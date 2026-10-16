@@ -1,0 +1,686 @@
+[
+  {
+    "sequence": 0,
+    "tensor": "ref0.ple_conv_out.bin",
+    "diff": 30871,
+    "l2": 0.011096229472852609
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0.ple_emb.bin",
+    "diff": 0,
+    "l2": 0.0
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0.ple_gated_n.bin",
+    "diff": 19945,
+    "l2": 0.004060364088375787
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.a.bin",
+    "diff": 1,
+    "l2": 6.321185569296718e-06
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.attn_out.bin",
+    "diff": 3298,
+    "l2": 0.0014894152472931415
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.beta.bin",
+    "diff": 0,
+    "l2": 0.0
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.eid.bin",
+    "diff": 0,
+    "l2": 0.0
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.moe_in.bin",
+    "diff": 4967,
+    "l2": 0.0029578404242625077
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.moe_out.bin",
+    "diff": 11460,
+    "l2": 0.018157726597778888
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.out.bin",
+    "diff": 32612,
+    "l2": 0.013348426735345486
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.qkv.bin",
+    "diff": 621,
+    "l2": 9.837195301205627e-05
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.qkv_raw.bin",
+    "diff": 763,
+    "l2": 0.0002217849557127095
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.rw.bin",
+    "diff": 20,
+    "l2": 0.002769892415402025
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.trunk_in.bin",
+    "diff": 0,
+    "l2": 0.0
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.x.bin",
+    "diff": 7,
+    "l2": 7.558315251179445e-05
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.y_ssm.bin",
+    "diff": 1495,
+    "l2": 0.0006160595507739051
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.y_ssm_gated.bin",
+    "diff": 1502,
+    "l2": 0.0008241215706916576
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m0.z.bin",
+    "diff": 194,
+    "l2": 0.00021636014993405985
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.a.bin",
+    "diff": 179,
+    "l2": 0.010342895924933667
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.attn_out.bin",
+    "diff": 10363,
+    "l2": 0.01261466027995448
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.beta.bin",
+    "diff": 158,
+    "l2": 0.006082193901525016
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.eid.bin",
+    "diff": 14,
+    "l2": 0.32471625064369514
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.moe_in.bin",
+    "diff": 10839,
+    "l2": 0.016719029058641716
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.moe_out.bin",
+    "diff": 12528,
+    "l2": 0.09036457867929933
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.out.bin",
+    "diff": 42712,
+    "l2": 0.02153545999055916
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.qkv.bin",
+    "diff": 39581,
+    "l2": 0.007996918898191019
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.qkv_raw.bin",
+    "diff": 42149,
+    "l2": 0.009613205886569175
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.rw.bin",
+    "diff": 50,
+    "l2": 0.013075819565768866
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.trunk_in.bin",
+    "diff": 30871,
+    "l2": 0.011096229472852609
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.x.bin",
+    "diff": 10764,
+    "l2": 0.019325014504076202
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.y_ssm.bin",
+    "diff": 24889,
+    "l2": 0.006338662851992666
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.y_ssm_gated.bin",
+    "diff": 25747,
+    "l2": 0.012512310050676701
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_m1.z.bin",
+    "diff": 18789,
+    "l2": 0.005802983798397969
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_mix_0.bin",
+    "diff": 7,
+    "l2": 7.558315251179445e-05
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_mix_1.bin",
+    "diff": 4967,
+    "l2": 0.0029578404242625077
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_mix_2.bin",
+    "diff": 10764,
+    "l2": 0.019325014504076202
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_mix_3.bin",
+    "diff": 10839,
+    "l2": 0.016719029058641716
+  },
+  {
+    "sequence": 0,
+    "tensor": "ref0_mix_4.bin",
+    "diff": 11995,
+    "l2": 0.05192833522765134
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1.ple_conv_out.bin",
+    "diff": 19645,
+    "l2": 0.011928356285034794
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1.ple_emb.bin",
+    "diff": 0,
+    "l2": 0.0
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1.ple_gated_n.bin",
+    "diff": 10657,
+    "l2": 0.00517097546199737
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.a.bin",
+    "diff": 1,
+    "l2": 0.00012603243536708634
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.attn_out.bin",
+    "diff": 2125,
+    "l2": 0.001649909382891368
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.beta.bin",
+    "diff": 1,
+    "l2": 0.0002054069563876681
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.eid.bin",
+    "diff": 0,
+    "l2": 0.0
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.moe_in.bin",
+    "diff": 3419,
+    "l2": 0.003135647207242924
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.moe_out.bin",
+    "diff": 7119,
+    "l2": 0.022835461248737313
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.out.bin",
+    "diff": 21012,
+    "l2": 0.01536601276496813
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.qkv.bin",
+    "diff": 1078,
+    "l2": 0.00024655207281091727
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.qkv_raw.bin",
+    "diff": 859,
+    "l2": 0.00032365428351400935
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.rw.bin",
+    "diff": 20,
+    "l2": 0.005522185549415864
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.trunk_in.bin",
+    "diff": 0,
+    "l2": 0.0
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.x.bin",
+    "diff": 2,
+    "l2": 0.0001290278177376983
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.y_ssm.bin",
+    "diff": 1259,
+    "l2": 0.000759633547938603
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.y_ssm_gated.bin",
+    "diff": 1331,
+    "l2": 0.0010456393451168217
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m0.z.bin",
+    "diff": 220,
+    "l2": 0.000297792495984402
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.a.bin",
+    "diff": 119,
+    "l2": 0.011579609595182703
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.attn_out.bin",
+    "diff": 6567,
+    "l2": 0.013123246494992255
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.beta.bin",
+    "diff": 106,
+    "l2": 0.006457202991036194
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.eid.bin",
+    "diff": 5,
+    "l2": 0.35369428448046064
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.moe_in.bin",
+    "diff": 6871,
+    "l2": 0.01868061168277243
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.moe_out.bin",
+    "diff": 7509,
+    "l2": 0.12241669458222451
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.out.bin",
+    "diff": 26825,
+    "l2": 0.02597675797431669
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.qkv.bin",
+    "diff": 25982,
+    "l2": 0.00859442182654863
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.qkv_raw.bin",
+    "diff": 26611,
+    "l2": 0.010187624756732874
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.rw.bin",
+    "diff": 20,
+    "l2": 0.010982914376526253
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.trunk_in.bin",
+    "diff": 19645,
+    "l2": 0.011928356285034794
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.x.bin",
+    "diff": 6783,
+    "l2": 0.019314621104575103
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.y_ssm.bin",
+    "diff": 16222,
+    "l2": 0.007377450455875426
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.y_ssm_gated.bin",
+    "diff": 16602,
+    "l2": 0.013089372399915374
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_m1.z.bin",
+    "diff": 12203,
+    "l2": 0.00580342984665586
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_mix_0.bin",
+    "diff": 2,
+    "l2": 0.0001290278177376983
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_mix_1.bin",
+    "diff": 3419,
+    "l2": 0.003135647207242924
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_mix_2.bin",
+    "diff": 6783,
+    "l2": 0.019314621104575103
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_mix_3.bin",
+    "diff": 6871,
+    "l2": 0.01868061168277243
+  },
+  {
+    "sequence": 1,
+    "tensor": "ref1_mix_4.bin",
+    "diff": 7299,
+    "l2": 0.0428906162243922
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2.ple_conv_out.bin",
+    "diff": 49055,
+    "l2": 0.02263334163300143
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2.ple_emb.bin",
+    "diff": 0,
+    "l2": 0.0
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2.ple_gated_n.bin",
+    "diff": 35555,
+    "l2": 0.005659624611419417
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.a.bin",
+    "diff": 17,
+    "l2": 0.000315877922552396
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.attn_out.bin",
+    "diff": 6353,
+    "l2": 0.002044261311044333
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.beta.bin",
+    "diff": 7,
+    "l2": 0.00035373162197835964
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.eid.bin",
+    "diff": 2,
+    "l2": 0.11398474225448796
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.moe_in.bin",
+    "diff": 8929,
+    "l2": 0.003707361948451066
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.moe_out.bin",
+    "diff": 16808,
+    "l2": 0.03557089176396315
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.out.bin",
+    "diff": 52150,
+    "l2": 0.03720318990638997
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.qkv.bin",
+    "diff": 3868,
+    "l2": 0.00019129485233366863
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.qkv_raw.bin",
+    "diff": 4943,
+    "l2": 0.0005502353075131823
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.rw.bin",
+    "diff": 40,
+    "l2": 0.0035304571218657253
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.trunk_in.bin",
+    "diff": 0,
+    "l2": 0.0
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.x.bin",
+    "diff": 26,
+    "l2": 0.0003216424090421319
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.y_ssm.bin",
+    "diff": 4551,
+    "l2": 0.0006129793555215965
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.y_ssm_gated.bin",
+    "diff": 5014,
+    "l2": 0.0014765982184587966
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m0.z.bin",
+    "diff": 1522,
+    "l2": 0.0005707959378280379
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.a.bin",
+    "diff": 279,
+    "l2": 0.018745516899037723
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.attn_out.bin",
+    "diff": 16320,
+    "l2": 0.027222736057848574
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.beta.bin",
+    "diff": 258,
+    "l2": 0.012239258168905006
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.eid.bin",
+    "diff": 16,
+    "l2": 0.23346680476222398
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.moe_in.bin",
+    "diff": 16686,
+    "l2": 0.04463463411178718
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.moe_out.bin",
+    "diff": 17604,
+    "l2": 0.14930651953913485
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.out.bin",
+    "diff": 63951,
+    "l2": 0.0394700987726002
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.qkv.bin",
+    "diff": 63900,
+    "l2": 0.02195373863742098
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.qkv_raw.bin",
+    "diff": 64206,
+    "l2": 0.02255390278724618
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.rw.bin",
+    "diff": 60,
+    "l2": 0.01718659179582571
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.trunk_in.bin",
+    "diff": 49055,
+    "l2": 0.02263334163300143
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.x.bin",
+    "diff": 16211,
+    "l2": 0.0445319324380777
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.y_ssm.bin",
+    "diff": 39462,
+    "l2": 0.01385052564717513
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.y_ssm_gated.bin",
+    "diff": 40016,
+    "l2": 0.02824358704622604
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_m1.z.bin",
+    "diff": 31455,
+    "l2": 0.011877026792184345
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_mix_0.bin",
+    "diff": 26,
+    "l2": 0.0003216424090421319
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_mix_1.bin",
+    "diff": 8929,
+    "l2": 0.003707361948451066
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_mix_2.bin",
+    "diff": 16211,
+    "l2": 0.0445319324380777
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_mix_3.bin",
+    "diff": 16686,
+    "l2": 0.04463463411178718
+  },
+  {
+    "sequence": 2,
+    "tensor": "ref2_mix_4.bin",
+    "diff": 17166,
+    "l2": 0.08238919471382691
+  }
+]

@@ -33,71 +33,11 @@ def response(label=contract.CONTROL, cancelled=False, complete=True):
 
 def log():
     lines = []
-    for label, kind, _ in contract.recovery_plan():
-        if kind != 'prefill_cancel':
-            steps = 74 if kind in ['control', 'recovery'] else 2
-            lines.append(f'[q4t][decode_path] id={label} requested_mtp=1 '
-                         f'path=mtp_multi_b1 mtp_steps={steps} fallback=none '
-                         'plain_tail_tokens=0')
     for label, reason in contract.INTERRUPTS.items():
         if label == 'same-prefill-cancel':
             lines.append('[q4t] prefill cancelled seq=0 position=8192 total=45056')
         lines.append(f'[q4t] request cancelled id={label} reason={reason}')
     return '\n'.join(lines) + '\n'
-
-
-def sequential_log():
-    lines = []
-    for line in log().splitlines():
-        if line.startswith('[q4t][decode_path] '):
-            steps = int(line.split('mtp_steps=')[1].split()[0])
-            tail = 2 if steps == 74 else 0
-            targets = 254 if steps == 74 else 3 * steps
-            line = line.replace('path=mtp_multi_b1', 'path=mtp_sequential_b1')
-            line = line.replace('plain_tail_tokens=0', f'plain_tail_tokens={tail}')
-            line += (f' verifier=sequential tail_reason={"output_limit" if tail else "none"}'
-                     f' draft_forward_calls={2 * steps} target_t1_calls={targets}'
-                     f' target_t4_calls=0 extend_forward_calls={steps}'
-                     ' forward_count_scope=sequential_attempts')
-        lines.append(line)
-    return '\n'.join(lines) + '\n'
-
-
-class SequentialRecoveryTest(unittest.TestCase):
-    def test_same_mode_control_and_recoveries_include_tail(self):
-        result = contract.validate_same_mode_paths(sequential_log(), 'sequential')
-        self.assertEqual(result['verifier'], 'sequential')
-        self.assertEqual(result['terminal_paths'][contract.CONTROL]['plain_tail_tokens'], '2')
-
-    def test_legacy_and_wrong_requested_verifier_rejected(self):
-        for evidence, verifier in [(log(), 'sequential'), (sequential_log(), 't4')]:
-            with self.assertRaises(ValueError):
-                contract.validate_same_mode_paths(evidence, verifier)
-
-    def test_recovery_accounting_must_equal_fresh_control(self):
-        for old, new in [('target_t1_calls=254', 'target_t1_calls=253'),
-                         ('tail_reason=output_limit', 'tail_reason=context_limit'),
-                         ('plain_tail_tokens=2', 'plain_tail_tokens=3')]:
-            # Change the first (fresh-control) row, keeping valid per-row counts.
-            with self.subTest(new=new), self.assertRaises(ValueError):
-                contract.validate_same_mode_paths(
-                    sequential_log().replace(old, new, 1), 'sequential')
-
-    def test_consistent_but_wrong_completed_counts_rejected(self):
-        with self.assertRaises(ValueError):
-            contract.validate_same_mode_paths(sequential_log().replace(
-                'target_t1_calls=254', 'target_t1_calls=222'), 'sequential')
-        with self.assertRaises(ValueError):
-            contract.validate_same_mode_paths(sequential_log().replace(
-                'tail_reason=output_limit', 'tail_reason=context_limit'), 'sequential')
-
-    def test_invalid_attempt_counts_are_not_recovery_success(self):
-        for old, new in [('draft_forward_calls=148', 'draft_forward_calls=149'),
-                         ('target_t4_calls=0', 'target_t4_calls=1'),
-                         ('forward_count_scope=sequential_attempts', '')]:
-            with self.subTest(new=new), self.assertRaises(ValueError):
-                contract.validate_same_mode_paths(
-                    sequential_log().replace(old, new, 1), 'sequential')
 
 
 class PlanAndFixtureTest(unittest.TestCase):
@@ -307,49 +247,6 @@ class AccountingAndPathTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 contract.metric_values(bad)
 
-    def test_all_paths_and_prefill_progress(self):
-        result = contract.validate_same_mode_paths(log())
-        self.assertEqual(len(result['terminal_paths']), 8)
-        self.assertEqual(result['prefill_cancel_position'], 8192)
-        self.assertEqual(result['control_mtp_steps'], 74)
-
-    def test_cross_mode_or_fallback_rejected(self):
-        for old, new in [('path=mtp_multi_b1', 'path=plain'),
-                         ('requested_mtp=1', 'requested_mtp=0'),
-                         ('fallback=none', 'fallback=initialization'),
-                         ('mtp_steps=74', 'mtp_steps=0'),
-                         ('plain_tail_tokens=0', 'plain_tail_tokens=1')]:
-            with self.assertRaises(ValueError):
-                contract.validate_same_mode_paths(log().replace(old, new, 1))
-
-    def test_missing_extra_duplicate_paths_rejected(self):
-        lines = log().splitlines()
-        for bad in ['\n'.join(lines[1:]), log() + lines[0] + '\n',
-                    log() + lines[0].replace(contract.CONTROL, 'unexpected') + '\n']:
-            with self.assertRaises(ValueError):
-                contract.validate_same_mode_paths(bad)
-
-    def test_changed_recovery_step_count_rejected(self):
-        changed = log().replace('id=same-prefill-recovery requested_mtp=1 '
-                                'path=mtp_multi_b1 mtp_steps=74',
-                                'id=same-prefill-recovery requested_mtp=1 '
-                                'path=mtp_multi_b1 mtp_steps=73')
-        with self.assertRaises(ValueError):
-            contract.validate_same_mode_paths(changed)
-
-    def test_missing_or_wrong_interrupt_reason_rejected(self):
-        for bad in [log().replace('reason=deadline_exceeded', 'reason=explicit_cancel'),
-                    log().replace('id=same-decode-rst reason=', 'id=other reason=')]:
-            with self.assertRaises(ValueError):
-                contract.validate_same_mode_paths(bad)
-
-    def test_missing_or_unbounded_prefill_progress_rejected(self):
-        for old, new in [('position=8192', 'position=0'),
-                         ('position=8192', 'position=45056'),
-                         ('total=45056', 'total=1024'),
-                         ('prefill cancelled', 'prefill completed')]:
-            with self.assertRaises(ValueError):
-                contract.validate_same_mode_paths(log().replace(old, new))
 
     def test_prefill_progress_must_be_adjacent_to_actual_request_id(self):
         progress = '[q4t] prefill cancelled seq=0 position=8192 total=45056\n'

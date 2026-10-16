@@ -58,6 +58,37 @@ struct HyperConnectionWeights {
   void Free();
 };
 
+// Production HC inject gate operators, exposed for the operator-level
+// comparison test (tests/gemm_t1_vs_tk1_test.cpp; docs/STATUS.md 当前阶段
+// O0/O1). Both compute
+//   inject[t, b] = 2 * sigmoid((normed[t, :] . block_inject[b, :]) / hc)
+// HcInjectGevGated is the fused T=1 SIMT path (one warp per output, gate
+// applied in-register from the materialized BF16 projection); HcInjectGev is
+// the same GEMV without the gate (pre-gate projection); HcInjectGateGeneric
+// is the T>1 cuBLASLt path (GEMM followed by the per-(t,b) gated sigmoid
+// kernel). Production code reaches all of them through PrepareInjectGate.
+bool HcInjectGev(const uint16_t* x, const uint16_t* w, uint16_t* y,
+                 float alpha, cudaStream_t stream);
+bool HcInjectGevGated(const uint16_t* x, const uint16_t* w, uint16_t* y,
+                      cudaStream_t stream);
+// Multi-row (2 <= T <= 8) fused HC inject gate: one warp per (t, b) output,
+// each row bit-identical to HcInjectGevGated on the same input row.
+bool HcInjectGevGatedMultirow(const uint16_t* x, const uint16_t* w,
+                              uint16_t* y, int T, cudaStream_t stream);
+Status HcInjectGateGeneric(const uint16_t* normed, const uint16_t* block_inject,
+                           uint16_t* inject, int T, int hc, int hs,
+                           void* workspace, size_t workspace_bytes,
+                           cudaStream_t stream);
+
+// mix-down step (the first GEMM in the HC mix): down = normed @ W_down^T
+// ([T, hc_dim] x [lr, hc_dim]^T -> [T, lr]). The exact production branch
+// (row-wise candidate gate, ProjGemm fallback, capture hook), extracted so
+// the operator-level test can drive it on fixed captured inputs without
+// re-running the layer norm. Caller owns d_down.
+Status MixDownStep(const HyperConnectionWeights& w, const uint16_t* normed,
+                   uint16_t* d_down, int T, void* workspace,
+                   size_t workspace_bytes, cudaStream_t stream);
+
 // Load one GatedResidual's weights from `loader` under the checkpoint names
 //   {prefix}.hc_norm.weight
 //   {prefix}.input_mix_weight_down.weight

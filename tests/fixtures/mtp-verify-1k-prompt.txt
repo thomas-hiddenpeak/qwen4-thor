@@ -1,0 +1,34 @@
+Technical review notes. Read the following records carefully.
+Record 1: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.
+Record 2: The storage worker reads selected rows from the lookup table. The table is much larger than the small buffer used by one request.
+Record 3: The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.
+Record 4: A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.
+Record 5: The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives.
+Record 6: A short request and a long request can follow different execution paths. The report must distinguish the time to the first answer from the later generation rate.
+Record 7: The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.
+Record 8: The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives.
+Record 9: The service reads model weights and updates the sequence state on each step. The team records latency and checks the generated answer before accepting a change.
+Record 10: The storage worker reads selected rows from the lookup table. The table is much larger than the small buffer used by one request.
+Record 11: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.
+Record 12: The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.
+Record 13: A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.
+Record 14: The request contains technical notes from several experiments. Input length, output length, and concurrency must remain fixed when comparing runs.
+Record 15: The request contains technical notes from several experiments. Input length, output length, and concurrency must remain fixed when comparing runs.
+Record 16: A short request and a long request can follow different execution paths. The report must distinguish the time to the first answer from the later generation rate.
+Record 17: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.
+Record 18: A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.
+Record 19: The storage worker reads selected rows from the lookup table. The table is much larger than the small buffer used by one request.
+Record 20: A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.
+Record 21: The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.
+Record 22: The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.
+Record 23: A short request and a long request can follow different execution paths. The report must distinguish the time to the first answer from the later generation rate.
+Record 24: The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives.
+Record 25: The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.
+Record 26: The scheduler tracks each request separately. It must preserve the correct state when a request finishes or another request arrives.
+Record 27: The evaluation stores the complete request and response with the build identifier. The next run uses the same data so that the results remain comparable.
+Record 28: A short request and a long request can follow different execution paths. The report must distinguish the time to the first answer from the later generation rate.
+Record 29: A useful change can reduce code complexity while keeping the same accuracy and speed. A faster result on one input does not justify a regression on another input.
+Record 30: A short request and a long request can follow different execution paths. The report must distinguish the time to the first answer from the later generation rate.
+Record 31: The service reads model weights and updates the sequence state on each
+Task: Write a detailed technical review of these records in at least 500 words. Explain measurement, storage, scheduling, and correctness.
+Answer:

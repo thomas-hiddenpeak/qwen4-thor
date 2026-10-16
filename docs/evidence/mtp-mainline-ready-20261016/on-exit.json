@@ -1,0 +1,21 @@
+{
+  "returncode": 0,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3",
+    "tools/evalscope/run_acceptance.py",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--startup-timeout",
+    "300",
+    "--allow-unqualified-binary",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-mainline-ready-20261016/on",
+    "--mode",
+    "performance",
+    "--fixtures",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-merge-e2e-20261015/on",
+    "--mtp-default",
+    "--port",
+    "8731"
+  ]
+}

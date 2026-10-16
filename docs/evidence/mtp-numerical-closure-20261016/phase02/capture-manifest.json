@@ -1,0 +1,762 @@
+[
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed.ple_conv_out.bin",
+    "bytes": 307200,
+    "sha256": "ce2f3c03e18bd2df15e44ef3d79b7d207d95ba263f9d601b7a4ad460e9ea5ac3"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed.ple_emb.bin",
+    "bytes": 76800,
+    "sha256": "ef36249f93a713c7fddfe102a1e4b646bd0354240167a52c4ef3d8d14f720ea9"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed.ple_gated_n.bin",
+    "bytes": 307200,
+    "sha256": "707624ff371f1711ccf650013755b55a6349a2f9e9c78ed869cc3d9ffa5d605a"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.a.bin",
+    "bytes": 1440,
+    "sha256": "a274f72479976bf0fd9b78a5eb2ea18353eefabc9aa39dbd8c13512ae0d55f46"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.attn_out.bin",
+    "bytes": 76800,
+    "sha256": "fcec1b01b91024d83935839c06f5ceee97fbbd322f43fb85a92b9c55228b1513"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.beta.bin",
+    "bytes": 1440,
+    "sha256": "a87962fe5794b2d79ed813b4eaf941da0c9a8c05491d896bd7211dd9cd411f94"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.eid.bin",
+    "bytes": 600,
+    "sha256": "955248bb7a1aec298ee41e144fe4537d574aaa046e3d7830afde90b857013e31"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.moe_in.bin",
+    "bytes": 76800,
+    "sha256": "bb7be1b10fc09f32a01e2793489d81c5eb6f5899aa50700518fbfd70860a1c3c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.moe_out.bin",
+    "bytes": 76800,
+    "sha256": "b73cadf27d3f978f6b054c03c55d5a30eceae871c2c2a8114204787a9b3e07aa"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.out.bin",
+    "bytes": 307200,
+    "sha256": "8a6c022496779759721dc3621effe9abb85ebac6760d7246e3b5e6d874c7f827"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.qkv.bin",
+    "bytes": 307200,
+    "sha256": "9879a2f118feed1f4a5d883bc18f733228f65c64608474bb538427a796fe7d41"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.qkv_raw.bin",
+    "bytes": 307200,
+    "sha256": "4b7273919a22541db5190a3df1b87dfeef8377b29d7bef98ab945d075141754b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.rw.bin",
+    "bytes": 600,
+    "sha256": "20700f8faab35060a30446b20e5f91e020f17291dadffa191465bb6001c1945b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.trunk_in.bin",
+    "bytes": 307200,
+    "sha256": "3717a401116d58d952e329c8faddf6e6d69f8989168843eec3cb1c81824e99e0"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.x.bin",
+    "bytes": 76800,
+    "sha256": "ad0ceeb8c3b45c9dbbeb3055a6a06f9ed92411c57f1d07de01c8a7392bd05855"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.y_ssm.bin",
+    "bytes": 184320,
+    "sha256": "59ac648f27de5e164382d021c30faf6da27828b6b8c1289fb333099c57cc9937"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.y_ssm_gated.bin",
+    "bytes": 184320,
+    "sha256": "c0fc7520fac6e3d6e98f8f5abbc958b84d8c9bdec5005e8a5a55bab264d4918c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m0.z.bin",
+    "bytes": 184320,
+    "sha256": "59591a95647a2389fe2c0eb7fb3594d108a385584d1ed9b07bb6f9a73790ea4e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.a.bin",
+    "bytes": 1440,
+    "sha256": "0e7da6bacf2efaac39444f2046bb5e846945e7a077f357d057ea31c9ee161c61"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.attn_out.bin",
+    "bytes": 76800,
+    "sha256": "ccbf95915531762dedcec562d28b45d3164f9f08fe03c00343d26649b5348154"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.beta.bin",
+    "bytes": 1440,
+    "sha256": "01c83c42fe9c2b7c98adc86ff0e713df14e16ee381add52d94e0ef19e8a21e37"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.eid.bin",
+    "bytes": 600,
+    "sha256": "6a81e995b50c3551b75bcdddc5c9d8e80120a48782b45df6815ffb1a220c4b52"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.moe_in.bin",
+    "bytes": 76800,
+    "sha256": "5986355cfcf6bd454b7f941f98490abb7cba873d57689cb2c6b27716948ac033"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.moe_out.bin",
+    "bytes": 76800,
+    "sha256": "331be88730a2bbcd63ec335e39b991a5657f743becd5d922ce9816243259a3a5"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.out.bin",
+    "bytes": 307200,
+    "sha256": "4e370b1a610816b9458f65d89dfa48b12610ba85164192aa79b1cfdc4e55cfea"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.qkv.bin",
+    "bytes": 307200,
+    "sha256": "6aab0fe9a8b14e8edb37249393c305c93c08be75f7edb3f83421eb764e62a741"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.qkv_raw.bin",
+    "bytes": 307200,
+    "sha256": "9446a72b02f9629d9475e1587257c6dcc0662f1b6b591aa3527bce9a46276f84"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.rw.bin",
+    "bytes": 600,
+    "sha256": "dc7d7ff3d112bda8a4d583b9d937455517591da255c7fc94b564a87a3daef307"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.trunk_in.bin",
+    "bytes": 307200,
+    "sha256": "ce2f3c03e18bd2df15e44ef3d79b7d207d95ba263f9d601b7a4ad460e9ea5ac3"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.x.bin",
+    "bytes": 76800,
+    "sha256": "75d777c1bb441a2d542c2343d0609dc4b47feff6c5a496626d696a52e330c935"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.y_ssm.bin",
+    "bytes": 184320,
+    "sha256": "cd15d678351ca9d7fc46441f6f56e358b28f951a3dfa2c04a201fb4f9e776546"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.y_ssm_gated.bin",
+    "bytes": 184320,
+    "sha256": "7663b3699fc47319d9ae00bcb709d12df68f2d7ad69b43aecb066ce18f6aa07e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_m1.z.bin",
+    "bytes": 184320,
+    "sha256": "4455ffe5b672c568101dece7904ce7dabc3a84352a97ca5ca5291a2428f37ba9"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_mix_0.bin",
+    "bytes": 76800,
+    "sha256": "ad0ceeb8c3b45c9dbbeb3055a6a06f9ed92411c57f1d07de01c8a7392bd05855"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_mix_1.bin",
+    "bytes": 76800,
+    "sha256": "bb7be1b10fc09f32a01e2793489d81c5eb6f5899aa50700518fbfd70860a1c3c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_mix_2.bin",
+    "bytes": 76800,
+    "sha256": "75d777c1bb441a2d542c2343d0609dc4b47feff6c5a496626d696a52e330c935"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_mix_3.bin",
+    "bytes": 76800,
+    "sha256": "5986355cfcf6bd454b7f941f98490abb7cba873d57689cb2c6b27716948ac033"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/packed_mix_4.bin",
+    "bytes": 76800,
+    "sha256": "69bf935dc07e29d136ae800b5e8c5dc29912fd92225db77bdc96d90b7ef1489b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0.ple_conv_out.bin",
+    "bytes": 102400,
+    "sha256": "4b3dc0ff96d6fd0cf23260814c56a1946861e39c3da9ce93c10807610e2eb951"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0.ple_emb.bin",
+    "bytes": 25600,
+    "sha256": "bd331070bd0170d13bd89cb1b118a2c8b067815faa78ce62e2d869361c0c5ef8"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0.ple_gated_n.bin",
+    "bytes": 102400,
+    "sha256": "ce011007cd6af7e8e0f199933d54fbe59f831f8b1d797e3294b5c3e5dc972071"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.a.bin",
+    "bytes": 480,
+    "sha256": "e9610398a491006d8ae1c62277239d971a78b0c2c7596386fedd0252f9b1c061"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.attn_out.bin",
+    "bytes": 25600,
+    "sha256": "07c9b5394832d75459278239510880dc0e94e2f577f6ea7ff09148cf91473baf"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.beta.bin",
+    "bytes": 480,
+    "sha256": "9e4651283d44cfa6b12774ef6dd3777727cc4bad3d9d74489827813e7b9be14f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.eid.bin",
+    "bytes": 200,
+    "sha256": "40b87d48fc3e26fb9b8c14be0c255615deff6d2e0654c2f614834cb4a9010979"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.moe_in.bin",
+    "bytes": 25600,
+    "sha256": "0a15061bd46a143db617aca345eed9e66e745a787c583cb5799efb0e843aa495"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.moe_out.bin",
+    "bytes": 25600,
+    "sha256": "21079f471b85a32fccdcae2f7110d57c7021a57143e4614a13b87427f2013e79"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.out.bin",
+    "bytes": 102400,
+    "sha256": "55789aa87be4c4255170a5241e586a54f6f33c2a2832e8cee538085b9eaf53bc"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.qkv.bin",
+    "bytes": 102400,
+    "sha256": "5b1a4b17fac0aa89969f8ff894aa7c579e61a71ec91f4e94c9f44cc288c2b93f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.qkv_raw.bin",
+    "bytes": 102400,
+    "sha256": "a87f9967c89ea736c9807e32bb3c3071d6285d19101debc78eb1f647fa9df537"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.rw.bin",
+    "bytes": 200,
+    "sha256": "8cd4366ed4f60efb335bdf559c4b67ff03c8893c4f460126d223940b2f32aee0"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.trunk_in.bin",
+    "bytes": 102400,
+    "sha256": "0c753043d9939b55a14607b9da8c9cab1d775013042fc8236ca6bbd1fd8dd8c6"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.x.bin",
+    "bytes": 25600,
+    "sha256": "82ee03ab6f59d11a9cd9921afd205514a361cae32c57e49f3c7be23c0e165c74"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.y_ssm.bin",
+    "bytes": 61440,
+    "sha256": "26360aff1b4cbee9a2ba4445253e5a56cfb245b1e894a6f2ce7d7584f3ebb53c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.y_ssm_gated.bin",
+    "bytes": 61440,
+    "sha256": "69d5f3a6d0d977847c7178abfaeb74b593747fd46f285c098c4efc4a394561c5"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m0.z.bin",
+    "bytes": 61440,
+    "sha256": "e666b8c45dd31cd22dec7c06231ee4502fc67c1f578d5a83bf170424fb09826c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.a.bin",
+    "bytes": 480,
+    "sha256": "4d384aa15a00898cce51780d5c56348d2ce77fb854f9e40fcdff7442814a935b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.attn_out.bin",
+    "bytes": 25600,
+    "sha256": "9d5b437fd1a503a0adc6bd8a2c4f2fddfe70920ba1a3e1b1f3edbf1c2c6f39df"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.beta.bin",
+    "bytes": 480,
+    "sha256": "b692c87ab2af80d410c5ce94857e63b8be34e51ebf599df8c6b9f94c98e3022e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.eid.bin",
+    "bytes": 200,
+    "sha256": "2bb2ab0652e5781d597a47af62528eeda023b04a2d4c556fcee9605e79b1cc02"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.moe_in.bin",
+    "bytes": 25600,
+    "sha256": "609027a70c50704b82d5a5c30fad43b1b80800ac4d7693322f57978882675d58"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.moe_out.bin",
+    "bytes": 25600,
+    "sha256": "188ed6dccf66f0d8eb0ec016c0d4b51190d61c3e13b1eaf76712be68fad097c8"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.out.bin",
+    "bytes": 102400,
+    "sha256": "517a50a15f4748dc843b90c78237a3d2afbb2b4e4af092b35ebb006ff6e861bf"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.qkv.bin",
+    "bytes": 102400,
+    "sha256": "4455c3acf4b6ba408410d186e40cc962043110edeb559cead58d84e0f37d4179"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.qkv_raw.bin",
+    "bytes": 102400,
+    "sha256": "0891d0dc550e22ebcd77db9403479fd9e00f03d6aa4125f9da614507a0469426"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.rw.bin",
+    "bytes": 200,
+    "sha256": "98f6caf9404ee50b578fa0e8e654fbed0e2acb70e36745aba2c912554e5c1ee1"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.trunk_in.bin",
+    "bytes": 102400,
+    "sha256": "4b3dc0ff96d6fd0cf23260814c56a1946861e39c3da9ce93c10807610e2eb951"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.x.bin",
+    "bytes": 25600,
+    "sha256": "710305075b61f84375acf2c1ca1de5d6840aeee211f97d9b2b297df3a08bd406"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.y_ssm.bin",
+    "bytes": 61440,
+    "sha256": "ac3f74a09f5086834d6a48c385d44149e655458a32dd6aa9e846ad2d54f926df"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.y_ssm_gated.bin",
+    "bytes": 61440,
+    "sha256": "b1a386df50fd1258a7c0f44609a36bdb202efc9e9c9681bde559b8b8f3ac8f8a"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_m1.z.bin",
+    "bytes": 61440,
+    "sha256": "8bb59a9f1daf7362e7a6b1351886de6ca2298e68b6e3a6dc9c719918599714f6"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_mix_0.bin",
+    "bytes": 25600,
+    "sha256": "82ee03ab6f59d11a9cd9921afd205514a361cae32c57e49f3c7be23c0e165c74"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_mix_1.bin",
+    "bytes": 25600,
+    "sha256": "0a15061bd46a143db617aca345eed9e66e745a787c583cb5799efb0e843aa495"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_mix_2.bin",
+    "bytes": 25600,
+    "sha256": "710305075b61f84375acf2c1ca1de5d6840aeee211f97d9b2b297df3a08bd406"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_mix_3.bin",
+    "bytes": 25600,
+    "sha256": "609027a70c50704b82d5a5c30fad43b1b80800ac4d7693322f57978882675d58"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref0_mix_4.bin",
+    "bytes": 25600,
+    "sha256": "81afa5a5bf49b01083c194b5727c07c6886d6fbb79cd7eae0225fc9f6187f7dc"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1.ple_conv_out.bin",
+    "bytes": 61440,
+    "sha256": "5d18847b9b1738086b0479835aacac5ee5aaeef9a32886ac9bd774cd513875b8"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1.ple_emb.bin",
+    "bytes": 15360,
+    "sha256": "b65f6f71ffbe34a01d85f300e3fd540dee106eb58be0960b8b04ee76dfa88857"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1.ple_gated_n.bin",
+    "bytes": 61440,
+    "sha256": "82009dc5c51b8c4bc5f2e4bb4d852f908e9dece547592683568a4f0c0fcf33be"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.a.bin",
+    "bytes": 288,
+    "sha256": "b661663a4373d559259f02b4e5316796ed454c259a9ede1ec2cb47580ed0c59a"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.attn_out.bin",
+    "bytes": 15360,
+    "sha256": "7dd6def2e70fd65b647de1c0bca5d4633d64748bac10d1242a0d8d6c13b3ed69"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.beta.bin",
+    "bytes": 288,
+    "sha256": "c58e0e6060ff09114e82664a9a091532b60597243902d48730984d5bfc51aa96"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.eid.bin",
+    "bytes": 120,
+    "sha256": "7e207f09912530d9197d1cb5d21da44d3f4b0ec81eac0f18497b0521308c974a"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.moe_in.bin",
+    "bytes": 15360,
+    "sha256": "2fedeacf0862de59860dfd8534e21eb46071b3be75109e9d6c00737677d4ff55"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.moe_out.bin",
+    "bytes": 15360,
+    "sha256": "d7afe8a92b2c9cb2cfec01a5dd8c9a6d7a16a38dff63014cbffd04fa07a5c42e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.out.bin",
+    "bytes": 61440,
+    "sha256": "f76efc5d5fcde3e2812dd0beaeb98885267c6075d59507d78a7719848e98e506"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.qkv.bin",
+    "bytes": 61440,
+    "sha256": "26806788e0d819857e86815052a288746d8716036ae0222d8d34341cb42c80bd"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.qkv_raw.bin",
+    "bytes": 61440,
+    "sha256": "d306822e0a2e200619657f61105e17c966812a95ecd915d4e9bb33a60e01ab55"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.rw.bin",
+    "bytes": 120,
+    "sha256": "bd009068670df5f0378a316d19794b6c1743d7b26fb0672106b7286cc6466fdc"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.trunk_in.bin",
+    "bytes": 61440,
+    "sha256": "d848bde1ef7535d1ee75dd8d00027f56a1d355c9afa235a7947319653b1e35b7"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.x.bin",
+    "bytes": 15360,
+    "sha256": "a4eae2b8b849c47d038fa77836ac7221d86707333b2586ea7bb6ba5f7bfda805"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.y_ssm.bin",
+    "bytes": 36864,
+    "sha256": "3e035b287692bae02e593e9dcb6bf7a967483974f64c17dce34ee41eaf1e4db5"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.y_ssm_gated.bin",
+    "bytes": 36864,
+    "sha256": "1078073187f2b2da27b10ec03e6f4fed2b4ffdc6355b440716dff24e1d2aeb23"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m0.z.bin",
+    "bytes": 36864,
+    "sha256": "4fbb4be8153902511a3f06709b0c8d5e88552f47bd47101daffe4c025e1433ef"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.a.bin",
+    "bytes": 288,
+    "sha256": "41a38656f08397428218fb73f799c6b966fbaa6cf5bbd2188c1ba3b6e48b70e0"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.attn_out.bin",
+    "bytes": 15360,
+    "sha256": "26b0fe3e88890b7d6fd228f2420585287594c402bcc0bb068957b25bb08f9de8"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.beta.bin",
+    "bytes": 288,
+    "sha256": "fe6f7cff2b668629467f622537aba47aea5d04fbd793ff475422ce7fb64c1f90"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.eid.bin",
+    "bytes": 120,
+    "sha256": "f9e2ef3fcf210b4de7c632f1c95236feca9a9303429d249dfb36ae1d7e4dc4b6"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.moe_in.bin",
+    "bytes": 15360,
+    "sha256": "f6e5b020cb46834b09e943634b5d38ce5aeb8a5c9dbe14ad76018f018f24a11b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.moe_out.bin",
+    "bytes": 15360,
+    "sha256": "07be17336ab95ac0a94686b6e7b6eddd647e491d1c1c9b55d114f1baaab594bd"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.out.bin",
+    "bytes": 61440,
+    "sha256": "ee0283003033ce3b3f582f4b2d916a8403b3864146a7216c75d10e623ee7a9fa"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.qkv.bin",
+    "bytes": 61440,
+    "sha256": "53bc99ac4ce1541a1e270ba0e4283de82de50b7db50e5041aac486a3e274cede"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.qkv_raw.bin",
+    "bytes": 61440,
+    "sha256": "d05195adcb8eb8df354ea7e6fdb0d1fd2127fafb609518bf7b9b9174c227efa9"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.rw.bin",
+    "bytes": 120,
+    "sha256": "19883407082379d98f13cca4300a6766110a3f6c9d75d02bdeb03770e375764b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.trunk_in.bin",
+    "bytes": 61440,
+    "sha256": "5d18847b9b1738086b0479835aacac5ee5aaeef9a32886ac9bd774cd513875b8"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.x.bin",
+    "bytes": 15360,
+    "sha256": "730c9448001c122ccbe688552a4f733bc660f22f528c4173621362bfe6fc9f6b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.y_ssm.bin",
+    "bytes": 36864,
+    "sha256": "12e65ad30a4d568bc6cd2028b9519e3aa2ee512d0394ce5009aeeb071b5dee0f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.y_ssm_gated.bin",
+    "bytes": 36864,
+    "sha256": "f92d623157c91b23f7e8412ac0dbfafa40e5cc3f3c9b98f9671bf9330b2bc365"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_m1.z.bin",
+    "bytes": 36864,
+    "sha256": "2479565390423a6562e80f6937ee35b3b298c0acf724bab04e3e599e178e54e7"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_mix_0.bin",
+    "bytes": 15360,
+    "sha256": "a4eae2b8b849c47d038fa77836ac7221d86707333b2586ea7bb6ba5f7bfda805"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_mix_1.bin",
+    "bytes": 15360,
+    "sha256": "2fedeacf0862de59860dfd8534e21eb46071b3be75109e9d6c00737677d4ff55"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_mix_2.bin",
+    "bytes": 15360,
+    "sha256": "730c9448001c122ccbe688552a4f733bc660f22f528c4173621362bfe6fc9f6b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_mix_3.bin",
+    "bytes": 15360,
+    "sha256": "f6e5b020cb46834b09e943634b5d38ce5aeb8a5c9dbe14ad76018f018f24a11b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref1_mix_4.bin",
+    "bytes": 15360,
+    "sha256": "4160aeacb1f5fb9d1ab16ff4c7f1075597e258b3bedabc25d9d9e070eae6fa66"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2.ple_conv_out.bin",
+    "bytes": 143360,
+    "sha256": "28a71abe38d9bc3cd5a519ac9aa4215eb91ce0517d6f8ad9368353d6457bd794"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2.ple_emb.bin",
+    "bytes": 35840,
+    "sha256": "770b7b81bd14baf7dd5f8358fe258caded336661d049ca031337f97836bb3a96"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2.ple_gated_n.bin",
+    "bytes": 143360,
+    "sha256": "a7d1e16a596de14335371209caf344f24e3c29b017351127658100533b69f886"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.a.bin",
+    "bytes": 672,
+    "sha256": "0f7731626098db1e37f3ea3a36957e4a5fa38ffcc25f490350ae889bd6422f79"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.attn_out.bin",
+    "bytes": 35840,
+    "sha256": "46d8e75f0a526bc50316b44ba63bbf006f967aa6112694bf7ea1a4ce42e9e68e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.beta.bin",
+    "bytes": 672,
+    "sha256": "755839ae8754e1ef2b2d19d10cced7f9c66870b301a820a666da41efb614205a"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.eid.bin",
+    "bytes": 280,
+    "sha256": "2c9ed11b271f20cb6db38e5b83b04d553a0ead1800b4b3632ed3a31ced002b10"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.moe_in.bin",
+    "bytes": 35840,
+    "sha256": "db7293df166016e9fc7ab81a540991bbe2f49684b95c1a77fafeef4da8886d71"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.moe_out.bin",
+    "bytes": 35840,
+    "sha256": "28e3bcfbc45e04ad98be89dfff75554114215ec5deec3fac50b992b50496df49"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.out.bin",
+    "bytes": 143360,
+    "sha256": "733421f36f6461d845885fd54845ae2017e3c2a964136798ae0f37871b97771f"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.qkv.bin",
+    "bytes": 143360,
+    "sha256": "7d7fba9f6150be84f1d119b321e43fcb6fc57b3266d036b88ef6443df43bec81"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.qkv_raw.bin",
+    "bytes": 143360,
+    "sha256": "98df7f654773b1528af758d661e1cd9a9314c50202a536c4d8c65ad546994baa"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.rw.bin",
+    "bytes": 280,
+    "sha256": "c8093de799fc5597e95732a53a9c46bd12b152aa5dd5dec58390b69cb2071d8e"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.trunk_in.bin",
+    "bytes": 143360,
+    "sha256": "191ecc2c5d7b113683f139adae08da106fca16492e6a52da7c6a3d374229c07a"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.x.bin",
+    "bytes": 35840,
+    "sha256": "07459ca567b9d3153678c3a54a7bad69b3c98c98dd66f3986efe4e8960fe32b0"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.y_ssm.bin",
+    "bytes": 86016,
+    "sha256": "371177d1f9a676e25fbdfbed96d0ddc2815cb214fbf532f9709faf53826cae5c"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.y_ssm_gated.bin",
+    "bytes": 86016,
+    "sha256": "70580dfdcc7f2aa6c0ca30655d0c346e94481d2a2301c78a54df08a355bcc4e6"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m0.z.bin",
+    "bytes": 86016,
+    "sha256": "4364d3c5daf0906b1d98c3934ed350a041f45cefa28555fbe7bd362b19145142"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.a.bin",
+    "bytes": 672,
+    "sha256": "0de96eebc483d20650d5a8511a3457a486ae7aace6e2fd13ba0ae0e6e980c0a7"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.attn_out.bin",
+    "bytes": 35840,
+    "sha256": "dc06b82eb544460f5869a286a09b205c013892c882bed11af720bd4cc5cd64ce"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.beta.bin",
+    "bytes": 672,
+    "sha256": "0f7f6252419eb1ac50250592bbfb148412cc1e33b987fcd68cc40904ad61e967"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.eid.bin",
+    "bytes": 280,
+    "sha256": "2871ff271e146ee62f6a51cdd7c98f08ef9468c29544e6bc84c756539bcd3a51"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.moe_in.bin",
+    "bytes": 35840,
+    "sha256": "6683b97dff508f4e64b29941aba1d8f425a259f395d10d1729d600195cc671c9"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.moe_out.bin",
+    "bytes": 35840,
+    "sha256": "9baa6c2f83d3d2897d83d9f8b44321158a576ccd0ed8d18d0b8e6af8aa471bc9"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.out.bin",
+    "bytes": 143360,
+    "sha256": "0338f0a4ba0497ec33ed36934b32c747d196360f6b6c30b67b65b57ae0cdef67"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.qkv.bin",
+    "bytes": 143360,
+    "sha256": "8b0515f6674a6b3ce0f1abce81b5bb15f29493e40201b618796b740a1a26dfca"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.qkv_raw.bin",
+    "bytes": 143360,
+    "sha256": "a9c4276efdcfcf8ade917de7e0f9a8cb33bba714d9c400526e5144dae09e2edb"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.rw.bin",
+    "bytes": 280,
+    "sha256": "e58e12a6c3529ffee222efee931f179ca806e8f6805a5bed5180716284c8825b"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.trunk_in.bin",
+    "bytes": 143360,
+    "sha256": "28a71abe38d9bc3cd5a519ac9aa4215eb91ce0517d6f8ad9368353d6457bd794"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.x.bin",
+    "bytes": 35840,
+    "sha256": "fe6dd6fd29eed1544194a97da65602b76391d57dc4a416b96f15d8ab16193404"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.y_ssm.bin",
+    "bytes": 86016,
+    "sha256": "122f72b2c31299736e4eb7271f08cecdd02d9cd3b75e3c6a926210df721bd7a3"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.y_ssm_gated.bin",
+    "bytes": 86016,
+    "sha256": "f4105cb2d86fee6cbc1bd112169b8ddd101915af43947a391f38edefa7ab3364"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_m1.z.bin",
+    "bytes": 86016,
+    "sha256": "63eee6129a3e50caa53e7d3a2ade8d1a0fa81feebe3e8789d6b11cd934170e83"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_mix_0.bin",
+    "bytes": 35840,
+    "sha256": "07459ca567b9d3153678c3a54a7bad69b3c98c98dd66f3986efe4e8960fe32b0"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_mix_1.bin",
+    "bytes": 35840,
+    "sha256": "db7293df166016e9fc7ab81a540991bbe2f49684b95c1a77fafeef4da8886d71"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_mix_2.bin",
+    "bytes": 35840,
+    "sha256": "fe6dd6fd29eed1544194a97da65602b76391d57dc4a416b96f15d8ab16193404"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_mix_3.bin",
+    "bytes": 35840,
+    "sha256": "6683b97dff508f4e64b29941aba1d8f425a259f395d10d1729d600195cc671c9"
+  },
+  {
+    "path": ".q4t-work/mtp-numerical-closure-20261016/prefill-layers/ref2_mix_4.bin",
+    "bytes": 35840,
+    "sha256": "1e1cdd8a885e886af01ba13345026fd5ac606d94773a4e3479e5bbe11fefac09"
+  }
+]

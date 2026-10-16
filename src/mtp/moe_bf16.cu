@@ -20,7 +20,6 @@
 #include <vector>
 
 #include "q4t/model/linear.h"
-#include "q4t/trace/mtp_cycle_timing.h"
 
 namespace q4t {
 namespace mtp {
@@ -335,8 +334,6 @@ Status MoeBf16RoutedForward(const uint16_t* x, const int32_t* expert_ids,
 
   // 2. Read counts to host (one sync). Token lists stay on device.
   {
-    // Includes the existing GPU wait; this is not GPU active time.
-    trace::MtpCycleSpan timing(trace::CycleDetail::kDraftMoeCounts);
     if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
                         cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
       cudaFreeAsync(d_counts, stream);

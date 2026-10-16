@@ -1,0 +1,47 @@
+[q4t] MoE device decode grouped NVFP4 enabled: groups=20 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=20 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+  compare=prefill.layer0.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=prefill.layer0.conv bytes=61440 unequal=0 first_byte=61440
+  compare=prefill.layer1.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=prefill.layer1.conv bytes=61440 unequal=0 first_byte=61440
+  compare=prefill.layer1.ple bytes=184320 unequal=0 first_byte=184320
+  compare=verified.layer0.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=verified.layer0.conv bytes=61440 unequal=0 first_byte=61440
+  compare=verified.layer1.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=verified.layer1.conv bytes=61440 unequal=0 first_byte=61440
+  compare=verified.layer1.ple bytes=184320 unequal=0 first_byte=184320
+  compare=verify.logits bytes=993280 unequal=0 first_byte=993280
+  compare=restored.layer0.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=restored.layer0.conv bytes=61440 unequal=0 first_byte=61440
+  compare=restored.layer1.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=restored.layer1.conv bytes=61440 unequal=0 first_byte=61440
+  compare=restored.layer1.ple bytes=184320 unequal=0 first_byte=184320
+  compare=probe.logits bytes=496640 unequal=0 first_byte=496640
+  checkpoint_capacity input_equal=1 restore_equal=1 probe_equal=1 cap1=1 cap3=3 saved_rows=1
+  checkpoint_reject=ordinary_forward rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=negative_capacity rejected=1 message=ModelReserveVerifyCheckpoints: invalid capacity
+  checkpoint_reject=sequence_reset rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=negative_row rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=capacity_row rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=negative_slot rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=outside_slot rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=sequence_reset rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=unwritten_row rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=old_verify_row rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=verify_exceeds_reserved_capacity rejected=1 message=verify checkpoints: reserve at least T-1 rows first
+  checkpoint_reject=failed_verify rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  compare=rejected_inputs_unchanged.layer0.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=rejected_inputs_unchanged.layer0.conv bytes=61440 unequal=0 first_byte=61440
+  compare=rejected_inputs_unchanged.layer1.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=rejected_inputs_unchanged.layer1.conv bytes=61440 unequal=0 first_byte=61440
+  compare=rejected_inputs_unchanged.layer1.ple bytes=184320 unequal=0 first_byte=184320
+  checkpoint_reject=single-sequence unwritten row rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=sequence_reset rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=zero_saved_rows rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_validity=1
+[PASS] mtp_checkpoint_capacity_layout
+1 tests, 1 passed, 0 failed, 0 skipped

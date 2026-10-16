@@ -27,6 +27,7 @@
 #include <vector>
 
 #include "q4t/model/decoder_workspace.h"
+#include "q4t/model/layer_subtiming.h"
 #include "q4t/status.h"
 
 namespace q4t {
@@ -90,6 +91,34 @@ void DumpLayerOut(const uint16_t* out, int T, int hc_dim) {
       std::string(e) + "_m" + std::to_string(li) + ".out.bin";
   std::vector<uint16_t> h(static_cast<size_t>(T) * hc_dim);
   cudaMemcpy(h.data(), out, h.size() * sizeof(uint16_t),
+             cudaMemcpyDeviceToHost);
+  FILE* f = std::fopen(p.c_str(), "wb");
+  if (f) {
+    std::fwrite(h.data(), sizeof(uint16_t), h.size(), f);
+    std::fclose(f);
+  }
+}
+
+// Debug: when Q4T_MLP_DUMP=<tag>, copy this layer's attention output
+// (d_block right after the attention block, [T, hs] BF16) to
+// <tag>_m<idx>.attn_out.bin. idx is the layer (0-based, reset when the tag
+// changes). Used to attribute the first T-path divergence: if attn_out
+// diverges while the layer's trunk_in (and the GRRead mixed input) are
+// identical, the attention kernel is the first diverging operator.
+void DumpAttnOut(const uint16_t* attn_out, int T, int hs) {
+  const char* e = std::getenv("Q4T_MLP_DUMP");
+  if (!e || !*e) return;
+  static std::string last_tag_attn;
+  static int idx_attn = 0;
+  if (std::string(e) != last_tag_attn) {
+    last_tag_attn = e;
+    idx_attn = 0;
+  }
+  const int li = idx_attn++;
+  const std::string p =
+      std::string(e) + "_m" + std::to_string(li) + ".attn_out.bin";
+  std::vector<uint16_t> h(static_cast<size_t>(T) * hs);
+  cudaMemcpy(h.data(), attn_out, h.size() * sizeof(uint16_t),
              cudaMemcpyDeviceToHost);
   FILE* f = std::fopen(p.c_str(), "wb");
   if (f) {
@@ -278,6 +307,7 @@ void DecoderLayer::Free() {
   conv_state = ple_conv_state = kv_cache = idx_raw = idx_comp = nullptr;
   page_table = nullptr;
   // routed (NVFP4) buffers (MoEWeightLayout has no Free; free manually).
+  moe_residency.Free();
   if (routed.gu_packed) cudaFree(routed.gu_packed);
   if (routed.gu_sf) cudaFree(routed.gu_sf);
   if (routed.dn_packed) cudaFree(routed.dn_packed);
@@ -329,11 +359,15 @@ void DecoderLayer::ResetState(int seq_id, cudaStream_t stream) const {
 Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
                         int hc, int lowrank, float eps, int E, int moe_is,
                         int shared_is, int k, int max_len, int max_seq,
-                        DecoderLayer* out, cudaStream_t stream) {
+                        DecoderLayer* out, cudaStream_t stream,
+                        int moe_resident_slots,
+                        const std::vector<int>* hot_experts,
+                        bool hot_protected) {
   out->layer_id = layer_id;
   out->hs = hs;
   out->hc = hc;
   out->hc_dim = hc * hs;
+  out->moe_is = moe_is;
   out->is_full_attention = (layer_id % 4 == 3);
   out->topk = k;
   out->max_len = max_len;
@@ -435,9 +469,22 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
   }
 
   // 3. MoE (routed NVFP4 + BF16 router/shared).
-  s = quant::LoadMoEWeights(loader, layer_id, E, hs, moe_is, &out->routed,
-                            stream);
-  if (!s.ok()) return s;
+  if (moe_resident_slots > 0) {
+    // Tiered residency: C slots instead of all E experts; missing experts are
+    // loaded on demand (MoEResidency). `routed` stays default-constructed.
+    s = out->moe_residency.Init(loader, layer_id, E, hs, moe_is,
+                                moe_resident_slots, stream);
+    if (!s.ok()) return s;
+    if (hot_experts && !hot_experts->empty()) {
+      s = out->moe_residency.InitHot(*hot_experts, stream);
+      if (!s.ok()) return s;
+      if (hot_protected) out->moe_residency.SetHotProtected();
+    }
+  } else {
+    s = quant::LoadMoEWeights(loader, layer_id, E, hs, moe_is, &out->routed,
+                              stream);
+    if (!s.ok()) return s;
+  }
   s = LoadMoEExtra(loader, base + ".mlp", E, hs, shared_is, &out->mlp, stream);
   if (!s.ok()) return s;
 
@@ -461,7 +508,10 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                            const int* d_seq_id, const int* d_rope_pos,
                            int tokens_per_seq, uint16_t* ple_conv_ckpt,
                            const RaggedBatch* ragged, int max_position,
-                           trace::RouterCollector* trace, int layer_id) {
+                           trace::RouterCollector* trace, int layer_id,
+                           int ckpt_stride, float* ssm_capture,
+                           uint16_t* qkv_raw_capture,
+                           uint16_t* gated_n_capture) {
   const int hs = layer.hs, hc_dim = layer.hc_dim, hc = layer.hc;
   if (T <= 0) return Status();
   // Pooled recurrent-state slices for this sequence (seq_id selects the
@@ -509,9 +559,12 @@ Status DecoderLayerForward(const DecoderLayer& layer,
                                  : layer.idx_comp + seq * layer.max_len * 128)
                      : nullptr;
 
+  // The router always emits E = mlp.E expert IDs (512) regardless of the
+  // routed layout's slot mode, so the workspace is sized with the router E
+  // and the architecture moe_is (the slot layout keeps no moe_is of its own).
   const DecoderWorkspaceLayout layout = MakeDecoderWorkspaceLayout(
-      T, layer.is_full_attention, layer.has_ple, hc, hs, layer.routed.E,
-      layer.routed.moe_is, layer.mlp.shared_is, layer.topk, &layer.full,
+      T, layer.is_full_attention, layer.has_ple, hc, hs, layer.mlp.E,
+      layer.moe_is, layer.mlp.shared_is, layer.topk, &layer.full,
       std::max(layer.attn_hc.lowrank, layer.mlp_hc.lowrank));
   if (layout.total_bytes > workspace_bytes) {
     return Status::Fail("DecoderLayerForward: workspace too small");
@@ -534,6 +587,10 @@ Status DecoderLayerForward(const DecoderLayer& layer,
       reinterpret_cast<uint16_t*>(base + layout.gate), layout.gate_bytes};
 
   Status s;
+  auto mt = [stream, layer_id](int op, int which) {
+    LayerSubTiming::Instance().Mark(layer_id, op, which, stream);
+  };
+  mt(0, 0);  // ple start
 
   // The trunk residual the rest of the layer reads. For the PLE layer this is
   // a scratch copy (hyper_input is const); otherwise it aliases hyper_input.
@@ -550,7 +607,7 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     s = PleLayerForward(layer.ple, ple_embeddings, hyper_input, d_ple_trunk, T,
                         ple_conv_state, d_ple_ws, layout.ple_bytes, stream,
                         hyper_input, d_seq_id, tokens_per_seq, ple_conv_ckpt,
-                        num_ckpt, ragged);
+                        num_ckpt, ragged, ckpt_stride, gated_n_capture);
     if (!s.ok()) {
       return s;
     }
@@ -558,6 +615,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   }
   DumpTrunkBeforeMix(d_trunk, T, hc_dim);
 
+  mt(0, 1);  // ple end
+  mt(1, 0);  // gr_read start
   // GRRead prepares inject before the sublayer; normed is now temporary.
   GatedResidualFrame attn_frame;
   s = attn_frame.Read(layer.attn_hc, d_trunk, d_mixed, d_normed, T, d_hc_ws,
@@ -565,6 +624,8 @@ Status DecoderLayerForward(const DecoderLayer& layer,
   if (!s.ok()) {
     return s;
   }
+  mt(1, 1);  // gr_read end
+  mt(2, 0);  // attention start
   // 2. attention block.
   if (layer.is_full_attention) {
     // B2 multi-seq: the full-attention kernels select the per-token rope slice
@@ -574,32 +635,50 @@ Status DecoderLayerForward(const DecoderLayer& layer,
     s = FullAttentionForward(layer.full, d_mixed, d_block, positions, fa_rope,
                              kv_cache, page_table, idx_raw, idx_comp, T,
                              d_attn_ws, layout.attention_bytes, stream,
-                             d_seq_id, max_position);
+                             d_seq_id, max_position, layer_id);
   } else {
     s = LinearAttentionForward(layer.linear, d_mixed, d_block, ssm_state,
                                conv_state, T, d_attn_ws, layout.attention_bytes,
                                stream, ssm_ckpt, conv_ckpt, num_ckpt, d_seq_id,
-                               tokens_per_seq, ragged);
+                               tokens_per_seq, ragged, ckpt_stride,
+                               ssm_capture,
+                               /*conv_capture=*/nullptr, qkv_raw_capture,
+                               layer_id);
   }
   if (!s.ok()) {
     return s;
   }
+  DumpAttnOut(d_block, T, hs);
   // Combined is still materialized for the MLP residual. The next norm can
   // consume the BF16-rounded Write result before it leaves shared staging.
+  mt(2, 1);  // attention end
+  mt(3, 0);  // write_and_read start
   GatedResidualFrame mlp_frame;
   s = attn_frame.WriteAndRead(d_block, d_combined, layer.mlp_hc, mlp_frame,
                               d_mixed, d_normed, d_hc_ws, kGemmWs,
                               &hc_mix_scratch, &gate_storage);
   if (!s.ok()) return s;
-  // 5. MoE.
-  s = MoEForward(d_mixed, layer.routed, layer.mlp, d_block, T, layer.topk,
+  // 5. MoE. In slot mode the routed weights live in the per-layer C-slot
+  // residency pool; the router still emits the full 512-expert IDs and
+  // MoEForward remaps them to slots (missing experts load on demand).
+  const quant::MoEWeightLayout& routed_layout =
+      layer.moe_residency.Slots() > 0 ? layer.moe_residency.Layout()
+                                      : layer.routed;
+  const quant::MoEResidency* residency =
+      layer.moe_residency.Slots() > 0 ? &layer.moe_residency : nullptr;
+  mt(3, 1);  // write_and_read end
+  mt(4, 0);  // moe start
+  s = MoEForward(d_mixed, routed_layout, layer.mlp, d_block, T, layer.topk,
                  d_moe_ws, layout.moe_bytes, d_moe_gemm, kGemmWs, stream,
-                 trace, layer_id);
+                 trace, layer_id, residency);
   if (!s.ok()) {
     return s;
   }
   DumpMoeBoundary(d_mixed, d_block, T, hs);
+  mt(4, 1);  // moe end
+  mt(5, 0);  // write start
   s = mlp_frame.Write(d_block, out);
+  mt(5, 1);  // write end
   DumpLayerOut(out, T, hc_dim);
   return s;
 }

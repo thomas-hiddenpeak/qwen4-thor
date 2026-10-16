@@ -178,7 +178,11 @@ Q4T_TEST(video_processor) {
   std::vector<uint8_t> raw = ReadFile(json_path.c_str());
   std::string content(raw.begin(), raw.end());
   q4t::io::Json root;
-  q4t::Status s = q4t::io::ParseJson(content, &root);
+  // The checked-in reference artifact holds ~8.6M values, above the default
+  // 4M server limit; this test-only parse uses an explicit larger limit.
+  q4t::io::JsonParseLimits ref_limits;
+  ref_limits.max_values = 16 * 1024 * 1024;
+  q4t::Status s = q4t::io::ParseJson(content, &root, false, ref_limits);
   if (!s.ok()) {
     std::printf("  [video_processor] parse failed: %s\n", s.message().c_str());
     return false;

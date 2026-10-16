@@ -1,0 +1,6 @@
+{
+  "initial_archive_check": "failed: asserted HTTP status == 200 against nullable schema field",
+  "observed": "22/22 success=1, http_status_code=null, status_source explicitly states schema does not retain status",
+  "resolution": "check retained success field and declared status source; do not fabricate HTTP status or rerun inference",
+  "runtime_test_failure": false
+}

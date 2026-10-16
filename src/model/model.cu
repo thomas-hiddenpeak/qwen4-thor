@@ -16,6 +16,11 @@
 // buffer and writes the other. The forward workspace d_ws is reused across
 // layers (they run sequentially); its size is the max over all layers.
 #include "q4t/model/model.h"
+#include "q4t/model/layer_subtiming.h"
+#include "q4t/model/hc_mix_subtiming.h"
+#include "q4t/quant/moe_subtiming.h"
+
+#include "q4t/runtime/residency_config.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -27,6 +32,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <memory>
+#include <numeric>
 #include <string>
 #include <utility>
 #include <vector>
@@ -121,6 +127,8 @@ void Model::Free() {
   head.Free();
   for (auto& l : layers) l.Free();
   layers.clear();
+  weight_loader.reset();
+  weight_index.reset();
   if (ple_emb) delete ple_emb;
   ple_emb = nullptr;
   auto freep = [](void* p) {
@@ -210,32 +218,53 @@ Status LoadPleHashParams(const io::WeightLoader& loader,
 }
 
 Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
+  runtime::ResidencyConfig residency_config;
+  Status residency_status = runtime::LoadResidencyConfig(
+      cfg.moe_hot_list, cfg.num_layers, cfg.E, cfg.moe_resident_slots,
+      &residency_config);
+  if (!residency_status.ok()) return residency_status;
   m->cfg = cfg;
   // RAII: the mmap'd safetensors shards must be released on every exit path.
   // On Jetson Thor's 122 GB unified memory, keeping the ~84 GB of file
   // mappings alive alongside the ~84 GB of GPU weights exceeds the budget.
   // (Same fix as qwen35-thor model.cpp: "统一内存: 立即释放 mmap".)
-  std::unique_ptr<io::WeightIndex> index;
   {
     io::WeightIndex* raw = nullptr;
     Status s = io::WeightIndex::Open(cfg.index_path, &raw);
     if (!s.ok()) return s;
-    index.reset(raw);
+    m->weight_index.reset(raw);
   }
-  std::unique_ptr<io::WeightLoader> loader;
   {
     io::WeightLoader* raw = nullptr;
-    // max_open_shards = 32: the parallel MoE expert load reads from multiple
-    // shards concurrently. NOTE: we deliberately do NOT pre-open all ~197
-    // shards (tried OpenAllShards, measured 3x SLOWER on warm cache: 197
-    // simultaneous mmaps make the 14 worker threads' page faults contend on
-    // the kernel VMA/page-table locks). A 32-shard LRU keeps the active mmap
-    // set small; each layer's experts span only a few shards, so eviction is
-    // rare.
-    Status s = io::WeightLoader::Create(cfg.model_dir, *index, 32, &raw);
+    // max_open_shards: the parallel MoE expert load reads from multiple
+    // shards concurrently. A small LRU (32) thrashes under tiered residency
+    // decode: each expert miss does ~15 EnsureOpen calls on its shard, and
+    // with 16 staging workers and only 32 open slots the shard is evicted
+    // (munmap) and reopened (open+mmap+200 KB header JSON parse, ~1.5 ms)
+    // between those calls, so the decode miss critical path is dominated by
+    // reopens, not preads. Raising the cap so all ~197 shards stay open
+    // removes the reopen cost. This does NOT repeat the old OpenAllShards
+    // regression (docs/log/2026-09-19): that pre-opened every shard at
+    // startup and read data through the mmap, so 14 workers' data page
+    // faults contended on the kernel VMA/page-table locks. Here shards open
+    // lazily on first use and data is read with pread (no process page
+    // faults; the mmap is touched only for the header), so keeping them
+    // open costs only the one-time header parse plus virtual address space.
+    // Override with Q4T_MOE_MAX_OPEN_SHARDS (0 = all shards in the index).
+    size_t max_open_shards = 32;
+    if (const char* env = std::getenv("Q4T_MOE_MAX_OPEN_SHARDS")) {
+      const int v = std::atoi(env);
+      if (v > 0) max_open_shards = static_cast<size_t>(v);
+      else if (v == 0) {
+        max_open_shards = m->weight_index->num_shards() + 8;
+      }
+    }
+    Status s = io::WeightLoader::Create(cfg.model_dir, *m->weight_index,
+                                       max_open_shards, &raw);
     if (!s.ok()) return s;
-    loader.reset(raw);
+    m->weight_loader.reset(raw);
   }
+  io::WeightLoader& loader = *m->weight_loader;
   Status s;
 
   const int hc_dim = cfg.hc * cfg.hs;
@@ -244,18 +273,72 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   double t0 = lt ? NowMs() : 0.0;
 
   // 1. Head (embed + lm_head + mixer).
-  s = LoadModelHead(*loader, cfg.vocab, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
+  s = LoadModelHead(loader, cfg.vocab, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
                     &m->head, stream);
   if (!s.ok()) return s;
   if (lt) t_head = NowMs() - t0;
 
   // 2. Decoder layers [0, num_layers).
   m->layers.resize(cfg.num_layers);
+  // Tiered residency keeps the loader for the model's lifetime (on-demand
+  // expert loads); the baseline path releases it once loading is done.
+  const bool keep_loader = cfg.moe_resident_slots > 0;
+  if (keep_loader) {
+    // C5 (page-cache retention, residency layer; GEMM untouched): slot mode
+    // streams experts from ~192 shards for the model's lifetime, but the
+    // open-shard LRU evicts shards as they rotate out of the 32-entry set,
+    // and the SafetensorsFile destructor then issues POSIX_FADV_DONTNEED on
+    // the whole evicted shard. That wipes the page-cache pages the C3
+    // pre-warm filled, so every on-demand expert pread falls back to NVMe
+    // (~4 ms) instead of the warm cache (~0.5 ms) -- the dominant decode
+    // miss critical-path cost (pilot-45056: pread_avg 4.0 ms, decode
+    // 4.86 tps = 27% of baseline vs the 50% gate). Keep the expert shards'
+    // pages; non-expert shards (already GPU-resident) still evict as before.
+    loader.SetKeepPageCache(true, "-experts-");
+    // Slot-mode stream safety (residency-layer guard; GEMM itself untouched):
+    // on-demand expert loads/evictions are stream-ordered on the caller's
+    // stream, but MoERoutedForward's extra GEMM streams read slot weights
+    // without waiting for those H2Ds (cross-stream race -> wrong weights).
+    // The GEMM stream count is env-configured (Q4T_MOE_STREAMS, default 4);
+    // slot mode forces single-stream GEMM so every slot read is ordered after
+    // its load and before its eviction. Set before the first forward.
+    const char* env = std::getenv("Q4T_MOE_STREAMS");
+    const int n = env ? std::atoi(env) : 4;
+    if (n != 1) {
+      setenv("Q4T_MOE_STREAMS", "1", 1);
+      std::fprintf(stderr,
+                   "[q4t][residency] Q4T_MOE_STREAMS forced to 1: slot-mode "
+                   "loads are stream-ordered; extra GEMM streams would race "
+                   "slot H2Ds\n");
+    }
+  }
+  // The budget and loader share empty/missing-layer capacity semantics.
+  const auto& hot_lists = residency_config.hot_lists;
+  const auto& c_layer = residency_config.layer_slots;
+  const int c_total = static_cast<int>(residency_config.total_slots);
+  const bool nonuniform = std::any_of(
+      c_layer.begin(), c_layer.end(),
+      [&](int slots) { return slots != cfg.moe_resident_slots; });
+  if (lt && nonuniform) {
+    std::fprintf(stderr,
+                 "[q4t][residency] non-uniform per-layer C: total=%d "
+                 "(max/layer=%d): ",
+                 c_total, cfg.moe_resident_slots);
+    for (int l = 0; l < cfg.num_layers; ++l) {
+      std::fprintf(stderr, "%d%s", c_layer[l],
+                   l + 1 < cfg.num_layers ? "," : "\n");
+    }
+  }
   t0 = lt ? NowMs() : 0.0;
   for (int l = 0; l < cfg.num_layers; ++l) {
-    s = LoadDecoderLayer(*loader, l, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
+    const std::vector<int>* hot =
+        (cfg.moe_resident_slots > 0 && !hot_lists[l].empty())
+            ? &hot_lists[l]
+            : nullptr;
+    s = LoadDecoderLayer(loader, l, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
                          cfg.E, cfg.moe_is, cfg.shared_is, cfg.topk,
-                         cfg.max_len, cfg.max_seq, &m->layers[l], stream);
+                         cfg.max_len, cfg.max_seq, &m->layers[l], stream,
+                         c_layer[l], hot, cfg.moe_hot_protect);
     if (!s.ok()) return s;
   }
   if (lt) t_layers = NowMs() - t0;
@@ -277,7 +360,7 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
         "model.language_model.layers." + std::to_string(ple_layer) + ".ple";
     m->ple_hash.ngram_size = cfg.ple_ngram_size;
     m->ple_hash.heads_per_ngram = cfg.ple_heads_per_ngram;
-    s = LoadPleHashParams(*loader, ple_prefix, &m->ple_hash,
+    s = LoadPleHashParams(loader, ple_prefix, &m->ple_hash,
                           &m->ple_weight_scale, stream);
     if (!s.ok()) return s;
 
@@ -368,9 +451,9 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   m->ws_bytes = ws;
   if (!(s = alloc(&m->d_ws, ws))) return s;
 
-  // All weights are on GPU. `loader`/`index` (unique_ptr) release the
-  // mmap'd safetensors shards at scope exit, dropping the file mappings
-  // before the decode loop runs. Sync first so every H2D copy has landed
+  // All weights are on GPU. `index` (unique_ptr) releases the weight
+  // index at scope exit; the loader's shard mappings are released below
+  // (baseline) or kept for the model's lifetime (tiered residency). Sync first so every H2D copy has landed
   // (the reads are async on `stream`).
   t0 = lt ? NowMs() : 0.0;
   cudaStreamSynchronize(stream);
@@ -381,7 +464,60 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
                  "buffers=%.0f ms sync=%.0f ms\n",
                  t_head, t_layers, t_ple, t_buf, t_sync);
   }
+  // Baseline path (no tiered residency): release the loader now, as before,
+  // dropping the shard mappings before the decode loop. Tiered residency
+  // keeps it for the model's lifetime: on-demand expert loads stream shards
+  // from NVMe after startup, and each layer's MoEResidency borrows it.
+  if (!keep_loader) {
+    m->weight_loader.reset();
+    m->weight_index.reset();
+  }
   return Status();
+}
+
+// Q4T_LAYER_TIMING report: sync the last event, print per-group totals
+// (embedding / linear-attention layers / full-attention layers / head) plus
+// the five slowest layers, and destroy the events. `hs` is the head status
+// when the head ran (null when skipped). Observation-only.
+Status FinishLayerTiming(const Model& m, bool layer_timing,
+                         std::vector<cudaEvent_t>& lt_ev, int T,
+                         Status* hs = nullptr) {
+  if (!layer_timing) return hs ? *hs : Status();
+  const int nl = m.cfg.num_layers;
+  const cudaError_t se = cudaEventSynchronize(lt_ev[2 * (nl + 1) + 1]);
+  if (se != cudaSuccess) {
+    // Observation-only: report, then clear the sticky error so it cannot
+    // poison the caller's next cudaGetLastError() check.
+    std::fprintf(stderr, "[layer-timing] sync failed: %s\n",
+                 cudaGetErrorString(se));
+    cudaGetLastError();
+  } else {
+    std::vector<float> seg(nl + 2, 0.0f);
+    float embed = 0.0f, lin = 0.0f, full = 0.0f, head = 0.0f;
+    cudaEventElapsedTime(&embed, lt_ev[0], lt_ev[2]);
+    for (int l = 0; l < nl; ++l) {
+      cudaEventElapsedTime(&seg[l + 1], lt_ev[2 * (l + 1)],
+                           lt_ev[2 * (l + 2)]);
+      if (m.layers[l].is_full_attention) full += seg[l + 1];
+      else lin += seg[l + 1];
+    }
+    cudaEventElapsedTime(&head, lt_ev[2 * (nl + 1)], lt_ev[2 * (nl + 1) + 1]);
+    std::vector<int> order(nl);
+    std::iota(order.begin(), order.end(), 0);
+    std::partial_sort(order.begin(), order.begin() + std::min(5, nl),
+                      order.end(),
+                      [&](int a, int b) { return seg[a + 1] > seg[b + 1]; });
+    std::fprintf(stderr,
+                 "[layer-timing] T=%d embed=%.2fms lin=%.2fms full=%.2fms "
+                 "head=%.2fms total=%.2fms top5=",
+                 T, embed, lin, full, head, embed + lin + full + head);
+    for (int i = 0; i < std::min(5, nl); ++i)
+      std::fprintf(stderr, " L%d(%.2f)", order[i], seg[order[i] + 1]);
+    std::fprintf(stderr, "\n");
+  }
+  for (auto& e : lt_ev) cudaEventDestroy(e);
+  lt_ev.clear();
+  return hs ? *hs : Status();
 }
 
 // Shared layer loop over [0, num_layers), reading `trunk`/`next` (ping-pong)
@@ -402,7 +538,10 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
                  int tokens_per_seq = 0, uint16_t* ple_conv_ckpt = nullptr,
                  const RaggedBatch* ragged = nullptr,
                  LogitsRows logits_rows = LogitsRows::kAllRows,
-                 bool sequence_last_rows = false) {
+                 bool sequence_last_rows = false,
+                 float** ssm_captures = nullptr,
+                 uint16_t** qkv_raw_captures = nullptr,
+                 uint16_t** gated_n_captures = nullptr) {
   // Checkpoints describe the most recent successful verify only. Invalidate
   // before any layer mutates recurrent state, including failed forwards.
   InvalidateVerifyCheckpoints(m);
@@ -423,13 +562,44 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   const bool diag = std::getenv("Q4T_DIAG") != nullptr;
   int lin_idx = 0;   // running linear-layer index (for checkpoint offsets)
   int ple_idx = 0;   // running PLE-layer index (for checkpoint offsets)
-  // Checkpoint layout is pooled over max_seq: [num_layers, max_seq, num_ckpt,
-  // elems]. The kernels index the per-layer slice by the POOLED seq id (multi
-  // seq, d_seq_id != null: pass the layer base, seq_off = 0) or by the single
-  // sequence's slice (single seq: seq_off = seq_id). With max_seq == 1 this
-  // degenerates to the legacy [num_layers, num_ckpt, elems] layout.
+  // Checkpoint layout is pooled over max_seq: [num_layers, max_seq, cap,
+  // elems] (cap = verify_ckpt_cap, the reserved stride). The kernels index the
+  // per-layer slice by the POOLED seq id (multi seq, d_seq_id != null: pass
+  // the layer base, seq_off = 0) or by the single sequence's slice (single
+  // seq: seq_off = seq_id). With max_seq == 1 this degenerates to the legacy
+  // [num_layers, cap, elems] layout.
   const size_t max_seq = static_cast<size_t>(cfg.max_seq);
   const size_t seq_off = d_seq_id ? 0 : static_cast<size_t>(seq_id);
+  // The checkpoint buffer is allocated with stride cap = verify_ckpt_cap
+  // (ModelReserveVerifyCheckpoints). The save MUST use the same stride so
+  // restore/direct-read (which index by cap) find the data, regardless of how
+  // many checkpoints (num_ckpt) this call writes. num_ckpt <= cap.
+  const size_t ckpt_stride = static_cast<size_t>(m.verify_ckpt_cap);
+  if (ssm_ckpt && (ckpt_stride == 0 ||
+                   static_cast<size_t>(num_ckpt) > ckpt_stride)) {
+    return Status::Fail("RunLayers: checkpoint stride mismatch (num_ckpt > "
+                        "verify_ckpt_cap)");
+  }
+  // Q4T_LAYER_TIMING: observation-only per-layer GPU timing. Records
+  // cudaEvents around embedding, each decoder layer, and the head, then
+  // syncs and prints per-group totals. Never touches compute; off by
+  // default.
+  const bool layer_timing = std::getenv("Q4T_LAYER_TIMING") != nullptr;
+  std::vector<cudaEvent_t> lt_ev;
+  if (layer_timing) {
+    lt_ev.resize(2 * (static_cast<size_t>(cfg.num_layers) + 2));
+    for (auto& e : lt_ev)
+      if (cudaEventCreate(&e) != cudaSuccess) {
+        for (auto& f : lt_ev)
+          if (f) cudaEventDestroy(f);
+        return Status::Fail("Q4T_LAYER_TIMING: cudaEventCreate");
+      }
+  }
+  const bool layer_subtiming = std::getenv("Q4T_LAYER_SUBTIMING") != nullptr;
+  if (layer_subtiming) LayerSubTiming::Instance().Begin(cfg.num_layers);
+  if (layer_subtiming) quant::MoESubTiming::Instance().Begin();
+  if (layer_subtiming) HcMixSubTiming::Instance().Begin();
+  if (layer_timing) cudaEventRecord(lt_ev[0], stream);
   for (int l = 0; l < cfg.num_layers; ++l) {
     if (diag) {
       const cudaError_t e = cudaGetLastError();
@@ -456,8 +626,8 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
       ple_emb = m.d_ple_emb;
     }
     // Per-linear-layer checkpoint slices (only when saving for MTP verify).
-    // Pooled layout [num_lin, max_seq, num_ckpt, elems]: the per-layer slice
-    // starts at (lin_idx * max_seq + seq_off) * num_ckpt * elems.
+    // Pooled layout [num_lin, max_seq, cap, elems]: the per-layer slice starts
+    // at (lin_idx * max_seq + seq_off) * cap * elems (cap = ckpt_stride).
     float* layer_ssm_ckpt = nullptr;
     uint16_t* layer_conv_ckpt = nullptr;
     uint16_t* layer_ple_conv_ckpt = nullptr;
@@ -469,31 +639,45 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
           static_cast<size_t>(lin.in_qkv()) * (lin.conv_k - 1);
       layer_ssm_ckpt = ssm_ckpt +
                        (static_cast<size_t>(lin_idx) * max_seq + seq_off) *
-                           num_ckpt * ssm_elems;
+                           ckpt_stride * ssm_elems;
       layer_conv_ckpt = conv_ckpt +
                         (static_cast<size_t>(lin_idx) * max_seq + seq_off) *
-                            num_ckpt * conv_elems;
+                            ckpt_stride * conv_elems;
     }
     // PLE conv checkpoint slice (the PLE short-conv is an in-place recurrence
     // too; a partial accept must restore it — see ModelRestoreCheckpoint).
     // Uses the SEPARATE d_verify_ple_conv_ckpt buffer ([num_ple, max_seq,
-    // num_ckpt, ple_elems]), not the linear conv buffer.
+    // cap, ple_elems]), not the linear conv buffer.
     if (ple_conv_ckpt && m.layers[l].has_ple) {
       const size_t ple_elems = static_cast<size_t>(m.layers[l].hc_dim) *
                                (m.layers[l].ple.conv_kernel - 1) *
                                m.layers[l].ple.conv_dilation;
       layer_ple_conv_ckpt = ple_conv_ckpt +
                             (static_cast<size_t>(ple_idx) * max_seq + seq_off) *
-                                num_ckpt * ple_elems;
+                                ckpt_stride * ple_elems;
     }
+    if (layer_timing) cudaEventRecord(lt_ev[2 * (l + 1)], stream);
     Status s = DecoderLayerForward(m.layers[l], trunk, ple_emb, next,
                                    m.d_positions, seq_rope_pos, T, m.d_ws,
                                    m.ws_bytes, stream, layer_ssm_ckpt,
                                    layer_conv_ckpt, num_ckpt, seq_id, d_seq_id,
                                    m.d_rope_pos, tokens_per_seq,
                                    layer_ple_conv_ckpt, ragged, max_position,
-                                   m.router_trace, l);
+                                   m.router_trace, l,
+                                   static_cast<int>(ckpt_stride),
+                                   (!m.layers[l].is_full_attention &&
+                                    ssm_captures)
+                                       ? ssm_captures[lin_idx]
+                                       : nullptr,
+                                   (!m.layers[l].is_full_attention &&
+                                    qkv_raw_captures)
+                                       ? qkv_raw_captures[lin_idx]
+                                       : nullptr,
+                                   (m.layers[l].has_ple && gated_n_captures)
+                                       ? gated_n_captures[ple_idx]
+                                       : nullptr);
     if (!s.ok()) return s;
+    if (layer_timing) cudaEventRecord(lt_ev[2 * (l + 2)], stream);
     if (!m.layers[l].is_full_attention) lin_idx++;
     if (m.layers[l].has_ple) ple_idx++;
     if (diag) {
@@ -511,6 +695,9 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
     trunk = next;
     next = const_cast<uint16_t*>(t);
   }
+  if (layer_subtiming) LayerSubTiming::Instance().Report(T);
+  if (layer_subtiming) quant::MoESubTiming::Instance().Report(T);
+  if (layer_subtiming) HcMixSubTiming::Instance().Report(T);
   // MTP scheme A hook: expose the pre-final-mixer multi stream [T, hc*hs]
   // (the trunk after the last decoder layer, before hyper_connection_mixer).
   // Device-to-device copy; the caller owns `trunk_out` (>= T * hc_dim bytes).
@@ -525,7 +712,12 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
   // extend's hidden gather) and skips the lm_head GEMM. HeadForward would
   // otherwise pass a null output pointer to Bf16Gemm (CUBLAS_STATUS_INVALID_
   // VALUE).
-  if (!logits) return Status();
+  if (!logits) {
+    if (layer_timing)
+      cudaEventRecord(lt_ev[2 * (cfg.num_layers + 1) + 1], stream);
+    return FinishLayerTiming(m, layer_timing, lt_ev, T);
+  }
+  Status hs;
   if (sequence_last_rows) {
     const int width = m.hc_dim();
     const dim3 grid((width + kBlock - 1) / kBlock, ragged->B);
@@ -533,14 +725,17 @@ Status RunLayers(const Model& m, const uint16_t* trunk_in, uint16_t* trunk2,
         trunk, next, ragged->seq_offset, width);
     if (cudaGetLastError() != cudaSuccess)
       return Status::Fail("RunLayers: gather sequence last rows");
-    return HeadForward(m.head, next, logits, ragged->B, m.d_ws, m.ws_bytes,
-                       stream);
+    hs = HeadForward(m.head, next, logits, ragged->B, m.d_ws, m.ws_bytes,
+                     stream);
+  } else if (logits_rows == LogitsRows::kLastRow) {
+    hs = HeadForward(m.head, trunk + static_cast<size_t>(T - 1) * m.hc_dim(),
+                     logits, 1, m.d_ws, m.ws_bytes, stream);
+  } else {
+    hs = HeadForward(m.head, trunk, logits, T, m.d_ws, m.ws_bytes, stream);
   }
-  if (logits_rows == LogitsRows::kLastRow) {
-    return HeadForward(m.head, trunk + static_cast<size_t>(T - 1) * m.hc_dim(),
-                       logits, 1, m.d_ws, m.ws_bytes, stream);
-  }
-  return HeadForward(m.head, trunk, logits, T, m.d_ws, m.ws_bytes, stream);
+  if (layer_timing)
+    cudaEventRecord(lt_ev[2 * (cfg.num_layers + 1) + 1], stream);
+  return FinishLayerTiming(m, layer_timing, lt_ev, T, &hs);
 }
 
 // Reset all per-layer persistent state (linear SSM/conv, full KV/indexer)
@@ -832,7 +1027,10 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out, bool save_checkpoints,
-                        int seq_id, LogitsRows logits_rows) {
+                        int seq_id, LogitsRows logits_rows,
+                        float** ssm_captures,
+                        uint16_t** qkv_raw_captures,
+                        uint16_t** gated_n_captures) {
   InvalidateVerifyCheckpoints(m);
   const ModelConfig& cfg = m.cfg;
   if (T <= 0) return Status::Fail("ModelDecodeBatch: T must be > 0");
@@ -843,13 +1041,10 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   if (seq_id < 0 || seq_id >= cfg.max_seq)
     return Status::Fail("ModelDecodeBatch: seq_id exceeds max_seq");
   if (save_checkpoints) {
-    // The legacy single-sequence PLE kernel never writes PLE checkpoints.
-    // Reject before submitting work instead of exposing a partial rollback.
-    for (const auto& layer : m.layers) {
-      if (layer.has_ple)
-        return Status::Fail("ModelDecodeBatch: PLE checkpoints require "
-                            "ModelVerifyMulti");
-    }
+    // This single-sequence batch path writes PLE conv checkpoints (the
+    // ple_conv_ckpt slice below reaches PleLayerForward's single-seq branch),
+    // so save_checkpoints is valid for PLE models: the T>1 MTP verify path
+    // relies on it.
     Status capacity = CheckVerifyCheckpointCapacity(m, T - 1);
     if (!capacity.ok()) return capacity;
   }
@@ -917,16 +1112,23 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   }
 
   // Layer loop + head — NO reset, continues from the current per-layer state.
-  // When save_checkpoints, capture per-token SSM/conv state for the first T-1
-  // tokens (checkpoint[t] = state after token t) so an MTP partial accept can
-  // restore checkpoint[accept_count] via D2D instead of re-running the forward.
+  // When save_checkpoints, capture per-token SSM/conv/PLE-conv state for the
+  // first T-1 tokens (checkpoint[t] = state after token t) so an MTP partial
+  // accept can restore checkpoint[accept_count] via D2D instead of re-running
+  // the forward. The PLE conv slice MUST be passed too: the single-sequence
+  // verify path is the only checkpoint saver that reaches
+  // PleLayerForward's single-seq branch, and a partial accept restores the
+  // PLE conv state from this buffer (ModelRestoreCheckpoint).
   float* ssm_ckpt = save_checkpoints ? m.d_verify_ssm_ckpt : nullptr;
   uint16_t* conv_ckpt = save_checkpoints ? m.d_verify_conv_ckpt : nullptr;
+  uint16_t* ple_conv_ckpt =
+      save_checkpoints ? m.d_verify_ple_conv_ckpt : nullptr;
   const int num_ckpt = save_checkpoints ? (T - 1) : 0;
   s = RunLayers(m, m.d_trunk, m.d_trunk2, ids64.data(), hist.data(),
                 positions.data(), T, logits, stream, trunk_out, ssm_ckpt,
-                conv_ckpt, num_ckpt, seq_id, nullptr, 0, nullptr, nullptr,
-                logits_rows);
+                conv_ckpt, num_ckpt, seq_id, nullptr, 0, ple_conv_ckpt,
+                nullptr, logits_rows, false, ssm_captures, qkv_raw_captures,
+                gated_n_captures);
   if (s.ok() && num_ckpt > 0) {
     m.verify_ckpt_rows = num_ckpt;
     m.verify_ckpt_slots.assign(1, seq_id);
@@ -1498,12 +1700,12 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
   Status capacity = CheckVerifyCheckpointCapacity(m, m.verify_ckpt_rows);
   if (!capacity.ok()) return capacity;
   const LinCkptDims d = CollectLinCkptDims(m);
-  const int rows = m.verify_ckpt_rows;
+  const int cap = m.verify_ckpt_cap;
   const size_t max_seq = static_cast<size_t>(m.cfg.max_seq);
   const size_t seq = static_cast<size_t>(seq_id);
-  // The kernels pack the current verify's rows, independently of allocation
-  // capacity: [num_layers, max_seq, rows, elems]. Reader and writer must use
-  // the same actual stride even when the last reserve was larger.
+  // Writers and readers use the reserved capacity as the physical stride:
+  // [num_layers, max_seq, cap, elems]. verify_ckpt_rows only bounds which
+  // rows are valid; it does not change the allocation layout.
   // Restored into the same sequence's pooled recurrent-state slice. (The PLE
   // conv restore fixes the pre-existing single-seq gap: the PLE short-conv is
   // an in-place recurrence and must roll back on a partial accept too.)
@@ -1512,7 +1714,7 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
   for (const auto& l : m.layers) {
     if (l.is_full_attention) continue;
     const size_t lin_slice =
-        (static_cast<size_t>(lin_idx) * max_seq + seq) * rows;
+        (static_cast<size_t>(lin_idx) * max_seq + seq) * cap;
     const float* ssm_src = m.d_verify_ssm_ckpt + lin_slice * d.ssm_elems +
                            static_cast<size_t>(ckpt_idx) * d.ssm_elems;
     const uint16_t* conv_src = m.d_verify_conv_ckpt + lin_slice * d.conv_elems +
@@ -1528,7 +1730,7 @@ Status ModelRestoreCheckpoint(const Model& m, int ckpt_idx,
     lin_idx++;
     if (l.has_ple) {
       const size_t ple_slice =
-          (static_cast<size_t>(ple_idx) * max_seq + seq) * rows;
+          (static_cast<size_t>(ple_idx) * max_seq + seq) * cap;
       const uint16_t* ple_src =
           m.d_verify_ple_conv_ckpt + ple_slice * d.ple_conv_elems +
           static_cast<size_t>(ckpt_idx) * d.ple_conv_elems;
@@ -1690,7 +1892,92 @@ std::vector<RecurrentStateRef> CollectRecurrentState(const Model& m) {
   return refs;
 }
 
+
 }  // namespace
+
+// Test-only: read the verify checkpoint buffers (ssm/conv/ple_conv) for a
+// given ckpt_idx into a host snapshot, in the SAME order as
+// CollectRecurrentState (per layer: ssm, conv, then ple_conv if present).
+// Lets a test directly compare checkpoint-N against the T=1 recurrent state
+// WITHOUT going through ModelRestoreCheckpoint (which overwrites the live
+// state). Fails if no checkpoints are reserved. Lives in the q4t::model
+// namespace (not the anonymous one) so tests can link it; computes the
+// element counts directly instead of reusing the anonymous-namespace helper.
+Status ModelSnapshotCheckpoint(const Model& m, int ckpt_idx,
+                               ModelStateSnapshot* snap, cudaStream_t stream,
+                               int seq_id) {
+  if (!snap) return Status::Fail("ModelSnapshotCheckpoint: null");
+  if (!m.d_verify_ssm_ckpt || ckpt_idx < 0 ||
+      ckpt_idx >= m.verify_ckpt_cap)
+    return Status::Fail("ModelSnapshotCheckpoint: no/invalid ckpt");
+  size_t ssm_elems = 0, conv_elems = 0, ple_elems = 0;
+  for (const auto& l : m.layers) {
+    if (l.ssm_state && ssm_elems == 0) {
+      ssm_elems =
+          static_cast<size_t>(l.linear.nv) * l.linear.kd * l.linear.vd;
+      conv_elems = static_cast<size_t>(l.linear.in_qkv()) *
+                   (l.linear.conv_k - 1);
+    }
+    if (l.ple_conv_state && ple_elems == 0) {
+      ple_elems = static_cast<size_t>(l.hc_dim) *
+                  (l.ple.conv_kernel - 1) * l.ple.conv_dilation;
+    }
+  }
+  const size_t max_seq = static_cast<size_t>(m.cfg.max_seq);
+  const size_t cap = static_cast<size_t>(m.verify_ckpt_cap);
+  const size_t seq = static_cast<size_t>(seq_id);
+  const size_t ci = static_cast<size_t>(ckpt_idx);
+  struct Ref {
+    void* dev;
+    size_t bytes;
+  };
+  std::vector<Ref> refs;
+  int lin_idx = 0;
+  int ple_idx = 0;
+  for (const auto& l : m.layers) {
+    if (l.ssm_state) {
+      const size_t lin_slice =
+          (static_cast<size_t>(lin_idx) * max_seq + seq) * cap;
+      refs.push_back(
+          {m.d_verify_ssm_ckpt + (lin_slice + ci) * ssm_elems,
+           ssm_elems * sizeof(float)});
+      refs.push_back(
+          {m.d_verify_conv_ckpt + (lin_slice + ci) * conv_elems,
+           conv_elems * sizeof(uint16_t)});
+      lin_idx++;
+    }
+    if (l.ple_conv_state) {
+      const size_t ple_slice =
+          (static_cast<size_t>(ple_idx) * max_seq + seq) * cap;
+      refs.push_back(
+          {m.d_verify_ple_conv_ckpt + (ple_slice + ci) * ple_elems,
+           ple_elems * sizeof(uint16_t)});
+      ple_idx++;
+    }
+  }
+  size_t total = 0;
+  for (const auto& r : refs) total += r.bytes;
+  if (total == 0) {
+    snap->Free();
+    return Status();
+  }
+  snap->data.resize(total);
+  size_t off = 0;
+  for (const auto& r : refs) {
+    if (cudaMemcpyAsync(snap->data.data() + off, r.dev, r.bytes,
+                        cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
+      return Status::Fail("ModelSnapshotCheckpoint: D2H copy");
+    }
+    off += r.bytes;
+  }
+  if (cudaStreamSynchronize(stream) != cudaSuccess) {
+    return Status::Fail("ModelSnapshotCheckpoint: sync");
+  }
+  snap->bytes = total;
+  snap->valid = true;
+  return Status();
+}
+
 
 void ModelStateSnapshot::Free() {
   data.clear();

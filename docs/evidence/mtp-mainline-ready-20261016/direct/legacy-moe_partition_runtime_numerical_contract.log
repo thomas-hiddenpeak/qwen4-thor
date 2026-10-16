@@ -1,0 +1,24 @@
+[q4t][residency] chunk_order=0 policy=original prefill_only=1 tie=original_chunk_index
+[q4t][residency] partition=1 policy=min_new_csr_v1 prefill_only=1 budget=32*T*k
+[q4t][residency][partition] layer=2 T=1024 policy=min_new_csr_v1 requested=1 applied=1 fallback=0 reason=candidate chunks=11 singleton_chunks=0 work_used=84541 work_budget=327680 metadata_bytes=47112
+[q4t][residency][diag] layer=2 T=1024 D=256 chunks=11 max_distinct=256 resident_before=0 overlap=154,160,140,142,146,143,124,131,135,110 new=102,96,116,114,110,113,131,123,121,129 chunk_order=0 diag_order=min_new_partition partition=1
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][partition] layer=2 T=1 policy=min_new_csr_v1 requested=1 applied=0 fallback=0 reason=decode chunks=1 singleton_chunks=1 work_used=0 work_budget=0 metadata_bytes=0
+[q4t][residency][diag] layer=2 T=1 D=256 chunks=1 max_distinct=10 resident_before=256 overlap= new= chunk_order=0 diag_order=original_partition partition=1
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t][residency][partition] layer=2 T=4 policy=min_new_csr_v1 requested=1 applied=1 fallback=0 reason=candidate chunks=2 singleton_chunks=1 work_used=51 work_budget=1280 metadata_bytes=4260
+[q4t][residency][diag] layer=2 T=4 D=15 chunks=2 max_distinct=11 resident_before=0 overlap=1 new=9 chunk_order=0 diag_order=min_new_partition partition=1
+  layer=2 C=256 T=1024 applied=1 chunks=11 singleton=0 executed=11 singleton_dispatches=0
+  routed_fp32: bit_differences=0 max_abs=0
+  layer=2 C=256 T=1024 BF16_BIT_EXACT=true
+  layer=2 C=256 T=1 applied=0 chunks=1 singleton=1 executed=1 singleton_dispatches=1
+  routed_fp32: bit_differences=0 max_abs=0
+  layer=2 C=256 T=1 BF16_BIT_EXACT=true
+  layer=2 C=15 T=4 applied=1 chunks=2 singleton=1 executed=2 singleton_dispatches=1
+  routed_fp32: bit_differences=0 max_abs=0
+  layer=2 C=15 T=4 BF16_BIT_EXACT=true
+[PASS] moe_partition_runtime_numerical_contract
+1 tests, 1 passed, 0 failed, 0 skipped

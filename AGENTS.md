@@ -49,7 +49,8 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DQ4T_CUDA_ARCHITECTURES=110a
 cmake --build build --parallel
 
-# 运行（默认关闭 MTP；评估参数与顺序见 docs/EVALUATION.md）
+# 运行（默认开启 MTP k=3；--no-mtp 回退普通 decode；评估参数与顺序见
+# docs/EVALUATION.md）
 ./build/q4t serve --max-seq 1 --max-prefill 8192 --max-len 208896
 ```
 
@@ -65,6 +66,11 @@ Runner对数值合同负责，不以语义分数改善接受错误计算，也�
 整模型质量通过。涉及运行时行为的交付仍记录HTTP质量，涉及性能
 接受结论仍需五档E2E。必要构建不算测试。基线MTP关闭，单流五档
 上下文；保持精度与各档性能，复杂度下降且性能持平也接受。
+
+2026-09-28用户补充：**当前MoE Router分析阶段**先完成工具、采样和分析，
+再统一进行质量与性能验收；过程中不随中间改动反复测试。已经通过且身份
+未变的证据直接复用，仅具体失败修复后重验受影响项。此阶段顺序不自动
+扩展为真实offload或其他性能优化任务的通用豁免。
 
 用户已授权后续按阶段 commit 并推送 GitHub 工作分支；在改动与验证记录形成
 清晰、可回退的边界时进行。阶段快照可以保留未通过项，但必须明确标记，

@@ -11,6 +11,7 @@
 // 2048 tokens. The indexer is still run (to match the reference) but its
 // selection is a no-op in the dense regime; the sparse attention kernel
 // handles both regimes via the topk index list.
+#include "q4t/model/layer_subtiming.h"
 #include "q4t/model/full_attention.h"
 
 #include <cublasLt.h>
@@ -21,6 +22,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <string>
 #include <vector>
@@ -33,7 +35,6 @@
 #include "q4t/model/short_topk.h"
 #include "q4t/model/streaming_topk.h"
 #include "q4t/status.h"
-#include "q4t/trace/mtp_cycle_timing.h"
 
 namespace q4t {
 namespace model {
@@ -1449,7 +1450,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                             uint16_t* idx_raw, uint16_t* idx_comp, int T,
                             void* workspace, size_t workspace_bytes,
                             cudaStream_t stream, const int* d_seq_id,
-                            int max_position) {
+                            int max_position, int layer_id) {
   if (T <= 0 || T > kMaxT)
     return Status::Fail("FullAttentionForward: T out of range [1, " +
                         std::to_string(kMaxT) + "]");
@@ -1526,6 +1527,9 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   if (off > workspace_bytes)
     return Status::Fail("FullAttentionForward: workspace too small for GEMM");
 
+  auto mt = [stream, layer_id](int op, int which) {
+    LayerSubTiming::Instance().Mark(layer_id, op, which, stream);
+  };
   // `positions` is a DEVICE int[T] (absolute token positions), the same
   // contract as `rope_pos`. It is read directly by the kernels below; no
   // host->device copy is performed here. (An earlier version treated it as a
@@ -1546,6 +1550,7 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
 
   Status s;
   // 1. qg = x @ W_q^T ; k = x @ W_k^T ; v = x @ W_v^T
+  mt(9, 0);  // full_qkv start
   s = CheckGemm(ProjGemm(x, w.q_proj, &w.q_proj_fp8, d_qg, T, qg_dim, hs, 1.f,
                          0.f, d_gemm_ws, gemm_ws, stream));
   if (!s.ok()) return s;
@@ -1556,6 +1561,8 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
                          0.f, d_gemm_ws, gemm_ws, stream));
   if (!s.ok()) return s;
 
+  mt(9, 1);  // full_qkv end
+  mt(10, 0);  // full_core start
   // 2. Fused q/k preprocessing: deinterleave qg -> q + gate + centered
   //    RMSNorm(q) AND centered RMSNorm(k) in one launch (disjoint heads).
   QKDeinterleaveNormKernel<<<T * (nq + nkv), hd, 0, stream>>>(
@@ -1617,16 +1624,12 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   if (max_pos < 0) {
     max_pos = 0;
     std::vector<int> hp(static_cast<size_t>(T));
-    {
-      // Includes the existing GPU wait; this is not GPU active time.
-      trace::MtpCycleSpan timing(trace::CycleDetail::kPositionsReadback);
-      if (cudaMemcpyAsync(hp.data(), d_positions,
-                          static_cast<size_t>(T) * sizeof(int),
-                          cudaMemcpyDeviceToHost, stream) != cudaSuccess)
-        return Status::Fail("cudaMemcpyAsync positions failed");
-      if (cudaStreamSynchronize(stream) != cudaSuccess)
-        return Status::Fail("cudaStreamSynchronize positions failed");
-    }
+    if (cudaMemcpyAsync(hp.data(), d_positions,
+                        static_cast<size_t>(T) * sizeof(int),
+                        cudaMemcpyDeviceToHost, stream) != cudaSuccess)
+      return Status::Fail("cudaMemcpyAsync positions failed");
+    if (cudaStreamSynchronize(stream) != cudaSuccess)
+      return Status::Fail("cudaStreamSynchronize positions failed");
     for (int i = 0; i < T; ++i) max_pos = std::max(max_pos, hp[i]);
   }
   const int n_groups_max = (max_pos + 1) / w.idx_compress;
@@ -1773,15 +1776,65 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
         d_run_idx, d_run_val, d_positions, T, w.idx_compress, block_topk,
         d_topk, d_topk_len, max_topk);
   }
+  // DEBUG (test-only, off by default): dump the one-pass block scores and the
+  // selected top-block_topk token list for token 0 at a long-context small-T
+  // (decode / MTP verify) step, for ground-truth verification of the top-k
+  // selection at long context (e.g. the 45K tier). Runtime behavior is
+  // unchanged when Q4T_DUMP_TOPK is unset.
+  //   Q4T_DUMP_TOPK=<n>      dump on the nth long-context small-T attention call
+  //   Q4T_DUMP_TOPK_FILE=<p> output path (default /tmp/q4t_topk_dump.bin)
+  if (T <= kOnePassT && d_op_logits != nullptr && n_groups_max > kMaxBlocks) {
+    static int dump_calls = 0;
+    const char* want = std::getenv("Q4T_DUMP_TOPK");
+    if (want != nullptr && dump_calls == std::atoi(want)) {
+      const char* path = std::getenv("Q4T_DUMP_TOPK_FILE");
+      if (path == nullptr) path = "/tmp/q4t_topk_dump.bin";
+      std::vector<f32> h_scores(static_cast<size_t>(n_groups_max));
+      std::vector<int> h_topk(static_cast<size_t>(max_topk));
+      int h_len = 0;
+      int h_pos = 0;
+      cudaMemcpy(h_scores.data(), d_op_logits,
+                 static_cast<size_t>(n_groups_max) * 4,
+                 cudaMemcpyDeviceToHost);
+      cudaMemcpy(h_topk.data(), d_topk, static_cast<size_t>(max_topk) * 4,
+                 cudaMemcpyDeviceToHost);
+      cudaMemcpy(&h_len, d_topk_len, 4, cudaMemcpyDeviceToHost);
+      cudaMemcpy(&h_pos, d_positions, 4, cudaMemcpyDeviceToHost);
+      FILE* f = std::fopen(path, "wb");
+      if (f != nullptr) {
+        int header[4] = {n_groups_max, max_topk, h_len, h_pos};
+        std::fwrite(header, 4, sizeof(int), f);
+        std::fwrite(h_scores.data(), 4, h_scores.size(), f);
+        std::fwrite(h_topk.data(), 4, h_topk.size(), f);
+        std::fclose(f);
+      }
+    }
+    dump_calls++;
+  }
   // 11. sparse GQA attention over the selected positions (valid only, via
   //     topk_len — the -1 tail is not iterated). The sigmoid gate is applied
   //     in-kernel (fused), so no separate GateMulKernel pass is needed.
   // Tensor-core GQA-packed: grid (T, nkv), each block reads its KV chunk once
   // and feeds all 12 q-heads via mma.sync (12x KV read reduction vs the old
   // per-q-head SIMT kernel).
-  if (T == 1 && nq == 24 && nkv == 2 && hd == 256) {
+  // Small-T (decode / MTP verify) uses the column-split kernel
+  // (grid=(T, nkv, 4)): each block owns one (token, kv-head) and one 64-column
+  // output partition, so (a) the per-token math is bit-identical to the T=1
+  // decode — sparse attention is no longer a T-dependence source — and (b) the
+  // 8 blocks of the generic kernel (T=4) become 32, filling the 20 SMs. The
+  // split re-reads K once per column partition (4x K traffic), which only pays
+  // off while the generic kernel is under-parallelized; for prefill (large T)
+  // the generic kernel already saturates the SMs and wins on K traffic.
+  constexpr int kSplitMaxT = 8;
+  // ABLATION (test-only, off by default): force the small-T sparse attention
+  // to use the generic SparseAttentionKernel, re-introducing the QSA
+  // T-dependence, to confirm whether QSA is the only T-dependence source in
+  // the MTP vs plain-greedy divergence (see docs/log/2026-10-10.md). Default
+  // runtime behavior is unchanged when the env var is unset.
+  const bool ablate_qsa_t1 = std::getenv("Q4T_ABLATE_QSA_T1") != nullptr;
+  if (!ablate_qsa_t1 && T <= kSplitMaxT && nq == 24 && nkv == 2 && hd == 256) {
     s = QsaDecodeSplit(d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn,
-                       d_gate, max_topk, d_seq_id, kv_seq_stride,
+                       d_gate, max_topk, T, d_seq_id, kv_seq_stride,
                        pt_seq_stride, stream);
     if (!s) return s;
   } else {
@@ -1789,9 +1842,12 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
         d_q, kv_cache, page_table, d_topk, d_topk_len, d_attn, d_gate, nq, nkv,
         hd, max_topk, d_seq_id, kv_seq_stride, pt_seq_stride);
   }
+  mt(10, 1);  // full_core end
   // 12. out = attn @ W_o^T
+  mt(11, 0);  // full_oproj start
   s = CheckGemm(ProjGemm(d_attn, w.o_proj, &w.o_proj_fp8, out, T, hs, nq * hd,
                          1.f, 0.f, d_gemm_ws, gemm_ws, stream));
+  mt(11, 1);  // full_oproj end
   return s;
 }
 

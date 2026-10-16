@@ -7,21 +7,56 @@
 #include <cstdio>
 #include <cstring>
 #include <ctime>
-#include <memory>
 #include <span>
 #include <string>
 #include <vector>
 #include <cuda_runtime.h>
-#include "q4t/mtp/init_timing.h"
-#include "q4t/quant/moe_gemm.h"
-#include "q4t/trace/mtp_cycle_timing.h"
-#include "q4t/trace/mtp_verify_moe_timing.h"
 #include "q4t/server/chat_contract.h"
-#include "q4t/server/mtp_policy.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/mtp_policy.h"
 #include "q4t/server/scheduler_submission.h"
 
 namespace q4t::server {
+namespace {
+
+// Diagnostic-only memory snapshot (device + host + page cache) for the
+// acceptance memory ledger. Never touches the compute path.
+void LogMemorySnapshot(const char* phase, const std::string& id) {
+  size_t free_bytes = 0, total_bytes = 0;
+  if (cudaMemGetInfo(&free_bytes, &total_bytes) != cudaSuccess) return;
+  long rss_kb = 0;
+  if (FILE* st = std::fopen("/proc/self/status", "r")) {
+    char line[256];
+    while (std::fgets(line, sizeof line, st)) {
+      if (std::strncmp(line, "VmRSS:", 6) == 0) {
+        rss_kb = std::atol(line + 6);
+        break;
+      }
+    }
+    std::fclose(st);
+  }
+  long mem_free_kb = 0, cached_kb = 0, mem_avail_kb = 0;
+  if (FILE* mi = std::fopen("/proc/meminfo", "r")) {
+    char line[256];
+    while (std::fgets(line, sizeof line, mi)) {
+      if (std::strncmp(line, "MemFree:", 8) == 0) mem_free_kb = std::atol(line + 8);
+      if (std::strncmp(line, "Cached:", 7) == 0) cached_kb = std::atol(line + 7);
+      if (std::strncmp(line, "MemAvailable:", 13) == 0)
+        mem_avail_kb = std::atol(line + 13);
+      if (mem_free_kb != 0 && cached_kb != 0 && mem_avail_kb != 0) break;
+    }
+    std::fclose(mi);
+  }
+  std::fprintf(stderr,
+               "[q4t][mem] phase=%s id=%s dev_used_gb=%.3f dev_total_gb=%.3f "
+               "rss_mb=%.1f mem_free_gb=%.3f mem_avail_gb=%.3f cached_gb=%.3f\n",
+               phase, id.c_str(), (total_bytes - free_bytes) / 1e9,
+               total_bytes / 1e9, rss_kb / 1024.0,
+               mem_free_kb * 1024.0 / 1e9, mem_avail_kb * 1024.0 / 1e9,
+               cached_kb * 1024.0 / 1e9);
+}
+
+}  // namespace
 using detail::RequestCancelled;
 using detail::ValidRequestKey;
 using detail::FinishHostReadback;
@@ -93,13 +128,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     request_id = "chatcmpl-auto-" +
                  std::to_string(next_request_id_.fetch_add(1));
   }
-  auto deadline = t_arrive + std::chrono::minutes(20);
+  auto deadline = t_arrive +
+                  std::chrono::milliseconds(request_deadline_ms_);
   if (const io::Json* timeout = req.Find("request_timeout_ms")) {
     const double value = timeout->AsDouble(-1);
-    if (!timeout->IsNumber() || !(value >= 1 && value <= 1200000) ||
+    if (!timeout->IsNumber() || !(value >= 1 && value <= 10800000) ||
         value != static_cast<double>(static_cast<int64_t>(value))) {
       SendError(fd, 400,
-                "request_timeout_ms must be an integer in [1,1200000]");
+                "request_timeout_ms must be an integer in [1,10800000]");
       return;
     }
     deadline = t_arrive +
@@ -301,86 +337,33 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // (each chunk's trunk_out writes its [base, base+c) rows); the draft-extend
   // then runs over the full prompt in chunks (MtpDraftExtend's chunked path).
   // The draft KV/indexer is allocated at MTP load time (pooled over max_seq,
-  // max_len). Per-request costs also include the draft-extend temporaries;
-  // the startup allocation estimate accounts for their overlap. If this
-  // trunk allocation fails, fall back to plain decode and record the path.
+  // max_len), so it is NOT a per-request cost -- the only per-request extra is
+  // this trunk buffer (T * hc_dim * 2, ~0.9 GB at 44K, ~5.4 GB at 262K). If
+  // the allocation fails (not enough headroom), fall back to plain decode.
   const size_t trunk_hc_dim =
       mtp_loaded_
           ? static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs)
           : 0;
-  const char* mtp_fallback =
-      !mtp_loaded_ && mtp_requested_ ? "load_failed" : "none";
-  const bool sequential_mtp =
-      mtp_requested_ && mtp_verifier_ == MtpVerifier::kSequential;
-  const char* tail_reason = "none";
-  uint64_t draft_forward_calls = 0;
-  uint64_t target_t1_calls = 0;
-  uint64_t extend_forward_calls = 0;
-  // Snapshot after acquiring the sequence slot, before any main forward.
-  // With one slot the process-counter delta belongs to this request. With
-  // concurrent slots it is only a process window, never per-request routing.
-  const bool batch_gather_enabled = quant::MoEBatchGatherEnabled();
-  const quant::MoEBatchGatherStats batch_gather_begin =
-      batch_gather_enabled ? quant::GetMoEBatchGatherStats()
-                           : quant::MoEBatchGatherStats{};
-  std::unique_ptr<trace::MtpVerifyMoeTiming> verify_moe_timing;
-  const char* verify_moe_env = getenv("Q4T_MTP_VERIFY_MOE_TIMING");
-  if (verify_moe_env && std::strcmp(verify_moe_env, "1") == 0) {
-    const bool supported =
-        mtp_loaded_ && max_seq_ == 1 && items.empty() && mtp_k_ == 3;
-    try {
-      verify_moe_timing = std::make_unique<trace::MtpVerifyMoeTiming>(
-          request_id, T, max_tokens, mtp_k_, supported);
-    } catch (...) {
-      std::fprintf(stderr,
-                   "[q4t][mtp_verify_moe_timing] {\"schema_version\":1,"
-                   "\"response_id\":\"%s\",\"valid\":false,"
-                   "\"complete\":false,\"error\":\"setup_exception\"}\n",
-                   request_id.c_str());
-    }
-  }
-  std::unique_ptr<trace::MtpCycleTiming> cycle_timing;
-  const char* cycle_env = getenv("Q4T_MTP_CYCLE_TIMING");
-  if (cycle_env && std::strcmp(cycle_env, "1") == 0 && mtp_loaded_ &&
-      max_seq_ == 1 && items.empty()) {
-    try {
-      cycle_timing = std::make_unique<trace::MtpCycleTiming>(
-          request_id, T, max_tokens, mtp_k_, t_arrive);
-    } catch (...) {
-      std::fprintf(stderr,
-                   "[q4t][mtp_cycle_timing] {\"schema_version\":1,"
-                   "\"response_id\":\"%s\",\"valid\":false,"
-                   "\"complete\":false,\"error\":\"setup_exception\"}\n",
-                   request_id.c_str());
-    }
-  }
-  std::unique_ptr<mtp::MtpInitTiming> init_timing;
-  const char* timing_env = getenv("Q4T_MTP_INIT_TIMING");
-  if (timing_env && std::strcmp(timing_env, "1") == 0 && mtp_loaded_ &&
-      max_seq_ == 1 && items.empty()) {
-    try {
-      init_timing = std::make_unique<mtp::MtpInitTiming>(
-          request_id, T, chunk, static_cast<size_t>(T) * trunk_hc_dim * 2,
-          t_arrive);
-    } catch (...) {
-      std::fprintf(stderr,
-                   "[q4t][mtp_init_timing] {\"schema_version\":1,"
-                   "\"response_id\":\"%s\",\"valid\":false,"
-                   "\"complete\":false,\"error\":\"setup_exception\"}\n",
-                   request_id.c_str());
-    }
-  }
-  if (init_timing) init_timing->MarkHost("trunk_prepare_begin");
   if (mtp_loaded_) {
-    // Runtime heuristic in addition to the startup allocation estimate.
-    // MemAvailable includes reclaimable file cache; it cannot guarantee that
-    // a CUDA allocation succeeds or that the system avoids an OOM.
+    // OOM preflight (runtime). On unified memory a large cudaMalloc does not
+    // merely fail — it can push MemFree to zero and trip the global OOM
+    // killer (the 2026-09-19 reboot). So before attempting the trunk
+    // allocation, gauge MemFree (which excludes reclaimable page cache) and
+    // fall back to plain decode if there is not enough headroom. The trunk
+    // buffer (T * hc_dim * 2) plus the MTP draft logits (max_prefill * vocab *
+    // 2, allocated inside MtpDraftExtend) plus a 2 GB safety margin must fit.
     const size_t trunk_bytes = static_cast<size_t>(T) * trunk_hc_dim * 2;
     const size_t draft_logits_bytes =
         static_cast<size_t>(max_prefill_) *
         static_cast<size_t>(model_.Get().cfg.vocab) * 2;
     const size_t kPreflightMargin = 2u * 1024u * 1024u * 1024u;  // 2 GB
     const size_t need = trunk_bytes + draft_logits_bytes + kPreflightMargin;
+    // MemAvailable (NOT MemFree): it includes reclaimable page cache, which is
+    // exactly what the kernel evicts to satisfy a fresh cudaMalloc. In steady
+    // state MemFree is only a few GB (weights + model-file cache fill it) but
+    // MemAvailable is ~120 GB, so MemFree would wrongly fall back on every
+    // request. MemAvailable < need means even cache eviction cannot satisfy
+    // the allocation -> the OOM killer would trip, so degrade to plain decode.
     const size_t mem_avail = runtime::ReadMemAvailable();
     if (mem_avail > 0 && mem_avail < need) {
       std::fprintf(
@@ -389,21 +372,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           "T=%d); plain decode\n",
           mem_avail / 1e9, need / 1e9, T);
       d_trunk_full = nullptr;
-      mtp_fallback = "memory_preflight";
-    } else {
-      if (init_timing) init_timing->MarkHost("trunk_alloc_begin");
-      const auto allocation =
-          cudaMalloc(reinterpret_cast<void**>(&d_trunk_full), trunk_bytes);
-      if (init_timing) init_timing->MarkHost("trunk_alloc_end");
-      if (allocation != cudaSuccess) {
-        std::fprintf(stderr,
-                     "[q4t] trunk alloc failed for T=%d; plain decode\n", T);
-        d_trunk_full = nullptr;
-        mtp_fallback = "trunk_allocation";
-      }
+    } else if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
+                          trunk_bytes) != cudaSuccess) {
+      std::fprintf(stderr,
+                   "[q4t] trunk alloc failed for T=%d; plain decode\n", T);
+      d_trunk_full = nullptr;
     }
   }
-  if (init_timing) init_timing->MarkHost("trunk_prepare_end");
   std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
 
   auto argmax = [&](const uint16_t* h) {
@@ -453,7 +428,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         [&] { chunk_prefill_pending_.push_back(&pr); },
         [&] { return pr.done; });
     prefill_cancelled = pr.cancelled;
-    s = pr.ok ? Status() : Status::Fail("scheduled chunk prefill failed");
+    s = pr.ok ? Status()
+              : Status::Fail("scheduled chunk prefill failed" +
+                             (pr.err.empty()
+                                  ? std::string()
+                                  : std::string(": ") + pr.err));
   } else if (batched_prefill) {
     PrefillReq pr;
     pr.control = control.get();
@@ -472,22 +451,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         [&] { return pr.done; });
     s = pr.ok ? Status() : Status::Fail("batched prefill failed");
   } else {
-    if (init_timing) init_timing->MarkHost("main_lock_wait_begin");
     const std::lock_guard<std::mutex> lock(model_mu_);
-    if (init_timing) {
-      init_timing->MarkHost("main_lock_acquired");
-      init_timing->MarkHost("main_reset_begin");
-    }
     s = cancelled() ? Status::Fail("request cancelled")
                     : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
-    if (init_timing) {
-      init_timing->MarkHost("main_reset_end");
-      init_timing->MarkHost("main_prefill_begin");
-      init_timing->MarkOuter(mtp::InitOuterPoint::kPrefillBegin, nullptr);
-    }
     if (s.ok()) {
       if (!chunked) {
-        if (init_timing) init_timing->MarkHost("main_chunk_begin", 0, T);
         if (router_trace_) router_trace_->BeginForward(
             trace::RouteStage::kPrefill, 0, T);
         // Keep full trunk output for MTP, but only the final logits row.
@@ -495,7 +463,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                 nullptr, mtp_loaded_ ? d_trunk_full : nullptr,
                                 vptr, seq_id, model::LogitsRows::kLastRow,
                                 model::SequenceCompletion::kDeferred);
-        if (init_timing) init_timing->MarkHost("main_chunk_submit_end", 0, T);
       } else {
         // Text chunks share the sequence's slot, position and PLE history.
         // Intermediate chunks only produce trunk/state; the final chunk
@@ -509,8 +476,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           const int base = seq.position;
           const int c = std::min(chunk, T - base);
           const bool last = (base + c == T);
-          if (init_timing)
-            init_timing->MarkHost("main_chunk_begin", base, c);
           if (router_trace_) router_trace_->BeginForward(
               trace::RouteStage::kPrefill, base, c);
           s = model::ModelPrefillTextChunk(
@@ -520,21 +485,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                   ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
                   : nullptr, model::LogitsRows::kLastRow,
               model::SequenceCompletion::kDeferred);
-          if (init_timing)
-            init_timing->MarkHost("main_chunk_submit_end", base, c);
           if (!last) {
             model::ModelSequence* sequence = &seq;
             s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {&sequence, 1},
                                    s, router_trace_.get());
-            if (init_timing)
-              init_timing->MarkHost("main_chunk_complete", base, c);
+            // Diagnostic: memory trajectory across chunked prefill (the
+            // 204800-tier OOM investigation). Never touches compute.
+            LogMemorySnapshot("prefill_chunk",
+                              "seq" + std::to_string(seq_id) +
+                                  "@pos" + std::to_string(seq.position));
           }
           if (last || !s.ok()) break;
         }
       }
     }
-    if (init_timing)
-      init_timing->MarkOuter(mtp::InitOuterPoint::kPrefillEnd, nullptr);
     cudaError_t copy_error = cudaSuccess;
     if (s.ok())
       copy_error = cudaMemcpyAsync(
@@ -546,11 +510,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         ? std::span<model::ModelSequence* const>(&sequence, 1)
         : std::span<model::ModelSequence* const>();
     s = FinishHostReadback(copy_error, &gpu_healthy_, pending, s, router_trace_.get());
-    if (init_timing) {
-      const int last_base = ((T - 1) / chunk) * chunk;
-      init_timing->MarkHost("main_chunk_complete", last_base, T - last_base);
-      init_timing->MarkHost("main_prefill_end");
-    }
     if (!s.ok()) seq.Fail();
   }
   if ((prefill_cancelled || cancelled()) &&
@@ -607,9 +566,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 
   // Every prefill path reads its selected final row under model_mu_ and
   // checks stream completion before publishing h_logits to this thread.
-  if (init_timing) init_timing->MarkHost("prefill_argmax_begin");
   next_token = argmax(h_logits.data());
-  if (init_timing) init_timing->MarkHost("prefill_argmax_end");
   metrics_.ttft_seconds.Observe(
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
           .count());
@@ -634,92 +591,46 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // chunked path accumulates the trunk across prefill chunks and runs the
   // draft-extend in chunks (MtpDraftExtend's chunked path). The draft
   // KV/indexer is allocated at MTP load time (not per-request), so the only
-  // trunk is one of the per-request costs. Exact equivalence to plain greedy
-  // also depends on the verifier's numerical/state contract, tested separately.
-  const bool prefill_only = max_tokens == 1 || is_stop_token(next_token);
-  if (cycle_timing) cycle_timing->MarkRequest("main_prefill_finished");
-  int mtp_steps = 0;
-  int plain_steps = 0;
-  int plain_tail_tokens = 0;
-  bool plain_tail = false;
-  bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr && !prefill_only;
-  if (use_mtp &&
-      !MtpGenerationStepFits(seq.position, max_len_, max_prefill_, mtp_k_,
-                            max_tokens)) {
-    use_mtp = false;
-    plain_tail = true;
-    tail_reason = max_tokens <= mtp_k_ + 1 ? "output_limit" : "context_limit";
-  }
+  // per-request cost is the trunk buffer; if its allocation failed, d_trunk_full
+  // is null and we fall back to plain decode. MTP is precision-safe: the main
+  // model verifies every draft token under the documented T>1 near-tie
+  // contract; it need not be bit-identical to the T=1 arithmetic path.
+  bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr;
   int32_t mtp_b = -1, mtp_d0 = -1;
   if (use_mtp) {
-    if (init_timing) init_timing->MarkHost("rolling_trunk_alloc_begin");
     if (cudaMalloc(reinterpret_cast<void**>(&d_mtp_g),
                    static_cast<size_t>(mtp_.cfg.hc) *
                        static_cast<size_t>(mtp_.cfg.hs) * 2) != cudaSuccess) {
       std::fprintf(stderr, "[q4t] MTP trunk alloc failed; plain decode\n");
       use_mtp = false;
-      mtp_fallback = "rolling_trunk_allocation";
     }
-    if (init_timing) init_timing->MarkHost("rolling_trunk_alloc_end");
   }
   if (use_mtp) {
     {
-      if (init_timing) init_timing->MarkHost("init_lock_wait_begin");
       const std::lock_guard<std::mutex> lock(model_mu_);
-      if (init_timing) {
-        init_timing->MarkHost("init_lock_acquired");
-        init_timing->MarkHost("draft_reset_begin");
-        init_timing->MarkOuter(mtp::InitOuterPoint::kResetBegin, nullptr);
-      }
       s = mtp::MtpResetState(mtp_, nullptr, seq_id);
-      if (init_timing) {
-        init_timing->MarkOuter(mtp::InitOuterPoint::kResetEnd, nullptr);
-        init_timing->MarkHost("draft_reset_end");
-      }
       if (s.ok()) {
         mtp_b = next_token;
         // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
-        if (init_timing) init_timing->MarkHost("shift_begin");
         std::vector<int32_t> shifted(T);
         for (int i = 0; i < T - 1; ++i) shifted[i] = ids[i + 1];
         shifted[T - 1] = mtp_b;
         std::vector<int> pos(T);
         for (int i = 0; i < T; ++i) pos[i] = i;
-        if (init_timing) {
-          init_timing->MarkHost("shift_end");
-          init_timing->MarkHost("extend_begin");
-        }
-        const bool skip_unused_tail =
-            max_seq_ == 1 && seq_id == 0 && items.empty() &&
-            mtp_.cfg.max_prefill == 8192 && T > mtp_.cfg.max_prefill;
-        const auto init_policy = skip_unused_tail
-                                     ? mtp::MtpInitPolicy::kSkipUnusedTail
-                                     : mtp::MtpInitPolicy::kFull;
         s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
-                                T, &mtp_d0, d_mtp_g, nullptr, seq_id,
-                                model::LogitsRows::kLastRow, init_timing.get(),
-                                init_policy);
-        if (init_timing) init_timing->MarkHost("extend_end");
+                                T, &mtp_d0, d_mtp_g, nullptr, seq_id);
         if (s.ok()) {
-          if (init_timing) init_timing->MarkHost("checkpoint_reserve_begin");
-          if (!sequential_mtp)
-            s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
-          if (init_timing) init_timing->MarkHost("checkpoint_reserve_end");
-          if (s.ok()) {
-            if (init_timing) init_timing->MarkHost("scratch_reserve_begin");
+          s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
+          if (s.ok())
             s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
-            if (init_timing) init_timing->MarkHost("scratch_reserve_end");
-          }
         }
       }
-      if (init_timing) init_timing->FinishInit(s.ok());
       if (!s.ok()) {
         std::fprintf(stderr,
                      "[q4t] MTP init failed (%s); plain decode for this "
                      "request\n",
                      s.message().c_str());
         use_mtp = false;
-        mtp_fallback = "initialization";
       }
 
     }
@@ -727,12 +638,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // The prompt trunk is only needed for the draft-extend above; free it now so
   // decoding requests do not hold it (bounds concurrent memory).
   if (d_trunk_full) {
-    if (init_timing) init_timing->MarkHost("trunk_free_begin");
     cudaFree(d_trunk_full);
     d_trunk_full = nullptr;
-    if (init_timing) init_timing->MarkHost("trunk_free_end");
   }
-  if (cycle_timing) cycle_timing->MarkRequest("init_finished");
   // Stage 2c (4b): the speculative steps are driven by the central scheduler,
   // which batches all concurrent MTP requests into ONE MtpSpeculativeStepMulti
   // (weights read once). This thread registers each step's input (mtp_b/d0/g),
@@ -753,119 +661,56 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 
       active_.push_back(&mtp_ar);
     } else {
-      // No speculative step has touched main state. Preserve the pending
-      // prefill token and enter the ordinary decode loop below.
       use_mtp = false;
-      mtp_fallback = "scheduler_unavailable";
     }
   }
   if (use_mtp) {
     bool done = false;
     while (!done && static_cast<int>(generated.size()) < max_tokens) {
       if (cancelled()) break;
+      if (!mtp_sched) break;
       if (is_stop_token(mtp_b)) {
         generated.push_back(mtp_b);
         finish_reason = "stop";
         break;
       }
-      const int output_remaining =
-          max_tokens - static_cast<int>(generated.size());
-      if (!MtpGenerationStepFits(seq.position, max_len_, max_prefill_, mtp_k_,
-                                 output_remaining)) {
-        // Both verifiers leave the last allowed output unconsumed and
-        // continue from the valid pending correction through ordinary B1.
+      const int remaining = max_tokens - static_cast<int>(generated.size());
+      if (!MtpGenerationStepFits(seq.position, max_len_,
+                                 model_.Get().cfg.max_prefill, mtp_k_,
+                                 remaining)) {
+        // No speculative work has started. Finish with ordinary decode,
+        // preserving the pending token and the already emitted prefix.
         next_token = mtp_b;
         use_mtp = false;
-        plain_tail = true;
-        tail_reason = output_remaining <= mtp_k_ + 1 ? "output_limit"
-                                                     : "context_limit";
         break;
       }
       // Register this step's input with the scheduler.
       mtp_ar.mtp_b = mtp_b;
       mtp_ar.mtp_d0 = mtp_d0;
-      mtp_ar.mtp_output_remaining = output_remaining;
-      trace::MtpCycleStep* cycle_step =
-          cycle_timing ? cycle_timing->BeginStep(seq.position, mtp_k_)
-                       : nullptr;
-      trace::MtpVerifyMoeStep* verify_moe_step =
-          verify_moe_timing
-              ? verify_moe_timing->BeginStep(seq.position, mtp_k_)
-              : nullptr;
-      mtp_ar.mtp_cycle_step = cycle_step;
-      mtp_ar.mtp_verify_moe_step = verify_moe_step;
-      if (cycle_step) cycle_step->Mark("submit");
-      if (init_timing && mtp_steps == 0)
-        init_timing->MarkHost("first_step_submit");
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
         mtp_ar.mtp_accepted_count = 0;
         mtp_ar.mtp_next_b = -1;
         mtp_ar.mtp_next_d0 = -1;
-        mtp_ar.mtp_sequential_result = {};
         mtp_ar.pending = !scheduler_stop_;
         mtp_ar.done = scheduler_stop_;
         if (scheduler_stop_) seq.Fail();
       }
       sched_cv_.notify_one();
       // Block until the scheduler's batched step yields this step's output.
-      if (init_timing && mtp_steps == 0)
-        init_timing->MarkHost("first_step_wait_begin");
       {
         std::unique_lock<std::mutex> lock(sched_mu_);
         mtp_ar.cv.wait(lock, [&mtp_ar] { return mtp_ar.done; });
       }
-      if (cycle_step) cycle_step->Mark("request_wake");
-      if (init_timing && mtp_steps == 0)
-        init_timing->MarkHost("first_step_wait_end");
-      if (sequential_mtp) {
-        const auto& result = mtp_ar.mtp_sequential_result;
-        draft_forward_calls += result.draft_forward_calls;
-        target_t1_calls += result.target_forward_calls;
-        extend_forward_calls += result.extend_forward_calls;
-      }
-      const int consumed = mtp_ar.mtp_accepted_count;
-      const bool terminal = is_stop_token(mtp_ar.mtp_next_b);
-      const auto valid_token = [vocab](int32_t token) {
-        return token >= 0 && token < vocab;
-      };
-      // Reject failed or inconsistent results before publishing any token or
-      // host state. A correction must remain pending after the whole prefix.
-      if (consumed < 1 || consumed > mtp_k_ + 1 ||
-          consumed >= output_remaining ||
-          consumed >= max_len_ - seq.position ||
-          !valid_token(mtp_ar.mtp_next_b) ||
-          (terminal ? mtp_ar.mtp_next_d0 != -1
-                    : !valid_token(mtp_ar.mtp_next_d0)) ||
-          mtp_ar.mtp_accepted[0] != mtp_b ||
-          std::any_of(mtp_ar.mtp_accepted,
-                      mtp_ar.mtp_accepted + consumed,
-                      [&](int32_t token) {
-                        return !valid_token(token) || is_stop_token(token);
-                      })) {
+      if (mtp_ar.mtp_accepted_count <= 0 ||
+          mtp_ar.mtp_accepted_count > mtp_k_ + 1) {
+        // Scheduler failed the step or is shutting down.
         generation_failed = true;
         break;
       }
-      if (sequential_mtp) {
-        const auto& result = mtp_ar.mtp_sequential_result;
-        if (result.accepted_count != consumed ||
-            result.next_b != mtp_ar.mtp_next_b ||
-            result.next_d0 != mtp_ar.mtp_next_d0 ||
-            result.terminal != terminal ||
-            result.next_seed_valid == terminal ||
-            !std::equal(mtp_ar.mtp_accepted,
-                        mtp_ar.mtp_accepted + consumed,
-                        result.accepted_tokens.begin())) {
-          generation_failed = true;
-          break;
-        }
-      }
-      ++mtp_steps;
-      const size_t generated_before_step = generated.size();
-      int token_piece_writes = 0;
-      int nonempty_writes = 0;
-      if (cycle_step) cycle_step->Mark("emit_begin");
-      for (int i = 0; i < consumed; ++i) {
+      for (int i = 0; i < mtp_ar.mtp_accepted_count &&
+                          static_cast<int>(generated.size()) < max_tokens;
+           ++i) {
         const int32_t tok_id = mtp_ar.mtp_accepted[i];
         generated.push_back(tok_id);
         if (stream) {
@@ -874,25 +719,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           bool wrote = true;
           {
             const std::lock_guard<std::mutex> lock(tok_mu_);
-            if (tok_->Decode(one, true, &piece).ok()) {
-              const bool first_content = init_timing && !piece.empty() &&
-                                         !init_timing->FirstContentWritten();
-              if (first_content)
-                init_timing->MarkHost("first_content_write_begin");
-              const bool first_cycle_content =
-                  cycle_timing && !piece.empty() &&
-                  !cycle_timing->FirstContentWritten();
-              if (first_cycle_content)
-                cycle_timing->MarkRequest("first_content_write_begin");
+            if (tok_->Decode(one, true, &piece).ok())
               wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
-              if (first_content && wrote) init_timing->FinishFirstContent();
-              if (first_cycle_content && wrote)
-                cycle_timing->FinishFirstContent();
-              if (cycle_step && wrote) {
-                ++token_piece_writes;
-                if (!piece.empty()) ++nonempty_writes;
-              }
-            }
           }
           if (!wrote) {  // client disconnected: stop, free the slot
             done = true;
@@ -900,23 +728,16 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             break;
           }
         }
+        if (is_stop_token(tok_id)) {
+          done = true;
+          break;
+        }
       }
-      if (cycle_step) {
-        cycle_step->Mark("emit_end");
-        cycle_step->SetDelivery(
-            static_cast<int>(generated.size() - generated_before_step),
-            token_piece_writes, nonempty_writes);
-      }
-      if (verify_moe_step)
-        verify_moe_step->SetDelivery(
-            static_cast<int>(generated.size() - generated_before_step));
       // Advance the main seq over the accepted prefix [b, d_0..d_{a-1}] (the
       // multi step does not touch seqs[b]).
-      seq.position += consumed;
-      for (int i = 0; i < consumed; ++i)
+      seq.position += mtp_ar.mtp_accepted_count;
+      for (int i = 0; i < mtp_ar.mtp_accepted_count; ++i)
         seq.history.push_back(mtp_ar.mtp_accepted[i]);
-      if (cycle_step) cycle_step->Mark("advance_end");
-      if (done) break;  // Client cancellation ends delivery of the prefix.
       if (static_cast<int>(generated.size()) >= max_tokens) {
         finish_reason = "length";
         break;
@@ -963,17 +784,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         active_.push_back(&ar);
       }
     }
-    if ((sequential_mtp || plain_tail) && !use_sched) {
-      // A normal MTP tail preserves the ordinary scheduler's B1 arithmetic.
-      // Strict mode also requires it for a pre-step resource fallback.
-      generation_failed = true;
-    }
     for (int step = static_cast<int>(generated.size());
-         !generation_failed && step < max_tokens;
-         ++step) {
+         step < max_tokens; ++step) {
       if (cancelled()) break;
       generated.push_back(next_token);
-      if (plain_tail) ++plain_tail_tokens;
       if (is_stop_token(next_token)) {
         finish_reason = "stop";
         break;
@@ -1044,7 +858,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         }
         next_token = argmax(h_logits.data());
       }
-      ++plain_steps;
     }
     if (use_sched) {
       {
@@ -1058,64 +871,134 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
   trace_output_tokens = generated.size();
-  const char* decode_path = "plain";
-  if (mtp_steps > 0) {
-    decode_path = sequential_mtp
-                      ? "mtp_sequential_b1"
-                      : (max_seq_ == 1 ? "mtp_multi_b1" : "mtp_multi");
-  } else if (plain_steps == 0 && prefill_only) {
-    decode_path = "prefill_only";
-  } else if (plain_tail) {
-    decode_path = "plain_tail_b1";
-  }
-  if (sequential_mtp) {
-    std::fprintf(stderr,
-                 "[q4t][decode_path] id=%s requested_mtp=%d path=%s "
-                 "mtp_steps=%d fallback=%s plain_tail_tokens=%d "
-                 "verifier=sequential tail_reason=%s "
-                 "draft_forward_calls=%llu target_t1_calls=%llu"
-                 " target_t4_calls=0 extend_forward_calls=%llu "
-                 "forward_count_scope=sequential_attempts\n",
-                 id.c_str(), mtp_requested_, decode_path, mtp_steps,
-                 prefill_only ? "none" : mtp_fallback, plain_tail_tokens,
-                 tail_reason,
-                 static_cast<unsigned long long>(draft_forward_calls),
-                 static_cast<unsigned long long>(target_t1_calls),
-                 static_cast<unsigned long long>(extend_forward_calls));
-  } else {
-    std::fprintf(stderr,
-                 "[q4t][decode_path] id=%s requested_mtp=%d path=%s "
-                 "mtp_steps=%d fallback=%s plain_tail_tokens=%d verifier=%s "
-                 "tail_reason=%s\n",
-                 id.c_str(), mtp_requested_, decode_path, mtp_steps,
-                 prefill_only ? "none" : mtp_fallback, plain_tail_tokens,
-                 mtp_requested_ ? MtpVerifierName(mtp_verifier_) : "none",
-                 tail_reason);
-  }
-  if (batch_gather_enabled) {
-    const auto end = quant::GetMoEBatchGatherStats();
-    std::fprintf(
-        stderr,
-        "[q4t][moe_batch_gather] id=%s scope=%s applied_calls=%llu "
-        "legacy_calls=%llu bad_counts_fallback=%llu batch_launches=%llu "
-        "legacy_gather_launches=%llu replaced_gather_launches=%llu\n",
-        id.c_str(), max_seq_ == 1 ? "single_sequence_window" : "process_window",
-        static_cast<unsigned long long>(end.applied_calls -
-                                        batch_gather_begin.applied_calls),
-        static_cast<unsigned long long>(end.legacy_calls -
-                                        batch_gather_begin.legacy_calls),
-        static_cast<unsigned long long>(end.bad_counts_fallback -
-                                        batch_gather_begin.bad_counts_fallback),
-        static_cast<unsigned long long>(end.batch_launches -
-                                        batch_gather_begin.batch_launches),
-        static_cast<unsigned long long>(end.legacy_gather_launches -
-                                        batch_gather_begin.legacy_gather_launches),
-        static_cast<unsigned long long>(
-            end.replaced_gather_launches -
-            batch_gather_begin.replaced_gather_launches));
-  }
   if (generation_failed) seq.Fail();
   model::ModelEndSequence(&seq);
+  LogMemorySnapshot("request_end", id);
+  if (residency_enabled_) {
+    // Per-request residency load activity (cumulative counters; max_seq=1
+    // makes the delta exact). Evidences on-demand load volume for acceptance.
+    const auto now = model::SumResidencyStats(model_.Get());
+    const auto& prev = residency_stats_prev_;
+    std::fprintf(stderr,
+                 "[q4t][residency] id=%s finish=%s in=%d out=%zu "
+                 "loads=%llu load_mb=%.1f misses=%llu hits=%llu "
+                 "evictions=%llu dmiss=%llu dlook=%llu pmiss=%llu "
+                 "plook=%llu l2h=%llu l2m=%llu l2ev=%llu nvme_mb=%.1f "
+                 "mh=%llu mw=%llu msk=%llu ld2h=%llu ld2m=%llu "
+                 "ld2ev=%llu lp2h=%llu lp2m=%llu lp2ev=%llu "
+                 "pmr=%llu pme=%llu\n",
+                 id.c_str(), finish_reason.c_str(), T, generated.size(),
+                 static_cast<unsigned long long>(now.loads - prev.loads),
+                 (now.load_bytes - prev.load_bytes) / 1e6,
+                 static_cast<unsigned long long>(now.misses - prev.misses),
+                 static_cast<unsigned long long>(now.hits - prev.hits),
+                 static_cast<unsigned long long>(
+                     now.evictions - prev.evictions),
+                 static_cast<unsigned long long>(
+                     now.decode_misses - prev.decode_misses),
+                 static_cast<unsigned long long>(
+                     now.decode_lookups - prev.decode_lookups),
+                 static_cast<unsigned long long>(
+                     now.prefill_misses - prev.prefill_misses),
+                 static_cast<unsigned long long>(
+                     now.prefill_lookups - prev.prefill_lookups),
+                 static_cast<unsigned long long>(now.l2_hits - prev.l2_hits),
+                 static_cast<unsigned long long>(
+                     now.l2_misses - prev.l2_misses),
+                 static_cast<unsigned long long>(
+                     now.l2_evictions - prev.l2_evictions),
+                 (now.nvme_read_bytes - prev.nvme_read_bytes) / 1e6,
+                 static_cast<unsigned long long>(
+                     now.mirror_hits - prev.mirror_hits),
+                 static_cast<unsigned long long>(
+                     now.mirror_writebacks - prev.mirror_writebacks),
+                 static_cast<unsigned long long>(
+                     now.mirror_skips - prev.mirror_skips),
+                 static_cast<unsigned long long>(
+                     now.l2_decode_hits - prev.l2_decode_hits),
+                 static_cast<unsigned long long>(
+                     now.l2_decode_misses - prev.l2_decode_misses),
+                 static_cast<unsigned long long>(
+                     now.l2_decode_evictions - prev.l2_decode_evictions),
+                 static_cast<unsigned long long>(
+                     now.l2_prefill_hits - prev.l2_prefill_hits),
+                 static_cast<unsigned long long>(
+                     now.l2_prefill_misses - prev.l2_prefill_misses),
+                 static_cast<unsigned long long>(
+                     now.l2_prefill_evictions - prev.l2_prefill_evictions),
+                 static_cast<unsigned long long>(
+                     now.pread_merge_runs - prev.pread_merge_runs),
+                 static_cast<unsigned long long>(
+                     now.pread_merge_experts - prev.pread_merge_experts));
+    residency_stats_prev_ = now;
+    // Optional per-miss pipeline timing (Q4T_RESIDENCY_TIMING=1). Per-request
+    // deltas of count/ns; max is cumulative (upper bound). Diagnostic only.
+    const auto tim_now = model::SumResidencyTiming(model_.Get());
+    if (tim_now.enabled) {
+      const auto& tp = residency_timing_prev_;
+      auto avg_us = [](uint64_t ns, uint64_t cnt) {
+        return cnt ? (static_cast<double>(ns) / cnt) / 1e3 : 0.0;
+      };
+      std::fprintf(stderr,
+                   "[q4t][residency][timing] id=%s "
+                   "stage_n=%llu stage_avg_us=%.1f stage_max_us=%.1f "
+                   "pread_n=%llu pread_avg_us=%.1f pread_max_us=%.1f "
+                   "swz_n=%llu swz_avg_us=%.1f swz_max_us=%.1f "
+                   "phase1_n=%llu phase1_avg_us=%.1f phase1_max_us=%.1f "
+                   "dstage_n=%llu dstage_avg_us=%.1f dstage_max_us=%.1f "
+                   "dpread_n=%llu dpread_avg_us=%.1f dpread_max_us=%.1f "
+                   "dphase1_n=%llu dphase1_avg_us=%.1f dphase1_max_us=%.1f "
+                   "d2h_n=%llu d2h_avg_us=%.1f d2h_max_us=%.1f "
+                   "pmrun_n=%llu pmrun_avg_us=%.1f pmrun_max_us=%.1f\n",
+                   id.c_str(),
+                   static_cast<unsigned long long>(
+                       tim_now.stage_count - tp.stage_count),
+                   avg_us(tim_now.stage_ns - tp.stage_ns,
+                          tim_now.stage_count - tp.stage_count),
+                   tim_now.stage_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.pread_count - tp.pread_count),
+                   avg_us(tim_now.pread_ns - tp.pread_ns,
+                          tim_now.pread_count - tp.pread_count),
+                   tim_now.pread_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.swz_count - tp.swz_count),
+                   avg_us(tim_now.swz_ns - tp.swz_ns,
+                          tim_now.swz_count - tp.swz_count),
+                   tim_now.swz_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.phase1_count - tp.phase1_count),
+                   avg_us(tim_now.phase1_ns - tp.phase1_ns,
+                          tim_now.phase1_count - tp.phase1_count),
+                   tim_now.phase1_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.dstage_count - tp.dstage_count),
+                   avg_us(tim_now.dstage_ns - tp.dstage_ns,
+                          tim_now.dstage_count - tp.dstage_count),
+                   tim_now.dstage_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.dpread_count - tp.dpread_count),
+                   avg_us(tim_now.dpread_ns - tp.dpread_ns,
+                          tim_now.dpread_count - tp.dpread_count),
+                   tim_now.dpread_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.dphase1_count - tp.dphase1_count),
+                   avg_us(tim_now.dphase1_ns - tp.dphase1_ns,
+                          tim_now.dphase1_count - tp.dphase1_count),
+                   tim_now.dphase1_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.d2h_count - tp.d2h_count),
+                   avg_us(tim_now.d2h_ns - tp.d2h_ns,
+                          tim_now.d2h_count - tp.d2h_count),
+                   tim_now.d2h_max_ns / 1e3,
+                   static_cast<unsigned long long>(
+                       tim_now.pread_merge_count - tp.pread_merge_count),
+                   avg_us(tim_now.pread_merge_ns - tp.pread_merge_ns,
+                          tim_now.pread_merge_count - tp.pread_merge_count),
+                   tim_now.pread_merge_max_ns / 1e3);
+      residency_timing_prev_ = tim_now;
+    }
+  }
 
   metrics_.prompt_tokens_total.fetch_add(static_cast<uint64_t>(T),
                                          std::memory_order_relaxed);
@@ -1212,17 +1095,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
   }
   cleanup();
-  if (verify_moe_timing)
-    verify_moe_timing->Finish(
-        static_cast<int>(generated.size()), mtp_steps, plain_tail,
-        finish_reason, mtp_fallback,
-        !generation_failed && !client_disconnected);
-  if (cycle_timing) {
-    cycle_timing->MarkRequest("request_end");
-    cycle_timing->Finish(static_cast<int>(generated.size()), mtp_steps,
-                         plain_tail, finish_reason, mtp_fallback,
-                         !generation_failed && !client_disconnected);
-  }
 }
 
 }  // namespace q4t::server

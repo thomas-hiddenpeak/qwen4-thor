@@ -1,0 +1,89 @@
+{
+  "binary_sha256": "26639190711e0a2179e3695e33f10ad5fd055578b3f6d38adcc7f955df6557b7",
+  "tiers": [
+    {
+      "length": 1024,
+      "off_decode_tps": 18.706289168013893,
+      "on_decode_tps": 34.535402658563804,
+      "gain_percent": 84.61920666561863,
+      "target_pass": true,
+      "off_ttft": 0.7897912220020468,
+      "on_ttft": 0.9630254810132707,
+      "off_old_text_equal": false,
+      "off_common_prefix_characters": 68,
+      "on_old_text_equal": true,
+      "on_common_prefix_characters": 897
+    },
+    {
+      "length": 4096,
+      "off_decode_tps": 17.941718861175303,
+      "on_decode_tps": 35.47992952188554,
+      "gain_percent": 97.7510058897521,
+      "target_pass": true,
+      "off_ttft": 2.6120980416502184,
+      "on_ttft": 2.9361311186803505,
+      "off_old_text_equal": false,
+      "off_common_prefix_characters": 216,
+      "on_old_text_equal": true,
+      "on_common_prefix_characters": 749
+    },
+    {
+      "length": 8192,
+      "off_decode_tps": 18.174806031275015,
+      "on_decode_tps": 37.329760938388766,
+      "gain_percent": 105.39289868707323,
+      "target_pass": true,
+      "off_ttft": 5.066132231014005,
+      "on_ttft": 5.622850379673764,
+      "off_old_text_equal": false,
+      "off_common_prefix_characters": 68,
+      "on_old_text_equal": true,
+      "on_common_prefix_characters": 578
+    },
+    {
+      "length": 45056,
+      "off_decode_tps": 17.888914186888424,
+      "on_decode_tps": 35.85540562352383,
+      "gain_percent": 100.43366103127624,
+      "target_pass": true,
+      "off_ttft": 30.313057277332216,
+      "on_ttft": 31.865475859337796,
+      "off_old_text_equal": false,
+      "off_common_prefix_characters": 257,
+      "on_old_text_equal": true,
+      "on_common_prefix_characters": 1277
+    },
+    {
+      "length": 204800,
+      "off_decode_tps": 17.162793449955934,
+      "on_decode_tps": 33.13577743625864,
+      "gain_percent": 93.0675069468002,
+      "target_pass": true,
+      "off_ttft": 158.91930381565666,
+      "on_ttft": 166.78733284565774,
+      "off_old_text_equal": false,
+      "off_common_prefix_characters": 10,
+      "on_old_text_equal": true,
+      "on_common_prefix_characters": 1280
+    }
+  ],
+  "quality": {
+    "off": {
+      "count": 11,
+      "exact_match": 11,
+      "length_match": 11,
+      "failures": []
+    },
+    "on": {
+      "count": 11,
+      "exact_match": 11,
+      "length_match": 11,
+      "failures": []
+    }
+  },
+  "limits": {
+    "server_returncode": 0,
+    "passed": true
+  },
+  "performance_target_pass": true
+}

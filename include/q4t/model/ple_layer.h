@@ -105,7 +105,10 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        const uint16_t* trunk_add = nullptr,
                        const int* d_seq_id = nullptr, int tokens_per_seq = 0,
                        uint16_t* conv_ckpt = nullptr, int num_ckpt = 0,
-                       const RaggedBatch* ragged = nullptr);
+                       const RaggedBatch* ragged = nullptr,
+                       int ckpt_stride = 0,
+                       uint16_t* gated_n_capture = nullptr,
+                       uint16_t* ple_conv_capture = nullptr);
 // `tokens_per_seq` (MTP multi-sequence VERIFY, Phase 2): when d_seq_id is
 // non-null and tokens_per_seq > 1, the packed [T, ...] rows are sequence-major
 // (B = T / tokens_per_seq sequences) and the short-conv runs a per-sequence

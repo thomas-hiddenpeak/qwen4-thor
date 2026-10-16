@@ -1,0 +1,29 @@
+{
+  "runtime_unchanged": true,
+  "q4t_sha256": "26639190711e0a2179e3695e33f10ad5fd055578b3f6d38adcc7f955df6557b7",
+  "q4t_tests_final_sha256": "497693db9d7cddd5fc6befbc4743e860c6338ffa39931b92a136326ed11c5931",
+  "test_only_changes": [
+    "tests/model_verify_ckpt_test.cpp",
+    "tests/model_verify_multi_test.cpp",
+    "tests/model_verify_ckpt_samepath_test.cpp"
+  ],
+  "reused_evidence": "All frozen HTTP and unchanged numerical/host/lifecycle test sources; only faulty checkpoint fixture cases rechecked.",
+  "rechecked_failures": {
+    "model_verify_ckpt": {
+      "l2_rel": 0.02632,
+      "threshold": 0.02,
+      "passed": false
+    },
+    "model_verify_multi_ckpt": {
+      "l2_rel": 0.02632,
+      "threshold": 0.02,
+      "passed": false
+    },
+    "model_verify_ckpt_samepath": {
+      "partial_l2_rel": 0.02632,
+      "full_l2_rel": 0,
+      "threshold": 0.02,
+      "passed": false
+    }
+  }
+}

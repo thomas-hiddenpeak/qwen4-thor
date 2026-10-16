@@ -1,0 +1,18 @@
+[
+  {
+    "head": 41,
+    "shape": [
+      48,
+      2560
+    ],
+    "partial": 2.84375,
+    "reference": 2.828125,
+    "partial_bits": "0x4036",
+    "reference_bits": "0x4035",
+    "longdouble_dot": "2.8359382581111276522278785705566406",
+    "bf16_midpoint": 2.8359375,
+    "distance_to_midpoint": "7.58111127652227878570556640625e-07",
+    "nearest_of_two": "partial",
+    "sum_abs_products": 9.548044054026832
+  }
+]

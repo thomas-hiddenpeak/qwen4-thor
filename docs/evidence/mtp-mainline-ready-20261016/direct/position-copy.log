@@ -1,0 +1,20 @@
+copy_environment device=0 name=NVIDIA Thor major=11 minor=0 uva=1
+copy_case source=pageable stream=default rows=1 pointer_type=0 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pageable stream=default rows=4 pointer_type=0 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pageable stream=default rows=8192 pointer_type=0 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pageable stream=nonblocking rows=1 pointer_type=0 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pageable stream=nonblocking rows=4 pointer_type=0 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pageable stream=nonblocking rows=8192 pointer_type=0 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pinned stream=default rows=1 pointer_type=1 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pinned stream=default rows=4 pointer_type=1 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pinned stream=default rows=8192 pointer_type=1 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pinned stream=nonblocking rows=1 pointer_type=1 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pinned stream=nonblocking rows=4 pointer_type=1 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=pinned stream=nonblocking rows=8192 pointer_type=1 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=device stream=default rows=1 pointer_type=2 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=device stream=default rows=4 pointer_type=2 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=device stream=default rows=8192 pointer_type=2 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=device stream=nonblocking rows=1 pointer_type=2 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=device stream=nonblocking rows=4 pointer_type=2 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_case source=device stream=nonblocking rows=8192 pointer_type=2 guards_per_side=2 same_stream_predecessor=1 passed=1
+copy_summary cases=18 failures=0 passed=1

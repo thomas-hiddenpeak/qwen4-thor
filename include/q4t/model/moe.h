@@ -25,6 +25,7 @@
 
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/gemv.h"
+#include "q4t/quant/moe_residency.h"
 #include "q4t/quant/moe_weights.h"
 #include "q4t/status.h"
 
@@ -74,6 +75,19 @@ Status LoadMoEExtra(const io::WeightLoader& loader, const std::string& prefix,
 size_t MoEForwardWorkspaceBytes(int T, int k, int hs, int moe_is, int shared_is,
                                 int E);
 
+// Optional caller-owned observations for bounded numerical contracts. No row
+// capture or diagnostics allocation occurs when the pointer is null.
+struct MoEForwardDiagnostics {
+  bool partition_requested = false;
+  bool partition_applied = false;
+  bool partition_fallback = false;
+  size_t chunks = 0;
+  size_t singleton_chunks = 0;
+  size_t actual_executed_chunks = 0;
+  size_t actual_singleton_dispatches = 0;
+  std::vector<int32_t> executed_token_rows;
+};
+
 // Run the full MoE forward for one layer.
 //
 //   x        : device row-major [T, hs] uint16 (BF16) token activations
@@ -85,11 +99,19 @@ size_t MoEForwardWorkspaceBytes(int T, int k, int hs, int moe_is, int shared_is,
 //   gemm_ws  : separate cuBLASLt workspace (>= ~32 MiB), shared by the BF16
 //              GEMMs and MoERoutedForward
 //   stream   : CUDA stream
+//   residency: optional per-layer tiered expert residency (slot mode). When
+//              non-null, `routed` must be residency->Layout() (E = slot
+//              count). After the router top-k, the expert IDs are read back,
+//              resolved to slots (missing experts are loaded on demand,
+//              stream-ordered), and written back before the routed GEMM.
+//              The trace (if any) captures the ORIGINAL expert IDs.
 Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   const MoEExtraWeights& extra, uint16_t* y, int T, int k,
                   void* workspace, size_t workspace_bytes, void* gemm_ws,
                   size_t gemm_ws_bytes, cudaStream_t stream,
-                  trace::RouterCollector* trace = nullptr, int layer_id = -1);
+                  trace::RouterCollector* trace = nullptr, int layer_id = -1,
+                  const quant::MoEResidency* residency = nullptr,
+                  MoEForwardDiagnostics* diagnostics = nullptr);
 
 }  // namespace model
 }  // namespace q4t

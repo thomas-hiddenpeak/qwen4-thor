@@ -1,12 +1,17 @@
 #include "q4t/runtime/memory_budget.h"
+#include "q4t/runtime/residency_config.h"
 #include "q4t/test.h"
 
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
 #include <limits>
 
 namespace {
 using q4t::runtime::BudgetModelParams;
 using q4t::runtime::BudgetRequest;
 using q4t::runtime::ComputeMemoryBudget;
+using q4t::runtime::ResidencyConfig;
 
 constexpr size_t kRoom = 128000000000;
 constexpr size_t kWeights = 1000000000;
@@ -35,59 +40,6 @@ BudgetModelParams MtpParams() {
 }
 }  // namespace
 
-Q4T_TEST(budget_batch_gather_extra_is_charged_once) {
-  constexpr size_t kExtra = 1024000;
-  for (bool mtp : {false, true}) {
-    BudgetModelParams params;
-    params.has_mtp = mtp;
-    auto request = mtp ? MtpRequest() : Request(262144, 4);
-    const auto old = ComputeMemoryBudget(params, request, kWeights, kRoom);
-    request.main_forward_extra_bytes = kExtra;
-    const auto batch = ComputeMemoryBudget(params, request, kWeights, kRoom);
-    Q4T_CHECK(old.feasible && batch.feasible && !batch.capped);
-    Q4T_CHECK(old.main_forward_extra == 0);
-    Q4T_CHECK(batch.main_forward_extra == kExtra);
-    Q4T_CHECK(batch.fixed == old.fixed + kExtra);
-    Q4T_CHECK(batch.runtime_peak == old.runtime_peak + kExtra);
-    Q4T_CHECK(batch.startup_peak == old.startup_peak + kExtra);
-    Q4T_CHECK(batch.estimated_total == old.estimated_total + kExtra);
-    Q4T_CHECK(batch.main_workspace == old.main_workspace);
-    Q4T_CHECK(batch.per_request == old.per_request);
-    Q4T_CHECK(batch.state_pool == old.state_pool);
-    Q4T_CHECK(batch.report.find("main_forward_extra=1024000") !=
-              std::string::npos);
-  }
-  return true;
-}
-
-Q4T_TEST(budget_batch_gather_extra_exact_fit_boundary) {
-  for (bool mtp : {false, true}) {
-    BudgetModelParams params;
-    params.has_mtp = mtp;
-    auto request = mtp ? MtpRequest() : Request();
-    request.main_forward_extra_bytes = 1024000;
-    const auto roomy = ComputeMemoryBudget(params, request, kWeights, kRoom);
-    const auto exact =
-        ComputeMemoryBudget(params, request, kWeights, roomy.estimated_total);
-    const auto short_one = ComputeMemoryBudget(
-        params, request, kWeights, roomy.estimated_total - 1);
-    Q4T_CHECK(exact.feasible && !exact.capped);
-    Q4T_CHECK(exact.max_len == request.max_len);
-    Q4T_CHECK(short_one.feasible && short_one.capped);
-    Q4T_CHECK(short_one.max_len < request.max_len);
-    Q4T_CHECK(short_one.estimated_total <= short_one.budget);
-  }
-  return true;
-}
-
-Q4T_TEST(budget_batch_gather_extra_saturates) {
-  auto request = Request();
-  request.main_forward_extra_bytes = std::numeric_limits<size_t>::max();
-  const auto budget = ComputeMemoryBudget({}, request, kWeights, kRoom);
-  Q4T_CHECK(budget.fixed == std::numeric_limits<size_t>::max());
-  Q4T_CHECK(!budget.feasible && budget.max_len == 0 && budget.max_seq == 0);
-  return true;
-}
 
 Q4T_TEST(budget_infeasible_capacity_never_becomes_a_minimum) {
   for (int length : {0, 1024, 262144}) {
@@ -236,8 +188,8 @@ Q4T_TEST(budget_mtp_off_has_no_draft_reservation) {
   Q4T_CHECK(draft.per_request == 9665896608ULL);
   // One extra full-attention pool plus an independent three-axis RoPE.
   Q4T_CHECK(draft.state_pool - plain.state_pool == 675282944ULL);
-  Q4T_CHECK(draft.report.find("MTP admission scope") != std::string::npos);
-  Q4T_CHECK(plain.report.find("MTP admission scope") == std::string::npos);
+  Q4T_CHECK(draft.report.find("MTP allocation scope") != std::string::npos);
+  Q4T_CHECK(plain.report.find("MTP allocation scope") == std::string::npos);
   const auto no_mtp = ComputeMemoryBudget({}, Request(), kWeights, kRoom);
   Q4T_CHECK(plain.estimated_total == no_mtp.estimated_total);
   return true;
@@ -358,7 +310,7 @@ Q4T_TEST(budget_mtp_scope_rejects_unsupported_configurations) {
     Q4T_CHECK(!budget.feasible);
     Q4T_CHECK(budget.reason == "unsupported_mtp_configuration");
   }
-  for (int k : {0, 2, 4, std::numeric_limits<int>::max()}) {
+  for (int k : {0, 17, std::numeric_limits<int>::max()}) {
     auto request = MtpRequest();
     request.mtp_k = k;
     const auto budget =
@@ -470,5 +422,50 @@ Q4T_TEST(budget_invalid_or_overflowed_estimate_fails_closed) {
   const auto overflow = ComputeMemoryBudget(params, Request(), kWeights, kRoom);
   Q4T_CHECK(!overflow.feasible);
   Q4T_CHECK(overflow.max_len == 0 && overflow.max_seq == 0);
+  return true;
+}
+
+
+Q4T_TEST(residency_capacity_empty_missing_and_nonuniform_layers) {
+  ResidencyConfig config;
+  Q4T_CHECK(q4t::runtime::ParseResidencyConfig(
+      R"({"0":[],"1":[4,5],"2":[0,1,2,3,4,5]})", 4, 8, 4, &config));
+  Q4T_CHECK(config.layer_slots == std::vector<int>({4, 2, 4, 4}));
+  Q4T_CHECK(config.total_slots == 14);
+  Q4T_CHECK(config.hot_lists[0].empty() && config.hot_lists[3].empty());
+  Q4T_CHECK(config.hot_lists[2].size() == 6);
+  return true;
+}
+
+Q4T_TEST(residency_capacity_rejects_ambiguous_or_invalid_lists) {
+  for (const char* text :
+       {"[]", R"({"0":null})", R"({"0":[1.5]})", R"({"0":[true]})",
+        R"({"0":[8]})", R"({"0junk":[]})", R"({"4":[]})", R"({"0":[],"0":[]})",
+        R"({"0":[],"00":[]})"}) {
+    ResidencyConfig config;
+    Q4T_CHECK(!q4t::runtime::ParseResidencyConfig(text, 4, 8, 4, &config));
+  }
+  return true;
+}
+
+Q4T_TEST(residency_capacity_file_errors_fail_before_loading) {
+  char pattern[] = ".q4t-work/budget-config-XXXXXX";
+  char* name = mkdtemp(pattern);
+  Q4T_CHECK(name != nullptr);
+  struct Cleanup {
+    std::filesystem::path path;
+    ~Cleanup() { std::filesystem::remove_all(path); }
+  } cleanup{std::filesystem::path(name)};
+  const auto file = cleanup.path / "hot.json";
+  ResidencyConfig config;
+  Q4T_CHECK(!q4t::runtime::LoadResidencyConfig(file, 4, 8, 4, &config));
+  std::ofstream(file).close();
+  Q4T_CHECK(!q4t::runtime::LoadResidencyConfig(file, 4, 8, 4, &config));
+  {
+    std::ofstream stream(file);
+    stream << R"({"0":[]})";
+  }
+  Q4T_CHECK(q4t::runtime::LoadResidencyConfig(file, 4, 8, 4, &config));
+  Q4T_CHECK(config.total_slots == 16);
   return true;
 }

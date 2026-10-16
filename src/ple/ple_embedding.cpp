@@ -21,12 +21,18 @@ struct PleEmbedding::Impl {
   size_t gpu_fp8_bytes = 0;
   int64_t* host_row_ids = nullptr;  // pinned host row ids
   size_t host_row_ids_cap = 0;
+  cudaEvent_t upload_complete = nullptr;
+  bool upload_pending = false;
+  bool upload_failed = false;
 };
 
 PleEmbedding::PleEmbedding(Impl* impl) : impl_(impl) {}
 
 PleEmbedding::~PleEmbedding() {
   if (!impl_) return;
+  // The pinned source and FP8 scratch outlive every queued conversion.
+  if (impl_->upload_pending) cudaEventSynchronize(impl_->upload_complete);
+  if (impl_->upload_complete) cudaEventDestroy(impl_->upload_complete);
   if (impl_->reader) delete impl_->reader;
   if (impl_->staging) cudaFreeHost(impl_->staging);
   if (impl_->gpu_fp8) cudaFree(impl_->gpu_fp8);
@@ -81,6 +87,15 @@ Status PleEmbedding::Create(const Config& config, PleEmbedding** out) {
     return Status::Fail("cudaHostAlloc host_row_ids failed");
   }
   impl->host_row_ids_cap = max_rows;
+  if (cudaEventCreateWithFlags(&impl->upload_complete, cudaEventDisableTiming) !=
+      cudaSuccess) {
+    cudaFreeHost(impl->host_row_ids);
+    cudaFree(impl->gpu_fp8);
+    cudaFreeHost(impl->staging);
+    delete impl->reader;
+    delete impl;
+    return Status::Fail("cudaEventCreate PLE upload failed");
+  }
 
   *out = new PleEmbedding(impl);
   return Status();
@@ -142,21 +157,46 @@ Status PleEmbedding::GatherRows(const int64_t* row_ids, size_t n_rows,
   if (n_rows > impl_->host_row_ids_cap) {
     return Status::Fail("n_rows exceeds capacity");
   }
+  if (impl_->upload_failed) {
+    return Status::Fail("PLE upload completion failed; recreate embedding");
+  }
+  // A CUDA stream orders device work, not the CPU writes performed by the
+  // reader. Wait before overwriting the pinned source. Completion includes
+  // conversion so the shared FP8 scratch is also safe across streams.
+  if (impl_->upload_pending) {
+    if (cudaEventSynchronize(impl_->upload_complete) != cudaSuccess) {
+      impl_->upload_failed = true;
+      return Status::Fail("PLE previous upload completion failed");
+    }
+    impl_->upload_pending = false;
+  }
   // The reader scatters rows into the pinned staging buffer (token-major).
   ReadStats stats;
   Status s = impl_->reader->Gather(row_ids, n_rows, impl_->staging, &stats);
   if (!s.ok()) return s;
 
+  // Error exits also drain submitted work before releasing buffer ownership.
+  auto fail_upload = [&](const char* message) {
+    if (cudaStreamSynchronize(stream) != cudaSuccess) {
+      impl_->upload_failed = true;
+      return Status::Fail(std::string(message) + "; stream completion failed");
+    }
+    return Status::Fail(message);
+  };
   // H2D the FP8 rows, then convert to BF16 on the stream.
   const size_t fp8_bytes = n_rows * row_bytes;
   if (cudaMemcpyAsync(impl_->gpu_fp8, impl_->staging, fp8_bytes,
                       cudaMemcpyHostToDevice, stream) != cudaSuccess) {
-    return Status::Fail("H2D staging->gpu_fp8 failed");
+    return fail_upload("H2D staging->gpu_fp8 failed");
   }
   if (ConvertFp8ToBf16Async(impl_->gpu_fp8, out_bf16, fp8_bytes, stream) !=
       cudaSuccess) {
-    return Status::Fail("FP8->BF16 conversion failed");
+    return fail_upload("FP8->BF16 conversion failed");
   }
+  if (cudaEventRecord(impl_->upload_complete, stream) != cudaSuccess) {
+    return fail_upload("PLE upload event record failed");
+  }
+  impl_->upload_pending = true;
   return Status();
 }
 

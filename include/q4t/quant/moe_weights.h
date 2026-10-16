@@ -41,9 +41,14 @@ namespace quant {
 // of 128, each expert's SF is a valid standalone swizzled buffer, so a
 // per-expert GEMM can address gu_sf_expert(e) / dn_sf_expert(e) directly.
 struct MoEWeightLayout {
-  int E = 0;  // num_experts
+  int E = 0;  // num_experts (or resident slot count in slot mode)
   int hs = 0;  // hidden_size (K of gate/up, N of down)
   int moe_is = 0;  // moe_intermediate_size (N of gate/up, K of down)
+  // Slot mode: E is the number of resident expert slots (C << 512) instead of
+  // the full expert count. The caller (quant::MoEResidency) remaps expert IDs
+  // to slot IDs before the GEMM; each slot's byte layout is identical to one
+  // expert slice, so the grouped-GEMM paths consume slot IDs unchanged.
+  bool slot_mode = false;
 
   // Merged gate/up: gate rows [0, moe_is), up rows [moe_is, 2*moe_is) per
   // expert. Packed is one contiguous [2*E*moe_is, hs/2] row-major buffer.

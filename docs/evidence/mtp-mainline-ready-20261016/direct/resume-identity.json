@@ -1,0 +1,11 @@
+{
+  "head": "577dac0444a49b723282f2b90816807650273f2d",
+  "merge_head": "7f6a69c0c8af3919ada8a3359575e049e485e878",
+  "files": {
+    "src/model/model.cu": "b87696cefcd3c1d6c4da39cca0fd7794688392516387841bf6d9c3dd19595302",
+    "src/mtp/mtp.cu": "c2e038b0fad3bce88cc86fcda5244e7c5a08c51238da1cfd593dd5c279f776f7",
+    "src/model/linear_attention.cu": "521ec8eda2c1f36f1556d0ce72ae79f3da455e5e6d62218f7677c88a72790b08",
+    "src/model/ple_layer.cu": "87c467faf4dfd33992a2f0244c0211d6c7c829b296a80dc1b153b5e31befe232",
+    "src/quant/moe_decode.cu": "eca5bda705b838e70a5035828b2611174f81c6fc8b3bc590701e8bd56999467f"
+  }
+}

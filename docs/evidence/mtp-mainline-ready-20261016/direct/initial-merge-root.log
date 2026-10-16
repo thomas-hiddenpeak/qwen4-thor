@@ -1,0 +1,1759 @@
+[PASS] ple_ngram_hash_matches_sglang_reference
+[PASS] ple_ngram_hash_row_ids_in_table_range
+[PASS] ple_multipliers_derivation_matches_checkpoint
+[PASS] ple_page_reader_basic_rows
+[PASS] ple_page_reader_page_dedup
+[PASS] ple_page_reader_out_of_range_zeroed
+[PASS] ple_page_reader_cross_page_row
+[PASS] ple_page_reader_fault_recovery
+[PASS] ple_fp8_to_bf16_matches_reference
+[PASS] ple_fp8_to_bf16_empty
+[PASS] ple_e2e_gather_matches_cpu_reference
+[PASS] ple_e2e_capacity_guard
+  PLE working memory = 75.17 MiB (78816256 bytes), budget 100 MiB
+    page pool 32.00 MiB + io_uring ring + pinned staging 20.00 MiB + GPU scratch 20.00 MiB + row-ids 1.00 MiB + reader scratch
+[PASS] ple_working_memory_under_100mib
+[PASS] json_parse_object_scalars
+[PASS] json_parse_nested_arrays
+[PASS] json_parse_string_escapes
+[PASS] json_parse_errors
+[PASS] json_rejects_deep_input_before_recursing
+[PASS] json_resource_limits_and_duplicate_keys
+[PASS] json_strict_numbers_and_safe_integer_conversion
+[PASS] json_strict_unicode_and_controls
+[PASS] budget_infeasible_capacity_never_becomes_a_minimum
+[PASS] budget_exact_fit_and_one_byte_short
+[PASS] budget_minimum_boundaries_fail_without_capacity_fallback
+[PASS] budget_sequence_cap_keeps_requested_and_effective_distinct
+[PASS] budget_auto_search_finds_largest_supported_capacity
+[PASS] budget_auto_minimum_preserves_requested_sequence_count
+[PASS] budget_default_fraction_and_prefill_use_effective_parameters
+[PASS] budget_text_baseline_tracks_resident_allocations
+[PASS] budget_context_ceiling_is_applied_to_explicit_requests
+[PASS] budget_mtp_off_has_no_draft_reservation
+[PASS] budget_mtp_accounts_for_loaded_and_lazy_allocations
+[PASS] budget_mtp_loading_and_request_peaks_are_separate
+[PASS] budget_mtp_loading_peak_exact_and_one_byte_short
+[PASS] budget_mtp_runtime_peak_caps_length_without_dropping_charges
+[PASS] budget_mtp_chunk_bound_is_monotone_across_full_last_chunk
+[PASS] budget_mtp_requires_independent_weight_staging_and_workspace_inputs
+[PASS] budget_mtp_scope_rejects_unsupported_configurations
+[PASS] budget_mtp_overflowed_weight_or_loading_peak_fails_closed
+[PASS] budget_ple_counts_all_ngram_heads_and_registered_pool
+[PASS] budget_runtime_workspace_sizes_override_reference_estimates
+[PASS] budget_kv_page_rounding_matches_allocated_state
+[PASS] budget_invalid_or_overflowed_estimate_fails_closed
+[PASS] residency_capacity_empty_missing_and_nonuniform_layers
+[PASS] residency_capacity_rejects_ambiguous_or_invalid_lists
+[PASS] residency_capacity_file_errors_fail_before_loading
+[PASS] sequence_commit_requires_completion
+[PASS] sequence_rejects_reentry_and_early_recycle
+[PASS] sequence_failed_submission_still_drains
+[PASS] sequence_completion_failure_preserves_prefix
+[PASS] sequence_invalid_input_does_not_poison_prefix
+[PASS] sequence_chunk_and_decode_share_commit
+[PASS] sequence_batch_failure_is_atomic
+[PASS] sequence_rejects_duplicate_completion
+[PASS] http_valid_length_and_header_names
+[PASS] http_rejects_ambiguous_framing
+[PASS] http_request_line_and_header_budget
+[PASS] http_body_capacity_and_trailing_bytes
+[PASS] http_absolute_deadline_and_body_budget
+[PASS] chat_contract_greedy_neutral_options
+[PASS] chat_contract_rejects_unimplemented_constraints
+[PASS] chat_contract_rejects_wrong_types_and_ambiguous_input
+[PASS] chat_contract_template_options_are_explicit
+[PASS] chat_contract_media_rejected_before_decoding
+[PASS] safetensors_parse_and_read
+[PASS] safetensors_open_real_scale_file
+  mincore pages: payload=4096 evicted=16 retained=4097
+[PASS] safetensors_keep_page_cache
+[PASS] model_config_parse_real
+[PASS] model_config_missing_file
+[PASS] weight_index_parse_real
+[PASS] weight_loader_read_matches_direct_shard
+[PASS] weight_loader_lru_eviction
+[PASS] quant_e2m1_decode_table
+[PASS] quant_e2m1_encode_roundtrip
+[PASS] quant_e4m3_roundtrip
+[PASS] quant_swizzle_offsets
+[PASS] quant_swizzle_buffer_size
+[PASS] quant_swizzle_roundtrip
+[PASS] quant_dequant_kernel
+[PASS] quant_act_quant_kernel
+  [N=640 K=2560 M=  1] max_rel=0.00005 PASS
+  [N=640 K=2560 M=  8] max_rel=0.00013 PASS
+  [N=640 K=2560 M= 64] max_rel=0.00012[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+ PASS
+  [N=640 K=2560 M=256] max_rel=0.00013 PASS
+  [N=2560 K=640 M=  1] max_rel=0.00002 PASS
+  [N=2560 K=640 M=  8] max_rel=0.00004 PASS
+  [N=2560 K=640 M= 64] max_rel=0.00004 PASS
+  [N=2560 K=640 M=256] max_rel=0.00005 PASS
+  8/8 W4A4 GEMM cases passed
+[PASS] quant_fp4_gemm_w4a4
+[PASS] moe_load_packed_matches_shard
+[PASS] moe_load_sf_unswizzle_matches_shard
+[PASS] moe_load_gate_up_share_scale
+  gate/up GEMM expert 0 M=8 max_rel=0.00000
+[PASS] moe_load_gemm_matches_reference
+  MoE routed forward M=4 k=3 max_abs=0.0063768 max_rel=0.0063768
+[PASS] moe_gemm_routed_forward_matches_reference
+[PASS] residency_init_free_lifecycle
+[PASS] residency_load_matches_reference
+  merge=0 inline=0 experts=1
+  merge=0 inline=0 experts=2
+  merge=0 inline=0 experts=4
+  merge=0 inline=0 experts=9
+  merge=0 inline=1 experts=1
+  merge=0 inline=1 experts=2
+  merge=0 inline=1 experts=4
+  merge=0 inline=1 experts=9
+  merge=1 inline=0 experts=1
+  merge=1 inline=0 experts=2
+  merge=1 inline=0 experts=4
+  merge=1 inline=0 experts=9
+  merge=1 inline=1 experts=1
+  merge=1 inline=1 experts=2
+  merge=1 inline=1 experts=4
+  merge=1 inline=1 experts=9
+[PASS] residency_pread_merge_dispatch_contract
+[PASS] residency_resolve_hit_miss_evict
+[PASS] residency_hot_list_dedup_cap
+[PASS] residency_l2_cache_hit_evict
+[PASS] residency_mirror_ring_hit
+[PASS] residency_invalid_inputs
+  routingA A grouped-vs-perrow: exact=10240/10240 (100.0%) max_ulp=0.00
+  routingA B grouped-vs-T1: exact=10240/10240 max_ulp=0.00
+  routingB A grouped-vs-perrow: exact=10240/10240 (100.0%) max_ulp=0.00
+  routingB B grouped-vs-T1: exact=10240/10240 max_ulp=0.00
+  max_ulp=0.00 (bound 4.0)
+[PASS] moe_decode_grouped_vs_perrow
+  T=1 default-vs-perrow-env bit-exact: yes
+[PASS] moe_decode_t1_dispatch_bitexact
+  mix l2_rel_err = 3.505e-03
+  combine l2_rel_err = 2.330e-03
+[PASS] hyperconnection_mix_combine
+  out l2_rel_err = 6.534e-03
+  ssm_state l2_rel_err = 4.842e-03
+[PASS] linear_attention_forward
+  out l2_rel_err = 2.890e-03
+  indexer raw/comp l2_rel_err = 0.000e+00 / 2.610e-03
+  host position metadata vs readback: bit-exact
+[PASS] full_attention_forward
+  rows=1: 25 chunks, all top-512 scores/IDs bit-exact
+  rows=3: 25 chunks, all top-512 scores/IDs bit-exact
+  rows=17: 25 chunks, all top-512 scores/IDs bit-exact
+[PASS] streaming_topk_exact
+  groups=2049 tokens=1 ties=0: exact top-512 selection matches reference
+  groups=2049 tokens=4 ties=0: exact top-512 selection matches reference
+  groups=4096 tokens=1 ties=0: exact top-512 selection matches reference
+  groups=4096 tokens=4 ties=0: exact top-512 selection matches reference
+  groups=11264 tokens=1 ties=0: exact top-512 selection matches reference
+  groups=11264 tokens=4 ties=0: exact top-512 selection matches reference
+  groups=20480 tokens=1 ties=0: exact top-512 selection matches reference
+  groups=20480 tokens=4 ties=0: exact top-512 selection matches reference
+  groups=51200 tokens=1 ties=0: exact top-512 selection matches reference
+  groups=51200 tokens=4 ties=0: exact top-512 selection matches reference
+  groups=11264 ties t=0: a_groups=513 e_groups=513 |missing|=1536 |extra|=1536 hist_match=1
+  groups=11264 ties t=0: per-score group counts match (tie-breaking only)
+  groups=11264 ties t=1: a_groups=513 e_groups=513 |missing|=1628 |extra|=1628 hist_match=1
+  groups=11264 ties t=1: per-score group counts match (tie-breaking only)
+  groups=11264 ties t=2: a_groups=513 e_groups=513 |missing|=1540 |extra|=1540 hist_match=1
+  groups=11264 ties t=2: per-score group counts match (tie-breaking only)
+  groups=11264 ties t=3: a_groups=512 e_groups=512 |missing|=1448 |extra|=1448 hist_match=1
+  groups=11264 ties t=3: per-score group counts match (tie-breaking only)
+  groups=11264 tokens=4 ties=1: exact top-512 selection matches reference
+[PASS] decode_topk_exact
+  decoder_layer A-vs-B l2_rel_err = 0.000e+00
+[PASS] decoder_layer_forward
+  decoder_layer PLE A-vs-B l2_rel_err = 0.000e+00
+[PASS] decoder_layer_ple_injection
+  ple_layer out l2_rel_err = 4.071e-03
+[PASS] ple_layer_forward
+  model_head loaded (vocab=248320 hs=2560 hc=4)
+[PASS] model_head_load
+  embed l2_rel_err = 1.721e-03
+  expand l2_rel_err = 1.721e-03
+  head logits l2_rel_err = 3.193e-03
+[PASS] model_head_forward
+  quant roundtrip l2rel = 2.560e-02
+[PASS] fp8_shadow_quantize_roundtrip
+  Fp8Gev l2rel=2.589e-02  Bf16 l2rel=1.561e-03
+[PASS] fp8_gev_matches_reference_in_noise_band
+[PASS] proj_gemm_dispatches_fp8_by_m
+  argmax bf16=1234 fp8=1234 (winner=1234)
+[PASS] fp8_head_argmax_preserved_for_confident_token
+  M=2 row 0: batch vs per-row Fp8Gev l2rel=0.00e+00
+  M=2 row 1: batch vs per-row Fp8Gev l2rel=0.00e+00
+  M=4 row 0: batch vs per-row Fp8Gev l2rel=0.00e+00
+  M=4 row 1: batch vs per-row Fp8Gev l2rel=0.00e+00
+  M=4 row 2: batch vs per-row Fp8Gev l2rel=0.00e+00
+  M=4 row 3: batch vs per-row Fp8Gev l2rel=0.00e+00
+[PASS] fp8_small_m_matches_per_row_gev
+[case general-square] N=2560 K=2560 seed=12345
+  gemv vs gemm1          first_diff=-1     count=0     /2560 max_abs=0.000e+00 l2rel=0.000e+00
+  gemm1 vs gemm4         first_diff=-1     count=0     /2560 max_abs=0.000e+00 l2rel=0.000e+00
+  gemv vs gemm4          first_diff=-1     count=0     /2560 max_abs=0.000e+00 l2rel=0.000e+00
+  l2rel-to-FP64ref: gemv=1.656e-03 gemm1=1.656e-03 gemm4=1.656e-03
+[case general-square] N=2560 K=2560 seed=2024
+  gemv vs gemm1          first_diff=-1     count=0     /2560 max_abs=0.000e+00 l2rel=0.000e+00
+  gemm1 vs gemm4         first_diff=-1     count=0     /2560 max_abs=0.000e+00 l2rel=0.000e+00
+  gemv vs gemm4          first_diff=-1     count=0     /2560 max_abs=0.000e+00 l2rel=0.000e+00
+  l2rel-to-FP64ref: gemv=1.616e-03 gemm1=1.616e-03 gemm4=1.616e-03
+[case general-square] N=2560 K=2560 seed=777
+  gemv vs gemm1          first_diff=-1     count=0     /2560 max_abs=0.000e+00 l2rel=0.000e+00
+  gemm1 vs gemm4         first_diff=-1     count=0     /2560 max_abs=0.000e+00 l2rel=0.000e+00
+  gemv vs gemm4          first_diff=-1     count=0     /2560 max_abs=0.000e+00 l2rel=0.000e+00
+  l2rel-to-FP64ref: gemv=1.678e-03 gemm1=1.678e-03 gemm4=1.678e-03
+  => worst gemv-vs-gemm4 over 3 seeds: count=0 max_abs=0.000e+00 l2rel=0.000e+00 first_diff=-1
+[PASS] gemm_t1_vs_tk1_general
+[case hc-inject] N=4 K=10240 seed=67890
+  gemv vs gemm1          first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gemm1 vs gemm4         first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gemv vs gemm4          first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  l2rel-to-FP64ref: gemv=4.580e-04 gemm1=4.580e-04 gemm4=4.580e-04
+[case hc-inject] N=4 K=10240 seed=31337
+  gemv vs gemm1          first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gemm1 vs gemm4         first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gemv vs gemm4          first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  l2rel-to-FP64ref: gemv=2.950e-03 gemm1=2.950e-03 gemm4=2.950e-03
+[case hc-inject] N=4 K=10240 seed=5
+  gemv vs gemm1          first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gemm1 vs gemm4         first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gemv vs gemm4          first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  l2rel-to-FP64ref: gemv=1.358e-03 gemm1=1.358e-03 gemm4=1.358e-03
+  => worst gemv-vs-gemm4 over 3 seeds: count=0 max_abs=0.000e+00 l2rel=0.000e+00 first_diff=-1
+[PASS] gemm_t1_vs_tk1_hc_inject
+  seed=4242
+[hc-prod synthetic] hc=4 hs=2560 dim=10240
+  proj fused vs gemm1    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  proj gemm1 vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  proj fused vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate fused vs gemm1    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate gemm1 vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate fused vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate fused1 vs multirow4 first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  proj l2rel-to-FP[q4t] MoE device decode grouped NVFP4 enabled: groups=30 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=30 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+64ref: fused=1.971e-03 gemm1=1.971e-03 gemm4=1.971e-03
+  seed=99
+[hc-prod synthetic] hc=4 hs=2560 dim=10240
+  proj fused vs gemm1    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  proj gemm1 vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  proj fused vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate fused vs gemm1    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate gemm1 vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate fused vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate fused1 vs multirow4 first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  proj l2rel-to-FP64ref: fused=1.564e-03 gemm1=1.564e-03 gemm4=1.564e-03
+  seed=20261011
+[hc-prod synthetic] hc=4 hs=2560 dim=10240
+  proj fused vs gemm1    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  proj gemm1 vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  proj fused vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate fused vs gemm1    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate gemm1 vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate fused vs gemm4    first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  gate fused1 vs multirow4 first_diff=-1     count=0     /4 max_abs=0.000e+00 l2rel=0.000e+00
+  proj l2rel-to-FP64ref: fused=2.729e-03 gemm1=2.729e-03 gemm4=2.729e-03
+[PASS] hc_inject_prod_synthetic
+  (no S7 capture at /tmp/q4t_op_capture_s7; run model_verify_ckpt_samepath with Q4T_OP_CAPTURE first)
+[PASS] hc_inject_actual_s7
+  (no S7 mix capture at /tmp/q4t_op_capture_s7; run model_verify_ckpt_samepath with Q4T_S7_CAPTURE first)
+[PASS] mix_down_actual_s7
+  (no S7 mix capture at /tmp/q4t_op_capture_s7_v2)
+[PASS] mix_down_fp32_s7
+  (no S7 mix capture at /tmp/q4t_op_capture_s7_v2)
+[PASS] mix_down_candidate_s7
+  HCdown M4 run1 vs run2 first_diff=-1     count=0     /1280 max_abs=0.000e+00 l2rel=0.000e+00
+  l2rel-to-FP64ref: HCdown M4 row0 = 1.558e-03
+  HCdown M4 row0 vs M1 GEMV (must be identical) first_diff=-1     count=0     /320 max_abs=0.000e+00 l2rel=0.000e+00
+  HCdown M4 default vs M4 cuBLASLt first_diff=52     count=4     /320 max_abs=1.953e-03 l2rel=1.605e-04
+  HCup M4 run1 vs run2   first_diff=-1     count=0     /40960 max_abs=0.000e+00 l2rel=0.000e+00
+  HCup M4 row0 vs M1 GEMV (must be identical) first_diff=-1     count=0     /10240 max_abs=0.000e+00 l2rel=0.000e+00
+  HCup M4 default vs M4 cuBLASLt (must differ, ULP class) first_diff=3817   count=4     /10240 max_abs=4.883e-04 l2rel=2.921e-05
+  l2rel-to-FP64ref: HCup M4 row0 = 1.678e-03
+[scattered N=10240 K=2560] M4 row0 vs M1 GEMV
+  row0 vs GEMV (must be identical) first_diff=-1     count=0     /10240 max_abs=0.000e+00 l2rel=0.000e+00
+[scattered N=10240 K=2560] M8 row0 vs M1 GEMV
+  row0 vs GEMV M8 (must be identical) first_diff=-1     count=0     /10240 max_abs=0.000e+00 l2rel=0.000e+00
+[scattered N=248320 K=2560] M4 row0 vs M1 GEMV
+  row0 vs GEMV (must be identical) first_diff=-1     count=0     /248320 max_abs=0.000e+00 l2rel=0.000e+00
+[PASS] smallm_gemm_wiring
+  model loaded: 2 layers, ple_weight_scale=0.0002
+  logits: max_abs=5.938 argmax(last)=236644 finite=1
+  determinism: identical
+[PASS] model_forward_e2e
+  decode-vs-prefill last-token l2_rel_err = 2.144e-02
+[PASS] model_decode_step
+  prefill legacy-vs-seq: identical
+  decode legacy-vs-seq: DIFFER
+  CHECK failed: decode_identical (line 362)
+[FAIL] model_sequence_api
+  dumped prefill 4 + decode 4 steps -> /tmp/cpp4dec.*
+  greedy tokens: 63016 107300 35759 2770
+[PASS] model_forward_dump_decode
+  dumped 4 x 248320 logits -> /tmp/cpp.logits.bin
+[PASS] model_forward_dump_logits
+  trunk_out does not perturb logits: identical
+  trunk_out: max_abs=0.383 finite=1 (T=4, hc_dim=10240)
+  HeadForward(trunk_out) == prefill logits: identical
+[PASS] model_trunk_out
+  model loaded: 4 layers, max_seq=4
+  prefill s[q4t] MoE device decode grouped NVFP4 enabled: groups=20 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=20 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t][residency] chunk_order=0 policy=original prefill_only=1 tie=original_chunk_index
+[q4t][residency] partition=0 policy=original prefill_only=1 budget=32*T*k
+[q4t][residency][diag] layer=2 flush size=6 book=60 actual=60
+[q4t][residency][diag] layer=2 flush size=8 book=64 actual=64
+[q4t][residency][diag] layer=2 flush size=7 book=60 actual=60
+[q4t][residency][diag] layer=2 flush size=7 book=60 actual=60
+[q4t][residency][diag] layer=2 flush size=4 book=38 actual=38
+[q4t][residency][diag] layer=2 T=32 D=64 chunks=5 max_distinct=64 resident_before=0 overlap=10,14,15,7 new=54,46,45,31 chunk_order=0 diag_order=original_partition partition=0
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][diag] layer=2 T=1 D=64 chunks=1 max_distinct=10 resident_before=64 overlap= new= chunk_order=0 diag_order=original_partition partition=0
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=60 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=60 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=80 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=80 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+eq1-vs-seq0: identical
+  decode step 0 seq1-vs-seq0: identical
+  decode step 1 seq1-vs-seq0: identical
+  prefill seq2-vs-seq0: identical
+  decode step 0 seq2-vs-seq0: identical
+  decode step 1 seq2-vs-seq0: identical
+  prefill seq3-vs-seq0: identical
+  decode step 0 seq3-vs-seq0: identical
+  decode step 1 seq3-vs-seq0: identical
+[PASS] model_multi_seq_isolation
+  [B=1] packed vs serial decode: l2_rel=0.0550 argmax packed=63016 ref=63016
+  [B=4] seq0: argmax packed=63016 ref=63016 l2_rel=0.0516
+  [B=4] seq1: argmax packed=3184 ref=3184 l2_rel=0.0587
+  [B=4] seq2: argmax packed=99432 ref=228326 l2_rel=0.1921
+  [B=4] seq3: argmax packed=171613 ref=171613 l2_rel=0.1491
+[PASS] model_decode_batch_multi
+  MoE forward T=2 k=10 l2_rel=0.010042
+[PASS] moe_forward_end_to_end
+  T=32 C=64: BIT-EXACT=true loads=234 misses=234
+  T=1 C=64: BIT-EXACT=true loads=239 misses=239
+[PASS] moe_forward_residency_bitexact
+  required environment: Q4T_MOE_PARTITION=1
+  CHECK failed: PartitionEnvironmentMatches() (line 807)
+[FAIL] moe_partition_runtime_numerical_contract
+  seq 0 tok 0: l2_rel=0.00000 OK
+  seq 0 tok 1: l2_rel=0.00000 OK
+  seq 0 tok 2: l2_rel=0.00000 OK
+  seq 1 tok 0: l2_rel=0.00000 OK
+  seq 1 tok 1: l2_rel=0.00000 OK
+  seq 1 tok 2: l2_rel=0.00000 OK
+  rollback seq 0 (a=0) then decode verify0[1]: l2_rel=0.00000 OK
+[PASS] model_verify_multi
+  reserve_cap=4 (T-1=2, cap > count)
+  seq 1 tok 0: l2_rel=0.00000 OK
+  seq 1 tok 1: l2_rel=0.00000 OK
+  seq 1 tok 2: l2_rel=0.00000 OK
+  seq 2 tok 0: l2_rel=0.00000 OK
+  seq 2 tok 1: l2_rel=0.00000 OK
+  seq 2 tok 2: l2_rel=0.00000 OK
+  accept seq 1 (a=0) then decode verify0[1]: l2_rel=0.91034 MISMATCH
+  restore checkpoint 1 failed: ModelRestoreCheckpoint: unwritten or stale row/slot
+[FAIL] model_verify_multi_ckpt
+  reserve_cap=4 (T-1=2, cap > count)
+  cap>T-1 rollback (a=0) then decode verify[1]: l2_rel=0.20215 MISMATCH
+  restore checkpoint 1 failed: ModelRestoreCheckpoint: unwritten or stale row/slot
+[FAIL] model_verify_ckpt
+  [A] sanity: ckpt0 != ckpt1 (distinct states) OK, bytes=6598656
+  [A] restore(1)->live == ckpt[1] direct: MISMATCH (bytes=6598656, first_diff_off)
+        first_diff_off=3207168
+  [A] restore(0)->live == ckpt[0] direct: MISMATCH (bytes=6598656)
+        first_diff_off=3207168
+  [B] batch logits save vs nosave: BIT-EXACT (T=3, vocab=248320)
+  [B] same-path re-run ckpt[1] deterministic: BIT-EXACT
+  [C] accept=0 (full reject): restore ckpt[0], decode verify[1]: l2_rel=0.20242 MISMATCH
+  [C] accept=1 (partial): restore ckpt[1], decode verify[2]: l2_rel=0.46648 MISMATCH
+  [C] accept=2 (full): batch final state, decode probe: l2_rel=0.26336 MISMATCH
+  [D] batch-vs-pref7 L0 ssm     : diff_bytes=0/3145728 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-pref7 L0 conv    : diff_bytes=0/61440 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-pref7 L1 ssm     : diff_bytes=0/3145728 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-pref7 L1 conv    : diff_bytes=0/61440 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-pref7 L1 ple_conv: diff_bytes=0/184320 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-seq L0 ssm     : diff_bytes=65536/3145728 first=671744 maxabs=2.148e-03 relL2=1.638e-04
+  [D] batch-vs-seq L0 conv    : diff_bytes=0/61440 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-seq L1 ssm     : diff_bytes=3145584/3145728 first=0 maxabs=7.531e-04 relL2=2.464e-03
+  [D] batch-vs-seq L1 conv    : diff_bytes=16878/61440 first=2 maxabs=6.250e-02 relL2=3.700e-03
+  [D] batch-vs-seq L1 ple_conv: diff_bytes=5112/184320 first=23048 maxabs=3.125e-02 relL2=5.848e-04
+  [D] pref7-vs-seq L0 ssm     : diff_bytes=65536/3145728 first=671744 maxabs=2.148e-03 relL2=1.638e-04
+  [D] pref7-vs-seq L0 conv    : diff_bytes=0/61440 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] pref7-vs-seq L1 ssm     : diff_bytes=3145584/3145728 first=0 maxabs=7.531e-04 relL2=2.464e-03
+  [D] pref7-vs-seq L1 conv    : diff_bytes=16878/61440 first=2 maxabs=6.250e-02 relL2=3.700e-03
+  [D] pref7-vs-seq L1 ple_conv: diff_bytes=5112/184320 first=23048 maxabs=3.125e-02 relL2=5.848e-04
+  [E[q4t] MoE device decode grouped NVFP4 enabled: groups=50 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=50 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+] batch-final (=C a=2): probe l2_rel=0.00000 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  [E] pref7 state (path-only): probe l2_rel=0.00000 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  [E] seq T1x3 state: probe l2_rel=0.07151 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  stage=E probe path (last)
+[FAIL] model_verify_ckpt_samepath
+  seq 0 (len=5): worst l2_rel=0.09737  argmax batch=82116 ref=163130 MISMATCH
+  seq 1 (len=3): worst l2_rel=0.05924  argmax batch=3965 ref=3965 MISMATCH
+  seq 2 (len=7): worst l2_rel=0.16509  argmax batch=168589 ref=168589 MISMATCH
+  FAIL: batched prefill diverged from single-seq reference
+[FAIL] model_prefill_batch
+  A all-fresh vs ModelPrefillBatch: l2_rel=0.00e+00
+  B fused: fresh l2_rel=0.00e+00 | continue l2_rel=0.00e+00 | argmax 3965 vs 3965
+[PASS] model_mixed_batch
+  main model loaded: 2 layers
+  MTP loaded (hs=2560 hc=4 E=512 moe_is=640)
+  main prefill done, trunk_out [T=4, hc*hs=10240]
+  step0 logits: max_abs=13.750 argmax(last)=220 finite=1
+  step0 determinism: identical
+  step1 logits: max_abs=15.188 finite=1
+[PASS] mtp_draft_forward
+  MTP loaded (max_seq=4, hs=2560 hc=4 E=512)
+  main prefill done, trunk_out [T=2, hc*hs=10240]
+  seq0 tok0: l2_rel=0.0086 OK
+  seq0 tok1: l2_rel=0.0138 OK
+  seq1 tok0: l2_rel=0.0086 OK
+  seq1 tok1: l2_rel=0.0138 OK
+  seq2 tok0: l2_rel=0.0086 OK
+  seq2 tok1: l2_rel=0.0138 OK
+  seq3 tok0: l2_rel=0.0086 OK
+  seq3 tok1: l2_rel=0.0138 OK
+  multi determinism: identical
+[PASS] mtp_draft_multi_seq
+  MTP loaded (hs=2560 hc=4 E=512)
+  cross-check: main argmax at P-1 = 236644 (expect 236644)
+  prefill done, P=4, trunk_in ready
+  ground truth: 4 tokens (first=236644)
+  speculative: accepted 1 tokens: [236644]
+[PASS] mtp_speculative_step
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=12
+  seq 1: accepted_count=1 next_b=37693 next_d0=12
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_step
+  b0=236644 d0(b0)=13 m[0]=3901
+  constructed: m[0]=3901 m[1]=87048 m[2]=5277 d0_reject=3902 d0_accept=3901 f1_partial=87049 f2_full=5277
+  [reject] a=0 accepted_count=1 next_b=3901 pos=6 l2_rel=0.01702 OK
+  [partial] a=1 accepted_count=2 next_b=87048 pos=7 l2_rel=0.04154 MISMATCH
+  [full] a=3 accepted_count=4 next_b=1076 pos=9 l2_rel=0.07696 MISMATCH
+[FAIL] mtp_spec_accept_states
+  step26: P=1075 b=4752 capture=0 num_ckpt=3 cap=3
+  writer_row0 done: P=1075 capture=0 diff_count=0
+[PASS] mtp_writer_row0
+[mem] after_load: cuda free=28.37 GB total=131.92 GB cma_free=297684 kB
+[mem] after_begin: cuda free=24.25 GB total=131.92 GB cma_free=297804 kB
+[mem] after_prefill: cuda free=24.33 GB total=131.92 GB cma_free=297816 kB
+[mem] after_b1_replay: cuda free=24.44 GB total=131.92 GB cma_free=297884 kB
+[mem] after_free_prefill_plain: cuda free=28.57 GB total=131.92 GB cma_free=297884 kB
+[mem] after_ckpt_reserve: cuda free=28.21 GB total=131.92 GB cma_free=297884 kB
+[probe] malloc 4294967296 bytes: OK
+[probe] malloc 1073741824 bytes: OK
+[probe] malloc 536870912 bytes: OK
+[probe] malloc 268435456 bytes: OK
+[probe] malloc 134217728 bytes: OK
+[probe] malloc 67108864 bytes: OK
+[probe] malloc 33554432 bytes: OK
+[probe] malloc 16777216 bytes: OK
+[probe] malloc 8388608 bytes: OK
+[probe] malloc 4194304 bytes: OK
+[probe] malloc 3145728 bytes: OK
+[probe] malloc 2097152 bytes: OK
+[probe] malloc 1048576 bytes: OK
+[probe] malloc 524288 bytes: OK
+[probe] malloc 262144 bytes: OK
+[probe] malloc 131072 bytes: OK
+[probe] malloc 65536 bytes: OK
+[probe] malloc 32768 bytes: OK
+[probe] malloc 4096 bytes: OK
+[probe] ssm-pattern ok=40/40
+[mem] end: cuda free=28.20 GB total=131.92 GB cma_free=297884 kB
+[PASS] mem_alloc_probe
+  position=13 delta=0 rope=[13,13,13] expected=13 target_mismatches=0 other_writes=0 nonfinite_logits=0
+  position=14 delta=5 rope=[19,19,19] expected=19 target_mismatches=0 other_writes=0 nonfinite_logits=0
+[PASS] model_decode_batch_multi_rope_position
+  compare=prefill.layer0.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=prefill.layer0.conv bytes=61440 unequal=0 first_byte=61440
+  compare=prefill.layer1.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=prefill.layer1.conv bytes=61440 unequal=0 first_byte=61440
+  compare=prefill.layer1.ple bytes=184320 unequal=0 first_byte=184320
+  compare=verified.layer0.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=verified.layer0.conv bytes=61440 unequal=0 first_byte=61440
+  compare=verified.layer1.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=verified.layer1.conv bytes=61440 unequal=0 first_byte=61440
+  compare=verified.layer1.ple bytes=184320 unequal=0 first_byte=184320
+  compare=verify.logits bytes=993280 unequal=0 first_byte=993280
+  compare=restored.layer0.ssm bytes=3145728 unequal=0 first_byte=3145728
+  compare=restored.layer0.conv bytes=61440 unequal=0 first_byte=61440
+  compare=restored.layer1.ssm bytes=3145728 unequal=3136202 first_byte=0
+  compare=restored.layer1.conv bytes=61440 unequal=61331 first_byte=0
+  compare=restored.layer1.ple bytes=184320 unequal=0 first_byte=184320
+  compare=probe.logits bytes=496640 unequal=344342 first_byte=0
+  checkpoint_capacity input_equal=1 restore_equal=0 probe_equal=0 cap1=1 cap3=3 saved_rows=1
+  checkpoint_reject=ordinary_forward rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=negative_capacity rejected=1 message=ModelReserveVerifyCheckpoints: invalid capacity
+  checkpoint_reject=sequence_reset rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=negative_row rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=capacity_row rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=negative_slot rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=outside_slot rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=sequence_reset rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=unwritten_row rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=old_verify_row rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=verify_exceeds_reserved_capacity rejected=1 message=verify checkpoints: reserve at least T-1 rows first
+  checkpoint_reject=failed_verify rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=legacy_single_sequence_ple_checkpoint rejected=0 message=
+  compare=rejected_inputs_unchanged.layer0.ssm bytes=3145728 unequal=2915879 first_byte=0
+  compare=rejected_inputs_unchanged.layer0.conv bytes=61440 unequal=51310 first_byte=0
+  compare=rejected_inputs_unchanged.layer1.ssm bytes=3145728 unequal=2837591 first_byte=0
+  compare=rejected_inputs_unchanged.layer1.conv bytes=61440 unequal=55322 first_byte=0
+  compare=rejected_inputs_unchanged.layer1.ple bytes=184320 unequal=96620 first_byte=8
+  checkpoint_reject=sequence_reset rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_reject=zero_saved_rows rejected=1 message=ModelRestoreCheckpoint: unwritten or stale row/slot
+  checkpoint_validity=0
+[FAIL] mtp_checkpoint_capacity_layout
+TRIANGLE_SCOPE layers=4 B=1 default_gdn=1 draft_loaded=0 prompt=42+17*i prompt_length=13 capacity=64 prefill_cap=32 cross_shape=diagnostic suffix_change=diagnostic hook_ordinals_require_fresh_process=1
+TRIANGLE_FORWARD index=0 stage=fixed97.plain_t1.prefill T=13 linear_hook_first=0 linear_hook_last=2
+  finite=fixed97.plain_t1.prefill.logits elements=248320 nonfinite=0
+  finite=fixed97.plain_t1.prefill.trunk elements=133120 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer0.ssm elements=786432 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer0.conv elements=30720 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer1.ssm elements=786432 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer1.conv elements=30720 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer1.ple elements=92160 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer2.ssm elements=786432 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer2.conv elements=30720 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer3.kv elements=65536 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer3.index_raw elements=8192 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer3.index_comp elements=8192 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.layer3.page_table elements=64 nonfinite=0
+  finite=fixed97.plain_t1.prefill.state.rope elements=192 nonfinite=0
+  top5=fixed97.plain_t1.prefill vocab=248320 top1_top2_margin=0.34375 rank1_id=287 value=5.84375 bits=40bb gap=0 rank2_id=313 value=5.5 bits=40b0 gap=0.34375 rank3_id=1369 value=5.5 bits=40b0 gap=0.34375 rank4_id=68 value=5.4375 bits=40ae gap=0.40625 rank5_id=261 value=5.3125 bits=40aa gap=0.53125
+TRIANGLE_INPUT stage=fixed97.plain_t1 position=13 tokens=97
+TRIANGLE_FORWARD index=1 stage=fixed97.plain_t1.forward T=1 linear_hook_first=3 linear_hook_last=5
+  finite=fixed97.plain_t1.all_logits elements=248320 nonfinite=0
+  finite=fixed97.plain_t1.all_trunk elements=10240 nonfinite=0
+  top5=fixed97.plain_t1.first_row vocab=248320 top1_top2_margin=0.3125 rank1_id=103649 value=4.34375 bits=408b gap=0 rank2_id=37014 value=4.03125 bits=4081 gap=0.3125 rank3_id=106847 value=4.03125 bits=4081 gap=0.3125 rank4_id=152886 value=3.984375 bits=407f gap=0.359375 rank5_id=62498 value=3.84375 bits=4076 gap=0.5
+  finite=fixed97.plain_t1.prefix_state.layer0.ssm elements=786432 nonfinite=0
+  finite=fixed97.plain_t1.prefix_state.layer0.conv elements=30720 nonfinite=0
+  finite=fixed97.plain_t1.prefix_state.layer1.ssm elements=786432 nonfinite=0
+  finite=fixed97.plain_t1.prefix_state.layer1.conv elements=30720 nonfinite=0
+  finite=fixed97.plain_t1.prefix_state.layer1.ple elements=92160 nonfinite=0
+  finite=fixed97.plain_t1.prefix_state.layer2.ssm elements=786432 nonfinite=0
+  finite=fixed97.plain_t1.prefix_state.layer2.conv elements=30720 nonfinite=0
+TRIANGLE_FORWARD index=2 stage=fixed97.verify_t1.prefill T=13 linear_hook_first=6 linear_hook_last=8
+  finite=fixed97.verify_t1.prefill.logits elements=248320 nonfinite=0
+  finite=fixed97.verify_t1.prefill.trunk elements=133120 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer0.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer0.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer1.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer1.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer1.ple elements=92160 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer2.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer2.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer3.kv elements=65536 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer3.index_raw elements=8192 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer3.index_comp elements=8192 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.layer3.page_table elements=64 nonfinite=0
+  finite=fixed97.verify_t1.prefill.state.rope elements=192 nonfinite=0
+  top5=fixed97.verify_t1.prefill vocab=248320 top1_top2_margin=0.34375 rank1_id=287 value=5.84375 bits=40bb gap=0 rank2_id=313 value=5.5 bits=40b0 gap=0.34375 rank3_id=1369 value=5.5 bits=40b0 gap=0.34375 rank4_id=68 value=5.4375 bits=40ae gap=0.40625 rank5_id=261 value=5.3125 bits=40aa gap=0.53125
+  compare=fixed97.verify_t1.prefill_replay.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.trunk elements=133120 unequal=0 first=133120 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer3.kv elements=65536 unequal=0 first=65536 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer3.index_raw elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer3.index_comp elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.layer3.page_table elements=64 unequal=0 first=64 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.rope elements=192 unequal=0 first=192 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1.prefill_replay.state.rope_delta elements=1 unequal=0 first=1 max_abs=0 relative_l2=0
+TRIANGLE_INPUT stage=fixed97.verify_t1 position=13 tokens=97
+TRIANGLE_FORWARD index=3 stage=fixed97.verify_t1.forward T=1 linear_hook_first=9 linear_hook_last=11
+  finite=fixed97.verify_t1.all_logits elements=248320 nonfinite=0
+  finite=fixed97.verify_t1.all_trunk elements=10240 nonfinite=0
+  top5=fixed97.verify_t1.first_row vocab=248320 top1_top2_margin=0.3125 rank1_id=103649 value=4.34375 bits=408b gap=0 rank2_id=37014 value=4.03125 bits=4081 gap=0.3125 rank3_id=106847 value=4.03125 bits=4081 gap=0.3125 rank4_id=152886 value=3.984375 bits=407f gap=0.359375 rank5_id=62498 value=3.84375 bits=4076 gap=0.5
+  finite=fixed97.verify_t1.prefix_state.layer0.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t1.prefix_state.layer0.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t1.prefix_state.layer1.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t1.prefix_state.layer1.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t1.prefix_state.layer1.ple elements=92160 nonfinite=0
+  finite=fixed97.verify_t1.prefix_state.layer2.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t1.prefix_state.layer2.conv elements=30720 nonfinite=0
+TRIANGLE_FORWARD index=4 stage=fixed97.verify_t4_a.prefill T=13 linear_hook_first=12 linear_hook_last=14
+  finite=fixed97.verify_t4_a.prefill.logits elements=248320 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.trunk elements=133120 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer0.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer0.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer1.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer1.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer1.ple elements=92160 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer2.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer2.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer3.kv elements=65536 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer3.index_raw elements=8192 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer3.index_comp elements=8192 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.layer3.page_table elements=64 nonfinite=0
+  finite=fixed97.verify_t4_a.prefill.state.rope elements=192 nonfinite=0
+  top5=fixed97.verify_t4_a.prefill vocab=248320 top1_top2_margin=0.34375 rank1_id=287 value=5.84375 bits=40bb gap=0 rank2_id=313 value=5.5 bits=40b0 gap=0.34375 rank3_id=1369 value=5.5 bits=40b0 gap=0.34375 rank4_id=68 value=5.4375 bits=40ae gap=0.40625 rank5_id=261 value=5.3125 bits=40aa gap=0.53125
+  compare=fixed97.verify_t4_a.prefill_replay.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.trunk elements=133120 unequal=0 first=133120 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer3.kv elements=65536 unequal=0 first=65536 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer3.index_raw elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer3.index_comp elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.layer3.page_table elements=64 unequal=0 first=64 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.rope elements=192 unequal=0 first=192 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a.prefill_replay.state.rope_delta elements=1 unequal=0 first=1 max_abs=0 relative_l2=0
+TRIANGLE_INPUT stage=fixed97.verify_t4_a position=13 tokens=97,131,211,307
+TRIANGLE_FORWARD index=5 stage=fixed97.verify_t4_a.forward T=4 linear_hook_first=15 linear_hook_last=17
+  finite=fixed97.verify_t4_a.all_logits elements=993280 nonfinite=0
+  finite=fixed97.verify_t4_a.all_trunk elements=40960 nonfinite=0
+  top5=fixed97.verify_t4_a.first_row vocab=248320 top1_top2_margin=0.3125 rank1_id=103649 value=4.34375 bits=408b gap=0 rank2_id=37014 value=4.03125 bits=4081 gap=0.3125 rank3_id=106847 value=4.03125 bits=4081 gap=0.3125 rank4_id=152886 value=3.984375 bits=407f gap=0.359375 rank5_id=62498 value=3.84375 bits=4076 gap=0.5
+TRIANGLE_RESTORE stage=fixed97.verify_t4_a checkpoint=0 rows=3
+  finite=fixed97.verify_t4_a.prefix_state.layer0.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_a.prefix_state.layer0.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t4_a.prefix_state.layer1.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_a.prefix_state.layer1.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t4_a.prefix_state.layer1.ple elements=92160 nonfinite=0
+  finite=fixed97.verify_t4_a.prefix_state.layer2.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_a.prefix_state.layer2.conv elements=30720 nonfinite=0
+TRIANGLE_FORWARD index=6 stage=fixed97.verify_t4_b.prefill T=13 linear_hook_first=18 linear_hook_last=20
+  finite=fixed97.verify_t4_b.prefill.logits elements=248320 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.trunk elements=133120 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer0.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer0.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer1.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer1.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer1.ple elements=92160 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer2.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer2.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer3.kv elements=65536 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer3.index_raw elements=8192 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer3.index_comp elements=8192 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.layer3.page_table elements=64 nonfinite=0
+  finite=fixed97.verify_t4_b.prefill.state.rope elements=192 nonfinite=0
+  top5=fixed97.verify_t4_b.prefill vocab=248320 top1_top2_margin=0.34375 rank1_id=287 value=5.84375 bits=40bb gap=0 rank2_id=313 value=5.5 bits=40b0 gap=0.34375 rank3_id=1369 value=5.5 bits=40b0 gap=0.34375 rank4_id=68 value=5.4375 bits=40ae gap=0.40625 rank5_id=261 value=5.3125 bits=40aa gap=0.53125
+  compare=fixed97.verify_t4_b.prefill_replay.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.trunk elements=133120 unequal=0 first=133120 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer3.kv elements=65536 unequal=0 first=65536 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer3.index_raw elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer3.index_comp elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.layer3.page_table elements=64 unequal=0 first=64 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.rope elements=192 unequal=0 first=192 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b.prefill_replay.state.rope_delta elements=1 unequal=0 first=1 max_abs=0 relative_l2=0
+TRIANGLE_INPUT stage=fixed97.verify_t4_b position=13 tokens=97,503,701,907
+TRIANGLE_FORWARD index=7 stage=fixed97.verify_t4_b.forward T=4 linear_hook_first=21 linear_hook_last=23
+  finite=fixed97.verify_t4_b.all_logits elements=993280 nonfinite=0
+  finite=fixed97.verify_t4_b.all_trunk elements=40960 nonfinite=0
+  top5=fixed97.verify_t4_b.first_row vocab=248320 top1_top2_margin=0.3125 rank1_id=103649 value=4.34375 bits=408b gap=0 rank2_id=37014 value=4.03125 bits=4081 gap=0.3125 rank3_id=106847 value=4.03125 bits=4081 gap=0.3125 rank4_id=152886 value=3.984375 bits=407f gap=0.359375 rank5_id=62498 value=3.84375 bits=4076 gap=0.5
+TRIANGLE_RESTORE stage=fixed97.verify_t4_b checkpoint=0 rows=3
+  finite=fixed97.verify_t4_b.prefix_state.layer0.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_b.prefix_state.layer0.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t4_b.prefix_state.layer1.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_b.prefix_state.layer1.conv elements=30720 nonfinite=0
+  finite=fixed97.verify_t4_b.prefix_state.layer1.ple elements=92160 nonfinite=0
+  finite=fixed97.verify_t4_b.prefix_state.layer2.ssm elements=786432 nonfinite=0
+  finite=fixed97.verify_t4_b.prefix_state.layer2.conv elements=30720 nonfinite=0
+  compare=fixed97.verify_t1_vs_plain_t1.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1_vs_plain_t1.trunk elements=10240 unequal=0 first=10240 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1_vs_plain_t1.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1_vs_plain_t1.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1_vs_plain_t1.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1_vs_plain_t1.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1_vs_plain_t1.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1_vs_plain_t1.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t1_vs_plain_t1.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a_vs_verify_t1.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a_vs_verify_t1.trunk elements=10240 unequal=0 first=10240 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a_vs_verify_t1.state.layer0.ssm elements=786432 unequal=260456 first=4 max_abs=4.76837158e-07 relative_l2=7.70633188e-08
+  compare=fixed97.verify_t4_a_vs_verify_t1.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a_vs_verify_t1.state.layer1.ssm elements=786432 unequal=191988 first=1 max_abs=2.98023224e-08 relative_l2=4.55633919e-08
+  compare=fixed97.verify_t4_a_vs_verify_t1.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a_vs_verify_t1.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_a_vs_verify_t1.state.layer2.ssm elements=786432 unequal=233706 first=2 max_abs=2.98023224e-08 relative_l2=5.82286808e-08
+  compare=fixed97.verify_t4_a_vs_verify_t1.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t1.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t1.trunk elements=10240 unequal=0 first=10240 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t1.state.layer0.ssm elements=786432 unequal=260456 first=4 max_abs=4.76837158e-07 relative_l2=7.70633188e-08
+  compare=fixed97.verify_t4_b_vs_verify_t1.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t1.state.layer1.ssm elements=786432 unequal=191988 first=1 max_abs=2.98023224e-08 relative_l2=4.55633919e-08
+  compare=fixed97.verify_t4_b_vs_verify_t1.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t1.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t1.state.layer2.ssm elements=786432 unequal=233706 first=2 max_abs=2.98023224e-08 relative_l2=5.82286808e-08
+  compare=fixed97.verify_t4_b_vs_verify_t1.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t4_a.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t4_a.trunk elements=10240 unequal=0 first=10240 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t4_a.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t4_a.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t4_a.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t4_a.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t4_a.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t4_a.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=fixed97.verify_t4_b_vs_verify_t4_a.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+TRIANGLE_DIAGNOSTIC example=fixed97 shape_a_equal=0 shape_b_equal=0 suffix_equal=1 acceptance_threshold=none
+TRIANGLE_FORWARD index=8 stage=bonus287.plain_t1.prefill T=13 linear_hook_first=24 linear_hook_last=26
+  finite=bonus287.plain_t1.prefill.logits elements=248320 nonfinite=0
+  finite=bonus287.plain_t1.prefill.trunk elements=133120 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer0.ssm elements=786432 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer0.conv elements=30720 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer1.ssm elements=786432 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer1.conv elements=30720 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer1.ple elements=92160 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer2.ssm elements=786432 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer2.conv elements=30720 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer3.kv elements=65536 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer3.index_raw elements=8192 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer3.index_comp elements=8192 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.layer3.page_table elements=64 nonfinite=0
+  finite=bonus287.plain_t1.prefill.state.rope elements=192 nonfinite=0
+  top5=bonus287.plain_t1.prefill vocab=248320 top1_top2_margin=0.34375 rank1_id=287 value=5.84375 bits=40bb gap=0 rank2_id=313 value=5.5 bits=40b0 gap=0.34375 rank3_id=1369 value=5.5 bits=40b0 gap=0.34375 rank4_id=68 value=5.4375 bits=40ae gap=0.40625 rank5_id=261 value=5.3125 bits=40aa gap=0.53125
+  compare=bonus287.plain_t1.prefill_replay.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.trunk elements=133120 unequal=0 first=133120 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer3.kv elements=65536 unequal=0 first=65536 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer3.index_raw elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer3.index_comp elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.layer3.page_table elements=64 unequal=0 first=64 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.rope elements=192 unequal=0 first=192 max_abs=0 relative_l2=0
+  compare=bonus287.plain_t1.prefill_replay.state.rope_delta elements=1 unequal=0 first=1 max_abs=0 relative_l2=0
+TRIANGLE_INPUT stage=bonus287.plain_t1 position=13 tokens=287
+TRIANGLE_FORWARD index=9 stage=bonus287.plain_t1.forward T=1 linear_hook_first=27 linear_hook_last=29
+  finite=bonus287.plain_t1.all_logits elements=248320 nonfinite=0
+  finite=bonus287.plain_t1.all_trunk elements=10240 nonfinite=0
+  top5=bonus287.plain_t1.first_row vocab=248320 top1_top2_margin=0 rank1_id=220 value=5.1875 bits=40a6 gap=0 rank2_id=359 value=5.1875 bits=40a6 gap=0 rank3_id=471 value=5 bits=40a0 gap=0.1875 rank4_id=11012 value=4.9375 bits=409e gap=0.25 rank5_id=762 value=4.78125 bits=4099 gap=0.40625
+  finite=bonus287.plain_t1.prefix_state.layer0.ssm elements=786432 nonfinite=0
+  finite=bonus287.plain_t1.prefix_state.layer0.conv elements=30720 nonfinite=0
+  finite=bonus287.plain_t1.prefix_state.layer1.ssm elements=786432 nonfinite=0
+  finite=bonus287.plain_t1.prefix_state.layer1.conv elements=30720 nonfinite=0
+  finite=bonus287.plain_t1.prefix_state.layer1.ple elements=92160 nonfinite=0
+  finite=bonus287.plain_t1.prefix_state.layer2.ssm elements=786432 nonfinite=0
+  finite=bonus287.plain_t1.prefix_state.layer2.conv elements=30720 nonfinite=0
+TRIANGLE_FORWARD index=10 stage=bonus287.verify_t1.prefill T=13 linear_hook_first=30 linear_hook_last=32
+  finite=bonus287.verify_t1.prefill.logits elements=248320 nonfinite=0
+  finite=bonus287.verify_t1.prefill.trunk elements=133120 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer0.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer0.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer1.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer1.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer1.ple elements=92160 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer2.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer2.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer3.kv elements=65536 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer3.index_raw elements=8192 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer3.index_comp elements=8192 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.layer3.page_table elements=64 nonfinite=0
+  finite=bonus287.verify_t1.prefill.state.rope elements=192 nonfinite=0
+  top5=bonus287.verify_t1.prefill vocab=248320 top1_top2_margin=0.34375 rank1_id=287 value=5.84375 bits=40bb gap=0 rank2_id=313 value=5.5 bits=40b0 gap=0.34375 rank3_id=1369 value=5.5 bits=40b0 gap=0.34375 rank4_id=68 value=5.4375 bits=40ae gap=0.40625 rank5_id=261 value=5.3125 bits=40aa gap=0.53125
+  compare=bonus287.verify_t1.prefill_replay.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.trunk elements=133120 unequal=0 first=133120 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer3.kv elements=65536 unequal=0 first=65536 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer3.index_raw elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer3.index_comp elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.layer3.page_table elements=64 unequal=0 first=64 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.rope elements=192 unequal=0 first=192 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1.prefill_replay.state.rope_delta elements=1 unequal=0 first=1 max_abs=0 relative_l2=0
+TRIANGLE_INPUT stage=bonus287.verify_t1 position=13 tokens=287
+TRIANGLE_FORWARD index=11 stage=bonus287.verify_t1.forward T=1 linear_hook_first=33 linear_hook_last=35
+  finite=bonus287.verify_t1.all_logits elements=248320 nonfinite=0
+  finite=bonus287.verify_t1.all_trunk elements=10240 nonfinite=0
+  top5=bonus287.verify_t1.first_row vocab=248320 top1_top2_margin=0 rank1_id=220 value=5.1875 bits=40a6 gap=0 rank2_id=359 value=5.1875 bits=40a6 gap=0 rank3_id=471 value=5 bits=40a0 gap=0.1875 rank4_id=11012 value=4.9375 bits=409e gap=0.25 rank5_id=762 value=4.78125 bits=4099 gap=0.40625
+  finite=bonus287.verify_t1.prefix_state.layer0.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t1.prefix_state.layer0.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t1.prefix_state.layer1.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t1.prefix_state.layer1.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t1.prefix_state.layer1.ple elements=92160 nonfinite=0
+  finite=bonus287.verify_t1.prefix_state.layer2.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t1.prefix_state.layer2.conv elements=30720 nonfinite=0
+TRIANGLE_FORWARD index=12 stage=bonus287.verify_t4_a.prefill T=13 linear_hook_first=36 linear_hook_last=38
+  finite=bonus287.verify_t4_a.prefill.logits elements=248320 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.trunk elements=133120 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer0.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer0.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer1.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer1.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer1.ple elements=92160 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer2.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer2.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer3.kv elements=65536 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer3.index_raw elements=8192 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer3.index_comp elements=8192 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.layer3.page_table elements=64 nonfinite=0
+  finite=bonus287.verify_t4_a.prefill.state.rope elements=192 nonfinite=0
+  top5=bonus287.verify_t4_a.prefill vocab=248320 top1_top2_margin=0.34375 rank1_id=287 value=5.84375 bits=40bb gap=0 rank2_id=313 value=5.5 bits=40b0 gap=0.34375 rank3_id=1369 value=5.5 bits=40b0 gap=0.34375 rank4_id=68 value=5.4375 bits=40ae gap=0.40625 rank5_id=261 value=5.3125 bits=40aa gap=0.53125
+  compare=bonus287.verify_t4_a.prefill_replay.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.trunk elements=133120 unequal=0 first=133120 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer3.kv elements=65536 unequal=0 first=65536 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer3.index_raw elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer3.index_comp elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.layer3.page_table elements=64 unequal=0 first=64 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.rope elements=192 unequal=0 first=192 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a.prefill_replay.state.rope_delta elements=1 unequal=0 first=1 max_abs=0 relative_l2=0
+TRIANGLE_INPUT stage=bonus287.verify_t4_a position=13 tokens=287,131,211,307
+TRIANGLE_FORWARD index=13 stage=bonus287.verify_t4_a.forward T=4 linear_hook_first=39 linear_hook_last=41
+  finite=bonus287.verify_t4_a.all_logits elements=993280 nonfinite=0
+  finite=bonus287.verify_t4_a.all_trunk elements=40960 nonfinite=0
+  top5=bonus287.verify_t4_a.first_row vocab=248320 top1_top2_margin=0 rank1_id=220 value=5.1875 bits=40a6 gap=0 rank2_id=359 value=5.1875 bits=40a6 gap=0 rank3_id=471 value=5 bits=40a0 gap=0.1875 rank4_id=11012 value=4.9375 bits=409e gap=0.25 rank5_id=762 value=4.78125 bits=4099 gap=0.40625
+TRIANGLE_RESTORE stage=bonus287.verify_t4_a checkpoint=0 rows=3
+  finite=bonus287.verify_t4_a.prefix_state.layer0.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_a.prefix_state.layer0.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t4_a.prefix_state.layer1.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_a.prefix_state.layer1.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t4_a.prefix_state.layer1.ple elements=92160 nonfinite=0
+  finite=bonus287.verify_t4_a.prefix_state.layer2.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_a.prefix_state.layer2.conv elements=30720 nonfinite=0
+TRIANGLE_FORWARD index=14 stage=bonus287.verify_t4_b.prefill T=13 linear_hook_first=42 linear_hook_last=44
+  finite=bonus287.verify_t4_b.prefill.logits elements=248320 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.trunk elements=133120 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer0.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer0.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer1.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer1.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer1.ple elements=92160 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer2.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer2.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer3.kv elements=65536 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer3.index_raw elements=8192 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer3.index_comp elements=8192 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.layer3.page_table elements=64 nonfinite=0
+  finite=bonus287.verify_t4_b.prefill.state.rope elements=192 nonfinite=0
+  top5=bonus287.verify_t4_b.prefill vocab=248320 top1_top2_margin=0.34375 rank1_id=287 value=5.84375 bits=40bb gap=0 rank2_id=313 value=5.5 bits=40b0 gap=0.34375 rank3_id=1369 value=5.5 bits=40b0 gap=0.34375 rank4_id=68 value=5.4375 bits=40ae gap=0.40625 rank5_id=261 value=5.3125 bits=40aa gap=0.53125
+  compare=bonus287.verify_t4_b.prefill_replay.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.trunk elements=133120 unequal=0 first=133120 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer3.kv elements=65536 unequal=0 first=65536 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer3.index_raw elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer3.index_comp elements=8192 unequal=0 first=8192 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.layer3.page_table elements=64 unequal=0 first=64 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.rope elements=192 unequal=0 first=192 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b.prefill_replay.state.rope_delta elements=1 unequal=0 first=1 max_abs=0 relative_l2=0
+TRIANGLE_INPUT stage=bonus287.verify_t4_b position=13 tokens=287,503,701,907
+TRIANGLE_FORWARD index=15 stage=bonus287.verify_t4_b.forward T=4 linear_hook_first=45 linear_hook_last=47
+  finite=bonus287.verify_t4_b.all_logits elements=993280 nonfinite=0
+  finite=bonus287.verify_t4_b.all_trunk elements=40960 nonfinite=0
+  top5=bonus287.verify_t4_b.first_row vocab=248320 top1_top2_margin=0 rank1_id=220 value=5.1875 bits=40a6 gap=0 rank2_id=359 value=5.1875 bits=40a6 gap=0 rank3_id=471 value=5 bits=40a0 gap=0.1875 rank4_id=11012 value=4.9375 bits=409e gap=0.25 rank5_id=762 value=4.78125 bits=4099 gap=0.40625
+TRIANGLE_RESTORE stage=bonus287.verify_t4_b checkpoint=0 rows=3
+  finite=bonus287.verify_t4_b.prefix_state.layer0.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_b.prefix_state.layer0.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t4_b.prefix_state.layer1.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_b.prefix_state.layer1.conv elements=30720 nonfinite=0
+  finite=bonus287.verify_t4_b.prefix_state.layer1.ple elements=92160 nonfinite=0
+  finite=bonus287.verify_t4_b.prefix_state.layer2.ssm elements=786432 nonfinite=0
+  finite=bonus287.verify_t4_b.prefix_state.layer2.conv elements=30720 nonfinite=0
+  compare=bonus287.verify_t1_vs_plain_t1.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1_vs_plain_t1.trunk elements=10240 unequal=0 first=10240 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1_vs_plain_t1.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1_vs_plain_t1.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1_vs_plain_t1.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1_vs_plain_t1.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1_vs_plain_t1.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1_vs_plain_t1.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t1_vs_plain_t1.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a_vs_verify_t1.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a_vs_verify_t1.trunk elements=10240 unequal=0 first=10240 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a_vs_verify_t1.state.layer0.ssm elements=786432 unequal=295275 first=4 max_abs=4.76837158e-07 relative_l2=6.1056466e-08
+  compare=bonus287.verify_t4_a_vs_verify_t1.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a_vs_verify_t1.state.layer1.ssm elements=786432 unequal=181455 first=60 max_abs=2.98023224e-08 relative_l2=5.24483948e-08
+  compare=bonus287.verify_t4_a_vs_verify_t1.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a_vs_verify_t1.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_a_vs_verify_t1.state.layer2.ssm elements=786432 unequal=250236 first=2 max_abs=2.98023224e-08 relative_l2=6.89703974e-08
+  compare=bonus287.verify_t4_a_vs_verify_t1.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t1.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t1.trunk elements=10240 unequal=0 first=10240 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t1.state.layer0.ssm elements=786432 unequal=295275 first=4 max_abs=4.76837158e-07 relative_l2=6.1056466e-08
+  compare=bonus287.verify_t4_b_vs_verify_t1.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t1.state.layer1.ssm elements=786432 unequal=181455 first=60 max_abs=2.98023224e-08 relative_l2=5.24483948e-08
+  compare=bonus287.verify_t4_b_vs_verify_t1.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t1.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t1.state.layer2.ssm elements=786432 unequal=250236 first=2 max_abs=2.98023224e-08 relative_l2=6.89703974e-08
+  compare=bonus287.verify_t4_b_vs_verify_t1.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t4_a.logits elements=248320 unequal=0 first=248320 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t4_a.trunk elements=10240 unequal=0 first=10240 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t4_a.state.layer0.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t4_a.state.layer0.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t4_a.state.layer1.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t4_a.state.layer1.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t4_a.state.layer1.ple elements=92160 unequal=0 first=92160 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t4_a.state.layer2.ssm elements=786432 unequal=0 first=786432 max_abs=0 relative_l2=0
+  compare=bonus287.verify_t4_b_vs_verify_t4_a.state.layer2.conv elements=30720 unequal=0 first=30720 max_abs=0 relative_l2=0
+TRIANGLE_DIAGNOSTIC example=bonus287 shape_a_equal=0 shape_b_equal=0 suffix_equal=1 acceptance_threshold=none
+MTP_PATH_TRIANGLE prefill_equal=1 t1_equal=1 bonus287=1 all_observations_finite=1 forwards=16 cross_shape_and_suffix_are_diagnostic=1
+[PASS] mtp_path_triangle_single_stream
+  vision weights loaded
+  [image] grid=1x4x4 L=16 out=[4,2560]
+  [image] output[0,:4] cuda = [-0.021729, 0.013794, -0.042236, -0.003799]
+  [image] output[0,:4] ref  = [-0.022348, 0.014569, -0.042154, -0.003845]
+  [image] max_abs_diff = 0.011032  max_ref_abs = 0.340879  l2_rel = 0.031689
+  [video] grid=2x4x4 L=32 out=[8,2560]
+  [video] output[0,:4] cuda = [-0.040283, 0.030396, -0.013428, -0.004059]
+  [video] output[0,:4] ref  = [-0.039584, 0.030506, -0.014825, -0.004090]
+  [video] max_abs_diff = 0.005755  max_ref_abs = 0.346039  l2_rel = 0.020543
+[PASS] vision_forward
+  baseline vs injected max_abs_diff = 9.445312
+[PASS] model_vision_inject
+  [a] grid=[1,16,16] L=256 max_abs_diff=0.000000000 l2_rel=0.000000 (identity)
+  [b] grid=[1,14,20] L=280 max_abs_diff=0.000000000 l2_rel=0.000000 (bicubic)
+[PASS] vision_processor
+  [case] F=2 grid=[1,14,20] L=280 max_abs_diff=0.000000 l2_rel=0.000000
+  [case] F=4 grid=[2,14,20] L=560 max_abs_diff=0.000000 l2_rel=0.000000
+  [case] F=8 grid=[4,14,20] L=1120 max_abs_diff=0.000000 l2_rel=0.000000
+  [case] F=5 grid=[3,14,20] L=840 max_abs_diff=0.000000 l2_rel=0.000000
+  [case] F=4 grid=[2,28,40] L=2240 max_abs_diff=0.000000 l2_rel=0.000000
+  [case] F=4 grid=[2,14,20] L=560 max_abs_diff=0.015686 l2_rel=0.001056
+  [video_processor] 6 cases
+[PASS] video_processor
+  image grid=[1,16,16] L=256 merged=64
+  input_ids: 5 -> 68 (expanded 64 image tokens)
+  baseline vs injected max_abs_diff = 14.718750
+[PASS] vision_e2e
+[PASS] tokenizer_load_real
+[PASS] tokenizer_golden_encode
+[PASS] tokenizer_roundtrip_real
+[PASS] tokenizer_special_tokens
+  prompt_tokens=1024 steps=256
+  reserve_cap=4 (T-1=3)
+  snapshot_bytes=115642368
+  causality: row0 bit-identical across fillers=yes
+  ckpt_direct: step0 first_diff_offset=0 diff_bytes=84755615 total=115642368
+  state_diag: first_diff_offset=0 total=115642368 win[0..1048576]=564075 win[1048576..2097152]=551169 win[2097152..3145728]=561664 win[3145728..4194304]=983903 win[4194304..5242880]=1044954 win[5242880..6291456]=1045023 win[6291456..7340032]=844823 win[7340032..8388608]=1013043 win[8388608..9437184]=1017622 win[9437184..10485760]=1009429 win[10485760..11534336]=1012592 win[11534336..12582912]=1015292 win[12582912..13631488]=1012617 win[13631488..14680064]=1014816 win[14680064..15728640]=1015473 win[15728640..16777216]=1029092 win[16777216..17825792]=1044960 win[17825792..18874368]=1045100 win[18874368..19922944]=1029859 win[19922944..20971520]=1013065 win[20971520..22020096]=1016016 win[22020096..23068672]=1009842 win[23068672..24117248]=1012378 win[24117248..25165824]=1013942 win[25165824..26214400]=1009218 win[26214400..27262976]=1017445 win[27262976..28311552]=1013672 win[28311552..29360128]=1019988 win[29360128..30408704]=1044991 win[30408704..31457280]=1045028 win[31457280..32505856]=1036129 win[32505856..33554432]=1008353 win[33554432..34603008]=1011216 win[34603008..35651584]=1007769 win[35651584..36700160]=1007606 win[36700160..37748736]=1010042 win[37748736..38797312]=1008265 win[38797312..39845888]=1007685 win[39845888..40894464]=1009425 win[40894464..41943040]=1009841 win[41943040..42991616]=1044979 win[42991616..44040192]=1044967 win[44040192..45088768]=1045053 win[45088768..46137344]=1009408 win[46137344..47185920]=1009293 win[47185920..48234496]=1008371 win[48234496..49283072]=1002770 win[49283072..50331648]=1008409 win[50331648..51380224]=1011023 win[51380224..52428800]=1009152 win[52428800..53477376]=1017817 win[53477376..54525952]=1017115 win[54525952..55574528]=1036227 win[55574528..56623104]=1045035 win[56623104..57671680]=1044983 win[57671680..58720256]=1018499 win[58720256..59768832]=1014796 win[59768832..60817408]=1011546 win[60817408..61865984]=1003557 win[61865984..62914560]=1010359 win[62914560..63963136]=1010939 win[63963136..65011712]=1005204 win[65011712..66060288]=1009644 win[66060288..67108864]=1012506 win[67108864..68157440]=1029694 win[68157440..69206016]=1045117 win[69206016..70254592]=1044964 win[70254592..71303168]=1027375 win[71303168..72351744]=1009001 win[72351744..73400320]=1010745 win[73400320..74448896]=1010673 win[74448896..75497472]=1024362 win[75497472..76546048]=1017070 win[76546048..77594624]=1007321 win[77594624..78643200]=1019678 win[78643200..79691776]=1017404 win[79691776..80740352]=1023800 win[80740352..81788928]=1044999 win[81788928..82837504]=1045143 win[82837504..83886080]=1032753 win[83886080..84934656]=1009001 win[84934656..85983232]=1010847 win[85983232..87031808]=1005171 win[87031808..88080384]=1006026 win[88080384..89128960]=1011544 win[89128960..90177536]=1011070 win[90177536..91226112]=1009940 win[91226112..92274688]=1010690 win[92274688..93323264]=1013815 win[93323264..94371840]=1045100 win[94371840..95420416]=1045069 win[95420416..96468992]=1042787 win[96468992..97517568]=1021206 win[97517568..98566144]=1015952 win[98566144..99614720]=1015459 win[99614720..100663296]=1014155 win[100663296..101711872]=1014427 win[101711872..102760448]=1012079 win[102760448..103809024]=1008558 win[103809024..104857600]=1013945 win[104857600..105906176]=1014018 win[105906176..106954752]=1037934 win[106954752..108003328]=1045023 win[108003328..109051904]=1045093 win[109051904..110100480]=1017230 win[110100480..111149056]=1011670 win[111149056..112197632]=1012547 win[112197632..113246208]=1008251 win[113246208..114294784]=1012566 win[114294784..115343360]=1014051 win[115343360..115642368]=285676
+  state_diag: off=0 plain=0xb8015263 batch=0xb8016f4f
+  state_diag: off=4 plain=0x3887f626 batch=0x38881ade
+  state_diag: off=8 plain=0x38224c00 batch=0x3822a478
+  state_diag: off=12 plain=0x38bfb7ec batch=0x38c00160
+  state_diag: off=16 plain=0x38acf59d batch=0x38ad2cdc
+  state_diag: off=20 plain=0x37854e0b batch=0x37853e75
+  state_diag: off=24 plain=0x36db764c batch=0x36dc1504
+  state_diag: off=28 plain=0xb8bc2797 batch=0xb8bc5c77
+  step=2 FLIP plain=220 batch=96365 gap_plain=1.062500 (17.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.543554 near_tie=1
+    plain: top1=220(v=9.187500) top2v=8.125000 gap=1.062500 at_batch_id(96365)=7.031250
+    batch: top1=96365(v=8.250000) top2v=8.187500 gap=0.062500 at_plain_id(220)=6.468750
+  step=4 FLIP plain=63373 batch=228068 gap_plain=0.750000 (12.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.760195 near_tie=1
+    plain: top1=63373(v=9.562500) top2v=8.812500 gap=0.750000 at_batch_id(228068)=6.218750
+    batch: top1=228068(v=8.875000) top2v=8.687500 gap=0.187500 at_plain_id(63373)=7.093750
+  step=7 FLIP plain=314 batch=29642 gap_plain=2.812500 (45.0 ulp) gap_batch=0.750000 (12.0 ulp) l2_rel=0.453062 near_tie=0
+    plain: top1=314(v=13.687500) top2v=10.875000 gap=2.812500 at_batch_id(29642)=9.750000
+    batch: top1=29642(v=13.000000) top2v=12.250000 gap=0.750000 at_plain_id(314)=10.250000
+  step=9 FLIP plain=1001 batch=318 gap_plain=0.312500 (5.0 ulp) gap_batch=1.687500 (27.0 ulp) l2_rel=0.556893 near_tie=0
+    plain: top1=1001(v=11.875000) top2v=11.562500 gap=0.312500 at_batch_id(318)=6.750000
+    batch: top1=318(v=12.500000) top2v=10.812500 gap=1.687500 at_plain_id(1001)=10.812500
+  step=14 FLIP plain=864 batch=1024 gap_plain=0.437500 (7.0 ulp) gap_batch=0.687500 (11.0 ulp) l2_rel=0.447890 near_tie=0
+    plain: top1=864(v=13.812500) top2v=13.375000 gap=0.437500 at_batch_id(1024)=11.625000
+    batch: top1=1024(v=11.375000) top2v=10.687500 gap=0.687500 at_plain_id(864)=9.000000
+  step=16 FLIP plain=5265 batch=777 gap_plain=1.375000 (22.0 ulp) gap_batch=0.875000 (14.0 ulp) l2_rel=0.771259 near_tie=0
+    plain: top1=5265(v=14.812500) top2v=13.437500 gap=1.375000 at_batch_id(777)=5.156250
+    batch: top1=777(v=10.437500) top2v=9.562500 gap=0.875000 at_plain_id(5265)=6.781250
+  step=18 FLIP plain=884 batch=279 gap_plain=0.750000 (12.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.443577 near_tie=1
+    plain: top1=884(v=10.750000) top2v=10.000000 gap=0.750000 at_batch_id(279)=10.000000
+    batch: top1=279(v=10.812500) top2v=10.562500 gap=0.250000 at_plain_id(884)=8.875000
+  step=19 FLIP plain=408 batch=57127 gap_plain=1.000000 (16.0 ulp) gap_batch=3.750000 (60.0 ulp) l2_rel=0.626453 near_tie=0
+    plain: top1=408(v=14.625000) top2v=13.625000 gap=1.000000 at_batch_id(57127)=12.250000
+    batch: top1=57127(v=13.437500) top2v=9.687500 gap=3.750000 at_plain_id(408)=8.187500
+  step=20 FLIP plain=267 batch=71022 gap_plain=1.125000 (18.0 ulp) gap_batch=1.750000 (28.0 ulp) l2_rel=0.508071 near_tie=0
+    plain: top1=267(v=12.687500) top2v=11.562500 gap=1.125000 at_batch_id(71022)=11.562500
+    batch: top1=71022(v=12.625000) top2v=10.875000 gap=1.750000 at_plain_id(267)=10.562500
+  step=21 FLIP plain=13 batch=3173 gap_plain=0.250000 (4.0 ulp) gap_batch=0.625000 (10.0 ulp) l2_rel=0.343332 near_tie=1
+    plain: top1=13(v=10.562500) top2v=10.312500 gap=0.250000 at_batch_id(3173)=9.500000
+    batch: top1=3173(v=12.562500) top2v=11.937500 gap=0.625000 at_plain_id(13)=8.625000
+  step=22 FLIP plain=427 batch=17 gap_plain=0.062500 (1.0 ulp) gap_batch=0.687500 (11.0 ulp) l2_rel=0.558437 near_tie=1
+    plain: top1=427(v=9.375000) top2v=9.312500 gap=0.062500 at_batch_id(17)=8.812500
+    batch: top1=17(v=9.937500) top2v=9.250000 gap=0.687500 at_plain_id(427)=4.937500
+  step=23 FLIP plain=3131 batch=895 gap_plain=1.500000 (24.0 ulp) gap_batch=0.562500 (9.0 ulp) l2_rel=0.676707 near_tie=0
+    plain: top1=3131(v=12.000000) top2v=10.500000 gap=1.500000 at_batch_id(895)=8.937500
+    batch: top1=895(v=10.250000) top2v=9.687500 gap=0.562500 at_plain_id(3131)=9.625000
+  step=24 FLIP plain=16 batch=725 gap_plain=1.000000 (16.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.506771 near_tie=1
+    plain: top1=16(v=12.562500) top2v=11.562500 gap=1.000000 at_batch_id(725)=8.562500
+    batch: top1=725(v=12.437500) top2v=12.250000 gap=0.187500 at_plain_id(16)=11.187500
+  step=26 FLIP plain=13 batch=18 gap_plain=4.375000 (70.0 ulp) gap_batch=0.500000 (8.0 ulp) l2_rel=0.670295 near_tie=0
+    plain: top1=13(v=12.750000) top2v=8.375000 gap=4.375000 at_batch_id(18)=7.687500
+    batch: top1=18(v=11.875000) top2v=11.375000 gap=0.500000 at_plain_id(13)=11.375000
+  step=27 FLIP plain=828 batch=20 gap_plain=0.750000 (12.0 ulp) gap_batch=1.437500 (23.0 ulp) l2_rel=0.645057 near_tie=0
+    plain: top1=828(v=9.750000) top2v=9.000000 gap=0.750000 at_batch_id(20)=9.000000
+    batch: top1=20(v=11.375000) top2v=9.937500 gap=1.437500 at_plain_id(828)=5.156250
+  step=28 FLIP plain=11 batch=1647 gap_plain=0.000000 (0.0 ulp) gap_batch=1.125000 (18.0 ulp) l2_rel=0.563022 near_tie=1
+    plain: top1=11(v=11.625000) top2v=11.625000 gap=0.000000 at_batch_id(1647)=8.187500
+    batch: top1=1647(v=11.937500) top2v=10.812500 gap=1.125000 at_plain_id(11)=10.812500
+  step=34 FLIP plain=65 batch=27653 gap_plain=0.062500 (1.0 ulp) gap_batch=0.812500 (13.0 ulp) l2_rel=0.560491 near_tie=1
+    plain: top1=65(v=12.375000) top2v=12.312500 gap=0.062500 at_batch_id(27653)=9.750000
+    batch: top1=27653(v=14.000000) top2v=13.187500 gap=0.812500 at_plain_id(65)=10.812500
+  step=35 FLIP plain=8284 batch=10010 gap_plain=0.375000 (6.0 ulp) gap_batch=1.750000 (28.0 ulp) l2_rel=0.622899 near_tie=0
+    plain: top1=8284(v=12.312500) top2v=11.937500 gap=0.375000 at_batch_id(10010)=10.062500
+    batch: top1=10010(v=12.312500) top2v=10.562500 gap=1.750000 at_plain_id(8284)=9.250000
+  step=36 FLIP plain=30966 batch=8855 gap_plain=1.625000 (26.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.625882 near_tie=1
+    plain: top1=30966(v=15.812500) top2v=14.187500 gap=1.625000 at_batch_id(8855)=8.312500
+    batch: top1=8855(v=12.812500) top2v=12.750000 gap=0.062500 at_plain_id(30966)=7.312500
+  step=38 FLIP plain=3148 batch=303 gap_plain=1.062500 (17.0 ulp) gap_batch=0.562500 (9.0 ulp) l2_rel=0.551186 near_tie=0
+    plain: top1=3148(v=10.750000) top2v=9.687500 gap=1.062500 at_batch_id(303)=9.687500
+    batch: top1=303(v=9.812500) top2v=9.250000 gap=0.562500 at_plain_id(3148)=5.250000
+  step=40 FLIP plain=13 batch=383 gap_plain=0.562500 (9.0 ulp) gap_batch=1.062500 (17.0 ulp) l2_rel=0.519080 near_tie=0
+    plain: top1=13(v=11.000000) top2v=10.437500 gap=0.562500 at_batch_id(383)=7.656250
+    batch: top1=383(v=11.812500) top2v=10.750000 gap=1.062500 at_plain_id(13)=10.750000
+  step=42 FLIP plain=7606 batch=8904 gap_plain=0.000000 (0.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.536365 near_tie=1
+    plain: top1=7606(v=8.937500) top2v=8.937500 gap=0.000000 at_batch_id(8904)=8.937500
+    batch: top1=8904(v=8.625000) top2v=8.562500 gap=0.062500 at_plain_id(7606)=3.890625
+  step=43 FLIP plain=739 batch=12448 gap_plain=0.250000 (4.0 ulp) gap_batch=1.000000 (8.0 ulp) l2_rel=0.398775 near_tie=1
+    plain: top1=739(v=14.000000) top2v=13.750000 gap=0.250000 at_batch_id(12448)=13.625000
+    batch: top1=12448(v=16.500000) top2v=15.500000 gap=1.000000 at_plain_id(739)=14.625000
+  step=44 FLIP plain=2631 batch=1482 gap_plain=1.375000 (11.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.549517 near_tie=1
+    plain: top1=2631(v=17.500000) top2v=16.125000 gap=1.375000 at_batch_id(1482)=12.500000
+    batch: top1=1482(v=13.000000) top2v=12.937500 gap=0.062500 at_plain_id(2631)=12.812500
+  step=45 FLIP plain=13 batch=383 gap_plain=0.125000 (2.0 ulp) gap_batch=2.375000 (38.0 ulp) l2_rel=0.337014 near_tie=1
+    plain: top1=13(v=11.687500) top2v=11.562500 gap=0.125000 at_batch_id(383)=7.937500
+    batch: top1=383(v=13.750000) top2v=11.375000 gap=2.375000 at_plain_id(13)=11.375000
+  step=46 FLIP plain=220 batch=318 gap_plain=0.125000 (2.0 ulp) gap_batch=0.062500 (2.0 ulp) l2_rel=0.497013 near_tie=1
+    plain: top1=220(v=8.687500) top2v=8.562500 gap=0.125000 at_batch_id(318)=8.562500
+    batch: top1=318(v=7.718750) top2v=7.656250 gap=0.062500 at_plain_id(220)=6.906250
+  step=47 FLIP plain=20 batch=21 gap_plain=1.437500 (23.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.835314 near_tie=1
+    plain: top1=20(v=11.875000) top2v=10.437500 gap=1.437500 at_batch_id(21)=10.437500
+    batch: top1=21(v=9.562500) top2v=9.375000 gap=0.187500 at_plain_id(20)=8.500000
+  step=49 FLIP plain=16 batch=19 gap_plain=0.312500 (5.0 ulp) gap_batch=1.000000 (16.0 ulp) l2_rel=0.415556 near_tie=0
+    plain: top1=16(v=10.875000) top2v=10.562500 gap=0.312500 at_batch_id(19)=9.375000
+    batch: top1=19(v=12.812500) top2v=11.812500 gap=1.000000 at_plain_id(16)=11.062500
+  step=50 FLIP plain=14 batch=22 gap_plain=0.937500 (15.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.680485 near_tie=1
+    plain: top1=14(v=10.562500) top2v=9.625000 gap=0.937500 at_batch_id(22)=2.984375
+    batch: top1=22(v=10.500000) top2v=10.312500 gap=0.187500 at_plain_id(14)=9.062500
+  step=51 FLIP plain=16 batch=22 gap_plain=0.562500 (9.0 ulp) gap_batch=0.375000 (6.0 ulp) l2_rel=0.651498 near_tie=0
+    plain: top1=16(v=12.875000) top2v=12.312500 gap=0.562500 at_batch_id(22)=10.750000
+    batch: top1=22(v=14.062500) top2v=13.687500 gap=0.375000 at_plain_id(16)=12.250000
+  step=54 FLIP plain=1622 batch=883 gap_plain=0.000000 (0.0 ulp) gap_batch=1.125000 (18.0 ulp) l2_rel=0.434152 near_tie=1
+    plain: top1=1622(v=12.187500) top2v=12.187500 gap=0.000000 at_batch_id(883)=6.593750
+    batch: top1=883(v=14.125000) top2v=13.000000 gap=1.125000 at_plain_id(1622)=11.750000
+  step=55 FLIP plain=269 batch=95386 gap_plain=1.375000 (22.0 ulp) gap_batch=1.562500 (25.0 ulp) l2_rel=0.422724 near_tie=0
+    plain: top1=269(v=13.000000) top2v=11.625000 gap=1.375000 at_batch_id(95386)=11.625000
+    batch: top1=95386(v=12.875000) top2v=11.312500 gap=1.562500 at_plain_id(269)=8.500000
+  step=56 FLIP plain=13 batch=14934 gap_plain=2.187500 (35.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.708211 near_tie=1
+    plain: top1=13(v=13.375000) top2v=11.187500 gap=2.187500 at_batch_id(14934)=10.250000
+    batch: top1=14934(v=10.500000) top2v=10.375000 gap=0.125000 at_plain_id(13)=10.375000
+  step=58 FLIP plain=13 batch=316 gap_plain=2.125000 (34.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.396527 near_tie=1
+    plain: top1=13(v=12.562500) top2v=10.437500 gap=2.125000 at_batch_id(316)=9.625000
+    batch: top1=316(v=10.125000) top2v=10.062500 gap=0.062500 at_plain_id(13)=9.937500
+  step=60 FLIP plain=24 batch=20 gap_plain=2.375000 (19.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.599353 near_tie=1
+    plain: top1=24(v=16.500000) top2v=14.125000 gap=2.375000 at_batch_id(20)=11.812500
+    batch: top1=20(v=13.937500) top2v=13.750000 gap=0.187500 at_plain_id(24)=12.937500
+  step=61 FLIP plain=26068 batch=398 gap_plain=0.562500 (9.0 ulp) gap_batch=0.812500 (13.0 ulp) l2_rel=0.565699 near_tie=0
+    plain: top1=26068(v=9.312500) top2v=8.750000 gap=0.562500 at_batch_id(398)=5.218750
+    batch: top1=398(v=10.625000) top2v=9.812500 gap=0.812500 at_plain_id(26068)=6.500000
+  step=62 FLIP plain=477 batch=5604 gap_plain=1.312500 (21.0 ulp) gap_batch=3.000000 (48.0 ulp) l2_rel=0.502360 near_tie=0
+    plain: top1=477(v=13.437500) top2v=12.125000 gap=1.312500 at_batch_id(5604)=11.125000
+    batch: top1=5604(v=15.875000) top2v=12.875000 gap=3.000000 at_plain_id(477)=10.562500
+  step=65 FLIP plain=478 batch=16 gap_plain=0.062500 (1.0 ulp) gap_batch=1.187500 (19.0 ulp) l2_rel=0.479318 near_tie=1
+    plain: top1=478(v=8.562500) top2v=8.500000 gap=0.062500 at_batch_id(16)=7.906250
+    batch: top1=16(v=9.500000) top2v=8.312500 gap=1.187500 at_plain_id(478)=6.062500
+  step=66 FLIP plain=449 batch=476 gap_plain=0.187500 (3.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.526511 near_tie=1
+    plain: top1=449(v=11.125000) top2v=10.937500 gap=0.187500 at_batch_id(476)=7.156250
+    batch: top1=476(v=8.687500) top2v=8.625000 gap=0.062500 at_plain_id(449)=7.281250
+  step=67 FLIP plain=44038 batch=1724 gap_plain=0.187500 (3.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.383721 near_tie=1
+    plain: top1=44038(v=12.437500) top2v=12.250000 gap=0.187500 at_batch_id(1724)=9.812500
+    batch: top1=1724(v=12.750000) top2v=12.562500 gap=0.187500 at_plain_id(44038)=10.812500
+  step=68 FLIP plain=470 batch=310 gap_plain=1.562500 (25.0 ulp) gap_batch=1.625000 (26.0 ulp) l2_rel=0.405309 near_tie=0
+    plain: top1=470(v=14.187500) top2v=12.625000 gap=1.562500 at_batch_id(310)=11.687500
+    batch: top1=310(v=15.000000) top2v=13.375000 gap=1.625000 at_plain_id(470)=11.375000
+  step=69 FLIP plain=10435 batch=3107 gap_plain=0.125000 (2.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.501628 near_tie=1
+    plain: top1=10435(v=12.375000) top2v=12.250000 gap=0.125000 at_batch_id(3107)=12.250000
+    batch: top1=3107(v=10.375000) top2v=10.312500 gap=0.062500 at_plain_id(10435)=9.500000
+  step=70 FLIP plain=2538 batch=6525 gap_plain=0.125000 (2.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.527109 near_tie=1
+    plain: top1=2538(v=12.875000) top2v=12.750000 gap=0.125000 at_batch_id(6525)=11.500000
+    batch: top1=6525(v=11.937500) top2v=11.750000 gap=0.187500 at_plain_id(2538)=9.750000
+  step=71 FLIP plain=6134 batch=355 gap_plain=0.312500 (5.0 ulp) gap_batch=1.000000 (16.0 ulp) l2_rel=0.645705 near_tie=0
+    plain: top1=6134(v=12.562500) top2v=12.250000 gap=0.312500 at_batch_id(355)=12.000000
+    batch: top1=355(v=12.437500) top2v=11.437500 gap=1.000000 at_plain_id(6134)=7.218750
+  step=72 FLIP plain=293 batch=468 gap_plain=0.625000 (10.0 ulp) gap_batch=0.687500 (11.0 ulp) l2_rel=0.410611 near_tie=0
+    plain: top1=293(v=11.562500) top2v=10.937500 gap=0.625000 at_batch_id(468)=10.062500
+    batch: top1=468(v=12.750000) top2v=12.062500 gap=0.687500 at_plain_id(293)=9.000000
+  step=73 FLIP plain=4758 batch=22 gap_plain=0.187500 (3.0 ulp) gap_batch=0.687500 (11.0 ulp) l2_rel=0.598403 near_tie=1
+    plain: top1=4758(v=11.312500) top2v=11.125000 gap=0.187500 at_batch_id(22)=6.437500
+    batch: top1=22(v=11.437500) top2v=10.750000 gap=0.687500 at_plain_id(4758)=10.062500
+  step=76 FLIP plain=82 batch=8999 gap_plain=1.125000 (18.0 ulp) gap_batch=2.562500 (41.0 ulp) l2_rel=0.377092 near_tie=0
+    plain: top1=82(v=13.125000) top2v=12.000000 gap=1.125000 at_batch_id(8999)=12.000000
+    batch: top1=8999(v=14.187500) top2v=11.625000 gap=2.562500 at_plain_id(82)=11.562500
+  step=77 FLIP plain=1815 batch=2290 gap_plain=0.062500 (1.0 ulp) gap_batch=0.500000 (8.0 ulp) l2_rel=0.470173 near_tie=1
+    plain: top1=1815(v=11.937500) top2v=11.875000 gap=0.062500 at_batch_id(2290)=8.812500
+    batch: top1=2290(v=12.812500) top2v=12.312500 gap=0.500000 at_plain_id(1815)=11.750000
+  step=78 FLIP plain=15752 batch=828 gap_plain=1.437500 (23.0 ulp) gap_batch=0.625000 (10.0 ulp) l2_rel=0.561160 near_tie=0
+    plain: top1=15752(v=11.500000) top2v=10.062500 gap=1.437500 at_batch_id(828)=8.312500
+    batch: top1=828(v=12.187500) top2v=11.562500 gap=0.625000 at_plain_id(15752)=7.562500
+  step=80 FLIP plain=378 batch=348 gap_plain=1.000000 (16.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.586057 near_tie=1
+    plain: top1=378(v=9.687500) top2v=8.687500 gap=1.000000 at_batch_id(348)=8.500000
+    batch: top1=348(v=9.375000) top2v=9.250000 gap=0.125000 at_plain_id(378)=7.343750
+  step=81 FLIP plain=1 batch=372 gap_plain=0.000000 (0.0 ulp) gap_batch=0.312500 (5.0 ulp) l2_rel=0.510533 near_tie=1
+    plain: top1=1(v=10.500000) top2v=10.500000 gap=0.000000 at_batch_id(372)=5.500000
+    batch: top1=372(v=9.562500) top2v=9.250000 gap=0.312500 at_plain_id(1)=6.687500
+  step=82 FLIP plain=16 batch=198 gap_plain=1.375000 (22.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.641760 near_tie=1
+    plain: top1=16(v=11.187500) top2v=9.812500 gap=1.375000 at_batch_id(198)=8.562500
+    batch: top1=198(v=9.750000) top2v=9.500000 gap=0.250000 at_plain_id(16)=6.156250
+  step=84 FLIP plain=8851 batch=579 gap_plain=0.562500 (9.0 ulp) gap_batch=0.687500 (11.0 ulp) l2_rel=0.526575 near_tie=0
+    plain: top1=8851(v=11.937500) top2v=11.375000 gap=0.562500 at_batch_id(579)=9.875000
+    batch: top1=579(v=11.312500) top2v=10.625000 gap=0.687500 at_plain_id(8851)=7.156250
+  step=89 FLIP plain=96288 batch=357 gap_plain=0.250000 (4.0 ulp) gap_batch=0.000000 (0.0 ulp) l2_rel=0.685992 near_tie=1
+    plain: top1=96288(v=9.125000) top2v=8.875000 gap=0.250000 at_batch_id(357)=5.656250
+    batch: top1=357(v=8.375000) top2v=8.375000 gap=0.000000 at_plain_id(96288)=7.500000
+  step=90 FLIP plain=4237 batch=1766 gap_plain=0.562500 (9.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.411008 near_tie=1
+    plain: top1=4237(v=11.687500) top2v=11.125000 gap=0.562500 at_batch_id(1766)=6.125000
+    batch: top1=1766(v=10.000000) top2v=9.875000 gap=0.125000 at_plain_id(4237)=6.593750
+  step=91 FLIP plain=310 batch=411 gap_plain=0.875000 (14.0 ulp) gap_batch=0.375000 (6.0 ulp) l2_rel=0.510683 near_tie=0
+    plain: top1=310(v=14.750000) top2v=13.875000 gap=0.875000 at_batch_id(411)=13.875000
+    batch: top1=411(v=11.875000) top2v=11.500000 gap=0.375000 at_plain_id(310)=11.500000
+  step=94 FLIP plain=16 batch=24 gap_plain=0.000000 (0.0 ulp) gap_batch=0.375000 (6.0 ulp) l2_rel=0.513821 near_tie=1
+    plain: top1=16(v=10.375000) top2v=10.375000 gap=0.000000 at_batch_id(24)=9.875000
+    batch: top1=24(v=11.500000) top2v=11.125000 gap=0.375000 at_plain_id(16)=10.125000
+  step=98 FLIP plain=1088 batch=357 gap_plain=2.437500 (39.0 ulp) gap_batch=0.500000 (8.0 ulp) l2_rel=0.745503 near_tie=0
+    plain: top1=1088(v=11.125000) top2v=8.687500 gap=2.437500 at_batch_id(357)=6.500000
+    batch: top1=357(v=11.125000) top2v=10.625000 gap=0.500000 at_plain_id(1088)=7.625000
+  step=99 FLIP plain=1062 batch=84 gap_plain=0.187500 (3.0 ulp) gap_batch=2.375000 (38.0 ulp) l2_rel=0.774434 near_tie=1
+    plain: top1=1062(v=10.750000) top2v=10.562500 gap=0.187500 at_batch_id(84)=10.562500
+    batch: top1=84(v=12.875000) top2v=10.500000 gap=2.375000 at_plain_id(1062)=8.437500
+  step=100 FLIP plain=82473 batch=72833 gap_plain=5.875000 (47.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.830932 near_tie=1
+    plain: top1=82473(v=18.250000) top2v=12.375000 gap=5.875000 at_batch_id(72833)=9.000000
+    batch: top1=72833(v=11.937500) top2v=11.812500 gap=0.125000 at_plain_id(82473)=9.687500
+  step=101 FLIP plain=13 batch=11 gap_plain=0.937500 (15.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.380317 near_tie=1
+    plain: top1=13(v=12.500000) top2v=11.562500 gap=0.937500 at_batch_id(11)=9.750000
+    batch: top1=11(v=11.000000) top2v=10.875000 gap=0.125000 at_plain_id(13)=10.875000
+  step=106 FLIP plain=16336 batch=698 gap_plain=0.312500 (5.0 ulp) gap_batch=1.125000 (18.0 ulp) l2_rel=0.607087 near_tie=0
+    plain: top1=16336(v=10.687500) top2v=10.375000 gap=0.312500 at_batch_id(698)=10.375000
+    batch: top1=698(v=13.062500) top2v=11.937500 gap=1.125000 at_plain_id(16336)=11.937500
+  step=107 FLIP plain=310 batch=466 gap_plain=0.875000 (14.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.636841 near_tie=1
+    plain: top1=310(v=13.375000) top2v=12.500000 gap=0.875000 at_batch_id(466)=10.625000
+    batch: top1=466(v=12.500000) top2v=12.375000 gap=0.125000 at_plain_id(310)=8.750000
+  step=108 FLIP plain=599 batch=874 gap_plain=0.250000 (4.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.514519 near_tie=1
+    plain: top1=599(v=14.187500) top2v=13.937500 gap=0.250000 at_batch_id(874)=11.875000
+    batch: top1=874(v=13.500000) top2v=13.375000 gap=0.125000 at_plain_id(599)=12.750000
+  step=109 FLIP plain=264 batch=524 gap_plain=0.375000 (6.0 ulp) gap_batch=1.062500 (17.0 ulp) l2_rel=0.523442 near_tie=0
+    plain: top1=264(v=12.250000) top2v=11.875000 gap=0.375000 at_batch_id(524)=8.562500
+    batch: top1=524(v=11.937500) top2v=10.875000 gap=1.062500 at_plain_id(264)=10.187500
+  step=110 FLIP plain=11173 batch=13 gap_plain=0.687500 (11.0 ulp) gap_batch=1.062500 (17.0 ulp) l2_rel=0.443495 near_tie=0
+    plain: top1=11173(v=10.812500) top2v=10.125000 gap=0.687500 at_batch_id(13)=10.125000
+    batch: top1=13(v=11.875000) top2v=10.812500 gap=1.062500 at_plain_id(11173)=10.812500
+  step=112 FLIP plain=9066 batch=383 gap_plain=0.062500 (1.0 ulp) gap_batch=1.625000 (26.0 ulp) l2_rel=0.417794 near_tie=1
+    plain: top1=9066(v=12.375000) top2v=12.312500 gap=0.062500 at_batch_id(383)=11.187500
+    batch: top1=383(v=13.437500) top2v=11.812500 gap=1.625000 at_plain_id(9066)=10.937500
+  step=115 FLIP plain=8999 batch=10649 gap_plain=1.000000 (16.0 ulp) gap_batch=0.375000 (6.0 ulp) l2_rel=0.282938 near_tie=0
+    plain: top1=8999(v=12.000000) top2v=11.000000 gap=1.000000 at_batch_id(10649)=9.375000
+    batch: top1=10649(v=11.437500) top2v=11.062500 gap=0.375000 at_plain_id(8999)=11.062500
+  step=119 FLIP plain=12669 batch=63656 gap_plain=0.500000 (8.0 ulp) gap_batch=0.437500 (7.0 ulp) l2_rel=0.570642 near_tie=0
+    plain: top1=12669(v=10.437500) top2v=9.937500 gap=0.500000 at_batch_id(63656)=7.250000
+    batch: top1=63656(v=10.125000) top2v=9.687500 gap=0.437500 at_plain_id(12669)=8.687500
+  step=120 FLIP plain=1412 batch=16456 gap_plain=3.312500 (26.5 ulp) gap_batch=0.437500 (7.0 ulp) l2_rel=0.594511 near_tie=0
+    plain: top1=1412(v=16.000000) top2v=12.687500 gap=3.312500 at_batch_id(16456)=11.500000
+    batch: top1=16456(v=12.250000) top2v=11.812500 gap=0.437500 at_plain_id(1412)=10.562500
+  step=121 FLIP plain=13 batch=4238 gap_plain=0.375000 (6.0 ulp) gap_batch=1.812500 (29.0 ulp) l2_rel=0.472426 near_tie=0
+    plain: top1=13(v=10.812500) top2v=10.437500 gap=0.375000 at_batch_id(4238)=9.062500
+    batch: top1=4238(v=13.125000) top2v=11.312500 gap=1.812500 at_plain_id(13)=11.312500
+  step=122 FLIP plain=1088 batch=31221 gap_plain=1.250000 (20.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.638665 near_tie=1
+    plain: top1=1088(v=10.875000) top2v=9.625000 gap=1.250000 at_batch_id(31221)=8.500000
+    batch: top1=31221(v=9.500000) top2v=9.312500 gap=0.187500 at_plain_id(1088)=7.500000
+  step=123 FLIP plain=1062 batch=84 gap_plain=1.312500 (21.0 ulp) gap_batch=3.750000 (60.0 ulp) l2_rel=0.529390 near_tie=0
+    plain: top1=1062(v=12.125000) top2v=10.812500 gap=1.312500 at_batch_id(84)=10.750000
+    batch: top1=84(v=14.500000) top2v=10.750000 gap=3.750000 at_plain_id(1062)=9.000000
+  step=124 FLIP plain=27262 batch=82473 gap_plain=1.625000 (26.0 ulp) gap_batch=0.312500 (5.0 ulp) l2_rel=0.653752 near_tie=0
+    plain: top1=27262(v=14.187500) top2v=12.562500 gap=1.625000 at_batch_id(82473)=9.000000
+    batch: top1=82473(v=14.250000) top2v=13.937500 gap=0.312500 at_plain_id(27262)=13.937500
+  step=125 FLIP plain=6157 batch=2624 gap_plain=0.125000 (2.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.402232 near_tie=1
+    plain: top1=6157(v=10.812500) top2v=10.687500 gap=0.125000 at_batch_id(2624)=10.625000
+    batch: top1=2624(v=12.625000) top2v=12.375000 gap=0.250000 at_plain_id(6157)=10.125000
+  step=127 FLIP plain=9400 batch=4047 gap_plain=0.562500 (9.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.566527 near_tie=1
+    plain: top1=9400(v=12.062500) top2v=11.500000 gap=0.562500 at_batch_id(4047)=6.281250
+    batch: top1=4047(v=10.562500) top2v=10.312500 gap=0.250000 at_plain_id(9400)=8.500000
+  step=128 FLIP plain=314 batch=1088 gap_plain=3.625000 (58.0 ulp) gap_batch=1.187500 (19.0 ulp) l2_rel=0.513198 near_tie=0
+    plain: top1=314(v=14.312500) top2v=10.687500 gap=3.625000 at_batch_id(1088)=9.625000
+    batch: top1=1088(v=11.312500) top2v=10.125000 gap=1.187500 at_plain_id(314)=10.125000
+  step=131 FLIP plain=4660 batch=13 gap_plain=0.625000 (10.0 ulp) gap_batch=1.125000 (18.0 ulp) l2_rel=0.444511 near_tie=0
+    plain: top1=4660(v=10.312500) top2v=9.687500 gap=0.625000 at_batch_id(13)=7.687500
+    batch: top1=13(v=12.375000) top2v=11.250000 gap=1.125000 at_plain_id(4660)=7.031250
+  step=133 FLIP plain=10649 batch=30692 gap_plain=0.312500 (5.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.478604 near_tie=1
+    plain: top1=10649(v=9.687500) top2v=9.375000 gap=0.312500 at_batch_id(30692)=7.625000
+    batch: top1=30692(v=9.625000) top2v=9.562500 gap=0.062500 at_plain_id(10649)=5.593750
+  step=134 FLIP plain=2781 batch=383 gap_plain=0.125000 (2.0 ulp) gap_batch=0.000000 (0.0 ulp) l2_rel=0.457663 near_tie=1
+    plain: top1=2781(v=11.125000) top2v=11.000000 gap=0.125000 at_batch_id(383)=8.125000
+    batch: top1=383(v=9.937500) top2v=9.937500 gap=0.000000 at_plain_id(2781)=6.937500
+  step=135 FLIP plain=364 batch=82 gap_plain=0.437500 (7.0 ulp) gap_batch=1.750000 (28.0 ulp) l2_rel=0.513153 near_tie=0
+    plain: top1=364(v=12.187500) top2v=11.750000 gap=0.437500 at_batch_id(82)=4.250000
+    batch: top1=82(v=14.812500) top2v=13.062500 gap=1.750000 at_plain_id(364)=8.812500
+  step=137 FLIP plain=8999 batch=13 gap_plain=0.062500 (1.0 ulp) gap_batch=0.000000 (0.0 ulp) l2_rel=0.293821 near_tie=1
+    plain: top1=8999(v=11.750000) top2v=11.687500 gap=0.062500 at_batch_id(13)=11.687500
+    batch: top1=13(v=10.812500) top2v=10.812500 gap=0.000000 at_plain_id(8999)=9.562500
+  step=138 FLIP plain=593 batch=11 gap_plain=0.125000 (2.0 ulp) gap_batch=0.375000 (6.0 ulp) l2_rel=0.425908 near_tie=1
+    plain: top1=593(v=10.000000) top2v=9.875000 gap=0.125000 at_batch_id(11)=9.562500
+    batch: top1=11(v=10.125000) top2v=9.750000 gap=0.375000 at_plain_id(593)=9.250000
+  step=139 FLIP plain=1433 batch=2400 gap_plain=0.125000 (2.0 ulp) gap_batch=0.562500 (9.0 ulp) l2_rel=0.601095 near_tie=1
+    plain: top1=1433(v=12.625000) top2v=12.500000 gap=0.125000 at_batch_id(2400)=11.750000
+    batch: top1=2400(v=11.875000) top2v=11.312500 gap=0.562500 at_plain_id(1433)=6.437500
+  step=140 FLIP plain=3187 batch=275 gap_plain=0.062500 (1.0 ulp) gap_batch=0.562500 (9.0 ulp) l2_rel=0.465090 near_tie=1
+    plain: top1=3187(v=14.000000) top2v=13.937500 gap=0.062500 at_batch_id(275)=13.937500
+    batch: top1=275(v=13.750000) top2v=13.187500 gap=0.562500 at_plain_id(3187)=10.875000
+  step=141 FLIP plain=383 batch=13 gap_plain=2.000000 (32.0 ulp) gap_batch=0.875000 (14.0 ulp) l2_rel=0.473414 near_tie=0
+    plain: top1=383(v=13.000000) top2v=11.000000 gap=2.000000 at_batch_id(13)=10.062500
+    batch: top1=13(v=11.500000) top2v=10.625000 gap=0.875000 at_plain_id(383)=9.250000
+  step=144 FLIP plain=2022 batch=29972 gap_plain=0.625000 (10.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.776726 near_tie=1
+    plain: top1=2022(v=13.062500) top2v=12.437500 gap=0.625000 at_batch_id(29972)=4.937500
+    batch: top1=29972(v=13.937500) top2v=13.812500 gap=0.125000 at_plain_id(2022)=13.562500
+  step=145 FLIP plain=466 batch=13 gap_plain=0.187500 (3.0 ulp) gap_batch=1.562500 (25.0 ulp) l2_rel=0.569687 near_tie=1
+    plain: top1=466(v=11.437500) top2v=11.250000 gap=0.187500 at_batch_id(13)=11.250000
+    batch: top1=13(v=12.875000) top2v=11.312500 gap=1.562500 at_plain_id(466)=11.125000
+  step=146 FLIP plain=198 batch=279 gap_plain=0.000000 (0.0 ulp) gap_batch=1.187500 (19.0 ulp) l2_rel=0.449797 near_tie=1
+    plain: top1=198(v=9.312500) top2v=9.312500 gap=0.000000 at_batch_id(279)=5.218750
+    batch: top1=279(v=11.375000) top2v=10.187500 gap=1.187500 at_plain_id(198)=6.562500
+  step=147 FLIP plain=17 batch=16 gap_plain=0.187500 (3.0 ulp) gap_batch=0.875000 (14.0 ulp) l2_rel=0.712678 near_tie=1
+    plain: top1=17(v=9.375000) top2v=9.187500 gap=0.187500 at_batch_id(16)=9.125000
+    batch: top1=16(v=9.687500) top2v=8.812500 gap=0.875000 at_plain_id(17)=8.312500
+  step=149 FLIP plain=279 batch=11 gap_plain=0.375000 (6.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.553728 near_tie=1
+    plain: top1=279(v=9.375000) top2v=9.000000 gap=0.375000 at_batch_id(11)=8.000000
+    batch: top1=11(v=9.812500) top2v=9.562500 gap=0.250000 at_plain_id(279)=9.312500
+  step=150 FLIP plain=8999 batch=27867 gap_plain=1.187500 (19.0 ulp) gap_batch=0.625000 (10.0 ulp) l2_rel=0.539109 near_tie=0
+    plain: top1=8999(v=12.312500) top2v=11.125000 gap=1.187500 at_batch_id(27867)=7.812500
+    batch: top1=27867(v=11.687500) top2v=11.062500 gap=0.625000 at_plain_id(8999)=5.375000
+  step=152 FLIP plain=22 batch=348 gap_plain=0.187500 (3.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.411396 near_tie=1
+    plain: top1=22(v=9.875000) top2v=9.687500 gap=0.187500 at_batch_id(348)=8.687500
+    batch: top1=348(v=9.375000) top2v=9.312500 gap=0.062500 at_plain_id(22)=8.125000
+  step=153 FLIP plain=24 batch=1024 gap_plain=0.812500 (13.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.621655 near_tie=1
+    plain: top1=24(v=10.875000) top2v=10.062500 gap=0.812500 at_batch_id(1024)=10.062500
+    batch: top1=1024(v=10.437500) top2v=10.187500 gap=0.250000 at_plain_id(24)=5.687500
+  step=154 FLIP plain=13 batch=732 gap_plain=1.125000 (18.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.770201 near_tie=1
+    plain: top1=13(v=9.937500) top2v=8.812500 gap=1.125000 at_batch_id(732)=7.187500
+    batch: top1=732(v=11.625000) top2v=11.375000 gap=0.250000 at_plain_id(13)=7.812500
+  step=155 FLIP plain=16 batch=524 gap_plain=0.125000 (2.0 ulp) gap_batch=2.000000 (32.0 ulp) l2_rel=0.598213 near_tie=1
+    plain: top1=16(v=10.937500) top2v=10.812500 gap=0.125000 at_batch_id(524)=10.312500
+    batch: top1=524(v=11.812500) top2v=9.812500 gap=2.000000 at_plain_id(16)=7.312500
+  step=156 FLIP plain=15 batch=19 gap_plain=2.687500 (43.0 ulp) gap_batch=1.312500 (21.0 ulp) l2_rel=0.629383 near_tie=0
+    plain: top1=15(v=13.437500) top2v=10.750000 gap=2.687500 at_batch_id(19)=8.625000
+    batch: top1=19(v=14.437500) top2v=13.125000 gap=1.312500 at_plain_id(15)=11.125000
+  step=157 FLIP plain=12 batch=22 gap_plain=1.562500 (25.0 ulp) gap_batch=0.375000 (6.0 ulp) l2_rel=0.381411 near_tie=0
+    plain: top1=12(v=12.187500) top2v=10.625000 gap=1.562500 at_batch_id(22)=10.500000
+    batch: top1=22(v=11.812500) top2v=11.437500 gap=0.375000 at_plain_id(12)=10.812500
+  step=158 FLIP plain=16 batch=18 gap_plain=1.062500 (17.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.633432 near_tie=1
+    plain: top1=16(v=10.687500) top2v=9.625000 gap=1.062500 at_batch_id(18)=8.500000
+    batch: top1=18(v=9.250000) top2v=9.125000 gap=0.125000 at_plain_id(16)=8.375000
+  step=160 FLIP plain=18677 batch=8851 gap_plain=0.125000 (2.0 ulp) gap_batch=0.375000 (6.0 ulp) l2_rel=0.477744 near_tie=1
+    plain: top1=18677(v=9.062500) top2v=8.937500 gap=0.125000 at_batch_id(8851)=8.187500
+    batch: top1=8851(v=10.812500) top2v=10.437500 gap=0.375000 at_plain_id(18677)=10.437500
+  step=161 FLIP plain=7652 batch=6195 gap_plain=0.062500 (1.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.448435 near_tie=1
+    plain: top1=7652(v=12.062500) top2v=12.000000 gap=0.062500 at_batch_id(6195)=10.687500
+    batch: top1=6195(v=14.062500) top2v=13.875000 gap=0.187500 at_plain_id(7652)=13.875000
+  step=162 FLIP plain=310 batch=13 gap_plain=2.437500 (39.0 ulp) gap_batch=0.750000 (12.0 ulp) l2_rel=0.377369 near_tie=0
+    plain: top1=310(v=14.562500) top2v=12.125000 gap=2.437500 at_batch_id(13)=11.750000
+    batch: top1=13(v=11.812500) top2v=11.062500 gap=0.750000 at_plain_id(310)=10.500000
+  step=164 FLIP plain=1088 batch=318 gap_plain=0.562500 (9.0 ulp) gap_batch=1.062500 (17.0 ulp) l2_rel=0.570716 near_tie=0
+    plain: top1=1088(v=11.062500) top2v=10.500000 gap=0.562500 at_batch_id(318)=10.000000
+    batch: top1=318(v=11.125000) top2v=10.062500 gap=1.062500 at_plain_id(1088)=10.062500
+  step=165 FLIP plain=16 batch=3812 gap_plain=0.062500 (1.0 ulp) gap_batch=0.500000 (8.0 ulp) l2_rel=0.727759 near_tie=1
+    plain: top1=16(v=8.812500) top2v=8.750000 gap=0.062500 at_batch_id(3812)=8.375000
+    batch: top1=3812(v=11.125000) top2v=10.625000 gap=0.500000 at_plain_id(16)=4.968750
+  step=166 FLIP plain=17 batch=18 gap_plain=0.062500 (1.0 ulp) gap_batch=0.937500 (15.0 ulp) l2_rel=0.446466 near_tie=1
+    plain: top1=17(v=13.375000) top2v=13.312500 gap=0.062500 at_batch_id(18)=13.062500
+    batch: top1=18(v=15.812500) top2v=14.875000 gap=0.937500 at_plain_id(17)=14.375000
+  step=167 FLIP plain=20 batch=17 gap_plain=1.437500 (23.0 ulp) gap_batch=0.500000 (8.0 ulp) l2_rel=0.484328 near_tie=0
+    plain: top1=20(v=10.687500) top2v=9.250000 gap=1.437500 at_batch_id(17)=9.250000
+    batch: top1=17(v=9.062500) top2v=8.562500 gap=0.500000 at_plain_id(20)=7.437500
+  step=168 FLIP plain=18 batch=198 gap_plain=0.375000 (6.0 ulp) gap_batch=0.750000 (12.0 ulp) l2_rel=0.632528 near_tie=0
+    plain: top1=18(v=10.312500) top2v=9.937500 gap=0.375000 at_batch_id(198)=7.593750
+    batch: top1=198(v=11.500000) top2v=10.750000 gap=0.750000 at_plain_id(18)=9.250000
+  step=169 FLIP plain=2022 batch=398 gap_plain=0.687500 (11.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.582187 near_tie=1
+    plain: top1=2022(v=11.875000) top2v=11.187500 gap=0.687500 at_batch_id(398)=8.062500
+    batch: top1=398(v=10.562500) top2v=10.437500 gap=0.125000 at_plain_id(2022)=10.000000
+  step=170 FLIP plain=466 batch=13 gap_plain=0.312500 (5.0 ulp) gap_batch=2.000000 (32.0 ulp) l2_rel=0.546036 near_tie=0
+    plain: top1=466(v=12.750000) top2v=12.437500 gap=0.312500 at_batch_id(13)=12.437500
+    batch: top1=13(v=15.937500) top2v=13.937500 gap=2.000000 at_plain_id(466)=11.625000
+  step=171 FLIP plain=1562 batch=278 gap_plain=0.437500 (7.0 ulp) gap_batch=1.000000 (16.0 ulp) l2_rel=0.481060 near_tie=0
+    plain: top1=1562(v=10.875000) top2v=10.437500 gap=0.437500 at_batch_id(278)=7.687500
+    batch: top1=278(v=10.687500) top2v=9.687500 gap=1.000000 at_plain_id(1562)=9.125000
+  step=172 FLIP plain=364 batch=1142 gap_plain=0.750000 (12.0 ulp) gap_batch=1.625000 (26.0 ulp) l2_rel=0.498878 near_tie=0
+    plain: top1=364(v=14.062500) top2v=13.312500 gap=0.750000 at_batch_id(1142)=13.312500
+    batch: top1=1142(v=14.125000) top2v=12.500000 gap=1.625000 at_plain_id(364)=12.312500
+  step=173 FLIP plain=279 batch=6713 gap_plain=0.375000 (6.0 ulp) gap_batch=0.500000 (8.0 ulp) l2_rel=0.421949 near_tie=0
+    plain: top1=279(v=10.187500) top2v=9.812500 gap=0.375000 at_batch_id(6713)=9.250000
+    batch: top1=6713(v=10.625000) top2v=10.125000 gap=0.500000 at_plain_id(279)=9.125000
+  step=174 FLIP plain=21261 batch=82 gap_plain=0.375000 (6.0 ulp) gap_batch=0.812500 (13.0 ulp) l2_rel=0.509913 near_tie=0
+    plain: top1=21261(v=9.875000) top2v=9.500000 gap=0.375000 at_batch_id(82)=7.750000
+    batch: top1=82(v=10.062500) top2v=9.250000 gap=0.812500 at_plain_id(21261)=6.468750
+  step=175 FLIP plain=11 batch=314 gap_plain=2.062500 (33.0 ulp) gap_batch=0.000000 (0.0 ulp) l2_rel=0.514955 near_tie=1
+    plain: top1=11(v=13.187500) top2v=11.125000 gap=2.062500 at_batch_id(314)=10.750000
+    batch: top1=314(v=10.875000) top2v=10.875000 gap=0.000000 at_plain_id(11)=10.562500
+  step=176 FLIP plain=198 batch=26 gap_plain=0.375000 (6.0 ulp) gap_batch=0.750000 (12.0 ulp) l2_rel=0.754388 near_tie=0
+    plain: top1=198(v=10.250000) top2v=9.875000 gap=0.375000 at_batch_id(26)=7.593750
+    batch: top1=26(v=11.125000) top2v=10.375000 gap=0.750000 at_plain_id(198)=9.500000
+  step=177 FLIP plain=13 batch=16 gap_plain=1.875000 (30.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.600996 near_tie=1
+    plain: top1=13(v=12.187500) top2v=10.312500 gap=1.875000 at_batch_id(16)=10.312500
+    batch: top1=16(v=10.187500) top2v=10.062500 gap=0.125000 at_plain_id(13)=10.062500
+  step=178 FLIP plain=93 batch=16 gap_plain=0.625000 (10.0 ulp) gap_batch=0.000000 (0.0 ulp) l2_rel=0.701664 near_tie=1
+    plain: top1=93(v=12.062500) top2v=11.437500 gap=0.625000 at_batch_id(16)=10.937500
+    batch: top1=16(v=10.687500) top2v=10.687500 gap=0.000000 at_plain_id(93)=10.687500
+  step=179 FLIP plain=96288 batch=24 gap_plain=0.187500 (3.0 ulp) gap_batch=1.062500 (17.0 ulp) l2_rel=0.670900 near_tie=1
+    plain: top1=96288(v=8.437500) top2v=8.250000 gap=0.187500 at_batch_id(24)=6.187500
+    batch: top1=24(v=10.375000) top2v=9.312500 gap=1.062500 at_plain_id(96288)=6.062500
+  step=180 FLIP plain=1088 batch=1622 gap_plain=1.187500 (19.0 ulp) gap_batch=1.375000 (22.0 ulp) l2_rel=0.525415 near_tie=0
+    plain: top1=1088(v=12.250000) top2v=11.062500 gap=1.187500 at_batch_id(1622)=11.062500
+    batch: top1=1622(v=12.750000) top2v=11.375000 gap=1.375000 at_plain_id(1088)=5.812500
+  step=181 FLIP plain=88396 batch=2840 gap_plain=0.625000 (10.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.488080 near_tie=1
+    plain: top1=88396(v=10.187500) top2v=9.562500 gap=0.625000 at_batch_id(2840)=8.687500
+    batch: top1=2840(v=9.687500) top2v=9.500000 gap=0.187500 at_plain_id(88396)=9.250000
+  step=183 FLIP plain=67 batch=16 gap_plain=0.875000 (14.0 ulp) gap_batch=0.625000 (10.0 ulp) l2_rel=0.869438 near_tie=0
+    plain: top1=67(v=12.062500) top2v=11.187500 gap=0.875000 at_batch_id(16)=11.187500
+    batch: top1=16(v=11.187500) top2v=10.562500 gap=0.625000 at_plain_id(67)=6.937500
+  step=184 FLIP plain=4746 batch=11958 gap_plain=0.125000 (2.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.429858 near_tie=1
+    plain: top1=4746(v=11.750000) top2v=11.625000 gap=0.125000 at_batch_id(11958)=10.312500
+    batch: top1=11958(v=11.687500) top2v=11.625000 gap=0.062500 at_plain_id(4746)=11.125000
+  step=185 FLIP plain=278 batch=4577 gap_plain=0.000000 (0.0 ulp) gap_batch=0.687500 (11.0 ulp) l2_rel=0.375241 near_tie=1
+    plain: top1=278(v=11.812500) top2v=11.812500 gap=0.000000 at_batch_id(4577)=10.062500
+    batch: top1=4577(v=12.500000) top2v=11.812500 gap=0.687500 at_plain_id(278)=10.750000
+  step=186 FLIP plain=13 batch=1452 gap_plain=0.375000 (6.0 ulp) gap_batch=0.750000 (12.0 ulp) l2_rel=0.650486 near_tie=0
+    plain: top1=13(v=12.937500) top2v=12.562500 gap=0.375000 at_batch_id(1452)=7.093750
+    batch: top1=1452(v=13.437500) top2v=12.687500 gap=0.750000 at_plain_id(13)=11.687500
+  step=188 FLIP plain=59 batch=16 gap_plain=0.062500 (1.0 ulp) gap_batch=0.000000 (0.0 ulp) l2_rel=0.514424 near_tie=1
+    plain: top1=59(v=9.875000) top2v=9.812500 gap=0.062500 at_batch_id(16)=7.562500
+    batch: top1=16(v=9.875000) top2v=9.875000 gap=0.000000 at_plain_id(59)=8.187500
+  step=190 FLIP plain=17 batch=673 gap_plain=0.250000 (4.0 ulp) gap_batch=0.937500 (15.0 ulp) l2_rel=0.670798 near_tie=1
+    plain: top1=17(v=10.812500) top2v=10.562500 gap=0.250000 at_batch_id(673)=6.843750
+    batch: top1=673(v=12.062500) top2v=11.125000 gap=0.937500 at_plain_id(17)=11.125000
+  step=191 FLIP plain=18 batch=15 gap_plain=1.250000 (20.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.640086 near_tie=1
+    plain: top1=18(v=12.750000) top2v=11.500000 gap=1.250000 at_batch_id(15)=11.500000
+    batch: top1=15(v=10.562500) top2v=10.437500 gap=0.125000 at_plain_id(18)=10.437500
+  step=192 FLIP plain=884 batch=1562 gap_plain=1.250000 (20.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.375806 near_tie=1
+    plain: top1=884(v=11.687500) top2v=10.437500 gap=1.250000 at_batch_id(1562)=10.062500
+    batch: top1=1562(v=9.062500) top2v=9.000000 gap=0.062500 at_plain_id(884)=8.125000
+  step=193 FLIP plain=261 batch=23755 gap_plain=0.875000 (14.0 ulp) gap_batch=0.812500 (13.0 ulp) l2_rel=0.490243 near_tie=0
+    plain: top1=261(v=12.687500) top2v=11.812500 gap=0.875000 at_batch_id(23755)=10.625000
+    batch: top1=23755(v=12.000000) top2v=11.187500 gap=0.812500 at_plain_id(261)=10.812500
+  step=195 FLIP plain=20 batch=17 gap_plain=1.250000 (20.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.502634 near_tie=1
+    plain: top1=20(v=13.625000) top2v=12.375000 gap=1.250000 at_batch_id(17)=11.687500
+    batch: top1=17(v=13.062500) top2v=12.812500 gap=0.250000 at_plain_id(20)=10.937500
+  step=198 FLIP plain=19 batch=22 gap_plain=0.375000 (6.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.445625 near_tie=1
+    plain: top1=19(v=11.500000) top2v=11.125000 gap=0.375000 at_batch_id(22)=9.687500
+    batch: top1=22(v=11.812500) top2v=11.750000 gap=0.062500 at_plain_id(19)=9.937500
+  step=199 FLIP plain=24 batch=884 gap_plain=0.312500 (5.0 ulp) gap_batch=0.000000 (0.0 ulp) l2_rel=0.626921 near_tie=1
+    plain: top1=24(v=10.312500) top2v=10.000000 gap=0.312500 at_batch_id(884)=4.750000
+    batch: top1=884(v=10.750000) top2v=10.750000 gap=0.000000 at_plain_id(24)=6.250000
+  step=200 FLIP plain=2022 batch=382 gap_plain=0.500000 (8.0 ulp) gap_batch=1.562500 (25.0 ulp) l2_rel=0.659168 near_tie=0
+    plain: top1=2022(v=9.062500) top2v=8.562500 gap=0.500000 at_batch_id(382)=5.062500
+    batch: top1=382(v=11.312500) top2v=9.750000 gap=1.562500 at_plain_id(2022)=9.625000
+  step=202 FLIP plain=16 batch=19 gap_plain=0.000000 (0.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.641077 near_tie=1
+    plain: top1=16(v=10.812500) top2v=10.812500 gap=0.000000 at_batch_id(19)=10.125000
+    batch: top1=19(v=9.875000) top2v=9.812500 gap=0.062500 at_plain_id(16)=8.250000
+  step=203 FLIP plain=16 batch=24 gap_plain=0.937500 (15.0 ulp) gap_batch=0.437500 (7.0 ulp) l2_rel=0.530148 near_tie=0
+    plain: top1=16(v=11.500000) top2v=10.562500 gap=0.937500 at_batch_id(24)=10.562500
+    batch: top1=24(v=12.250000) top2v=11.812500 gap=0.437500 at_plain_id(16)=11.125000
+  step=204 FLIP plain=18677 batch=21 gap_plain=0.000000 (0.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.495747 near_tie=1
+    plain: top1=18677(v=10.875000) top2v=10.875000 gap=0.000000 at_batch_id(21)=8.437500
+    batch: top1=21(v=11.062500) top2v=10.812500 gap=0.250000 at_plain_id(18677)=10.437500
+  step=205 FLIP plain=2444 batch=10649 gap_plain=1.437500 (23.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.467991 near_tie=1
+    plain: top1=2444(v=14.500000) top2v=13.062500 gap=1.437500 at_batch_id(10649)=8.625000
+    batch: top1=10649(v=12.750000) top2v=12.500000 gap=0.250000 at_plain_id(2444)=12.500000
+  step=206 FLIP plain=12 batch=5757 gap_plain=1.000000 (16.0 ulp) gap_batch=0.875000 (14.0 ulp) l2_rel=0.356117 near_tie=0
+    plain: top1=12(v=11.625000) top2v=10.625000 gap=1.000000 at_batch_id(5757)=9.312500
+    batch: top1=5757(v=11.562500) top2v=10.687500 gap=0.875000 at_plain_id(12)=10.000000
+  step=207 FLIP plain=13 batch=318 gap_plain=1.062500 (17.0 ulp) gap_batch=0.437500 (7.0 ulp) l2_rel=0.439451 near_tie=0
+    plain: top1=13(v=12.250000) top2v=11.187500 gap=1.062500 at_batch_id(318)=11.187500
+    batch: top1=318(v=10.687500) top2v=10.250000 gap=0.437500 at_plain_id(13)=8.875000
+  step=208 FLIP plain=16 batch=1088 gap_plain=1.625000 (26.0 ulp) gap_batch=1.812500 (29.0 ulp) l2_rel=0.553118 near_tie=0
+    plain: top1=16(v=13.750000) top2v=12.125000 gap=1.625000 at_batch_id(1088)=11.812500
+    batch: top1=1088(v=13.750000) top2v=11.937500 gap=1.812500 at_plain_id(16)=11.937500
+  step=213 FLIP plain=12 batch=23 gap_plain=0.375000 (6.0 ulp) gap_batch=0.437500 (7.0 ulp) l2_rel=0.653023 near_tie=0
+    plain: top1=12(v=10.250000) top2v=9.875000 gap=0.375000 at_batch_id(23)=6.875000
+    batch: top1=23(v=9.687500) top2v=9.250000 gap=0.437500 at_plain_id(12)=8.562500
+  step=214 FLIP plain=16 batch=20 gap_plain=0.937500 (15.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.569121 near_tie=1
+    plain: top1=16(v=11.375000) top2v=10.437500 gap=0.937500 at_batch_id(20)=10.312500
+    batch: top1=20(v=12.125000) top2v=11.937500 gap=0.187500 at_plain_id(16)=10.750000
+  step=216 FLIP plain=16 batch=3387 gap_plain=0.812500 (13.0 ulp) gap_batch=0.375000 (6.0 ulp) l2_rel=0.549750 near_tie=0
+    plain: top1=16(v=10.812500) top2v=10.000000 gap=0.812500 at_batch_id(3387)=7.593750
+    batch: top1=3387(v=10.625000) top2v=10.250000 gap=0.375000 at_plain_id(16)=10.250000
+  step=217 FLIP plain=13 batch=12 gap_plain=1.625000 (26.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.406853 near_tie=1
+    plain: top1=13(v=12.750000) top2v=11.125000 gap=1.625000 at_batch_id(12)=11.125000
+    batch: top1=12(v=11.062500) top2v=10.812500 gap=0.250000 at_plain_id(13)=9.125000
+  step=218 FLIP plain=198 batch=1088 gap_plain=2.875000 (46.0 ulp) gap_batch=1.187500 (19.0 ulp) l2_rel=0.688357 near_tie=0
+    plain: top1=198(v=13.250000) top2v=10.375000 gap=2.875000 at_batch_id(1088)=9.187500
+    batch: top1=1088(v=11.250000) top2v=10.062500 gap=1.187500 at_plain_id(198)=10.062500
+  step=219 FLIP plain=198 batch=20545 gap_plain=0.500000 (8.0 ulp) gap_batch=0.812500 (13.0 ulp) l2_rel=0.501847 near_tie=0
+    plain: top1=198(v=8.312500) top2v=7.812500 gap=0.500000 at_batch_id(20545)=4.343750
+    batch: top1=20545(v=10.500000) top2v=9.687500 gap=0.812500 at_plain_id(198)=5.531250
+  step=221 FLIP plain=11 batch=271 gap_plain=1.875000 (30.0 ulp) gap_batch=2.562500 (20.5 ulp) l2_rel=0.568210 near_tie=0
+    plain: top1=11(v=14.312500) top2v=12.437500 gap=1.875000 at_batch_id(271)=12.437500
+    batch: top1=271(v=16.500000) top2v=13.937500 gap=2.562500 at_plain_id(11)=11.250000
+  step=222 FLIP plain=5075 batch=6130 gap_plain=0.062500 (1.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.828597 near_tie=1
+    plain: top1=5075(v=9.812500) top2v=9.750000 gap=0.062500 at_batch_id(6130)=4.687500
+    batch: top1=6130(v=10.000000) top2v=9.937500 gap=0.062500 at_plain_id(5075)=4.000000
+  step=223 FLIP plain=16 batch=425 gap_plain=0.437500 (7.0 ulp) gap_batch=1.187500 (19.0 ulp) l2_rel=0.493990 near_tie=0
+    plain: top1=16(v=12.437500) top2v=12.000000 gap=0.437500 at_batch_id(425)=8.312500
+    batch: top1=425(v=13.937500) top2v=12.750000 gap=1.187500 at_plain_id(16)=12.750000
+  step=225 FLIP plain=59 batch=198 gap_plain=0.062500 (1.0 ulp) gap_batch=1.062500 (17.0 ulp) l2_rel=0.464108 near_tie=1
+    plain: top1=59(v=9.875000) top2v=9.812500 gap=0.062500 at_batch_id(198)=7.062500
+    batch: top1=198(v=9.750000) top2v=8.687500 gap=1.062500 at_plain_id(59)=8.250000
+  step=227 FLIP plain=398 batch=15666 gap_plain=0.687500 (11.0 ulp) gap_batch=0.625000 (10.0 ulp) l2_rel=0.845760 near_tie=0
+    plain: top1=398(v=9.750000) top2v=9.062500 gap=0.687500 at_batch_id(15666)=7.343750
+    batch: top1=15666(v=10.687500) top2v=10.062500 gap=0.625000 at_plain_id(398)=10.062500
+  step=228 FLIP plain=261 batch=298 gap_plain=1.437500 (23.0 ulp) gap_batch=0.750000 (12.0 ulp) l2_rel=0.581475 near_tie=0
+    plain: top1=261(v=12.562500) top2v=11.125000 gap=1.437500 at_batch_id(298)=8.687500
+    batch: top1=298(v=12.500000) top2v=11.750000 gap=0.750000 at_plain_id(261)=10.500000
+  step=229 FLIP plain=467 batch=69 gap_plain=0.875000 (14.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.496033 near_tie=1
+    plain: top1=467(v=14.500000) top2v=13.625000 gap=0.875000 at_batch_id(69)=10.500000
+    batch: top1=69(v=12.625000) top2v=12.375000 gap=0.250000 at_plain_id(467)=12.375000
+  step=231 FLIP plain=33 batch=16 gap_plain=1.250000 (20.0 ulp) gap_batch=2.000000 (32.0 ulp) l2_rel=0.420885 near_tie=0
+    plain: top1=33(v=13.000000) top2v=11.750000 gap=1.250000 at_batch_id(16)=11.750000
+    batch: top1=16(v=12.937500) top2v=10.937500 gap=2.000000 at_plain_id(33)=10.937500
+  step=232 FLIP plain=67078 batch=16 gap_plain=1.000000 (16.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.739879 near_tie=1
+    plain: top1=67078(v=12.687500) top2v=11.687500 gap=1.000000 at_batch_id(16)=7.375000
+    batch: top1=16(v=11.312500) top2v=11.250000 gap=0.062500 at_plain_id(67078)=7.343750
+  step=233 FLIP plain=9662 batch=311 gap_plain=0.125000 (2.0 ulp) gap_batch=0.125000 (2.0 ulp) l2_rel=0.467928 near_tie=1
+    plain: top1=9662(v=10.625000) top2v=10.500000 gap=0.125000 at_batch_id(311)=8.875000
+    batch: top1=311(v=10.562500) top2v=10.437500 gap=0.125000 at_plain_id(9662)=8.625000
+  step=234 FLIP plain=11661 batch=2279 gap_plain=1.750000 (28.0 ulp) gap_batch=0.375000 (6.0 ulp) l2_rel=0.336898 near_tie=0
+    plain: top1=11661(v=13.000000) top2v=11.250000 gap=1.750000 at_batch_id(2279)=11.250000
+    batch: top1=2279(v=11.750000) top2v=11.375000 gap=0.375000 at_plain_id(11661)=11.312500
+  step=236 FLIP plain=198 batch=318 gap_plain=0.437500 (7.0 ulp) gap_batch=1.000000 (16.0 ulp) l2_rel=0.523069 near_tie=0
+    plain: top1=198(v=12.750000) top2v=12.312500 gap=0.437500 at_batch_id(318)=11.375000
+    batch: top1=318(v=12.000000) top2v=11.000000 gap=1.000000 at_plain_id(198)=11.000000
+  step=237 FLIP plain=21134 batch=15666 gap_plain=0.375000 (6.0 ulp) gap_batch=2.187500 (35.0 ulp) l2_rel=0.531674 near_tie=0
+    plain: top1=21134(v=12.750000) top2v=12.375000 gap=0.375000 at_batch_id(15666)=12.375000
+    batch: top1=15666(v=15.062500) top2v=12.875000 gap=2.187500 at_plain_id(21134)=12.875000
+  step=238 FLIP plain=318 batch=351 gap_plain=0.625000 (10.0 ulp) gap_batch=0.250000 (4.0 ulp) l2_rel=0.394395 near_tie=1
+    plain: top1=318(v=12.562500) top2v=11.937500 gap=0.625000 at_batch_id(351)=10.000000
+    batch: top1=351(v=11.062500) top2v=10.812500 gap=0.250000 at_plain_id(318)=9.687500
+  step=239 FLIP plain=263 batch=38804 gap_plain=1.062500 (17.0 ulp) gap_batch=0.312500 (5.0 ulp) l2_rel=0.455240 near_tie=0
+    plain: top1=263(v=12.000000) top2v=10.937500 gap=1.062500 at_batch_id(38804)=7.343750
+    batch: top1=38804(v=9.750000) top2v=9.437500 gap=0.312500 at_plain_id(263)=6.593750
+  step=243 FLIP plain=18 batch=20 gap_plain=0.937500 (15.0 ulp) gap_batch=0.562500 (9.0 ulp) l2_rel=0.382995 near_tie=0
+    plain: top1=18(v=14.562500) top2v=13.625000 gap=0.937500 at_batch_id(20)=13.625000
+    batch: top1=20(v=14.812500) top2v=14.250000 gap=0.562500 at_plain_id(18)=14.250000
+  step=245 FLIP plain=19 batch=15 gap_plain=0.562500 (9.0 ulp) gap_batch=0.312500 (5.0 ulp) l2_rel=0.600124 near_tie=0
+    plain: top1=19(v=12.062500) top2v=11.500000 gap=0.562500 at_batch_id(15)=11.500000
+    batch: top1=15(v=12.062500) top2v=11.750000 gap=0.312500 at_plain_id(19)=11.750000
+  step=247 FLIP plain=292 batch=59 gap_plain=0.062500 (1.0 ulp) gap_batch=1.500000 (24.0 ulp) l2_rel=0.548424 near_tie=1
+    plain: top1=292(v=12.375000) top2v=12.312500 gap=0.062500 at_batch_id(59)=12.250000
+    batch: top1=59(v=12.312500) top2v=10.812500 gap=1.500000 at_plain_id(292)=9.937500
+  step=249 FLIP plain=1001 batch=18677 gap_plain=0.125000 (2.0 ulp) gap_batch=0.062500 (1.0 ulp) l2_rel=0.470799 near_tie=1
+    plain: top1=1001(v=9.437500) top2v=9.312500 gap=0.125000 at_batch_id(18677)=7.593750
+    batch: top1=18677(v=8.812500) top2v=8.750000 gap=0.062500 at_plain_id(1001)=8.375000
+  step=250 FLIP plain=263 batch=6975 gap_plain=0.250000 (4.0 ulp) gap_batch=1.000000 (16.0 ulp) l2_rel=0.568137 near_tie=1
+    plain: top1=263(v=10.187500) top2v=9.937500 gap=0.250000 at_batch_id(6975)=8.375000
+    batch: top1=6975(v=12.312500) top2v=11.312500 gap=1.000000 at_plain_id(263)=8.437500
+  step=252 FLIP plain=5638 batch=82 gap_plain=2.187500 (35.0 ulp) gap_batch=0.187500 (3.0 ulp) l2_rel=0.517042 near_tie=1
+    plain: top1=5638(v=12.312500) top2v=10.125000 gap=2.187500 at_batch_id(82)=4.656250
+    batch: top1=82(v=12.062500) top2v=11.875000 gap=0.187500 at_plain_id(5638)=9.562500
+    num_sample layer=0 ssm      w=0 plain=-0.000316154 batch=-0.000316235 absdiff=8.10833e-08 reldiff=0.000256402 finite=1
+    num_sample layer=0 ssm      w=4 plain=-0.00107009 batch=-0.00107071 absdiff=6.2061e-07 reldiff=0.000579625 finite=1
+    num_sample layer=0 ssm      w=8 plain=0.000772867 batch=0.000773404 absdiff=5.36151e-07 reldiff=0.000693235 finite=1
+    num_sample layer=1 conv     w=4 plain=-1.53125 batch=0 absdiff=1.53125 reldiff=1 finite=1
+    num_sample layer=1 conv     w=10 plain=-0.875 batch=0 absdiff=0.875 reldiff=1 finite=1
+    num_sample layer=1 conv     w=16 plain=1.04688 batch=0 absdiff=1.04688 reldiff=1 finite=1
+    num_sample layer=1 ple_conv w=46096 plain=0.00866699 batch=0.00872803 absdiff=6.10352e-05 reldiff=0.00699301 finite=1
+    num_sample layer=1 ple_conv w=46114 plain=0.216797 batch=0.21875 absdiff=0.00195312 reldiff=0.00892857 finite=1
+    num_sample layer=1 ple_conv w=46132 plain=0.170898 batch=0.172852 absdiff=0.00195312 reldiff=0.0112994 finite=1
+  step=255 FLIP plain=314 batch=7772 gap_plain=2.937500 (23.5 ulp) gap_batch=1.375000 (22.0 ulp) l2_rel=0.405123 near_tie=0
+    plain: top1=314(v=16.375000) top2v=13.437500 gap=2.937500 at_batch_id(7772)=12.812500
+    batch: top1=7772(v=14.250000) top2v=12.875000 gap=1.375000 at_plain_id(314)=10.250000
+  state_size_check expected=115642368 actual=115642368 match=1
+  state_diff_by_component (both_nz/plain0/batch0 = share of differing bytes with both non-zero / plain zero / batch zero):
+    layer=0 ssm      steps=256 max_bytes=1709103 total=419771392 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=1 ssm      steps=256 max_bytes=3135833 total=802585543 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=1 conv     steps=256 max_bytes=61319 total=5272508 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=1 ple_conv steps=219 max_bytes=9637 total=905604 both_nz=99.1% plain0=0.4% batch0=0.4% first_off=46096
+    layer=2 ssm      steps=256 max_bytes=3045081 total=769664947 both_nz=99.3% plain0=0.3% batch0=0.4% first_off=0
+    layer=2 conv     steps=256 max_bytes=56325 total=13750584 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=4 ssm      steps=256 max_bytes=3042564 total=760425000 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=4 conv     steps=256 max_bytes=55967 total=14061932 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=5 ssm      steps=256 max_bytes=3046067 total=760201365 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=5 conv     steps=256 max_bytes=55970 total=14041919 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=6 ssm      steps=256 max_bytes=3135969 total=802577980 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=6 conv     steps=256 max_bytes=61312 total=5272842 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=8 ssm      steps=256 max_bytes=3042849 total=753789895 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=8 conv     steps=256 max_bytes=56130 total=13391791 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=9 ssm      steps=256 max_bytes=3040392 total=771254009 both_nz=99.3% plain0=0.3% batch0=0.3% first_off=0
+    layer=9 conv     steps=256 max_bytes=57011 total=14429336 both_nz=63.6% plain0=0.1% batch0=36.3% first_off=0
+    layer=10 ssm      steps=256 max_bytes=3042746 total=754818087 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=10 conv     steps=256 max_bytes=55973 total=13807212 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=12 ssm      steps=256 max_bytes=3135813 total=802587966 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=12 conv     steps=256 max_bytes=61306 total=5272540 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=13 ssm      steps=256 max_bytes=3030419 total=760722798 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=13 conv     steps=256 max_bytes=55897 total=13546318 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=14 ssm      steps=256 max_bytes=3027816 total=754165227 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=14 conv     steps=256 max_bytes=55944 total=13941868 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=16 ssm      steps=256 max_bytes=3117098 total=788328545 both_nz=99.3% plain0=0.3% batch0=0.3% first_off=0
+    layer=16 conv     steps=256 max_bytes=59680 total=10060109 both_nz=47.8% plain0=0.1% batch0=52.1% first_off=0
+    layer=17 ssm      steps=256 max_bytes=3136001 total=802583031 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=17 conv     steps=256 max_bytes=61299 total=5272581 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=18 ssm      steps=256 max_bytes=3027264 total=756984557 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=18 conv     steps=256 max_bytes=55879 total=13598040 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=20 ssm      steps=256 max_bytes=3025180 total=753053436 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=20 conv     steps=256 max_bytes=56030 total=14033678 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=21 ssm      steps=256 max_bytes=3069099 total=773675050 both_nz=99.3% plain0=0.3% batch0=0.3% first_off=0
+    layer=21 conv     steps=256 max_bytes=58034 total=14816652 both_nz=64.7% plain0=0.2% batch0=35.2% first_off=0
+    layer=22 ssm      steps=256 max_bytes=3135928 total=802587500 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=22 conv     steps=256 max_bytes=61311 total=5272230 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=24 ssm      steps=256 max_bytes=3036400 total=764390060 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=24 conv     steps=256 max_bytes=56007 total=13416725 both_nz=99.5% plain0=0.3% batch0=0.3% first_off=0
+    layer=25 ssm      steps=256 max_bytes=3028488 total=756510591 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=25 conv     steps=256 max_bytes=55962 total=13934674 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=26 ssm      steps=256 max_bytes=3032323 total=756135503 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=26 conv     steps=256 max_bytes=56135 total=14029675 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=28 ssm      steps=256 max_bytes=3135790 total=802588706 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=28 conv     steps=256 max_bytes=61315 total=5272894 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=29 ssm      steps=256 max_bytes=3030218 total=759969293 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=29 conv     steps=256 max_bytes=55935 total=13611531 both_nz=99.5% plain0=0.2% batch0=0.3% first_off=0
+    layer=30 ssm      steps=256 max_bytes=3055889 total=772495222 both_nz=99.3% plain0=0.3% batch0=0.3% first_off=0
+    layer=30 conv     steps=256 max_bytes=56628 total=14304339 both_nz=63.3% plain0=0.2% batch0=36.6% first_off=0
+    layer=32 ssm      steps=256 max_bytes=3051444 total=764919666 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=32 conv     steps=256 max_bytes=56209 total=13844688 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=33 ssm      steps=256 max_bytes=3135859 total=802564605 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=33 conv     steps=256 max_bytes=61332 total=5272673 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=34 ssm      steps=256 max_bytes=3026651 total=754781945 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=34 conv     steps=256 max_bytes=56262 total=13401735 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=36 ssm      steps=256 max_bytes=3028746 total=755057583 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=36 conv     steps=256 max_bytes=56119 total=13938850 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=37 ssm      steps=256 max_bytes=3119487 total=791049508 both_nz=99.3% plain0=0.3% batch0=0.3% first_off=0
+    layer=37 conv     steps=256 max_bytes=59512 total=10053566 both_nz=47.7% plain0=0.1% batch0=52.1% first_off=0
+    layer=38 ssm      steps=256 max_bytes=3135827 total=802596268 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=38 conv     steps=256 max_bytes=61317 total=5272283 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=40 ssm      steps=256 max_bytes=3055258 total=761951864 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=40 conv     steps=256 max_bytes=56497 total=13665433 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=41 ssm      steps=256 max_bytes=3041102 total=764882968 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=41 conv     steps=256 max_bytes=56069 total=14064505 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=42 ssm      steps=256 max_bytes=3039018 total=765234668 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=42 conv     steps=256 max_bytes=56246 total=14341675 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=44 ssm      steps=256 max_bytes=3135886 total=802575520 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=44 conv     steps=256 max_bytes=61337 total=5273005 both_nz=0.0% plain0=0.0% batch0=100.0% first_off=0
+    layer=45 ssm      steps=256 max_bytes=3040594 total=772845366 both_nz=99.3% plain0=0.3% batch0=0.3% first_off=0
+    layer=45 conv     steps=256 max_bytes=56054 total=13637020 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+    layer=46 ssm      steps=256 max_bytes=3037156 total=763721281 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=0
+    layer=46 conv     steps=256 max_bytes=56357 total=14034142 both_nz=99.5% plain0=0.2% batch0=0.2% first_off=0
+  flips=168/256 confident_both_sides=76 max_flip_l2=0.869438 min_nonflip_gap=0.000000
+  state_update_T_independent: 256/256 steps differ, first=0 max_diff_bytes=110890073
+  ckpt0_direct_read: 256/256 steps differ from T=1, max_diff_bytes=91471337
+  FAIL: 76 flip(s) confident on both sides (top-2 gap > 4 ULP in both paths) — not explainable by BF16 rounding
+[FAIL] mtp_verify_numerics
+  candidate env check: unset (ok)
+  prompt_tokens=1024 vocab=248320
+  independent rope layout check (pure text axis[p]==p): PASS
+  roundtrip component compare (F1 vs F2):
+  cmp host scalars: identical (pos=1027 seq_id=0 P=1027 stage=2)
+  cmp history: identical (len=1027)
+  cmp rope_pos       F1 vs F2: identical (12324 bytes)
+  cmp recurrent      F1 vs F2: identical (115642368 bytes)
+  cmp page_table[0]  F1 vs F2: identical (4108 bytes)
+  cmp kv[0]          F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[0]     F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[0]    F1 vs F2: identical (65536 bytes)
+  cmp page_table[1]  F1 vs F2: identical (4108 bytes)
+  cmp kv[1]          F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[1]     F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[1]    F1 vs F2: identical (65536 bytes)
+  cmp page_table[2]  F1 vs F2: identical (4108 bytes)
+  cmp kv[2]          F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[2]     F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[2]    F1 vs F2: identical (65536 bytes)
+  cmp page_table[3]  F1 vs F2: identical (4108 bytes)
+  cmp kv[3]          F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[3]     F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[3]    F1 vs F2: identical (65536 bytes)
+  cmp page_table[4]  F1 vs F2: identical (4108 bytes)
+  cmp kv[4]          F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[4]     F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[4]    F1 vs F2: identical (65536 bytes)
+  cmp page_table[5]  F1 vs F2: identical (4108 bytes)
+  cmp kv[5]          F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[5]     F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[5]    F1 vs F2: identical (65536 bytes)
+  cmp page_table[6]  F1 vs F2: identical (4108 bytes)
+  cmp kv[6]          F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[6]     F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[6]    F1 vs F2: identical (65536 bytes)
+  cmp page_table[7]  F1 vs F2: identical (4108 bytes)
+  cmp kv[7]          F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[7]     F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[7]    F1 vs F2: identical (65536 bytes)
+  cmp page_table[8]  F1 vs F2: identical (4108 bytes)
+  cmp kv[8]          F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[8]     F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[8]    F1 vs F2: identical (65536 bytes)
+  cmp page_table[9]  F1 vs F2: identical (4108 bytes)
+  cmp kv[9]          F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[9]     F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[9]    F1 vs F2: identical (65536 bytes)
+  cmp page_table[10] F1 vs F2: identical (4108 bytes)
+  cmp kv[10]         F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[10]    F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[10]   F1 vs F2: identical (65536 bytes)
+  cmp page_table[11] F1 vs F2: identical (4108 bytes)
+  cmp kv[11]         F1 vs F2: identical (2103296 bytes)
+  cmp idx_raw[11]    F1 vs F2: identical (262912 bytes)
+  cmp idx_comp[11]   F1 vs F2: identical (65536 bytes)
+  functional re-decode logits bit-identical: yes
+  PASS: full-state save/restore is a bit-exact round trip
+[PASS] mtp_fullstate_roundtrip
+  candidate env check: unset (ok)
+  (repro256) step 0 pos=1024 input=271 plain=248068 batch=248068 l2=0.171794
+  (repro256) step 1 pos=1025 input=248068 plain=198 batch=198 l2=0.236062
+  (repro256) step 2 pos=1026 input=198 plain=760 batch=760 l2=0.228540
+  (repro256) step 3 pos=1027 input=760 plain=1156 batch=1156 l2=0.142037
+  (repro256) step 4 pos=1028 input=1156 plain=6587 batch=6587 l2=0.077972
+  (repro256) step 5 pos=1029 input=6587 plain=728 batch=728 l2=0.064739
+  (repro256) step 6 pos=1030 input=728 plain=310 batch=310 l2=0.053884
+  (repro256) step 7 pos=1031 input=310 plain=3165 batch=3165 l2=0.031896
+  (repro256) step 8 pos=1032 input=3165 plain=264 batch=264 l2=0.050502
+  (repro256) step 9 pos=1033 input=264 plain=11346 batch=11346 l2=0.048076
+  (repro256) step 10 pos=1034 input=11346 plain=10597 batch=10597 l2=0.042296
+  (repro256) step 11 pos=1035 input=10597 plain=3286 batch=3286 l2=0.047893
+  (repro256) step 12 pos=1036 input=3286 plain=314 batch=314 l2=0.054748
+  (repro256) step 13 pos=1037 input=314 plain=279 batch=279 l2=0.053557
+  (repro256) step 14 pos=1038 input=279 plain=7189 batch=7189 l2=0.042088
+  (repro256) step 15 pos=1039 input=7189 plain=3766 batch=3766 l2=0.053325
+  (repro256) step 16 pos=1040 input=3766 plain=11 batch=11 l2=0.058711
+  (repro256) step 17 pos=1041 input=11 plain=17661 batch=17661 l2=0.064084
+  (repro256) step 18 pos=1042 input=17661 plain=18100 batch=18100 l2=0.042613
+  (repro256) step 19 pos=1043 input=18100 plain=11 batch=11 l2=0.079358
+  (repro256) step 20 pos=1044 input=11 plain=5638 batch=5638 l2=0.042537
+  (repro256) step 21 pos=1045 input=5638 plain=11 batch=11 l2=0.065670
+  (repro256) step 22 pos=1046 input=11 plain=36602 batch=36602 l2=0.074597
+  (repro256) step 23 pos=1047 input=36602 plain=11 batch=11 l2=0.054113
+  (repro256) step 24 pos=1048 input=11 plain=321 batch=321 l2=0.088749
+  (repro256) step 25 pos=1049 input=321 plain=55404 batch=55404 l2=0.201326
+  (repro256) step 26 pos=1050 input=55404 plain=11 batch=11 l2=0.045606
+  (repro256) step 27 pos=1051 input=11 plain=303 batch=303 l2=0.070775
+  (repro256) step 28 pos=1052 input=303 plain=506 batch=506 l2=0.081691
+  (repro256) step 29 pos=1053 input=506 plain=3140 batch=3140 l2=0.111880
+  (repro256) step 30 pos=1054 input=3140 plain=220 batch=220 l2=0.080343
+  (repro256) step 31 pos=1055 input=220 plain=20 batch=20 l2=0.089862
+  (repro256) step 32 pos=1056 input=20 plain=15 batch=15 l2=0.292729
+  (repro256) step 33 pos=1057 input=15 plain=15 batch=15 l2=0.079856
+  (repro256) step 34 pos=1058 input=15 plain=4105 batch=4105 l2=0.065441
+  (repro256) step 35 pos=1059 input=4105 plain=13 batch=13 l2=0.073096
+  (repro256) step 36 pos=1060 input=13 plain=6558 batch=6558 l2=0.062948
+  (repro256) step 37 pos=1061 input=6558 plain=728 batch=728 l2=0.046568
+  (repro256) step 38 pos=1062 input=728 plain=22903 batch=22903 l2=0.033208
+  (repro256) step 39 pos=1063 input=22903 plain=279 batch=279 l2=0.052251
+  (repro256) step 40 pos=1064 input=279 plain=7189 batch=7189 l2=0.041825
+  (repro256) step 41 pos=1065 input=7189 plain=15060 batch=15060 l2=0.050330
+  (repro256) step 42 pos=1066 input=15060 plain=13 batch=13 l2=0.050562
+  (repro256) step 43 pos=1067 input=13 plain=271 batch=271 l2=0.068831
+  (repro256) step 44 pos=1068 input=271 plain=5170 batch=5170 l2=0.056483
+  (repro256) step 45 pos=1069 input=5170 plain=11 batch=11 l2=0.080930
+  (repro256) step 46 pos=1070 input=11 plain=1042 batch=1042 l2=0.049474
+  (repro256) step 47 pos=1071 input=1042 plain=728 batch=728 l2=0.053760
+  (repro256) step 48 pos=1072 input=728 plain=10229 batch=10229 l2=0.036831
+  (repro256) step 49 pos=1073 input=10229 plain=279 batch=279 l2=0.056647
+  (repro256) step 50 pos=1074 input=279 plain=4752 batch=4752 l2=0.045485
+  (repro256) step 51 pos=1075 input=4752 plain=2144 batch=7189 l2=0.059439
+  (repro256) first divergence at step 51 (pos=1075, input=4752): plain=2144 batch=7189; fixture -> .q4t-work/mtp-repro-20261011/fixture.txt
+[PASS] mtp_repro_256
+  candidate env check: unset (ok)
+  fixture: divergence_step=51 b=4752 plain=2144 batch=7189 prefix_len=1075 predeclared=0
+  S_T4 construction: full_prefill+B1_replay[plen,P-1)+T4[last,42,42,42]+restore_ckpt0 (save_checkpoints=1 actual, restore ckpt_idx=0)
+  cross-check S_B1 vs S_T4 (same logical prefix P=1075; checkpoint/capture fixed: reserve=4, save_checkpoints=1, restore ckpt[0]):
+  cmp host scalars: identical (pos=1075 seq_id=0 P=1075 stage=2)
+  cmp history: identical (len=1075)
+  cmp rope_pos       S_B1 vs S_T4: identical (12900 bytes)
+  cmp recurrent      S_B1 vs S_T4: DIFF 110869538/115642368 bytes first_off=0
+  cmp page_table[0]  S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[0]          S_B1 vs S_T4: DIFF 1053/2201600 bytes first_off=2199552
+  cmp idx_raw[0]     S_B1 vs S_T4: DIFF 129/275200 bytes first_off=274944
+  cmp idx_comp[0]    S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[1]  S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[1]          S_B1 vs S_T4: DIFF 956/2201600 bytes first_off=2199552
+  cmp idx_raw[1]     S_B1 vs S_T4: DIFF 125/275200 bytes first_off=274944
+  cmp idx_comp[1]    S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[2]  S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[2]          S_B1 vs S_T4: DIFF 1106/2201600 bytes first_off=2199552
+  cmp idx_raw[2]     S_B1 vs S_T4: DIFF 132/275200 bytes first_off=274944
+  cmp idx_comp[2]    S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[3]  S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[3]          S_B1 vs S_T4: DIFF 1097/2201600 bytes first_off=2199552
+  cmp idx_raw[3]     S_B1 vs S_T4: DIFF 128/275200 bytes first_off=274944
+  cmp idx_comp[3]    S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[4]  S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[4]          S_B1 vs S_T4: DIFF 1141/2201600 bytes first_off=2199552
+  cmp idx_raw[4]     S_B1 vs S_T4: DIFF 132/275200 bytes first_off=274944
+  cmp idx_comp[4]    S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[5]  S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[5]          S_B1 vs S_T4: DIFF 1079/2201600 bytes first_off=2199552
+  cmp idx_raw[5]     S_B1 vs S_T4: DIFF 127/275200 bytes first_off=274944
+  cmp idx_comp[5]    S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[6]  S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[6]          S_B1 vs S_T4: DIFF 1123/2201600 bytes first_off=2199552
+  cmp idx_raw[6]     S_B1 vs S_T4: DIFF 133/275200 bytes first_off=274944
+  cmp idx_comp[6]    S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[7]  S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[7]          S_B1 vs S_T4: DIFF 1073/2201600 bytes first_off=2199552
+  cmp idx_raw[7]     S_B1 vs S_T4: DIFF 137/275200 bytes first_off=274944
+  cmp idx_comp[7]    S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[8]  S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[8]          S_B1 vs S_T4: DIFF 1120/2201600 bytes first_off=2199552
+  cmp idx_raw[8]     S_B1 vs S_T4: DIFF 135/275200 bytes first_off=274944
+  cmp idx_comp[8]    S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[9]  S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[9]          S_B1 vs S_T4: DIFF 1068/2201600 bytes first_off=2199554
+  cmp idx_raw[9]     S_B1 vs S_T4: DIFF 123/275200 bytes first_off=274944
+  cmp idx_comp[9]    S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[10] S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[10]         S_B1 vs S_T4: DIFF 1004/2201600 bytes first_off=2199556
+  cmp idx_raw[10]    S_B1 vs S_T4: DIFF 132/275200 bytes first_off=274944
+  cmp idx_comp[10]   S_B1 vs S_T4: identical (68608 bytes)
+  cmp page_table[11] S_B1 vs S_T4: identical (4300 bytes)
+  cmp kv[11]         S_B1 vs S_T4: DIFF 1051/2201600 bytes first_off=2199552
+  cmp idx_raw[11]    S_B1 vs S_T4: DIFF 126/275200 bytes first_off=274944
+  cmp idx_comp[11]   S_B1 vs S_T4: identical (68608 bytes)
+  cross-check total component diffs: 25 (expect recurrent + last-position KV to differ via the T-path; earlier KV identical)
+  evidence persisted + verified: .q4t-work/mtp-repro-20261011/evidence/{f_B1,f_T4}_* (valid components + metadata; no extra forward)
+  six-cell row-0 results (reference = cell 0 = S_B1+B1[b]):
+    [0] S_B1+B1[b]           argmax=2144 top2=(2144:22.3750, 7189:22.3750) gap=0.0000 finite=1
+    [1] S_B1+T4[b,u,v,w]     argmax=7189 top2=(7189:22.3750, 2144:22.2500) gap=0.1250 finite=1
+    [2] S_B1+T4[b,u',v',w']  argmax=7189 top2=(7189:22.3750, 2144:22.2500) gap=0.1250 finite=1
+    [3] S_T4+B1[b]           argmax=34 top2=(34:12.2500, 75370:12.1875) gap=0.0625 finite=1
+    [4] S_T4+T4[b,u,v,w]     argmax=48652 top2=(48652:12.3750, 75370:11.6250) gap=0.7500 finite=1
+    [5] S_T4+T4[b,u',v',w']  argmax=48652 top2=(48652:12.3750, 75370:11.6250) gap=0.7500 finite=1
+  pairwise error vs reference (cell 0):
+    [1] S_B1+T4[b,u,v,w]     l2_rel=0.059741 max_abs=0.843750
+    [2] S_B1+T4[b,u',v',w']  l2_rel=0.059741 max_abs=0.843750
+    [3] S_T4+B1[b]           l2_rel=1.198967 max_abs=24.906250
+    [4] S_T4+T4[b,u,v,w]     l2_rel=1.205053 max_abs=25.109375
+    [5] S_T4+T4[b,u',v',w']  l2_rel=1.205053 max_abs=25.109375
+  causal guard (row0 filler-independent): S_B1 PASS, S_T4 PASS
+  six-cell complete (measurement only; no 0.02 acceptance)
+[PASS] mtp_sixcell
+159 tests, 150 passed, 9 failed, 0 skipped

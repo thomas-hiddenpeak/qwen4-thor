@@ -13,6 +13,7 @@
 #include <cublasLt.h>
 
 #include <cstdint>
+#include <cstdlib>
 
 #include "q4t/model/gemv.h"
 #include "q4t/quant/lt_cache.h"
@@ -103,9 +104,43 @@ inline Bf16GemmResult Bf16Gemm(const uint16_t* x, const uint16_t* w,
                                float beta, void* workspace,
                                size_t workspace_bytes, cudaStream_t stream) {
   Bf16GemmResult res;
+  // ABLATION (test-only, off by default): force the M=1 path to use the
+  // cuBLASLt GEMM (the same kernel family as M>1), so the GEMM is no longer
+  // a T-dependence source. Used to confirm whether the M=1 GEMV is the source
+  // of the MTP vs plain-greedy divergence (see docs/log/2026-10-10.md).
+  // Default runtime behavior is unchanged when the env var is unset.
+  const bool ablate_gemv_t1 = std::getenv("Q4T_ABLATE_GEMV_T1") != nullptr;
+  // ABLATION (test-only, off by default): force the M=1 path to use the M=4
+  // cuBLASLt plan (the same algorithm family the T=4 verify GEMM gets) by
+  // padding M=1 to M=4, so the cuBLASLt algorithm selection is no longer a
+  // T-dependence source. Used to confirm whether the M=1 vs M=4 GEMM tiling
+  // is a source of the MTP vs plain-greedy divergence (see
+  // docs/log/2026-10-11.md). Default runtime behavior is unchanged when the
+  // env var is unset.
+  const bool ablate_gemm_tile = std::getenv("Q4T_ABLATE_GEMM_TILE") != nullptr;
+  if (M == 1 && beta == 0.0f && ablate_gemm_tile) {
+    uint16_t* x4 = nullptr;
+    uint16_t* y4 = nullptr;
+    if (cudaMalloc(&x4, sizeof(uint16_t) * 4 * K) != cudaSuccess) return res;
+    if (cudaMalloc(&y4, sizeof(uint16_t) * 4 * N) != cudaSuccess) {
+      cudaFree(x4);
+      return res;
+    }
+    cudaMemcpyAsync(x4, x, sizeof(uint16_t) * K, cudaMemcpyDeviceToDevice,
+                    stream);
+    cudaMemsetAsync(x4 + K, 0, sizeof(uint16_t) * 3 * K, stream);
+    Bf16GemmResult r4 = Bf16Gemm(x4, w, y4, 4, N, K, alpha, beta, workspace,
+                                 workspace_bytes, stream);
+    cudaMemcpyAsync(y, y4, sizeof(uint16_t) * N, cudaMemcpyDeviceToDevice,
+                    stream);
+    cudaStreamSynchronize(stream);
+    cudaFree(x4);
+    cudaFree(y4);
+    return r4;
+  }
   // M=1 (decode): dedicated GEMV kernel — reads W at full DRAM bandwidth.
   // beta must be 0 (all call sites use 0).
-  if (M == 1 && beta == 0.0f) {
+  if (M == 1 && beta == 0.0f && !ablate_gemv_t1) {
     if (Bf16Gev(x, w, y, N, K, alpha, stream)) {
       res.status = CUBLAS_STATUS_SUCCESS;
       res.has_algo = true;
@@ -113,6 +148,19 @@ inline Bf16GemmResult Bf16Gemm(const uint16_t* x, const uint16_t* w,
     }
     // Unsupported shape (K % 8 != 0) or launch failure: fall through to
     // the cuBLASLt path.
+  }
+  // 2 <= M <= 8 (batched decode / MTP verify): hand-written small-M GEMM
+  // for the shapes measured to beat cuBLASLt on SM110a (src/model/
+  // small_m_gemm.cu, tools/small_m_gemm_v2_bench). beta must be 0 (all call
+  // sites use 0). Skipped under the M=1->M=4 cuBLASLt ablation so that
+  // ablation keeps forcing the cuBLASLt algorithm family. Unsupported
+  // shapes return false and fall through to cuBLASLt below.
+  if (M >= 2 && M <= 8 && beta == 0.0f && !ablate_gemm_tile) {
+    if (Bf16SmallMGemm(x, w, y, M, N, K, alpha, stream)) {
+      res.status = CUBLAS_STATUS_SUCCESS;
+      res.has_algo = true;
+      return res;
+    }
   }
   std::lock_guard<std::mutex> lock(quant::LtCacheMutex());
   quant::LtPlan* plan = GetBf16Plan(M, N, K, workspace_bytes);
@@ -140,7 +188,9 @@ inline Bf16GemmResult ProjGemm(const uint16_t* x, const uint16_t* w,
                                int N, int K, float alpha, float beta,
                                void* workspace, size_t workspace_bytes,
                                cudaStream_t stream) {
-  if (M == 1 && beta == 0.0f && shadow != nullptr && shadow->w != nullptr) {
+  const bool ablate_gemv_t1 = std::getenv("Q4T_ABLATE_GEMV_T1") != nullptr;
+  if (M == 1 && beta == 0.0f && shadow != nullptr && shadow->w != nullptr &&
+      !ablate_gemv_t1) {
     if (Fp8Gev(x, *shadow, y, N, K, alpha, stream)) {
       Bf16GemmResult res;
       res.status = CUBLAS_STATUS_SUCCESS;

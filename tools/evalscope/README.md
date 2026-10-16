@@ -27,29 +27,15 @@ build/ 或 .q4t-work/。没有 --fixtures 时按固定算法生成语料；使�
 可重放已有 quality-inputs/ 或含 context-N/requests.jsonl 的性能结果目录。
 --binary 可选择保存的旧二进制；--port 可选择服务端口。
 
-显式 `--mtp` 才启用单流 MTP；省略时仍传 `--no-mtp`。两组使用不同
+serve 默认开启 MTP 投机解码（k=3），`--no-mtp` 回退普通
+greedy decode（性能基线侧）。run_acceptance.py 用 `--mtp` 显式
+开启、`--mtp-default` 不带旗标（验证 serve 默认路径）、`--mtp-k`
+指定 k；两者都不带时传 `--no-mtp`。两组使用不同
 输出目录，`run-mode.json`、`server-command.json` 和结果中的
 `decode_mode` 区分普通 decode 与 MTP。可分别用 `--binary` 指定旧版
 和候选；`commit.txt`/`worktree.patch` 记录执行脚本所在源码树，实际
 被测二进制以 `binary.sha256`、命令绝对路径和对应构建缓存为准，不能
 把脚本所在提交自动当成外部旧二进制的构建提交。现有参考不会被重写。
-
-新运行的 `--mtp` 默认选择 sequential，工具显式记录并向服务传入
-解析后的 verifier；也可写 `--mtp --mtp-verifier sequential`。
-实验 T4 必须显式选择 `--mtp --mtp-verifier t4`。显式 verifier
-不能自行启用 MTP；旧日志缺少该字段仍按历史 T4 解释。sequential
-要求实际 `mtp_sequential_b1` 路径与调用/输出计数相符，正常短输出
-尾部可为 `plain_tail_b1`，尾部与fallback分别记录。指定参数/候选已完成
-[有限范围验收](../../docs/MTP_STRICT_RESULT_2026-10-09.md)，实测
-慢于普通decode，不能使用旧T4性能作为其性能结论。
-
-`sustained-quality` 使用事前冻结的中英持续生成题面，数值配对、
-长度覆盖和人工语义检查分别记录。`admission-limits` 使用每模式
-14项输出/context边界；默认要求普通参考先通过。其可选
-`--allow-reference-early-eos` 只用于显式sequential配对：严格核验
-原14项响应/身份/路径，仅允许末项208892/nonstream/max8合法
-提前EOS的失败参考被采集，保留原coverage FAIL，并且不放宽
-strict自身输出或路径门槛。不能用于其他模式或豁免任意失败。
 
 ```bash
 python3 tools/evalscope/run_acceptance.py --mode quality --mtp \
@@ -58,23 +44,14 @@ python3 tools/evalscope/run_acceptance.py --mode quality --mtp \
   --reference tools/evalscope/fixtures/quality_reference.json
 ```
 
-`--mtp` 同样适用于 performance 和 limits 模式。启动后记录并验证
-实际 capabilities 与 capacity：MTP 开关必须符合请求，媒体关闭，
-预算启用且可行，实际容量保持 1/8192/208896；预算缩小容量会直接拒绝。
-启动通过只证明加载状态，每个 MTP 响应还必须有实际 HTTP ID 对应的
-`[q4t][decode_path]` 终态日志，明确所选 verifier 对应的
-`mtp_sequential_b1` 或实验 `mtp_multi_b1`、正数 `mtp_steps`
-与 `fallback=none`。服务停止后统一核对终态日志，防止最后一个 SSE
-先于日志写入导致误判；证据保存到 startup-mode.json/request-modes.json。
-旧主线普通 decode 可以没有新终态日志，但仍须证明启动时 MTP 关闭；
-这种情况明确记为 `legacy_plain_startup_only`。
-
-仅输出上限为 1 或首次 EOS 导致的 `prefill_only` 可以没有 MTP step，
-要求实际输出不超过 1。进入过 MTP 后为上下文边界转普通尾部时，日志
-独立保存 `plain_tail_tokens`，不能隐去尾部工作；整个请求实际普通
-decode 或任何加载/初始化 fallback 都不能冒充 MTP 验收通过。故障
-回退本身是否正确须由单独的边界专项证明。MoE trace 与 `--mtp` 组合
-不在本入口接受范围。
+`--mtp`/`--mtp-default` 同样适用于 performance 和 limits 模式。
+启动后记录并验证实际 capacity（`[q4t][capacity]`）：实际容量保持
+1/8192/208896；预算缩小容量会直接拒绝。启动通过只证明加载状态。
+数值验收合同为 [EVALUATION.md](../../docs/EVALUATION.md)「MTP vs
+plain 近 tie 合同」（N=4 ULP、限定近 tie 为唯一分岔来源、causality
+负控）；主线 sequential verifier 与 `[q4t][decode_path]` 终态日志
+核验随 sequential 专属工件从归并树删除，其正确性参考价值保留在
+main 提交历史。MoE trace 与 MTP 组合不在本入口接受范围。
 
 质量模式包含 11 条原生模板检索题，要求明确答案精确匹配、实际输入计数
 匹配并正常 stop。性能模式每档使用同一输入重复三次，要求实际五档长度、
@@ -100,6 +77,47 @@ MTP 可能成组输出 token，本工具不把 SSE chunk 间隔当成精确 toke
 **脚本退出 0 不等于性能无回退已接受**：脚本验证 HTTP、长度、质量或输出
 一致性并采集计时，性能仍需按总 decode token/总 decode 时间、每档重复
 范围与对照版本分析；不得用任意固定容忍百分比替代现行接受条件。
+
+## 有界资源探索与独立服务
+
+`run_acceptance.py --mode performance --perf-lengths 45056 --perf-repeats 3`
+只运行选定档位。plan/results/exit明确标为partial；不能替代五档或
+offload六档验收。显式选档时每发启动一个evalscope client，服务保持
+连续，客户端/tokenizer启动间隔与默认每档一次client的历史批次不同。
+`events.jsonl`与`request-boundaries.json`记录客户端前后时钟和HTTP
+单调时钟；HTTP的UTC是锚点映射估计。有效容量缺失或与请求值不一致
+时，在发请求前拒绝；legacy预算日志不能单独证明有效prefill值。
+
+`--systemd-unit q4t-UNIQUE.service`使服务出生于独立组，client和monitor
+留在组外；`--host-cache-max-bytes BYTES`设置memcg限额，swap固定0。
+本机需systemd与非交互sudo。Thor CUDA分配和外部已有缓存可能不计入
+此组，**不能将它称为全部物理RAM上限**。服务正常/错误退出后用10秒
+ExecStopPost窗口保留cg端点；辅助sleep计入unit尾部开销，准确模型PID
+另行记录。退出或清理失败均非零，已有同名unit拒绝复用。
+
+`run_budget_experiment.py`提供本轮冻结的C256/8192/262144、质量或45K×3
+入口，集成逐文件缓存门禁、独立服务、监控和工具/输入身份快照：
+
+```bash
+python3 tools/evalscope/run_budget_experiment.py --mode performance \
+  --binary build/q4t --model-dir "$Q4T_MODEL_DIR" \
+  --hot-list .q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json \
+  --fixtures .q4t-work/moe-residency-20260930/e2e-fixtures-v2 \
+  --output .q4t-work/e2e/ram-host16g --clear-model-cache \
+  --host-cache-max-bytes 17179869184
+```
+
+16GiB是本轮host/cache探索配置。冷态操作只向只读模型fd发送定向
+eviction advice，必须cachestat确认safetensors/bin payload驻留0；
+门禁失败保留现场并停止，请求间不清缓存/改额度。metadata可由组外
+tokenizer重新缓存，不能冒称全部cache为独占charge。此工具不负责
+选择新预算或自动扩大限额。协议与结论见
+[RAM/缓存协议](../../docs/OFFLOAD_RAM_PROTOCOL_2026-10-02.md)。
+
+monitor新增`--cgroup-path`，`resource-samples.jsonl`与CSV按sequence
+对齐，保存真实PID读存储字节、cg io.stat/memory/限额/事件/PSI与
+模型设备背景统计。分区与父盘不相加，服务IO含PLE/元数据等，
+`nvme_mb`仍是逻辑读取。缺测/身份变化/计数重置保留null与原因。
 
 ## 固定参考的边界
 
@@ -200,22 +218,3 @@ build/verify_chat_template tools/evalscope/fixtures/chat_template_cases.jsonl
 
 字节参考由模型自带Jinja模板生成并冻结，来源与摘要见同目录metadata。
 字节检查通过不替代HTTP或性能接受，测试失败不得重写参考迎合实现。
-
-## MTP 同模式取消恢复
-
-`run_request_cancellation.py --scope same-mode-recovery --mtp` 使用同一
-新服务的 fresh control，依次验证 prefill 显式取消、decode 显式取消、
-TCP RST 和固定 deadline 后的恢复。范围为 S1、208896/8192、纯文本
-和所选 verifier 的实际路径，共 9 个生成请求；默认 sequential，
-也可显式选择实验 T4。旧 `decode-recovery` 范围仍显式保留其历史
-T4 合同，不随新服务默认值改变。逐次核对文本、usage、
-finish、实际路径、请求计数和槽位回收，不声称完整内部状态逐位相等。
-
-输入由 `--quality-run` 的 44K fixture 与 `--performance-run` 的 1K
-fixture 提取，历史生成输出不作为恢复参考；禁止 `--reference-run`。
-还需指定 `--binary` 和新的 `--output`（位于 `build/` 或 `.q4t-work/`）。
-首次执行前须冻结实际输入与二进制身份，规则见
-[转正计划](../../docs/MTP_RELEASE_PLAN_2026-10-08.md)。当前尚未执行这组真实 HTTP。
-
-旧 `full` 与 `decode-recovery` scope 保留；后者仍包含普通/MTP 的
-跨模式文本比较，其整体失败不能单独用于认定取消造成了状态残留。

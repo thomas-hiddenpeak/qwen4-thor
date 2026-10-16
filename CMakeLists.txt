@@ -147,6 +147,7 @@ add_library(q4t_quant STATIC
   src/quant/moe_weights.cpp
   src/quant/moe_gemm.cu
   src/quant/moe_decode.cu
+  src/quant/moe_residency.cpp
   src/quant/lt_cache.cpp)
 target_include_directories(q4t_quant PUBLIC include)
 target_link_libraries(q4t_quant PUBLIC q4t_io CUDA::cudart CUDA::cublasLt)
@@ -154,8 +155,7 @@ target_link_libraries(q4t_quant PUBLIC q4t_io CUDA::cudart CUDA::cublasLt)
 # ---------------------------------------------------------------------------
 # q4t_model — model layer (hyper-connection backbone, attention, MoE)
 # ---------------------------------------------------------------------------
-add_library(q4t_trace STATIC src/trace/mtp_cycle_timing.cpp
-  src/trace/mtp_verify_moe_timing.cpp
+add_library(q4t_trace STATIC
   src/trace/router_trace.cpp
   src/trace/router_collector.cpp src/trace/sha256.cpp)
 target_include_directories(q4t_trace PUBLIC include)
@@ -182,10 +182,9 @@ add_library(q4t_model STATIC
   src/model/model_owner.cpp
   src/model/gemv.cu
   src/model/gemv_hc_inject.cu
+  src/model/small_m_gemm.cu
   src/mtp/moe_bf16.cu
   src/mtp/mtp.cu
-  src/mtp/mtp_sequential.cpp
-  src/mtp/init_timing.cpp
   src/vision/vision.cu
   src/vision/processor.cpp)
 target_include_directories(q4t_model PUBLIC include third_party)
@@ -254,6 +253,22 @@ target_link_libraries(q4t_fp8_gemv_proto PRIVATE CUDA::cudart)
 add_executable(q4t_small_m_gemm_bench tools/small_m_gemm_bench.cu)
 target_link_libraries(q4t_small_m_gemm_bench PRIVATE CUDA::cudart CUDA::cublasLt)
 
+# q4t_small_m_gemm_v2_bench — SM110a-tuned hand-written BF16 small-M GEMM
+# (smem-staged x, f32x2 FMA, MAXM templated) vs cuBLASLt on the model's real
+# dense projection shapes; L2-defeated weight pool (DRAM regime).
+add_executable(q4t_small_m_gemm_v2_bench tools/small_m_gemm_v2_bench.cu)
+target_link_libraries(q4t_small_m_gemm_v2_bench PRIVATE CUDA::cudart CUDA::cublasLt)
+
+# q4t_small_m_gemm_v3_bench — contiguous-vs-scattered column mapping variants
+# (bit-identical to production scattered) on the real verify (T=4) shapes.
+add_executable(q4t_small_m_gemm_v3_bench tools/small_m_gemm_v3_bench.cu)
+target_link_libraries(q4t_small_m_gemm_v3_bench PRIVATE CUDA::cudart CUDA::cublasLt)
+
+# q4t_hc_inject_bench — HC inject GEMV variants (T=4 multi-row / T=1 decode),
+# L2-defeated per-call timing.
+add_executable(q4t_hc_inject_bench tools/hc_inject_bench.cu)
+target_link_libraries(q4t_hc_inject_bench PRIVATE CUDA::cudart)
+
 # q4t_moe_grouped_bench — grouped FP4 MoE GEMM benefit probe (per-expert
 # cuBLASLt vs weight-streaming floor; no model load)
 add_executable(q4t_moe_grouped_bench tools/moe_grouped_bench.cu)
@@ -278,6 +293,7 @@ if(Q4T_BUILD_TESTS)
     tests/ple_e2e_gather_test.cpp
     tests/ple_working_memory_test.cpp
     tests/io_json_test.cpp
+    tests/runtime_memory_budget_test.cpp
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
     tests/server_chat_contract_test.cpp
@@ -289,90 +305,61 @@ if(Q4T_BUILD_TESTS)
     tests/quant_fp4_test.cpp
     tests/quant_moe_load_test.cpp
     tests/quant_moe_gemm_test.cpp
+    tests/quant_moe_residency_test.cpp
+    tests/moe_decode_grouped_test.cpp
     tests/model_hyperconnection_test.cpp
     tests/model_linear_attention_test.cpp
     tests/model_full_attention_test.cpp
     tests/streaming_topk_test.cpp
+    tests/decode_topk_test.cpp
     tests/model_decoder_layer_test.cpp
     tests/model_ple_layer_test.cpp
     tests/model_head_test.cpp
     tests/gemv_fp8_test.cpp
+    tests/gemm_t1_vs_tk1_test.cpp
     tests/model_forward_test.cpp
     tests/model_moe_test.cpp
     tests/model_verify_multi_test.cpp
+    tests/model_verify_ckpt_test.cpp
+    tests/model_verify_ckpt_samepath_test.cpp
     tests/model_prefill_batch_test.cpp
     tests/model_mixed_batch_test.cpp
     tests/mtp_draft_test.cpp
     tests/mtp_speculative_test.cpp
     tests/mtp_spec_multi_test.cpp
+    tests/mtp_spec_accept_states_test.cpp
+    tests/mtp_writer_row0_test.cpp
+    tests/mem_alloc_probe_test.cpp
     tests/model_decode_rope_test.cpp
     tests/mtp_checkpoint_layout_test.cpp
     tests/mtp_path_triangle_test.cpp
-    tests/mtp_known_position_test.cpp
-    tests/mtp_init_tail_test.cpp
     tests/vision_forward_test.cpp
     tests/model_vision_inject_test.cpp
     tests/vision_processor_test.cpp
     tests/video_processor_test.cpp
     tests/vision_e2e_test.cpp
     tests/test_main.cpp)
-  set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant q4t_model)
+  set(Q4T_TEST_LIBS q4t_ple q4t_io q4t_quant q4t_model q4t_runtime)
   if(Q4T_HAS_ICU)
-    list(APPEND Q4T_TEST_SOURCES tests/text_tokenizer_test.cpp)
+    list(APPEND Q4T_TEST_SOURCES tests/text_tokenizer_test.cpp
+                                 tests/mtp_verify_numerics_test.cpp
+                                 tests/mtp_sixcell_test.cpp)
     list(APPEND Q4T_TEST_LIBS q4t_text)
   endif()
   add_executable(q4t_tests ${Q4T_TEST_SOURCES})
   target_include_directories(q4t_tests PRIVATE include)
   target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})
   add_test(NAME q4t_tests COMMAND q4t_tests)
-  # Preserve the known cross-mode failure as an explicit diagnostic, matching
-  # the foundation branch. Its assertions are not a sequential release gate.
-  add_executable(q4t_mtp_cross_mode_diagnostic EXCLUDE_FROM_ALL
-    tests/test_main.cpp tests/mtp_admission_test.cpp)
-  target_include_directories(q4t_mtp_cross_mode_diagnostic PRIVATE include)
-  target_link_libraries(q4t_mtp_cross_mode_diagnostic PRIVATE ${Q4T_TEST_LIBS})
 
   # These research replays require retained private raw input or a caller-
   # supplied new evidence directory. Keep their original assertions and run
   # them only through an explicit target with the recorded fixture protocol.
-  foreach(fixture IN ITEMS mtp_projection_path mtp_moe_path mtp_k3_replay
-      mtp_init_last_row quant_moe_batch_gather)
+  foreach(fixture IN ITEMS mtp_projection_path mtp_moe_path)
     add_executable(q4t_${fixture}_diagnostic EXCLUDE_FROM_ALL
       tests/test_main.cpp tests/${fixture}_test.cpp)
     target_include_directories(q4t_${fixture}_diagnostic PRIVATE include)
     target_link_libraries(q4t_${fixture}_diagnostic PRIVATE ${Q4T_TEST_LIBS})
   endforeach()
-
-  # Targeted CUDA allocation-failure checks; never part of the full model
-  # registry because its link-time wrappers deliberately inject failures.
-  add_executable(q4t_mtp_lifecycle tests/mtp_lifecycle_test.cpp)
-  target_include_directories(q4t_mtp_lifecycle PRIVATE include)
-  target_link_libraries(q4t_mtp_lifecycle PRIVATE ${Q4T_TEST_LIBS})
-  target_link_options(q4t_mtp_lifecycle PRIVATE
-    LINKER:--wrap=cudaMalloc LINKER:--wrap=cudaFree
-    LINKER:--wrap=cudaStreamSynchronize)
-
-  # The regular control target links the production driver with dependency
-  # stubs and never loads CUDA/models. Real-model admission remains explicit.
-  add_executable(q4t_mtp_sequential_control
-    tests/test_main.cpp tests/mtp_sequential_control_test.cpp
-    src/mtp/mtp_sequential.cpp)
-  target_include_directories(q4t_mtp_sequential_control PRIVATE
-    include ${CUDAToolkit_INCLUDE_DIRS})
-  add_test(NAME q4t_mtp_sequential_control
-    COMMAND q4t_mtp_sequential_control)
-  set_tests_properties(q4t_mtp_sequential_control PROPERTIES TIMEOUT 180)
-  add_executable(q4t_mtp_sequential_admission EXCLUDE_FROM_ALL
-    tests/test_main.cpp tests/mtp_sequential_admission_test.cpp)
-  target_include_directories(q4t_mtp_sequential_admission PRIVATE include)
-  target_link_libraries(q4t_mtp_sequential_admission PRIVATE ${Q4T_TEST_LIBS})
-
-  # Bounded long-only supplement for the original terminal shape fixture.
-  add_executable(q4t_mtp_sequential_long_admission EXCLUDE_FROM_ALL
-    tests/test_main.cpp tests/mtp_sequential_admission_test.cpp)
-  target_include_directories(q4t_mtp_sequential_long_admission PRIVATE include)
-  target_link_libraries(q4t_mtp_sequential_long_admission PRIVATE
-    ${Q4T_TEST_LIBS})
 
   # Three frozen HC replays explain the old first cross-shape fork. Captures
   # wrap real projection imports only in this explicit diagnostic executable.
@@ -384,19 +371,13 @@ if(Q4T_BUILD_TESTS)
     LINKER:--wrap=_ZN3q4t5model7Bf16GevEPKtS2_PtiifP11CUstream_st
     LINKER:--wrap=cublasLtMatmul)
 
-  # Logical forward failure after a real forward submission. Production q4t has
-  # no injection hook; only this explicit test executable wraps its imports.
-  add_executable(q4t_mtp_sequential_fault_server EXCLUDE_FROM_ALL
-    src/main.cpp tests/mtp_sequential_fault_server.cpp)
-  target_include_directories(q4t_mtp_sequential_fault_server PRIVATE include)
-  target_link_libraries(q4t_mtp_sequential_fault_server PRIVATE
-    q4t_model q4t_text q4t_ple q4t_quant q4t_server CUDA::cudart)
-  target_link_options(q4t_mtp_sequential_fault_server PRIVATE
-    LINKER:--wrap=_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_
-    LINKER:--wrap=_ZN3q4t3mtp10MtpForwardERKNS0_8MtpModelEPKiS5_PKtPtS8_S8_iP11CUstream_stS5_bNS_5model10LogitsRowsEPNS0_13MtpInitTimingEiNS0_14MtpForwardModeE
-    LINKER:--wrap=_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti
-    LINKER:--wrap=_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE
-    LINKER:--wrap=_ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti
+
+  # Shared MTP ownership contract retained across verifier replacement.
+  add_executable(q4t_mtp_lifecycle tests/mtp_lifecycle_test.cpp)
+  target_include_directories(q4t_mtp_lifecycle PRIVATE include)
+  target_link_libraries(q4t_mtp_lifecycle PRIVATE ${Q4T_TEST_LIBS})
+  target_link_options(q4t_mtp_lifecycle PRIVATE
+    LINKER:--wrap=cudaMalloc LINKER:--wrap=cudaFree
     LINKER:--wrap=cudaStreamSynchronize)
 
   # Repeatable real-CUDA copy contract; no checkpoint or private input.
@@ -408,38 +389,6 @@ if(Q4T_BUILD_TESTS)
   set_tests_properties(q4t_mtp_position_copy PROPERTIES
     TIMEOUT 180 LABELS cuda RESOURCE_LOCK q4t_cuda)
 
-  add_executable(q4t_mtp_t4_completion_fault_server EXCLUDE_FROM_ALL
-    src/main.cpp tests/mtp_t4_completion_fault_server.cpp)
-  target_include_directories(q4t_mtp_t4_completion_fault_server PRIVATE include)
-  target_link_libraries(q4t_mtp_t4_completion_fault_server PRIVATE
-    q4t_model q4t_text q4t_ple q4t_quant q4t_server CUDA::cudart)
-  target_link_options(q4t_mtp_t4_completion_fault_server PRIVATE
-    LINKER:--wrap=_ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE
-    LINKER:--wrap=_ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_
-    LINKER:--wrap=_ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti
-    LINKER:--wrap=_ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i
-    LINKER:--wrap=_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_
-    LINKER:--wrap=_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti
-    LINKER:--wrap=_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE
-    LINKER:--wrap=_ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti
-    LINKER:--wrap=cudaMemcpyAsync
-    LINKER:--wrap=cudaStreamSynchronize)
-  # Explicit real-model terminal selection control; never production.
-  add_executable(q4t_mtp_t4_terminal_server EXCLUDE_FROM_ALL
-    src/main.cpp tests/mtp_t4_terminal_server.cpp)
-  target_include_directories(q4t_mtp_t4_terminal_server PRIVATE include)
-  target_link_libraries(q4t_mtp_t4_terminal_server PRIVATE
-    q4t_model q4t_text q4t_ple q4t_quant q4t_server CUDA::cudart)
-  target_link_options(q4t_mtp_t4_terminal_server PRIVATE
-    LINKER:--wrap=_ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE
-    LINKER:--wrap=_ZN3q4t5model16ModelVerifyMultiERKNS0_5ModelEPKiS5_S5_S5_iiiPtP11CUstream_stS6_
-    LINKER:--wrap=_ZN3q4t5model22ModelRestoreCheckpointERKNS0_5ModelEiP11CUstream_sti
-    LINKER:--wrap=_ZN3q4t5model20FullAttentionForwardERKNS0_20FullAttentionWeightsEPKtPtPKiS8_S6_S8_S6_S6_iPvmP11CUstream_stS8_i
-    LINKER:--wrap=_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_
-    LINKER:--wrap=_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti
-    LINKER:--wrap=_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE
-    LINKER:--wrap=_ZN3q4t5model12ModelPrefillERKNS0_5ModelEPNS0_13ModelSequenceEPKiiPtP11CUstream_stS8_PKNS0_14VisionFeaturesEiNS0_10LogitsRowsENS0_18SequenceCompletionE
-    LINKER:--wrap=cudaMemcpy)
 
 endif()
 
@@ -462,3 +411,16 @@ if(Q4T_BUILD_TESTS)
   set_tests_properties(q4t_scheduler_submission_contracts PROPERTIES
     TIMEOUT 180)
 endif()
+
+# q4t_moe_gemm_bench — per-row grouped NVFP4 GEMM (verify T=4 shapes) vs
+# DRAM floor; characterizes the moe_decode.cu grouped path per call.
+add_executable(q4t_moe_gemm_bench tools/moe_gemm_bench.cu)
+target_include_directories(q4t_moe_gemm_bench PRIVATE include)
+target_link_libraries(q4t_moe_gemm_bench PRIVATE q4t_quant CUDA::cudart CUDA::cublasLt)
+
+# q4t_moe_gemm_grouped_bench — expert-grouped vs per-row grouped NVFP4 GEMM
+# (verify T=4 shapes); characterizes the weight-traffic headroom of grouping
+# (token,slot) rows by expert before the grouped GEMM.
+add_executable(q4t_moe_gemm_grouped_bench tools/moe_gemm_grouped_bench.cu)
+target_include_directories(q4t_moe_gemm_grouped_bench PRIVATE include)
+target_link_libraries(q4t_moe_gemm_grouped_bench PRIVATE q4t_quant CUDA::cudart CUDA::cublasLt)

@@ -363,7 +363,7 @@ __global__ void DepthwiseConvAddMultiSeqCausalKernel(
 __global__ void PleConvCheckpointMultiSeqKernel(
     const uint16_t* __restrict__ input, const uint16_t* __restrict__ old_state,
     uint16_t* __restrict__ ckpt, const int* __restrict__ d_seq_id, int C,
-    int state_len, int T, int num_ckpt) {
+    int state_len, int T, int num_ckpt, int ckpt_stride) {
   const int c = blockIdx.x * blockDim.x + threadIdx.x;
   if (c >= C) return;
   const int z = blockIdx.y;  // = b * num_ckpt + tt
@@ -373,12 +373,41 @@ __global__ void PleConvCheckpointMultiSeqKernel(
   const uint16_t* seq_state =
       old_state + static_cast<size_t>(seq) * C * state_len;
   uint16_t* dst = ckpt +
-                  ((static_cast<size_t>(seq) * num_ckpt + tt) * C + c) *
+                  ((static_cast<size_t>(seq) * ckpt_stride + tt) * C + c) *
                       state_len;
   for (int k = 0; k < state_len; ++k) {
     const int s = tt - state_len + 1 + k;  // local position (can be negative)
     dst[k] = (s >= 0) ? input[static_cast<size_t>(b * T + s) * C + c]
                       : seq_state[c * state_len + (s + state_len)];
+  }
+}
+
+// Save the PLE short-conv state after each of the first `num_ckpt` local
+// tokens, for SINGLE-SEQUENCE MTP VERIFY rollback. The packed [T, C] input is
+// one sequence (packed index == local token index). For local token tt the
+// conv state window = the last `state_len` gated_n values ending at tt (from
+// the packed input if in-range, else the pre-batch old_state). Layout
+// [num_ckpt, C, state_len] (per-layer slice; the sequence offset is applied by
+// the caller). MUST run BEFORE the in-place state update
+// (PleConvUpdateStateKernel) so `old_state` is still the pre-batch state.
+// Mirrors PleConvCheckpointMultiSeqKernel with B = 1.
+__global__ void PleConvCheckpointSingleSeqKernel(
+    const uint16_t* __restrict__ input, const uint16_t* __restrict__ old_state,
+    uint16_t* __restrict__ ckpt, uint16_t* __restrict__ capture, int C,
+    int state_len, int num_ckpt) {
+  const int c = blockIdx.x * blockDim.x + threadIdx.x;
+  if (c >= C) return;
+  const int tt = blockIdx.y;  // checkpoint index = local token index
+  uint16_t* dst = ckpt + (static_cast<size_t>(tt) * C + c) * state_len;
+  for (int k = 0; k < state_len; ++k) {
+    const int s = tt - state_len + 1 + k;  // local position (can be negative)
+    dst[k] = (s >= 0) ? input[static_cast<size_t>(s) * C + c]
+                      : old_state[c * state_len + (s + state_len)];
+  }
+  // Independent writer-row0 capture (test-only, default null): copy the
+  // tt==0 row to a separate buffer, NOT via ckpt.
+  if (tt == 0 && capture) {
+    for (int k = 0; k < state_len; ++k) capture[c * state_len + k] = dst[k];
   }
 }
 
@@ -570,7 +599,9 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
                        size_t workspace_bytes, cudaStream_t stream,
                        const uint16_t* trunk_add, const int* d_seq_id,
                        int tokens_per_seq, uint16_t* conv_ckpt, int num_ckpt,
-                       const RaggedBatch* ragged) {
+                       const RaggedBatch* ragged, int ckpt_stride,
+                       uint16_t* gated_n_capture,
+                       uint16_t* ple_conv_capture) {
   const int hc = w.hc_count, hs = w.hidden_size, pe = w.ple_embed_dim;
   const int hc_dim = hc * hs;
   const int K = w.conv_kernel, dil = w.conv_dilation;
@@ -648,6 +679,18 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
       reinterpret_cast<uint16_t*>(d_gated), w.norm_conv,
       reinterpret_cast<uint16_t*>(d_gated_n), T, hc, hs, w.eps);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("ple rmsnorm2");
+  // Test-only writer-row0 capture: copy row 0 of the PLE short-conv INPUT
+  // (gated_n) to the caller-owned buffer. Independent reference for the PLE
+  // conv checkpoint row-0 window (host-side reconstruction), separate from
+  // the checkpoint write path. nullptr in production; the D2D copy does not
+  // alter the forward.
+  if (gated_n_capture) {
+    if (cudaMemcpyAsync(gated_n_capture, d_gated_n,
+                        static_cast<size_t>(hc_dim) * sizeof(uint16_t),
+                        cudaMemcpyDeviceToDevice, stream) != cudaSuccess) {
+      return Status::Fail("gated_n_capture D2D");
+    }
+  }
   // 8. out = gated_value + silu(depthwise-causal-conv(gated_n)). The dilated
   //    conv (K, dilation) has receptive field (K-1)*dilation, so the
   //    persistent state holds that many gated_n values per channel
@@ -702,7 +745,8 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
         PleConvCheckpointMultiSeqKernel<<<dim3(blocks, B * num_ckpt), kBlock,
                                           0, stream>>>(
             reinterpret_cast<uint16_t*>(d_gated_n), conv_state, conv_ckpt,
-            d_seq_id, hc_dim, state_len, tokens_per_seq, num_ckpt);
+            d_seq_id, hc_dim, state_len, tokens_per_seq, num_ckpt,
+            ckpt_stride);
         if (cudaGetLastError() != cudaSuccess)
           return Status::Fail("ple conv ckpt");
       }
@@ -715,6 +759,18 @@ Status PleLayerForward(const PleLayerWeights& w, const uint16_t* embeddings,
           conv_state, reinterpret_cast<uint16_t*>(d_gated_n), d_seq_id, hc_dim,
           state_len);
     } else {
+      // Single-sequence T>1 verify: save the per-token PLE conv checkpoint
+      // BEFORE the in-place update (mirrors the multi-seq branch). The
+      // checkpoint rows read the pre-update state + packed input; a partial
+      // accept restores the PLE conv state via D2D (ModelRestoreCheckpoint).
+      if (conv_ckpt && num_ckpt > 0) {
+        PleConvCheckpointSingleSeqKernel<<<dim3(blocks, num_ckpt), kBlock,
+                                           0, stream>>>(
+            reinterpret_cast<uint16_t*>(d_gated_n), conv_state, conv_ckpt,
+            ple_conv_capture, hc_dim, state_len, num_ckpt);
+        if (cudaGetLastError() != cudaSuccess)
+          return Status::Fail("ple conv ckpt");
+      }
       PleConvUpdateStateKernel<<<blocks, kBlock, 0, stream>>>(
           conv_state, reinterpret_cast<uint16_t*>(d_gated_n), T, hc_dim,
           state_len);

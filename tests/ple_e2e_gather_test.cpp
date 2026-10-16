@@ -11,9 +11,17 @@
 
 #include <cuda_runtime.h>
 
+#include <algorithm>
+#include <atomic>
+#include <chrono>
+#include <condition_variable>
+#include <filesystem>
+#include <mutex>
+#include <thread>
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
 #include <string>
@@ -62,8 +70,9 @@ bool CudaAvailable() {
 }
 
 std::string MakePatternFile(size_t nbytes) {
-  const char* path = "/tmp/q4t_ple_e2e_test.bin";
-  int fd = open(path, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+  std::filesystem::create_directories(".q4t-work/ple-e2e");
+  std::string path = ".q4t-work/ple-e2e/rows-XXXXXX";
+  int fd = mkstemp(path.data());
   if (fd < 0) return "";
   std::vector<uint8_t> buf(nbytes);
   for (size_t i = 0; i < nbytes; ++i) {
@@ -209,4 +218,97 @@ Q4T_TEST(ple_e2e_capacity_guard) {
   delete emb;
   unlink(path.c_str());
   return true;
+}
+
+// Keep the first upload pending while a second call reuses the gather object.
+// Both outputs must retain their own rows even without a caller-side wait.
+namespace {
+bool CheckPendingUpload(bool different_stream) {
+  if (!CudaAvailable()) Q4T_SKIP("no CUDA device");
+  std::filesystem::create_directories(".q4t-work/ple-staging");
+  std::string pattern = ".q4t-work/ple-staging/rows-XXXXXX";
+  const int fd = mkstemp(pattern.data());
+  Q4T_CHECK(fd >= 0);
+  std::vector<uint8_t> file(4096, 0x38);  // E4M3 1.0
+  std::fill(file.begin() + 160, file.begin() + 320, 0x40);  // 2.0
+  const bool wrote = write(fd, file.data(), file.size()) ==
+                     static_cast<ssize_t>(file.size());
+  close(fd);
+  Q4T_CHECK(wrote);
+  PleEmbedding::Config cfg;
+  cfg.sidecar_path = pattern;
+  cfg.row_bytes = 160;
+  cfg.total_rows = 25;
+  cfg.capacity_tokens = 2;
+  cfg.hash_params.ngram_size = 2;
+  cfg.hash_params.heads_per_ngram = 1;
+  PleEmbedding* emb = nullptr;
+  Q4T_CHECK(PleEmbedding::Create(cfg, &emb).ok());
+  uint16_t* output = nullptr;
+  Q4T_CHECK(cudaMalloc(&output, 320 * sizeof(uint16_t)) == cudaSuccess);
+  cudaStream_t stream = nullptr;
+  Q4T_CHECK(cudaStreamCreate(&stream) == cudaSuccess);
+  cudaStream_t next_stream = stream;
+  if (different_stream) {
+    Q4T_CHECK(cudaStreamCreate(&next_stream) == cudaSuccess);
+  }
+  const int64_t rows[] = {0, 1};
+  // Warm the conversion kernel before inserting the controlled dependency.
+  Q4T_CHECK(emb->GatherRows(rows, 2, output, stream).ok());
+  Q4T_CHECK(cudaStreamSynchronize(stream) == cudaSuccess);
+  std::atomic<bool> release{false};
+  Q4T_CHECK(cudaLaunchHostFunc(stream, [](void* value) {
+    auto* gate = static_cast<std::atomic<bool>*>(value);
+    while (!gate->load()) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+  }, &release) == cudaSuccess);
+  std::mutex mutex;
+  std::condition_variable cv;
+  bool second_returned = false;
+  std::thread unblock([&] {
+    std::unique_lock lock(mutex);
+    cv.wait_for(lock, std::chrono::seconds(1), [&] { return second_returned; });
+    release.store(true);
+  });
+  const Status first = emb->GatherRows(rows, 1, output, stream);
+  const Status second = emb->GatherRows(rows + 1, 1, output + 160, next_stream);
+  {
+    std::lock_guard lock(mutex);
+    second_returned = true;
+  }
+  cv.notify_one();
+  unblock.join();
+  // Destruction must finish the pending conversion before freeing scratch.
+  delete emb;
+  const bool completed = cudaStreamSynchronize(stream) == cudaSuccess &&
+                         cudaStreamSynchronize(next_stream) == cudaSuccess;
+  std::vector<uint16_t> actual(320);
+  const bool copied = cudaMemcpy(actual.data(), output, actual.size() * 2,
+                                 cudaMemcpyDeviceToHost) == cudaSuccess;
+  int wrong_first = 0;
+  int wrong_second = 0;
+  for (int i = 0; i < 160; ++i) {
+    wrong_first += actual[i] != 0x3f80;
+    wrong_second += actual[160 + i] != 0x4000;
+  }
+  std::printf("  pending uploads: wrong_first=%d wrong_second=%d\n",
+              wrong_first, wrong_second);
+  cudaFree(output);
+  if (different_stream) cudaStreamDestroy(next_stream);
+  cudaStreamDestroy(stream);
+  unlink(pattern.c_str());
+  Q4T_CHECK(first.ok() && second.ok() && completed && copied);
+  Q4T_CHECK(wrong_first == 0 && wrong_second == 0);
+  return true;
+}
+
+}  // namespace
+
+Q4T_TEST(ple_e2e_pending_upload_owns_staging) {
+  return CheckPendingUpload(false);
+}
+
+Q4T_TEST(ple_e2e_cross_stream_upload_owns_scratch) {
+  return CheckPendingUpload(true);
 }

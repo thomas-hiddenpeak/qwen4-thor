@@ -4,9 +4,10 @@
 // It is not a physical RAM limit or an OOM guarantee: file cache, allocator
 // retention, driver ownership and other processes require separate accounting.
 // Callers must reject an infeasible result; zero capacity is never a fallback.
-// MTP admission covers single-sequence text with k=3. It includes the supplied
-// independent draft weights, loading host peak, scratch, checkpoints and the
-// request's draft-extend allocations. Other MTP configurations fail closed.
+// MTP budget covers single-sequence text with k in [1,16] (T=k+1 verify
+// rows). It includes the supplied independent draft weights, loading host
+// peak, scratch, checkpoints and the request's draft-extend allocations.
+// Other MTP configurations fail closed.
 //
 // The model accounts for:
 //   - A supplied weight estimate (an index total may include unused tensors)
@@ -70,10 +71,10 @@ struct BudgetRequest {
   // workspace and independent index/staging sizes. MTP fields are ignored
   // when has_mtp is false.
   size_t main_workspace_bytes = 0;
-  // Serialized main-forward transient outside the workspace, charged once
-  // conservatively in fixed allocations (also when MTP is disabled).
-  size_t main_forward_extra_bytes = 0;
   size_t mtp_workspace_bytes = 0;
+  // Extra fixed cost beyond weights + measured constants (e.g. tiered
+  // residency per-layer pinned staging buffers).
+  size_t extra_fixed_bytes = 0;
   size_t mtp_weights_bytes =
       0;  // independent MTP index, excluding main weights
   size_t mtp_load_host_bytes = 0;  // largest simultaneous loader host staging
@@ -91,7 +92,6 @@ struct MemoryBudget {
   size_t per_request = 0;  // MTP prompt trunk, extend buffers and host scratch
   size_t available_for_state = 0;  // budget - fixed - max(request, loading)
   size_t main_workspace = 0;
-  size_t main_forward_extra = 0;
   size_t mtp_workspace = 0;
   size_t mtp_weights = 0;
   size_t mtp_buffers = 0;  // LoadMtp single-step sample/trunk/logits

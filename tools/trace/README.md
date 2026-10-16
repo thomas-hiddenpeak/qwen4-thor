@@ -1,5 +1,49 @@
 # MoE 路由采集与检查
 
+## 实际offload分块的有界离线研究
+
+`run_offload_study.py`配合`offload_trace.py`、`offload_replay.py`和
+`offload_working_set.py`，消费完整成功请求的逐token路由。冻结范围与
+数据边界见[2026-10-02回放报告](../../docs/OFFLOAD_REPLAY_2026-10-02.md)。
+它不启动模型，不改变运行时，也不预测TTFT或实际SSD读取。
+
+当前固定比较C256/L2-16/mirror-8/PhaseD关闭：原lex分块tick-LRU，
+以及保持分块不变、按当前GPU重叠贪心重排的唯一候选。每forward另算
+同入口状态、原分块顺序的未来知情驱逐参照；其和不是全请求最优值。
+L2/mirror分别列`serial_eager`与`batch_deferred`条件，二者不是实际
+排程的上下界。InitHot实际读取单列并暖化模拟缓存；跨请求保持状态。
+
+同key token的C++非稳定排序由独立host helper复现。用与运行时相同
+的g++-14/libstdc++构建，产物只放build/或.q4t-work/：
+
+```bash
+g++-14 -std=c++23 -O2 -Wall -Wextra -Werror \
+  tools/trace/offload_sort.cpp -o build/offload_sort
+python3 -B tools/trace/run_offload_study.py \
+  --plan .q4t-work/offload-replay-goal-20261002/plan.json \
+  --layout .q4t-work/offload-replay-goal-20261002/layout.json \
+  --output .q4t-work/offload-replay-goal-20261002/new-run
+```
+
+plan绑定helper、旧采集binary/checker、当前binary、热点和两条完整
+源文件SHA；示例使用已冻结helper，不会自动切换到新编译路径。
+缺少私有输入、身份变化、容量不符、部分forward或失败终态均拒绝。
+输出目录必须全新；失败保存exit与已完成分项，不删除失败证据。
+
+文件layout只读取safetensors头部与索引，保留file/stat/header身份。
+8/12/16GiB专家对象池是假设全部空间用于原始专家payload的独立模型，
+不是memcg或整体RAM预算；不模拟Linux回收、readahead及并行pread顺序。
+旧采集binary的路由仅用于固定路由反事实比较，不宣称当前路由逐ID相同。
+
+直接工具合同：`test_offload_replay.py`、`test_offload_working_set.py`、
+`test_offload_log.py`；`test_offload_study.py --sort-helper HELPER`；
+`test_offload_trace.py --checker CHECKER --output NEW_OUTPUT`。
+`analyze_offload_log.py --log SERVER_LOG --output NEW_JSON`可从已有
+完整flush/overlap诊断提取固定顺序GPU补载下界，拒绝不完整日志；
+该下界不能约束改变chunk顺序的候选，也不代表物理IO下界。
+
+## 原始路由采集
+
 受控完整请求采集，默认关闭。仅支持实际 max_seq=1、文本 greedy、MTP关、
 媒体关；不改变 scheduler、prefill chunk 或 Router 算法。默认部署已包含
 采集功能，具体版本与成本接受见[当前状态](../../docs/STATUS.md)。
@@ -72,7 +116,9 @@ CUDA错误仍进入原服务失败/不健康路径。关闭态不建池、不启
 
 `ctest --test-dir build/public-host --no-tests=error --output-on-failure`
 运行host、格式/CLI、来源绑定、回放/影子/分布/混合，以及下述离线研究
-合同（distribution合同需要numpy）。所有合成测试产物写入配置的构建目录。`run_capture_checks.py`接受候选binary/checker、
+合同（distribution合同需要numpy）。所有合成测试产物写入配置的构建目录。
+`test_analyze.py --checker ... --output ...`检查来源绑定和不完整样本反例。
+`run_capture_checks.py`接受候选binary/checker、
 既有quality/performance证据和全新output，实际运行取消、inline/fallback、
 不支持模式、配额、写盘/关闭失败、队列压力、池分配失败、停止/崩溃及
 采集CUDA故障；测试shim不会链接进runner。`--case NAME`可重复选择受影响
@@ -176,7 +222,8 @@ frame上限16MiB。单个受限文件的解析/IO不可抢占，deadline非故�
 余下LRU；排名只用原冻结校准。prefill扣除固定命中后，剩余并集放不入动态
 区则bypass，不污染动态顺序。初始化固定区计费；同时比较每请求重置和连续
 保留。逐组独立列表核对，0/100端点匹配原纯LRU/静态；test_hybrid.py提供
-直接合同。结果仅离线，见[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
+直接合同。结果仅离线，见docs/MOE_HYBRID_2026-09-28.md与
+[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
 
 ## 专家ID分布（不做缓存回放）
 
@@ -197,7 +244,8 @@ experts.csv、逐层layers.csv、完整身份和重复标记。只消费已提�
 `summarize_distribution.py --directory NEW`重算分组并生成readout/汇总、
 场景表和跨请求名单重合；输出不能覆盖。`test_distribution.py --checker
 CHECKER`运行直接合同，也可在末尾指定unittest用例名称只重验受影响项。
-本轮来源、排除项、口径及结论见[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
+本轮来源、排除项、口径及结论见docs/MOE_DISTRIBUTION_2026-09-28.md与
+[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
 公开仓不包含私有轨迹；缺源即失败。没有发送模型HTTP或评价缓存策略。
 
 `expert_probabilities.py --directory DISTRIBUTION_RESULTS --output NEW
@@ -216,7 +264,8 @@ CHECKER`运行直接合同，也可在末尾指定unittest用例名称只重验�
 N=1..512，给出选择覆盖80/90/95/99%与整组概率50/80/90/95%目标的最小N。
 最小性限于同样本频率排名路径，不是所有专家组合或运行时缓存的最优解。
 prefill仍按token。输出完整曲线、目标表和最大/最小名次直方图；无模型执行。
-见[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
+见docs/MOE_LAYER_TOPN_2026-09-28.md与
+[收尾研究结论与历史报告入口](../../docs/MAIN_WRAPUP_2026-10-07.md)。
 
 ## 主试验原始路由分析（2026-09-29 入库）
 

@@ -1,22 +1,11 @@
-// Test for ModelPrefillBatch (Phase 2 ragged batched prefill). Loads a small
-// main model (2 layers = 1 linear + 1 linear/PLE) and verifies that packing B
-// FRESH, VARIABLE-LENGTH sequences into ONE ragged forward produces the same
-// per-sequence logits as B independent single-sequence prefills.
-//
-//   1. Per-token logits of each packed sequence match its single-seq prefill
-//      reference (l2_rel < 0.01: the ragged causal kernels are a per-sequence
-//      copy of the single-seq prefill kernels, so the match is near bit-exact).
-//   2. No cross-sequence contamination: the B sequences use DIFFERENT prompts
-//      AND DIFFERENT lengths, so a packing bug (wrong cu_seqlens / token_local)
-//      would show up as a large l2_rel against the wrong reference.
-//   3. Last-token argmax of each packed sequence matches its reference (the
-//      next-token distribution serve samples from).
-//
-// The ragged path exercises: cu_seqlens (seq_offset) for the update-state / GDN
-// batch-grid kernels, token_local for the conv / PLE token-grid kernels, and
-// per-token d_seq_id for the full-attention KV/indexer slices (length-agnostic).
-//
-// Skipped when CUDA or the model is absent.
+// Ragged prefill must match independent causal prefixes at the same total
+// GEMM shape, bit-exactly. Each sequence is placed first in a separate plain
+// prefill and padded to total M with two predetermined suffixes. Suffixes
+// cannot affect a causal prefix; the references never use ragged metadata.
+// Different-length unpadded references remain visible as cross-shape
+// diagnostics, not an assumption of batch-invariant projection arithmetic.
+// See docs/evidence/mtp-numerical-closure-20261016 for the original failures
+// and the first observed shape-dependent mixing-projection differences.
 #include "q4t/model/model.h"
 #include "q4t/test.h"
 
@@ -26,6 +15,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
 #include <string>
@@ -45,12 +35,15 @@ using q4t::model::ModelPrefillBatch;
 using q4t::model::ModelSequence;
 
 const char* kModelDir =
-    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+    "/home/rm01/models/dev/llm/garnermccloud/"
+    "Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
 const char* kIndex =
-    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/"
+    "/home/rm01/models/dev/llm/garnermccloud/"
+    "Qwen3.8-Flash-Next-NVFP4-SSD-Stream/"
     "model.safetensors.index.json";
 const char* kPleSidecar =
-    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/"
+    "/home/rm01/models/dev/llm/garnermccloud/"
+    "Qwen3.8-Flash-Next-NVFP4-SSD-Stream/"
     "ple/qwen3.8-flash-next-ple-fp8.bin";
 
 bool FileExists(const char* path) {
@@ -126,8 +119,8 @@ Q4T_TEST(model_prefill_batch) {
   // B = 3 sequences, DIFFERENT lengths + DIFFERENT prompts.
   const int B = 3;
   const std::vector<std::vector<int32_t>> prompts = {
-      {846, 25, 1203, 321, 44},           // len 5
-      {1024, 55, 9001},                   // len 3
+      {846, 25, 1203, 321, 44},            // len 5
+      {1024, 55, 9001},                    // len 3
       {12, 3456, 789, 234, 5678, 90, 111}  // len 7
   };
   std::vector<int> lens(B), seq_ids(B);
@@ -146,6 +139,19 @@ Q4T_TEST(model_prefill_batch) {
     return false;
   }
 
+  auto capture = [](const std::string& suffix) {
+    const char* directory = std::getenv("Q4T_PREFILL_CAPTURE");
+    if (!directory) return;
+    for (const char* name : {"Q4T_MLP_DUMP", "Q4T_LIN_DUMP", "Q4T_MOE_DUMP"}) {
+      if (suffix.empty()) {
+        unsetenv(name);
+      } else {
+        const std::string tag = std::string(directory) + "/" + suffix;
+        setenv(name, tag.c_str(), 1);
+      }
+    }
+  };
+
   // ---- Reference: B independent single-sequence prefills ------------------
   std::vector<std::vector<uint16_t>> ref(B);  // [B][len_b * vocab]
   for (int b = 0; b < B; ++b) {
@@ -157,6 +163,7 @@ Q4T_TEST(model_prefill_batch) {
       m.Free();
       return false;
     }
+    capture("ref" + std::to_string(b));
     s = ModelPrefill(m, &rseq, prompts[b].data(), lens[b], d_logits, nullptr,
                      nullptr, nullptr, seq_ids[b]);
     if (!s.ok()) {
@@ -167,7 +174,8 @@ Q4T_TEST(model_prefill_batch) {
     }
     ref[b].resize(static_cast<size_t>(lens[b]) * vocab);
     cudaMemcpy(ref[b].data(), d_logits,
-               static_cast<size_t>(lens[b]) * vocab * 2, cudaMemcpyDeviceToHost);
+               static_cast<size_t>(lens[b]) * vocab * 2,
+               cudaMemcpyDeviceToHost);
     ModelEndSequence(&rseq);
   }
 
@@ -178,6 +186,7 @@ Q4T_TEST(model_prefill_batch) {
   for (int b = 0; b < B; ++b)
     tokens.insert(tokens.end(), prompts[b].begin(), prompts[b].end());
 
+  capture("packed");
   s = ModelPrefillBatch(m, tokens.data(), lens.data(), seq_ids.data(), B,
                         d_logits, nullptr);
   if (!s.ok()) {
@@ -187,11 +196,55 @@ Q4T_TEST(model_prefill_batch) {
     return false;
   }
   std::vector<uint16_t> batched(static_cast<size_t>(Ttot) * vocab);
-  cudaMemcpy(batched.data(), d_logits,
-             static_cast<size_t>(Ttot) * vocab * 2, cudaMemcpyDeviceToHost);
+  cudaMemcpy(batched.data(), d_logits, static_cast<size_t>(Ttot) * vocab * 2,
+             cudaMemcpyDeviceToHost);
+
+  // Same total projection shape, but one independent causal sequence. The
+  // target prompt is first; suffix padding cannot affect its prefix.
+  bool ok = true;
+  int packed_offset = 0;
+  for (int b = 0; b < B; ++b) {
+    for (int padding_case = 0; padding_case < 2; ++padding_case) {
+      std::vector<int32_t> padded = prompts[b];
+      padded.resize(Ttot, padding_case == 0 ? prompts[b].back() : 0);
+      ModelSequence rseq;
+      s = ModelBeginSequence(m, &rseq, nullptr, seq_ids[b]);
+      capture("padded" + std::to_string(b) + "-" +
+              std::to_string(padding_case));
+      if (s.ok()) {
+        s = ModelPrefill(m, &rseq, padded.data(), Ttot, d_logits, nullptr,
+                         nullptr, nullptr, seq_ids[b]);
+      }
+      if (!s.ok()) {
+        cudaFree(d_logits);
+        m.Free();
+        return false;
+      }
+      std::vector<uint16_t> padded_logits(static_cast<size_t>(Ttot) * vocab);
+      cudaMemcpy(padded_logits.data(), d_logits, padded_logits.size() * 2,
+                 cudaMemcpyDeviceToHost);
+      float worst = 0.0f;
+      int mismatches = 0;
+      for (int t = 0; t < lens[b]; ++t) {
+        const uint16_t* actual =
+            batched.data() + static_cast<size_t>(packed_offset + t) * vocab;
+        const uint16_t* expected =
+            padded_logits.data() + static_cast<size_t>(t) * vocab;
+        worst = std::max(worst, L2Rel(actual, expected, vocab));
+        for (int v = 0; v < vocab; ++v) mismatches += actual[v] != expected[v];
+      }
+      std::printf(
+          "  same-M padded prefix seq=%d padding=%d differences=%d "
+          "l2=%.8f\n",
+          b, padding_case, mismatches, worst);
+      if (mismatches != 0) ok = false;
+      ModelEndSequence(&rseq);
+    }
+    packed_offset += lens[b];
+  }
+  capture("");
 
   // ---- Compare per token + last-token argmax ------------------------------
-  bool ok = true;
   int offset = 0;
   for (int b = 0; b < B; ++b) {
     float worst = 0.0f;
@@ -202,16 +255,16 @@ Q4T_TEST(model_prefill_batch) {
       worst = std::max(worst, rel);
     }
     const int last = lens[b] - 1;
-    const int am_batch =
-        Argmax(batched.data() + static_cast<size_t>(offset + last) * vocab,
-               vocab);
+    const int am_batch = Argmax(
+        batched.data() + static_cast<size_t>(offset + last) * vocab, vocab);
     const int am_ref =
         Argmax(ref[b].data() + static_cast<size_t>(last) * vocab, vocab);
     const bool seq_ok = (worst < 0.01f) && (am_batch == am_ref);
-    std::printf("  seq %d (len=%d): worst l2_rel=%.5f  argmax batch=%d ref=%d "
-                "%s\n",
-                b, lens[b], worst, am_batch, am_ref, seq_ok ? "OK" : "MISMATCH");
-    if (!seq_ok) ok = false;
+    std::printf(
+        "  seq %d (len=%d): worst l2_rel=%.5f  argmax batch=%d ref=%d "
+        "%s\n",
+        b, lens[b], worst, am_batch, am_ref, seq_ok ? "OK" : "MISMATCH");
+    // Original cross-shape observation retained; same-M oracle gates above.
     offset += lens[b];
   }
 
@@ -221,7 +274,9 @@ Q4T_TEST(model_prefill_batch) {
     std::printf("  FAIL: batched prefill diverged from single-seq reference\n");
     return false;
   }
-  std::printf("  PASS: ragged batched prefill matches per-seq prefill "
-              "(B=%d, lens=5/3/7)\n", B);
+  std::printf(
+      "  PASS: ragged prefill matches independent same-M prefixes "
+      "(B=%d, lens=5/3/7)\n",
+      B);
   return true;
 }

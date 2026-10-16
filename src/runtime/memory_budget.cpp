@@ -213,8 +213,9 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
         p.ple_heads <= std::numeric_limits<int>::max() / p.ple_row_bytes));
   const bool supported_mtp =
       !p.has_mtp ||
-      (req.max_seq == 1 && req.mtp_k == 3 && p.mtp_full_attn_layers == 1 &&
-       p.max_prefill >= 4 && p.max_prefill <= 8192);
+      (req.max_seq == 1 && req.mtp_k >= 1 && req.mtp_k <= 16 &&
+       p.mtp_full_attn_layers == 1 && p.max_prefill >= 4 &&
+       p.max_prefill <= 8192);
   const bool complete_mtp =
       !p.has_mtp || (req.mtp_weights_bytes > 0 && req.mtp_load_host_bytes > 0 &&
                      req.mtp_workspace_bytes > 0);
@@ -225,7 +226,6 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
         req.main_workspace_bytes > 0
             ? req.main_workspace_bytes
             : ReferenceWorkspace(kMainWorkspaceBytes, p.max_prefill);
-    b.main_forward_extra = req.main_forward_extra_bytes;
     if (p.has_mtp) {
       b.mtp_workspace = req.mtp_workspace_bytes;
       b.mtp_weights = req.mtp_weights_bytes;
@@ -240,7 +240,7 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
     b.fixed =
         Sum({weights_bytes, b.main_workspace, b.mtp_workspace, b.mtp_weights,
              b.mtp_buffers, b.mtp_scratch, b.mtp_checkpoints, b.forward_buffers,
-             b.ple_working, b.main_forward_extra, kContextMarginBytes});
+             b.ple_working, kContextMarginBytes, req.extra_fixed_bytes});
     const auto peak_extra = [&](int len) {
       return std::max(PerRequestBytes(p, len, b.mtp_forward_temp),
                       MtpLoadingHostBytes(p, req, len));
@@ -331,7 +331,6 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
      << "[q4t][budget]   weights=" << b.weights / 1e9
      << " GB  fixed=" << b.fixed / 1e9 << " GB (estimated allocations+margin)\n"
      << "[q4t][budget]   main_workspace=" << b.main_workspace
-     << " main_forward_extra=" << b.main_forward_extra
      << " mtp_workspace=" << b.mtp_workspace
      << " forward_buffers=" << b.forward_buffers
      << " ple_working=" << b.ple_working << " mtp=" << p.has_mtp << "\n"
@@ -341,8 +340,8 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
      << "[q4t][budget]   => max_len=" << b.max_len << " max_seq=" << b.max_seq
      << (b.capped ? "  (CAPPED to fit estimate)" : "") << "\n";
   if (p.has_mtp) {
-    os << "[q4t][budget]   MTP admission scope: text max_seq=1 k=3; "
-          "allocation estimate, not a physical RAM guarantee\n"
+    os << "[q4t][budget]   MTP allocation scope: text max_seq=1, "
+          "k in [1,16]; allocation estimate, not a physical RAM guarantee\n"
        << "[q4t][budget]   mtp_weights=" << b.mtp_weights
        << " mtp_buffers=" << b.mtp_buffers << " mtp_scratch=" << b.mtp_scratch
        << " mtp_checkpoints=" << b.mtp_checkpoints

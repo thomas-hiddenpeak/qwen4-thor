@@ -5,15 +5,23 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [MTP数值收口](MTP_NUMERICAL_CLOSURE_2026-10-16.md) | 独立前缀合同、PLE上传修复与新运行时验收 | 当前阶段 |
+| [MTP归并候选结果](MTP_MAINLINE_READY_2026-10-16.md) | 原冻结binary验收、五项历史失败与回退 | PLE修复前历史 |
+| [MTP归并边界决策](MTP_MERGE_BOUNDARY_2026-10-15.md) | 两套MTP实现归并边界、策略A裁决与逐文件归并计划 | 2026-10-16恢复与共用合同补正 |
 | [MTP基础修复交付](MTP_FOUNDATION_2026-10-08.md) | 基础修复、原跨模式失败与证据复用边界 | 2026-10-08历史交付 |
 | [MTP主线交付结果](MTP_MAINLINE_RESULT_2026-10-09.md) | 已合入main的有限能力、验证归属、成本与回退点 | 2026-10-09交付完成 |
 | [MTP主线交付条件](MTP_MAINLINE_READINESS_2026-10-09.md) | 入口与集成阻碍清单、修复及实际合入 | 2026-10-09交付完成 |
-| [MTP sequential有限正确性验收](MTP_STRICT_RESULT_2026-10-09.md) | 独立正确性证据、原失败与五档成本 | 本阶段 |
-| [MTP严格greedy基线](MTP_STRICT_BASELINE_2026-10-09.md) | 显式sequential target接口、状态与验收边界 | 本阶段 |
-| [MTP阶段性转正计划](MTP_RELEASE_PLAN_2026-10-08.md) | 基础修复PR、有限支持准入与冻结验收清单 | 本阶段 |
+| [MTP sequential有限正确性验收](MTP_STRICT_RESULT_2026-10-09.md) | 独立正确性证据、原失败与五档成本 | 2026-10-09历史阶段 |
+| [MTP严格greedy基线](MTP_STRICT_BASELINE_2026-10-09.md) | 显式sequential target接口、状态与验收边界 | 2026-10-09历史阶段 |
+| [MTP阶段性转正计划](MTP_RELEASE_PLAN_2026-10-08.md) | 基础修复PR、有限支持准入与冻结验收清单 | 2026-10-09历史阶段 |
 | [MTP数值准入设计](MTP_NUMERICAL_ADMISSION_DESIGN_2026-10-08.md) | 快速T4与严格普通greedy合同、状态所有权和代价 | 合同明确时 |
 | [主线存储准备](STORAGE_READY_2026-10-07.md) | 可再生成缓存清理、原始证据保护与可用容量 | 本轮整理 |
 | [主线收尾与分支交接](MAIN_WRAPUP_2026-10-07.md) | 精选研究工具、公共 I/O/预算修复、历史 NO_GO 索引与验证边界 | 本轮收尾 |
+| [OFFLOAD_AUTONOMOUS_2026-10-03.md](OFFLOAD_AUTONOMOUS_2026-10-03.md) | 十小时自主队列、在线候选与冻结HTTP决定门槛 | Goal进行中，当前尚无新验收结论 |
+| [OFFLOAD_REPLAY_2026-10-02.md](OFFLOAD_REPLAY_2026-10-02.md) | 实际分块/驻留离线回放与候选收益边界 | Goal完成：重排减少约6%–7% GPU补载，未接受性能 |
+| [OFFLOAD_RAM_PROTOCOL_2026-10-02.md](OFFLOAD_RAM_PROTOCOL_2026-10-02.md) | RAM预算修复、缓存/实际IO协议与有界对照 | Goal完成；完整物理RAM及受限cg IO归属仍未闭合 |
+| [MOE_OFFLOAD_REPAIR_2026-10-02.md](MOE_OFFLOAD_REPAIR_2026-10-02.md) | offload 基础修复 Goal 范围、身份与验证出口 | 修复与有界验证完成；总物理峰值未知 |
+| [MOE_OFFLOAD_DIAGNOSIS_2026-10-02.md](MOE_OFFLOAD_DIAGNOSIS_2026-10-02.md) | offload 分支、代码缺陷、内存/验收/离线方法审查及推进建议 | 诊断快照；后续修复见修复阶段 |
 | [GDN_VECTOR_LOAD_2026-09-21.md](GDN_VECTOR_LOAD_2026-09-21.md) | GDN 连续读取、完整 E2E 与状态等价证据 | 本轮验证更新 |
 | [2026-09-21 状态历史](HISTORY_STATUS_2026-09-21.md) | 完整保留 fcb5925 时的阶段记录，当前状态已精简 | 历史快照 |
 | [GRFrame read/write](GRFRAME_READWRITE_2026-09-21.md) | 提前 inject、frame 所有权与阶段验收 | 验收进行中 |
@@ -61,7 +69,17 @@
 | [REFERENCE_MTP.md](REFERENCE_MTP.md) | MTP / 投机解码参考调研 | MTP 相关时 |
 | [MTP_BATCHING.md](MTP_BATCHING.md) | MTP 批处理设计与阶段 | MTP 批处理推进时 |
 | [DATAFLOW_OPTIMIZATION.md](DATAFLOW_OPTIMIZATION.md) | 当前数据流预算、假设与决策边界 | 数据流优化推进时 |
+| [MOE_DISTRIBUTION_2026-09-28.md](MOE_DISTRIBUTION_2026-09-28.md) | 历史轨迹专家ID分布、阶段/层/场景差异和稳定性 | 统计完成，与缓存命中分开 |
+| [MOE_SHADOW_2026-09-28.md](MOE_SHADOW_2026-09-28.md) | 有界请求完成边界影子观察、完整长度验证与资源成本 | 功能通过，严格持平未通过 |
+| [MOE_CACHE_REPLAY_2026-09-28.md](MOE_CACHE_REPLAY_2026-09-28.md) | 固定容量静态/LRU回放、预算与影子阶段决策 | 本轮离线交付 |
+| [MOE_LAYER_TOPN_2026-09-28.md](MOE_LAYER_TOPN_2026-09-28.md) | 每层Top-N完整曲线与覆盖/整组目标的最小名单 | 同样本描述性，非运行时最优 |
+| [MOE_HYBRID_2026-09-28.md](MOE_HYBRID_2026-09-28.md) | 固定热点与动态LRU混合容量离线比较 | 离线探索，不认定统一最优比例 |
+| [MOE_EVALSCOPE_SCENARIOS_2026-09-28.md](MOE_EVALSCOPE_SCENARIOS_2026-09-28.md) | 24条多场景采样、32/64槽影子统计与128/256离线容量 | 采样完成，非生产代表性 |
 | [MOE_ROUTING_TRACE.md](MOE_ROUTING_TRACE.md) | MoE受控采集边界、首轮证据与下一阶段离线缓存回放 | 设计或实现进展变化时 |
+| [MOE_RESIDENCY_PLAN_2026-09-30.md](MOE_RESIDENCY_PLAN_2026-09-30.md) | 分层专家驻留与按需加载实现计划、冻结轮与用户决策记录 | 实现中，矩阵执行 |
+| [MOE_RESIDENCY_ACCEPTANCE_2026-09-30.md](MOE_RESIDENCY_ACCEPTANCE_2026-09-30.md) | 分层驻留验收报告（第一轮矩阵实测已填） | DRAFT，第一轮完成，第二轮待跑 |
+| [MOE_RESIDENCY_L2_PREDICTION_2026-10-01.md](MOE_RESIDENCY_L2_PREDICTION_2026-10-01.md) | L2 命中率离线预测与 C 容量扫描（第二轮预判/第三轮决策输入） | 已完成（离线分析） |
+| [MOE_RESIDENCY_MEMORY_LEDGER_2026-10-01.md](MOE_RESIDENCY_MEMORY_LEDGER_2026-10-01.md) | 262144容量完整内存账（预算侧+实测侧） | 已建立，第二轮峰值待实测 |
 
 ## 现行入口（2026-10-07）
 

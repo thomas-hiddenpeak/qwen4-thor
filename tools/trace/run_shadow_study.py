@@ -33,7 +33,7 @@ def main():
     out.mkdir(parents=True, exist_ok=False)
     paths = args.corpus_file or [ROOT / 'docs' / name for name in ['MODEL.md', 'ARCHITECTURE.md',
               'PHASES.md', 'EVALUATION.md', 'MOE_ROUTING_TRACE.md',
-              'RELEASE_TEXT_V1_2026-09-28.md']]
+              'MOE_CACHE_REPLAY_2026-09-28.md', 'RELEASE_TEXT_V1_2026-09-28.md']]
     corpus = '\n\n'.join(p.name + '\n' + p.read_text() for p in paths)
     cases = [
         dict(name='python-retry', prompt='Design a Python retry function for a job queue. Requirements: at most four attempts, retry only TimeoutError, exponential delays starting at 0.2 seconds, preserve the final exception, inject the sleep function for tests. Explain the state transitions and show code.'),

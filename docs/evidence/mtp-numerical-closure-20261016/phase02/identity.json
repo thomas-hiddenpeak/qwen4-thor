@@ -1,0 +1,12 @@
+{
+  "sha256": {
+    "build/q4t": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "build/q4t_tests": "f85cbbebf77b92c848bfe64ff1d1676ce75ac38047edfee8993cb93717e526b5",
+    "src/ple/ple_embedding.cpp": "af7e6b7ad21660c165fae6ef5e5c9176246ca11d235d6bcdf1e74f7d26285c6b",
+    "include/q4t/ple/ple_embedding.h": "8ab9f25fc869f405cfbea3406be7e26a744dc9ed39273f06a4f0e59593b14edb"
+  },
+  "http_quality": "pending",
+  "five_tier_performance": "pending",
+  "numerics_256": "PASS flips=4 confident_both_sides=0 causality=PASS",
+  "five_legacy_diagnostics": "not yet closed; old cross-shape gates preserved"
+}

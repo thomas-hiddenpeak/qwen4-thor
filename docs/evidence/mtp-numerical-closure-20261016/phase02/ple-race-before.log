@@ -1,0 +1,4 @@
+  pending uploads: wrong_first=160 wrong_second=0
+  CHECK failed: wrong_first == 0 && wrong_second == 0 (line 289)
+[FAIL] ple_e2e_pending_upload_owns_staging
+1 tests, 0 passed, 1 failed, 0 skipped

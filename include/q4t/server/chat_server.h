@@ -38,10 +38,6 @@
 #include "q4t/vision/vision.h"
 
 namespace q4t {
-namespace trace {
-class MtpCycleStep;
-class MtpVerifyMoeStep;
-}
 namespace server {
 
 // One multimodal content part: a single image (1 frame) or a video (N frames).
@@ -166,13 +162,6 @@ class ChatServer {
     int32_t mtp_next_d0 = 0;    // next first draft (step output)
     int mtp_accepted_count = 0;  // accepted tokens this step (step output)
     int32_t mtp_accepted[64];   // accepted tokens (bonus + drafts, step output)
-    // Sequential verifier shares the pending/done handshake. Its count is
-    // both the emitted non-stop prefix and the main model's consumed prefix.
-    int mtp_output_remaining = 0;
-    mtp::MtpSequentialResult mtp_sequential_result;
-    // Request-owned, S1 diagnostic only. Publication follows pending/done.
-    trace::MtpCycleStep* mtp_cycle_step = nullptr;
-    trace::MtpVerifyMoeStep* mtp_verify_moe_step = nullptr;
     std::condition_variable cv;  // request thread waits here for `done`
   };
   // Batched prefill (Phase 2, plain path). Concurrent requests that need a
@@ -199,6 +188,8 @@ class ChatServer {
   };
   // Request thread owns these buffers and waits until the entire prompt is
   // done. Only the scheduler advances seq between chunk completions.
+  // err carries the scheduler-side failure message (e.g. residency fault
+  // injection) so the request thread can surface it in the HTTP error.
   struct ChunkPrefillReq {
     RequestControl* control = nullptr;
     int fd = -1;  // Borrowed until done; owned by the waiting request thread.
@@ -210,6 +201,7 @@ class ChatServer {
     uint16_t* h_logits = nullptr;
     bool done = false;
     bool ok = false;
+    std::string err;  // set by the scheduler when ok=false
     std::condition_variable cv;
   };
   void RunOnePrefillChunk();
@@ -290,10 +282,15 @@ class ChatServer {
   // freed before model_ (destructor order: members destruct in reverse
   // declaration order, so mtp_ is destroyed before model_).
   mtp::MtpModel mtp_;
-  bool mtp_requested_ = false;
-  MtpVerifier mtp_verifier_ = MtpVerifier::kSequential;
   bool mtp_loaded_ = false;
-  int mtp_k_ = 3;  // Fixed draft length for the single-stream admission scope.
+  // Tiered residency observability (max_seq=1 contract: the delta between
+  // consecutive request completions is that request's own load activity).
+  bool residency_enabled_ = false;
+  quant::MoEResidency::Stats residency_stats_prev_{};
+  model::ResidencyTimingSnapshot residency_timing_prev_{};
+  // Default per-request deadline (ms); see ServerOptions::request_deadline_ms.
+  int request_deadline_ms_ = 1200000;
+  int mtp_k_ = 3;  // matches the CLI default (实测最优, 见 docs/LOG.md)
   // NOTE (Stage 2c): the legacy shared rolling draft-trunk buffers d_g_/
   // d_g_next_ are gone — concurrent MTP requests would corrupt each other's
   // trunk. Each MTP request now owns a per-request d_mtp_g (HandleChat local,

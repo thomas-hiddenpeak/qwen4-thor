@@ -10,8 +10,6 @@
 #include <vector>
 #include <cuda_profiler_api.h>
 #include <cuda_runtime.h>
-#include "q4t/trace/mtp_cycle_timing.h"
-#include "q4t/trace/mtp_verify_moe_timing.h"
 
 namespace q4t::server {
 using detail::RequestCancelled;
@@ -138,6 +136,7 @@ void ChatServer::RunOnePrefillChunk() {
       chunk_prefill_pending_.push_back(req);
     } else {
       req->ok = s.ok() && !req->cancelled && last && !scheduler_stop_;
+      if (!s.ok()) req->err = s.message();
       if (!req->ok) req->seq->Fail();
       req->done = true;
       req->cv.notify_one();
@@ -192,7 +191,6 @@ void ChatServer::SchedulerLoop() {
             r->mtp_accepted_count = 0;
             r->mtp_next_b = -1;
             r->mtp_next_d0 = -1;
-            r->mtp_sequential_result = {};
           }
           r->cv.notify_one();
         }
@@ -309,6 +307,11 @@ void ChatServer::SchedulerLoop() {
         sp = FinishHostReadback(copy_error, &gpu_healthy_, sequences, sp, router_trace_.get());
       }
       {
+        if (!sp.ok()) {
+          std::fprintf(stderr,
+                       "[q4t][sched] batched prefill failed Bp=%d: %s\n",
+                       Bp, sp.message().c_str());
+        }
         const std::lock_guard<std::mutex> lock(sched_mu_);
         for (int i = 0; i < Bp; ++i) {
           pf[i]->pending = false;
@@ -334,15 +337,6 @@ void ChatServer::SchedulerLoop() {
 
     if (!mtp_reqs.empty()) {
       const int B = static_cast<int>(mtp_reqs.size());
-      trace::MtpCycleStep* cycle_step =
-          B == 1 ? mtp_reqs[0]->mtp_cycle_step : nullptr;
-      trace::MtpVerifyMoeStep* verify_moe_step =
-          B == 1 ? mtp_reqs[0]->mtp_verify_moe_step : nullptr;
-      if (B != 1)
-        for (ActiveRequest* r : mtp_reqs)
-          if (r->mtp_verify_moe_step)
-            r->mtp_verify_moe_step->Invalidate("unsupported_batch");
-      if (cycle_step) cycle_step->Mark("scheduler_pick");
       if (getenv("Q4T_SCHED_DEBUG") != nullptr)
         std::fprintf(stderr, "[q4t][sched] MTP step B=%d\n", B);
       std::vector<model::ModelSequence*> seqs(B);
@@ -359,41 +353,17 @@ void ChatServer::SchedulerLoop() {
       std::vector<int32_t> accepted(static_cast<size_t>(B) * (mtp_k_ + 1));
       std::vector<int> acc_count(B, 0);
       std::vector<int32_t> next_b(B, 0), next_d0(B, 0);
-      mtp::MtpSequentialResult sequential_result;
       Status s;
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
-        if (cycle_step) cycle_step->Mark("model_lock_acquired");
-        if (mtp_verifier_ == MtpVerifier::kSequential) {
-          if (B != 1 || mtp_k_ != 3 || seqs[0]->seq_id != 0) {
-            s = Status::Fail("sequential MTP requires S1/slot0/k3");
-          } else {
-            s = mtp::MtpSpeculativeStepSequentialTarget(
-                model_.Get(), mtp_, *seqs[0], b_tok[0], d0[0], g_in[0],
-                mtp_reqs[0]->mtp_output_remaining, stop_token_ids_,
-                &sequential_result, next_g[0], nullptr);
-            if (s.ok() && (sequential_result.accepted_count < 1 ||
-                           sequential_result.accepted_count > mtp_k_ + 1))
-              s = Status::Fail("sequential MTP returned an invalid prefix");
-            if (s.ok()) {
-              acc_count[0] = sequential_result.accepted_count;
-              for (int t = 0; t < acc_count[0]; ++t)
-                accepted[t] = sequential_result.accepted_tokens[t];
-              next_b[0] = sequential_result.next_b;
-              next_d0[0] = sequential_result.next_d0;
-            }
-          }
-        } else {
-          s = mtp::MtpSpeculativeStepMulti(
-              model_.Get(), mtp_, seqs.data(), b_tok.data(), d0.data(),
-              g_in.data(), B, mtp_k_, accepted.data(), acc_count.data(),
-              next_b.data(), next_d0.data(), next_g.data(), nullptr,
-              cycle_step, verify_moe_step, stop_token_ids_);
-          // The core has completed its stream before returning. Publish the
-          // failure under model ownership, before waking request threads.
-          if (!s.ok())
-            for (auto* seq : seqs) seq->Fail();
-        }
+        s = mtp::MtpSpeculativeStepMulti(model_.Get(), mtp_, seqs.data(),
+                                         b_tok.data(), d0.data(), g_in.data(),
+                                         B, mtp_k_, accepted.data(),
+                                         acc_count.data(), next_b.data(),
+                                         next_d0.data(), next_g.data(),
+                                         nullptr, stop_token_ids_);
+        if (!s.ok())
+          for (auto* sequence : seqs) sequence->Fail();
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
           gpu_healthy_.store(false, std::memory_order_relaxed);
       }
@@ -403,7 +373,6 @@ void ChatServer::SchedulerLoop() {
           ActiveRequest* r = mtp_reqs[i];
           r->pending = false;
           r->done = true;
-          r->mtp_sequential_result = sequential_result;
           if (s.ok()) {
             r->mtp_accepted_count = acc_count[i];
             for (int t = 0; t < acc_count[i]; ++t)
@@ -414,7 +383,6 @@ void ChatServer::SchedulerLoop() {
           } else {
             r->mtp_accepted_count = 0;  // sentinel: step failed
           }
-          if (cycle_step) cycle_step->Mark("scheduler_finish");
           r->cv.notify_one();
         }
       }

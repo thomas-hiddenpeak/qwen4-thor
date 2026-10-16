@@ -1,0 +1,118 @@
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+  prompt_tokens=1024 steps=256
+  reserve_cap=4 (T-1=3)
+  snapshot_bytes=115642368
+  causality: row0 bit-identical across fillers=yes
+  ckpt_direct: step0 first_diff_offset=0 diff_bytes=84755615 total=115642368
+  state_diag: first_diff_offset=0 total=115642368 win[0..1048576]=564075 win[1048576..2097152]=551169 win[2097152..3145728]=561664 win[3145728..4194304]=686987 win[4194304..5242880]=732941 win[5242880..6291456]=727108 win[6291456..7340032]=598578 win[7340032..8388608]=746607 win[8388608..9437184]=763755 win[9437184..10485760]=720358 win[10485760..11534336]=785341 win[11534336..12582912]=787944 win[12582912..13631488]=750389 win[13631488..14680064]=788066 win[14680064..15728640]=777883 win[15728640..16777216]=739137 win[16777216..17825792]=774929 win[17825792..18874368]=795650 win[18874368..19922944]=746804 win[19922944..20971520]=784862 win[20971520..22020096]=791154 win[22020096..23068672]=728566 win[23068672..24117248]=756891 win[24117248..25165824]=794919 win[25165824..26214400]=744302 win[26214400..27262976]=758941 win[27262976..28311552]=795813 win[28311552..29360128]=731790 win[29360128..30408704]=759793 win[30408704..31457280]=754537 win[31457280..32505856]=732599 win[32505856..33554432]=785639 win[33554432..34603008]=798765 win[34603008..35651584]=752293 win[35651584..36700160]=751003 win[36700160..37748736]=745886 win[37748736..38797312]=731893 win[38797312..39845888]=723416 win[39845888..40894464]=732875 win[40894464..41943040]=691418 win[41943040..42991616]=792670 win[42991616..44040192]=769335 win[44040192..45088768]=812524 win[45088768..46137344]=780670 win[46137344..47185920]=804017 win[47185920..48234496]=766981 win[48234496..49283072]=702002 win[49283072..50331648]=795505 win[50331648..51380224]=816322 win[51380224..52428800]=773049 win[52428800..53477376]=809190 win[53477376..54525952]=836031 win[54525952..55574528]=806597 win[55574528..56623104]=788103 win[56623104..57671680]=779824 win[57671680..58720256]=767873 win[58720256..59768832]=809334 win[59768832..60817408]=812940 win[60817408..61865984]=731160 win[61865984..62914560]=756894 win[62914560..63963136]=794173 win[63963136..65011712]=749077 win[65011712..66060288]=761629 win[66060288..67108864]=812879 win[67108864..68157440]=722636 win[68157440..69206016]=747447 win[69206016..70254592]=762192 win[70254592..71303168]=741985 win[71303168..72351744]=781549 win[72351744..73400320]=804403 win[73400320..74448896]=741969 win[74448896..75497472]=756257 win[75497472..76546048]=761815 win[76546048..77594624]=738210 win[77594624..78643200]=760965 win[78643200..79691776]=753862 win[79691776..80740352]=724856 win[80740352..81788928]=787733 win[81788928..82837504]=814469 win[82837504..83886080]=787640 win[83886080..84934656]=808258 win[84934656..85983232]=802184 win[85983232..87031808]=741382 win[87031808..88080384]=798209 win[88080384..89128960]=812419 win[89128960..90177536]=791203 win[90177536..91226112]=810626 win[91226112..92274688]=827273 win[92274688..93323264]=801392 win[93323264..94371840]=842303 win[94371840..95420416]=765158 win[95420416..96468992]=754514 win[96468992..97517568]=808717 win[97517568..98566144]=810858 win[98566144..99614720]=785933 win[99614720..100663296]=821937 win[100663296..101711872]=830048 win[101711872..102760448]=812353 win[102760448..103809024]=822542 win[103809024..104857600]=829659 win[104857600..105906176]=860067 win[105906176..106954752]=732280 win[106954752..108003328]=745288 win[108003328..109051904]=760601 win[109051904..110100480]=792067 win[110100480..111149056]=838674 win[111149056..112197632]=843405 win[112197632..113246208]=806555 win[113246208..114294784]=822438 win[114294784..115343360]=810229 win[115343360..115642368]=203536
+  state_diag: off=0 plain=0xb8015263 batch=0xb8016f4f
+  state_diag: off=4 plain=0x3887f626 batch=0x38881ade
+  state_diag: off=8 plain=0x38224c00 batch=0x3822a478
+  state_diag: off=12 plain=0x38bfb7ec batch=0x38c00160
+  state_diag: off=16 plain=0x38acf59d batch=0x38ad2cdc
+  state_diag: off=20 plain=0x37854e0b batch=0x37853e75
+  state_diag: off=24 plain=0x36db764c batch=0x36dc1504
+  state_diag: off=28 plain=0xb8bc2797 batch=0xb8bc5c77
+  step=26 FLIP plain=303 batch=11 gap_plain=0.125000 (1.0 ulp) gap_batch=0.000000 (0.0 ulp) l2_rel=0.045772 near_tie=1
+    plain: top1=303(v=23.375000) top2v=23.250000 gap=0.125000 at_batch_id(11)=23.250000
+    batch: top1=11(v=23.125000) top2v=23.125000 gap=0.000000 at_plain_id(303)=23.000000
+  step=51 FLIP plain=3808 batch=20730 gap_plain=0.125000 (1.0 ulp) gap_batch=0.125000 (1.0 ulp) l2_rel=0.068318 near_tie=1
+    plain: top1=3808(v=20.750000) top2v=20.625000 gap=0.125000 at_batch_id(20730)=20.625000
+    batch: top1=20730(v=20.750000) top2v=20.625000 gap=0.125000 at_plain_id(3808)=20.625000
+  step=90 FLIP plain=7875 batch=11 gap_plain=0.250000 (2.0 ulp) gap_batch=0.000000 (0.0 ulp) l2_rel=0.050027 near_tie=1
+    plain: top1=7875(v=23.250000) top2v=23.000000 gap=0.250000 at_batch_id(11)=23.000000
+    batch: top1=11(v=23.250000) top2v=23.250000 gap=0.000000 at_plain_id(7875)=23.250000
+  step=117 FLIP plain=7411 batch=202201 gap_plain=0.250000 (2.0 ulp) gap_batch=0.125000 (1.0 ulp) l2_rel=0.047045 near_tie=1
+    plain: top1=7411(v=24.000000) top2v=23.750000 gap=0.250000 at_batch_id(202201)=23.750000
+    batch: top1=202201(v=23.875000) top2v=23.750000 gap=0.125000 at_plain_id(7411)=23.750000
+    num_sample layer=0 ssm      w=0 plain=-0.000315755 batch=-0.000315719 absdiff=3.59432e-08 reldiff=0.000113833 finite=1
+    num_sample layer=0 ssm      w=4 plain=5.21377e-05 batch=5.19847e-05 absdiff=1.53028e-07 reldiff=0.00293507 finite=1
+    num_sample layer=0 ssm      w=8 plain=0.000173199 batch=0.000173354 absdiff=1.54454e-07 reldiff=0.000890976 finite=1
+    num_sample layer=1 conv     w=10 plain=0.796875 batch=0.792969 absdiff=0.00390625 reldiff=0.00490196 finite=1
+    num_sample layer=1 conv     w=16 plain=0.470703 batch=0.460938 absdiff=0.00976562 reldiff=0.0207469 finite=1
+    num_sample layer=1 conv     w=22 plain=-0.120605 batch=-0.116699 absdiff=0.00390625 reldiff=0.0323887 finite=1
+    num_sample layer=1 ple_conv w=46096 plain=-0.0234375 batch=-0.0246582 absdiff=0.0012207 reldiff=0.049505 finite=1
+    num_sample layer=1 ple_conv w=46114 plain=0.00299072 batch=0.00315857 absdiff=0.000167847 reldiff=0.0531401 finite=1
+    num_sample layer=1 ple_conv w=46132 plain=-0.0444336 batch=-0.046875 absdiff=0.00244141 reldiff=0.0520833 finite=1
+  state_size_check expected=115642368 actual=115642368 match=1
+  state_diff_by_component (both_nz/plain0/batch0 = share of differing bytes with both non-zero / plain zero / batch zero):
+    layer=0 ssm      steps=256 max_bytes=1709103 total=419705840 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=1 ssm      steps=256 max_bytes=2274330 total=479082796 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=1 conv     steps=256 max_bytes=11069 total=2302792 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=1 ple_conv steps=212 max_bytes=9637 total=773075 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=46096
+    layer=2 ssm      steps=256 max_bytes=2281185 total=494578240 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=2 conv     steps=256 max_bytes=11144 total=2514513 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=4 ssm      steps=256 max_bytes=2324263 total=498636562 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=4 conv     steps=256 max_bytes=11508 total=2563178 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=5 ssm      steps=256 max_bytes=2362388 total=517250761 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=1
+    layer=5 conv     steps=256 max_bytes=11783 total=2552183 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=6 ssm      steps=256 max_bytes=2344227 total=520015537 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=6 conv     steps=256 max_bytes=12138 total=2557083 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=8 ssm      steps=256 max_bytes=2346197 total=498434601 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=8 conv     steps=256 max_bytes=12542 total=2632418 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=9 ssm      steps=256 max_bytes=2308458 total=494263460 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=9 conv     steps=256 max_bytes=12549 total=2640299 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=10 ssm      steps=256 max_bytes=2338104 total=519453906 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=10 conv     steps=256 max_bytes=12237 total=2630920 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=12 ssm      steps=256 max_bytes=2262910 total=487751002 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=12 conv     steps=256 max_bytes=12722 total=2742732 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=13 ssm      steps=256 max_bytes=2376006 total=524706554 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=13 conv     steps=256 max_bytes=12973 total=2760942 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=14 ssm      steps=256 max_bytes=2256758 total=488515920 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=14 conv     steps=256 max_bytes=13018 total=2842019 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=16 ssm      steps=256 max_bytes=2177982 total=480276238 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=16 conv     steps=256 max_bytes=13338 total=2851593 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=17 ssm      steps=256 max_bytes=2405169 total=538112198 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=17 conv     steps=256 max_bytes=13660 total=2893484 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=18 ssm      steps=256 max_bytes=2354007 total=508712003 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=18 conv     steps=256 max_bytes=13406 total=2915655 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=20 ssm      steps=256 max_bytes=2349350 total=529626056 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=20 conv     steps=256 max_bytes=13149 total=2873621 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=21 ssm      steps=256 max_bytes=2455846 total=538164715 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=21 conv     steps=256 max_bytes=13103 total=2887486 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=22 ssm      steps=256 max_bytes=2408436 total=533718770 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=22 conv     steps=256 max_bytes=12446 total=2752626 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=24 ssm      steps=256 max_bytes=2423794 total=530637656 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=24 conv     steps=256 max_bytes=13672 total=2887268 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=25 ssm      steps=256 max_bytes=2335646 total=517584689 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=25 conv     steps=256 max_bytes=14276 total=2866108 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=26 ssm      steps=256 max_bytes=2376651 total=538674358 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=26 conv     steps=256 max_bytes=14794 total=2874652 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=28 ssm      steps=256 max_bytes=2311455 total=499793254 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=28 conv     steps=256 max_bytes=16106 total=2966976 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=29 ssm      steps=256 max_bytes=2395099 total=537007485 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=29 conv     steps=256 max_bytes=16650 total=2998773 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=30 ssm      steps=256 max_bytes=2291206 total=498508731 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=30 conv     steps=256 max_bytes=16815 total=3018980 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=32 ssm      steps=256 max_bytes=2261630 total=491009950 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=32 conv     steps=256 max_bytes=17004 total=2956845 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=33 ssm      steps=256 max_bytes=2421486 total=549820753 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=33 conv     steps=256 max_bytes=17468 total=2987258 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=34 ssm      steps=256 max_bytes=2402046 total=517504513 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=34 conv     steps=256 max_bytes=17618 total=2988242 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=36 ssm      steps=256 max_bytes=2420284 total=534734153 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=36 conv     steps=256 max_bytes=17565 total=2953772 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=37 ssm      steps=256 max_bytes=2472512 total=542478237 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=37 conv     steps=256 max_bytes=17046 total=2928801 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=38 ssm      steps=256 max_bytes=2446922 total=544958542 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=38 conv     steps=256 max_bytes=16926 total=2843504 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+    layer=40 ssm      steps=256 max_bytes=2440659 total=512279312 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=40 conv     steps=256 max_bytes=16476 total=2876527 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=41 ssm      steps=256 max_bytes=2482624 total=536111998 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=41 conv     steps=256 max_bytes=16945 total=2887244 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=42 ssm      steps=256 max_bytes=2594425 total=592240517 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=42 conv     steps=256 max_bytes=17106 total=2902567 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=44 ssm      steps=256 max_bytes=2319082 total=497881249 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=44 conv     steps=256 max_bytes=16463 total=2790469 both_nz=99.3% plain0=0.3% batch0=0.3% first_off=4
+    layer=45 ssm      steps=256 max_bytes=2612416 total=582028187 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=45 conv     steps=256 max_bytes=16199 total=2847015 both_nz=99.3% plain0=0.4% batch0=0.4% first_off=4
+    layer=46 ssm      steps=256 max_bytes=2546589 total=576122118 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=0
+    layer=46 conv     steps=256 max_bytes=15694 total=2816239 both_nz=99.2% plain0=0.4% batch0=0.4% first_off=4
+  flips=4/256 confident_both_sides=0 max_flip_l2=0.068318 min_nonflip_gap=0.000000
+  state_update_T_independent: 256/256 steps differ, first=0 max_diff_bytes=84755615
+  ckpt0_direct_read: 256/256 steps differ from T=1, max_diff_bytes=84755615
+[PASS] mtp_verify_numerics
+1 tests, 1 passed, 0 failed, 0 skipped

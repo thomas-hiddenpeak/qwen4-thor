@@ -1,0 +1,19 @@
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=60 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=60 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+  reserve_cap=4 (T-1=2, cap > count)
+  seq 1 tok 0: l2_rel=0.00000 OK
+  seq 1 tok 1: l2_rel=0.00000 OK
+  seq 1 tok 2: l2_rel=0.00000 OK
+  seq 2 tok 0: l2_rel=0.00000 OK
+  seq 2 tok 1: l2_rel=0.00000 OK
+  seq 2 tok 2: l2_rel=0.00000 OK
+  accept seq 1 (a=0) then decode verify0[1]: l2_rel=0.00000 OK
+  accept seq 1 (a=1) then decode verify0[2]: l2_rel=0.02632 MISMATCH
+[FAIL] model_verify_multi_ckpt
+1 tests, 0 passed, 1 failed, 0 skipped

@@ -24,6 +24,13 @@ namespace model {
 bool Bf16Gev(const uint16_t* x, const uint16_t* w, uint16_t* y, int N, int K,
              float alpha, cudaStream_t stream);
 
+// Test-only: same arithmetic as Bf16Gev but also returns the pre-rounding
+// FP32 accumulation (fp32_sum[n] = alpha * sum_k x[k]*W[n,k] in FP32) for
+// operator-level diagnostics (docs/STATUS.md 当前阶段 O1).
+bool Bf16GevFp32(const uint16_t* x, const uint16_t* w, uint16_t* y,
+                 float* fp32_sum, int N, int K, float alpha,
+                 cudaStream_t stream);
+
 // FP8 (e4m3) shadow of a BF16 [N, K] projection weight, for the M=1 decode
 // GEMV. W8A16: the weight is stored e4m3 (1 byte) with a per-output-channel
 // (row) absmax scale; the activation stays BF16. Halves the weight bytes read
@@ -79,6 +86,21 @@ constexpr int kFp8SmallMMax = 4;
 // registers. Returns false if unsupported (bad M/shape or null shadow).
 bool Fp8SmallMGemm(const uint16_t* x, const Fp8Shadow& w, uint16_t* y, int M,
                    int N, int K, float alpha, cudaStream_t stream);
+
+// 2 <= M <= 8 BF16 small-M GEMM (y = alpha * x * W^T) for batched decode /
+// MTP verify. Hand-written SM110a-tuned kernel (x staged in shared memory
+// once per block, f32x2 SIMD FMA) that beats cuBLASLt on the tall-skinny
+// shapes measured in tools/small_m_gemm_v2_bench; the shape policy inside
+// routes only those winners. Deterministic (fixed reduction order, no
+// atomics) like Bf16Gev, so repeated steps are bit-stable. Returns false if
+// the shape is not routed or on launch failure; the caller must fall back to
+// the cuBLASLt path in Bf16Gemm.
+bool Bf16SmallMGemm(const uint16_t* x, const uint16_t* w, uint16_t* y, int M,
+                    int N, int K, float alpha, cudaStream_t stream);
+
+// Pure shape policy of Bf16SmallMGemm (exposed for wiring tests): true iff
+// the (M, N, K) shape is routed to the hand-written small-M kernel.
+bool Bf16SmallMShapeRouted(int M, int N, int K);
 
 }  // namespace model
 }  // namespace q4t

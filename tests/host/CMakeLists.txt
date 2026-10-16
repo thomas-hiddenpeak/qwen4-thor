@@ -56,9 +56,23 @@ q4t_add_python_contract(q4t_router_shadow_contracts
   tools/trace/test_shadow.py
   --checker $<TARGET_FILE:q4t_router_trace_check>
   --output ${CMAKE_CURRENT_BINARY_DIR}/shadow-contracts)
-q4t_add_python_contract(q4t_router_distribution_contracts
-  tools/trace/test_distribution.py
-  --checker $<TARGET_FILE:q4t_router_trace_check>)
+
+# test_distribution.py needs numpy. Prefer a machine-local venv when present
+# (.q4t-work/venvs/public-host); otherwise the default interpreter, which the
+# CI workflow provisions with python3-numpy.
+find_program(Q4T_DISTRIBUTION_PYTHON
+  NAMES python3
+  PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../../.q4t-work/venvs/public-host/bin
+  NO_DEFAULT_PATH)
+if(NOT Q4T_DISTRIBUTION_PYTHON)
+  set(Q4T_DISTRIBUTION_PYTHON ${Python3_EXECUTABLE})
+endif()
+add_test(NAME q4t_router_distribution_contracts
+  COMMAND ${Q4T_DISTRIBUTION_PYTHON} -B
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../tools/trace/test_distribution.py
+    --checker $<TARGET_FILE:q4t_router_trace_check>)
+set_tests_properties(q4t_router_distribution_contracts PROPERTIES TIMEOUT 180)
+
 q4t_add_python_contract(q4t_router_hybrid_contracts
   tools/trace/test_hybrid.py)
 
@@ -94,17 +108,5 @@ q4t_add_python_contract(q4t_physical_ram_contracts
   tools/evalscope/test_physical_ram.py)
 q4t_add_python_contract(q4t_response_identity_contracts
   tools/evalscope/test_response_identity.py)
-q4t_add_python_contract(q4t_mtp_mode_contracts
-  tools/evalscope/test_mtp_mode.py)
-q4t_add_python_contract(q4t_acceptance_mode_contracts
-  tools/evalscope/test_acceptance_mode.py)
 q4t_add_python_contract(q4t_request_cancellation_contracts
   tools/evalscope/test_request_cancellation.py)
-q4t_add_python_contract(q4t_sustained_quality_contracts
-  tools/evalscope/test_sustained_quality.py)
-q4t_add_python_contract(q4t_mtp_failure_recovery_contracts
-  tools/evalscope/test_mtp_failure_recovery.py)
-q4t_add_python_contract(q4t_mtp_t4_completion_contracts
-  tools/evalscope/test_t4_completion_contract.py)
-q4t_add_python_contract(q4t_mtp_t4_terminal_contracts
-  tools/evalscope/test_t4_terminal_contract.py)

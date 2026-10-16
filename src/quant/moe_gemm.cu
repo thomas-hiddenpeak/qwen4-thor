@@ -14,22 +14,15 @@
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
 
-#include <algorithm>
-#include <atomic>
-#include <bit>
 #include <cstdint>
 #include <cstdlib>
-#include <cstring>
 #include <string>
 #include <vector>
 
 #include "q4t/quant/fp4_gemm.h"
 #include "q4t/quant/moe_decode.h"
-#include "q4t/quant/moe_gemm_test.h"
 #include "q4t/quant/format.h"
 #include "q4t/quant/swizzle.h"
-#include "q4t/trace/mtp_cycle_timing.h"
-#include "q4t/trace/mtp_verify_moe_timing.h"
 
 namespace q4t {
 namespace quant {
@@ -37,44 +30,6 @@ namespace quant {
 namespace {
 
 constexpr int kBlock = 256;
-constexpr size_t kBatchPackedBytes = 5120;
-constexpr size_t kBatchSfBytes = 20480;
-constexpr size_t kBatchSlotBytes = kBatchPackedBytes + kBatchSfBytes;
-static_assert(kBatchSlotBytes * kMoEBatchSlots == MoEBatchGatherExtraBytes());
-
-struct BatchStats {
-  std::atomic<uint64_t> applied_calls{0};
-  std::atomic<uint64_t> legacy_calls{0};
-  std::atomic<uint64_t> bad_counts_fallback{0};
-  std::atomic<uint64_t> batch_launches{0};
-  std::atomic<uint64_t> legacy_gather_launches{0};
-  std::atomic<uint64_t> replaced_gather_launches{0};
-};
-BatchStats g_batch_stats;
-
-void Increment(std::atomic<uint64_t>* counter, uint64_t amount = 1) {
-  counter->fetch_add(amount, std::memory_order_relaxed);
-}
-
-bool CaptureGemm(MoECapturedGemm* capture, int M, int N, int K,
-                 size_t workspace_bytes, float alpha) {
-  capture->key = {M, N, K, workspace_bytes, 16};
-  capture->alpha_bits = std::bit_cast<uint32_t>(alpha);
-  std::lock_guard<std::mutex> lock(LtCacheMutex());
-  const auto& cache = Fp4PlanCache();
-  const auto found = cache.find(capture->key);
-  if (found == cache.end() || !found->second.has_algo) return false;
-  std::memcpy(capture->algo.data(), &found->second.algo,
-              sizeof(found->second.algo));
-  capture->has_algo = true;
-  return true;
-}
-
-bool CaptureCopy(MoERoutedCapture* capture, size_t offset, const void* source,
-                 size_t bytes, cudaStream_t stream) {
-  return cudaMemcpyAsync(capture->device_buffer + offset, source, bytes,
-                          cudaMemcpyDeviceToDevice, stream) == cudaSuccess;
-}
 
 // Multi-stream MoE: the per-expert chains (gather -> gu GEMM -> swiglu ->
 // dn GEMM) are independent, and each small GEMM (M_e ~ tens of tokens) only
@@ -238,51 +193,6 @@ __global__ void GatherQuantKernel(
   a_sf[SfOffsetDev(row, g, num_g_tiles)] = sf_code;
 }
 
-// The row descriptor changes only scheduling. Each thread performs exactly
-// the original GatherQuant operations for one (expert-local row, group).
-__global__ void GatherQuantBatchKernel(
-    const uint16_t* __restrict__ x, const int32_t* __restrict__ token_list,
-    const float* __restrict__ input_scale, uint8_t* __restrict__ arena,
-    MoEBatchGatherRows rows) {
-  constexpr int kGroups = 2560 / 16;
-  const int idx = blockIdx.x * blockDim.x + threadIdx.x;
-  if (idx >= rows.count * kGroups) return;
-  const MoEBatchGatherRow descriptor = rows.rows[idx / kGroups];
-  const int row = descriptor.local_row;
-  const int g = idx % kGroups;
-  const int flat = token_list[descriptor.expert * 4 + row];
-  const int t = flat / 10;
-  const float inv_scale = input_scale[descriptor.expert];
-  uint8_t* a_packed =
-      arena + static_cast<size_t>(descriptor.active_ordinal) * kBatchSlotBytes;
-  uint8_t* a_sf = a_packed + kBatchPackedBytes;
-
-  const uint16_t* src = x + static_cast<size_t>(t) * 2560 + g * 16;
-  float a[16];
-  float gmax = 0.0f;
-#pragma unroll
-  for (int j = 0; j < 16; ++j) {
-    const __nv_bfloat16 b = *reinterpret_cast<const __nv_bfloat16*>(&src[j]);
-    a[j] = __bfloat162float(b);
-    gmax = fmaxf(gmax, fabsf(a[j]));
-  }
-  const float block_scale = gmax > 0.0f ? gmax / 6.0f : 1.0f;
-  const uint8_t sf_code = FloatToE4m3(block_scale / inv_scale);
-  const float eff = E4m3ToFloat(sf_code) * inv_scale;
-  const float inv = eff > 0.0f ? 1.0f / eff : 0.0f;
-  uint8_t bytes[8];
-#pragma unroll
-  for (int j = 0; j < 8; ++j) {
-    const int c0 = FloatToE2m1Code(a[2 * j] * inv);
-    const int c1 = FloatToE2m1Code(a[2 * j + 1] * inv);
-    bytes[j] = static_cast<uint8_t>((c1 << 4) | (c0 & 0xF));
-  }
-  uint8_t* pdst = a_packed + (static_cast<size_t>(row) * kGroups + g) * 8;
-#pragma unroll
-  for (int j = 0; j < 8; ++j) pdst[j] = bytes[j];
-  a_sf[SfOffsetDev(row, g, 40)] = sf_code;
-}
-
 // SwiGLU + NVFP4 quantize fused: inter = silu(g)*u, then quantize inter to
 // NVFP4 (same convention as QuantizeFloat32ToFp4Kernel). One thread per
 // (row, group of 16) — a group is exactly 16 inter elements, so the per-group
@@ -377,47 +287,6 @@ __global__ void CombineGroupedKernel(const uint16_t* __restrict__ dn_out,
 
 }  // namespace
 
-bool MoEBatchGatherEnabled() {
-  const char* value = std::getenv("Q4T_MOE_BATCH_GATHER");
-  return value && std::strcmp(value, "1") == 0;
-}
-
-MoEBatchGatherStats GetMoEBatchGatherStats() {
-  constexpr auto order = std::memory_order_relaxed;
-  return {g_batch_stats.applied_calls.load(order),
-          g_batch_stats.legacy_calls.load(order),
-          g_batch_stats.bad_counts_fallback.load(order),
-          g_batch_stats.batch_launches.load(order),
-          g_batch_stats.legacy_gather_launches.load(order),
-          g_batch_stats.replaced_gather_launches.load(order)};
-}
-
-bool MoEBatchGatherShapeSupported(int M, int k, int E, int hs, int moe_is,
-                                 int streams) {
-  return M == 4 && k == 10 && E == 512 && hs == 2560 && moe_is == 640 &&
-         streams == kMoEBatchStreams;
-}
-
-bool MakeMoEBatchGatherPlan(const int32_t* counts, int E,
-                            MoEBatchGatherPlan* plan) {
-  if (!counts || !plan || E != kMoEBatchExperts) return false;
-  int total = 0;
-  for (int e = 0; e < E; ++e) {
-    if (counts[e] < 0 || counts[e] > 4) return false;
-    total += counts[e];
-  }
-  if (total != kMoEBatchSlots) return false;
-  *plan = {};
-  for (int e = 0; e < E; ++e) {
-    if (counts[e] == 0) continue;
-    const int ordinal = plan->active_experts++;
-    auto& target = plan->streams[ordinal % kMoEBatchStreams];
-    for (int row = 0; row < counts[e]; ++row)
-      target.rows[target.count++] = {e, row, ordinal};
-  }
-  return true;
-}
-
 size_t MoEWorkspace::RequiredBytes(int M, int k, int hs, int moe_is) {
   const int R = M * k;
   size_t b = 0;
@@ -440,16 +309,11 @@ void MoEWorkspace::Init(uint8_t* base) {
   off += dn_out_bytes;
 }
 
-static Status MoERoutedForwardImpl(
-    const uint16_t* x, const int32_t* expert_ids, const float* router_w,
-    float* y, const MoEWeightLayout& weights, void* workspace, void* gemm_ws,
-    size_t gemm_ws_bytes, int M, int k, cudaStream_t stream,
-    trace::MtpVerifyMoeCall* verify_moe, bool batch_requested,
-    MoERoutedCapture* capture) {
-  if (batch_requested && verify_moe)
-    return Status::Fail("batch gather is incompatible with verify MoE v1");
-  if (verify_moe)
-    verify_moe->MarkHost(trace::VerifyMoeHostPoint::kRoutedBegin);
+Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
+                        const float* router_w, float* y,
+                        const MoEWeightLayout& weights, void* workspace,
+                        void* gemm_ws, size_t gemm_ws_bytes, int M, int k,
+                        cudaStream_t stream) {
   const int E = weights.E;
   const int hs = weights.hs;
   const int moe_is = weights.moe_is;
@@ -457,26 +321,6 @@ static Status MoERoutedForwardImpl(
     return Status::Fail("invalid MoE forward dims");
   }
   const int R = M * k;
-  const bool device_decode =
-      M == 1 && k == 10 && E == 512 && hs == 2560 && moe_is == 640;
-  const int n_streams = device_decode ? 1 : MoeStreamCount();
-  const bool batch_shape = MoEBatchGatherShapeSupported(
-      M, k, E, hs, moe_is, n_streams);
-  if (capture && (!batch_shape || !capture->device_buffer ||
-                  capture->device_bytes < MoERoutedCaptureLayout::kBytes)) {
-    return Status::Fail("invalid bounded MoE capture shape or capacity");
-  }
-  if (capture) {
-    capture->batch_applied = false;
-    capture->active_experts = 0;
-    capture->streams = n_streams;
-    capture->injection_triggered = false;
-    capture->cleanup_joined = false;
-    capture->cleanup_freed = false;
-    capture->counts = {};
-    capture->offsets = {};
-    capture->experts = {};
-  }
 
   MoEWorkspace ws;
   ws.a_packed_bytes = static_cast<size_t>(R) * (hs / 2);
@@ -485,10 +329,31 @@ static Status MoERoutedForwardImpl(
   ws.dn_out_bytes = static_cast<size_t>(R) * hs * sizeof(uint16_t);
   ws.Init(static_cast<uint8_t*>(workspace));
 
-  if (device_decode) {
-    if (batch_requested) Increment(&g_batch_stats.legacy_calls);
+  // ABLATION (test-only, off by default): skip the dedicated M=1 device
+  // decode path so the single-token MoE forward uses the same per-expert
+  // Fp4Gemm chain as T>1, removing the MoEDeviceDecode implementation
+  // difference as a T-dependence source. Used to confirm whether the M=1 MoE
+  // decode path is a source of the MTP vs plain-greedy divergence (see
+  // docs/log/2026-10-11.md). Default runtime behavior is unchanged when the
+  // env var is unset.
+  const bool ablate_moe_decode_t1 =
+      std::getenv("Q4T_ABLATE_MOE_DECODE_T1") != nullptr;
+  if (!ablate_moe_decode_t1 && M == 1 && k == 10 && E == 512 && hs == 2560 &&
+      moe_is == 640) {
     return MoEDeviceDecode(x, expert_ids, router_w, y, weights, ws, gemm_ws,
                            gemm_ws_bytes, stream);
+  }
+  // 2 <= M <= 8 (batched decode / MTP verify): the fixed-shape device decode
+  // path with R = M*k independent M=1 rows. No host routing readback and no
+  // per-expert GEMM loop (the T>1 path below syncs the stream for expert
+  // counts and launches up to E x 5 kernels per layer, which dominates the
+  // verify step). Each (token, slot) row keeps the identical per-row
+  // arithmetic as the T=1 decode path, so per-token MoE output is
+  // bit-consistent with single-token decode.
+  if (!ablate_moe_decode_t1 && M >= 2 && M <= 8 && k == 10 && E == 512 &&
+      hs == 2560 && moe_is == 640) {
+    return MoEDeviceDecodeMulti(x, expert_ids, router_w, y, weights, ws,
+                                gemm_ws, gemm_ws_bytes, M, k, stream);
   }
 
   // Host-side scratch for per-expert counts (the token lists stay on device;
@@ -505,14 +370,8 @@ static Status MoERoutedForwardImpl(
   const size_t rows_bytes = AlignUp256(static_cast<size_t>(R) * sizeof(int32_t));
   const size_t metadata_bytes =
       counts_bytes + list_bytes + offset_bytes + rows_bytes;
-  const bool reserve_batch = batch_requested && batch_shape;
-  const size_t arena_guard = capture ? MoERoutedCaptureLayout::kGuard : 0;
-  const size_t arena_bytes = reserve_batch
-                                ? MoEBatchGatherExtraBytes() + 2 * arena_guard
-                                : 0;
   uint8_t* routing = nullptr;
-  if (cudaMallocAsync(&routing, metadata_bytes + arena_bytes, stream) !=
-      cudaSuccess) {
+  if (cudaMallocAsync(&routing, metadata_bytes, stream) != cudaSuccess) {
     return Status::Fail("cudaMallocAsync routing metadata");
   }
   int32_t* d_counts = reinterpret_cast<int32_t*>(routing);
@@ -521,8 +380,7 @@ static Status MoERoutedForwardImpl(
       reinterpret_cast<int32_t*>(routing + counts_bytes + list_bytes);
   int32_t* d_row_of_flat = reinterpret_cast<int32_t*>(
       routing + counts_bytes + list_bytes + offset_bytes);
-  uint8_t* batch_arena = reserve_batch
-      ? routing + metadata_bytes + arena_guard : nullptr;
+  const int n_streams = MoeStreamCount();
   bool submitted_extras[kMaxMoeStreams] = {};
   bool extras_joined = false;
   // Failure cleanup must establish an ordering edge before the allocation
@@ -543,11 +401,8 @@ static Status MoERoutedForwardImpl(
           safe = false;
       }
     }
-    if (capture) capture->cleanup_joined = safe;
     if (!safe) return false;
-    const bool freed = cudaFreeAsync(routing, stream) == cudaSuccess;
-    if (capture) capture->cleanup_freed = freed;
-    return freed;
+    return cudaFreeAsync(routing, stream) == cudaSuccess;
   };
   auto fail = [&](const char* message) -> Status {
     if (!free_all())
@@ -555,11 +410,6 @@ static Status MoERoutedForwardImpl(
                           "; routing cleanup failed; memory may remain live");
     return Status::Fail(message);
   };
-  if (reserve_batch && capture &&
-      cudaMemsetAsync(routing + metadata_bytes,
-                      MoERoutedCaptureLayout::kSentinel, arena_bytes,
-                      stream) != cudaSuccess)
-    return fail("initialize batch capture guards");
   if (cudaMemsetAsync(d_counts, 0, E * sizeof(int32_t), stream) != cudaSuccess) {
     return fail("memset counts");
   }
@@ -576,45 +426,14 @@ static Status MoERoutedForwardImpl(
   if (cudaGetLastError() != cudaSuccess) {
     return fail("kernel launch error");
   }
-  if (verify_moe)
-    verify_moe->MarkGpu(trace::VerifyMoeGpuPoint::kListEnd, stream);
 
   // 2. Read counts to host (one sync). Token lists stay on device.
-  {
-    // Includes the existing GPU wait; this is not GPU active time.
-    trace::MtpCycleSpan timing(trace::CycleDetail::kVerifyMoeCounts);
-    if (verify_moe)
-      verify_moe->MarkHost(trace::VerifyMoeHostPoint::kCountsWaitBegin);
-    if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
-                        cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
-      return fail("cudaMemcpy counts");
-    }
-    if (verify_moe)
-      verify_moe->MarkGpu(trace::VerifyMoeGpuPoint::kCountsCopyEnd, stream);
-    if (cudaStreamSynchronize(stream) != cudaSuccess) {
-      return fail("stream sync");
-    }
-    if (verify_moe)
-      verify_moe->MarkHost(trace::VerifyMoeHostPoint::kCountsWaitEnd);
+  if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
+                      cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
+    return fail("cudaMemcpy counts");
   }
-  if (verify_moe) verify_moe->SetCounts(counts_h.data(), E, M, k);
-  MoEBatchGatherPlan batch_plan;
-  const bool valid_batch_counts = (reserve_batch || capture) &&
-      MakeMoEBatchGatherPlan(counts_h.data(), E, &batch_plan);
-  const bool batch_applied = reserve_batch && valid_batch_counts;
-  if (capture) {
-    if (!valid_batch_counts) return fail("invalid bounded capture counts");
-    capture->batch_applied = batch_applied;
-    std::copy(counts_h.begin(), counts_h.end(), capture->counts.begin());
-  }
-  if (batch_requested) {
-    Increment(batch_applied ? &g_batch_stats.applied_calls
-                            : &g_batch_stats.legacy_calls);
-    if (reserve_batch && !valid_batch_counts)
-      Increment(&g_batch_stats.bad_counts_fallback);
-    if (batch_applied)
-      Increment(&g_batch_stats.replaced_gather_launches,
-                 batch_plan.active_experts);
+  if (cudaStreamSynchronize(stream) != cudaSuccess) {
+    return fail("stream sync");
   }
 
   // Clamp per-expert counts to M. An expert can be selected by at most M
@@ -636,8 +455,6 @@ static Status MoERoutedForwardImpl(
   //    dominated: median ~3.5us, below the ~5us launch cost).
   std::vector<int32_t> offset_h(E + 1, 0);
   for (int e = 0; e < E; ++e) offset_h[e + 1] = offset_h[e] + counts_h[e];
-  if (capture)
-    std::copy(offset_h.begin(), offset_h.end(), capture->offsets.begin());
   if (cudaMemcpyAsync(d_offset, offset_h.data(),
                       static_cast<size_t>(E + 1) * sizeof(int32_t),
                       cudaMemcpyHostToDevice, stream) != cudaSuccess) {
@@ -659,16 +476,6 @@ static Status MoERoutedForwardImpl(
   if (cudaGetLastError() != cudaSuccess) {
     return fail("build row_of_flat failed");
   }
-  if (capture &&
-      (!CaptureCopy(capture, MoERoutedCaptureLayout::kTokenListOffset,
-                    d_token_list, MoERoutedCaptureLayout::kTokenListBytes,
-                    stream) ||
-       !CaptureCopy(capture, MoERoutedCaptureLayout::kRowMapOffset,
-                    d_row_of_flat, MoERoutedCaptureLayout::kRowMapBytes,
-                    stream)))
-    return fail("capture routing metadata");
-  if (verify_moe)
-    verify_moe->MarkHost(trace::VerifyMoeHostPoint::kOffsetsEnd);
 
   // Per-stream scratch. Stream 0 is the caller's stream (reuses ws + gemm_ws);
   // streams 1..n-1 get their own a_packed/a_sf/gu_out (M rows suffice since
@@ -682,12 +489,12 @@ static Status MoERoutedForwardImpl(
     void* gemm_ws;
     cudaStream_t stream;
   };
-  if (verify_moe) verify_moe->SetStreams(n_streams);
   SScratch sc[kMaxMoeStreams];
   sc[0] = {reinterpret_cast<uint8_t*>(ws.a_packed),
            reinterpret_cast<uint8_t*>(ws.a_sf), ws.gu_out, gemm_ws, stream};
   if (n_streams > 1) {
-    if (!EnsureMoeStreams()) return fail("moe streams initialization failed");
+    if (!EnsureMoeStreams())
+      return fail("moe streams initialization failed");
     const size_t ap_b = AlignUp256(static_cast<size_t>(M) * (hs / 2));
     const size_t asf_b = AlignUp256(SfBufferSize(M, hs));
     const size_t gu_b =
@@ -703,45 +510,15 @@ static Status MoERoutedForwardImpl(
     }
   }
 
-  if (batch_applied) {
-    for (int si = 0; si < kMoEBatchStreams; ++si) {
-      const auto& rows = batch_plan.streams[si];
-      const int blocks = (rows.count * (hs / 16) + kBlock - 1) / kBlock;
-      GatherQuantBatchKernel<<<blocks, kBlock, 0, sc[si].stream>>>(
-          x, d_token_list, weights.gu_input_scale, batch_arena, rows);
-      if (si > 0) submitted_extras[si] = true;
-      if (cudaGetLastError() != cudaSuccess)
-        return fail("batch gather quant failed");
-      Increment(&g_batch_stats.batch_launches);
-      if (capture && capture->inject_after_first_extra_batch && si == 1) {
-        capture->injection_triggered = true;
-        return fail("injected after first extra batch gather");
-      }
-    }
-  }
-
   // 4. Per-expert GEMM chain.
-  if (verify_moe)
-    verify_moe->MarkHost(trace::VerifyMoeHostPoint::kExpertLoopBegin);
   int active_idx = 0;
   for (int e = 0; e < E; ++e) {
     const int M_e = counts_h[e];
     if (M_e <= 0) continue;
-    const int ordinal = active_idx;
-    const int stream_index = ordinal % n_streams;
+    const int stream_index = active_idx % n_streams;
     const SScratch& ss = sc[stream_index];
-    ++active_idx;
     if (stream_index > 0) submitted_extras[stream_index] = true;
-    MoECapturedExpert* observed = nullptr;
-    if (capture) {
-      observed = &capture->experts[ordinal];
-      observed->expert = e;
-      observed->rows = M_e;
-      observed->active_ordinal = ordinal;
-      observed->stream_index = stream_index;
-      observed->grouped_offset = offset_h[e];
-      capture->active_experts = active_idx;
-    }
+    ++active_idx;
 
     // gate/up input = token activation (calibrated by gu_input_scale); the
     // down input = SwiGLU intermediate (calibrated by down_proj's own
@@ -752,39 +529,18 @@ static Status MoERoutedForwardImpl(
     const float gu_alpha = weights.gu_w_scale2_h[e] * gu_in_scale;
     const float dn_alpha = weights.dn_w_scale2_h[e] * dn_in_scale;
 
-    if (verify_moe)
-      verify_moe->MarkExpert(active_idx - 1,
-                             trace::VerifyMoeExpertPoint::kGatherBegin,
-                             ss.stream);
-
     // Gather + quantize this expert's M_e token rows into the start of the
     // compact / a_packed / a_sf buffers (rows 0..M_e-1).
-    if (!batch_applied) {
+    {
       const int total = M_e * (hs / 16);
       const int blocks = (total + kBlock - 1) / kBlock;
       GatherQuantKernel<<<blocks, kBlock, 0, ss.stream>>>(
           reinterpret_cast<const uint16_t*>(x), d_token_list, M_e, e, k, M, hs,
           num_g_tiles, weights.gu_input_scale, ss.a_packed, ss.a_sf);
-      if (batch_requested) Increment(&g_batch_stats.legacy_gather_launches);
-      if (cudaGetLastError() != cudaSuccess)
-        return fail("gather quant failed");
     }
-    const uint8_t* gu_packed = batch_applied
-        ? batch_arena + static_cast<size_t>(ordinal) * kBatchSlotBytes
-        : ss.a_packed;
-    const uint8_t* gu_sf = batch_applied
-        ? gu_packed + kBatchPackedBytes : ss.a_sf;
-    if (capture &&
-        (!CaptureCopy(capture, MoERoutedCaptureLayout::StageOffset(ordinal, 0),
-                      gu_packed, static_cast<size_t>(M_e) * (hs / 2),
-                      ss.stream) ||
-         !CaptureCopy(capture, MoERoutedCaptureLayout::StageOffset(ordinal, 1),
-                      gu_sf, SfBufferSize(M_e, hs), ss.stream)))
-      return fail("capture gate/up inputs");
-    if (verify_moe)
-      verify_moe->MarkExpert(active_idx - 1,
-                             trace::VerifyMoeExpertPoint::kGatherEnd,
-                             ss.stream);
+    if (cudaGetLastError() != cudaSuccess) {
+      return fail("gather quant failed");
+    }
 
     // gate/up GEMM: [M_e, 2*moe_is] = act [M_e, hs] * W_gu [2*moe_is, hs]^T.
     // cuBLASLt nvjet for all M_e. Three hand-written W4A4 GEMV designs
@@ -795,22 +551,11 @@ static Status MoERoutedForwardImpl(
     // ~5-6 instructions/byte for nibble extract + LUT + FMA vs a 0.63
     // inst/byte budget to stay DRAM-bound (152 Ginst/s issue limit).
     auto r1 = Fp4Gemm(weights.gu_packed_expert(e), weights.gu_sf_expert(e),
-                      gu_packed, gu_sf, ss.gu_out, M_e, 2 * moe_is, hs,
+                      ss.a_packed, ss.a_sf, ss.gu_out, M_e, 2 * moe_is, hs,
                       gu_alpha, 1.0f, ss.gemm_ws, gemm_ws_bytes, ss.stream);
     if (r1.status != CUBLAS_STATUS_SUCCESS || !r1.has_algo) {
       return fail("gate/up GEMM failed");
     }
-    if (capture &&
-        (!CaptureGemm(&observed->gu, M_e, 2 * moe_is, hs, gemm_ws_bytes,
-                      gu_alpha) ||
-         !CaptureCopy(capture, MoERoutedCaptureLayout::StageOffset(ordinal, 2),
-                      ss.gu_out,
-                      static_cast<size_t>(M_e) * 2 * moe_is * sizeof(uint16_t),
-                      ss.stream)))
-      return fail("capture gate/up output or plan");
-    if (verify_moe)
-      verify_moe->MarkExpert(active_idx - 1,
-                             trace::VerifyMoeExpertPoint::kGuEnd, ss.stream);
 
     // SwiGLU + quantize inter -> NVFP4 (fused, one launch; reuses a_packed /
     // a_sf, now [M_e, moe_is]).
@@ -825,17 +570,6 @@ static Status MoERoutedForwardImpl(
     if (cudaGetLastError() != cudaSuccess) {
       return fail("inter quant failed");
     }
-    if (capture &&
-        (!CaptureCopy(capture, MoERoutedCaptureLayout::StageOffset(ordinal, 3),
-                      ss.a_packed, static_cast<size_t>(M_e) * (moe_is / 2),
-                      ss.stream) ||
-         !CaptureCopy(capture, MoERoutedCaptureLayout::StageOffset(ordinal, 4),
-                      ss.a_sf, SfBufferSize(M_e, moe_is), ss.stream)))
-      return fail("capture down inputs");
-    if (verify_moe)
-      verify_moe->MarkExpert(active_idx - 1,
-                             trace::VerifyMoeExpertPoint::kActivationEnd,
-                             ss.stream);
 
     // down GEMM: [M_e, hs] = inter [M_e, moe_is] * W_dn [hs, moe_is]^T.
     // (Same nvjet rationale as gate/up above.) Write into this expert's slice
@@ -849,20 +583,7 @@ static Status MoERoutedForwardImpl(
     if (r2.status != CUBLAS_STATUS_SUCCESS || !r2.has_algo) {
       return fail("down GEMM failed");
     }
-    if (capture &&
-        (!CaptureGemm(&observed->dn, M_e, hs, moe_is, gemm_ws_bytes,
-                      dn_alpha) ||
-         !CaptureCopy(capture, MoERoutedCaptureLayout::StageOffset(ordinal, 5),
-                      ws.dn_out + static_cast<size_t>(offset_h[e]) * hs,
-                      static_cast<size_t>(M_e) * hs * sizeof(uint16_t),
-                      ss.stream)))
-      return fail("capture down output or plan");
-    if (verify_moe)
-      verify_moe->MarkExpert(active_idx - 1,
-                             trace::VerifyMoeExpertPoint::kDnEnd, ss.stream);
   }
-  if (verify_moe)
-    verify_moe->MarkHost(trace::VerifyMoeHostPoint::kExpertLoopEnd);
 
   // Rejoin the extra streams: the combine (on the caller's stream) must not
   // read dn_out until every stream's down GEMM has landed.
@@ -873,12 +594,6 @@ static Status MoERoutedForwardImpl(
       return fail("join MoE expert streams failed");
   }
   extras_joined = true;
-  if (capture && batch_applied &&
-      !CaptureCopy(capture, MoERoutedCaptureLayout::kArenaOffset,
-                   routing + metadata_bytes, arena_bytes, stream))
-    return fail("capture batch arena guards");
-  if (verify_moe)
-    verify_moe->MarkGpu(trace::VerifyMoeGpuPoint::kExpertsJoined, stream);
 
   // 5. Single deterministic combine over all experts' grouped rows.
   {
@@ -893,28 +608,6 @@ static Status MoERoutedForwardImpl(
 
   if (!free_all()) return Status::Fail("routing cleanup failed");
   return Status();
-}
-
-Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
-                        const float* router_w, float* y,
-                        const MoEWeightLayout& weights, void* workspace,
-                        void* gemm_ws, size_t gemm_ws_bytes, int M, int k,
-                        cudaStream_t stream,
-                        trace::MtpVerifyMoeCall* verify_moe) {
-  return MoERoutedForwardImpl(x, expert_ids, router_w, y, weights, workspace,
-                              gemm_ws, gemm_ws_bytes, M, k, stream, verify_moe,
-                              MoEBatchGatherEnabled(), nullptr);
-}
-
-Status MoERoutedForwardForTest(
-    const uint16_t* x, const int32_t* expert_ids, const float* router_w,
-    float* y, const MoEWeightLayout& weights, void* workspace, void* gemm_ws,
-    size_t gemm_ws_bytes, int M, int k, cudaStream_t stream,
-    bool batch_requested, MoERoutedCapture* capture) {
-  if (!capture) return Status::Fail("bounded MoE capture is required");
-  return MoERoutedForwardImpl(x, expert_ids, router_w, y, weights, workspace,
-                              gemm_ws, gemm_ws_bytes, M, k, stream, nullptr,
-                              batch_requested, capture);
 }
 
 }  // namespace quant

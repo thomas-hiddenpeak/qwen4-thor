@@ -1,0 +1,14 @@
+[
+  "/home/rm01/models/dev/qwen4-thor/build/q4t",
+  "serve",
+  "--model-dir",
+  "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "--port",
+  "8734",
+  "--max-seq",
+  "1",
+  "--max-prefill",
+  "8192",
+  "--max-len",
+  "1040"
+]

@@ -1,0 +1,9 @@
+{
+  "cancel_status": 202,
+  "cancel_body": "{\"cancel_requested\":true}",
+  "response": {
+    "status": 200,
+    "raw": "data: {\"id\":\"boundary-cancel\",\"object\":\"chat.completion.chunk\",\"created\":1792107381,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\r\n\r\ndata: {\"id\":\"boundary-cancel\",\"object\":\"chat.completion.chunk\",\"created\":1792107381,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\\n\\n\"},\"finish_reason\":null}]}\r\n\r\ndata: {\"error\":{\"message\":\"request cancelled\"}}\r\n\r\ndata: [DONE]\r\n\r\n"
+  },
+  "passed": true
+}

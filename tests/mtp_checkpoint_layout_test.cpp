@@ -258,15 +258,17 @@ bool CheckValidity(Model& model) {
   const auto before_reject = CaptureState(model);
   rejected(verify(5), "verify_exceeds_reserved_capacity");
   rejected(restore(0), "failed_verify");
-  const q4t::Status legacy = q4t::model::ModelDecodeBatch(
-      model, tokens, 2, sequence.position, sequence.history.data(),
-      static_cast<int>(sequence.history.size()), nullptr, nullptr, nullptr,
-      true, slot);
-  rejected(legacy, "legacy_single_sequence_ple_checkpoint");
-  valid &= legacy.message().find("ModelVerifyMulti") != std::string::npos;
   RequireCuda(cudaStreamSynchronize(nullptr), "rejected-work completion");
   valid &= CompareState("rejected_inputs_unchanged", CaptureState(model),
                         before_reject);
+  // T>1 uses the single-sequence PLE checkpoint path in production.
+  Require(q4t::model::ModelDecodeBatch(
+              model, tokens, 2, sequence.position, sequence.history.data(),
+              static_cast<int>(sequence.history.size()), nullptr, nullptr,
+              nullptr, true, slot),
+          "single-sequence PLE checkpoint");
+  Require(restore(0), "single-sequence saved row");
+  rejected(restore(1), "single-sequence unwritten row");
 
   fresh();
   Require(verify(1), "verify without saved rows");

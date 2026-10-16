@@ -1,0 +1,10 @@
+{
+  "merge_commit": "fe44c56",
+  "parents": [
+    "577dac0",
+    "7f6a69c"
+  ],
+  "pull_request": "https://github.com/thomas-hiddenpeak/qwen4-thor/pull/4",
+  "source_changed_since_freeze": false,
+  "note": "off run started before merge commit; on run records merged HEAD. The frozen binary and runtime source digests are identical."
+}

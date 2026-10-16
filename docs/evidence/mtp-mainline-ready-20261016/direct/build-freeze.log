@@ -1,0 +1,27 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/build
+[  2%] Built target q4t_runtime
+[ 10%] Built target q4t_trace
+[ 27%] Built target q4t_ple
+[ 29%] Built target q4t_io
+[ 32%] Built target q4t_text
+[ 43%] Built target q4t_quant
+[ 45%] Building CUDA object CMakeFiles/q4t_model.dir/src/mtp/mtp.cu.o
+[ 48%] Linking CXX static library libq4t_model.a
+[ 78%] Built target q4t_model
+[ 97%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  1%] Built target q4t_runtime
+[  6%] Built target q4t_trace
+[ 11%] Built target q4t_io
+[ 18%] Built target q4t_ple
+[ 19%] Built target q4t_text
+[ 26%] Built target q4t_quant
+[ 47%] Built target q4t_model
+[ 47%] Linking CXX executable q4t_tests
+[100%] Built target q4t_tests
+gmake: *** No rule to make target 'q4t_mtp_lifecycle'.  Stop.

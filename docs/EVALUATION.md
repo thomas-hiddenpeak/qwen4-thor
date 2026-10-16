@@ -47,11 +47,41 @@ Bug修复应选择适合缺陷的验证方式。代码决定行为，测试结�
 证据位置。纯文档治理不运行推理测试，也不宣称运行时通过E2E。
 已冻结HTTP证据可以复用；无须为纯离线分析反复启动HTTP。
 
+## 恢复与批量前缀的局部数值合同（2026-10-16）
+
+五项小模型诊断以独立执行检查机制正确性：checkpoint恢复后的后继logits
+必须与不保存/恢复checkpoint、只执行已接受前缀的参考逐位相同；samepath
+同时检查状态、保存无副作用、恢复往返，并以错误row作负控，覆盖partial
+和full。旧MTP API保留接受数量、token、bonus、history和position检查，
+后继输出采用上述独立前缀参考，不调用speculative step产生参考。
+
+ragged prefill与逐序列独立普通prefill比较所有前缀token的logits；保持总
+M相同，用两种预定后缀填充，要求逐位一致。参考不使用ragged布局或其
+元数据。后缀不应影响因果前缀。该合同检验批量布局与因果性，不承诺不同
+M下的浮点归约顺序相同。
+
+原不同形状prefill的L2/argmax观测继续输出、原失败证据保留，不提高阈值。
+替换其门禁前提的依据是：首个已采样分歧发生于状态更新之前的投影；独立
+高精度点积位于BF16舍入中点附近，原参考并非始终更精确；独立前缀状态与
+输出逐位匹配。实际PLE上传所有权缺陷另行修复并以受控异步用例验证。
+详见[数值收口](MTP_NUMERICAL_CLOSURE_2026-10-16.md)。这些局部合同不证明
+整模型任务质量，也不替代完整模型N=4近tie、HTTP质量与五档性能验收。
+
+## 当前MoE Router分析阶段的收敛顺序（2026-09-28用户补充）
+
+先完成工具、采样和分析，再统一做质量与性能验收；过程中不随中间改动
+反复测试。直接合同成组完成，发现具体失败才定位并重验受影响项。
+已经通过且身份/依赖未变的质量、性能与直接合同证据复用，不为文档、
+报告或路径整理重跑推理。正在执行的检查保留原始记录；不因调整顺序
+删除或挑选结果。此约定限定当前MoE Router分析阶段，不自动放宽后续
+真实加载/驱逐及其他性能优化的门槛。
+
 ## 基线配置
 
-- 单请求并发 1、服务 max_seq=1，普通 greedy decode，MTP 关闭。
-- serve 默认关闭 MTP；--mtp 显式开启，--no-mtp 明确关闭。MTP 使用独立
-  结果组，不与普通 decode 混算。启动日志必须确认实际模式。
+- 单请求并发 1、服务 max_seq=1，greedy decode；MTP 自 2026-10-14 起默认
+  开启（k=3），--no-mtp 回退普通 greedy decode（性能基线侧）。
+- serve 默认开启 MTP；--mtp 显式开启（与默认相同），--no-mtp 明确关闭。
+  MTP 使用独立结果组，不与普通 decode 混算。启动日志必须确认实际模式。
 - 保持 checkpoint 和当前精度；禁用 Q4T_FP8_* 实验开关，记录实际环境。
 - 服务容量必须容纳 prompt 加输出；max_prefill 是分块大小，**不是最大上下文**。
   固定分块策略。容量被预算器缩减、输入截断或退化路径变化必须报告。
@@ -109,6 +139,10 @@ K 在本矩阵按 1024 计；历史 44002-token 等结果单独标注，不视�
 
 HTTP 200 或 evalscope perf 跑完只证明链路和性能采集可用，不能证明模型精度。
 当前矩阵使用 prepare_inputs.py 生成的固定技术文本负载，并保存 requests.jsonl。
+性能档自 2026-10-14 起以完整记录为边界收尾（--snap-records）：实际输入比名义
+档长至多短一条记录（<=48 token），名义档长仍是档位身份，验收按
+[名义-48, 名义] 区间核对；limits 档保持精确长度。旧矩阵的提示在记录中间截断
+（45K 档曾留下 "Record 136" 残片），属生成器产物而非负载条件，不再使用。
 它不是生产语料或质量基准；随机 token 数据也不承担语义正确性验收。保留固定真实文本请求、
 生成内容及已接受版本的 greedy 输出作为 E2E 对照。Bug修复的数值
 检查可以先于HTTP；性能优化仍按E2E前置。不能用near-tie泛化解释所有差异。
@@ -148,3 +182,48 @@ Runner必须忠实执行模型计算合同，不能用实现错误补偿模型�
 不以错误实现更快为理由拒绝必要的正确性修复。性能优化自身仍须遵守
 E2E前置及五档无回退要求。具体重验结论见
 [近期工作验收](NUMERICAL_ACCEPTANCE_2026-09-27.md)。
+
+## MTP vs plain 近 tie 合同（2026-10-12）
+
+MTP 开启时 verify 用一次 T=k+1（默认 k=3 → T=4）batch 前向计算 k+1 个
+token 的 logits，plain greedy 用 T=1 顺序 decode。两条路径在精确算术下
+逐 token 相同，但 BF16 下 GEMM/GEMV tiling 不同，logits 存在累积舍入差。
+合同如下：
+
+1. **允许分歧的唯一来源**：某 decode 位 top-2 logits 相距 ≤ N ULP（N=4，
+   ULP 取该侧 top-1 量级处的 BF16 单 ULP，量级 ~24 处为 0.125）。此类
+   近 tie 分歧是舍入级，允许 MTP 与 plain 选不同 token。
+2. **不可解释分歧（缺陷）**：top-2 相距 > N ULP 且两侧均 confident 的
+   argmax 翻转，或 causality 负控失败（row0 跨 filler 非逐位一致），或
+   状态差无界增长。此类必须定位修复，不得以近 tie 泛化解释。
+3. **验收测试**：`mtp_verify_numerics`（全模型、1K prompt、256 步、plain
+   T=1 vs batch T=4 差分，判据 ULP 感知）。PASS 条件：causality 负控通过
+   且无 > N ULP 双侧 confident 翻转。2026-10-12 结果：flips=4/256 全部
+   1–2 ULP 近 tie、confident_both_sides=0、PASS（证据
+   .q4t-work/verify-nums-ulp-rerun2/run.log）。
+4. **边界**：本合同界定 MTP 与 plain 的 token 级分歧来源，不替代五档 E2E
+   的质量与性能验收；MTP 默认部署前仍须完成五档 E2E（质量不回退 +
+   decode 提速 50–200%）。局部 PASS 不等于整模型质量通过。
+
+### 近 tie 合同与主流引擎对照（2026-10-16 来源复核）
+
+对照对象是同一逻辑输入在不同 batch/算术路径下的差异，不是任意错误的豁免。
+
+- [vLLM speculative decoding 文档（v0.7.1）](https://docs.vllm.ai/en/v0.7.1/features/spec_decode.html)
+  区分算法无损与浮点数值稳定性，明确 batch 大小变化可能改变 logprobs。
+  [当前 batch invariance 文档](https://docs.vllm.ai/en/latest/features/batch_invariance/)
+  提供 `VLLM_BATCH_INVARIANT=1` 显式启用方式；默认模式不能据此宣称 batch 不变。
+- [NeurIPS 2025 论文](https://proceedings.neurips.cc/paper_files/paper/2025/file/f80094a824ba5912d4a2de169c404a40-Paper-Conference.pdf)
+  研究有限精度、浮点非结合性导致的系统配置敏感性；BF16 greedy 的
+  DeepSeek-R1-Distill-Qwen-7B 在不同 GPU 数/类型及 batch size 下，报告最高
+  9% 准确率与 9000 token 响应长度差。这是特定实验结果，不是本模型的容差。
+- [Microsoft LLM-42（2026，v2）](https://arxiv.org/abs/2601.17768v2)
+  同样指出浮点非结合性、动态 batching 和归约顺序的作用，但它通过固定形状
+  verifier 与 rollback **强制确定性**，并非提倡无限制接受 token 翻转。
+
+据此，本项目合同**比 vLLM 默认非 batch-不变模式有更严格、可检验的显式边界**：
+N=4 BF16 ULP、双侧 confident 翻转拒绝、causality 负控；每个数值 PASS
+仍限于实际测过的输入与步数。不能推导为所有输入上的误差上界，也不能声称
+比 vLLM 的 batch-invariant 模式或 LLM-42 的确定性保证更强。
+来源解释了差异机制，不替本项目证明正确，更不授权放宽 N=4 或忽略状态缺陷。
+五档 HTTP 的重复确定性、输出合同、任务质量与性能分别记录。

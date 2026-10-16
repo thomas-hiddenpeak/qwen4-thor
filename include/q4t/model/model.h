@@ -71,6 +71,14 @@ struct ModelConfig {
   int max_seq = 1;
   float eps = 1e-6f;
 
+  // Tiered expert residency: C resident slots per MoE layer (0 = all E
+  // experts resident, the bit-identical baseline path).
+  int moe_resident_slots = 0;
+  // Optional per-layer static hot list JSON (layer id -> expert id array).
+  std::string moe_hot_list;
+  // Protect hot-list experts from LRU eviction (dynamic capacity C - hot).
+  bool moe_hot_protect = false;
+
   // PLE SSD stream (the core differentiator).
   std::string ple_sidecar;  // path to the 51 GB FP8 n-gram table
   int64_t ple_total_rows = 320001536;
@@ -85,6 +93,15 @@ struct ModelConfig {
 struct Model {
   // Optional observer, borrowed from serve; never controls execution.
   trace::RouterCollector* router_trace = nullptr;
+  // Owned weight loader. Kept alive for the model's lifetime only when
+  // tiered MoE residency is enabled (moe_resident_slots > 0): on-demand
+  // expert loads stream shards from NVMe after startup, so the borrowed
+  // pointers held by each layer's MoEResidency must outlive LoadModel.
+  // Released (reset) at the end of LoadModel when residency is disabled,
+  // preserving the baseline path exactly. The loader borrows the index, so
+  // both must outlive the model together.
+  std::unique_ptr<io::WeightIndex> weight_index;
+  std::unique_ptr<io::WeightLoader> weight_loader;
   ModelConfig cfg;
   ModelHeadWeights head;
   std::vector<DecoderLayer> layers;  // size = cfg.num_layers
@@ -124,10 +141,9 @@ struct Model {
   // ModelReserveVerifyCheckpoints): per-linear-layer per-token SSM/conv state,
   // so a partial accept restores the accepted-prefix boundary via D2D instead
   // of re-running the forward. POOLED over max_seq sequences (Phase 2 MTP
-  // multi-seq verify). Allocation reserves cap rows per (layer, slot), but
-  // kernels write a packed [num_layers, max_seq, verify_ckpt_rows, elems]
-  // layout using the current verify's T-1, which may be smaller than cap.
-  // Restore must use that actual stride, never the allocation capacity. The PLE
+  // multi-seq verify). Writers and readers use the reserved cap as stride:
+  // [num_layers, max_seq, cap, elems]. verify_ckpt_rows bounds valid rows
+  // without changing that physical layout. The PLE
   // conv state is an in-place recurrence too, so a partial accept must restore
   // it (the single-seq path historically missed this — see LOG 2026-09-13).
   float* d_verify_ssm_ckpt = nullptr;
@@ -277,14 +293,17 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
 // positions before `base_position`; the in-batch prefix supplies the rest.
 // The caller owns logits (T*vocab, or vocab for kLastRow) and
 // trunk_out (T*hc*hs); selecting logits rows never shortens trunk_out.
-// save_checkpoints requires reserved T-1 rows and rejects models with PLE;
-// use ModelVerifyMulti for complete SSM/conv/PLE rollback checkpoints.
+// save_checkpoints requires at least T-1 reserved rows and saves complete
+// SSM/conv/PLE state for the selected sequence.
 Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
                         int base_position, const int32_t* history,
                         int history_len, uint16_t* logits, cudaStream_t stream,
                         uint16_t* trunk_out = nullptr,
                         bool save_checkpoints = false, int seq_id = 0,
-                        LogitsRows logits_rows = LogitsRows::kAllRows);
+                        LogitsRows logits_rows = LogitsRows::kAllRows,
+                        float** ssm_captures = nullptr,
+                        uint16_t** qkv_raw_captures = nullptr,
+                        uint16_t** gated_n_captures = nullptr);
 
 // B2 continuous batching: decode ONE token for each of B sequences in a SINGLE
 // packed forward (T = B). This is the bandwidth win — the 84 GB of weights is
@@ -313,11 +332,10 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
 
 // Reserve per-linear-layer per-token SSM/conv/PLE-conv checkpoint buffers for
 // MTP verify (idempotent; grows if num_ckpt exceeds the current capacity).
-// Allocation is pooled over m.cfg.max_seq; the active packed layout uses the
-// last successful verify's T-1 stride, bounded by this reserved capacity.
-// Must be called before ModelVerifyMulti / ModelRestoreCheckpoint. The legacy
-// ModelDecodeBatch(save_checkpoints=true) rejects models with PLE: its single-
-// sequence PLE kernel does not save that recurrent state. Use ModelVerifyMulti.
+// Allocation is pooled over m.cfg.max_seq with reserved capacity as stride.
+// Only rows/slots written by the last successful verify are restorable.
+// Call before ModelVerifyMulti or ModelDecodeBatch(save_checkpoints=true).
+// Both paths save PLE recurrent state for partial acceptance.
 Status ModelReserveVerifyCheckpoints(Model& m, int num_ckpt);
 
 // Restore every linear layer's SSM/conv state AND the PLE layer's conv state
@@ -524,6 +542,119 @@ Status ModelSnapshotState(const Model& m, ModelStateSnapshot* snap,
 // 恢复 recurrent 状态 (host -> device)。验证后回滚调用。
 Status ModelRestoreState(const Model& m, const ModelStateSnapshot& snap,
                          cudaStream_t stream);
+
+// Test-only: read the verify checkpoint buffers (ssm/conv/ple_conv) for a
+// given ckpt_idx into a host snapshot, in the same order as
+// ModelSnapshotState. Lets a test directly compare checkpoint-N against the
+// T=1 recurrent state without going through ModelRestoreCheckpoint.
+Status ModelSnapshotCheckpoint(const Model& m, int ckpt_idx,
+                               ModelStateSnapshot* snap, cudaStream_t stream,
+                               int seq_id = 0);
+
+// Aggregate per-layer MoE residency counters (all-zero when tiered
+// residency is disabled, i.e. every layer has Slots() == 0).
+inline quant::MoEResidency::Stats SumResidencyStats(const Model& m) {
+  quant::MoEResidency::Stats total;
+  for (const auto& layer : m.layers) {
+    const auto& s = layer.moe_residency.GetStats();
+    total.resolve_calls += s.resolve_calls;
+    total.expert_lookups += s.expert_lookups;
+    total.hits += s.hits;
+    total.misses += s.misses;
+    total.loads += s.loads;
+    total.evictions += s.evictions;
+    total.load_bytes += s.load_bytes;
+    total.decode_lookups += s.decode_lookups;
+    total.decode_misses += s.decode_misses;
+    total.prefill_lookups += s.prefill_lookups;
+    total.prefill_misses += s.prefill_misses;
+    total.l2_hits += s.l2_hits;
+    total.l2_misses += s.l2_misses;
+    total.l2_evictions += s.l2_evictions;
+    total.l2_decode_hits += s.l2_decode_hits;
+    total.l2_decode_misses += s.l2_decode_misses;
+    total.l2_decode_evictions += s.l2_decode_evictions;
+    total.l2_prefill_hits += s.l2_prefill_hits;
+    total.l2_prefill_misses += s.l2_prefill_misses;
+    total.l2_prefill_evictions += s.l2_prefill_evictions;
+    total.mirror_hits += s.mirror_hits;
+    total.mirror_writebacks += s.mirror_writebacks;
+    total.mirror_skips += s.mirror_skips;
+    total.pread_merge_runs += s.pread_merge_runs;
+    total.pread_merge_experts += s.pread_merge_experts;
+    total.nvme_read_bytes += s.nvme_read_bytes;
+  }
+  return total;
+}
+
+// Plain snapshot of the per-layer MoE residency timing counters (the
+// atomics in MoEResidency::TimingStats are loaded once per layer).
+// count/ns are summed across layers; max is the max of the per-layer maxes
+// (cumulative, not per-request). All-zero when residency is disabled.
+struct ResidencyTimingSnapshot {
+  uint64_t stage_count = 0, stage_ns = 0, stage_max_ns = 0;
+  uint64_t pread_count = 0, pread_ns = 0, pread_max_ns = 0;
+  uint64_t swz_count = 0, swz_ns = 0, swz_max_ns = 0;
+  uint64_t phase1_count = 0, phase1_ns = 0, phase1_max_ns = 0;
+  uint64_t d2h_count = 0, d2h_ns = 0, d2h_max_ns = 0;
+  // Decode-phase split (C5 diagnosis).
+  uint64_t dstage_count = 0, dstage_ns = 0, dstage_max_ns = 0;
+  uint64_t dpread_count = 0, dpread_ns = 0, dpread_max_ns = 0;
+  uint64_t dphase1_count = 0, dphase1_ns = 0, dphase1_max_ns = 0;
+  // Item 3b: one event per batched preadv run (total ns across the run).
+  uint64_t pread_merge_count = 0, pread_merge_ns = 0,
+      pread_merge_max_ns = 0;
+  bool enabled = false;
+};
+
+inline ResidencyTimingSnapshot SumResidencyTiming(const Model& m) {
+  ResidencyTimingSnapshot total;
+  for (const auto& layer : m.layers) {
+    const auto& t = layer.moe_residency.GetTiming();
+    total.enabled = total.enabled ||
+                    t.enabled.load(std::memory_order_relaxed);
+    total.stage_count += t.stage_count.load(std::memory_order_relaxed);
+    total.stage_ns += t.stage_ns.load(std::memory_order_relaxed);
+    total.stage_max_ns =
+        std::max(total.stage_max_ns, t.stage_max_ns.load(std::memory_order_relaxed));
+    total.pread_count += t.pread_count.load(std::memory_order_relaxed);
+    total.pread_ns += t.pread_ns.load(std::memory_order_relaxed);
+    total.pread_max_ns =
+        std::max(total.pread_max_ns, t.pread_max_ns.load(std::memory_order_relaxed));
+    total.swz_count += t.swz_count.load(std::memory_order_relaxed);
+    total.swz_ns += t.swz_ns.load(std::memory_order_relaxed);
+    total.swz_max_ns =
+        std::max(total.swz_max_ns, t.swz_max_ns.load(std::memory_order_relaxed));
+    total.phase1_count += t.phase1_count.load(std::memory_order_relaxed);
+    total.phase1_ns += t.phase1_ns.load(std::memory_order_relaxed);
+    total.phase1_max_ns =
+        std::max(total.phase1_max_ns, t.phase1_max_ns.load(std::memory_order_relaxed));
+    total.d2h_count += t.d2h_count.load(std::memory_order_relaxed);
+    total.d2h_ns += t.d2h_ns.load(std::memory_order_relaxed);
+    total.d2h_max_ns =
+        std::max(total.d2h_max_ns, t.d2h_max_ns.load(std::memory_order_relaxed));
+    total.dstage_count += t.dstage_count.load(std::memory_order_relaxed);
+    total.dstage_ns += t.dstage_ns.load(std::memory_order_relaxed);
+    total.dstage_max_ns =
+        std::max(total.dstage_max_ns, t.dstage_max_ns.load(std::memory_order_relaxed));
+    total.dpread_count += t.dpread_count.load(std::memory_order_relaxed);
+    total.dpread_ns += t.dpread_ns.load(std::memory_order_relaxed);
+    total.dpread_max_ns =
+        std::max(total.dpread_max_ns, t.dpread_max_ns.load(std::memory_order_relaxed));
+    total.dphase1_count += t.dphase1_count.load(std::memory_order_relaxed);
+    total.dphase1_ns += t.dphase1_ns.load(std::memory_order_relaxed);
+    total.dphase1_max_ns =
+        std::max(total.dphase1_max_ns, t.dphase1_max_ns.load(std::memory_order_relaxed));
+    total.pread_merge_count +=
+        t.pread_merge_count.load(std::memory_order_relaxed);
+    total.pread_merge_ns +=
+        t.pread_merge_ns.load(std::memory_order_relaxed);
+    total.pread_merge_max_ns = std::max(
+        total.pread_merge_max_ns,
+        t.pread_merge_max_ns.load(std::memory_order_relaxed));
+  }
+  return total;
+}
 
 }  // namespace model
 }  // namespace q4t

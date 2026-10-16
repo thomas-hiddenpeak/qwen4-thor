@@ -1,0 +1,13 @@
+[  3%] Built target q4t_runtime
+[ 13%] Built target q4t_trace
+[ 23%] Built target q4t_io
+[ 36%] Built target q4t_ple
+[ 40%] Built target q4t_text
+[ 53%] Built target q4t_quant
+[ 96%] Built target q4t_model
+[ 96%] Building CXX object CMakeFiles/q4t_mtp_lifecycle.dir/tests/mtp_lifecycle_test.cpp.o
+[100%] Linking CXX executable q4t_mtp_lifecycle
+[100%] Built target q4t_mtp_lifecycle
+[ 21%] Built target q4t_io
+[ 28%] Built target q4t_text
+[100%] Built target q4t_host_tests

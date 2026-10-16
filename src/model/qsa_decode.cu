@@ -269,9 +269,13 @@ __global__ void SparseAttentionDecodeSplitKernel(
 Status QsaDecodeSplit(const uint16_t* q, const uint16_t* kv_cache,
                       const int* page_table, const int* topk,
                       const int* topk_len, uint16_t* out, const uint16_t* gate,
-                      int max_topk, const int* seq_id, size_t kv_seq_stride,
-                      int pt_seq_stride, cudaStream_t stream) {
-  SparseAttentionDecodeSplitKernel<<<dim3(1, 2, 4), 256, 0, stream>>>(
+                      int max_topk, int T, const int* seq_id,
+                      size_t kv_seq_stride, int pt_seq_stride,
+                      cudaStream_t stream) {
+  // grid=(T, nkv, 4): x=token, y=kv-head, z=64-column output partition. The
+  // kernel body is T-general (t=blockIdx.x), so each token's attention is
+  // computed exactly as in the T=1 decode — bit-identical per token.
+  SparseAttentionDecodeSplitKernel<<<dim3(T, 2, 4), 256, 0, stream>>>(
       q, kv_cache, page_table, topk, topk_len, out, gate, 24, 2, 256, max_topk,
       seq_id, kv_seq_stride, pt_seq_stride);
   const cudaError_t error = cudaGetLastError();

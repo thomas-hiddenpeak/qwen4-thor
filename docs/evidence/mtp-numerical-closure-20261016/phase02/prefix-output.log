@@ -1,0 +1,47 @@
+[q4t] MoE device decode grouped NVFP4 enabled: groups=80 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=80 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=30 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=30 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=20 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=20 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+  [A] sanity: ckpt0 != ckpt1 (distinct states) OK, bytes=6598656
+  [A] restore(1)->live == ckpt[1] direct: BIT-EXACT (bytes=6598656)
+  [A] restore(0)->live == ckpt[0] direct: BIT-EXACT (bytes=6598656)
+  [B] batch logits save vs nosave: BIT-EXACT (T=3, vocab=248320)
+  [B] same-path re-run ckpt[1] deterministic: BIT-EXACT
+  [C] accept=0 (full reject): restore ckpt[0], decode verify[1]: l2_rel=0.00000 OK
+  [C] accept=1 (partial): restore ckpt[1], decode verify[2]: l2_rel=0.02632 MISMATCH
+  [C] accept=2 (full): batch final state, decode probe: l2_rel=0.00000 OK
+  [D] batch-vs-pref7 L0 ssm     : diff_bytes=0/3145728 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-pref7 L0 conv    : diff_bytes=0/61440 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-pref7 L1 ssm     : diff_bytes=0/3145728 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-pref7 L1 conv    : diff_bytes=0/61440 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-pref7 L1 ple_conv: diff_bytes=0/184320 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-seq L0 ssm     : diff_bytes=65536/3145728 first=671744 maxabs=2.148e-03 relL2=1.638e-04
+  [D] batch-vs-seq L0 conv    : diff_bytes=0/61440 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] batch-vs-seq L1 ssm     : diff_bytes=3145584/3145728 first=0 maxabs=7.531e-04 relL2=2.464e-03
+  [D] batch-vs-seq L1 conv    : diff_bytes=16878/61440 first=2 maxabs=6.250e-02 relL2=3.700e-03
+  [D] batch-vs-seq L1 ple_conv: diff_bytes=5112/184320 first=23048 maxabs=3.125e-02 relL2=5.848e-04
+  [D] pref7-vs-seq L0 ssm     : diff_bytes=65536/3145728 first=671744 maxabs=2.148e-03 relL2=1.638e-04
+  [D] pref7-vs-seq L0 conv    : diff_bytes=0/61440 first=- maxabs=0.000e+00 relL2=0.000e+00
+  [D] pref7-vs-seq L1 ssm     : diff_bytes=3145584/3145728 first=0 maxabs=7.531e-04 relL2=2.464e-03
+  [D] pref7-vs-seq L1 conv    : diff_bytes=16878/61440 first=2 maxabs=6.250e-02 relL2=3.700e-03
+  [D] pref7-vs-seq L1 ple_conv: diff_bytes=5112/184320 first=23048 maxabs=3.125e-02 relL2=5.848e-04
+  [E] batch-final (=C a=2): probe l2_rel=0.00000 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  [E] pref7 state (path-only): probe l2_rel=0.00000 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  [E] seq T1x3 state: probe l2_rel=0.07151 argmax=39535 (ref argmax=39535) ARGMAX-MATCH
+  [F] independent prefix a=0 vs checkpoint: BIT-EXACT first_diff=0
+  [F] prefix output a=0 row=0 wrong=0: PASS
+  [F] prefix output a=0 row=1 wrong=1: PASS
+  [F] independent prefix a=1 vs checkpoint: BIT-EXACT first_diff=0
+  [F] prefix output a=1 row=1 wrong=0: PASS
+  [F] prefix output a=1 row=0 wrong=1: PASS
+  stage=F independent prefix (last)
+[FAIL] model_verify_ckpt_samepath
+1 tests, 0 passed, 1 failed, 0 skipped
