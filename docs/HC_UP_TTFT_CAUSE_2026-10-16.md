@@ -1811,3 +1811,26 @@ R39.2.1官方文档对应oc*_event_cnt接口，并说明OC硬件节流可影响�
 根因未确定，active及原NO_GO保持。平台来源：
 https://docs.nvidia.com/jetson/archives/r39.2.1/DeveloperGuide/SD/PlatformPowerAndPerformance/JetsonThor.html
 本机ABI路径/SHA及原始只读样本：evidence/hc-up-emc-counter-20261017/。
+
+## 请求级OC窗口工具落地，尚未模型执行（2026-10-17）
+
+新增oc_evalscope.py，复用身份/AST锚点校验的EvalScope边界钩子。请求
+计时前及首有效输出赋值后各读一次soctherm_oc；保存每次读区间、boot/
+设备身份、enable、uint32计数以及两端slack。读取非原子，窗口包围HTTP
+首输出，可能包含边界余量和少量decode；正delta不直接证明事件发生在
+纯prefill内，更不能换算节流时长或TTFT损失。boot/device/enable变化、
+计数下降、缺首输出、重复窗口、读取失败、时钟逆序均拒绝有效结论。
+
+runner显式--oc-observer仅允许单档200K off一次、无其他诊断；客户端
+包装独立于服务器，记录diagnostic_oc，缺失/失败counter不能伪装通过。
+本阶段9项CPU用例通过（6项窗口合同，3项runner选择/拒绝路径，含4个
+身份/计数负控子场景）；真实sysfs只读smoke通过、delta全0，读耗时约
+0.93/0.66ms。smoke无HTTP/模型，不宣称真实HTTP集成已通过。现有边界
+钩子身份未变，其已通过证据复用；生产src/include未改，无构建必要。
+
+下一步冻结原A/B各一次的OC观察：保持原二进制和五档基线夹具，仅补
+此前没有的请求窗口计数；正delta支持继续机制定位，零delta仅停止该
+次观测的OC解释，不回溯历史、不改变原NO_GO。异常完整保存，无自动
+重采；耗时仅保留诊断，不接受性能。当前未执行模型请求，未写频率/
+电压/保护阈值，目标active、根因仍未确定。
+证据：evidence/hc-up-oc-observer-20261017/；工具在tools/evalscope/。

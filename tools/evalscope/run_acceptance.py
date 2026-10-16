@@ -132,7 +132,7 @@ def request_timing(start, end, before, after):
 
 def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
              evalscope, model, port, env, server, bounded, capacity, mode,
-             ucf_probe=None):
+             ucf_probe=None, oc_observer=False):
     """Collect all available evidence even when the client returns nonzero."""
     parsed, boundaries, commands = [], [], []
     lines = inputs.read_text().splitlines()
@@ -164,6 +164,12 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
                    str(Path(__file__).with_name('ucf_evalscope.py')),
                    '--probe', str(ucf_probe), '--evidence', str(client_dir / 'ucf'),
                    '--', *cmd[1:]]
+        if oc_observer:
+            if ucf_probe or client_count != 1 or not streaming:
+                raise ValueError('OC requires one streaming request without UCF')
+            cmd = [str(evalscope.parent / 'python'),
+                   str(Path(__file__).with_name('oc_evalscope.py')),
+                   '--evidence', str(client_dir / 'oc'), '--', *cmd[1:]]
         commands.append(cmd)
         save(client_dir / 'command.json', cmd)
         (out / 'memory-phase.txt').write_text(f'requests:{label}\n')
@@ -188,6 +194,10 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
             counter = json.loads((client_dir / 'ucf/counter.json').read_text())
             if counter.get('complete') is not True or counter.get('error'):
                 raise RuntimeError('UCF observation incomplete')
+        if oc_observer:
+            counter = json.loads((client_dir / 'oc/counter.json').read_text())
+            if counter.get('complete') is not True or counter.get('error'):
+                raise RuntimeError('OC observation incomplete')
         databases = list(client_dir.rglob('benchmark_data.db'))
         rows = []
         if len(databases) == 1:
@@ -320,6 +330,8 @@ def main():
                              'setarch for the server only, not the HTTP client')
     parser.add_argument('--persistent-backing-fds', action='store_true',
                         help='Diagnostic only: forward inherited VMM FDs 73..75 to server')
+    parser.add_argument('--oc-observer', action='store_true',
+                        help='Diagnostic OC count window; one 200K off request')
     parser.add_argument('--ucf-probe', type=Path,
                         help='Diagnostic UCF executable; selected-tier single-request clients only')
     parser.add_argument('--mtp-k', type=int, default=3,
@@ -337,6 +349,13 @@ def main():
             parser.error('--persistent-backing-fds is frozen to one 200K off request')
         for fd in (73, 74, 75):
             os.fstat(fd)  # Fail before launching anything if owner FDs are absent.
+    if args.oc_observer and (
+            args.ucf_probe or args.mode != 'performance' or
+            args.perf_lengths != '204800' or args.perf_repeats != 1 or
+            args.max_len != 208896 or args.mtp or args.mtp_default or
+            args.persistent_backing_fds or args.moe_trace_dir or
+            args.server_address_space or args.systemd_unit):
+        parser.error('--oc-observer requires one original 200K off request')
     if args.ucf_probe and (args.mode != 'performance' or args.perf_lengths is None):
         parser.error('--ucf-probe requires selected performance tiers')
     if args.ucf_probe:
@@ -415,6 +434,10 @@ def main():
     (out / 'commit.txt').write_bytes(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT))
     (out / 'worktree.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT))
     shutil.copyfile(__file__, out / 'run_acceptance.py')
+    if args.oc_observer:
+        for name in ('oc_evalscope.py', 'ucf_client_boundary.py'):
+            shutil.copyfile(Path(__file__).with_name(name), out / name)
+        save(out / 'oc-diagnostic.json', {'performance_acceptance': False})
     if args.ucf_probe:
         for name in ('ucf_evalscope.py', 'ucf_client_boundary.py', 'ucf_window_probe.cpp'):
             shutil.copyfile(Path(__file__).with_name(name), out / name)
@@ -574,7 +597,7 @@ def main():
                                   tokens, streaming, evalscope, model, args.port,
                                   env, server, args.mode == 'performance' and
                                   args.perf_lengths is not None, capacity, args.mode,
-                                  args.ucf_probe)
+                                  args.ucf_probe, args.oc_observer)
                 if not all(isinstance(r['actual_input'], int) and
                            isinstance(r['actual_output'], int) and
                            0 < r['actual_input'] + r['actual_output'] <=
@@ -680,6 +703,7 @@ def main():
                                           'diagnostic_address_space': args.server_address_space,
                                           'diagnostic_persistent_backing_fds': args.persistent_backing_fds,
                                           'diagnostic_ucf': bool(args.ucf_probe),
+                                          'diagnostic_oc': args.oc_observer,
                                           'failure': failure, 'cleanup_failure': cleanup_failure})
         if server.returncode != 0:
             raise RuntimeError('server did not exit normally')
