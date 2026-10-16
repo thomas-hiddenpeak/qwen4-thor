@@ -1,0 +1,28 @@
+{
+  "device": "/sys/devices/platform/bus@0/810c630000.i2c",
+  "driver": "/sys/bus/platform/drivers/tegra-i2c",
+  "entries": [
+    "uevent",
+    "of_node",
+    "iommu_group",
+    "power",
+    "driver",
+    "i2c-0",
+    "driver_override",
+    "subsystem",
+    "dma:tx",
+    "iommu",
+    "supplier:platform:bpmp",
+    "modalias"
+  ],
+  "of_node": {
+    "name": "i2c|",
+    "compatible": "nvidia,tegra264-i2c|",
+    "status": "okay|"
+  },
+  "children": {
+    "i2c-0": {
+      "of_node": "i2c\u0000"
+    }
+  }
+}
