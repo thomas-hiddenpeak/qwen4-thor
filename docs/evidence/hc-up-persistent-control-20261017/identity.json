@@ -1,0 +1,9 @@
+{
+  "sha256": {
+    "tools/evalscope/persistent_layout_probe.cpp": "7d13d8abdafd423c1b747b9030b9110d1a53bd0c3a698cf5e7c8e8bd46c228ec",
+    "tools/evalscope/test_persistent_layout_probe.py": "1a57402b0a09f4a819703c212c080c8e335b62506c65b732b8e140bec418c03a"
+  },
+  "production_probe_sha256": "002203f24a1fa2488fcc09c4846cd5f066df8df9f753760f428c6f71609a45e8",
+  "production_probe_means": "real-driver linked diagnostic build, not production deployment",
+  "gpu_model_run": false
+}

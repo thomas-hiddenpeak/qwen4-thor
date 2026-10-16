@@ -52,8 +52,11 @@ GDN/Conv/Combine各自全程独占仍变慢。Combine同48层序号累计均正�
 legacy cudaMalloc retain返回INVALID_VALUE，不能直接保原页改VA。
 跨顺序进程共享backing能力已通过：同一2MiB VMM分配经POSIX FD导入，
 两个fresh exec子进程映射相差512MiB的指定VA，三方全量读写与清理通过，
-guard COMPLETED。下一步设计d_ws/双trunk对照并冻结因果判据；分配方式
-和缓存历史仍是独立变量，不改生产allocator、不追加trace或泛化计时。
+guard COMPLETED。独立persistent_layout_probe已实现：校验1541次startup
+分配序列，保留legacy分配，仅替换d_ws/双trunk返回指针；两模式均映射
+相同VMM区域。零警告构建、9项fake CUDA合同通过，未接入模型。下一步
+完成backing owner/结果验收驱动并冻结因果判据；分配方式和缓存历史仍是
+独立变量，不改生产allocator、不追加trace或泛化计时。
 UCF analyzer的outputs重复哈希标注已修正，原始文本hash独立核对通过，
 读流量结论不变。不得继续普通ASLR或UCF计时。
 此前scratch固定布局8条判据亦未过，诊断分配器不交付、不扩样。

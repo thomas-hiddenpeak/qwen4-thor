@@ -1,0 +1,5 @@
+[persistent-layout] slot=0 original=0x60e000 va=275414777856 exposed=0x60e000 bytes=167772160 mode=original
+[persistent-layout] slot=1 original=0x60f000 va=279709745152 exposed=0x60f000 bytes=167772160 mode=original
+[persistent-layout] slot=2 original=0x611000 va=284004712448 exposed=0x611000 bytes=2348023808 mode=original
+[persistent-layout] startup_complete=1541
+[persistent-layout] cleanup_complete=3

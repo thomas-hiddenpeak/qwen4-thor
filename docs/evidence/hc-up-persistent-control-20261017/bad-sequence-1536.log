@@ -1,0 +1,3 @@
+[persistent-layout] slot=0 original=0x60e000 va=274877906944 exposed=0x4000000000 bytes=167772160 mode=shared
+[persistent-layout] slot=1 original=0x60f000 va=279172874240 exposed=0x4100000000 bytes=167772160 mode=shared
+[persistent-layout] INVALID startup allocation sequence mismatch
