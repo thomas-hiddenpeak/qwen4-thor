@@ -1,0 +1,92 @@
+{
+  "common_functions": 1046,
+  "size_changes": {
+    "_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st": [
+      {
+        "address": "0000000000063630",
+        "size": 1040,
+        "kind": "T"
+      },
+      {
+        "address": "00000000000646f0",
+        "size": 1176,
+        "kind": "T"
+      }
+    ]
+  },
+  "added": {
+    "_ZN3q4t5model12HcUpFourRowsEPKtS2_PtfP11CUstream_st": {
+      "address": "0000000000064e90",
+      "size": 160,
+      "kind": "T"
+    },
+    "e843419@000e_00000177_3c8": {
+      "address": "0000000000049228",
+      "size": 8,
+      "kind": "t"
+    },
+    "_Z108__device_stub__ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_PtfPKtS0_Ptf": {
+      "address": "0000000000064d20",
+      "size": 368,
+      "kind": "t"
+    },
+    "e843419@002a_00000404_c4": {
+      "address": "00000000000bacc8",
+      "size": 8,
+      "kind": "t"
+    },
+    "e843419@0022_00000316_4784": {
+      "address": "000000000008f9e8",
+      "size": 8,
+      "kind": "t"
+    },
+    "_ZN3q4t5model49_GLOBAL__N__a4d86fa5_16_hc_up_small_m_cu_d321225518HcUpFourRowsKernelEPKtS3_Ptf": {
+      "address": "0000000000064bac",
+      "size": 368,
+      "kind": "T"
+    },
+    "e843419@0025_00000379_7548": {
+      "address": "00000000000a8038",
+      "size": 8,
+      "kind": "t"
+    },
+    "e843419@0009_000000fb_2ae4": {
+      "address": "000000000003c810",
+      "size": 8,
+      "kind": "t"
+    }
+  },
+  "removed": {
+    "e843419@002f_000004bd_2268": {
+      "address": "00000000000da4f8",
+      "size": 8,
+      "kind": "t"
+    },
+    "e843419@0021_00000307_1c84": {
+      "address": "000000000008f4e8",
+      "size": 8,
+      "kind": "t"
+    },
+    "e843419@0029_000003f5_85c4": {
+      "address": "00000000000b97c8",
+      "size": 8,
+      "kind": "t"
+    },
+    "e843419@0030_000004d6_4808": {
+      "address": "00000000000e2ed8",
+      "size": 8,
+      "kind": "t"
+    },
+    "e843419@0017_0000026b_98a4": {
+      "address": "0000000000071020",
+      "size": 8,
+      "kind": "t"
+    },
+    "e843419@000a_00000126_588": {
+      "address": "0000000000045dc8",
+      "size": 8,
+      "kind": "t"
+    }
+  },
+  "address_changes": 1046
+}

@@ -1,0 +1,350 @@
+{
+  "A": {
+    "streams": {
+      "7": {
+        "count": 608927,
+        "hash": "e7de8c72e9dea4b0ee0fd4ebd7dd1edbf478f79a189b7c165d33512d8f19f1bb"
+      },
+      "13": {
+        "count": 553116,
+        "hash": "665fdc0cc623431002fdfeeac714e930aa244ea1232895747769de09ac70b78b"
+      },
+      "14": {
+        "count": 551924,
+        "hash": "11b78d1ff5848fb057aaaf3251490aa73469ffb22c6735990a9a2a46e23b777c"
+      },
+      "15": {
+        "count": 550712,
+        "hash": "bdd0e6457ae8868b748d382b499144163839a2cb76a9cc34163df2fbcbe77bcf"
+      }
+    },
+    "longest_api": [
+      {
+        "start_s": 5.342982753,
+        "duration_ms": 28131.080402,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 52.815783356,
+        "duration_ms": 22688.35479,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 33.474067266,
+        "duration_ms": 12337.066347,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 87.300191456,
+        "duration_ms": 11605.391839,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 75.504144915,
+        "duration_ms": 4013.446197,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 48.754986402,
+        "duration_ms": 3463.019803,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 83.270663639,
+        "duration_ms": 2538.957466,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 79.517595769,
+        "duration_ms": 2522.822399,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 45.811138029,
+        "duration_ms": 2055.209371,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 85.874343606,
+        "duration_ms": 1403.497601,
+        "name": "cudaStreamSynchronize_v3020"
+      },
+      {
+        "start_s": 82.040422242,
+        "duration_ms": 1230.225443,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 47.866352715,
+        "duration_ms": 888.619965,
+        "name": "cudaMallocAsync_v11020"
+      },
+      {
+        "start_s": 52.283742592,
+        "duration_ms": 450.427846,
+        "name": "cudaLaunchKernel_v7000"
+      },
+      {
+        "start_s": 259.174986928,
+        "duration_ms": 329.684571,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 253.05362837,
+        "duration_ms": 326.904903,
+        "name": "cudaMemcpyAsync_v3020"
+      }
+    ],
+    "longest_gaps": [
+      {
+        "duration_ms": 46877.89312,
+        "start_s": 5.343736838,
+        "end_s": 52.221629958
+      },
+      {
+        "duration_ms": 32967.582112,
+        "start_s": 52.842269958,
+        "end_s": 85.80985207
+      },
+      {
+        "duration_ms": 11595.927648,
+        "start_s": 87.30988503,
+        "end_s": 98.905812678
+      },
+      {
+        "duration_ms": 1403.598688,
+        "start_s": 85.874312486,
+        "end_s": 87.277911174
+      },
+      {
+        "duration_ms": 450.219296,
+        "start_s": 52.28394759,
+        "end_s": 52.734166886
+      },
+      {
+        "duration_ms": 257.630368,
+        "start_s": 5.07775751,
+        "end_s": 5.335387878
+      },
+      {
+        "duration_ms": 56.545952,
+        "start_s": 104.044569542,
+        "end_s": 104.101115494
+      },
+      {
+        "duration_ms": 25.782368,
+        "start_s": 115.186951302,
+        "end_s": 115.21273367
+      },
+      {
+        "duration_ms": 25.699616,
+        "start_s": 120.867435686,
+        "end_s": 120.893135302
+      },
+      {
+        "duration_ms": 25.598656,
+        "start_s": 109.594354182,
+        "end_s": 109.619952838
+      },
+      {
+        "duration_ms": 21.288512,
+        "start_s": 252.228876966,
+        "end_s": 252.250165478
+      },
+      {
+        "duration_ms": 20.511872,
+        "start_s": 52.789616998,
+        "end_s": 52.81012887
+      },
+      {
+        "duration_ms": 17.732288,
+        "start_s": 126.64192919,
+        "end_s": 126.659661478
+      },
+      {
+        "duration_ms": 14.214752,
+        "start_s": 138.42426855,
+        "end_s": 138.438483302
+      },
+      {
+        "duration_ms": 14.018464,
+        "start_s": 132.487039558,
+        "end_s": 132.501058022
+      }
+    ]
+  },
+  "B": {
+    "streams": {
+      "7": {
+        "count": 608927,
+        "hash": "e7de8c72e9dea4b0ee0fd4ebd7dd1edbf478f79a189b7c165d33512d8f19f1bb"
+      },
+      "13": {
+        "count": 553116,
+        "hash": "665fdc0cc623431002fdfeeac714e930aa244ea1232895747769de09ac70b78b"
+      },
+      "14": {
+        "count": 551924,
+        "hash": "11b78d1ff5848fb057aaaf3251490aa73469ffb22c6735990a9a2a46e23b777c"
+      },
+      "15": {
+        "count": 550712,
+        "hash": "bdd0e6457ae8868b748d382b499144163839a2cb76a9cc34163df2fbcbe77bcf"
+      }
+    },
+    "longest_api": [
+      {
+        "start_s": 165.307315183,
+        "duration_ms": 329.640639,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 159.199861969,
+        "duration_ms": 327.97827,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 161.033366769,
+        "duration_ms": 326.120719,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 164.696931554,
+        "duration_ms": 325.94701,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 161.64451137,
+        "duration_ms": 325.276302,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 162.261052915,
+        "duration_ms": 324.680398,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 164.08867413,
+        "duration_ms": 324.336624,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 157.946659107,
+        "duration_ms": 323.72768,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 160.421590871,
+        "duration_ms": 323.559894,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 163.47739177,
+        "duration_ms": 323.504818,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 151.861314895,
+        "duration_ms": 323.11705,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 162.870825647,
+        "duration_ms": 322.633572,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 159.813828937,
+        "duration_ms": 322.088949,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 151.255598294,
+        "duration_ms": 320.934577,
+        "name": "cudaMemcpyAsync_v3020"
+      },
+      {
+        "start_s": 157.337872969,
+        "duration_ms": 320.158569,
+        "name": "cudaMemcpyAsync_v3020"
+      }
+    ],
+    "longest_gaps": [
+      {
+        "duration_ms": 59.87616,
+        "start_s": 5.427643405,
+        "end_s": 5.487519565
+      },
+      {
+        "duration_ms": 24.991008,
+        "start_s": 5.617609165,
+        "end_s": 5.642600173
+      },
+      {
+        "duration_ms": 13.292064,
+        "start_s": 5.493665261,
+        "end_s": 5.506957325
+      },
+      {
+        "duration_ms": 12.348832,
+        "start_s": 158.389397645,
+        "end_s": 158.401746477
+      },
+      {
+        "duration_ms": 12.320768,
+        "start_s": 75.793912685,
+        "end_s": 75.806233453
+      },
+      {
+        "duration_ms": 12.305024,
+        "start_s": 108.791668077,
+        "end_s": 108.803973101
+      },
+      {
+        "duration_ms": 12.261664,
+        "start_s": 102.034152333,
+        "end_s": 102.046413997
+      },
+      {
+        "duration_ms": 12.206816,
+        "start_s": 122.547709837,
+        "end_s": 122.559916653
+      },
+      {
+        "duration_ms": 12.204928,
+        "start_s": 143.793836749,
+        "end_s": 143.806041677
+      },
+      {
+        "duration_ms": 12.201536,
+        "start_s": 69.448994701,
+        "end_s": 69.461196237
+      },
+      {
+        "duration_ms": 12.139232,
+        "start_s": 44.948991949,
+        "end_s": 44.961131181
+      },
+      {
+        "duration_ms": 12.134144,
+        "start_s": 63.199675853,
+        "end_s": 63.211809997
+      },
+      {
+        "duration_ms": 12.029888,
+        "start_s": 33.211916109,
+        "end_s": 33.223945997
+      },
+      {
+        "duration_ms": 12.000224,
+        "start_s": 82.233292365,
+        "end_s": 82.245292589
+      },
+      {
+        "duration_ms": 11.835488,
+        "start_s": 136.639467373,
+        "end_s": 136.651302861
+      }
+    ]
+  }
+}

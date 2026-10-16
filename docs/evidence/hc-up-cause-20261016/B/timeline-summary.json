@@ -1,0 +1,1130 @@
+[
+  {
+    "length": 204800,
+    "decode_forwards": 255,
+    "prefill_chunks": [
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8192,
+      8181
+    ],
+    "profiled_ttft_s": 160.4122994200443,
+    "profiled_e2e_s": 175.5588202259969,
+    "last_forward_ms": 61.584256,
+    "stages": {
+      "prefill": {
+        "span_ms": 160266.359616,
+        "gpu_busy_ms": 158369.69086,
+        "gpu_gap_ms": 1896.668756,
+        "gpu_busy_pct": 98.81655216943565,
+        "kernel_count": 2264679,
+        "kernel_sum_ms": 180816.988812,
+        "kernel_union_ms": 157978.050924,
+        "copy_sum_ms": 10.968352,
+        "memset_sum_ms": 380.671584,
+        "expert_count_d2h_calls": 1200,
+        "top_kernels": [
+          {
+            "name": "SparseAttentionKernel",
+            "calls": 300,
+            "total_ms": 35516.359872,
+            "kernel_sum_pct": 19.642158685059876
+          },
+          {
+            "name": "GatedDeltaNetRegKernel",
+            "calls": 900,
+            "total_ms": 31379.616608,
+            "kernel_sum_pct": 17.35435194124717
+          },
+          {
+            "name": "MergeChunkTopkWarpKernel",
+            "calls": 3888,
+            "total_ms": 19551.48048,
+            "kernel_sum_pct": 10.812855920484424
+          },
+          {
+            "name": "SwiGLUQuantKernel",
+            "calls": 552518,
+            "total_ms": 10501.437494,
+            "kernel_sum_pct": 5.807771472689776
+          },
+          {
+            "name": "GatherQuantKernel",
+            "calls": 552518,
+            "total_ms": 10250.910935,
+            "kernel_sum_pct": 5.6692189170665435
+          },
+          {
+            "name": "nvjet_sm110_ootst_128x128_256x7_2x1_2cta_v_bz_Avec16UE4M3_Bvec16UE4M3_TNT",
+            "calls": 495734,
+            "total_ms": 8097.445823,
+            "kernel_sum_pct": 4.478254989313598
+          },
+          {
+            "name": "nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT",
+            "calls": 2450,
+            "total_ms": 6666.874976,
+            "kernel_sum_pct": 3.68708439389604
+          },
+          {
+            "name": "nvjet_sm110_ootst_128x128_256x7_4x1_2cta_v_bz_Avec16UE4M3_Bvec16UE4M3_TNT",
+            "calls": 346405,
+            "total_ms": 6509.4624,
+            "kernel_sum_pct": 3.600028096236053
+          },
+          {
+            "name": "nvjet_sm110_tst_128x256_64x6_2x1_2cta_v_bz_TNT",
+            "calls": 8400,
+            "total_ms": 6209.354048,
+            "kernel_sum_pct": 3.4340545591410234
+          },
+          {
+            "name": "CausalConv1dWithCkptKernel",
+            "calls": 900,
+            "total_ms": 4856.195072,
+            "kernel_sum_pct": 2.6856962412138765
+          },
+          {
+            "name": "IndexerReduceKernel",
+            "calls": 3900,
+            "total_ms": 4369.480544,
+            "kernel_sum_pct": 2.4165210208997894
+          },
+          {
+            "name": "CombineWithGateKernel",
+            "calls": 1200,
+            "total_ms": 4161.737824,
+            "kernel_sum_pct": 2.3016298697060287
+          },
+          {
+            "name": "MixGatePairKernel",
+            "calls": 2401,
+            "total_ms": 3702.889184,
+            "kernel_sum_pct": 2.0478657499655566
+          },
+          {
+            "name": "nvjet_sm110_tst_128x256_64x4_1x2_h_bz_TNT",
+            "calls": 2304,
+            "total_ms": 3676.696512,
+            "kernel_sum_pct": 2.033380013767818
+          },
+          {
+            "name": "NormGateKernel",
+            "calls": 900,
+            "total_ms": 3340.484928,
+            "kernel_sum_pct": 1.8474397510696225
+          },
+          {
+            "name": "CombineGroupedKernel",
+            "calls": 1200,
+            "total_ms": 3278.151744,
+            "kernel_sum_pct": 1.812966671737011
+          },
+          {
+            "name": "CombineAndGroupedNormKernel",
+            "calls": 1200,
+            "total_ms": 2734.143136,
+            "kernel_sum_pct": 1.5121052252688256
+          },
+          {
+            "name": "nvjet_sm110_ootst_128x256_256x5_2x1_2cta_v_bz_Avec16UE4M3_Bvec16UE4M3_TNT",
+            "calls": 117493,
+            "total_ms": 2564.846016,
+            "kernel_sum_pct": 1.4184762354751606
+          },
+          {
+            "name": "nvjet_sm110_ootst_256x128_256x3_1x2_h_bz_Avec16UE4M3_Bvec16UE4M3_TNT",
+            "calls": 97851,
+            "total_ms": 1847.57168,
+            "kernel_sum_pct": 1.0217909789002
+          },
+          {
+            "name": "Kernel2",
+            "calls": 2400,
+            "total_ms": 1847.02416,
+            "kernel_sum_pct": 1.0214881754946146
+          },
+          {
+            "name": "GroupedRmsNormKernel",
+            "calls": 1276,
+            "total_ms": 1713.377024,
+            "kernel_sum_pct": 0.9475752445924434
+          },
+          {
+            "name": "MoECombineKernel",
+            "calls": 1200,
+            "total_ms": 1258.37856,
+            "kernel_sum_pct": 0.6959404468948258
+          },
+          {
+            "name": "RouterTopkKernel",
+            "calls": 1200,
+            "total_ms": 1014.284992,
+            "kernel_sum_pct": 0.5609456272134793
+          },
+          {
+            "name": "QKDeinterleaveNormKernel",
+            "calls": 300,
+            "total_ms": 859.353408,
+            "kernel_sum_pct": 0.4752614307129578
+          },
+          {
+            "name": "nvjet_sm110_tst_256x128_64x4_1x4f_h_bz_TNT",
+            "calls": 2016,
+            "total_ms": 595.541312,
+            "kernel_sum_pct": 0.3293613702522164
+          },
+          {
+            "name": "nvjet_sm110_tst_256x256_64x3_1x2_h_bz_TNT",
+            "calls": 1200,
+            "total_ms": 505.878752,
+            "kernel_sum_pct": 0.2797739058280497
+          },
+          {
+            "name": "GdnRegPrepNormKernel",
+            "calls": 900,
+            "total_ms": 486.34288,
+            "kernel_sum_pct": 0.2689696821052932
+          },
+          {
+            "name": "nvjet_sm110_ootst_128x128_256x5_1x2_h_bz_Avec16UE4M3_Bvec16UE4M3_TNT",
+            "calls": 17612,
+            "total_ms": 447.747552,
+            "kernel_sum_pct": 0.24762471432677957
+          },
+          {
+            "name": "nvjet_sm110_ootst_128x256_256x5_2x2f_2cta_v_bz_Avec16UE4M3_Bvec16UE4M3_TNT",
+            "calls": 10086,
+            "total_ms": 407.921952,
+            "kernel_sum_pct": 0.22559935030448205
+          },
+          {
+            "name": "nvjet_sm110_ootst_128x128_256x7_2x2f_2cta_v_bz_Avec16UE4M3_Bvec16UE4M3_TNT",
+            "calls": 19855,
+            "total_ms": 407.79024,
+            "kernel_sum_pct": 0.22552650759160128
+          },
+          {
+            "name": "nvjet_sm110_tst_48x512_64x3_1x4_2cta_h_bz_TNN",
+            "calls": 1728,
+            "total_ms": 319.989536,
+            "kernel_sum_pct": 0.17696873402349445
+          },
+          {
+            "name": "PartialRopeKernel",
+            "calls": 600,
+            "total_ms": 274.547552,
+            "kernel_sum_pct": 0.15183725478663626
+          },
+          {
+            "name": "SwiGLUKernel",
+            "calls": 1200,
+            "total_ms": 245.363968,
+            "kernel_sum_pct": 0.1356974085300752
+          },
+          {
+            "name": "SiluDivKernel",
+            "calls": 2401,
+            "total_ms": 187.887392,
+            "kernel_sum_pct": 0.1039102538065996
+          },
+          {
+            "name": "DepthwiseConvAddKernel",
+            "calls": 25,
+            "total_ms": 155.699712,
+            "kernel_sum_pct": 0.0861090061409467
+          },
+          {
+            "name": "PleGateKernel",
+            "calls": 25,
+            "total_ms": 147.336416,
+            "kernel_sum_pct": 0.0814837239398945
+          },
+          {
+            "name": "ExpandRunTopkKernel",
+            "calls": 288,
+            "total_ms": 115.277312,
+            "kernel_sum_pct": 0.0637535846368157
+          },
+          {
+            "name": "IndexerQueryNormRopeKernel",
+            "calls": 300,
+            "total_ms": 90.442432,
+            "kernel_sum_pct": 0.050018769029515964
+          },
+          {
+            "name": "nvjet_sm110_tst_192x288_64x5_2x1_2cta_v_bz_TNT",
+            "calls": 96,
+            "total_ms": 81.308992,
+            "kernel_sum_pct": 0.044967562248555644
+          },
+          {
+            "name": "GatedValueKernel",
+            "calls": 25,
+            "total_ms": 78.677184,
+            "kernel_sum_pct": 0.0435120529973003
+          },
+          {
+            "name": "WriteKVKernel",
+            "calls": 300,
+            "total_ms": 74.371008,
+            "kernel_sum_pct": 0.041130542261891896
+          },
+          {
+            "name": "nvjet_sm110_tst_128x256_64x4_1x4f_h_bz_TNT",
+            "calls": 288,
+            "total_ms": 36.865248,
+            "kernel_sum_pct": 0.02038815503023874
+          },
+          {
+            "name": "BuildTokenListsKernel",
+            "calls": 1200,
+            "total_ms": 34.054624,
+            "kernel_sum_pct": 0.01883375241659812
+          },
+          {
+            "name": "InitRunTopkKernel",
+            "calls": 288,
+            "total_ms": 33.723104,
+            "kernel_sum_pct": 0.018650406812748533
+          },
+          {
+            "name": "ShortTopkSelectKernel",
+            "calls": 12,
+            "total_ms": 32.27952,
+            "kernel_sum_pct": 0.01785203935320582
+          },
+          {
+            "name": "ExpandTrunkKernel",
+            "calls": 25,
+            "total_ms": 25.077888,
+            "kernel_sum_pct": 0.013869210058615739
+          },
+          {
+            "name": "BuildCompressedKKernel",
+            "calls": 300,
+            "total_ms": 18.086272,
+            "kernel_sum_pct": 0.010002529142217248
+          },
+          {
+            "name": "nvjet_sm110_tst_256x120_64x4_1x2_h_bz_TNT",
+            "calls": 84,
+            "total_ms": 17.261952,
+            "kernel_sum_pct": 0.009546642775888547
+          },
+          {
+            "name": "ScaleBf16Kernel",
+            "calls": 25,
+            "total_ms": 16.608544,
+            "kernel_sum_pct": 0.009185278501274194
+          },
+          {
+            "name": "BuildRowOfFlatKernel",
+            "calls": 1200,
+            "total_ms": 15.972544,
+            "kernel_sum_pct": 0.008833541640607154
+          },
+          {
+            "name": "Fp8ToBf16Kernel",
+            "calls": 25,
+            "total_ms": 14.535648,
+            "kernel_sum_pct": 0.008038872948555228
+          },
+          {
+            "name": "nvjet_sm110_tst_64x416_64x3_1x2_h_bz_TNT",
+            "calls": 72,
+            "total_ms": 13.26944,
+            "kernel_sum_pct": 0.007338602466052884
+          },
+          {
+            "name": "WriteIndexRawKernel",
+            "calls": 300,
+            "total_ms": 8.19504,
+            "kernel_sum_pct": 0.004532228997862911
+          },
+          {
+            "name": "ApplyInjectGateKernel",
+            "calls": 2400,
+            "total_ms": 6.498848,
+            "kernel_sum_pct": 0.0035941578513714865
+          },
+          {
+            "name": "EmbedLookupKernel",
+            "calls": 25,
+            "total_ms": 5.520384,
+            "kernel_sum_pct": 0.0030530228582335717
+          },
+          {
+            "name": "Bf16GevKernel",
+            "calls": 3,
+            "total_ms": 4.887936,
+            "kernel_sum_pct": 0.0027032504147506352
+          },
+          {
+            "name": "Conv1dUpdateStateKernel",
+            "calls": 900,
+            "total_ms": 2.259872,
+            "kernel_sum_pct": 0.0012498117653920485
+          },
+          {
+            "name": "nvjet_sm110_tst_64x416_64x6_2x1_2cta_v_bz_TNT",
+            "calls": 12,
+            "total_ms": 2.090048,
+            "kernel_sum_pct": 0.0011558913870494082
+          },
+          {
+            "name": "PleConvUpdateStateKernel",
+            "calls": 25,
+            "total_ms": 0.120288,
+            "kernel_sum_pct": 6.65247224778566e-05
+          }
+        ],
+        "cuda_api": [
+          {
+            "name": "cudaMemcpyAsync_v3020",
+            "calls": 2549,
+            "overlapping_ms": 135314.278892
+          },
+          {
+            "name": "cudaMallocAsync_v11020",
+            "calls": 6602,
+            "overlapping_ms": 6678.029941
+          },
+          {
+            "name": "cuLaunchKernelEx",
+            "calls": 1123686,
+            "overlapping_ms": 4372.955114
+          },
+          {
+            "name": "cudaLaunchKernel_v7000",
+            "calls": 1138593,
+            "overlapping_ms": 4310.338958
+          },
+          {
+            "name": "cudaStreamSynchronize_v3020",
+            "calls": 1225,
+            "overlapping_ms": 1416.293932
+          },
+          {
+            "name": "cuKernelGetAttribute",
+            "calls": 2247372,
+            "overlapping_ms": 255.371716
+          },
+          {
+            "name": "cuStreamGetGreenCtx",
+            "calls": 1132991,
+            "overlapping_ms": 137.527081
+          },
+          {
+            "name": "cuKernelSetAttribute",
+            "calls": 36,
+            "overlapping_ms": 135.536267
+          },
+          {
+            "name": "cuKernelGetName",
+            "calls": 1138593,
+            "overlapping_ms": 126.999743
+          },
+          {
+            "name": "cudaFreeAsync_v11020",
+            "calls": 6602,
+            "overlapping_ms": 38.277287
+          },
+          {
+            "name": "cudaMemsetAsync_v3020",
+            "calls": 4909,
+            "overlapping_ms": 36.717641
+          },
+          {
+            "name": "cuLibraryLoadData",
+            "calls": 40,
+            "overlapping_ms": 22.179828
+          },
+          {
+            "name": "cudaEventRecord_v3020",
+            "calls": 3625,
+            "overlapping_ms": 14.244506
+          },
+          {
+            "name": "cuLaunchKernel",
+            "calls": 2490,
+            "overlapping_ms": 14.005534
+          },
+          {
+            "name": "cudaStreamWaitEvent_v3020",
+            "calls": 3600,
+            "overlapping_ms": 9.059478
+          },
+          {
+            "name": "cuKernelGetFunction",
+            "calls": 2400,
+            "overlapping_ms": 6.610911
+          },
+          {
+            "name": "cudaMalloc_v3020",
+            "calls": 6,
+            "overlapping_ms": 2.353213
+          },
+          {
+            "name": "cudaStreamCreateWithFlags_v5000",
+            "calls": 7,
+            "overlapping_ms": 0.312695
+          },
+          {
+            "name": "cudaEventSynchronize_v3020",
+            "calls": 24,
+            "overlapping_ms": 0.279621
+          },
+          {
+            "name": "cuGetProcAddress_v2",
+            "calls": 441,
+            "overlapping_ms": 0.178781
+          },
+          {
+            "name": "cuLibraryGetKernel",
+            "calls": 71,
+            "overlapping_ms": 0.090754
+          },
+          {
+            "name": "cudaEventCreateWithFlags_v3020",
+            "calls": 7,
+            "overlapping_ms": 0.04199
+          },
+          {
+            "name": "cudaOccupancyAvailableDynamicSMemPerBlock_v10200",
+            "calls": 1,
+            "overlapping_ms": 0.010649
+          },
+          {
+            "name": "cudaOccupancyMaxActiveClusters_v11070",
+            "calls": 14,
+            "overlapping_ms": 0.009906
+          },
+          {
+            "name": "cuInit",
+            "calls": 2,
+            "overlapping_ms": 0.003935
+          },
+          {
+            "name": "cudaGetDriverEntryPointByVersion_v12050",
+            "calls": 3,
+            "overlapping_ms": 0.001592
+          },
+          {
+            "name": "cuModuleGetLoadingMode",
+            "calls": 1,
+            "overlapping_ms": 0.000157
+          }
+        ]
+      },
+      "decode": {
+        "span_ms": 15160.257696,
+        "gpu_busy_ms": 14783.935187,
+        "gpu_gap_ms": 376.322509,
+        "gpu_busy_pct": 97.5177037452385,
+        "kernel_count": 439875,
+        "kernel_sum_ms": 14765.095827,
+        "kernel_union_ms": 14760.730195,
+        "copy_sum_ms": 5.553888,
+        "memset_sum_ms": 17.651104,
+        "expert_count_d2h_calls": 0,
+        "top_kernels": [
+          {
+            "name": "Bf16GevKernel",
+            "calls": 151215,
+            "total_ms": 9461.406016,
+            "kernel_sum_pct": 64.07954358615488
+          },
+          {
+            "name": "SparseAttentionDecodeSplitKernel",
+            "calls": 3060,
+            "total_ms": 1263.096896,
+            "kernel_sum_pct": 8.554613602237882
+          },
+          {
+            "name": "nvjet_sm110_ootst_128x128_256x7_2x1_2cta_v_abatch_bbatch_bx_Avec16UE4M3_Bvec16UE4M3_ptrGroup_TNT",
+            "calls": 12240,
+            "total_ms": 972.982304,
+            "kernel_sum_pct": 6.589745948148664
+          },
+          {
+            "name": "OnePassScoreKernel",
+            "calls": 3060,
+            "total_ms": 726.065056,
+            "kernel_sum_pct": 4.917442219862133
+          },
+          {
+            "name": "nvjet_sm110_ootst_256x128_256x4_2x1_2cta_v_abatch_bbatch_bx_Avec16UE4M3_Bvec16UE4M3_ptrGroup_TNT",
+            "calls": 12240,
+            "total_ms": 535.802688,
+            "kernel_sum_pct": 3.628846668371846
+          },
+          {
+            "name": "HcInjectGevKernel",
+            "calls": 24480,
+            "total_ms": 344.433536,
+            "kernel_sum_pct": 2.332755168240467
+          },
+          {
+            "name": "GatedDeltaNetDecodeKernel",
+            "calls": 9180,
+            "total_ms": 240.889184,
+            "kernel_sum_pct": 1.6314772814376262
+          },
+          {
+            "name": "PrepareMoEDecodeKernel",
+            "calls": 24480,
+            "total_ms": 151.286771,
+            "kernel_sum_pct": 1.0246243761137765
+          },
+          {
+            "name": "CombineAndGroupedNormKernel",
+            "calls": 12240,
+            "total_ms": 149.636576,
+            "kernel_sum_pct": 1.0134480517652247
+          },
+          {
+            "name": "MoECombineKernel",
+            "calls": 12240,
+            "total_ms": 115.532608,
+            "kernel_sum_pct": 0.7824711018043838
+          },
+          {
+            "name": "DecodeWindowMergeTopkKernel",
+            "calls": 6120,
+            "total_ms": 115.481088,
+            "kernel_sum_pct": 0.7821221707808155
+          },
+          {
+            "name": "RouterTopkKernel",
+            "calls": 12240,
+            "total_ms": 102.176256,
+            "kernel_sum_pct": 0.6920121426720219
+          },
+          {
+            "name": "GroupedRmsNormKernel",
+            "calls": 13260,
+            "total_ms": 86.756256,
+            "kernel_sum_pct": 0.5875766538633248
+          },
+          {
+            "name": "DecodeSliceLocalTopkKernel",
+            "calls": 3060,
+            "total_ms": 78.72464,
+            "kernel_sum_pct": 0.5331806912898
+          },
+          {
+            "name": "MixGatePairKernel",
+            "calls": 24735,
+            "total_ms": 71.033856,
+            "kernel_sum_pct": 0.481093091655422
+          },
+          {
+            "name": "DecodeFinalTopkExpandKernel",
+            "calls": 3060,
+            "total_ms": 53.747392,
+            "kernel_sum_pct": 0.36401654706307784
+          },
+          {
+            "name": "CausalConv1dMultiSeqKernel",
+            "calls": 9180,
+            "total_ms": 35.819968,
+            "kernel_sum_pct": 0.2425989537737932
+          },
+          {
+            "name": "PartialRopeKernel",
+            "calls": 6120,
+            "total_ms": 29.692224,
+            "kernel_sum_pct": 0.20109740124885409
+          },
+          {
+            "name": "CombineMoEDecodeKernel",
+            "calls": 12240,
+            "total_ms": 29.691424,
+            "kernel_sum_pct": 0.2010919830652583
+          },
+          {
+            "name": "SiluDivKernel",
+            "calls": 24735,
+            "total_ms": 29.43536,
+            "kernel_sum_pct": 0.19935773085992042
+          },
+          {
+            "name": "NormGateKernel",
+            "calls": 9180,
+            "total_ms": 26.352416,
+            "kernel_sum_pct": 0.17847778510052742
+          },
+          {
+            "name": "Conv1dUpdateStateMultiSeqKernel",
+            "calls": 9180,
+            "total_ms": 23.621312,
+            "kernel_sum_pct": 0.1599807564865593
+          },
+          {
+            "name": "CombineWithGateKernel",
+            "calls": 12240,
+            "total_ms": 22.882464,
+            "kernel_sum_pct": 0.15497673884483892
+          },
+          {
+            "name": "SwiGLUKernel",
+            "calls": 12240,
+            "total_ms": 20.55312,
+            "kernel_sum_pct": 0.13920072203267253
+          },
+          {
+            "name": "PleGateKernel",
+            "calls": 255,
+            "total_ms": 16.437856,
+            "kernel_sum_pct": 0.11132915216128249
+          },
+          {
+            "name": "IndexerQueryNormRopeKernel",
+            "calls": 3060,
+            "total_ms": 13.451104,
+            "kernel_sum_pct": 0.0911006887974463
+          },
+          {
+            "name": "WriteKVKernel",
+            "calls": 3060,
+            "total_ms": 11.138016,
+            "kernel_sum_pct": 0.07543476947594618
+          },
+          {
+            "name": "QKDeinterleaveNormKernel",
+            "calls": 3060,
+            "total_ms": 8.205728,
+            "kernel_sum_pct": 0.05557517605131084
+          },
+          {
+            "name": "BuildCompressedKKernel",
+            "calls": 3060,
+            "total_ms": 7.454944,
+            "kernel_sum_pct": 0.05049031911034139
+          },
+          {
+            "name": "WriteIndexRawKernel",
+            "calls": 3060,
+            "total_ms": 6.91344,
+            "kernel_sum_pct": 0.0468228589980285
+          },
+          {
+            "name": "ArgmaxBf16ChunkKernel",
+            "calls": 255,
+            "total_ms": 5.993248,
+            "kernel_sum_pct": 0.04059064749881627
+          },
+          {
+            "name": "EmbedLookupKernel",
+            "calls": 255,
+            "total_ms": 2.715872,
+            "kernel_sum_pct": 0.018393866398304412
+          },
+          {
+            "name": "PleConvUpdateStateMultiSeqKernel",
+            "calls": 255,
+            "total_ms": 1.189568,
+            "kernel_sum_pct": 0.008056622279583935
+          },
+          {
+            "name": "ArgmaxBf16ReduceKernel",
+            "calls": 255,
+            "total_ms": 1.17984,
+            "kernel_sum_pct": 0.007990737167059227
+          },
+          {
+            "name": "DepthwiseConvAddMultiSeqKernel",
+            "calls": 255,
+            "total_ms": 1.010112,
+            "kernel_sum_pct": 0.0068412153353781275
+          },
+          {
+            "name": "Fp8ToBf16Kernel",
+            "calls": 255,
+            "total_ms": 0.818752,
+            "kernel_sum_pct": 0.005545185819267084
+          },
+          {
+            "name": "ExpandTrunkKernel",
+            "calls": 255,
+            "total_ms": 0.710112,
+            "kernel_sum_pct": 0.004809396486959895
+          },
+          {
+            "name": "GatedValueKernel",
+            "calls": 255,
+            "total_ms": 0.48384,
+            "kernel_sum_pct": 0.0032769174387289263
+          },
+          {
+            "name": "ScaleBf16Kernel",
+            "calls": 255,
+            "total_ms": 0.293984,
+            "kernel_sum_pct": 0.001991074107777953
+          }
+        ],
+        "cuda_api": [
+          {
+            "name": "cudaMemcpyAsync_v3020",
+            "calls": 2041,
+            "overlapping_ms": 9205.580813
+          },
+          {
+            "name": "cudaLaunchKernel_v7000",
+            "calls": 415395,
+            "overlapping_ms": 4667.831306
+          },
+          {
+            "name": "cudaMallocAsync_v11020",
+            "calls": 67830,
+            "overlapping_ms": 180.776125
+          },
+          {
+            "name": "cuLaunchKernelEx",
+            "calls": 24480,
+            "overlapping_ms": 178.296714
+          },
+          {
+            "name": "cudaMemsetAsync_v3020",
+            "calls": 12240,
+            "overlapping_ms": 163.342544
+          },
+          {
+            "name": "cudaFreeAsync_v11020",
+            "calls": 67830,
+            "overlapping_ms": 104.614083
+          },
+          {
+            "name": "cudaStreamSynchronize_v3020",
+            "calls": 255,
+            "overlapping_ms": 58.033342
+          },
+          {
+            "name": "cuKernelGetName",
+            "calls": 415395,
+            "overlapping_ms": 46.352305
+          },
+          {
+            "name": "cuKernelGetAttribute",
+            "calls": 48960,
+            "overlapping_ms": 5.679504
+          },
+          {
+            "name": "cuStreamGetGreenCtx",
+            "calls": 24484,
+            "overlapping_ms": 3.494443
+          },
+          {
+            "name": "cudaEventSynchronize_v3020",
+            "calls": 255,
+            "overlapping_ms": 1.520929
+          },
+          {
+            "name": "cudaEventRecord_v3020",
+            "calls": 255,
+            "overlapping_ms": 1.337178
+          },
+          {
+            "name": "cuLibraryLoadData",
+            "calls": 6,
+            "overlapping_ms": 0.651585
+          },
+          {
+            "name": "cuLaunchKernel",
+            "calls": 20,
+            "overlapping_ms": 0.382541
+          },
+          {
+            "name": "cudaMalloc_v3020",
+            "calls": 2,
+            "overlapping_ms": 0.301074
+          },
+          {
+            "name": "cuKernelSetAttribute",
+            "calls": 4,
+            "overlapping_ms": 0.183166
+          },
+          {
+            "name": "cuLibraryGetKernel",
+            "calls": 17,
+            "overlapping_ms": 0.018518
+          }
+        ]
+      }
+    },
+    "prefill_chunk_final_kernels": [
+      {
+        "chunk": 0,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.423488
+      },
+      {
+        "chunk": 1,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.419008
+      },
+      {
+        "chunk": 2,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.441792
+      },
+      {
+        "chunk": 3,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.392832
+      },
+      {
+        "chunk": 4,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.460576
+      },
+      {
+        "chunk": 5,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.43872
+      },
+      {
+        "chunk": 6,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.392736
+      },
+      {
+        "chunk": 7,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.392224
+      },
+      {
+        "chunk": 8,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.392192
+      },
+      {
+        "chunk": 9,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.438464
+      },
+      {
+        "chunk": 10,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.391328
+      },
+      {
+        "chunk": 11,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.40688
+      },
+      {
+        "chunk": 12,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.392768
+      },
+      {
+        "chunk": 13,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.391872
+      },
+      {
+        "chunk": 14,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.435648
+      },
+      {
+        "chunk": 15,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.392672
+      },
+      {
+        "chunk": 16,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.448576
+      },
+      {
+        "chunk": 17,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.397056
+      },
+      {
+        "chunk": 18,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.40864
+      },
+      {
+        "chunk": 19,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.391264
+      },
+      {
+        "chunk": 20,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.392224
+      },
+      {
+        "chunk": 21,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.394624
+      },
+      {
+        "chunk": 22,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.439168
+      },
+      {
+        "chunk": 23,
+        "name": "CombineWithGateKernel",
+        "grid": [
+          327680,
+          1,
+          1
+        ],
+        "ms": 3.393344
+      },
+      {
+        "chunk": 24,
+        "name": "Bf16GevKernel",
+        "grid": [
+          31040,
+          1,
+          1
+        ],
+        "ms": 4.82544
+      }
+    ]
+  }
+]

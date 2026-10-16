@@ -1,0 +1,8 @@
+[
+  "nsys",
+  "start",
+  "--session=q4t-http-1026694",
+  "--sample=none",
+  "--cpuctxsw=none",
+  "--output=/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-cause-20261016/A/context-204800/trace"
+]
