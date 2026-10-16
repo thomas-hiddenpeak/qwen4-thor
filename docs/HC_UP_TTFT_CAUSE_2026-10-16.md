@@ -1759,3 +1759,25 @@ D2H/后台IO扰动，耗时不进入性能接受，不能反推原始未插桩�
 完整原始trace留在.q4t-work/hc-up-route-identity-20261017/routes/，
 SHA/大小/路径记录于raw-artifacts.json；检查结果、命令、输出/lease/
 server日志封存docs/evidence/hc-up-route-identity-20261017/。
+
+## 频率观测字段与历史可识别性复核（2026-10-17）
+
+本机/etc/nv_tegra_release为R39.2.1。对应官方Thor文档指定用CPU
+cpuinfo_cur_freq查询当前频率，并说明短暂硬件节流可不通知主机OS。
+旧5秒遥测使用scaling_cur_freq、devfreq cur_freq；它支持采样读数不变，
+不证明全窗口有效频率恒定。此前已有瞬态限制，本轮补确切字段和平台依据，
+不改写成“发现旧请求节流”。bwmgr/GPU cur_freq回调实现语义未从已安装
+源码确证，因此也不把它们擅自改称请求值或硬件实测值。
+
+只读能力检查发现BPMP emc/stats含4个频点累计值、transitions及time-stamp；
+当前over_temp_state报告nominal table/refresh，CPU两种读数当下相同。
+它们是当前非同步快照，不能代表旧请求；累计值时间单位、重置/溢出规则
+尚未确证，旧请求亦无前后快照，故不计算历史驻留时间或拿14次累计切换
+解释某条TTFT。nvidia-smi当前memory clock及clock event reasons为N/A，
+不能以此证明没有内存降频或节流。未写sysfs/debugfs，未改功耗、风扇、
+电压或频率，无模型运行。
+
+来源：https://docs.nvidia.com/jetson/archives/r39.2.1/DeveloperGuide/SD/PlatformPowerAndPerformance/JetsonThor.html
+下一步核实可用累计计数的定义与测量范围，只有能区分瞬态环境机制时
+才冻结受控诊断；不重采TTFT以弥补无法回溯的历史字段。根因仍未确定，
+目标active及原HC NO_GO保持。证据：evidence/hc-up-clock-evidence-20261017/。
