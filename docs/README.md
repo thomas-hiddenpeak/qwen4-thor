@@ -6,6 +6,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [B1a基线后复审](MTP_POSITION_B1A_AFTER_BASELINE_2026-10-18.md) | 新基线的增量证据、剩余缺口与有界出口 | 当前审查 |
 | [no-MTP基线实测](NO_MTP_BASELINE_RESULT_2026-10-18.md) | 41请求描述基线、两次启动差异与原始证据 | 当前交付 |
 | [no-MTP有界基线设计](NO_MTP_BASELINE_BOUNDED_2026-10-18.md) | 41请求冻结设计；已执行，结果单独归档 | 本阶段 |
 | [描述与代码核对](DESCRIPTION_AUDIT_2026-10-17.md) | README/CLI/架构差异与构建身份 | 描述变化时 |
