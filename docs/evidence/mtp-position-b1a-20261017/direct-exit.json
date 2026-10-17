@@ -1,0 +1,19 @@
+[
+  {
+    "name": "contracts",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/build/q4t_tests",
+      "--required-list",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-20261017/contracts.required"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "boundaries",
+    "command": [
+      "python3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-20261017/boundaries.py"
+    ],
+    "returncode": 0
+  }
+]

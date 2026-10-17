@@ -1,0 +1,12 @@
+{
+  "sha256": {
+    "src/mtp/mtp.cu": "52ba3cf563bb008cdc91f5f89f371975d9ce55312bc5b0c9c6794aef2a5aa90e",
+    "include/q4t/mtp/mtp.h": "9992d12ec0dcf75ffd507d20a62e638007717311f40356d3fa9c2295baef892c",
+    "tests/mtp_spec_multi_test.cpp": "85316e04a0c1d49021e6e048b9b90606ee055370bb3d12127aacd122f16dd3ef",
+    "tests/mtp_position_metadata_test.cpp": "5fb69ad7b4043d44fd5a9e04fc3975e1e5f17b87ac3f3ba69f33cb6b8c8fe334",
+    "build/q4t_tests": "85ab546b81e56c1715c9c63e6a9cbf95f714d8fa658cf9687d578844c812052c",
+    "build/q4t": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee"
+  },
+  "test_binary_identical_to_executed": true,
+  "note": "Test-only member naming, include cleanup and comment clarification; rebuilt binary byte-identical, no GPU rerun."
+}

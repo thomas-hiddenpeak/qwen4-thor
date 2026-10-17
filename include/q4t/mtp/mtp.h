@@ -224,11 +224,13 @@ Status MtpReserveScratch(MtpModel& m, int k_max);
 //                  (bit-identical to the prior behavior). The projection/MoE/
 //                  lm_head GEMMs are stateless and operate on the packed [T,...]
 //                  rows (weights read once).
+// max_position: exact maximum of logical positions[0:T], not a capacity or
+// MRoPE bound. -1 preserves the attention position readback fallback.
 Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positions,
                   const uint16_t* hidden_states, uint16_t* sample_hidden,
                   uint16_t* multi_hidden, uint16_t* logits, int T,
                   cudaStream_t stream, const int* d_seq_id = nullptr,
-                  bool compute_logits = true);
+                  bool compute_logits = true, int max_position = -1);
 
 // Device bytes for the MtpForward `workspace` (the GEMM scratch plus the
 // forward intermediates for `T` tokens, the full-attention scratch, and the

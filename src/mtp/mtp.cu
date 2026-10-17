@@ -1407,13 +1407,13 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                       cudaMemcpyHostToDevice, stream) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D draft seq"));
 
-  // 1. Batched draft loop (Plan D: GPU-resident draft tokens, zero host syncs
-  //    inside the loop). Seed the per-seq rolling trunk + the draft matrix's
-  //    first column (drafts[0] = d0), then generate drafts[1..k-1] for all
-  //    sequences. Each step: GatherDraftKernel pulls the previous column
+  // 1. Batched draft loop (Plan D: GPU-resident draft tokens). Lower-level
+  //    MoE dispatch still synchronizes host counts. Seed the rolling trunk
+  //    and first draft column (drafts[0] = d0), then generate drafts[1..k-1]
+  //    for all sequences. Each step: GatherDraftKernel pulls the previous column
   //    (device), MtpForward runs the draft model, ArgmaxBf16Rows produces the
-  //    new column (device), ScatterDraftKernel writes it back (device) — the
-  //    whole loop stays on-GPU. One D2H of the [B, k] draft matrix happens
+  //    new column (device), ScatterDraftKernel writes it back (device).
+  //    Token IDs remain on GPU. One D2H of the [B, k] draft matrix happens
   //    after the loop (the verify/extend packing needs it on host).
   if (mtp.d_ms_drafts == nullptr)
     return cleanup(Status::Fail(
@@ -1453,8 +1453,11 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D draft pos"));
     // d_seq_id = seq_of (token b = sequence b -> pooled slice seq_of[b]),
     // H2D'd into d_ms_ext_seq above (before the loop).
+    const auto pos_begin = h_pos.begin() + static_cast<size_t>(j) * B;
+    const int max_position = *std::max_element(pos_begin, pos_begin + B);
     Status s = MtpForward(mtp, d_ids, d_pos, d_g_pool, d_sample, d_multi,
-                          d_vlogits, B, stream, mtp.d_ms_ext_seq);
+                          d_vlogits, B, stream, mtp.d_ms_ext_seq, true,
+                          max_position);
     if (!s.ok()) return cleanup(s);
     // Argmax over the B rows -> d_ext_ids (kept separate from d_ids so the
     // gather input is not clobbered; d_ext_ids is reused by the extend phase).
@@ -1473,8 +1476,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                           cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: roll g"));
   }
-  // Extract the [B, k] draft sub-matrix to host (the only sync in the draft
-  // phase). The matrix is indexed by seq_id (seq_of[b]), so gather the rows
+  // Extract the [B, k] draft sub-matrix to host. The matrix is indexed by
+  // seq_id (seq_of[b]), so gather the rows
   // into d_ext_ids (device, sized max_seq*k_max >= B*k), then one D2H.
   GatherDraftMatrixKernel<<<B, 32, 0, stream>>>(d_drafts, k_stride, k,
                                                 d_ext_ids, mtp.d_ms_ext_seq, B);
@@ -1657,7 +1660,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                         cudaMemcpyHostToDevice, stream) != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D extend"));
     s = MtpForward(mtp, d_ext_ids, d_ext_pos, d_gather, d_ext_sample, d_ext_multi,
-                   d_ext_logits, T_ext, stream, mtp.d_ms_ext_seq);
+                   d_ext_logits, T_ext, stream, mtp.d_ms_ext_seq, true,
+                   *std::max_element(ext_pos.begin(), ext_pos.end()));
     if (!s.ok()) return cleanup(s);
     // Per-seq outputs: next_d0 = argmax of the sequence's last extend row;
     // next_g = that row's multi_hidden.
@@ -1733,7 +1737,7 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                   const int* positions, const uint16_t* hidden_states,
                   uint16_t* sample_hidden, uint16_t* multi_hidden,
                   uint16_t* logits, int T, cudaStream_t stream,
-                  const int* d_seq_id, bool compute_logits) {
+                  const int* d_seq_id, bool compute_logits, int max_position) {
   const int hs = m.cfg.hs, hc = m.cfg.hc, hc_dim = hc * hs;
   if (T <= 0) return Status();
   const auto& cfg = m.cfg;
@@ -1826,7 +1830,8 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   s = model::FullAttentionForward(m.full_attn, d_mixed_attn, d_attn_out,
                                   d_positions, m.d_rope_pos, m.kv_cache,
                                   m.page_table, m.idx_raw, m.idx_comp, T,
-                                  d_attn_ws, attn_ws, stream, d_seq_id);
+                                  d_attn_ws, attn_ws, stream, d_seq_id,
+                                  max_position);
   if (!s.ok()) return s;
   // 4d. attn_hc.combine: trunk_a = attn_out + trunk (learned injection).
   s = model::HyperConnectionCombine(m.attn_hc, d_attn_out, d_trunk,

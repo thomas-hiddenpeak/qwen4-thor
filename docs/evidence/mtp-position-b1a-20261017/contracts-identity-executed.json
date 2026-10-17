@@ -1,0 +1,6 @@
+{
+  "build/q4t_tests": "85ab546b81e56c1715c9c63e6a9cbf95f714d8fa658cf9687d578844c812052c",
+  "tests/mtp_position_metadata_test.cpp": "123399b061b7db84015079ceed27e774630d08d77495c836194b4686691fd0f3",
+  "tests/mtp_spec_multi_test.cpp": "85316e04a0c1d49021e6e048b9b90606ee055370bb3d12127aacd122f16dd3ef",
+  "src/mtp/mtp.cu": "52ba3cf563bb008cdc91f5f89f371975d9ce55312bc5b0c9c6794aef2a5aa90e"
+}

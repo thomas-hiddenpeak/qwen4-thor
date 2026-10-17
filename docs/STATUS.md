@@ -4,6 +4,13 @@
 
 ## 当前交付
 
+**B1a有界交付完成（2026-10-17），性能证据不足。** 精确位置仅下传至
+multi草稿循环/非终止extend，构建零警告；HTTP两组质量各11/11、五档
+各3次输出检查、9项直接合同及尾部/取消均通过。共60请求、无补采样，
+GPU guard正常结束。各档可信分辨带未建立，不宣称持平/提速或真实回退。
+候选44abd8b1保留于codex/mtp-position-b1a，不合入main；生产build/q4t
+仍为8685d8bf。[实现、判定与证据](MTP_POSITION_B1A_2026-10-17.md)。
+
 **项目描述核对完成（2026-10-17）。** README/简介、CLI展示、架构与
 索引已按代码修正，详见[核对记录](DESCRIPTION_AUDIT_2026-10-17.md)。
 仅CLI字符串/注释及文档变化，推理控制与数值逻辑未改。q4t零警告构建，
@@ -16,7 +23,7 @@
 合并树与审核PR头完全一致；本轮未重复运行任何测试。
 见[交付与证据](MAIN_CONVERGENCE_2026-10-17.md)。
 
-当前工作区已切到main，原工作分支本地/远端引用已删除。最终PR头由
+此前收敛时工作区切到main，原工作分支本地/远端引用已删除。最终PR头由
 archive/main-convergence-delivery-20261017标签保护并从远端独立取回验证；
 完整研究与两个旧研究分支仍按[归档索引](ARCHIVED_RESEARCH.md)恢复。
 
@@ -40,10 +47,10 @@ HC up、T4 attention和GDN Record/Fold候选均未接受；HC TTFT根因未明�
 
 ## 分支与证据
 
-本地/远端仅main，无新增分支。四个annotated归档标签保护研究历史与
-最终PR头；全部20个工作区路径保留，仅当前根工作区随交付切换至main，
-其余19个HEAD不变。1248份移出活动Git树的本地证据继续保留原路径。
-后续优先复用有效入口，确需独立工作时才建分支，合入后评估留存。
+本轮为未决B1a交付建立唯一工作分支codex/mtp-position-b1a，当前根工作区
+位于该分支；main保持生产基线。四个annotated归档标签继续保护研究历史与
+最终PR头，既有20个工作区及1248份旧证据原路径保留。B1a分支含独有实现
+和证据，暂不清理；不自动启动B1b或其他后续候选。
 
 历史状态保存在main及研究tag，不作为当前任务安排：
 [生产基线历史状态](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/28a3783350b0c4c3d73fd3d483b5eebe881d2bdb/docs/STATUS.md)。
