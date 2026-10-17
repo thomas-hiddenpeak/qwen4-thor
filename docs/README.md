@@ -1,10 +1,12 @@
 # docs/ — 开发记录文档体系
 
-本目录是项目的开发记录, 目标是:**任意 agent 在任意时间点进入项目,
-读完这里就能准确了解当前进展、设计决策和下一步**。
+本目录包含当前入口与按日期冻结的历史报告。先读[STATUS](STATUS.md)和
+[EVALUATION](EVALUATION.md)；下表专题的“进行中/下一步/当前”仅代表成文
+时的状态，不是当前任务队列或发布承诺。实现以src/代码为准。
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [描述与代码核对](DESCRIPTION_AUDIT_2026-10-17.md) | README/CLI/架构差异与构建身份 | 描述变化时 |
 | [工具与规则收敛](MAIN_CONVERGENCE_2026-10-17.md) | 主线交付边界、证据复用与阶段 | 当前交付 |
 | [研究归档](ARCHIVED_RESEARCH.md) | 固定历史、失败证据及恢复入口 | 归档变化时 |
 | [MTP数值收口](MTP_NUMERICAL_CLOSURE_2026-10-16.md) | 独立前缀合同、PLE上传修复与新运行时验收 | 当前阶段 |
@@ -19,7 +21,7 @@
 | [MTP数值准入设计](MTP_NUMERICAL_ADMISSION_DESIGN_2026-10-08.md) | 快速T4与严格普通greedy合同、状态所有权和代价 | 合同明确时 |
 | [主线存储准备](STORAGE_READY_2026-10-07.md) | 可再生成缓存清理、原始证据保护与可用容量 | 本轮整理 |
 | [主线收尾与分支交接](MAIN_WRAPUP_2026-10-07.md) | 精选研究工具、公共 I/O/预算修复、历史 NO_GO 索引与验证边界 | 本轮收尾 |
-| [OFFLOAD_AUTONOMOUS_2026-10-03.md](OFFLOAD_AUTONOMOUS_2026-10-03.md) | 十小时自主队列、在线候选与冻结HTTP决定门槛 | Goal进行中，当前尚无新验收结论 |
+| [OFFLOAD_AUTONOMOUS_2026-10-03.md](OFFLOAD_AUTONOMOUS_2026-10-03.md) | 十小时自主队列、在线候选与冻结HTTP决定门槛 | 历史队列；不作为当前活动目标 |
 | [OFFLOAD_REPLAY_2026-10-02.md](OFFLOAD_REPLAY_2026-10-02.md) | 实际分块/驻留离线回放与候选收益边界 | Goal完成：重排减少约6%–7% GPU补载，未接受性能 |
 | [OFFLOAD_RAM_PROTOCOL_2026-10-02.md](OFFLOAD_RAM_PROTOCOL_2026-10-02.md) | RAM预算修复、缓存/实际IO协议与有界对照 | Goal完成；完整物理RAM及受限cg IO归属仍未闭合 |
 | [MOE_OFFLOAD_REPAIR_2026-10-02.md](MOE_OFFLOAD_REPAIR_2026-10-02.md) | offload 基础修复 Goal 范围、身份与验证出口 | 修复与有界验证完成；总物理峰值未知 |
@@ -78,15 +80,17 @@
 | [MOE_HYBRID_2026-09-28.md](MOE_HYBRID_2026-09-28.md) | 固定热点与动态LRU混合容量离线比较 | 离线探索，不认定统一最优比例 |
 | [MOE_EVALSCOPE_SCENARIOS_2026-09-28.md](MOE_EVALSCOPE_SCENARIOS_2026-09-28.md) | 24条多场景采样、32/64槽影子统计与128/256离线容量 | 采样完成，非生产代表性 |
 | [MOE_ROUTING_TRACE.md](MOE_ROUTING_TRACE.md) | MoE受控采集边界、首轮证据与下一阶段离线缓存回放 | 设计或实现进展变化时 |
-| [MOE_RESIDENCY_PLAN_2026-09-30.md](MOE_RESIDENCY_PLAN_2026-09-30.md) | 分层专家驻留与按需加载实现计划、冻结轮与用户决策记录 | 实现中，矩阵执行 |
-| [MOE_RESIDENCY_ACCEPTANCE_2026-09-30.md](MOE_RESIDENCY_ACCEPTANCE_2026-09-30.md) | 分层驻留验收报告（第一轮矩阵实测已填） | DRAFT，第一轮完成，第二轮待跑 |
+| [MOE_RESIDENCY_PLAN_2026-09-30.md](MOE_RESIDENCY_PLAN_2026-09-30.md) | 分层专家驻留与按需加载实现计划、冻结轮与用户决策记录 | 历史计划与冻结轮记录 |
+| [MOE_RESIDENCY_ACCEPTANCE_2026-09-30.md](MOE_RESIDENCY_ACCEPTANCE_2026-09-30.md) | 分层驻留验收报告（第一轮矩阵实测已填） | 历史第一轮报告；非当前待跑清单 |
 | [MOE_RESIDENCY_L2_PREDICTION_2026-10-01.md](MOE_RESIDENCY_L2_PREDICTION_2026-10-01.md) | L2 命中率离线预测与 C 容量扫描（第二轮预判/第三轮决策输入） | 已完成（离线分析） |
-| [MOE_RESIDENCY_MEMORY_LEDGER_2026-10-01.md](MOE_RESIDENCY_MEMORY_LEDGER_2026-10-01.md) | 262144容量完整内存账（预算侧+实测侧） | 已建立，第二轮峰值待实测 |
+| [MOE_RESIDENCY_MEMORY_LEDGER_2026-10-01.md](MOE_RESIDENCY_MEMORY_LEDGER_2026-10-01.md) | 262144容量完整内存账（预算侧+实测侧） | 历史内存账与当时缺项 |
 
-## 现行入口（2026-10-07）
+## 现行入口（2026-10-17）
 
 先读 [STATUS.md](STATUS.md) 与 [EVALUATION.md](EVALUATION.md)。
-当前主线整合见[Offload 分支收尾](MAIN_WRAPUP_2026-10-07.md)。
+当前主线工具与规则交付见[收敛记录](MAIN_CONVERGENCE_2026-10-17.md)，
+默认MTP与PLE修复验收见[数值收口](MTP_NUMERICAL_CLOSURE_2026-10-16.md)。
+[Offload 分支收尾](MAIN_WRAPUP_2026-10-07.md)是此前阶段历史。
 运行时部署与旧基线保留[首版私有文本版本](RELEASE_TEXT_V1_2026-09-28.md)
 及[基线交接](BASELINE_HANDOFF_2026-09-28.md)的历史记录；源码合并不等于
 覆盖原开发目录的默认二进制。

@@ -38,7 +38,7 @@ void HandleServeSignal(int) {
 }
 
 void PrintVersion() {
-  std::printf("q4t (Qwen4-Thor) v0.1.0 — skeleton\n");
+  std::printf("q4t (Qwen4-Thor) v0.1.0\n");
   std::printf("  target: Jetson AGX Thor, SM110a\n");
   std::printf("  model:  Qwen3.8-Flash-Next (qwen4_exp)\n");
 }
@@ -58,7 +58,7 @@ void PrintUsage(const char* prog) {
       "[--mtp | --no-mtp] [--allow-media]\n"
       "       [--moe-trace-dir DIR --moe-trace-workload FILE] "
       "[--moe-trace-max-mib N])\n"
-      "            MTP is disabled by default.\n"
+      "            serve: MTP is enabled by default (k=3); --no-mtp disables it.\n"
       "  bench-decode  Batched-decode throughput vs batch size\n"
       "            (q4t bench-decode [--batch B] [--steps N] [--prompt P] "
       "[--max-len L])\n"
@@ -114,7 +114,7 @@ int RunGenerate(int argc, char** argv) {
       "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
   std::string model_dir = kDefaultModelDir;
   int max_tokens = 64;
-  bool use_mtp = true;  // MTP is the default; --no-mtp opts out
+  bool use_mtp = true;  // generate defaults to MTP; no --no-mtp parser here.
   int mtp_k = 3;  // 实测最优 (k=3 1.46x; 见 docs/LOG.md 2026-09-10)
   int max_prefill = 0;  // 0 = use ModelConfig default (2048)
   std::string prompt;

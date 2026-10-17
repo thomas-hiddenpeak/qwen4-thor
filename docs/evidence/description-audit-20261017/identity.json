@@ -1,0 +1,16 @@
+{
+  "review_base": "7356f235e972b5e1be201923a4ba27b214b31e12",
+  "new_binary_sha256": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+  "accepted_binary_sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+  "accepted_binary_backup": ".q4t-work/description-audit-20261017/q4t-before",
+  "source_change_scope": "PrintVersion/PrintUsage literals and one RunGenerate comment only",
+  "build_target": "q4t",
+  "build_exit": 0,
+  "build_warnings": 0,
+  "cli_version_checked": true,
+  "cli_usage_checked": true,
+  "model_loaded": false,
+  "model_tests_run": false,
+  "new_performance_acceptance": false,
+  "github_description": "Native C++23/CUDA inference engine for Qwen3.8-Flash-Next (qwen4_exp) on Jetson AGX Thor, with PLE SSD Stream and default MTP text decoding"
+}

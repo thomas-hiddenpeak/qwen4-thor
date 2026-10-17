@@ -7,7 +7,8 @@
 >
 > **权威参考**: `reference/sglang-qwen4-exp/qwen4_exp.py`
 > (SGLang @ 0a79825, 即 sglang-ssd-stream 为 aarch64/Thor pin 的版本)。
-> 该文件是 forward pass 的最高事实来源。
+> 该文件用于对照上游模型语义；本项目实际执行路径以src/代码为准。
+> 模型最大配置不是当前发布验收范围，后者见[STATUS](STATUS.md)。
 
 模型目录 (只读):
 `~/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream`
@@ -144,11 +145,11 @@
 10. hidden_states += output                      # 加到主干 (在 attn_hyper_connection.mix 之前)
 ```
 
-- **prefetch 重叠**: 主模型 forward 循环中, 执行 layer i 之前先调用
+- **上游 SGLang prefetch 重叠（非本项目当前实现）**: 主模型 forward 循环中, 执行 layer i 之前先调用
   `layer[i+1].ple.start_prefetch()` (若 layer i+1 有 PLE), 在独立
   CUDA stream 上发起 SSD 读取, 与 layer i 的 GPU 计算重叠;
   layer i+1 的 `_prepare_qwen4_exp_attn` 中消费。
-- **ngram history 提交**: 每层 forward 后 `_commit_ple_batch` 把
+- **上游 ngram history 提交**: 每层 forward 后 `_commit_ple_batch` 把
   更新后的 2-token 历史写回 per-request state pool。
 
 ### SSD Stream 读取机制 (sglang-ssd-stream backend.py + lib.rs)

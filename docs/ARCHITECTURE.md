@@ -1,144 +1,101 @@
-# ARCHITECTURE.md — 整体架构设计
+# ARCHITECTURE.md — 当前实现与设计边界
 
-> 设计意图文档。实现细节以代码为准。
-> 状态: 初稿 (2026-09-03), 随实现推进修订。
-> 当前发布范围见 [收敛验收](RELEASE_TEXT_V1_2026-09-28.md)。
-> 下列模块包含实验路径；模块存在不表示该路径已通过当前发布验收。
+2026-10-17按代码静态核对。本文描述当前模块，不把设计目标或旧实测
+当作已交付功能；验收范围见[STATUS](STATUS.md)和[EVALUATION](EVALUATION.md)。
+旧设计记录见[历史版本](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7356f235e972b5e1be201923a4ba27b214b31e12/docs/ARCHITECTURE.md)。
 
-## 设计原则
+## 运行入口与模块
 
-1. **专用 runner, 不做通用框架**。只为 Qwen3.8-Flash-Next 在
-   Thor SM110a 上的部署做协同设计 (权重布局、状态所有权、
-   调度、kernel、API 行为)。
-2. **PLE SSD Stream 是一等公民**, 不是外挂优化。查找表的
-   异步读取与 GPU 计算重叠是架构核心, 从第一天就按生产路径
-   实现。
-3. **以真实使用环境为准**：推理服务为原生 C++/CUDA；性能优化首项
-   测试使用tools/evalscope HTTP E2E，Bug修复可先做针对性直接测试，
-   详见[EVALUATION.md](EVALUATION.md)。评估工具Python不是推理依赖。
-4. **统一物理内存不等于零拷贝**：CPU/GPU 共享物理 DRAM，但代码仍有
-   host/device 分配、cudaMemcpy 和同步。预算必须计入实际复制与缓存行为，
-   不能从统一内存推导所有数据共享同一指针或复制无成本。
+- `src/main.cpp`提供version、probe、models、generate、serve及两类bench。
+  generate调用独立单序列MTP路径；serve默认MTP k=3，可用--no-mtp回退。
+  bench存在不代表它可用于性能接受，后者使用真实HTTP E2E。
+- `src/server/`实现自有HTTP socket服务、请求解析、chat模板、资源预算
+  接入和调度；默认数字IPv4 127.0.0.1:8000。只实现规定范围的OpenAI
+  风格接口，当前生成采用greedy，不支持完整OpenAI参数语义。
+- `chat_scheduler.cpp`提供批处理/多序列调度与MTP批量步骤。实现存在
+  不代表所有并发配置已获验收；当前冻结矩阵是纯文本单流k=3。
+- `src/model/`实现48层主模型：36层linear attention、12层full attention，
+  含QSA、HyperConnection、MoE和第2层PLE（0-indexed layer 1）。
+- `src/mtp/`实现一层draft与T>1 verifier路径；旧sequential verifier不在
+  当前源码中。N=4 ULP近tie合同不等于所有状态或跨路径逐位相同。
+- `src/quant/`实现NVFP4专家权重/激活原语、GEMM/GEMV和可选专家驻留。
+  不是整个模型都为W4A4：其余权重/激活与状态包含BF16、FP32。
+- `src/vision/`实现ViT与图像/视频预处理；serve默认拒绝媒体，需显式
+  --allow-media，当前文本验收不覆盖此实验路径。
+- `src/ple/`实现ngram hash、页去重读取和FP8转换；`src/io/`负责权重/
+  JSON配置，`src/text/`负责基于ICU的BPE tokenizer。
 
-## 模块划分
+## PLE实际数据流
 
-```
-q4t (单一可执行)
-├── CLI 层          version / probe / models / generate / serve /
-│                   bench-decode / bench-prefill
-├── 服务层          OpenAI 兼容 HTTP (chat/completions, streaming)
-├── 引擎层          请求生命周期: tokenize → prefill → decode → 采样
-│   ├── Runner      推理循环, 状态机 (prefill/decode 可分离路径,
-│   │               见"PD-ready 架构")
-│   ├── Scheduler   ✅ 连续批处理 (token 级打包 + MTP lockstep,
-│   │               独立调度线程合并并发请求)
-│   └── Sampler     greedy (GPU argmax; 当前唯一采样模式)
-├── 模型层          qwen4_exp forward pass
-│   ├── 48 层混合注意力 (36 DeltaNet SSM + 12 GQA full)
-│   ├── MoE (512 专家 top-10 + shared, NVFP4 grouped GEMM)
-│   ├── PLE (0-indexed layer 1, 16 次查找/token)
-│   ├── MTP (1 层 draft, 推测解码)
-│   └── Vision (27 层 ViT + merger)
-├── PLE 流式层      ★ 核心
-│   ├── RowPlanner  行 ID 计算 (16 行/token)
-│   ├── PageDedup   4 KiB 页去重
-│   ├── IouringReader  io_uring 并发读 (32 MiB 注册页池)
-│   ├── Staging     pinned host FP8 暂存 (capacity_tokens × 160 B)
-│   └── ConvertStream  独立 CUDA stream 上 FP8→BF16
-├── 状态层          Paged KV cache (✅ 已实现, PD-ready 前提),
-│                   SSM state (FP32), 请求状态
-├── 量化层          NVFP4 W4A4 / FP8 原语, 反量化
-├── 运行时层        内存预算 (memory_budget: --mem-fraction + auto-length
-│                   + 运行时 preflight 软降级, OOM 可靠性)
-├── IO 层           safetensors (pread + hash 索引), JSON, tokenizer
-└── 核心层          设备探测, SHA-256, 日志
+每token计算16个row ID，每行160字节，因此FP8查表数据为2560字节/token。
+51,200,245,760字节sidecar不整表驻留，不能将这个文件大小当作运行时
+工作内存，也不能把全部约47.68 GiB都描述为无额外成本的节省。
+
+```text
+主模型到达PLE层
+  → host计算row IDs
+  → PlePageReader::Gather：4 KiB页拆分/去重，io_uring分波提交并等待完成
+  → scatter到pinned host staging
+  → 在调用者CUDA stream上H2D到GPU FP8 scratch
+  → 同一stream执行FP8→BF16、scale及PLE层融合
+  → 后续主模型层
 ```
 
-## 关键数据流 (decode 单 token)
+`PleEmbedding::GatherRows`返回前完成host读取和scatter；GPU上传/转换可
+异步完成，但再次覆盖staging前须等待上一轮upload_complete事件。
+错误退出会排空已提交工作，事件失败后embedding不可继续复用。
+这些所有权边界是2026-10-16 PLE修复的一部分，不能因同一CUDA stream
+就省略CPU覆盖源内存前的等待。
 
-```
-token t 的 hidden state
-  → [layer 2] PLE: 计算 16 个 row_id
-       → RowPlanner 写入固定主机内存
-       → PageDedup: 映射到 4 KiB 页, 去重
-       → IouringReader: 提交 io_uring 读 (与 layer 0-1 的 GPU 计算重叠)
-       → Staging: 行数据按序恢复
-       → ConvertStream: FP8→BF16 (独立 CUDA stream)
-       → 与主干融合 (PleLayerForward: key/value_proj + 门控 +
-          depthwise conv, 加到 trunk, 见 MODEL.md PLE forward)
-  → 其余层正常 forward (SSM / full attn / MoE)
-  → lm_head → 采样 → token t+1
-```
+当前实现没有专属ConvertStream对象，也不等同于上游“提前一层发起
+prefetch”的执行器。I/O可能与此前已入队的GPU工作重叠，实际程度受
+同步/调度影响，不保证SSD延迟完全被掩盖。
 
-重叠目标: SSD 读取延迟 (NVMe 随机读 ~10-100 µs/页) 被
-GPU 层计算掩盖; 仅当读取超过重叠窗口时才同步等待。
+主要容量来自`PleEmbedding::Create`与page_reader配置：
 
-## 内存预算 (实测 2026-09-19)
-
-| 项 | 实测 |
+| 缓冲 | 容量关系 |
 |---|---|
-| 模型权重 (NVFP4 专家 + BF16 其余) | **84 GB** (WeightIndex::total_size() 精确) |
-| 固定成本 (MTP/vision/scratch) | ~14.2 GB |
-| PLE sidecar | 0 (走 SSD, 工作内存 75.17 MiB 实测 2026-09-07, < 100 MiB 预算) |
-| full-attn KV+indexer (12 层) | 33356 B/token/seq (随 max_len×max_seq) |
-| linear SSM state (36 层, FP32) | 110.4 MB/seq (O(1), 不随序列增长) |
-| **合计** | `--mem-fraction` (默认 0.90) × MemTotal 预算; 启动前推导
-  (max_len, max_seq) 上限，可对部分超预算配置 CAPPED 回退；不保证所有分配无 OOM |
+| pinned FP8 staging | capacity_tokens × 16 × 160字节 |
+| GPU FP8 scratch | 与staging同大小 |
+| pinned row IDs | capacity_tokens × 16 × sizeof(int64_t) |
+| page pool | 默认32 MiB；尝试注册io_uring fixed buffer，失败可回退普通buffer读取 |
+| 其他 | reader元数据、ring、模型持有的BF16输出等另计 |
 
-> 262144×seq1 实测峰值 ~96 GB (余 25.6 GB); 262144×seq4 OOM (~158 GB)。
-> 详见 PHASES.md "长上下文 262K 内存预算" + STATUS.md OOM 可靠性条目。
+## 专家驻留与内存预算
 
-## 技术选型
+PLE sidecar流式读取和MoE专家按需驻留是两个机制。serve默认
+moe_resident_slots=0，全部专家驻留；非零显式启用有限GPU槽位、主机
+缓存与按需NVMe读取。该路径的研究结论不能替代默认全驻留MTP验收。
 
-| 项 | 选择 | 理由 |
-|---|---|---|
-| PLE I/O | 原生 Linux io_uring | sglang-ssd-stream 用 Rust io_uring; 我们 C++ 直接调用 liburing, 无跨语言边界 |
-| GEMM | cuBLASLt (BF16/FP4 W4A4) + 自研 GEMV | decode 单 token 走自研
-  GEMV (warp-per-output + f32x2, 超 cuBLASLt); prefill 走 cuBLASLt; FP4
-  W4A4 当前保留 cuBLASLt tensor core；历史 SIMT 候选未获收益，
-  不据此排除 grouped 执行等其他方案。见 [MoE 执行合同](../dataflow-engine/MOE_DEVICE_PLAN.md) |
-| HTTP | 轻量 C++ HTTP (自研或 cpp-httplib 级) | 无重依赖; OpenAI 兼容语义 |
-| JSON | 自研递归下降解析器 | 已部署深度/节点/字符串预算；现行合同见 RELEASE_TEXT_V1_2026-09-28.md |
-| Tokenizer | 自研 BPE (解析 tokenizer.json) | 无 Python 依赖 |
+统一物理内存不等于零拷贝：CPU/GPU仍有各自分配、H2D/D2H和同步，
+不能把重叠的驱动、进程、cgroup计数简单相加为物理总量。
+`src/runtime/memory_budget.cpp`结合权重和状态/workspace容量估计，
+以mem_fraction（默认0.90）决定可行配置；未指定max_len时自动推导，
+部分请求可被CAPPED，实际容量写入服务启动日志。不承诺所有配置无OOM，
+不覆盖其他进程、媒体解码及任意异常输入。
 
-## PD-ready 架构 (Prefill/Decode 可分离)
+旧“84 GB权重/14.2 GB固定成本/96 GB峰值”等数字依赖当时配置，不是
+当前所有模式的内存常量。模型配置上限262144也不是任意并发容量保证；
+当前正式单流矩阵最大名义档204800，冻结max_len=208896。
 
-> 用户决定 (2026-09-05): runner 后期有特殊场景需 PD 分离, 架构须
-> 早期可分离, 避免后期返工。Phase 1 落地**架构可分离性**,
-> 完整多设备 PD *部署*归 Phase 2。
+## 状态与PD分离边界
 
-**为什么 Paged KV 是 Phase 1 硬需求 (而非 Phase 2)**
-PD 分离的价值来自 KV 在 prefill 与 decode 之间**迁移**。连续 KV
-`[max_len, nkv, 2, hd]` 是按绝对位置寻址的整块, 无法按请求切分/迁移;
-Paged KV (按页组织 + block table) 让 KV 成为可独立搬运的页序列,
-是 KV 可迁移/共享/换页的硬前提。因此 Paged KV 随 PD-ready 提前到
-Phase 1, 而非等到 Phase 2 连续批处理。
+ModelSequence维护position/history/stage及请求生命周期；模型的KV、
+SSM、conv、PLE等状态按槽位管理。Paged KV使用页表间接寻址，page size
+为16；具备页表和prefill/decode分开调用，不等于已经实现跨设备传输、
+动态共享页池或完整会话迁移。
 
-**Phase 1 落地的可分离性 (低成本、零风险)**
-1. **prefill/decode 可分离代码路径**: prefill (T 首步) 与 decode (T=1)
-   不融合, 各自可独立调用 (✅ 现状已满足, 保持)。
-2. **Paged KV cache**: ✅ 已实现 (2026-09-05)。full_attention 按页组织
-   (`kKvPageSize=16`) + 页表间接寻址, 替代连续 KV。恒等映射
-   (`page_table[p]=p/16`) 下与旧布局逐位一致。见 PHASES.md 第 3/6 项。
-3. **阶段边界 API**: ✅ 已实现 (2026-09-05)。`ModelSequence` 是轻量
-   host-only 状态机 (stage: kIdle→kPrefill→kDecode, position, PLE
-   history), 4 个操作: `ModelBeginSequence` (重置 per-layer 状态) →
-   `ModelPrefill` (完成 prefill, **KV/SSM 状态就绪的交接点**) →
-   `ModelDecodeStepSeq` (单 decode token, 自动维护 position/history) →
-   `ModelEndSequence` (重置 kIdle)。使 runner 能把 prefill 与 decode
-   驱动为两次独立调用。`ModelForward` 重构为 `ResetAllLayers +
-   RunPrefill` (向后兼容)。测试 `model_sequence_api` 验证 prefill/decode
-   与旧路径逐位一致。
-4. **MTP 留在 decode 路径内** (draft 依赖 decode 的逐 token 流)。
+多设备PD部署、独立prefill/decode池与跨设备状态交接仍是设计目标。
+历史“PD-ready”“零风险”等措辞不能作为已交付或无状态污染的承诺。
 
-**Phase 2 的完整 PD 部署 (依赖并发底座)**
-多设备/多实例分离、KV 跨设备传输 (RDMA/NVLink/共享统一内存)、
-独立 prefill/decode 调度池。单卡 Thor 无独立 prefill/decode 池可分,
-完整 PD 分离的收益需多请求并发 (Phase 2 连续批处理) 才能体现。
+## 构建与验证工具
 
-## 与参考项目的关系
+CMake要求4.0+，host/device标准均为C++23，目标SM110a；本机工具链
+CUDA13.3/g++-14。liburing缺失时PLE读取器被禁用，ICU缺失时tokenizer
+不构建，因此完整推理需要相应开发依赖。推理服务不依赖Python，
+评估工具使用Python；共享GPU验证lease及其局限见
+[评估工具说明](../tools/evalscope/README.md)。
 
-见 [REFERENCE.md](REFERENCE.md)。核心: 独立实现, 不 fork;
-参考项目**灵活选用** (非锁定), 取其有用部分服务本项目:
-qwen35-thor 的架构模式与 kernel 设计、sglang-ssd-stream 的 PLE 流式
-机制、vLLM (`reference/vllm`) 的 MTP/QSA 语义。
+源码决定实际行为，模型config与固定上游实现用于核对数学语义，
+数值合同与HTTP任务质量分别验收。历史与未接受研究见
+[归档索引](ARCHIVED_RESEARCH.md)，不作为当前自动执行计划。

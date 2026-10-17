@@ -4,6 +4,11 @@
 
 ## 当前交付
 
+**项目描述核对完成（2026-10-17）。** README/简介、CLI展示、架构与
+索引已按代码修正，详见[核对记录](DESCRIPTION_AUDIT_2026-10-17.md)。
+仅CLI字符串/注释及文档变化，推理控制与数值逻辑未改。q4t零警告构建，
+版本/帮助已检查；无模型测试或采样，不宣称新性能验收。
+
 [PR #5](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/5)已于
 2026-10-17 09:06:07 UTC按squash合入main，合并提交f3a975c。
 最终22文件差异已审查；保留工具/测试身份、生产源码/binary及文档链接
@@ -17,8 +22,13 @@ archive/main-convergence-delivery-20261017标签保护并从远端独立取回�
 
 ## 已接受生产基线
 
-main现包含f3a975c工具/规则交付；推理源码仍等同28a3783，build/q4t保持
-be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072。
+main包含f3a975c工具/规则交付；推理算法源码与28a3783一致，src/main.cpp
+仅展示文字/注释更新。原已接受binary为
+be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072，
+备份于.q4t-work/description-audit-20261017/q4t-before。
+当前build/q4t为描述修正后的构建
+8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee，
+已检查CLI展示，未重新跑模型验收；旧HTTP结果不记为该新hash的实测。
 默认MTP k=3，--no-mtp回退普通decode；PLE上传修复与N=4等合同保留。
 [数值收口与五档证据](MTP_NUMERICAL_CLOSURE_2026-10-16.md)继续有效，
 身份/依赖不变的已通过项复用。当前不是任意模型/任意输入正确性的证明。
