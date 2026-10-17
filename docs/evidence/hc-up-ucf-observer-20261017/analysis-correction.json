@@ -1,1 +1,0 @@
-{"initial_failure":"mistyped hardcoded output hash in new analyzer","correction":"derive expected output hash from unchanged reference results, compare every reference output","model_retested":false}

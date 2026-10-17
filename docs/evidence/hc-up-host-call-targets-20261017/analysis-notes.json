@@ -1,8 +1,0 @@
-{
-  "offline_refinements": [
-    "Adjacent-only ADRP/ADD rule rejected a non-adjacent ExpertName use; backward scan then rejected an incoming branch. Replaced with normal-CFG constant meet, not a guessed value.",
-    "Nested string append target was absent from initial direct-site pair list; added its actual address pair before dependency closure."
-  ],
-  "indirect_tail_branch_count_in_compared_targets": 0,
-  "scope": "no exception unwind edge inference; no GPU tests"
-}

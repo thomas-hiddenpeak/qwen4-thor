@@ -239,10 +239,10 @@ ENV_ABORT不作为性能失败；修复明确环境/工具缺陷后，只重做�
 
 ### 已有证据对本规则的约束
 
-[HC up复审](HC_UP_REVIEW_2026-10-16.md)的三对TTFT差为
+[HC up复审](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/9a5bc0cfc92e92a8db953092691072fed5e2ede3/docs/HC_UP_REVIEW_2026-10-16.md)的三对TTFT差为
 +135/+105/+28ms，按当时规则保持NO_GO；后续原频率交叉对照出现
 +152/-337ms，同身份最大跨度约297ms，详见
-[因果调查](HC_UP_TTFT_CAUSE_2026-10-16.md)。它们说明三次范围不足以
+[因果调查](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/9a5bc0cfc92e92a8db953092691072fed5e2ede3/docs/HC_UP_TTFT_CAUSE_2026-10-16.md)。它们说明三次范围不足以
 充当通用波动边界，不证明原差异是噪声，也不提供所有档位/指标的
 统一分辨带。当前不据此填入数值阈值、不重采样、不改变原接受结论。
 

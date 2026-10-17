@@ -1,213 +1,0 @@
-2026-10-16 12:18:01 - evalscope - INFO: Save the result to: /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-on/quality/20261016_121801/qwen3.8-flash-next
-Running[perf]:   0%|          | 0/1 [00:00<?, ?it/s]                                                    2026-10-16 12:18:01 - evalscope - INFO: Starting benchmark with args: 
-Running[perf]:   0%|          | 0/1 [00:00<?, ?it/s]                                                    2026-10-16 12:18:01 - evalscope - INFO: {
-    "model": "qwen3.8-flash-next",
-    "model_id": "qwen3.8-flash-next",
-    "attn_implementation": null,
-    "api": "openai",
-    "tokenizer_path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
-    "port": 8877,
-    "url": "http://127.0.0.1:8741/v1/chat/completions",
-    "headers": {},
-    "connect_timeout": 30,
-    "read_timeout": 7200,
-    "total_timeout": 10800,
-    "api_key": null,
-    "no_test_connection": true,
-    "scenario": null,
-    "number": 11,
-    "parallel": 1,
-    "rate": -1.0,
-    "warmup_num": 0.0,
-    "enable_pd_metrics": false,
-    "open_loop": false,
-    "sleep_interval": 5,
-    "duration": null,
-    "sla_auto_tune": false,
-    "sla_variable": "parallel",
-    "sla_params": null,
-    "sla_num_runs": 3,
-    "sla_upper_bound": 65536,
-    "sla_lower_bound": 1,
-    "sla_fixed_parallel": null,
-    "sla_number_multiplier": null,
-    "db_commit_interval": 1000,
-    "queue_size_multiplier": 5,
-    "in_flight_task_multiplier": 2,
-    "num_workers": 0,
-    "log_every_n_query": 100,
-    "debug": false,
-    "enable_progress_tracker": false,
-    "visualizer": null,
-    "wandb_api_key": null,
-    "swanlab_api_key": null,
-    "swanlab_host": null,
-    "name": null,
-    "outputs_dir": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-on/quality/20261016_121801/qwen3.8-flash-next",
-    "no_timestamp": false,
-    "max_prompt_length": 208896,
-    "min_prompt_length": 1,
-    "prefix_length": 0,
-    "prompt": null,
-    "query_template": null,
-    "apply_chat_template": false,
-    "image_width": 224,
-    "image_height": 224,
-    "image_format": "RGB",
-    "image_num": 1,
-    "image_patch_size": 28,
-    "dataset": "line_by_line",
-    "dataset_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-on/inputs/requests.jsonl",
-    "data_source": null,
-    "dataset_offset": 0,
-    "dataset_args": null,
-    "frequency_penalty": null,
-    "repetition_penalty": null,
-    "logprobs": null,
-    "max_tokens": 32,
-    "min_tokens": null,
-    "n_choices": null,
-    "seed": 20260920,
-    "stop": null,
-    "stop_token_ids": null,
-    "stream": true,
-    "temperature": 0.0,
-    "top_p": null,
-    "top_k": null,
-    "extra_args": {},
-    "tokenize_prompt": false,
-    "multi_turn": false,
-    "min_turns": 1,
-    "max_turns": null,
-    "multi_turn_args": null
-}
-Running[perf]:   0%|          | 0/1 [00:00<?, ?it/s]                                                    2026-10-16 12:18:01 - evalscope - INFO: uvloop event loop policy installed (asyncio.sleep precision improved)
-Running[perf]:   0%|          | 0/1 [00:00<?, ?it/s][transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
-
-Generating[requests]:   0%|          | 0/11 [00:00<?, ?it/s][A                                                    
-                                                            [A2026-10-16 12:18:03 - evalscope - INFO: Generating[requests]  91%| 10/11 [Elapsed: 00:00 < Remaining: 00:00, 5185.84it/s]
-Running[perf]:   0%|          | 0/1 [00:01<?, ?it/s]
-Generating[requests]:  91%|█████████ | 10/11 [00:00<00:00, 4341.93it/s][AGenerating[requests]:  91%|█████████ | 10/11 [00:00<00:00, 4176.35it/s]
-                                                    2026-10-16 12:18:03 - evalscope - INFO: Save the data base to: /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-on/quality/20261016_121801/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db
-Running[perf]:   0%|          | 0/1 [00:01<?, ?it/s]
-Processing[parallel_1_number_11]:   0%|          | 0/11 [00:00<?, ?it/s][A
-Processing[parallel_1_number_11]:   9%|▉         | 1/11 [00:01<00:11,  1.19s/it][A
-Processing[parallel_1_number_11]:  18%|█▊        | 2/11 [00:02<00:09,  1.08s/it][A
-Processing[parallel_1_number_11]:  27%|██▋       | 3/11 [00:03<00:08,  1.05s/it][A
-Processing[parallel_1_number_11]:  36%|███▋      | 4/11 [00:06<00:12,  1.84s/it][A
-Processing[parallel_1_number_11]:  45%|████▌     | 5/11 [00:09<00:13,  2.27s/it][A
-Processing[parallel_1_number_11]:  55%|█████▍    | 6/11 [00:12<00:12,  2.53s/it][A
-Processing[parallel_1_number_11]:  64%|██████▎   | 7/11 [00:18<00:14,  3.60s/it][A
-Processing[parallel_1_number_11]:  73%|███████▎  | 8/11 [00:23<00:12,  4.29s/it][A
-Processing[parallel_1_number_11]:  82%|████████▏ | 9/11 [00:29<00:09,  4.74s/it][A
-Processing[parallel_1_number_11]:  91%|█████████ | 10/11 [01:01<00:13, 13.09s/it][A                                                    
-                                                                                 [A2026-10-16 12:19:04 - evalscope - INFO: Processing[parallel_1_number_11]  91%| 10/11 [Elapsed: 01:01 < Remaining: 00:13, 13.09s/it]
-Running[perf]:   0%|          | 0/1 [01:03<?, ?it/s]
-Processing[parallel_1_number_11]:  91%|█████████ | 10/11 [01:01<00:13, 13.09s/it][A
-Processing[parallel_1_number_11]: 100%|██████████| 11/11 [03:47<00:00, 59.92s/it][A                                                    
-                                                                                 [A2026-10-16 12:21:50 - evalscope - INFO: Processing[parallel_1_number_11] 100%| 11/11 [Elapsed: 03:47 < Remaining: 00:00, 59.92s/it]
-Running[perf]:   0%|          | 0/1 [03:49<?, ?it/s]
-Processing[parallel_1_number_11]: 100%|██████████| 11/11 [03:47<00:00, 59.92s/it][AProcessing[parallel_1_number_11]: 100%|██████████| 11/11 [03:47<00:00, 20.69s/it]
-                                                    2026-10-16 12:21:50 - evalscope - INFO: 
-Benchmarking summary:
-┌────────────────────────────┬─────────────┐
-│ Metric                     │       Value │
-├────────────────────────────┼─────────────┤
-│ ── General ──              │             │
-│ Test Duration (s)          │      227.53 │
-│ Concurrency                │           1 │
-│ Request Rate (req/s)       │          -1 │
-│ Total / Success / Failed   │ 11 / 11 / 0 │
-│ Req Throughput (req/s)     │        0.05 │
-│ ── Latency ──              │             │
-│ Avg Latency (s)            │      20.684 │
-│ Avg TTFT (ms)              │    20591.05 │
-│ Avg TPOT (ms)              │       15.49 │
-│ Avg ITL (ms)               │       18.55 │
-│ ── Tokens ──               │             │
-│ Avg Input Tokens           │     26344.7 │
-│ Avg Output Tokens          │           7 │
-│ Output Throughput (tok/s)  │        0.34 │
-│ Total Throughput (tok/s)   │     1273.98 │
-│ ── Speculative Decoding ── │             │
-│ Avg Decoded Tok/Iter       │         1.2 │
-│ Spec. Accept Rate          │        16.7 │
-└────────────────────────────┴─────────────┘
-Running[perf]:   0%|          | 0/1 [03:49<?, ?it/s]                                                    2026-10-16 12:21:50 - evalscope - INFO: 
-Percentile results:
-┌────────────────┬────────┬────────┬────────┬─────────┬─────────┬─────────┬─────────┬──────────┬───────────┬───────────┬───────────┐
-│ Metric         │    min │     1% │     5% │     10% │     25% │     50% │     75% │      90% │       95% │       99% │       max │
-├────────────────┼────────┼────────┼────────┼─────────┼─────────┼─────────┼─────────┼──────────┼───────────┼───────────┼───────────┤
-│ Latency (s)    │   1.01 │   1.01 │   1.01 │    1.02 │    1.18 │    3.05 │     5.8 │    31.76 │    166.13 │    166.13 │    166.13 │
-│ TTFT (ms)      │ 924.59 │ 924.59 │ 924.59 │  926.81 │ 1094.27 │ 2955.05 │ 5711.37 │ 31666.21 │ 166024.82 │ 166024.82 │ 166024.82 │
-│ ITL (ms)       │   0.01 │   0.01 │   0.01 │    0.01 │    0.01 │    0.03 │    0.09 │    92.29 │     94.01 │     103.2 │     103.2 │
-│ TPOT (ms)      │  14.79 │  14.79 │  14.79 │   14.86 │   15.03 │   15.43 │   15.72 │    15.89 │     17.25 │     17.25 │     17.25 │
-│ Input tokens   │   1024 │   1024 │   1024 │    1024 │    1024 │    4096 │    8192 │    45056 │    204800 │    204800 │    204800 │
-│ Output tokens  │      7 │      7 │      7 │       7 │       7 │       7 │       7 │        7 │         7 │         7 │         7 │
-│ Output (tok/s) │   0.04 │   0.04 │   0.04 │    0.22 │    1.21 │     2.3 │    5.91 │     6.89 │      6.91 │      6.91 │      6.91 │
-│ Total (tok/s)  │ 870.44 │ 870.44 │ 870.44 │ 1015.22 │ 1017.04 │ 1351.81 │ 1418.87 │  1423.48 │   1426.97 │   1426.97 │   1426.97 │
-│ Decode (tok/s) │  57.96 │  57.96 │  57.96 │   62.94 │   63.62 │   64.82 │   66.52 │    67.31 │     67.62 │     67.62 │     67.62 │
-└────────────────┴────────┴────────┴────────┴─────────┴─────────┴─────────┴─────────┴──────────┴───────────┴───────────┴───────────┘
-Running[perf]:   0%|          | 0/1 [03:49<?, ?it/s]                                                    2026-10-16 12:21:50 - evalscope - INFO: 
-Workload throughput (11 samples):
-┌─────────────────────┬───────────┬────────────┬─────────────────────┐
-│ Metric (tok/s)      │   Overall │   Last 30s │   Steady (drop 20%) │
-├─────────────────────┼───────────┼────────────┼─────────────────────┤
-│ Total Prompt tok/s  │   1273.64 │    1232.76 │             1262.59 │
-│ New Prompt tok/s    │   1273.64 │    1232.76 │             1262.59 │
-│ Cached Prompt tok/s │         0 │          0 │                   0 │
-│ Completion tok/s    │      0.34 │       0.04 │                0.07 │
-└─────────────────────┴───────────┴────────────┴─────────────────────┘
-Running[perf]:   0%|          | 0/1 [03:49<?, ?it/s]                                                    2026-10-16 12:21:50 - evalscope - INFO: Save the summary to: /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-on/quality/20261016_121801/qwen3.8-flash-next/parallel_1_number_11
-Running[perf]:   0%|          | 0/1 [03:49<?, ?it/s]Running[perf]: 100%|██████████| 1/1 [03:49<00:00, 229.64s/it]                                                             2026-10-16 12:21:50 - evalscope - INFO: Running[perf] 100%| 1/1 [Elapsed: 03:49 < Remaining: 00:00, 229.64s/it]
-Running[perf]: 100%|██████████| 1/1 [03:49<00:00, 229.64s/it]Running[perf]: 100%|██████████| 1/1 [03:49<00:00, 229.65s/it]
-╭──────────────────────────────────────────────────────────────────────────────╮
-│ Performance Test Summary Report                                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-
-Basic Information:
-┌───────────────────────┬──────────────────────────────────────────────────────┐
-│ Model                 │ qwen3.8-flash-next                                   │
-│ Test Dataset          │ line_by_line                                         │
-│ API Type              │ openai                                               │
-│ Total Generated       │ 77.0 tokens                                          │
-│ Avg Output Rate       │ 0.34 tok/s                                           │
-│ Total Test Time       │ 227.53 s                                             │
-│ Output Path           │ /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-reco… │
-└───────────────────────┴──────────────────────────────────────────────────────┘
-
-
-            Performance Overview             
-┏━━━━━━┳━━━━━━┳━━━━━┳━━━━━━┳━━━━━━━┳━━━━━━━━┓
-┃Conc. ┃ Rate ┃ Num ┃  RPS ┃ Gen/s ┃ Success┃
-┡━━━━━━╇━━━━━━╇━━━━━╇━━━━━━╇━━━━━━━╇━━━━━━━━┩
-│    1 │    - │  11 │ 0.05 │  0.34 │    100%│
-└──────┴──────┴─────┴──────┴───────┴────────┘
-
-
-                              Per-Request Metrics                              
-┏━━━━━━┳━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┓
-┃Conc. ┃ Rate ┃ Metric            ┃      avg ┃     p50 ┃       p99 ┃       max┃
-┡━━━━━━╇━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━┩
-│    1 │    - │ Latency (s)       │   20.684 │    3.05 │    166.13 │    166.13│
-│      │      │ TTFT (ms)         │ 20591.05 │ 2955.05 │ 166024.82 │ 166024.82│
-│      │      │ TPOT (ms)         │    15.49 │   15.43 │     17.25 │     17.25│
-│      │      │ Input Tokens      │    26345 │    4096 │    204800 │    204800│
-│      │      │ Output Tokens     │        7 │       7 │         7 │         7│
-│      │      │ Decode toks/s     │    64.56 │       - │         - │         -│
-│      │      │ Decoded Tok/Iter  │      1.2 │       - │         - │         -│
-│      │      │ Spec. Accept Rate │    16.7% │       - │         - │         -│
-└──────┴──────┴───────────────────┴──────────┴─────────┴───────────┴──────────┘
-
-
-                             Workload Throughput                             
-┏━━━━━━┳━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┓
-┃Conc. ┃ Rate ┃ Metric (tok/s)      ┃ Overall ┃ Last 30s ┃ Steady (drop 20%)┃
-┡━━━━━━╇━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━┩
-│    1 │    - │ Total Prompt tok/s  │ 1273.64 │  1232.76 │           1262.59│
-│      │      │ New Prompt tok/s    │ 1273.64 │  1232.76 │           1262.59│
-│      │      │ Cached Prompt tok/s │       0 │        0 │                 0│
-│      │      │ Completion tok/s    │    0.34 │     0.04 │              0.07│
-└──────┴──────┴─────────────────────┴─────────┴──────────┴──────────────────┘
-2026-10-16 12:21:50 - evalscope - INFO: Performance summary saved to: /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-on/quality/20261016_121801/qwen3.8-flash-next/performance_summary.txt
-2026-10-16 12:21:51 - evalscope - INFO: HTML report generated: /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/http-resume/quality-on/quality/20261016_121801/qwen3.8-flash-next/perf_report.html

@@ -1,7 +1,0 @@
-{
-  "coordinator_pid": 1003078,
-  "active_http_pid": 1004346,
-  "cancelled_pending_helper_pid": 1004066,
-  "action": "hold coordinator only; active on matrix continues; review profitability before off/numerics",
-  "reason": "first four tiers have no discernible gain; preserve complete on matrix before decision"
-}

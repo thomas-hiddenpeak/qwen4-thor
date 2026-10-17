@@ -1,5 +1,0 @@
-{
-  "returncode": 0,
-  "stdout": "",
-  "stderr": "Running as unit: q4t-clock-idle-1276219.service; invocation ID: 91fb83a9daae4d66a927547c648b48e8\nFinished with result: success\nMain processes terminated with: code=exited/status=0\nService runtime: 842ms\nCPU time consumed: 480ms\nMemory peak: 33.7M\nMemory swap peak: 0B\n"
-}

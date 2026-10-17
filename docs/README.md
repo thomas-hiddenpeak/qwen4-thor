@@ -5,10 +5,8 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
-| [外部实现综合实施计划](REFERENCE_INTEGRATION_PLAN_2026-10-16.md) | 五项目机制落地：诊断/MTP轨迹、执行组织、草稿、完整会话与页驻留 | 计划已制定，实施未启动 |
-| [Megatron Inference源码评估](MEGATRON_INFERENCE_REVIEW_2026-10-16.md) | MoE路由重放、MTP路由生命周期、数值/Graph与本项目差异 | 固定版本源码研究，未运行GPU测试 |
-| [GDN Record/Fold研究](GDN_RECORD_FOLD_2026-10-16.md) | anchor与rank-one候选实现、五档HTTP及TTFT保护门槛 | NO_GO，保留候选与证据 |
-| [外部实现源码评估](REFERENCE_REVIEW_2026-10-16.md) | KVMem、NInfer、ActKV、Strata关键代码及本项目价值 | 固定版本源码研究 |
+| [工具与规则收敛](MAIN_CONVERGENCE_2026-10-17.md) | 主线交付边界、证据复用与阶段 | 当前交付 |
+| [研究归档](ARCHIVED_RESEARCH.md) | 固定历史、失败证据及恢复入口 | 归档变化时 |
 | [MTP数值收口](MTP_NUMERICAL_CLOSURE_2026-10-16.md) | 独立前缀合同、PLE上传修复与新运行时验收 | 当前阶段 |
 | [MTP归并候选结果](MTP_MAINLINE_READY_2026-10-16.md) | 原冻结binary验收、五项历史失败与回退 | PLE修复前历史 |
 | [MTP归并边界决策](MTP_MERGE_BOUNDARY_2026-10-15.md) | 两套MTP实现归并边界、策略A裁决与逐文件归并计划 | 2026-10-16恢复与共用合同补正 |

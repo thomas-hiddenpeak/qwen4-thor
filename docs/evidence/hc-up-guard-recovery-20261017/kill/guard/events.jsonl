@@ -1,5 +1,0 @@
-{"utc": "2026-10-16T22:32:11.628045+00:00", "monotonic": 380014.144923928, "pid": 1275332, "event": "lease_acquired"}
-{"utc": "2026-10-16T22:32:11.628066+00:00", "monotonic": 380014.144943039, "pid": 1275332, "event": "preflight", "conflicts": []}
-{"utc": "2026-10-16T22:32:11.628267+00:00", "monotonic": 380014.145145086, "pid": 1275332, "event": "child_started", "child_pid": 1275337}
-{"utc": "2026-10-16T22:32:11.628284+00:00", "monotonic": 380014.145160392, "pid": 1275332, "event": "monitor", "conflicts": []}
-{"utc": "2026-10-16T22:32:11.638354+00:00", "monotonic": 380014.155231151, "pid": 1275332, "event": "monitor", "conflicts": []}

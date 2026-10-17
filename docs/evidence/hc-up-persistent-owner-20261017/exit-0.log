@@ -1,5 +1,0 @@
-[persistent-owner] slot=0 handle=1 bytes=167772160 child_fd=73
-[persistent-owner] slot=1 handle=2 bytes=167772160 child_fd=74
-[persistent-owner] slot=2 handle=3 bytes=2348810240 child_fd=75
-[persistent-owner] driver_pid=1233301
-[persistent-owner] cleanup_complete=3 driver_exit=0

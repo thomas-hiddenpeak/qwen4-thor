@@ -1,6 +1,0 @@
-{
-  "path": "/usr/local/lib/python3.12/dist-packages/jtop/core/jetson_variables.py",
-  "sha256": "fc914d298e016d8a7cc4d386372003386afeae6c39369f04ec20f63228d52202",
-  "read_part_number_function_line": 302,
-  "limitation": "Current open FDs and source path do not identify the caller of historical timeout events."
-}

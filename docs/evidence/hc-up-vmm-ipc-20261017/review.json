@@ -1,9 +1,0 @@
-{
-  "scope": "2 MiB VMM cross-process capability, not model performance or root-cause evidence",
-  "gate": "PASS",
-  "binary_sha256": "fbb9ef61ff8877de24de6c45ce8968822b5e742aab8a34b739ec6d764bf66668",
-  "source_sha256": "ec235c477a8e9d7106a972a0ef4460441dc2f838bc102d410a5b37125b60ea3f",
-  "exact_va_delta": 536870912,
-  "full_bytes_each_direction": 2097152,
-  "production_changed": false
-}

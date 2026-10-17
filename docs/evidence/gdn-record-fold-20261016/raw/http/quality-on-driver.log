@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py", line 620, in <module>
-    main()
-  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py", line 496, in main
-    time.sleep(1)
-KeyboardInterrupt

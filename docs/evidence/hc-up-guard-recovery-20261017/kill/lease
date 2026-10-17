@@ -1,1 +1,0 @@
-{"utc": "2026-10-16T22:32:11.627966+00:00", "monotonic": 380014.144851872, "pid": 1275332, "command": ["/usr/bin/python3", "-c", "import os,signal;os.kill(os.getppid(),signal.SIGKILL)"], "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-guard-recovery-20261017/kill/guard", "state": "held"}

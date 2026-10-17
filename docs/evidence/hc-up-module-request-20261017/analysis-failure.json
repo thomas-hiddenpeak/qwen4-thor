@@ -1,5 +1,0 @@
-{
-  "initial_error": "StopIteration: assumed nonexistent phase=request_begin marker",
-  "repair": "use actual ready and unique request_end markers; distinguish broad single-request window from precise request start",
-  "gpu_repeated": false
-}

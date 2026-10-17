@@ -1,7 +1,0 @@
-{
-  "regression_diagnosis": true,
-  "performance_acceptance": false,
-  "expected_inputs": {
-    "204800": 204789
-  }
-}

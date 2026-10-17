@@ -1,29 +1,10 @@
 # REFERENCE.md — 参考项目说明
 
+当前工具收敛见[交付记录](MAIN_CONVERGENCE_2026-10-17.md)；近期研究及未实施计划见
+[只读归档](ARCHIVED_RESEARCH.md)，不作为自动执行队列。
+
 > `reference/` 目录存放外部参考项目源码 (只读, 不参与构建,
 > 不修改)。本文说明每个项目取什么、怎么用。
-
-## 2026-10-16 外部实现补充评估
-
-[综合实施计划](REFERENCE_INTEGRATION_PLAN_2026-10-16.md)汇总五个来源：
-先复用现有工具补固定IDs诊断与默认MTP完整轨迹，再评估精确位置下传、
-GPU接受元数据和有界Graph；草稿、会话/容量与专家预取各自按条件推进。
-含代码落点、阶段依赖、统一验收、资源账目及停止条件；目前仅制定计划。
-
-[KVMem、NInfer、ActKV、Strata源码评估](REFERENCE_REVIEW_2026-10-16.md)
-记录固定完整commit、关键实现/生产调用点、测试边界及本项目适用性。
-本轮临时检出位于`.q4t-work/reference-review-20261016/`，未修改本目录
-下列只读参考源码，未构建或运行第三方测试。
-优先参考NInfer的MTP执行/状态组织、Strata的同模型QSA与草稿机制；
-KVMem用于未来会话存储事务，ActKV额外KV淘汰保留为独立近似研究。
-
-新增[Megatron Core Inference源码评估](MEGATRON_INFERENCE_REVIEW_2026-10-16.md)，
-固定NVIDIA/Megatron-LM `3e2807ce5e787f81b7275be2383092fe0c3bfc71`。
-重点核对MoE固定IDs/当前scores语义、推理RECORD导出、异步双bank和
-MTP/prefix路由生命周期；补充batch-invariant算术与负控、Graph地址
-生命周期及预测脚本的证据边界。优先用于现有数值诊断和默认MTP采集，
-不将其解释为省掉gating，也不视为GDN+MTP/QSA/PLE的现成实现。
-检出位于`.q4t-work/megatron-review-20261016/`；仅源码审阅，未运行测试。
 
 ## 目录约定
 

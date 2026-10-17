@@ -1,7 +1,0 @@
-{
-  "http_delta_ms": 87.91769505478442,
-  "event_delta_ms": 86.07000000000698,
-  "outside_event_delta_ms": 1.8476950547774322,
-  "event_fraction": 0.9789838091907883,
-  "not_causal_proof": true
-}

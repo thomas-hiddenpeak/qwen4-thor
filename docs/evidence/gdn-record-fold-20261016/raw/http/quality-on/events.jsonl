@@ -1,5 +1,0 @@
-{"event": "runner_start", "monotonic_seconds": 312306.320756427, "unix_seconds": 1792122223.8038821, "utc": "2026-10-16T03:43:43.803882+00:00", "clock_pair_uncertainty_seconds": 6.019836291670799e-07, "mode": "quality"}
-{"event": "server_before_start", "monotonic_seconds": 312306.40086751105, "unix_seconds": 1792122223.8839934, "utc": "2026-10-16T03:43:43.883993+00:00", "clock_pair_uncertainty_seconds": 7.869966793805361e-07}
-{"event": "server_started", "monotonic_seconds": 312306.40134528046, "unix_seconds": 1792122223.884471, "utc": "2026-10-16T03:43:43.884471+00:00", "clock_pair_uncertainty_seconds": 5.83502696827054e-07, "pid": 1027603}
-{"event": "server_before_shutdown", "monotonic_seconds": 312412.77043352404, "unix_seconds": 1792122330.2535596, "utc": "2026-10-16T03:45:30.253560+00:00", "clock_pair_uncertainty_seconds": 8.149945642799139e-07, "pid": 1027603}
-{"event": "server_after_shutdown", "monotonic_seconds": 312413.036229488, "unix_seconds": 1792122330.5193555, "utc": "2026-10-16T03:45:30.519356+00:00", "clock_pair_uncertainty_seconds": 1.6619742382317781e-06, "pid": 1027603, "server_returncode": -15, "cleanup_failure": null}

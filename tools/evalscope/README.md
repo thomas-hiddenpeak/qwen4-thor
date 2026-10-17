@@ -221,47 +221,36 @@ build/verify_chat_template tools/evalscope/fixtures/chat_template_cases.jsonl
 
 ## 跨会话 GPU 独占（2026-10-16）
 
-开发验证的整个阶段驱动经共享入口运行，例如：
+完整验证阶段由同一guard持锁，不在子任务间释放：
 
 ```bash
 python3 tools/evalscope/gpu_exclusive.py \
-  --output .q4t-work/my-phase/lease -- \
-  python3 .q4t-work/my-phase/run_phase.py
+  --output .q4t-work/my-phase/lease -- python3 .q4t-work/my-phase/run_phase.py
 ```
 
-锁位于 git common-dir 所属仓库的 `.q4t-work/gpu-exclusive.lock`，因此本仓库
-不同 worktree 共用，不在子测试间释放。另一持锁会话存在则返回75且不启动
-命令；不能根据锁文件内容判断占用或手动删锁，内核flock才是占用事实。
-退出时文件保留released记录，进程死亡自动释放flock。
+锁位于git common-dir所属仓库的`.q4t-work/gpu-exclusive.lock`，不同
+worktree共享。flock为占用事实，不根据文件文字判定空闲、不手动删锁。
+启动前与运行中轮询/proc及nvidia-smi计算进程；冲突/查询失败记录
+ENV_ABORT并返回75，只清理自有进程组及经父子链/start_ticks核实的
+自有后代（包括setsid后代），使用pidfd核对身份，不停止冲突方。
+命令失败记录COMMAND_FAILED，不能混同环境失败或模型性能失败。
+exit.json/events.jsonl保留结果；成功仅表示命令成功且未检测到冲突。
+轮询不能排除短于采样间隔、图形或驱动未列出的负载，不承诺绝对独占。
 
-启动前及运行中每秒检查 `/proc` 中的模型服务/测试/Nsight命令和
-`nvidia-smi`计算进程；查询失败或检测到非自有GPU负载时记ENV_ABORT、
-返回75，仅清理本入口创建的进程组，不停止冲突方。命令本身失败单列
-COMMAND_FAILED，不混同环境失败。exit.json、events.jsonl保留监控与退出。
-成功仅证明命令成功且监控未检测到冲突，不表示性能或数值验收通过。
+默认guard自己持锁。显式`--lease-fd`借用同一lock inode的已排他持锁FD，
+仅关闭自身副本，退出记录external_cleanup_pending，外部持锁者负责
+恢复与释放；不把guard退出视为外部恢复完成。锁旁存在
+`.recovery-required`标记（包括悬空符号链接）时拒绝启动；只能由持锁
+恢复流程确认配置恢复后清除，不能为运行测试直接删标记。本工具不
+修改GPU频率，专项调频/布局/计数工具已归档，不作为日常验收入口。
 
-flock只有遵循该入口的会话才互斥；轮询补充检测非合作进程，无法排除
-短于实际采样间隔、驱动未列出或不可见的GPU负载。事件记录真实单调
-时钟，查询耗时可能拉长间隔。需要跨会话安排，不把轮询无冲突扩大为
-绝对无干扰证明。环境中断时保留全部原始证据，不自动重跑或接受结果。
+## HTTP trace输入身份
 
+profile_http.py要求同binary的完整五档HTTP输出记录，按记录中的实际
+输入token数核对profile请求；analyze_http_trace.py亦使用actual input，
+不把名义档长当实际长度。`--diagnose-regression`仅记录诊断标签，不
+绕过binary、五档和输出门；HTTP完成不等于性能回退已获接受。
+trace时间不替代E2E验收，profiler事件不完整时不能推导完整因果关系。
 
-## 服务进程地址空间诊断（2026-10-17）
-
-`run_acceptance.py --server-address-space inherit|no-aslr` 为显式诊断选项。
-默认省略时保持原启动路径。`no-aslr` 仅以 `setarch <架构> -R` 启动服务，
-`inherit` 不加前缀；两者均在服务就绪后保存实际 personality 与完整 maps。
-父进程、HTTP客户端不修改；不支持与 `--systemd-unit` 同用。
-快照失败或实际personality不符时在HTTP前停止并清理服务。
-
-证据包括 `server-address-space.json`、`server-maps.txt`，命令和退出记录
-标记诊断模式。maps只描述该时点的虚拟映射，不证明物理/CUDA布局相同。
-这些诊断结果不能直接替代默认部署性能验收；GPU运行仍需完整阶段guard。
-CPU检查：`python3 tools/evalscope/test_server_address_space.py`（需本机Linux
-允许对子进程设置personality，不假设其他CI容器支持）、
-`python3 tools/evalscope/test_run_acceptance.py`（模拟runner合同）。
-
-重复同一no-ASLR身份时，可用 `--server-map-reference <先前server-address-space.json>`
-在HTTP前要求文件支持的可执行映射与参考完全一致。参考只支持no-aslr模式；
-不匹配会保留当前/参考快照并清理服务，不会自动重试。此检查不覆盖
-就绪后的延迟映射、物理页或CUDA地址，也不能替代数值/性能验收。
+已有验证范围、原始身份及归档恢复见
+[主线收敛记录](../../docs/MAIN_CONVERGENCE_2026-10-17.md)。

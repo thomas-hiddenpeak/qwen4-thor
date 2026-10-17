@@ -1,6 +1,0 @@
-{
-  "tools/evalscope/oc_evalscope.py": "0210e6747e898b0a35c64b696d8e5317b49f6f47d96e4a8c4cef5a243c44941e",
-  "tools/evalscope/test_oc_evalscope.py": "b113435394bdddfb26e4e9c87cc9cbd94b722b08f1580583a0bf3734963dcd9e",
-  "tools/evalscope/run_acceptance.py": "f0bfa30aa89dee7b0fc4e9071940cf460c26a1f7ea7be134274f29981721a603",
-  "tools/evalscope/ucf_client_boundary.py": "73033d3b15d4d2f0e45fb546e71f43cb6d783ad0af58b80300545435825686d3"
-}

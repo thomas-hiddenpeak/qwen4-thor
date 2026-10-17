@@ -1,9 +1,0 @@
-ordinary format intact 7 1.5
-[layer-timing] T=8192 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
-[layer-timing] T=8192 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
-[layer-timing] T=8181 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
-[layer-timing] T=1 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
-[layer-timing] T=8192 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
-[layer-timing] T=8192 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
-[layer-timing] T=8181 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)
-[layer-timing] T=1 embed=0.00ms lin=1.00ms full=2.00ms head=0.00ms total=3.00ms top5= L1(3.00)

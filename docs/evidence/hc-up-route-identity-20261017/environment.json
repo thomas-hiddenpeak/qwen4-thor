@@ -1,4 +1,0 @@
-{
-  "LD_LIBRARY_PATH": "/usr/local/cuda-13.3/lib64",
-  "CUDA_HOME": "/usr/local/cuda-13.3"
-}

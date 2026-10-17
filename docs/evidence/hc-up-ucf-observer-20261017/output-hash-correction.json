@@ -1,6 +1,0 @@
-{
-  "previous_description_incorrect": "Not a mistyped reference hash: analyzer hashed the outputs field twice. outputs already stores SHA256.",
-  "fixed": "Compare outputs directly with original reference; independently hash raw output-0.txt and check equality.",
-  "verified_raw_sha256": "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
-  "effect": "read-volume gate and runner output result unchanged; no GPU rerun"
-}

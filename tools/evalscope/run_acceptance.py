@@ -131,8 +131,7 @@ def request_timing(start, end, before, after):
 
 
 def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
-             evalscope, model, port, env, server, bounded, capacity, mode,
-             ucf_probe=None, oc_observer=False):
+             evalscope, model, port, env, server, bounded, capacity, mode):
     """Collect all available evidence even when the client returns nonzero."""
     parsed, boundaries, commands = [], [], []
     lines = inputs.read_text().splitlines()
@@ -157,19 +156,6 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
                '--read-timeout', '7200', '--total-timeout', '10800',
                '--no-test-connection', '--outputs-dir', str(client_dir),
                '--stream' if streaming else '--no-stream']
-        if ucf_probe:
-            if client_count != 1 or not streaming:
-                raise ValueError('UCF requires one streaming request per client')
-            cmd = [str(evalscope.parent / 'python'),
-                   str(Path(__file__).with_name('ucf_evalscope.py')),
-                   '--probe', str(ucf_probe), '--evidence', str(client_dir / 'ucf'),
-                   '--', *cmd[1:]]
-        if oc_observer:
-            if ucf_probe or client_count != 1 or not streaming:
-                raise ValueError('OC requires one streaming request without UCF')
-            cmd = [str(evalscope.parent / 'python'),
-                   str(Path(__file__).with_name('oc_evalscope.py')),
-                   '--evidence', str(client_dir / 'oc'), '--', *cmd[1:]]
         commands.append(cmd)
         save(client_dir / 'command.json', cmd)
         (out / 'memory-phase.txt').write_text(f'requests:{label}\n')
@@ -190,14 +176,6 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
             save(client_dir / 'client-exit.json', {'returncode': code, 'before': before, 'after': after})
             if hasattr(server, 'snapshot'):
                 server.snapshot(f'after-{label}')
-        if ucf_probe:
-            counter = json.loads((client_dir / 'ucf/counter.json').read_text())
-            if counter.get('complete') is not True or counter.get('error'):
-                raise RuntimeError('UCF observation incomplete')
-        if oc_observer:
-            counter = json.loads((client_dir / 'oc/counter.json').read_text())
-            if counter.get('complete') is not True or counter.get('error'):
-                raise RuntimeError('OC observation incomplete')
         databases = list(client_dir.rglob('benchmark_data.db'))
         rows = []
         if len(databases) == 1:
@@ -322,44 +300,9 @@ def main():
                         help='serve with no MTP flag: exercise the serve '
                              'default (MTP on since 2026-10-14) for default-'
                              'deployment acceptance.')
-    parser.add_argument('--server-map-reference', type=Path,
-                        help='Require identical controlled executable mappings '
-                             'before HTTP; requires --server-address-space no-aslr')
-    parser.add_argument('--server-address-space', choices=['inherit', 'no-aslr'],
-                        help='Diagnostic only: snapshot server maps; no-aslr uses '
-                             'setarch for the server only, not the HTTP client')
-    parser.add_argument('--persistent-backing-fds', action='store_true',
-                        help='Diagnostic only: forward inherited VMM FDs 73..75 to server')
-    parser.add_argument('--oc-observer', action='store_true',
-                        help='Diagnostic OC count window; one 200K off request')
-    parser.add_argument('--ucf-probe', type=Path,
-                        help='Diagnostic UCF executable; selected-tier single-request clients only')
     parser.add_argument('--mtp-k', type=int, default=3,
                         help='MTP speculative steps k (serve default 3)')
     args = parser.parse_args()
-    if args.server_map_reference and args.server_address_space != 'no-aslr':
-        parser.error('--server-map-reference requires --server-address-space no-aslr')
-    if args.server_address_space and args.systemd_unit:
-        parser.error('--server-address-space is not supported with --systemd-unit')
-    if args.persistent_backing_fds:
-        if args.systemd_unit or args.mode != 'performance' or args.perf_lengths is None:
-            parser.error('--persistent-backing-fds requires selected performance tiers without systemd')
-        if (args.perf_lengths != '204800' or args.perf_repeats != 1
-                or args.max_len != 208896 or args.mtp or args.mtp_default):
-            parser.error('--persistent-backing-fds is frozen to one 200K off request')
-        for fd in (73, 74, 75):
-            os.fstat(fd)  # Fail before launching anything if owner FDs are absent.
-    if args.oc_observer and (
-            args.ucf_probe or args.mode != 'performance' or
-            args.perf_lengths != '204800' or args.perf_repeats != 1 or
-            args.max_len != 208896 or args.mtp or args.mtp_default or
-            args.persistent_backing_fds or args.moe_trace_dir or
-            args.server_address_space or args.systemd_unit):
-        parser.error('--oc-observer requires one original 200K off request')
-    if args.ucf_probe and (args.mode != 'performance' or args.perf_lengths is None):
-        parser.error('--ucf-probe requires selected performance tiers')
-    if args.ucf_probe:
-        args.ucf_probe = args.ucf_probe.resolve(strict=True)
     if args.perf_repeats <= 0:
         parser.error('--perf-repeats must be positive')
     if args.mode != 'performance' and (args.perf_lengths is not None or args.perf_repeats != 3):
@@ -434,20 +377,8 @@ def main():
     (out / 'commit.txt').write_bytes(subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT))
     (out / 'worktree.patch').write_bytes(subprocess.check_output(['git', 'diff', 'HEAD'], cwd=ROOT))
     shutil.copyfile(__file__, out / 'run_acceptance.py')
-    if args.oc_observer:
-        for name in ('oc_evalscope.py', 'ucf_client_boundary.py'):
-            shutil.copyfile(Path(__file__).with_name(name), out / name)
-        save(out / 'oc-diagnostic.json', {'performance_acceptance': False})
-    if args.ucf_probe:
-        for name in ('ucf_evalscope.py', 'ucf_client_boundary.py', 'ucf_window_probe.cpp'):
-            shutil.copyfile(Path(__file__).with_name(name), out / name)
-        save(out / 'ucf-diagnostic.json', {'probe': str(args.ucf_probe),
-                                         'performance_acceptance': False})
     shutil.copyfile(Path(__file__).with_name('response_identity.py'),
                     out / 'response_identity.py')
-    if args.server_address_space:
-        shutil.copyfile(Path(__file__).with_name('server_address_space.py'),
-                        out / 'server_address_space.py')
     cache = binary.parent / 'CMakeCache.txt'
     deployment = binary.with_name(binary.name + '.release.json')
     if deployment.is_file() and not args.allow_unqualified_binary:
@@ -533,14 +464,7 @@ def main():
     if args.moe_hot_list:
         hot_identity = {'path': str(args.moe_hot_list.resolve()),
                         'sha256': hashlib.sha256(args.moe_hot_list.read_bytes()).hexdigest()}
-    address_parent = None
-    if args.server_address_space:
-        from server_address_space import launch_command, personality
-        address_parent = personality(os.getpid())
-        command = launch_command(command, args.server_address_space)
     save(out / 'server-command.json', {'argv': command, 'removed_environment': removed,
-                                       'diagnostic_address_space': args.server_address_space,
-                                       'diagnostic_persistent_backing_fds': args.persistent_backing_fds,
                                        'effective_q4t_environment': effective_q4t,
                                        'hot_list': hot_identity,
                                        'isolation': {'systemd_unit': args.systemd_unit,
@@ -560,8 +484,7 @@ def main():
                                      unit=args.systemd_unit, memory_max=args.host_cache_max_bytes,
                                      evidence=out / 'isolation')
         else:
-            fd_options = {'pass_fds': (73, 74, 75)} if args.persistent_backing_fds else {}
-            server = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, **fd_options)
+            server = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT)
         (out / 'server.pid').write_text(f'{server.pid}\n')
         event(out, 'server_started', pid=server.pid)
         try:
@@ -575,17 +498,6 @@ def main():
                 raise RuntimeError(f'server startup timeout after {args.startup_timeout}s')
             capacity = capacity_evidence((out / 'server.log').read_text(), args.max_len)
             save(out / 'capacity.json', capacity)
-            if args.server_address_space:
-                from server_address_space import snapshot
-                address_info, maps = snapshot(server.pid, binary,
-                                              args.server_address_space, address_parent)
-                save(out / 'server-address-space.json', address_info)
-                (out / 'server-maps.txt').write_text(maps)
-                if args.server_map_reference:
-                    from server_address_space import require_mapping_match
-                    reference_maps = json.loads(args.server_map_reference.read_text())
-                    save(out / 'server-map-reference.json', reference_maps)
-                    require_mapping_match(address_info, reference_maps)
             event(out, 'server_ready', pid=server.pid, capacity=capacity)
             if not capacity['matches_requested']:
                 raise RuntimeError('effective server capacity is missing or differs from requested capacity')
@@ -596,8 +508,7 @@ def main():
                 parsed = run_case(out, case, inputs, count, minimum, maximum,
                                   tokens, streaming, evalscope, model, args.port,
                                   env, server, args.mode == 'performance' and
-                                  args.perf_lengths is not None, capacity, args.mode,
-                                  args.ucf_probe, args.oc_observer)
+                                  args.perf_lengths is not None, capacity, args.mode)
                 if not all(isinstance(r['actual_input'], int) and
                            isinstance(r['actual_output'], int) and
                            0 < r['actual_input'] + r['actual_output'] <=
@@ -700,10 +611,6 @@ def main():
                                           'full_five_tier_completed': bool(plan and plan['full_five_tier_requested'] and clean),
                                           'full_offload_matrix_completed': bool(plan and plan['full_offload_matrix_requested'] and clean),
                                           'performance_acceptance': False,
-                                          'diagnostic_address_space': args.server_address_space,
-                                          'diagnostic_persistent_backing_fds': args.persistent_backing_fds,
-                                          'diagnostic_ucf': bool(args.ucf_probe),
-                                          'diagnostic_oc': args.oc_observer,
                                           'failure': failure, 'cleanup_failure': cleanup_failure})
         if server.returncode != 0:
             raise RuntimeError('server did not exit normally')
