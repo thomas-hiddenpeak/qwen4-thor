@@ -1,0 +1,50 @@
+{
+  "mode": "performance",
+  "lengths": [
+    1024,
+    4096,
+    8192,
+    45056,
+    204800
+  ],
+  "repeats": 3,
+  "requests": [
+    {
+      "input_tokens": 1024,
+      "max_tokens": 256,
+      "total_tokens": 1280,
+      "repeats": 3
+    },
+    {
+      "input_tokens": 4096,
+      "max_tokens": 256,
+      "total_tokens": 4352,
+      "repeats": 3
+    },
+    {
+      "input_tokens": 8192,
+      "max_tokens": 256,
+      "total_tokens": 8448,
+      "repeats": 3
+    },
+    {
+      "input_tokens": 45056,
+      "max_tokens": 256,
+      "total_tokens": 45312,
+      "repeats": 3
+    },
+    {
+      "input_tokens": 204800,
+      "max_tokens": 256,
+      "total_tokens": 205056,
+      "repeats": 3
+    }
+  ],
+  "partial": false,
+  "scope": "five_tier",
+  "full_five_tier_requested": true,
+  "full_offload_matrix_requested": false,
+  "performance_acceptance": false,
+  "client_protocol": "one_evalscope_process_per_tier",
+  "client_protocol_note": "Default batched scheduling is unchanged."
+}

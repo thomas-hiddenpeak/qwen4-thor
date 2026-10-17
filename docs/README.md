@@ -6,7 +6,8 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
-| [no-MTP有界基线设计](NO_MTP_BASELINE_BOUNDED_2026-10-18.md) | 先41请求描述基线，按需另立校准阶段；未执行 | 本阶段 |
+| [no-MTP基线实测](NO_MTP_BASELINE_RESULT_2026-10-18.md) | 41请求描述基线、两次启动差异与原始证据 | 当前交付 |
+| [no-MTP有界基线设计](NO_MTP_BASELINE_BOUNDED_2026-10-18.md) | 41请求冻结设计；已执行，结果单独归档 | 本阶段 |
 | [描述与代码核对](DESCRIPTION_AUDIT_2026-10-17.md) | README/CLI/架构差异与构建身份 | 描述变化时 |
 | [工具与规则收敛](MAIN_CONVERGENCE_2026-10-17.md) | 主线交付边界、证据复用与阶段 | 当前交付 |
 | [研究归档](ARCHIVED_RESEARCH.md) | 固定历史、失败证据及恢复入口 | 归档变化时 |

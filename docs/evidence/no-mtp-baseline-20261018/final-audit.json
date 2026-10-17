@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "database_request_counts": {
+    "Q": 11,
+    "A0": 15,
+    "A1": 15
+  },
+  "databases": [
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/Q/quality/20261018_020903/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db",
+      "rows": 11,
+      "matches_responses": true
+    },
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/A0/context-1024/20261018_021416/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "rows": 3,
+      "matches_responses": true
+    },
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/A0/context-204800/20261018_021923/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "rows": 3,
+      "matches_responses": true
+    },
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/A0/context-4096/20261018_021505/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "rows": 3,
+      "matches_responses": true
+    },
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/A0/context-45056/20261018_021704/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "rows": 3,
+      "matches_responses": true
+    },
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/A0/context-8192/20261018_021601/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "rows": 3,
+      "matches_responses": true
+    },
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/A1/context-1024/20261018_022940/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "rows": 3,
+      "matches_responses": true
+    },
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/A1/context-204800/20261018_023447/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "rows": 3,
+      "matches_responses": true
+    },
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/A1/context-4096/20261018_023029/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "rows": 3,
+      "matches_responses": true
+    },
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/A1/context-45056/20261018_023228/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "rows": 3,
+      "matches_responses": true
+    },
+    {
+      "path": ".q4t-work/no-mtp-baseline-20261018/A1/context-8192/20261018_023125/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "rows": 3,
+      "matches_responses": true
+    }
+  ],
+  "lease_elapsed_seconds": 2105.4951604270027,
+  "lease_start_utc": "2026-10-17T18:08:29.007385+00:00",
+  "lease_end_utc": "2026-10-17T18:43:34.502547+00:00",
+  "monitor_samples": 2031,
+  "single_lease_no_observed_conflicts": true,
+  "runtime_identity_checks": 6,
+  "note": "Polling cannot rule out invisible or sub-interval interference; no statistical stability claim."
+}

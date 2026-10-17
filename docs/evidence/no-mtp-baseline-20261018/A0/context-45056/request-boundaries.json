@@ -1,0 +1,278 @@
+[
+  {
+    "request_index": 1,
+    "request_group": "context-45056",
+    "client_before": {
+      "event": "client_before",
+      "monotonic_seconds": 451104.31725848303,
+      "unix_seconds": 1792261021.800384,
+      "utc": "2026-10-17T18:17:01.800384+00:00",
+      "clock_pair_uncertainty_seconds": 4.1202292777597904e-07,
+      "case": "context-45056",
+      "request_group": "context-45056",
+      "expected_requests": 3,
+      "requested_output": 256,
+      "expected_input_min": 45008,
+      "expected_input_max": 45056,
+      "capacity": {
+        "requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "effective": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "reported_requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "source": "server effective capacity report",
+        "matches_requested": true,
+        "budget_enabled": "1",
+        "budget_feasible": "true",
+        "raw_lines": [
+          "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+        ]
+      }
+    },
+    "client_after": {
+      "event": "client_after",
+      "monotonic_seconds": 451243.61442602146,
+      "unix_seconds": 1792261161.0975523,
+      "utc": "2026-10-17T18:19:21.097552+00:00",
+      "clock_pair_uncertainty_seconds": 1.083506504073739e-06,
+      "case": "context-45056",
+      "request_group": "context-45056",
+      "client_returncode": 0
+    },
+    "http_timing": {
+      "start_monotonic_seconds": 451108.540746567,
+      "end_monotonic_seconds": 451153.182681116,
+      "start_utc_estimate": "2026-10-17T18:17:06.023872+00:00",
+      "end_utc_estimate": "2026-10-17T18:17:50.665807+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 7.152557373046875e-07,
+      "within_client_boundaries": true
+    },
+    "success": 1,
+    "actual_input": 45050,
+    "actual_output": 256,
+    "finish": [
+      "length"
+    ],
+    "requested_max_tokens": 256,
+    "capacity": {
+      "requested": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "effective": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "reported_requested": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "source": "server effective capacity report",
+      "matches_requested": true,
+      "budget_enabled": "1",
+      "budget_feasible": "true",
+      "raw_lines": [
+        "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+      ]
+    }
+  },
+  {
+    "request_index": 2,
+    "request_group": "context-45056",
+    "client_before": {
+      "event": "client_before",
+      "monotonic_seconds": 451104.31725848303,
+      "unix_seconds": 1792261021.800384,
+      "utc": "2026-10-17T18:17:01.800384+00:00",
+      "clock_pair_uncertainty_seconds": 4.1202292777597904e-07,
+      "case": "context-45056",
+      "request_group": "context-45056",
+      "expected_requests": 3,
+      "requested_output": 256,
+      "expected_input_min": 45008,
+      "expected_input_max": 45056,
+      "capacity": {
+        "requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "effective": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "reported_requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "source": "server effective capacity report",
+        "matches_requested": true,
+        "budget_enabled": "1",
+        "budget_feasible": "true",
+        "raw_lines": [
+          "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+        ]
+      }
+    },
+    "client_after": {
+      "event": "client_after",
+      "monotonic_seconds": 451243.61442602146,
+      "unix_seconds": 1792261161.0975523,
+      "utc": "2026-10-17T18:19:21.097552+00:00",
+      "clock_pair_uncertainty_seconds": 1.083506504073739e-06,
+      "case": "context-45056",
+      "request_group": "context-45056",
+      "client_returncode": 0
+    },
+    "http_timing": {
+      "start_monotonic_seconds": 451153.183704878,
+      "end_monotonic_seconds": 451197.818536294,
+      "start_utc_estimate": "2026-10-17T18:17:50.666830+00:00",
+      "end_utc_estimate": "2026-10-17T18:18:35.301662+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 7.152557373046875e-07,
+      "within_client_boundaries": true
+    },
+    "success": 1,
+    "actual_input": 45050,
+    "actual_output": 256,
+    "finish": [
+      "length"
+    ],
+    "requested_max_tokens": 256,
+    "capacity": {
+      "requested": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "effective": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "reported_requested": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "source": "server effective capacity report",
+      "matches_requested": true,
+      "budget_enabled": "1",
+      "budget_feasible": "true",
+      "raw_lines": [
+        "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+      ]
+    }
+  },
+  {
+    "request_index": 3,
+    "request_group": "context-45056",
+    "client_before": {
+      "event": "client_before",
+      "monotonic_seconds": 451104.31725848303,
+      "unix_seconds": 1792261021.800384,
+      "utc": "2026-10-17T18:17:01.800384+00:00",
+      "clock_pair_uncertainty_seconds": 4.1202292777597904e-07,
+      "case": "context-45056",
+      "request_group": "context-45056",
+      "expected_requests": 3,
+      "requested_output": 256,
+      "expected_input_min": 45008,
+      "expected_input_max": 45056,
+      "capacity": {
+        "requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "effective": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "reported_requested": {
+          "max_len": 208896,
+          "max_seq": 1,
+          "max_prefill": 8192
+        },
+        "source": "server effective capacity report",
+        "matches_requested": true,
+        "budget_enabled": "1",
+        "budget_feasible": "true",
+        "raw_lines": [
+          "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+        ]
+      }
+    },
+    "client_after": {
+      "event": "client_after",
+      "monotonic_seconds": 451243.61442602146,
+      "unix_seconds": 1792261161.0975523,
+      "utc": "2026-10-17T18:19:21.097552+00:00",
+      "clock_pair_uncertainty_seconds": 1.083506504073739e-06,
+      "case": "context-45056",
+      "request_group": "context-45056",
+      "client_returncode": 0
+    },
+    "http_timing": {
+      "start_monotonic_seconds": 451197.819551696,
+      "end_monotonic_seconds": 451242.49825196,
+      "start_utc_estimate": "2026-10-17T18:18:35.302677+00:00",
+      "end_utc_estimate": "2026-10-17T18:19:19.981377+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 7.152557373046875e-07,
+      "within_client_boundaries": true
+    },
+    "success": 1,
+    "actual_input": 45050,
+    "actual_output": 256,
+    "finish": [
+      "length"
+    ],
+    "requested_max_tokens": 256,
+    "capacity": {
+      "requested": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "effective": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "reported_requested": {
+        "max_len": 208896,
+        "max_seq": 1,
+        "max_prefill": 8192
+      },
+      "source": "server effective capacity report",
+      "matches_requested": true,
+      "budget_enabled": "1",
+      "budget_feasible": "true",
+      "raw_lines": [
+        "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+      ]
+    }
+  }
+]

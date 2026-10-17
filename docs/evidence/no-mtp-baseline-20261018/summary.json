@@ -1,0 +1,189 @@
+{
+  "status": "BASELINE_RECORDED_DESCRIPTIVE",
+  "quality_passed": 11,
+  "quality_total": 11,
+  "http_requests": 41,
+  "server_starts": 3,
+  "lease_status": "COMPLETED",
+  "phase_seconds": 2105.3554171340074,
+  "metrics": [
+    {
+      "nominal_input": 1024,
+      "A0": {
+        "ttft_seconds": 0.7853048676624894,
+        "decode_tps": 18.641014039455836,
+        "actual_input": 1006,
+        "ttft_samples_seconds": [
+          0.8499224620172754,
+          0.7520960139809176,
+          0.7538961269892752
+        ],
+        "decode_samples_tps": [
+          18.623239508512693,
+          18.659294974632207,
+          18.640542521897455
+        ]
+      },
+      "A1": {
+        "ttft_seconds": 0.7891756773460656,
+        "decode_tps": 18.635566715379685,
+        "actual_input": 1006,
+        "ttft_samples_seconds": [
+          0.8573488160036504,
+          0.7549195550382137,
+          0.7552586609963328
+        ],
+        "decode_samples_tps": [
+          18.58692842807428,
+          18.65552630782633,
+          18.664438703788257
+        ]
+      },
+      "ttft_increase_pct": 0.4929053470785094,
+      "decode_decrease_pct": 0.029222251882976558
+    },
+    {
+      "nominal_input": 4096,
+      "A0": {
+        "ttft_seconds": 2.613358808661966,
+        "decode_tps": 17.86225918394887,
+        "actual_input": 4075,
+        "ttft_samples_seconds": [
+          2.6165374330012128,
+          2.6118548960075714,
+          2.6116840969771147
+        ],
+        "decode_samples_tps": [
+          17.85683148044874,
+          17.867755563213194,
+          17.862193848975984
+        ]
+      },
+      "A1": {
+        "ttft_seconds": 2.6166331196630686,
+        "decode_tps": 17.8660611398558,
+        "actual_input": 4075,
+        "ttft_samples_seconds": [
+          2.6221148669719696,
+          2.6119472479913384,
+          2.6158372440258972
+        ],
+        "decode_samples_tps": [
+          17.85783041360679,
+          17.87285988838018,
+          17.86749961316526
+        ]
+      },
+      "ttft_increase_pct": 0.12529129143115103,
+      "decode_decrease_pct": -0.021284854663550234
+    },
+    {
+      "nominal_input": 8192,
+      "A0": {
+        "ttft_seconds": 5.079097724694293,
+        "decode_tps": 18.114047686449737,
+        "actual_input": 8159,
+        "ttft_samples_seconds": [
+          5.083703197014984,
+          5.074568424024619,
+          5.079021553043276
+        ],
+        "decode_samples_tps": [
+          18.061564952079962,
+          18.132850214871556,
+          18.14796327474792
+        ]
+      },
+      "A1": {
+        "ttft_seconds": 5.092378472986941,
+        "decode_tps": 18.059158181029975,
+        "actual_input": 8159,
+        "ttft_samples_seconds": [
+          5.086744882981293,
+          5.0954810659750365,
+          5.094909470004495
+        ],
+        "decode_samples_tps": [
+          17.96547379730489,
+          18.109539732898856,
+          18.103196842132398
+        ]
+      },
+      "ttft_increase_pct": 0.26147849504998266,
+      "decode_decrease_pct": 0.30302175620759986
+    },
+    {
+      "nominal_input": 45056,
+      "A0": {
+        "ttft_seconds": 30.3656244459756,
+        "decode_tps": 17.849396081348342,
+        "actual_input": 45050,
+        "ttft_samples_seconds": [
+          30.358213553961832,
+          30.347927553986665,
+          30.390732229978312
+        ],
+        "decode_samples_tps": [
+          17.852490964302024,
+          17.84851374823128,
+          17.847184385736362
+        ]
+      },
+      "A1": {
+        "ttft_seconds": 30.366282489694033,
+        "decode_tps": 17.831855293381217,
+        "actual_input": 45050,
+        "ttft_samples_seconds": [
+          30.353720304032322,
+          30.35558483301429,
+          30.38954233203549
+        ],
+        "decode_samples_tps": [
+          17.832148199351153,
+          17.81776353847161,
+          17.84567599558703
+        ]
+      },
+      "ttft_increase_pct": 0.0021670679606788923,
+      "decode_decrease_pct": 0.09827104450583768
+    },
+    {
+      "nominal_input": 204800,
+      "A0": {
+        "ttft_seconds": 159.25374016765272,
+        "decode_tps": 17.117263314485715,
+        "actual_input": 204789,
+        "ttft_samples_seconds": [
+          159.1348542869673,
+          159.25705083698267,
+          159.36931537900819
+        ],
+        "decode_samples_tps": [
+          17.1086037387423,
+          17.121391450722093,
+          17.12180133517217
+        ]
+      },
+      "A1": {
+        "ttft_seconds": 159.23866554235187,
+        "decode_tps": 17.12180599271172,
+        "actual_input": 204789,
+        "ttft_samples_seconds": [
+          159.1087473600055,
+          159.29148669802817,
+          159.3157625690219
+        ],
+        "decode_samples_tps": [
+          17.104278984939846,
+          17.14466648324745,
+          17.11652258287956
+        ]
+      },
+      "ttft_increase_pct": -0.00946579043291651,
+      "decode_decrease_pct": -0.026538577706869404
+    }
+  ],
+  "uncertainty_intervals": null,
+  "resolution_band": "NOT_ESTABLISHED",
+  "b1a": "PAUSED"
+}

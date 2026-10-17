@@ -1,0 +1,1139 @@
+{
+  "status": "PASS",
+  "mismatches": [],
+  "hashes": {
+    "build/q4t": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+    ".q4t-work/b1a-20261017/q4t-baseline": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+    ".q4t-work/b1a-20261017/CMakeCache.txt": "ca2e60a10bb4c6c3d653a73437283e543797d119b5fbd7e9cdc82835af549e06",
+    "build/q4t.release.json": "cef96e24197d4e16b0a2a4f03566c59c1133ee385950970e24dd9c69c3e8796d",
+    "tools/evalscope/run_acceptance.py": "43a30bb7605af0659e7d960400efaea8182e97dcf5afa4c8b52159349f44427b",
+    "tools/evalscope/prepare_inputs.py": "9e58b85f96e0f060dfba77b740a9fdd2579cbb77b3ba4d9ae0f8682b93f5e21a",
+    "tools/evalscope/prepare_quality.py": "140e7c8008f00928b271201d5116534af8f89ae7f57302a24c272a6c8607143a",
+    "tools/evalscope/response_identity.py": "2102fb7a401786a55dba5b8845985b69a36b4279c52a6e4d1610a11ccd1b6e7a",
+    "tools/evalscope/gpu_exclusive.py": "b2e63e764992185ef28e6cf99a3d4b9d5375847d5267fbf6e4f85c2198ab5197",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/results.json": "5c34c3a03975c7d7969736f1909f26b45433891f467867d17d45cdb33e38a0c8",
+    ".q4t-work/mtp-numerical-closure-20261016/http/quality-off/results.json": "110d906ab228cd2dc707a8238349f4b0dfd724abd81aa95b6d46629bb821ba05",
+    ".q4t-work/mtp-numerical-closure-20261016/http/quality-off/inputs/manifest.json": "e2a542bf2c27b4404844b2e60e861c80e6c670d32bcd78685ad053f7fb833ae1",
+    ".q4t-work/mtp-numerical-closure-20261016/http/quality-off/inputs/requests.jsonl": "22cce46de658df1988cacbe311bc74a7d6f1e7125c48e11e1cd9a0dd97ab4c42",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/context-1024/requests.jsonl": "528326cd60d67d902741dc90cb858b09768d281636b93cf635683326d833fb78",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/context-1024/responses.json": "5f046f8f9afe33970960ed99a7f863f0e06963a167e0a46d7c282e7d10d4df14",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/context-4096/requests.jsonl": "1cc86f32fc09456c8c0808fbd8bfce4319888bf0b7a8b86c637f7ba1c74b71ec",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/context-4096/responses.json": "68e89353502203e6253b5b6555588bfbfca28152a55dd6a9957a4e6223635e25",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/context-8192/requests.jsonl": "771ea15e835b96c7d912c4efc123b1d0423dca5e639a39df26b315b3b67822fc",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/context-8192/responses.json": "80f35d0106903a525eb507f4b56037adb95a04850a011fa019ef948616499849",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/context-45056/requests.jsonl": "4ed61fc792d09b96ecfed463d08dd0d005899a6f6eb8df93e7255ef412e10c1c",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/context-45056/responses.json": "bcef5ae53d5376f284aaa0ecb1401c3e5db5f8acdc8da9c2250d31069c280997",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/context-204800/requests.jsonl": "d80c69b853d708c8be0ab85b492dab4a749f5d5e470f45d4d73dddc2f611e0c7",
+    ".q4t-work/mtp-numerical-closure-20261016/http/off/context-204800/responses.json": "db4ed131eb2cfcffdeb64ed60f98544f0ca2e974f204b236003f2606baa4fd93",
+    "/usr/local/cuda-13.3/lib64/libcudart.so.13": "83b2ccdccdbb285613a97e8be332d1b17cbd55e267e1d2e047adb3081660335e",
+    "/lib/aarch64-linux-gnu/liburing.so.2": "db3cef1cea7d0011476e4270321a77d25f43ff422c347883098005ead0b55655",
+    "/usr/local/cuda-13.3/lib64/libcublasLt.so.13": "6c15bfbf538088ce72f9d83d81200b37ecff3409b905fe1696887d0f9084f11f",
+    "/lib/aarch64-linux-gnu/libicui18n.so.74": "7bd69f1141097e7d127cdf3436fa7448dc7925bf2e3da0fdf028e94ec2e69243",
+    "/lib/aarch64-linux-gnu/libicuuc.so.74": "9d58137df08c36a03417445cc39576b0a95b538bdf0733f5455d2255deb9b799",
+    "/lib/aarch64-linux-gnu/libstdc++.so.6": "6e3112d35cfc86db7ee85b27e1746f67408e2837ff8628b46386c3eabd5682a4",
+    "/lib/aarch64-linux-gnu/libm.so.6": "5e0391562de36de323fb9cb0f2c1b6bd6d034c840b1dac018499f5fe4ded1b4a",
+    "/lib/aarch64-linux-gnu/libgcc_s.so.1": "f2d3ad2bf0b61f6bc944cc37d7b6ab7f88d2582b41ff989ca164803f56cc5f20",
+    "/lib/aarch64-linux-gnu/libc.so.6": "0f1905dc27dbc6715875c70527bc8da846a10084c9c483e9d8ff76dce8d69d0e",
+    "/lib/ld-linux-aarch64.so.1": "390027e5f45f236bd1838bc54bf464c5ff01d260ab9f8b415ea8276641bce505",
+    "/lib/aarch64-linux-gnu/libdl.so.2": "1c16b2692a155191c97d7fdc5ce937d37c242435f05745046a794a9832b16af4",
+    "/lib/aarch64-linux-gnu/libpthread.so.0": "6f1ab9e7d7de142dc5e2feaf6d19faceff0a0f40d5e225c922899f5362b8c353",
+    "/lib/aarch64-linux-gnu/librt.so.1": "93d0d5ab643b50ac1a61c2c7baf670e8aa94973fa5a2584d13db05295d5b5a0e",
+    "/lib/aarch64-linux-gnu/libicudata.so.74": "96b1154b9ab94cfc908c0fe745edc128ee3f67e444c66e2d7a9cf06664df9255"
+  },
+  "observed": {
+    "kernel": "Linux localhost.localdomain 6.8.12-1021-tegra #1 SMP PREEMPT Thu Aug  6 21:56:04 PDT 2026 aarch64 aarch64 aarch64 GNU/Linux",
+    "l4t": "# R39 (release), REVISION: 2.1, GCID: 46758480, BOARD: generic, EABI: aarch64, DATE: Fri Aug  7 05:54:22 AM UTC 2026\n# KERNEL_VARIANT: oot\nTARGET_USERSPACE_LIB_DIR=nvidia\nTARGET_USERSPACE_LIB_DIR_PATH=usr/lib/aarch64-linux-gnu/nvidia\n",
+    "driver": "NVRM version: NVIDIA UNIX Open Kernel Module for aarch64  TempVersion  Release Build  (r595_00)  (buildbrain@74e043fc-6c96-4a54-a660-50b30a72108d-97k4-j97dd)  Thu Aug  6 10:18:15 PM PDT 2026\nGCC version:  gcc version 13.2.0 (crosstool-NG 1.26.0) \n",
+    "power_mode": "NV Power Mode: MAXN\n0",
+    "frequency_policies": {
+      "/sys/devices/system/cpu/cpufreq/policy0/scaling_governor": "schedutil",
+      "/sys/devices/system/cpu/cpufreq/policy0/scaling_min_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy0/scaling_max_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy10/scaling_governor": "schedutil",
+      "/sys/devices/system/cpu/cpufreq/policy10/scaling_min_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy10/scaling_max_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy12/scaling_governor": "schedutil",
+      "/sys/devices/system/cpu/cpufreq/policy12/scaling_min_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy12/scaling_max_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy2/scaling_governor": "schedutil",
+      "/sys/devices/system/cpu/cpufreq/policy2/scaling_min_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy2/scaling_max_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy4/scaling_governor": "schedutil",
+      "/sys/devices/system/cpu/cpufreq/policy4/scaling_min_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy4/scaling_max_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy6/scaling_governor": "schedutil",
+      "/sys/devices/system/cpu/cpufreq/policy6/scaling_min_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy6/scaling_max_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy8/scaling_governor": "schedutil",
+      "/sys/devices/system/cpu/cpufreq/policy8/scaling_min_freq": "2601000",
+      "/sys/devices/system/cpu/cpufreq/policy8/scaling_max_freq": "2601000",
+      "/sys/class/devfreq/8188050000.vic/governor": "tegra_wmark",
+      "/sys/class/devfreq/8188050000.vic/min_freq": "54000000",
+      "/sys/class/devfreq/8188050000.vic/max_freq": "1107000000",
+      "/sys/class/devfreq/bwmgr/governor": "bpmp-bwmgr",
+      "/sys/class/devfreq/bwmgr/min_freq": "4266000000",
+      "/sys/class/devfreq/bwmgr/max_freq": "4266000000",
+      "/sys/class/devfreq/gpu-gpc-0/governor": "nvhost_podgov",
+      "/sys/class/devfreq/gpu-gpc-0/min_freq": "1575000000",
+      "/sys/class/devfreq/gpu-gpc-0/max_freq": "1575000000",
+      "/sys/class/devfreq/gpu-nvd-0/governor": "nvhost_podgov",
+      "/sys/class/devfreq/gpu-nvd-0/min_freq": "1692000000",
+      "/sys/class/devfreq/gpu-nvd-0/max_freq": "1692000000"
+    },
+    "python_environment": {
+      "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+      "packages": {
+        "Jinja2": "3.1.6",
+        "Markdown": "3.10.3",
+        "MarkupSafe": "3.0.3",
+        "PyYAML": "6.0.3",
+        "Pygments": "2.21.0",
+        "absl-py": "2.5.0",
+        "addict": "2.4.0",
+        "aiohappyeyeballs": "2.7.1",
+        "aiohttp": "3.14.3",
+        "aiosignal": "1.4.0",
+        "aliyun-python-sdk-core": "2.16.1",
+        "aliyun-python-sdk-kms": "2.16.5",
+        "annotated-doc": "0.0.5",
+        "annotated-types": "0.8.0",
+        "antlr4-python3-runtime": "4.9.3",
+        "anyio": "4.15.1",
+        "attrs": "26.1.0",
+        "boto3": "1.43.98",
+        "botocore": "1.43.98",
+        "certifi": "2026.7.22",
+        "cffi": "2.1.1",
+        "charset-normalizer": "3.5.1",
+        "click": "8.5.0",
+        "cloudpickle": "3.1.2",
+        "colorama": "0.4.6",
+        "colorlog": "6.12.0",
+        "crcmod": "1.7",
+        "cryptography": "50.0.1",
+        "datasets": "4.8.4",
+        "defusedxml": "0.7.1",
+        "dill": "0.4.1",
+        "distro": "1.9.0",
+        "docstring_parser": "0.18.0",
+        "dotenv": "0.9.9",
+        "editdistance": "0.8.1",
+        "einops": "0.8.2",
+        "evalscope": "1.12.0",
+        "fastapi": "0.141.1",
+        "fastuuid": "0.14.0",
+        "filelock": "4.0.1",
+        "filetype": "1.2.0",
+        "frozenlist": "1.8.0",
+        "fsspec": "2026.2.0",
+        "h11": "0.16.0",
+        "hf-xet": "1.6.0",
+        "httpcore": "1.0.9",
+        "httpx": "0.28.1",
+        "huggingface_hub": "1.32.0",
+        "idna": "3.20",
+        "importlib_metadata": "8.9.0",
+        "jieba": "0.42.1",
+        "jiter": "0.17.0",
+        "jmespath": "1.1.0",
+        "joblib": "1.6.0",
+        "jsonlines": "4.0.0",
+        "jsonschema": "4.26.0",
+        "jsonschema-specifications": "2025.9.1",
+        "latex2sympy2_extended": "1.11.0",
+        "litellm": "1.101.0",
+        "lxml": "6.1.3",
+        "markdown-it-py": "4.2.0",
+        "mdurl": "0.1.2",
+        "modelscope": "1.40.1",
+        "modelscope-hub": "0.4.3",
+        "more-itertools": "11.1.0",
+        "mpmath": "1.3.0",
+        "multidict": "6.9.0",
+        "multiprocess": "0.70.19",
+        "narwhals": "2.26.0",
+        "nltk": "3.10.3",
+        "numpy": "2.5.3",
+        "openai": "2.54.0",
+        "oss2": "2.19.1",
+        "packaging": "26.3",
+        "pandas": "3.0.6",
+        "pillow": "12.3.0",
+        "plotly": "7.1.0",
+        "portalocker": "4.4.0",
+        "propcache": "0.5.4",
+        "pyarrow": "25.0.1",
+        "pycparser": "3.0",
+        "pycryptodome": "3.23.0",
+        "pydantic": "2.13.5",
+        "pydantic-settings": "2.15.0",
+        "pydantic_core": "2.46.5",
+        "pylatexenc": "2.11",
+        "python-dateutil": "2.9.0.post0",
+        "python-dotenv": "1.2.3",
+        "referencing": "0.37.0",
+        "regex": "2026.9.10",
+        "requests": "2.34.2",
+        "rich": "15.0.0",
+        "rouge-chinese": "1.0.3",
+        "rouge_score": "0.1.2",
+        "rpds-py": "2026.6.3",
+        "s3transfer": "0.19.2",
+        "sacrebleu": "2.6.0",
+        "safetensors": "0.8.0",
+        "scipy": "1.18.1",
+        "setuptools": "84.0.0",
+        "shellingham": "1.5.4",
+        "simplejson": "4.1.2",
+        "six": "1.17.0",
+        "sniffio": "1.3.1",
+        "sortedcontainers": "2.4.0",
+        "sse-starlette": "3.4.11",
+        "starlette": "1.6.0",
+        "sympy": "1.14.0",
+        "tabulate": "0.10.0",
+        "tiktoken": "0.14.0",
+        "tokenizers": "0.23.2",
+        "tqdm": "4.70.1",
+        "transformers": "5.17.0",
+        "typer": "0.27.2",
+        "typing-inspection": "0.4.4",
+        "typing_extensions": "4.16.0",
+        "urllib3": "2.8.0",
+        "uvicorn": "0.53.0",
+        "uvloop": "0.22.1",
+        "word2number": "1.1",
+        "xxhash": "4.0.1",
+        "yarl": "1.25.1",
+        "zhconv": "1.4.3",
+        "zipp": "4.1.0"
+      }
+    }
+  },
+  "model_metadata": {
+    ".msc": {
+      "size": 20882,
+      "mtime_ns": 1788444005571882565
+    },
+    ".mv": {
+      "size": 36,
+      "mtime_ns": 1788444005575882590
+    },
+    "README.md": {
+      "size": 8047,
+      "mtime_ns": 1788441028487971336
+    },
+    "chat_template.jinja": {
+      "size": 8952,
+      "mtime_ns": 1788440422473571939
+    },
+    "config.json": {
+      "size": 4983,
+      "mtime_ns": 1788440422497571932
+    },
+    "configuration.json": {
+      "size": 76,
+      "mtime_ns": 1788440422485571936
+    },
+    "generation_config.json": {
+      "size": 202,
+      "mtime_ns": 1788440422469571940
+    },
+    "hf_quant_config.json": {
+      "size": 504,
+      "mtime_ns": 1788440422473571939
+    },
+    "layer-00000-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440446477565178
+    },
+    "layer-00000-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440448761564571
+    },
+    "layer-00000-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440462149561133
+    },
+    "layer-00000-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440436829567812
+    },
+    "layer-00001-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440460621561515
+    },
+    "layer-00001-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440465905560206
+    },
+    "layer-00001-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440472253558676
+    },
+    "layer-00001-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440435633568146
+    },
+    "layer-00002-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440460069561653
+    },
+    "layer-00002-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440447765564835
+    },
+    "layer-00002-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440458901561948
+    },
+    "layer-00002-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440462009561168
+    },
+    "layer-00003-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440471117558946
+    },
+    "layer-00003-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440476937557575
+    },
+    "layer-00003-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440498597552801
+    },
+    "layer-00003-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440479765556923
+    },
+    "layer-00004-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440501865552124
+    },
+    "layer-00004-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440481853556446
+    },
+    "layer-00004-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440499945552520
+    },
+    "layer-00004-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440501965552104
+    },
+    "layer-00005-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440491945554213
+    },
+    "layer-00005-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440488889554878
+    },
+    "layer-00005-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440510169550456
+    },
+    "layer-00005-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440508749550737
+    },
+    "layer-00006-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440516613549212
+    },
+    "layer-00006-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440507605550964
+    },
+    "layer-00006-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440526529547380
+    },
+    "layer-00006-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440529833546791
+    },
+    "layer-00007-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440516241549282
+    },
+    "layer-00007-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440525849547502
+    },
+    "layer-00007-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440539633545111
+    },
+    "layer-00007-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440525241547612
+    },
+    "layer-00008-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440544697544279
+    },
+    "layer-00008-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440530133546738
+    },
+    "layer-00008-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440543989544394
+    },
+    "layer-00008-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440548085543737
+    },
+    "layer-00009-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440549557543505
+    },
+    "layer-00009-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440553777542851
+    },
+    "layer-00009-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440543793544426
+    },
+    "layer-00009-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440566693540956
+    },
+    "layer-00010-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440577049539548
+    },
+    "layer-00010-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440556445542447
+    },
+    "layer-00010-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440581893538924
+    },
+    "layer-00010-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440560109541902
+    },
+    "layer-00011-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440589981537929
+    },
+    "layer-00011-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440591925537699
+    },
+    "layer-00011-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440565565541115
+    },
+    "layer-00011-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440596137537211
+    },
+    "layer-00012-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440571073540348
+    },
+    "layer-00012-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440602053536552
+    },
+    "layer-00012-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440607753535946
+    },
+    "layer-00012-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440580805539063
+    },
+    "layer-00013-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440588381538121
+    },
+    "layer-00013-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440591529537746
+    },
+    "layer-00013-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440620497534692
+    },
+    "layer-00013-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440598325536964
+    },
+    "layer-00014-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440628285533993
+    },
+    "layer-00014-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440628105534009
+    },
+    "layer-00014-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440633213533577
+    },
+    "layer-00014-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440635373533401
+    },
+    "layer-00015-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440609473535769
+    },
+    "layer-00015-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440613849535329
+    },
+    "layer-00015-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440651329532217
+    },
+    "layer-00015-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440646037532587
+    },
+    "layer-00016-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440623461534421
+    },
+    "layer-00016-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440633797533529
+    },
+    "layer-00016-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440635093533423
+    },
+    "layer-00016-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440651185532227
+    },
+    "layer-00017-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440642837532822
+    },
+    "layer-00017-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440664677531381
+    },
+    "layer-00017-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440652145532162
+    },
+    "layer-00017-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440668613531161
+    },
+    "layer-00018-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440647101532511
+    },
+    "layer-00018-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440679697530605
+    },
+    "layer-00018-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440669809531097
+    },
+    "layer-00018-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440665049531360
+    },
+    "layer-00019-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440683457530437
+    },
+    "layer-00019-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440680141530585
+    },
+    "layer-00019-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440662657531499
+    },
+    "layer-00019-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440698945529857
+    },
+    "layer-00020-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440679153530630
+    },
+    "layer-00020-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440681857530507
+    },
+    "layer-00020-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440707285529616
+    },
+    "layer-00020-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440689681530183
+    },
+    "layer-00021-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440700289529815
+    },
+    "layer-00021-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440711305529518
+    },
+    "layer-00021-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440711621529510
+    },
+    "layer-00021-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440694017530023
+    },
+    "layer-00022-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440715237529433
+    },
+    "layer-00022-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440721081529326
+    },
+    "layer-00022-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440706697529632
+    },
+    "layer-00022-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440728837529221
+    },
+    "layer-00023-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440717477529389
+    },
+    "layer-00023-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440725349529263
+    },
+    "layer-00023-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440720981529328
+    },
+    "layer-00023-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440742657529135
+    },
+    "layer-00024-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440742737529134
+    },
+    "layer-00024-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440749649529139
+    },
+    "layer-00024-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440735265529165
+    },
+    "layer-00024-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440737161529153
+    },
+    "layer-00025-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440748101529136
+    },
+    "layer-00025-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440752185529149
+    },
+    "layer-00025-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440752197529149
+    },
+    "layer-00025-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440752985529153
+    },
+    "layer-00026-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440758593529192
+    },
+    "layer-00026-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440771449529357
+    },
+    "layer-00026-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440763949529248
+    },
+    "layer-00026-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440776145529444
+    },
+    "layer-00027-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440766965529288
+    },
+    "layer-00027-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440769533529326
+    },
+    "layer-00027-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440787621529712
+    },
+    "layer-00027-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440781257529553
+    },
+    "layer-00028-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440777309529467
+    },
+    "layer-00028-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440787037529696
+    },
+    "layer-00028-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440792525529851
+    },
+    "layer-00028-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440787057529696
+    },
+    "layer-00029-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440818433530822
+    },
+    "layer-00029-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440793745529888
+    },
+    "layer-00029-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440802957530194
+    },
+    "layer-00029-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440806889530341
+    },
+    "layer-00030-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440805069530271
+    },
+    "layer-00030-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440809357530437
+    },
+    "layer-00030-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440813669530614
+    },
+    "layer-00030-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440814837530663
+    },
+    "layer-00031-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440812893530581
+    },
+    "layer-00031-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440822029530987
+    },
+    "layer-00031-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440838333531829
+    },
+    "layer-00031-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440826049531181
+    },
+    "layer-00032-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440828713531314
+    },
+    "layer-00032-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440832657531519
+    },
+    "layer-00032-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440846289532293
+    },
+    "layer-00032-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440846785532323
+    },
+    "layer-00033-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440849389532482
+    },
+    "layer-00033-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440840117531930
+    },
+    "layer-00033-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440845841532266
+    },
+    "layer-00033-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440848869532451
+    },
+    "layer-00034-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440855893532898
+    },
+    "layer-00034-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440866305533610
+    },
+    "layer-00034-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440859545533142
+    },
+    "layer-00034-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440876489534361
+    },
+    "layer-00035-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440878193534491
+    },
+    "layer-00035-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440864945533514
+    },
+    "layer-00035-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440880849534698
+    },
+    "layer-00035-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440866301533610
+    },
+    "layer-00036-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440878533534518
+    },
+    "layer-00036-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440880417534664
+    },
+    "layer-00036-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440890253535459
+    },
+    "layer-00036-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440890073535444
+    },
+    "layer-00037-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440887349535219
+    },
+    "layer-00037-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440898297536145
+    },
+    "layer-00037-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440899517536251
+    },
+    "layer-00037-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440903245536582
+    },
+    "layer-00038-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440907869537002
+    },
+    "layer-00038-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440910117537209
+    },
+    "layer-00038-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440908953537102
+    },
+    "layer-00038-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440912293537413
+    },
+    "layer-00039-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440916357537799
+    },
+    "layer-00039-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440919553538107
+    },
+    "layer-00039-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440930389539190
+    },
+    "layer-00039-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440924429538588
+    },
+    "layer-00040-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440936505539825
+    },
+    "layer-00040-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440932321539388
+    },
+    "layer-00040-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440939929540188
+    },
+    "layer-00040-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440930089539159
+    },
+    "layer-00041-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440939985540193
+    },
+    "layer-00041-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440938325540017
+    },
+    "layer-00041-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440954841325380
+    },
+    "layer-00041-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440949193436630
+    },
+    "layer-00042-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440966965090277
+    },
+    "layer-00042-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440950853403817
+    },
+    "layer-00042-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440955745307676
+    },
+    "layer-00042-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440956313296569
+    },
+    "layer-00043-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440973684962114
+    },
+    "layer-00043-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440972300988387
+    },
+    "layer-00043-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440966441100338
+    },
+    "layer-00043-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440968325064220
+    },
+    "layer-00044-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440984372761362
+    },
+    "layer-00044-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440983796772085
+    },
+    "layer-00044-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440973952957032
+    },
+    "layer-00044-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440992348613983
+    },
+    "layer-00045-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440991880622572
+    },
+    "layer-00045-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440986308725399
+    },
+    "layer-00045-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440997492520019
+    },
+    "layer-00045-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440997780514782
+    },
+    "layer-00046-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440995844550028
+    },
+    "layer-00046-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441011492268520
+    },
+    "layer-00046-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441012180256317
+    },
+    "layer-00046-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441006768352695
+    },
+    "layer-00047-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788441012344253412
+    },
+    "layer-00047-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441019204132581
+    },
+    "layer-00047-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441016376182219
+    },
+    "layer-00047-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441023668054726
+    },
+    "merges.txt": {
+      "size": 3353259,
+      "mtime_ns": 1788440998460502431
+    },
+    "model-bf16-00001.safetensors": {
+      "size": 1273114461,
+      "mtime_ns": 1788441072983233526
+    },
+    "model-bf16-00010.safetensors": {
+      "size": 323564201,
+      "mtime_ns": 1788441027891981608
+    },
+    "model-bf16-00011.safetensors": {
+      "size": 10727387912,
+      "mtime_ns": 1788441457602701387
+    },
+    "model-bf16-00012.safetensors": {
+      "size": 3683689888,
+      "mtime_ns": 1788441195229472953
+    },
+    "model-plefp8-scale.safetensors": {
+      "size": 146,
+      "mtime_ns": 1788441024148046389
+    },
+    "model.safetensors.index.json": {
+      "size": 35429343,
+      "mtime_ns": 1788441027439989409
+    },
+    "mtp/chat_template.jinja": {
+      "size": 8952,
+      "mtime_ns": 1788440422489571934
+    },
+    "mtp/config.json": {
+      "size": 4983,
+      "mtime_ns": 1788440422485571936
+    },
+    "mtp/generation_config.json": {
+      "size": 202,
+      "mtime_ns": 1788440422469571940
+    },
+    "mtp/hf_quant_config.json": {
+      "size": 504,
+      "mtime_ns": 1788440422921571806
+    },
+    "mtp/merges.txt": {
+      "size": 3353259,
+      "mtime_ns": 1788440999100490816
+    },
+    "mtp/model-bf16-00010.safetensors": {
+      "size": 323564201,
+      "mtime_ns": 1788441029623951784
+    },
+    "mtp/model-bf16-00011.safetensors": {
+      "size": 10727387912,
+      "mtime_ns": 1788441505830304351
+    },
+    "mtp/model-bf16-00012.safetensors": {
+      "size": 3683689888,
+      "mtime_ns": 1788441190145539169
+    },
+    "mtp/model.safetensors.index.json": {
+      "size": 2802,
+      "mtime_ns": 1788441027759983886
+    },
+    "mtp/preprocessor_config.json": {
+      "size": 390,
+      "mtime_ns": 1788441028039979054
+    },
+    "mtp/tokenizer.json": {
+      "size": 12809320,
+      "mtime_ns": 1788441029863947657
+    },
+    "mtp/tokenizer_config.json": {
+      "size": 17928,
+      "mtime_ns": 1788441030155942639
+    },
+    "mtp/video_preprocessor_config.json": {
+      "size": 385,
+      "mtime_ns": 1788441030755932338
+    },
+    "mtp/vocab.json": {
+      "size": 6722759,
+      "mtime_ns": 1788441031623917455
+    },
+    "ple/qwen3.8-flash-next-ple-fp8.bin": {
+      "size": 51200245760,
+      "mtime_ns": 1788444005571882565
+    },
+    "preprocessor_config.json": {
+      "size": 390,
+      "mtime_ns": 1788441028195976367
+    },
+    "ssd-stream.json": {
+      "size": 493,
+      "mtime_ns": 1788441028751966789
+    },
+    "tokenizer.json": {
+      "size": 12809320,
+      "mtime_ns": 1788441030615934742
+    },
+    "tokenizer_config.json": {
+      "size": 17928,
+      "mtime_ns": 1788441030479937076
+    },
+    "video_preprocessor_config.json": {
+      "size": 385,
+      "mtime_ns": 1788441030907929728
+    },
+    "vocab.json": {
+      "size": 6722759,
+      "mtime_ns": 1788441031683916426
+    }
+  },
+  "thermal_snapshot": {
+    "/sys/class/thermal/thermal_zone0/temp": "50375",
+    "/sys/class/thermal/thermal_zone1/temp": "50375",
+    "/sys/class/thermal/thermal_zone2/temp": "50093",
+    "/sys/class/thermal/thermal_zone3/temp": "49593",
+    "/sys/class/thermal/thermal_zone4/temp": "47781"
+  },
+  "weight_hash_note": "No full weight rehash; metadata inventory for same-phase change detection."
+}
