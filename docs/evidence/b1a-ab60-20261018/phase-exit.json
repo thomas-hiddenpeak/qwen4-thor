@@ -1,0 +1,13 @@
+{
+  "status": "AB_OBSERVATIONS_RECORDED",
+  "reserved_requests": 60,
+  "server_starts": 4,
+  "completed": [
+    "A-off",
+    "B-off",
+    "B-on",
+    "A-on"
+  ],
+  "start_monotonic": 456621.450227377,
+  "end_monotonic": 460119.197037538
+}
