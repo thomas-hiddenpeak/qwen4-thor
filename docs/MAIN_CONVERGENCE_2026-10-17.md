@@ -14,7 +14,7 @@ HC up提速或TTFT根因修复。沿用原分支，PR建议squash，不自动合
    输入修复、AGENTS/EVALUATION规则。工具源码与测试保留原身份；
    run_acceptance及其测试恢复main字节。移出ASLR/UCF/OC/VMM/调频等
    专项诊断，不改生产、N=4、确定性/状态合同；不重跑任何测试。
-3. 创建聚焦主线PR后记录链接。建议squash，只把最终范围带入main；
+3. [聚焦主线PR #5](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/5)已创建。建议squash，只把最终范围带入main；
    不force-push旧分支，完整调查历史由tag保留。合入后另评估当前分支。
 
 [裁剪前方案与逐文件清单](ARCHIVED_RESEARCH.md)永久可恢复。本地1248份
@@ -51,3 +51,6 @@ HC up提速或TTFT根因修复。沿用原分支，PR建议squash，不自动合
 
 若静态核对暴露工具逻辑必须改变，应停止/缩小该部分范围，不能为
 本次整理扩展测试或调查。保留修复均未做这种逻辑改变。
+
+阶段2裁剪提交e51142f已推送，最终相对main为22个文件。阶段3仅记录PR，
+未执行合并或重跑测试；保持原有失败/未决结论。

@@ -5,7 +5,7 @@
 ## 当前交付
 
 工具与验收规则主线收敛：完整历史已远端归档并独立恢复核对，成组裁剪
-完成，准备聚焦PR，尚未合并main。见[阶段与证据](MAIN_CONVERGENCE_2026-10-17.md)。
+完成，[PR #5](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/5)已创建，尚未合并main。见[阶段与证据](MAIN_CONVERGENCE_2026-10-17.md)。
 保留GPU互斥/归属修复、实际输入trace修正、简化持平通道和有界诊断规则；
 runner恢复main，专项probe与大批调查材料由[归档索引](ARCHIVED_RESEARCH.md)恢复。
 此次不运行测试、不采样、不新增分支，不能称为新性能或数值验收。
