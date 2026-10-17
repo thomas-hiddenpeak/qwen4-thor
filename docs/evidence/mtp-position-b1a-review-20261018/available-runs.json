@@ -1,0 +1,582 @@
+[
+  {
+    "directory": ".q4t-work/hc-up-clock-cross-20261017/http/OA2",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "bfa24861a6685f7f736f340c07629710a1e74210ec8a96921ae98ec6cb46559f"
+  },
+  {
+    "directory": ".q4t-work/hc-up-clock-cross-20261017/http/LA1",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "728e33c01926630a10ef5a8f7c341159eb9d86f9264e37504112740859d783ae"
+  },
+  {
+    "directory": ".q4t-work/hc-up-clock-cross-20261017/http/OA1",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "2ec31d19b282185de40dc9d6c5260217081e212c239ee66c2e087c7be746cf01"
+  },
+  {
+    "directory": ".q4t-work/hc-up-clock-cross-20261017/http/LA2",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "489cda31a2f3399c534e6be01354476643ef563e37ff0da9bb80b55ca31c64cf"
+  },
+  {
+    "directory": ".q4t-work/hc-up-layout-intervention-20261017/http/04-A-fixed",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "0719ec16e5a2502e1772948531ab22d53efbf9558b12a54fc61e1e60f1ac19c2"
+  },
+  {
+    "directory": ".q4t-work/hc-up-layout-intervention-20261017/http/01-A-control",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "44e188cc24469744aa197dc115222a160fb559664f536c6ee24e1e755e08cb4d"
+  },
+  {
+    "directory": ".q4t-work/hc-up-layout-intervention-20261017/http/05-A-fixed",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "055a9e7f7e72d7cfd4d44603873efa5f34776adb34e63778a923ffc3b6a5c569"
+  },
+  {
+    "directory": ".q4t-work/mtp-numerical-closure-20261016/http/on",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "repeats": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "result_sha256": "4723c8177d2b7157b10c4a9ad364d1f2d29d26fff2fc43a9a7c52d475ecf99c2"
+  },
+  {
+    "directory": ".q4t-work/hc-up-layout-intervention-20261017/http/08-A-control",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "1787aa318ebdfd1e572d6dbe3990755402df5643d0a7d383c86604f09f051aa4"
+  },
+  {
+    "directory": ".q4t-work/mtp-numerical-closure-20261016/http/off",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "repeats": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "result_sha256": "5c34c3a03975c7d7969736f1909f26b45433891f467867d17d45cdb33e38a0c8"
+  },
+  {
+    "directory": ".q4t-work/b1a-20261017/on",
+    "binary": "candidate",
+    "sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "repeats": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "result_sha256": "233593ea24a8482316f2c1f7f41407f660b1e5fd73dbc9e8ee18907752ea9822"
+  },
+  {
+    "directory": ".q4t-work/b1a-20261017/off",
+    "binary": "candidate",
+    "sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "repeats": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "result_sha256": "9b11eecc7d9d833b3642401ca1f9fd03aea9c6963d61a55c8d1a518372aace4c"
+  },
+  {
+    "directory": ".q4t-work/hc-up-review-20261016/01-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "9b080c1df5bc6f2edf9e09bf89a9476fdce9f79be8de3c8c0606d66ccc91002b"
+  },
+  {
+    "directory": ".q4t-work/hc-up-review-20261016/04-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "b1ed7b9f7aae1cb9fc79194c8725a13975699220e1b5c2530894188a8b0979a1"
+  },
+  {
+    "directory": ".q4t-work/hc-up-review-20261016/05-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "8308c32555391ffec568b6e534347cd2289bf83d5eeaa2c031f04bf300d8bb09"
+  },
+  {
+    "directory": ".q4t-work/hc-up-aslr-20261017/http/05-A-no-aslr",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "5d0c83ecb8f5db54a8fa972f2ee45a1c0a0d233e3798b8b87517565e9708583f"
+  },
+  {
+    "directory": ".q4t-work/hc-up-aslr-20261017/http/08-A-inherit",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "c6270a62eb4e498130297eeb2343485f9b93061266e49b605b5a3fab74b23b17"
+  },
+  {
+    "directory": ".q4t-work/hc-up-aslr-20261017/http/04-A-no-aslr",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "068363dbec47f40321fff0e8411fbc49f708491a8ce9e28b9ec0ed6a506fe9e2"
+  },
+  {
+    "directory": ".q4t-work/hc-up-aslr-20261017/http/01-A-inherit",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "e80913a417393cd739c7636a025e8eda5e0c14a2e49d06f34b01698d0d4bc0e1"
+  },
+  {
+    "directory": ".q4t-work/hc-up-cause-20261016/light/01-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "c17e0abd20d727efaccec30a7e65ba43dbd64206d76b2f658ffa4d5f94553b79"
+  },
+  {
+    "directory": ".q4t-work/hc-up-route-identity-20261017/http/A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "3ed0415f688dd263c751a023a9b09f8db6697e68ca0b5b19b18bdd1dbfabf722"
+  },
+  {
+    "directory": ".q4t-work/hc-up-thunk-cause-20261016/http/01-A0",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "eb6b65a2e140a01586fda36442ec8fa9adb0eb645f239c3cf844b6c95a9d29f3"
+  },
+  {
+    "directory": ".q4t-work/hc-up-thunk-cause-20261016/http/08-A0",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "69fcaeaa7f88c25ac350f880ba7fe82e49e82ab93fbf08f56e9d8657854e8d7e"
+  },
+  {
+    "directory": ".q4t-work/hc-up-subtiming-20261017-v2/http/01-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "f980b820657ff131924d5341ce9fda6bfda803535df47bdc4f1f13e66f0e36eb"
+  },
+  {
+    "directory": ".q4t-work/hc-up-subtiming-20261017-v2/http/04-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "f72d7dcd2772f0e98590ca9972cbe6782e6bbf8642b17cb385895a7e3fcb12d9"
+  },
+  {
+    "directory": ".q4t-work/hc-up-address-observer-20261017/http/01-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "091a13b5cd9c0a4850bcb990e2a0edbe4213ba295de090f5bcf2f2a7da06c3be"
+  },
+  {
+    "directory": ".q4t-work/gdn-record-fold-20261016/source/docs/evidence/mtp-numerical-closure-20261016/phase04/on",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "repeats": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "result_sha256": "4723c8177d2b7157b10c4a9ad364d1f2d29d26fff2fc43a9a7c52d475ecf99c2"
+  },
+  {
+    "directory": ".q4t-work/gdn-record-fold-20261016/source/docs/evidence/mtp-numerical-closure-20261016/phase04/off",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "repeats": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "result_sha256": "5c34c3a03975c7d7969736f1909f26b45433891f467867d17d45cdb33e38a0c8"
+  },
+  {
+    "directory": ".q4t-work/gdn-record-fold-20261016/staging-evidence/baseline/selected/on",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "repeats": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "result_sha256": "4723c8177d2b7157b10c4a9ad364d1f2d29d26fff2fc43a9a7c52d475ecf99c2"
+  },
+  {
+    "directory": ".q4t-work/gdn-record-fold-20261016/staging-evidence/baseline/selected/off",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "repeats": [
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "result_sha256": "5c34c3a03975c7d7969736f1909f26b45433891f467867d17d45cdb33e38a0c8"
+  },
+  {
+    "directory": ".q4t-work/hc-up-registration-cause-20261016/http/06-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "03850a0882877ff108b78032d90b992719dce3e3de241b262391d4c72c33e610"
+  },
+  {
+    "directory": ".q4t-work/hc-up-registration-cause-20261016/http/01-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "2ad262c10ecac5c51d4e6c6595598dd23da0f70ab214429e0f548d0314e1a5e0"
+  },
+  {
+    "directory": ".q4t-work/hc-up-gather-observer-20261017/http/01-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "082a4006c7a9feddfc2d22e569dc465213b0457072dc936c6d425e51d8749a5c"
+  },
+  {
+    "directory": ".q4t-work/hc-up-gather-observer-20261017/http/04-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "27d594ec596ddd6ce9be53cf2a07561096299db7783e10284349a8bafb5d9c7d"
+  },
+  {
+    "directory": ".q4t-work/hc-up-oc-window-20261017/http/A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "cfe8332b091d6aa969d0d962922f5c23d8601c6f03f201e0df69123ed5c703d0"
+  },
+  {
+    "directory": ".q4t-work/hc-up-ucf-observer-20261017/http/01-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "cc1fde04c7f9ed1d8c276cbcdd1cf84b3419ec1b46197ddde0b2510aa847898f"
+  },
+  {
+    "directory": ".q4t-work/hc-up-ucf-observer-20261017/http/04-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "ce712f5faa4ffeb961f75faf3147c6a9c9e71773f80d13990b41a31ec73b19c6"
+  },
+  {
+    "directory": ".q4t-work/hc-up-host-observer-20261016/http/01-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "72899287dd18e95c12358cb79ff8af8e653c5ad79b9b3b9049dc078d34c73fd1"
+  },
+  {
+    "directory": ".q4t-work/hc-up-host-observer-20261016/http/04-A",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "dfdca4015a676608de986d27b2390af00daa28e9c8f49e010a72c69c0ea2bb7b"
+  },
+  {
+    "directory": ".q4t-work/hc-up-persistent-interaction-20261017/http/05-A-shared",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "bbb1a4eaf4cf3ba92b2c66bdf3701348319a542355767be4689ec563e7d92ac1"
+  },
+  {
+    "directory": ".q4t-work/hc-up-persistent-interaction-20261017/http/01-A-original",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "44b96ba987b1273ab50cd02707dcea5bb89be53445de92364c33cc2878470548"
+  },
+  {
+    "directory": ".q4t-work/hc-up-persistent-interaction-20261017/http/04-A-shared",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "d40444ca94e9f15a7a334e166f8e337f0075cfc31fa08586e5b2e5bf51f18185"
+  },
+  {
+    "directory": ".q4t-work/hc-up-persistent-interaction-20261017/http/08-A-original",
+    "binary": "accepted",
+    "sha256": "be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072",
+    "lengths": [
+      204800
+    ],
+    "repeats": [
+      1
+    ],
+    "result_sha256": "9ccad4081bb85ff9fbd4f9844c985e5232f220924e07533407875755362f6712"
+  }
+]
