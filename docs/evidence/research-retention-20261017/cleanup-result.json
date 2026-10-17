@@ -1,0 +1,47 @@
+{
+  "remote_recovery_verified": [
+    {
+      "tag": "archive/mtp-perf-20261009",
+      "commit": "d802fce3ccc4ca8129f94a790c086516713da053",
+      "tag_object": "eab9e8e72884141d1a3af7eab44733a4d37545ae",
+      "fetched_from_remote_in_independent_bare_repo": true
+    },
+    {
+      "tag": "archive/offload-mirror-recycle-20261006",
+      "commit": "7672b591644add0bbc05b8782da3127c80edc04d",
+      "tag_object": "a4f93e23f80b15c871086f4b3354904ef0d7ddb9",
+      "fetched_from_remote_in_independent_bare_repo": true
+    }
+  ],
+  "offload_covered_refs": [
+    "origin/codex/offload-causality-20261005",
+    "origin/codex/offload-causality-recovery-20261005",
+    "origin/codex/offload-decode-log-20261005",
+    "origin/codex/offload-diagnostics-20261004",
+    "origin/codex/offload-gpu-replay-20261006",
+    "origin/codex/offload-mechanism-20261006",
+    "origin/codex/offload-mirror-recycle-20261006",
+    "origin/codex/offload-mirror-retention-20261006",
+    "origin/codex/offload-request-policy-20261004",
+    "origin/codex/offload-supply-20261006",
+    "origin/codex/offload-supply-observer-20261006"
+  ],
+  "status": "completed",
+  "remaining_remote_heads": [
+    "e1383e13deb1e61d6acd0e8b48fe79bc42a9df0d\trefs/heads/codex/moe-residency-20260930",
+    "28a3783350b0c4c3d73fd3d483b5eebe881d2bdb\trefs/heads/main"
+  ],
+  "remaining_local_branches": [
+    "codex/moe-residency-20260930",
+    "main"
+  ],
+  "worktrees_preserved": 20,
+  "worktree_heads_unchanged": true,
+  "clean_detached_worktrees": [
+    ".q4t-work/wt-c1",
+    ".q4t-work/mtp-perf-20261009/source",
+    ".q4t-work/offload-mirror-recycle-20261006/source"
+  ],
+  "archived_uncommitted_content_commit": "e1383e1",
+  "tests_run": false
+}

@@ -5,24 +5,19 @@
 
 ## 当前阶段
 
-**剩余研究留存评估完成（2026-10-17，仅已有代码/证据）。**
-[评估报告](RESEARCH_RETENTION_2026-10-17.md)：path-c未提交统计功能已被main
-覆盖，补丁归档后可清理；mtp-perf保留旧诊断/状态测试意图，未提交故障
-夹具已有run3失败摘要，不直接移植或当作通过；offload保留NO_GO研究
-历史与工具，作为前次10个已删引用的恢复锚点，暂不删除。
-两份未提交内容已复制到[归档](evidence/research-retention-20261017/manifest.json)，
-原工作区保持。建议后两分支转持久只读归档再删引用，目录/压缩证据须
-单独评估。本次不新增分支、不测试、不采样，不恢复旧优化任务。
-
-**分支治理（2026-10-17）：收敛到少量有效入口。**
-默认复用当前分支，合入main后逐一评估留存，不按小任务新增分支。
-本次范围：删除2个已合入本地分支、6个已合入远端分支和10个被
-保留offload研究分支完整包含的远端入口；保留main、当前工作分支、
-path-c、mtp-perf及offload-mirror-recycle。后两类研究入口不代表验收通过。
-path-c和mtp-perf工作区有未提交内容，原样保护；所有20个工作区与
-证据路径保留，admission/foundation两个干净工作区改为原tip detached。
-[清理清单与恢复方法](evidence/branch-cleanup-20261017/README.md)记录
-旧tip、包含锚点与未提交状态；不修改生产实现、不运行模型测试。
+**分支治理执行完成（2026-10-17）：仅保留main和当前工作分支。**
+用户授权按评估执行。path-c两项已归档修改已精确清理，本地/远端
+分支删除，tip仍包含于main。mtp-perf和offload先创建并推送annotated
+归档标签archive/mtp-perf-20261009、archive/offload-mirror-recycle-20261006，
+再从独立空bare仓库取回核对commit及旧offload阶段祖先关系，最后
+按预期远端tip删除本地/远端研究分支。归档不代表验收通过。
+mtp-perf的CMake修改及未跟踪夹具已在e1383e1完整归档后清理。
+三个旧工作区均为原HEAD、clean、detached；全部20个工作区路径/HEAD
+保留，其余证据、构建产物及压缩payload未清理。没有新增分支、构建、
+测试或采样。默认继续复用当前工作入口，合入后再评估其留存。
+[评估与执行说明](RESEARCH_RETENTION_2026-10-17.md)、
+[远端恢复及清理核对](evidence/research-retention-20261017/cleanup-result.json)
+记录恢复锚点；前次offload清理清单的保留分支已由上述tag接替。
 
 **当前交付：验收规则调整已落文档；不继续HC up诊断或采样。**
 按用户2026-10-17要求，保留“复杂度下降且性能持平”的合入通道，

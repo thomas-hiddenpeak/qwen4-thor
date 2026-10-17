@@ -1,5 +1,13 @@
 # 分支清理（2026-10-17）
 
+> 2026-10-17后续执行已完成：path-c本地/远端引用已删除，main包含其tip；
+> mtp-perf与offload研究分支已改用远端annotated标签
+> `archive/mtp-perf-20261009`、`archive/offload-mirror-recycle-20261006`
+> 持久保留。已从独立空bare仓库取回并核对commit，后者覆盖全部旧offload
+> 阶段。两份未提交内容归档于e1383e1后已清理，工作区保留原HEAD detached。
+> 下文原清单/建议是执行前记录；恢复offload历史时使用归档tag而非已删分支。
+
+
 用户授权适当清理、默认不新增分支，合入main后评估留存。
 完整删除前tip/包含锚点见[inventory.json](inventory.json)，均在fetch后核对；
 当时无打开PR。删除分支引用不删除工作区、构建产物或证据。
