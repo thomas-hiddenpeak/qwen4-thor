@@ -1,0 +1,23 @@
+{
+  "head": "2046b6afe7b14b49a99f35c84a45f40cefa61e3f",
+  "base": "28a3783350b0c4c3d73fd3d483b5eebe881d2bdb",
+  "changed_files": 22,
+  "deleted_main_files": 0,
+  "source_and_binary_unchanged": true,
+  "retained_identity_and_tracked_links_checked": true,
+  "prior_ci_success_runs": [
+    39019579264,
+    39019575888
+  ],
+  "tests_rerun": false,
+  "merged_commit": "f3a975cbe96cbc07a0ecccba1ffdbc4b2d50c8a8",
+  "merged_at": "2026-10-17T09:06:07Z",
+  "method": "squash",
+  "merged_tree_identical": true,
+  "final_head_archive": "archive/main-convergence-delivery-20261017",
+  "archive_recovery_verified": true,
+  "deleted_branch": "codex/moe-residency-20260930",
+  "remaining_branch": "main",
+  "worktree_paths_preserved": 20,
+  "other_worktree_heads_unchanged": true
+}

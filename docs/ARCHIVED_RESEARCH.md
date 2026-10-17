@@ -6,6 +6,7 @@ NO_GO、未决或局部通过的范围，不自动启动下一阶段。
 
 | 标签 | commit | 内容 |
 |---|---|---|
+| archive/main-convergence-delivery-20261017 | 2046b6afe7b14b49a99f35c84a45f40cefa61e3f | PR #5最终审核头及完整收敛提交历史，squash后删除工作分支的恢复锚点 |
 | archive/main-convergence-20261017 | 9a5bc0cfc92e92a8db953092691072fed5e2ede3 | HC/GDN/参考源码调查、专项工具、证据、日志、分支清理与收敛方案 |
 | archive/mtp-perf-20261009 | d802fce3ccc4ca8129f94a790c086516713da053 | 旧MTP性能归因与状态研究，非当前数值准入 |
 | archive/offload-mirror-recycle-20261006 | 7672b591644add0bbc05b8782da3127c80edc04d | offload完整NO_GO研究链，含此前10个删除入口 |

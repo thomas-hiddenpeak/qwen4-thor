@@ -2,7 +2,7 @@
 
 生产基线main为28a3783350b0c4c3d73fd3d483b5eebe881d2bdb；生产src/include/
 根CMake未改。本次交付只有验证工具、验收/分支规则和必要索引，不是
-HC up提速或TTFT根因修复。沿用原分支，PR建议squash，不自动合并。
+HC up提速或TTFT根因修复。PR #5已按用户授权squash合入main，原工作分支已归档后清理。
 
 ## 阶段与交付边界
 
@@ -14,8 +14,9 @@ HC up提速或TTFT根因修复。沿用原分支，PR建议squash，不自动合
    输入修复、AGENTS/EVALUATION规则。工具源码与测试保留原身份；
    run_acceptance及其测试恢复main字节。移出ASLR/UCF/OC/VMM/调频等
    专项诊断，不改生产、N=4、确定性/状态合同；不重跑任何测试。
-3. [聚焦主线PR #5](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/5)已创建。建议squash，只把最终范围带入main；
-   不force-push旧分支，完整调查历史由tag保留。合入后另评估当前分支。
+3. [聚焦主线PR #5](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/5)已squash合入f3a975c；
+   最终审核头2046b6a由独立恢复验证过的delivery归档tag保护，原工作
+   分支本地/远端引用已删除，根工作区切至main。未force-push或新增分支。
 
 [裁剪前方案与逐文件清单](ARCHIVED_RESEARCH.md)永久可恢复。本地1248份
 被移出Git活动树的证据/清单仍在原路径，由本仓库info/exclude隐藏；
@@ -52,5 +53,24 @@ HC up提速或TTFT根因修复。沿用原分支，PR建议squash，不自动合
 若静态核对暴露工具逻辑必须改变，应停止/缩小该部分范围，不能为
 本次整理扩展测试或调查。保留修复均未做这种逻辑改变。
 
-阶段2裁剪提交e51142f已推送，最终相对main为22个文件。阶段3仅记录PR，
-未执行合并或重跑测试；保持原有失败/未决结论。
+阶段2裁剪提交e51142f已推送，PR最终差异22文件。首次交付仅创建PR；
+后续用户明确授权最终审查和squash合入，执行结果如下。
+
+## 最终审核与交付
+
+审核头2046b6a，基线28a3783；无main原有文件被删除，STATUS的历史
+收敛为固定commit归档入口，未抹除历史。保留7个工具/测试身份吻合，
+runner与生产源码不变，build/q4t SHA保持；改动文档链接均可解析。
+既有CI两次成功：
+[PR检查](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/39019579264)、
+[push检查](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/39019575888)，
+均对应2046b6a，包含零警告host构建、host合同、严格runner及冻结证据审计；
+没有将其解释为GPU性能验证，也没有重新运行测试。
+
+2026-10-17 09:06:07 UTC按精确head匹配squash合入
+f3a975cbe96cbc07a0ecccba1ffdbc4b2d50c8a8，合并树与审核头完全相同。
+工作分支没有未保护独有工作：archive/main-convergence-delivery-20261017
+保留最终头及收敛历史，远端取回验证后删除本地/远端工作分支。
+仅根工作区切换main，其余工作区HEAD及全部证据路径保持；未删构建目录。
+[交付清单](evidence/main-convergence-20261017/merge-delivery.json)保留审核依据。
+本轮交付记录为纯文档提交，不触发重复测试，旧NO_GO/未决结论不变。

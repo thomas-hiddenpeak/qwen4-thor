@@ -4,15 +4,20 @@
 
 ## 当前交付
 
-工具与验收规则主线收敛：完整历史已远端归档并独立恢复核对，成组裁剪
-完成，[PR #5](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/5)已创建，尚未合并main。见[阶段与证据](MAIN_CONVERGENCE_2026-10-17.md)。
-保留GPU互斥/归属修复、实际输入trace修正、简化持平通道和有界诊断规则；
-runner恢复main，专项probe与大批调查材料由[归档索引](ARCHIVED_RESEARCH.md)恢复。
-此次不运行测试、不采样、不新增分支，不能称为新性能或数值验收。
+[PR #5](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/5)已于
+2026-10-17 09:06:07 UTC按squash合入main，合并提交f3a975c。
+最终22文件差异已审查；保留工具/测试身份、生产源码/binary及文档链接
+核对通过，最终PR头2046b6a两条既有host-contracts检查均成功。
+合并树与审核PR头完全一致；本轮未重复运行任何测试。
+见[交付与证据](MAIN_CONVERGENCE_2026-10-17.md)。
+
+当前工作区已切到main，原工作分支本地/远端引用已删除。最终PR头由
+archive/main-convergence-delivery-20261017标签保护并从远端独立取回验证；
+完整研究与两个旧研究分支仍按[归档索引](ARCHIVED_RESEARCH.md)恢复。
 
 ## 已接受生产基线
 
-main 28a3783；src/include/根CMake与本分支一致，build/q4t保持
+main现包含f3a975c工具/规则交付；推理源码仍等同28a3783，build/q4t保持
 be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072。
 默认MTP k=3，--no-mtp回退普通decode；PLE上传修复与N=4等合同保留。
 [数值收口与五档证据](MTP_NUMERICAL_CLOSURE_2026-10-16.md)继续有效，
@@ -25,9 +30,10 @@ HC up、T4 attention和GDN Record/Fold候选均未接受；HC TTFT根因未明�
 
 ## 分支与证据
 
-本地/远端仅main及codex/moe-residency-20260930两个分支。研究历史由
-三个归档标签保护；20个工作区原路径/HEAD及本地证据保留，清理过的
-两个旧工作区修改已按字节归档。默认复用现有入口，合入后评估留存。
+本地/远端仅main，无新增分支。四个annotated归档标签保护研究历史与
+最终PR头；全部20个工作区路径保留，仅当前根工作区随交付切换至main，
+其余19个HEAD不变。1248份移出活动Git树的本地证据继续保留原路径。
+后续优先复用有效入口，确需独立工作时才建分支，合入后评估留存。
 
 历史状态保存在main及研究tag，不作为当前任务安排：
 [生产基线历史状态](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/28a3783350b0c4c3d73fd3d483b5eebe881d2bdb/docs/STATUS.md)。
