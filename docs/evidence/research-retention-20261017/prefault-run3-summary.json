@@ -1,0 +1,10 @@
+{
+  "passed": false,
+  "failure": "AssertionError()",
+  "server_exit": 0,
+  "cleanup": {
+    "pid": 459242,
+    "forced": false,
+    "exit": 0
+  }
+}

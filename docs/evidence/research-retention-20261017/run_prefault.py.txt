@@ -1,0 +1,215 @@
+"""Run the T4 target-pre fault drain group (fresh / fault / recovery).
+
+Drives the link-only q4t_mtp_t4_prefault_server variant with three real
+HTTP requests on the frozen 1K fixture. The variant self-verifies its
+observer contract and aborts on any violation; this driver verifies the
+HTTP-side contract, the server log markers, and clean shutdown.
+"""
+import argparse
+import hashlib
+import json
+import os
+import secrets
+import signal
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+
+def sha(path):
+    with Path(path).open('rb') as source:
+        return hashlib.file_digest(source, 'sha256').hexdigest()
+
+
+def save(path, value):
+    with path.open('x', encoding='utf-8') as target:
+        json.dump(value, target, indent=2, ensure_ascii=False)
+        target.write('\n')
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source', type=Path, required=True)
+    parser.add_argument('--binary', type=Path, required=True)
+    parser.add_argument('--model-dir', type=Path, required=True)
+    parser.add_argument('--input', type=Path, required=True)
+    parser.add_argument('--port', type=int, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--startup-seconds', type=int, default=600)
+    args = parser.parse_args()
+
+    source = args.source.resolve()
+    sys.dont_write_bytecode = True
+    sys.path.insert(0, str(source / 'tools' / 'evalscope'))
+    import run_mtp_failure_recovery as transport
+    import request_cancellation_contract as recovery
+    import mtp_failure_recovery_contract as failure_contract
+    transport.ROOT = source
+
+    variant = ('[q4t][t4_prefault_variant] protocol=t4_prefault_v1 '
+               'production_binary=0 requests=3')
+    plan = (('prefault-fresh', 'success'),
+            ('prefault-fault', 'draft_sequence_upload'),
+            ('prefault-recovery', 'success'))
+    fixture = [json.loads(line) for line in args.input.read_text().splitlines()]
+    assert len(fixture) == 3, 'fixture must hold the frozen 3 prompts'
+    prompt = fixture[0]['prompt']
+    prompt_sha = hashlib.sha256(prompt.encode()).hexdigest()
+
+    args.output.mkdir(parents=True, exist_ok=False)
+    command = [str(args.binary), 'serve', '--model-dir', str(args.model_dir),
+               '--host', '127.0.0.1', '--port', str(args.port),
+               '--max-seq', '1', '--max-prefill', '8192', '--max-len',
+               '208896', '--max-tokens', '256', '--mtp',
+               '--mtp-verifier', 't4']
+    save(args.output / 'server-command.json',
+         {'argv': command,
+          'binary_sha256': sha(args.binary),
+          'prompt_sha256': prompt_sha})
+
+    failure = None
+    server = None
+    evidence = {'pid': None, 'forced': False, 'exit': None}
+    log_path = args.output / 'server.log'
+    try:
+        with log_path.open('x') as log:
+            server = subprocess.Popen(command, cwd=source,
+                                      stdout=log, stderr=subprocess.STDOUT,
+                                      start_new_session=True)
+            save(args.output / 'server-process.json',
+                 {'pid': server.pid,
+                  'process_group': os.getpgid(server.pid)})
+            assert os.getpgid(server.pid) == server.pid
+            end = time.monotonic() + args.startup_seconds
+            while True:
+                assert server.poll() is None, 'server exited at startup'
+                text = transport.read_log(log_path)
+                if 'serving on port' in text:
+                    break
+                assert time.monotonic() < end, 'startup deadline exceeded'
+                time.sleep(min(.25, max(0, end - time.monotonic())))
+            markers = [line for line in text.splitlines()
+                       if line.startswith('[q4t][t4_prefault_variant]')]
+            assert markers == [variant], 'wrong variant announcement'
+            assert '[q4t][t4_prefault_contract]' not in text
+            before = previous = transport.snapshot(args.port, args.output,
+                                                   'before')
+            control = None
+            for label, kind in plan:
+                assert server.poll() is None, 'server exited between requests'
+                body = {'model': 'qwen3.8-flash-next', 'prompt': prompt,
+                        'max_tokens': 256, 'temperature': 0,
+                        'seed': 20260920, 'stream': True,
+                        'stream_options': {'include_usage': True},
+                        'request_id': label,
+                        'cancel_token': secrets.token_hex(32)}
+                response = transport.request(
+                    args.port, args.output, label, '/v1/chat/completions',
+                    body, timeout=600)
+                if kind == 'success':
+                    result = recovery.completed_result(response, label)
+                    if control is None:
+                        control = result
+                    else:
+                        recovery.require_recovery(result, control)
+                else:
+                    result = failure_contract.failed_result(response, label)
+                save(args.output / (label + '-result.json'), result)
+                current = transport.snapshot(args.port, args.output,
+                                             label + '-after')
+                failure_contract.require_counter_delta(
+                    previous, current, kind == 'success')
+                previous = current
+            assert tuple(b - a for a, b in zip(before, previous)) == \
+                (len(plan), 2, len(plan) - 2, 0), 'wrong total counters'
+    except BaseException as error:
+        failure = repr(error)
+    finally:
+        def send(sig):
+            try:
+                os.killpg(server.pid, sig)
+            except ProcessLookupError:
+                pass
+        evidence = {'pid': server.pid, 'forced': False, 'exit': None}
+        send(signal.SIGTERM)
+        deadline = time.monotonic() + 60
+        while server.poll() is None and time.monotonic() < deadline:
+            time.sleep(.05)
+        if server.poll() is None:
+            evidence['forced'] = True
+            send(signal.SIGKILL)
+            server.wait(timeout=10)
+        evidence['exit'] = server.returncode
+        save(args.output / 'cleanup.json', evidence)
+        if not evidence['forced'] and evidence['exit'] != 0:
+            failure = failure or f'server exit {evidence["exit"]}'
+
+    if failure is None:
+        try:
+            text = transport.read_log(log_path)
+            def events(prefix):
+                rows = []
+                for line in text.splitlines():
+                    if line.startswith(prefix + ' '):
+                        pairs = [item.split('=', 1)
+                                 for item in line[len(prefix) + 1:].split()]
+                        assert all(len(p) == 2 and p[1] for p in pairs)
+                        rows.append(dict(pairs))
+                return rows
+            begins = events('[q4t][t4_prefault_begin]')
+            resets = events('[q4t][t4_prefault_reset]')
+            injections = events('[q4t][t4_prefault_injection]')
+            drains = events('[q4t][t4_prefault_drain]')
+            returns = events('[q4t][t4_prefault_return]')
+            ends = events('[q4t][t4_prefault_end]')
+            assert [r['ordinal'] for r in begins] == ['1', '2', '3']
+            assert [r['ordinal'] for r in resets] == ['1', '2', '3']
+            assert len(injections) == 1 and \
+                injections[0]['ordinal'] == '2' and \
+                injections[0]['kind'] == 'draft_sequence_upload' and \
+                injections[0]['step'] == '1' and \
+                injections[0]['target_started'] == '0' and \
+                injections[0]['pending'] == '0'
+            assert [r['ordinal'] for r in drains] == ['2']
+            assert len(returns) == 1 and returns[0]['ordinal'] == '2' and \
+                returns[0]['status'] == 'failed' and \
+                returns[0]['counts'] == '0' and \
+                returns[0]['next_b'] == '-1' and \
+                returns[0]['next_d0'] == '-1' and \
+                returns[0]['caller_unchanged'] == '1' and \
+                returns[0]['pending'] == '0' and \
+                returns[0]['observer_cuda_calls'] == '0'
+            assert [r['ordinal'] for r in ends] == ['1', '2', '3']
+            assert ends[0]['injected'] == '0' and \
+                ends[0]['ordinary_calls'] == '0' and \
+                ends[0]['stage'] == 'idle' and \
+                ends[0]['position'] == '0' and ends[0]['history'] == '0'
+            assert ends[1]['injected'] == '1' and \
+                ends[1]['outputs_checked'] == '1' and \
+                int(ends[1]['drains']) >= 1 and \
+                ends[1]['ordinary_calls'] == '0' and \
+                ends[1]['stage'] == 'idle' and \
+                ends[1]['position'] == '0' and ends[1]['history'] == '0'
+            assert ends[2]['injected'] == '0' and \
+                ends[2]['ordinary_calls'] == '0' and \
+                ends[2]['stage'] == 'idle'
+            assert '[q4t][t4_prefault_contract]' not in text
+            save(args.output / 'log-evidence.json',
+                 {'begins': begins, 'resets': resets,
+                  'injections': injections, 'drains': drains,
+                  'returns': returns, 'ends': ends, 'passed': True})
+        except BaseException as error:
+            failure = failure or repr(error)
+    summary = {'passed': failure is None, 'failure': failure,
+               'server_exit': None if server is None else server.returncode,
+               'cleanup': evidence}
+    save(args.output / 'summary.json', summary)
+    print(json.dumps({'passed': summary['passed'],
+                      'failure': summary['failure'],
+                      'server_exit': summary['server_exit']}))
+    sys.exit(0 if summary['passed'] else 1)
+
+
+if __name__ == '__main__':
+    main()

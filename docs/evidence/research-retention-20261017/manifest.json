@@ -1,0 +1,45 @@
+{
+  "worktrees": [
+    {
+      "worktree": "/home/rm01/models/dev/qwen4-thor/.q4t-work/wt-c1",
+      "head": "887a3fec1af02f95209dac198681f66bdd9b82aa",
+      "status": " M include/q4t/model/model.h\n M src/server/chat_generation.cpp\n",
+      "patch": "path-c.patch",
+      "patch_sha256": "7d504f9b43e7fa73e1e4c1d8032667c9a80bd4980e514d644881b6c52edbc9fd"
+    },
+    {
+      "worktree": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-perf-20261009/source",
+      "head": "d802fce3ccc4ca8129f94a790c086516713da053",
+      "status": " M CMakeLists.txt\n?? tests/mtp_t4_prefault_server.cpp\n",
+      "patch": "mtp-perf.patch",
+      "patch_sha256": "d3ea158f186260d6c6170a75cb9c62e9e40a8bd9c749bab0529926ecd715bc65"
+    }
+  ],
+  "files": [
+    {
+      "source": ".q4t-work/mtp-perf-20261009/source/tests/mtp_t4_prefault_server.cpp",
+      "archive": "mtp_t4_prefault_server.cpp.txt",
+      "bytes": 12998,
+      "sha256": "c40f055b66c2fa4a60e9ee41ab37614d4e90a4c95c0768d78a2e72781f7f79ea"
+    },
+    {
+      "source": ".q4t-work/mtp-perf-20261009/t4-admission-20261009/step3-prefault/run_prefault.py",
+      "archive": "run_prefault.py.txt",
+      "bytes": 9958,
+      "sha256": "0e58388739ebdebd6ef045ba24f257629d013f4cf60787eec6528571254d0042"
+    },
+    {
+      "source": ".q4t-work/mtp-perf-20261009/t4-admission-20261009/step3-prefault/run3/summary.json",
+      "archive": "prefault-run3-summary.json",
+      "bytes": 149,
+      "sha256": "4d240f65193b8ff1fb9e801e5ab3d2869f591caf1425aad1e4eee7530a97ad97"
+    },
+    {
+      "source": ".q4t-work/mtp-perf-20261009/t4-admission-20261009/step3-prefault/run3/server.log",
+      "archive": "prefault-run3-server.log.txt",
+      "bytes": 4218,
+      "sha256": "e43f69cd1f7aa8be2c9b286faacb47bdb237b3c540687228699cae6885b3ec62"
+    }
+  ],
+  "scope": "read-only assessment and copies; original worktrees unchanged"
+}

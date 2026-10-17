@@ -1,0 +1,27 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index acee672..3fce8d6 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -415,6 +415,22 @@ if(Q4T_BUILD_TESTS)
+   target_include_directories(q4t_mtp_t4_state PRIVATE include)
+   target_link_libraries(q4t_mtp_t4_state PRIVATE ${Q4T_TEST_LIBS})
+ 
++  # Target-pre fault drain variant (T4 admission step 3 item 2): draft-stage
++  # logical failure before any target work; link-only, never production.
++  add_executable(q4t_mtp_t4_prefault_server EXCLUDE_FROM_ALL
++    src/main.cpp tests/mtp_t4_prefault_server.cpp)
++  target_include_directories(q4t_mtp_t4_prefault_server PRIVATE include)
++  target_link_libraries(q4t_mtp_t4_prefault_server PRIVATE
++    q4t_model q4t_text q4t_ple q4t_quant q4t_server CUDA::cudart)
++  target_link_options(q4t_mtp_t4_prefault_server PRIVATE
++    LINKER:--wrap=_ZN3q4t3mtp23MtpSpeculativeStepMultiERKNS_5model5ModelERKNS0_8MtpModelEPKPKNS1_13ModelSequenceEPKiSE_PKPKtiiPiSJ_SJ_SJ_PPtP11CUstream_stPNS_5trace12MtpCycleStepEPNSO_16MtpVerifyMoeStepESt4spanISD_Lm18446744073709551615EE
++    LINKER:--wrap=_ZN3q4t5model21ModelDecodeBatchMultiERKNS0_5ModelEPKiS5_S5_S5_iPtP11CUstream_stS6_
++    LINKER:--wrap=_ZN3q4t5model18ModelBeginSequenceERKNS0_5ModelEPNS0_13ModelSequenceEP11CUstream_sti
++    LINKER:--wrap=_ZN3q4t5model16ModelEndSequenceEPNS0_13ModelSequenceE
++    LINKER:--wrap=_ZN3q4t3mtp13MtpResetStateERKNS0_8MtpModelEP11CUstream_sti
++    LINKER:--wrap=cudaMemcpyAsync
++    LINKER:--wrap=cudaStreamSynchronize)
++
+   add_executable(q4t_mtp_t4_completion_fault_server EXCLUDE_FROM_ALL
+     src/main.cpp tests/mtp_t4_completion_fault_server.cpp)
+   target_include_directories(q4t_mtp_t4_completion_fault_server PRIVATE include)
