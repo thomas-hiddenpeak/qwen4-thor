@@ -218,3 +218,39 @@ build/verify_chat_template tools/evalscope/fixtures/chat_template_cases.jsonl
 
 字节参考由模型自带Jinja模板生成并冻结，来源与摘要见同目录metadata。
 字节检查通过不替代HTTP或性能接受，测试失败不得重写参考迎合实现。
+
+## 跨会话 GPU 独占（2026-10-16）
+
+完整验证阶段由同一guard持锁，不在子任务间释放：
+
+```bash
+python3 tools/evalscope/gpu_exclusive.py \
+  --output .q4t-work/my-phase/lease -- python3 .q4t-work/my-phase/run_phase.py
+```
+
+锁位于git common-dir所属仓库的`.q4t-work/gpu-exclusive.lock`，不同
+worktree共享。flock为占用事实，不根据文件文字判定空闲、不手动删锁。
+启动前与运行中轮询/proc及nvidia-smi计算进程；冲突/查询失败记录
+ENV_ABORT并返回75，只清理自有进程组及经父子链/start_ticks核实的
+自有后代（包括setsid后代），使用pidfd核对身份，不停止冲突方。
+命令失败记录COMMAND_FAILED，不能混同环境失败或模型性能失败。
+exit.json/events.jsonl保留结果；成功仅表示命令成功且未检测到冲突。
+轮询不能排除短于采样间隔、图形或驱动未列出的负载，不承诺绝对独占。
+
+默认guard自己持锁。显式`--lease-fd`借用同一lock inode的已排他持锁FD，
+仅关闭自身副本，退出记录external_cleanup_pending，外部持锁者负责
+恢复与释放；不把guard退出视为外部恢复完成。锁旁存在
+`.recovery-required`标记（包括悬空符号链接）时拒绝启动；只能由持锁
+恢复流程确认配置恢复后清除，不能为运行测试直接删标记。本工具不
+修改GPU频率，专项调频/布局/计数工具已归档，不作为日常验收入口。
+
+## HTTP trace输入身份
+
+profile_http.py要求同binary的完整五档HTTP输出记录，按记录中的实际
+输入token数核对profile请求；analyze_http_trace.py亦使用actual input，
+不把名义档长当实际长度。`--diagnose-regression`仅记录诊断标签，不
+绕过binary、五档和输出门；HTTP完成不等于性能回退已获接受。
+trace时间不替代E2E验收，profiler事件不完整时不能推导完整因果关系。
+
+已有验证范围、原始身份及归档恢复见
+[主线收敛记录](../../docs/MAIN_CONVERGENCE_2026-10-17.md)。

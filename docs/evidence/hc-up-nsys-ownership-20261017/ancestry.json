@@ -1,0 +1,73 @@
+{
+  "driver": {
+    "pid": 1223542,
+    "pgid": 1223542,
+    "sid": 1223542
+  },
+  "session": "q4t-cpu-ownership-1223542",
+  "child": {
+    "pid": 1223574,
+    "ppid": 1223573,
+    "pgid": 1223574,
+    "sid": 1223574,
+    "tag": "q4t-cpu-ownership-1223542"
+  },
+  "chain": [
+    {
+      "pid": 1223574,
+      "state": "S",
+      "ppid": 1223573,
+      "pgid": 1223574,
+      "start_ticks": 36987347,
+      "argv": [
+        "/usr/bin/python3",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-nsys-ownership-20261017/probe.py",
+        "child"
+      ],
+      "executable": "/usr/bin/python3.12"
+    },
+    {
+      "pid": 1223573,
+      "state": "S",
+      "ppid": 1223545,
+      "pgid": 1223542,
+      "start_ticks": 36987347,
+      "argv": [
+        "/opt/nvidia/nsight-systems/2026.1.3/target-linux-sbsa-armv8/nsys-launcher",
+        "/tmp/a34c-5300-e992-6c79",
+        "33"
+      ],
+      "executable": "/opt/nvidia/nsight-systems/2026.1.3/target-linux-sbsa-armv8/nsys-launcher"
+    },
+    {
+      "pid": 1223545,
+      "state": "S",
+      "ppid": 1223542,
+      "pgid": 1223542,
+      "start_ticks": 36987327,
+      "argv": [
+        "/opt/nvidia/nsight-systems/2026.1.3/target-linux-sbsa-armv8/nsys",
+        "launch",
+        "--session-new=q4t-cpu-ownership-1223542",
+        "--trace=none",
+        "--discard-environment=true",
+        "/usr/bin/python3",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/hc-up-nsys-ownership-20261017/probe.py",
+        "child"
+      ],
+      "executable": "/opt/nvidia/nsight-systems/2026.1.3/target-linux-sbsa-armv8/nsys"
+    },
+    {
+      "pid": 1223542,
+      "state": "R",
+      "ppid": 1223536,
+      "pgid": 1223542,
+      "start_ticks": 36987324,
+      "argv": [
+        "python3",
+        ".q4t-work/hc-up-nsys-ownership-20261017/probe.py"
+      ],
+      "executable": "/usr/bin/python3.12"
+    }
+  ]
+}

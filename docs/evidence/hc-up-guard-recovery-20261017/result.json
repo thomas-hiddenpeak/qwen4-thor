@@ -1,0 +1,47 @@
+[
+  {
+    "mode": "normal",
+    "returncode": 0,
+    "cleanup": {
+      "lease_still_held": true,
+      "before": "lower\n",
+      "after": "original\n",
+      "service_result": "success",
+      "exit_code": "exited",
+      "exit_status": "0"
+    },
+    "failed_restore_held": null,
+    "released_after_restore": true,
+    "unit_load_state": "not-found"
+  },
+  {
+    "mode": "kill",
+    "returncode": 255,
+    "cleanup": {
+      "lease_still_held": true,
+      "before": "lower\n",
+      "after": "original\n",
+      "service_result": "signal",
+      "exit_code": "killed",
+      "exit_status": "KILL"
+    },
+    "failed_restore_held": null,
+    "released_after_restore": true,
+    "unit_load_state": "not-found"
+  },
+  {
+    "mode": "restore_failure",
+    "returncode": 0,
+    "cleanup": {
+      "lease_still_held": true,
+      "before": "lower\n",
+      "after": "original\n",
+      "service_result": "success",
+      "exit_code": "exited",
+      "exit_status": "0"
+    },
+    "failed_restore_held": true,
+    "released_after_restore": true,
+    "unit_load_state": "not-found"
+  }
+]

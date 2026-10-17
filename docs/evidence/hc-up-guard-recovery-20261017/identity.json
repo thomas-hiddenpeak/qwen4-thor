@@ -1,0 +1,5 @@
+{
+  "integration_guard_commit": "1ef9d88",
+  "integration_guard_sha256": "3ced50a0122855d4dd0a68d5f0a43a40624f283b0db86e70395eff468971b0fd",
+  "note": "Integration preceded recovery-marker change; marker checks separately validated by 23 CPU tests. No model or real clock IO."
+}

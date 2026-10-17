@@ -1,0 +1,12 @@
+{
+  "tag": "archive/main-convergence-20261017",
+  "commit": "9a5bc0cfc92e92a8db953092691072fed5e2ede3",
+  "tag_object": "dd9e2e12c022bb64f27fc6268d09b4331f090181",
+  "independent_remote_fetch": true,
+  "verified_paths": [
+    "inventory.json",
+    "research-retention manifest",
+    "uncommitted prefault source"
+  ],
+  "tests_run": false
+}
