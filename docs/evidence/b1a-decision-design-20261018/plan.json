@@ -1,0 +1,190 @@
+{
+  "status": "METHOD_FROZEN_CONDITIONAL_NOT_RUN",
+  "sampling_authorized": false,
+  "new_requests": 0,
+  "identity_checked": {
+    "A": {
+      "path": ".q4t-work/b1a-20261017/q4t-baseline",
+      "sha256": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee"
+    },
+    "B": {
+      "path": ".q4t-work/b1a-20261017/q4t-candidate",
+      "sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03"
+    },
+    "runner": {
+      "path": "tools/evalscope/run_acceptance.py",
+      "sha256": "43a30bb7605af0659e7d960400efaea8182e97dcf5afa4c8b52159349f44427b"
+    },
+    "cache": {
+      "path": ".q4t-work/b1a-20261017/CMakeCache.txt",
+      "sha256": "ca2e60a10bb4c6c3d653a73437283e543797d119b5fbd7e9cdc82835af549e06"
+    }
+  },
+  "caps": {
+    "requests": 300,
+    "starts": 20,
+    "wall_seconds": 25200,
+    "retries": 0
+  },
+  "schedule": [
+    {
+      "slot": 0,
+      "mode": "off",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 0
+    },
+    {
+      "slot": 1,
+      "mode": "off",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 1080
+    },
+    {
+      "slot": 2,
+      "mode": "off",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 2160
+    },
+    {
+      "slot": 3,
+      "mode": "off",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 3240
+    },
+    {
+      "slot": 4,
+      "mode": "off",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 4320
+    },
+    {
+      "slot": 5,
+      "mode": "off",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 5400
+    },
+    {
+      "slot": 6,
+      "mode": "off",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 6480
+    },
+    {
+      "slot": 7,
+      "mode": "off",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 7560
+    },
+    {
+      "slot": 8,
+      "mode": "off",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 8640
+    },
+    {
+      "slot": 9,
+      "mode": "off",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 9720
+    },
+    {
+      "slot": 10,
+      "mode": "on",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 10800
+    },
+    {
+      "slot": 11,
+      "mode": "on",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 11880
+    },
+    {
+      "slot": 12,
+      "mode": "on",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 12960
+    },
+    {
+      "slot": 13,
+      "mode": "on",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 14040
+    },
+    {
+      "slot": 14,
+      "mode": "on",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 15120
+    },
+    {
+      "slot": 15,
+      "mode": "on",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 16200
+    },
+    {
+      "slot": 16,
+      "mode": "on",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 17280
+    },
+    {
+      "slot": 17,
+      "mode": "on",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 18360
+    },
+    {
+      "slot": 18,
+      "mode": "on",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 19440
+    },
+    {
+      "slot": 19,
+      "mode": "on",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 20520
+    }
+  ],
+  "slot_seconds": 1080,
+  "service_deadline_seconds": 1020,
+  "maximum_start_skew_seconds": 5,
+  "minimum_gap_seconds": 60,
+  "alpha_go_item": 0.05,
+  "alpha_regression_item": 0.0025,
+  "alpha_model_check": 0.0005,
+  "precision_cap_log": 0.001998002662673056,
+  "resolution_multiplier": 2.771807648699356,
+  "historical_timing_used_in_inference": false,
+  "statistical_guarantee": "conditional on normal independent equal-variance errors and common linear drift, no carryover",
+  "stage_gate": {
+    "first_requests": 150,
+    "first_mode": "off",
+    "continue_only_if": "all ten off metrics satisfy GO_ITEM including precision and all validity gates",
+    "on_requests_if_pass": 150,
+    "on_requests_otherwise": 0,
+    "no_retest_of_off": true
+  }
+}
