@@ -1,0 +1,205 @@
+{
+  "head_reviewed": "1ca45a28b9bc4fc73ab8c781e4d51d5969afa0b1",
+  "branch": "codex/mtp-position-b1a",
+  "new_gpu_http_requests": 0,
+  "manifests": {
+    "mtp-position-b1a-20261017": {
+      "files": 355,
+      "manifest_sha256": "d6319de1b1135d23cc419ca30e67ad03997b3daa8ab87bb4184cec834439297b",
+      "status": "PASS"
+    },
+    "b1a-ab60-20261018": {
+      "files": 482,
+      "manifest_sha256": "5c086c30d7fb4de769e478a224e7156c5934dcb626219ac9c66cfbc8d7d4355c",
+      "status": "PASS"
+    },
+    "no-mtp-baseline-20261018": {
+      "files": 299,
+      "manifest_sha256": "135dbae92aa5c91a291f4935bb0039be0124aefe7757290b5372d050729bf136",
+      "status": "PASS"
+    }
+  },
+  "identities": {
+    "src/mtp/mtp.cu": "52ba3cf563bb008cdc91f5f89f371975d9ce55312bc5b0c9c6794aef2a5aa90e",
+    "include/q4t/mtp/mtp.h": "9992d12ec0dcf75ffd507d20a62e638007717311f40356d3fa9c2295baef892c",
+    "tests/mtp_spec_multi_test.cpp": "85316e04a0c1d49021e6e048b9b90606ee055370bb3d12127aacd122f16dd3ef",
+    "tests/mtp_position_metadata_test.cpp": "5fb69ad7b4043d44fd5a9e04fc3975e1e5f17b87ac3f3ba69f33cb6b8c8fe334",
+    "build/q4t_tests": "85ab546b81e56c1715c9c63e6a9cbf95f714d8fa658cf9687d578844c812052c",
+    "build/q4t": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+    ".q4t-work/b1a-20261017/q4t-baseline": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+    ".q4t-work/b1a-20261017/q4t-candidate": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03"
+  },
+  "contracts": {
+    "same_shape_cases": 56,
+    "direct_tests_passed": 9,
+    "tested_accept_counts_including_correction": [
+      1,
+      2,
+      4
+    ],
+    "accepted_draft_counts": [
+      0,
+      1,
+      3
+    ],
+    "a2_not_forced": true
+  },
+  "metrics": [
+    {
+      "mode": "off",
+      "tier": 1024,
+      "A_T": 0.7883053939828338,
+      "B_T": 0.7897321276832372,
+      "A_D": 18.594672680419766,
+      "B_D": 18.64352948225615,
+      "ttft_increase_pct": 0.18098743346088852,
+      "decode_decrease_pct": -0.2627462320852203,
+      "ttft_delta_ms": 1.4267337004033598
+    },
+    {
+      "mode": "off",
+      "tier": 4096,
+      "A_T": 2.614177666643324,
+      "B_T": 2.61234148935182,
+      "A_D": 17.85714920176074,
+      "B_D": 17.877626890553266,
+      "ttft_increase_pct": -0.07023919280365609,
+      "decode_decrease_pct": -0.11467501649427003,
+      "ttft_delta_ms": -1.836177291503649
+    },
+    {
+      "mode": "off",
+      "tier": 8192,
+      "A_T": 5.07665032701334,
+      "B_T": 5.081649585995668,
+      "A_D": 18.070153471949983,
+      "B_D": 18.10347313112029,
+      "ttft_increase_pct": 0.09847554312980566,
+      "decode_decrease_pct": -0.1843905710155136,
+      "ttft_delta_ms": 4.999258982327781
+    },
+    {
+      "mode": "off",
+      "tier": 45056,
+      "A_T": 30.353059594655253,
+      "B_T": 30.382286215996526,
+      "A_D": 17.85159320642265,
+      "B_D": 17.838554429264015,
+      "ttft_increase_pct": 0.09628888069794783,
+      "decode_decrease_pct": 0.07303985144554437,
+      "ttft_delta_ms": 29.226621341273074
+    },
+    {
+      "mode": "off",
+      "tier": 204800,
+      "A_T": 159.1374263790009,
+      "B_T": 159.21254892802486,
+      "A_D": 17.131997602043953,
+      "B_D": 17.088722913177765,
+      "ttft_increase_pct": 0.04720608516379787,
+      "decode_decrease_pct": 0.2525956976612287,
+      "ttft_delta_ms": 75.12254902394488
+    },
+    {
+      "mode": "on",
+      "tier": 1024,
+      "A_T": 0.9626011946626628,
+      "B_T": 0.9619572926506711,
+      "A_D": 34.37503159308497,
+      "B_D": 34.75405075227401,
+      "ttft_increase_pct": -0.06689187750461567,
+      "decode_decrease_pct": -1.1026001769996574,
+      "ttft_delta_ms": -0.6439020119917149
+    },
+    {
+      "mode": "on",
+      "tier": 4096,
+      "A_T": 2.9358602303351895,
+      "B_T": 2.942619609336058,
+      "A_D": 35.412944117046074,
+      "B_D": 35.71258196226827,
+      "ttft_increase_pct": 0.23023504085877278,
+      "decode_decrease_pct": -0.8461252027841537,
+      "ttft_delta_ms": 6.759379000868648
+    },
+    {
+      "mode": "on",
+      "tier": 8192,
+      "A_T": 5.632697903318331,
+      "B_T": 5.635302058653906,
+      "A_D": 37.34315649472157,
+      "B_D": 37.642198579095925,
+      "ttft_increase_pct": 0.04623282448790178,
+      "decode_decrease_pct": -0.8007948776816098,
+      "ttft_delta_ms": 2.604155335575342
+    },
+    {
+      "mode": "on",
+      "tier": 45056,
+      "A_T": 31.953472096996848,
+      "B_T": 31.95470416964963,
+      "A_D": 35.901632320257065,
+      "B_D": 36.036318410661885,
+      "ttft_increase_pct": 0.0038558334100491365,
+      "decode_decrease_pct": -0.3751531105977701,
+      "ttft_delta_ms": 1.2320726527832448
+    },
+    {
+      "mode": "on",
+      "tier": 204800,
+      "A_T": 167.12689982399266,
+      "B_T": 167.1310221266467,
+      "A_D": 33.23431578174741,
+      "B_D": 33.32243589496,
+      "ttft_increase_pct": 0.002466570407522184,
+      "decode_decrease_pct": -0.2651479687178826,
+      "ttft_delta_ms": 4.122302654053556
+    }
+  ],
+  "build_logs": {
+    "build-contracts-final.log": "ef2e360e68002d5384e473de40675e79deca6b0a589878ff71acc62bb117f729",
+    "build-delivery.log": "782b756f4c8f51577c34c59a1d554872ee3816bccfb176029ce095112a793b2b",
+    "build-contracts-post-http.log": "913cb5876e45bedb9219e4c85c1f49c78f3543e7812a3522735a538de77b6ae0",
+    "build.log": "a0cd6756ad151c113352fbce3a9e08a2733285d9667900e6ab26755475bb2cbe",
+    "build-contracts.log": "a86104d74ac7a84ef843da1a5680ea805a801ffe9715f22438c2738a9bbf8e18"
+  },
+  "actual_ab_requests": 60,
+  "quality-on": {
+    "server": 0,
+    "completed": 11,
+    "http_output_checks_passed": true,
+    "performance_scope": null,
+    "partial_performance_matrix": null,
+    "full_five_tier_completed": false,
+    "full_offload_matrix_completed": false,
+    "performance_acceptance": false,
+    "failure": null,
+    "cleanup_failure": null
+  },
+  "quality-off": {
+    "server": 0,
+    "completed": 11,
+    "http_output_checks_passed": true,
+    "performance_scope": null,
+    "partial_performance_matrix": null,
+    "full_five_tier_completed": false,
+    "full_offload_matrix_completed": false,
+    "performance_acceptance": false,
+    "failure": null,
+    "cleanup_failure": null
+  },
+  "rollback": {
+    "isolated_index_tree": "b2c6fc2462e8a1ef83c3c25e8bb99d88048626b5",
+    "implementation_paths": [
+      "CMakeLists.txt",
+      "include/q4t/mtp/mtp.h",
+      "src/mtp/mtp.cu",
+      "tests/mtp_position_metadata_test.cpp",
+      "tests/mtp_spec_multi_test.cpp"
+    ],
+    "remaining_differences_from_parent": "docs only",
+    "patch_sha256": "f5c4aaed14186be70a9aeb082ee06e7ed66c6246d7a346637e6185febb709529",
+    "working_tree_code_modified": false
+  },
+  "evaluation_sha256": "62115025c79b17f519153f5aefd1835839a8e13ffd57d74904a3498c402f5c32"
+}
