@@ -1,5 +1,9 @@
 # 简化改动工程接受：规则修订草案
 
+> 2026-10-18后续决定：用户在审查后要求并入主线，B1a已按有限工程
+> 接受路线接受；规则已纳入[EVALUATION](EVALUATION.md)。下文保留原提案
+> 或审查时状态，当前交付见[主线交付记录](MTP_POSITION_B1A_MERGE_2026-10-18.md)。
+
 2026-10-18。DRAFT_NOT_IN_FORCE。需要用户明确认可；本文件不改变
 [EVALUATION.md](EVALUATION.md)的现行效力，不授权合入、部署或新增采样。
 

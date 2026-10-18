@@ -1,5 +1,9 @@
 # B1a最终交付审查：建议有限工程接受
 
+> 2026-10-18后续决定：用户在审查后要求并入主线，B1a已按有限工程
+> 接受路线接受；规则已纳入[EVALUATION](EVALUATION.md)。下文保留原提案
+> 或审查时状态，当前交付见[主线交付记录](MTP_POSITION_B1A_MERGE_2026-10-18.md)。
+
 2026-10-18。RECOMMEND_ACCEPT_PENDING_APPROVAL。新增模型/HTTP/GPU请求 **0**。
 建议接受该局部简化，但需用户认可[具体规则修订](EVALUATION_SIMPLIFICATION_DRAFT_2026-10-18.md)
 及披露的计时风险。现行规则未改，原性能验收仍未通过；未合入main、未部署。
