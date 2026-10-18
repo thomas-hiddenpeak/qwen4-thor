@@ -1,0 +1,39 @@
+{
+  "status": "DEPLOYED_DEFAULT_EXECUTABLE",
+  "utc": "2026-10-18T06:47:39.220638+00:00",
+  "source_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+  "installed_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+  "previous_sha256": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+  "release_metadata": {
+    "version": "mtp-position-b1a-20261018",
+    "binary_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/b1a-20261018",
+    "package_manifest_sha256": "b7288e5d0596bcb903969704f329cf56b42df40498d91085ba206e8e59300ef2",
+    "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/b1a-20261018/CMakeCache.txt",
+    "build_cache_sha256": "ca2e60a10bb4c6c3d653a73437283e543797d119b5fbd7e9cdc82835af549e06",
+    "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/docs/MTP_POSITION_B1A_MERGE_2026-10-18.md",
+    "acceptance": "ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY",
+    "scope": "default executable; validated single-stream MTP on/off; no new service lifecycle qualification",
+    "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t",
+    "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t.release.json",
+    "previous_release_was_stale": true
+  },
+  "package_manifest": {
+    "kind": "default executable deployment; not supervised text-v1 service qualification",
+    "binary_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+    "build_cache_sha256": "ca2e60a10bb4c6c3d653a73437283e543797d119b5fbd7e9cdc82835af549e06",
+    "source_commit": "1c6e7927d393cbed1a490c23344d2995c941335a",
+    "accepted_main": "33d8a8a7a5207fe7c708112529d01069e6a018d7",
+    "acceptance": "ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY",
+    "new_requests": 0,
+    "files": {
+      "q4t": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+      "CMakeCache.txt": "ca2e60a10bb4c6c3d653a73437283e543797d119b5fbd7e9cdc82835af549e06",
+      "validated-server-command.json": "09292bee95539189dbbe7bc240d6d365cdb541b61e312b9c9dc696740e08ff56"
+    },
+    "evidence": "docs/MTP_POSITION_B1A_FINAL_REVIEW_2026-10-18.md"
+  },
+  "service_started": false,
+  "reason": "No q4t service was running; preserve stopped state",
+  "new_http_gpu_requests": 0
+}

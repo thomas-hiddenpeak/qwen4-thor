@@ -9,7 +9,9 @@
 有限工程接受规则纳入EVALUATION。复用原零警告构建、计算/状态合同、
 HTTP质量及两模式五档证据；不追认统计持平。no-MTP 200K decode观察
 下降0.2526%及未约束的真实退化风险保持披露。新增采样0，B1b不扩展，
-build/q4t仍为旧A（8685d8bf），源码合入与部署分开。
+build/q4t已部署已验证B（44abd8b1），A保留可回退。当前无运行服务，
+只更新默认启动入口与身份元数据；没有新增上线健康证明。
+见[部署记录](MTP_POSITION_B1A_DEPLOY_2026-10-18.md)。
 [PR #6](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/6)合并提交c3f3c45，
 工作分支已核对包含后清理，原证据路径保留。
 见[主线交付记录](MTP_POSITION_B1A_MERGE_2026-10-18.md)。

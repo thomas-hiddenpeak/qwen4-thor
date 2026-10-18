@@ -6,6 +6,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [B1a默认入口部署](MTP_POSITION_B1A_DEPLOY_2026-10-18.md) | 已验证B部署、身份修正、A回退；服务保持停止 | 当前部署 |
 | [B1a主线交付](MTP_POSITION_B1A_MERGE_2026-10-18.md) | 有限工程接受、主线合入、回退与部署边界 | 当前交付 |
 | [B1a最终交付审查](MTP_POSITION_B1A_FINAL_REVIEW_2026-10-18.md) | 零采样最终审查、风险与有限工程接受依据 | 已采纳 |
 | [简化改动规则草案](EVALUATION_SIMPLIFICATION_DRAFT_2026-10-18.md) | 原提案保留；已纳入EVALUATION | 已采纳 |

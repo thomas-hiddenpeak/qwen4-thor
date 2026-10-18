@@ -1,0 +1,18 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "python",
+    ".q4t-work/b1a-deploy-20261018/deploy.py"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-18T06:47:40.232503+00:00",
+    "monotonic": 496142.749391349,
+    "pid": 1579265
+  }
+}

@@ -1,5 +1,9 @@
 # B1a主线交付
 
+> 后续部署更新：用户要求继续后，默认build/q4t已切换B，A留作回退。
+> 未启动服务，详见[部署记录](MTP_POSITION_B1A_DEPLOY_2026-10-18.md)。
+> 下文保留合入当时的部署边界。
+
 2026-10-18。ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY。
 [PR #6](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/6)已于
 2026-10-18 06:41:26 UTC合入main，合并提交
