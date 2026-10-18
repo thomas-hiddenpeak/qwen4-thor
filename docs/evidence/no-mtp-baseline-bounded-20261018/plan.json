@@ -1,0 +1,52 @@
+{
+  "status": "DESIGN_ONLY_NOT_RUN",
+  "execution_authorized": false,
+  "current_execution_request_budget": 0,
+  "supersedes": "afb49a5:docs/evidence/no-mtp-calibration-design-20261018/plan.json",
+  "identity_reference": "../no-mtp-calibration-design-20261018/identity.json",
+  "stage_1_caps": {
+    "http_generation_requests": 41,
+    "server_starts": 3,
+    "wall_seconds": 14400,
+    "retries": 0
+  },
+  "schedule": [
+    {
+      "id": "Q",
+      "mode": "no-mtp-quality",
+      "requests": 11
+    },
+    {
+      "id": "A0",
+      "mode": "no-mtp-performance",
+      "requests": 15
+    },
+    {
+      "id": "A1",
+      "mode": "no-mtp-performance",
+      "requests": 15
+    }
+  ],
+  "performance": {
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "repeats_per_tier": 3,
+    "output_tokens": 256,
+    "client_protocol": "one_evalscope_process_per_tier",
+    "restart_gap_seconds": 60
+  },
+  "permitted_conclusion": "BASELINE_RECORDED_DESCRIPTIVE",
+  "resolution_band": "NOT_ESTABLISHED",
+  "stage_2": {
+    "request_budget": 0,
+    "automatic_continuation": false,
+    "requires": "concrete_decision_and_new_frozen_method_budget_and_execution_authorization"
+  },
+  "b1a": "PAUSED",
+  "b1b": "OUT_OF_SCOPE"
+}

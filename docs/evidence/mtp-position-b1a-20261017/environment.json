@@ -1,0 +1,8 @@
+{
+  "parent_relevant_environment": {
+    "LD_LIBRARY_PATH": "/usr/local/cuda-13.3/lib64",
+    "CUDA_HOME": "/usr/local/cuda-13.3",
+    "PATH": "/home/rm01/.nvm/versions/node/v24.18.0/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/codex-path:/home/rm01/.local/bin:/home/rm01/.codex/tmp/arg0/codex-arg0uPiPe5:/home/rm01/.nvm/versions/node/v24.18.0/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/codex-path:/home/rm01/.local/bin:/home/rm01/.local/bin:/home/rm01/.nvm/versions/node/v24.18.0/bin:/home/rm01/.local/bin:/home/rm01/.bun/bin:/home/rm01/.opencode/bin:/usr/local/cuda-13.3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+  },
+  "child_policy": "remove every Q4T_* variable and LD_PRELOAD; see run_phase.py"
+}

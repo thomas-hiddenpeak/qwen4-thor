@@ -1,0 +1,12 @@
+{
+  "status": "RUNNING",
+  "reserved_requests": 60,
+  "server_starts": 4,
+  "completed": [
+    "A-off",
+    "B-off",
+    "B-on",
+    "A-on"
+  ],
+  "start_monotonic": 456621.450227377
+}

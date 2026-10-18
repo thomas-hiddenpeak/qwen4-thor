@@ -27,6 +27,7 @@
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
 
+#include <algorithm>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -130,7 +131,8 @@ std::vector<int32_t> GreedyPrefill(const Model& m,
 
 }  // namespace
 
-Q4T_TEST(mtp_spec_multi_step) {
+bool RunMultiStep(int k, int terminal_sequences, bool zero_head = false,
+                  bool accept_first = false) {
   // Force the shared-state GDN kernel: the single-seq ModelPrefill ground truth
   // must use the same kernel as the (shared-state) MTP verify path (the
   // register-state kernel is ON by default). See q4t::test::GdnRegOff.
@@ -143,7 +145,6 @@ Q4T_TEST(mtp_spec_multi_step) {
   }
 
   const int B = 2;
-  const int k = 3;
   const int T0 = 4, T1 = 5;  // two different prompt lengths.
 
   // 1. Load a small main model (2 layers) pooled for B sequences.
@@ -178,13 +179,20 @@ Q4T_TEST(mtp_spec_multi_step) {
   std::printf("  MTP loaded (hs=%d hc_dim=%d max_seq=%d)\n", hs, hc_dim,
               mtp.max_seq);
 
+  // Test-only deterministic full acceptance: the borrowed main/draft head
+  // emits tied zero logits, whose independent greedy reference selects 0.
+  if (zero_head) {
+    Q4T_CHECK(cudaMemset(const_cast<uint16_t*>(m.head.lm_head), 0,
+                        static_cast<size_t>(vocab) * hs * 2) == cudaSuccess);
+  }
+
   // Two distinct prompts (small ids to keep the 2-layer model stable).
   std::vector<int32_t> p0 = {846, 25, 1203, 321};
   std::vector<int32_t> p1 = {101, 202, 303, 404, 505};
 
   // 3. Ground truth (prefill-semantics greedy) for each sequence.
-  std::vector<int32_t> gt0 = GreedyPrefill(m, p0, k + 2);
-  std::vector<int32_t> gt1 = GreedyPrefill(m, p1, k + 2);
+  std::vector<int32_t> gt0 = GreedyPrefill(m, p0, k + 3);
+  std::vector<int32_t> gt1 = GreedyPrefill(m, p1, k + 3);
   std::printf("  gt0=%d %d %d %d  gt1=%d %d %d %d\n", gt0[0], gt0[1], gt0[2],
               gt0[3], gt1[0], gt1[1], gt1[2], gt1[3]);
 
@@ -317,9 +325,18 @@ Q4T_TEST(mtp_spec_multi_step) {
   std::vector<int32_t> next_b(B, -1), next_d0(B, -1);
   const ModelSequence* seq_ptrs[B];
   for (int b = 0; b < B; ++b) seq_ptrs[b] = &seqs[b];
+  if (accept_first) {
+    d0[0] = gt0[1];
+    d0[1] = gt1[1];
+  }
+  std::vector<int32_t> stop_tokens;
+  // Mixed termination removes the sequence with the largest position.
+  if (terminal_sequences >= 1) stop_tokens.push_back(gt1[1]);
+  if (terminal_sequences >= 2) stop_tokens.push_back(gt0[1]);
   s = MtpSpeculativeStepMulti(m, mtp, seq_ptrs, b_tok.data(), d0.data(), g_in,
                               B, k, accepted.data(), accepted_count.data(),
-                              next_b.data(), next_d0.data(), next_g, nullptr);
+                              next_b.data(), next_d0.data(), next_g, nullptr,
+                              stop_tokens);
   if (!s.ok()) {
     std::printf("  MtpSpeculativeStepMulti failed: %s\n", s.message().c_str());
     mtp.Free();
@@ -343,6 +360,8 @@ Q4T_TEST(mtp_spec_multi_step) {
   for (int b = 0; b < B; ++b) {
     const std::vector<int32_t>& gt = (b == 0) ? gt0 : gt1;
     const int a = accepted_count[b];
+    if (zero_head) Q4T_CHECK(a == k + 1);
+    if (accept_first) Q4T_CHECK(a >= 2);
     std::printf("  seq %d: accepted_count=%d next_b=%d next_d0=%d\n", b, a,
                 next_b[b], next_d0[b]);
     if (a < 1 || a > k + 1) {
@@ -365,7 +384,16 @@ Q4T_TEST(mtp_spec_multi_step) {
       ok = false;
     }
     // next_d0 is a valid vocab token (draft model prediction).
-    if (next_d0[b] < 0 || next_d0[b] >= vocab) {
+    const bool terminal = std::find(stop_tokens.begin(), stop_tokens.end(),
+                                    next_b[b]) != stop_tokens.end();
+    if (terminal_sequences == 2 || (terminal_sequences == 1 && b == 1)) {
+      Q4T_CHECK(terminal);
+    } else {
+      Q4T_CHECK(!terminal);
+    }
+    if (terminal) {
+      Q4T_CHECK(a == 1 && next_d0[b] == -1);
+    } else if (next_d0[b] < 0 || next_d0[b] >= vocab) {
       std::printf("  FAIL: seq %d next_d0=%d out of vocab\n", b, next_d0[b]);
       ok = false;
     }
@@ -380,6 +408,16 @@ Q4T_TEST(mtp_spec_multi_step) {
   m.Free();
   return ok;
 }
+
+Q4T_TEST(mtp_spec_multi_step) { return RunMultiStep(3, 0); }
+Q4T_TEST(mtp_spec_multi_full_k3) { return RunMultiStep(3, 0, true); }
+Q4T_TEST(mtp_spec_multi_accept_first_k3) {
+  return RunMultiStep(3, 0, false, true);
+}
+Q4T_TEST(mtp_spec_multi_step_k1) { return RunMultiStep(1, 0); }
+Q4T_TEST(mtp_spec_multi_terminal_k1) { return RunMultiStep(1, 2); }
+Q4T_TEST(mtp_spec_multi_terminal_k3) { return RunMultiStep(3, 2); }
+Q4T_TEST(mtp_spec_multi_mixed_terminal) { return RunMultiStep(3, 1); }
 
 // Pre-submission failures must never expose stale consumable results. These
 // checks use no model allocation or GPU submission.

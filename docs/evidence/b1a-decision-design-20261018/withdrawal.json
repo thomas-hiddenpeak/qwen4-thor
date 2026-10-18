@@ -1,0 +1,12 @@
+{
+  "status": "WITHDRAWN",
+  "date": "2026-10-18",
+  "supersedes_plan_sha256": "df9d2e218a3e941232cf591a358c2810c6cbb299a63c3f8692fca47c8167f1f9",
+  "new_request_budget": 0,
+  "withdrawn": [
+    "300-request conditional design",
+    "unvalidated 0.2% measurement capability gate"
+  ],
+  "original_plan_preserved": true,
+  "review": "../../MTP_POSITION_B1A_FINAL_REVIEW_2026-10-18.md"
+}

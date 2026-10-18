@@ -1,0 +1,14 @@
+[
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-20261017/q4t-candidate",
+  "serve",
+  "--model-dir",
+  "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "--port",
+  "8734",
+  "--max-seq",
+  "1",
+  "--max-prefill",
+  "8192",
+  "--max-len",
+  "1040"
+]

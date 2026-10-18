@@ -1,0 +1,21 @@
+{
+  "document": "docs/MTP_POSITION_B1A_2026-10-17.md",
+  "baseline_commit": "867b8a6",
+  "performance_type": "execution simplification",
+  "http_generation_budget": 59,
+  "http_control_budget": 1,
+  "http_order": [
+    "quality-on:11",
+    "on:5x3",
+    "quality-off:11",
+    "off:5x3",
+    "boundaries:7 generation + 1 cancel"
+  ],
+  "diagnostic_extra_http_budget": 0,
+  "performance_resolution_bands": null,
+  "performance_difference_uncertainty_intervals": null,
+  "performance_missing_resolution_exit": "INSUFFICIENT_EVIDENCE",
+  "gpu_lease": "lease",
+  "direct_required_list": "contracts.required",
+  "note": "Machine-readable transcription of pre-HTTP document freeze; direct fixtures finalized before their execution."
+}

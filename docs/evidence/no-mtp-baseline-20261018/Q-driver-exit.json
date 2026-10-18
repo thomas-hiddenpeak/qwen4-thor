@@ -1,0 +1,27 @@
+{
+  "returncode": 0,
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+    "--binary",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-20261017/q4t-baseline",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--startup-timeout",
+    "300",
+    "--max-len",
+    "208896",
+    "--allow-unqualified-binary",
+    "--mode",
+    "quality",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/no-mtp-baseline-20261018/Q",
+    "--reference",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/quality-off/results.json",
+    "--fixtures",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-numerical-closure-20261016/http/quality-off/inputs",
+    "--port",
+    "8740"
+  ],
+  "pid": 1461334
+}

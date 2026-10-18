@@ -1,0 +1,364 @@
+{
+  "scope": "synthetic model mathematics only, zero HTTP/GPU requests",
+  "band_standardized": 2.771807648699356,
+  "precision_cap_log": 0.001998002662673056,
+  "precision_scenarios": [
+    {
+      "true_log_sigma": [
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001
+      ],
+      "model_gates_not_included": true,
+      "flat_global_go_mc": 0.33413
+    },
+    {
+      "true_log_sigma": [
+        0.001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001,
+        0.0001
+      ],
+      "model_gates_not_included": true,
+      "flat_global_go_mc": 0.00486
+    }
+  ],
+  "candidate_sizes": [
+    {
+      "starts_each_identity_per_mode": 3,
+      "requests": 180,
+      "df": 1,
+      "q": 0.6730769230769229,
+      "flat_item_pass_before_other_gates": 0.8030573802119547,
+      "independent_20_items": 0.012443184872293636,
+      "five_sigma_regression_detection": 0.03817660646020313
+    },
+    {
+      "starts_each_identity_per_mode": 4,
+      "requests": 240,
+      "df": 2,
+      "q": 0.5000000000000006,
+      "flat_item_pass_before_other_gates": 0.8997502848708475,
+      "independent_20_items": 0.12090377372542621,
+      "five_sigma_regression_detection": 0.22460875272645867
+    },
+    {
+      "starts_each_identity_per_mode": 5,
+      "requests": 300,
+      "df": 3,
+      "q": 0.40048543689320365,
+      "flat_item_pass_before_other_gates": 0.9474514595218145,
+      "independent_20_items": 0.3397342896678766,
+      "five_sigma_regression_detection": 0.6527375203217662
+    },
+    {
+      "starts_each_identity_per_mode": 6,
+      "requests": 360,
+      "df": 4,
+      "q": 0.33333333333333354,
+      "flat_item_pass_before_other_gates": 0.9724739626246088,
+      "independent_20_items": 0.572215534520338,
+      "five_sigma_regression_detection": 0.934935188357436
+    },
+    {
+      "starts_each_identity_per_mode": 8,
+      "requests": 480,
+      "df": 6,
+      "q": 0.2499999999999999,
+      "flat_item_pass_before_other_gates": 0.992476466818545,
+      "independent_20_items": 0.8598136886414505,
+      "five_sigma_regression_detection": 0.9997488180629568
+    }
+  ],
+  "schedule": [
+    {
+      "slot": 0,
+      "mode": "off",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 0
+    },
+    {
+      "slot": 1,
+      "mode": "off",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 1080
+    },
+    {
+      "slot": 2,
+      "mode": "off",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 2160
+    },
+    {
+      "slot": 3,
+      "mode": "off",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 3240
+    },
+    {
+      "slot": 4,
+      "mode": "off",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 4320
+    },
+    {
+      "slot": 5,
+      "mode": "off",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 5400
+    },
+    {
+      "slot": 6,
+      "mode": "off",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 6480
+    },
+    {
+      "slot": 7,
+      "mode": "off",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 7560
+    },
+    {
+      "slot": 8,
+      "mode": "off",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 8640
+    },
+    {
+      "slot": 9,
+      "mode": "off",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 9720
+    },
+    {
+      "slot": 10,
+      "mode": "on",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 10800
+    },
+    {
+      "slot": 11,
+      "mode": "on",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 11880
+    },
+    {
+      "slot": 12,
+      "mode": "on",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 12960
+    },
+    {
+      "slot": 13,
+      "mode": "on",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 14040
+    },
+    {
+      "slot": 14,
+      "mode": "on",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 15120
+    },
+    {
+      "slot": 15,
+      "mode": "on",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 16200
+    },
+    {
+      "slot": 16,
+      "mode": "on",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 17280
+    },
+    {
+      "slot": 17,
+      "mode": "on",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 18360
+    },
+    {
+      "slot": 18,
+      "mode": "on",
+      "binary": "A",
+      "requests": 15,
+      "start_offset_seconds": 19440
+    },
+    {
+      "slot": 19,
+      "mode": "on",
+      "binary": "B",
+      "requests": 15,
+      "start_offset_seconds": 20520
+    }
+  ],
+  "checks": {
+    "off": {
+      "sequence": [
+        "A",
+        "B",
+        "A",
+        "B",
+        "A",
+        "B",
+        "B",
+        "A",
+        "B",
+        "A"
+      ],
+      "q": 0.40048543689320365,
+      "df": 3,
+      "synthetic_flat": {
+        "theta": -1.3552527156068805e-20,
+        "baseline_sigma": 0.00011965577975152179,
+        "q": 0.40048543689320365,
+        "df": 3,
+        "eta_interval": {
+          "upper_95": 1.0409278323913531,
+          "lower_99_75": -1.776400968484256
+        },
+        "band_log_estimate": 0.0003316628055263536,
+        "band_upper_95": 0.0009684582259051683,
+        "precision_cap_log": 0.001998002662673056,
+        "band_log_pointwise_95": [
+          0.00018788351232745302,
+          0.0012366204500386725
+        ],
+        "decision": "GO_ITEM"
+      },
+      "synthetic_regression": {
+        "theta": 0.009999999999999998,
+        "baseline_sigma": 0.00011965577975152179,
+        "q": 0.40048543689320365,
+        "df": 3,
+        "eta_interval": {
+          "upper_95": 134.8933105028358,
+          "lower_99_75": 10.190621970096702
+        },
+        "band_log_estimate": 0.0003316628055263536,
+        "band_upper_95": 0.0009684582259051683,
+        "precision_cap_log": 0.001998002662673056,
+        "band_log_pointwise_95": [
+          0.00018788351232745302,
+          0.0012366204500386725
+        ],
+        "decision": "NO_GO"
+      },
+      "boundary_false_go_mc": 0.050475
+    },
+    "on": {
+      "sequence": [
+        "B",
+        "A",
+        "A",
+        "B",
+        "A",
+        "B",
+        "B",
+        "A",
+        "A",
+        "B"
+      ],
+      "q": 0.4004854368932038,
+      "df": 3,
+      "synthetic_flat": {
+        "theta": 1.1858461261560205e-20,
+        "baseline_sigma": 0.00014434711798054067,
+        "q": 0.4004854368932038,
+        "df": 3,
+        "eta_interval": {
+          "upper_95": 1.0409278323913538,
+          "lower_99_75": -1.7764009684842568
+        },
+        "band_log_estimate": 0.00040010244568617096,
+        "band_upper_95": 0.0011683025599286234,
+        "precision_cap_log": 0.001998002662673056,
+        "band_log_pointwise_95": [
+          0.00022665385305120885,
+          0.0014918008839151905
+        ],
+        "decision": "GO_ITEM"
+      },
+      "synthetic_regression": {
+        "theta": 0.009999999999999998,
+        "baseline_sigma": 0.00014434711798054067,
+        "q": 0.4004854368932038,
+        "df": 3,
+        "eta_interval": {
+          "upper_95": 111.82235347759202,
+          "lower_99_75": 8.433018076092212
+        },
+        "band_log_estimate": 0.00040010244568617096,
+        "band_upper_95": 0.0011683025599286234,
+        "precision_cap_log": 0.001998002662673056,
+        "band_log_pointwise_95": [
+          0.00022665385305120885,
+          0.0014918008839151905
+        ],
+        "decision": "NO_GO"
+      },
+      "boundary_false_go_mc": 0.04983
+    }
+  },
+  "caps": {
+    "requests": 300,
+    "starts": 20,
+    "wall_seconds": 25200,
+    "retries": 0
+  },
+  "assumptions": "normal independent equal-variance service errors; common linear trend per mode; no carryover",
+  "source_sha256": "371d761f295f9e4afabbfa5028d983a9f7cdc6d38b2410a84ae5910d7ff740da"
+}

@@ -1,0 +1,189 @@
+{
+  "status": "DESIGN_FROZEN_NOT_RUN",
+  "execution_authorized": false,
+  "current_execution_request_budget": 0,
+  "future_stage_caps": {
+    "http_generation_requests": 851,
+    "server_starts": 57,
+    "wall_seconds": 172800
+  },
+  "quality": {
+    "mode": "no-mtp",
+    "requests": 11,
+    "must_pass_before_performance": true
+  },
+  "performance": {
+    "mode": "no-mtp",
+    "lengths": [
+      1024,
+      4096,
+      8192,
+      45056,
+      204800
+    ],
+    "repeats_per_tier": 3,
+    "output_tokens": 256,
+    "requests_per_service": 15,
+    "services_per_pair": 2,
+    "restart_gap_seconds": 60,
+    "explicit_perf_lengths": false,
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "max_len": 208896,
+    "client_protocol": "one_evalscope_process_per_tier"
+  },
+  "pairs": [
+    {
+      "id": "P01",
+      "role": "scale",
+      "requests": 30
+    },
+    {
+      "id": "P02",
+      "role": "scale",
+      "requests": 30
+    },
+    {
+      "id": "P03",
+      "role": "scale",
+      "requests": 30
+    },
+    {
+      "id": "P04",
+      "role": "scale",
+      "requests": 30
+    },
+    {
+      "id": "P05",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P06",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P07",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P08",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P09",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P10",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P11",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P12",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P13",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P14",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P15",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P16",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P17",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P18",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P19",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P20",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P21",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P22",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P23",
+      "role": "calibration",
+      "requests": 30
+    },
+    {
+      "id": "P24",
+      "role": "holdout",
+      "requests": 30
+    },
+    {
+      "id": "P25",
+      "role": "holdout",
+      "requests": 30
+    },
+    {
+      "id": "P26",
+      "role": "holdout",
+      "requests": 30
+    },
+    {
+      "id": "P27",
+      "role": "holdout",
+      "requests": 30
+    },
+    {
+      "id": "P28",
+      "role": "holdout",
+      "requests": 30
+    }
+  ],
+  "method": {
+    "alpha": 0.05,
+    "scale": "per_metric_median_absolute_pair_log_difference_on_P01_P04",
+    "score": "maximum_across_10_metrics_of_absolute_log_difference_divided_by_own_scale",
+    "calibration_n": 19,
+    "order_statistic": 19,
+    "zero_scale": "METHOD_INSUFFICIENT",
+    "holdout_any_exceedance": "CALIBRATION_NOT_TRANSFERABLE",
+    "coverage": "conditional_on_exchangeability_assumption; marginal_joint_prediction_for_one_new_AA_pair; not_candidate_effect_CI; not_postselection_guarantee"
+  },
+  "retry_budget": 0,
+  "candidate_testing_authorized": false
+}

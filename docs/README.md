@@ -6,6 +6,15 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [B1a主线交付](MTP_POSITION_B1A_MERGE_2026-10-18.md) | 有限工程接受、主线合入、回退与部署边界 | 当前交付 |
+| [B1a最终交付审查](MTP_POSITION_B1A_FINAL_REVIEW_2026-10-18.md) | 零采样最终审查、风险与有限工程接受依据 | 已采纳 |
+| [简化改动规则草案](EVALUATION_SIMPLIFICATION_DRAFT_2026-10-18.md) | 原提案保留；已纳入EVALUATION | 已采纳 |
+| [B1a条件判定补验卡](MTP_POSITION_B1A_DECISION_PLAN_2026-10-18.md) | 300请求及0.2%门禁已撤回；保留未执行历史 | 已撤回 |
+| [B1a同期补验结果](MTP_POSITION_B1A_AB60_RESULT_2026-10-18.md) | 60请求通过、两模式五档同期实测与剩余判定工作 | 当前交付 |
+| [B1a同期对照冻结卡](MTP_POSITION_B1A_AB60_PLAN_2026-10-18.md) | 60请求描述对照、证据增量、停止与未决归档；已执行 | 冻结依据 |
+| [B1a基线后复审](MTP_POSITION_B1A_AFTER_BASELINE_2026-10-18.md) | 新基线的增量证据、剩余缺口与有界出口 | 当前审查 |
+| [no-MTP基线实测](NO_MTP_BASELINE_RESULT_2026-10-18.md) | 41请求描述基线、两次启动差异与原始证据 | 当前交付 |
+| [no-MTP有界基线设计](NO_MTP_BASELINE_BOUNDED_2026-10-18.md) | 41请求冻结设计；已执行，结果单独归档 | 本阶段 |
 | [描述与代码核对](DESCRIPTION_AUDIT_2026-10-17.md) | README/CLI/架构差异与构建身份 | 描述变化时 |
 | [工具与规则收敛](MAIN_CONVERGENCE_2026-10-17.md) | 主线交付边界、证据复用与阶段 | 当前交付 |
 | [研究归档](ARCHIVED_RESEARCH.md) | 固定历史、失败证据及恢复入口 | 归档变化时 |
