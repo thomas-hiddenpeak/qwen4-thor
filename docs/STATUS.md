@@ -4,11 +4,14 @@
 
 ## 当前交付
 
-**B1b启动（2026-10-19），尚未验收。** 仅持久化extend gather offset，
-基线a893dc8/B1a binary44abd8b1，工作分支codex/mtp-gather-b1b。
-冻结82个HTTP请求、随后直接合同，有限工程接受须单独认可具体风险；
-不追加校准，不启动Megatron。默认二进制保持B1a。
-见[范围与验收卡](MTP_GATHER_B1B_2026-10-19.md)。
+**B1b有界验证完成（2026-10-19），待独立工程认可。** offset持久化实现
+已提交工作分支codex/mtp-gather-b1b；候选两模式HTTP质量各11/11、
+父/候选四组五档60/60通过，总82请求；候选37/37、父8/8、生命周期
+及12步完整有效状态逐位差分通过，构建零警告。统计性能证据不足，
+普通decode最大观察下降0.0789%，未排除真实小幅退化，不声称持平。
+父入口曾缺真实构建缓存，启动前0请求失败；修复后只续跑剩余30请求，
+两段lease间隔86.48秒明确披露。候选尚未接受/合入/部署，默认B1a不变，
+不追加采样，不启动Megatron。见[交付与全部观察](MTP_GATHER_B1B_2026-10-19.md)。
 
 以下历史入口中的旧生产binary与分支描述不覆盖上述及B1a部署记录。
 
@@ -98,17 +101,14 @@ archive/main-convergence-delivery-20261017标签保护并从远端独立取回�
 
 ## 已接受生产基线
 
-main包含f3a975c工具/规则交付；推理算法源码与28a3783一致，src/main.cpp
-仅展示文字/注释更新。原已接受binary为
-be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072，
-备份于.q4t-work/description-audit-20261017/q4t-before。
-当前build/q4t为描述修正后的构建
-8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee，
-CLI展示已检查；精确binary的off质量11/11和本次on/off五档输出检查
-已实测。on完整质量仍复用算法未变的旧证据，不记为新hash的11题实测。
+当前main为a893dc8，包含B1a合并c3f3c45；运行时与B1a实现1c6e792一致。
+默认build/q4t及release元数据为已接受B1a binary
+44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03，
+对应真实构建缓存与回退见[B1a部署](MTP_POSITION_B1A_DEPLOY_2026-10-18.md)。
+8685d8bf与更早be74946d是前代基线，不是当前默认入口。
 默认MTP k=3，--no-mtp回退普通decode；PLE上传修复与N=4等合同保留。
-[数值收口与五档证据](MTP_NUMERICAL_CLOSURE_2026-10-16.md)继续有效，
-身份/依赖不变的已通过项复用。当前不是任意模型/任意输入正确性的证明。
+[数值收口](MTP_NUMERICAL_CLOSURE_2026-10-16.md)的未变依赖证据继续复用，
+B1b候选独立保存在.q4t-work/b1b-20261019/build/q4t，未替换默认入口。
 
 HC up、T4 attention和GDN Record/Fold候选均未接受；HC TTFT根因未明，
 原因果目标blocked未完成，不自动恢复诊断或把差异称为噪声。微小变化
@@ -117,10 +117,9 @@ HC up、T4 attention和GDN Record/Fold候选均未接受；HC TTFT根因未明�
 
 ## 分支与证据
 
-本轮为未决B1a交付建立唯一工作分支codex/mtp-position-b1a，当前根工作区
-位于该分支；main保持生产基线。四个annotated归档标签继续保护研究历史与
-最终PR头，既有20个工作区及1248份旧证据原路径保留。B1a分支含独有实现
-和证据，暂不清理；不自动启动B1b或其他后续候选。
+当前根工作区为codex/mtp-gather-b1b，main保留已接受B1a。B1a工作分支
+已完整合入main后清理，原证据路径保留；B1b含独有实现与验证证据，当前
+不得当作重复入口清理。既有归档研究与其他worktree未改动。
 
 历史状态保存在main及研究tag，不作为当前任务安排：
 [生产基线历史状态](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/28a3783350b0c4c3d73fd3d483b5eebe881d2bdb/docs/STATUS.md)。

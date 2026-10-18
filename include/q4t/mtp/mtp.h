@@ -133,7 +133,7 @@ struct MtpModel {
   uint16_t* d_spec_sample = nullptr;  // [k_max*hs] extend sample_hidden
   uint16_t* d_g = nullptr;            // [hc_dim] rolling draft trunk
   // Multi-seq speculative scratch (Phase 2 Stage 2b, allocated in
-  // MtpReserveScratch when max_seq > 1). The batched draft loop packs B
+  // MtpReserveScratch even for max_seq == 1). The draft loop packs B
   // sequences' tokens per step (T = B), so it needs its own ids/positions/
   // sample/multi buffers sized for B rows (B <= max_seq); the batched extend
   // packs the accepted prefixes of all sequences (T = sum(a_b+1) <= B*(k+1)),

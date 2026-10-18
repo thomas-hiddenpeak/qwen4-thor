@@ -1,0 +1,29 @@
+{
+  "scope": "Frozen local PLE ownership, independent-prefix/checkpoint/prefill, full-model N=4 results. No new full-model numerics claim.",
+  "references": {
+    "docs/evidence/mtp-numerical-closure-20261016/phase02/ple-contracts.log": {
+      "sha256": "d4d05fa98a4e9b4d7a332eab4e06fcb49bee62237ca30fb305220616198f04ea",
+      "bytes": 300
+    },
+    "docs/evidence/mtp-numerical-closure-20261016/phase02/numerics-after-ple.log": {
+      "sha256": "ecaef8201fa5987833432adc1cda4c7127e27a691c1b7af1ae5539f79974b209",
+      "bytes": 15520
+    },
+    "docs/evidence/mtp-numerical-closure-20261016/phase02/identity.json": {
+      "sha256": "a91839307aa4ff4ffdda5b158465747a77185a5c815faaab5b2a44430b6a8413",
+      "bytes": 624
+    },
+    "docs/evidence/mtp-numerical-closure-20261016/phase03/five-contracts.log": {
+      "sha256": "130e1d40a007d949c630ff08719b54fc8d52969bcd9f71b15f02359cbff81321",
+      "bytes": 6619
+    },
+    "docs/evidence/mtp-numerical-closure-20261016/phase03/five-contracts.required": {
+      "sha256": "8446886bf7afd4d606aba9fcdc2ff46834928847a166f35a1edb4b279354df16",
+      "bytes": 112
+    },
+    "docs/evidence/mtp-numerical-closure-20261016/phase03/identity.json": {
+      "sha256": "ea563ae3f1f2b8d62c6a3f0a6be38a04d40cae6c6cc95af78340e038959dd3fb",
+      "bytes": 316
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "base_runtime_matches_B1a": true,
+  "modified_paths": [
+    "include/q4t/mtp/mtp.h",
+    "src/mtp/mtp.cu",
+    "src/runtime/memory_budget.cpp"
+  ],
+  "gather_kernel_and_MtpForward_unchanged": true,
+  "scope": "normal/status-error cleanup before host vector destruction; no claim about unrelated exceptions or diagnostics"
+}

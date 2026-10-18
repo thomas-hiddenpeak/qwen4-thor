@@ -1,0 +1,62 @@
+{
+  "3-2-0-0-0.bin": {
+    "bytes": 17703060,
+    "parent": "f96523882894fa2d7f0c982ca6f700c3b940512cde2b746675e34761012a1910",
+    "candidate": "f96523882894fa2d7f0c982ca6f700c3b940512cde2b746675e34761012a1910"
+  },
+  "1-0-0-0-0.bin": {
+    "bytes": 16720004,
+    "parent": "b91e2a2f53e7b21c7e0d56b79ec300cc050feacfa1dc1f6a563dc24e21f3e6ef",
+    "candidate": "b91e2a2f53e7b21c7e0d56b79ec300cc050feacfa1dc1f6a563dc24e21f3e6ef"
+  },
+  "3-0-1-0-2.bin": {
+    "bytes": 22044884,
+    "parent": "4eb33c29e42e80c96eddab08502a7e4d0b46c0fc7d9e53144204184dc4c046c9",
+    "candidate": "4eb33c29e42e80c96eddab08502a7e4d0b46c0fc7d9e53144204184dc4c046c9"
+  },
+  "2-0-1-0-0.bin": {
+    "bytes": 19925132,
+    "parent": "8c82d71429076c05e8350ed31161413e3074c0d21dc656f5ce4376ececbc3172",
+    "candidate": "8c82d71429076c05e8350ed31161413e3074c0d21dc656f5ce4376ececbc3172"
+  },
+  "1-2-0-0-0.bin": {
+    "bytes": 15634564,
+    "parent": "664a81026ae001985b507b41b2cccc19290ab4f5e19dcc7c8ff38d0af1e3fbfd",
+    "candidate": "664a81026ae001985b507b41b2cccc19290ab4f5e19dcc7c8ff38d0af1e3fbfd"
+  },
+  "3-1-0-0-0.bin": {
+    "bytes": 18245780,
+    "parent": "23f53d0fbd9e8e7e1877129f2706bc0c8d16d83e8fd04ac1d2ae46dfd099dcaa",
+    "candidate": "23f53d0fbd9e8e7e1877129f2706bc0c8d16d83e8fd04ac1d2ae46dfd099dcaa"
+  },
+  "3-0-1-0-1.bin": {
+    "bytes": 22044852,
+    "parent": "3c1e0b3952ec3cda6019ebcb00984073646a35dae45ac6cb13f4bec1bbe0a073",
+    "candidate": "3c1e0b3952ec3cda6019ebcb00984073646a35dae45ac6cb13f4bec1bbe0a073"
+  },
+  "3-0-1-0-0.bin": {
+    "bytes": 22044820,
+    "parent": "b76d8f8e5f92022f61d4c47387568e4956ccdff4ca145c174d89c61e46c01c3e",
+    "candidate": "b76d8f8e5f92022f61d4c47387568e4956ccdff4ca145c174d89c61e46c01c3e"
+  },
+  "3-0-0-1-0.bin": {
+    "bytes": 19873940,
+    "parent": "f3e42a3ff01c9d5a98059e37ce5306c2d254a83bce662306f57e6f9bd6ed0265",
+    "candidate": "f3e42a3ff01c9d5a98059e37ce5306c2d254a83bce662306f57e6f9bd6ed0265"
+  },
+  "2-0-1-0-1.bin": {
+    "bytes": 19925156,
+    "parent": "7f18b012df9c47bd7224c9f1d4f05d1bdfa46f8c166ea6c74732fc18489e2c8f",
+    "candidate": "7f18b012df9c47bd7224c9f1d4f05d1bdfa46f8c166ea6c74732fc18489e2c8f"
+  },
+  "2-0-1-0-2.bin": {
+    "bytes": 19925180,
+    "parent": "1b5a39436ee0f73b9649310587b77d43340d64b7f9badc3c14db78c0ad6a7f52",
+    "candidate": "1b5a39436ee0f73b9649310587b77d43340d64b7f9badc3c14db78c0ad6a7f52"
+  },
+  "3-0-0-0-0.bin": {
+    "bytes": 18788500,
+    "parent": "6439578ad6a0a572cfc3b171f3cc0c7db05cf5b4cd61869ddb415f497494d923",
+    "candidate": "6439578ad6a0a572cfc3b171f3cc0c7db05cf5b4cd61869ddb415f497494d923"
+  }
+}

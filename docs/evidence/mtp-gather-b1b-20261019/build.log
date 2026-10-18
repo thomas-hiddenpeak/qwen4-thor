@@ -1,0 +1,146 @@
+[  0%] Building CXX object CMakeFiles/q4t_runtime.dir/src/runtime/memory_budget.cpp.o
+[  2%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ngram_hash.cpp.o
+[  5%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_trace.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_io.dir/src/io/json.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ngram_hash_derive.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/page_reader.cpp.o
+[ 11%] Building CXX object CMakeFiles/q4t_io.dir/src/io/safetensors.cpp.o
+[ 14%] Linking CXX static library libq4t_runtime.a
+[ 14%] Built target q4t_runtime
+[ 17%] Building CXX object CMakeFiles/q4t_io.dir/src/io/model_config.cpp.o
+[ 17%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_collector.cpp.o
+[ 17%] Building CUDA object CMakeFiles/q4t_ple.dir/src/ple/fp8_convert.cu.o
+[ 17%] Building CXX object CMakeFiles/q4t_io.dir/src/io/weight_loader.cpp.o
+[ 20%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ple_embedding.cpp.o
+[ 22%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/sha256.cpp.o
+[ 25%] Linking CXX static library libq4t_ple.a
+[ 25%] Built target q4t_ple
+[ 28%] Linking CXX static library libq4t_trace.a
+[ 28%] Built target q4t_trace
+[ 31%] Linking CXX static library libq4t_io.a
+[ 31%] Built target q4t_io
+[ 31%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/dequant.cu.o
+[ 37%] Building CXX object CMakeFiles/q4t_text.dir/src/text/tokenizer.cpp.o
+[ 37%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/act_quant.cu.o
+[ 37%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/moe_weights.cpp.o
+[ 40%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/moe_gemm.cu.o
+[ 40%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/moe_decode.cu.o
+[ 42%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/moe_residency.cpp.o
+[ 42%] Linking CXX static library libq4t_text.a
+[ 42%] Built target q4t_text
+[ 45%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/lt_cache.cpp.o
+[ 45%] Linking CXX static library libq4t_quant.a
+[ 45%] Built target q4t_quant
+[ 45%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/hyperconnection.cu.o
+[ 48%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/linear_attention.cu.o
+[ 51%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/full_attention.cu.o
+[ 51%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/qsa_decode.cu.o
+[ 54%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/streaming_topk.cu.o
+[ 54%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/decode_topk.cu.o
+[ 57%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/short_topk.cu.o
+[ 57%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/indexer_decode.cu.o
+[ 60%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/moe.cu.o
+[ 62%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/ple_layer.cu.o
+[ 62%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/decoder_layer.cu.o
+[ 65%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/model_head.cu.o
+[ 65%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/model.cu.o
+[ 68%] Building CXX object CMakeFiles/q4t_model.dir/src/model/model_owner.cpp.o
+[ 68%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/gemv.cu.o
+[ 71%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/gemv_hc_inject.cu.o
+[ 71%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/small_m_gemm.cu.o
+[ 74%] Building CUDA object CMakeFiles/q4t_model.dir/src/mtp/moe_bf16.cu.o
+[ 77%] Building CUDA object CMakeFiles/q4t_model.dir/src/mtp/mtp.cu.o
+[ 77%] Building CUDA object CMakeFiles/q4t_model.dir/src/vision/vision.cu.o
+[ 80%] Building CXX object CMakeFiles/q4t_model.dir/src/vision/processor.cpp.o
+[ 80%] Linking CXX static library libq4t_model.a
+[ 80%] Built target q4t_model
+[ 80%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_server.dir/src/server/server_options.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 91%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 91%] Building CXX object CMakeFiles/q4t_server.dir/src/server/http_request.cpp.o
+[ 94%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_contract.cpp.o
+[ 97%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_template.cpp.o
+[ 97%] Linking CXX static library libq4t_server.a
+[ 97%] Built target q4t_server
+[ 97%] Building CXX object CMakeFiles/q4t.dir/src/main.cpp.o
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  1%] Built target q4t_runtime
+[ 10%] Built target q4t_io
+[ 11%] Built target q4t_trace
+[ 18%] Built target q4t_ple
+[ 20%] Built target q4t_text
+[ 26%] Built target q4t_quant
+[ 46%] Built target q4t_model
+[ 46%] Building CXX object CMakeFiles/q4t_tests.dir/tests/ple_ngram_hash_test.cpp.o
+[ 48%] Building CXX object CMakeFiles/q4t_tests.dir/tests/ple_page_reader_test.cpp.o
+[ 48%] Building CXX object CMakeFiles/q4t_tests.dir/tests/ple_fp8_convert_test.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_tests.dir/tests/ple_e2e_gather_test.cpp.o
+[ 51%] Building CXX object CMakeFiles/q4t_tests.dir/tests/ple_working_memory_test.cpp.o
+[ 51%] Building CXX object CMakeFiles/q4t_tests.dir/tests/io_json_test.cpp.o
+[ 53%] Building CXX object CMakeFiles/q4t_tests.dir/tests/runtime_memory_budget_test.cpp.o
+[ 53%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_sequence_test.cpp.o
+[ 55%] Building CXX object CMakeFiles/q4t_tests.dir/tests/server_http_request_test.cpp.o
+[ 55%] Building CXX object CMakeFiles/q4t_tests.dir/tests/server_chat_contract_test.cpp.o
+[ 56%] Building CXX object CMakeFiles/q4t_tests.dir/src/server/chat_contract.cpp.o
+[ 58%] Building CXX object CMakeFiles/q4t_tests.dir/src/server/http_request.cpp.o
+[ 58%] Building CXX object CMakeFiles/q4t_tests.dir/tests/io_safetensors_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_tests.dir/tests/io_model_config_test.cpp.o
+[ 60%] Building CXX object CMakeFiles/q4t_tests.dir/tests/io_weight_loader_test.cpp.o
+[ 61%] Building CXX object CMakeFiles/q4t_tests.dir/tests/quant_fp4_test.cpp.o
+[ 61%] Building CXX object CMakeFiles/q4t_tests.dir/tests/quant_moe_load_test.cpp.o
+[ 63%] Building CXX object CMakeFiles/q4t_tests.dir/tests/quant_moe_gemm_test.cpp.o
+[ 65%] Building CXX object CMakeFiles/q4t_tests.dir/tests/quant_moe_residency_test.cpp.o
+[ 65%] Building CXX object CMakeFiles/q4t_tests.dir/tests/moe_decode_grouped_test.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_hyperconnection_test.cpp.o
+[ 66%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_linear_attention_test.cpp.o
+[ 68%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_full_attention_test.cpp.o
+[ 68%] Building CXX object CMakeFiles/q4t_tests.dir/tests/streaming_topk_test.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_tests.dir/tests/decode_topk_test.cpp.o
+[ 70%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_decoder_layer_test.cpp.o
+[ 71%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_ple_layer_test.cpp.o
+[ 73%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_head_test.cpp.o
+[ 73%] Building CXX object CMakeFiles/q4t_tests.dir/tests/gemv_fp8_test.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_tests.dir/tests/gemm_t1_vs_tk1_test.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_forward_test.cpp.o
+[ 76%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_moe_test.cpp.o
+[ 76%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_verify_multi_test.cpp.o
+[ 78%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_verify_ckpt_test.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_verify_ckpt_samepath_test.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_prefill_batch_test.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_mixed_batch_test.cpp.o
+[ 81%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_position_metadata_test.cpp.o
+[ 83%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_draft_test.cpp.o
+[ 83%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_speculative_test.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_spec_multi_test.cpp.o
+[ 86%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_spec_accept_states_test.cpp.o
+[ 86%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_writer_row0_test.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mem_alloc_probe_test.cpp.o
+[ 88%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_decode_rope_test.cpp.o
+[ 90%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_checkpoint_layout_test.cpp.o
+[ 90%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_path_triangle_test.cpp.o
+[ 91%] Building CXX object CMakeFiles/q4t_tests.dir/tests/vision_forward_test.cpp.o
+[ 93%] Building CXX object CMakeFiles/q4t_tests.dir/tests/model_vision_inject_test.cpp.o
+[ 93%] Building CXX object CMakeFiles/q4t_tests.dir/tests/vision_processor_test.cpp.o
+[ 95%] Building CXX object CMakeFiles/q4t_tests.dir/tests/video_processor_test.cpp.o
+[ 95%] Building CXX object CMakeFiles/q4t_tests.dir/tests/vision_e2e_test.cpp.o
+[ 96%] Building CXX object CMakeFiles/q4t_tests.dir/tests/test_main.cpp.o
+[ 96%] Building CXX object CMakeFiles/q4t_tests.dir/tests/text_tokenizer_test.cpp.o
+[ 98%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_verify_numerics_test.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_tests.dir/tests/mtp_sixcell_test.cpp.o
+[100%] Linking CXX executable q4t_tests
+[100%] Built target q4t_tests
+[  3%] Built target q4t_runtime
+[ 13%] Built target q4t_trace
+[ 26%] Built target q4t_ple
+[ 36%] Built target q4t_io
+[ 40%] Built target q4t_text
+[ 53%] Built target q4t_quant
+[ 93%] Built target q4t_model
+[ 96%] Building CXX object CMakeFiles/q4t_mtp_lifecycle.dir/tests/mtp_lifecycle_test.cpp.o
+[100%] Linking CXX executable q4t_mtp_lifecycle
+[100%] Built target q4t_mtp_lifecycle
