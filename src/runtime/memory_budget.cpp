@@ -97,10 +97,11 @@ size_t MtpScratchBytes(const BudgetModelParams& p, int k) {
   const size_t single =
       Add(Mul(rows, Sum({8u, logits, Mul(trunk, 2u), hidden})), trunk);
   // IDs/positions, sample, multi and rolling g; then gather/verify/extend
-  // trunks, verify/extend logits, sample and four packed integer arrays.
+  // trunks, verify/extend logits, sample and five packed integer arrays
+  // (including gather offsets).
   const size_t multi =
       Add(Sum({8u, hidden, Mul(trunk, 2u)}),
-          Mul(rows, Sum({Mul(trunk, 3u), Mul(logits, 2u), hidden, 16u})));
+          Mul(rows, Sum({Mul(trunk, 3u), Mul(logits, 2u), hidden, 20u})));
   return Add(single, multi);
 }
 
@@ -119,12 +120,12 @@ size_t MtpForwardTempBytes(const BudgetModelParams& p, int k) {
   const size_t moe_host = Mul(p.mtp_experts, 4u);   // counts_h
   const size_t positions = Mul(p.max_prefill, 4u);  // full-attention hp
   const size_t rows = static_cast<size_t>(k) + 1u;
-  const size_t gather_offsets = Mul(rows, 4u);  // MtpSpeculativeStepMulti
-  // B=1 small decode metadata, plus two conservative int slots. The complete
+  // B=1 small decode metadata, including host gather_off (one of the six
+  // row arrays), plus two conservative int slots. The complete
   // vhist copy is length-dependent and covered by PerRequestBytes' host
   // envelope, not by this subtotal. Sum across sequential subphases.
   const size_t decode_host = Mul(7u + k + 6u * rows + 2u, 4u);
-  return Sum({moe_device, moe_host, positions, gather_offsets, decode_host});
+  return Sum({moe_device, moe_host, positions, decode_host});
 }
 
 size_t MtpLoadingHostBytes(const BudgetModelParams& p, const BudgetRequest& req,

@@ -1,8 +1,17 @@
 # 当前状态
 
-更新：2026-10-18。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+更新：2026-10-19。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
 ## 当前交付
+
+**B1b启动（2026-10-19），尚未验收。** 仅持久化extend gather offset，
+基线a893dc8/B1a binary44abd8b1，工作分支codex/mtp-gather-b1b。
+冻结82个HTTP请求、随后直接合同，有限工程接受须单独认可具体风险；
+不追加校准，不启动Megatron。默认二进制保持B1a。
+见[范围与验收卡](MTP_GATHER_B1B_2026-10-19.md)。
+
+以下历史入口中的旧生产binary与分支描述不覆盖上述及B1a部署记录。
+
 
 **B1a已工程接受并合入main（2026-10-18）。** 用户在最终审查披露风险
 后要求并入主线，按ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY接受，

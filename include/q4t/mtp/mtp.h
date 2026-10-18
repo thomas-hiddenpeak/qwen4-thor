@@ -168,6 +168,8 @@ struct MtpModel {
   // argmax result (ScatterDraftKernel) — zero host syncs inside the loop.
   // A single D2H of the [B, k] sub-matrix happens after the loop.
   int32_t* d_ms_drafts = nullptr;       // [max_seq*k_max] draft tokens
+  int* d_ms_gather_off = nullptr;  // [max_seq*k_max] extend source rows
+  size_t gather_off_capacity = 0;  // int elements; reset with scratch
   int k_max = 0;  // capacity of the above (0 = not allocated)
 
   int hc_dim() const { return cfg.hc * cfg.hs; }
