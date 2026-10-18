@@ -4,12 +4,14 @@
 
 ## 当前交付
 
-**B1a已工程接受、准备主线合入（2026-10-18）。** 用户在最终审查披露风险
+**B1a已工程接受并合入main（2026-10-18）。** 用户在最终审查披露风险
 后要求并入主线，按ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY接受，
 有限工程接受规则纳入EVALUATION。复用原零警告构建、计算/状态合同、
 HTTP质量及两模式五档证据；不追认统计持平。no-MTP 200K decode观察
 下降0.2526%及未约束的真实退化风险保持披露。新增采样0，B1b不扩展，
 build/q4t仍为旧A（8685d8bf），源码合入与部署分开。
+[PR #6](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/6)合并提交c3f3c45，
+工作分支已核对包含后清理，原证据路径保留。
 见[主线交付记录](MTP_POSITION_B1A_MERGE_2026-10-18.md)。
 
 以下审查条目保留当时状态，待认可标记已由上述决定替代。

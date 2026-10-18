@@ -1,7 +1,9 @@
 # B1a主线交付
 
 2026-10-18。ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY。
-当前准备PR合入；合并结果核验后追加记录。
+[PR #6](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/6)已于
+2026-10-18 06:41:26 UTC合入main，合并提交
+c3f3c456bb53c715763c56940703868c1b3db231。
 
 ## 决定及范围
 
@@ -43,3 +45,18 @@ A二进制及匹配配置/缓存重启。当前build/q4t仍为A SHA256
 main包含工作分支全部提交、工作区干净和无活动PR，再删除重复本地分支。
 远端仅处理codex/mtp-position-b1a，核对预期tip后删除；不清理其他分支。
 .q4t-work、build及依赖原路径的证据全部保留。合并及清理实际结果另记。
+
+## 实际合入与分支整理结果
+
+PR head为8aadc3844ce8cc1aa0af6a1862bb430c0c513c70，base为867b8a6。
+PR显示MERGEABLE/CLEAN，两个host-contracts检查均SUCCESS后，以精确head
+匹配完成merge。主线包含head及全部阶段历史，没有squash丢失证据锚点。
+[PR检查](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/39104682381)
+仅作为公共host验证，原本机Thor证据继续按已记录身份复用。
+
+切换main并快进后确认工作区干净、无该head的活动PR、main完整包含
+8aadc3844ce8cc1aa0af6a1862bb430c0c513c70；删除本地重复分支。
+远端核对同一tip后通过精确force-with-lease删除仅
+refs/heads/codex/mtp-position-b1a。保留锚点为main合并提交c3f3c45，
+原工作目录与全部.q4t-work证据保持原路径，其他worktree未改动。
+本次文档收尾提交直接记录在main；无新增运行时变更、采样或部署。
