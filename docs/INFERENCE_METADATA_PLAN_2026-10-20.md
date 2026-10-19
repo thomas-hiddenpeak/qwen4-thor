@@ -80,7 +80,7 @@ H2D布局。单纯固定GPU指针不能解决CPU源提前复用；增加pinned b
 ## 传输诊断结果与下一步决定
 
 [原始16例](evidence/inference-metadata-20261020/transfer-probe-v1/raw.json)
-已完成，单lease COMPLETED、子进程0、8文件摘要复核通过。
+已完成，单lease COMPLETED、子进程0、7文件摘要复核通过。
 本机pageable_access=1、host_page_tables=1。四种pageable源早复用
 均保留原值；前三种event尚未完成但值保留，与内部暂存解释一致，
 最大2,506,752字节的调用约50ms、event已完成。只描述本次观察，
