@@ -103,3 +103,21 @@ snapshot就宣称降低复杂度。不会因当前未复现pageable错误而跳�
 若候选目标包含减少H2D/执行开销，第一项测试仍必须HTTP E2E，
 本次诊断不算未来候选的前置性能通过。候选实施与准确采样预算尚未
 冻结，当前不运行新的模型/GPU测试。目标保持active。
+
+## 候选实现与服务边界补查
+
+[独立候选](INFERENCE_METADATA_CANDIDATE_2026-10-20.md)已实现
+DecodeMetadataUpload，零警告单文件编译通过，尚未加入CMake或接入
+Model。保留原GPU地址与拷贝次数；连续host数据仅统一源所有权，
+没有宣称合并GPU布局或提速。目标仍包括其余入口的审计。
+
+服务侧进一步核对：chat_generation.cpp:703/832的MTP/plain提交后
+等待done，不因取消提前退出等待；chat_scheduler.cpp:448排空后才
+在458设置done。prefill取消在chat_generation.cpp:515检查，而此前
+已通过FinishHostReadback排空；scheduler chunk在124排空后才在141
+通知。ModelBeginSequence在reset后同步再发布host Begin。以上说明
+已核对正常提交及该取消路径的顺序，不替代CUDA错误注入或HTTP回归。
+
+MTP多序列step cleanup在src/mtp/mtp.cu:1385显式stream同步；
+chunked MtpDraftExtend的seqid局部vector（825）仍是pageable暂存
+依赖项，与普通入口一起保留在最终审计，不能用step cleanup覆盖它。
