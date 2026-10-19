@@ -1,0 +1,29 @@
+{
+  "binary_sha256": "eda2717b33adcf4ae3ad9ba53f3c79f86b7bab5d192bbedb87ffa4a75deda678",
+  "source_sha256": "db4d6261a835f53f61dc96ff95930cc298900915277978d2676b0443db4386fb",
+  "model_sha256": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+  "weights_sha256": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818",
+  "text_sha256": "d8ae8cb87093e393ad497b039e66a035520eaae7194c6fa1d0fbbcc5670b2b34",
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/upstream-first-fork-20261019/gpu-v1/executable",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/upstream-first-fork-20261019/gpu-v1/text.txt",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/upstream-first-fork-20261019/gpu-v1/capture",
+    "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+    "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818",
+    "db4d6261a835f53f61dc96ff95930cc298900915277978d2676b0443db4386fb"
+  ],
+  "model_loads": 1,
+  "model_invocations": 7,
+  "layer_replays": 17,
+  "records": 24,
+  "upstream_layers": [
+    0,
+    1,
+    2
+  ],
+  "http_requests": 0,
+  "token_rule": "encode complete UTF-8; final four tokens forced",
+  "exact_tokens": "capture/tokens.i32 written before CUDA creation",
+  "retries": 0
+}

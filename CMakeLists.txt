@@ -213,6 +213,18 @@ if(Q4T_HAS_ICU)
     q4t_moe_replay_io q4t_text)
   target_link_options(q4t_moe_real_capture PRIVATE
     "-Wl,--wrap=_ZN3q4t5model10MoEForwardEPKtRKNS_5quant15MoEWeightLayoutERKNS0_15MoEExtraWeightsEPtiiPvmSB_mP11CUstream_stPNS_5trace15RouterCollectorEiPKNS3_12MoEResidencyEPNS0_21MoEForwardDiagnosticsE")
+  add_executable(q4t_upstream_first_fork EXCLUDE_FROM_ALL
+    tools/verify/upstream_first_fork/capture.cpp)
+  target_link_libraries(q4t_upstream_first_fork PRIVATE q4t_moe_replay_gpu
+    q4t_moe_replay_io q4t_text)
+  target_link_options(q4t_upstream_first_fork PRIVATE
+    "-Wl,--wrap=_ZN3q4t5model10MoEForwardEPKtRKNS_5quant15MoEWeightLayoutERKNS0_15MoEExtraWeightsEPtiiPvmSB_mP11CUstream_stPNS_5trace15RouterCollectorEiPKNS3_12MoEResidencyEPNS0_21MoEForwardDiagnosticsE")
+  target_link_options(q4t_upstream_first_fork PRIVATE
+    LINKER:--wrap=_ZN3q4t5model19DecoderLayerForwardERKNS0_12DecoderLayerEPKtS5_PtPKiS8_iPvmP11CUstream_stPfS6_iiS8_S8_iS6_PKNS0_11RaggedBatchEiPNS_5trace15RouterCollectorEiiSC_S6_S6_
+    LINKER:--wrap=_ZN3q4t5model7Bf16GevEPKtS2_PtiifP11CUstream_st
+    LINKER:--wrap=_ZN3q4t5model14Bf16SmallMGemmEPKtS2_PtiiifP11CUstream_st
+    LINKER:--wrap=cublasLtMatmul)
+
 endif()
 
 

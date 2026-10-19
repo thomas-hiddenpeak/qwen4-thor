@@ -1,0 +1,10 @@
+test_known_dot_and_cancellation (__main__.ReferenceTest.test_known_dot_and_cancellation) ... ok
+test_midpoints_even_and_negative (__main__.ReferenceTest.test_midpoints_even_and_negative) ... ok
+test_nonfinite_and_shape_rejected (__main__.ReferenceTest.test_nonfinite_and_shape_rejected) ... ok
+test_reference_does_not_impose_correct_rounding_contract (__main__.ReferenceTest.test_reference_does_not_impose_correct_rounding_contract) ... ok
+test_subnormal_zero_and_overflow (__main__.ReferenceTest.test_subnormal_zero_and_overflow) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.001s
+
+OK

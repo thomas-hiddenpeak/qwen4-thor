@@ -1,0 +1,18 @@
+captured prefill-t1 position=0 rows=72
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+captured t1-row0 position=72 rows=1
+captured t1-row1 position=73 rows=1
+captured t1-row2 position=74 rows=1
+captured t1-row3 position=75 rows=1
+captured prefill-t4 position=0 rows=72
+independent-prefill BITEXACT_PASS
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+captured t4 position=72 rows=4
+t4-same-shape BITEXACT_PASS
+t1-row0-same-shape BITEXACT_PASS
+t1-row1-same-shape BITEXACT_PASS
+t1-row2-same-shape BITEXACT_PASS
+t1-row3-same-shape BITEXACT_PASS
+real_text_capture PASS

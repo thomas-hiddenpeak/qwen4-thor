@@ -1,0 +1,10 @@
+test_duplicate (__main__.EventTest.test_duplicate) ... ok
+test_inventory (__main__.EventTest.test_inventory) ... ok
+test_missing (__main__.EventTest.test_missing) ... ok
+test_nonfinite_with_valid_checksum (__main__.EventTest.test_nonfinite_with_valid_checksum) ... ok
+test_prefix (__main__.EventTest.test_prefix) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.696s
+
+OK
