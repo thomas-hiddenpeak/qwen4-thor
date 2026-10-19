@@ -1,0 +1,18 @@
+{
+  "status": "BUILD_PASS_INTEGRATION_UNTESTED",
+  "candidate_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/inference-metadata-20261020/build/q4t",
+  "candidate_sha256": "ddd99f6f13363a32b23ab59ac99de63f50e40c3d8672d4291526009d6b46ffed",
+  "default_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+  "source_files": {
+    "CMakeLists.txt": "e93a02ff1ecfa941b509fcf3730f55cde87aebf43d99a3999b96f81080ff7f33",
+    "include/q4t/model/model.h": "02c5c64802f52a9cd3624f79ea4c6ad89745b9d4e48b77166645cceb1c488ed2",
+    "src/model/model.cu": "38b8d13c53d4d9e41d56fa4a03d5e16f3a3198764f8eefee0d9021dcaf0087cf",
+    "include/q4t/model/decode_metadata_upload.h": "8e39e78fbfd65b34975631149ca82a5a3d7181f651a58e37ac04eb65d3ba6469",
+    "src/model/decode_metadata_upload.cpp": "8d5ebf39e39860e224d84974b932fc450f79eb89508dbb57ce0abd75d80deac9"
+  },
+  "build_log_sha256": "1dc7047d9afc1aeb70a282140c84d965c61fc3dab05f4140391f4f9b04e285a3",
+  "configure_log_sha256": "8d1358810e7509bb938e70271e99f7c2ee51a72953ec5c9b680e42f3206e520d",
+  "warnings": 0,
+  "http_requests": 0,
+  "model_loads": 0
+}

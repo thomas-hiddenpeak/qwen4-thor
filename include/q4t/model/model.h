@@ -25,6 +25,7 @@
 
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/decoder_layer.h"
+#include "q4t/model/decode_metadata_upload.h"
 #include "q4t/model/model_head.h"
 #include "q4t/model/sequence.h"
 #include "q4t/ple/ngram_hash.h"
@@ -108,6 +109,9 @@ struct Model {
   ple::PleEmbedding* ple_emb = nullptr;  // null if no PLE layer in range
   ple::NgramHashParams ple_hash;
   float ple_weight_scale = 1.0f;
+
+  // Upload-source ownership only; consumers still use the existing scratch.
+  std::unique_ptr<DecodeMetadataUpload> decode_metadata_upload;
 
   // Persistent device buffers (allocated in LoadModel, freed in Free).
   int32_t* d_ids = nullptr;  // [max_prefill]

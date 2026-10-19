@@ -180,6 +180,7 @@ add_library(q4t_model STATIC
   src/model/model_head.cu
   src/model/model.cu
   src/model/model_owner.cpp
+  src/model/decode_metadata_upload.cpp
   src/model/gemv.cu
   src/model/gemv_hc_inject.cu
   src/model/small_m_gemm.cu

@@ -1,0 +1,22 @@
+{
+  "host_v1": {
+    "status": "TOOL_FAILURE_UNGUARDED_RUNTIME_CALL",
+    "reason": "C++ cudaMallocHost routes to unwrapped cudaHostAlloc; unknown pointer abort in mock free",
+    "binary_sha256": "1dc4de634cc5215273d22156a1923b13e8180f27b901daee79d50324d8aa31bd",
+    "acceptance": false
+  },
+  "host_v2": {
+    "status": "PASS",
+    "cases": 8,
+    "cuda_runtime_linked": false,
+    "binary_sha256": "1f3018ff12f7b48169b4f0a5c99bf4d91ba348f1d852ed1ad0a4b85a9c737b0e"
+  },
+  "gpu_v1": {
+    "status": "PASS",
+    "uploads": 4,
+    "exact_ints": 216,
+    "invalid_no_mutation": true,
+    "verified_manifest_files": 8
+  },
+  "integration": "NOT_YET_TESTED"
+}

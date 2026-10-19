@@ -10,8 +10,10 @@ ModelSequence、服务排空与verify持有机制复用；其他入口临时元�
 仍需核对具体CUDA合同，尚未判定运行时缺陷。16例传输诊断通过：pageable未复现覆盖，pinned早复用全部覆盖，
 完成事件正控全部正确；候选必须绑定上传源所有权，尚未改生产。HTTP预算0，
 生产保持。见[范围与初步审计](INFERENCE_METADATA_PLAN_2026-10-20.md)。
-独立上传所有权候选已实现并零警告编译，尚未接入Model或CMake；
-保留GPU地址/拷贝次数，下一步验证延迟消费、复用及失败路径。
+上传对象8项host故障检查及4次GPU上传/216整数检查通过；首轮mock
+漏拦截工具失败保留。候选已接入单个普通多序列decode入口，独立q4t
+零警告构建通过，模型接入与HTTP验收未运行，默认binary未替换。
+见[候选与冻结范围](INFERENCE_METADATA_CANDIDATE_2026-10-20.md)。
 
 **真实文本首分叉定位与分类完成（2026-10-20）。** layer0位置74的
 in_proj_a[43]：相同输入下GEMV与cuBLAS tensor累加落在BF16中点两侧。

@@ -1,0 +1,22 @@
+{
+  "uploads": 4,
+  "rows": [
+    2,
+    1,
+    2,
+    1
+  ],
+  "streams": [
+    0,
+    0,
+    1,
+    1
+  ],
+  "copies": 30,
+  "invalid_calls": 1,
+  "delay_ms": 50,
+  "timeout_seconds": 60,
+  "model_loads": 0,
+  "retries": 0,
+  "binary_sha256": "6a285ec1865f22e7f39b0e7c4243e016aec9d4f4e6aa2cfaaf5586b6a60ac26d"
+}

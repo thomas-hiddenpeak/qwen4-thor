@@ -124,6 +124,7 @@ __global__ void InjectVisionKernel(const uint16_t* __restrict__ vision_src,
 }  // namespace
 
 void Model::Free() {
+  decode_metadata_upload.reset();
   head.Free();
   for (auto& l : layers) l.Free();
   layers.clear();
@@ -393,6 +394,9 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_seq_id),
                   static_cast<size_t>(cfg.max_seq) * sizeof(int))))
     return s;
+  m->decode_metadata_upload = std::make_unique<DecodeMetadataUpload>();
+  s = m->decode_metadata_upload->Init(cfg.max_seq);
+  if (!s.ok()) return s;
   // Phase 2 MTP multi-seq verify: per-token seq id for the B*T packed verify
   // tokens (sized for the max prefill, since B*T <= max_prefill).
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_token_seq_id),
@@ -1156,31 +1160,17 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
       return Status::Fail("ModelDecodeBatchMulti: seq_id exceeds max_seq");
   }
 
-  // 1. H2D the packed tokens / positions / per-token seq ids.
-  if (cudaMemcpyAsync(m.d_ids, tokens, B * sizeof(int32_t),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D tokens");
-  if (cudaMemcpyAsync(m.d_positions, positions, B * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D positions");
-  if (cudaMemcpyAsync(m.d_seq_id, seq_ids, B * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D seq_ids");
-
-  // Full attention reads the pooled MRoPE table, not d_positions directly.
-  // Prefill initializes only its input range; publish this decode position
-  // for each selected slot before any layer consumes it.
-  const size_t ml = static_cast<size_t>(cfg.max_len);
-  for (int t = 0; t < B; ++t) {
-    int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_ids[t]) * 3 * ml;
-    const int rope_position = positions[t] + m.rope_delta[seq_ids[t]];
-    for (int row = 0; row < 3; ++row) {
-      if (cudaMemcpyAsync(seq_rope + row * ml + positions[t], &rope_position,
-                          sizeof(int), cudaMemcpyHostToDevice, stream) !=
-          cudaSuccess)
-        return Status::Fail("H2D rope_pos");
-    }
-  }
+  // Keep upload sources alive independently of the caller and loop scopes.
+  // The owner completes the previous upload before refilling its CPU buffer;
+  // model scratch consumers remain serialized by the caller as before.
+  if (!m.decode_metadata_upload)
+    return Status::Fail("ModelDecodeBatchMulti: upload owner missing");
+  Status uploaded = m.decode_metadata_upload->Upload(
+      {tokens, static_cast<size_t>(B)}, {positions, static_cast<size_t>(B)},
+      {seq_ids, static_cast<size_t>(B)}, m.rope_delta,
+      {m.d_ids, m.d_positions, m.d_seq_id, m.d_rope_pos, cfg.max_len,
+       cfg.max_seq}, stream);
+  if (!uploaded.ok()) return uploaded;
 
   std::vector<int64_t> ids64(tokens, tokens + B);
 
