@@ -12,7 +12,8 @@ ModelSequence、服务排空与verify持有机制复用；其他入口临时元�
 生产保持。见[范围与初步审计](INFERENCE_METADATA_PLAN_2026-10-20.md)。
 上传对象8项host故障检查及4次GPU上传/216整数检查通过；首轮mock
 漏拦截工具失败保留。候选已接入单个普通多序列decode入口，独立q4t
-零警告构建通过，模型接入与HTTP验收未运行，默认binary未替换。
+零警告构建通过，四层父候选28文件逐位差分通过；已冻结off/on各11条HTTP质量，
+完整验收仍进行中，默认binary未替换。
 见[候选与冻结范围](INFERENCE_METADATA_CANDIDATE_2026-10-20.md)。
 
 **真实文本首分叉定位与分类完成（2026-10-20）。** layer0位置74的

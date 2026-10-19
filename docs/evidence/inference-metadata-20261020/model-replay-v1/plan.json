@@ -1,0 +1,20 @@
+{
+  "parent_commit": "73aab36",
+  "candidate_commit": "f01e8fa",
+  "layers": 4,
+  "model_loads": 2,
+  "prefills_per_binary": 5,
+  "packed_decode_rows": [
+    4,
+    2,
+    1,
+    1
+  ],
+  "retries": 0,
+  "binaries": {
+    "parent": "2a51244d36eb82e93f2df53211036bd8a026b5ef8383823aed3efc862bbdfd4a",
+    "candidate": "3c50a4d80d913f8b7b92e9e6fea90284fed97537f723b2fb94a20dde8587b5cd"
+  },
+  "model_identity": "prior full hashes plus unchanged stat identity before/after",
+  "timeout_per_binary_seconds": 600
+}

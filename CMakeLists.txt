@@ -474,3 +474,9 @@ target_link_libraries(q4t_moe_gemm_bench PRIVATE q4t_quant CUDA::cudart CUDA::cu
 add_executable(q4t_moe_gemm_grouped_bench tools/moe_gemm_grouped_bench.cu)
 target_include_directories(q4t_moe_gemm_grouped_bench PRIVATE include)
 target_link_libraries(q4t_moe_gemm_grouped_bench PRIVATE q4t_quant CUDA::cudart CUDA::cublasLt)
+
+# Independent parent/candidate metadata lifecycle fixture; never a serve hook.
+add_executable(q4t_metadata_replay EXCLUDE_FROM_ALL
+  tools/verify/inference_metadata/model_replay.cpp)
+target_include_directories(q4t_metadata_replay PRIVATE include)
+target_link_libraries(q4t_metadata_replay PRIVATE q4t_model)

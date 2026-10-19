@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "verified_files": 67,
+  "exact_comparisons": 28,
+  "coverage": "4 layers; B=4,2,1,1; slot reset/reuse; not full-model quality"
+}

@@ -79,3 +79,43 @@ ModelDecodeBatchMulti通过owner上传原有三个字段及RoPE，随后原样
 [构建身份](evidence/inference-metadata-20261020/ownership/candidate-build.json)。
 模型接入、HTTP质量/取消、性能均未验收；默认binary保持。
 前述“尚未集成”是设计冻结时状态，由本段更新。
+
+## 四层精确父版本差分预算（执行前冻结）
+
+父源码从73aab36 git archive导出至parent-source（仅增加相同独立
+replay目标），候选f01e8fa；分别用各自头文件/库编译同一fixture，
+不能拿默认B1a二进制冒充精确父。两侧q4t及replay零警告构建通过。
+候选首次build在未重新configure时无target，记录保留；configure后
+成功，不涉及运行时失败。
+
+单lease运行父/候选各一次，均4层（含GDN、PLE、full attention），
+max_seq=4、max_prefill=8、max_len=32。每侧5次prefill、4次packed
+ decode（B=4/2/1/1，slot顺序2/0/3/1）；最后重置并复用slot2。
+每步保存logits、完整recurrent、KV、raw/comp index、RoPE、host
+cursor/history，共28文件，要求父候选逐位相同。通过范围限定固定
+四层轨迹，不能宣称全模型多流质量或跨形状一致。
+
+原模型全量hash清单复用10-19记录，运行前后核对每文件size、mtime、
+ctime、inode、device；本阶段不声称重新读取全模型payload校验。
+记录各binary/fixture摘要、源码差分；每进程600秒上限，无重试。
+完整run_model_replay.py经gpu_exclusive持锁，model-replay-v1输出，
+model-replay-lease-v1锁；环境冲突ENV_ABORT。模型加载总2、HTTP0。
+
+## HTTP质量预算（执行前冻结）
+
+四层父候选28文件逐位通过后，运行质量off/on各11条，总22条，
+两个完整模型服务启动、每组1800秒上限、加载300秒上限、无重试。
+使用tools/evalscope/run_acceptance.py --mode quality，max_seq1、
+max_prefill8192、max_len208896、port8740，固定B1b已接受quality-off/on
+的inputs/results副本，要求同模式prompt/output一致。候选binary从
+本阶段build读取并保存副本，运行前后校验摘要。B1b参考仅作为已接受
+文本质量对照，不冒充73aab36重新运行的精确父性能。
+
+完整run_quality.py由gpu_exclusive持同一把锁，输出quality-v1，
+lease为quality-lease-v1。失败立即停止后续组，不自动追加样本。
+该阶段只验HTTP质量，非性能矩阵或多请求取消合同；后两者仍待
+完成。新源码身份与默认部署身份分开，默认binary保持。
+
+四层差分原始目录model-replay-v1，共67文件摘要复核通过，见
+[审计](evidence/inference-metadata-20261020/model-replay-v1/audit.json)。
+HTTP quality-v1已启动，正在持锁执行；未取得完整终态前不得标通过。
