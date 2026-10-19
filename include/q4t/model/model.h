@@ -323,6 +323,9 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
 //              per token in the same order as `tokens`
 //   logits   : device BF16 [B, vocab] (caller-owned)
 //
+// B must be positive and <= both cfg.max_seq and cfg.max_prefill. Packed
+// token scratch is sized by max_prefill, independently of the slot pool.
+//
 // Per-sequence state (linear SSM/conv, PLE conv, full KV/indexer, 3D MRoPE)
 // is isolated by seq_ids[t]; each token continues its own sequence's
 // recurrent state from the prior step. The caller must have already run

@@ -1,0 +1,5 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/inference-metadata-20261020/build

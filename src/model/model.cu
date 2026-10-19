@@ -1153,6 +1153,8 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
   if (B <= 0) return Status::Fail("ModelDecodeBatchMulti: B must be > 0");
   if (B > cfg.max_seq)
     return Status::Fail("ModelDecodeBatchMulti: B exceeds max_seq");
+  if (B > cfg.max_prefill)
+    return Status::Fail("ModelDecodeBatchMulti: B exceeds max_prefill");
   for (int t = 0; t < B; ++t) {
     if (positions[t] < 0 || positions[t] >= cfg.max_len)
       return Status::Fail("ModelDecodeBatchMulti: position exceeds max_len");

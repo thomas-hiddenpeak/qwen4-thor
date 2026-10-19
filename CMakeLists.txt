@@ -480,3 +480,9 @@ add_executable(q4t_metadata_replay EXCLUDE_FROM_ALL
   tools/verify/inference_metadata/model_replay.cpp)
 target_include_directories(q4t_metadata_replay PRIVATE include)
 target_link_libraries(q4t_metadata_replay PRIVATE q4t_model)
+
+add_executable(q4t_metadata_bounds EXCLUDE_FROM_ALL
+  tools/verify/inference_metadata/model_bounds.cpp)
+target_include_directories(q4t_metadata_bounds PRIVATE include)
+target_link_libraries(q4t_metadata_bounds PRIVATE q4t_model)
+target_compile_options(q4t_metadata_bounds PRIVATE -Wall -Wextra -Werror)

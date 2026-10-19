@@ -131,3 +131,15 @@ decode按全部plain_reqs组批，没有在该分组处限制max_prefill。
 不是本次owner引入。还需完成配置入口约束核对，若无全局保证，最小
 修复应在任何上传前拒绝B>max_prefill，并补无GPU边界验证。当前先
 登记，不修改正在封存候选身份，也不把普通max_seq1/4验收当越界证明。
+
+### 容量检查最小修复预算（实施前冻结）
+
+已核对chat_server预算及no-budget配置、ComputeMemoryBudget和普通
+scheduler分组，均无max_seq<=max_prefill的保证。新增入口检查
+B>max_prefill时立即失败，位于指针读取与上传之前；不改调度策略。
+直接调用真实ModelDecodeBatchMulti，构造未加载Model，测试B为0、
+超过max_seq、超过max_prefill，以及等于容量时进入后续owner检查。
+拒绝用例传空指针，证明不访问输入；合法容量用例给有效host数组，
+以owner缺失为截止，禁止模型加载/CUDA计算。构建独立目标，执行一次，
+保守经gpu_exclusive持锁；HTTP/模型加载/GPU数值采样预算0。任何
+失败保留，不启动旧验收tail；实际HTTP及数值证据不可追认为新身份通过。

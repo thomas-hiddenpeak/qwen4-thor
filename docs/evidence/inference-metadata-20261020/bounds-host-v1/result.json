@@ -1,0 +1,19 @@
+{
+  "status": "PASS_HOST_ENTRY_ONLY",
+  "cases": 6,
+  "sealed_files_verified": 4,
+  "model_loads": 0,
+  "gpu_work": 0,
+  "http": 0,
+  "first_build": "FAILED: new target not configured; log preserved",
+  "second_build": "PASS_ZERO_WARNINGS",
+  "sha256": {
+    "src/model/model.cu": "635fc73d981f622000dea6562794263e59198086ef0c04084dc1ff2cabb2f52a",
+    "include/q4t/model/model.h": "dd4f176eb2c870e27399e828dc258155cd238eeb48e6ee11c3b2368ba0d8a2b2",
+    "tools/verify/inference_metadata/model_bounds.cpp": "29fb057c3caac1e1cf4351e305bba5f4ca6451f261ecce53c3bafe1f455b9087",
+    "CMakeLists.txt": "9188154da277da7a3f8bd3524825411ccf114137d4a8e0d2c5676427b1bc61da",
+    ".q4t-work/inference-metadata-20261020/build/q4t_metadata_bounds": "17e970811813f62104bad708f3ee200eb9f13b75426b27b7484b329e2afd1ffc",
+    "build/q4t": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+    ".q4t-work/inference-metadata-20261020/build/q4t": "ddd99f6f13363a32b23ab59ac99de63f50e40c3d8672d4291526009d6b46ffed"
+  }
+}
