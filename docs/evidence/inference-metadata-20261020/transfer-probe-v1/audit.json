@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "verified_files": 7,
+  "wait_controls": 8,
+  "pageable_early_reuse_original": 4,
+  "pinned_early_reuse_overwritten": 4,
+  "scope": "transfer probe only; no model failure reproduced"
+}

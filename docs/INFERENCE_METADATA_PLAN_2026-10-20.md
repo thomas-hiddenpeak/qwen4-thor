@@ -58,3 +58,48 @@ CUDA文档对Async pageable传输只说可能对host同步，不能由Async名�
 当前设计倾向：先补齐上传源寿命与完成协议，再决定是否有必要合并
 H2D布局。单纯固定GPU指针不能解决CPU源提前复用；增加pinned buffer
 而遗漏event反而会引入历史已发生的风险。
+
+## 有界传输寿命诊断（执行前冻结）
+
+已核对CUDA13.3归档同步合同，Async pageable没有无条件host完成保证。
+为区分本机是否立即暂存，仅运行独立transfer_probe（不跑模型）：
+4种int计数1/4/8192/626688 × pageable/pinned × 提前复用/完成后复用，
+共16次H2D。每次stream前置50ms host callback延迟，不调用CUDA API；
+源始终活着，不访问已释放内存。提前复用为故意错误的负控，记录
+原值/覆盖值数量及event是否完成；完成后复用必须全部原值。
+记录pageable access/host page table属性；不把本机未复现作为通用
+安全保证，也不把负控损坏宣称已经复现模型路径损坏。
+
+构建g++-14 C++23 -O2 -Wall -Wextra -Werror，零警告；一次进程，
+60秒上限，无重试。run_transfer_probe.py完整经gpu_exclusive.py持锁，
+输出.q4t-work/inference-metadata-20261020/transfer-probe-v1/run，
+锁记录同父目录lease。GPU竞争/监控失败ENV_ABORT，保留全部现场。
+本阶段是正确性诊断，不形成性能结论；copy调用时间仅帮助解释是否
+阻塞，不是benchmark。生产/默认binary保持，HTTP/模型加载0。
+
+## 传输诊断结果与下一步决定
+
+[原始16例](evidence/inference-metadata-20261020/transfer-probe-v1/raw.json)
+已完成，单lease COMPLETED、子进程0、8文件摘要复核通过。
+本机pageable_access=1、host_page_tables=1。四种pageable源早复用
+均保留原值；前三种event尚未完成但值保留，与内部暂存解释一致，
+最大2,506,752字节的调用约50ms、event已完成。只描述本次观察，
+不能证明未来驱动、其他大小或任意错误路径同样安全。
+
+四种pinned源早复用全部变为覆盖值；8种等待event的正控全部原值。
+因此不能直接将局部vector替换为复用pinned staging。必须将完成
+事件与缓冲所有权绑定。该负控证明风险机制，不是现有模型错误复现。
+CUDA13.3来源已明确固定：
+https://docs.nvidia.com/cuda/archive/13.3.0/cuda-runtime-api/api-sync-behavior.html
+
+候选设计收敛到单个入口ModelDecodeBatchMulti：拥有本步token、
+position、slot及RoPE源的上传对象；复用前完成检查，失败路径也保留
+源，析构排空。GPU字段有效范围和目标地址显式列出。先保留现有
+计算形状与kernel，不把KV/SSM加入快照，也不改ModelVerifyMulti已
+明确的finish协议。是否合并GPU布局仍待实现评估，不能以名字叫
+snapshot就宣称降低复杂度。不会因当前未复现pageable错误而跳过
+其余路径与取消/复用审计。
+
+若候选目标包含减少H2D/执行开销，第一项测试仍必须HTTP E2E，
+本次诊断不算未来候选的前置性能通过。候选实施与准确采样预算尚未
+冻结，当前不运行新的模型/GPU测试。目标保持active。

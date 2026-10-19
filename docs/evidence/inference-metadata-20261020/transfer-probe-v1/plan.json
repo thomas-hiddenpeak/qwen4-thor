@@ -1,0 +1,22 @@
+{
+  "cases": 16,
+  "integers": [
+    1,
+    4,
+    8192,
+    626688
+  ],
+  "sources": [
+    "pageable",
+    "pinned"
+  ],
+  "reuse": [
+    "before_wait",
+    "after_wait"
+  ],
+  "delay_ms": 50,
+  "timeout_seconds": 60,
+  "retries": 0,
+  "model_loads": 0,
+  "binary_sha256": "92485c85a146e7ef84a1831a030cb7ca87b58a8afe6eaa08538abf59203f559b"
+}
