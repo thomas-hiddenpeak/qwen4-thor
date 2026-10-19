@@ -4,7 +4,8 @@
 
 ## 当前交付
 
-**B1b已独立工程接受（2026-10-19），按用户授权合入收口。**
+**B1b已独立工程接受并合入main（2026-10-19）。**
+PR #7合并提交a2f5af8；最终审核头88eb43b，两项host检查通过，合并树一致。
 状态ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY；统计性能仍为
 INSUFFICIENT_EVIDENCE，不宣称提速、持平或非劣。用户已单独认可本项
 普通decode最大观察下降0.0789%、最大TTFT增加88.38ms、真实退化上界
@@ -118,8 +119,11 @@ HC up、T4 attention和GDN Record/Fold候选均未接受；HC TTFT根因未明�
 
 ## 分支与证据
 
-B1b合入后核对main包含全部阶段提交，再清理重复工作分支；原证据路径
-保留。B1a分支已清理。既有归档研究与其他worktree未改动。
+根工作区为main。B1b本地/远端分支codex/mtp-gather-b1b已清理，旧tip
+88eb43ba2ea9b22cf1e240e900eed42ac7c256c9完整包含于main合并提交
+a2f5af8d1b9e979baac8c5fb4e13dcdbf7819f9a；删除前核对远端tip、无活动PR、
+无独有提交/未提交工作，远端删除带预期tip保护。原证据路径保留。
+B1a分支已清理。既有归档研究与其他worktree未改动。
 
 历史状态保存在main及研究tag，不作为当前任务安排：
 [生产基线历史状态](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/28a3783350b0c4c3d73fd3d483b5eebe881d2bdb/docs/STATUS.md)。
