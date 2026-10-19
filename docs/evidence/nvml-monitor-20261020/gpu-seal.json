@@ -1,0 +1,16 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792446920.2223759,
+  "finished": 1792446921.399673,
+  "command": [
+    "timeout",
+    "--signal=INT",
+    "--kill-after=5",
+    "60",
+    "python3",
+    "-B",
+    "tools/evalscope/verify_nvml_context.py"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}

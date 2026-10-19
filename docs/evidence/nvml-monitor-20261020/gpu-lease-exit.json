@@ -1,0 +1,23 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "timeout",
+    "--signal=INT",
+    "--kill-after=5",
+    "60",
+    "python3",
+    "-B",
+    "tools/evalscope/verify_nvml_context.py"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-19T21:55:21.392187+00:00",
+    "monotonic": 637003.909076926,
+    "pid": 2013415
+  }
+}

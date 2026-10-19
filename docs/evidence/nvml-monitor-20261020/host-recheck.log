@@ -1,0 +1,8 @@
+test_empty_and_nonempty_success (test_nvml_process_query.QueryTests.test_empty_and_nonempty_success) ... ok
+test_explicit_failure_ignores_partial_pids (test_nvml_process_query.QueryTests.test_explicit_failure_ignores_partial_pids) ... ok
+test_invalid_results_never_publish_pids (test_nvml_process_query.QueryTests.test_invalid_results_never_publish_pids) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.165s
+
+OK

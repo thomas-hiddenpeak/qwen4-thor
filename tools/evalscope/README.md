@@ -239,6 +239,28 @@ exit.json/events.jsonl保留结果；成功仅表示命令成功且未检测到�
 
 ### Jetson Thor监控职责与本机能力（2026-10-20）
 
+已新增显式可选的直接NVML后端（默认仍nvidia-smi）：
+
+```bash
+python3 tools/evalscope/gpu_exclusive.py --compute-backend nvml \
+  --output .q4t-work/my-phase/lease -- python3 my_stage.py
+```
+
+每次查询使用独立Python worker，通过pynvml调用init/count/handle/
+compute-v3/shutdown，不启动nvidia-smi。正常worker退出且完整协议通过
+后才发布PID；新请求随机身份，不缓存上次结果。5秒查询时限，超时
+杀死自己的worker并等待最多1秒清理；未能回收也记失败，不继续查询。
+nvml-queries.jsonl保留每次stdout/stderr、逐API边界及返回状态。错误、
+不支持、超时、协议异常和清理失败均触发ENV_ABORT，无自动fallback。
+现有flock、PID/start_ticks归属、退出确认及清理策略保留。
+
+7项query host合同、26项guard host回归通过；原guard保护下，4字节
+CUDA上下文启动前/存在时/退出后三次直接查询均成功，正确发现PID及
+确认退出。无kernel、模型或HTTP。详见
+[计划和结果](../../docs/NVML_MONITOR_PLAN_2026-10-20.md)。这不证明
+历史负载下超时已解决，也不证明性能优于CLI。相同NVML/驱动仍可能
+阻塞；本次仅提供可选择的后端和更精确的调用边界证据。
+
 本机为L4T R39.2.1。轻量只读采集运行tegrastats 3.2秒、取得3条记录，
 无模型加载或HTTP请求。内存、CPU、温度、供电轨数据可用；本次输出
 没有GPU利用率/频率字段或计算进程PID。缺字段不解释为GPU空闲。
@@ -246,8 +268,8 @@ exit.json/events.jsonl保留结果；成功仅表示命令成功且未检测到�
 证据见[能力记录](../../docs/evidence/jetson-monitor-capabilities-20261020/result.json)。
 
 职责分开处理：系统遥测优先用tegrastats；计算进程竞争检查由guard
-单独承担；Nsight仅按具体分析需要使用。当前guard仍使用nvidia-smi
-PID查询，尚未更换后端或放宽失败规则；其超时是监控通道失败，不能
+单独承担；Nsight仅按具体分析需要使用。当前guard默认仍用nvidia-smi
+PID查询，可显式选择上述NVML后端，失败规则未放宽；超时是监控通道失败，不能
 单独证明模型/GPU计算故障。tegrastats不能凭资源使用率替代PID归属。
 
 Thor不同于早期Jetson：官方说明NVML支持Thor及后续L4T平台，Thor

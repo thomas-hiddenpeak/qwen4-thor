@@ -1,0 +1,34 @@
+test_empty_and_nonempty_success (test_nvml_process_query.QueryTests.test_empty_and_nonempty_success) ... FAIL
+test_explicit_failure_ignores_partial_pids (test_nvml_process_query.QueryTests.test_explicit_failure_ignores_partial_pids) ... FAIL
+test_invalid_results_never_publish_pids (test_nvml_process_query.QueryTests.test_invalid_results_never_publish_pids) ... ok
+test_partial_device_query_failure_discards_pids (test_nvml_process_query.QueryTests.test_partial_device_query_failure_discards_pids) ... ok
+test_shutdown_failure_discards_pids (test_nvml_process_query.QueryTests.test_shutdown_failure_discards_pids) ... ok
+test_timeout_reaps_worker_and_keeps_api_boundary (test_nvml_process_query.QueryTests.test_timeout_reaps_worker_and_keeps_api_boundary) ... ok
+test_unreaped_worker_is_not_success (test_nvml_process_query.QueryTests.test_unreaped_worker_is_not_success) ... ok
+
+======================================================================
+FAIL: test_empty_and_nonempty_success (test_nvml_process_query.QueryTests.test_empty_and_nonempty_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_nvml_process_query.py", line 30, in test_empty_and_nonempty_success
+    self.assertEqual(result['status'], 'OK')
+AssertionError: 'PROTOCOL_ERROR' != 'OK'
+- PROTOCOL_ERROR
++ OK
+
+
+======================================================================
+FAIL: test_explicit_failure_ignores_partial_pids (test_nvml_process_query.QueryTests.test_explicit_failure_ignores_partial_pids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_nvml_process_query.py", line 49, in test_explicit_failure_ignores_partial_pids
+    self.assertEqual(result['status'], 'ERROR')
+AssertionError: 'PROTOCOL_ERROR' != 'ERROR'
+- PROTOCOL_ERROR
++ ERROR
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.450s
+
+FAILED (failures=2)

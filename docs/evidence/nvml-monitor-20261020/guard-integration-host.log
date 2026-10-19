@@ -1,0 +1,6 @@
+test_nvml_guard_success_and_monitor_failure (test_gpu_exclusive.ExclusiveTests.test_nvml_guard_success_and_monitor_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.076s
+
+OK

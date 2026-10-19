@@ -1,0 +1,33 @@
+test_argument_text_is_not_an_executable (test_gpu_exclusive.ExclusiveTests.test_argument_text_is_not_an_executable) ... ok
+test_busy_lease_does_not_start_command_or_rewrite_holder (test_gpu_exclusive.ExclusiveTests.test_busy_lease_does_not_start_command_or_rewrite_holder) ... ok
+test_child_older_than_parent_cannot_prove_ancestry (test_gpu_exclusive.ExclusiveTests.test_child_older_than_parent_cannot_prove_ancestry) ... ok
+test_cleanup_failure_propagates_nonzero_exit (test_gpu_exclusive.ExclusiveTests.test_cleanup_failure_propagates_nonzero_exit) ... ok
+test_command_failure_is_not_environment_failure (test_gpu_exclusive.ExclusiveTests.test_command_failure_is_not_environment_failure) ... ok
+test_cpu_command_completes_and_releases_lease (test_gpu_exclusive.ExclusiveTests.test_cpu_command_completes_and_releases_lease) ... ok
+test_detached_descendant_and_reparented_identity_are_owned (test_gpu_exclusive.ExclusiveTests.test_detached_descendant_and_reparented_identity_are_owned) ... ok
+test_exit_recheck_does_not_hide_reused_pid_or_other_context (test_gpu_exclusive.ExclusiveTests.test_exit_recheck_does_not_hide_reused_pid_or_other_context) ... ok
+test_external_invalid_leases_never_start (test_gpu_exclusive.ExclusiveTests.test_external_invalid_leases_never_start) ... ok
+test_external_lease_survives_cleanup_error (test_gpu_exclusive.ExclusiveTests.test_external_lease_survives_cleanup_error) ... ok
+test_external_lease_survives_guard_success_and_failure (test_gpu_exclusive.ExclusiveTests.test_external_lease_survives_guard_success_and_failure) ... ok
+test_nvml_backend_failure_aborts_before_launch_and_records_query (test_gpu_exclusive.ExclusiveTests.test_nvml_backend_failure_aborts_before_launch_and_records_query) ... ok
+test_nvml_backend_preserves_owned_and_foreign_detection (test_gpu_exclusive.ExclusiveTests.test_nvml_backend_preserves_owned_and_foreign_detection) ... ok
+test_owned_exit_between_driver_and_proc_queries (test_gpu_exclusive.ExclusiveTests.test_owned_exit_between_driver_and_proc_queries) ... ok
+test_owned_group_excluded_unknown_compute_process_detected (test_gpu_exclusive.ExclusiveTests.test_owned_group_excluded_unknown_compute_process_detected) ... ok
+test_owned_stale_context_still_present_or_requery_error_fails_closed (test_gpu_exclusive.ExclusiveTests.test_owned_stale_context_still_present_or_requery_error_fails_closed) ... ok
+test_preflight_conflict_never_launches (test_gpu_exclusive.ExclusiveTests.test_preflight_conflict_never_launches) ... ok
+test_query_failure_is_not_idle (test_gpu_exclusive.ExclusiveTests.test_query_failure_is_not_idle) ... ok
+test_real_detached_child_cleanup_preserves_unrelated_process (test_gpu_exclusive.ExclusiveTests.test_real_detached_child_cleanup_preserves_unrelated_process) ... ok
+test_real_owned_zombie_not_misclassified_as_foreign (test_gpu_exclusive.ExclusiveTests.test_real_owned_zombie_not_misclassified_as_foreign) ... ok
+test_recovery_marker_blocks_owned_and_external_lease (test_gpu_exclusive.ExclusiveTests.test_recovery_marker_blocks_owned_and_external_lease) ... ok
+test_reused_detached_pid_is_not_owned (test_gpu_exclusive.ExclusiveTests.test_reused_detached_pid_is_not_owned) ... ok
+test_runtime_conflict_stops_only_owned_child (test_gpu_exclusive.ExclusiveTests.test_runtime_conflict_stops_only_owned_child) ... Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+KeyboardInterrupt
+ok
+test_stat_identity_survives_missing_executable (test_gpu_exclusive.ExclusiveTests.test_stat_identity_survives_missing_executable) ... ok
+test_unknown_missing_pid_and_unreadable_owned_history_fail_closed (test_gpu_exclusive.ExclusiveTests.test_unknown_missing_pid_and_unreadable_owned_history_fail_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 1.056s
+
+OK

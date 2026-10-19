@@ -20,6 +20,14 @@ B<=max_prefill容量检查，6项无模型入口测试通过；完整新候选�
 [候选](INFERENCE_METADATA_CANDIDATE_2026-10-20.md)和
 [验收停止条件](INFERENCE_METADATA_ACCEPTANCE_2026-10-20.md)。
 
+**直接NVML监控后端已工具级验证（2026-10-20）。** 新增独立worker、
+5秒监督时限与逐API记录，7项query host合同及26项guard回归通过；
+原guard下4字节CUDA上下文三次查询正确识别创建/退出，lease正常。
+无模型加载、HTTP或kernel。guard支持显式--compute-backend nvml，
+默认仍nvidia-smi、失败规则不放宽；尚未证明历史负载超时根因消失。
+后续可冻结选择此后端的验收计划，不必先改全局默认。见
+[范围、失败记录与证据](NVML_MONITOR_PLAN_2026-10-20.md)。
+
 **Thor监控能力轻量核对（2026-10-20）。** 本机tegrastats采集3条，
 内存/CPU/温度/功耗可用；本次无GPU利用率或PID字段，不能替代竞争
 检查。无模型加载、HTTP或新推理采样；guard规则未改。下一步先核实

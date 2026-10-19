@@ -1,0 +1,9 @@
+{
+  "status": "PASS_MINIMAL_CONTEXT_ONLY",
+  "queries": 3,
+  "model_loads": 0,
+  "cuda_alloc_bytes": 4,
+  "fixture_pid": 2013425,
+  "fixture_exit": 0,
+  "finished": 1792446920.809793
+}

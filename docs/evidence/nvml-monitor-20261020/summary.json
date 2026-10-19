@@ -1,0 +1,28 @@
+{
+  "status": "PASS_BOUNDED_TOOL_VALIDATION",
+  "host_query_tests": 7,
+  "host_guard_tests": 26,
+  "gpu_queries": 3,
+  "gpu_sealed_files_verified": 9,
+  "cuda_alloc_bytes": 4,
+  "model_loads": 0,
+  "http": 0,
+  "default_backend": "nvidia-smi",
+  "new_backend": "nvml opt-in",
+  "prior_failure": "mock stdout extra newline; fixed fixture and rechecked all three dependent tests",
+  "limits": [
+    "No proof of historical timeout root cause",
+    "No loaded-model backend acceptance",
+    "No performance claim"
+  ],
+  "sha256": {
+    "tools/evalscope/nvml_process_query.py": "0c56ed6de4b4f9c04d953fc0c0a2c7dd363f763b7153c87365d43fdc181d40ec",
+    "tools/evalscope/test_nvml_process_query.py": "2412c403e1148166cad26fc6603773e96dd8132a22dbe4e5cf112382fed2e9de",
+    "tools/evalscope/gpu_exclusive.py": "504fee3a1caff79ba2d48dd7a6960f90dbda10222fa6977c1f62ce6499bf23df",
+    "tools/evalscope/test_gpu_exclusive.py": "4a9a29d4361471bb027ea661fcfc3971c19c04496b3f0af875e609722c2bfff5",
+    "tools/evalscope/nvml_context_fixture.cpp": "67b57e3f04945201a47743f28acde6786c697ddbd239e32e0a99ca51408596d0",
+    "tools/evalscope/verify_nvml_context.py": "e68a820322a725e7b89f2c6810982df32a9273a3f857d878f154db498807ad6e",
+    ".q4t-work/nvml-monitor-20261020/context-fixture": "f4e5d2ad6ea5612cc00b0eb1918e06df14b936992f0e6d96c247943a9e9f0170"
+  },
+  "default_binary_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03"
+}

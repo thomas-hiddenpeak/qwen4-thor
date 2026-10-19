@@ -18,6 +18,8 @@ import stat
 import subprocess
 import time
 
+import nvml_process_query
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -78,6 +80,16 @@ def gpu_command(record):
         (name == 'nsys' and any(v in argv[1:3] for v in ('launch', 'profile'))))
 
 
+def nvml_pids(log_path):
+    result = nvml_process_query.query(timeout=5)
+    with log_path.open('a') as log:
+        log.write(json.dumps(result) + '\n')
+    if result['status'] != 'OK':
+        raise RuntimeError('NVML process query: ' + result['status'] +
+                           '; details in ' + str(log_path))
+    return set(result['pids'])
+
+
 def owned_processes(records, owner_pgid, history):
     """Prove ownership by current ancestry or a previously observed identity."""
     if owner_pgid is None:
@@ -122,8 +134,9 @@ def signal_identity(pid, identity, signum):
         os.close(fd)
 
 
-def inspect(owner_pgid=None, owned_history=None):
-    compute = nvidia_pids()  # Errors fail closed; never interpreted as idle.
+def inspect(owner_pgid=None, owned_history=None, compute_query=None):
+    compute_query = compute_query or nvidia_pids
+    compute = compute_query()  # Errors fail closed; never interpreted as idle.
     # Read process groups after the driver query so newly created owned GPU
     # children are not mistaken for unrelated processes from a stale snapshot.
     records = processes()
@@ -136,7 +149,7 @@ def inspect(owner_pgid=None, owned_history=None):
     if candidates:
         # NVIDIA may report a context whose owned process exited before /proc
         # was read. Require a fresh query AND /proc snapshot to confirm exit.
-        refreshed_compute = nvidia_pids()
+        refreshed_compute = compute_query()
         refreshed_records = processes()
         for pid in candidates:
             if pid not in refreshed_compute and pid not in refreshed_records:
@@ -243,9 +256,18 @@ def borrowed_lock(fd, lock_path):
     return os.fdopen(os.dup(fd), 'r+')
 
 
-def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None):
+def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
+              compute_backend='nvidia-smi'):
+    if compute_backend not in ('nvidia-smi', 'nvml'):
+        raise ValueError('unknown compute backend')
     out.mkdir(parents=True, exist_ok=False)
+    scan = inspect
+    if compute_backend == 'nvml':
+        def scan(*args):
+            return inspect(*args, compute_query=lambda: nvml_pids(
+                out / 'nvml-queries.jsonl'))
     status = {'status': 'INITIALIZING', 'command': command,
+              'compute_backend': compute_backend,
               'lock_path': str(lock_path), 'poll_interval_seconds': interval,
               'poll_scope': 'cooperative flock plus /proc and NVIDIA compute polling',
               'performance_acceptance': False, 'child_returncode': None,
@@ -286,7 +308,7 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None):
             lock.write(json.dumps(lease) + '\n')
             lock.flush()
             record('lease_acquired')
-            snapshot = inspect()
+            snapshot = scan()
             record('preflight', **snapshot)
             if snapshot['conflicts']:
                 status['status'] = 'ENV_ABORT'
@@ -296,7 +318,7 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None):
             record('child_started', child_pid=child.pid)
             owned_history = {}
             while True:
-                snapshot = inspect(child.pid, owned_history)
+                snapshot = scan(child.pid, owned_history)
                 record('monitor', **snapshot)
                 if snapshot['conflicts']:
                     status['status'] = 'ENV_ABORT'
@@ -344,6 +366,9 @@ def main():
     signal.signal(signal.SIGTERM, interrupted)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--compute-backend', choices=['nvidia-smi', 'nvml'],
+                        default='nvidia-smi',
+                        help='explicit compute PID query backend; no fallback')
     parser.add_argument('--lease-fd', type=int,
                         help='inherited exclusive lease; external owner handles recovery')
     parser.add_argument('command', nargs=argparse.REMAINDER)
@@ -354,7 +379,8 @@ def main():
     out = args.output.resolve()
     if not any(out.is_relative_to(ROOT / p) for p in ('build', '.q4t-work')):
         parser.error('output must be under build/ or .q4t-work/')
-    result = run_guard(command, out, common_lock(), lease_fd=args.lease_fd)
+    result = run_guard(command, out, common_lock(), lease_fd=args.lease_fd,
+                       compute_backend=args.compute_backend)
     # A cleanup failure in finally must override an otherwise successful return.
     if json.loads((out / 'exit.json').read_text())['status'] == 'ENV_ABORT':
         result = 75

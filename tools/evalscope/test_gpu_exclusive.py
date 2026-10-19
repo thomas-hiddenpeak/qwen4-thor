@@ -17,6 +17,60 @@ WORK = guard.ROOT / '.q4t-work/gpu-exclusive-tests'
 
 
 class ExclusiveTests(unittest.TestCase):
+    def test_nvml_guard_success_and_monitor_failure(self):
+        ok = dict(status='OK', pids=[], request_id='test')
+        for failure in (False, True):
+            with self.subTest(failure=failure):
+                out = self.root / str(failure)
+                calls = [0]
+
+                def query(**_):
+                    calls[0] += 1
+                    if failure and calls[0] > 1:
+                        return dict(status='TIMEOUT', pids=None, request_id='test')
+                    return ok
+
+                with patch.object(guard.nvml_process_query, 'query',
+                                  side_effect=query), \
+                        patch.object(guard, 'processes', return_value={}):
+                    code = guard.run_guard(
+                        [sys.executable, '-c', 'import time; time.sleep(.05)'],
+                        out, self.lock, interval=.01, grace=1,
+                        compute_backend='nvml')
+                self.assertEqual(code, 75 if failure else 0)
+                status = json.loads((out / 'exit.json').read_text())
+                self.assertEqual(status['compute_backend'], 'nvml')
+                self.assertEqual(status['status'],
+                                 'ENV_ABORT' if failure else 'COMPLETED')
+                self.assertIsNotNone(status['child_returncode'])
+
+    def test_nvml_backend_failure_aborts_before_launch_and_records_query(self):
+        for status in ['ERROR', 'TIMEOUT', 'PROTOCOL_ERROR', 'CLEANUP_FAILED']:
+            with self.subTest(status=status):
+                out = self.root / status
+                result = dict(status=status, pids=None, request_id='test')
+                with patch.object(guard.nvml_process_query, 'query',
+                                  return_value=result), \
+                        patch.object(guard.subprocess, 'Popen') as launch:
+                    code = guard.run_guard(['must-not-run'], out, self.lock,
+                                           compute_backend='nvml')
+                    launch.assert_not_called()
+                self.assertEqual(code, 75)
+                self.assertEqual(json.loads((out / 'exit.json').read_text())[
+                    'status'], 'ENV_ABORT')
+                self.assertEqual(json.loads((out / 'nvml-queries.jsonl').read_text()),
+                                 result)
+
+    def test_nvml_backend_preserves_owned_and_foreign_detection(self):
+        records = {10: {'pgid': 5, 'ppid': 5, 'start_ticks': 100},
+                   20: {'pgid': 20, 'ppid': 1, 'start_ticks': 200}}
+        with patch.object(guard.nvml_process_query, 'query', return_value={
+                'status': 'OK', 'pids': [10, 20], 'request_id': 'test'}), \
+                patch.object(guard, 'processes', return_value=records):
+            snapshot = guard.inspect(5, compute_query=lambda: guard.nvml_pids(
+                self.root / 'queries.jsonl'))
+        self.assertEqual([row['pid'] for row in snapshot['conflicts']], [20])
+
     def setUp(self):
         WORK.mkdir(parents=True, exist_ok=True)
         self.temp = tempfile.TemporaryDirectory(dir=WORK)
