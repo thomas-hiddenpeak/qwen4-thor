@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-19",
+  "candidate_sha256": "ba570f6b9905d589f7d11e2558c0eaf13627a910ce86136ec66b3265262722e2",
+  "validated_head": "36cbd3193d4c28f67e02cf8462d358a6fc2faebd",
+  "engineering_acceptance": "ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY",
+  "statistical_performance": "INSUFFICIENT_EVIDENCE",
+  "approval_source": "User explicitly instructed B1b engineering acceptance closure, separate timing-risk acknowledgement under current rules, then merge; see delivery decision.",
+  "acknowledged_risks": [
+    "Maximum observed plain decode loss 0.0789%",
+    "Maximum absolute TTFT increase 88.38 ms",
+    "No credible resolution bands or cross-start difference intervals; real regression upper bound unconstrained",
+    "86.48-second tool-failure gap between leases; drift and brief interference not excluded"
+  ],
+  "additional_requests": 0,
+  "merge_authorized": true,
+  "deployment_authorized": false
+}

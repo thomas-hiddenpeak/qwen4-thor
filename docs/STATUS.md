@@ -1,8 +1,21 @@
 # 当前状态
 
-更新：2026-10-18。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+更新：2026-10-19。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
 ## 当前交付
+
+**B1b已独立工程接受（2026-10-19），按用户授权合入收口。**
+状态ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY；统计性能仍为
+INSUFFICIENT_EVIDENCE，不宣称提速、持平或非劣。用户已单独认可本项
+普通decode最大观察下降0.0789%、最大TTFT增加88.38ms、真实退化上界
+未约束及86.48秒工具故障锁间隔风险，不继承B1a决定。
+复用零警告构建、82 HTTP、候选37/37、父8/8及12步状态逐位差分；
+新增采样0。默认build/q4t仍为B1a，未部署B1b，不启动Megatron。
+见[本项决定、全部观察与回退](MTP_GATHER_B1B_2026-10-19.md)及
+[PR #7](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/7)。
+
+以下历史入口中的旧生产binary与分支描述不覆盖上述及B1a部署记录。
+
 
 **B1a已工程接受并合入main（2026-10-18）。** 用户在最终审查披露风险
 后要求并入主线，按ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY接受，
@@ -89,17 +102,14 @@ archive/main-convergence-delivery-20261017标签保护并从远端独立取回�
 
 ## 已接受生产基线
 
-main包含f3a975c工具/规则交付；推理算法源码与28a3783一致，src/main.cpp
-仅展示文字/注释更新。原已接受binary为
-be74946d815904e84899c64fd88511cb0474166bef9d199c22330e8413db5072，
-备份于.q4t-work/description-audit-20261017/q4t-before。
-当前build/q4t为描述修正后的构建
-8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee，
-CLI展示已检查；精确binary的off质量11/11和本次on/off五档输出检查
-已实测。on完整质量仍复用算法未变的旧证据，不记为新hash的11题实测。
+B1b源码按PR #7合入；此前main为a893dc8，包含B1a合并c3f3c45。
+默认build/q4t及release元数据为已接受B1a binary
+44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03，
+对应真实构建缓存与回退见[B1a部署](MTP_POSITION_B1A_DEPLOY_2026-10-18.md)。
+8685d8bf与更早be74946d是前代基线，不是当前默认入口。
 默认MTP k=3，--no-mtp回退普通decode；PLE上传修复与N=4等合同保留。
-[数值收口与五档证据](MTP_NUMERICAL_CLOSURE_2026-10-16.md)继续有效，
-身份/依赖不变的已通过项复用。当前不是任意模型/任意输入正确性的证明。
+[数值收口](MTP_NUMERICAL_CLOSURE_2026-10-16.md)的未变依赖证据继续复用，
+B1b候选独立保存在.q4t-work/b1b-20261019/build/q4t，未替换默认入口。
 
 HC up、T4 attention和GDN Record/Fold候选均未接受；HC TTFT根因未明，
 原因果目标blocked未完成，不自动恢复诊断或把差异称为噪声。微小变化
@@ -108,10 +118,8 @@ HC up、T4 attention和GDN Record/Fold候选均未接受；HC TTFT根因未明�
 
 ## 分支与证据
 
-本轮为未决B1a交付建立唯一工作分支codex/mtp-position-b1a，当前根工作区
-位于该分支；main保持生产基线。四个annotated归档标签继续保护研究历史与
-最终PR头，既有20个工作区及1248份旧证据原路径保留。B1a分支含独有实现
-和证据，暂不清理；不自动启动B1b或其他后续候选。
+B1b合入后核对main包含全部阶段提交，再清理重复工作分支；原证据路径
+保留。B1a分支已清理。既有归档研究与其他worktree未改动。
 
 历史状态保存在main及研究tag，不作为当前任务安排：
 [生产基线历史状态](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/28a3783350b0c4c3d73fd3d483b5eebe881d2bdb/docs/STATUS.md)。

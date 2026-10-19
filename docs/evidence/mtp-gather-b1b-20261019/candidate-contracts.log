@@ -1,0 +1,158 @@
+[PASS] budget_infeasible_capacity_never_becomes_a_minimum
+[PASS] budget_exact_fit_and_one_byte_short
+[PASS] budget_minimum_boundaries_fail_without_capacity_fallback
+[PASS] budget_sequence_cap_keeps_requested_and_effective_distinct
+[PASS] budget_auto_search_finds_largest_supported_capacity
+[PASS] budget_auto_minimum_preserves_requested_sequence_count
+[PASS] budget_default_fraction_and_prefill_use_effective_parameters
+[PASS] budget_text_baseline_tracks_resident_allocations
+[PASS] budget_context_ceiling_is_applied_to_explicit_requests
+[PASS] budget_mtp_off_has_no_draft_reservation
+[PASS] budget_mtp_accounts_for_loaded_and_lazy_allocations
+[PASS] budget_mtp_loading_and_request_peaks_are_separate
+[PASS] budget_mtp_loading_peak_exact_and_one_byte_short
+[PASS] budget_mtp_runtime_peak_caps_length_without_dropping_charges
+[PASS] budget_mtp_chunk_bound_is_monotone_across_full_last_chunk
+[PASS] budget_mtp_requires_independent_weight_staging_and_workspace_inputs
+[PASS] budget_mtp_scope_rejects_unsupported_configurations
+[PASS] budget_mtp_overflowed_weight_or_loading_peak_fails_closed
+[PASS] budget_ple_counts_all_ngram_heads_and_registered_pool
+[PASS] budget_runtime_workspace_sizes_override_reference_estimates
+[PASS] budget_kv_page_rounding_matches_allocated_state
+[PASS] budget_invalid_or_overflowed_estimate_fails_closed
+[PASS] residency_capacity_empty_missing_and_nonuniform_layers
+[PASS] residency_capacity_rejects_ambiguous_or_invalid_lists
+[PASS] residency_capacity_file_errors_fail_before_loading
+metadata max=3 rows=1 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=3 rows=2 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=3 rows=3 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=3 rows=4 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=3 rows=5 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=3 rows=6 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=3 rows=7 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=3 rows=8 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=4 rows=1 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=4 rows=2 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=4 rows=3 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=4 rows=4 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=4 rows=5 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=4 rows=6 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=4 rows=7 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=4 rows=8 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8191 rows=1 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8191 rows=2 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8191 rows=3 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8191 rows=4 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8191 rows=5 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8191 rows=6 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8191 rows=7 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8191 rows=8 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8192 rows=1 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8192 rows=2 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8192 rows=3 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8192 rows=4 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8192 rows=5 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8192 rows=6 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8192 rows=7 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8192 rows=8 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8194 rows=1 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8194 rows=2 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8194 rows=3 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8194 rows=4 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8194 rows=5 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metada[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=50 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=50 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=60 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=60 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=80 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=80 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+ta max=8194 rows=6 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8194 rows=7 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8194 rows=8 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8195 rows=1 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8195 rows=2 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8195 rows=3 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8195 rows=4 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8195 rows=5 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8195 rows=6 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8195 rows=7 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8195 rows=8 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8196 rows=1 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8196 rows=2 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8196 rows=3 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8196 rows=4 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8196 rows=5 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8196 rows=6 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8196 rows=7 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+metadata max=8196 rows=8 steps=2 logits_hidden_kv_raw_comp_bit_exact=1
+[PASS] mtp_position_metadata_exact
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=12
+  seq 1: accepted_count=1 next_b=37693 next_d0=12
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_step
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=0 0 0 0  gt1=0 0 0 0
+  seq 0: accepted_count=3 next_b=0 next_d0=0
+  seq 1: accepted_count=3 next_b=0 next_d0=0
+  seq 0: accepted_count=3 next_b=0 next_d0=0
+  seq 1: accepted_count=3 next_b=0 next_d0=0
+  seq 0: accepted_count=3 next_b=0 next_d0=0
+  seq 1: accepted_count=3 next_b=0 next_d0=0
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_full_k2
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_offsets_null
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_offsets_capacity
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=0 0 0 0  gt1=0 0 0 0
+  seq 0: accepted_count=4 next_b=0 next_d0=0
+  seq 1: accepted_count=4 next_b=0 next_d0=0
+  seq 0: accepted_count=4 next_b=0 next_d0=0
+  seq 1: accepted_count=4 next_b=0 next_d0=0
+  seq 0: accepted_count=4 next_b=0 next_d0=0
+  seq 1: accepted_count=4 next_b=0 next_d0=0
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_full_k3
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=2 next_b=87048 next_d0=8
+  seq 1: accepted_count=2 next_b=5050 next_d0=470
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_accept_first_k3
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=12
+  seq 1: accepted_count=1 next_b=37693 next_d0=12
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_step_k1
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=-1
+  seq 1: accepted_count=1 next_b=37693 next_d0=-1
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_terminal_k1
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=-1
+  seq 1: accepted_count=1 next_b=37693 next_d0=-1
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_terminal_k3
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=12
+  seq 1: accepted_count=1 next_b=37693 next_d0=-1
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_mixed_terminal
+[PASS] mtp_spec_multi_rejects_invalid_outputs
+37 tests, 37 passed, 0 failed, 0 skipped

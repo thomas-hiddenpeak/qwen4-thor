@@ -180,12 +180,12 @@ Q4T_TEST(budget_mtp_off_has_no_draft_reservation) {
   Q4T_CHECK(plain.feasible && draft.feasible);
   Q4T_CHECK(plain.mtp_workspace == 0 && plain.per_request == 0);
   Q4T_CHECK(draft.mtp_workspace == request.mtp_workspace_bytes);
-  Q4T_CHECK(draft.fixed - plain.fixed == 11353926248ULL);
+  Q4T_CHECK(draft.fixed - plain.fixed == 11353926264ULL);
   Q4T_CHECK(plain.mtp_weights == 0 && plain.mtp_scratch == 0);
   Q4T_CHECK(plain.mtp_checkpoints == 0 && plain.loading_host_peak == 0);
   // Full prompt trunk plus all draft-extend buffers, rolling g and host/IO
   // scratch. Independent weights and rollback scratch are persistent.
-  Q4T_CHECK(draft.per_request == 9665896608ULL);
+  Q4T_CHECK(draft.per_request == 9665896592ULL);
   // One extra full-attention pool plus an independent three-axis RoPE.
   Q4T_CHECK(draft.state_pool - plain.state_pool == 675282944ULL);
   Q4T_CHECK(draft.report.find("MTP allocation scope") != std::string::npos);
@@ -202,14 +202,17 @@ Q4T_TEST(budget_mtp_accounts_for_loaded_and_lazy_allocations) {
   Q4T_CHECK(budget.mtp_weights == 6000000000ULL);
   // LoadMtp: sample[2560], trunk[10240], logits[248320], all BF16.
   Q4T_CHECK(budget.mtp_buffers == 522240);
-  // ReserveScratch(k_max=4): 2,191,392 single-step bytes and 4,285,512
+  // ReserveScratch(k_max=4): 2,191,392 single-step bytes and 4,285,528
   // batched bytes. The batched allocations exist even at max_seq=1.
-  Q4T_CHECK(budget.mtp_scratch == 6476904);
+  Q4T_CHECK(budget.mtp_scratch == 6476920);
+  // The 16-byte device offset charge moved from transient to persistent;
+  // host gather_off remains charged. Runtime total is unchanged.
+  Q4T_CHECK(budget.mtp_scratch + budget.mtp_forward_temp == 23291144);
   // Three checkpoints of 36 linear SSM/conv pools and one PLE conv pool.
   Q4T_CHECK(budget.mtp_checkpoints == 346927104);
   // Async counts/token lists are additional to their unused d_ws reserve;
   // include counts_h, attention host positions and decode metadata too.
-  Q4T_CHECK(budget.mtp_forward_temp == 16814240);
+  Q4T_CHECK(budget.mtp_forward_temp == 16814224);
   Q4T_CHECK(budget.loading_host_peak == 3355443200ULL);
   Q4T_CHECK(budget.estimated_total == budget.runtime_peak);
   Q4T_CHECK(budget.runtime_peak > budget.startup_peak);

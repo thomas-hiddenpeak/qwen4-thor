@@ -1,0 +1,6 @@
+{
+  "initial_failure": "Anchored metadata-line regex did not find all 56 because stderr [q4t] diagnostics split buffered stdout records.",
+  "repair": "Remove only complete stderr diagnostic records for parsing; compare exact 56 expected max/rows pairs, all bit-exact marker fields. Raw log retained.",
+  "new_gpu_requests": 0,
+  "new_http_requests": 0
+}

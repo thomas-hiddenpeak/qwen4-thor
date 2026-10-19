@@ -1,0 +1,11 @@
+{
+  "status": "RUNNING",
+  "reserved_requests": 67,
+  "completed": [
+    "quality-on",
+    "candidate-on",
+    "quality-off",
+    "candidate-off"
+  ],
+  "start": 1792347799.5312853
+}

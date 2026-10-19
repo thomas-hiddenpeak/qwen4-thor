@@ -1,0 +1,5 @@
+{
+  "reason": "Pre-execution review found legacy snapshot covers only slot0; replace with explicit two-slot reads. No direct test executed yet; no HTTP binary change.",
+  "gate_sha256": "301da1d5741de6930b099d408433d74b52556fc4296501b26c7cfb179b44747d",
+  "updated_test_source_sha256": "bb1681056b2f4c236cba074dc0969d85918af8ed7e52ed1a96c7eed51bed0133"
+}

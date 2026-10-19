@@ -1,0 +1,6 @@
+partial load: missing tensor, allocation failures 1..4, retry, both streams, borrowed ownership: PASS
+scratch: 23 failure boundaries, grow/retry/idempotence: PASS
+scratch: 23 failure boundaries, grow/retry/idempotence: PASS
+checkpoints: failures 1..3, capacity/validity reset, retry/grow: PASS
+real load: success, reload rejection, failure at 8/39, nested cleanup: PASS
+MTP lifecycle: PASS

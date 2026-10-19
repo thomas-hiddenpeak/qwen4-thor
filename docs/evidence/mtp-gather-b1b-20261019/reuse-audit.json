@@ -1,0 +1,1422 @@
+[
+  {
+    "path": ".q4t-work/b1a-20261017/CMakeCache.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/analyze.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/archive.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/boundaries/binary.sha256",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/boundaries/cancellation.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/boundaries/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/boundaries/exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/boundaries/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/boundaries/server.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/boundaries.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/boundaries.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/build-contracts-final.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/build-contracts-post-http.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/build-contracts.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/build-delivery.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/build.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/candidate.patch",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/continue.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/contracts-identity-executed.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/contracts-identity-final.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/contracts-identity.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/contracts.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/contracts.required",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/delivery-identity.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/direct-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/environment.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/final.patch",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/guard.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/http-complete",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/identity-before-http.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/lease/events.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/lease/exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/CMakeCache.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/binary.sha256",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/capacity.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/commit.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/20261017_231635/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/20261017_231635/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/20261017_231635/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/20261017_231635/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/20261017_231635/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/20261017_231635/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/20261017_231635/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/20261017_231635/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/20261017_231635/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-1024/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/20261017_232143/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/20261017_232143/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/20261017_232143/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/20261017_232143/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/20261017_232143/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/20261017_232143/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/20261017_232143/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/20261017_232143/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/20261017_232143/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-204800/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/20261017_231724/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/20261017_231724/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/20261017_231724/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/20261017_231724/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/20261017_231724/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/20261017_231724/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/20261017_231724/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/20261017_231724/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/20261017_231724/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-4096/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/20261017_231923/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/20261017_231923/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/20261017_231923/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/20261017_231923/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/20261017_231923/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/20261017_231923/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/20261017_231923/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/20261017_231923/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/20261017_231923/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-45056/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/20261017_231820/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/20261017_231820/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/20261017_231820/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/20261017_231820/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/20261017_231820/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/20261017_231820/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/20261017_231820/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/20261017_231820/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/20261017_231820/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/context-8192/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/evalscope-version.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/events.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/inputs/context-1024.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/inputs/context-204800.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/inputs/context-4096.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/inputs/context-45056.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/inputs/context-8192.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/memory-phase.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/performance-plan.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/response_identity.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/results.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/run_acceptance.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/server-command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/server.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/server.pid",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off/worktree.patch",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off-driver.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/off-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/CMakeCache.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/binary.sha256",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/capacity.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/commit.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/20261017_225913/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/20261017_225913/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/20261017_225913/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/20261017_225913/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/20261017_225913/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/20261017_225913/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/20261017_225913/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/20261017_225913/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/20261017_225913/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-1024/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/20261017_230304/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/20261017_230304/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/20261017_230304/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/20261017_230304/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/20261017_230304/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/20261017_230304/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/20261017_230304/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/20261017_230304/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/20261017_230304/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-204800/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/20261017_225943/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/20261017_225943/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/20261017_225943/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/20261017_225943/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/20261017_225943/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/20261017_225943/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/20261017_225943/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/20261017_225943/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/20261017_225943/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-4096/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/20261017_230101/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/20261017_230101/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/20261017_230101/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/20261017_230101/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/20261017_230101/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/20261017_230101/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/20261017_230101/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/20261017_230101/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/20261017_230101/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-45056/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/20261017_230019/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/20261017_230019/qwen3.8-flash-next/parallel_1_number_3/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/20261017_230019/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/20261017_230019/qwen3.8-flash-next/parallel_1_number_3/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/20261017_230019/qwen3.8-flash-next/parallel_1_number_3/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/20261017_230019/qwen3.8-flash-next/parallel_1_number_3/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/20261017_230019/qwen3.8-flash-next/parallel_1_number_3/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/20261017_230019/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/20261017_230019/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/context-8192/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/evalscope-version.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/events.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/inputs/context-1024.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/inputs/context-204800.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/inputs/context-4096.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/inputs/context-45056.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/inputs/context-8192.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/memory-phase.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/performance-plan.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/response_identity.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/results.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/run_acceptance.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/server-command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/server.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/server.pid",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on/worktree.patch",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on-driver.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/on-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/performance-table.md",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/plan.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/q4t-baseline",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/q4t-candidate",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/CMakeCache.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/binary.sha256",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/capacity.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/commit.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/evalscope-version.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/events.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/inputs/manifest.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/inputs/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/memory-phase.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/20261017_231224/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/20261017_231224/qwen3.8-flash-next/parallel_1_number_11/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/20261017_231224/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/20261017_231224/qwen3.8-flash-next/parallel_1_number_11/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/20261017_231224/qwen3.8-flash-next/parallel_1_number_11/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/20261017_231224/qwen3.8-flash-next/parallel_1_number_11/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/20261017_231224/qwen3.8-flash-next/parallel_1_number_11/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/20261017_231224/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/20261017_231224/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-10.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-3.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-4.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-5.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-6.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-7.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-8.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/output-9.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/quality/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/response_identity.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/results.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/run_acceptance.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/server-command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/server.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/server.pid",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off/worktree.patch",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off-driver.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-off-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/CMakeCache.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/binary.sha256",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/capacity.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/commit.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/evalscope-version.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/events.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/inputs/manifest.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/inputs/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/memory-phase.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/20261017_225448/qwen3.8-flash-next/benchmark.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/20261017_225448/qwen3.8-flash-next/parallel_1_number_11/benchmark_args.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/20261017_225448/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/20261017_225448/qwen3.8-flash-next/parallel_1_number_11/benchmark_percentile.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/20261017_225448/qwen3.8-flash-next/parallel_1_number_11/benchmark_summary.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/20261017_225448/qwen3.8-flash-next/parallel_1_number_11/workload_throughput.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/20261017_225448/qwen3.8-flash-next/parallel_1_number_11/workload_timeline.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/20261017_225448/qwen3.8-flash-next/perf_report.html",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/20261017_225448/qwen3.8-flash-next/performance_summary.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/client-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/client.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-0.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-1.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-10.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-2.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-3.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-4.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-5.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-6.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-7.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-8.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/output-9.txt",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/request-boundaries.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/requests.jsonl",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/quality/responses.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/response_identity.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/results.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/run_acceptance.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/server-command.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/server.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/server.pid",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on/worktree.patch",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on-driver.log",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/quality-on-exit.json",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/run_contracts.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/run_phase.py",
+    "ok": true
+  },
+  {
+    "path": ".q4t-work/b1a-20261017/summary.json",
+    "ok": true
+  }
+]

@@ -1,0 +1,42 @@
+{
+  "leases": [
+    {
+      "directory": "lease",
+      "start": {
+        "utc": "2026-10-18T18:23:19.466907+00:00",
+        "monotonic": 537881.983786043,
+        "pid": 1652580,
+        "event": "lease_acquired"
+      },
+      "end": {
+        "utc": "2026-10-18T18:59:44.050390+00:00",
+        "monotonic": 540066.567267773,
+        "pid": 1652580,
+        "event": "lease_released",
+        "status": "COMMAND_FAILED"
+      },
+      "monitors": 2107,
+      "seconds": 2184.583481729962
+    },
+    {
+      "directory": "lease-resume-01",
+      "start": {
+        "utc": "2026-10-18T19:01:10.526034+00:00",
+        "monotonic": 540153.042912724,
+        "pid": 1664651,
+        "event": "lease_acquired"
+      },
+      "end": {
+        "utc": "2026-10-18T19:31:08.270212+00:00",
+        "monotonic": 541950.787088982,
+        "pid": 1664651,
+        "event": "lease_released",
+        "status": "COMPLETED"
+      },
+      "monitors": 1734,
+      "seconds": 1797.7441762579838
+    }
+  ],
+  "gap_seconds": 86.47564495098777,
+  "limitation": "Two complete guarded drivers separated by a tool-preflight failure. No detected contention; polling cannot exclude invisible/sub-interval interference."
+}

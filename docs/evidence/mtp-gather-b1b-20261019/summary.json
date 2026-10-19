@@ -1,0 +1,834 @@
+{
+  "status": "REVIEW_REQUIRED",
+  "calculation": "PASS_WITH_STATED_SCOPE",
+  "http_quality": {
+    "on": {
+      "requests": 11,
+      "passed": 11
+    },
+    "off": {
+      "requests": 11,
+      "passed": 11
+    }
+  },
+  "http_counts": {
+    "quality-on": 11,
+    "candidate-on": 15,
+    "quality-off": 11,
+    "candidate-off": 15,
+    "parent-off-r1": 15,
+    "parent-on": 15
+  },
+  "total_requests": 82,
+  "dbs": [
+    {
+      "path": "quality-on/quality/20261019_022400/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db",
+      "requests": 11
+    },
+    {
+      "path": "candidate-on/context-1024/20261019_022826/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "candidate-on/context-204800/20261019_023217/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "candidate-on/context-4096/20261019_022856/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "candidate-on/context-45056/20261019_023014/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "candidate-on/context-8192/20261019_022932/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "quality-off/quality/20261019_024138/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db",
+      "requests": 11
+    },
+    {
+      "path": "candidate-off/context-1024/20261019_024549/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "candidate-off/context-204800/20261019_025057/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "candidate-off/context-4096/20261019_024638/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "candidate-off/context-45056/20261019_024837/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "candidate-off/context-8192/20261019_024734/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "parent-off-r1/context-1024/20261019_030140/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "parent-off-r1/context-204800/20261019_030647/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "parent-off-r1/context-4096/20261019_030229/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "parent-off-r1/context-45056/20261019_030428/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "parent-off-r1/context-8192/20261019_030325/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "parent-on/context-1024/20261019_031605/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "parent-on/context-204800/20261019_031956/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "parent-on/context-4096/20261019_031636/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "parent-on/context-45056/20261019_031754/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    },
+    {
+      "path": "parent-on/context-8192/20261019_031711/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+      "requests": 3
+    }
+  ],
+  "direct": {
+    "candidate": {
+      "required": 37,
+      "passed": 37,
+      "failed": 0,
+      "skipped": 0
+    },
+    "parent": {
+      "required": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "state_pairs": 12,
+  "metrics": [
+    {
+      "mode": "on",
+      "nominal_input": 1024,
+      "parent": {
+        "ttft_mean_s": 0.9604175473408153,
+        "decode_aggregate_tps": 34.70272075965063,
+        "actual_input": 1006,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          1.0673698229948059,
+          0.9086122970329598,
+          0.9052705219946802
+        ],
+        "latency_samples_s": [
+          8.429658612934873,
+          8.24707284104079,
+          8.248902241000906
+        ],
+        "decode_samples_tps": [
+          34.63596814463941,
+          34.748432381804996,
+          34.7239635315628
+        ],
+        "first_after_load": [
+          true,
+          false,
+          false
+        ]
+      },
+      "candidate": {
+        "ttft_mean_s": 0.9623246499492476,
+        "decode_aggregate_tps": 34.81799896594707,
+        "actual_input": 1006,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          1.0799226299859583,
+          0.9072466709185392,
+          0.8998046489432454
+        ],
+        "latency_samples_s": [
+          8.40167836996261,
+          8.233288820949383,
+          8.223401517956518
+        ],
+        "decode_samples_tps": [
+          34.82771196636685,
+          34.80733454405888,
+          34.81895638998448
+        ],
+        "first_after_load": [
+          true,
+          false,
+          false
+        ]
+      },
+      "ttft_increase_pct": 0.1985701545866858,
+      "decode_decrease_pct": -0.332187804797357
+    },
+    {
+      "mode": "on",
+      "nominal_input": 4096,
+      "parent": {
+        "ttft_mean_s": 2.9465678059884035,
+        "decode_aggregate_tps": 35.65803904488241,
+        "actual_input": 4075,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          2.9887233519693837,
+          2.9279029350727797,
+          2.9230771309230477
+        ],
+        "latency_samples_s": [
+          10.145646122982726,
+          10.078098024008796,
+          10.069746985915117
+        ],
+        "decode_samples_tps": [
+          35.62983815233971,
+          35.66336258357186,
+          35.68095423099448
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate": {
+        "ttft_mean_s": 2.939431521614703,
+        "decode_aggregate_tps": 35.675791428715435,
+        "actual_input": 4075,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          2.981792982900515,
+          2.9194662049412727,
+          2.917035377002321
+        ],
+        "latency_samples_s": [
+          10.137889434932731,
+          10.062041961937211,
+          10.061475411988795
+        ],
+        "decode_samples_tps": [
+          35.633952352274974,
+          35.70140642193891,
+          35.69209045793087
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "ttft_increase_pct": -0.2421897218586766,
+      "decode_decrease_pct": -0.04978508159318995
+    },
+    {
+      "mode": "on",
+      "nominal_input": 8192,
+      "parent": {
+        "ttft_mean_s": 5.635956957393016,
+        "decode_aggregate_tps": 37.62843148104809,
+        "actual_input": 8159,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          5.657817736035213,
+          5.623882055049762,
+          5.626171081094071
+        ],
+        "latency_samples_s": [
+          12.456993281957693,
+          12.386286966037005,
+          12.394962364109233
+        ],
+        "decode_samples_tps": [
+          37.50454717306505,
+          37.708478471274,
+          37.67290042461024
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate": {
+        "ttft_mean_s": 5.63484436898337,
+        "decode_aggregate_tps": 37.65720832292988,
+        "actual_input": 8159,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          5.666968005010858,
+          5.627721610944718,
+          5.609843490994535
+        ],
+        "latency_samples_s": [
+          12.441075833979994,
+          12.410309970960952,
+          12.367983001982793
+        ],
+        "decode_samples_tps": [
+          37.64333347477954,
+          37.59626656738308,
+          37.73227817883724
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "ttft_increase_pct": -0.01974089614339425,
+      "decode_decrease_pct": -0.07647632587683972
+    },
+    {
+      "mode": "on",
+      "nominal_input": 45056,
+      "parent": {
+        "ttft_mean_s": 31.951836349015746,
+        "decode_aggregate_tps": 36.031357449729136,
+        "actual_input": 45050,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          31.921726581058465,
+          31.963195128948428,
+          31.970587337040342
+        ],
+        "latency_samples_s": [
+          38.99346774898004,
+          39.04711179493461,
+          39.04643600597046
+        ],
+        "decode_samples_tps": [
+          36.05901205161699,
+          35.997035541707696,
+          36.038079943639666
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate": {
+        "ttft_mean_s": 31.91873587896892,
+        "decode_aggregate_tps": 36.1688145974678,
+        "actual_input": 45050,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          31.914601515978575,
+          31.9068630610127,
+          31.93474305991549
+        ],
+        "latency_samples_s": [
+          38.96852364600636,
+          38.954231715993956,
+          38.98426986497361
+        ],
+        "decode_samples_tps": [
+          36.1501013619774,
+          36.183717992354445,
+          36.17264066817001
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "ttft_increase_pct": -0.10359489102680364,
+      "decode_decrease_pct": -0.3814931145196043
+    },
+    {
+      "mode": "on",
+      "nominal_input": 204800,
+      "parent": {
+        "ttft_mean_s": 167.15784838803424,
+        "decode_aggregate_tps": 33.37699298379874,
+        "actual_input": 204789,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          167.09385525004473,
+          167.13994952500798,
+          167.23974038904998
+        ],
+        "latency_samples_s": [
+          174.75524123804644,
+          174.77645022398792,
+          174.86183335306123
+        ],
+        "decode_samples_tps": [
+          33.28379491639614,
+          33.39225779604289,
+          33.45537783441076
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate": {
+        "ttft_mean_s": 167.15399942166792,
+        "decode_aggregate_tps": 33.446519863273096,
+        "actual_input": 204789,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          167.09858126798645,
+          167.15204378799535,
+          167.21137320902199
+        ],
+        "latency_samples_s": [
+          174.74267875391524,
+          174.76867085392587,
+          174.82298345095478
+        ],
+        "decode_samples_tps": [
+          33.35907220824987,
+          33.47938632057035,
+          33.501452635500236
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "ttft_increase_pct": -0.0023025938676757285,
+      "decode_decrease_pct": -0.20830779905218755
+    },
+    {
+      "mode": "off",
+      "nominal_input": 1024,
+      "parent": {
+        "ttft_mean_s": 0.7921570343508696,
+        "decode_aggregate_tps": 18.563950502779576,
+        "actual_input": 1006,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          0.8613377959700301,
+          0.7568854790879413,
+          0.7582478279946372
+        ],
+        "latency_samples_s": [
+          14.632661096053198,
+          14.481731643085368,
+          14.470979448058642
+        ],
+        "decode_samples_tps": [
+          18.516739055749277,
+          18.579443219473582,
+          18.59585727083673
+        ],
+        "first_after_load": [
+          true,
+          false,
+          false
+        ]
+      },
+      "candidate": {
+        "ttft_mean_s": 0.7851870003311584,
+        "decode_aggregate_tps": 18.61585004434704,
+        "actual_input": 1006,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          0.8435362529708073,
+          0.7545443300623447,
+          0.7574804179603234
+        ],
+        "latency_samples_s": [
+          14.556865102960728,
+          14.439200987108052,
+          14.453508784994483
+        ],
+        "decode_samples_tps": [
+          18.595047401651673,
+          18.634007881279963,
+          18.618536203807498
+        ],
+        "first_after_load": [
+          true,
+          false,
+          false
+        ]
+      },
+      "ttft_increase_pct": -0.8798803415818623,
+      "decode_decrease_pct": -0.279571643760268
+    },
+    {
+      "mode": "off",
+      "nominal_input": 4096,
+      "parent": {
+        "ttft_mean_s": 2.6179537436303995,
+        "decode_aggregate_tps": 17.866030648498754,
+        "actual_input": 4075,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          2.623610447975807,
+          2.6148595509584993,
+          2.6153912319568917
+        ],
+        "latency_samples_s": [
+          16.913931105984375,
+          16.883450621040538,
+          16.875167944002897
+        ],
+        "decode_samples_tps": [
+          17.84424619311066,
+          17.87142113384106,
+          17.882467948084187
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate": {
+        "ttft_mean_s": 2.6145388826650255,
+        "decode_aggregate_tps": 17.862659196635306,
+        "actual_input": 4075,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          2.619615962030366,
+          2.6127891020150855,
+          2.6112115839496255
+        ],
+        "latency_samples_s": [
+          16.89767644694075,
+          16.89162830694113,
+          16.881082061911002
+        ],
+        "decode_samples_tps": [
+          17.8595685506091,
+          17.858594549620516,
+          17.869818818175414
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "ttft_increase_pct": -0.13044008029868825,
+      "decode_decrease_pct": 0.018870738161025358
+    },
+    {
+      "mode": "off",
+      "nominal_input": 8192,
+      "parent": {
+        "ttft_mean_s": 5.088501127980028,
+        "decode_aggregate_tps": 18.09850460281707,
+        "actual_input": 8159,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          5.084687662078068,
+          5.085102702956647,
+          5.095713018905371
+        ],
+        "latency_samples_s": [
+          19.186025553033687,
+          19.169666629983112,
+          19.17849675193429
+        ],
+        "decode_samples_tps": [
+          18.08339052449435,
+          18.104926877479524,
+          18.107215507537635
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate": {
+        "ttft_mean_s": 5.079963304994938,
+        "decode_aggregate_tps": 18.11737925352567,
+        "actual_input": 8159,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          5.067597629968077,
+          5.087311060051434,
+          5.084981224965304
+        ],
+        "latency_samples_s": [
+          19.167363099986687,
+          19.138882964034565,
+          19.158293967018835
+        ],
+        "decode_samples_tps": [
+          18.08540720356134,
+          18.1474358699838,
+          18.119401215181924
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "ttft_increase_pct": -0.16778659904669313,
+      "decode_decrease_pct": -0.10428845433816392
+    },
+    {
+      "mode": "off",
+      "nominal_input": 45056,
+      "parent": {
+        "ttft_mean_s": 30.35039658398212,
+        "decode_aggregate_tps": 17.847348559709037,
+        "actual_input": 45050,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          30.356650101952255,
+          30.31330858299043,
+          30.381231067003682
+        ],
+        "latency_samples_s": [
+          44.645190606010146,
+          44.60701540193986,
+          44.66249354998581
+        ],
+        "decode_samples_tps": [
+          17.846469338669053,
+          17.840018913914044,
+          17.855564261483444
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate": {
+        "ttft_mean_s": 30.36647960729897,
+        "decode_aggregate_tps": 17.833266971991907,
+        "actual_input": 45050,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          30.352497689891607,
+          30.35837631695904,
+          30.388564815046266
+        ],
+        "latency_samples_s": [
+          44.66351736697834,
+          44.6546372580342,
+          44.67864008806646
+        ],
+        "decode_samples_tps": [
+          17.818436823777038,
+          17.83683167585094,
+          17.844552609281394
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "ttft_increase_pct": 0.052991147157976926,
+      "decode_decrease_pct": 0.07890016643098408
+    },
+    {
+      "mode": "off",
+      "nominal_input": 204800,
+      "parent": {
+        "ttft_mean_s": 159.17899582131454,
+        "decode_aggregate_tps": 17.086180058225946,
+        "actual_input": 204789,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          158.99782801500987,
+          159.27289987599943,
+          159.26625957293436
+        ],
+        "latency_samples_s": [
+          173.9379682460567,
+          174.204724070034,
+          174.16732208500616
+        ],
+        "decode_samples_tps": [
+          17.068112886255864,
+          17.077618694564826,
+          17.112873648668796
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "candidate": {
+        "ttft_mean_s": 159.26737294567283,
+        "decode_aggregate_tps": 17.078100609943046,
+        "actual_input": 204789,
+        "actual_outputs": [
+          256,
+          256,
+          256
+        ],
+        "ttft_samples_s": [
+          159.19504796597175,
+          159.31992623303086,
+          159.2871446380159
+        ],
+        "latency_samples_s": [
+          174.1362836980261,
+          174.24823372298852,
+          174.21180994494352
+        ],
+        "decode_samples_tps": [
+          17.066861441248335,
+          17.08164171802729,
+          17.085810284913773
+        ],
+        "first_after_load": [
+          false,
+          false,
+          false
+        ]
+      },
+      "ttft_increase_pct": 0.05552059422304634,
+      "decode_decrease_pct": 0.04728645171341306
+    }
+  ],
+  "statistical_performance": "INSUFFICIENT_EVIDENCE",
+  "engineering_acceptance": "PENDING_EXPLICIT_B1B_APPROVAL",
+  "resolution_band": null,
+  "uncertainty_interval": null,
+  "exact_token_itl_available": false,
+  "initial_lease": {
+    "status": "COMMAND_FAILED",
+    "command": [
+      "python3",
+      ".q4t-work/b1b-20261019/run_phase.py"
+    ],
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 1,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-10-18T18:59:44.050115+00:00",
+      "monotonic": 540066.56700119,
+      "pid": 1652580
+    }
+  },
+  "continuation_lease": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      ".q4t-work/b1b-20261019/run_resume.py"
+    ],
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-10-18T19:31:08.269954+00:00",
+      "monotonic": 541950.786840575,
+      "pid": 1664651
+    }
+  },
+  "tool_failure": "parent cache missing before server start; zero requests, remaining 30 resumed with actual cache",
+  "phase_seconds": 4068.2796397209167,
+  "default_binary_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03"
+}

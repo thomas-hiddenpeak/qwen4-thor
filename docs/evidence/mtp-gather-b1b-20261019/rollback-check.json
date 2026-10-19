@@ -1,0 +1,6 @@
+{
+  "implementation_patch_sha256": "a4f2b7e9e14e00803da4253b06d86f0bc6a450a9934267b2d477b32196964e60",
+  "reverse_apply_check": true,
+  "default_binary_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+  "baseline_backup_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03"
+}

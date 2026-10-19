@@ -1,0 +1,30 @@
+[  0%] Building CXX object CMakeFiles/q4t_runtime.dir/src/runtime/memory_budget.cpp.o
+[  8%] Built target q4t_trace
+[ 17%] Built target q4t_io
+[ 28%] Built target q4t_ple
+[ 31%] Built target q4t_text
+[ 42%] Built target q4t_quant
+[ 77%] Built target q4t_model
+[ 80%] Linking CXX static library libq4t_runtime.a
+[ 80%] Built target q4t_runtime
+[ 97%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  5%] Built target q4t_trace
+[  6%] Built target q4t_runtime
+[ 11%] Built target q4t_io
+[ 18%] Built target q4t_ple
+[ 20%] Built target q4t_text
+[ 26%] Built target q4t_quant
+[ 46%] Built target q4t_model
+[ 46%] Linking CXX executable q4t_tests
+[100%] Built target q4t_tests
+[  3%] Built target q4t_runtime
+[ 13%] Built target q4t_trace
+[ 23%] Built target q4t_io
+[ 36%] Built target q4t_ple
+[ 40%] Built target q4t_text
+[ 53%] Built target q4t_quant
+[ 93%] Built target q4t_model
+[ 96%] Linking CXX executable q4t_mtp_lifecycle
+[100%] Built target q4t_mtp_lifecycle

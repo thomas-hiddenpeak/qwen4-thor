@@ -133,7 +133,7 @@ struct MtpModel {
   uint16_t* d_spec_sample = nullptr;  // [k_max*hs] extend sample_hidden
   uint16_t* d_g = nullptr;            // [hc_dim] rolling draft trunk
   // Multi-seq speculative scratch (Phase 2 Stage 2b, allocated in
-  // MtpReserveScratch when max_seq > 1). The batched draft loop packs B
+  // MtpReserveScratch even for max_seq == 1). The draft loop packs B
   // sequences' tokens per step (T = B), so it needs its own ids/positions/
   // sample/multi buffers sized for B rows (B <= max_seq); the batched extend
   // packs the accepted prefixes of all sequences (T = sum(a_b+1) <= B*(k+1)),
@@ -168,6 +168,8 @@ struct MtpModel {
   // argmax result (ScatterDraftKernel) — zero host syncs inside the loop.
   // A single D2H of the [B, k] sub-matrix happens after the loop.
   int32_t* d_ms_drafts = nullptr;       // [max_seq*k_max] draft tokens
+  int* d_ms_gather_off = nullptr;  // [max_seq*k_max] extend source rows
+  size_t gather_off_capacity = 0;  // int elements; reset with scratch
   int k_max = 0;  // capacity of the above (0 = not allocated)
 
   int hc_dim() const { return cfg.hc * cfg.hs; }

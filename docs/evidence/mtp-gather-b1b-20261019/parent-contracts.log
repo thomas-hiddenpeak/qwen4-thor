@@ -1,0 +1,67 @@
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=50 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=50 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=60 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=60 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=70 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=80 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=80 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=12
+  seq 1: accepted_count=1 next_b=37693 next_d0=12
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_step
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=0 0 0 0  gt1=0 0 0 0
+  seq 0: accepted_count=3 next_b=0 next_d0=0
+  seq 1: accepted_count=3 next_b=0 next_d0=0
+  seq 0: accepted_count=3 next_b=0 next_d0=0
+  seq 1: accepted_count=3 next_b=0 next_d0=0
+  seq 0: accepted_count=3 next_b=0 next_d0=0
+  seq 1: accepted_count=3 next_b=0 next_d0=0
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_full_k2
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=0 0 0 0  gt1=0 0 0 0
+  seq 0: accepted_count=4 next_b=0 next_d0=0
+  seq 1: accepted_count=4 next_b=0 next_d0=0
+  seq 0: accepted_count=4 next_b=0 next_d0=0
+  seq 1: accepted_count=4 next_b=0 next_d0=0
+  seq 0: accepted_count=4 next_b=0 next_d0=0
+  seq 1: accepted_count=4 next_b=0 next_d0=0
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_full_k3
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=2 next_b=87048 next_d0=8
+  seq 1: accepted_count=2 next_b=5050 next_d0=470
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_accept_first_k3
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=12
+  seq 1: accepted_count=1 next_b=37693 next_d0=12
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_step_k1
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=-1
+  seq 1: accepted_count=1 next_b=37693 next_d0=-1
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_terminal_k1
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=-1
+  seq 1: accepted_count=1 next_b=37693 next_d0=-1
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_terminal_k3
+  MTP loaded (hs=2560 hc_dim=10240 max_seq=2)
+  gt0=236644 3901 87048 5277  gt1=3521 37693 5050 70483
+  seq 0: accepted_count=1 next_b=3901 next_d0=12
+  seq 1: accepted_count=1 next_b=37693 next_d0=-1
+  PASS: batched multi-seq step matches ground truth
+[PASS] mtp_spec_multi_mixed_terminal
+8 tests, 8 passed, 0 failed, 0 skipped

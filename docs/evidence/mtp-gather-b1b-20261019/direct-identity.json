@@ -1,0 +1,6 @@
+{
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1b-20261019/build/q4t_tests": "d8050d53c55ce8fa54fc37d51661cfa2f6bb8d7fcf4ed8fe9a873b620e2e339d",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1b-20261019/reference/q4t_tests": "87846162e7083bc420ecf73822f2160492f0f2dd7d4f298ba99900bdc70edf87",
+  "/home/rm01/models/dev/qwen4-thor/tests/mtp_spec_multi_test.cpp": "bb1681056b2f4c236cba074dc0969d85918af8ed7e52ed1a96c7eed51bed0133",
+  "/home/rm01/models/dev/qwen4-thor/include/q4t/mtp/mtp.h": "0a275daeed063d6503ca4d4abb5c68b3e4c6ffde340e839797a58633229dac25"
+}

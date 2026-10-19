@@ -1,0 +1,6 @@
+{
+  "parent_source_exact": true,
+  "mtp_archive_members": 1,
+  "archive_object_sha256": "1610ee3d70f4858d8d64d613d301fc7bc0f55891c5009ca9440060d69505efc3",
+  "note": "Final gate rebuild repeats the same archive replacement procedure before direct execution."
+}

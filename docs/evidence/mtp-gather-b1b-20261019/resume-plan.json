@@ -1,0 +1,12 @@
+{
+  "reason": "Missing actual parent CMakeCache caused pre-launch tool rejection; zero parent requests or server starts. Preserve attempt; reuse all 52 completed candidate requests.",
+  "initial_status": "COMMAND_FAILED",
+  "completed_requests": 52,
+  "remaining_http_budget": 30,
+  "total_cap": 82,
+  "new_output": "parent-off-r1; parent-on",
+  "retry_sampling": false,
+  "cache_sha256": "ca2e60a10bb4c6c3d653a73437283e543797d119b5fbd7e9cdc82835af549e06",
+  "driver_sha256": "52b8afd0e2add4531c69df06dbf752e778362e23711596c2de9bb26456df53c8",
+  "lock": "new complete continuation driver lease; initial failed lease retained"
+}

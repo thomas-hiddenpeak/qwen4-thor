@@ -1,0 +1,11 @@
+quality-on PASS; lease held
+candidate-on PASS; lease held
+quality-off PASS; lease held
+candidate-off PASS; lease held
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1b-20261019/run_phase.py", line 40, in <module>
+    run(name+'-driver',cmd,max(1,14400-(time.time()-state['start'])))
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1b-20261019/run_phase.py", line 23, in run
+    if rc: raise RuntimeError(name+' failed: '+str(rc))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: parent-off-driver failed: 1

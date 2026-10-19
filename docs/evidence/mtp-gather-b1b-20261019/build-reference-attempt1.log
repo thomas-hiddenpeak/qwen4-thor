@@ -1,0 +1,11 @@
+/usr/local/cuda-13.3/bin/nvcc -ccbin=/usr/bin/g++-14 --options-file CMakeFiles/q4t_model.dir/includes_CUDA.rsp --expt-relaxed-constexpr -O3 -O3 -DNDEBUG -std=c++23 '--generate-code=arch=compute_110a,code=[compute_110a,sm_110a]' -Wall -Wextra -c /home/rm01/models/dev/qwen4-thor/.q4t-work/b1b-20261019/reference/mtp.cu -o /home/rm01/models/dev/qwen4-thor/.q4t-work/b1b-20261019/reference/mtp.cu.o
+nvcc fatal   : Unknown option '-Wall'
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1b-20261019/build_reference.py", line 11, in <module>
+    run(['/usr/local/cuda-13.3/bin/nvcc','-ccbin=/usr/bin/g++-14',*flags('q4t_model','CUDA'),'-c',str(ref/'mtp.cu'),'-o',str(ref/'mtp.cu.o')])
+  File "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1b-20261019/build_reference.py", line 5, in run
+    print(shlex.join(cmd),flush=True); subprocess.run(cmd,cwd=build,check=True)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/usr/local/cuda-13.3/bin/nvcc', '-ccbin=/usr/bin/g++-14', '--options-file', 'CMakeFiles/q4t_model.dir/includes_CUDA.rsp', '--expt-relaxed-constexpr', '-O3', '-O3', '-DNDEBUG', '-std=c++23', '--generate-code=arch=compute_110a,code=[compute_110a,sm_110a]', '-Wall', '-Wextra', '-c', '/home/rm01/models/dev/qwen4-thor/.q4t-work/b1b-20261019/reference/mtp.cu', '-o', '/home/rm01/models/dev/qwen4-thor/.q4t-work/b1b-20261019/reference/mtp.cu.o']' returned non-zero exit status 1.

@@ -181,6 +181,7 @@ void FreeScratch(MtpModel& m) {
   if (m.d_ms_ext_ids) cudaFree(m.d_ms_ext_ids);
   if (m.d_ms_ext_pos) cudaFree(m.d_ms_ext_pos);
   if (m.d_ms_drafts) cudaFree(m.d_ms_drafts);
+  if (m.d_ms_gather_off) cudaFree(m.d_ms_gather_off);
   m.d_ids_scratch = nullptr;
   m.d_pos_scratch = nullptr;
   m.d_spec_logits = nullptr;
@@ -203,6 +204,8 @@ void FreeScratch(MtpModel& m) {
   m.d_ms_ext_ids = nullptr;
   m.d_ms_ext_pos = nullptr;
   m.d_ms_drafts = nullptr;
+  m.d_ms_gather_off = nullptr;
+  m.gather_off_capacity = 0;
   m.k_max = 0;
 }
 
@@ -587,6 +590,11 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
                    Tmx * sizeof(int32_t)) != cudaSuccess)
       return Status::Fail("MtpReserveScratch: d_ms_drafts");
   }
+  const size_t offset_rows = static_cast<size_t>(m.max_seq) * k_max;
+  if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_gather_off),
+                 offset_rows * sizeof(int)) != cudaSuccess)
+    return Status::Fail("MtpReserveScratch: d_ms_gather_off");
+  m.gather_off_capacity = offset_rows;
   m.k_max = k_max;
   pending.model = nullptr;
   return Status();
@@ -1337,10 +1345,10 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
       return Status::Fail("MtpSpeculativeStepMulti: seq not in decode stage");
   }
 
-  // Persistent multi-seq scratch (reserved by MtpReserveScratch, max_seq > 1).
+  // Persistent multi-seq scratch (reserved even for max_seq == 1).
   // All buffers are sized for the worst case B = max_seq, T = k_max, so the
-  // scheduler's per-step call does no cudaMalloc/cudaFree (each cudaFree is an
-  // implicit device sync that stalls the pipeline).
+  // extend gather needs no cudaMalloc/cudaFree. Other diagnostic/forward
+  // allocations are outside this scratch contract.
   if (mtp.d_ms_ids == nullptr || mtp.k_max < k + 1)
     return Status::Fail("MtpSpeculativeStepMulti: scratch not reserved "
                         "(call MtpReserveScratch with k_max >= k+1)");
@@ -1630,18 +1638,18 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   if (T_ext > 0) {
     // Gather the per-seq verify-trunk rows contiguous (the extend hidden).
     {
-      int* d_off = nullptr;
-      if (cudaMalloc(reinterpret_cast<void**>(&d_off), T_ext * sizeof(int)) !=
-          cudaSuccess)
-        return cleanup(Status::Fail("MtpSpeculativeStepMulti: cudaMalloc off"));
-      if (cudaMemcpyAsync(d_off, gather_off.data(), T_ext * sizeof(int),
-                          cudaMemcpyHostToDevice, stream) != cudaSuccess) {
-        cudaFree(d_off);
+      if (!mtp.d_ms_gather_off ||
+          static_cast<size_t>(T_ext) > mtp.gather_off_capacity)
+        return cleanup(Status::Fail(
+            "MtpSpeculativeStepMulti: gather offset scratch capacity"));
+      // gather_off stays in step scope until cleanup drains on every exit.
+      // The same drain makes the device scratch reusable by the next step.
+      if (cudaMemcpyAsync(mtp.d_ms_gather_off, gather_off.data(),
+                          T_ext * sizeof(int), cudaMemcpyHostToDevice,
+                          stream) != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D off"));
-      }
-      GatherTrunkRowsKernel<<<T_ext, 256, 0, stream>>>(d_vtrunk, d_off, d_gather,
-                                                       hc_dim, T_ext);
-      cudaFree(d_off);
+      GatherTrunkRowsKernel<<<T_ext, 256, 0, stream>>>(
+          d_vtrunk, mtp.d_ms_gather_off, d_gather, hc_dim, T_ext);
       if (cudaGetLastError() != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: gather launch"));
     }

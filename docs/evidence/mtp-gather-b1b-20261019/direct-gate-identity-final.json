@@ -1,0 +1,5 @@
+{
+  "reason": "Also correct stale header comment: multi scratch is reserved for single-sequence too; no executable logic change. Gate still runs only after all HTTP.",
+  "gate_sha256": "22678814552774fe312e7c3b20dfc09c74a454fe439edf3db483a940f98f04e3",
+  "header_sha256": "0a275daeed063d6503ca4d4abb5c68b3e4c6ffde340e839797a58633229dac25"
+}

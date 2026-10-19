@@ -1,0 +1,686 @@
+diff --git a/docs/STATUS.md b/docs/STATUS.md
+index a1e0896..14a377e 100644
+--- a/docs/STATUS.md
++++ b/docs/STATUS.md
+@@ -1,9 +1,18 @@
+ # 当前状态
+ 
+-更新：2026-10-18。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
++更新：2026-10-19。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+ 
+ ## 当前交付
+ 
++**B1b启动（2026-10-19），尚未验收。** 仅持久化extend gather offset，
++基线a893dc8/B1a binary44abd8b1，工作分支codex/mtp-gather-b1b。
++冻结82个HTTP请求、随后直接合同，有限工程接受须单独认可具体风险；
++不追加校准，不启动Megatron。默认二进制保持B1a。
++见[范围与验收卡](MTP_GATHER_B1B_2026-10-19.md)。
++
++以下历史入口中的旧生产binary与分支描述不覆盖上述及B1a部署记录。
++
++
+ **B1a已工程接受并合入main（2026-10-18）。** 用户在最终审查披露风险
+ 后要求并入主线，按ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY接受，
+ 有限工程接受规则纳入EVALUATION。复用原零警告构建、计算/状态合同、
+diff --git a/docs/log/README.md b/docs/log/README.md
+index fd79719..617dae2 100644
+--- a/docs/log/README.md
++++ b/docs/log/README.md
+@@ -6,6 +6,7 @@
+ 
+ | 日期 | 摘要 (当天最新一条) |
+ |---|---|
++| [2026-10-19](2026-10-19.md) | B1b持久offset实现及82请求有界验收冻结 |
+ | [2026-10-18](2026-10-18.md) | B1a已部署默认二进制及真实身份，A保留；服务未启动，零新增采样 |
+ | [2026-10-17](2026-10-17.md) | 工具与验收规则主线收敛；完整研究日志由归档索引保留 |
+ | [2026-10-16](2026-10-16.md) | MTP归并、PLE上传修复、数值/五档验收与用户授权主线交付 |
+diff --git a/include/q4t/mtp/mtp.h b/include/q4t/mtp/mtp.h
+index 4278dc0..bf4975e 100644
+--- a/include/q4t/mtp/mtp.h
++++ b/include/q4t/mtp/mtp.h
+@@ -168,6 +168,8 @@ struct MtpModel {
+   // argmax result (ScatterDraftKernel) — zero host syncs inside the loop.
+   // A single D2H of the [B, k] sub-matrix happens after the loop.
+   int32_t* d_ms_drafts = nullptr;       // [max_seq*k_max] draft tokens
++  int* d_ms_gather_off = nullptr;  // [max_seq*k_max] extend source rows
++  size_t gather_off_capacity = 0;  // int elements; reset with scratch
+   int k_max = 0;  // capacity of the above (0 = not allocated)
+ 
+   int hc_dim() const { return cfg.hc * cfg.hs; }
+diff --git a/src/mtp/mtp.cu b/src/mtp/mtp.cu
+index 7a9fdcd..3e88e43 100644
+--- a/src/mtp/mtp.cu
++++ b/src/mtp/mtp.cu
+@@ -181,6 +181,7 @@ void FreeScratch(MtpModel& m) {
+   if (m.d_ms_ext_ids) cudaFree(m.d_ms_ext_ids);
+   if (m.d_ms_ext_pos) cudaFree(m.d_ms_ext_pos);
+   if (m.d_ms_drafts) cudaFree(m.d_ms_drafts);
++  if (m.d_ms_gather_off) cudaFree(m.d_ms_gather_off);
+   m.d_ids_scratch = nullptr;
+   m.d_pos_scratch = nullptr;
+   m.d_spec_logits = nullptr;
+@@ -203,6 +204,8 @@ void FreeScratch(MtpModel& m) {
+   m.d_ms_ext_ids = nullptr;
+   m.d_ms_ext_pos = nullptr;
+   m.d_ms_drafts = nullptr;
++  m.d_ms_gather_off = nullptr;
++  m.gather_off_capacity = 0;
+   m.k_max = 0;
+ }
+ 
+@@ -587,6 +590,11 @@ Status MtpReserveScratch(MtpModel& m, int k_max) {
+                    Tmx * sizeof(int32_t)) != cudaSuccess)
+       return Status::Fail("MtpReserveScratch: d_ms_drafts");
+   }
++  const size_t offset_rows = static_cast<size_t>(m.max_seq) * k_max;
++  if (cudaMalloc(reinterpret_cast<void**>(&m.d_ms_gather_off),
++                 offset_rows * sizeof(int)) != cudaSuccess)
++    return Status::Fail("MtpReserveScratch: d_ms_gather_off");
++  m.gather_off_capacity = offset_rows;
+   m.k_max = k_max;
+   pending.model = nullptr;
+   return Status();
+@@ -1337,10 +1345,10 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
+       return Status::Fail("MtpSpeculativeStepMulti: seq not in decode stage");
+   }
+ 
+-  // Persistent multi-seq scratch (reserved by MtpReserveScratch, max_seq > 1).
++  // Persistent multi-seq scratch (reserved even for max_seq == 1).
+   // All buffers are sized for the worst case B = max_seq, T = k_max, so the
+-  // scheduler's per-step call does no cudaMalloc/cudaFree (each cudaFree is an
+-  // implicit device sync that stalls the pipeline).
++  // extend gather needs no cudaMalloc/cudaFree. Other diagnostic/forward
++  // allocations are outside this scratch contract.
+   if (mtp.d_ms_ids == nullptr || mtp.k_max < k + 1)
+     return Status::Fail("MtpSpeculativeStepMulti: scratch not reserved "
+                         "(call MtpReserveScratch with k_max >= k+1)");
+@@ -1630,18 +1638,18 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
+   if (T_ext > 0) {
+     // Gather the per-seq verify-trunk rows contiguous (the extend hidden).
+     {
+-      int* d_off = nullptr;
+-      if (cudaMalloc(reinterpret_cast<void**>(&d_off), T_ext * sizeof(int)) !=
+-          cudaSuccess)
+-        return cleanup(Status::Fail("MtpSpeculativeStepMulti: cudaMalloc off"));
+-      if (cudaMemcpyAsync(d_off, gather_off.data(), T_ext * sizeof(int),
+-                          cudaMemcpyHostToDevice, stream) != cudaSuccess) {
+-        cudaFree(d_off);
++      if (!mtp.d_ms_gather_off ||
++          static_cast<size_t>(T_ext) > mtp.gather_off_capacity)
++        return cleanup(Status::Fail(
++            "MtpSpeculativeStepMulti: gather offset scratch capacity"));
++      // gather_off stays in step scope until cleanup drains on every exit.
++      // The same drain makes the device scratch reusable by the next step.
++      if (cudaMemcpyAsync(mtp.d_ms_gather_off, gather_off.data(),
++                          T_ext * sizeof(int), cudaMemcpyHostToDevice,
++                          stream) != cudaSuccess)
+         return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D off"));
+-      }
+-      GatherTrunkRowsKernel<<<T_ext, 256, 0, stream>>>(d_vtrunk, d_off, d_gather,
+-                                                       hc_dim, T_ext);
+-      cudaFree(d_off);
++      GatherTrunkRowsKernel<<<T_ext, 256, 0, stream>>>(
++          d_vtrunk, mtp.d_ms_gather_off, d_gather, hc_dim, T_ext);
+       if (cudaGetLastError() != cudaSuccess)
+         return cleanup(Status::Fail("MtpSpeculativeStepMulti: gather launch"));
+     }
+diff --git a/src/runtime/memory_budget.cpp b/src/runtime/memory_budget.cpp
+index db5ed83..de818f6 100644
+--- a/src/runtime/memory_budget.cpp
++++ b/src/runtime/memory_budget.cpp
+@@ -97,10 +97,11 @@ size_t MtpScratchBytes(const BudgetModelParams& p, int k) {
+   const size_t single =
+       Add(Mul(rows, Sum({8u, logits, Mul(trunk, 2u), hidden})), trunk);
+   // IDs/positions, sample, multi and rolling g; then gather/verify/extend
+-  // trunks, verify/extend logits, sample and four packed integer arrays.
++  // trunks, verify/extend logits, sample and five packed integer arrays
++  // (including gather offsets).
+   const size_t multi =
+       Add(Sum({8u, hidden, Mul(trunk, 2u)}),
+-          Mul(rows, Sum({Mul(trunk, 3u), Mul(logits, 2u), hidden, 16u})));
++          Mul(rows, Sum({Mul(trunk, 3u), Mul(logits, 2u), hidden, 20u})));
+   return Add(single, multi);
+ }
+ 
+@@ -119,12 +120,12 @@ size_t MtpForwardTempBytes(const BudgetModelParams& p, int k) {
+   const size_t moe_host = Mul(p.mtp_experts, 4u);   // counts_h
+   const size_t positions = Mul(p.max_prefill, 4u);  // full-attention hp
+   const size_t rows = static_cast<size_t>(k) + 1u;
+-  const size_t gather_offsets = Mul(rows, 4u);  // MtpSpeculativeStepMulti
+-  // B=1 small decode metadata, plus two conservative int slots. The complete
++  // B=1 small decode metadata, including host gather_off (one of the six
++  // row arrays), plus two conservative int slots. The complete
+   // vhist copy is length-dependent and covered by PerRequestBytes' host
+   // envelope, not by this subtotal. Sum across sequential subphases.
+   const size_t decode_host = Mul(7u + k + 6u * rows + 2u, 4u);
+-  return Sum({moe_device, moe_host, positions, gather_offsets, decode_host});
++  return Sum({moe_device, moe_host, positions, decode_host});
+ }
+ 
+ size_t MtpLoadingHostBytes(const BudgetModelParams& p, const BudgetRequest& req,
+diff --git a/tests/mtp_lifecycle_test.cpp b/tests/mtp_lifecycle_test.cpp
+index 1da798b..037d305 100644
+--- a/tests/mtp_lifecycle_test.cpp
++++ b/tests/mtp_lifecycle_test.cpp
+@@ -48,7 +48,8 @@ void CheckEmpty(const q4t::mtp::MtpModel& m) {
+             !m.moe.gu && !m.moe.down && !m.moe_extra.gate && !m.mixer.hc_norm &&
+             !m.kv_cache && !m.page_table && !m.idx_raw && !m.idx_comp &&
+             !m.d_rope_pos && !m.d_ws && !m.d_sample && !m.d_trunk &&
+-            !m.d_logits && !m.d_ids_scratch && !m.d_ms_drafts && m.k_max == 0 &&
++            !m.d_ms_gather_off && m.gather_off_capacity == 0 && !m.d_logits &&
++            !m.d_ids_scratch && !m.d_ms_drafts && m.k_max == 0 &&
+             m.ws_bytes == 0 && m.kv_bytes == 0 && m.idx_bytes == 0,
+         "MTP cleanup left stale ownership metadata");
+ }
+@@ -138,42 +139,54 @@ int main(int argc, char** argv) {
+ 
+   // Scratch uses small dimensions, so every allocator boundary is tested
+   // without exhausting physical memory or loading a model repeatedly.
+-  m.cfg = tiny;
+-  m.embed_tokens = embed;
+-  m.lm_head = head;
+-  CheckCuda(cudaMalloc(reinterpret_cast<void**>(&m.fc_embedding), 2),
+-            "owned marker weight");
+-  const std::unordered_set<void*> weights = live;
+-  ResetCounters();
+-  Check(q4t::mtp::MtpReserveScratch(m, 2).ok(), "initial scratch reserve");
+-  const int scratch_allocations = allocations;
+-  Check(scratch_allocations > 1 && m.d_ms_drafts, "multi scratch missing");
+-  const size_t expected_live = live.size();
+-  ResetCounters();
+-  Check(q4t::mtp::MtpReserveScratch(m, 2).ok() && allocations == 0,
+-        "idempotent reserve allocated");
+-  Check(!q4t::mtp::LoadMtp(tiny, embed, head, &m, nullptr).ok() &&
+-            live.size() == expected_live,
+-        "live reload must reject without losing resources");
+-  for (int failure = 1; failure <= scratch_allocations; ++failure) {
+-    ResetCounters(failure);
+-    Check(!q4t::mtp::MtpReserveScratch(m, 3).ok(),
+-          "injected scratch grow unexpectedly succeeded");
+-    Check(m.k_max == 0 && live == weights && !m.d_ms_drafts &&
+-              m.embed_tokens == embed && m.lm_head == head,
+-          "failed grow left partial scratch or released weights");
++  for (int slots : {1, 3}) {
++    m.cfg = tiny;
++    m.max_seq = slots;
++    m.embed_tokens = embed;
++    m.lm_head = head;
++    CheckCuda(cudaMalloc(reinterpret_cast<void**>(&m.fc_embedding), 2),
++              "owned marker weight");
++    const std::unordered_set<void*> weights = live;
++    ResetCounters();
++    Check(q4t::mtp::MtpReserveScratch(m, 2).ok(), "initial scratch reserve");
++    const int scratch_allocations = allocations;
++    Check(m.d_ms_gather_off &&
++              m.gather_off_capacity == static_cast<size_t>(slots) * 2,
++          "offset capacity missing");
++    int* offset_pointer = m.d_ms_gather_off;
++    Check(scratch_allocations > 1 && m.d_ms_drafts, "multi scratch missing");
++    const size_t expected_live = live.size();
++    ResetCounters();
++    Check(q4t::mtp::MtpReserveScratch(m, 2).ok() && allocations == 0,
++          "idempotent reserve allocated");
++    Check(m.d_ms_gather_off == offset_pointer, "reserve replaced offsets");
++    Check(!q4t::mtp::LoadMtp(tiny, embed, head, &m, nullptr).ok() &&
++              live.size() == expected_live,
++          "live reload must reject without losing resources");
++    for (int failure = 1; failure <= scratch_allocations; ++failure) {
++      ResetCounters(failure);
++      Check(!q4t::mtp::MtpReserveScratch(m, 3).ok(),
++            "injected scratch grow unexpectedly succeeded");
++      Check(!m.d_ms_gather_off && m.gather_off_capacity == 0 && m.k_max == 0 &&
++                live == weights && !m.d_ms_drafts && m.embed_tokens == embed &&
++                m.lm_head == head,
++            "failed grow left partial scratch or released weights");
++      ResetCounters();
++      Check(q4t::mtp::MtpReserveScratch(m, 2).ok(), "scratch retry failed");
++      Check(live.size() == expected_live, "scratch retry changed live count");
++    }
+     ResetCounters();
+-    Check(q4t::mtp::MtpReserveScratch(m, 2).ok(), "scratch retry failed");
+-    Check(live.size() == expected_live, "scratch retry changed live count");
++    Check(q4t::mtp::MtpReserveScratch(m, 4).ok(), "scratch grow failed");
++    Check(live.size() == expected_live && m.k_max == 4,
++          "successful grow leaked replaced draft matrix");
++    Check(m.gather_off_capacity == static_cast<size_t>(slots) * 4,
++          "grown offset capacity incorrect");
++    m.Free();
++    CheckEmpty(m);
++    std::printf(
++        "scratch: %d failure boundaries, grow/retry/idempotence: PASS\n",
++        scratch_allocations);
+   }
+-  ResetCounters();
+-  Check(q4t::mtp::MtpReserveScratch(m, 4).ok(), "scratch grow failed");
+-  Check(live.size() == expected_live && m.k_max == 4,
+-        "successful grow leaked replaced draft matrix");
+-  m.Free();
+-  CheckEmpty(m);
+-  std::printf("scratch: %d failure boundaries, grow/retry/idempotence: PASS\n",
+-              scratch_allocations);
+ 
+   // Main-model verify checkpoints have the same partial-grow contract.
+   q4t::model::Model checkpoints;
+diff --git a/tests/mtp_spec_multi_test.cpp b/tests/mtp_spec_multi_test.cpp
+index 2696908..f969f9b 100644
+--- a/tests/mtp_spec_multi_test.cpp
++++ b/tests/mtp_spec_multi_test.cpp
+@@ -33,6 +33,8 @@
+ #include <cstdlib>
+ #include <cstring>
+ #include <fcntl.h>
++#include <fstream>
++#include <stdexcept>
+ #include <string>
+ #include <unistd.h>
+ #include <vector>
+@@ -42,29 +44,33 @@ namespace {
+ using q4t::Status;
+ using q4t::model::LoadModel;
+ using q4t::model::Model;
+-using q4t::model::ModelConfig;
+-using q4t::model::ModelSequence;
+ using q4t::model::ModelBeginSequence;
++using q4t::model::ModelConfig;
+ using q4t::model::ModelPrefill;
+ using q4t::model::ModelReserveVerifyCheckpoints;
++using q4t::model::ModelSequence;
+ using q4t::mtp::LoadMtp;
+ using q4t::mtp::MtpConfig;
+-using q4t::mtp::MtpModel;
+ using q4t::mtp::MtpForward;
+-using q4t::mtp::MtpResetState;
++using q4t::mtp::MtpModel;
+ using q4t::mtp::MtpReserveScratch;
++using q4t::mtp::MtpResetState;
+ using q4t::mtp::MtpSpeculativeStepMulti;
+ 
+ const char* kModelDir =
+-    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
++    "/home/rm01/models/dev/llm/garnermccloud/"
++    "Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+ const char* kIndex =
+-    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/"
++    "/home/rm01/models/dev/llm/garnermccloud/"
++    "Qwen3.8-Flash-Next-NVFP4-SSD-Stream/"
+     "model.safetensors.index.json";
+ const char* kPleSidecar =
+-    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/"
++    "/home/rm01/models/dev/llm/garnermccloud/"
++    "Qwen3.8-Flash-Next-NVFP4-SSD-Stream/"
+     "ple/qwen3.8-flash-next-ple-fp8.bin";
+ const char* kMtpDir =
+-    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/"
++    "/home/rm01/models/dev/llm/garnermccloud/"
++    "Qwen3.8-Flash-Next-NVFP4-SSD-Stream/"
+     "mtp";
+ 
+ bool FileExists(const char* path) {
+@@ -77,9 +83,7 @@ bool CudaAvailable() {
+   int count = 0;
+   return cudaGetDeviceCount(&count) == cudaSuccess && count > 0;
+ }
+-bool Mal(void** p, size_t bytes) {
+-  return cudaMalloc(p, bytes) == cudaSuccess;
+-}
++bool Mal(void** p, size_t bytes) { return cudaMalloc(p, bytes) == cudaSuccess; }
+ float Bf16ToFloat(uint16_t b) {
+   uint32_t bits = static_cast<uint32_t>(b) << 16;
+   float f;
+@@ -131,8 +135,25 @@ std::vector<int32_t> GreedyPrefill(const Model& m,
+ 
+ }  // namespace
+ 
++// Optional raw contract artifacts for parent/candidate byte-for-byte
++// comparison. Only initialized outputs/state are serialized; scratch padding is
++// excluded.
++void WriteDevice(std::ofstream& out, const void* pointer, size_t bytes) {
++  std::vector<char> data(bytes);
++  if (cudaMemcpy(data.data(), pointer, bytes, cudaMemcpyDeviceToHost) !=
++      cudaSuccess)
++    throw std::runtime_error("contract state readback failed");
++  out.write(data.data(), data.size());
++}
++template <typename T>
++void WriteVector(std::ofstream& out, const std::vector<T>& values) {
++  const size_t count = values.size();
++  out.write(reinterpret_cast<const char*>(&count), sizeof(count));
++  out.write(reinterpret_cast<const char*>(values.data()), count * sizeof(T));
++}
++
+ bool RunMultiStep(int k, int terminal_sequences, bool zero_head = false,
+-                  bool accept_first = false) {
++                  bool accept_first = false, int broken_offsets = 0) {
+   // Force the shared-state GDN kernel: the single-seq ModelPrefill ground truth
+   // must use the same kernel as the (shared-state) MTP verify path (the
+   // register-state kernel is ON by default). See q4t::test::GdnRegOff.
+@@ -166,6 +187,8 @@ bool RunMultiStep(int k, int terminal_sequences, bool zero_head = false,
+   MtpConfig mcfg;
+   mcfg.mtp_dir = kMtpDir;
+   mcfg.max_seq = B;
++  mcfg.max_len = 64;
++  mcfg.max_prefill = 16;
+   MtpModel mtp;
+   s = LoadMtp(mcfg, m.head.embed_tokens, m.head.lm_head, &mtp, nullptr);
+   if (!s.ok()) {
+@@ -183,7 +206,7 @@ bool RunMultiStep(int k, int terminal_sequences, bool zero_head = false,
+   // emits tied zero logits, whose independent greedy reference selects 0.
+   if (zero_head) {
+     Q4T_CHECK(cudaMemset(const_cast<uint16_t*>(m.head.lm_head), 0,
+-                        static_cast<size_t>(vocab) * hs * 2) == cudaSuccess);
++                         static_cast<size_t>(vocab) * hs * 2) == cudaSuccess);
+   }
+ 
+   // Two distinct prompts (small ids to keep the 2-layer model stable).
+@@ -198,7 +221,7 @@ bool RunMultiStep(int k, int terminal_sequences, bool zero_head = false,
+ 
+   // Per-sequence buffers: full trunk (draft extend hidden gather) + single-row
+   // g_in / next_g (the draft trunk).
+-  uint16_t* d_full[B], *g_in[B], *next_g[B];
++  uint16_t *d_full[B], *g_in[B], *next_g[B];
+   for (int b = 0; b < B; ++b) {
+     const int T = (b == 0) ? T0 : T1;
+     if (!Mal(reinterpret_cast<void**>(&d_full[b]),
+@@ -254,7 +277,8 @@ bool RunMultiStep(int k, int terminal_sequences, bool zero_head = false,
+   const int Tmx = T1;
+   if (!Mal(reinterpret_cast<void**>(&d_ids),
+            static_cast<size_t>(Tmx) * sizeof(int32_t)) ||
+-      !Mal(reinterpret_cast<void**>(&d_pos), static_cast<size_t>(Tmx) * sizeof(int)) ||
++      !Mal(reinterpret_cast<void**>(&d_pos),
++           static_cast<size_t>(Tmx) * sizeof(int)) ||
+       !Mal(reinterpret_cast<void**>(&d_seqid),
+            static_cast<size_t>(Tmx) * sizeof(int)) ||
+       !Mal(reinterpret_cast<void**>(&d_sample),
+@@ -319,83 +343,154 @@ bool RunMultiStep(int k, int terminal_sequences, bool zero_head = false,
+   cudaFree(d_multi);
+   cudaFree(d_logits);
+ 
+-  // 6. The batched speculative step.
+-  std::vector<int32_t> accepted(B * (k + 1), -1);
+-  std::vector<int> accepted_count(B, -1);
+-  std::vector<int32_t> next_b(B, -1), next_d0(B, -1);
+-  const ModelSequence* seq_ptrs[B];
+-  for (int b = 0; b < B; ++b) seq_ptrs[b] = &seqs[b];
+-  if (accept_first) {
+-    d0[0] = gt0[1];
+-    d0[1] = gt1[1];
+-  }
+-  std::vector<int32_t> stop_tokens;
+-  // Mixed termination removes the sequence with the largest position.
+-  if (terminal_sequences >= 1) stop_tokens.push_back(gt1[1]);
+-  if (terminal_sequences >= 2) stop_tokens.push_back(gt0[1]);
+-  s = MtpSpeculativeStepMulti(m, mtp, seq_ptrs, b_tok.data(), d0.data(), g_in,
+-                              B, k, accepted.data(), accepted_count.data(),
+-                              next_b.data(), next_d0.data(), next_g, nullptr,
+-                              stop_tokens);
+-  if (!s.ok()) {
+-    std::printf("  MtpSpeculativeStepMulti failed: %s\n", s.message().c_str());
+-    mtp.Free();
+-    m.Free();
+-    return false;
+-  }
+-  // The step does NOT advance the sequences (Stage 2c contract); the caller
+-  // does. Advance each seq over its accepted prefix [b_b, d_0..d_{a_b-1}].
+-  for (int b = 0; b < B; ++b) {
+-    const int count = accepted_count[b];
+-    Q4T_CHECK(count >= 1 && count <= k + 1);
+-    seqs[b].position += count;
+-    for (int i = 0; i < count; ++i)
+-      seqs[b].history.push_back(
+-          accepted[static_cast<size_t>(b) * (k + 1) + i]);
+-    Q4T_CHECK(seqs[b].position == (b == 0 ? T0 : T1) + count);
+-    Q4T_CHECK(static_cast<int>(seqs[b].history.size()) == seqs[b].position);
+-  }
+-
++  // 6. Reuse the exact same scratch over consecutive full-accept steps.
++  int* const offset_pointer = mtp.d_ms_gather_off;
++  const size_t offset_capacity = mtp.gather_off_capacity;
++#ifndef Q4T_MTP_PARENT_REFERENCE
++  Q4T_CHECK(offset_pointer && offset_capacity == size_t(B * (k + 1)));
++#endif
++  for (int b = 0; b < B; ++b)
++    Q4T_CHECK(cudaMemset(next_g[b], 0, hc_dim * 2) == cudaSuccess);
++  const int steps = zero_head ? 3 : 1;
+   bool ok = true;
+-  for (int b = 0; b < B; ++b) {
+-    const std::vector<int32_t>& gt = (b == 0) ? gt0 : gt1;
+-    const int a = accepted_count[b];
+-    if (zero_head) Q4T_CHECK(a == k + 1);
+-    if (accept_first) Q4T_CHECK(a >= 2);
+-    std::printf("  seq %d: accepted_count=%d next_b=%d next_d0=%d\n", b, a,
+-                next_b[b], next_d0[b]);
+-    if (a < 1 || a > k + 1) {
+-      std::printf("  FAIL: seq %d accepted_count %d out of range\n", b, a);
+-      ok = false;
+-      continue;
++  for (int step = 0; step < steps; ++step) {
++    // The batched speculative step.
++    std::vector<int32_t> accepted(B * (k + 1), -1);
++    std::vector<int> accepted_count(B, -1);
++    std::vector<int32_t> next_b(B, -1), next_d0(B, -1);
++    const ModelSequence* seq_ptrs[B];
++    for (int b = 0; b < B; ++b) seq_ptrs[b] = &seqs[b];
++    if (accept_first) {
++      d0[0] = gt0[1];
++      d0[1] = gt1[1];
+     }
+-    // accepted[0..a-1] == gt[0..a-1] (bonus + accepted drafts).
+-    for (int i = 0; i < a; ++i) {
+-      if (accepted[static_cast<size_t>(b) * (k + 1) + i] != gt[i]) {
+-        std::printf("  FAIL: seq %d accepted[%d]=%d gt=%d\n", b, i,
+-                    accepted[static_cast<size_t>(b) * (k + 1) + i], gt[i]);
+-        ok = false;
++    std::vector<int32_t> stop_tokens;
++    // Mixed termination removes the sequence with the largest position.
++    if (terminal_sequences >= 1) stop_tokens.push_back(gt1[1]);
++    if (terminal_sequences >= 2) stop_tokens.push_back(gt0[1]);
++    if (broken_offsets == 1) mtp.d_ms_gather_off = nullptr;
++    if (broken_offsets == 2) mtp.gather_off_capacity = 0;
++    s = MtpSpeculativeStepMulti(m, mtp, seq_ptrs, b_tok.data(), d0.data(), g_in,
++                                B, k, accepted.data(), accepted_count.data(),
++                                next_b.data(), next_d0.data(), next_g, nullptr,
++                                stop_tokens);
++    mtp.d_ms_gather_off = offset_pointer;
++    mtp.gather_off_capacity = offset_capacity;
++    if (broken_offsets) {
++      Q4T_CHECK(!s.ok());
++      Q4T_CHECK(s.message().find("gather offset scratch capacity") !=
++                std::string::npos);
++      Q4T_CHECK(cudaStreamQuery(nullptr) == cudaSuccess);
++      for (int b = 0; b < B; ++b)
++        Q4T_CHECK(accepted_count[b] == 0 && next_b[b] == -1 &&
++                  next_d0[b] == -1);
++      break;
++    }
++    if (!s.ok()) {
++      std::printf("  MtpSpeculativeStepMulti failed: %s\n",
++                  s.message().c_str());
++      mtp.Free();
++      m.Free();
++      return false;
++    }
++    Q4T_CHECK(mtp.d_ms_gather_off == offset_pointer);
++    Q4T_CHECK(mtp.gather_off_capacity == offset_capacity);
++    if (const char* directory = std::getenv("Q4T_MTP_CONTRACT_DIR")) {
++      const std::string name =
++          std::to_string(k) + "-" + std::to_string(terminal_sequences) + "-" +
++          std::to_string(zero_head) + "-" + std::to_string(accept_first) + "-" +
++          std::to_string(step);
++      std::ofstream out(std::string(directory) + "/" + name + ".bin",
++                        std::ios::binary);
++      WriteVector(out, accepted);
++      WriteVector(out, accepted_count);
++      WriteVector(out, next_b);
++      WriteVector(out, next_d0);
++      q4t::model::ModelStateSnapshot recurrent;
++      Q4T_CHECK(q4t::model::ModelSnapshotState(m, &recurrent, nullptr).ok());
++      WriteVector(out, recurrent.data);
++      WriteDevice(out, mtp.kv_cache, mtp.kv_bytes * B);
++      WriteDevice(out, mtp.idx_raw, mtp.idx_bytes * B);
++      WriteDevice(out, mtp.idx_comp, mtp.idx_bytes * B);
++      WriteDevice(out, mtp.d_ms_vlogits, size_t(B * (k + 1)) * vocab * 2);
++      WriteDevice(out, mtp.d_ms_vtrunk, size_t(B * (k + 1)) * hc_dim * 2);
++      int rows = 0;
++      for (int b = 0; b < B; ++b) {
++        WriteDevice(out, next_g[b], hc_dim * 2);
++        WriteVector(out, seqs[b].history);
++        out.write(reinterpret_cast<const char*>(&seqs[b].position),
++                  sizeof(int));
++        if (next_d0[b] != -1) rows += accepted_count[b];
+       }
++      if (rows) {
++        WriteDevice(out, mtp.d_ms_ext_logits, size_t(rows) * vocab * 2);
++        WriteDevice(out, mtp.d_ms_ext_multi, size_t(rows) * hc_dim * 2);
++        WriteDevice(out, mtp.d_ms_ext_sample, size_t(rows) * hs * 2);
++        WriteDevice(out, mtp.d_ms_gather, size_t(rows) * hc_dim * 2);
++      }
++      Q4T_CHECK(out.good());
+     }
+-    // next_b == the main model's greedy token at position P_b+a (gt[a]).
+-    if (next_b[b] != gt[a]) {
+-      std::printf("  FAIL: seq %d next_b=%d gt[%d]=%d\n", b, next_b[b], a,
+-                  gt[a]);
+-      ok = false;
++    // The step does NOT advance the sequences (Stage 2c contract); the caller
++    // does. Advance each seq over its accepted prefix [b_b, d_0..d_{a_b-1}].
++    for (int b = 0; b < B; ++b) {
++      const int count = accepted_count[b];
++      Q4T_CHECK(count >= 1 && count <= k + 1);
++      seqs[b].position += count;
++      for (int i = 0; i < count; ++i)
++        seqs[b].history.push_back(
++            accepted[static_cast<size_t>(b) * (k + 1) + i]);
++      Q4T_CHECK(seqs[b].position ==
++                (b == 0 ? T0 : T1) + (zero_head ? step * (k + 1) : 0) + count);
++      Q4T_CHECK(static_cast<int>(seqs[b].history.size()) == seqs[b].position);
+     }
+-    // next_d0 is a valid vocab token (draft model prediction).
+-    const bool terminal = std::find(stop_tokens.begin(), stop_tokens.end(),
+-                                    next_b[b]) != stop_tokens.end();
+-    if (terminal_sequences == 2 || (terminal_sequences == 1 && b == 1)) {
+-      Q4T_CHECK(terminal);
+-    } else {
+-      Q4T_CHECK(!terminal);
++
++    for (int b = 0; b < B; ++b) {
++      const std::vector<int32_t>& gt = (b == 0) ? gt0 : gt1;
++      const int a = accepted_count[b];
++      if (zero_head) Q4T_CHECK(a == k + 1);
++      if (accept_first) Q4T_CHECK(a >= 2);
++      std::printf("  seq %d: accepted_count=%d next_b=%d next_d0=%d\n", b, a,
++                  next_b[b], next_d0[b]);
++      if (a < 1 || a > k + 1) {
++        std::printf("  FAIL: seq %d accepted_count %d out of range\n", b, a);
++        ok = false;
++        continue;
++      }
++      // accepted[0..a-1] == gt[0..a-1] (bonus + accepted drafts).
++      for (int i = 0; i < a; ++i) {
++        if (accepted[static_cast<size_t>(b) * (k + 1) + i] != gt[i]) {
++          std::printf("  FAIL: seq %d accepted[%d]=%d gt=%d\n", b, i,
++                      accepted[static_cast<size_t>(b) * (k + 1) + i], gt[i]);
++          ok = false;
++        }
++      }
++      // next_b == the main model's greedy token at position P_b+a (gt[a]).
++      if (next_b[b] != gt[a]) {
++        std::printf("  FAIL: seq %d next_b=%d gt[%d]=%d\n", b, next_b[b], a,
++                    gt[a]);
++        ok = false;
++      }
++      // next_d0 is a valid vocab token (draft model prediction).
++      const bool terminal = std::find(stop_tokens.begin(), stop_tokens.end(),
++                                      next_b[b]) != stop_tokens.end();
++      if (terminal_sequences == 2 || (terminal_sequences == 1 && b == 1)) {
++        Q4T_CHECK(terminal);
++      } else {
++        Q4T_CHECK(!terminal);
++      }
++      if (terminal) {
++        Q4T_CHECK(a == 1 && next_d0[b] == -1);
++      } else if (next_d0[b] < 0 || next_d0[b] >= vocab) {
++        std::printf("  FAIL: seq %d next_d0=%d out of vocab\n", b, next_d0[b]);
++        ok = false;
++      }
+     }
+-    if (terminal) {
+-      Q4T_CHECK(a == 1 && next_d0[b] == -1);
+-    } else if (next_d0[b] < 0 || next_d0[b] >= vocab) {
+-      std::printf("  FAIL: seq %d next_d0=%d out of vocab\n", b, next_d0[b]);
+-      ok = false;
++    if (zero_head) {
++      b_tok = next_b;
++      d0 = next_d0;
++      for (int b = 0; b < B; ++b)
++        Q4T_CHECK(cudaMemcpy(g_in[b], next_g[b], hc_dim * 2,
++                             cudaMemcpyDeviceToDevice) == cudaSuccess);
+     }
+   }
+   if (ok) std::printf("  PASS: batched multi-seq step matches ground truth\n");
+@@ -410,6 +505,13 @@ bool RunMultiStep(int k, int terminal_sequences, bool zero_head = false,
+ }
+ 
+ Q4T_TEST(mtp_spec_multi_step) { return RunMultiStep(3, 0); }
++Q4T_TEST(mtp_spec_multi_full_k2) { return RunMultiStep(2, 0, true); }
++Q4T_TEST(mtp_spec_multi_offsets_null) {
++  return RunMultiStep(3, 0, false, false, 1);
++}
++Q4T_TEST(mtp_spec_multi_offsets_capacity) {
++  return RunMultiStep(3, 0, false, false, 2);
++}
+ Q4T_TEST(mtp_spec_multi_full_k3) { return RunMultiStep(3, 0, true); }
+ Q4T_TEST(mtp_spec_multi_accept_first_k3) {
+   return RunMultiStep(3, 0, false, true);
+@@ -438,9 +540,9 @@ Q4T_TEST(mtp_spec_multi_rejects_invalid_outputs) {
+   int32_t next = 99, next_draft = 99;
+   auto call = [&](int k) {
+     count = next = next_draft = 99;
+-    return MtpSpeculativeStepMulti(
+-        main, draft, sequences, &token, &token, input, 1, k, accepted,
+-        &count, &next, &next_draft, output, nullptr);
++    return MtpSpeculativeStepMulti(main, draft, sequences, &token, &token,
++                                   input, 1, k, accepted, &count, &next,
++                                   &next_draft, output, nullptr);
+   };
+   Q4T_CHECK(!call(0).ok());
+   Q4T_CHECK(count == 0 && next == -1 && next_draft == -1);
+diff --git a/tests/runtime_memory_budget_test.cpp b/tests/runtime_memory_budget_test.cpp
+index 2abe9b1..2258a8c 100644
+--- a/tests/runtime_memory_budget_test.cpp
++++ b/tests/runtime_memory_budget_test.cpp
+@@ -180,12 +180,12 @@ Q4T_TEST(budget_mtp_off_has_no_draft_reservation) {
+   Q4T_CHECK(plain.feasible && draft.feasible);
+   Q4T_CHECK(plain.mtp_workspace == 0 && plain.per_request == 0);
+   Q4T_CHECK(draft.mtp_workspace == request.mtp_workspace_bytes);
+-  Q4T_CHECK(draft.fixed - plain.fixed == 11353926248ULL);
++  Q4T_CHECK(draft.fixed - plain.fixed == 11353926264ULL);
+   Q4T_CHECK(plain.mtp_weights == 0 && plain.mtp_scratch == 0);
+   Q4T_CHECK(plain.mtp_checkpoints == 0 && plain.loading_host_peak == 0);
+   // Full prompt trunk plus all draft-extend buffers, rolling g and host/IO
+   // scratch. Independent weights and rollback scratch are persistent.
+-  Q4T_CHECK(draft.per_request == 9665896608ULL);
++  Q4T_CHECK(draft.per_request == 9665896592ULL);
+   // One extra full-attention pool plus an independent three-axis RoPE.
+   Q4T_CHECK(draft.state_pool - plain.state_pool == 675282944ULL);
+   Q4T_CHECK(draft.report.find("MTP allocation scope") != std::string::npos);
+@@ -202,14 +202,17 @@ Q4T_TEST(budget_mtp_accounts_for_loaded_and_lazy_allocations) {
+   Q4T_CHECK(budget.mtp_weights == 6000000000ULL);
+   // LoadMtp: sample[2560], trunk[10240], logits[248320], all BF16.
+   Q4T_CHECK(budget.mtp_buffers == 522240);
+-  // ReserveScratch(k_max=4): 2,191,392 single-step bytes and 4,285,512
++  // ReserveScratch(k_max=4): 2,191,392 single-step bytes and 4,285,528
+   // batched bytes. The batched allocations exist even at max_seq=1.
+-  Q4T_CHECK(budget.mtp_scratch == 6476904);
++  Q4T_CHECK(budget.mtp_scratch == 6476920);
++  // The 16-byte device offset charge moved from transient to persistent;
++  // host gather_off remains charged. Runtime total is unchanged.
++  Q4T_CHECK(budget.mtp_scratch + budget.mtp_forward_temp == 23291144);
+   // Three checkpoints of 36 linear SSM/conv pools and one PLE conv pool.
+   Q4T_CHECK(budget.mtp_checkpoints == 346927104);
+   // Async counts/token lists are additional to their unused d_ws reserve;
+   // include counts_h, attention host positions and decode metadata too.
+-  Q4T_CHECK(budget.mtp_forward_temp == 16814240);
++  Q4T_CHECK(budget.mtp_forward_temp == 16814224);
+   Q4T_CHECK(budget.loading_host_peak == 3355443200ULL);
+   Q4T_CHECK(budget.estimated_total == budget.runtime_peak);
+   Q4T_CHECK(budget.runtime_peak > budget.startup_peak);

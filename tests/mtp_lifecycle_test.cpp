@@ -48,7 +48,8 @@ void CheckEmpty(const q4t::mtp::MtpModel& m) {
             !m.moe.gu && !m.moe.down && !m.moe_extra.gate && !m.mixer.hc_norm &&
             !m.kv_cache && !m.page_table && !m.idx_raw && !m.idx_comp &&
             !m.d_rope_pos && !m.d_ws && !m.d_sample && !m.d_trunk &&
-            !m.d_logits && !m.d_ids_scratch && !m.d_ms_drafts && m.k_max == 0 &&
+            !m.d_ms_gather_off && m.gather_off_capacity == 0 && !m.d_logits &&
+            !m.d_ids_scratch && !m.d_ms_drafts && m.k_max == 0 &&
             m.ws_bytes == 0 && m.kv_bytes == 0 && m.idx_bytes == 0,
         "MTP cleanup left stale ownership metadata");
 }
@@ -138,42 +139,54 @@ int main(int argc, char** argv) {
 
   // Scratch uses small dimensions, so every allocator boundary is tested
   // without exhausting physical memory or loading a model repeatedly.
-  m.cfg = tiny;
-  m.embed_tokens = embed;
-  m.lm_head = head;
-  CheckCuda(cudaMalloc(reinterpret_cast<void**>(&m.fc_embedding), 2),
-            "owned marker weight");
-  const std::unordered_set<void*> weights = live;
-  ResetCounters();
-  Check(q4t::mtp::MtpReserveScratch(m, 2).ok(), "initial scratch reserve");
-  const int scratch_allocations = allocations;
-  Check(scratch_allocations > 1 && m.d_ms_drafts, "multi scratch missing");
-  const size_t expected_live = live.size();
-  ResetCounters();
-  Check(q4t::mtp::MtpReserveScratch(m, 2).ok() && allocations == 0,
-        "idempotent reserve allocated");
-  Check(!q4t::mtp::LoadMtp(tiny, embed, head, &m, nullptr).ok() &&
-            live.size() == expected_live,
-        "live reload must reject without losing resources");
-  for (int failure = 1; failure <= scratch_allocations; ++failure) {
-    ResetCounters(failure);
-    Check(!q4t::mtp::MtpReserveScratch(m, 3).ok(),
-          "injected scratch grow unexpectedly succeeded");
-    Check(m.k_max == 0 && live == weights && !m.d_ms_drafts &&
-              m.embed_tokens == embed && m.lm_head == head,
-          "failed grow left partial scratch or released weights");
+  for (int slots : {1, 3}) {
+    m.cfg = tiny;
+    m.max_seq = slots;
+    m.embed_tokens = embed;
+    m.lm_head = head;
+    CheckCuda(cudaMalloc(reinterpret_cast<void**>(&m.fc_embedding), 2),
+              "owned marker weight");
+    const std::unordered_set<void*> weights = live;
     ResetCounters();
-    Check(q4t::mtp::MtpReserveScratch(m, 2).ok(), "scratch retry failed");
-    Check(live.size() == expected_live, "scratch retry changed live count");
+    Check(q4t::mtp::MtpReserveScratch(m, 2).ok(), "initial scratch reserve");
+    const int scratch_allocations = allocations;
+    Check(m.d_ms_gather_off &&
+              m.gather_off_capacity == static_cast<size_t>(slots) * 2,
+          "offset capacity missing");
+    int* offset_pointer = m.d_ms_gather_off;
+    Check(scratch_allocations > 1 && m.d_ms_drafts, "multi scratch missing");
+    const size_t expected_live = live.size();
+    ResetCounters();
+    Check(q4t::mtp::MtpReserveScratch(m, 2).ok() && allocations == 0,
+          "idempotent reserve allocated");
+    Check(m.d_ms_gather_off == offset_pointer, "reserve replaced offsets");
+    Check(!q4t::mtp::LoadMtp(tiny, embed, head, &m, nullptr).ok() &&
+              live.size() == expected_live,
+          "live reload must reject without losing resources");
+    for (int failure = 1; failure <= scratch_allocations; ++failure) {
+      ResetCounters(failure);
+      Check(!q4t::mtp::MtpReserveScratch(m, 3).ok(),
+            "injected scratch grow unexpectedly succeeded");
+      Check(!m.d_ms_gather_off && m.gather_off_capacity == 0 && m.k_max == 0 &&
+                live == weights && !m.d_ms_drafts && m.embed_tokens == embed &&
+                m.lm_head == head,
+            "failed grow left partial scratch or released weights");
+      ResetCounters();
+      Check(q4t::mtp::MtpReserveScratch(m, 2).ok(), "scratch retry failed");
+      Check(live.size() == expected_live, "scratch retry changed live count");
+    }
+    ResetCounters();
+    Check(q4t::mtp::MtpReserveScratch(m, 4).ok(), "scratch grow failed");
+    Check(live.size() == expected_live && m.k_max == 4,
+          "successful grow leaked replaced draft matrix");
+    Check(m.gather_off_capacity == static_cast<size_t>(slots) * 4,
+          "grown offset capacity incorrect");
+    m.Free();
+    CheckEmpty(m);
+    std::printf(
+        "scratch: %d failure boundaries, grow/retry/idempotence: PASS\n",
+        scratch_allocations);
   }
-  ResetCounters();
-  Check(q4t::mtp::MtpReserveScratch(m, 4).ok(), "scratch grow failed");
-  Check(live.size() == expected_live && m.k_max == 4,
-        "successful grow leaked replaced draft matrix");
-  m.Free();
-  CheckEmpty(m);
-  std::printf("scratch: %d failure boundaries, grow/retry/idempotence: PASS\n",
-              scratch_allocations);
 
   // Main-model verify checkpoints have the same partial-grow contract.
   q4t::model::Model checkpoints;

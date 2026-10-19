@@ -1,0 +1,13 @@
+{
+  "status": "STOPPED",
+  "reserved_requests": 67,
+  "completed": [
+    "quality-on",
+    "candidate-on",
+    "quality-off",
+    "candidate-off"
+  ],
+  "start": 1792347799.5312853,
+  "reason": "RuntimeError('parent-off-driver failed: 1')",
+  "end": 1792349983.34281
+}
