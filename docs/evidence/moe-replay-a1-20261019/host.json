@@ -1,0 +1,26 @@
+{
+  "status": "HOST_ONLY_PASS",
+  "compiler": "g++-14 -std=c++23 -Wall -Wextra -Werror -Iinclude",
+  "files": [
+    {
+      "path": "include/q4t/model/moe_replay.h",
+      "sha256": "592e73835241fee87872fdef8c71978b6a0fcecda0996efa21228ebb77d03597"
+    },
+    {
+      "path": "tests/moe_replay_contract_test.cpp",
+      "sha256": "eba5b9095018d3441439fd7efb85bb0079c2997a3aa2f1c9f7f0a3e9b2e219d5"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/host-contracts",
+      "sha256": "7c12067705896b4bfc83737a2e62aa155e232716a44b4da24927975b57d02d56"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/host-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/host-contracts.log",
+      "sha256": "5e5e4d6659169f47a490ed930b4fd9f563aebde66338975797ea214489de2afc"
+    }
+  ]
+}

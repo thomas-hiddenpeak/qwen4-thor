@@ -318,6 +318,7 @@ if(Q4T_BUILD_TESTS)
     tests/gemv_fp8_test.cpp
     tests/gemm_t1_vs_tk1_test.cpp
     tests/model_forward_test.cpp
+    tests/moe_replay_contract_test.cpp
     tests/model_moe_test.cpp
     tests/model_verify_multi_test.cpp
     tests/model_verify_ckpt_test.cpp

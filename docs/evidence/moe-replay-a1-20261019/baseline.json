@@ -1,0 +1,40 @@
+{
+  "source_commit": "047d8ee1acac5f83fbf8caf62e07b4454f5033a8",
+  "reference_commit": "3e2807ce5e787f81b7275be2383092fe0c3bfc71",
+  "files": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "bytes": 4300056,
+      "sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03"
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json",
+      "bytes": 4983,
+      "sha256": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624"
+    },
+    {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model.safetensors.index.json",
+      "bytes": 35429343,
+      "sha256": "aa702aa8cadb463b728cfd6829e172b1124114080231c75712155e2490f8c607"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-review-20261016/megatron-lm/megatron/core/transformer/moe/router.py",
+      "bytes": 63741,
+      "sha256": "489e55641b3564c77b0bf3bcb9865cee068072f3bdb86cf033d557ed8a185004"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-review-20261016/megatron-lm/megatron/core/transformer/moe/router_replay.py",
+      "bytes": 13129,
+      "sha256": "4898e1deded3213d2b0372b1fdcee2ccbca86fb86b887e2e8c7583a8fbfb402d"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-review-20261016/megatron-lm/megatron/core/transformer/moe/moe_utils.py",
+      "bytes": 77934,
+      "sha256": "d1aff14179353c469d891aa367ca7dc8ff756add1999eb9b5e897a19ca234295"
+    }
+  ],
+  "candidate_binary": null,
+  "test_binary": null,
+  "weights_content_identity": "pending: hash exact layer tensor payloads before GPU execution",
+  "status": "BASELINE_REVIEW_ONLY"
+}
