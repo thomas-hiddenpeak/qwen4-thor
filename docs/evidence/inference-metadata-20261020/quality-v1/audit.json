@@ -1,0 +1,18 @@
+{
+  "status": "ENV_ABORT",
+  "original_manifest_changed_files": [
+    "on/server.log",
+    "on/quality/client.log",
+    "on/quality/20261020_010503/qwen3.8-flash-next/benchmark.log"
+  ],
+  "original_manifest_missing_files": [
+    "on/quality/20261020_010503/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db-journal"
+  ],
+  "reason": "child cleanup followed interrupted driver manifest; SQLite journal removal and log updates preserved as differences",
+  "post_abort_sealed_files": 76,
+  "off_requests_completed_before_abort": 11,
+  "on_complete": false,
+  "cause": "nvidia-smi compute PID query timeout after 5 seconds",
+  "subsequent_gpu_runs": 0,
+  "quality_acceptance": "NOT_COMPLETE"
+}

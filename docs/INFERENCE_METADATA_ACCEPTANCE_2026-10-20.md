@@ -47,3 +47,6 @@ owner初始化随Model加载，故off/on分别验收，不能只验普通decode�
 不得直接套用B1a/B1b“有限工程接受”许可。完整证据形成后明确决定
 保留候选、回退或请求用户认可具体风险；提交/推送不构成接受。
 默认部署保持。采样预算用尽不追加校准或追求有利结果。
+
+前置quality-v1现为ENV_ABORT，完整质量PASS未满足，本计划未执行。
+见[中断与关停封存审计](evidence/inference-metadata-20261020/quality-v1/audit.json)。
