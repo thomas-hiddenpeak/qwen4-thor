@@ -20,6 +20,12 @@ B<=max_prefill容量检查，6项无模型入口测试通过；完整新候选�
 [候选](INFERENCE_METADATA_CANDIDATE_2026-10-20.md)和
 [验收停止条件](INFERENCE_METADATA_ACCEPTANCE_2026-10-20.md)。
 
+**Thor监控能力轻量核对（2026-10-20）。** 本机tegrastats采集3条，
+内存/CPU/温度/功耗可用；本次无GPU利用率或PID字段，不能替代竞争
+检查。无模型加载、HTTP或新推理采样；guard规则未改。下一步先核实
+竞争检测接口能力，不继续盲目加载模型复现监控超时。见
+[监控职责](../tools/evalscope/README.md#jetson-thor监控职责与本机能力2026-10-20)。
+
 **真实文本首分叉定位与分类完成（2026-10-20）。** layer0位置74的
 in_proj_a[43]：相同输入下GEMV与cuBLAS tensor累加落在BF16中点两侧。
 实际SM110内核主循环一致，独立WMMA逐位复现192个FP32/BF16结果；

@@ -237,6 +237,26 @@ ENV_ABORT并返回75，只清理自有进程组及经父子链/start_ticks核实
 exit.json/events.jsonl保留结果；成功仅表示命令成功且未检测到冲突。
 轮询不能排除短于采样间隔、图形或驱动未列出的负载，不承诺绝对独占。
 
+### Jetson Thor监控职责与本机能力（2026-10-20）
+
+本机为L4T R39.2.1。轻量只读采集运行tegrastats 3.2秒、取得3条记录，
+无模型加载或HTTP请求。内存、CPU、温度、供电轨数据可用；本次输出
+没有GPU利用率/频率字段或计算进程PID。缺字段不解释为GPU空闲。
+`/proc/driver/nvidia/clients`不存在，不作为可用竞争检测后端。
+证据见[能力记录](../../docs/evidence/jetson-monitor-capabilities-20261020/result.json)。
+
+职责分开处理：系统遥测优先用tegrastats；计算进程竞争检查由guard
+单独承担；Nsight仅按具体分析需要使用。当前guard仍使用nvidia-smi
+PID查询，尚未更换后端或放宽失败规则；其超时是监控通道失败，不能
+单独证明模型/GPU计算故障。tegrastats不能凭资源使用率替代PID归属。
+
+Thor不同于早期Jetson：官方说明NVML支持Thor及后续L4T平台，Thor
+文档列出nvidia-smi dmon的部分支持字段。不能由此推断所有NVML字段
+或本机compute-PID查询都可靠。后续后端选择需验证本机接口、权限、
+已知竞争进程的可见性和失败行为，再决定是否替换硬依赖。
+参考：[CUDA for Tegra](https://docs.nvidia.com/cuda/cuda-for-tegra-appnote/)、
+[Thor GPU管理工具](https://docs.nvidia.com/jetson/archives/r38.2.1/DeveloperGuide/SD/PlatformPowerAndPerformance/JetsonThor.html#gpu-management-tool)。
+
 默认guard自己持锁。显式`--lease-fd`借用同一lock inode的已排他持锁FD，
 仅关闭自身副本，退出记录external_cleanup_pending，外部持锁者负责
 恢复与释放；不把guard退出视为外部恢复完成。锁旁存在

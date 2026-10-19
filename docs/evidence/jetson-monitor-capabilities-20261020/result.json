@@ -1,0 +1,41 @@
+{
+  "purpose": "read-only platform telemetry capability check",
+  "model_loads": 0,
+  "http_requests": 0,
+  "guard_changed": false,
+  "tools": {
+    "tegrastats": "/usr/bin/tegrastats",
+    "nvidia-smi": "/usr/sbin/nvidia-smi",
+    "nsys": "/usr/local/cuda-13.3/bin/nsys"
+  },
+  "/etc/nv_tegra_release": "# R39 (release), REVISION: 2.1, GCID: 46758480, BOARD: generic, EABI: aarch64, DATE: Fri Aug  7 05:54:22 AM UTC 2026\n# KERNEL_VARIANT: oot\nTARGET_USERSPACE_LIB_DIR=nvidia\nTARGET_USERSPACE_LIB_DIR_PATH=usr/lib/aarch64-linux-gnu/nvidia\n",
+  "/proc/driver/nvidia/version": "NVRM version: NVIDIA UNIX Open Kernel Module for aarch64  TempVersion  Release Build  (r595_00)  (buildbrain@74e043fc-6c96-4a54-a660-50b30a72108d-97k4-j97dd)  Thu Aug  6 10:18:15 PM PDT 2026\nGCC version:  gcc version 13.2.0 (crosstool-NG 1.26.0) \n",
+  "/proc/driver/nvidia/clients": {
+    "error": "[Errno 2] No such file or directory: '/proc/driver/nvidia/clients'"
+  },
+  "/proc/sys/kernel/yama/ptrace_scope": "1\n",
+  "device_nodes": [
+    "/dev/nvidia-modeset",
+    "/dev/nvidia-uvm-tools",
+    "/dev/nvidia-uvm",
+    "/dev/nvidia1",
+    "/dev/nvidia0",
+    "/dev/nvidia-caps",
+    "/dev/nvidiactl",
+    "/dev/nvhost-ctrl-pva0",
+    "/dev/nvmap",
+    "/dev/nvhost-ctrl-isp1",
+    "/dev/nvhost-ctrl-isp"
+  ],
+  "tegrastats": {
+    "command": [
+      "/usr/bin/tegrastats",
+      "--interval",
+      "1000"
+    ],
+    "seconds": 3.201540558016859,
+    "returncode": -15,
+    "stop_reason": "bounded_capture_complete",
+    "samples": 3
+  }
+}
