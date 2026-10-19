@@ -1,5 +1,8 @@
 # 上游首分叉捕获：layer0 GDN a[43]
 
+后续更新：本页保留当时证据与未决项；现已完成实际内核和独立WMMA核对，
+最终分类见[2026-10-20结论](UPSTREAM_FIRST_FORK_RESULT_2026-10-20.md)。
+
 状态：CAPTURE_PASS_ROOT_CAUSE_PENDING。捕获阶段通过，定位目标未完成。
 
 ## 固定实验与来源

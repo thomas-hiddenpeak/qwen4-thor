@@ -1,0 +1,11 @@
+{
+  "cublasLt": {
+    "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27",
+    "sha256": "6c15bfbf538088ce72f9d83d81200b37ecff3409b905fe1696887d0f9084f11f"
+  },
+  "cupti": {
+    "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcupti.so.2026.2.0",
+    "sha256": "6c6cfec85a8c08ff5abb230a4233e71b2a991ae0b0e8196bb7e64b7e2699becc"
+  },
+  "note": "Post-run linked library identity; actual modules separately captured and hashed."
+}

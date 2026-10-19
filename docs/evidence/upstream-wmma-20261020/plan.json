@@ -1,0 +1,17 @@
+{
+  "model_loads": 0,
+  "launches": 3,
+  "real_fixture_calls": 1,
+  "controls": [
+    "zero",
+    "sparse basis at K=0,15,16,2559"
+  ],
+  "retries": 0,
+  "binary_sha256": "146787c8fee6c22d2f564c3634d42db99cdbad8aa04c28c263b0d03bf5f6632a",
+  "prior_files": {
+    "fixture/x": "6ca7a0b43a7fa8588ba97c5973da73ab1ff48d9fd6610ec64aaf07c7580cf3eb",
+    "fixture/weight": "ec10ca960d290d70340b9434f0b985ec04f063611a2c5a3953d2fe49ba1411ec",
+    "projection/float_output.f32": "6c0ff06a0d87da9de9c61391f8f59d2cf34cca673f9577cab329c65b0c36451b",
+    "projection/t4.bf16": "eab943b2d59b8108cbc23b18d108d373dccb6bd25c3c9f5959ea6003da1618a5"
+  }
+}

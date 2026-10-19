@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "verified_files": 12,
+  "run_status": "PASS",
+  "lease": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      "-B",
+      "tools/verify/upstream_first_fork/run_wmma.py"
+    ],
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-10-19T16:22:53.879647+00:00",
+      "monotonic": 617056.39652934,
+      "pid": 1956626
+    }
+  }
+}

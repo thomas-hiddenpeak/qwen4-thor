@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "instruction_counts": [
+    616,
+    600
+  ],
+  "identical_prefix_instructions": 317,
+  "first_different_instruction": [
+    [
+      "13d0",
+      "LDC.64 R18, c[0x0][0x398]"
+    ],
+    [
+      "13d0",
+      "LDC.64 R20, c[0x0][0x398]"
+    ]
+  ],
+  "common_tensor_instructions": [
+    [
+      246,
+      "0f60",
+      "HMMA.16816.F32.BF16 R4, R12.reuse, R2, R4"
+    ],
+    [
+      249,
+      "0f90",
+      "HMMA.16816.F32.BF16 R8, R12, R2, R8"
+    ],
+    [
+      256,
+      "1000",
+      "HMMA.16816.F32.BF16 R4, R12.reuse, R2, R4"
+    ],
+    [
+      259,
+      "1030",
+      "HMMA.16816.F32.BF16 R8, R12, R2, R8"
+    ],
+    [
+      266,
+      "10a0",
+      "HMMA.16816.F32.BF16 R4, R12.reuse, R2, R4"
+    ],
+    [
+      269,
+      "10d0",
+      "HMMA.16816.F32.BF16 R8, R12, R2, R8"
+    ],
+    [
+      276,
+      "1140",
+      "HMMA.16816.F32.BF16 R4, R12.reuse, R2, R4"
+    ],
+    [
+      280,
+      "1180",
+      "HMMA.16816.F32.BF16 R8, R12, R2, R8"
+    ]
+  ],
+  "note": "Compares decoded address/opcode/operands, not scheduling bits; same parameters and independently reproduced outputs required separately.",
+  "files": {
+    "module-23.sass": "2163085de616186f38285083344fb8feac8926e9cca667056549b19e6c3c3c8c",
+    "module-24.sass": "dd819c9bd661002c177e7c2c4650684c7c28eaada9c58754f8b55b0b9798d66e"
+  }
+}

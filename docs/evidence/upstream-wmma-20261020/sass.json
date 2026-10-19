@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "sass_sha256": "20bf614d8c9e80de13908ce8c51b64a24201b2bebb37f9a3f8fe1e6dc40f15f1",
+  "static_tensor_instructions": [
+    "HMMA.16816.F32.BF16 R20, R12.reuse, R24, R20",
+    "HMMA.16816.F32.BF16 R8, R12, R6, R8",
+    "HMMA.16816.F32.BF16 R20, R16.reuse, R26, R20",
+    "HMMA.16816.F32.BF16 R16, R16, R4, R8",
+    "HMMA.16816.F32.BF16 R20, R12.reuse, R24, R20",
+    "HMMA.16816.F32.BF16 R12, R12, R6, R16",
+    "HMMA.16816.F32.BF16 R20, R8.reuse, R26, R20",
+    "HMMA.16816.F32.BF16 R8, R8, R4, R12",
+    "HMMA.16816.F32.BF16 R20, R16.reuse, R24, R20",
+    "HMMA.16816.F32.BF16 R16, R16, R6, R8",
+    "HMMA.16816.F32.BF16 R20, R12.reuse, R26, R20",
+    "HMMA.16816.F32.BF16 R16, R12, R4, R16",
+    "HMMA.16816.F32.BF16 R20, R8.reuse, R24, R20",
+    "HMMA.16816.F32.BF16 R8, R8, R6, R16",
+    "HMMA.16816.F32.BF16 R20, R12.reuse, R26, R20",
+    "HMMA.16816.F32.BF16 R8, R12, R4, R8"
+  ],
+  "source_sha256": "08c23c61ff9763b6df5ab1b0b8c9a1e65438d44219ee47af12043e54d207eced",
+  "binary_sha256": "146787c8fee6c22d2f564c3634d42db99cdbad8aa04c28c263b0d03bf5f6632a"
+}

@@ -1,0 +1,4 @@
+captured module=23 bytes=2260624 bf16=1 fp32=0
+captured module=24 bytes=2296776 bf16=0 fp32=1
+PASS projection: 4 GEMV, 1 BF16 batch, 1 float-output diagnostic
+module capture completed saved=2 bytes=4557400

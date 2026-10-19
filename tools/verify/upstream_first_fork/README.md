@@ -1,7 +1,7 @@
 # Upstream first-fork investigation
 
-Status: capture validated; root cause pending. See
-[the capture result](../../../docs/UPSTREAM_FIRST_FORK_CAPTURE_2026-10-19.md).
+Status: fixed-fixture classification complete: shape-dependent accumulation
+rounding. See [the final result](../../../docs/UPSTREAM_FIRST_FORK_RESULT_2026-10-20.md).
 
 `q4t_upstream_first_fork` is an explicit EXCLUDE_FROM_ALL executable. It reuses
 the real-text capture lifecycle and adds decoder, GEMV, small-M and cuBLASLt
@@ -66,3 +66,33 @@ run only under gpu_exclusive and a corresponding bounded plan.
 
 See [local results and limits](../../../docs/UPSTREAM_LOCAL_REPLAY_2026-10-20.md).
 These passes do not finish the cuBLAS root-cause classification.
+
+
+Final local evidence tools (dated, single-run drivers; no automatic retries):
+
+- `run_trace.py`: Nsight trace of frozen projection executable.
+- `module_observer.cpp` / `run_modules.py`: read-only CUPTI loaded-module copy.
+- `audit_sass.py`: offline common accumulation-prefix comparison.
+- `wmma_reference.cu` / `run_wmma.py`: independent CUDA WMMA plus zero/basis
+  controls; all 192 float and BF16 outputs compared to frozen cuBLAS results.
+
+See the dated TRACE, MODULE and WMMA plan documents for exact build/lease
+budgets. These are standalone diagnostic tools; they add no production hooks.
+The WMMA reference shares GPU tensor hardware, not cuBLAS/q4t source.
+
+Standalone builds used for this evidence (outputs must remain under work/build):
+
+```bash
+g++-14 -std=c++23 -Wall -Wextra -Werror -O2 -shared -fPIC \
+  -I/usr/local/cuda/include \
+  tools/verify/upstream_first_fork/module_observer.cpp \
+  -L/usr/local/cuda/lib64 -Wl,-rpath,/usr/local/cuda/lib64 -lcupti \
+  -o .q4t-work/upstream-cublas-modules-20261020/observer.so
+/usr/local/cuda/bin/nvcc -std=c++23 -ccbin g++-14 -arch=sm_110a -O3 \
+  -Xcompiler=-Wall,-Wextra,-Werror \
+  tools/verify/upstream_first_fork/wmma_reference.cu \
+  -o .q4t-work/upstream-wmma-20261020/executable
+```
+
+Do not overwrite retained evidence binaries or reuse the dated run directories.
+Freeze a new plan/directory before any further GPU run.

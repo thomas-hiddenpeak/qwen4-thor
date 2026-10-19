@@ -1,0 +1,24 @@
+{
+  "model_loads": 0,
+  "gemv_calls": 4,
+  "bf16_batch_calls": 1,
+  "float_output_calls": 1,
+  "runs": 1,
+  "retries": 0,
+  "max_modules": 4,
+  "max_module_bytes": 268435456,
+  "max_total_bytes": 536870912,
+  "observer_sha256": "736cf02dc3ce912344c11c78255a09e528a3cd5512c88aa040d632a7aaab503c",
+  "prior_files": {
+    "executable": "1142b1268a9e9e561d0382b95a4b4d150739901a524fe85184364c707bcfb358",
+    "fixture/x": "6ca7a0b43a7fa8588ba97c5973da73ab1ff48d9fd6610ec64aaf07c7580cf3eb",
+    "fixture/t4": "eab943b2d59b8108cbc23b18d108d373dccb6bd25c3c9f5959ea6003da1618a5",
+    "fixture/t1": "5d524343f6ddf6b1677d6d8461e90e2477bb6b812b8a542fcf1caa2d919090d5",
+    "fixture/weight": "ec10ca960d290d70340b9434f0b985ec04f063611a2c5a3953d2fe49ba1411ec"
+  },
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/upstream-projection-20261020/gpu-v1/executable",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/upstream-projection-20261020/gpu-v1/fixture",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/upstream-cublas-modules-20261020/run-v1/projection"
+  ]
+}

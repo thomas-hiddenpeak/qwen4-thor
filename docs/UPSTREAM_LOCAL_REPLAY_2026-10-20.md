@@ -1,5 +1,8 @@
 # 首分叉局部重放与状态因果证据（2026-10-20）
 
+后续更新：本页保留当时证据与未决项；现已完成实际内核和独立WMMA核对，
+最终分类见[2026-10-20结论](UPSTREAM_FIRST_FORK_RESULT_2026-10-20.md)。
+
 状态：LOCAL_REPLAY_PASS_CLASSIFICATION_PENDING。目标继续进行，尚不
 将本次差异判为已证明的正常舍入或实现缺陷。
 

@@ -1,0 +1,68 @@
+[
+  [
+    253701501,
+    253707453,
+    6,
+    1,
+    1,
+    256,
+    1,
+    1,
+    "q4t::model::<unnamed>::Bf16GevKernel(const unsigned short *, const unsigned short *, unsigned short *, int, int, float, float *)"
+  ],
+  [
+    253707741,
+    253711613,
+    6,
+    1,
+    1,
+    256,
+    1,
+    1,
+    "q4t::model::<unnamed>::Bf16GevKernel(const unsigned short *, const unsigned short *, unsigned short *, int, int, float, float *)"
+  ],
+  [
+    253712157,
+    253716093,
+    6,
+    1,
+    1,
+    256,
+    1,
+    1,
+    "q4t::model::<unnamed>::Bf16GevKernel(const unsigned short *, const unsigned short *, unsigned short *, int, int, float, float *)"
+  ],
+  [
+    253716637,
+    253720541,
+    6,
+    1,
+    1,
+    256,
+    1,
+    1,
+    "q4t::model::<unnamed>::Bf16GevKernel(const unsigned short *, const unsigned short *, unsigned short *, int, int, float, float *)"
+  ],
+  [
+    310029789,
+    310065437,
+    4,
+    1,
+    1,
+    32,
+    1,
+    1,
+    "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_64x1_tn_align8>(T1::Params)"
+  ],
+  [
+    338822301,
+    338859165,
+    4,
+    1,
+    1,
+    32,
+    1,
+    1,
+    "void cutlass::Kernel2<cutlass_80_wmma_tensorop_s161616gemm_bf16_16x16_64x1_tn_align8>(T1::Params)"
+  ]
+]

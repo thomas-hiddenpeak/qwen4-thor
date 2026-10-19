@@ -1,0 +1,13 @@
+{
+  "trace.nsys-rep": "17cd937c83377e5d4f699a663632d40fdffd2d61ee8d665823ce1994e884ebde",
+  "plan.json": "1e8f66f7823a1ef3ab07d2c5f07286dc0c88322c54d3cc8d1ace6b681a5a7957",
+  "profile.log": "e85377cf3fa2e054cae76a863b01c63bc20caa62384e84a9b38acb0dd7f90d43",
+  "run.json": "093fcb64c8cd93c75496aa4583dddca62bb4ca4edc6585d265bc2078f14b93f3",
+  "trace.sqlite": "c11400fbd439405c290acb8b4d70b58d71dec79e14f8ec331bca67d84ca418d8",
+  "export.log": "ee18c8aed3e9650b82de1d0d3bfe0d9732d3f24096c7c52c0b8a84d546a116ef",
+  "projection/float_output.f32": "6c0ff06a0d87da9de9c61391f8f59d2cf34cca673f9577cab329c65b0c36451b",
+  "projection/result.json": "290d3d0998df0b6bdfe30c1fff4081586e19a688949f44c94423d4067ee60008",
+  "projection/gemv.bf16": "5d524343f6ddf6b1677d6d8461e90e2477bb6b812b8a542fcf1caa2d919090d5",
+  "projection/t4.bf16": "eab943b2d59b8108cbc23b18d108d373dccb6bd25c3c9f5959ea6003da1618a5",
+  "projection/gemv.f32": "f6d2333751d71940245ce9f6b69227a87227674c80bfef64d072b258c5a93a97"
+}
