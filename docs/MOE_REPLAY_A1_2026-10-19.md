@@ -70,3 +70,44 @@ RouterCollector::CaptureLayer 只观测原始 ID，不承担重放执行。
 固定 IDs 将剩余差异全部归因于专家算术。保留正常路由对照。
 草稿 MTP、完整 trace、预取/offload、驻留偏置及 CUDA Graph 不在范围。
 按清晰边界提交推送；未验收快照明确标注，不自动部署。
+
+## 2026-10-19 实现快照（非最终验收）
+
+`q4t_moe_replay_gpu` 独立目标再次编译同一 MoEForward 函数体，
+仅定义 `Q4T_MOE_REPLAY_DIAGNOSTIC` 时加入 replay kernel 和选择分支。
+生产编译完全排除此代码，trace collector 未改。GPU wrapper 先验证
+来源/执行身份及实际 hidden bytes，拥有 ID 上传副本；成功和失败均
+等待自己的 stream 完成后释放，返回时调用方可复用输入记录/缓冲。
+此版本仅支持全驻留，不将 offload 纳入验证范围。
+
+`q4t_moe_replay_io` 使用版本化 little-endian 编码与 SHA256 尾部校验，
+16 MiB 上限，角色/形状/数量显式编码，必须恰好消费完整 payload。
+读取只信任来源字段作为待校验记录；执行身份由诊断 loader 重建。
+校验和不等于模型身份可信，仍必须通过 Prepare 与 loader 对照。
+
+独立 host 测试 2/2：身份、ID 顺序和副本生命周期；每个字节截断点，
+checksum 错误、重算 checksum 后的非法结构和额外 payload。无 skip。
+GPU 库及 host CMake 目标零警告构建；首次多目标构建因 Makefile 自动
+重生成后旧 make 进程未识别新目标失败，单独构建成功，原日志保留。
+[构建与比较证据](evidence/moe-replay-a1-20261019/implementation-build.json)。
+
+与 B1b 原生产 MoE 对象比较，完整 SASS 相同，host 反汇编/重定位
+除路径标题相同；原始对象摘要不同，不宣称对象逐字节一致。
+最终生产路径复用还需结合数据段、链接依赖审查，不能单以指令相同
+替代完整影响审查。新增 GPU/HTTP 运行均为 0。
+
+当前可复现 host 检查：
+
+```bash
+cmake -S . -B .q4t-work/moe-replay-a1-20261019/build \
+  -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-14 \
+  -DCMAKE_CUDA_HOST_COMPILER=g++-14 -DQ4T_CUDA_ARCHITECTURES=110a
+cmake --build .q4t-work/moe-replay-a1-20261019/build \
+  --target q4t_moe_replay_gpu q4t_moe_replay_host_tests --parallel 8
+Q4T_REPLAY_TEST_OUTPUT=.q4t-work/moe-replay-a1-20261019/io-user-check \
+  .q4t-work/moe-replay-a1-20261019/build/q4t_moe_replay_host_tests
+```
+
+剩余：真实层独立 CLI/固定夹具及权重 payload 身份、GPU router 边界与
+CPU 参考、同形状逐位/跨形状诊断、GPU 所有权负控、生产路径最终审核、
+完整复现与结果报告。当前静态库构建不构成这些项目通过。

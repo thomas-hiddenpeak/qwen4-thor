@@ -1,0 +1,60 @@
+{
+  "status": "COMPILED_AND_HOST_PASS_GPU_NOT_RUN",
+  "host_tests": 2,
+  "host_failed": 0,
+  "production_moe_sass_identical": true,
+  "production_moe_host_disassembly_and_relocations_identical_except_file_heading": true,
+  "raw_object_identical": false,
+  "raw_object_comparison_not_used_as_identity": true,
+  "initial_build_driver_failure": "build-v2.log: new target absent in pre-regeneration make process; separate build succeeds",
+  "files": [
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/configure.log",
+      "sha256": "2d52705ef1beb46cea197f1995b2167e668912d492797aa046dea97ba3bc6c4e"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/build.log",
+      "sha256": "65af1c886e46d8daf17c00e05b3492fccd90b2730502a09e049e382bc1bc36c6"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/build-v2.log",
+      "sha256": "82f43dcfdd25a25525781bd80a3a4b59f40929801665d1867d6e5d9ae5b1d79b"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/host-cmake-build.log",
+      "sha256": "cfd9a0150d78039c4aabcfc469f682798aa9df1bcf47f46a7912c0b75551736d"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/host-contracts-v2.log",
+      "sha256": "0aaefec313c2dfb3890ecaac5d205f54c54da3e039b3f88ab674eec54199c053"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/host-cmake-tests.log",
+      "sha256": "0aaefec313c2dfb3890ecaac5d205f54c54da3e039b3f88ab674eec54199c053"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/parent-moe.sass",
+      "sha256": "f2c02952388416286bda45394c8bb21207d9473ec45a9175a1bdc0d45971a7af"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/candidate-moe.sass",
+      "sha256": "f2c02952388416286bda45394c8bb21207d9473ec45a9175a1bdc0d45971a7af"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/parent-moe.host",
+      "sha256": "ecdcd0518574c859d7757b9ec9f85cbc448e2054cf010566615b1e3b922a591b"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/candidate-moe.host",
+      "sha256": "3651c8184d98140d6c6c6a4b4d1f7aa3d026889470b15553ec95c435890dc94c"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/build/libq4t_moe_replay_gpu.a",
+      "sha256": "5fe025e876dfcc892cb971252cff7271e1500f4710aae4b82515b02557bf217c"
+    },
+    {
+      "path": ".q4t-work/moe-replay-a1-20261019/build/q4t_moe_replay_host_tests",
+      "sha256": "003a352bcd3714e4a2a78e3fc272ff409fe3e1455fe1d602c13ac4ea93c0042a"
+    }
+  ]
+}

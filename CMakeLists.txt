@@ -191,6 +191,18 @@ target_include_directories(q4t_model PUBLIC include third_party)
 target_link_libraries(q4t_model PUBLIC q4t_trace q4t_io q4t_quant q4t_ple CUDA::cudart
                     CUDA::cublasLt)
 
+# Standalone A1 diagnostic: never linked by production q4t_model/serve.
+add_library(q4t_moe_replay_gpu STATIC EXCLUDE_FROM_ALL
+  tools/verify/moe_replay_gpu.cu)
+target_link_libraries(q4t_moe_replay_gpu PUBLIC q4t_model)
+add_library(q4t_moe_replay_io STATIC EXCLUDE_FROM_ALL
+  tools/verify/moe_replay_io.cpp)
+target_link_libraries(q4t_moe_replay_io PUBLIC q4t_trace)
+add_executable(q4t_moe_replay_host_tests EXCLUDE_FROM_ALL
+  tests/test_main.cpp tests/moe_replay_contract_test.cpp
+  tests/moe_replay_io_test.cpp)
+target_link_libraries(q4t_moe_replay_host_tests PRIVATE q4t_moe_replay_io)
+
 # ---------------------------------------------------------------------------
 # q4t_runtime — host-side runtime utilities (memory budget, OOM preflight).
 # No CUDA dependency: pure host logic over /proc/meminfo + architecture math.

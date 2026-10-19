@@ -209,6 +209,31 @@ __global__ void RouterTopkKernel(const uint16_t* __restrict__ logits,
   }
 }
 
+#ifdef Q4T_MOE_REPLAY_DIAGNOSTIC
+// Diagnostic-only: IDs have been validated and copied by the owning wrapper.
+// Preserve the production FP32 operation and slot order exactly.
+__global__ void RouterReplayKernel(const uint16_t* logits,
+                                   const int32_t* fixed_ids, int32_t* ids,
+                                   float* weights, int E, int k) {
+  const size_t offset = static_cast<size_t>(blockIdx.x) * k;
+  const uint16_t* row = logits + static_cast<size_t>(blockIdx.x) * E;
+  float selected[16];
+  for (int i = 0; i < k; ++i) selected[i] = Bf16ToFloat(row[fixed_ids[offset + i]]);
+  float max_val = selected[0];
+  for (int i = 1; i < k; ++i) max_val = fmaxf(max_val, selected[i]);
+  float sum = 0.0f;
+  for (int i = 0; i < k; ++i) {
+    selected[i] = __expf(selected[i] - max_val);
+    sum += selected[i];
+  }
+  const float inv = 1.0f / sum;
+  for (int i = 0; i < k; ++i) {
+    ids[offset + i] = fixed_ids[offset + i];
+    weights[offset + i] = selected[i] * inv;
+  }
+}
+#endif
+
 // Debug: when Q4T_MOE_DUMP=<tag>, copy this MoE block's router top-k expert
 // ids [T, k] int32 and router weights [T, k] f32 to
 // <tag>_m<idx>.{eid,rw}.bin so a prefill-vs-decode (or C++-vs-reference)
@@ -303,6 +328,7 @@ Status CheckGemm(const Bf16GemmResult& r) {
 
 }  // namespace
 
+#ifndef Q4T_MOE_REPLAY_DIAGNOSTIC
 void MoEExtraWeights::Free() {
   if (gate) cudaFree(gate);
   if (shared_gu) cudaFree(shared_gu);
@@ -394,13 +420,25 @@ size_t MoEForwardWorkspaceBytes(int T, int k, int hs, int moe_is, int shared_is,
   return ((routed + 7) & ~size_t(7)) + ((scratch + 7) & ~size_t(7));
 }
 
-Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
+#endif  // !Q4T_MOE_REPLAY_DIAGNOSTIC
+
+#ifdef Q4T_MOE_REPLAY_DIAGNOSTIC
+#define Q4T_MOE_FORWARD_NAME MoEForwardReplayImpl
+#else
+#define Q4T_MOE_FORWARD_NAME MoEForward
+#endif
+
+Status Q4T_MOE_FORWARD_NAME(const uint16_t* x, const quant::MoEWeightLayout& routed,
                   const MoEExtraWeights& extra, uint16_t* y, int T, int k,
                   void* workspace, size_t workspace_bytes, void* gemm_ws,
                   size_t gemm_ws_bytes, cudaStream_t stream,
                   trace::RouterCollector* trace, int layer_id,
                   const quant::MoEResidency* residency,
-                  MoEForwardDiagnostics* diagnostics) {
+                  MoEForwardDiagnostics* diagnostics
+#ifdef Q4T_MOE_REPLAY_DIAGNOSTIC
+                  , const int32_t* replay_ids
+#endif
+                  ) {
   if (diagnostics) *diagnostics = {};
   const int hs = extra.hs;
   const int E = extra.E;
@@ -440,6 +478,12 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
                          gemm_ws, gemm_ws_bytes, stream));
   if (!s.ok()) return s;
   // 2. top-k + softmax.
+#ifdef Q4T_MOE_REPLAY_DIAGNOSTIC
+  if (replay_ids) {
+    RouterReplayKernel<<<T, 1, 0, stream>>>(d_logits, replay_ids, d_eid, d_rw,
+                                           E, k);
+  } else
+#endif
   RouterTopkKernel<<<T, kBlock, 0, stream>>>(d_logits, d_eid, d_rw, T, E, k);
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("topk launch");
   if (trace) {
@@ -921,6 +965,8 @@ Status MoEForward(const uint16_t* x, const quant::MoEWeightLayout& routed,
   if (cudaGetLastError() != cudaSuccess) return Status::Fail("combine launch");
   return Status();
 }
+
+#undef Q4T_MOE_FORWARD_NAME
 
 }  // namespace model
 }  // namespace q4t
