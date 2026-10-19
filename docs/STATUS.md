@@ -14,7 +14,8 @@ HTTP off11条在原有效监控区间完成；原on与唯一一次受影响重�
 默认binary保持44abd8b1。已确认并补上普通多序列decode的
 B<=max_prefill容量检查，6项无模型入口测试通过；完整新候选零警告
 构建，旧候选另存，运行时尚未验收。单次1加载/1条200K环境诊断
-驱动已准备、待用户新增授权，未执行。完整静态边界见
+已按用户授权完成：单请求与guard均通过，但未复现超时，根因仍未明；
+/proc深层状态受权限限制，不据此恢复完整验收或追加样本。完整静态边界见
 [生命周期审计](INFERENCE_METADATA_AUDIT_2026-10-20.md)。见[范围](INFERENCE_METADATA_PLAN_2026-10-20.md)、
 [候选](INFERENCE_METADATA_CANDIDATE_2026-10-20.md)和
 [验收停止条件](INFERENCE_METADATA_ACCEPTANCE_2026-10-20.md)。

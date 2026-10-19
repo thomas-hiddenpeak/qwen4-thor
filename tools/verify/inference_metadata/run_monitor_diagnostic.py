@@ -1,19 +1,20 @@
 """Proposed single-request diagnostic. Requires a newly authorized GPU budget.
 
-Run only through seal_stage.py with output monitor-diagnostic-v1. No retries.
+Run only through seal_stage.py with output monitor-diagnostic-v2. No retries.
 The observer reads /proc for guard-owned NVIDIA queries; it issues no GPU API.
 """
 import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import threading
 import time
 
 ROOT = Path(__file__).resolve().parents[3]
 STAGE = ROOT / '.q4t-work/inference-metadata-20261020'
-OUT = STAGE / 'monitor-diagnostic-v1'
+OUT = STAGE / 'monitor-diagnostic-v2'
 
 
 def main():
@@ -23,6 +24,16 @@ def main():
         'candidate_sha256']
     if hashlib.sha256(binary.read_bytes()).hexdigest() != expected:
         raise ValueError('original candidate identity changed')
+    cache = STAGE / 'quality-v1/off/CMakeCache.txt'
+    original_files = json.loads((STAGE / 'quality-v1/files.json').read_text())
+    if hashlib.sha256(cache.read_bytes()).hexdigest() != original_files[
+            'off/CMakeCache.txt']:
+        raise ValueError('original build cache changed')
+    build = OUT / 'original-build'
+    build.mkdir(exist_ok=False)
+    shutil.copy2(binary, build / 'q4t')
+    shutil.copy2(cache, build / 'CMakeCache.txt')
+    binary = build / 'q4t'
     fixtures = OUT / 'fixtures'
     fixtures.mkdir(exist_ok=False)
     source = STAGE / 'quality-v1/reference-on/inputs'

@@ -1,0 +1,27 @@
+{
+  "status": "SINGLE_DIAGNOSTIC_COMPLETED",
+  "authorization": "User: 可以继续; 1 load/1 request only",
+  "actual_model_loads": 1,
+  "actual_requests": 1,
+  "preparation_failures": 1,
+  "full_acceptance": false,
+  "timeout_reproduced": false,
+  "root_cause": "UNRESOLVED",
+  "sealed_files_verified": {
+    "v1": 14,
+    "v2": 43
+  },
+  "observations": 5,
+  "wchan": {
+    "hrtimer_nanosleep": 3,
+    "0": 2
+  },
+  "syscall": {
+    "PermissionError(1, 'Operation not permitted')": 5
+  },
+  "stack": {
+    "PermissionError(13, 'Permission denied')": 4,
+    "FileNotFoundError(2, 'No such file or directory')": 1
+  },
+  "default_binary_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03"
+}

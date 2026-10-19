@@ -1,0 +1,30 @@
+{
+  "status": "REQUEST_COMPLETED_NOT_FULL_ACCEPTANCE",
+  "purpose": "ENVIRONMENT_DIAGNOSTIC_ONLY",
+  "requests": 1,
+  "loads": 1,
+  "retries": 0,
+  "binary_sha256": "ddd99f6f13363a32b23ab59ac99de63f50e40c3d8672d4291526009d6b46ffed",
+  "guard_parent": 2009142,
+  "command": [
+    "python3",
+    "-B",
+    "tools/evalscope/run_acceptance.py",
+    "--mode",
+    "quality",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/inference-metadata-20261020/monitor-diagnostic-v2/run",
+    "--binary",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/inference-metadata-20261020/monitor-diagnostic-v2/original-build/q4t",
+    "--fixtures",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/inference-metadata-20261020/monitor-diagnostic-v2/fixtures",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--mtp",
+    "--startup-timeout",
+    "300",
+    "--port",
+    "8740",
+    "--allow-unqualified-binary"
+  ]
+}

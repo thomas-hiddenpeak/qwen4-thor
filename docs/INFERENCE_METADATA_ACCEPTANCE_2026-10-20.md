@@ -100,10 +100,10 @@ nvidia-smi PID查询5秒超时。最后一条200K请求在关停时取消，不�
 再次执行前必须重新冻结源码/binary身份和受影响合同，不能把当前
 build目录内新静态库与旧q4t混为同一身份。
 
-## 待授权的单次环境诊断
+## 单次环境诊断
 
-状态：PREPARED_NOT_AUTHORIZED_NOT_RUN。新增预算必须由用户明确认可，
-不因goal自动续行或空闲查询恢复而启动。
+状态：SINGLE_DIAGNOSTIC_COMPLETED。用户2026-10-20答复“可以继续”，
+授权前述1加载/1请求的有界诊断；已完成，不扩展为完整验收重跑。
 
 已准备run_monitor_diagnostic.py，复用原候选保存副本和原on组唯一
 204800-token夹具：模型加载1次、MTP HTTP请求1条、输出上限32，
@@ -115,7 +115,7 @@ syscall及stack，最多4500轮；权限不足原样记错误，不提权、不�
 工具、不额外调用NVIDIA API。观察本身可能扰动计时，不作性能结论。
 新证据只能帮助判断查询等待位置；一次成功不证明负载下监控可靠。
 
-待授权命令：
+本次授权命令：
 
 ```bash
 python3 -B tools/verify/inference_metadata/seal_stage.py \
@@ -127,3 +127,32 @@ python3 -B tools/verify/inference_metadata/seal_stage.py \
 完整候选q4t已构建零警告，仅构建未运行。身份见
 [构建证据](evidence/inference-metadata-20261020/capacity-build-v2/identity.json)。
 旧四层/HTTP证据不改标新源码通过。默认build/q4t保持不变。
+
+### 授权后的准备失败修复
+
+monitor-diagnostic-v1在runner准备阶段因旧binary旁缺少CMakeCache.txt
+失败；events仅有runner_start，无server_started，实际加载/请求0。
+保留其COMMAND_FAILED及封存，不解释为负载监控失败。原质量off的
+CMakeCache通过原manifest摘要核对，与原binary一并放入新输出目录。
+修正驱动输出monitor-diagnostic-v2，执行尚未消耗的1加载/1请求预算，
+不增加GPU样本次数，不覆盖v1。旧cache保留真实历史构建路径，不伪造
+为新源码构建信息。本次以旧binary SHA为执行身份。
+
+### 单次诊断结果
+
+v2 guard COMPLETED/exit0，请求actual_input=204800、输出711273、
+exact_match/length_match通过、finish=stop，服务正常关停；v1实际
+加载0，v2加载1，请求总计1，未增加样本。v1/v2封存分别14/43文件
+复核通过。原始和派生证据见[记录](evidence/inference-metadata-20261020/monitor-diagnostic/result.json)。
+
+本次未复现查询超时。旁路仅捕获5个不同PID：wchan为3次
+hrtimer_nanosleep、2次0；syscall均EPERM，stack四次EACCES、一次
+进程已结束。未提权或改系统ptrace权限。kernel仅记录5次对应/proc
+访问的ptrace权限检查，不能据其文本称实际attach成功；该时间窗未见
+前次I2C timeout，但既不能证明I2C为根因，也不能证明问题已解决。
+
+这次是冷启动后的单条请求，前次为连续质量组，运行历史不同。
+不能拼入旧中断组宣布完整通过，也不能代表容量修复后的新binary。
+单次新授权已完成，取消/五档仍未启动；不追加诊断或计时样本。
+下一项仍是新源码运行时验收的明确预算/身份与最终候选去留决定，
+当前没有全模型质量或性能接受结论。
