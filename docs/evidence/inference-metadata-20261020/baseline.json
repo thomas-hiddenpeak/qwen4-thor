@@ -1,0 +1,26 @@
+{
+  "status": "READ_ONLY_AUDIT_STARTED",
+  "source_commit": "52e3cdc567659ec38b38436f070e23532a412eff",
+  "branch": "main",
+  "default_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03"
+  },
+  "source_files": {
+    "src/model/model.cu": "b87696cefcd3c1d6c4da39cca0fd7794688392516387841bf6d9c3dd19595302",
+    "include/q4t/model/model.h": "5f1f5d16d59d45ab2edde56c02b12834ec03c8b8496d50420bbf1b601b0d9ef1",
+    "include/q4t/model/sequence.h": "f335903f961788a9339f5ad1804c5c5adfae4dd143943726f8c4578a887c2ae9",
+    "src/server/chat_scheduler.cpp": "209ced41298444ee3219341ff5a17b46bce70f3d37ef720b868f6ea85af722f1",
+    "src/server/chat_generation.cpp": "c4f86ac5e17cda97db3a83a7fa2e310b8a928be1421564221e9875563e1a154a",
+    "src/ple/ple_embedding.cpp": "af7e6b7ad21660c165fae6ef5e5c9176246ca11d235d6bcdf1e74f7d26285c6b",
+    "tests/mtp_position_metadata_test.cpp": "5fb69ad7b4043d44fd5a9e04fc3975e1e5f17b87ac3f3ba69f33cb6b8c8fe334",
+    "tests/model_sequence_test.cpp": "1b9e714f0c6e5b3a2c3a10f1a6d9dc6b3de740b604dac4e462d2fc0a4fdcf0b6"
+  },
+  "reference_commit": "3e2807ce5e787f81b7275be2383092fe0c3bfc71",
+  "reference_files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-review-20261016/megatron-lm/megatron/core/inference/contexts/gpu_view.py": "1924050f1cdcc047313ebd22b309444d986d5129deea72898175bb46d91a846a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-review-20261016/megatron-lm/megatron/core/inference/contexts/dynamic_context.py": "1f7b72ff1055ac264aff52b20def7a38bc18d1f6da4f05d69cf7bb097b7f3533"
+  },
+  "gpu_runs": 0,
+  "http_requests": 0
+}
