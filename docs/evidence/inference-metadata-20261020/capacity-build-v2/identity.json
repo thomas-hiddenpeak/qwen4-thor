@@ -1,0 +1,10 @@
+{
+  "source_commit": "3d5564e",
+  "build": "PASS_ZERO_WARNINGS",
+  "runtime_validation": "NOT_RUN",
+  "sha256": {
+    "build/q4t": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+    ".q4t-work/inference-metadata-20261020/build/q4t": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+    ".q4t-work/inference-metadata-20261020/candidate-before-capacity-q4t": "ddd99f6f13363a32b23ab59ac99de63f50e40c3d8672d4291526009d6b46ffed"
+  }
+}

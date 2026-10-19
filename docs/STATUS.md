@@ -12,8 +12,9 @@ HTTP off11条在原有效监控区间完成；原on与唯一一次受影响重�
 均因nvidia-smi PID查询5秒超时ENV_ABORT。重验关停后封存摘要全部
 复核通过，完整质量未通过，取消/五档尚未启动，不自动追加GPU采样。
 默认binary保持44abd8b1。已确认并补上普通多序列decode的
-B<=max_prefill容量检查，6项无模型入口测试通过；仅独立bounds目标
-重建，旧候选q4t保持，运行时尚未验收。完整静态边界见
+B<=max_prefill容量检查，6项无模型入口测试通过；完整新候选零警告
+构建，旧候选另存，运行时尚未验收。单次1加载/1条200K环境诊断
+驱动已准备、待用户新增授权，未执行。完整静态边界见
 [生命周期审计](INFERENCE_METADATA_AUDIT_2026-10-20.md)。见[范围](INFERENCE_METADATA_PLAN_2026-10-20.md)、
 [候选](INFERENCE_METADATA_CANDIDATE_2026-10-20.md)和
 [验收停止条件](INFERENCE_METADATA_ACCEPTANCE_2026-10-20.md)。

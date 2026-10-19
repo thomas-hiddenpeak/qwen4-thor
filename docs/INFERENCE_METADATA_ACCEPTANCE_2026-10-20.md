@@ -99,3 +99,31 @@ nvidia-smi PID查询5秒超时。最后一条200K请求在关停时取消，不�
 目标已独立验证。旧tail即使能核验旧binary，也不能作为新源码验收。
 再次执行前必须重新冻结源码/binary身份和受影响合同，不能把当前
 build目录内新静态库与旧q4t混为同一身份。
+
+## 待授权的单次环境诊断
+
+状态：PREPARED_NOT_AUTHORIZED_NOT_RUN。新增预算必须由用户明确认可，
+不因goal自动续行或空闲查询恢复而启动。
+
+已准备run_monitor_diagnostic.py，复用原候选保存副本和原on组唯一
+204800-token夹具：模型加载1次、MTP HTTP请求1条、输出上限32，
+startup300秒包含在驱动900秒上限内；guard最终排空另计，无重试。
+不跑其他10条题目、不跑取消/性能矩阵，不修改监控5秒阈值。外层
+seal_stage调用原gpu_exclusive持锁，输出monitor-diagnostic-v1。
+旁路仅每0.2秒读取guard直接子进程nvidia-smi的/proc状态、wchan、
+syscall及stack，最多4500轮；权限不足原样记错误，不提权、不安装
+工具、不额外调用NVIDIA API。观察本身可能扰动计时，不作性能结论。
+新证据只能帮助判断查询等待位置；一次成功不证明负载下监控可靠。
+
+待授权命令：
+
+```bash
+python3 -B tools/verify/inference_metadata/seal_stage.py \
+  --output .q4t-work/inference-metadata-20261020/monitor-diagnostic-v1 \
+  -- python3 -B tools/verify/inference_metadata/run_monitor_diagnostic.py
+```
+
+旧候选已另存candidate-before-capacity-q4t并核对原质量SHA；容量修复后
+完整候选q4t已构建零警告，仅构建未运行。身份见
+[构建证据](evidence/inference-metadata-20261020/capacity-build-v2/identity.json)。
+旧四层/HTTP证据不改标新源码通过。默认build/q4t保持不变。
