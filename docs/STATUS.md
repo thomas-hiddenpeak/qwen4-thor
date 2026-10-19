@@ -4,14 +4,15 @@
 
 ## 当前交付
 
-**B1b有界验证完成（2026-10-19），待独立工程认可。** offset持久化实现
-已提交工作分支codex/mtp-gather-b1b；候选两模式HTTP质量各11/11、
-父/候选四组五档60/60通过，总82请求；候选37/37、父8/8、生命周期
-及12步完整有效状态逐位差分通过，构建零警告。统计性能证据不足，
-普通decode最大观察下降0.0789%，未排除真实小幅退化，不声称持平。
-父入口曾缺真实构建缓存，启动前0请求失败；修复后只续跑剩余30请求，
-两段lease间隔86.48秒明确披露。候选尚未接受/合入/部署，默认B1a不变，
-不追加采样，不启动Megatron。见[交付与全部观察](MTP_GATHER_B1B_2026-10-19.md)。
+**B1b已独立工程接受（2026-10-19），按用户授权合入收口。**
+状态ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY；统计性能仍为
+INSUFFICIENT_EVIDENCE，不宣称提速、持平或非劣。用户已单独认可本项
+普通decode最大观察下降0.0789%、最大TTFT增加88.38ms、真实退化上界
+未约束及86.48秒工具故障锁间隔风险，不继承B1a决定。
+复用零警告构建、82 HTTP、候选37/37、父8/8及12步状态逐位差分；
+新增采样0。默认build/q4t仍为B1a，未部署B1b，不启动Megatron。
+见[本项决定、全部观察与回退](MTP_GATHER_B1B_2026-10-19.md)及
+[PR #7](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/7)。
 
 以下历史入口中的旧生产binary与分支描述不覆盖上述及B1a部署记录。
 
@@ -101,7 +102,7 @@ archive/main-convergence-delivery-20261017标签保护并从远端独立取回�
 
 ## 已接受生产基线
 
-当前main为a893dc8，包含B1a合并c3f3c45；运行时与B1a实现1c6e792一致。
+B1b源码按PR #7合入；此前main为a893dc8，包含B1a合并c3f3c45。
 默认build/q4t及release元数据为已接受B1a binary
 44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03，
 对应真实构建缓存与回退见[B1a部署](MTP_POSITION_B1A_DEPLOY_2026-10-18.md)。
@@ -117,9 +118,8 @@ HC up、T4 attention和GDN Record/Fold候选均未接受；HC TTFT根因未明�
 
 ## 分支与证据
 
-当前根工作区为codex/mtp-gather-b1b，main保留已接受B1a。B1a工作分支
-已完整合入main后清理，原证据路径保留；B1b含独有实现与验证证据，当前
-不得当作重复入口清理。既有归档研究与其他worktree未改动。
+B1b合入后核对main包含全部阶段提交，再清理重复工作分支；原证据路径
+保留。B1a分支已清理。既有归档研究与其他worktree未改动。
 
 历史状态保存在main及研究tag，不作为当前任务安排：
 [生产基线历史状态](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/28a3783350b0c4c3d73fd3d483b5eebe881d2bdb/docs/STATUS.md)。
