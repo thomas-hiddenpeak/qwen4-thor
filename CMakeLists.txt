@@ -206,6 +206,15 @@ add_executable(q4t_moe_replay EXCLUDE_FROM_ALL
   tools/verify/moe_replay/main.cpp)
 target_link_libraries(q4t_moe_replay PRIVATE q4t_moe_replay_gpu
   q4t_moe_replay_io)
+if(Q4T_HAS_ICU)
+  add_executable(q4t_moe_real_capture EXCLUDE_FROM_ALL
+    tools/verify/moe_replay_real/capture.cpp)
+  target_link_libraries(q4t_moe_real_capture PRIVATE q4t_moe_replay_gpu
+    q4t_moe_replay_io q4t_text)
+  target_link_options(q4t_moe_real_capture PRIVATE
+    "-Wl,--wrap=_ZN3q4t5model10MoEForwardEPKtRKNS_5quant15MoEWeightLayoutERKNS0_15MoEExtraWeightsEPtiiPvmSB_mP11CUstream_stPNS_5trace15RouterCollectorEiPKNS3_12MoEResidencyEPNS0_21MoEForwardDiagnosticsE")
+endif()
+
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,1858 @@
+{
+  "end_to_end-row0": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "a7f3e2f845b751ee23460892c1907f14ed1cf1c09e350916de1e882b5d5bfa58",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 72,
+        "prefix_sha256": "0513a8f26e45de138ae81472fa2d855538ad1749666cfae29662f2267d90a86e",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.276003990115473,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 143.53662407612865,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            191,
+            382,
+            154,
+            210,
+            486,
+            370,
+            481,
+            2,
+            212,
+            139
+          ],
+          "right_ids": [
+            191,
+            382,
+            154,
+            210,
+            486,
+            370,
+            481,
+            2,
+            212,
+            139
+          ],
+          "common_experts": [
+            2,
+            139,
+            154,
+            191,
+            210,
+            212,
+            370,
+            382,
+            481,
+            486
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 11.194197541304602,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.3417086159238469,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.7399192191706372,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "selection_intervention-row0": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "a7f3e2f845b751ee23460892c1907f14ed1cf1c09e350916de1e882b5d5bfa58",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "a7f3e2f845b751ee23460892c1907f14ed1cf1c09e350916de1e882b5d5bfa58",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "rows": [
+      {
+        "position": 72,
+        "prefix_sha256": "0513a8f26e45de138ae81472fa2d855538ad1749666cfae29662f2267d90a86e",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.276003990115473,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 143.53662407612865,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            191,
+            382,
+            154,
+            210,
+            486,
+            370,
+            481,
+            2,
+            212,
+            139
+          ],
+          "right_ids": [
+            191,
+            382,
+            154,
+            210,
+            486,
+            370,
+            481,
+            2,
+            212,
+            139
+          ],
+          "common_experts": [
+            2,
+            139,
+            154,
+            191,
+            210,
+            212,
+            370,
+            382,
+            481,
+            486
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 11.194197541304602,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.3417086159238469,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.7399192191706372,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "same_input_shape_normal-row0": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "a7f3e2f845b751ee23460892c1907f14ed1cf1c09e350916de1e882b5d5bfa58",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 72,
+        "prefix_sha256": "0513a8f26e45de138ae81472fa2d855538ad1749666cfae29662f2267d90a86e",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.276003990115473,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 143.53662407612865,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            191,
+            382,
+            154,
+            210,
+            486,
+            370,
+            481,
+            2,
+            212,
+            139
+          ],
+          "right_ids": [
+            191,
+            382,
+            154,
+            210,
+            486,
+            370,
+            481,
+            2,
+            212,
+            139
+          ],
+          "common_experts": [
+            2,
+            139,
+            154,
+            191,
+            210,
+            212,
+            370,
+            382,
+            481,
+            486
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 11.194197541304602,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.3417086159238469,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.7399192191706372,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "same_input_shape_fixed_ids-row0": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "a7f3e2f845b751ee23460892c1907f14ed1cf1c09e350916de1e882b5d5bfa58",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 72,
+        "prefix_sha256": "0513a8f26e45de138ae81472fa2d855538ad1749666cfae29662f2267d90a86e",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.276003990115473,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 143.53662407612865,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            191,
+            382,
+            154,
+            210,
+            486,
+            370,
+            481,
+            2,
+            212,
+            139
+          ],
+          "right_ids": [
+            191,
+            382,
+            154,
+            210,
+            486,
+            370,
+            481,
+            2,
+            212,
+            139
+          ],
+          "common_experts": [
+            2,
+            139,
+            154,
+            191,
+            210,
+            212,
+            370,
+            382,
+            481,
+            486
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 11.194197541304602,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.3417086159238469,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.7399192191706372,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "end_to_end-row1": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "1ad610c7cf2b75882f08b0db4e7cb2b192128c2790b536c1b078dd22f6316764",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 73,
+        "prefix_sha256": "9ea9167ee965fec5315de54204004cbfc33b41d5de51e229d959029a47c87111",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.391498685143375,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 142.8058976865539,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            154,
+            139,
+            479,
+            370,
+            435,
+            406,
+            168,
+            339,
+            138,
+            127
+          ],
+          "right_ids": [
+            154,
+            139,
+            479,
+            370,
+            435,
+            406,
+            168,
+            339,
+            138,
+            127
+          ],
+          "common_experts": [
+            127,
+            138,
+            139,
+            154,
+            168,
+            339,
+            370,
+            406,
+            435,
+            479
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 11.41968386985822,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.3663294671614791,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.701200691413948,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "selection_intervention-row1": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "1ad610c7cf2b75882f08b0db4e7cb2b192128c2790b536c1b078dd22f6316764",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "1ad610c7cf2b75882f08b0db4e7cb2b192128c2790b536c1b078dd22f6316764",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "rows": [
+      {
+        "position": 73,
+        "prefix_sha256": "9ea9167ee965fec5315de54204004cbfc33b41d5de51e229d959029a47c87111",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.391498685143375,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 142.8058976865539,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            154,
+            139,
+            479,
+            370,
+            435,
+            406,
+            168,
+            339,
+            138,
+            127
+          ],
+          "right_ids": [
+            154,
+            139,
+            479,
+            370,
+            435,
+            406,
+            168,
+            339,
+            138,
+            127
+          ],
+          "common_experts": [
+            127,
+            138,
+            139,
+            154,
+            168,
+            339,
+            370,
+            406,
+            435,
+            479
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 11.41968386985822,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.3663294671614791,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.701200691413948,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "same_input_shape_normal-row1": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "1ad610c7cf2b75882f08b0db4e7cb2b192128c2790b536c1b078dd22f6316764",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 73,
+        "prefix_sha256": "9ea9167ee965fec5315de54204004cbfc33b41d5de51e229d959029a47c87111",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.391498685143375,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 142.8058976865539,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            154,
+            139,
+            479,
+            370,
+            435,
+            406,
+            168,
+            339,
+            138,
+            127
+          ],
+          "right_ids": [
+            154,
+            139,
+            479,
+            370,
+            435,
+            406,
+            168,
+            339,
+            138,
+            127
+          ],
+          "common_experts": [
+            127,
+            138,
+            139,
+            154,
+            168,
+            339,
+            370,
+            406,
+            435,
+            479
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 11.41968386985822,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.3663294671614791,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.701200691413948,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "same_input_shape_fixed_ids-row1": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "1ad610c7cf2b75882f08b0db4e7cb2b192128c2790b536c1b078dd22f6316764",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 73,
+        "prefix_sha256": "9ea9167ee965fec5315de54204004cbfc33b41d5de51e229d959029a47c87111",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.391498685143375,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 142.8058976865539,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            154,
+            139,
+            479,
+            370,
+            435,
+            406,
+            168,
+            339,
+            138,
+            127
+          ],
+          "right_ids": [
+            154,
+            139,
+            479,
+            370,
+            435,
+            406,
+            168,
+            339,
+            138,
+            127
+          ],
+          "common_experts": [
+            127,
+            138,
+            139,
+            154,
+            168,
+            339,
+            370,
+            406,
+            435,
+            479
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 11.41968386985822,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.3663294671614791,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.701200691413948,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "end_to_end-row2": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "a84f29385b228a67689daf95278d59be10e9642a189a00825bf7781b0e336d76",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 74,
+        "prefix_sha256": "cae6c8ecf8d61b379782abcba91abc72139fe3a30e03f3142c6c34c522ff0db7",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 2368,
+          "max_abs": 0.0390625,
+          "l2": 0.47484957975163805,
+          "reference_l2": 19.947305499804266,
+          "relative_l2": 0.02380519914112197
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 124,
+          "max_abs": 0.0625,
+          "l2": 0.34903606099513557,
+          "reference_l2": 141.1964189026673,
+          "relative_l2": 0.0024719894718841346
+        },
+        "selection": {
+          "ordered_slot_differences": 2,
+          "left_ids": [
+            257,
+            370,
+            403,
+            511,
+            211,
+            496,
+            84,
+            207,
+            37,
+            107
+          ],
+          "right_ids": [
+            257,
+            370,
+            403,
+            511,
+            211,
+            84,
+            496,
+            207,
+            37,
+            107
+          ],
+          "common_experts": [
+            37,
+            84,
+            107,
+            207,
+            211,
+            257,
+            370,
+            403,
+            496,
+            511
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 3,
+            "max_abs": 0.015625,
+            "l2": 0.027063293868263706,
+            "reference_l2": 10.334151040814866,
+            "relative_l2": 0.002618821203732834
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 10,
+            "max_abs": 0.0024417638778686523,
+            "l2": 0.0030359785847942048,
+            "reference_l2": 0.3808017376005299,
+            "relative_l2": 0.00797259645905035
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 2511,
+          "max_abs": 0.0032958984375,
+          "l2": 0.04924345219469736,
+          "reference_l2": 0.5551841208451258,
+          "relative_l2": 0.08869751555526625
+        },
+        "interpretation": "Input hidden differs: upstream differences are present; this comparison does not isolate MoE shape effects."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "selection_intervention-row2": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "a84f29385b228a67689daf95278d59be10e9642a189a00825bf7781b0e336d76",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "f369c8ce7df3ecc13ed8c7231a0663d25df0d5f5ff71ff02d6a7f83dff99e298",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "rows": [
+      {
+        "position": 74,
+        "prefix_sha256": "cae6c8ecf8d61b379782abcba91abc72139fe3a30e03f3142c6c34c522ff0db7",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 19.93322989335531,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 141.25611591433173,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 2,
+          "left_ids": [
+            257,
+            370,
+            403,
+            511,
+            211,
+            496,
+            84,
+            207,
+            37,
+            107
+          ],
+          "right_ids": [
+            257,
+            370,
+            403,
+            511,
+            211,
+            84,
+            496,
+            207,
+            37,
+            107
+          ],
+          "common_experts": [
+            37,
+            84,
+            107,
+            207,
+            211,
+            257,
+            370,
+            403,
+            496,
+            511
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 10.320072976970657,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.38142021128499853,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.5554132507113448,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "same_input_shape_normal-row2": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "9712ea2df5a1653ce997223cef2f05943b39233750f7fafd92fd888fcc446b26",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 74,
+        "prefix_sha256": "cae6c8ecf8d61b379782abcba91abc72139fe3a30e03f3142c6c34c522ff0db7",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 19.947305499804266,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 141.1964189026673,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            257,
+            370,
+            403,
+            511,
+            211,
+            84,
+            496,
+            207,
+            37,
+            107
+          ],
+          "right_ids": [
+            257,
+            370,
+            403,
+            511,
+            211,
+            84,
+            496,
+            207,
+            37,
+            107
+          ],
+          "common_experts": [
+            37,
+            84,
+            107,
+            207,
+            211,
+            257,
+            370,
+            403,
+            496,
+            511
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 10.334151040814866,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.3808017376005299,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.5551841208451258,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "same_input_shape_fixed_ids-row2": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "9712ea2df5a1653ce997223cef2f05943b39233750f7fafd92fd888fcc446b26",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 74,
+        "prefix_sha256": "cae6c8ecf8d61b379782abcba91abc72139fe3a30e03f3142c6c34c522ff0db7",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 19.947305499804266,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 141.1964189026673,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            257,
+            370,
+            403,
+            511,
+            211,
+            84,
+            496,
+            207,
+            37,
+            107
+          ],
+          "right_ids": [
+            257,
+            370,
+            403,
+            511,
+            211,
+            84,
+            496,
+            207,
+            37,
+            107
+          ],
+          "common_experts": [
+            37,
+            84,
+            107,
+            207,
+            211,
+            257,
+            370,
+            403,
+            496,
+            511
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 10.334151040814866,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.3808017376005299,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.5551841208451258,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "end_to_end-row3": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "7372306f6d0f8d616d0644ed6e0838e3e185baf6a4c8d009616f24b595f5adfd",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 75,
+        "prefix_sha256": "06b6b9ed72f84b6cb5a4561c7bd41cb925bca1515593874d5724f537000b1138",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 2310,
+          "max_abs": 0.03125,
+          "l2": 0.39458149544678656,
+          "reference_l2": 20.24538292851981,
+          "relative_l2": 0.019489949725324134
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 88,
+          "max_abs": 0.03125,
+          "l2": 0.2893790496476896,
+          "reference_l2": 143.71667072859884,
+          "relative_l2": 0.0020135385003049945
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            257,
+            403,
+            270,
+            295,
+            27,
+            372,
+            370,
+            4,
+            9,
+            211
+          ],
+          "right_ids": [
+            257,
+            403,
+            270,
+            295,
+            27,
+            372,
+            370,
+            4,
+            9,
+            211
+          ],
+          "common_experts": [
+            4,
+            9,
+            27,
+            211,
+            257,
+            270,
+            295,
+            370,
+            372,
+            403
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 4,
+            "max_abs": 0.03125,
+            "l2": 0.04133986423538423,
+            "reference_l2": 10.762529035965478,
+            "relative_l2": 0.00384109200516324
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 10,
+            "max_abs": 0.0034986138343811035,
+            "l2": 0.004150508131215664,
+            "reference_l2": 0.390226728119142,
+            "relative_l2": 0.010636145174423963
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 2505,
+          "max_abs": 0.00347900390625,
+          "l2": 0.047762110141435984,
+          "reference_l2": 0.5059283205917241,
+          "relative_l2": 0.09440489531318257
+        },
+        "interpretation": "Input hidden differs: upstream differences are present; this comparison does not isolate MoE shape effects."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "selection_intervention-row3": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "7372306f6d0f8d616d0644ed6e0838e3e185baf6a4c8d009616f24b595f5adfd",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "7372306f6d0f8d616d0644ed6e0838e3e185baf6a4c8d009616f24b595f5adfd",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "rows": [
+      {
+        "position": 75,
+        "prefix_sha256": "06b6b9ed72f84b6cb5a4561c7bd41cb925bca1515593874d5724f537000b1138",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.248476025429753,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 143.7337601220678,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            257,
+            403,
+            270,
+            295,
+            27,
+            372,
+            370,
+            4,
+            9,
+            211
+          ],
+          "right_ids": [
+            257,
+            403,
+            270,
+            295,
+            27,
+            372,
+            370,
+            4,
+            9,
+            211
+          ],
+          "common_experts": [
+            4,
+            9,
+            27,
+            211,
+            257,
+            270,
+            295,
+            370,
+            372,
+            403
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 10.755097356166749,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.38870488985400814,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.5052384196475946,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "same_input_shape_normal-row3": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "81851b9b2844fbdd324794ca321d3f7164ce829213bd89c7c7777ba808576461",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 75,
+        "prefix_sha256": "06b6b9ed72f84b6cb5a4561c7bd41cb925bca1515593874d5724f537000b1138",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.24538292851981,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 143.71667072859884,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            257,
+            403,
+            270,
+            295,
+            27,
+            372,
+            370,
+            4,
+            9,
+            211
+          ],
+          "right_ids": [
+            257,
+            403,
+            270,
+            295,
+            27,
+            372,
+            370,
+            4,
+            9,
+            211
+          ],
+          "common_experts": [
+            4,
+            9,
+            27,
+            211,
+            257,
+            270,
+            295,
+            370,
+            372,
+            403
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 10.762529035965478,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.390226728119142,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.5059283205917241,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  },
+  "same_input_shape_fixed_ids-row3": {
+    "version": 1,
+    "left": {
+      "manifest_sha256": "81851b9b2844fbdd324794ca321d3f7164ce829213bd89c7c7777ba808576461",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 1
+    },
+    "right": {
+      "manifest_sha256": "b6c0dfceef2a9ef6ee97637825fe997f62d5680cd4ad576b851312a8836692a4",
+      "identity": {
+        "binary": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+        "model": "d6878b28bd47f05dddd8744b90ac88478a424ab0c44bdd3332ac843702d78ce6",
+        "source": "4d1126f492126660f99e1ddff1c04ccb1e60595f884c848ec69f71f654608b3b",
+        "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+        "weights": "500bcffe79b2ef3e2ead9eaf68a879c201c981ee802fdc15957872d184e0f818"
+      },
+      "rows": 4
+    },
+    "rows": [
+      {
+        "position": 75,
+        "prefix_sha256": "06b6b9ed72f84b6cb5a4561c7bd41cb925bca1515593874d5724f537000b1138",
+        "input_hidden": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 20.24538292851981,
+          "relative_l2": 0.0
+        },
+        "all_logits": {
+          "elements": 512,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 143.71667072859884,
+          "relative_l2": 0.0
+        },
+        "selection": {
+          "ordered_slot_differences": 0,
+          "left_ids": [
+            257,
+            403,
+            270,
+            295,
+            27,
+            372,
+            370,
+            4,
+            9,
+            211
+          ],
+          "right_ids": [
+            257,
+            403,
+            270,
+            295,
+            27,
+            372,
+            370,
+            4,
+            9,
+            211
+          ],
+          "common_experts": [
+            4,
+            9,
+            27,
+            211,
+            257,
+            270,
+            295,
+            370,
+            372,
+            403
+          ],
+          "left_only": [],
+          "right_only": []
+        },
+        "aligned_common_experts": {
+          "logits": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 10.762529035965478,
+            "relative_l2": 0.0
+          },
+          "weights": {
+            "elements": 10,
+            "bitwise_differences": 0,
+            "max_abs": 0.0,
+            "l2": 0.0,
+            "reference_l2": 0.390226728119142,
+            "relative_l2": 0.0
+          }
+        },
+        "moe_output": {
+          "elements": 2560,
+          "bitwise_differences": 0,
+          "max_abs": 0.0,
+          "l2": 0.0,
+          "reference_l2": 0.5059283205917241,
+          "relative_l2": 0.0
+        },
+        "interpretation": "Identical boundary input: observed differences are within this MoE boundary, but selection, current weights, routed and shared expert arithmetic are not causal ablations."
+      }
+    ],
+    "limits": "Common-expert weights are expert-aligned, not slot-aligned. Missing experts are selection differences, not zero weights. No expert-only causal attribution or full-model quality claim."
+  }
+}

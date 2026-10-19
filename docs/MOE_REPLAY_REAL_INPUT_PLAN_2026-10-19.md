@@ -1,6 +1,6 @@
 # 主干 MoE 真实文本输入与分项差异报告
 
-状态：ACTIVE；用户2026-10-19授权继续并设置目标。起点fa9a6cc。
+状态：COMPLETE，见[实测结果](MOE_REPLAY_REAL_INPUT_RESULT_2026-10-19.md)；用户2026-10-19授权继续并设置目标。起点fa9a6cc。
 这是A1后的新诊断阶段，不追认合成夹具为真实文本隐藏状态。
 
 ## 完成条件
@@ -82,3 +82,29 @@ CaptureContext。8项报告测试＋1项上下文测试通过；严格字段/大
 [host结果](evidence/moe-replay-real-20261019/host-result.json)。
 这不是实际模型捕获或GPU结果；链接包装、真实文本驱动及A1重放接入
 仍待实现。当前生产源文件未改，GPU/HTTP新增0。
+
+## GPU执行清单冻结（2026-10-19，覆盖准备期0预算）
+
+捕获/重放及完整bundle离线验证已实现；新增5项bundle负控通过，原8项
+报告测试通过。独立目标零警告构建；包装入口为外部符号，正式捕获还须
+由实际48层上下文闭合验证。首次链接可见性失败保留于build.log，已修复。
+
+一次完整阶段由gpu_exclusive持锁：全量只读散列模型index引用的权重
+分片、PLE及config/index/tokenizer，随后冻结运行plan.json；1次模型
+加载、7次全模型前向（2 prefill+4 T1+1 T4）、17次层重放、24份边界、
+16组逐行比较。所有步骤单进程串行，不重试。固定text.txt，实际tokenizer
+编码后最后4 token为teacher-forced后缀，完整tokens.i32在创建CUDA
+stream前写入；prompt≤256，max_len8192、max_seq1、默认PLE容量8192。
+只捕获主干层2，不加载草稿引擎。两次独立prefill要求逐位一致，5组
+同形状重放逐位一致；T1/T4差异仅描述，不设任意容差或因果结论。
+
+冻结入口输出：`.q4t-work/moe-replay-real-20261019/gpu-v1`；锁记录
+同级`lease-v1`。plan.json记录精确binary/source/model/weights/text摘要，
+文本到token绑定由实际tokenizer摘要、保存全文/IDs及执行源码共同核验。
+模型先全量hash、运行后核对inode/size/mtime/ctime；不声称能防御恶意
+并发篡改。命令与源文件/可执行快照均保留。错误或ENV_ABORT保留现场，
+只在确认缺陷后另冻受影响重验，不追加文本或扩展层数。
+
+生产src/include无改动，包装只链接EXCLUDE_FROM_ALL诊断目标；默认
+binary SHA保持44abd8b1。生产质量/性能证据按A1/B1b依赖复用，新增
+HTTP预算0，不宣称新整模型质量、性能或部署验收。

@@ -1,0 +1,11 @@
+[ 10%] Built target q4t_trace
+[ 17%] Built target q4t_io
+[ 28%] Built target q4t_ple
+[ 32%] Built target q4t_moe_replay_io
+[ 35%] Built target q4t_text
+[ 50%] Built target q4t_quant
+[ 92%] Built target q4t_model
+[ 96%] Built target q4t_moe_replay_gpu
+[100%] Building CXX object CMakeFiles/q4t_moe_real_capture.dir/tools/verify/moe_replay_real/capture.cpp.o
+[100%] Linking CXX executable q4t_moe_real_capture
+[100%] Built target q4t_moe_real_capture

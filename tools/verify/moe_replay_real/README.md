@@ -1,8 +1,40 @@
-# Real-text MoE diagnostics (implementation in progress)
+# Real-text MoE diagnostics
 
-This directory contains the host contracts for the real-input extension.
-The actual model capture/link wrapper and real-input replay driver are still
-pending. Passing these tests is not GPU or full-model validation.
+Independent capture and A1 replay implementation. See the dated plan and actual
+result for validation status; host tests alone do not prove GPU correctness.
+
+## Capture and replay
+
+Build the explicit `q4t_moe_real_capture` target in a diagnostic build. Run the
+complete driver under the shared lease (new output directories are required):
+
+```bash
+python3 -B tools/evalscope/gpu_exclusive.py \
+  --output .q4t-work/moe-real-example/lease -- \
+  python3 -B tools/verify/moe_replay_real/run.py \
+  --binary .q4t-work/moe-replay-a1-20261019/build/q4t_moe_real_capture \
+  --model /home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream \
+  --output .q4t-work/moe-real-example/run
+```
+
+The driver hashes all indexed weight shards, PLE, config, index and tokenizer;
+retains source/binary/text snapshots; writes the resolved plan before launch;
+and validates model file metadata and snapshots again after capture. Use this
+driver: the low-level executable accepts digests and cannot attest arbitrary
+caller-supplied provenance. Content hashes are computed before execution, with
+metadata checked after; this is not adversarial tamper protection.
+
+The fixed UTF-8 fixture is tokenized once with the real tokenizer. The last four
+tokens are forced continuations. Complete tokens are saved before CUDA creation.
+One model load performs two independent prefills, four T1 steps and one T4 batch,
+using explicit sequence history and actual layer IDs. Five same-shape replays
+must be bitexact; 12 additional layer calls compare normal/fixed-ID T1 using both
+actual T1 hidden and the matching T4 hidden slice. Layer 2 only, no draft model.
+
+`run.json` and lease status must both pass. `model-files.json`, `files.json`,
+`capture/tokens.i32`, 24 boundary records and explicit intervention links retain
+provenance. `comparisons.json` and `report.md` are independently recomputed from
+raw payloads by `bundle.py`. Failures stop without retry and retain artifacts.
 
 ## Boundary record version 1
 

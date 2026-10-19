@@ -1,0 +1,18 @@
+test_complete (__main__.BundleTest.test_complete) ... ok
+test_replay_bytes_changed_with_valid_checksum (__main__.BundleTest.test_replay_bytes_changed_with_valid_checksum) ... ok
+test_wrong_identity (__main__.BundleTest.test_wrong_identity) ... ok
+test_wrong_intervention_row (__main__.BundleTest.test_wrong_intervention_row) ... ok
+test_wrong_tokens (__main__.BundleTest.test_wrong_tokens) ... ok
+test_checksum_truncation_and_escape_rejected (test_report.ReportTest.test_checksum_truncation_and_escape_rejected) ... ok
+test_different_sets_do_not_impute_missing_weights (test_report.ReportTest.test_different_sets_do_not_impute_missing_weights) ... ok
+test_duplicate_fields_and_boolean_dimensions_rejected (test_report.ReportTest.test_duplicate_fields_and_boolean_dimensions_rejected) ... ok
+test_known_difference_and_upstream_warning (test_report.ReportTest.test_known_difference_and_upstream_warning) ... ok
+test_logical_alignment_ignores_only_future_suffix (test_report.ReportTest.test_logical_alignment_ignores_only_future_suffix) ... ok
+test_nonfinite_duplicate_out_of_range_and_missing_rows (test_report.ReportTest.test_nonfinite_duplicate_out_of_range_and_missing_rows) ... ok
+test_permutation_uses_expert_alignment (test_report.ReportTest.test_permutation_uses_expert_alignment) ... ok
+test_wrong_prefix_or_model_is_rejected (test_report.ReportTest.test_wrong_prefix_or_model_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.099s
+
+OK

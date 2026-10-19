@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "binary_sha256": "bf5c6ea040a1d41064ca6a8ff106f8f823a5cfcd7941b62d3a986bd09e34133c",
+  "default_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+  "production_alloc_sections_unchanged": true,
+  "wrapper_calls": [
+    "   5c624:\t97feba97 \tbl\tb080 <__wrap__ZN3q4t5model10MoEForwardEPKtRKNS_5quant15MoEWeightLayoutERKNS0_15MoEExtraWeightsEPtiiPvmSB_mP11CUstream_stPNS_5trace15RouterCollectorEiPKNS3_12MoEResidencyEPNS0_21MoEForwardDiagnosticsE>"
+  ],
+  "build_log_sha256": "a5b3d8243581869657185133c3049891754122495d037a98eede8314d71a40b7",
+  "libraries": {
+    "libq4t_moe_replay_gpu.a": "4c11e38b3d16b244ef4c78e9c2b0ca0a02f85ef8eee4f2caa1a570ffd899a402",
+    "libq4t_ple.a": "1db95da258b9f7e9d5f542bc33e3e4505f08ff80519cad0c0b910099a0b9c327",
+    "libq4t_io.a": "1694ad204ddce44263f2831b7ecbba8dfdd824a007da86f52274c18d6711c3bc",
+    "libq4t_trace.a": "e143c35afd516e3eb95e90e46bbfd0e4d337493851668d8b8e3f8fa9aa824275",
+    "libq4t_text.a": "b5d23197e94116477b82f28547f4842a5033dacabd74976b513ad20ae81c3859",
+    "libq4t_quant.a": "a0c3f7ad9d57b5828c9170d898624e70da39b7e4e6bcf2ff3f203bd4c116bcbe",
+    "libq4t_moe_replay_io.a": "359d9dda62b6772d25365b0f3f37bee4ae7b1993555129ca921b1bb0699fd969",
+    "libq4t_model.a": "ef6e05f7f06c58a638ceb57753d7cce6731f7386fa10543e8af9bf2daf1cac72"
+  }
+}
