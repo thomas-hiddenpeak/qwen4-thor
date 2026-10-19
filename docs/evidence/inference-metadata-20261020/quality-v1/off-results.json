@@ -1,0 +1,607 @@
+[
+  {
+    "success": 1,
+    "actual_input": 1024,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "710003",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+    "ttft": 0.8832385480636731,
+    "latency": 1.2188258590176702,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619331.923595778,
+      "end_monotonic_seconds": 619333.142421637,
+      "start_utc_estimate": "2026-10-19T17:00:49.406722+00:00",
+      "end_utc_estimate": "2026-10-19T17:00:50.625548+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-0",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-0",
+      "chatcmpl-auto-0",
+      "chatcmpl-auto-0",
+      "chatcmpl-auto-0",
+      "chatcmpl-auto-0",
+      "chatcmpl-auto-0",
+      "chatcmpl-auto-0",
+      "chatcmpl-auto-0"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "1024-10",
+    "length": 1024,
+    "depth": 0.1,
+    "expected": "710003",
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "success": 1,
+    "actual_input": 1024,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "710130",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+    "ttft": 0.7679855889873579,
+    "latency": 1.0878973579965532,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619333.142756386,
+      "end_monotonic_seconds": 619334.230653744,
+      "start_utc_estimate": "2026-10-19T17:00:50.625882+00:00",
+      "end_utc_estimate": "2026-10-19T17:00:51.713780+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-1",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-1",
+      "chatcmpl-auto-1",
+      "chatcmpl-auto-1",
+      "chatcmpl-auto-1",
+      "chatcmpl-auto-1",
+      "chatcmpl-auto-1",
+      "chatcmpl-auto-1",
+      "chatcmpl-auto-1"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "1024-50",
+    "length": 1024,
+    "depth": 0.5,
+    "expected": "710130",
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "success": 1,
+    "actual_input": 1024,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "710257",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+    "ttft": 0.7714545170310885,
+    "latency": 1.0943022640421987,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619334.231032992,
+      "end_monotonic_seconds": 619335.325335256,
+      "start_utc_estimate": "2026-10-19T17:00:51.714159+00:00",
+      "end_utc_estimate": "2026-10-19T17:00:52.808461+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-2",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-2",
+      "chatcmpl-auto-2",
+      "chatcmpl-auto-2",
+      "chatcmpl-auto-2",
+      "chatcmpl-auto-2",
+      "chatcmpl-auto-2",
+      "chatcmpl-auto-2",
+      "chatcmpl-auto-2"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "1024-90",
+    "length": 1024,
+    "depth": 0.9,
+    "expected": "710257",
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "success": 1,
+    "actual_input": 4096,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "710384",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+    "ttft": 2.6319170739734545,
+    "latency": 2.9674008489819244,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619335.325677866,
+      "end_monotonic_seconds": 619338.293078715,
+      "start_utc_estimate": "2026-10-19T17:00:52.808804+00:00",
+      "end_utc_estimate": "2026-10-19T17:00:55.776205+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-3",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-3",
+      "chatcmpl-auto-3",
+      "chatcmpl-auto-3",
+      "chatcmpl-auto-3",
+      "chatcmpl-auto-3",
+      "chatcmpl-auto-3",
+      "chatcmpl-auto-3",
+      "chatcmpl-auto-3"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "4096-10",
+    "length": 4096,
+    "depth": 0.1,
+    "expected": "710384",
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "success": 1,
+    "actual_input": 4096,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "710511",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+    "ttft": 2.6168808330548927,
+    "latency": 2.9523296400438994,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619338.293411835,
+      "end_monotonic_seconds": 619341.245741475,
+      "start_utc_estimate": "2026-10-19T17:00:55.776538+00:00",
+      "end_utc_estimate": "2026-10-19T17:00:58.728867+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-4",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-4",
+      "chatcmpl-auto-4",
+      "chatcmpl-auto-4",
+      "chatcmpl-auto-4",
+      "chatcmpl-auto-4",
+      "chatcmpl-auto-4",
+      "chatcmpl-auto-4",
+      "chatcmpl-auto-4"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "4096-50",
+    "length": 4096,
+    "depth": 0.5,
+    "expected": "710511",
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "success": 1,
+    "actual_input": 4096,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "710638",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+    "ttft": 2.619685210986063,
+    "latency": 2.9557007249677554,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619341.246091687,
+      "end_monotonic_seconds": 619344.201792412,
+      "start_utc_estimate": "2026-10-19T17:00:58.729218+00:00",
+      "end_utc_estimate": "2026-10-19T17:01:01.684918+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-5",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-5",
+      "chatcmpl-auto-5",
+      "chatcmpl-auto-5",
+      "chatcmpl-auto-5",
+      "chatcmpl-auto-5",
+      "chatcmpl-auto-5",
+      "chatcmpl-auto-5",
+      "chatcmpl-auto-5"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "4096-90",
+    "length": 4096,
+    "depth": 0.9,
+    "expected": "710638",
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "success": 1,
+    "actual_input": 8192,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "710765",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+    "ttft": 5.1406360869295895,
+    "latency": 5.475264022941701,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619344.202188382,
+      "end_monotonic_seconds": 619349.677452405,
+      "start_utc_estimate": "2026-10-19T17:01:01.685314+00:00",
+      "end_utc_estimate": "2026-10-19T17:01:07.160578+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-6",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-6",
+      "chatcmpl-auto-6",
+      "chatcmpl-auto-6",
+      "chatcmpl-auto-6",
+      "chatcmpl-auto-6",
+      "chatcmpl-auto-6",
+      "chatcmpl-auto-6",
+      "chatcmpl-auto-6"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "8192-10",
+    "length": 8192,
+    "depth": 0.1,
+    "expected": "710765",
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "success": 1,
+    "actual_input": 8192,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "710892",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+    "ttft": 5.133190743043087,
+    "latency": 5.467804742977023,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619349.677855043,
+      "end_monotonic_seconds": 619355.145659786,
+      "start_utc_estimate": "2026-10-19T17:01:07.160981+00:00",
+      "end_utc_estimate": "2026-10-19T17:01:12.628786+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-7",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-7",
+      "chatcmpl-auto-7",
+      "chatcmpl-auto-7",
+      "chatcmpl-auto-7",
+      "chatcmpl-auto-7",
+      "chatcmpl-auto-7",
+      "chatcmpl-auto-7",
+      "chatcmpl-auto-7"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "8192-50",
+    "length": 8192,
+    "depth": 0.5,
+    "expected": "710892",
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "success": 1,
+    "actual_input": 8192,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "711019",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+    "ttft": 5.133248068043031,
+    "latency": 5.467060238006525,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619355.146072859,
+      "end_monotonic_seconds": 619360.613133097,
+      "start_utc_estimate": "2026-10-19T17:01:12.629199+00:00",
+      "end_utc_estimate": "2026-10-19T17:01:18.096259+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-8",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-8",
+      "chatcmpl-auto-8",
+      "chatcmpl-auto-8",
+      "chatcmpl-auto-8",
+      "chatcmpl-auto-8",
+      "chatcmpl-auto-8",
+      "chatcmpl-auto-8",
+      "chatcmpl-auto-8"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "8192-90",
+    "length": 8192,
+    "depth": 0.9,
+    "expected": "711019",
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "success": 1,
+    "actual_input": 45056,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "711146",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+    "ttft": 30.239103329950012,
+    "latency": 30.576397988013923,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619360.613969046,
+      "end_monotonic_seconds": 619391.190367034,
+      "start_utc_estimate": "2026-10-19T17:01:18.097095+00:00",
+      "end_utc_estimate": "2026-10-19T17:01:48.673493+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-9",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-9",
+      "chatcmpl-auto-9",
+      "chatcmpl-auto-9",
+      "chatcmpl-auto-9",
+      "chatcmpl-auto-9",
+      "chatcmpl-auto-9",
+      "chatcmpl-auto-9",
+      "chatcmpl-auto-9"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "45056-50",
+    "length": 45056,
+    "depth": 0.5,
+    "expected": "711146",
+    "exact_match": true,
+    "length_match": true
+  },
+  {
+    "success": 1,
+    "actual_input": 204800,
+    "actual_output": 7,
+    "http_status_code": null,
+    "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+    "text": "711273",
+    "finish": [
+      "stop"
+    ],
+    "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+    "ttft": 157.93214758799877,
+    "latency": 158.28463486104738,
+    "request_stream": true,
+    "requested_max_tokens": 32,
+    "requested_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "effective_capacity": {
+      "max_len": 208896,
+      "max_seq": 1,
+      "max_prefill": 8192
+    },
+    "timing": {
+      "start_monotonic_seconds": 619391.193072976,
+      "end_monotonic_seconds": 619549.477707837,
+      "start_utc_estimate": "2026-10-19T17:01:48.676199+00:00",
+      "end_utc_estimate": "2026-10-19T17:04:26.960834+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 2.384185791015625e-07,
+      "within_client_boundaries": true
+    },
+    "response_id": "chatcmpl-auto-10",
+    "response_id_valid": true,
+    "response_ids_observed": [
+      "chatcmpl-auto-10",
+      "chatcmpl-auto-10",
+      "chatcmpl-auto-10",
+      "chatcmpl-auto-10",
+      "chatcmpl-auto-10",
+      "chatcmpl-auto-10",
+      "chatcmpl-auto-10",
+      "chatcmpl-auto-10"
+    ],
+    "response_id_source": "actual HTTP/SSE response id fields",
+    "id": "204800-50",
+    "length": 204800,
+    "depth": 0.5,
+    "expected": "711273",
+    "exact_match": true,
+    "length_match": true
+  }
+]

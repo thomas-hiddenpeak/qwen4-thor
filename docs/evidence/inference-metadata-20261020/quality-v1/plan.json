@@ -1,0 +1,16 @@
+{
+  "modes": [
+    "off",
+    "on"
+  ],
+  "requests_per_mode": 11,
+  "total_requests": 22,
+  "model_loads": 2,
+  "retries": 0,
+  "candidate_sha256": "ddd99f6f13363a32b23ab59ac99de63f50e40c3d8672d4291526009d6b46ffed",
+  "reference_sha256": {
+    "off": "77b13221a636ec2da43e905c2a6b9bf929213db30e57ae40836f2d0b42df0576",
+    "on": "485cdeb64a45b41ef07c7868bcd27f4e9de43f1e9e04ad700bc9d85ef5af52be"
+  },
+  "timeout_per_mode_seconds": 1800
+}

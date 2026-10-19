@@ -1,0 +1,7 @@
+{
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "elapsed_seconds": 0.01583596901036799,
+  "scope": "single read-only post-abort monitor query; not proof of future monitor reliability"
+}
