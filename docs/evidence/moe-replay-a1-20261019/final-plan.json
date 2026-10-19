@@ -1,0 +1,13 @@
+{
+  "status": "FROZEN_AFFECTED_ONLY_RECHECK",
+  "reason": "CLI did not reject Q4T_FP8_SHARED; original execution env had no Q4T variables and GPU evidence remains valid. Also persist explicit compatibility reason.",
+  "budget": {
+    "host_environment_rejections": 7,
+    "model_loads": 1,
+    "moe_forwards": 1,
+    "http_requests": 0
+  },
+  "binary_sha256": "9a6f2e0168abcb111bd0c326cc7d5b560a7474ae94ec28f1b0905d6a1b86d4fb",
+  "reuse": "full GPU suite unchanged; compare final explicit cross-binary T4 replay against saved normal bytes",
+  "binary_retention": "Original tested binary reconstructed from exact source identity, verified same full SHA 9833648f, and retained as q4t_moe_replay-tested; final executable retained separately."
+}

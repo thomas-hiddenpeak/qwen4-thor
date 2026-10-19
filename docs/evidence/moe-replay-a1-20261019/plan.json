@@ -1,0 +1,28 @@
+{
+  "status": "FROZEN_BEFORE_FIRST_GPU",
+  "kind": "diagnostic_contract",
+  "model_layer": 2,
+  "fixture": "tools/verify/moe_replay/fixture.json",
+  "fixture_kind": "synthetic layer boundary; tokens are explicit metadata, hidden is not claimed to be a full-model prefix state",
+  "binary_sha256": "9833648fe60ffba31c532c3078f409040f60d28ca81779a154c495ed5ab7db66",
+  "budget": {
+    "processes": 2,
+    "model_loads": 2,
+    "full_moe_forwards": 22,
+    "synthetic_router_launches": 3,
+    "gpu_rejection_checks": 4,
+    "http_requests": 0
+  },
+  "contracts": [
+    "five shapes: production vs diagnostic normal vs same-shape replay bitexact IDs/weights/logits/output",
+    "fixed IDs changed logits; CPU double reference abs <= 2e-6",
+    "normal tie and near-tie order; expert 0/511; unsorted replay slots",
+    "four rows T4 IDs in T1 with honest sliced fixture identity and output differences",
+    "four pre-use rejection sentinels, stream complete, scratch reuse after failure",
+    "separate-process persisted T4 CLI replay bitexact"
+  ],
+  "lease": ".q4t-work/moe-replay-a1-20261019/gpu-lease-v1",
+  "evidence": ".q4t-work/moe-replay-a1-20261019/gpu-v1",
+  "stop": "Any failed contract or ENV_ABORT; preserve evidence, no retries without identified defect and affected-only revision",
+  "remaining_normal_path_review": "production data sections and link dependencies; no performance claim"
+}

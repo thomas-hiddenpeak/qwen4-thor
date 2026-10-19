@@ -1,0 +1,26 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "python3",
+    "tools/verify/moe_replay/run.py",
+    "--binary",
+    ".q4t-work/moe-replay-a1-20261019/build/q4t_moe_replay",
+    "--model",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--fixture",
+    "tools/verify/moe_replay/fixture.json",
+    "--output",
+    ".q4t-work/moe-replay-a1-20261019/gpu-v1"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-19T10:37:20.789937+00:00",
+    "monotonic": 596323.306819781,
+    "pid": 1894248
+  }
+}

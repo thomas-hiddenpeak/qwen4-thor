@@ -1,0 +1,43 @@
+{
+  "source_commit": "f520f6fd81d88bb377bc4ac4ade78eb22d63ec48",
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-replay-a1-20261019/build/q4t_moe_replay",
+  "binary_sha256": "9833648fe60ffba31c532c3078f409040f60d28ca81779a154c495ed5ab7db66",
+  "fixture": "/home/rm01/models/dev/qwen4-thor/tools/verify/moe_replay/fixture.json",
+  "fixture_sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3",
+  "model": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "environment": {
+    "CUDA_HOME": "/usr/local/cuda-13.3"
+  },
+  "commands": [
+    [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-replay-a1-20261019/build/q4t_moe_replay",
+      "suite",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "/home/rm01/models/dev/qwen4-thor/tools/verify/moe_replay/fixture.json",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-replay-a1-20261019/gpu-v1/suite"
+    ],
+    [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-replay-a1-20261019/build/q4t_moe_replay",
+      "replay",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "/home/rm01/models/dev/qwen4-thor/tools/verify/moe_replay/fixture.json",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-replay-a1-20261019/gpu-v1/replay",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0.route"
+    ]
+  ],
+  "status": "PASS",
+  "source_patch_sha256": "b495bd0609999e6bf411fb159bbcb7d13d28f4dc964fa8d187c49930acdc1f4d",
+  "sources": {
+    "tools/verify/moe_replay/main.cpp": "d9e888f89b293cda151d6b3ac53941e2e46fbb22ca663612927e59ee78e25c5e",
+    "tools/verify/moe_replay/run.py": "aadcedeb9c045077429a6a699bed83e21dac694e6cf0db41a32fe15eca77b87a",
+    "tools/verify/moe_replay_gpu.cu": "98d821f666282c926729331d71aadd8f8f0b066f5ea13a14276da0d9c34b6e1c",
+    "tools/verify/moe_replay_io.cpp": "57ffe52ee9418051d8880c77c82870f77d182a1ff0b940ef653fa453d73a8e13",
+    "src/model/moe.cu": "07b7ea2c8d0ab36346dbd034b7f2ac1a5f2bbf86fdd50dc1dc268cfe92058264",
+    "include/q4t/model/moe_replay.h": "592e73835241fee87872fdef8c71978b6a0fcecda0996efa21228ebb77d03597",
+    "include/q4t/model/moe_replay_gpu.h": "9fed6e72d461ec62a298fe9623a5947c81ac623a05c8b70849570e7c116f0f28",
+    "include/q4t/model/moe_replay_io.h": "acaa3bd5f780eade9f307f069e79dacf07965f30e4231302d0d86b0a295df8cb",
+    "CMakeLists.txt": "6775ca94165d468731272df893061614733b92d48619470be0d2ef084fa9b8ff"
+  },
+  "suite_returncode": 0,
+  "replay_returncode": 0
+}

@@ -6,7 +6,107 @@
 #include "q4t/model/moe_replay_gpu.h"
 #include "q4t/trace/sha256.h"
 
+#include <bit>
+
 namespace q4t::model {
+
+Status MoEReplayRouterContract() {
+  constexpr int E = 512;
+  constexpr int k = 3;
+  constexpr int T = 4;
+  const std::vector<int32_t> fixed = {511, 0, 5, 0, 511, 5,
+                                     5, 511, 0, 511, 5, 0};
+  std::vector<uint16_t> logits(T * E, 0);
+  // Tie, adjacent BF16, unsorted slots, and finite large dynamic range.
+  logits[E] = 0x3f80;
+  logits[E + 511] = 0x3f81;
+  logits[E + 5] = 0x3f7f;
+  logits[2 * E + 5] = 0xc000;
+  logits[2 * E + 511] = 0x4000;
+  logits[3 * E + 511] = 0x42c8;
+  logits[3 * E + 5] = 0xc2c8;
+  struct Buffers {
+    uint16_t* logits = nullptr;
+    int32_t* fixed = nullptr;
+    int32_t* ids = nullptr;
+    float* weights = nullptr;
+    ~Buffers() {
+      cudaDeviceSynchronize();
+      cudaFree(logits);
+      cudaFree(fixed);
+      cudaFree(ids);
+      cudaFree(weights);
+    }
+  } buffers;
+  if (cudaMalloc(&buffers.logits, logits.size() * 2) != cudaSuccess ||
+      cudaMalloc(&buffers.fixed, fixed.size() * 4) != cudaSuccess ||
+      cudaMalloc(&buffers.ids, fixed.size() * 4) != cudaSuccess ||
+      cudaMalloc(&buffers.weights, fixed.size() * 4) != cudaSuccess) {
+    return Status::Fail("router contract allocation");
+  }
+  std::vector<int32_t> ids(fixed.size());
+  std::vector<float> weights(fixed.size()), first;
+  double maximum_error = 0;
+  for (int pass = 0; pass < 2; ++pass) {
+    if (pass == 1) logits[511] = 0x4000;  // Same IDs, new current score.
+    if (cudaMemcpy(buffers.logits, logits.data(), logits.size() * 2,
+                   cudaMemcpyHostToDevice) != cudaSuccess ||
+        cudaMemcpy(buffers.fixed, fixed.data(), fixed.size() * 4,
+                   cudaMemcpyHostToDevice) != cudaSuccess) {
+      return Status::Fail("router contract upload");
+    }
+    if (pass == 0) {
+      RouterTopkKernel<<<T, kBlock>>>(buffers.logits, buffers.ids,
+                                      buffers.weights, T, E, k);
+      if (cudaGetLastError() != cudaSuccess ||
+          cudaMemcpy(ids.data(), buffers.ids, ids.size() * 4,
+                      cudaMemcpyDeviceToHost) != cudaSuccess) {
+        return Status::Fail("normal router boundary execution");
+      }
+      if (ids[0] != 0 || ids[1] != 1 || ids[2] != 2 ||
+          ids[3] != 511 || ids[4] != 0 || ids[5] != 5) {
+        return Status::Fail("normal router tie/near-tie order");
+      }
+    }
+    RouterReplayKernel<<<T, 1>>>(buffers.logits, buffers.fixed, buffers.ids,
+                                 buffers.weights, E, k);
+    if (cudaGetLastError() != cudaSuccess ||
+        cudaMemcpy(ids.data(), buffers.ids, ids.size() * 4,
+                   cudaMemcpyDeviceToHost) != cudaSuccess ||
+        cudaMemcpy(weights.data(), buffers.weights, weights.size() * 4,
+                   cudaMemcpyDeviceToHost) != cudaSuccess) {
+      return Status::Fail("router contract execution");
+    }
+    if (ids != fixed) return Status::Fail("router slot order changed");
+    for (int row = 0; row < T; ++row) {
+      double values[k], sum = 0, maximum = -INFINITY;
+      for (int slot = 0; slot < k; ++slot) {
+        values[slot] = std::bit_cast<float>(
+            uint32_t{logits[row * E + fixed[row * k + slot]]} << 16);
+        maximum = std::max(maximum, values[slot]);
+      }
+      for (double& value : values) {
+        value = std::exp(value - maximum);
+        sum += value;
+      }
+      for (int slot = 0; slot < k; ++slot) {
+        const double error = std::abs(weights[row * k + slot] -
+                                       values[slot] / sum);
+        if (!std::isfinite(error) || error > 2e-6) {
+          return Status::Fail("router CPU reference mismatch");
+        }
+        maximum_error = std::max(maximum_error, error);
+      }
+    }
+    if (pass == 0) first = weights;
+  }
+  if (!(weights[0] > first[0] && weights[1] < first[1])) {
+    return Status::Fail("router ignored current logits");
+  }
+  std::printf("router_contract PASS rows=4 passes=2 cpu_max_abs=%.9g "
+              "current_scores_changed=1 boundary_ids=0,511\n", maximum_error);
+  return {};
+}
 
 Status MoEReplayForward(
     const uint16_t* x, const quant::MoEWeightLayout& routed,

@@ -1,6 +1,76 @@
 # 主干 MoE 固定 IDs 诊断 A1
 
-状态：实施中，尚无 GPU 或 HTTP 验收。2026-10-19 冻结初始范围。
+状态：**DIAGNOSTIC_CONTRACT_PASS（2026-10-19）**。主干最小固定 IDs
+诊断完成；下方实施快照与“剩余”段保留过程历史，以本节最终结果为准。
+
+## 最终结果与逐项完成核对
+
+入口：[工具说明与完整复现命令](../tools/verify/moe_replay/README.md)。
+独立 CLI `q4t_moe_replay`，库 `MoEReplayForward`，固定夹具
+`tools/verify/moe_replay/fixture.json`。最终 binary `9a6f2e01…`；首次 GPU
+suite binary `9833648f…`，两者完整 SHA 见[最终身份](evidence/moe-replay-a1-20261019/result.json)。
+默认服务 binary 仍为 B1a `44abd8b1…`，未部署替换。
+
+| 原目标 | 实现及证据 | 判定 |
+|---|---|---|
+| 基线、Megatron 和 A1 调用链 | 本文来源段、baseline.json；固定参考 SHA 与当前 B1b/B1a 分别核对 | PASS |
+| 真实 MoE 选择点固定 IDs、当前分数 | 独立编译同一 MoEForward，保留 BF16 gating 和专家链；生产无 replay 分支 | PASS |
+| 身份、完整性与生命周期 | model/6149个实际tensor/hidden/binary/token/层/位置/shape；严格文件、host 2/2、GPU 4次拒绝及恢复 | PASS |
+| 同形状重放 | T4及四行T1，5组 IDs/weights/logits/MoE输出逐位一致；另5组与生产路径逐位对照 | PASS |
+| 当前 logits 与 CPU 参考 | 固定 IDs 改分数，权重随之改变；double参考最大abs 4.87762835e-8 ≤ 2e-6；同分/近同分/0/511/slot顺序 | PASS |
+| 跨 T1/T4 诊断 | 4行正常对照和固定T4 IDs均保留；本夹具ID/权重/output差异计数为0，不扩展为普遍batch不变 | RECORDED |
+| 文件独立复现 | suite导出→另一进程读取重放逐位；最终binary显式兼容旧binary重放再次逐位 | PASS |
+| 正常路径保持 | MoE全部可加载ELF段一致、SASS和host指令/重定位一致；新增目标未链接生产；HTTP证据复用 | PASS（原范围） |
+| 可回退交付 | 固定夹具、CLI/API、文档、身份/原始记录及阶段提交；无默认部署 | PASS |
+
+原始首次[suite日志](evidence/moe-replay-a1-20261019/gpu-v1/suite.log)、
+[独立文件回放](evidence/moe-replay-a1-20261019/gpu-v1/replay.log)、
+[guard退出](evidence/moe-replay-a1-20261019/gpu-lease-v1/exit.json)均通过。
+全部19份保存的真实层输出已离线检查有限且非全零。
+
+交付检查发现 CLI 漏拦截 Q4T_FP8_SHARED；首次执行环境未设置该变量，
+并未使用FP8。补齐七项FP8入口检查和兼容差异落盘后，冻结
+[受影响补验](evidence/moe-replay-a1-20261019/final-plan.json)：7次加载前
+拒绝、1次层加载/前向，显式允许“仅CLI检查与身份说明变化”的精确
+source→execution binary 对，结果逐位通过；[结果](evidence/moe-replay-a1-20261019/final-replay-result.json)、
+[兼容说明](evidence/moe-replay-a1-20261019/final-replay/compatibility.txt)、
+[最终guard](evidence/moe-replay-a1-20261019/final-lease/exit.json)。
+没有重复完整suite或扩大数值阈值。两阶段各完整持锁；中间为离线检查，
+不声称一个覆盖全开发过程的连续lease。两段均COMPLETED/child=0。
+
+首次可执行文件在后续入口构建时被覆盖，随后用SHA完全相同的原源码
+重构，得到同一完整binary SHA `9833648f…`，现独立保留；未凭源码推定
+binary相同。驱动已改为启动前保存可执行文件和源码快照，避免后续构建
+覆盖。原始记录及构建/恢复日志见[167项清单](evidence/moe-replay-a1-20261019/raw-manifest.json)。
+
+### 正常路径与 HTTP 证据复用
+
+唯一涉及生产源文件的改动在 moe.cu 编译条件内。与已接受 B1b 对象比较，
+[全部可加载段](evidence/moe-replay-a1-20261019/production-sections.json)内容、大小、
+flags/type一致；SASS和host指令/重定位一致。CMake新增目标均为独立
+EXCLUDE_FROM_ALL目标，未修改生产库/服务的源列表、编译选项或链接依赖。
+因此正常路径无新增分配、回读、同步或采集；trace collector和MTP未改。
+
+[HTTP复用核验](evidence/moe-replay-a1-20261019/http-reuse.json)按原manifest
+核对B1b on/off各11题质量及各五档3次记录的SHA/大小，保留确定性、输入
+长度与原接受范围。新增HTTP请求0，不把诊断运行时间当性能数据。
+B1b的统计性能仍为INSUFFICIENT_EVIDENCE，原工程接受风险不被本项改写。
+N=4及状态合同的运行代码未变，沿用既有证据；本层测试不替代整模型质量。
+
+### 边界与回退
+
+本工具验证真实权重的合成层边界输入。token元数据明确固定，hidden不是
+自然文本经过前序层的采集，不能据此解释任意生产生成分歧。当前CLI固定
+层2/四行夹具；底层接口可接受经过调用方正确绑定的其他层记录。固定IDs
+只隔离选择；当前权重与专家算术仍可能改变，必须分别检查保存的中间量。
+未实现MTP草稿、完整trace、offload、预取、驻留偏置或Graph。
+
+回退诊断交付可按逆序revert本阶段提交（ca52825、f520f6f及最终CLI交付），
+保留证据；生产默认binary不需回退。不得删除依赖这些本地路径的证据。
+
+---
+
+以下为初始设计与执行历史。
 
 ## 来源与起点
 
@@ -111,3 +181,19 @@ Q4T_REPLAY_TEST_OUTPUT=.q4t-work/moe-replay-a1-20261019/io-user-check \
 剩余：真实层独立 CLI/固定夹具及权重 payload 身份、GPU router 边界与
 CPU 参考、同形状逐位/跨形状诊断、GPU 所有权负控、生产路径最终审核、
 完整复现与结果报告。当前静态库构建不构成这些项目通过。
+
+## 首次 GPU 阶段执行冻结
+
+2026-10-19：在首次 GPU 执行前具体化原清单，不扩大模型层/形状范围。
+使用仓库 `tools/verify/moe_replay/fixture.json`：真实层 2 权重，四行
+确定性合成 BF16 输入；token 是显式夹具元数据，不宣称这些 hidden
+来自完整模型前缀执行。权重逐 tensor 摘要含名称/dtype/shape，形成
+加载身份；模型 config/index、实际 executable 另记。
+
+单 lease 两个进程（suite + 独立文件 replay）、两次层加载：22 次完整
+MoE forward（5形状各 production/normal/replay=15，4次跨形状，错误
+恢复参考/重放=2，独立进程replay=1），3次合成 router kernel，4次拒绝
+检查。HTTP 新增 0。每个形状包含 T4 及四个 T1 行；错误后复用有完成
+边界和输出 sentinel 负控。CPU abs 2e-6、同形状逐位门禁不变。
+实际命令/精确 binary 摘要冻结在 `.q4t-work/moe-replay-a1-20261019/plan.json`。
+任何失败保留并停止，只定位实际缺陷后重验受影响项。

@@ -202,6 +202,11 @@ add_executable(q4t_moe_replay_host_tests EXCLUDE_FROM_ALL
   tests/test_main.cpp tests/moe_replay_contract_test.cpp
   tests/moe_replay_io_test.cpp)
 target_link_libraries(q4t_moe_replay_host_tests PRIVATE q4t_moe_replay_io)
+add_executable(q4t_moe_replay EXCLUDE_FROM_ALL
+  tools/verify/moe_replay/main.cpp)
+target_link_libraries(q4t_moe_replay PRIVATE q4t_moe_replay_gpu
+  q4t_moe_replay_io)
+
 
 # ---------------------------------------------------------------------------
 # q4t_runtime — host-side runtime utilities (memory budget, OOM preflight).

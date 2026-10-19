@@ -1,0 +1,5 @@
+weights tensors=6149 sha256=b5af56d2488de077d4bc94f661a72de5200e2addec0dabbf3758856a61099fae
+execution_binary=9833648fe60ffba31c532c3078f409040f60d28ca81779a154c495ed5ab7db66 model=1cf9fcd95c88f3eacaab969c62ddb62d823573867f40a5f27bf8dac28d2c2cc3
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+replay PASS source_binary=9833648fe60ffba31c532c3078f409040f60d28ca81779a154c495ed5ab7db66

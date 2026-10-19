@@ -1,0 +1,837 @@
+[
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/build-cli-final.log",
+    "bytes": 394,
+    "sha256": "2b879c7f2bb922e484417c800a1cab86551eb72ccd34a0c59b15fa6d339435e5"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/build-cli-restored-final.log",
+    "bytes": 394,
+    "sha256": "2b879c7f2bb922e484417c800a1cab86551eb72ccd34a0c59b15fa6d339435e5"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/build-cli-v2.log",
+    "bytes": 547,
+    "sha256": "7148b367d767c21ac20cd7c1b0fac54d1f858d7ca4c3f897d24b7dc91e9d431f"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/build-cli.log",
+    "bytes": 547,
+    "sha256": "7148b367d767c21ac20cd7c1b0fac54d1f858d7ca4c3f897d24b7dc91e9d431f"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/build-v2.log",
+    "bytes": 638,
+    "sha256": "82f43dcfdd25a25525781bd80a3a4b59f40929801665d1867d6e5d9ae5b1d79b"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/build.log",
+    "bytes": 3704,
+    "sha256": "65af1c886e46d8daf17c00e05b3492fccd90b2730502a09e049e382bc1bc36c6"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/candidate-moe.host",
+    "bytes": 934441,
+    "sha256": "3651c8184d98140d6c6c6a4b4d1f7aa3d026889470b15553ec95c435890dc94c"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/candidate-moe.sass",
+    "bytes": 388341,
+    "sha256": "f2c02952388416286bda45394c8bb21207d9473ec45a9175a1bdc0d45971a7af"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/configure-cli.log",
+    "bytes": 231,
+    "sha256": "ca3d80c246290c126048998139872790219c591f7dba83fa38c3e8e7ce6ec191"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/configure.log",
+    "bytes": 1077,
+    "sha256": "2d52705ef1beb46cea197f1995b2167e668912d492797aa046dea97ba3bc6c4e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-driver.log",
+    "bytes": 65,
+    "sha256": "3110cbfc3d19c5dfde180df7d80620dc66d95caaaa3feb1413372ec0fddb9084"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-lease/events.jsonl",
+    "bytes": 3175,
+    "sha256": "310f4bc9cd946f9a944eff1f9282e42689068775650489f89a4fa5abe8d6f017"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-lease/exit.json",
+    "bytes": 508,
+    "sha256": "afcedbf362053b5c27982a0dedceb6b37e6bb8ef679aa6e06fb824f5833eb8e1"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-plan.json",
+    "bytes": 742,
+    "sha256": "b1455010a971c9e1843e6e02ad75f38c1792813032ea961bd898bfe3633013f4"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay/compatibility.txt",
+    "bytes": 263,
+    "sha256": "774808a1d4068c31d4b6ac52f26fae5ccb09652ebe6d17c4e47162a63a46a46f"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay/fixture.hidden.bf16",
+    "bytes": 20480,
+    "sha256": "86bf9ccd6b1130d7f110d533686fde818944ac5140c67b4bc58e17b988b50973"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay/fixture.json",
+    "bytes": 139,
+    "sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay/fixture.tokens.i32",
+    "bytes": 16,
+    "sha256": "bf3b70cf3234252c35e649f57e563e23a7ecb28c4a373e59b3f58dea3644827e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay/replay.ids.i32",
+    "bytes": 160,
+    "sha256": "54b54bf47f43ea9c86eab63144601f29f803ed9eb56ddebabb99bc5606dd6b52"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay/replay.logits.bf16",
+    "bytes": 4096,
+    "sha256": "13eb7752311dfacb9626229c5fc8f5e9c35e00dd3ffebf17badf85be40e72f36"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay/replay.output.bf16",
+    "bytes": 20480,
+    "sha256": "296b4e7db9fafceb328aa49c4174af268464d1b3d057586819e45ad49a5bac59"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay/replay.weights.f32",
+    "bytes": 160,
+    "sha256": "f9b4b28880bf75fb2e017895e0efcf457359671b52fcac49238ca4fd455bdb1d"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay/weights-manifest.txt",
+    "bytes": 893856,
+    "sha256": "b5af56d2488de077d4bc94f661a72de5200e2addec0dabbf3758856a61099fae"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay-result.json",
+    "bytes": 1627,
+    "sha256": "16cdae8f25147406b143d91fb0b7a1b1d1300c890f48f88be485c290e12b66a7"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/final-replay.log",
+    "bytes": 550,
+    "sha256": "6d70fb7aa63e446362c48e715845945b72c9d4cc62d3d7e7ca3888140806537e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/finish.py",
+    "bytes": 1712,
+    "sha256": "d66b3e20f8fdfa85407a209c0633358d6a18a3a36b3d6692178cf8457407c66a"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-driver-v1.log",
+    "bytes": 58,
+    "sha256": "51917a5b17780fb9c2e6e889de431baddaae163c57dbc67ae5593af12ce8e428"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-lease-v1/events.jsonl",
+    "bytes": 5394,
+    "sha256": "ef5368e9e8917e5262fee24ba3fdc9b835a841d429ab8f1f8b75d9bf0a48ec41"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-lease-v1/exit.json",
+    "bytes": 795,
+    "sha256": "00ca2af6375c4038fbafe9f9355af1f0126671efa4996a8bf3e1ec0ce6e79bf8"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/files.json",
+    "bytes": 10090,
+    "sha256": "235a3d9c899a5c3d2474249061be4e173056cc583fcfa1d1cfc73f9ad9b2cc2b"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/identity.json",
+    "bytes": 2573,
+    "sha256": "fecd16175a8b4a2593121020b2d4f91968a3919a72ed35c98c58a9f4dedc7872"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/replay/fixture.hidden.bf16",
+    "bytes": 20480,
+    "sha256": "86bf9ccd6b1130d7f110d533686fde818944ac5140c67b4bc58e17b988b50973"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/replay/fixture.json",
+    "bytes": 139,
+    "sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/replay/fixture.tokens.i32",
+    "bytes": 16,
+    "sha256": "bf3b70cf3234252c35e649f57e563e23a7ecb28c4a373e59b3f58dea3644827e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/replay/replay.ids.i32",
+    "bytes": 160,
+    "sha256": "54b54bf47f43ea9c86eab63144601f29f803ed9eb56ddebabb99bc5606dd6b52"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/replay/replay.logits.bf16",
+    "bytes": 4096,
+    "sha256": "13eb7752311dfacb9626229c5fc8f5e9c35e00dd3ffebf17badf85be40e72f36"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/replay/replay.output.bf16",
+    "bytes": 20480,
+    "sha256": "296b4e7db9fafceb328aa49c4174af268464d1b3d057586819e45ad49a5bac59"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/replay/replay.weights.f32",
+    "bytes": 160,
+    "sha256": "f9b4b28880bf75fb2e017895e0efcf457359671b52fcac49238ca4fd455bdb1d"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/replay/weights-manifest.txt",
+    "bytes": 893856,
+    "sha256": "b5af56d2488de077d4bc94f661a72de5200e2addec0dabbf3758856a61099fae"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/replay.log",
+    "bytes": 550,
+    "sha256": "18c1ea1d300c37d4318a40cfdc70e438f8f775873f80d9ff51802bfc48dd129b"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/source.patch",
+    "bytes": 7328,
+    "sha256": "b495bd0609999e6bf411fb159bbcb7d13d28f4dc964fa8d187c49930acdc1f4d"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/fixture.hidden.bf16",
+    "bytes": 20480,
+    "sha256": "86bf9ccd6b1130d7f110d533686fde818944ac5140c67b4bc58e17b988b50973"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/fixture.json",
+    "bytes": 139,
+    "sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/fixture.tokens.i32",
+    "bytes": 16,
+    "sha256": "bf3b70cf3234252c35e649f57e563e23a7ecb28c4a373e59b3f58dea3644827e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-batch-ids.ids.i32",
+    "bytes": 40,
+    "sha256": "0bf4f4f03419f3f50362e3aa01a2384a6dd32fc987f687ec722411f29a36eb89"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-batch-ids.logits.bf16",
+    "bytes": 1024,
+    "sha256": "c23e969b4d97cdeea884d5b666cfd83a03549fd94f834b90cc8155e47004c812"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-batch-ids.output.bf16",
+    "bytes": 5120,
+    "sha256": "3aea6cc0f3502d2f51442e8ccf4d3418cb5633717abce8af090cbdad696ce8bc"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-batch-ids.weights.f32",
+    "bytes": 40,
+    "sha256": "f1cc4e3bbb9006d9fea415270ce1400f5347718dda57332e84812cff4c2d68a0"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-normal.ids.i32",
+    "bytes": 40,
+    "sha256": "0bf4f4f03419f3f50362e3aa01a2384a6dd32fc987f687ec722411f29a36eb89"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-normal.logits.bf16",
+    "bytes": 1024,
+    "sha256": "c23e969b4d97cdeea884d5b666cfd83a03549fd94f834b90cc8155e47004c812"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-normal.output.bf16",
+    "bytes": 5120,
+    "sha256": "3aea6cc0f3502d2f51442e8ccf4d3418cb5633717abce8af090cbdad696ce8bc"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-normal.weights.f32",
+    "bytes": 40,
+    "sha256": "f1cc4e3bbb9006d9fea415270ce1400f5347718dda57332e84812cff4c2d68a0"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-production.ids.i32",
+    "bytes": 40,
+    "sha256": "0bf4f4f03419f3f50362e3aa01a2384a6dd32fc987f687ec722411f29a36eb89"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-production.logits.bf16",
+    "bytes": 1024,
+    "sha256": "c23e969b4d97cdeea884d5b666cfd83a03549fd94f834b90cc8155e47004c812"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-production.output.bf16",
+    "bytes": 5120,
+    "sha256": "3aea6cc0f3502d2f51442e8ccf4d3418cb5633717abce8af090cbdad696ce8bc"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-production.weights.f32",
+    "bytes": 40,
+    "sha256": "f1cc4e3bbb9006d9fea415270ce1400f5347718dda57332e84812cff4c2d68a0"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-replay.ids.i32",
+    "bytes": 40,
+    "sha256": "0bf4f4f03419f3f50362e3aa01a2384a6dd32fc987f687ec722411f29a36eb89"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-replay.logits.bf16",
+    "bytes": 1024,
+    "sha256": "c23e969b4d97cdeea884d5b666cfd83a03549fd94f834b90cc8155e47004c812"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-replay.output.bf16",
+    "bytes": 5120,
+    "sha256": "3aea6cc0f3502d2f51442e8ccf4d3418cb5633717abce8af090cbdad696ce8bc"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0-replay.weights.f32",
+    "bytes": 40,
+    "sha256": "f1cc4e3bbb9006d9fea415270ce1400f5347718dda57332e84812cff4c2d68a0"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row0.route",
+    "bytes": 320,
+    "sha256": "3829ae27068c4cff38a2d4d8b7487722ec1ec125210aadca84a65b0a462005ac"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-batch-ids.ids.i32",
+    "bytes": 40,
+    "sha256": "007f8f657d6f48bdc9a15e8257a9d76a408639df33cfd5973cdfeaf0a24bd5a8"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-batch-ids.logits.bf16",
+    "bytes": 1024,
+    "sha256": "08af4c35e7c187cd2c7738b58e384ec06331673945dc0610d0e71bb6f6e26c5b"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-batch-ids.output.bf16",
+    "bytes": 5120,
+    "sha256": "32cd20c6582884553499376517bfb16f05f9a868b4fde27229304e6d7c656687"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-batch-ids.weights.f32",
+    "bytes": 40,
+    "sha256": "4a8a263f9d6700ffe040f24aafe614f73a966707b9245cd99683b7fce8228ab8"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-normal.ids.i32",
+    "bytes": 40,
+    "sha256": "007f8f657d6f48bdc9a15e8257a9d76a408639df33cfd5973cdfeaf0a24bd5a8"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-normal.logits.bf16",
+    "bytes": 1024,
+    "sha256": "08af4c35e7c187cd2c7738b58e384ec06331673945dc0610d0e71bb6f6e26c5b"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-normal.output.bf16",
+    "bytes": 5120,
+    "sha256": "32cd20c6582884553499376517bfb16f05f9a868b4fde27229304e6d7c656687"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-normal.weights.f32",
+    "bytes": 40,
+    "sha256": "4a8a263f9d6700ffe040f24aafe614f73a966707b9245cd99683b7fce8228ab8"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-production.ids.i32",
+    "bytes": 40,
+    "sha256": "007f8f657d6f48bdc9a15e8257a9d76a408639df33cfd5973cdfeaf0a24bd5a8"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-production.logits.bf16",
+    "bytes": 1024,
+    "sha256": "08af4c35e7c187cd2c7738b58e384ec06331673945dc0610d0e71bb6f6e26c5b"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-production.output.bf16",
+    "bytes": 5120,
+    "sha256": "32cd20c6582884553499376517bfb16f05f9a868b4fde27229304e6d7c656687"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-production.weights.f32",
+    "bytes": 40,
+    "sha256": "4a8a263f9d6700ffe040f24aafe614f73a966707b9245cd99683b7fce8228ab8"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-replay.ids.i32",
+    "bytes": 40,
+    "sha256": "007f8f657d6f48bdc9a15e8257a9d76a408639df33cfd5973cdfeaf0a24bd5a8"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-replay.logits.bf16",
+    "bytes": 1024,
+    "sha256": "08af4c35e7c187cd2c7738b58e384ec06331673945dc0610d0e71bb6f6e26c5b"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-replay.output.bf16",
+    "bytes": 5120,
+    "sha256": "32cd20c6582884553499376517bfb16f05f9a868b4fde27229304e6d7c656687"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1-replay.weights.f32",
+    "bytes": 40,
+    "sha256": "4a8a263f9d6700ffe040f24aafe614f73a966707b9245cd99683b7fce8228ab8"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row1.route",
+    "bytes": 328,
+    "sha256": "260e0eb7581127eecfc5b1a3c6f2e2358a60da8a174f1201bad23553349dcd53"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-batch-ids.ids.i32",
+    "bytes": 40,
+    "sha256": "8718d43c9f67d2c5d4b860ec8e2e34e2387ca8632ca5597b3b08dc52646207da"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-batch-ids.logits.bf16",
+    "bytes": 1024,
+    "sha256": "ab061bcc75c533c70515a9b280b6664068154e397d2846b3e19c177a4e6d7bf6"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-batch-ids.output.bf16",
+    "bytes": 5120,
+    "sha256": "7a0eedfe2d3cadda38e0bac2ab06cd24b4c702c26f90766e52a2e37df6705a52"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-batch-ids.weights.f32",
+    "bytes": 40,
+    "sha256": "2888b677018d5b8e55bbd3b7295bb3500f95c7920484256e3e921c7d8c45940f"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-normal.ids.i32",
+    "bytes": 40,
+    "sha256": "8718d43c9f67d2c5d4b860ec8e2e34e2387ca8632ca5597b3b08dc52646207da"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-normal.logits.bf16",
+    "bytes": 1024,
+    "sha256": "ab061bcc75c533c70515a9b280b6664068154e397d2846b3e19c177a4e6d7bf6"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-normal.output.bf16",
+    "bytes": 5120,
+    "sha256": "7a0eedfe2d3cadda38e0bac2ab06cd24b4c702c26f90766e52a2e37df6705a52"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-normal.weights.f32",
+    "bytes": 40,
+    "sha256": "2888b677018d5b8e55bbd3b7295bb3500f95c7920484256e3e921c7d8c45940f"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-production.ids.i32",
+    "bytes": 40,
+    "sha256": "8718d43c9f67d2c5d4b860ec8e2e34e2387ca8632ca5597b3b08dc52646207da"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-production.logits.bf16",
+    "bytes": 1024,
+    "sha256": "ab061bcc75c533c70515a9b280b6664068154e397d2846b3e19c177a4e6d7bf6"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-production.output.bf16",
+    "bytes": 5120,
+    "sha256": "7a0eedfe2d3cadda38e0bac2ab06cd24b4c702c26f90766e52a2e37df6705a52"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-production.weights.f32",
+    "bytes": 40,
+    "sha256": "2888b677018d5b8e55bbd3b7295bb3500f95c7920484256e3e921c7d8c45940f"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-replay.ids.i32",
+    "bytes": 40,
+    "sha256": "8718d43c9f67d2c5d4b860ec8e2e34e2387ca8632ca5597b3b08dc52646207da"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-replay.logits.bf16",
+    "bytes": 1024,
+    "sha256": "ab061bcc75c533c70515a9b280b6664068154e397d2846b3e19c177a4e6d7bf6"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-replay.output.bf16",
+    "bytes": 5120,
+    "sha256": "7a0eedfe2d3cadda38e0bac2ab06cd24b4c702c26f90766e52a2e37df6705a52"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2-replay.weights.f32",
+    "bytes": 40,
+    "sha256": "2888b677018d5b8e55bbd3b7295bb3500f95c7920484256e3e921c7d8c45940f"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row2.route",
+    "bytes": 336,
+    "sha256": "816ff16086038eb57c7a0b95083ac8d277f1fb124861e264a2b68a8c7dc640a3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-batch-ids.ids.i32",
+    "bytes": 40,
+    "sha256": "f2e9aefd629a9157f93edef4106d983ca13b12a21672500babaf731c3076cb55"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-batch-ids.logits.bf16",
+    "bytes": 1024,
+    "sha256": "dbc60a415815bda21d39289466be5725a7ee019fd9ca4abf9a612bfe0cafe1cb"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-batch-ids.output.bf16",
+    "bytes": 5120,
+    "sha256": "73ded7b0edba4808ed27a0bb35ff7c5955361905d58187ae127a0915501d11f9"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-batch-ids.weights.f32",
+    "bytes": 40,
+    "sha256": "055b012045fd90318cc322df0b4324daefa84f421317ab3b68ef88d9cd1bc436"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-normal.ids.i32",
+    "bytes": 40,
+    "sha256": "f2e9aefd629a9157f93edef4106d983ca13b12a21672500babaf731c3076cb55"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-normal.logits.bf16",
+    "bytes": 1024,
+    "sha256": "dbc60a415815bda21d39289466be5725a7ee019fd9ca4abf9a612bfe0cafe1cb"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-normal.output.bf16",
+    "bytes": 5120,
+    "sha256": "73ded7b0edba4808ed27a0bb35ff7c5955361905d58187ae127a0915501d11f9"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-normal.weights.f32",
+    "bytes": 40,
+    "sha256": "055b012045fd90318cc322df0b4324daefa84f421317ab3b68ef88d9cd1bc436"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-production.ids.i32",
+    "bytes": 40,
+    "sha256": "f2e9aefd629a9157f93edef4106d983ca13b12a21672500babaf731c3076cb55"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-production.logits.bf16",
+    "bytes": 1024,
+    "sha256": "dbc60a415815bda21d39289466be5725a7ee019fd9ca4abf9a612bfe0cafe1cb"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-production.output.bf16",
+    "bytes": 5120,
+    "sha256": "73ded7b0edba4808ed27a0bb35ff7c5955361905d58187ae127a0915501d11f9"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-production.weights.f32",
+    "bytes": 40,
+    "sha256": "055b012045fd90318cc322df0b4324daefa84f421317ab3b68ef88d9cd1bc436"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-replay.ids.i32",
+    "bytes": 40,
+    "sha256": "f2e9aefd629a9157f93edef4106d983ca13b12a21672500babaf731c3076cb55"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-replay.logits.bf16",
+    "bytes": 1024,
+    "sha256": "dbc60a415815bda21d39289466be5725a7ee019fd9ca4abf9a612bfe0cafe1cb"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-replay.output.bf16",
+    "bytes": 5120,
+    "sha256": "73ded7b0edba4808ed27a0bb35ff7c5955361905d58187ae127a0915501d11f9"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3-replay.weights.f32",
+    "bytes": 40,
+    "sha256": "055b012045fd90318cc322df0b4324daefa84f421317ab3b68ef88d9cd1bc436"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t1-row3.route",
+    "bytes": 344,
+    "sha256": "a24ab0089bac5adacd461caf688f85cef8ba94f29f728aaa1183faed6dbcb80e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-normal.ids.i32",
+    "bytes": 160,
+    "sha256": "54b54bf47f43ea9c86eab63144601f29f803ed9eb56ddebabb99bc5606dd6b52"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-normal.logits.bf16",
+    "bytes": 4096,
+    "sha256": "13eb7752311dfacb9626229c5fc8f5e9c35e00dd3ffebf17badf85be40e72f36"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-normal.output.bf16",
+    "bytes": 20480,
+    "sha256": "296b4e7db9fafceb328aa49c4174af268464d1b3d057586819e45ad49a5bac59"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-normal.weights.f32",
+    "bytes": 160,
+    "sha256": "f9b4b28880bf75fb2e017895e0efcf457359671b52fcac49238ca4fd455bdb1d"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-production.ids.i32",
+    "bytes": 160,
+    "sha256": "54b54bf47f43ea9c86eab63144601f29f803ed9eb56ddebabb99bc5606dd6b52"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-production.logits.bf16",
+    "bytes": 4096,
+    "sha256": "13eb7752311dfacb9626229c5fc8f5e9c35e00dd3ffebf17badf85be40e72f36"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-production.output.bf16",
+    "bytes": 20480,
+    "sha256": "296b4e7db9fafceb328aa49c4174af268464d1b3d057586819e45ad49a5bac59"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-production.weights.f32",
+    "bytes": 160,
+    "sha256": "f9b4b28880bf75fb2e017895e0efcf457359671b52fcac49238ca4fd455bdb1d"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-replay.ids.i32",
+    "bytes": 160,
+    "sha256": "54b54bf47f43ea9c86eab63144601f29f803ed9eb56ddebabb99bc5606dd6b52"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-replay.logits.bf16",
+    "bytes": 4096,
+    "sha256": "13eb7752311dfacb9626229c5fc8f5e9c35e00dd3ffebf17badf85be40e72f36"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-replay.output.bf16",
+    "bytes": 20480,
+    "sha256": "296b4e7db9fafceb328aa49c4174af268464d1b3d057586819e45ad49a5bac59"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0-replay.weights.f32",
+    "bytes": 160,
+    "sha256": "f9b4b28880bf75fb2e017895e0efcf457359671b52fcac49238ca4fd455bdb1d"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0.route",
+    "bytes": 584,
+    "sha256": "19d91df50b9c2b426e9504da64459659bbe4a4de8cfa56af38e0b7584146998d"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/weights-manifest.txt",
+    "bytes": 893856,
+    "sha256": "b5af56d2488de077d4bc94f661a72de5200e2addec0dabbf3758856a61099fae"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite.log",
+    "bytes": 1775,
+    "sha256": "e479f54a398f3c93f12efa29c49f305c70e9a5cb06a3adf550d52c5542c3f545"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_ATTN/fixture.hidden.bf16",
+    "bytes": 20480,
+    "sha256": "86bf9ccd6b1130d7f110d533686fde818944ac5140c67b4bc58e17b988b50973"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_ATTN/fixture.json",
+    "bytes": 139,
+    "sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_ATTN/fixture.tokens.i32",
+    "bytes": 16,
+    "sha256": "bf3b70cf3234252c35e649f57e563e23a7ecb28c4a373e59b3f58dea3644827e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_GDN/fixture.hidden.bf16",
+    "bytes": 20480,
+    "sha256": "86bf9ccd6b1130d7f110d533686fde818944ac5140c67b4bc58e17b988b50973"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_GDN/fixture.json",
+    "bytes": 139,
+    "sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_GDN/fixture.tokens.i32",
+    "bytes": 16,
+    "sha256": "bf3b70cf3234252c35e649f57e563e23a7ecb28c4a373e59b3f58dea3644827e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_HC/fixture.hidden.bf16",
+    "bytes": 20480,
+    "sha256": "86bf9ccd6b1130d7f110d533686fde818944ac5140c67b4bc58e17b988b50973"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_HC/fixture.json",
+    "bytes": 139,
+    "sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_HC/fixture.tokens.i32",
+    "bytes": 16,
+    "sha256": "bf3b70cf3234252c35e649f57e563e23a7ecb28c4a373e59b3f58dea3644827e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_HC_UP/fixture.hidden.bf16",
+    "bytes": 20480,
+    "sha256": "86bf9ccd6b1130d7f110d533686fde818944ac5140c67b4bc58e17b988b50973"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_HC_UP/fixture.json",
+    "bytes": 139,
+    "sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_HC_UP/fixture.tokens.i32",
+    "bytes": 16,
+    "sha256": "bf3b70cf3234252c35e649f57e563e23a7ecb28c4a373e59b3f58dea3644827e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_LMHEAD/fixture.hidden.bf16",
+    "bytes": 20480,
+    "sha256": "86bf9ccd6b1130d7f110d533686fde818944ac5140c67b4bc58e17b988b50973"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_LMHEAD/fixture.json",
+    "bytes": 139,
+    "sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_LMHEAD/fixture.tokens.i32",
+    "bytes": 16,
+    "sha256": "bf3b70cf3234252c35e649f57e563e23a7ecb28c4a373e59b3f58dea3644827e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_PROJ/fixture.hidden.bf16",
+    "bytes": 20480,
+    "sha256": "86bf9ccd6b1130d7f110d533686fde818944ac5140c67b4bc58e17b988b50973"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_PROJ/fixture.json",
+    "bytes": 139,
+    "sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_PROJ/fixture.tokens.i32",
+    "bytes": 16,
+    "sha256": "bf3b70cf3234252c35e649f57e563e23a7ecb28c4a373e59b3f58dea3644827e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_SHARED/fixture.hidden.bf16",
+    "bytes": 20480,
+    "sha256": "86bf9ccd6b1130d7f110d533686fde818944ac5140c67b4bc58e17b988b50973"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_SHARED/fixture.json",
+    "bytes": 139,
+    "sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/guard-Q4T_FP8_SHARED/fixture.tokens.i32",
+    "bytes": 16,
+    "sha256": "bf3b70cf3234252c35e649f57e563e23a7ecb28c4a373e59b3f58dea3644827e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/host-build-v2.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/host-build.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/host-cmake-build.log",
+    "bytes": 614,
+    "sha256": "cfd9a0150d78039c4aabcfc469f682798aa9df1bcf47f46a7912c0b75551736d"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/host-cmake-tests.log",
+    "bytes": 113,
+    "sha256": "0aaefec313c2dfb3890ecaac5d205f54c54da3e039b3f88ab674eec54199c053"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/host-contracts",
+    "bytes": 239976,
+    "sha256": "7c12067705896b4bfc83737a2e62aa155e232716a44b4da24927975b57d02d56"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/host-contracts-v2",
+    "bytes": 354792,
+    "sha256": "52831b81c3049a55f513cdd5e9cfe8a65064f2f078ae49bab4762d6bfc42e27f"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/host-contracts-v2.log",
+    "bytes": 113,
+    "sha256": "0aaefec313c2dfb3890ecaac5d205f54c54da3e039b3f88ab674eec54199c053"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/host-contracts.log",
+    "bytes": 80,
+    "sha256": "5e5e4d6659169f47a490ed930b4fd9f563aebde66338975797ea214489de2afc"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/http-reuse.json",
+    "bytes": 3932,
+    "sha256": "113f47c5a5cd61dd6853e918a046c36e45c6c5849a6cd1baa73ff36398124e18"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/io-cmake-tests/record.bin",
+    "bytes": 256,
+    "sha256": "01a1a5386db65a7e74a25c455d68a43d1f50703b26fb1d0eb1c78ade35ec35eb"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/io-tests/record.bin",
+    "bytes": 256,
+    "sha256": "01a1a5386db65a7e74a25c455d68a43d1f50703b26fb1d0eb1c78ade35ec35eb"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/main-final.cpp",
+    "bytes": 17375,
+    "sha256": "77f9dcf4a820c261fee69c6672025398cd5556d36f6c05745a36d6e2d792e09e"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/parent-moe.host",
+    "bytes": 934431,
+    "sha256": "ecdcd0518574c859d7757b9ec9f85cbc448e2054cf010566615b1e3b922a591b"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/parent-moe.sass",
+    "bytes": 388341,
+    "sha256": "f2c02952388416286bda45394c8bb21207d9473ec45a9175a1bdc0d45971a7af"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/plan.json",
+    "bytes": 1400,
+    "sha256": "9b8e98c76d3588f12c6f24e7c315134ae094be0356658c1ba802444bc184c0d7"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/production-sections.json",
+    "bytes": 18609,
+    "sha256": "12e6b532051724163e3c72c14ed0560bcb9d55b980bcfc585b47a9fb8293f831"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/q4t_moe_replay-final",
+    "bytes": 1216216,
+    "sha256": "9a6f2e0168abcb111bd0c326cc7d5b560a7474ae94ec28f1b0905d6a1b86d4fb"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/q4t_moe_replay-tested",
+    "bytes": 1215888,
+    "sha256": "9833648fe60ffba31c532c3078f409040f60d28ca81779a154c495ed5ab7db66"
+  },
+  {
+    "path": ".q4t-work/moe-replay-a1-20261019/reconstruct-tested-build.log",
+    "bytes": 394,
+    "sha256": "2b879c7f2bb922e484417c800a1cab86551eb72ccd34a0c59b15fa6d339435e5"
+  }
+]

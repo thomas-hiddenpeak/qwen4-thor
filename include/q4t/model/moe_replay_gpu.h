@@ -6,6 +6,9 @@
 
 namespace q4t::model {
 
+// Synthetic logits boundary suite; no model load. Must run under the GPU lease.
+Status MoEReplayRouterContract();
+
 struct MoEReplayObservation {
   std::vector<uint16_t> logits;
   std::vector<int32_t> ids;

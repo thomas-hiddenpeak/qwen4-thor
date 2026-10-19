@@ -1,0 +1,43 @@
+{
+  "status": "DIAGNOSTIC_CONTRACT_PASS",
+  "runtime_binary_sha256": "9a6f2e0168abcb111bd0c326cc7d5b560a7474ae94ec28f1b0905d6a1b86d4fb",
+  "initial_tested_binary_sha256": "9833648fe60ffba31c532c3078f409040f60d28ca81779a154c495ed5ab7db66",
+  "default_service_binary_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+  "sources": {
+    "CMakeLists.txt": "6775ca94165d468731272df893061614733b92d48619470be0d2ef084fa9b8ff",
+    "src/model/moe.cu": "07b7ea2c8d0ab36346dbd034b7f2ac1a5f2bbf86fdd50dc1dc268cfe92058264",
+    "include/q4t/model/moe_replay.h": "592e73835241fee87872fdef8c71978b6a0fcecda0996efa21228ebb77d03597",
+    "include/q4t/model/moe_replay_gpu.h": "9fed6e72d461ec62a298fe9623a5947c81ac623a05c8b70849570e7c116f0f28",
+    "include/q4t/model/moe_replay_io.h": "acaa3bd5f780eade9f307f069e79dacf07965f30e4231302d0d86b0a295df8cb",
+    "tools/verify/moe_replay_gpu.cu": "98d821f666282c926729331d71aadd8f8f0b066f5ea13a14276da0d9c34b6e1c",
+    "tools/verify/moe_replay_io.cpp": "57ffe52ee9418051d8880c77c82870f77d182a1ff0b940ef653fa453d73a8e13",
+    "tools/verify/moe_replay/main.cpp": "77f9dcf4a820c261fee69c6672025398cd5556d36f6c05745a36d6e2d792e09e",
+    "tools/verify/moe_replay/run.py": "4d2cf1999f9d6ffc376918905cc80008ea3e61c645a89ed045655daaa356bcf0",
+    "tools/verify/moe_replay/fixture.json": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3",
+    "tests/moe_replay_contract_test.cpp": "eba5b9095018d3441439fd7efb85bb0079c2997a3aa2f1c9f7f0a3e9b2e219d5",
+    "tests/moe_replay_io_test.cpp": "71f5420337b0bd0f37cd1ec28ce01f6c54eeb04cab7974a0426b4687e7f23fda"
+  },
+  "contracts": {
+    "host_tests": 2,
+    "same_shape_bitexact_cases": 5,
+    "production_control_bitexact_cases": 5,
+    "cross_shape_rows": 4,
+    "cross_shape_observed_id_weight_output_mismatches": 0,
+    "cpu_max_abs_error": 4.87762835e-08,
+    "cpu_absolute_limit": 2e-06,
+    "gpu_rejection_checks": 4,
+    "post_error_buffer_reuse": "PASS",
+    "independent_file_replay": "PASS",
+    "explicit_cross_binary_replay": "PASS",
+    "environment_guards": 7,
+    "new_http_requests": 0
+  },
+  "production": "all allocated MoE object sections identical to accepted B1b; host disassembly/relocations identical excluding filename heading; new diagnostic libraries not linked to q4t_model or serve",
+  "remaining_in_scope": [],
+  "limitations": [
+    "Synthetic fixed layer boundary, not natural-language hidden capture",
+    "No full-model or general batch-invariance claim",
+    "HTTP reused, not rerun; B1b statistical performance remains insufficient evidence",
+    "GPU polling cannot exclude sub-poll interference"
+  ]
+}

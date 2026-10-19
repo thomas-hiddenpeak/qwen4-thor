@@ -1,0 +1,52 @@
+{
+  "binary_sha256": "9a6f2e0168abcb111bd0c326cc7d5b560a7474ae94ec28f1b0905d6a1b86d4fb",
+  "guards": [
+    {
+      "variable": "Q4T_FP8_PROJ",
+      "returncode": 1,
+      "output": "FAIL: unset experimental variable Q4T_FP8_PROJ\n"
+    },
+    {
+      "variable": "Q4T_FP8_SHARED",
+      "returncode": 1,
+      "output": "FAIL: unset experimental variable Q4T_FP8_SHARED\n"
+    },
+    {
+      "variable": "Q4T_FP8_ATTN",
+      "returncode": 1,
+      "output": "FAIL: unset experimental variable Q4T_FP8_ATTN\n"
+    },
+    {
+      "variable": "Q4T_FP8_GDN",
+      "returncode": 1,
+      "output": "FAIL: unset experimental variable Q4T_FP8_GDN\n"
+    },
+    {
+      "variable": "Q4T_FP8_LMHEAD",
+      "returncode": 1,
+      "output": "FAIL: unset experimental variable Q4T_FP8_LMHEAD\n"
+    },
+    {
+      "variable": "Q4T_FP8_HC",
+      "returncode": 1,
+      "output": "FAIL: unset experimental variable Q4T_FP8_HC\n"
+    },
+    {
+      "variable": "Q4T_FP8_HC_UP",
+      "returncode": 1,
+      "output": "FAIL: unset experimental variable Q4T_FP8_HC_UP\n"
+    }
+  ],
+  "status": "PASS",
+  "command": [
+    ".q4t-work/moe-replay-a1-20261019/q4t_moe_replay-final",
+    "replay",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "tools/verify/moe_replay/fixture.json",
+    ".q4t-work/moe-replay-a1-20261019/final-replay",
+    ".q4t-work/moe-replay-a1-20261019/gpu-v1/suite/t4-row0.route",
+    "9833648fe60ffba31c532c3078f409040f60d28ca81779a154c495ed5ab7db66",
+    "CLI FP8 environment rejection and compatibility provenance only; GPU/loader arithmetic unchanged"
+  ],
+  "returncode": 0
+}

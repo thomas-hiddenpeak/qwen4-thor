@@ -1,0 +1,8 @@
+{
+  "kind": "synthetic_layer_boundary_v1",
+  "layer": 2,
+  "rows": 4,
+  "hidden_size": 2560,
+  "seed": 777,
+  "tokens": [42, 43, 44, 45]
+}
