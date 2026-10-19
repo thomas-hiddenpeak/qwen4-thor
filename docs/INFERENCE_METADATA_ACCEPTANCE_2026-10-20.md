@@ -50,3 +50,34 @@ owner初始化随Model加载，故off/on分别验收，不能只验普通decode�
 
 前置quality-v1现为ENV_ABORT，完整质量PASS未满足，本计划未执行。
 见[中断与关停封存审计](evidence/inference-metadata-20261020/quality-v1/audit.json)。
+
+## ENV_ABORT后的有界恢复与封存修正
+
+内核journal同一分钟存在tegra I2C timeout，但时间不同，无法据此
+证明nvidia-smi超时原因。当前空闲状态一次查询及随后5次固定查询均
+在5秒限制内成功、无compute PID；仅证明环境当前恢复可用，不声称
+监控根因已修复或高负载下必然可靠。gpu_exclusive不改、timeout仍5秒，
+再次监控失败仍立即ENV_ABORT，不忽略轮询空档。
+
+已确认的工具缺陷是中断时manifest生成早于子进程最终清理。
+新增seal_stage外层在gpu_exclusive返回（它已核对自有后代清理）后
+再生成sealed-files；中断驱动原manifest原样保留，不回写旧数据。
+源码Python语法离线检查，实际封存结果在本次阶段完成后核对。
+
+恢复预算固定仅MTP质量11条、1次模型加载，无自动重试；候选binary、
+题目及参考与quality-v1完全相同。off11条已在首次监控失败前正常完成，
+保留其输出及当时有效监控区间，不重复普通decode；其来源仍是最终
+ENV_ABORT阶段，最终报告明确这一局限，不改原lease终态。
+
+命令：seal_stage.py --output .q4t-work/inference-metadata-20261020/quality-on-v2
+-- python3 -B tools/verify/inference_metadata/run_quality_on.py。
+外层调用gpu_exclusive持完整阶段锁，输出目录内lease。质量1800秒，
+模型加载300秒；再失败不追加同类样本，转具体环境/失败分析。
+这是环境恢复确认及封存工具修正后的单次受影响组重验，不重跑整套。
+
+后续验收驱动已改为显式核对两组证据：off仍引用原quality-v1，核对
+其原manifest中全部off文件、11条结果、正常server_after_shutdown及
+覆盖起止时间的无冲突monitor记录；on必须为quality-on-v2的PASS且
+外层guard COMPLETED，全部sealed-files摘要一致。两组binary SHA
+须相同。保留原lease的ENV_ABORT与off复用局限，不拼装新“完整旧
+lease通过”记录。后续阶段尚未启动。

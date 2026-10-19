@@ -21,8 +21,41 @@ def sha(path):
 
 def main():
     quality = STAGE/'quality-v1'
-    if json.loads((quality/'run.json').read_text())['status'] != 'PASS':
-        raise ValueError('complete quality prerequisite missing')
+    # The original lease aborted during ON, after OFF shut down successfully.
+    # Never rewrite that lease: prove OFF's completed interval and reuse it.
+    on_stage = STAGE/'quality-on-v2'
+    if json.loads((on_stage/'run-state.json').read_text())['status'] != 'PASS':
+        raise ValueError('MTP recovery quality prerequisite missing')
+    seal = json.loads((on_stage/'seal.json').read_text())
+    if seal['guard_status'] != 'COMPLETED' or seal['guard_exit'] != 0:
+        raise ValueError('MTP recovery guard incomplete')
+    sealed = json.loads((on_stage/'sealed-files.json').read_text())
+    for name, digest in sealed.items():
+        if sha(on_stage/name) != digest:
+            raise ValueError('sealed MTP evidence changed: '+name)
+    original = json.loads((quality/'files.json').read_text())
+    for name, digest in original.items():
+        if name.startswith('off/') and sha(quality/name) != digest:
+            raise ValueError('completed OFF evidence changed: '+name)
+    events = [json.loads(line) for line in (quality/'off/events.jsonl').read_text().splitlines()]
+    started = next(e for e in events if e['event']=='server_started')['monotonic_seconds']
+    stopped = next(e for e in events if e['event']=='server_after_shutdown')
+    if stopped['server_returncode'] != 0 or stopped['cleanup_failure']:
+        raise ValueError('OFF shutdown incomplete')
+    monitors = [json.loads(line) for line in (STAGE/'quality-lease-v1/events.jsonl').read_text().splitlines()]
+    monitors = [e for e in monitors if e['event']=='monitor']
+    if not monitors or monitors[0]['monotonic'] > started or monitors[-1]['monotonic'] < stopped['monotonic_seconds']:
+        raise ValueError('OFF monitor interval missing')
+    if any(e['conflicts'] for e in monitors):
+        raise ValueError('original monitor conflict')
+    for run in [quality/'off', on_stage/'run']:
+        rows = json.loads((run/'results.json').read_text())
+        if len(rows)!=11 or not all(row['success']==1 for row in rows):
+            raise ValueError('incomplete quality rows')
+    old_identity=json.loads((quality/'plan.json').read_text())['candidate_sha256']
+    new_identity=json.loads((on_stage/'plan.json').read_text())['binary_sha256']
+    if old_identity != new_identity or sha(STAGE/'build/q4t') != old_identity:
+        raise ValueError('quality identity mismatch')
     OUT.mkdir(exist_ok=False)
     state = dict(status='PREPARING',started=time.time())
     try:
@@ -42,6 +75,8 @@ def main():
                   cancellation_control_posts=9,model_loads=5,retries=0,
                   binary_sha256=hashes,resolution_band='NOT_ESTABLISHED',
                   acceptance='No performance acceptance inferred from point estimates.')
+        plan['quality_evidence'] = {'off':str(quality/'off'), 'on':str(on_stage/'run'),
+            'off_limitation':'Completed before original lease ENV_ABORT; original monitor interval and files checked.'}
         (OUT/'plan.json').write_text(json.dumps(plan,indent=2)+'\n')
         env={k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k!='LD_PRELOAD'}
         def run(name,command,timeout):

@@ -1,0 +1,26 @@
+{
+  "queries": [
+    {
+      "elapsed_seconds": 0.015839545987546444,
+      "pids": ""
+    },
+    {
+      "elapsed_seconds": 0.0140464270953089,
+      "pids": ""
+    },
+    {
+      "elapsed_seconds": 0.015816155006177723,
+      "pids": ""
+    },
+    {
+      "elapsed_seconds": 0.013918253011070192,
+      "pids": ""
+    },
+    {
+      "elapsed_seconds": 0.014069702010601759,
+      "pids": ""
+    }
+  ],
+  "status": "HEALTHY_NOW",
+  "scope": "current idle availability only; monitor root cause not proven"
+}
