@@ -1,5 +1,10 @@
 # 推理元数据与异步缓冲生命周期
 
+最终状态更新：2026-10-20用户已明确接受本次加固，源码按本项独立
+工程决定接受，统计性能仍证据不足，未替换默认binary。见
+[最终审查及用户决定](INFERENCE_METADATA_FINAL_REVIEW_2026-10-20.md)。
+下文冻结计划、当时状态与失败记录保留，不覆盖上述最终决定。
+
 状态：ACTIVE_AUDIT。用户2026-10-20授权按计划设置目标并推进。
 起点52e3cdc，复用main，默认binary保持44abd8b1，不部署候选。
 身份见[evidence](evidence/inference-metadata-20261020/baseline.json)。
