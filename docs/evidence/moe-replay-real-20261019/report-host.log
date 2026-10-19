@@ -1,0 +1,13 @@
+test_checksum_truncation_and_escape_rejected (__main__.ReportTest.test_checksum_truncation_and_escape_rejected) ... ok
+test_different_sets_do_not_impute_missing_weights (__main__.ReportTest.test_different_sets_do_not_impute_missing_weights) ... ok
+test_duplicate_fields_and_boolean_dimensions_rejected (__main__.ReportTest.test_duplicate_fields_and_boolean_dimensions_rejected) ... ok
+test_known_difference_and_upstream_warning (__main__.ReportTest.test_known_difference_and_upstream_warning) ... ok
+test_logical_alignment_ignores_only_future_suffix (__main__.ReportTest.test_logical_alignment_ignores_only_future_suffix) ... ok
+test_nonfinite_duplicate_out_of_range_and_missing_rows (__main__.ReportTest.test_nonfinite_duplicate_out_of_range_and_missing_rows) ... ok
+test_permutation_uses_expert_alignment (__main__.ReportTest.test_permutation_uses_expert_alignment) ... ok
+test_wrong_prefix_or_model_is_rejected (__main__.ReportTest.test_wrong_prefix_or_model_is_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.016s
+
+OK

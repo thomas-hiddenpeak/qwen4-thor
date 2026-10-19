@@ -1,0 +1,41 @@
+{
+  "status": "HOST_CONTRACTS_ONLY_PASS",
+  "report_tests": 8,
+  "context_tests": 1,
+  "cuda_modified": false,
+  "gpu_runs": 0,
+  "http_requests": 0,
+  "pending": [
+    "actual link wrapper capture",
+    "tokenizer/real-text fixture and identity driver",
+    "A1 real-input replay integration",
+    "GPU budget and same-shape/cross-shape verification",
+    "final report/evidence audit"
+  ],
+  "files": [
+    {
+      "path": "tools/verify/moe_replay_real/report.py",
+      "sha256": "423c4b2fac11ce581caaa1aab4f1bcd7af6b8756ddf42b9314eaffed3a0c9857"
+    },
+    {
+      "path": "tools/verify/moe_replay_real/capture_context.h",
+      "sha256": "9261166418bd094870fbcd5bc3849e900f5cb87acbe236d0d2069e218609ceb7"
+    },
+    {
+      "path": "tools/verify/moe_replay_real/README.md",
+      "sha256": "703d53b262165acf535c77a54db0c8020ec1b2c8c0d6c90a61978a35567bd369"
+    },
+    {
+      "path": "tools/verify/moe_replay_real/context_test.cpp",
+      "sha256": "8cc3444494f52139f87713badf19609ad79701d470b1ba39ae02635e1d79cb24"
+    },
+    {
+      "path": "tools/verify/moe_replay_real/test_report.py",
+      "sha256": "1ec6a570f891f424e37745ece603c02e9e6b603d55750d4af086bdd4cdfb6696"
+    },
+    {
+      "path": ".q4t-work/moe-replay-real-20261019/context-test",
+      "sha256": "fecb6f749d14706168bc0c219c8419f5731acf8470855da91c460a17f49c906b"
+    }
+  ]
+}

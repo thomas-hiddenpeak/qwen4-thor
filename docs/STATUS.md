@@ -4,6 +4,13 @@
 
 ## 当前交付
 
+**真实输入诊断host合同已完成首组验证（2026-10-19）。** 新增严格
+layer-boundary文件读取、逻辑位置/完整前缀对齐、按expert对齐的分项
+差异报告，以及显式捕获上下文。8项报告测试＋1项上下文测试通过，
+C++零警告；尚未接入真实模型捕获/重放，GPU与HTTP新增0。
+见[host证据](evidence/moe-replay-real-20261019/host-result.json)及
+[数据合同](../tools/verify/moe_replay_real/README.md)。
+
 **真实文本MoE诊断目标已启动（2026-10-19）。** 用户授权继续并设置
 目标。已核对旧observer的层/位置推断局限及真实MoE调用边界，优先采用
 独立链接包装和显式teacher-forced上下文，补真实层输入与分项报告。

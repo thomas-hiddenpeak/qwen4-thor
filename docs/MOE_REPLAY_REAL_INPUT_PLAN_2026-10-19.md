@@ -73,3 +73,12 @@ ENV_ABORT不算数值失败。局部合同不代替整模型任务质量或N=4�
 独立真实文本capture入口、版本化layer-input文件、A1重放适配、离线
 分项JSON/可读报告、固定夹具、复现命令、身份清单与原始证据。
 沿用当前main，以提交划分阶段；默认build/q4t及模型/reference只读。
+
+## 实施进度：host合同（2026-10-19）
+
+已实现 `tools/verify/moe_replay_real/` 的文件读取/离线报告和显式
+CaptureContext。8项报告测试＋1项上下文测试通过；严格字段/大小/摘要、
+完整前缀、专家对齐及错误后禁止发布均有负控。详见
+[host结果](evidence/moe-replay-real-20261019/host-result.json)。
+这不是实际模型捕获或GPU结果；链接包装、真实文本驱动及A1重放接入
+仍待实现。当前生产源文件未改，GPU/HTTP新增0。
