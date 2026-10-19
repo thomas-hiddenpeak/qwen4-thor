@@ -1,0 +1,19 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/upstream_first_fork/run_gdn.py"
+  ],
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-19T16:09:34.254910+00:00",
+    "monotonic": 616256.771793126,
+    "pid": 1954869
+  }
+}

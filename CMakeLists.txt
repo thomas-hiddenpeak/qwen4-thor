@@ -213,6 +213,15 @@ if(Q4T_HAS_ICU)
     q4t_moe_replay_io q4t_text)
   target_link_options(q4t_moe_real_capture PRIVATE
     "-Wl,--wrap=_ZN3q4t5model10MoEForwardEPKtRKNS_5quant15MoEWeightLayoutERKNS0_15MoEExtraWeightsEPtiiPvmSB_mP11CUstream_stPNS_5trace15RouterCollectorEiPKNS3_12MoEResidencyEPNS0_21MoEForwardDiagnosticsE")
+  add_executable(q4t_upstream_gdn EXCLUDE_FROM_ALL
+    tools/verify/upstream_first_fork/gdn_replay.cu)
+  target_link_libraries(q4t_upstream_gdn PRIVATE q4t_model)
+  add_executable(q4t_upstream_projection EXCLUDE_FROM_ALL
+    tools/verify/upstream_first_fork/projection.cpp)
+  target_link_libraries(q4t_upstream_projection PRIVATE q4t_moe_replay_gpu
+    q4t_moe_replay_io q4t_text)
+  target_link_options(q4t_upstream_projection PRIVATE
+    "-Wl,--wrap=_ZN3q4t5model10MoEForwardEPKtRKNS_5quant15MoEWeightLayoutERKNS0_15MoEExtraWeightsEPtiiPvmSB_mP11CUstream_stPNS_5trace15RouterCollectorEiPKNS3_12MoEResidencyEPNS0_21MoEForwardDiagnosticsE")
   add_executable(q4t_upstream_first_fork EXCLUDE_FROM_ALL
     tools/verify/upstream_first_fork/capture.cpp)
   target_link_libraries(q4t_upstream_first_fork PRIVATE q4t_moe_replay_gpu

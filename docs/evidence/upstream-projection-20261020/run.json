@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "started": 1792425849.106662,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/upstream-projection-20261020/gpu-v1/executable",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/upstream-projection-20261020/gpu-v1/fixture",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/upstream-projection-20261020/gpu-v1/projection"
+  ],
+  "fp32_reference": [
+    {
+      "row": 0,
+      "head": 43,
+      "fp32": 2.4020943641662598,
+      "fp32_hex": "eabb1940",
+      "bf16": 16410
+    },
+    {
+      "row": 1,
+      "head": 43,
+      "fp32": 1.9947917461395264,
+      "fp32_hex": "5655ff3f",
+      "bf16": 16383
+    },
+    {
+      "row": 2,
+      "head": 43,
+      "fp32": 2.507817268371582,
+      "fp32_hex": "14802040",
+      "bf16": 16417
+    },
+    {
+      "row": 3,
+      "head": 43,
+      "fp32": 2.020338535308838,
+      "fp32_hex": "3a4d0140",
+      "bf16": 16385
+    }
+  ],
+  "finished": 1792425849.6641057
+}

@@ -6,6 +6,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [首分叉局部重放](UPSTREAM_LOCAL_REPLAY_2026-10-20.md) | GEMV精确FP32、GDN前缀状态和单a干预通过；cuBLAS解释待闭合 | 调查进行中 |
 | [上游首分叉捕获](UPSTREAM_FIRST_FORK_CAPTURE_2026-10-19.md) | layer0 a[43]同输入差异与精确点积，根因待闭合 | 调查进行中 |
 | [真实文本MoE捕获与重放](MOE_REPLAY_REAL_INPUT_RESULT_2026-10-19.md) | 完整token身份、真实层输入、同形状逐位与T1/T4分项报告 | 诊断合同通过 |
 | [主干MoE固定IDs诊断](MOE_REPLAY_A1_2026-10-19.md) | 独立入口、固定夹具、同形状逐位/当前分数语义及正常路径保护 | A1诊断交付 |

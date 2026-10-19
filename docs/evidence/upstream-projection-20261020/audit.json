@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "files_verified": 163,
+  "root": ".q4t-work/upstream-projection-20261020/gpu-v1",
+  "runtime_seconds": 0.5574436187744141,
+  "claims": "local replay only; root classification pending",
+  "checks": 4
+}

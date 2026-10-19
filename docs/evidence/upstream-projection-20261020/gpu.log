@@ -1,0 +1,1 @@
+PASS projection: 4 GEMV, 1 BF16 batch, 1 float-output diagnostic

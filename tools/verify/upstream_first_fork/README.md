@@ -47,3 +47,22 @@ python3 -B tools/verify/upstream_first_fork/test_events.py -v
 
 No model loading or GPU calls occur in these tests. Payloads and test fixtures
 are kept in `.q4t-work/`; the model directory remains read-only.
+
+## Local replay extension (2026-10-20)
+
+`projection.cpp` replays four captured GEMVs with FP32 observation, the original
+BF16 batch, and a separately identified float-output cuBLAS diagnostic.
+`fp32_reference.py` models each production GEMV FMA/add with exact rational
+binary32 rounding. `run_projection.py` freezes provenance and verifies output.
+Changing output dtype can change the kernel: equal algorithm fields do not
+establish equal accumulation. The float call is not a BF16 accumulator probe.
+
+`gdn_replay.cu` compiles the unchanged production kernel source for eight local
+pipelines. `run_gdn.py` validates original state/output reproduction, prefix1/2
+complete states, and the explicitly recorded a[2,43] intervention. Checkpoints
+are never enabled. Five kernel SASS bodies were compared against production.
+The drivers currently use the frozen dated paths and require new directories;
+run only under gpu_exclusive and a corresponding bounded plan.
+
+See [local results and limits](../../../docs/UPSTREAM_LOCAL_REPLAY_2026-10-20.md).
+These passes do not finish the cuBLAS root-cause classification.

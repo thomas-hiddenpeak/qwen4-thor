@@ -1,0 +1,9 @@
+test_bad_shape (__main__.Fp32Test.test_bad_shape) ... ok
+test_exact_sum (__main__.Fp32Test.test_exact_sum) ... ok
+test_reduction_is_not_real_dot (__main__.Fp32Test.test_reduction_is_not_real_dot) ... ok
+test_ties_and_subnormals (__main__.Fp32Test.test_ties_and_subnormals) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.005s
+
+OK

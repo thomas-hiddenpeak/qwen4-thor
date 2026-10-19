@@ -1,0 +1,8 @@
+[  8%] Built target q4t_trace
+[ 20%] Built target q4t_io
+[ 33%] Built target q4t_ple
+[ 50%] Built target q4t_quant
+[ 95%] Built target q4t_model
+[100%] Building CUDA object CMakeFiles/q4t_upstream_gdn.dir/tools/verify/upstream_first_fork/gdn_replay.cu.o
+[100%] Linking CXX executable q4t_upstream_gdn
+[100%] Built target q4t_upstream_gdn

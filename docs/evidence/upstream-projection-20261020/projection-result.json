@@ -1,0 +1,1 @@
+{"production_replay":"BITEXACT_PASS","algorithm_fields":["id","tile","split_k","reduction","swizzle","stages"],"bf16_algorithm":[21,5,1,0,0,13],"same_algorithm_float_check":7,"same_algorithm_float_state":0,"float_output_algorithm":[21,5,1,0,0,13],"status":"PASS"}

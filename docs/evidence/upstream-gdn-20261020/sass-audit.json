@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "kernels": {
+    "GatedDeltaNetRegKernelILi8E": {
+      "instruction_lines": 688,
+      "sha256": "8b23fcf5ed126674976ece2830346920a9f9e45893729aac8e34806d7a09d9bc"
+    },
+    "NormGateKernel": {
+      "instruction_lines": 296,
+      "sha256": "b5c47b7de5214f676f94e8321f3b4111aaa6463910f3ebb9c63c6e1bb089a44d"
+    },
+    "GdnRegPrepNormKernel": {
+      "instruction_lines": 144,
+      "sha256": "51301ccdfbc093ed4ffcc6f84b91355cf81fe53e3060217e6c01e18bc291f1a4"
+    },
+    "Conv1dUpdateStateKernel": {
+      "instruction_lines": 648,
+      "sha256": "1008c387650f295933e7bf02b7662866bec602fd2339afb19f18df8e2203024f"
+    },
+    "CausalConv1dWithCkptKernel": {
+      "instruction_lines": 656,
+      "sha256": "4ed571bede3bac767dc7923288b5b293a52ea7ed251c4dc5db22a3cf798ab147"
+    }
+  }
+}

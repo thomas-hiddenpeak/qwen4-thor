@@ -1,0 +1,11 @@
+[  7%] Built target q4t_trace
+[ 14%] Built target q4t_io
+[ 25%] Built target q4t_ple
+[ 28%] Built target q4t_moe_replay_io
+[ 32%] Built target q4t_text
+[ 46%] Built target q4t_quant
+[ 89%] Built target q4t_model
+[ 92%] Built target q4t_moe_replay_gpu
+[ 96%] Building CXX object CMakeFiles/q4t_upstream_projection.dir/tools/verify/upstream_first_fork/projection.cpp.o
+[100%] Linking CXX executable q4t_upstream_projection
+[100%] Built target q4t_upstream_projection
