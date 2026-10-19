@@ -17,6 +17,16 @@ WORK = guard.ROOT / '.q4t-work/gpu-exclusive-tests'
 
 
 class ExclusiveTests(unittest.TestCase):
+    def test_default_backend_is_nvml(self):
+        with patch.object(guard.nvml_process_query, 'query', return_value={
+                'status': 'OK', 'pids': [], 'request_id': 'test'}) as query, \
+                patch.object(guard, 'processes', return_value={}):
+            code = guard.run_guard([sys.executable, '-c', 'pass'], self.out,
+                                   self.lock, interval=.01, grace=1)
+        self.assertEqual(code, 0)
+        self.assertEqual(self.outcome()['compute_backend'], 'nvml')
+        self.assertGreaterEqual(query.call_count, 2)
+
     def test_nvml_guard_success_and_monitor_failure(self):
         ok = dict(status='OK', pids=[], request_id='test')
         for failure in (False, True):
@@ -348,7 +358,7 @@ class ExclusiveTests(unittest.TestCase):
         unrelated = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'])
         self.addCleanup(lambda: (unrelated.terminate(), unrelated.wait()))
         snapshots = iter([{'conflicts': []}, {'conflicts': [{'pid': unrelated.pid}]}])
-        with patch.object(guard, 'inspect', side_effect=lambda *args: next(snapshots)):
+        with patch.object(guard, 'inspect', side_effect=lambda *args, **kwargs: next(snapshots)):
             code = guard.run_guard([sys.executable, '-c', 'import time; time.sleep(30)'],
                                    self.out, self.lock, interval=0.01, grace=1)
         self.assertEqual(code, 75)

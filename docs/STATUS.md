@@ -24,8 +24,10 @@ B<=max_prefill容量检查，6项无模型入口测试通过；完整新候选�
 5秒监督时限与逐API记录，7项query host合同及26项guard回归通过；
 原guard下4字节CUDA上下文三次查询正确识别创建/退出，lease正常。
 无模型加载、HTTP或kernel。guard支持显式--compute-backend nvml，
-默认仍nvidia-smi、失败规则不放宽；尚未证明历史负载超时根因消失。
-后续可冻结选择此后端的验收计划，不必先改全局默认。见
+用户已授权默认改为NVML，27项host回归通过；失败规则不放宽，
+尚未证明历史负载超时根因消失。
+新候选剩余验收已冻结为7加载/102生成POST、同一lease，无自动重试。
+见[恢复验收计划](INFERENCE_METADATA_RESUME_2026-10-20.md)及
 [范围、失败记录与证据](NVML_MONITOR_PLAN_2026-10-20.md)。
 
 **Thor监控能力轻量核对（2026-10-20）。** 本机tegrastats采集3条，

@@ -239,7 +239,7 @@ exit.json/events.jsonl保留结果；成功仅表示命令成功且未检测到�
 
 ### Jetson Thor监控职责与本机能力（2026-10-20）
 
-已新增显式可选的直接NVML后端（默认仍nvidia-smi）：
+直接NVML现为默认后端；也可显式指定：
 
 ```bash
 python3 tools/evalscope/gpu_exclusive.py --compute-backend nvml \
@@ -253,6 +253,8 @@ compute-v3/shutdown，不启动nvidia-smi。正常worker退出且完整协议通
 nvml-queries.jsonl保留每次stdout/stderr、逐API边界及返回状态。错误、
 不支持、超时、协议异常和清理失败均触发ENV_ABORT，无自动fallback。
 现有flock、PID/start_ticks归属、退出确认及清理策略保留。
+默认切换经用户授权，27项默认/显式后端host回归通过；依据是已验证
+合同和可诊断性，不是已证明负载下更可靠。没有静默后端降级。
 
 7项query host合同、26项guard host回归通过；原guard保护下，4字节
 CUDA上下文启动前/存在时/退出后三次直接查询均成功，正确发现PID及
@@ -268,8 +270,8 @@ CUDA上下文启动前/存在时/退出后三次直接查询均成功，正确�
 证据见[能力记录](../../docs/evidence/jetson-monitor-capabilities-20261020/result.json)。
 
 职责分开处理：系统遥测优先用tegrastats；计算进程竞争检查由guard
-单独承担；Nsight仅按具体分析需要使用。当前guard默认仍用nvidia-smi
-PID查询，可显式选择上述NVML后端，失败规则未放宽；超时是监控通道失败，不能
+单独承担；Nsight仅按具体分析需要使用。当前guard默认用直接NVML
+PID查询，可显式--compute-backend nvidia-smi切回CLI，失败规则未放宽；超时是监控通道失败，不能
 单独证明模型/GPU计算故障。tegrastats不能凭资源使用率替代PID归属。
 
 Thor不同于早期Jetson：官方说明NVML支持Thor及后续L4T平台，Thor

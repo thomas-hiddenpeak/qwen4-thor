@@ -21,6 +21,7 @@ import time
 import nvml_process_query
 
 ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_COMPUTE_BACKEND = 'nvml'
 
 
 def common_lock():
@@ -257,7 +258,7 @@ def borrowed_lock(fd, lock_path):
 
 
 def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
-              compute_backend='nvidia-smi'):
+              compute_backend=DEFAULT_COMPUTE_BACKEND):
     if compute_backend not in ('nvidia-smi', 'nvml'):
         raise ValueError('unknown compute backend')
     out.mkdir(parents=True, exist_ok=False)
@@ -367,7 +368,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--compute-backend', choices=['nvidia-smi', 'nvml'],
-                        default='nvidia-smi',
+                        default=DEFAULT_COMPUTE_BACKEND,
                         help='explicit compute PID query backend; no fallback')
     parser.add_argument('--lease-fd', type=int,
                         help='inherited exclusive lease; external owner handles recovery')
