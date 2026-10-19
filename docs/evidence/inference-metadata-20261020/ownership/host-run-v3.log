@@ -1,0 +1,2 @@
+decode metadata retained after failed drain: decode metadata completion: injected error
+PASS retained source survives failed destructor drain

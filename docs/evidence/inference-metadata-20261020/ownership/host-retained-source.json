@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "additional_cases": 1,
+  "prior_8_cases": "REUSED_UNCHANGED_PRODUCTION_CLASS",
+  "binary_sha256": "214fa51aab2ba6c99cfac6b4f2b74b3baff1a8147f82defbea7518879e03ec93",
+  "cuda_runtime_linked": false,
+  "gpu_runs": 0
+}

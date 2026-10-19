@@ -14,6 +14,7 @@ int fail_copy = 0, copy_calls = 0;
 bool fail_alloc = false, fail_create = false, fail_record = false;
 bool fail_wait = false;
 int events = 0, waits = 0;
+cudaEvent_t last_event = nullptr;
 void Require(bool value) {
   if (!value) throw std::runtime_error("ownership invariant failed");
 }
@@ -46,7 +47,8 @@ cudaError_t __wrap_cudaFreeHost(void* p) {
 }
 cudaError_t __wrap_cudaEventCreateWithFlags(cudaEvent_t* e, unsigned) {
   if (fail_create) return cudaErrorMemoryAllocation;
-  *e = reinterpret_cast<cudaEvent_t>(new int(0)); ++events; return cudaSuccess;
+  *e = reinterpret_cast<cudaEvent_t>(new int(0));
+  last_event = *e; ++events; return cudaSuccess;
 }
 cudaError_t __wrap_cudaEventDestroy(cudaEvent_t e) {
   delete reinterpret_cast<int*>(e); --events; return cudaSuccess;
@@ -63,12 +65,32 @@ cudaError_t __wrap_cudaEventSynchronize(cudaEvent_t) { return Wait(); }
 cudaError_t __wrap_cudaStreamSynchronize(cudaStream_t) { return Wait(); }
 const char* __wrap_cudaGetErrorString(cudaError_t) { return "injected error"; }
 }
-int main() {
+int main(int argc, char**) {
   using q4t::model::DecodeMetadataUpload;
   try {
     int ids[2] = {17, 23}, pos[2] = {1, 2}, slots[2] = {1, 0};
     int delta[2] = {3, 4}, di[2]{}, dp[2]{}, ds[2]{}, rope[48]{};
     DecodeMetadataUpload::Targets targets{di, dp, ds, rope, 8, 2};
+    if (argc > 1) {
+      Reset();
+      {
+        DecodeMetadataUpload upload;
+        Require(upload.Init(2).ok());
+        Require(upload.Upload(ids, pos, slots, delta, targets, nullptr).ok());
+        fail_wait = true;
+      }
+      // Completion failed in destructor: queued readers still own source data.
+      Require(allocations.size() == 1 && events == 1 && !copies.empty());
+      fail_wait = false;
+      Require(Wait() == cudaSuccess);
+      Require(di[0] == 17 && dp[0] == 1 && ds[0] == 1 && rope[25] == 5);
+      // Simulated context recovery only: reclaim the deliberately retained data.
+      __wrap_cudaFreeHost(allocations.front());
+      __wrap_cudaEventDestroy(last_event);
+      Require(allocations.empty() && events == 0 && copies.empty());
+      std::cout << "PASS retained source survives failed destructor drain\n";
+      return 0;
+    }
     int cases = 0;
     for (int failure = 0; failure < 7; ++failure) {
       Reset();

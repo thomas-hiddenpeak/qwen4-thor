@@ -119,3 +119,11 @@ lease为quality-lease-v1。失败立即停止后续组，不自动追加样本�
 四层差分原始目录model-replay-v1，共67文件摘要复核通过，见
 [审计](evidence/inference-metadata-20261020/model-replay-v1/audit.json)。
 HTTP quality-v1已启动，正在持锁执行；未取得完整终态前不得标通过。
+
+## 析构无法完成的host补验
+
+审查发现原8例只覆盖Drain失败后恢复排空，未直接覆盖析构失败保留
+源分支。新增1例mock：已提交后令析构wait失败，确认源和event未释放，
+恢复mock后仍能读取原值，再由测试模拟context回收。生产类不改动，
+仅测试驱动加--retained-source入口。host-v3不链接cudart，执行此新增
+1例，不重复已通过8例；GPU新增0。属于具体覆盖缺口补验。
