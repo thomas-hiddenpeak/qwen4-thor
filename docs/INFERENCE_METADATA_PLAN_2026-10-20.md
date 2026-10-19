@@ -121,3 +121,13 @@ Model。保留原GPU地址与拷贝次数；连续host数据仅统一源所有�
 MTP多序列step cleanup在src/mtp/mtp.cu:1385显式stream同步；
 chunked MtpDraftExtend的seqid局部vector（825）仍是pageable暂存
 依赖项，与普通入口一起保留在最终审计，不能用step cleanup覆盖它。
+
+## 待闭合容量边界（2026-10-20，只读审计发现）
+
+ModelDecodeBatchMulti检查B<=max_seq，但d_ids/d_positions/d_emb及
+trunk等按max_prefill分配；新owner容量为max_seq。chat_scheduler普通
+decode按全部plain_reqs组批，没有在该分组处限制max_prefill。
+因此B<=max_seq并不单独证明目标容量足够；父实现已有同样检查缺口，
+不是本次owner引入。还需完成配置入口约束核对，若无全局保证，最小
+修复应在任何上传前拒绝B>max_prefill，并补无GPU边界验证。当前先
+登记，不修改正在封存候选身份，也不把普通max_seq1/4验收当越界证明。

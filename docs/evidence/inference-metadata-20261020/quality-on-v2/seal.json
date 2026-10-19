@@ -1,0 +1,12 @@
+{
+  "guard_exit": 75,
+  "guard_status": "ENV_ABORT",
+  "started": 1792430132.5541468,
+  "finished": 1792430433.1559825,
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_quality_on.py"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}

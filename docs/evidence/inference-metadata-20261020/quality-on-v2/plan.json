@@ -1,0 +1,31 @@
+{
+  "requests": 11,
+  "model_loads": 1,
+  "retries": 0,
+  "binary_sha256": "ddd99f6f13363a32b23ab59ac99de63f50e40c3d8672d4291526009d6b46ffed",
+  "prior_env_abort": "/home/rm01/models/dev/qwen4-thor/.q4t-work/inference-metadata-20261020/quality-v1",
+  "off_repeated": false,
+  "command": [
+    "python3",
+    "-B",
+    "tools/evalscope/run_acceptance.py",
+    "--mode",
+    "quality",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/inference-metadata-20261020/quality-on-v2/run",
+    "--binary",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/inference-metadata-20261020/build/q4t",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--fixtures",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/inference-metadata-20261020/quality-on-v2/reference/inputs",
+    "--reference",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/inference-metadata-20261020/quality-on-v2/reference/results.json",
+    "--startup-timeout",
+    "300",
+    "--port",
+    "8740",
+    "--allow-unqualified-binary",
+    "--mtp"
+  ]
+}

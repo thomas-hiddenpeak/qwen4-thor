@@ -1,6 +1,6 @@
 # 元数据候选集成验收判定卡
 
-状态：FROZEN_NOT_STARTED。质量quality-v1必须完整PASS才运行。
+状态：NOT_STARTED_ENV_ABORT。当前质量前置未满足，不启动后续阶段。
 本阶段是源所有权结构整理后的质量/性能风险评估，不宣称提速；
 已经完成的对象/四层直接合同复用，不再重复。
 
@@ -81,3 +81,16 @@ ENV_ABORT阶段，最终报告明确这一局限，不改原lease终态。
 外层guard COMPLETED，全部sealed-files摘要一致。两组binary SHA
 须相同。保留原lease的ENV_ABORT与off复用局限，不拼装新“完整旧
 lease通过”记录。后续阶段尚未启动。
+
+## 单次恢复终态（2026-10-20）
+
+quality-on-v2于UTC 2026-10-19 17:20:33退出75 ENV_ABORT，再次为
+nvidia-smi PID查询5秒超时。最后一条200K请求在关停时取消，不能将
+已完成的前10条拼成11条通过。run-state为INTERRUPTED；guard终态
+优先。seal_stage在清理完成后封存，全部摘要复核一致，修复后的
+封存机制本次有效。证据见[evidence](evidence/inference-metadata-20261020/quality-on-v2/audit.json)。
+
+单次恢复预算已用尽，不再追加采样，不启动取消/五档，不放宽监控。
+本时段kernel记录多次tegra I2C timeout，但没有堆栈或驱动因果证据，
+不能确定其导致PID查询超时，也不能归因于上传候选。候选未验收，
+默认binary保持；继续不加载模型的代码/环境诊断。

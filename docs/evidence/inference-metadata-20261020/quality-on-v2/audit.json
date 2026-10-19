@@ -1,0 +1,10 @@
+{
+  "status": "ENV_ABORT",
+  "sealed_files_verified": 31,
+  "quality_complete": false,
+  "additional_gpu_sampling": 0,
+  "tail_started": false,
+  "reason": "Second NVIDIA PID query timeout; frozen single recovery exhausted.",
+  "kernel_causality": "I2C timeouts observed, causal connection unproven",
+  "default_binary_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03"
+}
