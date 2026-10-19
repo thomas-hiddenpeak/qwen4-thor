@@ -1,0 +1,16 @@
+{
+  "candidate_source": "3d5564e",
+  "parent_source": "73aab36",
+  "compute_backend": "nvml",
+  "binary_sha256": {
+    "candidate": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+    "parent": "4bddcff37dd78f4680b85820148b2adce12930b3eb96af44e02fcd053fb6afc3"
+  },
+  "loads": 7,
+  "quality_requests": 22,
+  "cancellation_generation_posts": 20,
+  "cancellation_posts": 9,
+  "performance_requests": 60,
+  "retries": 0,
+  "resolution_band": "NOT_ESTABLISHED"
+}

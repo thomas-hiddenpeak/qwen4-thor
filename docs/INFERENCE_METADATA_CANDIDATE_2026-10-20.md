@@ -127,3 +127,11 @@ HTTP quality-v1已启动，正在持锁执行；未取得完整终态前不得�
 恢复mock后仍能读取原值，再由测试模拟context回收。生产类不改动，
 仅测试驱动加--retained-source入口。host-v3不链接cudart，执行此新增
 1例，不重复已通过8例；GPU新增0。属于具体覆盖缺口补验。
+
+
+## 后续恢复验收结果
+
+新候选（包含容量拒绝）已完成两模式质量、取消及父候选五档，默认
+NVML整轮无中断；不改写原失败。运行时合同通过，性能统计接受仍
+INSUFFICIENT_EVIDENCE，owner保持未部署候选，默认binary不替换。
+完整原值和决定见[恢复报告](INFERENCE_METADATA_RESUME_RESULT_2026-10-20.md)。

@@ -1,0 +1,104 @@
+{
+  "status": "RUNTIME_CONTRACTS_PASS_PERFORMANCE_ACCEPTANCE_PENDING",
+  "guard": "COMPLETED",
+  "compute_backend": "nvml",
+  "elapsed_seconds": 3925.606579065323,
+  "nvml_queries": 3595,
+  "nvml_max_seconds": 0.23322623001877218,
+  "nvml_p50_seconds": 0.0716719520278275,
+  "monitor_conflicts": 0,
+  "sealed_files_verified": 615,
+  "quality_requests": 22,
+  "performance_requests": 60,
+  "cancellation_records": 8,
+  "cancellation_generation_posts": 20,
+  "cancellation_control_posts": 9,
+  "model_loads": 7,
+  "service_checks": {
+    "quality-off": {
+      "shutdown": {
+        "event": "server_after_shutdown",
+        "monotonic_seconds": 639583.541006472,
+        "unix_seconds": 1792449501.0241325,
+        "utc": "2026-10-19T22:38:21.024132+00:00",
+        "clock_pair_uncertainty_seconds": 7.589696906507015e-07,
+        "pid": 2020590,
+        "server_returncode": 0,
+        "cleanup_failure": null
+      },
+      "case_requests": 11
+    },
+    "quality-on": {
+      "shutdown": {
+        "event": "server_after_shutdown",
+        "monotonic_seconds": 639850.458186324,
+        "unix_seconds": 1792449767.9413126,
+        "utc": "2026-10-19T22:42:47.941313+00:00",
+        "clock_pair_uncertainty_seconds": 8.330098353326321e-07,
+        "pid": 2022465,
+        "server_returncode": 0,
+        "cleanup_failure": null
+      },
+      "case_requests": 11
+    },
+    "parent-off": {
+      "shutdown": {
+        "event": "server_after_shutdown",
+        "monotonic_seconds": 640803.575187737,
+        "unix_seconds": 1792450721.0583138,
+        "utc": "2026-10-19T22:58:41.058314+00:00",
+        "clock_pair_uncertainty_seconds": 8.150236681103706e-07,
+        "pid": 2025178,
+        "server_returncode": 0,
+        "cleanup_failure": null
+      },
+      "case_requests": 15
+    },
+    "candidate-off": {
+      "shutdown": {
+        "event": "server_after_shutdown",
+        "monotonic_seconds": 641664.829639954,
+        "unix_seconds": 1792451582.3127658,
+        "utc": "2026-10-19T23:13:02.312766+00:00",
+        "clock_pair_uncertainty_seconds": 7.449998520314693e-07,
+        "pid": 2028461,
+        "server_returncode": 0,
+        "cleanup_failure": null
+      },
+      "case_requests": 15
+    },
+    "candidate-on": {
+      "shutdown": {
+        "event": "server_after_shutdown",
+        "monotonic_seconds": 642456.015540801,
+        "unix_seconds": 1792452373.4986668,
+        "utc": "2026-10-19T23:26:13.498667+00:00",
+        "clock_pair_uncertainty_seconds": 5.880137905478477e-07,
+        "pid": 2035076,
+        "server_returncode": 0,
+        "cleanup_failure": null
+      },
+      "case_requests": 15
+    },
+    "parent-on": {
+      "shutdown": {
+        "event": "server_after_shutdown",
+        "monotonic_seconds": 643245.6317438675,
+        "unix_seconds": 1792453163.1148696,
+        "utc": "2026-10-19T23:39:23.114870+00:00",
+        "clock_pair_uncertainty_seconds": 4.814937710762024e-07,
+        "pid": 2038383,
+        "server_returncode": 0,
+        "cleanup_failure": null
+      },
+      "case_requests": 15
+    }
+  },
+  "statistical_performance": "INSUFFICIENT_EVIDENCE",
+  "default_binary_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+  "limits": [
+    "No proof of historical CLI timeout cause",
+    "No statistical noninferiority bound",
+    "No default model deployment"
+  ]
+}

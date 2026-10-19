@@ -1,0 +1,16 @@
+{
+  "status": "MEASUREMENTS_COMPLETE_ACCEPTANCE_PENDING",
+  "started": 1792449238.6179702,
+  "completed": [
+    "quality-off",
+    "quality-on",
+    "cancellation",
+    "parent-off",
+    "candidate-off",
+    "candidate-on",
+    "parent-on"
+  ],
+  "current": "parent-on",
+  "statistical_performance": "INSUFFICIENT_EVIDENCE",
+  "finished": 1792453163.1797013
+}
