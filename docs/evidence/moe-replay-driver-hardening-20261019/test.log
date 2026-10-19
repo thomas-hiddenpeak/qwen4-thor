@@ -1,0 +1,10 @@
+test_interruption_is_terminal_and_recorded (__main__.DriverTest.test_interruption_is_terminal_and_recorded) ... ok
+test_missing_input_retains_preparation_failure (__main__.DriverTest.test_missing_input_retains_preparation_failure) ... ok
+test_original_mutation_cannot_change_replay_input (__main__.DriverTest.test_original_mutation_cannot_change_replay_input) ... ok
+test_snapshot_corruption_stops_before_second_process (__main__.DriverTest.test_snapshot_corruption_stops_before_second_process) ... ok
+test_snapshot_used_for_both_processes (__main__.DriverTest.test_snapshot_used_for_both_processes) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.493s
+
+OK

@@ -3,6 +3,15 @@
 状态：**DIAGNOSTIC_CONTRACT_PASS（2026-10-19）**。主干最小固定 IDs
 诊断完成；下方实施快照与“剩余”段保留过程历史，以本节最终结果为准。
 
+## 后续驱动补强（2026-10-19）
+
+用户要求进一步完善后，复审发现驱动仍读取原夹具且准备阶段/中断状态
+不完整。现使用冻结fixture副本、逐阶段核对快照，保存准备失败与Ctrl+C
+终态。5项纯host假执行器测试通过，见[独立证据](evidence/moe-replay-driver-hardening-20261019/result.json)。
+仅run.py变化，原result.json中的驱动SHA是历史验收身份，新的驱动SHA
+见上述证据；CUDA与模型执行未改，不为此重复GPU/HTTP。真实自然文本
+层输入捕获仍未实现，不将本次可靠性修复扩展为此能力。
+
 ## 最终结果与逐项完成核对
 
 入口：[工具说明与完整复现命令](../tools/verify/moe_replay/README.md)。

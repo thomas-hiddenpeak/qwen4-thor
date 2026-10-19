@@ -35,9 +35,20 @@ python3 tools/evalscope/gpu_exclusive.py \
 ```
 
 Output directories must be new and under `build/` or `.q4t-work/`. The driver
-retains the executable, source snapshot, command/environment identity, complete
+retains the executable, fixture and source snapshots, command/environment identity, complete
 logs, raw outputs, and file hashes. Any failed contract stops the run. Check both
-`results/identity.json` and the GPU guard's `lease/exit.json`.
+`results/identity.json` and the GPU guard's `lease/exit.json`. Both processes
+read the frozen fixture copy. Snapshot corruption stops further execution;
+editing the original fixture during the run also produces a failure. Preparation
+errors are recorded as `FAIL`, and Python `KeyboardInterrupt` as `INTERRUPTED`.
+Forced termination that cannot run cleanup still requires the guard exit record;
+never accept a leftover `PREPARING` or `RUNNING` status as success.
+
+Host-only driver regression (uses a fake executable, no model or GPU):
+
+```bash
+python3 -B tools/verify/moe_replay/test_driver.py -v
+```
 
 The suite compares production normal routing, diagnostic normal routing, and
 same-shape replay for T=4 and each of four T=1 rows. IDs, logits, weights and MoE

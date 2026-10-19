@@ -1,0 +1,22 @@
+{
+  "status": "HOST_DRIVER_PASS",
+  "tests": 5,
+  "gpu_runs": 0,
+  "http_requests": 0,
+  "scope": "freeze fixture snapshot and finalize preparation/KeyboardInterrupt failures",
+  "reuse": "A1 CUDA/layer/binary contracts unchanged; this is host orchestration only",
+  "files": [
+    {
+      "path": "tools/verify/moe_replay/run.py",
+      "sha256": "db81404b9852b62a27b50ca84aa92cc6999b3cd550c79e83540a2569676eb1f4"
+    },
+    {
+      "path": "tools/verify/moe_replay/test_driver.py",
+      "sha256": "89e77715c89fbccfe5428275e1e0fe4b1a755d1936e3ee81a006dd9bfbdc2e8a"
+    },
+    {
+      "path": ".q4t-work/moe-replay-driver-hardening/test.log",
+      "sha256": "ab85a993be2e996253c39912b5ac99cc9ed2e5bb8126392b8fe975fd16391b0c"
+    }
+  ]
+}

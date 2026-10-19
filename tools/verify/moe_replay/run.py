@@ -7,7 +7,6 @@ import os
 import shutil
 from pathlib import Path
 import subprocess
-import sys
 
 
 def digest(path):
@@ -27,41 +26,57 @@ def main():
     if not any(output.is_relative_to(root / part) for part in ('build', '.q4t-work')):
         parser.error('output must be under build/ or .q4t-work/')
     output.mkdir(parents=True, exist_ok=False)
-    binary = args.binary.resolve()
-    supplied_binary = binary
-    binary = output / "executable"
-    shutil.copy2(supplied_binary, binary)
-    fixture = args.fixture.resolve()
+    identity = output / 'identity.json'
     manifest = dict(
-        source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'],
-                                               cwd=root, text=True).strip(),
-        binary=str(binary), original_binary=str(supplied_binary),
-        binary_sha256=digest(binary),
-        fixture=str(fixture), fixture_sha256=digest(fixture),
+        original_binary=str(args.binary.resolve()),
+        original_fixture=str(args.fixture.resolve()),
         model=str(args.model.resolve()),
         environment={key: value for key, value in os.environ.items()
                      if key.startswith(('Q4T_', 'CUDA_'))},
-        commands=[], status='RUNNING')
-    patch = subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root)
-    (output / 'source.patch').write_bytes(patch)
-    manifest['source_patch_sha256'] = hashlib.sha256(patch).hexdigest()
-    # Include untracked implementation sources, not just git diff.
-    sources = ['tools/verify/moe_replay/main.cpp',
-               'tools/verify/moe_replay/run.py',
-               'tools/verify/moe_replay_gpu.cu',
-               'tools/verify/moe_replay_io.cpp', 'src/model/moe.cu',
-               'include/q4t/model/moe_replay.h',
-               'include/q4t/model/moe_replay_gpu.h',
-               'include/q4t/model/moe_replay_io.h', 'CMakeLists.txt']
-    manifest['sources'] = {name: digest(root / name) for name in sources}
-    for name in sources:
-        snapshot = output / 'source' / name
-        snapshot.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(root / name, snapshot)
-    identity = output / 'identity.json'
+        commands=[], status='PREPARING')
     identity.write_text(json.dumps(manifest, indent=2) + '\n')
     try:
+        # Snapshot every input that can otherwise be overwritten by rebuilding
+        # or editing a fixture. Execute these copies, not the mutable originals.
+        binary = output / 'executable'
+        fixture = output / 'fixture.json'
+        shutil.copy2(args.binary.resolve(), binary)
+        shutil.copy2(args.fixture.resolve(), fixture)
+        manifest.update(binary=str(binary), binary_sha256=digest(binary),
+                        fixture=str(fixture), fixture_sha256=digest(fixture))
+        manifest['source_commit'] = subprocess.check_output(
+            ['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip()
+        patch = subprocess.check_output(['git', 'diff', 'HEAD'], cwd=root)
+        (output / 'source.patch').write_bytes(patch)
+        manifest['source_patch_sha256'] = hashlib.sha256(patch).hexdigest()
+        # These are observed source identities; they do not alone prove which
+        # source tree built a caller-supplied binary. Preserve its separate SHA.
+        sources = ['tools/verify/moe_replay/main.cpp',
+                   'tools/verify/moe_replay/run.py',
+                   'tools/verify/moe_replay_gpu.cu',
+                   'tools/verify/moe_replay_io.cpp', 'src/model/moe.cu',
+                   'include/q4t/model/moe_replay.h',
+                   'include/q4t/model/moe_replay_gpu.h',
+                   'include/q4t/model/moe_replay_io.h', 'CMakeLists.txt']
+        manifest['sources'] = {}
+        for name in sources:
+            snapshot = output / 'source' / name
+            snapshot.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(root / name, snapshot)
+            manifest['sources'][name] = digest(snapshot)
+
+        def verify_snapshots():
+            if digest(binary) != manifest['binary_sha256']:
+                raise RuntimeError('binary snapshot changed during run')
+            if digest(fixture) != manifest['fixture_sha256']:
+                raise RuntimeError('fixture snapshot changed during run')
+            for name, expected in manifest['sources'].items():
+                if digest(output / 'source' / name) != expected:
+                    raise RuntimeError(f'source snapshot changed: {name}')
+
+        manifest['status'] = 'RUNNING'
         for mode in ('suite', 'replay'):
+            verify_snapshots()
             command = [str(binary), mode, str(args.model.resolve()), str(fixture),
                        str(output / mode)]
             if mode == 'replay':
@@ -79,15 +94,17 @@ def main():
             replay = output / ('replay/replay.' + suffix)
             if reference.read_bytes() != replay.read_bytes():
                 raise RuntimeError(f'persisted CLI replay mismatch: {suffix}')
-        if digest(binary) != manifest['binary_sha256']:
-            raise RuntimeError('binary changed during run')
+        verify_snapshots()
+        if digest(args.fixture.resolve()) != manifest['fixture_sha256']:
+            raise RuntimeError('original fixture changed during run')
         for name, expected in manifest['sources'].items():
             if digest(root / name) != expected:
                 raise RuntimeError(f'source changed during run: {name}')
         manifest['status'] = 'PASS'
-    except Exception as error:
-        manifest['status'] = 'FAIL'
-        manifest['error'] = str(error)
+    except BaseException as error:
+        manifest['status'] = ('INTERRUPTED' if isinstance(error, KeyboardInterrupt)
+                              else 'FAIL')
+        manifest['error'] = f'{type(error).__name__}: {error}'
         raise
     finally:
         identity.write_text(json.dumps(manifest, indent=2) + '\n')
