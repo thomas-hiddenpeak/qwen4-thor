@@ -1,0 +1,21 @@
+{
+  "status": "PASS_OBJECT_ONLY",
+  "host_cases": 10,
+  "gpu_batches": 4,
+  "gpu_h2d": 8,
+  "gpu_exact_ints": 64,
+  "models": 0,
+  "http": 0,
+  "gpu_manifest_verified": 5,
+  "source_allocation_failure_injected": false,
+  "runtime_integration": false,
+  "sha256": {
+    "include/q4t/model/metadata_upload_batch.h": "32c5b20cdda7f7cccaad12467c19e30a05bbb434b268ac05e5e4c86c4d0bd83d",
+    "src/model/metadata_upload_batch.cpp": "476bfb42336468f5f644f4675495315dc4d5ae2db494bf4f0fe43d1b82395e87",
+    "tools/verify/inference_metadata/batch_host_test.cpp": "0b90e51b5fdd7a4bd3629333a869d97a47d6a6ebc252cbe8e3eb724909114d4c",
+    "tools/verify/inference_metadata/batch_gpu_test.cpp": "227e3d14ff01c6071b20e2a209a91ab328b2e752e111dc044fc7b39ff9a76e64",
+    ".q4t-work/metadata-followup-20261020/batch-host-v1/test": "f0276afb75070ceb5a95647fb925deebe823fce218935a804be8b2827ea84732",
+    ".q4t-work/metadata-followup-20261020/batch-gpu-build-v1/test": "104579d9e0f829e4299c4eb7b5465d2ecd5173ab7d08f96df4aeb3b493072230",
+    "build/q4t": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d"
+  }
+}

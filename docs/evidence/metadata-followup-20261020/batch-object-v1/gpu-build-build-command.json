@@ -1,0 +1,17 @@
+[
+  "g++-14",
+  "-std=c++23",
+  "-O2",
+  "-Wall",
+  "-Wextra",
+  "-Werror",
+  "-Iinclude",
+  "-I/usr/local/cuda/include",
+  "src/model/metadata_upload_batch.cpp",
+  "tools/verify/inference_metadata/batch_gpu_test.cpp",
+  "-L/usr/local/cuda/lib64",
+  "-Wl,-rpath,/usr/local/cuda/lib64",
+  "-lcudart",
+  "-o",
+  ".q4t-work/metadata-followup-20261020/batch-gpu-build-v1/test"
+]

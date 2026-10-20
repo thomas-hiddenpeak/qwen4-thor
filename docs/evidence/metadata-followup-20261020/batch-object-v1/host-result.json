@@ -1,0 +1,8 @@
+{
+  "build_exit": 0,
+  "run_exit": 0,
+  "cases": 10,
+  "cuda_runtime_linked": false,
+  "gpu_work": 0,
+  "model_loads": 0
+}

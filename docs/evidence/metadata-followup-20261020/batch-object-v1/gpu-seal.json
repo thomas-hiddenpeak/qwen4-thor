@@ -1,0 +1,12 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792455382.40032,
+  "finished": 1792455383.7633867,
+  "command": [
+    "timeout",
+    "60",
+    ".q4t-work/metadata-followup-20261020/batch-gpu-build-v1/test"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}
