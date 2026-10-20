@@ -1,0 +1,68 @@
+{
+  "status": "PASS_BOUNDED_DIAGNOSIS",
+  "stages": {
+    "1": {
+      "guard": "ENV_ABORT",
+      "sealed_files": 126,
+      "cache_after_prewarm_bytes": 68717608960,
+      "prewarm_bytes": 67987279488,
+      "query_count": 39,
+      "query_max_seconds": 6.00707599404268,
+      "failed_queries": [
+        {
+          "status": "CLEANUP_FAILED",
+          "worker_pid": 2230203,
+          "seconds": 6.00707599404268
+        }
+      ],
+      "nvml_lock_samples": 62,
+      "simultaneous_compaction_and_lock": [
+        {
+          "index": 216,
+          "monotonic": 682551.93035595
+        },
+        {
+          "index": 242,
+          "monotonic": 682557.813679658
+        },
+        {
+          "index": 247,
+          "monotonic": 682558.940929194
+        }
+      ],
+      "kernel_allocation_errors": []
+    },
+    "2": {
+      "guard": "COMMAND_FAILED",
+      "sealed_files": 98,
+      "cache_after_prewarm_bytes": 68025380864,
+      "prewarm_bytes": 67987279488,
+      "query_count": 26,
+      "query_max_seconds": 0.07824170507956296,
+      "failed_queries": [],
+      "nvml_lock_samples": 0,
+      "simultaneous_compaction_and_lock": [],
+      "kernel_allocation_errors": []
+    },
+    "3": {
+      "guard": "COMPLETED",
+      "sealed_files": 152,
+      "cache_after_prewarm_bytes": 67987791872,
+      "prewarm_bytes": 67987279488,
+      "query_count": 69,
+      "query_max_seconds": 0.08017014199867845,
+      "failed_queries": [],
+      "nvml_lock_samples": 0,
+      "simultaneous_compaction_and_lock": [],
+      "kernel_allocation_errors": [],
+      "cache_preparation_passes": 1,
+      "http_quality_requests": 1
+    }
+  },
+  "relationship": "NVML driver-lock wait overlaps model allocation/direct compaction; allocation error is not required",
+  "operating_contract": "64GiB memcg; explicit prelaunch targeted model-cache preparation; unchanged NVML deadlines",
+  "warm_start_fixed": false,
+  "driver_internal_root_cause_proven": false,
+  "performance_acceptance": false,
+  "physical_ram_acceptance": false
+}

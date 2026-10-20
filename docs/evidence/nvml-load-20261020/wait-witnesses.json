@@ -1,0 +1,401 @@
+{
+  "source_sha256": "22dc2ee0555711e8d56b317aac8f97ae75df251f4f6857ef75113240817f8bf3",
+  "rows": [
+    {
+      "source_row": 216,
+      "sample": {
+        "wall": 1792492469.4134803,
+        "monotonic": 682551.93035595,
+        "targets": [
+          {
+            "pid": 2229382,
+            "kind": "model",
+            "command": [
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/offload-foundation-20261020/q4t",
+              "serve",
+              "--model-dir",
+              "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+              "--port",
+              "8740",
+              "--max-seq",
+              "1",
+              "--max-prefill",
+              "8192",
+              "--max-len",
+              "262144",
+              "--max-tokens",
+              "256",
+              "--no-mtp",
+              "--moe-resident-slots",
+              "256",
+              "--moe-hot-list",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/nvml-load-20261020/diagnostic-v1/run/hot.json",
+              "--request-deadline-ms",
+              "1800000",
+              ""
+            ],
+            "tasks": [
+              {
+                "tid": 2229382,
+                "stat": {
+                  "value": "2229382 (q4t) R 2229381 2229362 2229362 0 -1 4196352 1873537 0 11 0 198 1231 0 0 20 0 772 0 68253568 169044873216 1086427 18446744073709551615 187650514747392 187650518799032 281474649904128 0 0 0 0 0 0 0 0 0 17 4 0 0 0 0 0 187650518871984 187650518877216 187650759954432 281474649905791 281474649906214 281474649906214 281474649907108 0\n",
+                  "error": null
+                },
+                "wchan": {
+                  "value": "0",
+                  "error": null
+                },
+                "stack": {
+                  "value": "[<0>] el1h_64_irq_handler+0x18/0x2c\n[<0>] compact_zone_order+0xb4/0x110\n[<0>] try_to_compact_pages+0xe8/0x3ec\n[<0>] __alloc_pages_direct_compact+0x68/0x320\n[<0>] __alloc_pages+0xc30/0xf40\n[<0>] alloc_pages_mpol+0x88/0x230\n[<0>] alloc_pages+0x48/0xbc\n[<0>] __get_free_pages+0x14/0x44\n[<0>] nv_alloc_system_pages+0x238/0x2dc [nvidia]\n[<0>] nv_alloc_pages+0x144/0x254 [nvidia]\n[<0>] osAllocPagesInternal+0x31c/0x5f0 [nvidia]\n[<0>] memdescAlloc+0x26c/0xa60 [nvidia]\n[<0>] sysmemConstruct_IMPL+0x2fc/0xa10 [nvidia]\n[<0>] __nvoc_objCreate_SystemMemory+0xb4/0x280 [nvidia]\n[<0>] __nvoc_objCreateDynamic+0x50/0x70 [nvidia]\n[<0>] resservResourceFactory+0x190/0x290 [nvidia]\n[<0>] indexRemove+0x29c/0x5c0 [nvidia]\n[<0>] serverAllocResourceUnderLock+0x294/0x820 [nvidia]\n[<0>] serverAllocResource+0x2a8/0x530 [nvidia]\n[<0>] rmapiAllocWithSecInfo+0x184/0x340 [nvidia]\n[<0>] rmapiAllocWithSecInfoTls+0x7c/0xb0 [nvidia]\n[<0>] Nv04AllocWithAccessSecInfo+0x60/0x80 [nvidia]\n[<0>] RmIoctl+0x940/0xbd0 [nvidia]\n[<0>] rm_ioctl+0x64/0x430 [nvidia]\n[<0>] nvidia_dev_put+0xb9c/0xcb4 [nvidia]\n[<0>] __arm64_sys_ioctl+0xb4/0xf4\n[<0>] invoke_syscall+0x48/0x134\n[<0>] el0_svc_common.constprop.0+0xd0/0xf0\n[<0>] do_el0_svc+0x1c/0x30\n[<0>] el0_svc+0x30/0xe8\n[<0>] el0t_64_sync_handler+0x130/0x13c\n[<0>] el0t_64_sync+0x194/0x198\n",
+                  "error": null
+                }
+              }
+            ],
+            "cgroup": {
+              "value": "0::/system.slice/q4t-ram-1792492452028181152-2229354.scope\n",
+              "error": null
+            }
+          },
+          {
+            "pid": 2230203,
+            "kind": "nvml",
+            "command": [
+              "/usr/bin/python3",
+              "-B",
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/nvml_process_query.py",
+              "--worker",
+              "45ebf78831bbb548d1cc14e559325f5e",
+              ""
+            ],
+            "tasks": [
+              {
+                "tid": 2230203,
+                "stat": {
+                  "value": "2230203 (python3) D 2229269 2229245 2229245 0 -1 4194304 6902 0 0 0 3 1 0 0 20 0 1 0 68254613 225431552 9673 18446744073709551615 4194304 10541512 281474247242688 0 0 256 0 16781312 2 1 0 0 17 13 0 0 0 0 0 10616216 12102016 961863680 281474247246470 281474247246603 281474247246603 281474247249895 0\n",
+                  "error": null
+                },
+                "wchan": {
+                  "value": "os_acquire_rwlock_read",
+                  "error": null
+                },
+                "stack": {
+                  "value": "[<0>] os_acquire_rwlock_read+0x38/0x64 [nvidia]\n[<0>] portSyncRwLockAcquireRead+0x10/0x30 [nvidia]\n[<0>] rmapiLockAcquire+0x2bc/0x340 [nvidia]\n[<0>] rmapiPrologue+0x124/0x180 [nvidia]\n[<0>] serverControlApiCopyOut+0x5c0/0x830 [nvidia]\n[<0>] rmapiControlWithSecInfo+0xa8/0x220 [nvidia]\n[<0>] rmapiControlWithSecInfoTls+0x74/0x1a0 [nvidia]\n[<0>] embeddedParamCopyOut+0xbc0/0xfa0 [nvidia]\n[<0>] Nv04ControlWithSecInfo+0x34/0x40 [nvidia]\n[<0>] RmIoctl+0x87c/0xbd0 [nvidia]\n[<0>] rm_ioctl+0x64/0x430 [nvidia]\n[<0>] nvidia_dev_put+0xb9c/0xcb4 [nvidia]\n[<0>] __arm64_sys_ioctl+0xb4/0xf4\n[<0>] invoke_syscall+0x48/0x134\n[<0>] el0_svc_common.constprop.0+0xd0/0xf0\n[<0>] do_el0_svc+0x1c/0x30\n[<0>] el0_svc+0x30/0xe8\n[<0>] el0t_64_sync_handler+0x130/0x13c\n[<0>] el0t_64_sync+0x194/0x198\n",
+                  "error": null
+                }
+              }
+            ],
+            "cgroup": {
+              "value": "0::/user.slice/user-2002.slice/session-5.scope\n",
+              "error": null
+            }
+          },
+          {
+            "pid": 2230205,
+            "kind": "nvml",
+            "command": [
+              "/usr/bin/python3",
+              "-B",
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/nvml_process_query.py",
+              "--worker",
+              "6114b1e53f8dbea444280651f9e67014",
+              ""
+            ],
+            "tasks": [
+              {
+                "tid": 2230205,
+                "stat": {
+                  "value": "2230205 (python3) D 2229357 2229354 2229354 0 -1 4194304 3303 0 0 0 2 1 0 0 20 0 1 0 68254705 225431552 9623 18446744073709551615 4194304 10541512 281473982685888 0 0 256 0 16781312 2 1 0 0 17 7 0 0 0 0 0 10616216 12102016 1039323136 281473982689926 281473982690059 281473982690059 281473982693351 0\n",
+                  "error": null
+                },
+                "wchan": {
+                  "value": "os_acquire_rwlock_read",
+                  "error": null
+                },
+                "stack": {
+                  "value": "[<0>] os_acquire_rwlock_read+0x38/0x64 [nvidia]\n[<0>] portSyncRwLockAcquireRead+0x10/0x30 [nvidia]\n[<0>] rmapiLockAcquire+0x2bc/0x340 [nvidia]\n[<0>] rmapiPrologue+0x124/0x180 [nvidia]\n[<0>] rmapiAllocWithSecInfo+0x50/0x340 [nvidia]\n[<0>] rmapiAllocWithSecInfoTls+0x7c/0xb0 [nvidia]\n[<0>] Nv04AllocWithAccessSecInfo+0x60/0x80 [nvidia]\n[<0>] RmIoctl+0x940/0xbd0 [nvidia]\n[<0>] rm_ioctl+0x64/0x430 [nvidia]\n[<0>] nvidia_dev_put+0xb9c/0xcb4 [nvidia]\n[<0>] __arm64_sys_ioctl+0xb4/0xf4\n[<0>] invoke_syscall+0x48/0x134\n[<0>] el0_svc_common.constprop.0+0xd0/0xf0\n[<0>] do_el0_svc+0x1c/0x30\n[<0>] el0_svc+0x30/0xe8\n[<0>] el0t_64_sync_handler+0x130/0x13c\n[<0>] el0t_64_sync+0x194/0x198\n",
+                  "error": null
+                }
+              }
+            ],
+            "cgroup": {
+              "value": "0::/user.slice/user-2002.slice/session-5.scope\n",
+              "error": null
+            }
+          }
+        ],
+        "meminfo": {
+          "value": "MemTotal:       128828748 kB\nMemFree:        10851404 kB\nMemAvailable:   65825764 kB\nBuffers:          320988 kB\nCached:         58710272 kB\nSwapCached:        34200 kB\nActive:          2675824 kB\nInactive:       58722792 kB\nActive(anon):     803256 kB\nInactive(anon):  5355196 kB\nActive(file):    1872568 kB\nInactive(file): 53367596 kB\nUnevictable:       28948 kB\nMlocked:             928 kB\nSwapTotal:       2097148 kB\nSwapFree:         749008 kB\nDirty:               824 kB\nWriteback:             0 kB\nAnonPages:       2265016 kB\nMapped:          3944568 kB\nShmem:           3763332 kB\nKReclaimable:     880816 kB\nSlab:            1174888 kB\nSReclaimable:     552496 kB\nSUnreclaim:       622392 kB\nKernelStack:       22640 kB\nPageTables:        35500 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    66511520 kB\nCommitted_AS:   14834092 kB\nVmallocTotal:   133141626880 kB\nVmallocUsed:      385016 kB\nVmallocChunk:          0 kB\nPercpu:             6832 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:    786432 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:         524288 kB\nCmaFree:              16 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\n",
+          "error": null
+        },
+        "vmstat": {
+          "value": "nr_free_pages 2712851\nnr_zone_inactive_anon 1338777\nnr_zone_active_anon 200814\nnr_zone_inactive_file 13341810\nnr_zone_active_file 468142\nnr_zone_unevictable 7237\nnr_zone_write_pending 206\nnr_mlock 232\nnr_bounce 0\nnr_zspages 0\nnr_free_cma 4\nnuma_hit 12162093516\nnuma_miss 0\nnuma_foreign 0\nnuma_interleave 95\nnuma_local 12161951271\nnuma_other 0\nnr_inactive_anon 1338799\nnr_active_anon 200814\nnr_inactive_file 13341899\nnr_active_file 468142\nnr_unevictable 7237\nnr_slab_reclaimable 138124\nnr_slab_unreclaimable 155598\nnr_isolated_anon 331\nnr_isolated_file 0\nworkingset_nodes 160647\nworkingset_refault_anon 397682\nworkingset_refault_file 568379000\nworkingset_activate_anon 160212\nworkingset_activate_file 60234365\nworkingset_restore_anon 73267\nworkingset_restore_file 9397474\nworkingset_nodereclaim 2779007\nnr_anon_pages 566254\nnr_mapped 986142\nnr_file_pages 14766365\nnr_dirty 206\nnr_writeback 0\nnr_writeback_temp 0\nnr_shmem 940833\nnr_shmem_hugepages 0\nnr_shmem_pmdmapped 0\nnr_file_hugepages 0\nnr_file_pmdmapped 0\nnr_anon_transparent_hugepages 384\nnr_vmscan_write 3717607\nnr_vmscan_immediate_reclaim 21493\nnr_dirtied 25315873\nnr_written 25411687\nnr_throttled_written 0\nnr_kernel_misc_reclaimable 82080\nnr_foll_pin_acquired 44807575\nnr_foll_pin_released 43913863\nnr_kernel_stack 22640\nnr_page_table_pages 8875\nnr_sec_page_table_pages 0\nnr_swapcached 8550\npgpromote_success 0\npgpromote_candidate 0\npgdemote_kswapd 0\npgdemote_direct 0\npgdemote_khugepaged 0\nnr_dirty_threshold 3263882\nnr_dirty_background_threshold 1629948\npgpgin 44571349020\npgpgout 140381304\npswpin 1295738\npswpout 3677192\npgalloc_dma 82637536\npgalloc_dma32 0\npgalloc_normal 14967573413\npgalloc_movable 0\npgalloc_device 0\nallocstall_dma 0\nallocstall_dma32 0\nallocstall_normal 5173035\nallocstall_movable 47606\nallocstall_device 0\npgskip_dma 0\npgskip_dma32 0\npgskip_normal 0\npgskip_movable 0\npgskip_device 0\npgfree 15350771750\npgactivate 318515490\npgdeactivate 171045415\npglazyfree 0\npgfault 1132910754\npgmajfault 2558019\npglazyfreed 0\npgrefill 178250217\npgreuse 28400846\npgsteal_kswapd 487700415\npgsteal_direct 306901746\npgsteal_khugepaged 9865\npgscan_kswapd 596122071\npgscan_direct 661697465\npgscan_khugepaged 10510\npgscan_direct_throttle 0\npgscan_anon 26648405\npgscan_file 1231619462\npgsteal_anon 3475038\npgsteal_file 791572359\nzone_reclaim_failed 0\npginodesteal 45\nslabs_scanned 94807001\nkswapd_inodesteal 1642325\nkswapd_low_wmark_hit_quickly 95243\nkswapd_high_wmark_hit_quickly 353431\npageoutrun 458275\npgrotated 2615609\ndrop_pagecache 0\ndrop_slab 0\noom_kill 51\nnuma_pte_updates 0\nnuma_huge_pte_updates 0\nnuma_hint_faults 0\nnuma_hint_faults_local 0\nnuma_pages_migrated 0\npgmigrate_success 273002566\npgmigrate_fail 76851230\nthp_migration_success 0\nthp_migration_fail 0\nthp_migration_split 0\ncompact_migrate_scanned 13334609778\ncompact_free_scanned 3628437251\ncompact_isolated 635965452\ncompact_stall 230842\ncompact_fail 108182\ncompact_success 122660\ncompact_daemon_wake 46120\ncompact_daemon_migrate_scanned 6722706276\ncompact_daemon_free_scanned 3189002038\nhtlb_buddy_alloc_success 0\nhtlb_buddy_alloc_fail 0\ncma_alloc_success 62\ncma_alloc_fail 0\nunevictable_pgs_culled 35246104\nunevictable_pgs_scanned 0\nunevictable_pgs_rescued 35238335\nunevictable_pgs_mlocked 35238695\nunevictable_pgs_munlocked 35238019\nunevictable_pgs_cleared 0\nunevictable_pgs_stranded 444\nthp_fault_alloc 3460852\nthp_fault_fallback 37815\nthp_fault_fallback_charge 2\nthp_collapse_alloc 36057\nthp_collapse_alloc_failed 4\nthp_file_alloc 0\nthp_file_fallback 0\nthp_file_fallback_charge 0\nthp_file_mapped 0\nthp_split_page 3467\nthp_split_page_failed 0\nthp_deferred_split_page 45322\nthp_split_pmd 77920\nthp_scan_exceed_none_pte 37365\nthp_scan_exceed_swap_pte 98721\nthp_scan_exceed_share_pte 525\nthp_zero_page_alloc 1\nthp_zero_page_alloc_failed 0\nthp_swpout 0\nthp_swpout_fallback 2670\nballoon_inflate 0\nballoon_deflate 0\nballoon_migrate 0\nswap_ra 819673\nswap_ra_hit 758968\nksm_swpin_copy 7\ncow_ksm 0\nnr_unstable 0\n",
+          "error": null
+        }
+      }
+    },
+    {
+      "source_row": 242,
+      "sample": {
+        "wall": 1792492475.2968047,
+        "monotonic": 682557.813679658,
+        "targets": [
+          {
+            "pid": 2229382,
+            "kind": "model",
+            "command": [
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/offload-foundation-20261020/q4t",
+              "serve",
+              "--model-dir",
+              "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+              "--port",
+              "8740",
+              "--max-seq",
+              "1",
+              "--max-prefill",
+              "8192",
+              "--max-len",
+              "262144",
+              "--max-tokens",
+              "256",
+              "--no-mtp",
+              "--moe-resident-slots",
+              "256",
+              "--moe-hot-list",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/nvml-load-20261020/diagnostic-v1/run/hot.json",
+              "--request-deadline-ms",
+              "1800000",
+              ""
+            ],
+            "tasks": [
+              {
+                "tid": 2229382,
+                "stat": {
+                  "value": "2229382 (q4t) R 2229381 2229362 2229362 0 -1 4196352 1873537 0 11 0 198 1819 0 0 20 0 772 0 68253568 169044873216 1086267 18446744073709551615 187650514747392 187650518799032 281474649904128 0 0 0 0 0 0 0 0 0 17 4 0 0 0 0 0 187650518871984 187650518877216 187650759954432 281474649905791 281474649906214 281474649906214 281474649907108 0\n",
+                  "error": null
+                },
+                "wchan": {
+                  "value": "0",
+                  "error": null
+                },
+                "stack": {
+                  "value": "[<0>] arm_smmu_tlb_inv_range_asid+0xd8/0xe0\n[<0>] arm_smmu_mm_arch_invalidate_secondary_tlbs+0x118/0x138\n[<0>] __mmu_notifier_arch_invalidate_secondary_tlbs+0x64/0xb8\n[<0>] ptep_clear_flush+0xcc/0xd4\n[<0>] try_to_migrate_one+0x3d0/0x9f4\n[<0>] rmap_walk_file+0x110/0x25c\n[<0>] try_to_migrate+0xb0/0x134\n[<0>] migrate_pages_batch+0x580/0xdf0\n[<0>] migrate_pages+0xbb4/0xcfc\n[<0>] compact_zone+0x4e0/0xfec\n[<0>] compact_zone_order+0xb4/0x110\n[<0>] try_to_compact_pages+0xe8/0x3ec\n[<0>] __alloc_pages_direct_compact+0x68/0x320\n[<0>] __alloc_pages+0x68c/0xf40\n[<0>] alloc_pages_mpol+0x88/0x230\n[<0>] alloc_pages+0x48/0xbc\n[<0>] __get_free_pages+0x14/0x44\n[<0>] nv_alloc_system_pages+0x238/0x2dc [nvidia]\n[<0>] nv_alloc_pages+0x144/0x254 [nvidia]\n[<0>] osAllocPagesInternal+0x31c/0x5f0 [nvidia]\n[<0>] memdescAlloc+0x26c/0xa60 [nvidia]\n[<0>] sysmemConstruct_IMPL+0x2fc/0xa10 [nvidia]\n[<0>] __nvoc_objCreate_SystemMemory+0xb4/0x280 [nvidia]\n[<0>] __nvoc_objCreateDynamic+0x50/0x70 [nvidia]\n[<0>] resservResourceFactory+0x190/0x290 [nvidia]\n[<0>] indexRemove+0x29c/0x5c0 [nvidia]\n[<0>] serverAllocResourceUnderLock+0x294/0x820 [nvidia]\n[<0>] serverAllocResource+0x2a8/0x530 [nvidia]\n[<0>] rmapiAllocWithSecInfo+0x184/0x340 [nvidia]\n[<0>] rmapiAllocWithSecInfoTls+0x7c/0xb0 [nvidia]\n[<0>] Nv04AllocWithAccessSecInfo+0x60/0x80 [nvidia]\n[<0>] RmIoctl+0x940/0xbd0 [nvidia]\n[<0>] rm_ioctl+0x64/0x430 [nvidia]\n[<0>] nvidia_dev_put+0xb9c/0xcb4 [nvidia]\n[<0>] __arm64_sys_ioctl+0xb4/0xf4\n[<0>] invoke_syscall+0x48/0x134\n[<0>] el0_svc_common.constprop.0+0xd0/0xf0\n[<0>] do_el0_svc+0x1c/0x30\n[<0>] el0_svc+0x30/0xe8\n[<0>] el0t_64_sync_handler+0x130/0x13c\n[<0>] el0t_64_sync+0x194/0x198\n",
+                  "error": null
+                }
+              }
+            ],
+            "cgroup": {
+              "value": "0::/system.slice/q4t-ram-1792492452028181152-2229354.scope\n",
+              "error": null
+            }
+          },
+          {
+            "pid": 2230203,
+            "kind": "nvml",
+            "command": [
+              "/usr/bin/python3",
+              "-B",
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/nvml_process_query.py",
+              "--worker",
+              "45ebf78831bbb548d1cc14e559325f5e",
+              ""
+            ],
+            "tasks": [
+              {
+                "tid": 2230203,
+                "stat": {
+                  "value": "2230203 (python3) D 2229269 2229245 2229245 0 -1 4194304 6902 0 0 0 3 1 0 0 20 0 1 0 68254613 225431552 9673 18446744073709551615 4194304 10541512 281474247242688 0 0 256 0 16781312 2 1 0 0 17 13 0 0 0 0 0 10616216 12102016 961863680 281474247246470 281474247246603 281474247246603 281474247249895 0\n",
+                  "error": null
+                },
+                "wchan": {
+                  "value": "os_acquire_rwlock_read",
+                  "error": null
+                },
+                "stack": {
+                  "value": "[<0>] os_acquire_rwlock_read+0x38/0x64 [nvidia]\n[<0>] portSyncRwLockAcquireRead+0x10/0x30 [nvidia]\n[<0>] rmapiLockAcquire+0x2bc/0x340 [nvidia]\n[<0>] rmapiPrologue+0x124/0x180 [nvidia]\n[<0>] serverControlApiCopyOut+0x5c0/0x830 [nvidia]\n[<0>] rmapiControlWithSecInfo+0xa8/0x220 [nvidia]\n[<0>] rmapiControlWithSecInfoTls+0x74/0x1a0 [nvidia]\n[<0>] embeddedParamCopyOut+0xbc0/0xfa0 [nvidia]\n[<0>] Nv04ControlWithSecInfo+0x34/0x40 [nvidia]\n[<0>] RmIoctl+0x87c/0xbd0 [nvidia]\n[<0>] rm_ioctl+0x64/0x430 [nvidia]\n[<0>] nvidia_dev_put+0xb9c/0xcb4 [nvidia]\n[<0>] __arm64_sys_ioctl+0xb4/0xf4\n[<0>] invoke_syscall+0x48/0x134\n[<0>] el0_svc_common.constprop.0+0xd0/0xf0\n[<0>] do_el0_svc+0x1c/0x30\n[<0>] el0_svc+0x30/0xe8\n[<0>] el0t_64_sync_handler+0x130/0x13c\n[<0>] el0t_64_sync+0x194/0x198\n",
+                  "error": null
+                }
+              }
+            ],
+            "cgroup": {
+              "value": "0::/user.slice/user-2002.slice/session-5.scope\n",
+              "error": null
+            }
+          },
+          {
+            "pid": 2230205,
+            "kind": "nvml",
+            "command": [
+              "/usr/bin/python3",
+              "-B",
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/nvml_process_query.py",
+              "--worker",
+              "6114b1e53f8dbea444280651f9e67014",
+              ""
+            ],
+            "tasks": [
+              {
+                "tid": 2230205,
+                "stat": {
+                  "value": "2230205 (python3) D 1 2229354 2229354 0 -1 4194304 3303 0 0 0 2 1 0 0 20 0 1 0 68254705 225431552 9623 18446744073709551615 4194304 10541512 281473982685888 0 0 256 0 16781312 2 1 0 0 17 7 0 0 0 0 0 10616216 12102016 1039323136 281473982689926 281473982690059 281473982690059 281473982693351 0\n",
+                  "error": null
+                },
+                "wchan": {
+                  "value": "os_acquire_rwlock_read",
+                  "error": null
+                },
+                "stack": {
+                  "value": "[<0>] os_acquire_rwlock_read+0x38/0x64 [nvidia]\n[<0>] portSyncRwLockAcquireRead+0x10/0x30 [nvidia]\n[<0>] rmapiLockAcquire+0x2bc/0x340 [nvidia]\n[<0>] rmapiPrologue+0x124/0x180 [nvidia]\n[<0>] rmapiAllocWithSecInfo+0x50/0x340 [nvidia]\n[<0>] rmapiAllocWithSecInfoTls+0x7c/0xb0 [nvidia]\n[<0>] Nv04AllocWithAccessSecInfo+0x60/0x80 [nvidia]\n[<0>] RmIoctl+0x940/0xbd0 [nvidia]\n[<0>] rm_ioctl+0x64/0x430 [nvidia]\n[<0>] nvidia_dev_put+0xb9c/0xcb4 [nvidia]\n[<0>] __arm64_sys_ioctl+0xb4/0xf4\n[<0>] invoke_syscall+0x48/0x134\n[<0>] el0_svc_common.constprop.0+0xd0/0xf0\n[<0>] do_el0_svc+0x1c/0x30\n[<0>] el0_svc+0x30/0xe8\n[<0>] el0t_64_sync_handler+0x130/0x13c\n[<0>] el0t_64_sync+0x194/0x198\n",
+                  "error": null
+                }
+              }
+            ],
+            "cgroup": {
+              "value": "0::/user.slice/user-2002.slice/session-5.scope\n",
+              "error": null
+            }
+          }
+        ],
+        "meminfo": {
+          "value": "MemTotal:       128828748 kB\nMemFree:        14867144 kB\nMemAvailable:   65087468 kB\nBuffers:          321044 kB\nCached:         53956436 kB\nSwapCached:        34200 kB\nActive:          2678636 kB\nInactive:       53941972 kB\nActive(anon):     803240 kB\nInactive(anon):  5331248 kB\nActive(file):    1875396 kB\nInactive(file): 48610724 kB\nUnevictable:       28948 kB\nMlocked:             928 kB\nSwapTotal:       2097148 kB\nSwapFree:         749008 kB\nDirty:               516 kB\nWriteback:             0 kB\nAnonPages:       2240720 kB\nMapped:          3944188 kB\nShmem:           3763332 kB\nKReclaimable:     880824 kB\nSlab:            1174900 kB\nSReclaimable:     552504 kB\nSUnreclaim:       622396 kB\nKernelStack:       22576 kB\nPageTables:        35188 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    66511520 kB\nCommitted_AS:   14804824 kB\nVmallocTotal:   133141626880 kB\nVmallocUsed:      384992 kB\nVmallocChunk:          0 kB\nPercpu:             6832 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:    786432 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:         524288 kB\nCmaFree:              16 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\n",
+          "error": null
+        },
+        "vmstat": {
+          "value": "nr_free_pages 3716786\nnr_zone_inactive_anon 1332864\nnr_zone_active_anon 200810\nnr_zone_inactive_file 12152681\nnr_zone_active_file 468849\nnr_zone_unevictable 7237\nnr_zone_write_pending 129\nnr_mlock 232\nnr_bounce 0\nnr_zspages 0\nnr_free_cma 4\nnuma_hit 12162100817\nnuma_miss 0\nnuma_foreign 0\nnuma_interleave 95\nnuma_local 12161958572\nnuma_other 0\nnr_inactive_anon 1332812\nnr_active_anon 200810\nnr_inactive_file 12152681\nnr_active_file 468849\nnr_unevictable 7237\nnr_slab_reclaimable 138126\nnr_slab_unreclaimable 155599\nnr_isolated_anon 258\nnr_isolated_file 0\nworkingset_nodes 178924\nworkingset_refault_anon 397682\nworkingset_refault_file 568379018\nworkingset_activate_anon 160212\nworkingset_activate_file 60234365\nworkingset_restore_anon 73267\nworkingset_restore_file 9397474\nworkingset_nodereclaim 2779007\nnr_anon_pages 560180\nnr_mapped 986047\nnr_file_pages 13577920\nnr_dirty 129\nnr_writeback 0\nnr_writeback_temp 0\nnr_shmem 940833\nnr_shmem_hugepages 0\nnr_shmem_pmdmapped 0\nnr_file_hugepages 0\nnr_file_pmdmapped 0\nnr_anon_transparent_hugepages 384\nnr_vmscan_write 3717607\nnr_vmscan_immediate_reclaim 21493\nnr_dirtied 25316263\nnr_written 25412128\nnr_throttled_written 0\nnr_kernel_misc_reclaimable 82080\nnr_foll_pin_acquired 44807575\nnr_foll_pin_released 43913863\nnr_kernel_stack 22576\nnr_page_table_pages 8797\nnr_sec_page_table_pages 0\nnr_swapcached 8550\npgpromote_success 0\npgpromote_candidate 0\npgdemote_kswapd 0\npgdemote_direct 0\npgdemote_khugepaged 0\nnr_dirty_threshold 3226976\nnr_dirty_background_threshold 1611518\npgpgin 44571349108\npgpgout 140383720\npswpin 1295738\npswpout 3677192\npgalloc_dma 82641632\npgalloc_dma32 0\npgalloc_normal 14967744417\npgalloc_movable 0\npgalloc_device 0\nallocstall_dma 0\nallocstall_dma32 0\nallocstall_normal 5173191\nallocstall_movable 47606\nallocstall_device 0\npgskip_dma 0\npgskip_dma32 0\npgskip_normal 0\npgskip_movable 0\npgskip_device 0\npgfree 15352181611\npgactivate 318516211\npgdeactivate 171045419\npglazyfree 0\npgfault 1132914545\npgmajfault 2558020\npglazyfreed 0\npgrefill 178250221\npgreuse 28401096\npgsteal_kswapd 488404370\npgsteal_direct 307386497\npgsteal_khugepaged 9865\npgscan_kswapd 596826397\npgscan_direct 662182525\npgscan_khugepaged 10510\npgscan_direct_throttle 0\npgscan_anon 26648405\npgscan_file 1232808848\npgsteal_anon 3475038\npgsteal_file 792761065\nzone_reclaim_failed 0\npginodesteal 45\nslabs_scanned 94807001\nkswapd_inodesteal 1642325\nkswapd_low_wmark_hit_quickly 95446\nkswapd_high_wmark_hit_quickly 353431\npageoutrun 458503\npgrotated 2615609\ndrop_pagecache 0\ndrop_slab 0\noom_kill 51\nnuma_pte_updates 0\nnuma_huge_pte_updates 0\nnuma_hint_faults 0\nnuma_hint_faults_local 0\nnuma_pages_migrated 0\npgmigrate_success 273174051\npgmigrate_fail 77297737\nthp_migration_success 0\nthp_migration_fail 0\nthp_migration_split 0\ncompact_migrate_scanned 13338491212\ncompact_free_scanned 3628581984\ncompact_isolated 636791787\ncompact_stall 231130\ncompact_fail 108338\ncompact_success 122792\ncompact_daemon_wake 46120\ncompact_daemon_migrate_scanned 6722706276\ncompact_daemon_free_scanned 3189002038\nhtlb_buddy_alloc_success 0\nhtlb_buddy_alloc_fail 0\ncma_alloc_success 62\ncma_alloc_fail 0\nunevictable_pgs_culled 35246104\nunevictable_pgs_scanned 0\nunevictable_pgs_rescued 35238335\nunevictable_pgs_mlocked 35238695\nunevictable_pgs_munlocked 35238019\nunevictable_pgs_cleared 0\nunevictable_pgs_stranded 444\nthp_fault_alloc 3460852\nthp_fault_fallback 37816\nthp_fault_fallback_charge 2\nthp_collapse_alloc 36057\nthp_collapse_alloc_failed 4\nthp_file_alloc 0\nthp_file_fallback 0\nthp_file_fallback_charge 0\nthp_file_mapped 0\nthp_split_page 3467\nthp_split_page_failed 0\nthp_deferred_split_page 45322\nthp_split_pmd 77920\nthp_scan_exceed_none_pte 37365\nthp_scan_exceed_swap_pte 98721\nthp_scan_exceed_share_pte 525\nthp_zero_page_alloc 1\nthp_zero_page_alloc_failed 0\nthp_swpout 0\nthp_swpout_fallback 2670\nballoon_inflate 0\nballoon_deflate 0\nballoon_migrate 0\nswap_ra 819673\nswap_ra_hit 758968\nksm_swpin_copy 7\ncow_ksm 0\nnr_unstable 0\n",
+          "error": null
+        }
+      }
+    },
+    {
+      "source_row": 247,
+      "sample": {
+        "wall": 1792492476.424054,
+        "monotonic": 682558.940929194,
+        "targets": [
+          {
+            "pid": 2229382,
+            "kind": "model",
+            "command": [
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/offload-foundation-20261020/q4t",
+              "serve",
+              "--model-dir",
+              "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+              "--port",
+              "8740",
+              "--max-seq",
+              "1",
+              "--max-prefill",
+              "8192",
+              "--max-len",
+              "262144",
+              "--max-tokens",
+              "256",
+              "--no-mtp",
+              "--moe-resident-slots",
+              "256",
+              "--moe-hot-list",
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/nvml-load-20261020/diagnostic-v1/run/hot.json",
+              "--request-deadline-ms",
+              "1800000",
+              ""
+            ],
+            "tasks": [
+              {
+                "tid": 2229382,
+                "stat": {
+                  "value": "2229382 (q4t) R 2229381 2229362 2229362 0 -1 4196352 1873537 0 11 0 198 1932 0 0 20 0 772 0 68253568 169044873216 1086267 18446744073709551615 187650514747392 187650518799032 281474649904128 0 0 0 0 0 0 0 0 0 17 4 0 0 0 0 0 187650518871984 187650518877216 187650759954432 281474649905791 281474649906214 281474649906214 281474649907108 0\n",
+                  "error": null
+                },
+                "wchan": {
+                  "value": "0",
+                  "error": null
+                },
+                "stack": {
+                  "value": "[<0>] arm_smmu_tlb_inv_range_asid+0x7c/0xe0\n[<0>] arm_smmu_mm_arch_invalidate_secondary_tlbs+0x118/0x138\n[<0>] __mmu_notifier_arch_invalidate_secondary_tlbs+0x64/0xb8\n[<0>] ptep_clear_flush+0xcc/0xd4\n[<0>] try_to_migrate_one+0x3d0/0x9f4\n[<0>] rmap_walk_file+0x110/0x25c\n[<0>] try_to_migrate+0xb0/0x134\n[<0>] migrate_pages_batch+0x580/0xdf0\n[<0>] migrate_pages+0xbb4/0xcfc\n[<0>] compact_zone+0x4e0/0xfec\n[<0>] compact_zone_order+0xb4/0x110\n[<0>] try_to_compact_pages+0xe8/0x3ec\n[<0>] __alloc_pages_direct_compact+0x68/0x320\n[<0>] __alloc_pages+0x68c/0xf40\n[<0>] alloc_pages_mpol+0x88/0x230\n[<0>] alloc_pages+0x48/0xbc\n[<0>] __get_free_pages+0x14/0x44\n[<0>] nv_alloc_system_pages+0x238/0x2dc [nvidia]\n[<0>] nv_alloc_pages+0x144/0x254 [nvidia]\n[<0>] osAllocPagesInternal+0x31c/0x5f0 [nvidia]\n[<0>] memdescAlloc+0x26c/0xa60 [nvidia]\n[<0>] sysmemConstruct_IMPL+0x2fc/0xa10 [nvidia]\n[<0>] __nvoc_objCreate_SystemMemory+0xb4/0x280 [nvidia]\n[<0>] __nvoc_objCreateDynamic+0x50/0x70 [nvidia]\n[<0>] resservResourceFactory+0x190/0x290 [nvidia]\n[<0>] indexRemove+0x29c/0x5c0 [nvidia]\n[<0>] serverAllocResourceUnderLock+0x294/0x820 [nvidia]\n[<0>] serverAllocResource+0x2a8/0x530 [nvidia]\n[<0>] rmapiAllocWithSecInfo+0x184/0x340 [nvidia]\n[<0>] rmapiAllocWithSecInfoTls+0x7c/0xb0 [nvidia]\n[<0>] Nv04AllocWithAccessSecInfo+0x60/0x80 [nvidia]\n[<0>] RmIoctl+0x940/0xbd0 [nvidia]\n[<0>] rm_ioctl+0x64/0x430 [nvidia]\n[<0>] nvidia_dev_put+0xb9c/0xcb4 [nvidia]\n[<0>] __arm64_sys_ioctl+0xb4/0xf4\n[<0>] invoke_syscall+0x48/0x134\n[<0>] el0_svc_common.constprop.0+0xd0/0xf0\n[<0>] do_el0_svc+0x1c/0x30\n[<0>] el0_svc+0x30/0xe8\n[<0>] el0t_64_sync_handler+0x130/0x13c\n[<0>] el0t_64_sync+0x194/0x198\n",
+                  "error": null
+                }
+              }
+            ],
+            "cgroup": {
+              "value": "0::/system.slice/q4t-ram-1792492452028181152-2229354.scope\n",
+              "error": null
+            }
+          },
+          {
+            "pid": 2230203,
+            "kind": "nvml",
+            "command": [
+              "/usr/bin/python3",
+              "-B",
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/nvml_process_query.py",
+              "--worker",
+              "45ebf78831bbb548d1cc14e559325f5e",
+              ""
+            ],
+            "tasks": [
+              {
+                "tid": 2230203,
+                "stat": {
+                  "value": "2230203 (python3) D 2229269 2229245 2229245 0 -1 4194304 6902 0 0 0 3 1 0 0 20 0 1 0 68254613 225431552 9673 18446744073709551615 4194304 10541512 281474247242688 0 0 256 0 16781312 2 1 0 0 17 13 0 0 0 0 0 10616216 12102016 961863680 281474247246470 281474247246603 281474247246603 281474247249895 0\n",
+                  "error": null
+                },
+                "wchan": {
+                  "value": "os_acquire_rwlock_read",
+                  "error": null
+                },
+                "stack": {
+                  "value": "[<0>] os_acquire_rwlock_read+0x38/0x64 [nvidia]\n[<0>] portSyncRwLockAcquireRead+0x10/0x30 [nvidia]\n[<0>] rmapiLockAcquire+0x2bc/0x340 [nvidia]\n[<0>] rmapiPrologue+0x124/0x180 [nvidia]\n[<0>] serverControlApiCopyOut+0x5c0/0x830 [nvidia]\n[<0>] rmapiControlWithSecInfo+0xa8/0x220 [nvidia]\n[<0>] rmapiControlWithSecInfoTls+0x74/0x1a0 [nvidia]\n[<0>] embeddedParamCopyOut+0xbc0/0xfa0 [nvidia]\n[<0>] Nv04ControlWithSecInfo+0x34/0x40 [nvidia]\n[<0>] RmIoctl+0x87c/0xbd0 [nvidia]\n[<0>] rm_ioctl+0x64/0x430 [nvidia]\n[<0>] nvidia_dev_put+0xb9c/0xcb4 [nvidia]\n[<0>] __arm64_sys_ioctl+0xb4/0xf4\n[<0>] invoke_syscall+0x48/0x134\n[<0>] el0_svc_common.constprop.0+0xd0/0xf0\n[<0>] do_el0_svc+0x1c/0x30\n[<0>] el0_svc+0x30/0xe8\n[<0>] el0t_64_sync_handler+0x130/0x13c\n[<0>] el0t_64_sync+0x194/0x198\n",
+                  "error": null
+                }
+              }
+            ],
+            "cgroup": {
+              "value": "0::/user.slice/user-2002.slice/session-5.scope\n",
+              "error": null
+            }
+          },
+          {
+            "pid": 2230205,
+            "kind": "nvml",
+            "command": [
+              "/usr/bin/python3",
+              "-B",
+              "/home/rm01/models/dev/qwen4-thor/tools/evalscope/nvml_process_query.py",
+              "--worker",
+              "6114b1e53f8dbea444280651f9e67014",
+              ""
+            ],
+            "tasks": [
+              {
+                "tid": 2230205,
+                "stat": {
+                  "value": "2230205 (python3) D 1 2229354 2229354 0 -1 4194304 3303 0 0 0 2 1 0 0 20 0 1 0 68254705 225431552 9623 18446744073709551615 4194304 10541512 281473982685888 0 0 256 0 16781312 2 1 0 0 17 7 0 0 0 0 0 10616216 12102016 1039323136 281473982689926 281473982690059 281473982690059 281473982693351 0\n",
+                  "error": null
+                },
+                "wchan": {
+                  "value": "os_acquire_rwlock_read",
+                  "error": null
+                },
+                "stack": {
+                  "value": "[<0>] os_acquire_rwlock_read+0x38/0x64 [nvidia]\n[<0>] portSyncRwLockAcquireRead+0x10/0x30 [nvidia]\n[<0>] rmapiLockAcquire+0x2bc/0x340 [nvidia]\n[<0>] rmapiPrologue+0x124/0x180 [nvidia]\n[<0>] rmapiAllocWithSecInfo+0x50/0x340 [nvidia]\n[<0>] rmapiAllocWithSecInfoTls+0x7c/0xb0 [nvidia]\n[<0>] Nv04AllocWithAccessSecInfo+0x60/0x80 [nvidia]\n[<0>] RmIoctl+0x940/0xbd0 [nvidia]\n[<0>] rm_ioctl+0x64/0x430 [nvidia]\n[<0>] nvidia_dev_put+0xb9c/0xcb4 [nvidia]\n[<0>] __arm64_sys_ioctl+0xb4/0xf4\n[<0>] invoke_syscall+0x48/0x134\n[<0>] el0_svc_common.constprop.0+0xd0/0xf0\n[<0>] do_el0_svc+0x1c/0x30\n[<0>] el0_svc+0x30/0xe8\n[<0>] el0t_64_sync_handler+0x130/0x13c\n[<0>] el0t_64_sync+0x194/0x198\n",
+                  "error": null
+                }
+              }
+            ],
+            "cgroup": {
+              "value": "0::/user.slice/user-2002.slice/session-5.scope\n",
+              "error": null
+            }
+          }
+        ],
+        "meminfo": {
+          "value": "MemTotal:       128828748 kB\nMemFree:        15146424 kB\nMemAvailable:   65046408 kB\nBuffers:          321068 kB\nCached:         53637980 kB\nSwapCached:        34200 kB\nActive:          2678932 kB\nInactive:       53621380 kB\nActive(anon):     803244 kB\nInactive(anon):  5331288 kB\nActive(file):    1875688 kB\nInactive(file): 48290092 kB\nUnevictable:       28948 kB\nMlocked:             928 kB\nSwapTotal:       2097148 kB\nSwapFree:         749008 kB\nDirty:                32 kB\nWriteback:           324 kB\nAnonPages:       2239964 kB\nMapped:          3944676 kB\nShmem:           3763332 kB\nKReclaimable:     880824 kB\nSlab:            1174900 kB\nSReclaimable:     552504 kB\nSUnreclaim:       622396 kB\nKernelStack:       22576 kB\nPageTables:        35188 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    66511520 kB\nCommitted_AS:   14803544 kB\nVmallocTotal:   133141626880 kB\nVmallocUsed:      384992 kB\nVmallocChunk:          0 kB\nPercpu:             6832 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:    786432 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:         524288 kB\nCmaFree:              16 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\n",
+          "error": null
+        },
+        "vmstat": {
+          "value": "nr_free_pages 3786606\nnr_zone_inactive_anon 1332822\nnr_zone_active_anon 200811\nnr_zone_inactive_file 12072345\nnr_zone_active_file 468922\nnr_zone_unevictable 7237\nnr_zone_write_pending 89\nnr_mlock 232\nnr_bounce 0\nnr_zspages 0\nnr_free_cma 4\nnuma_hit 12162101544\nnuma_miss 0\nnuma_foreign 0\nnuma_interleave 95\nnuma_local 12161959299\nnuma_other 0\nnr_inactive_anon 1332822\nnr_active_anon 200811\nnr_inactive_file 12072345\nnr_active_file 468922\nnr_unevictable 7237\nnr_slab_reclaimable 138126\nnr_slab_unreclaimable 155599\nnr_isolated_anon 64\nnr_isolated_file 712\nworkingset_nodes 180050\nworkingset_refault_anon 397682\nworkingset_refault_file 568379024\nworkingset_activate_anon 160212\nworkingset_activate_file 60234365\nworkingset_restore_anon 73267\nworkingset_restore_file 9397474\nworkingset_nodereclaim 2779007\nnr_anon_pages 559991\nnr_mapped 986169\nnr_file_pages 13498312\nnr_dirty 8\nnr_writeback 81\nnr_writeback_temp 0\nnr_shmem 940833\nnr_shmem_hugepages 0\nnr_shmem_pmdmapped 0\nnr_file_hugepages 0\nnr_file_pmdmapped 0\nnr_anon_transparent_hugepages 384\nnr_vmscan_write 3717607\nnr_vmscan_immediate_reclaim 21493\nnr_dirtied 25316282\nnr_written 25412187\nnr_throttled_written 0\nnr_kernel_misc_reclaimable 82080\nnr_foll_pin_acquired 44807575\nnr_foll_pin_released 43913863\nnr_kernel_stack 22576\nnr_page_table_pages 8797\nnr_sec_page_table_pages 0\nnr_swapcached 8550\npgpromote_success 0\npgpromote_candidate 0\npgdemote_kswapd 0\npgdemote_direct 0\npgdemote_khugepaged 0\nnr_dirty_threshold 3224888\nnr_dirty_background_threshold 1610475\npgpgin 44571349108\npgpgout 140384412\npswpin 1295738\npswpout 3677192\npgalloc_dma 82641632\npgalloc_dma32 0\npgalloc_normal 14967752333\npgalloc_movable 0\npgalloc_device 0\nallocstall_dma 0\nallocstall_dma32 0\nallocstall_normal 5173202\nallocstall_movable 47606\nallocstall_device 0\npgskip_dma 0\npgskip_dma32 0\npgskip_normal 0\npgskip_movable 0\npgskip_device 0\npgfree 15352278609\npgactivate 318516284\npgdeactivate 171045421\npglazyfree 0\npgfault 1132914610\npgmajfault 2558020\npglazyfreed 0\npgrefill 178250223\npgreuse 28401096\npgsteal_kswapd 488451601\npgsteal_direct 307418905\npgsteal_khugepaged 9865\npgscan_kswapd 596873636\npgscan_direct 662214991\npgscan_khugepaged 10510\npgscan_direct_throttle 0\npgscan_anon 26648405\npgscan_file 1232888553\npgsteal_anon 3475038\npgsteal_file 792840704\nzone_reclaim_failed 0\npginodesteal 45\nslabs_scanned 94807001\nkswapd_inodesteal 1642325\nkswapd_low_wmark_hit_quickly 95460\nkswapd_high_wmark_hit_quickly 353431\npageoutrun 458520\npgrotated 2615609\ndrop_pagecache 0\ndrop_slab 0\noom_kill 51\nnuma_pte_updates 0\nnuma_huge_pte_updates 0\nnuma_hint_faults 0\nnuma_hint_faults_local 0\nnuma_pages_migrated 0\npgmigrate_success 273187665\npgmigrate_fail 77385399\nthp_migration_success 0\nthp_migration_fail 0\nthp_migration_split 0\ncompact_migrate_scanned 13339072618\ncompact_free_scanned 3628600255\ncompact_isolated 636908580\ncompact_stall 231150\ncompact_fail 108349\ncompact_success 122801\ncompact_daemon_wake 46120\ncompact_daemon_migrate_scanned 6722706276\ncompact_daemon_free_scanned 3189002038\nhtlb_buddy_alloc_success 0\nhtlb_buddy_alloc_fail 0\ncma_alloc_success 62\ncma_alloc_fail 0\nunevictable_pgs_culled 35246104\nunevictable_pgs_scanned 0\nunevictable_pgs_rescued 35238335\nunevictable_pgs_mlocked 35238695\nunevictable_pgs_munlocked 35238019\nunevictable_pgs_cleared 0\nunevictable_pgs_stranded 444\nthp_fault_alloc 3460852\nthp_fault_fallback 37816\nthp_fault_fallback_charge 2\nthp_collapse_alloc 36057\nthp_collapse_alloc_failed 4\nthp_file_alloc 0\nthp_file_fallback 0\nthp_file_fallback_charge 0\nthp_file_mapped 0\nthp_split_page 3467\nthp_split_page_failed 0\nthp_deferred_split_page 45322\nthp_split_pmd 77920\nthp_scan_exceed_none_pte 37365\nthp_scan_exceed_swap_pte 98721\nthp_scan_exceed_share_pte 525\nthp_zero_page_alloc 1\nthp_zero_page_alloc_failed 0\nthp_swpout 0\nthp_swpout_fallback 2670\nballoon_inflate 0\nballoon_deflate 0\nballoon_migrate 0\nswap_ra 819673\nswap_ra_hit 758968\nksm_swpin_copy 7\ncow_ksm 0\nnr_unstable 0\n",
+          "error": null
+        }
+      }
+    }
+  ]
+}
