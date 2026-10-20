@@ -161,5 +161,5 @@ if __name__ == '__main__':
     parser.add_argument('--reclaim-before-load', action='store_true')
     args = parser.parse_args()
     if args.reclaim_before_load:
-        OUT = ROOT / '.q4t-work/nvml-load-20261020/diagnostic-v2/run'
+        OUT = ROOT / '.q4t-work/nvml-load-20261020/diagnostic-v3/run'
     sys.exit(observe(args.observe) if args.observe else main(args.reclaim_before_load))

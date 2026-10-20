@@ -149,6 +149,25 @@ def payload_residual(observation):
                if Path(row['path']).suffix in ('.safetensors', '.bin'))
 
 
+def prepare_target_cache(paths, max_passes=3):
+    """Bound advisory eviction; a successful syscall does not prove residency."""
+    if not 1 <= max_passes <= 3:
+        raise ValueError('cache preparation permits one to three passes')
+    attempts = []
+    for index in range(max_passes):
+        errors = clear_target_cache(paths)
+        after = observe_files(paths)
+        residual = payload_residual(after)
+        attempts.append(dict(pass_number=index + 1, advice_errors=errors,
+                             payload_resident_bytes=residual, observation=after))
+        # Unknown state or syscall failure is not retried into a pass.
+        if errors or residual is None or residual == 0:
+            break
+        if index + 1 < max_passes:
+            time.sleep(.1)
+    return errors, after, attempts
+
+
 def selected_performance_plan(mode, lengths=None, repeats=3, target_total=0):
     """Keep the default bounded run; an explicit target tier emits 257 tokens."""
     if repeats != 3:
@@ -335,8 +354,8 @@ def main():
     })
     save(out / 'cache-before.json', observe_files(paths))
     if args.clear_model_cache:
-        errors = clear_target_cache(paths)
-        after = observe_files(paths)
+        errors, after, attempts = prepare_target_cache(paths)
+        save(out / 'cache-preparation.json', {'max_passes': 3, 'attempts': attempts})
         save(out / 'cache-after-advice.json', after)
         residual = payload_residual(after)
         gate = {'advice_errors': errors, 'payload_resident_bytes': residual,

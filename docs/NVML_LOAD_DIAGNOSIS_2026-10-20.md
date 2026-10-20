@@ -69,3 +69,18 @@ memcg/监控/observer，新增--clear-model-cache并要求payload零驻留门。
 最多一次模型加载与1K质量，不新增性能样本；原阶段v5的中断合同复用。
 若通过，建立明确的卸载研究启动cache合同，不宣称驱动内部已修复，
 不偷偷在请求间回收缓存，也不接受继承缓存启动模式。
+
+## 对照准备失败与定向工具加固
+
+diagnostic-v2未加载模型：单次FADV_DONTNEED无错误，但一个expert文件
+仍驻留393,216 bytes，严格零驻留门拒绝启动，guard COMMAND_FAILED。
+没有NVML超时，没有第二次GPU加载，不将准备失败算成对照通过。
+
+新增prepare_target_cache：最多3次建议/观测，已知正残留才继续，间隔
+0.1秒；未知观测或系统调用错误立即停止，零残留立即完成。逐次完整
+观测写cache-preparation.json，原零驻留门与cache-after-advice保留。
+这处理advisory调用不能保证一次完全回收的情况，不声称已证明残留原因。
+6项host验证零/暂留/持续残留/未知/调用错误/预算边界全部通过。
+
+diagnostic-v3只重验受影响的缓存准备并完成原定第二次加载，预热与
+GPU参数/监控不变；不增加第三次GPU加载或性能样本。若持续残留仍拒绝。
