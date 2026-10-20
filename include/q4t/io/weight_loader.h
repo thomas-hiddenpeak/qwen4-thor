@@ -92,8 +92,14 @@ class WeightLoader {
                          size_t count, const void* const* dsts,
                          const size_t* lens) const;
   // Read `name`'s bytes into `dst`, then H2D-copy to `device_dst` on `stream`.
+  // Caller retains both buffers through stream completion, including errors.
   Status ReadTensorToDevice(const std::string& name, void* dst,
                             void* device_dst, cudaStream_t stream) const;
+
+  // Own the host source and complete the copy before returning success.
+  // Reject a checkpoint tensor whose byte size differs from expected_bytes.
+  Status LoadTensorToDevice(const std::string& name, void* device_dst,
+                            size_t expected_bytes, cudaStream_t stream) const;
 
   // Number of cached shard handles (for diagnostics). Evicted shards can
   // remain open until their in-progress readers finish.

@@ -1,5 +1,6 @@
 // NVFP4 routed-expert MoE weight loader (direct-to-packed).
 #include "q4t/quant/moe_weights.h"
+#include "q4t/io/pending_host_storage.h"
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
@@ -107,10 +108,9 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
   // a disjoint device offset and uses its own thread-local staging, so the
   // experts are embarrassingly parallel; a pool of min(hw, E) threads drives
   // the host-side reads at aggregate memory bandwidth. This also fixes a
-  // latent async race in the old loop: the per-expert swizzle vectors were
-  // destroyed at iteration end while their H2D copies were still in flight on
-  // `stream` (use-after-free), masked only by timing. Per-thread staging + a
-  // single sync at the end removes it.
+  // Sources must survive each copy and must not be overwritten by the next
+  // expert. Worker-owned staging drains before reuse and on early returns;
+  // a parent-thread wait after join would be too late for those sources.
   int nthreads = std::max(
       1, std::min<int>(std::thread::hardware_concurrency(), E));
   if (const char* env = std::getenv("Q4T_MOE_THREADS")) {
@@ -130,19 +130,24 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
   std::vector<std::array<double, 3>> phase_acc(nthreads, {0.0, 0.0, 0.0});
   std::vector<std::thread> pool;
   pool.reserve(nthreads);
+  struct Staging {
+    Staging(size_t gu_w_bytes, size_t dn_w_bytes, size_t gu_s_bytes,
+            size_t dn_s_bytes, size_t gu_sf_block, size_t dn_sf_block)
+        : gu_w(gu_w_bytes), up_w(gu_w_bytes), dn_w(dn_w_bytes),
+          gate_s(gu_s_bytes), up_s(gu_s_bytes),
+          gu_s_merged(2 * gu_s_bytes), dn_s(dn_s_bytes),
+          gu_sw(gu_sf_block), dn_sw(dn_sf_block) {}
+    std::vector<uint8_t> gu_w, up_w, dn_w, gate_s, up_s, gu_s_merged;
+    std::vector<uint8_t> dn_s, gu_sw, dn_sw;
+    float scal[4] = {};
+  };
   for (int t = 0; t < nthreads; ++t) {
     pool.emplace_back([&, t]() {
-      // Thread-local staging (no sharing across threads).
-      std::vector<uint8_t> gu_w(gu_w_bytes);
-      std::vector<uint8_t> up_w(gu_w_bytes);
-      std::vector<uint8_t> dn_w(dn_w_bytes);
-      std::vector<uint8_t> gate_s(gu_s_bytes);
-      std::vector<uint8_t> up_s(gu_s_bytes);
-      std::vector<uint8_t> gu_s_merged(2 * gu_s_bytes);
-      std::vector<uint8_t> dn_s(static_cast<size_t>(hs) * (moe_is / 16));
-      std::vector<uint8_t> gu_sw(gu_sf_block);
-      std::vector<uint8_t> dn_sw(dn_sf_block);
-      float scal[4];  // [gu_ws2, gu_isc, dn_ws2, dn_isc]
+      io::PendingHostStorage<Staging> source(
+          stream, gu_w_bytes, dn_w_bytes, gu_s_bytes,
+          static_cast<size_t>(hs) * (moe_is / 16), gu_sf_block, dn_sf_block);
+      auto& [gu_w, up_w, dn_w, gate_s, up_s, gu_s_merged, dn_s, gu_sw,
+              dn_sw, scal] = source.Get();
       while (true) {
         if (first_err.load(std::memory_order_relaxed) != 0) return;
         const int e = next_expert.fetch_add(1, std::memory_order_relaxed);
@@ -169,6 +174,7 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
         if (lt) phase_acc[t][0] += nowms() - t0;
         // --- Phase 2: submit weight H2D (async on stream) ---
         const double t1 = lt ? nowms() : 0.0;
+        source.MarkPending();
         uint8_t* gu_dst = out->gu_packed_expert(e);
         if (!(es = H2D(gu_w.data(), gu_dst, gu_w_bytes, stream))) {
           first_err.store(-1, std::memory_order_relaxed);
@@ -273,6 +279,10 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
           return;
         }
         if (lt) phase_acc[t][1] += nowms() - t6;
+        if (!source.Drain().ok()) {
+          first_err.store(-1, std::memory_order_relaxed);
+          return;
+        }
       }
     });
   }

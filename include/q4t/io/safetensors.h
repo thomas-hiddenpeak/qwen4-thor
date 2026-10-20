@@ -94,6 +94,7 @@ class SafetensorsFile {
                     const void* const* dsts, const size_t* lens) const;
   // Read a tensor's bytes into `dst`, then H2D-copy to `device_dst` on
   // `stream` (both must be at least byte_size()).
+  // Caller retains both buffers through stream completion, including errors.
   Status ReadTensorToDevice(const TensorInfo& t, void* dst, void* device_dst,
                             cudaStream_t stream) const;
 

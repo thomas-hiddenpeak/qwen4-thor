@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include "q4t/io/json.h"
+#include "q4t/io/pending_host_storage.h"
 
 namespace q4t {
 namespace io {
@@ -275,6 +276,33 @@ Status WeightLoader::ReadTensorToDevice(const std::string& name, void* dst,
   const TensorInfo* info = sh->Find(name);
   if (!info) return Status::Fail("tensor not in shard " + *shard + ": " + name);
   return sh->ReadTensorToDevice(*info, dst, device_dst, stream);
+}
+
+Status WeightLoader::LoadTensorToDevice(const std::string& name,
+                                         void* device_dst,
+                                         size_t expected_bytes,
+                                         cudaStream_t stream) const {
+  const TensorInfo* info = FindTensor(name);
+  if (!device_dst || expected_bytes == 0 || !info ||
+      info->byte_size() != expected_bytes)
+    return Status::Fail("load tensor: destination/size mismatch: " + name);
+  try {
+    PendingHostStorage<std::vector<uint8_t>> host(stream, expected_bytes);
+    Status status = ReadTensor(name, host.Get().data());
+    if (!status.ok()) return status;
+    host.MarkPending();
+    const cudaError_t error = cudaMemcpyAsync(
+        device_dst, host.Get().data(), expected_bytes, cudaMemcpyHostToDevice,
+        stream);
+    status = host.Drain();  // Also drain a failed, possibly submitted call.
+    if (!status.ok()) return status;
+    if (error != cudaSuccess)
+      return Status::Fail("load tensor H2D: " + name + ": " +
+                          cudaGetErrorString(error));
+    return Status();
+  } catch (const std::bad_alloc&) {
+    return Status::Fail("load tensor host allocation: " + name);
+  }
 }
 
 size_t WeightLoader::open_shards() const {

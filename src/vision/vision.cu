@@ -556,10 +556,7 @@ bool LoadVision(const io::WeightLoader& loader, const VisionConfig& cfg,
   };
   auto load = [&loader, stream](const std::string& name, uint16_t* dst,
                                 size_t bytes) -> bool {
-    std::vector<uint16_t> host(bytes / sizeof(uint16_t));
-    if (!loader.ReadTensor(name, host.data()).ok()) return false;
-    return cudaMemcpyAsync(dst, host.data(), bytes, cudaMemcpyHostToDevice,
-                           stream) == cudaSuccess;
+    return loader.LoadTensorToDevice(name, dst, bytes, stream).ok();
   };
   auto set_err = [err](const std::string& s) {
     if (err) *err = s;

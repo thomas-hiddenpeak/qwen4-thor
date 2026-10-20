@@ -257,25 +257,13 @@ Status LoadMoeBf16(const io::WeightLoader& loader, const std::string& prefix,
     return Status::Fail("cudaMalloc down");
   }
 
-  // Read the 3-D tensors as raw contiguous bytes (row-major, expert-major).
-  std::vector<uint16_t> host;
-  Status s;
-  host.resize(gu_bytes / sizeof(uint16_t));
-  if (!(s = loader.ReadTensor(prefix + ".experts.gate_up_proj", host.data()))
-           .ok())
-    return s;
-  if (cudaMemcpyAsync(out->gu, host.data(), gu_bytes, cudaMemcpyHostToDevice,
-                      stream) != cudaSuccess)
-    return Status::Fail("H2D gu");
-  host.resize(down_bytes / sizeof(uint16_t));
-  if (!(s = loader.ReadTensor(prefix + ".experts.down_proj", host.data())).ok())
-    return s;
-  if (cudaMemcpyAsync(out->down, host.data(), down_bytes, cudaMemcpyHostToDevice,
-                      stream) != cudaSuccess)
-    return Status::Fail("H2D down");
-  if (stream != nullptr && cudaStreamSynchronize(stream) != cudaSuccess) {
-    return Status::Fail("stream sync failed");
-  }
+  // Each tensor owns its source through completion before the next read.
+  Status s = loader.LoadTensorToDevice(prefix + ".experts.gate_up_proj",
+                                       out->gu, gu_bytes, stream);
+  if (!s.ok()) return s;
+  s = loader.LoadTensorToDevice(prefix + ".experts.down_proj", out->down,
+                                 down_bytes, stream);
+  if (!s.ok()) return s;
   return Status();
 }
 

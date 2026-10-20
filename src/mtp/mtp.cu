@@ -308,13 +308,7 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
   };
   auto load = [&loader, stream](const std::string& name, uint16_t* dst,
                                 size_t bytes) -> Status {
-    std::vector<uint16_t> host(bytes / sizeof(uint16_t));
-    Status st = loader->ReadTensor(name, host.data());
-    if (!st.ok()) return st;
-    if (cudaMemcpyAsync(dst, host.data(), bytes, cudaMemcpyHostToDevice,
-                        stream) != cudaSuccess)
-      return Status::Fail("H2D failed");
-    return Status();
+    return loader->LoadTensorToDevice(name, dst, bytes, stream);
   };
 
   Status s;

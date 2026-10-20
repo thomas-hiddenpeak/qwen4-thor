@@ -101,14 +101,7 @@ Status LoadModelHead(const io::WeightLoader& loader, int vocab, int hs, int hc,
   };
   auto load = [&loader, stream](const std::string& name, uint16_t* dst,
                                 size_t bytes) -> Status {
-    std::vector<uint16_t> host(bytes / sizeof(uint16_t));
-    Status s = loader.ReadTensor(name, host.data());
-    if (!s.ok()) return s;
-    if (cudaMemcpyAsync(dst, host.data(), bytes, cudaMemcpyHostToDevice,
-                        stream) != cudaSuccess) {
-      return Status::Fail("H2D failed");
-    }
-    return Status();
+    return loader.LoadTensorToDevice(name, dst, bytes, stream);
   };
 
   Status s;

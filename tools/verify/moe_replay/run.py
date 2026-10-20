@@ -59,6 +59,11 @@ def main():
                    'include/q4t/model/moe_replay.h',
                    'include/q4t/model/moe_replay_gpu.h',
                    'include/q4t/model/moe_replay_io.h', 'CMakeLists.txt']
+        # Include loader/quant dependencies and new headers, not only tracked
+        # diffs: an untracked source file can participate in the build too.
+        sources = sorted(set(sources) | {
+            str(path.relative_to(root)) for folder in ('src', 'include')
+            for path in (root / folder).rglob('*') if path.is_file()})
         manifest['sources'] = {}
         for name in sources:
             snapshot = output / 'source' / name
