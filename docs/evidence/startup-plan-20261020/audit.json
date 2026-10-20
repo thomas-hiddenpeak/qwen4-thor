@@ -1,0 +1,649 @@
+{
+  "schema": 2,
+  "status": "INCOMPLETE_ENV_ABORT_AND_PREPARATION_FAILED",
+  "evidence_status": "VERIFIED",
+  "runtime_acceptance": "NOT_ACCEPTED",
+  "candidate_quality_no_go": false,
+  "default_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "builds": {
+    "historical": {
+      "manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/build.json",
+      "manifest_sha256": "a8404e612f7455b56c251ab0a5efd863c0e68546112fd30c9374a4ac9ae97154",
+      "candidate": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/build/q4t",
+        "sha256": "7538a12cfc2ca10cfd3d7e8509bdfaa903ca39021460d816be3f2a9628b06280",
+        "bytes": 4442912
+      },
+      "frozen_source_inputs_verified": true,
+      "current_default_unchanged": true
+    },
+    "ordered": {
+      "manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/order-candidate/build.json",
+      "manifest_sha256": "924446a4947bf8c670a5b0df11e5d09df339ec2d95ff619902637718625b8c01",
+      "candidate": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/order-candidate/build/q4t",
+        "sha256": "1d6603651a594a7e82e7a3f43de625ce810494d717a812f0e313d359e7761206",
+        "bytes": 4445592
+      },
+      "frozen_source_inputs_verified": true,
+      "current_default_unchanged": true
+    }
+  },
+  "candidate_sha256": "1d6603651a594a7e82e7a3f43de625ce810494d717a812f0e313d359e7761206",
+  "historical_candidate_sha256": "7538a12cfc2ca10cfd3d7e8509bdfaa903ca39021460d816be3f2a9628b06280",
+  "budget": {
+    "model_start_limit": 5,
+    "http_limit": 5,
+    "preparation_attempts": 5,
+    "model_starts": 2,
+    "http_requests": 1,
+    "preparation_only_failures": 3,
+    "ordered_candidate_model_starts": 0,
+    "ordered_candidate_http_requests": 0
+  },
+  "stages": [
+    {
+      "name": "plain-v1",
+      "status": "PASS_BOUNDED_RELIABILITY",
+      "candidate_sha256": "7538a12cfc2ca10cfd3d7e8509bdfaa903ca39021460d816be3f2a9628b06280",
+      "model_starts": 1,
+      "http_requests": 1,
+      "sealed_files": 424,
+      "sealed_manifest_sha256": "0402c2b68d76de0745bc756bec6a380eb0307e6d0807ab1c7fbd3afb2b406f0d",
+      "offline_helper_identity": {
+        "sealed_runner_sha256": "5fe500796e7162547251e0a6397dfbb15b9b315bb087b6c26623c229da8a76a9",
+        "pure_functions": [
+          "require",
+          "read",
+          "configuration",
+          "environment",
+          "server_command",
+          "records",
+          "capacity_evidence",
+          "check_plan",
+          "reservation_evidence"
+        ],
+        "frozen_functions_only": true
+      },
+      "configuration": {
+        "max_seq": 1,
+        "max_prefill": 8192,
+        "max_len": 262144,
+        "resident_slots": 256,
+        "mtp": false,
+        "mtp_k": 3,
+        "l2_slots": 16,
+        "mirror_k": 8,
+        "load_threads": 16,
+        "requests": 1
+      },
+      "plan_sha256": "f0def8ef749593f543ab5120916576499a032d2ea2eff483b421aa51fb4458df",
+      "plan_count": 1397,
+      "planned_device_bytes": 54843473680,
+      "plan_effective": {
+        "max_seq": 1,
+        "max_prefill": 8192,
+        "max_len": 262144,
+        "resident_slots": 256,
+        "mtp": 0,
+        "mtp_k": 3,
+        "initial_scratch_capacity": 0,
+        "l2_slots": 16,
+        "mirror_k": 8,
+        "load_threads": 16
+      },
+      "reservation": {
+        "status": "PASS",
+        "count": 1397,
+        "bytes": 54843473680,
+        "consumed": 1397,
+        "freed": 1397,
+        "plan_sha256": "f0def8ef749593f543ab5120916576499a032d2ea2eff483b421aa51fb4458df",
+        "all_device_reserved_before_first_pinned": true,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0
+      },
+      "nvml": {
+        "queries": 65,
+        "all_ok": true,
+        "failures": [],
+        "successful_queries": 65,
+        "configured_timeout_seconds": 5,
+        "maximum_observed_seconds": 1.627549766912125,
+        "maximum_api_span_seconds": {
+          "import_pynvml": 0.011747657903470099,
+          "init": 0.8989187660627067,
+          "device_count": 6.853800732642412e-05,
+          "handle[0]": 0.669992211041972,
+          "compute_v3[0]": 0.0047890490386635065,
+          "shutdown": 0.005347338039427996
+        },
+        "deadline_evidence": "sealed nvml_pids query(timeout=5) and worker process.communicate(timeout=timeout)",
+        "elapsed_scope": "worker-process lifetime including launch/teardown"
+      },
+      "scope": {
+        "unit": "q4t-startup-plain-v1-1792510175383956474.scope",
+        "pid": 2290898,
+        "scope_removed": true,
+        "host_cache_max_bytes": 68719476736,
+        "total_physical_ram_limit": null,
+        "sampled_memory_current_peak_bytes": 33322823680,
+        "sampled_swap_peak_bytes": 0,
+        "memory_event_maxima": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "observed_samples": 36
+      },
+      "cache": {
+        "payload_bytes": 67987791872,
+        "payload_files": 201,
+        "observed_files": 226,
+        "page_size_bytes": 4096,
+        "early_gate_exact": true,
+        "early_gate_deferred_files": [],
+        "final_gate_repair": null,
+        "exact_full_hot_gate": true,
+        "physical_fragmentation_equal": false
+      },
+      "http": {
+        "effective": {
+          "requested": {
+            "max_len": 262144,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective": {
+            "max_len": 262144,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "reported_requested": {
+            "max_len": 262144,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "matches_requested": true,
+          "budget_enabled": true,
+          "budget_feasible": true,
+          "effective_mtp": false
+        },
+        "default_mtp_without_flags": false,
+        "mtp_k": null,
+        "requests": [
+          {
+            "request_index": 0,
+            "actual_input": 1024,
+            "actual_output": 7,
+            "text": "710003",
+            "ttft": 15.727958673029207,
+            "latency": 16.536622582003474,
+            "response_id": "chatcmpl-auto-0",
+            "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392"
+          }
+        ],
+        "same_instance_requests": 1,
+        "reserved_storage_unchanged_across_requests": true
+      },
+      "timing": {
+        "server_started_to_ready_seconds": 11.290300735970959,
+        "shutdown_seconds": 2.1624278796371073,
+        "startup_phase_reported_ms": {
+          "tokenizer": 316,
+          "budget": 429,
+          "startup_resource_plan": 2442,
+          "model_load": 7960,
+          "startup_total": 11150
+        },
+        "metadata_plan_seconds": null,
+        "metadata_timing_status": "UNKNOWN",
+        "metadata_timing_reason": "measured binary records a rounded combined metadata-plus-reservation phase, not separate metadata time",
+        "combined_plan_phase_ms": 2442,
+        "reserve_plan_to_prepared_seconds": 1.223615981056355,
+        "reserve_prepared_to_startup_complete_seconds": 7.960344675928354,
+        "physical_allocation_seconds_sum": 1.218469868064858,
+        "maximum_physical_allocation_seconds": 0.18452868203166872,
+        "performance_acceptance": false
+      },
+      "trace_loss": {
+        "overrun": 0,
+        "commit overrun": 0,
+        "dropped events": 0
+      },
+      "trace_instance_removed": true,
+      "default_unchanged": true,
+      "performance_acceptance": false
+    },
+    {
+      "name": "mtp-v1",
+      "status": "PREPARATION_FAILED_RETAINED",
+      "candidate_sha256": "7538a12cfc2ca10cfd3d7e8509bdfaa903ca39021460d816be3f2a9628b06280",
+      "model_starts": 0,
+      "http_requests": 0,
+      "http_worker_launched": false,
+      "failure": "RuntimeError('cache vector differs: {\"/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0000-0127.safetensors\": [354099200, 350593024]}')",
+      "missing_cache_bytes": {
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0000-0127.safetensors": 3506176
+      },
+      "missing_total_bytes": 3506176,
+      "missing_files": 1,
+      "repair_file_bytes": 354098208,
+      "full_hot_preparation_passed": true,
+      "failure_gate": "parent_post_prepare",
+      "scope_created": false,
+      "nvml": {
+        "queries": 32,
+        "all_ok": true,
+        "failures": [],
+        "successful_queries": 32,
+        "configured_timeout_seconds": 5,
+        "maximum_observed_seconds": 0.06812392501160502,
+        "maximum_api_span_seconds": {
+          "import_pynvml": 0.008328146999701858,
+          "init": 0.00782739301212132,
+          "device_count": 5.1009003072977066e-05,
+          "handle[0]": 0.007294993964023888,
+          "compute_v3[0]": 0.0015686419792473316,
+          "shutdown": 0.0020722169429063797
+        },
+        "deadline_evidence": "sealed nvml_pids query(timeout=5) and worker process.communicate(timeout=timeout)",
+        "elapsed_scope": "worker-process lifetime including launch/teardown"
+      },
+      "trace_loss": {
+        "overrun": 0,
+        "commit overrun": 0,
+        "dropped events": 0
+      },
+      "cleanup_complete": true,
+      "sealed_files": 342,
+      "sealed_manifest_sha256": "20824f3a8ca2956f319e92caa2c1e05c7e2284a418da45026492b0f98ca7ce40"
+    },
+    {
+      "name": "mtp-v2",
+      "status": "PREPARATION_FAILED_RETAINED",
+      "candidate_sha256": "7538a12cfc2ca10cfd3d7e8509bdfaa903ca39021460d816be3f2a9628b06280",
+      "model_starts": 0,
+      "http_requests": 0,
+      "http_worker_launched": false,
+      "failure": "RuntimeError('cache vector differs: {\"/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0000-0127.safetensors\": [354099200, 275066880]}')",
+      "missing_cache_bytes": {
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0000-0127.safetensors": 79032320
+      },
+      "missing_total_bytes": 79032320,
+      "missing_files": 1,
+      "repair_file_bytes": 354098208,
+      "full_hot_preparation_passed": false,
+      "failure_gate": "prepare_internal_cache_ready",
+      "scope_created": false,
+      "nvml": {
+        "queries": 32,
+        "all_ok": true,
+        "failures": [],
+        "successful_queries": 32,
+        "configured_timeout_seconds": 5,
+        "maximum_observed_seconds": 0.07173068495467305,
+        "maximum_api_span_seconds": {
+          "import_pynvml": 0.009157876949757338,
+          "init": 0.006816704059019685,
+          "device_count": 6.8527995608747e-05,
+          "handle[0]": 0.007323934929445386,
+          "compute_v3[0]": 0.001892862026579678,
+          "shutdown": 0.008627015980891883
+        },
+        "deadline_evidence": "sealed nvml_pids query(timeout=5) and worker process.communicate(timeout=timeout)",
+        "elapsed_scope": "worker-process lifetime including launch/teardown"
+      },
+      "trace_loss": {
+        "overrun": 0,
+        "commit overrun": 0,
+        "dropped events": 0
+      },
+      "cleanup_complete": true,
+      "sealed_files": 339,
+      "sealed_manifest_sha256": "ee07749d22ef3cc2756c35f51ab460db906eaf0c1fbbd5ebc63f8c284ba4ec85"
+    },
+    {
+      "name": "mtp-v3",
+      "status": "ENV_ABORT_RETAINED",
+      "candidate_sha256": "7538a12cfc2ca10cfd3d7e8509bdfaa903ca39021460d816be3f2a9628b06280",
+      "model_starts": 1,
+      "http_requests": 0,
+      "runtime_accepted": false,
+      "candidate_quality_no_go": false,
+      "reason": "RuntimeError('NVML process query: TIMEOUT; details in /home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/mtp-v3/lease/nvml-queries.jsonl')",
+      "configuration": {
+        "max_seq": 1,
+        "max_prefill": 8192,
+        "max_len": 262144,
+        "resident_slots": 256,
+        "mtp": true,
+        "mtp_k": 3,
+        "l2_slots": 16,
+        "mirror_k": 8,
+        "load_threads": 16,
+        "requests": 2
+      },
+      "plan_sha256": "452df5ef4078eb1c65fbe13f7e6a76c1e7cf2b3eef96aeffd41e8d25dd9e8180",
+      "plan_count": 1462,
+      "planned_device_bytes": 64489419144,
+      "nvml": {
+        "queries": 36,
+        "all_ok": false,
+        "failures": [
+          {
+            "status": "TIMEOUT",
+            "returncode": -9,
+            "seconds": 5.0047053979942575,
+            "request_id": "06c4a24b8cdc58e66ea45d777aa740eb",
+            "worker_pid": 2294181,
+            "worker_result": {
+              "request_id": "06c4a24b8cdc58e66ea45d777aa740eb",
+              "monotonic": 700959.454098659,
+              "event": "result",
+              "status": "OK",
+              "error": null,
+              "device_count": 1,
+              "pids": [
+                2294153
+              ],
+              "process_memory": [
+                {
+                  "device": 0,
+                  "pid": 2294153,
+                  "used_bytes": 55824834560
+                }
+              ]
+            },
+            "completed_api_spans_seconds": {
+              "import_pynvml": 0.008681343984790146,
+              "init": 1.1866400740109384,
+              "device_count": 5.389796569943428e-05,
+              "handle[0]": 0.05940379004459828,
+              "compute_v3[0]": 0.02899440994951874,
+              "shutdown": 3.673948195995763
+            },
+            "incomplete_apis": {},
+            "outer_supervisor_status_takes_precedence": true
+          }
+        ],
+        "successful_queries": 35,
+        "configured_timeout_seconds": 5,
+        "maximum_observed_seconds": 5.0047053979942575,
+        "maximum_api_span_seconds": {
+          "import_pynvml": 0.00926534493919462,
+          "init": 1.1866400740109384,
+          "device_count": 5.389796569943428e-05,
+          "handle[0]": 0.05940379004459828,
+          "compute_v3[0]": 0.02899440994951874,
+          "shutdown": 3.673948195995763
+        },
+        "deadline_evidence": "sealed nvml_pids query(timeout=5) and worker process.communicate(timeout=timeout)",
+        "elapsed_scope": "worker-process lifetime including launch/teardown"
+      },
+      "cache": {
+        "payload_bytes": 67987791872,
+        "payload_files": 201,
+        "observed_files": 226,
+        "page_size_bytes": 4096,
+        "early_gate_exact": false,
+        "early_gate_deferred_files": [
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0000-0127.safetensors"
+        ],
+        "final_gate_repair": {
+          "files": [
+            "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0000-0127.safetensors"
+          ],
+          "bytes": 354098208,
+          "max_passes": 1,
+          "max_files": 2,
+          "max_bytes": 1073741824
+        },
+        "exact_full_hot_gate": true,
+        "physical_fragmentation_equal": false
+      },
+      "scope": {
+        "unit": "q4t-startup-mtp-v3-1792510868053207655.scope",
+        "pid": 2294153,
+        "scope_removed": true,
+        "host_cache_max_bytes": 68719476736,
+        "total_physical_ram_limit": null,
+        "sampled_memory_current_peak_bytes": 569999360,
+        "sampled_swap_peak_bytes": 0,
+        "memory_event_maxima": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "observed_samples": 10
+      },
+      "physical_reservation": {
+        "started": 1417,
+        "completed": 1416,
+        "successful_bytes": 58353475852,
+        "incomplete": [
+          {
+            "seq": 2833,
+            "tid": 2294153,
+            "mono": 700959.453911631,
+            "event": "alloc",
+            "api": "cudaMalloc",
+            "phase": "begin",
+            "index": 1416,
+            "bytes": 1677721600,
+            "ptr": 0,
+            "rc": -1
+          }
+        ],
+        "handed_off": 0,
+        "complete": false,
+        "maximum_completed_allocation_seconds": 3.672937214956619,
+        "application_release_status": "UNKNOWN_PROCESS_ABORTED",
+        "physical_driver_reclamation": "NOT_PROVEN_BY_SCOPE_CLEANUP"
+      },
+      "metadata_plan_seconds": null,
+      "metadata_timing_status": "UNKNOWN",
+      "offline_helper_identity": {
+        "sealed_runner_sha256": "16217af7b5a912bb7bff11c186184ffdd886ff3b56a294dd64fc1ecd5c2caf59",
+        "pure_functions": [
+          "require",
+          "read",
+          "configuration",
+          "environment",
+          "server_command",
+          "records",
+          "capacity_evidence",
+          "check_plan",
+          "reservation_evidence"
+        ],
+        "frozen_functions_only": true
+      },
+      "cleanup_complete": true,
+      "trace_loss": {
+        "overrun": 0,
+        "commit overrun": 0,
+        "dropped events": 0
+      },
+      "sealed_files": 377,
+      "sealed_manifest_sha256": "de27ae598aad8618b42004536b26ee06649ce0dee1567a3d50da33901660974c",
+      "performance_acceptance": false
+    },
+    {
+      "name": "mtp-order-v1",
+      "status": "PREPARATION_FAILED_RETAINED",
+      "candidate_sha256": "1d6603651a594a7e82e7a3f43de625ce810494d717a812f0e313d359e7761206",
+      "model_starts": 0,
+      "http_requests": 0,
+      "http_worker_launched": false,
+      "failure": "RuntimeError('final cache repair exceeds two files / 1GiB')",
+      "missing_cache_bytes": {
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0000-0127.safetensors": 354070528,
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0128-0255.safetensors": 354054144,
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0256-0383.safetensors": 354078720,
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0384-0511.safetensors": 353759232,
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0000-0127.safetensors": 354099200,
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0128-0255.safetensors": 354099200,
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0256-0383.safetensors": 354103296,
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0384-0511.safetensors": 354086912,
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00002-experts-0000-0127.safetensors": 36270080
+      },
+      "missing_total_bytes": 2868621312,
+      "missing_files": 9,
+      "repair_file_bytes": 3186891792,
+      "full_hot_preparation_passed": false,
+      "failure_gate": "bounded_deferral_rejected",
+      "scope_created": false,
+      "nvml": {
+        "queries": 31,
+        "all_ok": true,
+        "failures": [],
+        "successful_queries": 31,
+        "configured_timeout_seconds": 5,
+        "maximum_observed_seconds": 0.07329982193186879,
+        "maximum_api_span_seconds": {
+          "import_pynvml": 0.009121223003603518,
+          "init": 0.008285511983558536,
+          "device_count": 6.14440068602562e-05,
+          "handle[0]": 0.007398049929179251,
+          "compute_v3[0]": 0.0019184129778295755,
+          "shutdown": 0.002438041032291949
+        },
+        "deadline_evidence": "sealed nvml_pids query(timeout=5) and worker process.communicate(timeout=timeout)",
+        "elapsed_scope": "worker-process lifetime including launch/teardown"
+      },
+      "trace_loss": {
+        "overrun": 0,
+        "commit overrun": 0,
+        "dropped events": 0
+      },
+      "cleanup_complete": true,
+      "sealed_files": 339,
+      "sealed_manifest_sha256": "9010996d5428408d853c5b269cd97a61c9815aa0bf5a3fa82e98236265bb5f66"
+    },
+    {
+      "name": "restart-order-v1",
+      "status": "NOT_RUN",
+      "model_starts": 0,
+      "http_requests": 0,
+      "runtime_accepted": false
+    },
+    {
+      "name": "boundary-order-v1",
+      "status": "NOT_RUN",
+      "model_starts": 0,
+      "http_requests": 0,
+      "runtime_accepted": false
+    }
+  ],
+  "host_contracts": {
+    "new_candidate_contracts": {
+      "runner": 24,
+      "core": 35,
+      "owner": 15,
+      "wrapper": 9
+    },
+    "reused_configuration_contracts": 27,
+    "total": 110,
+    "planner_archive_sha256": "ed30948f09e2161c6da3a49f4544325a13ee3a2ce6b35985b1ab5e0cfde55e34",
+    "unchanged_configuration_formulas": true,
+    "source_changes": [
+      "tools/verify/device_reserve/owner.h",
+      "tools/verify/startup_plan/reservation.cpp"
+    ],
+    "gpu_configuration_accepted": false,
+    "receipts": {
+      "host-core-order-v1": {
+        "files": 28,
+        "sealed_manifest_sha256": "f4927a90394b48f55c49bb1de711ab2554000438d0dea5580da138da2e398d1b",
+        "result_sha256": "3cf8b92231ff2d809aa55910cbdaeb1beb627866cbaf0a141d3c701e1fc49ce6"
+      },
+      "order-owner-host-v2": {
+        "files": 7,
+        "sealed_manifest_sha256": "7e94eff8d5a1510db0a010ac0cae8628e44657c6743cec9d86c3ea96894cb288",
+        "result_sha256": "eb1e4bcb1d17711931a27b970cb381072e3c3bc300777330af24a8f9de3188f5"
+      },
+      "order-wrapper-host-v1": {
+        "files": 32,
+        "sealed_manifest_sha256": "1041221c7e9570674410cead6d675b9d64a1c34dccac29d2bddd46a67b97f538",
+        "result_sha256": "01ee31800df728cf24462772b2618dc4db3c12ceb6ea8aa1d8a5aa6041230987"
+      },
+      "host-plan-v1": {
+        "files": 181,
+        "sealed_manifest_sha256": "82d8fc19624c03b93e476ae217cc1455750e1c658af68247c47a5a87ebf2c981",
+        "result_sha256": "30dd6a850898fcdfff4a7d16a04750c927216d7506d832798dcc43cd9e9f8d51"
+      }
+    },
+    "runner_result_sha256": "a242d19163ef038e7ca7b42bdb9fa234a47ded1e2fa1c1aba94c42fdcad56403"
+  },
+  "mechanism_analysis": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/mtp-v3-analysis",
+    "files": 13,
+    "sealed_manifest_sha256": "323c272c46a8c4a81e4ff697ed89f2c44f2965225ed5fea7898a54960254a994",
+    "reports_sha256": {
+      "analysis.json": "3964486f0be2cf5820bfec60c2168bbbb4baaaf1e88c5567ddeb63d8e4c6007f",
+      "analysis-reusable.json": "02ec134d7afca671df6e63b72441d65b8233b5273b12c5d6b3b7202cf73c2a96",
+      "summary.json": "e04a362b3356f8afad46f44803799be1da7db9ef4b1d2b28134be18102d7805c",
+      "prep-order-v1-v2.json": "7962a1933029837c52d569f731461402be7a7067101cdace64e96fe971b0c067",
+      "report.txt": "18493f3c76a6ba4e5bf78fa57f6ff96b92374fe6192c6b4d68c396e3f2420e37"
+    },
+    "scope": "sealed kernel/resource attribution; no new analysis execution"
+  },
+  "files_verified": 1821,
+  "nvml_queries": 196,
+  "nvml_successful_queries": 195,
+  "nvml_failed_queries": 1,
+  "nvml_configured_timeout_seconds": 5,
+  "maximum_nvml_observed_seconds": 5.0047053979942575,
+  "same_complete_hot_payload_vector_for_launched_models": true,
+  "metadata_plan_seconds": null,
+  "metadata_timing_status": "UNKNOWN",
+  "configuration_totals": {
+    "plain-v1": {
+      "count": 1397,
+      "device_bytes": 54843473680,
+      "candidate_sha256": "7538a12cfc2ca10cfd3d7e8509bdfaa903ca39021460d816be3f2a9628b06280"
+    },
+    "mtp-v3": {
+      "count": 1462,
+      "device_bytes": 64489419144,
+      "candidate_sha256": "7538a12cfc2ca10cfd3d7e8509bdfaa903ca39021460d816be3f2a9628b06280"
+    }
+  },
+  "limitations": [
+    "Historical plain-mode success applies only to the historical binary.",
+    "The ordered candidate has no GPU runtime evidence when cache preparation stops before launch.",
+    "ENV_ABORT is retained as an environmental interruption, not a model quality NO_GO.",
+    "Missing stages remain NOT_RUN; host shape contracts do not establish GPU acceptance.",
+    "Metadata-only time is unknown; the measured combined phase includes reservation.",
+    "Each attempt re-establishes the cache vector; no untouched-cache restart is claimed.",
+    "64 GiB limits scope host/cache charges, not total physical RAM.",
+    "Prewarm limit_gib=64 selects file bytes only; the preparation worker inherited a cgroup that was not captured, so empty observed groups do not prove absence of memcg pressure.",
+    "Process/scope cleanup does not prove application frees or physical driver reclamation.",
+    "GPU polling cannot exclude interference shorter than its sampling interval.",
+    "No default replacement or performance acceptance."
+  ],
+  "audit_sources_sha256": {
+    "tools/verify/startup_plan/audit.py": "ecdc12db45cc854feb01b4ed3239b32375502704f9b48153c79703b512504c10",
+    "tools/verify/startup_plan/run.py": "fec7e6aaabefb9877aad389459617be3a635f4788e95ab4ed59c9c8b6b6a48d3",
+    "tools/verify/device_reserve/reservation_audit.py": "7e1e5c2558e4dc7c5d27ce73855d7ce4d6e266f0ca95f592e78d7051db12171b",
+    "tools/verify/vmm_compare/trace_audit.py": "1c0e9110eb28ec411f02cc5eda50e8ffdddddc45d3a9ac43f7db30ef3f5a6712"
+  },
+  "full_audit": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/audit-full.json",
+    "sha256": "8f8a3efcd90a6151d4d1d9442d60dd1f1a054affddca1a68da8ecfe1c7b13fe9"
+  },
+  "final_evidence": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/final-evidence.json",
+    "sha256": "2f2fa5979bdb61c2a4b88d20c4ca1183629d8fb81ae999b27e90c7639e65a4d3",
+    "files": 4004
+  }
+}

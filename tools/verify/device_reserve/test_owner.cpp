@@ -20,6 +20,7 @@ struct FakeBackend {
   int allocate_calls = 0;
   int release_calls = 0;
   std::map<void*, size_t> live;
+  std::vector<size_t> allocation_indices;
   std::vector<size_t> freed_indices;
   std::vector<reserve::ReleaseReason> reasons;
 
@@ -29,6 +30,7 @@ struct FakeBackend {
 
   int Allocate(size_t index, size_t bytes, void** output) {
     ++allocate_calls;
+    allocation_indices.push_back(index);
     if (static_cast<int>(index) == fail_allocate) return 2;
     *output = new char[bytes];
     Check(live.emplace(*output, index).second, "fake reused live allocation");
@@ -197,6 +199,70 @@ void ZeroBytePlanIsRejected() {
   Check(owner.Prepare().error == reserve::Error::kInvalidPlan &&
             backend.allocate_calls == 0, "zero-size plan accepted");
 }
+
+void InvalidPermutationIsRejectedBeforeAllocation() {
+  const std::array<size_t, 3> plan{16, 32, 48};
+  for (const std::vector<size_t>& order :
+       {std::vector<size_t>{0, 1}, {0, 1, 1}, {0, 1, 3}, {0, 1, 2, 3}}) {
+    FakeBackend backend;
+    reserve::Owner owner(plan, backend, order);
+    Check(owner.Prepare().error == reserve::Error::kInvalidPlan,
+          "invalid permutation accepted");
+    Check(backend.allocate_calls == 0 && !owner.Finalize().result.ok() &&
+              backend.release_calls == 0,
+          "invalid permutation touched backend");
+  }
+}
+
+void PhysicalOrderPreservesLogicalHandoff() {
+  FakeBackend backend;
+  const std::array<size_t, 4> plan{16, 32, 48, 32};
+  std::array<size_t, 4> order{2, 1, 3, 0};
+  reserve::Owner owner(plan, backend, order);
+  order.fill(0);  // The owner must own its permutation, not borrow mutations.
+  Check(owner.Prepare().ok(), "ordered prepare");
+  Check(backend.allocation_indices == std::vector<size_t>{2, 1, 3, 0},
+        "physical ordering ignored");
+  for (size_t index = 0; index < plan.size(); ++index) {
+    void* pointer = nullptr;
+    const auto result = owner.Take(plan[index], &pointer);
+    Check(result.ok() && result.index == index && backend.live.at(pointer) ==
+              index, "physical ordering changed logical handoff");
+    Check(owner.Release(pointer).ok(), "ordered release");
+  }
+  Check(owner.Finalize().result.ok() && backend.live.empty(),
+        "ordered lifecycle");
+}
+
+void PhysicalFailureRollsBackInAllocationOrder() {
+  FakeBackend backend;
+  backend.fail_allocate = 0;
+  const std::array<size_t, 4> plan{16, 32, 48, 32};
+  const std::array<size_t, 4> order{2, 1, 3, 0};
+  reserve::Owner owner(plan, backend, order);
+  const auto result = owner.Prepare();
+  Check(result.error == reserve::Error::kAllocation && result.index == 0,
+        "physical allocation failure index");
+  Check(backend.freed_indices == std::vector<size_t>{3, 1, 2} &&
+            backend.live.empty(), "rollback must reverse physical order");
+  Check(!owner.Finalize().result.ok() && backend.release_calls == 3,
+        "ordered rollback repeated frees");
+}
+
+void PhysicalExitSkipsHandedPointer() {
+  FakeBackend backend;
+  const std::array<size_t, 4> plan{16, 32, 48, 32};
+  const std::array<size_t, 4> order{2, 1, 3, 0};
+  reserve::Owner owner(plan, backend, order);
+  Check(owner.Prepare().ok(), "prepare");
+  void* pointer = nullptr;
+  Check(owner.Take(16, &pointer).ok(), "take");
+  const auto done = owner.Finalize();
+  Check(!done.result.ok() && done.handed_live == 1 &&
+            backend.freed_indices == std::vector<size_t>{3, 1, 2},
+        "ordered exit stole handed pointer or used logical reverse order");
+  Check(owner.Release(pointer).ok() && backend.live.empty(), "late free");
+}
 }  // namespace
 
 int main() {
@@ -207,7 +273,11 @@ int main() {
                         FullConsumptionNeedsRelease, DoubleFreeRejected,
                         UnknownReleaseIsNeverRetried,
                         RuntimeReuseRetiresTombstone,
-                        PinnedBeforeReserveIsRejected, ZeroBytePlanIsRejected};
+                        PinnedBeforeReserveIsRejected, ZeroBytePlanIsRejected,
+                        InvalidPermutationIsRejectedBeforeAllocation,
+                        PhysicalOrderPreservesLogicalHandoff,
+                        PhysicalFailureRollsBackInAllocationOrder,
+                        PhysicalExitSkipsHandedPointer};
   try {
     for (auto test : tests) test();
   } catch (const std::exception& error) {

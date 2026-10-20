@@ -65,6 +65,10 @@ struct MtpConfig {
   // independent [seq_id, ...] slice, enabling concurrent MTP requests. 1 =
   // legacy single-sequence behavior (bit-identical, no extra memory).
   int max_seq = 1;
+  // Optional startup reservation of speculative rows (k + 1). Zero retains
+  // the existing lazy request-time allocation; candidates can reserve the
+  // final capacity directly without allocating and freeing a smaller pool.
+  int initial_scratch_capacity = 0;
   float eps = 1e-6f;
   // full-attention dims (same as the main model).
   int nq = 24;
@@ -121,8 +125,9 @@ struct MtpModel {
   uint16_t* d_trunk = nullptr;
   uint16_t* d_logits = nullptr;
 
-  // Per-step speculative scratch (allocated in LoadMtp, sized for k up to
-  // k_max). Preallocating these avoids the per-step cudaMalloc/cudaFree in
+  // Per-step speculative scratch (reserved by MtpReserveScratch, optionally
+  // during LoadMtp, sized for k up to k_max). Preallocating these avoids
+  // the per-step cudaMalloc/cudaFree in
   // MtpSpeculativeStep / MtpDraftExtend — each cudaFree is an implicit device
   // sync that stalls the pipeline. When the requested k exceeds k_max the
   // caller falls back to per-call allocation.

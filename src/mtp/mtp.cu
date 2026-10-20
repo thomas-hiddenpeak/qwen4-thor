@@ -259,6 +259,8 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
                cudaStream_t stream) {
   if (!out || !main_embed || !main_lm_head)
     return Status::Fail("LoadMtp: model and borrowed weights are required");
+  if (cfg.initial_scratch_capacity < 0 || cfg.initial_scratch_capacity > 17)
+    return Status::Fail("LoadMtp: initial scratch capacity must be in [0,17]");
   if (out->embed_tokens || out->lm_head || out->fc_embedding ||
       out->d_ids_scratch || out->k_max > 0)
     return Status::Fail("LoadMtp: output already owns resources");
@@ -445,6 +447,10 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
       cudaSuccess)
     return Status::Fail("cudaMalloc d_logits");
 
+  if (cfg.initial_scratch_capacity > 0) {
+    s = MtpReserveScratch(*out, cfg.initial_scratch_capacity);
+    if (!s.ok()) return s;
+  }
   if (cudaStreamSynchronize(stream) != cudaSuccess) {
     return Status::Fail("stream sync failed");
   }

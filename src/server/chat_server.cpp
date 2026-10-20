@@ -19,6 +19,9 @@
 #include "q4t/quant/moe_residency.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/runtime/residency_config.h"
+#ifdef Q4T_STARTUP_RESOURCE_PLAN
+#include "q4t/runtime/startup_plan.h"
+#endif
 #include "q4t/vision/vision.h"
 
 namespace q4t::server {
@@ -194,6 +197,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
         s = io::WeightLoader::Create(mcfg.mtp_dir, *mtp_index, 1, &raw_loader);
         if (!s.ok()) return Status::Fail("MTP budget loader: " + s.message());
         const std::unique_ptr<io::WeightLoader> mtp_loader(raw_loader);
+#ifdef Q4T_STARTUP_RESOURCE_PLAN
+        // Metadata preflight must not evict the cache under investigation.
+        mtp_loader->SetKeepPageCache(true, "");
+#endif
         // Sum mapped tensor bytes from shard headers: the exported index's
         // total_size does not match the tensors listed in its MTP weight_map.
         // The loader reads each weight through one host vector; gate_up
@@ -252,6 +259,13 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // requests. Each in-flight request owns one seq_id.
   max_seq_ = eff_max_seq;
   cfg.max_seq = max_seq_;
+#ifdef Q4T_STARTUP_RESOURCE_PLAN
+  {
+    PhaseTimer pt("startup_resource_plan");
+    s = runtime::PrepareStartupReservation(cfg, opts);
+    if (!s.ok()) return s;
+  }
+#endif
   seq_free_.assign(static_cast<size_t>(max_seq_), true);
   conn_cap_ = std::max(max_seq_ * 8, 128);  // in-flight request-thread cap
   {
@@ -328,13 +342,24 @@ Status ChatServer::Start(const ServerOptions& opts) {
     // Stage 2c: pool the draft full-attention KV/indexer for max_seq sequences
     // so concurrent MTP requests own independent draft-state slices (Stage 1).
     mcfg.max_seq = max_seq_;
+#ifdef Q4T_STARTUP_RESOURCE_PLAN
+    mcfg.initial_scratch_capacity = mtp_k_ + 1;
+#endif
     s = mtp::LoadMtp(mcfg, model_.Get().head.embed_tokens, model_.Get().head.lm_head,
                      &mtp_, nullptr);
     if (!s.ok()) {
+#ifdef Q4T_STARTUP_RESOURCE_PLAN
+      return Status::Fail("planned MTP load failed: " + s.message());
+#else
       std::fprintf(stderr, "[q4t] MTP load failed (%s); plain decode only\n",
                    s.message().c_str());
+#endif
     } else {
       mtp_loaded_ = true;
+#ifdef Q4T_STARTUP_RESOURCE_PLAN
+      s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
+      if (!s.ok()) return s;
+#endif
       std::fprintf(stderr, "[q4t] MTP loaded (k=%d max_seq=%d)\n", mtp_k_,
                    max_seq_);
     }
@@ -437,6 +462,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
       cudaSuccess) {
     return Status::Fail("prefill logits buffer alloc failed (out of memory)");
   }
+#ifdef Q4T_STARTUP_RESOURCE_PLAN
+  s = runtime::CompleteStartupReservation();
+  if (!s.ok()) return s;
+#endif
   return Status();
 }
 

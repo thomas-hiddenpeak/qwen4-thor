@@ -83,8 +83,18 @@ struct Summary {
 template <class Backend>
 class Owner {
  public:
-  Owner(std::span<const size_t> plan, Backend& backend)
-      : plan_(plan), backend_(backend), blocks_(plan.size()) {}
+  // An empty order retains the original logical allocation order. A supplied
+  // order is copied, then validated completely before any backend allocation.
+  Owner(std::span<const size_t> plan, Backend& backend,
+        std::span<const size_t> physical_order = {})
+      : plan_(plan), backend_(backend), blocks_(plan.size()),
+        physical_order_(physical_order.begin(), physical_order.end()),
+        allocated_order_(plan.size()) {
+    if (physical_order_.empty()) {
+      physical_order_.resize(plan.size());
+      for (size_t i = 0; i < plan.size(); ++i) physical_order_[i] = i;
+    }
+  }
   Owner(const Owner&) = delete;
   Owner& operator=(const Owner&) = delete;
 
@@ -103,7 +113,15 @@ class Owner {
     for (size_t bytes : plan_) {
       if (bytes == 0) return Fail(Error::kInvalidPlan);
     }
-    for (size_t i = 0; i < plan_.size(); ++i) {
+    if (physical_order_.size() != plan_.size()) {
+      return Fail(Error::kInvalidPlan);
+    }
+    std::vector<bool> seen(plan_.size(), false);
+    for (size_t index : physical_order_) {
+      if (index >= plan_.size() || seen[index]) return Fail(Error::kInvalidPlan);
+      seen[index] = true;
+    }
+    for (size_t i : physical_order_) {
       void* pointer = nullptr;
       const int rc = backend_.Allocate(i, plan_[i], &pointer);
       if (rc != 0) {
@@ -117,6 +135,7 @@ class Owner {
         return error_;
       }
       blocks_[i] = {pointer, State::kUnhanded};
+      allocated_order_[allocated_] = i;
       ++allocated_;
     }
     prepared_ = true;
@@ -233,14 +252,18 @@ class Owner {
   }
 
   void ReleaseUnhanded(ReleaseReason reason) {
-    for (size_t i = blocks_.size(); i > 0; --i) {
-      if (blocks_[i - 1].state == State::kUnhanded) FreeBlock(i - 1, reason);
+    for (size_t ordinal = allocated_; ordinal > 0; --ordinal) {
+      const size_t index = allocated_order_[ordinal - 1];
+      if (blocks_[index].state == State::kUnhanded) FreeBlock(index, reason);
     }
   }
 
   std::span<const size_t> plan_;
   Backend& backend_;
   std::vector<Block> blocks_;
+  std::vector<size_t> physical_order_;
+  // Sized before allocation; recording successful ownership cannot allocate.
+  std::vector<size_t> allocated_order_;
   Result error_;
   size_t allocated_ = 0;
   size_t consumed_ = 0;
