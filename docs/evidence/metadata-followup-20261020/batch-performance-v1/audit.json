@@ -1,0 +1,14 @@
+{
+  "status": "COMPLETE_DESCRIPTIVE_COMPARISON_NOT_STATISTICAL_ACCEPTANCE",
+  "candidate_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+  "parent_sha256": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+  "sealed_files_verified": 473,
+  "nvml_queries_ok": 3032,
+  "elapsed_seconds": 3312.1606266498566,
+  "model_loads": 4,
+  "performance_requests": 60,
+  "retries": 0,
+  "default_unchanged": true,
+  "deployed": false,
+  "statistical_performance": "INSUFFICIENT_EVIDENCE"
+}

@@ -1,0 +1,227 @@
+{
+  "status": "PASS",
+  "checked_responses": 60,
+  "checks": "response contract, actual input equality, streamed IDs, clock boundaries, effective capacity, output hash, prompt hash, and recomputed metrics",
+  "groups": [
+    {
+      "service": "parent-off",
+      "length": 1024,
+      "actual_inputs": [
+        1006,
+        1006,
+        1006
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "parent-off",
+      "length": 4096,
+      "actual_inputs": [
+        4075,
+        4075,
+        4075
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "parent-off",
+      "length": 8192,
+      "actual_inputs": [
+        8159,
+        8159,
+        8159
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "parent-off",
+      "length": 45056,
+      "actual_inputs": [
+        45050,
+        45050,
+        45050
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "parent-off",
+      "length": 204800,
+      "actual_inputs": [
+        204789,
+        204789,
+        204789
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "candidate-off",
+      "length": 1024,
+      "actual_inputs": [
+        1006,
+        1006,
+        1006
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "candidate-off",
+      "length": 4096,
+      "actual_inputs": [
+        4075,
+        4075,
+        4075
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "candidate-off",
+      "length": 8192,
+      "actual_inputs": [
+        8159,
+        8159,
+        8159
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "candidate-off",
+      "length": 45056,
+      "actual_inputs": [
+        45050,
+        45050,
+        45050
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "candidate-off",
+      "length": 204800,
+      "actual_inputs": [
+        204789,
+        204789,
+        204789
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "parent-on",
+      "length": 1024,
+      "actual_inputs": [
+        1006,
+        1006,
+        1006
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "parent-on",
+      "length": 4096,
+      "actual_inputs": [
+        4075,
+        4075,
+        4075
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "parent-on",
+      "length": 8192,
+      "actual_inputs": [
+        8159,
+        8159,
+        8159
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "parent-on",
+      "length": 45056,
+      "actual_inputs": [
+        45050,
+        45050,
+        45050
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "parent-on",
+      "length": 204800,
+      "actual_inputs": [
+        204789,
+        204789,
+        204789
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "candidate-on",
+      "length": 1024,
+      "actual_inputs": [
+        1006,
+        1006,
+        1006
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "candidate-on",
+      "length": 4096,
+      "actual_inputs": [
+        4075,
+        4075,
+        4075
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "candidate-on",
+      "length": 8192,
+      "actual_inputs": [
+        8159,
+        8159,
+        8159
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "candidate-on",
+      "length": 45056,
+      "actual_inputs": [
+        45050,
+        45050,
+        45050
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    },
+    {
+      "service": "candidate-on",
+      "length": 204800,
+      "actual_inputs": [
+        204789,
+        204789,
+        204789
+      ],
+      "checked_responses": 3,
+      "metric_recomputed": true
+    }
+  ]
+}

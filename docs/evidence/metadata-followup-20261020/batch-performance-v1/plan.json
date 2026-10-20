@@ -1,0 +1,38 @@
+{
+  "parent_source": "3d5564e",
+  "candidate_source": "b6870c0",
+  "binary_sha256": {
+    "parent": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+    "candidate": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542"
+  },
+  "compute_backend": "nvml",
+  "order": [
+    "parent-off",
+    "candidate-off",
+    "candidate-on",
+    "parent-on"
+  ],
+  "lengths": [
+    1024,
+    4096,
+    8192,
+    45056,
+    204800
+  ],
+  "repeats": 3,
+  "output_tokens": 256,
+  "loads": 4,
+  "performance_requests": 60,
+  "quality_requests": 0,
+  "retries": 0,
+  "warmup_requests": 0,
+  "discard_first": false,
+  "timeout_per_start": 7200,
+  "startup_timeout": 300,
+  "max_seq": 1,
+  "max_prefill": 8192,
+  "max_len": 208896,
+  "statistical_acceptance": false,
+  "tolerance": null,
+  "limitation": "one service start per identity and mode; order/time confounded"
+}

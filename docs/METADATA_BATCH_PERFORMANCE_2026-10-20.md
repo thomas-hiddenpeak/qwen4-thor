@@ -55,3 +55,10 @@ batch-performance-v1，不覆盖历史样本。默认binary不变。
 
 执行器：tools/verify/inference_metadata/run_batch_performance.py。
 本卡在执行前提交，结果另行追加，保留该冻结版本副本。
+
+## 执行终态
+
+本卡冻结副本保存在阶段frozen-plan.md。4加载/60请求按预算完成，
+无重试，四服务exit0，guard COMPLETED，473份封存文件核验通过。
+本项采样预算已用尽，不自动扩样；完整原值、边界及建议见
+[结果报告](METADATA_BATCH_PERFORMANCE_RESULT_2026-10-20.md)。

@@ -1,0 +1,14 @@
+{
+  "status": "MEASUREMENTS_COMPLETE_ACCEPTANCE_PENDING",
+  "started": 1792461241.3529313,
+  "completed": [
+    "parent-off",
+    "candidate-off",
+    "candidate-on",
+    "parent-on"
+  ],
+  "current": "parent-on",
+  "statistical_performance": "INSUFFICIENT_EVIDENCE",
+  "deployed": false,
+  "finished": 1792464552.9530268
+}
