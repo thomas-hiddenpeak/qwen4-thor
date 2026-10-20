@@ -1,0 +1,21 @@
+[
+  "python3",
+  "-B",
+  "tools/evalscope/run_acceptance.py",
+  "--mode",
+  "quality",
+  "--output",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/health-off",
+  "--binary",
+  "/home/rm01/models/dev/qwen4-thor/build/q4t",
+  "--model-dir",
+  "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "--fixtures",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/fixtures-off",
+  "--reference",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/acceptance-v1/run/quality-off/results.json",
+  "--port",
+  "8740",
+  "--startup-timeout",
+  "300"
+]

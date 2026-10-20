@@ -1,0 +1,12 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792476520.2032707,
+  "finished": 1792476595.6421423,
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/deploy_diagnostic_accepted.py"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}

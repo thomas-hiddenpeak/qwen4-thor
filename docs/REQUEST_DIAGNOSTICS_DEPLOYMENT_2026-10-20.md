@@ -1,6 +1,6 @@
 # 请求诊断默认部署
 
-状态：等待本轮验收通过后执行。
+状态：DEPLOYED_ACCEPTED_HEALTH_VERIFIED，默认3eb9b2a0，源码6f6e7b9。
 
 用户明确授权本任务“具备条件后直接收尾”，并已有AGENTS持续授权。
 旧默认d4232b63，候选3eb9b2a032db927988468e38855d67892a2a21482e7e2142ae64ce6de513a9a8。
@@ -25,3 +25,15 @@ python3 -B tools/evalscope/gpu_exclusive.py \
 ```
 
 该命令恢复d4232b63；不可用旧部署器回退本次版本。
+
+## 收尾结果
+
+默认MTP k=3、普通模式各1条1024-token健康请求通过，输出与参考
+一致；两服务exit0，无常驻服务。单一NVML lease约75.44秒，
+guard COMPLETED/child0；86份部署文件封存复核，默认binary、
+sidecar和真实缓存匹配。旧d4232b63完整回退包已验证，未演练回退。
+[部署审计](evidence/request-diagnostics-20261020/deploy-v1/audit.json)。
+
+此前53项host、6条质量、7个诊断场景全部通过，见
+[验收记录](REQUEST_DIAGNOSTICS_2026-10-20.md)。本项已按非性能
+任务接受并直接收尾，无新性能矩阵，无需追加确认。

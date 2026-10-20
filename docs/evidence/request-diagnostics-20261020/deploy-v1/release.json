@@ -1,0 +1,18 @@
+{
+  "version": "request-diagnostics-20261020",
+  "binary_sha256": "3eb9b2a032db927988468e38855d67892a2a21482e7e2142ae64ce6de513a9a8",
+  "source_commit": "6f6e7b97a6c7d5768276a8344e06898acb5580e3",
+  "tested_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/acceptance-v1/run/sources.json",
+  "tested_source_manifest_sha256": "5ee1e77beb27a7a3b6676444d16d10cf4ebfbbb5aee2e80f6e91236eb8cf5a11",
+  "source_note": "runtime sources match sealed acceptance snapshot",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/request-diagnostics-20261020/CMakeCache.txt",
+  "build_cache_sha256": "b260993602550b400e75dca827416691ae3c3c22804e8e7ea02441897cc94eea",
+  "acceptance": "ENGINEERING_ACCEPTED_RELIABILITY",
+  "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/docs/REQUEST_DIAGNOSTICS_DEPLOYMENT_2026-10-20.md",
+  "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/acceptance-decision.md",
+  "acceptance_snapshot_sha256": "302514b65d4e27ba8d5cd29fa235281a889fcb75100df31397f0d67c9fecc0be",
+  "acceptance_report": "/home/rm01/models/dev/qwen4-thor/docs/REQUEST_DIAGNOSTICS_2026-10-20.md",
+  "scope": "default executable; no persistent service; reliability change; no performance claim",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/previous/q4t.release.json"
+}
