@@ -107,7 +107,7 @@ Status LoadMoEWeights(const io::WeightLoader& loader, int layer_id, int E,
   // mmap page fault + memcpy) on ONE thread (~1.2 GB/s). Each expert writes to
   // a disjoint device offset and uses its own thread-local staging, so the
   // experts are embarrassingly parallel; a pool of min(hw, E) threads drives
-  // the host-side reads at aggregate memory bandwidth. This also fixes a
+  // the host-side reads at aggregate memory bandwidth.
   // Sources must survive each copy and must not be overwritten by the next
   // expert. Worker-owned staging drains before reuse and on early returns;
   // a parent-thread wait after join would be too late for those sources.
