@@ -56,3 +56,9 @@ host/cache上限、max-len262144、普通模式完成1条1024-token质量请求�
 每次runner上限1200秒，无自动扩样。全程不清模型缓存，不宣称严格
 物理RAM限额、SSD冷态或性能收益。lifecycle入口的公共启动/清理后端
 复用此次GPU覆盖，业务六题/取消完整序列不在本次新增复测范围。
+
+实机驱动已准备为tools/verify/inference_metadata/run_scope_integration.py，
+仅做AST检查，尚未执行；启动前要求基线guard已COMPLETED。其受控
+中断通过NVML正向确认目标PID后发送SIGINT，核验wrapper退出、scope
+移除及进程组无存活成员；失败保留原输出，不将控制器补清理当runner
+自身清理通过。完整阶段仍需由seal_stage/gpu_exclusive包裹。
