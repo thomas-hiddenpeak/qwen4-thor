@@ -1,0 +1,1144 @@
+{
+  "schema": 1,
+  "status": "PASS_BOUNDED_RELIABILITY",
+  "runtime_accepted": true,
+  "task_type": "bounded_reliability",
+  "default_replaced": false,
+  "default_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+  "candidate": {
+    "manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/order-candidate/build.json",
+    "manifest_sha256": "924446a4947bf8c670a5b0df11e5d09df339ec2d95ff619902637718625b8c01",
+    "candidate": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/order-candidate/build/q4t",
+      "sha256": "1d6603651a594a7e82e7a3f43de625ce810494d717a812f0e313d359e7761206",
+      "bytes": 4445592
+    },
+    "frozen_source_inputs_verified": true,
+    "current_default_unchanged": true
+  },
+  "final_evidence": {
+    "path": ".q4t-work/startup-cache-20261021/final-evidence.json",
+    "sha256": "9125af44cbf5379eb43094e4abfb55805e5e7fbb37b0022a37f800adede77c27",
+    "files": 2593,
+    "all_rehashed": true
+  },
+  "runtime_audit": {
+    "path": ".q4t-work/startup-cache-20261021/audit-final-v1.json",
+    "sha256": "d317c4267ca30a795a101c1a939403dfce35146d3ba21f144e933266a8bed583"
+  },
+  "runtime_path_review": {
+    "path": ".q4t-work/startup-cache-20261021/runtime-path-review.json",
+    "sha256": "d2c8d81bbcfc5d5f3f679523c1c1e19f4f964d6dd6424b8cc99ef37edef5a07e"
+  },
+  "closure_checks": {
+    "path": ".q4t-work/startup-cache-20261021/closure-checks.json",
+    "sha256": "44ee9ed5b5bc7da42374cab8e23f9b7ed079c03cd8e6239ce83107f49a928df4"
+  },
+  "budget": {
+    "model_starts": 7,
+    "http_requests": 5,
+    "model_start_limit": 7,
+    "http_limit": 5,
+    "new_preparation_limit": 5,
+    "collector_interruptions_retained": 2,
+    "interrupted_stage_seals": {
+      "mtp-lock-v1": "6348d946242c5d4c74809d8a7b59460a231b0eb261b2d539d0556551558c97ff",
+      "mtp-lock-v2": "8cad08ff5964c8c429167ec26f4e498b490a00424808b9c6f98f7cc28675fe48"
+    },
+    "historical_manifest_sha256": "2f2fa5979bdb61c2a4b88d20c4ca1183629d8fb81ae999b27e90c7639e65a4d3",
+    "new_preparations_used": 5,
+    "new_model_starts_used": 5,
+    "new_http_requests_used": 4,
+    "no_further_gpu_attempts": true
+  },
+  "collector_profile": "resources_nvml_application_ledger",
+  "acceptance_kernel_timeline": "NOT_COLLECTED",
+  "performance_acceptance": false,
+  "restart_plan_bytes_identical": true,
+  "argmax_outside_plan": {
+    "source": "src/model/model_head.cu",
+    "source_lines": [
+      234,
+      240,
+      241,
+      242,
+      248,
+      253,
+      255,
+      257
+    ],
+    "static_buffers": [
+      "s_part_v",
+      "s_part_i"
+    ],
+    "capacity_policy": "max(need,256*numChunks), numChunks=ceil(vocab/kArgmaxThreads)",
+    "observed_bytes_each": 993280,
+    "total_bytes": 1986560,
+    "explicit_free_before_exit": false,
+    "planned_reservation_leak": false,
+    "scope_reference": "docs/STARTUP_RESOURCE_PLAN_2026-10-20.md:58",
+    "disclosure": "All 1397 planned allocations were freed; two process-lifetime first-argmax buffers totaling 1,986,560 bytes have no explicit final cudaFree in the trace."
+  },
+  "stages": [
+    {
+      "name": "mtp-lock-v1",
+      "status": "RUNTIME_NOT_ACCEPTED",
+      "runtime_accepted": false,
+      "recorded_status": "FAILED",
+      "model_starts": 1,
+      "http_requests": 0,
+      "candidate_sha256": "1d6603651a594a7e82e7a3f43de625ce810494d717a812f0e313d359e7761206",
+      "default_unchanged": true,
+      "sealed_files": 406,
+      "sealed_manifest_sha256": "6348d946242c5d4c74809d8a7b59460a231b0eb261b2d539d0556551558c97ff",
+      "audit_errors": {},
+      "checks": {
+        "guard": "PASS",
+        "nvml": "PASS",
+        "collectors": "PASS",
+        "owned_runner": "PASS",
+        "model_scope": "PASS",
+        "temporary_locks": "PASS",
+        "preparation": "PASS",
+        "reservation_prefix": "PASS"
+      },
+      "nvml": {
+        "queries": 49,
+        "all_ok": true,
+        "failures": [],
+        "successful_queries": 49,
+        "configured_timeout_seconds": 5,
+        "maximum_observed_seconds": 0.5467932530445978,
+        "maximum_api_span_seconds": {
+          "import_pynvml": 0.010157392942346632,
+          "init": 0.14882182504516095,
+          "device_count": 6.26749824732542e-05,
+          "handle[0]": 0.2293529739836231,
+          "compute_v3[0]": 0.298218518961221,
+          "shutdown": 0.06077702599577606
+        },
+        "deadline_evidence": "sealed nvml_pids query(timeout=5) and worker process.communicate(timeout=timeout)",
+        "elapsed_scope": "worker-process lifetime including launch/teardown"
+      },
+      "collectors": {
+        "driver_attribution_valid": true,
+        "resource_samples": {
+          "system_samples": 235,
+          "cache_samples": 56,
+          "cgroup_samples": 56,
+          "skipped_system_intervals": 45,
+          "skipped_cache_intervals": 0
+        },
+        "timeline_status": "INCOMPLETE",
+        "trace_loss": {
+          "overrun": 0,
+          "commit overrun": 0,
+          "dropped events": 0
+        },
+        "instance_removed": true,
+        "global_trace_configuration_unchanged": true,
+        "written_bytes": 536870912,
+        "unwritten_at_least": 15432,
+        "collector_status": "FAILED",
+        "reason": "CaptureFailure: trace byte limit reached"
+      },
+      "owned_runner": {
+        "returncode": 1,
+        "runner_reaped": true,
+        "cleanup_complete": true,
+        "failure": "KeyboardInterrupt: "
+      },
+      "model_scope": {
+        "unit": "q4t-startup-mtp-lock-v1-1792514108654648020.scope",
+        "pid": 2305825,
+        "scope_removed": true,
+        "host_cache_max_bytes": 68719476736,
+        "total_physical_ram_limit": null,
+        "sampled_memory_current_peak_bytes": 589017088,
+        "sampled_swap_peak_bytes": 0,
+        "memory_event_maxima": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "observed_samples": 12
+      },
+      "preparation": {
+        "exact_full_hot_gate": true,
+        "payload_bytes": 67987791872,
+        "temporary_locks_gone_before_model": true,
+        "repair_passes": 0,
+        "model_scope_limit_is_not_preparation_limit": true,
+        "physical_fragmentation_equal": false,
+        "locks": {
+          "selected_files": 192,
+          "selected_bytes": 67987791872,
+          "mapped_files": 192,
+          "locked_files": 192,
+          "fully_resident_files": 192,
+          "unmapped_files": 192,
+          "cleanup_confirmed": true
+        }
+      },
+      "server_outcome": {
+        "server": -15,
+        "completed": 0,
+        "http_output_checks_passed": false,
+        "failure": "KeyboardInterrupt('startup-plan validation interrupted')",
+        "cleanup_failure": null,
+        "performance_acceptance": false
+      }
+    },
+    {
+      "name": "mtp-lock-v2",
+      "status": "RUNTIME_NOT_ACCEPTED",
+      "runtime_accepted": false,
+      "recorded_status": "FAILED",
+      "model_starts": 1,
+      "http_requests": 0,
+      "candidate_sha256": "1d6603651a594a7e82e7a3f43de625ce810494d717a812f0e313d359e7761206",
+      "default_unchanged": true,
+      "sealed_files": 397,
+      "sealed_manifest_sha256": "8cad08ff5964c8c429167ec26f4e498b490a00424808b9c6f98f7cc28675fe48",
+      "audit_errors": {},
+      "checks": {
+        "guard": "PASS",
+        "nvml": "PASS",
+        "collectors": "PASS",
+        "owned_runner": "PASS",
+        "model_scope": "PASS",
+        "temporary_locks": "PASS",
+        "preparation": "PASS",
+        "reservation_prefix": "PASS"
+      },
+      "nvml": {
+        "queries": 42,
+        "all_ok": true,
+        "failures": [],
+        "successful_queries": 42,
+        "configured_timeout_seconds": 5,
+        "maximum_observed_seconds": 0.3635123579297215,
+        "maximum_api_span_seconds": {
+          "import_pynvml": 0.00988464301917702,
+          "init": 0.023111909977160394,
+          "device_count": 4.920398350805044e-05,
+          "handle[0]": 0.18897138605825603,
+          "compute_v3[0]": 0.06224562297575176,
+          "shutdown": 0.020269852015189826
+        },
+        "deadline_evidence": "sealed nvml_pids query(timeout=5) and worker process.communicate(timeout=timeout)",
+        "elapsed_scope": "worker-process lifetime including launch/teardown"
+      },
+      "collectors": {
+        "driver_attribution_valid": true,
+        "resource_samples": {
+          "system_samples": 196,
+          "cache_samples": 47,
+          "cgroup_samples": 47,
+          "skipped_system_intervals": 37,
+          "skipped_cache_intervals": 0
+        },
+        "timeline_status": "INCOMPLETE",
+        "trace_loss": {
+          "overrun": 5501,
+          "commit overrun": 0,
+          "dropped events": 0
+        },
+        "instance_removed": true,
+        "global_trace_configuration_unchanged": true,
+        "written_bytes": 207554304,
+        "unwritten_at_least": 0,
+        "collector_status": "FAILED",
+        "reason": "CaptureFailure: trace events lost: {\"overrun\": 5501, \"commit overrun\": 0, \"dropped events\": 0}"
+      },
+      "owned_runner": {
+        "returncode": 1,
+        "runner_reaped": true,
+        "cleanup_complete": true,
+        "failure": "KeyboardInterrupt: "
+      },
+      "model_scope": {
+        "unit": "q4t-startup-mtp-lock-v2-1792514790008364719.scope",
+        "pid": 2307204,
+        "scope_removed": true,
+        "host_cache_max_bytes": 68719476736,
+        "total_physical_ram_limit": null,
+        "sampled_memory_current_peak_bytes": 568147968,
+        "sampled_swap_peak_bytes": 0,
+        "memory_event_maxima": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "observed_samples": 5
+      },
+      "preparation": {
+        "exact_full_hot_gate": true,
+        "payload_bytes": 67987791872,
+        "temporary_locks_gone_before_model": true,
+        "repair_passes": 0,
+        "model_scope_limit_is_not_preparation_limit": true,
+        "physical_fragmentation_equal": false,
+        "locks": {
+          "selected_files": 192,
+          "selected_bytes": 67987791872,
+          "mapped_files": 192,
+          "locked_files": 192,
+          "fully_resident_files": 192,
+          "unmapped_files": 192,
+          "cleanup_confirmed": true
+        }
+      },
+      "server_outcome": {
+        "server": -15,
+        "completed": 0,
+        "http_output_checks_passed": false,
+        "failure": "KeyboardInterrupt('startup-plan validation interrupted')",
+        "cleanup_failure": null,
+        "performance_acceptance": false
+      }
+    },
+    {
+      "name": "mtp-lock-v3",
+      "status": "PASS_BOUNDED_RELIABILITY",
+      "runtime_accepted": true,
+      "recorded_status": "RUNTIME_COMPLETED",
+      "model_starts": 1,
+      "http_requests": 2,
+      "candidate_sha256": "1d6603651a594a7e82e7a3f43de625ce810494d717a812f0e313d359e7761206",
+      "default_unchanged": true,
+      "sealed_files": 473,
+      "sealed_manifest_sha256": "8f1991600bd9c4baabec412b27e8173821364fa886808ef244cacdc9e20de008",
+      "audit_errors": {},
+      "checks": {
+        "guard": "PASS",
+        "nvml": "PASS",
+        "collectors": "PASS",
+        "owned_runner": "PASS",
+        "model_scope": "PASS",
+        "temporary_locks": "PASS",
+        "preparation": "PASS",
+        "runtime": "PASS"
+      },
+      "nvml": {
+        "queries": 100,
+        "all_ok": true,
+        "failures": [],
+        "successful_queries": 100,
+        "configured_timeout_seconds": 5,
+        "maximum_observed_seconds": 0.8118416060460731,
+        "maximum_api_span_seconds": {
+          "import_pynvml": 0.01363433909136802,
+          "init": 0.1306549640139565,
+          "device_count": 7.615797221660614e-05,
+          "handle[0]": 0.28451800206676126,
+          "compute_v3[0]": 0.25154615903738886,
+          "shutdown": 0.09400158294010907
+        },
+        "deadline_evidence": "sealed nvml_pids query(timeout=5) and worker process.communicate(timeout=timeout)",
+        "elapsed_scope": "worker-process lifetime including launch/teardown"
+      },
+      "collectors": {
+        "driver_attribution_valid": true,
+        "resource_samples": {
+          "system_samples": 385,
+          "cache_samples": 113,
+          "cgroup_samples": 113,
+          "skipped_system_intervals": 178,
+          "skipped_cache_intervals": 0
+        },
+        "timeline_status": "NOT_COLLECTED",
+        "collector_profile": "resources_nvml_application_ledger",
+        "kernel_attribution_available": false
+      },
+      "owned_runner": {
+        "returncode": 0,
+        "runner_reaped": true,
+        "cleanup_complete": true,
+        "failure": null
+      },
+      "model_scope": {
+        "unit": "q4t-startup-mtp-lock-v3-1792515222948798866.scope",
+        "pid": 2308151,
+        "scope_removed": true,
+        "host_cache_max_bytes": 68719476736,
+        "total_physical_ram_limit": null,
+        "sampled_memory_current_peak_bytes": 51273519104,
+        "sampled_swap_peak_bytes": 0,
+        "memory_event_maxima": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "observed_samples": 66
+      },
+      "runtime": {
+        "plan_sha256": "f9dce3b36ec7cdb1bfe09425d4be8accea0be7ed40a7dc66a1a0aff30771afbe",
+        "plan_count": 1462,
+        "planned_device_bytes": 64489419144,
+        "reservation": {
+          "status": "PASS",
+          "count": 1462,
+          "bytes": 64489419144,
+          "consumed": 1462,
+          "freed": 1462,
+          "plan_sha256": "f9dce3b36ec7cdb1bfe09425d4be8accea0be7ed40a7dc66a1a0aff30771afbe",
+          "all_device_reserved_before_first_pinned": true,
+          "unhanded_remaining": 0,
+          "handed_live": 0,
+          "release_unknown": 0
+        },
+        "physical_order": {
+          "strategy": "stable_descending_bytes",
+          "planned": 1462,
+          "started": 1462,
+          "completed": 1462,
+          "complete": true,
+          "indices_sha256": "651f7de6feb034caa29cd1c6a9dfc63a544844080ed26e5376da2f8454f732e6"
+        },
+        "http": {
+          "effective": {
+            "requested": {
+              "max_len": 262144,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "effective": {
+              "max_len": 262144,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "reported_requested": {
+              "max_len": 262144,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "matches_requested": true,
+            "budget_enabled": true,
+            "budget_feasible": true,
+            "effective_mtp": true
+          },
+          "default_mtp_without_flags": true,
+          "mtp_k": 3,
+          "requests": [
+            {
+              "request_index": 0,
+              "actual_input": 1024,
+              "actual_output": 7,
+              "text": "710003",
+              "ttft": 17.878927174955606,
+              "latency": 18.20609048497863,
+              "response_id": "chatcmpl-auto-0",
+              "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392"
+            },
+            {
+              "request_index": 1,
+              "actual_input": 1024,
+              "actual_output": 7,
+              "text": "710003",
+              "ttft": 7.845908727031201,
+              "latency": 8.069123766035773,
+              "response_id": "chatcmpl-auto-1",
+              "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392"
+            }
+          ],
+          "same_instance_requests": 2,
+          "reserved_storage_unchanged_across_requests": true
+        },
+        "timing": {
+          "server_started_to_ready_seconds": 25.5556934394408,
+          "shutdown_seconds": 2.49163302348461,
+          "startup_phase_reported_ms": {
+            "tokenizer": 316,
+            "budget": 420,
+            "startup_resource_plan": 13072,
+            "model_load": 8770,
+            "mtp_load": 2881,
+            "startup_total": 25461
+          },
+          "metadata_plan_seconds": null,
+          "metadata_timing_status": "UNKNOWN",
+          "metadata_timing_reason": "measured binary records a rounded combined metadata-plus-reservation phase, not separate metadata time",
+          "combined_plan_phase_ms": 13072,
+          "reserve_plan_to_prepared_seconds": 11.86617123708129,
+          "reserve_prepared_to_startup_complete_seconds": 11.651684562908486,
+          "physical_allocation_seconds_sum": 11.854161643772386,
+          "maximum_physical_allocation_seconds": 0.2091412249719724,
+          "performance_acceptance": false
+        },
+        "logical_trace": {
+          "records": 141074,
+          "completed_calls": {
+            "cudaMalloc": 1476,
+            "cudaStreamSynchronize": 2675,
+            "cudaHostAlloc": 99,
+            "cudaEventRecord": 59103,
+            "cudaMallocAsync": 2322,
+            "cudaFreeAsync": 2322,
+            "cudaEventSynchronize": 965,
+            "cudaFree": 1476,
+            "cudaFreeHost": 99
+          },
+          "allocations": 3897,
+          "frees": 3897,
+          "async_free_submissions": 2322,
+          "peak_logical_bytes": {
+            "device": 65066819976,
+            "host": 3600304144
+          },
+          "live_logical_bytes": {
+            "device": 0,
+            "host": 0
+          },
+          "incomplete_calls": [],
+          "failed_calls": [],
+          "errors": [],
+          "ready_snapshot": {
+            "live": 1561,
+            "bytes": {
+              "device": 64489419144,
+              "host": 3600304144
+            }
+          },
+          "scope": "application linked API calls; library internal allocation excluded; async free is submission, not physical release"
+        }
+      },
+      "preparation": {
+        "exact_full_hot_gate": true,
+        "payload_bytes": 67987791872,
+        "temporary_locks_gone_before_model": true,
+        "repair_passes": 0,
+        "model_scope_limit_is_not_preparation_limit": true,
+        "physical_fragmentation_equal": false,
+        "locks": {
+          "selected_files": 192,
+          "selected_bytes": 67987791872,
+          "mapped_files": 192,
+          "locked_files": 192,
+          "fully_resident_files": 192,
+          "unmapped_files": 192,
+          "cleanup_confirmed": true
+        }
+      },
+      "server_outcome": {
+        "server": 0,
+        "completed": 2,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_failure": null,
+        "performance_acceptance": false
+      },
+      "mtp_completion_calls_per_request": [
+        2,
+        2
+      ],
+      "effective_configuration": {
+        "max_seq": 1,
+        "max_prefill": 8192,
+        "max_len": 262144,
+        "resident_slots": 256,
+        "mtp": 1,
+        "mtp_k": 3,
+        "initial_scratch_capacity": 4,
+        "l2_slots": 16,
+        "mirror_k": 8,
+        "load_threads": 16
+      },
+      "unfreed_runtime_device_bytes": 0
+    },
+    {
+      "name": "restart-lock-v3",
+      "status": "PASS_BOUNDED_RELIABILITY",
+      "runtime_accepted": true,
+      "recorded_status": "RUNTIME_COMPLETED",
+      "model_starts": 1,
+      "http_requests": 1,
+      "candidate_sha256": "1d6603651a594a7e82e7a3f43de625ce810494d717a812f0e313d359e7761206",
+      "default_unchanged": true,
+      "sealed_files": 450,
+      "sealed_manifest_sha256": "2a0814be6d7e6df22d668a1a93bd75b7544b6c6f8fb1af7462eb519301c6e423",
+      "audit_errors": {},
+      "checks": {
+        "guard": "PASS",
+        "nvml": "PASS",
+        "collectors": "PASS",
+        "owned_runner": "PASS",
+        "model_scope": "PASS",
+        "temporary_locks": "PASS",
+        "preparation": "PASS",
+        "runtime": "PASS"
+      },
+      "nvml": {
+        "queries": 92,
+        "all_ok": true,
+        "failures": [],
+        "successful_queries": 92,
+        "configured_timeout_seconds": 5,
+        "maximum_observed_seconds": 0.6929412740282714,
+        "maximum_api_span_seconds": {
+          "import_pynvml": 0.013876363052986562,
+          "init": 0.12939429399557412,
+          "device_count": 7.176795043051243e-05,
+          "handle[0]": 0.24411968095228076,
+          "compute_v3[0]": 0.17456499801483005,
+          "shutdown": 0.12632067792583257
+        },
+        "deadline_evidence": "sealed nvml_pids query(timeout=5) and worker process.communicate(timeout=timeout)",
+        "elapsed_scope": "worker-process lifetime including launch/teardown"
+      },
+      "collectors": {
+        "driver_attribution_valid": true,
+        "resource_samples": {
+          "system_samples": 365,
+          "cache_samples": 106,
+          "cgroup_samples": 106,
+          "skipped_system_intervals": 163,
+          "skipped_cache_intervals": 0
+        },
+        "timeline_status": "NOT_COLLECTED",
+        "collector_profile": "resources_nvml_application_ledger",
+        "kernel_attribution_available": false
+      },
+      "owned_runner": {
+        "returncode": 0,
+        "runner_reaped": true,
+        "cleanup_complete": true,
+        "failure": null
+      },
+      "model_scope": {
+        "unit": "q4t-startup-restart-lock-v3-1792515362564203023.scope",
+        "pid": 2309553,
+        "scope_removed": true,
+        "host_cache_max_bytes": 68719476736,
+        "total_physical_ram_limit": null,
+        "sampled_memory_current_peak_bytes": 52377501696,
+        "sampled_swap_peak_bytes": 0,
+        "memory_event_maxima": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "observed_samples": 58
+      },
+      "runtime": {
+        "plan_sha256": "f9dce3b36ec7cdb1bfe09425d4be8accea0be7ed40a7dc66a1a0aff30771afbe",
+        "plan_count": 1462,
+        "planned_device_bytes": 64489419144,
+        "reservation": {
+          "status": "PASS",
+          "count": 1462,
+          "bytes": 64489419144,
+          "consumed": 1462,
+          "freed": 1462,
+          "plan_sha256": "f9dce3b36ec7cdb1bfe09425d4be8accea0be7ed40a7dc66a1a0aff30771afbe",
+          "all_device_reserved_before_first_pinned": true,
+          "unhanded_remaining": 0,
+          "handed_live": 0,
+          "release_unknown": 0
+        },
+        "physical_order": {
+          "strategy": "stable_descending_bytes",
+          "planned": 1462,
+          "started": 1462,
+          "completed": 1462,
+          "complete": true,
+          "indices_sha256": "651f7de6feb034caa29cd1c6a9dfc63a544844080ed26e5376da2f8454f732e6"
+        },
+        "http": {
+          "effective": {
+            "requested": {
+              "max_len": 262144,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "effective": {
+              "max_len": 262144,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "reported_requested": {
+              "max_len": 262144,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "matches_requested": true,
+            "budget_enabled": true,
+            "budget_feasible": true,
+            "effective_mtp": true
+          },
+          "default_mtp_without_flags": true,
+          "mtp_k": 3,
+          "requests": [
+            {
+              "request_index": 0,
+              "actual_input": 1024,
+              "actual_output": 7,
+              "text": "710003",
+              "ttft": 18.782053816947155,
+              "latency": 19.07566588395275,
+              "response_id": "chatcmpl-auto-0",
+              "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392"
+            }
+          ],
+          "same_instance_requests": 1,
+          "reserved_storage_unchanged_across_requests": true
+        },
+        "timing": {
+          "server_started_to_ready_seconds": 31.167914880556054,
+          "shutdown_seconds": 2.504548651049845,
+          "startup_phase_reported_ms": {
+            "tokenizer": 356,
+            "budget": 453,
+            "startup_resource_plan": 18613,
+            "model_load": 8802,
+            "mtp_load": 2892,
+            "startup_total": 31118
+          },
+          "metadata_plan_seconds": null,
+          "metadata_timing_status": "UNKNOWN",
+          "metadata_timing_reason": "measured binary records a rounded combined metadata-plus-reservation phase, not separate metadata time",
+          "combined_plan_phase_ms": 18613,
+          "reserve_plan_to_prepared_seconds": 17.40249995200429,
+          "reserve_prepared_to_startup_complete_seconds": 11.69454300403595,
+          "physical_allocation_seconds_sum": 17.390594410011545,
+          "maximum_physical_allocation_seconds": 0.19755070796236396,
+          "performance_acceptance": false
+        },
+        "logical_trace": {
+          "records": 80322,
+          "completed_calls": {
+            "cudaMalloc": 1469,
+            "cudaStreamSynchronize": 1912,
+            "cudaHostAlloc": 99,
+            "cudaEventRecord": 32375,
+            "cudaMallocAsync": 1161,
+            "cudaFreeAsync": 1161,
+            "cudaEventSynchronize": 416,
+            "cudaFree": 1469,
+            "cudaFreeHost": 99
+          },
+          "allocations": 2729,
+          "frees": 2729,
+          "async_free_submissions": 1161,
+          "peak_logical_bytes": {
+            "device": 65066819976,
+            "host": 3600304144
+          },
+          "live_logical_bytes": {
+            "device": 0,
+            "host": 0
+          },
+          "incomplete_calls": [],
+          "failed_calls": [],
+          "errors": [],
+          "ready_snapshot": {
+            "live": 1561,
+            "bytes": {
+              "device": 64489419144,
+              "host": 3600304144
+            }
+          },
+          "scope": "application linked API calls; library internal allocation excluded; async free is submission, not physical release"
+        }
+      },
+      "preparation": {
+        "exact_full_hot_gate": true,
+        "payload_bytes": 67987791872,
+        "temporary_locks_gone_before_model": true,
+        "repair_passes": 0,
+        "model_scope_limit_is_not_preparation_limit": true,
+        "physical_fragmentation_equal": false,
+        "locks": {
+          "selected_files": 192,
+          "selected_bytes": 67987791872,
+          "mapped_files": 192,
+          "locked_files": 192,
+          "fully_resident_files": 192,
+          "unmapped_files": 192,
+          "cleanup_confirmed": true
+        }
+      },
+      "server_outcome": {
+        "server": 0,
+        "completed": 1,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_failure": null,
+        "performance_acceptance": false
+      },
+      "mtp_completion_calls_per_request": [
+        2
+      ],
+      "effective_configuration": {
+        "max_seq": 1,
+        "max_prefill": 8192,
+        "max_len": 262144,
+        "resident_slots": 256,
+        "mtp": 1,
+        "mtp_k": 3,
+        "initial_scratch_capacity": 4,
+        "l2_slots": 16,
+        "mirror_k": 8,
+        "load_threads": 16
+      },
+      "unfreed_runtime_device_bytes": 0
+    },
+    {
+      "name": "boundary-lock-v3",
+      "status": "PASS_BOUNDED_RELIABILITY",
+      "runtime_accepted": true,
+      "recorded_status": "RUNTIME_COMPLETED",
+      "model_starts": 1,
+      "http_requests": 1,
+      "candidate_sha256": "1d6603651a594a7e82e7a3f43de625ce810494d717a812f0e313d359e7761206",
+      "default_unchanged": true,
+      "sealed_files": 441,
+      "sealed_manifest_sha256": "71a894cdb836ac45be0c473dea7afa31e225e3190d641e94d8b81ab30aec9793",
+      "audit_errors": {},
+      "checks": {
+        "guard": "PASS",
+        "nvml": "PASS",
+        "collectors": "PASS",
+        "owned_runner": "PASS",
+        "model_scope": "PASS",
+        "temporary_locks": "PASS",
+        "preparation": "PASS",
+        "runtime": "PASS"
+      },
+      "nvml": {
+        "queries": 88,
+        "all_ok": true,
+        "failures": [],
+        "successful_queries": 88,
+        "configured_timeout_seconds": 5,
+        "maximum_observed_seconds": 0.08177508495282382,
+        "maximum_api_span_seconds": {
+          "import_pynvml": 0.009337265975773335,
+          "init": 0.006906741997227073,
+          "device_count": 9.584298823028803e-05,
+          "handle[0]": 0.010984680033288896,
+          "compute_v3[0]": 0.007817712030373514,
+          "shutdown": 0.007833749055862427
+        },
+        "deadline_evidence": "sealed nvml_pids query(timeout=5) and worker process.communicate(timeout=timeout)",
+        "elapsed_scope": "worker-process lifetime including launch/teardown"
+      },
+      "collectors": {
+        "driver_attribution_valid": true,
+        "resource_samples": {
+          "system_samples": 359,
+          "cache_samples": 97,
+          "cgroup_samples": 97,
+          "skipped_system_intervals": 124,
+          "skipped_cache_intervals": 0
+        },
+        "timeline_status": "NOT_COLLECTED",
+        "collector_profile": "resources_nvml_application_ledger",
+        "kernel_attribution_available": false
+      },
+      "owned_runner": {
+        "returncode": 0,
+        "runner_reaped": true,
+        "cleanup_complete": true,
+        "failure": null
+      },
+      "model_scope": {
+        "unit": "q4t-startup-boundary-lock-v3-1792515475266198206.scope",
+        "pid": 2310874,
+        "scope_removed": true,
+        "host_cache_max_bytes": 68719476736,
+        "total_physical_ram_limit": null,
+        "sampled_memory_current_peak_bytes": 15004635136,
+        "sampled_swap_peak_bytes": 0,
+        "memory_event_maxima": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "observed_samples": 50
+      },
+      "runtime": {
+        "plan_sha256": "fbd1c2cced9524839c36f4dade92a99b2c0c5e3ec751a7e83e9f0c3fee928f00",
+        "plan_count": 1397,
+        "planned_device_bytes": 28433536796,
+        "reservation": {
+          "status": "PASS",
+          "count": 1397,
+          "bytes": 28433536796,
+          "consumed": 1397,
+          "freed": 1397,
+          "plan_sha256": "fbd1c2cced9524839c36f4dade92a99b2c0c5e3ec751a7e83e9f0c3fee928f00",
+          "all_device_reserved_before_first_pinned": true,
+          "unhanded_remaining": 0,
+          "handed_live": 0,
+          "release_unknown": 0
+        },
+        "physical_order": {
+          "strategy": "stable_descending_bytes",
+          "planned": 1397,
+          "started": 1397,
+          "completed": 1397,
+          "complete": true,
+          "indices_sha256": "aeb2119abfc9a91c5813eff765a611531ffbb44081e28de49cf1c2fec8eb5879"
+        },
+        "http": {
+          "effective": {
+            "requested": {
+              "max_len": 8192,
+              "max_seq": 2,
+              "max_prefill": 2048
+            },
+            "effective": {
+              "max_len": 8192,
+              "max_seq": 2,
+              "max_prefill": 2048
+            },
+            "reported_requested": {
+              "max_len": 8192,
+              "max_seq": 2,
+              "max_prefill": 2048
+            },
+            "matches_requested": true,
+            "budget_enabled": true,
+            "budget_feasible": true,
+            "effective_mtp": false
+          },
+          "default_mtp_without_flags": false,
+          "mtp_k": null,
+          "requests": [
+            {
+              "request_index": 0,
+              "actual_input": 1024,
+              "actual_output": 7,
+              "text": "710003",
+              "ttft": 32.43683174904436,
+              "latency": 33.47489306807984,
+              "response_id": "chatcmpl-auto-0",
+              "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392"
+            }
+          ],
+          "same_instance_requests": 1,
+          "reserved_storage_unchanged_across_requests": true
+        },
+        "timing": {
+          "server_started_to_ready_seconds": 9.0909290635027,
+          "shutdown_seconds": 1.7179205963620916,
+          "startup_phase_reported_ms": {
+            "tokenizer": 352,
+            "budget": 480,
+            "startup_resource_plan": 1731,
+            "model_load": 6420,
+            "startup_total": 8985
+          },
+          "metadata_plan_seconds": null,
+          "metadata_timing_status": "UNKNOWN",
+          "metadata_timing_reason": "measured binary records a rounded combined metadata-plus-reservation phase, not separate metadata time",
+          "combined_plan_phase_ms": 1731,
+          "reserve_plan_to_prepared_seconds": 0.49761932995170355,
+          "reserve_prepared_to_startup_complete_seconds": 6.420885981991887,
+          "physical_allocation_seconds_sum": 0.4934877804480493,
+          "maximum_physical_allocation_seconds": 0.20323953009210527,
+          "performance_acceptance": false
+        },
+        "logical_trace": {
+          "records": 195600,
+          "completed_calls": {
+            "cudaMalloc": 1399,
+            "cudaStreamSynchronize": 2979,
+            "cudaHostAlloc": 51,
+            "cudaEventRecord": 50442,
+            "cudaMallocAsync": 2910,
+            "cudaFreeAsync": 2910,
+            "cudaEventSynchronize": 35661,
+            "cudaFree": 1397,
+            "cudaFreeHost": 51
+          },
+          "allocations": 4360,
+          "frees": 4358,
+          "async_free_submissions": 2910,
+          "peak_logical_bytes": {
+            "device": 28500842268,
+            "host": 179307296
+          },
+          "live_logical_bytes": {
+            "device": 1986560,
+            "host": 0
+          },
+          "incomplete_calls": [],
+          "failed_calls": [],
+          "errors": [],
+          "ready_snapshot": {
+            "live": 1448,
+            "bytes": {
+              "device": 28433536796,
+              "host": 179307296
+            }
+          },
+          "scope": "application linked API calls; library internal allocation excluded; async free is submission, not physical release"
+        }
+      },
+      "preparation": {
+        "exact_full_hot_gate": true,
+        "payload_bytes": 67987791872,
+        "temporary_locks_gone_before_model": true,
+        "repair_passes": 0,
+        "model_scope_limit_is_not_preparation_limit": true,
+        "physical_fragmentation_equal": false,
+        "locks": {
+          "selected_files": 192,
+          "selected_bytes": 67987791872,
+          "mapped_files": 192,
+          "locked_files": 192,
+          "fully_resident_files": 192,
+          "unmapped_files": 192,
+          "cleanup_confirmed": true
+        }
+      },
+      "server_outcome": {
+        "server": 0,
+        "completed": 1,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_failure": null,
+        "performance_acceptance": false
+      },
+      "mtp_completion_calls_per_request": [
+        0
+      ],
+      "effective_configuration": {
+        "max_seq": 2,
+        "max_prefill": 2048,
+        "max_len": 8192,
+        "resident_slots": 128,
+        "mtp": 0,
+        "mtp_k": 3,
+        "initial_scratch_capacity": 0,
+        "l2_slots": 1,
+        "mirror_k": 0,
+        "load_threads": 1
+      },
+      "unfreed_runtime_device_bytes": 1986560
+    }
+  ],
+  "cpu_contracts": {
+    "previous_110_reused": {
+      "counts": {
+        "configuration": 27,
+        "plan_core": 35,
+        "owner": 15,
+        "wrapper": 9,
+        "old_runner": 24
+      },
+      "audit": {
+        "path": ".q4t-work/startup-plan-20261020/audit-full.json",
+        "sha256": "8f8a3efcd90a6151d4d1d9442d60dd1f1a054affddca1a68da8ecfe1c7b13fe9"
+      }
+    },
+    "receipts": [
+      {
+        "path": ".q4t-work/startup-cache-20261021/observer-host-final/result.json",
+        "sha256": "d07cddb17d1aa8ebe274f840743d2ce398b7891b9b5eba55939aac8bb485e1d0",
+        "status": "PASS",
+        "tests_run": 15
+      },
+      {
+        "path": ".q4t-work/startup-cache-20261021/locked-host-v4/result.json",
+        "sha256": "059b8b15df07f703f3b920ef991e9683aa47b54875d484fb8141f3c08e891646",
+        "status": "PASS",
+        "maximum_selected_bytes": 4194304,
+        "cases": [
+          "success",
+          "zero_quota",
+          "partial_quota",
+          "eof_ready",
+          "eof_held",
+          "sigterm_held",
+          "sigkill_held",
+          "grant_denied",
+          "held_timeout",
+          "logging_failure",
+          "privileged_success",
+          "privileged_abort",
+          "parent_death"
+        ]
+      },
+      {
+        "path": ".q4t-work/startup-cache-20261021/locked-host-final-v1/result.json",
+        "sha256": "eb4d99a8069b20602edd9623f66ea57406752e9e9b59fabdb08b206b9466052b",
+        "status": "PASS",
+        "maximum_selected_bytes": 4194304,
+        "cases": [
+          "exit_log_failure",
+          "privileged_parent_death"
+        ]
+      },
+      {
+        "path": ".q4t-work/startup-cache-20261021/runner-host-v1/result.json",
+        "sha256": "81188bc0c131bfbcc32f3e10828ae9cdd7f2cdc587d6351a7ff68558980ee29f",
+        "status": "PASS",
+        "tests_run": 22
+      },
+      {
+        "path": ".q4t-work/startup-cache-20261021/runner-host-timing-v2/result.json",
+        "sha256": "9db44b12b20ee116d929fd3cac38768dccd88ef3752513d94b857f77b322616f",
+        "status": "PASS",
+        "tests_run": 1,
+        "reused_unmodified_test_cases": 21
+      },
+      {
+        "path": ".q4t-work/startup-cache-20261021/runner-cap-v3/result.json",
+        "sha256": "8372aeb9952a498a89dce0117aeb6cbc6a0c1750087ee35be24b8cf18f7e8dc9",
+        "status": "PASS",
+        "tests_run": 4
+      },
+      {
+        "path": ".q4t-work/startup-cache-20261021/runner-profile-v4/result.json",
+        "sha256": "60b174368dcd70e9ca8208c466dd95ecc59d5f83c9a1231fd7145e94330111a1",
+        "status": "PASS",
+        "tests_run": 5
+      },
+      {
+        "path": ".q4t-work/startup-cache-20261021/runner-host-current-v5/result.json",
+        "sha256": "7d47037af11be7b38d18b43470c0ce18bf5c400aa2d5d97cd507e5b1b0d42b21",
+        "status": "PASS",
+        "tests_run": 22
+      }
+    ]
+  },
+  "limitations": [
+    "Exact page-cache vectors do not establish equal physical fragmentation or NVIDIA pool state.",
+    "Preparation observations belong to the recorded helper cgroup; the 64 GiB model scope is a different boundary.",
+    "The v3 reliability profile does not collect a kernel timeline; vmstat/cgroup samples cannot replace per-PID compaction or shrinker attribution. Prior trace failures remain incomplete and do not accept the candidate.",
+    "Success applies only to this preparation method, physical allocation ordering and the tested configurations/text.",
+    "This is an offline review of existing sealed evidence; no server/GPU/NVML/cache preparation was run.",
+    "The request-level MTP evidence is successful wrapped CUDA callsites resolved to the tested ELF, not the startup loaded flag or client-estimated speculative acceptance rate.",
+    "Completion call counts prove speculative function execution for the observed 1K requests; they do not establish generalized MTP quality or performance.",
+    "Boundary max_seq=2 is configured capacity exercised by one serial request, not a concurrent-load acceptance claim.",
+    "The startup reservation contract excludes first-argmax process-lifetime caches. No explicit cudaFree for their final pointers was observed; process exit ends their lifetime.",
+    "No complete kernel timeline is available in the accepted resources/NVML/application-ledger profile; driver root cause is not established.",
+    "All four accepted HTTP requests use the same frozen 1024-input/7-output fixture; they do not establish full-model semantic quality.",
+    "The 262144 and 8192 sequence lengths are startup configuration capacities, not tested request input lengths.",
+    "Default MTP means the experimental candidate invoked without MTP flags; the production default binary remains unchanged.",
+    "Metadata derivation time is unknown: the binary reports a combined derivation and reservation phase.",
+    "All planned allocations were explicitly freed. Async free logs and process exit do not establish physical driver pool return to the OS.",
+    "All current and historical failed attempts remain retained; acceptance is limited to the three v3 stages."
+  ],
+  "stage_sealed_files": 2167,
+  "accepted_nvml_queries": 280,
+  "all_new_nvml_queries": 371
+}
