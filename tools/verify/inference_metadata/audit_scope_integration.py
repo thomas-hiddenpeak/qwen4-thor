@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[3]
-STAGE = ROOT / '.q4t-work/offload-foundation-20261020/scope-integration-v3'
+STAGE = ROOT / '.q4t-work/offload-foundation-20261020/scope-integration-v4'
 EXPECTED = '19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469'
 
 
@@ -89,7 +89,7 @@ def main():
             'intended startup failure/cleanup')
     cpu['startup_failure'] = dict(expected_exec_failure=True, unit_removed=True)
     normal = out / 'normal'
-    identity, end = scope_identity(normal / 'http/isolation', 16 << 30)
+    identity, end = scope_identity(normal / 'http/isolation', 64 << 30)
     require(end['returncode'] == 0 and int((normal / 'http/server.pid').read_text()) == identity['pid'],
             'normal GPU payload identity/exit')
     rows, http = read(normal / 'http/results.json'), read(normal / 'http/exit.json')
@@ -113,7 +113,7 @@ def main():
     require(statuses <= {'ok', 'scheduled_skip', 'no_target', 'no_matching_compute_process'},
             'resource NVML query failure')
     interrupted = out / 'interrupted'
-    identity, end = scope_identity(interrupted / 'http/isolation', 16 << 30)
+    identity, end = scope_identity(interrupted / 'http/isolation', 64 << 30)
     proof = read(out / 'interrupt-proof.json')
     require(proof['signal'] == 'SIGINT' and proof['pid'] == identity['pid'] and
             proof['identity'] == identity and proof['nvml']['status'] == 'OK' and

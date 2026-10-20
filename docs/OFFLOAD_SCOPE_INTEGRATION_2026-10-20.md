@@ -94,3 +94,15 @@ v3仅对未完成GPU部分做一次同配置诊断复现，仍用16GiB host/cach
 NVML默认后端和5秒门；无定向cache驱逐。复用v2相同scope源码及封存
 CPU五项证据，不重复CPU采样。原GPU预算的正常质量/受控中断仍待完成，
 额外v2中断加载单列为ENV_ABORT，不能隐藏在2次有效加载的计数中。
+
+## v3复现与v4定向限额对照
+
+v3再次ENV_ABORT：NVML init超时且worker在额外1秒清理窗口内未退出，
+记录CLEANUP_FAILED。稍后目标进程及scope均已退出；内核18:01:36记录
+GPU0 _memdescAllocInternal 返回NV_ERR_NO_MEMORY。该记录支持调查
+驱动分配/资源压力，不证明16GiB memcg是唯一原因，也不是代码缺陷定论。
+
+v4仅将host/cache memcg上限由16GiB改为64GiB，保持其余模型、GPU
+配置、NVML5秒门及正常质量/受控中断预算；复用同源码CPU合同。
+这是针对新分配失败证据的限额对照，若通过只接受64GiB配置的工具
+接入；16GiB保留未通过，不能宣称严格物理RAM上限或低预算offload可用。

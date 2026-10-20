@@ -17,7 +17,8 @@
 限额工具scope候选已通过CPU后代归属/退出/清理检查及7项host合同，
 暂存接入草稿另通过103项host合同，正式路径103项host复核通过，实机驱动和离线审计已准备，v1 CPU OOM计数保留失败已定位为systemd默认stop，已显式配置continue，
 v2 CPU已通过，GPU加载因NVML init超时ENV_ABORT，正在做一次
-同配置GPU定向复现，CPU证据复用；见[接入记录](OFFLOAD_SCOPE_INTEGRATION_2026-10-20.md)。
+同配置GPU定向复现也ENV_ABORT；内核出现GPU分配失败，当前仅改变
+memcg为64GiB作定向对照，CPU证据复用；见[接入记录](OFFLOAD_SCOPE_INTEGRATION_2026-10-20.md)。
 
 ## 当前研究准备审计
 

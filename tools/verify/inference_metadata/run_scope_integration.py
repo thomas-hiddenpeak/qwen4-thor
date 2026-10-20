@@ -12,7 +12,7 @@ import time
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'tools/evalscope'))
 STAGE = ROOT / '.q4t-work/offload-foundation-20261020'
-OUT = STAGE / 'scope-integration-v3/run'
+OUT = STAGE / 'scope-integration-v4/run'
 PACKAGE = ROOT / '.q4t-work/releases/offload-foundation-20261020'
 MODEL = '/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream'
 EXPECTED = '19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469'
@@ -129,7 +129,7 @@ def main():
     save(OUT / 'hot.json', {})
     save(OUT / 'plan.json', dict(binary_sha256=EXPECTED, loads=2, quality_requests=1,
         interrupted_gpu_loads=1, runner_timeout_seconds=1200, retries=0,
-        host_cache_max_bytes=16 << 30, cold_cache=False, physical_ram_acceptance=False,
+        host_cache_max_bytes=64 << 30, cold_cache=False, physical_ram_acceptance=False,
         cpu_cases=['normal', 'terminate', 'kill', 'startup_failure', 'oom']))
     env = {k: v for k, v in os.environ.items() if not k.startswith('Q4T_') and k != 'LD_PRELOAD'}
     state = dict(status='RUNNING', started=time.time(), completed=[])
@@ -142,7 +142,7 @@ def main():
             '--binary', str(PACKAGE / 'q4t'), '--model-dir', MODEL,
             '--hot-list', str(OUT / 'hot.json'), '--fixtures', str(fixtures),
             '--reference', str(OUT / 'reference.json'), '--mode', 'quality',
-            '--chunk-order', '0', '--host-cache-max-bytes', str(16 << 30),
+            '--chunk-order', '0', '--host-cache-max-bytes', str(64 << 30),
             '--runner-timeout-s', '1200', '--port', '8740']
         normal = OUT / 'normal'
         command = common + ['--output', str(normal)]
