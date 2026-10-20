@@ -62,3 +62,8 @@ host/cache上限、max-len262144、普通模式完成1条1024-token质量请求�
 中断通过NVML正向确认目标PID后发送SIGINT，核验wrapper退出、scope
 移除及进程组无存活成员；失败保留原输出，不将控制器补清理当runner
 自身清理通过。完整阶段仍需由seal_stage/gpu_exclusive包裹。
+
+离线审计入口为tools/verify/inference_metadata/audit_scope_integration.py，
+核对封存摘要、当前工具身份、五种CPU结果、真实payload PID/starttime/
+owner token、正常HTTP质量与NVML/cgroup绑定、受控中断见证及最终清理。
+目前只有AST检查，必须等真实阶段完成后执行；脚本存在不代表验收通过。
