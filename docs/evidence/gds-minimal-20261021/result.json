@@ -1,0 +1,430 @@
+{
+  "schema": 1,
+  "status": "COMPLETED_CAPABILITY_DIAGNOSTIC_NATIVE_NOT_ACCEPTED",
+  "probe_processes": 4,
+  "actual_cufile_reads": 2,
+  "model_loads": 0,
+  "http_requests": 0,
+  "cases": [
+    {
+      "name": "strict-current",
+      "driver_open_code": 5001,
+      "result": {
+        "status": "FAILED",
+        "failure": "cuFileDriverOpen failed",
+        "read_attempted": false,
+        "returned_bytes": null,
+        "requested_bytes": 2461696,
+        "data_match": false,
+        "file_unchanged": false,
+        "cleanup_ok": true,
+        "logging_ok": true,
+        "signal": 0,
+        "native_path": "UNPROVEN",
+        "performance_accepted": false,
+        "actual_internal_pool_bytes": null,
+        "event": "result",
+        "seq": 37,
+        "pid": 2360483,
+        "mono_ns": 715430437598212
+      },
+      "source_sha256": "6a48162c79e840129310d49085415aeab9e86160fcf1778e9adc7dba0e7d0be9",
+      "process_io": [],
+      "device_attributes": {
+        "DMA_BUF_SUPPORTED": 0,
+        "HOST_ALLOC_DMA_BUF_SUPPORTED": 1,
+        "INTEGRATED": 1,
+        "COMPUTE_CAPABILITY_MAJOR": 11,
+        "COMPUTE_CAPABILITY_MINOR": 0
+      },
+      "path": "STRICT_INITIALIZATION_FAILED_NO_PAYLOAD_READ"
+    },
+    {
+      "name": "strict-request-p2pdma",
+      "driver_open_code": 5001,
+      "result": {
+        "status": "FAILED",
+        "failure": "cuFileDriverOpen failed",
+        "read_attempted": false,
+        "returned_bytes": null,
+        "requested_bytes": 2461696,
+        "data_match": false,
+        "file_unchanged": false,
+        "cleanup_ok": true,
+        "logging_ok": true,
+        "signal": 0,
+        "native_path": "UNPROVEN",
+        "performance_accepted": false,
+        "actual_internal_pool_bytes": null,
+        "event": "result",
+        "seq": 37,
+        "pid": 2360490,
+        "mono_ns": 715430887146323
+      },
+      "source_sha256": "c43317994e5afa4e2b339de4957314fef915dcb18b80407674c5c9ab5bf1b25e",
+      "process_io": [],
+      "device_attributes": {
+        "DMA_BUF_SUPPORTED": 0,
+        "HOST_ALLOC_DMA_BUF_SUPPORTED": 1,
+        "INTEGRATED": 1,
+        "COMPUTE_CAPABILITY_MAJOR": 11,
+        "COMPUTE_CAPABILITY_MINOR": 0
+      },
+      "path": "STRICT_INITIALIZATION_FAILED_NO_PAYLOAD_READ"
+    },
+    {
+      "name": "compat-control",
+      "driver_open_code": 0,
+      "result": {
+        "status": "PASS",
+        "failure": null,
+        "read_attempted": true,
+        "returned_bytes": 2461696,
+        "requested_bytes": 2461696,
+        "data_match": true,
+        "file_unchanged": true,
+        "cleanup_ok": true,
+        "logging_ok": true,
+        "signal": 0,
+        "native_path": "UNPROVEN",
+        "performance_accepted": false,
+        "actual_internal_pool_bytes": null,
+        "event": "result",
+        "seq": 80,
+        "pid": 2360498,
+        "mono_ns": 715434878992370
+      },
+      "source_sha256": "a49a6f31a935712421c138381c8e94ac998dfd4d87edc6932a7fe338288e73a3",
+      "process_io": [
+        {
+          "before": {
+            "known": true,
+            "mono_ns": 715431812239243,
+            "read_bytes": 1417216,
+            "rchar": 913996
+          },
+          "after": {
+            "known": true,
+            "mono_ns": 715431814418565,
+            "read_bytes": 3878912,
+            "rchar": 3375807
+          },
+          "delta_known": true,
+          "read_bytes_delta": 2461696,
+          "rchar_delta": 2461811,
+          "scope": "process cuFileRead window; includes observer/library I/O, excludes later truth pread; not SSD attribution",
+          "event": "process_io",
+          "seq": 65,
+          "pid": 2360498,
+          "mono_ns": 715431814436231
+        }
+      ],
+      "device_attributes": {
+        "DMA_BUF_SUPPORTED": 0,
+        "HOST_ALLOC_DMA_BUF_SUPPORTED": 1,
+        "INTEGRATED": 1,
+        "COMPUTE_CAPABILITY_MAJOR": 11,
+        "COMPUTE_CAPABILITY_MINOR": 0
+      },
+      "reads": [
+        {
+          "name": "cuFileRead",
+          "phase": "work",
+          "returned_bytes": 2461696,
+          "elapsed_us": 2151,
+          "errno_raw": 0,
+          "error": null,
+          "event": "api",
+          "seq": 64,
+          "pid": 2360498,
+          "mono_ns": 715431814426194
+        }
+      ],
+      "l3_delta": {
+        "read_bytes": 2461696,
+        "n_total_reads": 1,
+        "n_p2p_reads": 0,
+        "n_nvfs_reads": 0,
+        "n_posix_reads": 1,
+        "n_unaligned_reads": 0,
+        "n_reads_err": 0
+      },
+      "path": "POSIX_COMPATIBILITY_OBSERVED"
+    },
+    {
+      "name": "compat-control-unaligned",
+      "driver_open_code": 0,
+      "result": {
+        "status": "PASS",
+        "failure": null,
+        "read_attempted": true,
+        "returned_bytes": 2457600,
+        "requested_bytes": 2457600,
+        "data_match": true,
+        "file_unchanged": true,
+        "cleanup_ok": true,
+        "logging_ok": true,
+        "signal": 0,
+        "native_path": "UNPROVEN",
+        "performance_accepted": false,
+        "actual_internal_pool_bytes": null,
+        "event": "result",
+        "seq": 80,
+        "pid": 2360533,
+        "mono_ns": 715438740255503
+      },
+      "source_sha256": "08658a04cec3d8b8b9f5a5bf12c74d1a56799705db9d2562f07ffd69e3810223",
+      "process_io": [
+        {
+          "before": {
+            "known": true,
+            "mono_ns": 715435675512495,
+            "read_bytes": 0,
+            "rchar": 914016
+          },
+          "after": {
+            "known": true,
+            "mono_ns": 715435677061154,
+            "read_bytes": 0,
+            "rchar": 3371725
+          },
+          "delta_known": true,
+          "read_bytes_delta": 0,
+          "rchar_delta": 2457709,
+          "scope": "process cuFileRead window; includes observer/library I/O, excludes later truth pread; not SSD attribution",
+          "event": "process_io",
+          "seq": 65,
+          "pid": 2360533,
+          "mono_ns": 715435677083033
+        }
+      ],
+      "device_attributes": {
+        "DMA_BUF_SUPPORTED": 0,
+        "HOST_ALLOC_DMA_BUF_SUPPORTED": 1,
+        "INTEGRATED": 1,
+        "COMPUTE_CAPABILITY_MAJOR": 11,
+        "COMPUTE_CAPABILITY_MINOR": 0
+      },
+      "reads": [
+        {
+          "name": "cuFileRead",
+          "phase": "work",
+          "returned_bytes": 2457600,
+          "elapsed_us": 1518,
+          "errno_raw": 0,
+          "error": null,
+          "event": "api",
+          "seq": 64,
+          "pid": 2360533,
+          "mono_ns": 715435677069987
+        }
+      ],
+      "l3_delta": {
+        "read_bytes": 2457600,
+        "n_total_reads": 1,
+        "n_p2p_reads": 0,
+        "n_nvfs_reads": 0,
+        "n_posix_reads": 1,
+        "n_unaligned_reads": 1,
+        "n_reads_err": 0
+      },
+      "path": "POSIX_COMPATIBILITY_OBSERVED"
+    }
+  ],
+  "nvml": {
+    "status": "ALL_OK",
+    "queries": 10,
+    "max_query_seconds": 0.0689844680018723,
+    "max_api_seconds": {
+      "init": 0.004664520965889096,
+      "device_count": 3.86660685762763e-05,
+      "handle[0]": 0.007343100034631789,
+      "compute_v3[0]": 0.0030581230530515313,
+      "shutdown": 0.003223742009140551
+    },
+    "query_budget_seconds": 5,
+    "final_pids": [],
+    "lease_status": "COMPLETED",
+    "lease_coverage": [
+      715430.075573687,
+      715438.956993695
+    ],
+    "polling_limit": "No claim excluding interference shorter than polling intervals"
+  },
+  "conclusions": {
+    "strict_native_path": "NOT_AVAILABLE_IN_THIS_CONFIGURATION",
+    "compatibility_path": "Both observed reads counted as POSIX, not NVFS/P2P",
+    "byte_comparison": "EXACT_BOTH_READS",
+    "cleanup": "ALL_RECORDED_CLEANUP_SUCCESS_WITH_VOID_API_LIMIT",
+    "performance_accepted": false,
+    "total_memory_budget_accepted": false
+  },
+  "memory_limit": {
+    "status": "NOT_ACCEPTED",
+    "requested_gpu_slab_bytes": 10485760,
+    "observed_max_device_cache_size_kib": 393216,
+    "observed_configured_cache_bytes": 402653184,
+    "actual_internal_pool_allocated_bytes": null,
+    "reason": "Requested 10 MiB GPU slab sum does not establish the intended bound: getters show 393216 KiB; configured size is not measured allocation. Path/byte findings stand independently."
+  },
+  "loaded_libraries": [
+    {
+      "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29",
+      "bytes": 785664,
+      "sha256": "83b2ccdccdbb285613a97e8be332d1b17cbd55e267e1d2e047adb3081660335e",
+      "device": 66305,
+      "inode": 1055173,
+      "mapped_cases": [
+        "strict-current",
+        "strict-request-p2pdma",
+        "compat-control",
+        "compat-control-unaligned"
+      ],
+      "matches_pre_run_build_manifest": true
+    },
+    {
+      "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcufile.so.1.18.0",
+      "bytes": 3383712,
+      "sha256": "613a75fd7cfa215eab8775c9e62d049cc4602d8787dd7bc2c503b7ab730b9ab7",
+      "device": 66305,
+      "inode": 1055420,
+      "mapped_cases": [
+        "strict-current",
+        "strict-request-p2pdma",
+        "compat-control",
+        "compat-control-unaligned"
+      ],
+      "matches_pre_run_build_manifest": true
+    },
+    {
+      "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1",
+      "bytes": 91177264,
+      "sha256": "c052fd6522969504193195cb06b6f3044b4b11b16f9e227357ced12c9d45ac1d",
+      "device": 66305,
+      "inode": 393237,
+      "mapped_cases": [
+        "strict-current",
+        "strict-request-p2pdma",
+        "compat-control",
+        "compat-control-unaligned"
+      ],
+      "matches_pre_run_build_manifest": true
+    },
+    {
+      "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-gpucomp.so.595.78",
+      "bytes": 89554616,
+      "sha256": "0088fc6bb92a531e54275eb2c98bd840e888fc941178a2676ac043fb0a9b6627",
+      "device": 66305,
+      "inode": 6076,
+      "mapped_cases": [
+        "strict-current",
+        "strict-request-p2pdma",
+        "compat-control",
+        "compat-control-unaligned"
+      ]
+    },
+    {
+      "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-nvvm70.so.595.78",
+      "bytes": 21494664,
+      "sha256": "9974e0fabd183263f9491126a7d3e78dac79584f4dc38d00be2b0b63fda36356",
+      "device": 66305,
+      "inode": 6078,
+      "mapped_cases": [
+        "strict-current",
+        "strict-request-p2pdma",
+        "compat-control",
+        "compat-control-unaligned"
+      ]
+    },
+    {
+      "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-ptxjitcompiler.so.595.78",
+      "bytes": 32367296,
+      "sha256": "6c8bf151ac5dd32f0839bb616694e2aefb2662a213757a01ad4f3531ee747864",
+      "device": 66305,
+      "inode": 6079,
+      "mapped_cases": [
+        "strict-current",
+        "strict-request-p2pdma",
+        "compat-control",
+        "compat-control-unaligned"
+      ]
+    },
+    {
+      "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-ml.so.1",
+      "bytes": 2559944,
+      "sha256": "e3acf1b05bf55ce5b07fe2d5a7147166fc81da94bb0b7cbcc3135ffd30549a55",
+      "device": 66305,
+      "inode": 39983,
+      "mapped_cases": [
+        "strict-current",
+        "strict-request-p2pdma",
+        "compat-control",
+        "compat-control-unaligned"
+      ]
+    },
+    {
+      "path": "/usr/lib/aarch64-linux-gnu/nvidia/libnvidia-rmapi-tegra.so.595.78",
+      "bytes": 377568,
+      "sha256": "8b31ecb353db581d4401adef5f64b51c82fd6d5f9200f7251057ee2f77dde311",
+      "device": 66305,
+      "inode": 9642,
+      "mapped_cases": [
+        "strict-current",
+        "strict-request-p2pdma",
+        "compat-control",
+        "compat-control-unaligned"
+      ]
+    }
+  ],
+  "input_records": {
+    "run-v1/files.json": {
+      "sha256": "acd0e4eac0f52878b3a5fb82ea29ff5149f1a20f465c22ea1052b4addb371d70",
+      "bytes": 3072
+    },
+    "lease-v1/exit.json": {
+      "sha256": "04ebe45796e4e4dc268b9652aa3c94f9ff8f34132f2e59a39c49e0e130f3606f",
+      "bytes": 654
+    },
+    "independent-run-review-v1/receipt.json": {
+      "sha256": "1ec867207c6385d5ac5c3447a0c923553677bab42e5be5ef68ca92d90a07e8d3",
+      "bytes": 52108
+    },
+    "path-review-v1/report.json": {
+      "sha256": "4dc8d048ae763257262be7fa7f4affba3b1fdd929e438dc1ecc729bf25ee8301",
+      "bytes": 45354
+    },
+    "runner-host-review-v1/result.json": {
+      "sha256": "6693afe50f784207a08e222a2641ee471a85fc0d43e4f3c782c2af803783c29d",
+      "bytes": 1218
+    },
+    "c128-history-v1/report.json": {
+      "sha256": "9fba19e0b0bd3bc0be50a81f2014ba5f744aea94368a52f4d006ef59310c35e6",
+      "bytes": 30686
+    },
+    "build/build.json": {
+      "sha256": "f32ce35f76210a64dd2c6248f948910884186db68e88e64d6e85b07c57b85006",
+      "bytes": 2904
+    },
+    "frozen-v1/files.json": {
+      "sha256": "94ec7898b02dbe76a9ceb70337b5090e054e2450a7d54cedabd9d33918bf63c8",
+      "bytes": 869
+    }
+  },
+  "protected_before": {
+    "/etc/cufile.json": "714f1f804f395c348614da20bff71579b2260557f761241648f08d275718aad1",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "e1a14429064aae3d046bbea6c743c2355071b09893cb9bc090deb7aecdf6be10"
+  },
+  "protected_after": {
+    "/etc/cufile.json": "714f1f804f395c348614da20bff71579b2260557f761241648f08d275718aad1",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "e1a14429064aae3d046bbea6c743c2355071b09893cb9bc090deb7aecdf6be10"
+  },
+  "identity_unchanged": true,
+  "limitations": [
+    "Byte and library path findings only, not performance acceptance.",
+    "GPU slab request was not enforced; actual pool allocation unknown.",
+    "Later unaligned read inherited cache; no speed or zero-SSD claim.",
+    "Source file identity uses stat; historical logs and model files unchanged."
+  ]
+}

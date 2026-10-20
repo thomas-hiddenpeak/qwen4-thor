@@ -1,7 +1,7 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[NVIDIA SSD直读评估](SSD_DIRECT_IO_EVALUATION_2026-10-21.md)。
+最新专项：[GDS最小实机实验与C128历史数据](GDS_MINIMAL_EXPERIMENT_2026-10-21.md)。
 
 本目录包含当前入口与按日期冻结的历史报告。先读[STATUS](STATUS.md)和
 [EVALUATION](EVALUATION.md)；下表专题的“进行中/下一步/当前”仅代表成文
@@ -9,6 +9,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [GDS最小实验与C128历史数据](GDS_MINIMAL_EXPERIMENT_2026-10-21.md) | 严格/兼容实际路径、字节校验、库缓冲限制及历史prefill/decode | 实机诊断完成，未接受原生GDS或性能优化 |
 | [SSD offload合同](SSD_OFFLOAD_CONTRACT.md) | SSD唯一容量后备、DRAM缓存/中转和逻辑/物理I/O定义 | 用户明确原则，当前规范 |
 | [NVIDIA SSD直读评估](SSD_DIRECT_IO_EVALUATION_2026-10-21.md) | GDS平台资格、本机只读盘点、权重布局与工程优先级 | 原生GDS暂不接入，SSD主线继续 |
 | [SSD offload前提对齐审计](SSD_OFFLOAD_ALIGNMENT_AUDIT_2026-10-21.md) | 近期代码/缓存条件与SSD目标对齐、后续优先级 | 只读审计完成，先核验SSD资源与读取约束 |

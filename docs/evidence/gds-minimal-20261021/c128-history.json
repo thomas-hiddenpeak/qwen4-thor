@@ -1,0 +1,573 @@
+{
+  "schema": 1,
+  "status": "HISTORICAL_DESCRIPTIVE_ONLY",
+  "reproduce": "python3 -B /home/rm01/models/dev/qwen4-thor/.q4t-work/gds-minimal-20261021/c128-history-v1/analyze.py",
+  "stages": [
+    {
+      "stage": "startup-delivery-20261021/boundary-v2",
+      "binary_sha256": "5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191",
+      "server_command": {
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/candidate-v1/build/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--port",
+          "8854",
+          "--max-seq",
+          "2",
+          "--max-prefill",
+          "2048",
+          "--max-len",
+          "8192",
+          "--moe-resident-slots",
+          "128",
+          "--moe-hot-list",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/hot.json",
+          "--no-mtp"
+        ],
+        "effective_q4t_environment": {
+          "Q4T_MOE_L2_SLOTS": "1",
+          "Q4T_MOE_MIRROR_K": "0",
+          "Q4T_MOE_MAX_OPEN_SHARDS": "200",
+          "Q4T_MOE_EVICT_WEIGHT": "0",
+          "Q4T_MOE_PREAD_MERGE": "1",
+          "Q4T_MOE_INLINE_MISS_LIMIT": "1",
+          "Q4T_MOE_CHUNK_ORDER": "0",
+          "Q4T_MOE_LOAD_THREADS": "1"
+        },
+        "isolation": {
+          "systemd_unit": "q4t-delivery-boundary-v2-1792519779621290284.scope",
+          "host_cache_max_bytes": 68719476736,
+          "swap_max_bytes": 0,
+          "is_total_physical_ram_limit": false
+        }
+      },
+      "cache_gate": {
+        "mode": "cold",
+        "payload_bytes": 0,
+        "file_vector_exact": true,
+        "naturally_inherited": false,
+        "repair_passes": 0,
+        "preparation_passes": 1,
+        "max_preparation_passes": 2,
+        "residual_retry_files": [],
+        "physical_fragmentation_equal": false,
+        "temporary_locks_used": false
+      },
+      "requests": [
+        {
+          "request_id": "chatcmpl-auto-0",
+          "db": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality/20261021_020951/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+            "sha256": "a77e11afee60ee33a87518a2496e7262df4da26661dac396c44515e9000cef2d",
+            "bytes": 12288
+          },
+          "benchmark_summary": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality/20261021_020951/qwen3.8-flash-next/parallel_1_number_1/benchmark_summary.json",
+            "sha256": "5c5e59a3e3ad383d0106b39c939c70274496a36f45428fac28f67610901b9e01",
+            "bytes": 631
+          },
+          "success": 1,
+          "input_tokens": 1024,
+          "output_tokens": 7,
+          "expected_text": "710003",
+          "actual_text": "710003",
+          "concurrency": 1,
+          "server_stage_prefill_seconds": 55.959083,
+          "server_stage_prefill_effective_tokens_per_second": 18.29908470801782,
+          "server_stage_decode_to_response_seconds": 1.0954210000000022,
+          "client_ttft_seconds": 55.96271592192352,
+          "client_effective_input_tokens_per_second": 18.29789678950956,
+          "client_latency_seconds": 57.057824713992886,
+          "client_first_content_to_completion_seconds": 1.095108792069368,
+          "client_decode_approx_tokens_per_second": 5.478907706203438,
+          "client_tpot_seconds": 0.18251813201156133,
+          "client_end_to_end_output_tokens_per_second": 0.12268255993087863,
+          "pure_gpu_prefill_seconds": null,
+          "pure_gpu_decode_seconds": null,
+          "raw_sqlite_columns": {
+            "success": 1,
+            "prompt_tokens": 1024,
+            "completion_tokens": 7,
+            "latency": 57.057824713992886,
+            "first_chunk_latency": 55.96271592192352,
+            "time_per_output_token": 0.18251813201156133,
+            "start_time": 709875.517656035,
+            "completed_time": 709932.575480749,
+            "inter_token_latencies": [
+              0.2824697110336274,
+              0.19544685003347695,
+              0.16425421694293618,
+              0.1447629720205441,
+              0.14665492007043213
+            ]
+          },
+          "server_log": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/server.log",
+            "sha256": "79571401117b7118639ce4721bf30c7e484a3ddf5cc67a09a3681b6b50d4d009",
+            "bytes": 256878
+          },
+          "server_log_lines": [
+            {
+              "line": 27,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=slot_admission seq=-1 elapsed_ms=0.066"
+            },
+            {
+              "line": 29,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=encode seq=0 elapsed_ms=0.072"
+            },
+            {
+              "line": 30,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=prefill seq=0 elapsed_ms=1.146"
+            },
+            {
+              "line": 843,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=decode seq=0 elapsed_ms=55960.229"
+            },
+            {
+              "line": 1421,
+              "text": "[q4t][residency] id=chatcmpl-auto-0 finish=stop in=1024 out=7 loads=49380 load_mb=136526.6 misses=49380 hits=445020 evictions=43236 dmiss=855 dlook=2890 pmiss=48525 plook=491510 l2h=0 l2m=49380 l2ev=49332 nvme_mb=136527.0 mh=0 mw=0 msk=0 ld2h=0 ld2m=855 ld2ev=855 lp2h=0 lp2m=48525 lp2ev=48477 pmr=0 pme=0"
+            },
+            {
+              "line": 1422,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=response seq=0 elapsed_ms=57055.650"
+            },
+            {
+              "line": 1423,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=57055.696 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=57053.783 stream_write_ms=0.237 scheduler_waits=7"
+            }
+          ]
+        },
+        {
+          "request_id": "chatcmpl-auto-1",
+          "db": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality-reuse/20261021_021053/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+            "sha256": "852609dc70f6e5396d988abbd9c0ac4b1f0eb57fc3dbe8ddbfca94e008f3c4d2",
+            "bytes": 12288
+          },
+          "benchmark_summary": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality-reuse/20261021_021053/qwen3.8-flash-next/parallel_1_number_1/benchmark_summary.json",
+            "sha256": "221108fae7d66db1bb703220f5d8c6ccf08cbb40e5d0a1a4658ee1db3b42b3c3",
+            "bytes": 630
+          },
+          "success": 1,
+          "input_tokens": 1024,
+          "output_tokens": 7,
+          "expected_text": "710003",
+          "actual_text": "710003",
+          "concurrency": 1,
+          "server_stage_prefill_seconds": 26.578011000000004,
+          "server_stage_prefill_effective_tokens_per_second": 38.52809000643426,
+          "server_stage_decode_to_response_seconds": 1.0001529999999985,
+          "client_ttft_seconds": 26.58210128196515,
+          "client_effective_input_tokens_per_second": 38.52216155292213,
+          "client_latency_seconds": 27.58186975400895,
+          "client_first_content_to_completion_seconds": 0.9997684720437974,
+          "client_decode_approx_tokens_per_second": 6.001389489442866,
+          "client_tpot_seconds": 0.16662807867396623,
+          "client_end_to_end_output_tokens_per_second": 0.25378990120793277,
+          "pure_gpu_prefill_seconds": null,
+          "pure_gpu_decode_seconds": null,
+          "raw_sqlite_columns": {
+            "success": 1,
+            "prompt_tokens": 1024,
+            "completion_tokens": 7,
+            "latency": 27.58186975400895,
+            "first_chunk_latency": 26.58210128196515,
+            "time_per_output_token": 0.16662807867396623,
+            "start_time": 709937.992805938,
+            "completed_time": 709965.574675692,
+            "inter_token_latencies": [
+              0.24251357605680823,
+              0.1829294889466837,
+              0.1597767040366307,
+              0.13324823696166277,
+              0.13232353399507701
+            ]
+          },
+          "server_log": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/server.log",
+            "sha256": "79571401117b7118639ce4721bf30c7e484a3ddf5cc67a09a3681b6b50d4d009",
+            "bytes": 256878
+          },
+          "server_log_lines": [
+            {
+              "line": 1426,
+              "text": "[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=slot_admission seq=-1 elapsed_ms=0.058"
+            },
+            {
+              "line": 1428,
+              "text": "[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=encode seq=0 elapsed_ms=0.063"
+            },
+            {
+              "line": 1429,
+              "text": "[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=prefill seq=0 elapsed_ms=1.670"
+            },
+            {
+              "line": 2238,
+              "text": "[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=decode seq=0 elapsed_ms=26579.681"
+            },
+            {
+              "line": 2816,
+              "text": "[q4t][residency] id=chatcmpl-auto-1 finish=stop in=1024 out=7 loads=46827 load_mb=129468.0 misses=46827 hits=447573 evictions=46827 dmiss=849 dlook=2890 pmiss=45978 plook=491510 l2h=0 l2m=46827 l2ev=46827 nvme_mb=129468.4 mh=0 mw=0 msk=0 ld2h=0 ld2m=849 ld2ev=849 lp2h=0 lp2m=45978 lp2ev=45978 pmr=0 pme=0"
+            },
+            {
+              "line": 2817,
+              "text": "[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=response seq=0 elapsed_ms=27579.834"
+            },
+            {
+              "line": 2818,
+              "text": "[q4t][request] instance=1 id=chatcmpl-auto-1 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=27579.875 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=27577.566 stream_write_ms=0.148 scheduler_waits=7"
+            }
+          ]
+        }
+      ],
+      "cache_context": {
+        "example_runtime_expert_cache_bytes": 58876686336,
+        "cache_sample": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/resources/cache/000098.json",
+          "sha256": "f002afafb560c371eb1bc50cfec44423939d0f607b964b13b496b724c69df21d",
+          "bytes": 69726
+        },
+        "scope": "Observed cache snapshot during requests, not exclusive physical memory ownership"
+      },
+      "classification": "bounded reliability short-output quality check; not formal performance matrix",
+      "scope_note": "max_seq=2 capacity; clients run serially at concurrency=1. memory_max=64GiB is cgroup charging, not total physical RAM."
+    },
+    {
+      "stage": "startup-cache-20261021/boundary-lock-v3",
+      "binary_sha256": "1d6603651a594a7e82e7a3f43de625ce810494d717a812f0e313d359e7761206",
+      "server_command": {
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-plan-20261020/order-candidate/build/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--port",
+          "8843",
+          "--max-seq",
+          "2",
+          "--max-prefill",
+          "2048",
+          "--max-len",
+          "8192",
+          "--max-tokens",
+          "32",
+          "--moe-resident-slots",
+          "128",
+          "--moe-hot-list",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/hot.json",
+          "--request-deadline-ms",
+          "1800000",
+          "--no-mtp"
+        ],
+        "effective_q4t_environment": {
+          "Q4T_MOE_L2_SLOTS": "1",
+          "Q4T_MOE_MIRROR_K": "0",
+          "Q4T_MOE_MAX_OPEN_SHARDS": "200",
+          "Q4T_MOE_EVICT_WEIGHT": "0",
+          "Q4T_MOE_PREAD_MERGE": "1",
+          "Q4T_MOE_INLINE_MISS_LIMIT": "1",
+          "Q4T_MOE_CHUNK_ORDER": "0",
+          "Q4T_MOE_LOAD_THREADS": "1",
+          "Q4T_STARTUP_PLAN_OUTPUT": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/startup-plan.json"
+        },
+        "isolation": {
+          "systemd_unit": "q4t-startup-boundary-lock-v3-1792515475266198206.scope",
+          "host_cache_max_bytes": 68719476736,
+          "swap_max_bytes": 0,
+          "is_total_physical_ram_limit": false
+        }
+      },
+      "cache_gate": {
+        "payload_bytes": 67987791872,
+        "file_vector_exact": true,
+        "temporary_locks_released": true,
+        "physical_fragmentation_equal": false,
+        "repair_passes": 0
+      },
+      "requests": [
+        {
+          "request_id": "chatcmpl-auto-0",
+          "db": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/quality/20261021_005848/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+            "sha256": "9c1fa0cacbce11f8306985b26f3dbca0ea1c64f75b4cb5d197c1402f155f1340",
+            "bytes": 12288
+          },
+          "benchmark_summary": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/quality/20261021_005848/qwen3.8-flash-next/parallel_1_number_1/benchmark_summary.json",
+            "sha256": "990a35afde3619c2bdbbe19c3e5f165ee719f307334e44828cb81475d4fe3c13",
+            "bytes": 631
+          },
+          "success": 1,
+          "input_tokens": 1024,
+          "output_tokens": 7,
+          "expected_text": "710003",
+          "actual_text": "710003",
+          "concurrency": 1,
+          "server_stage_prefill_seconds": 32.433244,
+          "server_stage_prefill_effective_tokens_per_second": 31.57254328305858,
+          "server_stage_decode_to_response_seconds": 1.038403000000002,
+          "client_ttft_seconds": 32.43683174904436,
+          "client_effective_input_tokens_per_second": 31.569051130592268,
+          "client_latency_seconds": 33.47489306807984,
+          "client_first_content_to_completion_seconds": 1.038061319035478,
+          "client_decode_approx_tokens_per_second": 5.7800053715275155,
+          "client_tpot_seconds": 0.17301021983924633,
+          "client_end_to_end_output_tokens_per_second": 0.2091119450557674,
+          "pure_gpu_prefill_seconds": null,
+          "pure_gpu_decode_seconds": null,
+          "raw_sqlite_columns": {
+            "success": 1,
+            "prompt_tokens": 1024,
+            "completion_tokens": 7,
+            "latency": 33.47489306807984,
+            "first_chunk_latency": 32.43683174904436,
+            "time_per_output_token": 0.17301021983924633,
+            "start_time": 705612.658866033,
+            "completed_time": 705646.133759101,
+            "inter_token_latencies": [
+              0.2637172859394923,
+              0.19141566404141486,
+              0.15383282606489956,
+              0.14106064091902226,
+              0.13633296603802592
+            ]
+          },
+          "server_log": {
+            "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/server.log",
+            "sha256": "1485b54618d68aca77a54c078d6785d317163b746ce86ef7c715e1ab7486a153",
+            "bytes": 43846800
+          },
+          "server_log_lines": [
+            {
+              "line": 9253,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=slot_admission seq=-1 elapsed_ms=0.061"
+            },
+            {
+              "line": 9255,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=encode seq=0 elapsed_ms=0.074"
+            },
+            {
+              "line": 9256,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=prefill seq=0 elapsed_ms=1.134"
+            },
+            {
+              "line": 186079,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=decode seq=0 elapsed_ms=32434.378"
+            },
+            {
+              "line": 198215,
+              "text": "[q4t][residency] id=chatcmpl-auto-0 finish=stop in=1024 out=7 loads=49380 load_mb=136526.6 misses=49380 hits=445020 evictions=43236 dmiss=855 dlook=2890 pmiss=48525 plook=491510 l2h=0 l2m=49380 l2ev=49332 nvme_mb=136527.0 mh=0 mw=0 msk=0 ld2h=0 ld2m=855 ld2ev=855 lp2h=0 lp2m=48525 lp2ev=48477 pmr=0 pme=0"
+            },
+            {
+              "line": 198216,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=response seq=0 elapsed_ms=33472.781"
+            },
+            {
+              "line": 198217,
+              "text": "[q4t][request] instance=0 id=chatcmpl-auto-0 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=33472.832 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=33471.012 stream_write_ms=0.207 scheduler_waits=7"
+            }
+          ]
+        }
+      ],
+      "cache_context": {},
+      "classification": "bounded reliability short-output quality check; not formal performance matrix",
+      "scope_note": "max_seq=2 capacity; clients run serially at concurrency=1. memory_max=64GiB is cgroup charging, not total physical RAM."
+    }
+  ],
+  "search": {
+    "command_files_checked": 3750,
+    "filename_allowlist": [
+      "server-command.json",
+      "server_argv.json",
+      "server-argv.json",
+      "command.json",
+      "run-command.json"
+    ],
+    "excluded_directories": [
+      ".git",
+      "build",
+      "cache",
+      "candidate-source",
+      "kernel",
+      "node_modules",
+      "observer-export",
+      "observer-source",
+      "parent-source",
+      "refenv",
+      "reference",
+      "resources",
+      "small-m-source",
+      "source"
+    ],
+    "excluded_prefix": "wt-",
+    "command_matches": [
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v1/run/normal/http/server-command.json",
+        "sha256": "d0204583ee7ebd0ec1bf61278fb9f89ffc19d7e395bf8360797e6d22243d5dd7",
+        "bytes": 1029
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/server-command.json",
+        "sha256": "520221419dc7d226bb7097239aeddfcfcd4bdbaf17f9882c539fefb66499693c",
+        "bytes": 1029
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/server-command.json",
+        "sha256": "89c9b4c339f6b86fd25f513c6e17b0040d9853b54c51fe3856e4fbc58d34a1bb",
+        "bytes": 1247
+      }
+    ],
+    "conclusion": "No formal C128 five-tier E2E matrix located in the inspected docs/command-artifact scope. boundary-v1 has no model/HTTP; only boundary-v2 and boundary-lock-v3 provide runtime rows. This is a bounded search, not proof that no unindexed historical file exists."
+  },
+  "definitions": {
+    "server_prefill": "request diagnostic decode-entry minus prefill-entry: scheduler wait, expert supply, compute and readback; not pure GPU kernel time",
+    "client_ttft": "client request to first content; includes ingress/queue/tokenize/prefill",
+    "client_decode_approx": "(actual output tokens - 1)/(HTTP latency - TTFT); six intervals only. Completion includes terminal/usage/SSE overhead, so not precise first-to-last-token timing or pure GPU decode.",
+    "capacity": "prefill2048/max_len8192 are configured capacity; actual inputs1024, outputs7",
+    "summary_output_throughput": "benchmark_summary Output Throughput is output/whole request, not decode rate"
+  },
+  "limitations": [
+    "No C256 numbers used. L2=128 in old filenames is not GPU C128.",
+    "Three short-output rows, not three repeats of one condition. No long-output steady-state or five-tier performance acceptance.",
+    "New first request starts after cold payload gate and model loading; second reuses same instance/cache with no intervening reset.",
+    "Old research binary1d66 uses full-hot 67987791872-byte fixture released before model start and detailed wrapper tracing; different binary/start/cache/instrumentation prohibits direct performance comparison.",
+    "No measured pure GPU prefill/decode time available in these selected records.",
+    "Server nvme_mb counts application reads and must not be called physical SSD traffic.",
+    "No new GPU/model/cache execution; SQLite opened mode=ro and only scalar latency/count columns decoded."
+  ],
+  "inputs": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/sealed-files.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/sealed-files.json",
+      "sha256": "caeb90426d82100d941ef92c0dbe2688610e9be0622a81d15790296f2a05504d",
+      "bytes": 33680
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/server-command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/server-command.json",
+      "sha256": "520221419dc7d226bb7097239aeddfcfcd4bdbaf17f9882c539fefb66499693c",
+      "bytes": 1029
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/binary.sha256": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/binary.sha256",
+      "sha256": "a637e657399fe4e9314b62f1a92b252f66e683c4514ba4fffe1ba8323131c1a7",
+      "bytes": 65
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/cache-gate.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/cache-gate.json",
+      "sha256": "45189f54b2fa744df3ceaf01ed53a3110209b1eb36ebb4852d4fb19c7e76c835",
+      "bytes": 288
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/results.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/results.json",
+      "sha256": "7b4ba5f594c690b6663515b0da94dcab6cf1973c53998b62ac20053ce4ecafeb",
+      "bytes": 3422
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/server.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/server.log",
+      "sha256": "79571401117b7118639ce4721bf30c7e484a3ddf5cc67a09a3681b6b50d4d009",
+      "bytes": 256878
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality/20261021_020951/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality/20261021_020951/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "sha256": "a77e11afee60ee33a87518a2496e7262df4da26661dac396c44515e9000cef2d",
+      "bytes": 12288
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality/20261021_020951/qwen3.8-flash-next/parallel_1_number_1/benchmark_summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality/20261021_020951/qwen3.8-flash-next/parallel_1_number_1/benchmark_summary.json",
+      "sha256": "5c5e59a3e3ad383d0106b39c939c70274496a36f45428fac28f67610901b9e01",
+      "bytes": 631
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality-reuse/20261021_021053/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality-reuse/20261021_021053/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "sha256": "852609dc70f6e5396d988abbd9c0ac4b1f0eb57fc3dbe8ddbfca94e008f3c4d2",
+      "bytes": 12288
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality-reuse/20261021_021053/qwen3.8-flash-next/parallel_1_number_1/benchmark_summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/run/normal/http/quality-reuse/20261021_021053/qwen3.8-flash-next/parallel_1_number_1/benchmark_summary.json",
+      "sha256": "221108fae7d66db1bb703220f5d8c6ccf08cbb40e5d0a1a4658ee1db3b42b3c3",
+      "bytes": 630
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/resources/cache/000098.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/boundary-v2/resources/cache/000098.json",
+      "sha256": "f002afafb560c371eb1bc50cfec44423939d0f607b964b13b496b724c69df21d",
+      "bytes": 69726
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/sealed-files.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/sealed-files.json",
+      "sha256": "71a894cdb836ac45be0c473dea7afa31e225e3190d641e94d8b81ab30aec9793",
+      "bytes": 48272
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/server-command.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/server-command.json",
+      "sha256": "89c9b4c339f6b86fd25f513c6e17b0040d9853b54c51fe3856e4fbc58d34a1bb",
+      "bytes": 1247
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/binary.sha256": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/binary.sha256",
+      "sha256": "4387401c45c1d5d58eb5856558acb55408e105ad55719c1cc22500ba8f27145a",
+      "bytes": 65
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/cache-gate.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/cache-gate.json",
+      "sha256": "10e24d1e6a8e4807516d713b4cacde9a5f3ec0a73efde70c19e196fa5db787b9",
+      "bytes": 163
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/results.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/results.json",
+      "sha256": "5bdf34f7971e00678aade1c387cf8e9265c7cfc6bc323fc3a2dfcf3fefda678e",
+      "bytes": 1713
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/server.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/server.log",
+      "sha256": "1485b54618d68aca77a54c078d6785d317163b746ce86ef7c715e1ab7486a153",
+      "bytes": 43846800
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/quality/20261021_005848/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/quality/20261021_005848/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+      "sha256": "9c1fa0cacbce11f8306985b26f3dbca0ea1c64f75b4cb5d197c1402f155f1340",
+      "bytes": 12288
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/quality/20261021_005848/qwen3.8-flash-next/parallel_1_number_1/benchmark_summary.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-cache-20261021/boundary-lock-v3/run/normal/http/quality/20261021_005848/qwen3.8-flash-next/parallel_1_number_1/benchmark_summary.json",
+      "sha256": "990a35afde3619c2bdbbe19c3e5f165ee719f307334e44828cb81475d4fe3c13",
+      "bytes": 631
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/EVALUATION.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/EVALUATION.md",
+      "sha256": "b51d09f581296bbb4a5acd8da43d5f7d570bc18acc2e6420073fc4c78bfe50b8",
+      "bytes": 29405
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/STARTUP_DELIVERY_2026-10-21.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/STARTUP_DELIVERY_2026-10-21.md",
+      "sha256": "2dcd615d506c11477f6edd36408ba1bb2aa5013fc19880f68180a6f913d54139",
+      "bytes": 13801
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/STARTUP_CACHE_PREPARATION_2026-10-21.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/STARTUP_CACHE_PREPARATION_2026-10-21.md",
+      "sha256": "0f4a7224a6d504b0b9d07e9d00022a93b4297abe7f625c6a17c64410ddcf8fe8",
+      "bytes": 15046
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/MOE_RESIDENCY_PATH_C_DESIGN_2026-10-01.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/MOE_RESIDENCY_PATH_C_DESIGN_2026-10-01.md",
+      "sha256": "41bda62ddda42063bfd4d9275e6a6f6121d86087ca634aa998f94e4b7acbbf0d",
+      "bytes": 10129
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/OFFLOAD_AUTONOMOUS_2026-10-03.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/OFFLOAD_AUTONOMOUS_2026-10-03.md",
+      "sha256": "ec85128b5af5ae19480aa952a60ad4af684b77b7d7fae6bbadce90d888a8dbb8",
+      "bytes": 11416
+    },
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp": {
+      "path": "/home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp",
+      "sha256": "38984a3d137b4ded62c8a3cbed583bdff2d9b6a9052d1ce7619e53df04de6110",
+      "bytes": 49139
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_prefill_consumers.py": {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_prefill_consumers.py",
+      "sha256": "d91d99855ee2775d345c634dd57daf89b11cf777a7ed10ec6d540f3779daa074",
+      "bytes": 14100
+    }
+  }
+}
