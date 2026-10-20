@@ -2,9 +2,11 @@
 
 更新：2026-10-20。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
-临时参考评估已记录：DeepInfer固定774ce244b87c，重点保留Engram查表
-发起/消费分离及固定token路径数值对照入口。仅静态参考，暂不实现或
-新增GPU验证，不改变以下热启动定位主线；见[参考文档](REFERENCE.md#deepinfer)。
+临时参考评估已记录：DeepInfer固定774ce244b87c，补充本项目PLE与
+Engram的n-gram/量化/门控/状态逐项对照，并追到固定DeepEP及
+TileKernels依赖。主要保留异步发起/消费、合并KV投影及分层数值验证
+入口；未证明本机收益，暂不实现或新增GPU验证，不改变以下热启动/
+启动资源计划主线。见[参考文档](REFERENCE.md#deepinfer)。
 
 ## 当前推进目标
 

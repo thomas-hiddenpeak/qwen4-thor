@@ -305,6 +305,96 @@ Engram / 数值一致性专项参考，暂不实施。
 pinned staging不同；hook不证明延迟已完全隐藏。Engram的压缩词表、
 哈希及门控数学不直接替代PLE语义，任何流水实现仍须独立验收。
 
+### n-gram / PLE逐项对照（2026-10-20静态评估）
+
+本项目对照源码：`d640bc97d034ae434e9a49ec003bd74a72fe9538`，
+所查PLE路径无未提交改动。DeepInfer仍固定上述commit，继续追到其
+`vendor/DeepEP` gitlink
+`93eb6eb238127e96c6d7a4a625a6dad158348509`及
+`requirements.txt`固定的`tile-kernels==2.1.0`，未用依赖main代替。
+TileKernels核对的是[PyPI 2.1.0 wheel][deepinfer-tile-wheel]，SHA-256：
+`df3ddffcf53ebc19404d2723bf2a629b46ce14cf4744a7739a80b0a9e366cf1f`。
+依赖只下载/解包查阅，未安装、导入或执行；临时来源清单在
+`.q4t-work/deepinfer-assessment-20261020/ngram-dependencies/sources.json`。
+
+两者都以多阶、多head哈希查表，再通过投影和门控注入主干；这个
+结构类比成立，但查到哪些行、如何反量化及注入的数学均属各自模型合同：
+
+| 项目 | 本项目qwen4_exp PLE | DeepInfer Engram |
+|---|---|---|
+| token空间 | 原始token ID，不做词表压缩 | [CompressedVocabulary][deepinfer-ngram-meta]先逐token解码、Unicode/大小写/空白归一化并映射压缩ID；模型embedding仍使用原始ID |
+| 窗口与哈希 | 2/3-gram各8头；当前token乘m0，前一乘m1，前二乘m2，XOR后按各头取模加offset；参数从checkpoint读取 | 同类XOR/素数表方法，但乘子由NumPy逐层RNG生成，表布局按其配置构造；不能复用其ID或生成器 |
+| 边界 | 句首EOS248044填充；仅当EOS严格位于历史token与当前token之间，才屏蔽该历史token | [输入准备][deepinfer-ngram-input]用压缩PAD补缺失历史，图像sentinel屏蔽自身及更早历史；已查路径没有本项目的EOS中间屏蔽规则 |
+| 表与量化 | NVMe FP8表，16×160字节拼接为2560维；FP8→BF16后乘checkpoint单一BF16 scalar并再次舍入 | CPU RDMA或GPU表分片；FP8模式每行每32通道UE8M0 scale，CUDA打包int32；取表与取scale路径分离 |
+| 层内计算 | 两次BF16 GEMM得key/value，Gemma RMSNorm，门控后还有K=4、dilation=3短卷积；每通道9项历史及verify checkpoint | [Engram.forward][deepinfer-engram]融合KV投影、归一化/门控/残差注入，没有本项目的短卷积参数或状态 |
+| 执行时序 | 到0-based layer 1才调用Gather；host页读取/scatter完成后排队上传、转换、缩放及PLE | 层循环前计算各层row IDs并发起读取，各层hook等待后消费 |
+
+本地事实入口：[哈希](../src/ple/ngram_hash.cpp)、
+[参数加载及到层查表](../src/model/model.cu)、
+[页读取](../src/ple/page_reader.cpp)、
+[缓冲所有权](../src/ple/ple_embedding.cpp)、
+[投影/门控/卷积](../src/model/ple_layer.cu)。
+原文档将乘子顺序、运行时参数来源和逻辑/物理行数混写的问题，
+本次按代码修正到[MODEL](MODEL.md)；
+属于描述纠正，没有改变模型计算。
+
+**实际值得保留的参考：**
+
+1. **读取发起/消费分离：参考价值高，收益未知。**
+   [DeepEP接口及hook][deepinfer-deepep-buffer]在当前CUDA stream上
+   发起fetch kernel；[issue kernel][deepinfer-deepep-issue]调用
+   `gin.get`并`flush_async`，[wait kernel][deepinfer-deepep-wait]
+   在对应层消费前等待completion。因此是真实异步传输，不只是延迟
+   调函数；本路径也不是显式独立comm stream。接收区按层复用固定
+   buffer，不能据hook外观推断任意跨stream/多轮并发安全。
+   对本项目可借鉴发起、完成依赖与消费接口；需分别维护读取完成、
+   H2D/转换完成、消费完成、允许复用的边界。现有staging/scratch保护
+   不能删除，见[10-16修复](MTP_NUMERICAL_CLOSURE_2026-10-16.md)。
+   单次forward内本项目仅第二层有PLE，可重叠窗口主要是第一层；
+   当前到层Gather也可能已与第一层入队工作部分重叠，净新增窗口未知。
+   把阻塞Gather简单移到循环前会推迟第一层入队，不等于实现prefetch。
+   SGLang提前一层预取已是既有参考，不将此方法作为本次新增功能。
+
+2. **合并KV投影：可保留候选，门控kernel不能照搬。**
+   当前key/value仍两次GEMM，合并投影可作为后续研究入口，但改变GEMM
+   形状可能改变算法和舍入，须按[投影参考](PLE_PROJECTION_REFERENCE_2026-09-23.md)
+   区分数学等价与数值结果。TileKernels 2.1.0的
+   `engram/engram_gate_fwd_cuda.py`用FP32累积norm/dot，根号为
+   `sqrt(max(abs(raw), 1e-6))`，再直接计算残差；
+   本项目为`sqrt(abs(raw)+1e-6)`且保留norm、gate、gated value、
+   卷积与残差的BF16中间舍入，还需短卷积及回退状态。
+   归一化权重预合并同样不能绕过这些数值边界；本项目已有卷积/加法融合，
+   不能把Engram短路径全额算作可消除成本。
+
+3. **固定前缀跨执行布局对照：参考价值高，本项目已有基础。**
+   对照宜按token窗口→整数row ID→原始FP8行→转换/缩放→投影/
+   gate/conv/state→logits分层，覆盖序列隔离、chunk边界和MTP部分接受。
+   DeepInfer的[ZOS窗口修正][deepinfer-zos-window]及
+   [只提交接受token的历史][deepinfer-scheduler]可作状态组织参考，
+   但不提供本项目PLE卷积checkpoint的替代。
+   已有[hash golden](../tests/ple_ngram_hash_test.cpp)及
+   [真实查表内容核对](PLE_LOOKUP_REFERENCE_2026-09-23.md)可复用入口；
+   后者覆盖旧版4102个token、10,501,120个FP8字节及转换/缩放，
+   无内部EOS、未直接捕获CPU行号且当时整模型错答，不能外推当前整模型通过。
+
+**参考价值有限或不可直接迁移的部分：**
+
+- 已查DeepEP逐entry发起读取，请求聚合并非相同row去重，也未提供跨轮
+  命中缓存；本项目已有4KiB页去重、io_uring分波和scatter，不能把这些
+  再算成Engram带来的新增能力。CPU RDMA常驻分片也不等同运行期NVMe流式表。
+- GPU哈希有实现参考，但本项目输入历史在host、NVMe读取计划也在host；
+  迁到GPU可能新增row IDs回传。尚无CPU hash瓶颈证据，不能只因kernel
+  存在就判断值得替换。词表压缩则会改变训练对应的表索引，不能作为
+  无损存储或性能优化移植。
+- 当前完整PLE的TTFT/decode占比未知：reader虽有ReadStats，生产调用
+  尚未导出；PLE子计时仅包围层内计算。层计时相邻边界复用同一事件，
+  PLE层起点又在查表/转换/缩放后，相关成本可能落入前层段，不能独立
+  分离完整查表成本。`submitted_bytes`也不等于实际NVMe物理读取量
+  （普通buffered I/O及OS页缓存）。因此不预测百分比收益，不把现有
+  局部计时当完整查表成本。
+- 结论是保留异步接口、投影组织和分层数值验证入口，暂不改实现、不新增
+  GPU采样或验收队列；继续当前热启动/启动资源计划主线。
+
 ### 数值一致性：固定token路径比较执行方式
 
 | 固定版本入口 | 验证方法及边界 |
@@ -341,6 +431,14 @@ pinned staging不同；hook不证明延迟已完全隐藏。Engram的压缩词�
 [deepinfer-diff]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/deepinfer/testing.py
 [deepinfer-qa]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/doc/inference_deployment_qa.md
 [deepinfer-readme]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/README.md
+[deepinfer-ngram-meta]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/deepinfer/model_executor/models/v4_modules/engram_metadata.py
+[deepinfer-ngram-input]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/csrc/engine/input_metadata/prepare_tensor_input_base.cpp
+[deepinfer-zos-window]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/deepinfer/model_executor/layers/tilelang_ops/cuda/gather_engram_tokens_zos.py
+[deepinfer-scheduler]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/csrc/engine/scheduler.hpp
+[deepinfer-deepep-buffer]: https://github.com/deepseek-ai/DeepEP/blob/93eb6eb238127e96c6d7a4a625a6dad158348509/csrc/buffers/engram.hpp
+[deepinfer-deepep-issue]: https://github.com/deepseek-ai/DeepEP/blob/93eb6eb238127e96c6d7a4a625a6dad158348509/deep_ep/include/deep_ep/impls/engram/engram_fetch.cuh
+[deepinfer-deepep-wait]: https://github.com/deepseek-ai/DeepEP/blob/93eb6eb238127e96c6d7a4a625a6dad158348509/deep_ep/include/deep_ep/impls/engram/engram_fetch_wait.cuh
+[deepinfer-tile-wheel]: https://files.pythonhosted.org/packages/89/64/9731e29c0b9d9c6a58a7e1f6353d4edbfc80591b9995f9026997fdab39c6/tile_kernels-2.1.0-py3-none-any.whl
 
 ## Qwen3.8-Next 官方技术报告 (目标模型权威设计文档)
 

@@ -92,7 +92,7 @@
 |---|---|
 | 文件 | `ple/qwen3.8-flash-next-ple-fp8.bin` |
 | 大小 | 51,200,245,760 字节 (~47.68 GiB) |
-| 行数 | 320,001,536 (= 16 head 词表之和, 每 head 一个 ~20M 的素数词表) |
+| 行数 | 逻辑320,001,446；物理320,001,536（按128行对齐，补90行） |
 | 行宽 | 160 字节 (FP8 e4m3) = head_dim_per_ngram (2560/16) |
 | dtype | float8_e4m3fn |
 | SHA-256 | `b070f9644adf93794d8a1030584ab705809387e64396a9327a68fa3a3a6666b3` |
@@ -101,41 +101,44 @@
 | ple_embed_dim | 2560 (= 16 heads × 160) |
 | ple_conv_kernel_size | 4 |
 
-### 16 个 row_id 的计算 (compute_ngram_ids → _hash_contexts)
+### 16 个 row_id 的计算（本项目ComputeNgramRowIds，上游_hash_contexts对照）
 
 1. **ngram_heads** = (ngram_size - 1) × heads_per_ngram = 2 × 8 = **16**
    (ngram_size=3, heads_per_ngram=8)
-2. **上下文窗口**: 每个 token 位置取 `[t-2, t-1, t]` 三个 token
-   (前 2 个来自 per-request ngram history cache, 当前 token 来自输入)。
-   序列边界/EOS 处用 eos_token_id 填充, `_shift_right_ignore_eos`
-   保证不跨 EOS 边界取历史。
+2. **上下文窗口**: 原始token ID按`[t-2, t-1, t]`排列，句首不足
+   两个历史token用EOS248044填充，不做词表压缩。历史token与当前token
+   之间严格存在EOS时，将该历史token替成EOS；当前token自身是EOS
+   不额外清除历史。下式`t[-k]`指此规则处理后的token。
 3. **每个 ngram 阶 (2-gram, 3-gram) 各 8 个 head**:
-   - 2-gram: `mix = t[-1]*m0 XOR t[0]*m1` (m0,m1 为 layer_multipliers)
-   - 3-gram: `mix = t[-2]*m0 XOR t[-1]*m1 XOR t[0]*m2`
+   - 2-gram: `mix = t[0]*m0 XOR t[-1]*m1`
+   - 3-gram: `mix = t[0]*m0 XOR t[-1]*m1 XOR t[-2]*m2`
    - 每个 head h: `row_id = mix % vocab_size[h] + offset[h]`
-4. **layer_multipliers**: 由 `seed + 10007*ple_layer_index` 经
-   splitmix64 派生的 3 个奇数乘子 (确定性, 无需存储)。
-5. **head 词表**: 第 h 个 head 的词表大小 =
-   `nth_prime_after(20000000 - 1, h+1)` (素数, 用 sympy.nextprime 计算),
-   offset 为累加。16 个词表之和 = 320,001,536 = 表总行数。
+4. **layer_multipliers**: 运行时从checkpoint读取3个奇数乘子。
+   `seed + 10007*ple_layer_index`及SplitMix派生仅用于开发交叉核对，
+   不替代checkpoint参数。
+5. **head词表**: 大小与offset同样从checkpoint读取；本模型各头约20M，
+   为从20,000,000起依次取的16个素数，offset累加。逻辑总行数
+   320,001,446，物理表按128行补齐到320,001,536。
 6. 输出: 每 token **16 个 row_id** (int64), 形状 [tokens, 16]。
 
 > 因此"每 token 16 次查找"= 16 个 head 各查 1 行 (160 字节),
-> 共 2560 字节/token。row_id 范围 [0, 320001536)。
+> 共2560个原始FP8字节/token。hash生成row_id范围[0,320001446)，
+> 不访问末90个padding行；磁盘实际读取量另受页去重及OS页缓存影响。
 
-### PLE 层 forward (Qwen4ExpPLELayer.forward)
+### PLE 层forward（本项目PleLayerForward，上游Qwen4ExpPLELayer对照）
 
 输入: `ple_query` = 主干 hidden (layer 2 的 attn 输入, 即
 `hidden_states + residual`, 形状 [tokens, hc_count×hidden=10240])。
 
 ```
-1. embeddings = 查表(row_ids)          # [tokens, 16, 160] → [tokens, 2560] (BF16)
+1. embeddings = BF16(BF16(FP8查表(row_ids)) * weight_scale)
+                                      # [tokens, 16, 160] → [tokens, 2560]
 2. key   = key_proj(embeddings)        # Linear(2560 → 10240)  ReplicatedLinear
 3. value = value_proj(embeddings)      # Linear(2560 → 2560)   ReplicatedLinear
 4. query = ple_query 重排为 [tokens, 4, 2560]  (hc_count=4 分支)
 5. gate  = (norm_key(key) * norm_query(query)).sum(-1) / sqrt(2560)
           # GroupedNorm: 10240 维按 group_size=2560 分 4 组各自 RMSNorm
-6. gate  = sigmoid( sign(gate) * sqrt(|gate|) )   # 平滑门控
+6. gate  = BF16(sigmoid((gate < 0 ? -1 : 1) * sqrt(abs(gate) + 1e-6)))
 7. gated_value = gate * value                    # [tokens, 4, 2560]
 8. conv_out = silu( depthwise_conv1d(norm_conv(gated_value)) )
           # Conv1d(channels=10240, kernel=4, dilation=3 (=ngram_size),
@@ -145,6 +148,12 @@
 10. hidden_states += output                      # 加到主干 (在 attn_hyper_connection.mix 之前)
 ```
 
+本项目norm使用Gemma RMSNorm的`1+w`权重；norm输出、gate、
+gated_value均有BF16舍入。融合卷积保留`BF16(SiLU(conv))`、
+`BF16(gated_value+conv_out)`及`BF16(trunk+output)`的边界；
+不能用代数等价的FP32长链直接替换。实现见
+[ple_layer.cu](../src/model/ple_layer.cu)。
+
 - **上游 SGLang prefetch 重叠（非本项目当前实现）**: 主模型 forward 循环中, 执行 layer i 之前先调用
   `layer[i+1].ple.start_prefetch()` (若 layer i+1 有 PLE), 在独立
   CUDA stream 上发起 SSD 读取, 与 layer i 的 GPU 计算重叠;
@@ -153,6 +162,9 @@
   更新后的 2-token 历史写回 per-request state pool。
 
 ### SSD Stream 读取机制 (sglang-ssd-stream backend.py + lib.rs)
+
+以下为上游机制；本项目到层读取、事件及缓冲复用边界见
+[ARCHITECTURE](ARCHITECTURE.md)和[本地Gather](../src/ple/ple_embedding.cpp)。
 
 ```
 GPU: lookup_ids [tokens,16] (int64, GPU)
@@ -179,9 +191,9 @@ GPU: lookup_ids [tokens,16] (int64, GPU)
   表在 `ple/*.bin`, 由 SSDStreamEmbedding 接管。
 - PLE 层其余权重 (key_proj/value_proj/norm_*/conv1d) 在常规
   safetensors 中, 名字含 `.ple.`。
-- 派生 buffer (layer_multipliers / ngram_heads_vocab_sizes /
-  ngram_heads_offsets / weight_scale) 由 config 确定性重建,
-  也存在于 checkpoint 中 (可校验)。
+- 本项目从checkpoint读取layer_multipliers、ngram_heads_vocab_sizes、
+  ngram_heads_offsets及BF16标量weight_scale；不在运行时由config重建。
+  入口：[LoadPleHashParams](../src/model/model.cu)。
 
 ## Hyper-Connection (hc_*) — 已确认
 
@@ -257,19 +269,20 @@ image=248056, video=248057
 - `mtp/` 子目录存放 MTP 权重
 - `ple/` 子目录存放 51.2 GB FP8 sidecar (非 safetensors)
 
-## 完整 Forward Pass 总览 (text, 单请求)
+## 完整Forward Pass总览（text，单请求；PLE时序按本项目）
 
 ```
 input_ids [T]
   → embed_tokens (248320×2560, BF16) → hidden [T, 2560]
   → 复制 4 份 → [T, 10240]  (hc_count=4 分支)
-  → _prepare_ple_batch: 构造 ngram 上下文 (per-request 2-token 历史)
+  → host准备原始token ID与per-request 2-token历史
 
 for layer i in 0..47:
-    if layer[i+1] 有 PLE:  layer[i+1].ple.start_prefetch()   # SSD 异步读
     # --- attention 段 ---
     ple_query = hidden (+residual)
-    if i in ple_layer_ids(={2}):  hidden += PLE(ple_query)    # ngram 查表+门控+conv
+    if i == 1:                         # 配置ple_layer_ids={2}是1-indexed
+        CPU计算row IDs → host页读取/scatter → H2D/FP8转BF16/scale
+        hidden += PLE(embeddings, ple_query)  # 投影+门控+短卷积
     hidden, residual = attn_hyper_connection.mix(hidden)      # 4 分支 mix
     if layer_types[i] == linear_attention:
         hidden = DeltaNet_SSM(hidden)        # 36 层, FP32 SSM state
