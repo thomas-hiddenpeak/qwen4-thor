@@ -1,0 +1,14 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792476252.859616,
+  "finished": 1792476471.7498302,
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_diagnostic_acceptance.py",
+    "--output",
+    ".q4t-work/request-diagnostics-20261020/acceptance-v1/run"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}

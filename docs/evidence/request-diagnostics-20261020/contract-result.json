@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "handlers": 7,
+  "cases": [
+    "invalid-json",
+    "over-capacity",
+    "cancel-ack",
+    "queued-cancel",
+    "queued-deadline",
+    "blocker",
+    "id-reuse",
+    "nonstream"
+  ]
+}

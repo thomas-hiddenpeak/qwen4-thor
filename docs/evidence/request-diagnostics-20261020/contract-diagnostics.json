@@ -1,0 +1,409 @@
+[
+  {
+    "instance": "0",
+    "id": "unregistered",
+    "event": "begin",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.000"
+  },
+  {
+    "instance": "0",
+    "id": "unregistered",
+    "event": "end",
+    "stage": "validation",
+    "seq": "-1",
+    "released": "0",
+    "outcome": "error",
+    "reason": "handler_error",
+    "elapsed_ms": "0.060",
+    "slot_wait_ms": "0.000",
+    "model_lock_ms": "0.000",
+    "tokenizer_lock_ms": "0.000",
+    "scheduler_completion_ms": "0.000",
+    "stream_write_ms": "0.000",
+    "scheduler_waits": "0"
+  },
+  {
+    "instance": "1",
+    "id": "unregistered",
+    "event": "begin",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.000"
+  },
+  {
+    "instance": "1",
+    "id": "diag-over",
+    "event": "registered",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "2.975"
+  },
+  {
+    "instance": "1",
+    "id": "diag-over",
+    "event": "stage",
+    "stage": "slot_admission",
+    "seq": "-1",
+    "elapsed_ms": "3.017"
+  },
+  {
+    "instance": "1",
+    "id": "diag-over",
+    "event": "admitted",
+    "stage": "slot_admission",
+    "seq": "0",
+    "elapsed_ms": "3.023"
+  },
+  {
+    "instance": "1",
+    "id": "diag-over",
+    "event": "stage",
+    "stage": "encode",
+    "seq": "0",
+    "elapsed_ms": "3.024"
+  },
+  {
+    "instance": "1",
+    "id": "diag-over",
+    "event": "end",
+    "stage": "encode",
+    "seq": "0",
+    "released": "1",
+    "outcome": "error",
+    "reason": "handler_error",
+    "elapsed_ms": "115.409",
+    "slot_wait_ms": "0.003",
+    "model_lock_ms": "0.000",
+    "tokenizer_lock_ms": "0.000",
+    "scheduler_completion_ms": "0.000",
+    "stream_write_ms": "0.000",
+    "scheduler_waits": "0"
+  },
+  {
+    "instance": "2",
+    "id": "unregistered",
+    "event": "begin",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.000"
+  },
+  {
+    "instance": "2",
+    "id": "diag-blocker",
+    "event": "registered",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.725"
+  },
+  {
+    "instance": "2",
+    "id": "diag-blocker",
+    "event": "stage",
+    "stage": "slot_admission",
+    "seq": "-1",
+    "elapsed_ms": "0.737"
+  },
+  {
+    "instance": "2",
+    "id": "diag-blocker",
+    "event": "admitted",
+    "stage": "slot_admission",
+    "seq": "0",
+    "elapsed_ms": "0.743"
+  },
+  {
+    "instance": "2",
+    "id": "diag-blocker",
+    "event": "stage",
+    "stage": "encode",
+    "seq": "0",
+    "elapsed_ms": "0.745"
+  },
+  {
+    "instance": "3",
+    "id": "unregistered",
+    "event": "begin",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.000"
+  },
+  {
+    "instance": "3",
+    "id": "diag-reuse",
+    "event": "registered",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.045"
+  },
+  {
+    "instance": "3",
+    "id": "diag-reuse",
+    "event": "stage",
+    "stage": "slot_admission",
+    "seq": "-1",
+    "elapsed_ms": "0.048"
+  },
+  {
+    "instance": "2",
+    "id": "diag-blocker",
+    "event": "stage",
+    "stage": "prefill",
+    "seq": "0",
+    "elapsed_ms": "25.900"
+  },
+  {
+    "instance": "3",
+    "id": "diag-reuse",
+    "event": "end",
+    "stage": "slot_admission",
+    "seq": "-1",
+    "released": "0",
+    "outcome": "cancelled",
+    "reason": "explicit_cancel",
+    "elapsed_ms": "20.363",
+    "slot_wait_ms": "20.271",
+    "model_lock_ms": "0.000",
+    "tokenizer_lock_ms": "0.000",
+    "scheduler_completion_ms": "0.000",
+    "stream_write_ms": "0.000",
+    "scheduler_waits": "0"
+  },
+  {
+    "instance": "4",
+    "id": "unregistered",
+    "event": "begin",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.000"
+  },
+  {
+    "instance": "4",
+    "id": "diag-deadline",
+    "event": "registered",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.045"
+  },
+  {
+    "instance": "4",
+    "id": "diag-deadline",
+    "event": "stage",
+    "stage": "slot_admission",
+    "seq": "-1",
+    "elapsed_ms": "0.049"
+  },
+  {
+    "instance": "4",
+    "id": "diag-deadline",
+    "event": "end",
+    "stage": "slot_admission",
+    "seq": "-1",
+    "released": "0",
+    "outcome": "cancelled",
+    "reason": "deadline_exceeded",
+    "elapsed_ms": "100.156",
+    "slot_wait_ms": "100.059",
+    "model_lock_ms": "0.000",
+    "tokenizer_lock_ms": "0.000",
+    "scheduler_completion_ms": "0.000",
+    "stream_write_ms": "0.000",
+    "scheduler_waits": "0"
+  },
+  {
+    "instance": "2",
+    "id": "diag-blocker",
+    "event": "stage",
+    "stage": "decode",
+    "seq": "0",
+    "elapsed_ms": "30342.736"
+  },
+  {
+    "instance": "2",
+    "id": "diag-blocker",
+    "event": "stage",
+    "stage": "response",
+    "seq": "0",
+    "elapsed_ms": "30695.054"
+  },
+  {
+    "instance": "2",
+    "id": "diag-blocker",
+    "event": "end",
+    "stage": "response",
+    "seq": "0",
+    "released": "1",
+    "outcome": "success",
+    "reason": "completed",
+    "elapsed_ms": "30695.111",
+    "slot_wait_ms": "0.002",
+    "model_lock_ms": "0.000",
+    "tokenizer_lock_ms": "0.001",
+    "scheduler_completion_ms": "30667.948",
+    "stream_write_ms": "0.285",
+    "scheduler_waits": "7"
+  },
+  {
+    "instance": "5",
+    "id": "unregistered",
+    "event": "begin",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.000"
+  },
+  {
+    "instance": "5",
+    "id": "diag-reuse",
+    "event": "registered",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.053"
+  },
+  {
+    "instance": "5",
+    "id": "diag-reuse",
+    "event": "stage",
+    "stage": "slot_admission",
+    "seq": "-1",
+    "elapsed_ms": "0.057"
+  },
+  {
+    "instance": "5",
+    "id": "diag-reuse",
+    "event": "admitted",
+    "stage": "slot_admission",
+    "seq": "0",
+    "elapsed_ms": "0.061"
+  },
+  {
+    "instance": "5",
+    "id": "diag-reuse",
+    "event": "stage",
+    "stage": "encode",
+    "seq": "0",
+    "elapsed_ms": "0.063"
+  },
+  {
+    "instance": "5",
+    "id": "diag-reuse",
+    "event": "stage",
+    "stage": "prefill",
+    "seq": "0",
+    "elapsed_ms": "0.988"
+  },
+  {
+    "instance": "5",
+    "id": "diag-reuse",
+    "event": "stage",
+    "stage": "decode",
+    "seq": "0",
+    "elapsed_ms": "754.956"
+  },
+  {
+    "instance": "5",
+    "id": "diag-reuse",
+    "event": "stage",
+    "stage": "response",
+    "seq": "0",
+    "elapsed_ms": "1076.747"
+  },
+  {
+    "instance": "5",
+    "id": "diag-reuse",
+    "event": "end",
+    "stage": "response",
+    "seq": "0",
+    "released": "1",
+    "outcome": "success",
+    "reason": "completed",
+    "elapsed_ms": "1076.782",
+    "slot_wait_ms": "0.002",
+    "model_lock_ms": "0.000",
+    "tokenizer_lock_ms": "0.001",
+    "scheduler_completion_ms": "1075.225",
+    "stream_write_ms": "0.130",
+    "scheduler_waits": "7"
+  },
+  {
+    "instance": "6",
+    "id": "unregistered",
+    "event": "begin",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.000"
+  },
+  {
+    "instance": "6",
+    "id": "diag-nonstream",
+    "event": "registered",
+    "stage": "validation",
+    "seq": "-1",
+    "elapsed_ms": "0.049"
+  },
+  {
+    "instance": "6",
+    "id": "diag-nonstream",
+    "event": "stage",
+    "stage": "slot_admission",
+    "seq": "-1",
+    "elapsed_ms": "0.052"
+  },
+  {
+    "instance": "6",
+    "id": "diag-nonstream",
+    "event": "admitted",
+    "stage": "slot_admission",
+    "seq": "0",
+    "elapsed_ms": "0.056"
+  },
+  {
+    "instance": "6",
+    "id": "diag-nonstream",
+    "event": "stage",
+    "stage": "encode",
+    "seq": "0",
+    "elapsed_ms": "0.058"
+  },
+  {
+    "instance": "6",
+    "id": "diag-nonstream",
+    "event": "stage",
+    "stage": "prefill",
+    "seq": "0",
+    "elapsed_ms": "0.978"
+  },
+  {
+    "instance": "6",
+    "id": "diag-nonstream",
+    "event": "stage",
+    "stage": "decode",
+    "seq": "0",
+    "elapsed_ms": "749.888"
+  },
+  {
+    "instance": "6",
+    "id": "diag-nonstream",
+    "event": "stage",
+    "stage": "response",
+    "seq": "0",
+    "elapsed_ms": "1071.087"
+  },
+  {
+    "instance": "6",
+    "id": "diag-nonstream",
+    "event": "end",
+    "stage": "response",
+    "seq": "0",
+    "released": "1",
+    "outcome": "success",
+    "reason": "completed",
+    "elapsed_ms": "1071.155",
+    "slot_wait_ms": "0.002",
+    "model_lock_ms": "0.000",
+    "tokenizer_lock_ms": "0.000",
+    "scheduler_completion_ms": "1069.744",
+    "stream_write_ms": "0.000",
+    "scheduler_waits": "7"
+  }
+]

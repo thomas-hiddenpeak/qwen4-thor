@@ -1,0 +1,45 @@
+{
+  "scope": "unpaired historical observations, no performance claim",
+  "rows": {
+    "off": [
+      {
+        "id": "1024-10",
+        "ttft_s": 0.8670781800756231,
+        "reference_ttft_s": 0.8759839320555329,
+        "observed_change_pct": -1.0166570018027787
+      },
+      {
+        "id": "8192-10",
+        "ttft_s": 5.160264206002466,
+        "reference_ttft_s": 5.152916531078517,
+        "observed_change_pct": 0.14259254695148105
+      },
+      {
+        "id": "45056-50",
+        "ttft_s": 30.339606628986076,
+        "reference_ttft_s": 30.31798032601364,
+        "observed_change_pct": 0.07133160830596896
+      }
+    ],
+    "on": [
+      {
+        "id": "1024-10",
+        "ttft_s": 1.0902379450853914,
+        "reference_ttft_s": 1.0932775320252404,
+        "observed_change_pct": -0.2780251903849451
+      },
+      {
+        "id": "8192-10",
+        "ttft_s": 5.763572551077232,
+        "reference_ttft_s": 5.712169757927768,
+        "observed_change_pct": 0.8998820995843593
+      },
+      {
+        "id": "45056-50",
+        "ttft_s": 31.79833211004734,
+        "reference_ttft_s": 31.78663719096221,
+        "observed_change_pct": 0.036791935601332426
+      }
+    ]
+  }
+}

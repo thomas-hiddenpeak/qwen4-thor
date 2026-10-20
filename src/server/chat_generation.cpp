@@ -15,6 +15,7 @@
 #include "q4t/server/request_json.h"
 #include "q4t/server/mtp_policy.h"
 #include "q4t/server/scheduler_submission.h"
+#include "q4t/server/request_diagnostics.h"
 
 namespace q4t::server {
 namespace {
@@ -68,6 +69,8 @@ using detail::SseChunk;
 using detail::PrepareChatInput;
 
 void ChatServer::HandleChat(int fd, const std::string& body) {
+  RequestDiagnostics diagnostic;
+  using Wait = RequestDiagnostics::Wait;
   metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
   const auto t_arrive = std::chrono::steady_clock::now();
   // Any return before generation starts (validation / alloc / encode / prefill
@@ -146,11 +149,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     SendError(fd, 409, "request_id already active");
     return;
   }
+  diagnostic.Bind(request_id);
   struct Registration {
     RequestRegistry& registry;
     std::shared_ptr<RequestControl> control;
-    ~Registration() { registry.Remove(control); }
-  } registration{requests_, control};
+    RequestDiagnostics& diagnostic;
+    ~Registration() {
+      if (control->Cancelled())
+        diagnostic.Outcome("cancelled", control->Reason());
+      registry.Remove(control);
+    }
+  } registration{requests_, control, diagnostic};
   const auto cancelled = [&] { return RequestCancelled(control.get(), fd); };
   bool abort_counted = false;
   const auto count_abort = [&] {
@@ -187,7 +196,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // seq_id), so model forwards are serialized behind model_mu_ for both
   // scratch safety and GPU-stream ordering. GPU readback completes under
   // the lock; tokenization and SSE output use the completed host result.
-  const int seq_id = AllocSeqId(control.get(), fd);
+  diagnostic.Stage("slot_admission");
+  int seq_id;
+  {
+    RequestDiagnostics::Scope wait(diagnostic, Wait::kSlot);
+    seq_id = AllocSeqId(control.get(), fd);
+  }
   if (seq_id == -2) {
     count_abort();
     SendError(fd, 409, "request cancelled before admission");
@@ -197,6 +211,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     SendError(fd, 503, "server shutting down");
     return;
   }
+  diagnostic.Admitted(seq_id);
+  diagnostic.Stage("encode");
   metrics_.queue_seconds.Observe(
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
           .count());
@@ -227,6 +243,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       d_mtp_g = nullptr;
     }
     FreeSeqId(seq_id);
+    diagnostic.Released();
   };
 
   if (cancelled()) {
@@ -240,7 +257,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // engine is not thread-safe, so Encode is serialized behind tok_mu_.
   std::vector<std::uint32_t> prompt_u32;
   {
-    const std::lock_guard<std::mutex> lock(tok_mu_);
+    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
     s = tok_->Encode(prompt, &prompt_u32);
   }
   if (!s.ok()) {
@@ -265,7 +282,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // behind model_mu_ (the same lock that serializes the main model). The
     // pipeline runs on the default stream and self-synchronizes internally.
     {
-      const std::lock_guard<std::mutex> lock(model_mu_);
+      auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
       if (!RunVisionPipeline(items, &d_vfeats, &vfeats.num_tokens, &counts,
                              &grids, &verr)) {
         SendError(fd, 400, verr);
@@ -396,6 +413,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return best;
   };
 
+  diagnostic.Stage("prefill");
   // 2. Prefill (PD-ready 阶段边界 API: Begin -> Prefill). The forward uses the
   // shared per-forward scratch, so it is serialized behind model_mu_; the
   // per-sequence recurrent state is isolated by seq_id. All GPU work uses the
@@ -423,6 +441,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     pr.ids = ids.data();
     pr.len = T;
     pr.h_logits = h_logits.data();
+    RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
     SubmitSchedulerRequestAndWait(
         sched_mu_, scheduler_stop_, sched_cv_, pr.cv,
         [&] { chunk_prefill_pending_.push_back(&pr); },
@@ -442,6 +461,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     pr.ids = ids.data();
     pr.len = T;
     pr.h_logits = h_logits.data();
+    RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
     SubmitSchedulerRequestAndWait(
         sched_mu_, scheduler_stop_, sched_cv_, pr.cv,
         [&] {
@@ -451,7 +471,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         [&] { return pr.done; });
     s = pr.ok ? Status() : Status::Fail("batched prefill failed");
   } else {
-    const std::lock_guard<std::mutex> lock(model_mu_);
+    auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
     s = cancelled() ? Status::Fail("request cancelled")
                     : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
     if (s.ok()) {
@@ -531,6 +551,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
 
+  diagnostic.Stage("decode");
   // 3. Decode loop (greedy).
   const std::string id = request_id;
   const std::string model_field = model_name_;
@@ -538,6 +559,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   bool client_disconnected = false;
   const auto write_stream = [&](const std::string& data) {
     if (client_disconnected) return false;
+    RequestDiagnostics::Scope wait(diagnostic, Wait::kWrite);
     if (!cancelled() && WriteAll(fd, data)) return true;
     client_disconnected = true;
     control->Cancel(RequestControl::State::kDisconnect);
@@ -607,7 +629,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
   if (use_mtp) {
     {
-      const std::lock_guard<std::mutex> lock(model_mu_);
+      auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
       s = mtp::MtpResetState(mtp_, nullptr, seq_id);
       if (s.ok()) {
         mtp_b = next_token;
@@ -699,6 +721,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       sched_cv_.notify_one();
       // Block until the scheduler's batched step yields this step's output.
       {
+        RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
         std::unique_lock<std::mutex> lock(sched_mu_);
         mtp_ar.cv.wait(lock, [&mtp_ar] { return mtp_ar.done; });
       }
@@ -718,7 +741,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           std::string piece;
           bool wrote = true;
           {
-            const std::lock_guard<std::mutex> lock(tok_mu_);
+            auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
             if (tok_->Decode(one, true, &piece).ok())
               wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
           }
@@ -799,7 +822,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         std::string piece;
         bool wrote = true;
         {
-          const std::lock_guard<std::mutex> lock(tok_mu_);
+          auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
           if (tok_->Decode(one, true, &piece).ok())
             wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
         }
@@ -828,6 +851,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         sched_cv_.notify_one();
         // Block until the scheduler's packed forward yields this step's token.
         {
+          RequestDiagnostics::Scope wait(diagnostic, Wait::kScheduler);
           std::unique_lock<std::mutex> lock(sched_mu_);
           ar.cv.wait(lock, [&ar] { return ar.done; });
         }
@@ -839,7 +863,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         next_token = ar.next_token;
       } else {
         // Fallback: single-sequence decode (B1 path).
-        const std::lock_guard<std::mutex> lock(model_mu_);
+        auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
         if (router_trace_) router_trace_->BeginForward(
             trace::RouteStage::kDecode, seq.position, 1);
         s = model::ModelDecodeStepSeq(model_.Get(), &seq, tok_id, d_prefill_logits_,
@@ -1042,6 +1066,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     cleanup();
     return;
   }
+  diagnostic.Stage("response");
   // 4. Finalize.
   if (stream) {
     write_stream(SseChunk(id, model_field, "", "", finish_reason, 0));
@@ -1063,7 +1088,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     std::string text;
     bool decoded = false;
     {
-      const std::lock_guard<std::mutex> lock(tok_mu_);
+      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
       decoded = tok_->Decode(gen_u32, true, &text).ok();
     }
     if (decoded) {
@@ -1089,9 +1114,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
 
+  if (client_disconnected)
+    diagnostic.Outcome("cancelled", "client_disconnected");
   trace_outcome = client_disconnected ? trace::RequestOutcome::kCancelled
                                       : trace::RequestOutcome::kSuccess;
   if (!client_disconnected) {
+    diagnostic.Outcome("success", "completed");
     metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
   }
   cleanup();
