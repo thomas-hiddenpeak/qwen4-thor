@@ -11,6 +11,8 @@
 两模式健康检查及86份部署文件复核通过。资源基线全驻留15请求及离线合同已通过，C256正在同一lease运行；独立memcg限额
 归属兼容仍待处理，不在本轮宣称严格RAM或SSD冷态。
 见[阶段计划](OFFLOAD_FOUNDATION_PLAN_2026-10-20.md)。
+下一策略候选为同payload预算的跨层共享CPU专家缓存，已核对当前字节
+布局，尚无优化收益结论；见[机制筛选](OFFLOAD_NEXT_STRATEGY_2026-10-20.md)。
 限额工具scope候选已通过CPU后代归属/退出/清理检查及7项host合同，
 暂存接入草稿另通过103项host合同，实机驱动已准备，尚未接入真实GPU；见[接入记录](OFFLOAD_SCOPE_INTEGRATION_2026-10-20.md)。
 

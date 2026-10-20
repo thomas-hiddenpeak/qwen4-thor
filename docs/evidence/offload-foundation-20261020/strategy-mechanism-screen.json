@@ -1,0 +1,40 @@
+{
+  "status": "MECHANISM_SCREEN_ONLY",
+  "runtime_changed": false,
+  "gpu_new_samples": 0,
+  "source_sha256": {
+    "src/quant/moe_residency.cpp": "6916f8e711c5703fb07b06c724c38680fb4fc20e0f3e025fcfa8eebdd8fec2d3",
+    "include/q4t/quant/swizzle.h": "f0c2c88a22f45092de70542dfd3e8046f56e52f3703defbcae2d84e240678ccf",
+    "include/q4t/quant/moe_residency.h": "154c04d9fc62866af7993b4769679d0abcb8e78770770d929f52d0dc55abda36",
+    "src/model/moe.cu": "991bf0e474f8009116ce1855edafbd1e6021fbf183a88d6d376ea07324ad8249",
+    "src/model/model.cu": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194",
+    "docs/OFFLOAD_REPLAY_2026-10-02.md": "a3ec7181a66a93d4004c0d152e90ba7c7c180e68cc8095291f28f8262bec70b5",
+    "docs/MOE_RESIDENCY_R3_DECISION_2026-10-01.md": "16cefddb9c8f5941d5f3ecf61b3513cf0a25eee4ca814ccb3243f5223e6d23c2"
+  },
+  "model": {
+    "hs": 2560,
+    "moe_is": 640,
+    "layers": 48,
+    "experts_per_layer": 512
+  },
+  "staging_bytes_per_slot": 3276816,
+  "mirror_bytes_per_slot": 2764816,
+  "current_L2_payload_bytes": 2516594688,
+  "current_L2_slots_total": 768,
+  "one_layer_all_experts_staging_bytes": 1677729792,
+  "current_mirror_payload_bytes": 1061689344,
+  "selected_research_candidate": "shared CPU expert cache across layers at the same L2 payload-byte budget",
+  "target_cost": "software reads, CPU scale processing/copy; physical SSD and end-to-end gains unproven",
+  "unchanged_hypothesis": "GPU capacity and required H2D count are not reduced by CPU cache hits",
+  "not_proven": [
+    "actual cache hit improvement",
+    "physical SSD read reduction",
+    "decode non-regression",
+    "strict physical RAM budget",
+    "end-to-end speedup"
+  ],
+  "model_config": {
+    "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json",
+    "sha256": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624"
+  }
+}
