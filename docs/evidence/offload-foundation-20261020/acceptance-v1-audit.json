@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "candidate_sha256": "a8d389001ec7f883c375841259a38612f874577261a8893d5f7cec1fc93ff106",
+  "sealed_files": {
+    "payload-v1": 22,
+    "payload-v2": 20,
+    "quality-v1": 280
+  },
+  "host_tests": 53,
+  "residency_tests": 5,
+  "payload_fault_cases": 9,
+  "http_quality_requests": 9,
+  "performance_acceptance": false,
+  "source_manifest_sha256": "6a9b96e209b73ded39f2a7e8032cb0f6f2265122b65e0797c2c9318773157ebd"
+}

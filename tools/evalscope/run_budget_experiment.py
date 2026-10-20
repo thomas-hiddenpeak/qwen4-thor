@@ -17,6 +17,7 @@ import time
 
 from file_cache import model_files, observe_files
 from monitor_memory import find_pids
+import nvml_process_query
 from offload_policy import AXES, RUN_TOOLS, policy_environment
 from run_acceptance import LENGTHS, parse_lengths, performance_plan
 
@@ -275,10 +276,8 @@ def main():
         ap.error('hot list must be a JSON object')
     if find_pids('q4t'):
         ap.error('another q4t process is active')
-    gpu = subprocess.run(['nvidia-smi', '--query-compute-apps=pid',
-                          '--format=csv,noheader,nounits'],
-                         capture_output=True, text=True, timeout=10)
-    if gpu.returncode or gpu.stdout.strip():
+    gpu = nvml_process_query.query(timeout=5)
+    if gpu['status'] != 'OK' or gpu['pids']:
         ap.error('GPU compute state unavailable or occupied')
     out.mkdir(parents=True, exist_ok=False)
     unit = f'q4t-ram-{time.time_ns()}-{os.getpid()}.service'

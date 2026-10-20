@@ -75,21 +75,22 @@ class ResponseContracts(unittest.TestCase):
 
     def test_existing_q4t_rejected_before_gpu_query(self):
         with patch('run_offload_lifecycle.find_pids', return_value=[123]), \
-                patch('run_offload_lifecycle.subprocess.run') as query:
+                patch('run_offload_lifecycle.nvml_process_query.query') as query:
             with self.assertRaisesRegex(RuntimeError, 'q4t process'):
                 require_idle_device()
             query.assert_not_called()
 
     def test_gpu_state_must_be_available_and_empty(self):
         with patch('run_offload_lifecycle.find_pids', return_value=[]), \
-                patch('run_offload_lifecycle.subprocess.run') as query:
-            for code, output in ((0, '456\n'), (1, '')):
-                query.return_value = Namespace(returncode=code, stdout=output)
+                patch('run_offload_lifecycle.nvml_process_query.query') as query:
+            for state in (dict(status='OK', pids=[456]),
+                          dict(status='ERROR', pids=None)):
+                query.return_value = state
                 with self.assertRaisesRegex(RuntimeError, 'unavailable or occupied'):
                     require_idle_device()
-            query.return_value = Namespace(returncode=0, stdout='\n')
+            query.return_value = dict(status='OK', pids=[])
             require_idle_device()
-            self.assertEqual(query.call_args.kwargs['timeout'], 10)
+            self.assertEqual(query.call_args.kwargs['timeout'], 5)
 
     def test_reference_binds_model_metadata_manifest_and_environment(self):
         root = Path(self.temp.name)

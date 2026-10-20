@@ -50,6 +50,17 @@ class QueryTests(unittest.TestCase):
         self.assertEqual(result['status'], 'ERROR')
         self.assertIsNone(result['pids'])
 
+    def test_memory_records_preserve_unknown_and_validate_identity(self):
+        records = [dict(device=0, pid=7, used_bytes=None)]
+        result = self.fake_output([self.final(pids=[7], process_memory=records)])
+        self.assertEqual(result['status'], 'OK')
+        self.assertEqual(result['process_memory'], records)
+        for bad in [[], records * 2, [dict(device=0, pid=8, used_bytes=1)],
+                    [dict(device=0, pid=7, used_bytes=2**64-1)]]:
+            result = self.fake_output([self.final(pids=[7], process_memory=bad)])
+            self.assertEqual(result['status'], 'PROTOCOL_ERROR')
+            self.assertIsNone(result['pids'])
+
     def test_timeout_reaps_worker_and_keeps_api_boundary(self):
         code = ('import time; print(\'{"request_id":"fresh",'
                 '"event":"begin","api":"compute"}\', flush=True); '

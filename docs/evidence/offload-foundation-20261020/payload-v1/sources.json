@@ -1,0 +1,7 @@
+{
+  "src/quant/moe_residency.cpp": "c6d92b66dc8454db21730f98bc3ab007625c08ad614ffd5a19597c112ddd13f4",
+  "include/q4t/quant/moe_residency.h": "154c04d9fc62866af7993b4769679d0abcb8e78770770d929f52d0dc55abda36",
+  "tests/quant_moe_residency_test.cpp": "2274fd9c37874fedff9d1c5c6ba1bc690d01dbaaa0021811f66ccf49cb2a4045",
+  "tools/verify/inference_metadata/run_payload_contracts.py": "f956256b187358b4655d131dde6c5c748d14aafd7d6fc75cc12858040bc29194",
+  "tools/verify/inference_metadata/payload_fault.cpp.in": "85846ee2d24e1da40d2acddee195f6e9046cf772c02a1fa7fdeb9476004b6a67"
+}

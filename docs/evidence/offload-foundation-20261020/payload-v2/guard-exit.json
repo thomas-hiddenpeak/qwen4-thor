@@ -1,0 +1,23 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_payload_contracts.py",
+    "--output",
+    ".q4t-work/offload-foundation-20261020/payload-v2/run",
+    "--fault-only"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-20T08:20:15.263083+00:00",
+    "monotonic": 674497.779964714,
+    "pid": 2190104
+  }
+}

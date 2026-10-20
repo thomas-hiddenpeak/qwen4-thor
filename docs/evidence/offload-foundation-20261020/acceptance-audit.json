@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "candidate_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+  "sealed_files": {
+    "payload-v1": 22,
+    "payload-v2": 20,
+    "payload-v3": 21,
+    "quality-v1": 280,
+    "quality-v2": 206
+  },
+  "host_tests": 53,
+  "residency_tests": 5,
+  "payload_fault_cases": 9,
+  "http_quality_requests": 12,
+  "retained_full_resident_requests": 6,
+  "performance_acceptance": false,
+  "source_manifest_sha256": "b40e5e27e995c4413b42a945aa9f7c3e8a2822dbc1222d898ca18263269ff4fc"
+}

@@ -1,0 +1,10 @@
+{
+  "started": 1792484882.8869836,
+  "completed": [
+    "shim-build",
+    "payload-faults",
+    "residency"
+  ],
+  "status": "PASS",
+  "finished": 1792484889.0438836
+}

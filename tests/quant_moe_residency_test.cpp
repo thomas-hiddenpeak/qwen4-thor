@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
+#include <dlfcn.h>
 #include <memory>
 #include <string>
 #include <unistd.h>
@@ -794,4 +795,110 @@ Q4T_TEST(residency_invalid_inputs) {
   delete c.loader;
   delete c.idx;
   return true;
+}
+
+// Requires the explicit test-only LD_PRELOAD shim. No production fault API.
+Q4T_TEST(residency_partial_payload_failure) {
+  using Arm = void (*)(int, int, int);
+  using Counter = int (*)(int);
+  auto arm = reinterpret_cast<Arm>(dlsym(RTLD_DEFAULT, "q4t_payload_arm"));
+  auto counter = reinterpret_cast<Counter>(
+      dlsym(RTLD_DEFAULT, "q4t_payload_counter"));
+  if (!arm || !counter) Q4T_SKIP("requires payload_fault test shim");
+  if (!CudaAvailable()) Q4T_SKIP("requires CUDA");
+  // One L2 buffer and one mirror force eviction of both identities.
+  const ScopedEnv threads("Q4T_MOE_LOAD_THREADS", "1");
+  const ScopedEnv l2("Q4T_MOE_L2_SLOTS", "1");
+  const ScopedEnv mirror("Q4T_MOE_MIRROR_K", "1");
+  Ctx c;
+  if (!OpenCtx(&c)) return false;
+  struct Case { int type; int nth; int persistent; int mirror; int target; };
+  const Case cases[] = {{1, 2, 0, 0, 2}, {1, 8, 0, 0, 2},
+                        {3, 1, 0, 0, 2}, {2, 2, 0, 1, 2},
+                        {3, 1, 0, 1, 2}, {1, 2, 1, 0, 2},
+                        {1, 2, 0, 1, 0}, {3, 1, 0, 1, 0}};
+  bool passed = true;
+  for (const auto& test : cases) {
+    MoEResidency res;
+    setenv("Q4T_MOE_MIRROR_K", test.mirror ? "1" : "0", 1);
+    auto resolve = [&](int32_t expert, int32_t* slot) {
+      return res.Resolve(&expert, 1, slot, nullptr);
+    };
+    int32_t slot = -1;
+    if (!res.Init(*c.loader, kLayer, kE, kHs, kMoeIs, 1, nullptr).ok() ||
+        !resolve(0, &slot).ok() || !resolve(1, &slot).ok() ||
+        cudaStreamSynchronize(nullptr) != cudaSuccess) {
+      res.Free(); passed = false; break;
+    }
+    arm(test.type, test.nth, test.persistent);
+    const Status failed = resolve(test.target, &slot);
+    bool ok = !failed.ok() && counter(0) >= 1 && res.SlotExpert(0) == -1;
+    if (test.persistent) {
+      // Unknown completion prevents reuse and keeps pinned allocations alive.
+      ok = ok && !resolve(0, &slot).ok();
+      res.Free();
+      ok = ok && counter(1) == 0;
+    }
+    arm(0, 0, 0);
+    if (!test.persistent) {
+      // Old mirror identity 0 and overwritten GPU identity 1 must both reload
+      // correctly, followed by the expert whose partial submission failed.
+      for (int32_t expert : {0, 1, 2}) {
+        ok = resolve(expert, &slot).ok() && ok;
+        if (slot >= 0) ok = SlotMatchesReference(c, &res, expert, slot) && ok;
+      }
+    }
+    res.Free();
+    std::printf("  payload fault type=%d nth=%d persistent=%d mirror=%d target=%d: %s\n",
+                test.type, test.nth, test.persistent, test.mirror, test.target,
+                ok ? "PASS" : "FAIL");
+    passed = passed && ok;
+  }
+  arm(0, 0, 0);
+  delete c.loader;
+  delete c.idx;
+  return passed;
+}
+
+Q4T_TEST(residency_partial_payload_parallel_failure) {
+  using Arm = void (*)(int, int, int);
+  auto arm = reinterpret_cast<Arm>(dlsym(RTLD_DEFAULT, "q4t_payload_arm"));
+  if (!arm) Q4T_SKIP("requires payload_fault test shim");
+  if (!CudaAvailable()) Q4T_SKIP("requires CUDA");
+  const ScopedEnv threads("Q4T_MOE_LOAD_THREADS", "2");
+  const ScopedEnv l2("Q4T_MOE_L2_SLOTS", "2");
+  const ScopedEnv mirror("Q4T_MOE_MIRROR_K", "1");
+  const ScopedEnv inline_limit("Q4T_MOE_INLINE_MISS_LIMIT", "0");
+  const ScopedEnv merge("Q4T_MOE_PREAD_MERGE", "0");
+  Ctx c;
+  if (!OpenCtx(&c)) return false;
+  MoEResidency res;
+  int32_t first[] = {0, 1}, next[] = {2, 3}, slots[2] = {-1, -1};
+  bool ok = res.Init(*c.loader, kLayer, kE, kHs, kMoeIs, 2, nullptr).ok();
+  ok = ok && res.Resolve(first, 2, slots, nullptr).ok();
+  ok = ok && cudaStreamSynchronize(nullptr) == cudaSuccess;
+  if (ok) {
+    arm(1, 2, 0);
+    ok = !res.Resolve(next, 2, slots, nullptr).ok();
+    arm(0, 0, 0);
+    // One worker fails; the other must finish without losing its payload.
+    int survivors = 0;
+    for (int slot = 0; slot < 2; ++slot) {
+      const int expert = res.SlotExpert(slot);
+      if (expert >= 0) {
+        ++survivors;
+        ok = SlotMatchesReference(c, &res, expert, slot) && ok;
+      }
+    }
+    ok = survivors == 1 && res.ResidentCount() == 1 && ok;
+    ok = res.Resolve(first, 2, slots, nullptr).ok() && ok;
+    for (int i = 0; i < 2; ++i)
+      if (slots[i] >= 0)
+        ok = SlotMatchesReference(c, &res, first[i], slots[i]) && ok;
+  }
+  arm(0, 0, 0);
+  res.Free();
+  delete c.loader;
+  delete c.idx;
+  return ok;
 }

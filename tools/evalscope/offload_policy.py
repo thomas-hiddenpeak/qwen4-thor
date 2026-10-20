@@ -13,7 +13,8 @@ BASE_ENVIRONMENT = {
 }
 RUN_TOOLS = ('run_budget_experiment.py', 'run_acceptance.py',
              'isolated_service.py', 'monitor_memory.py', 'file_cache.py',
-             'resource_metrics.py', 'memory_accounting.py')
+             'resource_metrics.py', 'memory_accounting.py',
+             'nvml_process_query.py')
 
 
 def require(condition, message):

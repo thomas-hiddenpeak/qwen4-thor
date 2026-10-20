@@ -1,0 +1,49 @@
+// Test-only one-shot CUDA return failure after earlier real DMA submissions.
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+#include <atomic>
+#include <cstdlib>
+
+namespace {
+std::atomic<int> kind{0}, ordinal{0}, copies{0}, events{0}, drains{0}, frees{0};
+std::atomic<bool> persistent{false};
+template <typename T> T Real(const char* name) {
+  auto fn = reinterpret_cast<T>(dlsym(RTLD_NEXT, name));
+  if (!fn) std::_Exit(127);
+  return fn;
+}
+}
+extern "C" void q4t_payload_arm(int type, int nth, int fail_sync) {
+  kind = type; ordinal = nth; copies = 0; events = 0; drains = 0; frees = 0;
+  persistent = fail_sync != 0;
+}
+extern "C" int q4t_payload_counter(int which) {
+  return which == 0 ? drains.load() : which == 1 ? frees.load() : copies.load();
+}
+extern "C" cudaError_t CUDARTAPI cudaMemcpyAsync(
+    void* dst, const void* src, size_t bytes, cudaMemcpyKind direction,
+    cudaStream_t stream) {
+  static const auto real = Real<decltype(&cudaMemcpyAsync)>("cudaMemcpyAsync");
+  const int mode = kind.load();
+  if ((mode == 1 && direction == cudaMemcpyHostToDevice) ||
+      (mode == 2 && direction == cudaMemcpyDeviceToHost)) {
+    if (++copies == ordinal) return cudaErrorInvalidValue;
+  }
+  return real(dst, src, bytes, direction, stream);
+}
+extern "C" cudaError_t CUDARTAPI cudaEventRecord(cudaEvent_t e, cudaStream_t s) {
+  static const auto real = Real<decltype(&cudaEventRecord)>("cudaEventRecord");
+  if (kind == 3 && ++events == ordinal) return cudaErrorInvalidValue;
+  return real(e, s);
+}
+extern "C" cudaError_t CUDARTAPI cudaStreamSynchronize(cudaStream_t s) {
+  static const auto real = Real<decltype(&cudaStreamSynchronize)>("cudaStreamSynchronize");
+  if (kind != 0) ++drains;
+  const auto result = real(s);
+  return persistent ? cudaErrorUnknown : result;
+}
+extern "C" cudaError_t CUDARTAPI cudaFreeHost(void* p) {
+  static const auto real = Real<decltype(&cudaFreeHost)>("cudaFreeHost");
+  if (kind != 0) ++frees;
+  return real(p);
+}

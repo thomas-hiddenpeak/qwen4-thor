@@ -1,0 +1,13 @@
+{
+  "status": "PASS_RUNTIME_CONTRACTS",
+  "started": 1792484452.038967,
+  "completed": [
+    "quality-off",
+    "quality-on",
+    "quality-offload"
+  ],
+  "current": "quality-offload",
+  "performance_acceptance": false,
+  "deployed": false,
+  "finished": 1792484788.495339
+}

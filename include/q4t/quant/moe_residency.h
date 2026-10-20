@@ -616,6 +616,10 @@ class MoEResidency {
   // and non-movable; DecoderLayer is default-constructed via
   // vector::resize in model.cu, which instantiates the move ctor.
   mutable std::unique_ptr<TimingStats> timing_{new TimingStats()};
+  // A failed stream drain makes payload completion unknown. Keep allocations
+  // and reject further plans until the owning model is destroyed/reloaded.
+  mutable std::shared_ptr<std::atomic<bool>> payload_poisoned_ =
+      std::make_shared<std::atomic<bool>>(false);
   bool inited_ = false;
 };
 

@@ -38,10 +38,11 @@ std::string ExpertName(int layer_id, int expert, const char* proj,
 
 Status H2D(const void* src, void* dst, size_t bytes, cudaStream_t stream) {
   if (bytes == 0) return Status();
-  if (cudaMemcpyAsync(dst, src, bytes, cudaMemcpyHostToDevice, stream) !=
-      cudaSuccess) {
+  const auto error =
+      cudaMemcpyAsync(dst, src, bytes, cudaMemcpyHostToDevice, stream);
+  if (error != cudaSuccess) {
     return Status::Fail(std::string("residency H2D failed: ") +
-                        cudaGetErrorString(cudaGetLastError()));
+                        cudaGetErrorString(error));
   }
   return Status();
 }
@@ -163,6 +164,8 @@ size_t MoEResidencyStagingBytes(int hs, int moe_is) {
 Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
                           int E, int hs, int moe_is, int C,
                           cudaStream_t stream) {
+  if (inited_) return Status::Fail("residency already initialized");
+  payload_poisoned_->store(false, std::memory_order_relaxed);
   if (E <= 0 || hs <= 0 || moe_is <= 0 || C <= 0 || C > E) {
     return Status::Fail("invalid residency dims");
   }
@@ -581,6 +584,8 @@ Status MoEResidency::ClaimExpert(int expert,
   if (expert < 0 || expert >= E_) {
     return Status::Fail("expert out of range");
   }
+  if (payload_poisoned_->load(std::memory_order_relaxed))
+    return Status::Fail("residency payload completion unknown; reload model");
   const bool tim = timing_->enabled.load(std::memory_order_relaxed);
   const auto t_stage0 =
       tim ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
@@ -1085,6 +1090,13 @@ Status MoEResidency::StageTask(LoadPlan& plan,
     Status cs = CommitExpert(plan.experts[i], plan.slots[i], bufs[t], stream,
                              delta);
     if (!cs.ok()) {
+      // CommitExpert drains before allowing release. Unknown completion
+      // keeps the source claimed, so no worker can recycle its storage.
+      if (payload_poisoned_->load(std::memory_order_relaxed)) {
+        if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0)
+          plan.first_err_msg = "commit completion unknown: " + cs.message();
+        continue;
+      }
       if (bufs[t] < 0) {
         ReleaseRingClaim(plan.experts[i], -bufs[t] - 1);
       } else {
@@ -1131,192 +1143,240 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
     return Status::Fail("residency staging layout exceeds buffer");
   }
 
-  // Only an overwrite of an occupied slot is an eviction; loading an empty
-  // slot (initial fill) is not. (Moved here from LoadPhase2 with the C1
-  // pipeline.)
-  if (slot_expert_[slot] >= 0) {
-    if (delta) ++delta->evictions;
-    else ++stats_.evictions;
-  }
-
-  Status s;
-  uint8_t* gu_dst =
-      layout_.gu_packed + static_cast<size_t>(slot) * moe_is_ * hs_;
-  uint8_t* dn_dst =
-      layout_.dn_packed + static_cast<size_t>(slot) * hs_ * (moe_is_ / 2);
-  // C4: before overwriting an occupied slot, D2H the evicted expert's
-  // payload into the mirror ring. The D2Hs are stream-ordered before the
-  // H2D below, so the copy completes before the slot is overwritten. The
-  // ring is a pure cache: if every buffer is in flight (a concurrent
-  // commit still reads one) the write-back is dropped, which only makes
-  // the ring colder, never incorrect.
-  if (mirror_k_ > 0 && slot_expert_[slot] >= 0) {
-    const int old = slot_expert_[slot];
-    int m = -1;
-    {
-      std::lock_guard<std::mutex> lk(*l2_mu_);
-      for (int i = 0; i < mirror_k_ && m < 0; ++i) {
-        const int cand = (mirror_cursor_ + i) % mirror_k_;
-        if (ring_in_flight_[cand]) {
-          // Lazy release: the copy that set the flag may have completed.
-          if (cudaEventQuery(ring_event_[cand]) != cudaSuccess) continue;
-          ring_in_flight_[cand] = false;
-        }
-        if (ring_claimed_[cand]) continue;
-        m = cand;
-        ring_claimed_[m] = true;  // released after the D2H + event record
-        mirror_cursor_ = (m + 1) % mirror_k_;
-      }
+  int mirror_target = -1;
+  // One transaction covers partial copies as well as event-record failure.
+  // Success retains the existing asynchronous event path, without a wait.
+  auto commit = [&]() -> Status {
+    // Only an overwrite of an occupied slot is an eviction; loading an empty
+    // slot (initial fill) is not. (Moved here from LoadPhase2 with the C1
+    // pipeline.)
+    if (slot_expert_[slot] >= 0) {
+      if (delta) ++delta->evictions;
+      else ++stats_.evictions;
     }
-    if (m < 0) {
-      if (delta) ++delta->mirror_skips;
-      else ++stats_.mirror_skips;
-    } else {
-      uint8_t* mb = mirror_buf_[m];
-      bool ok =
-          cudaMemcpyAsync(mb, dn_dst, w_bytes, cudaMemcpyDeviceToHost,
-                          stream) == cudaSuccess &&
-          cudaMemcpyAsync(mb + w_bytes, gu_dst, 2 * w_bytes,
-                          cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
-          cudaMemcpyAsync(mb + 3 * w_bytes,
-                          layout_.gu_sf + static_cast<size_t>(slot) *
-                              gu_sf_block,
-                          gu_sf_block, cudaMemcpyDeviceToHost, stream) ==
-              cudaSuccess &&
-          cudaMemcpyAsync(mb + 3 * w_bytes + gu_sf_block,
-                          layout_.dn_sf + static_cast<size_t>(slot) *
-                              dn_sf_block,
-                          dn_sf_block, cudaMemcpyDeviceToHost, stream) ==
-              cudaSuccess;
-      const size_t so = 3 * w_bytes + gu_sf_block + dn_sf_block;
-      ok = ok &&
-           cudaMemcpyAsync(mb + so, layout_.gu_w_scale2 + slot,
-                           sizeof(float), cudaMemcpyDeviceToHost, stream) ==
-               cudaSuccess &&
-           cudaMemcpyAsync(mb + so + sizeof(float),
-                           layout_.gu_input_scale + slot, sizeof(float),
-                           cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
-           cudaMemcpyAsync(mb + so + 2 * sizeof(float),
-                           layout_.dn_w_scale2 + slot, sizeof(float),
-                           cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
-           cudaMemcpyAsync(mb + so + 3 * sizeof(float),
-                           layout_.dn_input_scale + slot, sizeof(float),
-                           cudaMemcpyDeviceToHost, stream) == cudaSuccess;
-      if (!ok || cudaEventRecord(ring_event_[m], stream) != cudaSuccess) {
-        // Drop the write-back; the buffer is pickable again.
+
+    Status s;
+    uint8_t* gu_dst =
+        layout_.gu_packed + static_cast<size_t>(slot) * moe_is_ * hs_;
+    uint8_t* dn_dst =
+        layout_.dn_packed + static_cast<size_t>(slot) * hs_ * (moe_is_ / 2);
+    // C4: before overwriting an occupied slot, D2H the evicted expert's
+    // payload into the mirror ring. The D2Hs are stream-ordered before the
+    // H2D below, so the copy completes before the slot is overwritten. The
+    // ring is a pure cache: if every buffer is in flight (a concurrent
+    // commit still reads one) the write-back is dropped, which only makes
+    // the ring colder, never incorrect.
+    if (mirror_k_ > 0 && slot_expert_[slot] >= 0) {
+      const int old = slot_expert_[slot];
+      int m = -1;
+      {
         std::lock_guard<std::mutex> lk(*l2_mu_);
-        ring_claimed_[m] = false;
+        for (int i = 0; i < mirror_k_ && m < 0; ++i) {
+          const int cand = (mirror_cursor_ + i) % mirror_k_;
+          if (ring_in_flight_[cand]) {
+            // Lazy release: the copy that set the flag may have completed.
+            if (cudaEventQuery(ring_event_[cand]) != cudaSuccess) continue;
+            ring_in_flight_[cand] = false;
+          }
+          if (ring_claimed_[cand]) continue;
+          m = cand;
+          ring_claimed_[m] = true;  // released after the D2H + event record
+          mirror_target = m;
+          // Invalidate the old identity BEFORE any byte may be overwritten.
+          const int previous = mirror_expert_[m];
+          if (previous >= 0 && expert_mirror_[previous] == m)
+            expert_mirror_[previous] = -1;
+          mirror_expert_[m] = -1;
+          mirror_cursor_ = (m + 1) % mirror_k_;
+        }
+      }
+      if (m < 0) {
+        if (delta) ++delta->mirror_skips;
+        else ++stats_.mirror_skips;
       } else {
-        // Publish the entry only after the event is recorded, so the
-        // invariant "in_flight implies the event is recorded" holds and
-        // mirror hits can safely wait on it.
-        std::lock_guard<std::mutex> lk(*l2_mu_);
-        const int prev = mirror_expert_[m];
-        if (prev >= 0 && expert_mirror_[prev] == m) expert_mirror_[prev] = -1;
-        // Invalidate any stale entry for `old` elsewhere in the ring
-        // (re-eviction of an expert already mirrored).
-        for (int j = 0; j < mirror_k_; ++j) {
-          if (j != m && mirror_expert_[j] == old) mirror_expert_[j] = -1;
+        uint8_t* mb = mirror_buf_[m];
+        bool ok =
+            cudaMemcpyAsync(mb, dn_dst, w_bytes, cudaMemcpyDeviceToHost,
+                            stream) == cudaSuccess &&
+            cudaMemcpyAsync(mb + w_bytes, gu_dst, 2 * w_bytes,
+                            cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
+            cudaMemcpyAsync(mb + 3 * w_bytes,
+                            layout_.gu_sf + static_cast<size_t>(slot) *
+                                gu_sf_block,
+                            gu_sf_block, cudaMemcpyDeviceToHost, stream) ==
+                cudaSuccess &&
+            cudaMemcpyAsync(mb + 3 * w_bytes + gu_sf_block,
+                            layout_.dn_sf + static_cast<size_t>(slot) *
+                                dn_sf_block,
+                            dn_sf_block, cudaMemcpyDeviceToHost, stream) ==
+                cudaSuccess;
+        const size_t so = 3 * w_bytes + gu_sf_block + dn_sf_block;
+        ok = ok &&
+             cudaMemcpyAsync(mb + so, layout_.gu_w_scale2 + slot,
+                             sizeof(float), cudaMemcpyDeviceToHost, stream) ==
+                 cudaSuccess &&
+             cudaMemcpyAsync(mb + so + sizeof(float),
+                             layout_.gu_input_scale + slot, sizeof(float),
+                             cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
+             cudaMemcpyAsync(mb + so + 2 * sizeof(float),
+                             layout_.dn_w_scale2 + slot, sizeof(float),
+                             cudaMemcpyDeviceToHost, stream) == cudaSuccess &&
+             cudaMemcpyAsync(mb + so + 3 * sizeof(float),
+                             layout_.dn_input_scale + slot, sizeof(float),
+                             cudaMemcpyDeviceToHost, stream) == cudaSuccess;
+        if (!ok || cudaEventRecord(ring_event_[m], stream) != cudaSuccess) {
+          return Status::Fail("residency mirror copy/event failed");
+        } else {
+          // Publish the entry only after the event is recorded, so the
+          // invariant "in_flight implies the event is recorded" holds and
+          // mirror hits can safely wait on it.
+          std::lock_guard<std::mutex> lk(*l2_mu_);
+          const int prev = mirror_expert_[m];
+          if (prev >= 0 && expert_mirror_[prev] == m) expert_mirror_[prev] = -1;
+          // Invalidate any stale entry for `old` elsewhere in the ring
+          // (re-eviction of an expert already mirrored).
+          for (int j = 0; j < mirror_k_; ++j) {
+            if (j != m && mirror_expert_[j] == old) mirror_expert_[j] = -1;
+          }
+          mirror_expert_[m] = old;
+          expert_mirror_[old] = m;
+          ring_in_flight_[m] = true;
+          ring_claimed_[m] = false;
+          mirror_target = -1;  // Published; another worker may now reserve it.
+          if (delta) ++delta->mirror_writebacks;
+          else ++stats_.mirror_writebacks;
         }
-        mirror_expert_[m] = old;
-        expert_mirror_[old] = m;
-        ring_in_flight_[m] = true;
-        ring_claimed_[m] = false;
-        if (delta) ++delta->mirror_writebacks;
-        else ++stats_.mirror_writebacks;
       }
     }
-  }
-  if (from_ring) {
-    // A write-back D2H may still be filling the buffer: the entry is
-    // published with in_flight set before the copy completes. Wait for the
-    // event so the H2Ds below read a complete payload. The buffer is
-    // claimed, so no new write-back can start on it in the meantime.
-    if (ring_in_flight_[rb]) {
-      if (cudaEventSynchronize(ring_event_[rb]) != cudaSuccess) {
-        return Status::Fail("residency mirror wait failed");
+    if (from_ring) {
+      // A write-back D2H may still be filling the buffer: the entry is
+      // published with in_flight set before the copy completes. Wait for the
+      // event so the H2Ds below read a complete payload. The buffer is
+      // claimed, so no new write-back can start on it in the meantime.
+      if (ring_in_flight_[rb]) {
+        if (cudaEventSynchronize(ring_event_[rb]) != cudaSuccess) {
+          return Status::Fail("residency mirror wait failed");
+        }
+        std::lock_guard<std::mutex> lk(*l2_mu_);
+        ring_in_flight_[rb] = false;
+      }
+    }
+    // H2D into the slot. C2: gate+up are contiguous in the source buffer and
+    // in the slot (per-slot stride moe_is*hs == 2*w_bytes), so one copy
+    // covers both. The four per-slot scales live in four separate C-float
+    // device arrays (GEMM contract: gu_w_scale2[e], gu_input_scale[e], ...;
+    // the merged allocation only shares one block, it does not interleave
+    // per slot), so each scale keeps its own 4-byte copy. 9 H2D calls per
+    // expert become 6.
+    if (!(s = H2D(w_ga, gu_dst, 2 * w_bytes, stream))) return s;
+    if (!(s = H2D(w_dn, dn_dst, w_bytes, stream))) return s;
+    if (!(s = H2D(gu_sw, layout_.gu_sf + static_cast<size_t>(slot) * gu_sf_block,
+                  gu_sf_block, stream)))
+      return s;
+    if (!(s = H2D(dn_sw, layout_.dn_sf + static_cast<size_t>(slot) * dn_sf_block,
+                  dn_sf_block, stream)))
+      return s;
+    if (!(s = H2D(&scal[0], layout_.gu_w_scale2 + slot, sizeof(float),
+                  stream)))
+      return s;
+    if (!(s = H2D(&scal[1], layout_.gu_input_scale + slot, sizeof(float),
+                  stream)))
+      return s;
+    if (!(s = H2D(&scal[2], layout_.dn_w_scale2 + slot, sizeof(float),
+                  stream)))
+      return s;
+    if (!(s = H2D(&scal[3], layout_.dn_input_scale + slot, sizeof(float),
+                  stream)))
+      return s;
+
+    // Snapshot host scale metadata while the source claim is still held.
+    // A completed event permits another worker to reuse this pinned buffer.
+    layout_.gu_w_scale2_h[slot] = scal[0];
+    layout_.gu_input_scale_h[slot] = scal[1];
+    layout_.dn_w_scale2_h[slot] = scal[2];
+    layout_.dn_input_scale_h[slot] = scal[3];
+
+    // Mark the source buffer in flight until its last H2D completes (victim
+    // selection skips it; a same-expert hit may still use it read-only).
+    if (from_ring) {
+      if (cudaEventRecord(ring_event_[rb], stream) != cudaSuccess) {
+        return Status::Fail("residency mirror event record failed");
       }
       std::lock_guard<std::mutex> lk(*l2_mu_);
-      ring_in_flight_[rb] = false;
+      ring_in_flight_[rb] = true;
+      ring_claimed_[rb] = false;
+    } else {
+      if (cudaEventRecord(l2_event_[buf], stream) != cudaSuccess) {
+        return Status::Fail("residency L2 event record failed");
+      }
+      std::lock_guard<std::mutex> lk(*l2_mu_);
+      l2_in_flight_[buf] = true;
+      l2_claimed_[buf] = false;
     }
-  }
-  // H2D into the slot. C2: gate+up are contiguous in the source buffer and
-  // in the slot (per-slot stride moe_is*hs == 2*w_bytes), so one copy
-  // covers both. The four per-slot scales live in four separate C-float
-  // device arrays (GEMM contract: gu_w_scale2[e], gu_input_scale[e], ...;
-  // the merged allocation only shares one block, it does not interleave
-  // per slot), so each scale keeps its own 4-byte copy. 9 H2D calls per
-  // expert become 6.
-  if (!(s = H2D(w_ga, gu_dst, 2 * w_bytes, stream))) return s;
-  if (!(s = H2D(w_dn, dn_dst, w_bytes, stream))) return s;
-  if (!(s = H2D(gu_sw, layout_.gu_sf + static_cast<size_t>(slot) * gu_sf_block,
-                gu_sf_block, stream)))
-    return s;
-  if (!(s = H2D(dn_sw, layout_.dn_sf + static_cast<size_t>(slot) * dn_sf_block,
-                dn_sf_block, stream)))
-    return s;
-  if (!(s = H2D(&scal[0], layout_.gu_w_scale2 + slot, sizeof(float),
-                stream)))
-    return s;
-  if (!(s = H2D(&scal[1], layout_.gu_input_scale + slot, sizeof(float),
-                stream)))
-    return s;
-  if (!(s = H2D(&scal[2], layout_.dn_w_scale2 + slot, sizeof(float),
-                stream)))
-    return s;
-  if (!(s = H2D(&scal[3], layout_.dn_input_scale + slot, sizeof(float),
-                stream)))
-    return s;
 
-  // Mark the source buffer in flight until its last H2D completes (victim
-  // selection skips it; a same-expert hit may still use it read-only).
-  if (from_ring) {
-    if (cudaEventRecord(ring_event_[rb], stream) != cudaSuccess) {
-      return Status::Fail("residency mirror event record failed");
+    // Host identity + scales (the GEMM wrappers read the host scale vectors).
+    if (slot_expert_[slot] < 0) {
+      if (delta) ++delta->resident_delta;
+      else ++resident_count_;
     }
-    std::lock_guard<std::mutex> lk(*l2_mu_);
-    ring_in_flight_[rb] = true;
-    ring_claimed_[rb] = false;
-  } else {
-    if (cudaEventRecord(l2_event_[buf], stream) != cudaSuccess) {
-      return Status::Fail("residency L2 event record failed");
+    if (slot_expert_[slot] >= 0) expert_slot_[slot_expert_[slot]] = -1;
+    slot_expert_[slot] = expert;
+    expert_slot_[expert] = slot;
+    // LRU recency for this slot (moved here from LoadPhase2 with the C1
+    // pipeline).
+    slot_tick_[slot] = tick_;
+    if (delta) {
+      ++delta->loads;
+      delta->load_bytes +=
+          static_cast<double>(3 * w_bytes + 3 * s_bytes + 4 * sizeof(float));
+    } else {
+      ++stats_.loads;
+      stats_.load_bytes +=
+          static_cast<double>(3 * w_bytes + 3 * s_bytes +
+                              4 * sizeof(float));
     }
-    std::lock_guard<std::mutex> lk(*l2_mu_);
-    l2_in_flight_[buf] = true;
-    l2_claimed_[buf] = false;
-  }
+    return Status();
+  };
+  Status result = commit();
+  if (result.ok()) return result;
 
-  // Host identity + scales (the GEMM wrappers read the host scale vectors).
-  layout_.gu_w_scale2_h[slot] = scal[0];
-  layout_.gu_input_scale_h[slot] = scal[1];
-  layout_.dn_w_scale2_h[slot] = scal[2];
-  layout_.dn_input_scale_h[slot] = scal[3];
-  if (slot_expert_[slot] < 0) {
-    if (delta) ++delta->resident_delta;
-    else ++resident_count_;
+  // The source claim stays held throughout the drain. Other workers may
+  // still finish their independent transactions; none may reuse this source
+  // or mirror target before completion is established.
+  const auto drained = cudaStreamSynchronize(stream);
+  if (drained != cudaSuccess)
+    payload_poisoned_->store(true, std::memory_order_relaxed);
+  {
+    std::lock_guard<std::mutex> lock(*l2_mu_);
+    if (mirror_target >= 0) {
+      const int previous = mirror_expert_[mirror_target];
+      if (previous >= 0 && expert_mirror_[previous] == mirror_target)
+        expert_mirror_[previous] = -1;
+      mirror_expert_[mirror_target] = -1;
+      if (drained == cudaSuccess) {
+        ring_in_flight_[mirror_target] = false;
+        ring_claimed_[mirror_target] = false;
+      }
+    }
   }
-  if (slot_expert_[slot] >= 0) expert_slot_[slot_expert_[slot]] = -1;
-  slot_expert_[slot] = expert;
-  expert_slot_[expert] = slot;
-  // LRU recency for this slot (moved here from LoadPhase2 with the C1
-  // pipeline).
-  slot_tick_[slot] = tick_;
-  if (delta) {
-    ++delta->loads;
-    delta->load_bytes +=
-        static_cast<double>(3 * w_bytes + 3 * s_bytes + 4 * sizeof(float));
-  } else {
-    ++stats_.loads;
-    stats_.load_bytes +=
-        static_cast<double>(3 * w_bytes + 3 * s_bytes +
-                            4 * sizeof(float));
+  // Never leave an old expert mapped to a partially overwritten slot.
+  const int previous = slot_expert_[slot];
+  if (previous >= 0) {
+    expert_slot_[previous] = -1;
+    slot_expert_[slot] = -1;
+    if (delta) --delta->resident_delta;
+    else --resident_count_;
   }
-  return Status();
+  if (drained != cudaSuccess)
+    return Status::Fail("residency payload completion unknown; reload model");
+  return result;
 }
 
 Status MoEResidency::InitHot(const std::vector<int>& hot_experts,
                              cudaStream_t stream) {
   if (!inited_) return Status::Fail("residency not initialized");
+  if (payload_poisoned_->load(std::memory_order_relaxed))
+    return Status::Fail("residency payload completion unknown; reload model");
   LoadPlan plan;
   int slot = 0;
   for (int e : hot_experts) {
@@ -1358,6 +1418,8 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
                                  int32_t* slot_of, LoadPlan* plan,
                                  bool decode_phase) const {
   if (!inited_) return Status::Fail("residency not initialized");
+  if (payload_poisoned_->load(std::memory_order_relaxed))
+    return Status::Fail("residency payload completion unknown; reload model");
   if (n <= 0) return Status();
   if (n > (1 << 20)) {
     return Status::Fail("residency resolve set too large");
@@ -1462,6 +1524,8 @@ Status MoEResidency::PlanResolve(const int32_t* needed, int n,
 
 Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   if (!inited_) return Status::Fail("residency not initialized");
+  if (payload_poisoned_->load(std::memory_order_relaxed))
+    return Status::Fail("residency payload completion unknown; reload model");
   const int n = static_cast<int>(plan.experts.size());
   const int off = static_cast<int>(plan.next_stage);
   if (off >= n) return Status();  // fully staged
@@ -1613,6 +1677,8 @@ Status MoEResidency::LoadPhase2(LoadPlan& plan, cudaStream_t stream,
   // the plan is fully committed.
   (void)stream;
   if (!inited_) return Status::Fail("residency not initialized");
+  if (payload_poisoned_->load(std::memory_order_relaxed))
+    return Status::Fail("residency payload completion unknown; reload model");
   if (loaded && plan.next_commit < plan.next_stage) *loaded = true;
   return Status();
 }
@@ -1650,6 +1716,14 @@ void MoEResidency::Free() {
     delete w;
   }
   workers_.clear();
+  // Joining host workers does not finish their DMA. A persistent device
+  // error leaves all payload allocations intact rather than freeing memory
+  // whose source/target lifetime is still owned by the stream.
+  if (cudaStreamSynchronize(commit_stream_) != cudaSuccess) {
+    payload_poisoned_->store(true, std::memory_order_relaxed);
+    std::fprintf(stderr, "[q4t] retaining residency payloads: drain failed\n");
+    return;
+  }
   auto free_if = [](void** p) {
     if (*p) {
       cudaFree(*p);

@@ -1,0 +1,8 @@
+........................Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+KeyboardInterrupt
+...
+----------------------------------------------------------------------
+Ran 27 tests in 1.166s
+
+OK

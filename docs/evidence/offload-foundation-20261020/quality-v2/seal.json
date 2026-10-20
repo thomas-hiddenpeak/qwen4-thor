@@ -1,0 +1,15 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792484899.3084986,
+  "finished": 1792485064.6714299,
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_foundation_quality.py",
+    "--output",
+    ".q4t-work/offload-foundation-20261020/quality-v2/run",
+    "--offload-only"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}

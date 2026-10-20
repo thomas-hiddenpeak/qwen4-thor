@@ -1,0 +1,22 @@
+[PASS] residency_load_matches_reference
+  merge=0 inline=0 experts=1
+  merge=0 inline=0 experts=2
+  merge=0 inline=0 experts=4
+  merge=0 inline=0 experts=9
+  merge=0 inline=1 experts=1
+  merge=0 inline=1 experts=2
+  merge=0 inline=1 experts=4
+  merge=0 inline=1 experts=9
+  merge=1 inline=0 experts=1
+  merge=1 inline=0 experts=2
+  merge=1 inline=0 experts=4
+  merge=1 inline=0 experts=9
+  merge=1 inline=1 experts=1
+  merge=1 inline=1 experts=2
+  merge=1 inline=1 experts=4
+  merge=1 inline=1 experts=9
+[PASS] residency_pread_merge_dispatch_contract
+[PASS] residency_resolve_hit_miss_evict
+[PASS] residency_l2_cache_hit_evict
+[PASS] residency_mirror_ring_hit
+5 tests, 5 passed, 0 failed, 0 skipped

@@ -23,6 +23,7 @@ import traceback
 
 from isolated_service import IsolatedService, UNIT_PATTERN
 from monitor_memory import find_pids
+import nvml_process_query
 from offload_policy import AXES, partition_path_evidence, policy_environment
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -40,10 +41,8 @@ def require_idle_device():
     """Fail closed before creating evidence or starting any owned process."""
     if find_pids('q4t'):
         raise RuntimeError('another q4t process is active')
-    gpu = subprocess.run(['nvidia-smi', '--query-compute-apps=pid',
-                          '--format=csv,noheader,nounits'],
-                         capture_output=True, text=True, timeout=10)
-    if gpu.returncode or gpu.stdout.strip():
+    gpu = nvml_process_query.query(timeout=5)
+    if gpu['status'] != 'OK' or gpu['pids']:
         raise RuntimeError('GPU compute state unavailable or occupied')
 
 
@@ -381,7 +380,9 @@ def main():
                '--request-deadline-ms', '1800000', '--moe-resident-slots', '256',
                '--moe-hot-list', str(args.hot_list.resolve())]
     sources = [Path(__file__), ROOT / 'tools/evalscope/isolated_service.py',
-               ROOT / 'tools/evalscope/monitor_memory.py', ROOT / 'tools/evalscope/resource_metrics.py',
+               ROOT / 'tools/evalscope/monitor_memory.py',
+               ROOT / 'tools/evalscope/nvml_process_query.py',
+               ROOT / 'tools/evalscope/resource_metrics.py',
                ROOT / 'tools/evalscope/file_cache.py',
                ROOT / 'tools/evalscope/offload_policy.py']
     snapshot = out / 'tool-snapshot'; snapshot.mkdir()

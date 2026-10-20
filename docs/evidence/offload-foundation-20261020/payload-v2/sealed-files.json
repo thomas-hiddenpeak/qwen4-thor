@@ -1,0 +1,22 @@
+{
+  "seal.json": "015c7ec4529f7f599e06febe1b4a00b1fe10c93a5214e236de47e93d05bd0e16",
+  "driver.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "lease/nvml-queries.jsonl": "317a1bf34b8a05d4ab1e0b5ff6f886012b631b6fd2baf5c79cf4d3b93487e85e",
+  "lease/events.jsonl": "14ee02c27d04f2d91bda09d7f42dd2919958a1284ed692b8d582793892502c2e",
+  "lease/exit.json": "7573f510410ff9701248e211a176326340979f84b1f574a0fee529ab51b825d7",
+  "run/sources.json": "d248e2abdfb5b527f7e2c4954eb4d082af42443b0fb3927e1a1affd2078e8f6e",
+  "run/result.json": "ff83e25fe25094cd0f028ba97427fa2458171e1eaf6f354ee9f31822e52ac07c",
+  "run/binaries.json": "be7c66036b594401236ad0044b36cb2456b1b9e4dad893dcbc222949475dc0ec",
+  "run/CMakeCache.txt": "04d94c25bbf28a17de86b6addaf55f8d762196086487b173fd6a190124ec62af",
+  "run/q4t_host_tests": "1e46e5fb66fdfcb475c81fc2aff404ea7e63823af1c9afccd08b71f281aa680c",
+  "run/q4t_tests": "6f75449c88e3f513e63b3a133c29f563244d033a4146986bd8e1186193ac7382",
+  "run/payload_fault.so": "2e01e951f0123f128cdf8e87444b414a4e96aa74a86a1c30dd5c16d81ecc025b",
+  "run/shim-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "run/required.txt": "37a0a010077bbd2c706fba5e200838114956e3d8052ce5760f113f3ba4d82ceb",
+  "run/payload-faults.log": "c1de6447ebf42553bdc61a6abff41ca7ebd7ead489f9fd8c456216eaac86a35f",
+  "run/source/tests/quant_moe_residency_test.cpp": "f60a6ae75b0d44c3cbf34e5ff84e254ef2b740fea27a05aafd96caa06f3a871e",
+  "run/source/include/q4t/quant/moe_residency.h": "154c04d9fc62866af7993b4769679d0abcb8e78770770d929f52d0dc55abda36",
+  "run/source/src/quant/moe_residency.cpp": "c6d92b66dc8454db21730f98bc3ab007625c08ad614ffd5a19597c112ddd13f4",
+  "run/source/tools/verify/inference_metadata/run_payload_contracts.py": "6d797f704c821b39e93977731265e3675828d4086617b92447d17c96f5aa949f",
+  "run/source/tools/verify/inference_metadata/payload_fault.cpp.in": "85846ee2d24e1da40d2acddee195f6e9046cf772c02a1fa7fdeb9476004b6a67"
+}

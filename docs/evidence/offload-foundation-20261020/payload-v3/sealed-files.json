@@ -1,0 +1,23 @@
+{
+  "seal.json": "1879841fcd8b91d78e215bc9ae1d1c93b1188f9ab804b4175f1237f79b89be71",
+  "driver.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "lease/nvml-queries.jsonl": "0b6f5f28158efbe48afe3ceb8a84f30ee5d80f94908d592fc5121fef7dd4ebd4",
+  "lease/events.jsonl": "cbf95ea39ec72bca5cbd43e202c8239477593776076d49c46eb089375e7b59f9",
+  "lease/exit.json": "7544bbdc2f98863bb0308c464b7b20a8494083a34c187b0b5612457bf93350a5",
+  "run/sources.json": "fcedcb00ba5c3b9d5b325aef87ad22872ff9a5687a19e8646048ba8ca0ee22a9",
+  "run/result.json": "c59be31df05a9d80e64749fce8725ed980aa54582677c22bf4ea0179d927ba12",
+  "run/binaries.json": "cdcb6b60bc438e94af8698e1c4670455e676a05455b0841aa7a7a8e2849ff7e1",
+  "run/CMakeCache.txt": "04d94c25bbf28a17de86b6addaf55f8d762196086487b173fd6a190124ec62af",
+  "run/q4t_host_tests": "1e46e5fb66fdfcb475c81fc2aff404ea7e63823af1c9afccd08b71f281aa680c",
+  "run/q4t_tests": "0d2bb2e3db0654d907eaf180a58e4c97d6069e6d971a1dfb90c6e1d631578a79",
+  "run/payload_fault.so": "2e01e951f0123f128cdf8e87444b414a4e96aa74a86a1c30dd5c16d81ecc025b",
+  "run/shim-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "run/required.txt": "37a0a010077bbd2c706fba5e200838114956e3d8052ce5760f113f3ba4d82ceb",
+  "run/payload-faults.log": "c1de6447ebf42553bdc61a6abff41ca7ebd7ead489f9fd8c456216eaac86a35f",
+  "run/residency.log": "1525afc76e6e23f60c8e69497bc59dcd5bc07bdee9dec29b5c14c85a8f3cf108",
+  "run/source/tests/quant_moe_residency_test.cpp": "f60a6ae75b0d44c3cbf34e5ff84e254ef2b740fea27a05aafd96caa06f3a871e",
+  "run/source/include/q4t/quant/moe_residency.h": "154c04d9fc62866af7993b4769679d0abcb8e78770770d929f52d0dc55abda36",
+  "run/source/src/quant/moe_residency.cpp": "6916f8e711c5703fb07b06c724c38680fb4fc20e0f3e025fcfa8eebdd8fec2d3",
+  "run/source/tools/verify/inference_metadata/run_payload_contracts.py": "970aafa2842dfa04d71fd2886808efd7d6a3275cec7bfe1d9661408ea3b97505",
+  "run/source/tools/verify/inference_metadata/payload_fault.cpp.in": "85846ee2d24e1da40d2acddee195f6e9046cf772c02a1fa7fdeb9476004b6a67"
+}

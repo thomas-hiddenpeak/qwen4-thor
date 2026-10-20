@@ -20,6 +20,8 @@ import subprocess
 import sys
 import time
 
+import nvml_process_query
+
 from file_cache import model_files, observe_files
 from resource_metrics import ResourceSampler, normalize_cgroup, resource_summary
 
@@ -181,15 +183,20 @@ def gpu_observation(pids):
     if not pids:
         return None, 'no_target'
     try:
-        result = subprocess.run(
-            ['nvidia-smi', '--query-compute-apps=pid,used_memory',
-             '--format=csv,noheader,nounits'],
-            capture_output=True, text=True, timeout=2)
-        if result.returncode:
-            return None, 'query_failed'
-        return parse_gpu_csv(result.stdout, pids)
+        result = nvml_process_query.query(timeout=2)
     except (OSError, subprocess.SubprocessError):
-        return None, 'query_unavailable_or_timeout'
+        return None, 'nvml_query_unavailable'
+    if result['status'] != 'OK':
+        return None, 'nvml_' + result['status'].lower()
+    records = result.get('process_memory')
+    if records is None:
+        return None, 'nvml_memory_unavailable'
+    matched = [r for r in records if r['pid'] in pids]
+    if not matched:
+        return None, 'no_matching_compute_process'
+    if any(r['used_bytes'] is None for r in matched):
+        return None, 'unknown_matching_process'
+    return sum(r['used_bytes'] for r in matched), 'ok'
 
 
 def gpu_used_bytes(pids):

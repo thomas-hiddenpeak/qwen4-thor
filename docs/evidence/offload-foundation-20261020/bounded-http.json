@@ -1,0 +1,104 @@
+{
+  "scope": "quality request single observations; not performance acceptance",
+  "rows": [
+    {
+      "id": "1024-10",
+      "actual_input": 1024,
+      "actual_output": 7,
+      "ttft": 0.8806557989446446,
+      "latency": 1.214466150966473,
+      "exact_match": true,
+      "length_match": true,
+      "mode": "off",
+      "source": ".q4t-work/offload-foundation-20261020/quality-v1/run/quality-off/results.json"
+    },
+    {
+      "id": "8192-10",
+      "actual_input": 8192,
+      "actual_output": 7,
+      "ttft": 5.16437550005503,
+      "latency": 5.49818688002415,
+      "exact_match": true,
+      "length_match": true,
+      "mode": "off",
+      "source": ".q4t-work/offload-foundation-20261020/quality-v1/run/quality-off/results.json"
+    },
+    {
+      "id": "45056-50",
+      "actual_input": 45056,
+      "actual_output": 7,
+      "ttft": 30.332918165950105,
+      "latency": 30.669569266960025,
+      "exact_match": true,
+      "length_match": true,
+      "mode": "off",
+      "source": ".q4t-work/offload-foundation-20261020/quality-v1/run/quality-off/results.json"
+    },
+    {
+      "id": "1024-10",
+      "actual_input": 1024,
+      "actual_output": 7,
+      "ttft": 1.0876583959907293,
+      "latency": 1.1762709800386801,
+      "exact_match": true,
+      "length_match": true,
+      "mode": "on",
+      "source": ".q4t-work/offload-foundation-20261020/quality-v1/run/quality-on/results.json"
+    },
+    {
+      "id": "8192-10",
+      "actual_input": 8192,
+      "actual_output": 7,
+      "ttft": 5.778821026091464,
+      "latency": 5.869466261006892,
+      "exact_match": true,
+      "length_match": true,
+      "mode": "on",
+      "source": ".q4t-work/offload-foundation-20261020/quality-v1/run/quality-on/results.json"
+    },
+    {
+      "id": "45056-50",
+      "actual_input": 45056,
+      "actual_output": 7,
+      "ttft": 31.821852253051475,
+      "latency": 31.913831538055092,
+      "exact_match": true,
+      "length_match": true,
+      "mode": "on",
+      "source": ".q4t-work/offload-foundation-20261020/quality-v1/run/quality-on/results.json"
+    },
+    {
+      "id": "1024-10",
+      "actual_input": 1024,
+      "actual_output": 7,
+      "ttft": 7.57698163902387,
+      "latency": 9.093932328978553,
+      "exact_match": true,
+      "length_match": true,
+      "mode": "offload",
+      "source": ".q4t-work/offload-foundation-20261020/quality-v2/run/quality-offload/results.json"
+    },
+    {
+      "id": "8192-10",
+      "actual_input": 8192,
+      "actual_output": 7,
+      "ttft": 18.90489074809011,
+      "latency": 20.744778827065602,
+      "exact_match": true,
+      "length_match": true,
+      "mode": "offload",
+      "source": ".q4t-work/offload-foundation-20261020/quality-v2/run/quality-offload/results.json"
+    },
+    {
+      "id": "45056-50",
+      "actual_input": 45056,
+      "actual_output": 7,
+      "ttft": 114.11533614003565,
+      "latency": 115.96757078601513,
+      "exact_match": true,
+      "length_match": true,
+      "mode": "offload",
+      "source": ".q4t-work/offload-foundation-20261020/quality-v2/run/quality-offload/results.json"
+    }
+  ]
+}

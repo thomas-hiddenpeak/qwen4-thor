@@ -1,0 +1,12 @@
+[q4t] retaining residency payloads: drain failed
+  payload fault type=1 nth=2 persistent=0 mirror=0 target=2: PASS
+  payload fault type=1 nth=8 persistent=0 mirror=0 target=2: PASS
+  payload fault type=3 nth=1 persistent=0 mirror=0 target=2: PASS
+  payload fault type=2 nth=2 persistent=0 mirror=1 target=2: PASS
+  payload fault type=3 nth=1 persistent=0 mirror=1 target=2: PASS
+  payload fault type=1 nth=2 persistent=1 mirror=0 target=2: PASS
+  payload fault type=1 nth=2 persistent=0 mirror=1 target=0: PASS
+  payload fault type=3 nth=1 persistent=0 mirror=1 target=0: PASS
+[PASS] residency_partial_payload_failure
+[PASS] residency_partial_payload_parallel_failure
+2 tests, 2 passed, 0 failed, 0 skipped

@@ -13,16 +13,14 @@ import math
 from pathlib import Path
 
 import compare_chunk_order as pilot
-from offload_policy import (AXES, check_partition_plan, check_policy_protocol,
+from offload_policy import (AXES, RUN_TOOLS, check_partition_plan, check_policy_protocol,
                             partition_path_evidence)
 
 ROOT = Path(__file__).resolve().parents[2]
 LENGTHS = [1024, 4096, 8192, 45056, 204800, 261887]
 CAPACITY = pilot.CAPACITY
 PLAN_SHA256 = 'be667395434ad109174bf14ebc9c536b88cadab9196cfbdd165b1fb00bd820aa'
-TOOLS = ('run_budget_experiment.py', 'run_acceptance.py',
-         'isolated_service.py', 'monitor_memory.py', 'file_cache.py',
-         'resource_metrics.py', 'memory_accounting.py')
+TOOLS = RUN_TOOLS
 ENVIRONMENT = {'Q4T_MOE_L2_SLOTS': '16', 'Q4T_MOE_MIRROR_K': '8',
                'Q4T_MOE_MAX_OPEN_SHARDS': '200', 'Q4T_MOE_EVICT_WEIGHT': '0',
                'Q4T_MOE_PREAD_MERGE': '1', 'Q4T_MOE_INLINE_MISS_LIMIT': '1'}
@@ -359,7 +357,9 @@ def check_run(evidence, directory, order, plan, wrapper, reference, reference_sh
                     evidence.sources[str(build_cache.resolve())])
     expected_tools = [set(TOOLS) | {'offload_policy.py'}]
     if policy_axis == 'chunk-order':
-        expected_tools.append(set(TOOLS))  # Historical seven-file runner only.
+        expected_tools.extend([set(TOOLS),
+            set(TOOLS) - {'nvml_process_query.py'},
+            (set(TOOLS) - {'nvml_process_query.py'}) | {'offload_policy.py'}])
     require(set(p['tool_sha256']) in expected_tools,
             'incomplete tool source identities')
     if policy_axis == 'partition':

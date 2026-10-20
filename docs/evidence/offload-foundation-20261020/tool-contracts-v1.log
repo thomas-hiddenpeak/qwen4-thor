@@ -1,0 +1,123 @@
+.................................../home/rm01/models/dev/qwen4-thor/tools/evalscope/test_monitor_schedule.py:102: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/rm01/models/dev/qwen4-thor/.q4t-work/monitor-schedule-tests/tmpe4uqx257/memory/memory.csv' mode='r' encoding='UTF-8'>
+  rows = list(csv.DictReader((output / 'memory.csv').open()))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+..................F.FFFFFEFFE.............................................................................
+======================================================================
+ERROR: test_new_axis_retains_pilot_gate_and_numerical_binding (test_partition_protocol.PartitionPilotContracts.test_new_axis_retains_pilot_gate_and_numerical_binding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 427, in test_new_axis_retains_pilot_gate_and_numerical_binding
+    report = self.compare()
+             ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 421, in compare
+    return audit.pilot.compare_evidence(self.f.off, self.f.on, self.quality,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/compare_chunk_order.py", line 102, in compare_evidence
+    check_partition_plan(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/offload_policy.py", line 85, in check_partition_plan
+    require(set(plan['tool_sha256']) == set(RUN_TOOLS + ('offload_policy.py',)),
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/offload_policy.py", line 22, in require
+    raise ValueError(message)
+ValueError: partition plan must bind the full runner tool set
+
+======================================================================
+ERROR: test_runtime_fallback_is_valid_pilot_no_go (test_partition_protocol.PartitionPilotContracts.test_runtime_fallback_is_valid_pilot_no_go)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 448, in test_runtime_fallback_is_valid_pilot_no_go
+    report = self.compare()
+             ^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 421, in compare
+    return audit.pilot.compare_evidence(self.f.off, self.f.on, self.quality,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/compare_chunk_order.py", line 102, in compare_evidence
+    check_partition_plan(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/offload_policy.py", line 85, in check_partition_plan
+    require(set(plan['tool_sha256']) == set(RUN_TOOLS + ('offload_policy.py',)),
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/offload_policy.py", line 22, in require
+    raise ValueError(message)
+ValueError: partition plan must bind the full runner tool set
+
+======================================================================
+FAIL: test_extra_or_missing_tool_dependency_is_invalid (test_partition_protocol.PartitionMatrixContracts.test_extra_or_missing_tool_dependency_is_invalid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 312, in test_extra_or_missing_tool_dependency_is_invalid
+    self.assertIn('incomplete tool source identities', result['failure'])
+AssertionError: 'incomplete tool source identities' not found in 'ValueError: partition plan must bind the full runner tool set'
+
+======================================================================
+FAIL: test_old_pilot_cannot_be_used_for_partition (test_partition_protocol.PartitionMatrixContracts.test_old_pilot_cannot_be_used_for_partition)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 325, in test_old_pilot_cannot_be_used_for_partition
+    self.assertIn('another policy axis', result['failure'])
+AssertionError: 'another policy axis' not found in 'ValueError: partition plan must bind the full runner tool set'
+
+======================================================================
+FAIL: test_partition_full_gate_retains_all_six_tiers (test_partition_protocol.PartitionMatrixContracts.test_partition_full_gate_retains_all_six_tiers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 267, in test_partition_full_gate_retains_all_six_tiers
+    self.assertEqual(result['decision'], 'PASS_FULL_PERFORMANCE_SCREEN', result)
+AssertionError: 'INVALID_EVIDENCE' != 'PASS_FULL_PERFORMANCE_SCREEN'
+- INVALID_EVIDENCE
++ PASS_FULL_PERFORMANCE_SCREEN
+ : {'schema': 1, 'decision': 'INVALID_EVIDENCE', 'full_performance_screen_passed': False, 'performance_acceptance': False, 'statistical_noninferiority': False, 'deployment_acceptance': False, 'resource_acceptance': 'SEPARATE_AUDIT_REQUIRED', 'numerical_acceptance': 'SEPARATE_AUDIT_REQUIRED', 'business_acceptance': 'SEPARATE_AUDIT_REQUIRED', 'lifecycle_acceptance': 'SEPARATE_AUDIT_REQUIRED', 'total_physical_RAM': 'INDETERMINATE', 'inference_limit': 'Observed ranges only; independent counter peaks are not added. Only the first 1024 request of each group follows payload0. Later requests inherit state, including the first request of every later tier.', 'evidence_contracts_passed': False, 'failure': 'ValueError: partition plan must bind the full runner tool set', 'source_sha256': {'/home/rm01/models/dev/qwen4-thor/.q4t-work/matrix-audit-contract-t8rbpnnr/plan.json': 'e4199d0b61c1a435efc960e0af5263d16d652a248ccb56eb4cdd7855315bbe08', '/home/rm01/models/dev/qwen4-thor/tools/evalscope/audit_offload_matrix.py': '3d6779458c7a69750547c6d40ce49df06eb094daf1115c63f449166e7bc9b85c', '/home/rm01/models/dev/qwen4-thor/tools/evalscope/compare_chunk_order.py': 'adefa79c60ca0aa3d06ad55823f90562c5eaafca237f43189f9243fe39e9df89', '/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_offload_matrix_audit.py': 'b58ad4ee86ecb89935ae7fbe27b60a40ef06d7080d5dd7ab8254f2420f24aef9'}}
+
+======================================================================
+FAIL: test_relabelled_legacy_matrix_fails_closed (test_partition_protocol.PartitionMatrixContracts.test_relabelled_legacy_matrix_fails_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 278, in test_relabelled_legacy_matrix_fails_closed
+    self.assertIn('another policy axis', result['failure'])
+AssertionError: 'another policy axis' not found in 'ValueError: partition plan must bind the full runner tool set'
+
+======================================================================
+FAIL: test_unbound_helper_or_plan_is_invalid (test_partition_protocol.PartitionMatrixContracts.test_unbound_helper_or_plan_is_invalid)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 298, in test_unbound_helper_or_plan_is_invalid
+    self.assertIn('source SHA mismatch', result['failure'])
+AssertionError: 'source SHA mismatch' not found in 'ValueError: partition plan must bind the full runner tool set'
+
+======================================================================
+FAIL: test_valid_fallback_is_no_go_with_valid_evidence (test_partition_protocol.PartitionMatrixContracts.test_valid_fallback_is_no_go_with_valid_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 290, in test_valid_fallback_is_no_go_with_valid_evidence
+    self.assertEqual(result['decision'], 'NO_GO_FULL_PERFORMANCE_SCREEN', result)
+AssertionError: 'INVALID_EVIDENCE' != 'NO_GO_FULL_PERFORMANCE_SCREEN'
+- INVALID_EVIDENCE
++ NO_GO_FULL_PERFORMANCE_SCREEN
+ : {'schema': 1, 'decision': 'INVALID_EVIDENCE', 'full_performance_screen_passed': False, 'performance_acceptance': False, 'statistical_noninferiority': False, 'deployment_acceptance': False, 'resource_acceptance': 'SEPARATE_AUDIT_REQUIRED', 'numerical_acceptance': 'SEPARATE_AUDIT_REQUIRED', 'business_acceptance': 'SEPARATE_AUDIT_REQUIRED', 'lifecycle_acceptance': 'SEPARATE_AUDIT_REQUIRED', 'total_physical_RAM': 'INDETERMINATE', 'inference_limit': 'Observed ranges only; independent counter peaks are not added. Only the first 1024 request of each group follows payload0. Later requests inherit state, including the first request of every later tier.', 'evidence_contracts_passed': False, 'failure': 'ValueError: partition plan must bind the full runner tool set', 'source_sha256': {'/home/rm01/models/dev/qwen4-thor/.q4t-work/matrix-audit-contract-6u42upn3/plan.json': 'ae34d352742fb20040e330fcab6c84333e3551db19ff7bde1cc2fa8429b20525', '/home/rm01/models/dev/qwen4-thor/tools/evalscope/audit_offload_matrix.py': '3d6779458c7a69750547c6d40ce49df06eb094daf1115c63f449166e7bc9b85c', '/home/rm01/models/dev/qwen4-thor/tools/evalscope/compare_chunk_order.py': 'adefa79c60ca0aa3d06ad55823f90562c5eaafca237f43189f9243fe39e9df89', '/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_offload_matrix_audit.py': 'b58ad4ee86ecb89935ae7fbe27b60a40ef06d7080d5dd7ab8254f2420f24aef9'}}
+
+======================================================================
+FAIL: test_quality_cannot_reuse_old_chunk_order_activation (test_partition_protocol.PartitionPilotContracts.test_quality_cannot_reuse_old_chunk_order_activation)
+----------------------------------------------------------------------
+ValueError: partition plan must bind the full runner tool set
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 436, in test_quality_cannot_reuse_old_chunk_order_activation
+    with self.assertRaisesRegex(ValueError, 'another policy axis'):
+AssertionError: "another policy axis" does not match "partition plan must bind the full runner tool set"
+
+======================================================================
+FAIL: test_quality_tool_snapshot_change_is_invalid (test_partition_protocol.PartitionPilotContracts.test_quality_tool_snapshot_change_is_invalid)
+----------------------------------------------------------------------
+ValueError: partition plan must bind the full runner tool set
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py", line 441, in test_quality_tool_snapshot_change_is_invalid
+    with self.assertRaisesRegex(ValueError, 'source SHA mismatch'):
+AssertionError: "source SHA mismatch" does not match "partition plan must bind the full runner tool set"
+
+----------------------------------------------------------------------
+Ran 141 tests in 4.861s
+
+FAILED (failures=8, errors=2)
+{"samples": 4, "stop_reason": "target_exited", "accounting_status": "INDETERMINATE"}

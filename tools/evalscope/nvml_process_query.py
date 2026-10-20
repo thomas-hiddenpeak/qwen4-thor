@@ -28,6 +28,7 @@ def worker(request_id):
     initialized = False
     failure = None
     pids = set()
+    memory = []
     count = None
     try:
         emit(event='begin', api='import_pynvml')
@@ -45,6 +46,13 @@ def worker(request_id):
                              nvml.nvmlDeviceGetComputeRunningProcesses_v3,
                              handle)
             pids.update(int(process.pid) for process in processes)
+            for process in processes:
+                used = getattr(process, 'usedGpuMemory', None)
+                # NVML_VALUE_NOT_AVAILABLE and absent fields are unknown.
+                if type(used) is not int or used < 0 or used >= 2**63:
+                    used = None
+                memory.append(dict(device=index, pid=int(process.pid),
+                                   used_bytes=used))
     except Exception as error:
         failure = dict(type=type(error).__name__, message=str(error),
                        nvml_code=getattr(error, 'value', None))
@@ -56,7 +64,8 @@ def worker(request_id):
                 failure = failure or dict(type=type(error).__name__,
                                           message=str(error))
     emit(event='result', status='ERROR' if failure else 'OK', error=failure,
-         device_count=count, pids=None if failure else sorted(pids))
+         device_count=count, pids=None if failure else sorted(pids),
+         process_memory=None if failure else memory)
     return 1 if failure else 0
 
 
@@ -116,6 +125,22 @@ def supervise(command, request_id, timeout):
                 final['device_count'] <= 0 or not isinstance(pids, list) or
                 any(type(pid) is not int or pid <= 0 for pid in pids)):
             raise ValueError('invalid successful result')
+        memory = final.get('process_memory')
+        if memory is not None:
+            seen = set()
+            for row in memory:
+                key = (row['device'], row['pid'])
+                used = row['used_bytes']
+                if (type(row['device']) is not int or
+                        not 0 <= row['device'] < final['device_count'] or
+                        type(row['pid']) is not int or row['pid'] not in pids or
+                        key in seen or (used is not None and
+                        (type(used) is not int or not 0 <= used < 2**63))):
+                    raise ValueError('invalid process memory record')
+                seen.add(key)
+            if {row['pid'] for row in memory} != set(pids):
+                raise ValueError('incomplete process memory records')
+        result['process_memory'] = memory
         result.update(status='OK', pids=sorted(set(pids)),
                       device_count=final['device_count'])
     except (ValueError, TypeError, KeyError, AttributeError) as error:

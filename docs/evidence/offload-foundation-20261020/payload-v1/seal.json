@@ -1,0 +1,14 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792484282.4789069,
+  "finished": 1792484290.3115175,
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_payload_contracts.py",
+    "--output",
+    ".q4t-work/offload-foundation-20261020/payload-v1/run"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}
