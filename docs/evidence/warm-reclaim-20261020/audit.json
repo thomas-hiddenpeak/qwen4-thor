@@ -1,0 +1,131 @@
+{
+  "status": "BOUNDED_DIAGNOSIS_COMPLETE_NO_FULL_WARM_FIX",
+  "stages": [
+    {
+      "stage": "baseline-v1",
+      "sealed_files": 243,
+      "manifest_sha256": "d7ebf85d865f0711bb469ae1728aad96b866ebc762a069caeb43992799caf028",
+      "guard_status": "ENV_ABORT",
+      "model_loads": 1,
+      "http_requests": 0,
+      "full_hot_bytes": 67987791872,
+      "exact_cache_vector": true,
+      "nvml_status_counts": {
+        "OK": 41,
+        "CLEANUP_FAILED": 1
+      },
+      "last_nvml_api": "compute_v3[0]",
+      "completed_nvml_apis": [
+        "import_pynvml",
+        "init",
+        "device_count",
+        "handle[0]"
+      ],
+      "trace_bytes": 87233737,
+      "trace_loss": {
+        "overrun": 0,
+        "commit overrun": 0,
+        "dropped events": 0
+      },
+      "instance_removed": true,
+      "global_trace_configuration_equal": true,
+      "system_samples": 232,
+      "cache_samples": 60,
+      "capture_seconds": 59.17527063598391,
+      "default_unchanged": true,
+      "scope_gone": true,
+      "trace_sha256": "bcd440615e44be8d33d3293dc9de8bbb6e6764b59e210590c5beaf2be7247a06"
+    },
+    {
+      "stage": "precompact-v1",
+      "sealed_files": 244,
+      "manifest_sha256": "0fa1700dba32e0c35b36769aa9e94e5c6f5aa68df18f60db4bcff05fcc394914",
+      "guard_status": "ENV_ABORT",
+      "model_loads": 1,
+      "http_requests": 0,
+      "full_hot_bytes": 67987791872,
+      "exact_cache_vector": true,
+      "nvml_status_counts": {
+        "OK": 42,
+        "CLEANUP_FAILED": 1
+      },
+      "last_nvml_api": "handle[0]",
+      "completed_nvml_apis": [
+        "import_pynvml",
+        "init",
+        "device_count"
+      ],
+      "trace_bytes": 194863291,
+      "trace_loss": {
+        "overrun": 0,
+        "commit overrun": 0,
+        "dropped events": 0
+      },
+      "instance_removed": true,
+      "global_trace_configuration_equal": true,
+      "system_samples": 224,
+      "cache_samples": 57,
+      "capture_seconds": 57.117313055088744,
+      "default_unchanged": true,
+      "scope_gone": true,
+      "trace_sha256": "99a16ce325464bcae7fc4b5a16c57d2b4111b41fe0aa1787becceeadcfedd65b",
+      "precompaction": {
+        "status": "COMPLETED",
+        "pid": 2268793,
+        "before": 693987.077781356,
+        "operation": "/sys/devices/system/node/node0/compact",
+        "writes": 1,
+        "scope": "one memory node on this machine: all physical RAM",
+        "persistent_configuration_changed": false,
+        "exact_physical_layout_rollback_possible": false,
+        "finished_monotonic": 693987.177312513,
+        "finished": 693987.177318772
+      }
+    }
+  ],
+  "total_model_loads": 2,
+  "total_http_requests": 0,
+  "total_stage_sealed_files": 487,
+  "default_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+  "evidence_valid_for": "observed mechanism and failed precompaction contract",
+  "runtime_acceptance": false,
+  "performance_acceptance": false,
+  "limitations": [
+    "Fixed stage order; driver pools and physical state differ.",
+    "No PSI in running kernel; never interpreted as zero pressure.",
+    "No complete driver lock-owner proof or pool order mapping.",
+    "No claim that all KReclaimable belongs to NVIDIA."
+  ],
+  "all_stage_and_tool_evidence": {
+    "files": 585,
+    "manifest_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/warm-reclaim-20261020/final-evidence.json",
+    "manifest_sha256": "d5f19eacc44b7ffaa61198834f7ca609b5d7e39e07a7a4fde283cdb9aa3f3d27"
+  },
+  "host_contracts_passed": 40,
+  "analysis": {
+    "baseline-v1": {
+      "kernel": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/warm-reclaim-20261020/analysis-final-verified/baseline.json",
+        "sha256": "3d9055cfc5c5564e43b7864e14173a8c6fe7b2b38f0ed748a7bd77c7fe1931b3",
+        "events": 393193,
+        "verified_inputs": 7
+      },
+      "resources": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/warm-reclaim-20261020/comparison-resources-final-units/baseline.json",
+        "sha256": "82ed5b6b881dae6aeae156698784c2f09ee28c0b0a5c00d93b939c6fe1a6131a"
+      }
+    },
+    "precompact-v1": {
+      "kernel": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/warm-reclaim-20261020/analysis-final-verified/precompact.json",
+        "sha256": "f175fa15aa0236b9712c8c97a1fa8cb8105917165a66504f257a395c4eebbae1",
+        "events": 834618,
+        "verified_inputs": 7
+      },
+      "resources": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/warm-reclaim-20261020/comparison-resources-final-units/precompact.json",
+        "sha256": "9839dce0290fc76ff5bffa16d44bdbd068cbd522ea1487da1cc1dced9b9a4602"
+      }
+    }
+  }
+}
