@@ -1,0 +1,9 @@
+[PASS] sequence_commit_requires_completion
+[PASS] sequence_rejects_reentry_and_early_recycle
+[PASS] sequence_failed_submission_still_drains
+[PASS] sequence_completion_failure_preserves_prefix
+[PASS] sequence_invalid_input_does_not_poison_prefix
+[PASS] sequence_chunk_and_decode_share_commit
+[PASS] sequence_batch_failure_is_atomic
+[PASS] sequence_rejects_duplicate_completion
+8 tests, 8 passed, 0 failed, 0 skipped

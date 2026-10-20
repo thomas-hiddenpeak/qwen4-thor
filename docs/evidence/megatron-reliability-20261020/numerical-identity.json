@@ -1,0 +1,36 @@
+{
+  "original_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/build/q4t_moe_replay",
+  "original_fixture": "/home/rm01/models/dev/qwen4-thor/tools/verify/moe_replay/fixture.json",
+  "model": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "environment": {
+    "CUDA_HOME": "/usr/local/cuda-13.3"
+  },
+  "commands": [
+    [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/numerical-v1/executable",
+      "invariance",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/numerical-v1/fixture.json",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/numerical-v1/invariance"
+    ]
+  ],
+  "status": "PASS",
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/numerical-v1/executable",
+  "binary_sha256": "81bf683c7d7fbaf47eef9a641c3e003eaee914342cfb55acf001e0f636046096",
+  "fixture": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/numerical-v1/fixture.json",
+  "fixture_sha256": "d86095d8b4aa5f49705143752d6dc333b6b1d6c26e5b1e22e8332f7b03d93ca3",
+  "source_commit": "9d46fa2118ee3bc8018517a830f96b8ad631b6b8",
+  "source_patch_sha256": "4e5493bb06bc1c1b0daeece41c440e2d2a5e1a07be097ff01cb6007690a54659",
+  "sources": {
+    "tools/verify/moe_replay/main.cpp": "cb2ff1ab6efda09f5160cd1c52db8b23fe6afbb84f5b9fde273240d83f5e30cf",
+    "tools/verify/moe_replay/run.py": "176b94fd1c8aee5288316ef89446ba9e42cd137eb306582629450a75185b8655",
+    "tools/verify/moe_replay_gpu.cu": "98d821f666282c926729331d71aadd8f8f0b066f5ea13a14276da0d9c34b6e1c",
+    "tools/verify/moe_replay_io.cpp": "57ffe52ee9418051d8880c77c82870f77d182a1ff0b940ef653fa453d73a8e13",
+    "src/model/moe.cu": "07b7ea2c8d0ab36346dbd034b7f2ac1a5f2bbf86fdd50dc1dc268cfe92058264",
+    "include/q4t/model/moe_replay.h": "592e73835241fee87872fdef8c71978b6a0fcecda0996efa21228ebb77d03597",
+    "include/q4t/model/moe_replay_gpu.h": "9fed6e72d461ec62a298fe9623a5947c81ac623a05c8b70849570e7c116f0f28",
+    "include/q4t/model/moe_replay_io.h": "acaa3bd5f780eade9f307f069e79dacf07965f30e4231302d0d86b0a295df8cb",
+    "CMakeLists.txt": "ee7d0a28343a580a3049e6d4ce565a0de3ff1a9afa7db2835a91cacfd57778b7"
+  },
+  "invariance_returncode": 0
+}

@@ -20,6 +20,7 @@ def main():
     parser.add_argument('--model', type=Path, required=True)
     parser.add_argument('--fixture', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--suite', choices=('suite', 'invariance'), default='suite')
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[3]
     output = args.output.resolve()
@@ -75,7 +76,8 @@ def main():
                     raise RuntimeError(f'source snapshot changed: {name}')
 
         manifest['status'] = 'RUNNING'
-        for mode in ('suite', 'replay'):
+        modes = ('suite', 'replay') if args.suite == 'suite' else ('invariance',)
+        for mode in modes:
             verify_snapshots()
             command = [str(binary), mode, str(args.model.resolve()), str(fixture),
                        str(output / mode)]
@@ -89,7 +91,8 @@ def main():
             manifest[mode + '_returncode'] = result.returncode
             if result.returncode:
                 raise RuntimeError(f'{mode} exited {result.returncode}')
-        for suffix in ('logits.bf16', 'ids.i32', 'weights.f32', 'output.bf16'):
+        for suffix in (() if args.suite == 'invariance' else
+                       ('logits.bf16', 'ids.i32', 'weights.f32', 'output.bf16')):
             reference = output / ('suite/t4-row0-normal.' + suffix)
             replay = output / ('replay/replay.' + suffix)
             if reference.read_bytes() != replay.read_bytes():
@@ -111,7 +114,7 @@ def main():
         files = {str(path.relative_to(output)): digest(path)
                  for path in sorted(output.rglob('*')) if path.is_file()}
         (output / 'files.json').write_text(json.dumps(files, indent=2) + '\n')
-    print('PASS: bounded GPU suite and separate persisted CLI replay')
+    print('PASS: bounded ' + args.suite + ' run')
 
 
 if __name__ == '__main__':

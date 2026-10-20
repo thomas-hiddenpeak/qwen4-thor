@@ -168,10 +168,10 @@ void Equal(const Result& a, const Result& b, const std::string& tag) {
 
 int Run(int argc, char** argv) {
   Check(argc == 5 || argc == 6 || argc == 8,
-        "usage: q4t_moe_replay suite MODEL FIXTURE OUTPUT | "
+        "usage: q4t_moe_replay suite|invariance MODEL FIXTURE OUTPUT | "
         "replay MODEL FIXTURE OUTPUT ROUTE [SOURCE_SHA REASON]");
   const std::string mode = argv[1];
-  Check((mode == "suite" && argc == 5) ||
+  Check(((mode == "suite" || mode == "invariance") && argc == 5) ||
         (mode == "replay" && (argc == 6 || argc == 8)), "invalid mode/args");
   const fs::path model = fs::canonical(argv[2]);
   const fs::path fixture_path = fs::canonical(argv[3]);
@@ -278,6 +278,89 @@ int Run(int argc, char** argv) {
     Cuda(cudaStreamQuery(device.stream));
     return result;
   };
+  if (mode == "invariance") {
+    const auto original = fixture.hidden;
+    const auto original_tokens = fixture.tokens;
+    const auto row_result = [](const Result& source, int row) {
+      Result result;
+      const auto slice = [row](const auto& values, int width) {
+        using Vector = std::decay_t<decltype(values)>;
+        return Vector(values.begin() + row * width,
+                      values.begin() + (row + 1) * width);
+      };
+      result.route.logits = slice(source.route.logits, kE);
+      result.route.ids = slice(source.route.ids, kTopK);
+      result.route.weights = slice(source.route.weights, kTopK);
+      result.output = slice(source.output, kHs);
+      return result;
+    };
+    const auto baseline = run(identity(0, 4), nullptr, false);
+    SaveResult(directory, "baseline", baseline);
+    // Each mapping is new row -> original row; -1 is an unrelated filler.
+    const int maps[][4] = {{3, 1, 0, 2}, {0, -1, -1, -1},
+                          {0, -1, -1, -1}, {0, 1, 2, 3}};
+    const char* names[] = {"permuted", "zero-filler", "large-filler",
+                           "scratch-reuse"};
+    for (int test = 0; test < 4; ++test) {
+      fixture.hidden = original;
+      fixture.tokens = original_tokens;
+      for (int row = 0; row < 4; ++row) {
+        const int source = maps[test][row];
+        for (int col = 0; col < kHs; ++col) {
+          // +/-16 is an exact, finite BF16 outlier relative to this fixture.
+          fixture.hidden[row * kHs + col] = source >= 0
+              ? original[source * kHs + col]
+              : (test == 1 ? 0 : ((col & 1) ? 0xc180 : 0x4180));
+        }
+        if (source >= 0) fixture.tokens[row] = original_tokens[source];
+      }
+      const std::string tag = names[test];
+      Save(directory / (tag + ".hidden.bf16"), fixture.hidden);
+      Save(directory / (tag + ".tokens.i32"), fixture.tokens);
+      Save(directory / (tag + ".row-map.i32"),
+           std::vector<int32_t>(maps[test], maps[test] + 4));
+      Cuda(cudaMemsetAsync(workspace, 0xa5, workspace_bytes, device.stream));
+      const auto id = identity(0, 4);
+      const auto actual = run(id, nullptr, false);
+      SaveResult(directory, tag, actual);
+      Equal(actual, run(id, nullptr, true), tag + " production");
+      MoEReplayRecord record;
+      Check(record.Prepare(id, id, actual.route.ids));
+      Check(WriteMoEReplay((directory / (tag + ".route")).string(), record));
+      Equal(actual, run(id, &record, false), tag + " fixed-IDs");
+      for (const auto value : actual.output) {
+        Check((value & 0x7f80) != 0x7f80, tag + " nonfinite output");
+      }
+      for (const auto value : actual.route.logits) {
+        Check((value & 0x7f80) != 0x7f80, tag + " nonfinite logits");
+      }
+      for (const auto value : actual.route.weights) {
+        Check(std::isfinite(value), tag + " nonfinite weight");
+      }
+      for (int row = 0; row < 4; ++row) {
+        if (maps[test][row] < 0) continue;
+        Equal(row_result(baseline, maps[test][row]), row_result(actual, row),
+              tag + " row=" + std::to_string(row));
+      }
+    }
+    fixture.hidden = original;
+    fixture.tokens = original_tokens;
+    for (int row = 0; row < 4; ++row) {
+      const auto single = run(identity(row, 1), nullptr, false);
+      SaveResult(directory, "single-row" + std::to_string(row), single);
+      const auto expected = row_result(baseline, row);
+      std::cout << "cross_shape row=" << row
+                << " logits_equal=" << Bits(single.route.logits,
+                                               expected.route.logits)
+                << " ids_equal=" << Bits(single.route.ids, expected.route.ids)
+                << " weights_equal=" << Bits(single.route.weights,
+                                                expected.route.weights)
+                << " output_equal=" << Bits(single.output, expected.output)
+                << " DIAGNOSTIC_ONLY\n";
+    }
+    std::cout << "invariance PASS variants=4 protected_rows=10 forwards=17\n";
+    return 0;
+  }
   if (mode == "replay") {
     const auto& source = supplied.source();
     Check(source.position <= 3 && source.rows <= 4, "source outside fixture");

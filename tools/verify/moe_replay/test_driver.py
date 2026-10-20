@@ -17,6 +17,7 @@ from pathlib import Path
 mode,model,fixture,output=sys.argv[1:5]
 out=Path(output);out.mkdir()
 (out/'used-fixture').write_bytes(Path(fixture).read_bytes())
+if os.environ.get('REPLAY_FAIL'): sys.exit(7)
 for suffix in ['logits.bf16','ids.i32','weights.f32','output.bf16']:
  (out/(('t4-row0-normal.' if mode=='suite' else 'replay.')+suffix)).write_bytes(b'fixed')
 if mode=='suite':
@@ -61,6 +62,26 @@ class DriverTest(unittest.TestCase):
             self.assertEqual(Path(command[3]), self.output / 'fixture.json')
         self.assertEqual((self.output / 'suite/used-fixture').read_bytes(),
                          (self.output / 'replay/used-fixture').read_bytes())
+
+    def test_invariance_uses_one_process(self):
+        run = subprocess.run(self.command() + ['--suite', 'invariance'],
+                             capture_output=True, text=True)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        record = json.loads((self.output / 'identity.json').read_text())
+        self.assertEqual(record['status'], 'PASS')
+        self.assertEqual(len(record['commands']), 1)
+        self.assertEqual(record['commands'][0][1], 'invariance')
+        self.assertFalse((self.output / 'replay').exists())
+
+    def test_invariance_failure_is_not_retried(self):
+        run = subprocess.run(self.command() + ['--suite', 'invariance'],
+                             env={**os.environ, 'REPLAY_FAIL': '1'},
+                             capture_output=True, text=True)
+        self.assertNotEqual(run.returncode, 0)
+        record = json.loads((self.output / 'identity.json').read_text())
+        self.assertEqual(record['status'], 'FAIL')
+        self.assertEqual(record['invariance_returncode'], 7)
+        self.assertEqual(len(record['commands']), 1)
 
     def test_original_mutation_cannot_change_replay_input(self):
         run, record = self.invoke(str(self.fixture))

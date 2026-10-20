@@ -1,0 +1,29 @@
+weights tensors=6149 sha256=b5af56d2488de077d4bc94f661a72de5200e2addec0dabbf3758856a61099fae
+execution_binary=81bf683c7d7fbaf47eef9a641c3e003eaee914342cfb55acf001e0f636046096 model=1cf9fcd95c88f3eacaab969c62ddb62d823573867f40a5f27bf8dac28d2c2cc3
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+permuted production BITEXACT_PASS
+permuted fixed-IDs BITEXACT_PASS
+permuted row=0 BITEXACT_PASS
+permuted row=1 BITEXACT_PASS
+permuted row=2 BITEXACT_PASS
+permuted row=3 BITEXACT_PASS
+zero-filler production BITEXACT_PASS
+zero-filler fixed-IDs BITEXACT_PASS
+zero-filler row=0 BITEXACT_PASS
+large-filler production BITEXACT_PASS
+large-filler fixed-IDs BITEXACT_PASS
+large-filler row=0 BITEXACT_PASS
+scratch-reuse production BITEXACT_PASS
+scratch-reuse fixed-IDs BITEXACT_PASS
+scratch-reuse row=0 BITEXACT_PASS
+scratch-reuse row=1 BITEXACT_PASS
+scratch-reuse row=2 BITEXACT_PASS
+scratch-reuse row=3 BITEXACT_PASS
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+cross_shape row=0 logits_equal=1 ids_equal=1 weights_equal=1 output_equal=1 DIAGNOSTIC_ONLY
+cross_shape row=1 logits_equal=1 ids_equal=1 weights_equal=1 output_equal=1 DIAGNOSTIC_ONLY
+cross_shape row=2 logits_equal=1 ids_equal=1 weights_equal=1 output_equal=1 DIAGNOSTIC_ONLY
+cross_shape row=3 logits_equal=1 ids_equal=1 weights_equal=1 output_equal=1 DIAGNOSTIC_ONLY
+invariance PASS variants=4 protected_rows=10 forwards=17

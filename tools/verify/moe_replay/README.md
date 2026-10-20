@@ -113,3 +113,18 @@ N=4 numerical contracts remain unchanged. The diagnostic has synchronization and
 readback overhead and must not be used to claim serving performance.
 
 Results and identities: [A1 report](../../../docs/MOE_REPLAY_A1_2026-10-19.md).
+
+## Row independence regression
+
+Use the same driver with `--suite invariance` and a new output directory.
+It loads the fixed layer once and executes exactly 17 forwards: a baseline,
+four variants with diagnostic/production/fixed-ID controls, and four T1 rows.
+Variants reorder rows `[3,1,0,2]`, replace unrelated rows with zeros or finite
+BF16 +/-16 values, and restore the original input after poisoning scratch.
+Zero rows are filler inputs, not a masked-padding API. Ten unchanged rows must
+match baseline logits, ordered IDs, weights and output exactly at fixed T4.
+All variant outputs/logits/weights must be finite. T1/T4 comparisons remain
+observations only. Hidden inputs, token metadata and new-row-to-original-row
+maps are saved alongside raw results; these synthetic rows have no claimed
+natural-language causal prefix. A successful case is not general batch
+invariance, and this diagnostic does not measure serving performance.

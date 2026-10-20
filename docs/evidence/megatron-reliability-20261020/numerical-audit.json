@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "manifest_files_verified": 70,
+  "protected_rows": [
+    {
+      "variant": "permuted",
+      "row": 0,
+      "source": 3,
+      "bitexact": true
+    },
+    {
+      "variant": "permuted",
+      "row": 1,
+      "source": 1,
+      "bitexact": true
+    },
+    {
+      "variant": "permuted",
+      "row": 2,
+      "source": 0,
+      "bitexact": true
+    },
+    {
+      "variant": "permuted",
+      "row": 3,
+      "source": 2,
+      "bitexact": true
+    },
+    {
+      "variant": "zero-filler",
+      "row": 0,
+      "source": 0,
+      "bitexact": true
+    },
+    {
+      "variant": "large-filler",
+      "row": 0,
+      "source": 0,
+      "bitexact": true
+    },
+    {
+      "variant": "scratch-reuse",
+      "row": 0,
+      "source": 0,
+      "bitexact": true
+    },
+    {
+      "variant": "scratch-reuse",
+      "row": 1,
+      "source": 1,
+      "bitexact": true
+    },
+    {
+      "variant": "scratch-reuse",
+      "row": 2,
+      "source": 2,
+      "bitexact": true
+    },
+    {
+      "variant": "scratch-reuse",
+      "row": 3,
+      "source": 3,
+      "bitexact": true
+    }
+  ],
+  "forwards": 17,
+  "cross_shape_gate": false,
+  "runtime_changed": false,
+  "binary_sha256": "81bf683c7d7fbaf47eef9a641c3e003eaee914342cfb55acf001e0f636046096"
+}

@@ -1,0 +1,4 @@
+[PASS] scheduler_submission_rejects_after_stop
+[PASS] scheduler_submission_drains_before_shutdown
+[PASS] scheduler_submission_keeps_borrowed_buffer_until_done
+3 tests, 3 passed, 0 failed, 0 skipped
