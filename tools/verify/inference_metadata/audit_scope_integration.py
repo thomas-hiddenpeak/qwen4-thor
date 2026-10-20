@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[3]
-STAGE = ROOT / '.q4t-work/offload-foundation-20261020/scope-integration-v4'
+STAGE = ROOT / '.q4t-work/offload-foundation-20261020/scope-integration-v5'
 EXPECTED = '19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469'
 
 

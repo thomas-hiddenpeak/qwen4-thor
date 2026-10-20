@@ -106,3 +106,16 @@ v4仅将host/cache memcg上限由16GiB改为64GiB，保持其余模型、GPU
 配置、NVML5秒门及正常质量/受控中断预算；复用同源码CPU合同。
 这是针对新分配失败证据的限额对照，若通过只接受64GiB配置的工具
 接入；16GiB保留未通过，不能宣称严格物理RAM上限或低预算offload可用。
+
+## v4限额对照未消除故障，v5缓存对照
+
+v4 64GiB仍在GPU加载时NVML init超时，ENV_ABORT，未完成HTTP。
+不支持仅放宽memcg即可解决。现场模型缓存继承自基线，主机Cached约
+63GiB，MemFree约8GiB；KReclaimable约49GiB不能与CUDA计数简单相加。
+历史OFFLOAD_RAM_PROTOCOL的外部预热文件探针已证明旧cache不会
+自动迁入新组；这提示调查继承缓存，尚不证明NVML故障因果。
+
+v5保持64GiB及原有监控门，唯一新增--clear-model-cache：只读打开模型
+文件，POSIX_FADV_DONTNEED后观测payload驻留必须为0才启动。每次
+加载前执行，无全机drop_caches、无文件内容修改。仅验证既定质量/
+中断合同，不追加五档或声称冷SSD性能；若仍失败不自动继续重试。
