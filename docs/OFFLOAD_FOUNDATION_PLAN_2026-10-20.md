@@ -58,3 +58,20 @@ quality-v1三模式9条质量全部通过。复核发现成功路径host四标�
 源；未改全驻留路径或CUDA kernel。该具体修复触发payload-v3的9类
 故障/5项驻留和quality-v2的3条offload重验；53host及普通/MTP各3条
 未受影响证据明确复用，默认部署仍做当前binary两模式健康检查。
+
+## D首轮协议冻结（启动前）
+
+最终默认19ea4e57、release真实构建缓存；普通单请求MTP关闭，max-seq1、
+max-prefill8192、max-len208896。固定全驻留然后C256，后者L2=16、
+mirror8、workers16、stream1、chunk-order/partition0、无hot-list。
+五档1024/4096/8192/45056/204800各3次、每次256输出，合计30请求、
+2次模型加载。每模式5400秒上限，无自动重试或扩样。既有质量证据复用。
+
+先使用run_acceptance的直接子进程模式，整个驱动在单一GPU lease内。
+旧systemd service由PID1托管，不满足外层guard后代归属，不能直接套用；
+独立memcg限额runner的归属接入仍是未闭合项。本次不设host/cache上限，
+不清页缓存，继承先前运行缓存；固定顺序存在缓存/时间混杂，不能据此
+给出严格优化收益。1秒进程/系统/I/O观测，NVML10秒、模型页缓存仅端点。
+共享cgroup数据标为非进程独占；RSS/CUDA/pinned/cache不相加，NVMe逻辑
+字节不等于物理SSD读取，不认证严格54GB RAM或SSD冷态。端点页缓存检查
+在HTTP计时外。结果用于识别资源/供给瓶颈，策略优化另按规范验收。
