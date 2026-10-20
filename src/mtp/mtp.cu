@@ -212,6 +212,7 @@ void FreeScratch(MtpModel& m) {
 }  // namespace
 
 void MtpModel::Free() {
+  metadata_upload.reset();
   if (fc_embedding) cudaFree(fc_embedding);
   if (fc_hidden) cudaFree(fc_hidden);
   if (pre_fc_norm_embedding) cudaFree(pre_fc_norm_embedding);
@@ -277,6 +278,7 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
     }
   } pending{out, stream};
   out->cfg = cfg;
+  out->metadata_upload = std::make_unique<model::MetadataUploadBatch>();
   out->embed_tokens = main_embed;
   out->lm_head = main_lm_head;
   const int hs = cfg.hs, hc = cfg.hc, hc_dim = hc * hs;
@@ -771,6 +773,9 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   // row is the first-draft-token argmax); intermediate chunks skip the lm_head
   // GEMM (a full-prompt [T, vocab] buffer would be ~22 GB at 44K).
   if (T > m.cfg.max_prefill) {
+    if (!m.metadata_upload)
+      return Status::Fail("MtpDraftExtend: upload owner missing");
+    auto& upload = *m.metadata_upload;
     const int chunk = m.cfg.max_prefill;
     const int last_c = (T % chunk == 0) ? chunk : (T % chunk);
     int32_t* d_ids = nullptr;
@@ -780,6 +785,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
     uint16_t* d_logits = nullptr;  // [last_c, vocab] -- last chunk's rows
     int* d_seqid = nullptr;
     auto cleanup = [&](Status s) -> Status {
+      Status drained = upload.Drain();
+      if (!drained.ok()) s = drained;
       if (d_seqid) cudaFree(d_seqid);
       if (d_ids) cudaFree(d_ids);
       if (d_pos) cudaFree(d_pos);
@@ -810,22 +817,25 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
     }
     Status s;
     for (int base = 0; base < T; base += chunk) {
+      s = upload.Begin(stream);
+      if (!s.ok()) return cleanup(s);
       const int c = (T - base < chunk) ? (T - base) : chunk;
       const bool last = (base + c >= T);
-      if (cudaMemcpyAsync(d_ids, shifted_ids + base,
-                          static_cast<size_t>(c) * sizeof(int32_t),
-                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
-        return cleanup(Status::Fail("MtpDraftExtend: H2D ids"));
-      if (cudaMemcpyAsync(d_pos, positions + base,
-                          static_cast<size_t>(c) * sizeof(int),
-                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
-        return cleanup(Status::Fail("MtpDraftExtend: H2D pos"));
+      if (!(s = upload.Copy(d_ids, shifted_ids + base,
+                            static_cast<size_t>(c) * sizeof(int32_t)))
+               .ok())
+        return cleanup(s);
+      if (!(s = upload.Copy(d_pos, positions + base,
+                            static_cast<size_t>(c) * sizeof(int)))
+               .ok())
+        return cleanup(s);
       if (m.max_seq > 1) {
         std::vector<int> seqid(c, seq_id);
-        if (cudaMemcpyAsync(d_seqid, seqid.data(), c * sizeof(int),
-                            cudaMemcpyHostToDevice, stream) != cudaSuccess)
-          return cleanup(Status::Fail("MtpDraftExtend: H2D d_seqid"));
+        if (!(s = upload.Copy(d_seqid, seqid.data(), c * sizeof(int))).ok())
+          return cleanup(s);
       }
+      s = upload.Finish();
+      if (!s.ok()) return cleanup(s);
       // main_trunk is the FULL-prompt trunk [T, hc_dim]; this chunk reads its
       // [base, base+c) rows.
       s = MtpForward(m, d_ids, d_pos,

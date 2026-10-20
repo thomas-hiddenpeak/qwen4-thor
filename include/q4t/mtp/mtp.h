@@ -84,6 +84,7 @@ struct MtpConfig {
 // owned here).
 struct MtpModel {
   MtpConfig cfg;
+  std::unique_ptr<model::MetadataUploadBatch> metadata_upload;
   // Borrowed from the main model (must outlive this MtpModel).
   const uint16_t* embed_tokens = nullptr;  // [vocab, hs]
   const uint16_t* lm_head = nullptr;  // [vocab, hs]

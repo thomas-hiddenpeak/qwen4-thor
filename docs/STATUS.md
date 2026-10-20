@@ -4,6 +4,14 @@
 
 ## 当前交付
 
+**剩余元数据入口已接入，模型验收待执行（2026-10-20）。**
+RunPrefill、单步/单序列batch、ragged/mixed及MTP chunked接入
+pageable批次owner；保留原拷贝粒度、GPU目标及计算形状。候选
+753d9769零警告构建，19项真实入口检查通过；新增模型/HTTP0。
+默认c8f4b241保持，后续目标active。下一步精确父候选多路径差分
+及对应HTTP回归；未宣称性能通过或全部完成。见
+[接入合同和证据](METADATA_UPLOAD_BATCH_2026-10-20.md)。
+
 **剩余元数据批次对象通过直接合同验证（2026-10-20）。**
 新增独立MetadataUploadBatch保有pageable源快照及完成事件，处理
 提前返回和失败保留；10组host与真实GPU 4批次/64整数通过。

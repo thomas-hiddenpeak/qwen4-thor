@@ -65,3 +65,69 @@ completion失败时的stderr是预期故障注入，不能当真实设备故障�
 保留已有拷贝粒度和GPU调用顺序；补真实入口边界与错误返回覆盖。
 对象检查不能替代模型差分、取消或HTTP；新的runtime身份不部署，
 直到其相应验证和接受明确。已有统计性能方法结论不变。
+
+## 模型接入冻结（实施前）
+
+父身份48185ed（运行时等同已部署3d5564e），复用main，候选独立构建
+至.q4t-work/metadata-followup-20261020/build；默认binary不重建。
+Model和MtpModel各持独立MetadataUploadBatch，Free先销毁owner。
+事件延迟到第一次Begin创建，不增加Load时CUDA事件。主模型覆盖
+RunPrefill、ModelDecodeStep、ModelDecodeBatch、ModelPrefillBatch、
+ModelMixedBatch；MTP仅接入chunked MtpDraftExtend的ids/pos/seqid。
+
+每个入口Begin、按原顺序Copy、最后一项元数据上传后Finish；不合并
+拷贝、不改目标、不增kernel。RunPrefill为保留原Embed/多模态注入
+顺序，Finish在可能的image位置上传/注入后、Expand前，因此事件
+也覆盖此前同stream已入队的Embed/Inject；不能称纯传输计时事件。
+任何未Finish早退由owner继续保活；MTP临时device释放前先Drain。
+已接受DecodeBatchMulti和ModelVerifyMulti不改。
+
+入口防护单列：ModelDecodeStep在rope_delta索引前检查seq_id；
+ModelForward在Reset前检查seq_id；RunPrefill检查T、seq_id及容量，
+防止内部入口依赖不可见前提。ragged累计计数使用减法检查避免
+int溢出；Mixed范围检查避免base+len溢出。这些是同接入路径的
+安全前置，不变更调度和分配策略。
+
+复查纠正：最初拟检查ragged ResetAllLayers返回值，但该helper始终
+返回成功，底层DecoderLayer::ResetState为void；只加调用处判断不
+能证明错误传播，已在真实入口测试前撤掉无效改动。复位错误传播
+需要单独贯穿底层API，本轮未改，不将上传失败保护扩大为复位安全。
+
+验证分组：
+
+1. 真实入口纯host边界：固定无模型用例覆盖非法seq_id、超容量、
+   Mixed位置溢出及ragged计数溢出；合法单步/单batch到缺owner截止。
+   具体用例随测试源码保存，最多20次函数调用，一次执行，保守持锁；
+   不加载模型/执行GPU，不把mock对象测试替代入口检查。
+2. 构建候选及精确父版本的同一差分夹具，保持4层、max_seq4、
+   max_prefill8、max_len32。正式GPU采样前另冻结具体轨迹与文件比较
+   清单，必须覆盖prefill/step/batch/ragged/mixed/多模态位置和MTP
+   chunked，不能只重复原DecodeBatchMulti夹具。此项当前执行预算0。
+3. 直接合同通过后统一对应HTTP质量与取消回归，冻结新身份后执行；
+   当前执行预算0，不在每个中间源码版本上反复加载。性能新增0。
+
+旧对象测试按源码未变复用；接入不能继承旧完整模型验收。新候选
+在上述验证完成前仅作阶段快照，不部署、不宣布全部入口完成。
+
+## 接入构建与入口检查结果
+
+主模型5个入口及MTP chunked路径接入完成。独立候选binary
+753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542，
+完整构建及撤掉无效reset检查后的增量构建均零警告；19项真实入口
+检查全部通过，完整guard COMPLETED。没有加载模型或新增HTTP。
+证据见[接入身份和结果](evidence/metadata-followup-20261020/batch-integration-v1/result.json)。
+
+默认c8f4b241不变；已通过的批次对象源码未变，其host/GPU对象证据
+复用。新接入候选仍待精确父版本差分及HTTP，不能据19个拒绝/缺owner
+检查宣称正常模型路径通过。新增检查包括seq_id拒绝、INT_MAX累计
+和Mixed位置相加溢出拒绝、合法单步/batch到缺owner检查即停止。
+
+复核剩余MTP Async：推理multi-step的seq_of/h_pos/gather_off/ext数组
+仍由既有step scope和cleanup同步保护；单序列路径使用同步H2D，
+未因统一风格迁移。LoadMtp内load lambda的临时host权重仍依赖pageable
+行为，它是加载期权重而非本轮推理元数据，不声称被本改动覆盖。
+同样，完成失败后的GPU可恢复性与ResetState错误传播仍不是本轮保证。
+
+批次pageable块保留按拷贝序号观察到的容量上界直到Free；额外host
+驻留取决于实际布局/配置，不是零成本。此内存与event/快照复制
+成本不能被解释为已获性能接受；本轮不追加统计性能样本。

@@ -1,0 +1,28 @@
+{
+  "status": "BUILT_ENTRY_GUARDS_PASS_RUNTIME_PENDING",
+  "entry_cases": 19,
+  "entry_manifest_verified": 5,
+  "warnings": 0,
+  "model_loads": 0,
+  "http": 0,
+  "runtime_differential": "NOT_RUN",
+  "sha256": {
+    "src/model/model.cu": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194",
+    "src/mtp/mtp.cu": "173a4c54d8282705216e43319d5b1614b93f5db7697803ae2dd8bab501ae3b31",
+    "include/q4t/model/model.h": "5c6dc610cc6a387bdc1b8109a3f533616ef8ace3807315c5bbf79f00085b8d09",
+    "include/q4t/mtp/mtp.h": "fb6457fd10ff5bec2a7976fc9688e219dd6fb6794e32415c3cb8bfad68967f0d",
+    "CMakeLists.txt": "4cc00545f27c6f33c66e453e1aed70f2ae79b2f0b00028d385f45d2c70f1bf14",
+    "include/q4t/model/metadata_upload_batch.h": "32c5b20cdda7f7cccaad12467c19e30a05bbb434b268ac05e5e4c86c4d0bd83d",
+    "src/model/metadata_upload_batch.cpp": "476bfb42336468f5f644f4675495315dc4d5ae2db494bf4f0fe43d1b82395e87",
+    "tools/verify/inference_metadata/batch_entry_test.cpp": "6ba18ab8e47ed1ea9ecb5036d07191e801bc1b1cdd6732067f025fc9caa16360",
+    ".q4t-work/metadata-followup-20261020/build/q4t": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+    ".q4t-work/metadata-followup-20261020/build/q4t_metadata_batch_entry": "388e27b034a62d49457699809cdc64fe03dab2726dd22f454b41894052f8d2ac",
+    ".q4t-work/metadata-followup-20261020/build/CMakeCache.txt": "210aec969f3d72ca58a94d90ea11874d56638dbdf6c01bc9f491c5fbf00abe34",
+    "build/q4t": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d"
+  },
+  "limitations": [
+    "ResetState remains void; no reset failure propagation claim",
+    "MTP load-time weight staging outside inference-metadata scope",
+    "No statistical performance acceptance or candidate deployment"
+  ]
+}

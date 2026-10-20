@@ -1,0 +1,19 @@
+[  3%] Built target q4t_runtime
+[ 10%] Built target q4t_trace
+[ 16%] Built target q4t_io
+[ 26%] Built target q4t_ple
+[ 30%] Built target q4t_text
+[ 43%] Built target q4t_quant
+[ 46%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/model.cu.o
+[ 46%] Linking CXX static library libq4t_model.a
+[ 83%] Built target q4t_model
+[100%] Built target q4t_server
+[100%] Linking CXX executable q4t
+[100%] Built target q4t
+[  8%] Built target q4t_trace
+[ 16%] Built target q4t_io
+[ 29%] Built target q4t_ple
+[ 45%] Built target q4t_quant
+[ 95%] Built target q4t_model
+[ 95%] Linking CXX executable q4t_metadata_batch_entry
+[100%] Built target q4t_metadata_batch_entry

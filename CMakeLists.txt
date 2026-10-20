@@ -181,6 +181,7 @@ add_library(q4t_model STATIC
   src/model/model.cu
   src/model/model_owner.cpp
   src/model/decode_metadata_upload.cpp
+  src/model/metadata_upload_batch.cpp
   src/model/gemv.cu
   src/model/gemv_hc_inject.cu
   src/model/small_m_gemm.cu
@@ -486,3 +487,10 @@ add_executable(q4t_metadata_bounds EXCLUDE_FROM_ALL
 target_include_directories(q4t_metadata_bounds PRIVATE include)
 target_link_libraries(q4t_metadata_bounds PRIVATE q4t_model)
 target_compile_options(q4t_metadata_bounds PRIVATE -Wall -Wextra -Werror)
+
+# Host-only validation of real metadata entry guards (no model loading).
+add_executable(q4t_metadata_batch_entry EXCLUDE_FROM_ALL
+  tools/verify/inference_metadata/batch_entry_test.cpp)
+target_include_directories(q4t_metadata_batch_entry PRIVATE include)
+target_link_libraries(q4t_metadata_batch_entry PRIVATE q4t_model)
+target_compile_options(q4t_metadata_batch_entry PRIVATE -Wall -Wextra -Werror)

@@ -124,6 +124,7 @@ __global__ void InjectVisionKernel(const uint16_t* __restrict__ vision_src,
 }  // namespace
 
 void Model::Free() {
+  metadata_upload.reset();
   decode_metadata_upload.reset();
   head.Free();
   for (auto& l : layers) l.Free();
@@ -394,6 +395,7 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   if (!(s = alloc(reinterpret_cast<void**>(&m->d_seq_id),
                   static_cast<size_t>(cfg.max_seq) * sizeof(int))))
     return s;
+  m->metadata_upload = std::make_unique<MetadataUploadBatch>();
   m->decode_metadata_upload = std::make_unique<DecodeMetadataUpload>();
   s = m->decode_metadata_upload->Init(cfg.max_seq);
   if (!s.ok()) return s;
@@ -845,19 +847,28 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
                   const VisionFeatures* vision = nullptr, int seq_id = 0,
                   LogitsRows logits_rows = LogitsRows::kAllRows) {
   const ModelConfig& cfg = m.cfg;
+  if (T <= 0 || T > cfg.max_prefill || T > cfg.max_len)
+    return Status::Fail("RunPrefill: invalid token capacity");
+  if (seq_id < 0 || seq_id >= cfg.max_seq)
+    return Status::Fail("RunPrefill: seq_id exceeds max_seq");
+  if (!m.metadata_upload)
+    return Status::Fail("RunPrefill: upload owner missing");
+  auto& upload = *m.metadata_upload;
+  Status upload_status = upload.Begin(stream);
+  if (!upload_status.ok()) return upload_status;
+
   // 1. ids + positions.
-  if (cudaMemcpyAsync(m.d_ids, input_ids, T * sizeof(int32_t),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess) {
-    return Status::Fail("H2D ids");
-  }
+  if (!(upload_status = upload.Copy(m.d_ids, input_ids, T * sizeof(int32_t)))
+           .ok())
+    return upload_status;
   // PLE gather takes int64 token ids; build a host int64 copy.
   std::vector<int64_t> ids64(input_ids, input_ids + T);
   std::vector<int> positions(T);
   for (int t = 0; t < T; ++t) positions[t] = t;
-  if (cudaMemcpyAsync(m.d_positions, positions.data(), T * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess) {
-    return Status::Fail("H2D positions");
-  }
+  if (!(upload_status =
+            upload.Copy(m.d_positions, positions.data(), T * sizeof(int)))
+           .ok())
+    return upload_status;
   // 1b. 3D MRoPE table [3, max_len] (t, h, w) for the RoPE angles, addressed by
   //     ABSOLUTE position (rope_pos[r*max_len+p]). Pure text -> three identical
   //     rows (== logical), delta 0. Multimodal -> vision blocks carry their grid
@@ -873,11 +884,11 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
         cfg.video_token_id, cfg.max_len,
         grids ? *grids : std::vector<std::array<int, 3>>{}, &rope_pos);
     // Write into this sequence's [3, max_len] slice of the pooled table.
-    if (cudaMemcpyAsync(m.d_rope_pos + static_cast<size_t>(seq_id) * 3 * cfg.max_len,
-                        rope_pos.data(), rope_pos.size() * sizeof(int),
-                        cudaMemcpyHostToDevice, stream) != cudaSuccess) {
-      return Status::Fail("H2D rope_pos");
-    }
+    if (!(upload_status = upload.Copy(
+              m.d_rope_pos + static_cast<size_t>(seq_id) * 3 * cfg.max_len,
+              rope_pos.data(), rope_pos.size() * sizeof(int)))
+             .ok())
+      return upload_status;
   }
 
   // 2. emb.
@@ -904,17 +915,19 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
                            std::to_string(mm_pos.size()) + " vs " +
                            std::to_string(vision->num_tokens));
     }
-    if (cudaMemcpyAsync(m.d_img_pos, mm_pos.data(),
-                        mm_pos.size() * sizeof(int), cudaMemcpyHostToDevice,
-                        stream) != cudaSuccess) {
-      return Status::Fail("H2D img_pos");
-    }
+    if (!(upload_status = upload.Copy(m.d_img_pos, mm_pos.data(),
+                                      mm_pos.size() * sizeof(int)))
+             .ok())
+      return upload_status;
     const int total = vision->num_tokens * cfg.hs;
     const int grid = (total + kBlock - 1) / kBlock;
     InjectVisionKernel<<<grid, kBlock, 0, stream>>>(vision->device, m.d_img_pos,
                                                     m.d_emb, cfg.hs,
                                                     vision->num_tokens);
   }
+
+  upload_status = upload.Finish();
+  if (!upload_status.ok()) return upload_status;
 
   // 3. trunk.
   s = ExpandTrunk(m.head, m.d_emb, m.d_trunk, T, stream);
@@ -951,6 +964,10 @@ Status ModelForward(const Model& m, const int32_t* input_ids, int T,
   if (T > cfg.max_prefill) {
     return Status::Fail("ModelForward: T exceeds max_prefill");
   }
+  if (T > cfg.max_len)
+    return Status::Fail("ModelForward: T exceeds max_len");
+  if (seq_id < 0 || seq_id >= cfg.max_seq)
+    return Status::Fail("ModelForward: seq_id exceeds max_seq");
   // Prefill of a fresh sequence starts from empty per-layer state (linear
   // SSM/conv, full KV/indexer). Reset so repeated calls are deterministic.
   Status s = ResetAllLayers(m, stream, seq_id);
@@ -967,17 +984,21 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
     return Status::Fail("ModelDecodeStep: position exceeds max_len");
   }
 
+  if (seq_id < 0 || seq_id >= cfg.max_seq)
+    return Status::Fail("ModelDecodeStep: seq_id exceeds max_seq");
+  if (!m.metadata_upload)
+    return Status::Fail("ModelDecodeStep: upload owner missing");
+  auto& upload = *m.metadata_upload;
+  Status upload_status = upload.Begin(stream);
+  if (!upload_status.ok()) return upload_status;
+
   // Per-layer state is NOT reset: it continues from the prior steps.
   // 1. ids + positions (single token at its absolute position).
-  if (cudaMemcpyAsync(m.d_ids, &token_id, sizeof(int32_t),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess) {
-    return Status::Fail("H2D id");
-  }
+  if (!(upload_status = upload.Copy(m.d_ids, &token_id, sizeof(int32_t))).ok())
+    return upload_status;
   const int pos = position;
-  if (cudaMemcpyAsync(m.d_positions, &pos, sizeof(int), cudaMemcpyHostToDevice,
-                      stream) != cudaSuccess) {
-    return Status::Fail("H2D position");
-  }
+  if (!(upload_status = upload.Copy(m.d_positions, &pos, sizeof(int))).ok())
+    return upload_status;
   // 1b. 3D MRoPE for this decode token: all three rows = logical + delta
   //     (the rope delta computed at prefill; 0 for pure text). The RoPE
   //     kernels index rope_pos by the ABSOLUTE position: row r at position p
@@ -988,12 +1009,15 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
     const size_t ml = static_cast<size_t>(cfg.max_len);
     int* seq_rope = m.d_rope_pos + static_cast<size_t>(seq_id) * 3 * ml;
     for (int r = 0; r < 3; ++r) {
-      if (cudaMemcpyAsync(seq_rope + r * ml + pos, &rp, sizeof(int),
-                          cudaMemcpyHostToDevice, stream) != cudaSuccess) {
-        return Status::Fail("H2D rope_pos");
-      }
+      if (!(upload_status =
+                upload.Copy(seq_rope + r * ml + pos, &rp, sizeof(int)))
+               .ok())
+        return upload_status;
     }
   }
+
+  upload_status = upload.Finish();
+  if (!upload_status.ok()) return upload_status;
 
   // 2-3. emb + trunk.
   Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, 1, stream);
@@ -1053,15 +1077,22 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
     if (!capacity.ok()) return capacity;
   }
 
-  if (cudaMemcpyAsync(m.d_ids, input_ids, T * sizeof(int32_t),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D ids");
+  if (!m.metadata_upload)
+    return Status::Fail("ModelDecodeBatch: upload owner missing");
+  auto& upload = *m.metadata_upload;
+  Status upload_status = upload.Begin(stream);
+  if (!upload_status.ok()) return upload_status;
+
+  if (!(upload_status = upload.Copy(m.d_ids, input_ids, T * sizeof(int32_t)))
+           .ok())
+    return upload_status;
   std::vector<int64_t> ids64(input_ids, input_ids + T);
   std::vector<int> positions(T);
   for (int t = 0; t < T; ++t) positions[t] = base_position + t;
-  if (cudaMemcpyAsync(m.d_positions, positions.data(), T * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D positions");
+  if (!(upload_status =
+            upload.Copy(m.d_positions, positions.data(), T * sizeof(int)))
+           .ok())
+    return upload_status;
   // 3D MRoPE for the decode batch (all text tokens): each row = logical +
   // delta (the rope delta from prefill; 0 for pure text). The RoPE kernels
   // index rope_pos by the ABSOLUTE position (positions[t] == base_position+t),
@@ -1080,12 +1111,15 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
     std::vector<int> rope_pos(T);
     for (int t = 0; t < T; ++t) rope_pos[t] = base_position + t + m.rope_delta[seq_id];
     for (int r = 0; r < 3; ++r) {
-      if (cudaMemcpyAsync(seq_rope + r * ml + base_position, rope_pos.data(),
-                          T * sizeof(int), cudaMemcpyHostToDevice, stream) !=
-          cudaSuccess)
-        return Status::Fail("H2D rope_pos");
+      if (!(upload_status = upload.Copy(seq_rope + r * ml + base_position,
+                                        rope_pos.data(), T * sizeof(int)))
+               .ok())
+        return upload_status;
     }
   }
+
+  upload_status = upload.Finish();
+  if (!upload_status.ok()) return upload_status;
 
   Status s = EmbedLookup(m.head, m.d_ids, m.d_emb, T, stream);
   if (!s.ok()) return s;
@@ -1368,11 +1402,19 @@ Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
       return Status::Fail("ModelPrefillBatch: len exceeds max_len");
     if (seq_ids[b] < 0 || seq_ids[b] >= cfg.max_seq)
       return Status::Fail("ModelPrefillBatch: seq_id exceeds max_seq");
+    if (lens[b] > cfg.max_prefill - seq_offset[b])
+      return Status::Fail("ModelPrefillBatch: Ttot exceeds max_prefill");
     seq_offset[b + 1] = seq_offset[b] + lens[b];
   }
   const int Ttot = seq_offset[B];
   if (Ttot > cfg.max_prefill)
     return Status::Fail("ModelPrefillBatch: Ttot exceeds max_prefill");
+
+  if (!m.metadata_upload)
+    return Status::Fail("ModelPrefillBatch: upload owner missing");
+  auto& upload = *m.metadata_upload;
+  Status upload_status = upload.Begin(stream);
+  if (!upload_status.ok()) return upload_status;
 
   // Fresh prefill: reset each sequence's per-layer state (per-sequence slice).
   for (int b = 0; b < B; ++b) ResetAllLayers(m, stream, seq_ids[b]);
@@ -1393,23 +1435,25 @@ Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
   }
 
   // H2D packed tokens / positions / per-token seq id / ragged descriptor.
-  if (cudaMemcpyAsync(m.d_ids, tokens, Ttot * sizeof(int32_t),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D tokens");
-  if (cudaMemcpyAsync(m.d_positions, positions.data(), Ttot * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D positions");
-  if (cudaMemcpyAsync(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D token_seq");
-  if (cudaMemcpyAsync(m.d_ragged_seq_offset, seq_offset.data(),
-                      (B + 1) * sizeof(int), cudaMemcpyHostToDevice, stream) !=
-      cudaSuccess)
-    return Status::Fail("H2D seq_offset");
-  if (cudaMemcpyAsync(m.d_ragged_token_local, token_local.data(),
-                      Ttot * sizeof(int), cudaMemcpyHostToDevice, stream) !=
-      cudaSuccess)
-    return Status::Fail("H2D token_local");
+  if (!(upload_status = upload.Copy(m.d_ids, tokens, Ttot * sizeof(int32_t)))
+           .ok())
+    return upload_status;
+  if (!(upload_status =
+            upload.Copy(m.d_positions, positions.data(), Ttot * sizeof(int)))
+           .ok())
+    return upload_status;
+  if (!(upload_status =
+            upload.Copy(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int)))
+           .ok())
+    return upload_status;
+  if (!(upload_status = upload.Copy(m.d_ragged_seq_offset, seq_offset.data(),
+                                    (B + 1) * sizeof(int)))
+           .ok())
+    return upload_status;
+  if (!(upload_status = upload.Copy(m.d_ragged_token_local, token_local.data(),
+                                    Ttot * sizeof(int)))
+           .ok())
+    return upload_status;
 
   // 3D MRoPE: pure text, each sequence's three rows = local position 0..len-1
   // (delta 0). Write into the pooled table at the sequence's [3, max_len] slice.
@@ -1421,13 +1465,16 @@ Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
       rope_row.resize(lens[b]);
       for (int t = 0; t < lens[b]; ++t) rope_row[t] = t;
       for (int r = 0; r < 3; ++r) {
-        if (cudaMemcpyAsync(seq_rope + r * ml, rope_row.data(),
-                            lens[b] * sizeof(int), cudaMemcpyHostToDevice,
-                            stream) != cudaSuccess)
-          return Status::Fail("H2D rope_pos");
+        if (!(upload_status = upload.Copy(seq_rope + r * ml, rope_row.data(),
+                                          lens[b] * sizeof(int)))
+                 .ok())
+          return upload_status;
       }
     }
   }
+
+  upload_status = upload.Finish();
+  if (!upload_status.ok()) return upload_status;
 
   std::vector<int64_t> ids64(tokens, tokens + Ttot);
 
@@ -1490,15 +1537,24 @@ Status ModelMixedBatch(const Model& m, const int32_t* tokens, const int* lens,
   seq_offset[0] = 0;
   for (int b = 0; b < B; ++b) {
     if (lens[b] <= 0) return Status::Fail("ModelMixedBatch: len must be > 0");
-    if (base_positions[b] < 0 || base_positions[b] + lens[b] > cfg.max_len)
+    if (base_positions[b] < 0 || lens[b] > cfg.max_len ||
+        base_positions[b] > cfg.max_len - lens[b])
       return Status::Fail("ModelMixedBatch: position range exceeds max_len");
     if (seq_ids[b] < 0 || seq_ids[b] >= cfg.max_seq)
       return Status::Fail("ModelMixedBatch: seq_id exceeds max_seq");
+    if (lens[b] > cfg.max_prefill - seq_offset[b])
+      return Status::Fail("ModelMixedBatch: Ttot exceeds max_prefill");
     seq_offset[b + 1] = seq_offset[b] + lens[b];
   }
   const int Ttot = seq_offset[B];
   if (Ttot > cfg.max_prefill)
     return Status::Fail("ModelMixedBatch: Ttot exceeds max_prefill");
+
+  if (!m.metadata_upload)
+    return Status::Fail("ModelMixedBatch: upload owner missing");
+  auto& upload = *m.metadata_upload;
+  Status upload_status = upload.Begin(stream);
+  if (!upload_status.ok()) return upload_status;
 
   // Fresh sequences (base_position == 0) reset their per-layer state; continue
   // sequences keep it — this is what lets fresh-prefill chunks and continuing-
@@ -1520,23 +1576,25 @@ Status ModelMixedBatch(const Model& m, const int32_t* tokens, const int* lens,
     if (base == 0) m.rope_delta[seq_ids[b]] = 0;  // fresh text sequence
   }
 
-  if (cudaMemcpyAsync(m.d_ids, tokens, Ttot * sizeof(int32_t),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D tokens");
-  if (cudaMemcpyAsync(m.d_positions, positions.data(), Ttot * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D positions");
-  if (cudaMemcpyAsync(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int),
-                      cudaMemcpyHostToDevice, stream) != cudaSuccess)
-    return Status::Fail("H2D token_seq");
-  if (cudaMemcpyAsync(m.d_ragged_seq_offset, seq_offset.data(),
-                      (B + 1) * sizeof(int), cudaMemcpyHostToDevice, stream) !=
-      cudaSuccess)
-    return Status::Fail("H2D seq_offset");
-  if (cudaMemcpyAsync(m.d_ragged_token_local, token_local.data(),
-                      Ttot * sizeof(int), cudaMemcpyHostToDevice, stream) !=
-      cudaSuccess)
-    return Status::Fail("H2D token_local");
+  if (!(upload_status = upload.Copy(m.d_ids, tokens, Ttot * sizeof(int32_t)))
+           .ok())
+    return upload_status;
+  if (!(upload_status =
+            upload.Copy(m.d_positions, positions.data(), Ttot * sizeof(int)))
+           .ok())
+    return upload_status;
+  if (!(upload_status =
+            upload.Copy(m.d_token_seq_id, token_seq.data(), Ttot * sizeof(int)))
+           .ok())
+    return upload_status;
+  if (!(upload_status = upload.Copy(m.d_ragged_seq_offset, seq_offset.data(),
+                                    (B + 1) * sizeof(int)))
+           .ok())
+    return upload_status;
+  if (!(upload_status = upload.Copy(m.d_ragged_token_local, token_local.data(),
+                                    Ttot * sizeof(int)))
+           .ok())
+    return upload_status;
 
   // 3D MRoPE (pure text): each sequence's three rows = absolute position
   // base+t, written into the [base, base+len) slice of its [3, max_len] table.
@@ -1549,13 +1607,17 @@ Status ModelMixedBatch(const Model& m, const int32_t* tokens, const int* lens,
       rope_row.resize(lens[b]);
       for (int t = 0; t < lens[b]; ++t) rope_row[t] = base + t;
       for (int r = 0; r < 3; ++r) {
-        if (cudaMemcpyAsync(seq_rope + r * ml + base, rope_row.data(),
-                            lens[b] * sizeof(int), cudaMemcpyHostToDevice,
-                            stream) != cudaSuccess)
-          return Status::Fail("H2D rope_pos");
+        if (!(upload_status =
+                  upload.Copy(seq_rope + r * ml + base, rope_row.data(),
+                              lens[b] * sizeof(int)))
+                 .ok())
+          return upload_status;
       }
     }
   }
+
+  upload_status = upload.Finish();
+  if (!upload_status.ok()) return upload_status;
 
   std::vector<int64_t> ids64(tokens, tokens + Ttot);
 

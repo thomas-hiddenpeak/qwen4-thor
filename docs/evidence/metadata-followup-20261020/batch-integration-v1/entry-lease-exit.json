@@ -1,0 +1,20 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "timeout",
+    "30",
+    ".q4t-work/metadata-followup-20261020/build/q4t_metadata_batch_entry"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-20T00:21:17.763652+00:00",
+    "monotonic": 645760.280539528,
+    "pid": 2057223
+  }
+}

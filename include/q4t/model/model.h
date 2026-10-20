@@ -26,6 +26,7 @@
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/decoder_layer.h"
 #include "q4t/model/decode_metadata_upload.h"
+#include "q4t/model/metadata_upload_batch.h"
 #include "q4t/model/model_head.h"
 #include "q4t/model/sequence.h"
 #include "q4t/ple/ngram_hash.h"
@@ -112,6 +113,7 @@ struct Model {
 
   // Upload-source ownership only; consumers still use the existing scratch.
   std::unique_ptr<DecodeMetadataUpload> decode_metadata_upload;
+  std::unique_ptr<MetadataUploadBatch> metadata_upload;
 
   // Persistent device buffers (allocated in LoadModel, freed in Free).
   int32_t* d_ids = nullptr;  // [max_prefill]

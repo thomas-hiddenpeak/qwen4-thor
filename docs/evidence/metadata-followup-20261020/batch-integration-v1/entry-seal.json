@@ -1,0 +1,12 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792455677.5102327,
+  "finished": 1792455677.7731183,
+  "command": [
+    "timeout",
+    "30",
+    ".q4t-work/metadata-followup-20261020/build/q4t_metadata_batch_entry"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}
