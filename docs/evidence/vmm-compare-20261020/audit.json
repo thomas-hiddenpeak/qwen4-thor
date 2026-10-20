@@ -1,0 +1,272 @@
+{
+  "status": "BOUNDED_COMPARISON_COMPLETE_NO_FULL_WARM_FIX_CLAIM",
+  "stages": {
+    "capture-v1": {
+      "guard": "COMPLETED",
+      "files": 163,
+      "query_count": 45,
+      "max_query_seconds": 0.1094227209687233,
+      "query_statuses": {
+        "OK": 45
+      },
+      "records": 84940,
+      "allocations": 3855,
+      "frees": 3853,
+      "async_free_submissions": 2357,
+      "peak_logical_bytes": {
+        "device": 54910779152,
+        "host": 3600304144
+      },
+      "live_logical_bytes": {
+        "device": 1986560,
+        "host": 0
+      },
+      "ready_snapshot": {
+        "live": 1496,
+        "bytes": {
+          "device": 54843473680,
+          "host": 3600304144
+        }
+      },
+      "incomplete_calls": [],
+      "failed_calls": [],
+      "remaining": [
+        {
+          "ordinal": 2283,
+          "api": "cudaMalloc",
+          "bytes": 993280,
+          "ptr": 57950601216,
+          "caller": 412076,
+          "kind": "device",
+          "backend": "runtime",
+          "startup": false
+        },
+        {
+          "ordinal": 2284,
+          "api": "cudaMalloc",
+          "bytes": 993280,
+          "ptr": 57951594496,
+          "caller": 412092,
+          "kind": "device",
+          "backend": "runtime",
+          "startup": false
+        }
+      ],
+      "payload_at_launch": 0,
+      "startup_allocations": 1496,
+      "startup_frees": 0,
+      "quality": {
+        "text": "710003",
+        "actual_input": 1024,
+        "actual_output": 7,
+        "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+        "exact_match": true
+      },
+      "remaining_reason": "two process-lifetime ArgmaxBf16Rows static buffers; no explicit free",
+      "vmm_allocations": 0
+    },
+    "hot-runtime-v1": {
+      "guard": "ENV_ABORT",
+      "files": 141,
+      "query_count": 42,
+      "max_query_seconds": 6.007684324984439,
+      "query_statuses": {
+        "CLEANUP_FAILED": 1,
+        "OK": 41
+      },
+      "records": 5119,
+      "allocations": 1492,
+      "frees": 0,
+      "async_free_submissions": 0,
+      "peak_logical_bytes": {
+        "device": 52494456588,
+        "host": 3600304144
+      },
+      "live_logical_bytes": {
+        "device": 52494456588,
+        "host": 3600304144
+      },
+      "ready_snapshot": null,
+      "incomplete_calls": [
+        {
+          "seq": 5118,
+          "call": 2559,
+          "tid": 2258434,
+          "api": "cudaMalloc",
+          "phase": "begin",
+          "bytes": 2348023808,
+          "ptr": 0,
+          "stream": 0,
+          "flags": 0,
+          "caller": 76076,
+          "rc": -1,
+          "mono": 691556.991986829,
+          "backend": "runtime"
+        }
+      ],
+      "failed_calls": [],
+      "payload_at_launch": 67987791872,
+      "startup_allocations": 1492,
+      "startup_frees": 0,
+      "remaining_count": 1492
+    },
+    "hot-vmm-v1": {
+      "guard": "COMMAND_FAILED",
+      "files": 92,
+      "query_count": 31,
+      "max_query_seconds": 0.07529188191983849,
+      "query_statuses": {
+        "OK": 31
+      },
+      "model_started": false
+    },
+    "hot-vmm-v2": {
+      "guard": "COMMAND_FAILED",
+      "files": 94,
+      "query_count": 32,
+      "max_query_seconds": 0.07139622000977397,
+      "query_statuses": {
+        "OK": 32
+      },
+      "model_started": false
+    },
+    "bounded-runtime-v1": {
+      "guard": "COMPLETED",
+      "files": 164,
+      "query_count": 54,
+      "max_query_seconds": 0.09241290704812855,
+      "query_statuses": {
+        "OK": 54
+      },
+      "records": 82744,
+      "allocations": 3855,
+      "frees": 3853,
+      "async_free_submissions": 2357,
+      "peak_logical_bytes": {
+        "device": 54910779152,
+        "host": 3600304144
+      },
+      "live_logical_bytes": {
+        "device": 1986560,
+        "host": 0
+      },
+      "ready_snapshot": {
+        "live": 1496,
+        "bytes": {
+          "device": 54843473680,
+          "host": 3600304144
+        }
+      },
+      "incomplete_calls": [],
+      "failed_calls": [],
+      "remaining": [
+        {
+          "ordinal": 2283,
+          "api": "cudaMalloc",
+          "bytes": 993280,
+          "ptr": 57950601216,
+          "caller": 412076,
+          "kind": "device",
+          "backend": "runtime",
+          "startup": false
+        },
+        {
+          "ordinal": 2284,
+          "api": "cudaMalloc",
+          "bytes": 993280,
+          "ptr": 57951594496,
+          "caller": 412092,
+          "kind": "device",
+          "backend": "runtime",
+          "startup": false
+        }
+      ],
+      "payload_at_launch": 51344936960,
+      "startup_allocations": 1496,
+      "startup_frees": 0,
+      "quality": {
+        "text": "710003",
+        "actual_input": 1024,
+        "actual_output": 7,
+        "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+        "exact_match": true
+      },
+      "remaining_reason": "two process-lifetime ArgmaxBf16Rows static buffers; no explicit free",
+      "vmm_allocations": 0
+    },
+    "bounded-vmm-v1": {
+      "guard": "COMPLETED",
+      "files": 164,
+      "query_count": 55,
+      "max_query_seconds": 0.15092123101931065,
+      "query_statuses": {
+        "OK": 55
+      },
+      "records": 82606,
+      "allocations": 3855,
+      "frees": 3853,
+      "async_free_submissions": 2357,
+      "peak_logical_bytes": {
+        "device": 54910779152,
+        "host": 3600304144
+      },
+      "live_logical_bytes": {
+        "device": 1986560,
+        "host": 0
+      },
+      "ready_snapshot": {
+        "live": 1496,
+        "bytes": {
+          "device": 54843473680,
+          "host": 3600304144
+        }
+      },
+      "incomplete_calls": [],
+      "failed_calls": [],
+      "remaining": [
+        {
+          "ordinal": 2283,
+          "api": "cudaMalloc",
+          "bytes": 993280,
+          "ptr": 120764497920,
+          "caller": 409260,
+          "kind": "device",
+          "backend": "runtime",
+          "startup": false
+        },
+        {
+          "ordinal": 2284,
+          "api": "cudaMalloc",
+          "bytes": 993280,
+          "ptr": 120765491200,
+          "caller": 409276,
+          "kind": "device",
+          "backend": "runtime",
+          "startup": false
+        }
+      ],
+      "payload_at_launch": 51344936960,
+      "startup_allocations": 1496,
+      "startup_frees": 0,
+      "quality": {
+        "text": "710003",
+        "actual_input": 1024,
+        "actual_output": 7,
+        "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+        "exact_match": true
+      },
+      "remaining_reason": "two process-lifetime ArgmaxBf16Rows static buffers; no explicit free",
+      "vmm_allocations": 236
+    }
+  },
+  "exact_bounded_cache_vector": true,
+  "startup_allocation_sequence_equal": true,
+  "full_logical_alloc_free_sequence_equal": true,
+  "default_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+  "total_model_loads": 4,
+  "total_http_successes": 3,
+  "full_hot_vmm_not_tested": true,
+  "physical_fragmentation_equal": false,
+  "production_accepted": false,
+  "performance_acceptance": false
+}
