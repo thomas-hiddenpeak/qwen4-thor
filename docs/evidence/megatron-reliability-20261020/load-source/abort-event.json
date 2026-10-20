@@ -1,0 +1,26 @@
+[
+  {
+    "utc": "2026-10-20T04:17:13.575203+00:00",
+    "monotonic": 659916.09210476,
+    "pid": 2120755,
+    "event": "monitor",
+    "conflicts": [
+      {
+        "pid": 2126285,
+        "state": "R",
+        "ppid": 2126283,
+        "pgid": 2126283,
+        "start_ticks": 65991580,
+        "argv": [
+          ".q4t-work/megatron-reliability-20261020/build/q4t_host_tests",
+          "--required-list",
+          "tools/release/required_host_tests.txt"
+        ],
+        "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/build/q4t_host_tests",
+        "nvidia_compute_context": false
+      }
+    ],
+    "retired_owned_contexts": [],
+    "unreadable_processes": 0
+  }
+]

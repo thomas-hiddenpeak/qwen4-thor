@@ -1,0 +1,16 @@
+{
+  "source_commit": "0494f21bf1b0f3a49224713bd8a89b53ddbfc7e8",
+  "tower_loads": 1,
+  "model_forwards": 0,
+  "HTTP": 0,
+  "retry": 0,
+  "files": {
+    "src/vision/vision.cu": "24bc85502996f5fecd45b07f6a03326335484c775cad6cbeed31c28239937d08",
+    "src/io/weight_loader.cpp": "f6d168b287f96ab5dcaff818f8e5882e9a082b92d38047548ef779f4d53cb2a3",
+    "include/q4t/io/pending_host_storage.h": "055cf1b9c59e0dd5d11c4426a3f150d9c85143ffbcd58445466d05e63cd2a122",
+    ".q4t-work/megatron-reliability-20261020/build/libq4t_model.a": "31fbafe047940fd96eb62c1da96351269ad62d9bde89f1fe0ab62560d9601903",
+    ".q4t-work/megatron-reliability-20261020/build/libq4t_io.a": "c3fba0579d9ade9e01ede68dc8d729c9180d0bf1078dd1ccd0e3d39f941670b9",
+    ".q4t-work/megatron-reliability-20261020/vision-load-v1/source.cpp": "89192b557b171ee1c45326c9fb741e9e1173351ee0d977b53dcfdfbeae460519",
+    ".q4t-work/megatron-reliability-20261020/vision-load-v1/executable": "5ce73274f385fb1ca2723af8afed25ec26fb29805968e04b666429f3c1bf2368"
+  }
+}

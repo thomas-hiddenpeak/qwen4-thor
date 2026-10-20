@@ -1,0 +1,2 @@
+load source retained after failed drain: load source completion: unknown error
+HOST_PASS cases=7 waits=12

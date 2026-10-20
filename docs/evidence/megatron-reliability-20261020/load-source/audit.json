@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "sealed_files": 465,
+  "quality": {
+    "off": {
+      "passed": 11,
+      "startup_ms": {
+        "tokenizer": "294",
+        "budget": "409",
+        "model_load": "26038",
+        "startup_total": "26742"
+      }
+    },
+    "on": {
+      "passed": 11,
+      "startup_ms": {
+        "tokenizer": "432",
+        "budget": "425",
+        "model_load": "26657",
+        "mtp_load": "3273",
+        "startup_total": "30789"
+      }
+    }
+  },
+  "moe_files": 50,
+  "sass_functions_identical": 119,
+  "candidate_sha256": "bc348458db08f7d8006ab9416fd83dd4810fc905af9bd6d2a766fecab937790a",
+  "source_commit": "0494f21bf1b0f3a49224713bd8a89b53ddbfc7e8",
+  "gpu_seconds": 529.7339158058167,
+  "performance_acceptance": false,
+  "deployed": false,
+  "scope": "loader correctness; no vision semantics or performance claim"
+}

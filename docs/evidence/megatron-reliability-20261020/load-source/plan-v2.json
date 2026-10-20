@@ -1,0 +1,16 @@
+{
+  "binaries": {
+    "q4t": "bc348458db08f7d8006ab9416fd83dd4810fc905af9bd6d2a766fecab937790a",
+    "q4t_load_source_test": "5f043360c6fcdcc1ce6bf52568fa8189d0e3f0acaa10b6334343eb677f7c4ac7",
+    "q4t_moe_replay": "fc7828693885c8a9415ff9a5965489ac124b832edd5321f7c9e5eb06f9f151cd",
+    "CMakeCache.txt": "483a7f71446a1111740c305cb2223d46943bc9dadc5d97b78a2fa28700c90221"
+  },
+  "source_commit": "0494f21bf1b0f3a49224713bd8a89b53ddbfc7e8",
+  "model": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_loads": 3,
+  "full_model_loads": 2,
+  "quality_requests": 22,
+  "performance_requests": 0,
+  "retries": 0,
+  "default_binary_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542"
+}

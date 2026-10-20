@@ -1,0 +1,20 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_load_recovery.py"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-20T04:28:32.550455+00:00",
+    "monotonic": 660595.0673379,
+    "pid": 2127018
+  }
+}

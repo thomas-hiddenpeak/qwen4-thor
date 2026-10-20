@@ -230,12 +230,19 @@ python3 tools/evalscope/gpu_exclusive.py \
 
 锁位于git common-dir所属仓库的`.q4t-work/gpu-exclusive.lock`，不同
 worktree共享。flock为占用事实，不根据文件文字判定空闲、不手动删锁。
-启动前与运行中轮询/proc及nvidia-smi计算进程；冲突/查询失败记录
+启动前与运行中轮询/proc及计算进程（默认NVML，显式可选CLI）；
+冲突/查询失败记录
 ENV_ABORT并返回75，只清理自有进程组及经父子链/start_ticks核实的
 自有后代（包括setsid后代），使用pidfd核对身份，不停止冲突方。
 命令失败记录COMMAND_FAILED，不能混同环境失败或模型性能失败。
 exit.json/events.jsonl保留结果；成功仅表示命令成功且未检测到冲突。
 轮询不能排除短于采样间隔、图形或驱动未列出的负载，不承诺绝对独占。
+
+编排注意：当前进程规则保守匹配名称以q4t开头且包含test的可执行文件，
+包括q4t_host_tests，即便其当前只运行CPU检查。2026-10-20加载验收v1
+因本会话在lease外并行运行host清单而ENV_ABORT。此类检查应在GPU
+阶段前完成，或作为同一guard的子进程顺序执行；不要重命名binary
+规避监控，不在GPU阶段外启动并行验证。该事件不是NVML查询失败。
 
 ### Jetson Thor监控职责与本机能力（2026-10-20）
 

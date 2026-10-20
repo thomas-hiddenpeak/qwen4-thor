@@ -1,0 +1,12 @@
+{
+  "status": "FAILED_OR_INTERRUPTED",
+  "started": 1792469326.4798868,
+  "completed": [
+    "upload",
+    "moe",
+    "quality-off"
+  ],
+  "current": "quality-on",
+  "error": "KeyboardInterrupt()",
+  "finished": 1792469833.8432362
+}

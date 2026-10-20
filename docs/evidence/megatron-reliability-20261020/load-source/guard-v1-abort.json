@@ -1,0 +1,23 @@
+{
+  "status": "ENV_ABORT",
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_load_acceptance.py",
+    "--output",
+    ".q4t-work/megatron-reliability-20261020/load-acceptance-v1"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": -2,
+  "external_lease": false,
+  "reason": "competing workload during lease",
+  "finished": {
+    "utc": "2026-10-20T04:17:16.051331+00:00",
+    "monotonic": 659918.568227312,
+    "pid": 2120755
+  }
+}

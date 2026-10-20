@@ -1,0 +1,8 @@
+{
+  "parent_functions": 119,
+  "candidate_functions": 119,
+  "instruction_encoding_multisets_equal": true,
+  "parent_only": [],
+  "candidate_only": [],
+  "scope": "cuobjdump SASS instruction/address and encoding lines, excludes metadata/host code"
+}
