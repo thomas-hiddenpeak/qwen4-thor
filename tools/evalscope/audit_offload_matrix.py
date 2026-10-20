@@ -9,6 +9,7 @@ Both completion records are required before any request/monitor data is read.
 import argparse
 import hashlib
 import json
+import re
 import math
 from pathlib import Path
 
@@ -184,15 +185,32 @@ def check_processes(evidence, directory, protocol, wrapper):
     cgroup = '/system.slice/' + protocol['unit']
     require(type(identity['pid']) is int and identity['pid'] > 0 and
             int(evidence.text(directory / 'http/server.pid')) == identity['pid'] ==
-            int(props['MainPID']) and props['ControlGroup'] == cgroup and
+            (identity['pid'] if protocol['unit'].endswith('.scope') else
+             int(props['MainPID'])) and props['ControlGroup'] == cgroup and
             '0::' + cgroup in identity['membership'] and
             int(props['MemoryMax']) == 16 << 30 and
             props['MemorySwapMax'] == '0' and props['MemoryAccounting'] == 'yes',
             'service PID/cgroup/limits identity mismatch')
     cleanup = evidence.json(directory / 'http/isolation/cleanup.json')
-    require(cleanup['stop_rc'] == 0 and cleanup['unit_removed'] is True and
-            cleanup['properties_after']['LoadState'] == 'not-found' and
-            cleanup['properties_after']['MainPID'] == '0', 'service cleanup failed')
+    if protocol['unit'].endswith('.scope'):
+        payload = evidence.json(directory / 'http/isolation/payload.json')
+        payload_exit = evidence.json(directory / 'http/isolation/payload-exit.json')
+        require(identity.get('kind') == 'scope' and
+                re.fullmatch(r'q4t-scope-[0-9a-f]{32}', identity.get('token', '')) and
+                identity['token'] == props['Description'] == payload['token'] ==
+                payload_exit['token'] and payload_exit['returncode'] == 0 and
+                payload['pid'] == identity['pid'] and
+                payload['start_ticks'] == identity['start_ticks'] > 0 and
+                payload['membership'] == identity['membership'],
+                'scope payload identity/exit mismatch')
+        require(cleanup['unit_removed'] is True and
+                cleanup['properties_after']['LoadState'] == 'not-found' and
+                (cleanup['stop_rc'] == 0 or cleanup.get('already_absent') is True),
+                'scope cleanup failed')
+    else:
+        require(cleanup['stop_rc'] == 0 and cleanup['unit_removed'] is True and
+                cleanup['properties_after']['LoadState'] == 'not-found' and
+                cleanup['properties_after']['MainPID'] == '0', 'service cleanup failed')
     # reset-failed can return 1 after a successfully removed unit. Unit absence
     # and server exit above are authoritative, not reset_rc in isolation.
     return group, identity
@@ -357,9 +375,14 @@ def check_run(evidence, directory, order, plan, wrapper, reference, reference_sh
                     evidence.sources[str(build_cache.resolve())])
     expected_tools = [set(TOOLS) | {'offload_policy.py'}]
     if policy_axis == 'chunk-order':
-        expected_tools.extend([set(TOOLS),
-            set(TOOLS) - {'nvml_process_query.py'},
-            (set(TOOLS) - {'nvml_process_query.py'}) | {'offload_policy.py'}])
+        expected_tools.append(set(TOOLS))
+    if p['unit'].endswith('.service'):
+        # Historical service evidence retains its original dependency set.
+        for retired in ({'isolated_scope.py', 'scope_payload.py'},
+                        {'isolated_scope.py', 'scope_payload.py', 'nvml_process_query.py'}):
+            expected_tools.append((set(TOOLS) - retired) | {'offload_policy.py'})
+            if policy_axis == 'chunk-order':
+                expected_tools.append(set(TOOLS) - retired)
     require(set(p['tool_sha256']) in expected_tools,
             'incomplete tool source identities')
     if policy_axis == 'partition':

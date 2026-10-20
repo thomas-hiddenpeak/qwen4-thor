@@ -1,6 +1,7 @@
 # Offload限额工具与GPU lease接入
 
-状态：草稿CPU合同已验证，尚未接入生产工具/真实GPU，目标仍active。
+状态：候选已接入正式工具路径，103项host合同复核通过，真实GPU待验；
+目标仍active，当前不是scope交付完成声明。
 旧systemd service由PID1托管，外层GPU guard不能仅凭其名称证明归属。
 不能将任意NVML PID或同名unit列入白名单解决。
 

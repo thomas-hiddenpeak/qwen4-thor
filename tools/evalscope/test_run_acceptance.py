@@ -120,7 +120,7 @@ class RunnerContractTest(unittest.TestCase):
             stack.enter_context(patch.object(runner.subprocess, 'check_output', return_value=b'synthetic metadata\n'))
             stack.enter_context(patch.object(runner.subprocess, 'Popen', side_effect=self.fake_server))
             stack.enter_context(patch.object(runner.subprocess, 'run', side_effect=self.fake_client))
-            stack.enter_context(patch.dict(sys.modules, {'isolated_service': SimpleNamespace(IsolatedService=self.fake_server)}))
+            stack.enter_context(patch.dict(sys.modules, {'isolated_scope': SimpleNamespace(IsolatedScope=self.fake_server)}))
             stack.enter_context(redirect_stdout(io.StringIO()))
             runner.main()
 
@@ -238,7 +238,7 @@ class RunnerContractTest(unittest.TestCase):
             self.invoke('--perf-lengths', '45056')
 
     def test_systemd_interface_and_close_preserve_exact_pid(self):
-        self.invoke('--perf-lengths', '45056', '--systemd-unit', 'q4t-test.service',
+        self.invoke('--perf-lengths', '45056', '--systemd-unit', 'q4t-test.scope',
                     '--host-cache-max-bytes', '17179869184')
         service = self.servers[0]
         self.assertEqual(service.kwargs['memory_max'], 17179869184)

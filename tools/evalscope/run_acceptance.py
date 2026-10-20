@@ -307,8 +307,8 @@ def main():
         parser.error('--perf-repeats must be positive')
     if args.mode != 'performance' and (args.perf_lengths is not None or args.perf_repeats != 3):
         parser.error('--perf-lengths/--perf-repeats require performance mode')
-    if args.systemd_unit and not re.fullmatch(r'q4t-[A-Za-z0-9][A-Za-z0-9_.-]*\.service', args.systemd_unit):
-        parser.error('--systemd-unit must be an independent q4t-*.service unit name')
+    if args.systemd_unit and not re.fullmatch(r'q4t-[A-Za-z0-9][A-Za-z0-9_.-]*\.scope', args.systemd_unit):
+        parser.error('--systemd-unit must be an independent q4t-*.scope unit name')
     if args.host_cache_max_bytes is not None and (
             not args.systemd_unit or args.host_cache_max_bytes <= 0):
         parser.error('--host-cache-max-bytes must be positive and requires --systemd-unit')
@@ -479,8 +479,8 @@ def main():
         (out / 'memory-phase.txt').write_text('startup\n')
         event(out, 'server_before_start')
         if args.systemd_unit:
-            from isolated_service import IsolatedService
-            server = IsolatedService(command, cwd=ROOT, env=env, log_path=out / 'server.log',
+            from isolated_scope import IsolatedScope
+            server = IsolatedScope(command, cwd=ROOT, env=env, log_path=out / 'server.log',
                                      unit=args.systemd_unit, memory_max=args.host_cache_max_bytes,
                                      evidence=out / 'isolation')
         else:

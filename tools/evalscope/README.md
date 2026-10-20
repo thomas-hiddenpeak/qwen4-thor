@@ -88,22 +88,27 @@ offload六档验收。显式选档时每发启动一个evalscope client，服务
 单调时钟；HTTP的UTC是锚点映射估计。有效容量缺失或与请求值不一致
 时，在发请求前拒绝；legacy预算日志不能单独证明有效prefill值。
 
-`--systemd-unit q4t-UNIQUE.service`使服务出生于独立组，client和monitor
-留在组外；`--host-cache-max-bytes BYTES`设置memcg限额，swap固定0。
-本机需systemd与非交互sudo。Thor CUDA分配和外部已有缓存可能不计入
-此组，**不能将它称为全部物理RAM上限**。服务正常/错误退出后用10秒
-ExecStopPost窗口保留cg端点；辅助sleep计入unit尾部开销，准确模型PID
-另行记录。退出或清理失败均非零，已有同名unit拒绝复用。
+`--systemd-unit q4t-UNIQUE.scope`在独立memcg中执行模型，同时保留调用者
+后代关系，供外层GPU lease核验；client和monitor留在组外。
+`--host-cache-max-bytes BYTES`设置memcg限额，swap固定0。本机需systemd
+与非交互sudo。Thor CUDA分配和外部已有缓存可能不计入此组，**不能将
+它称为全部物理RAM上限**。helper记录真实payload PID/starttime/退出码，
+退出后最多保留scope 15秒；控制器先快照再清理，helper charge计入组内。
+清理必须匹配随机Description token，已有同名unit拒绝复用；旧.service
+实验快照仍按历史合同审计，新执行入口要求.scope。详见
+[接入验证状态](../../docs/OFFLOAD_SCOPE_INTEGRATION_2026-10-20.md)。
 
 `run_budget_experiment.py`提供本轮冻结的C256/8192/262144、质量或45K×3
 入口，集成逐文件缓存门禁、独立服务、监控和工具/输入身份快照：
 
 ```bash
-python3 tools/evalscope/run_budget_experiment.py --mode performance \
+python3 -B tools/evalscope/gpu_exclusive.py \
+  --output .q4t-work/e2e/ram-host16g/lease -- \
+  python3 -B tools/evalscope/run_budget_experiment.py --mode performance \
   --binary build/q4t --model-dir "$Q4T_MODEL_DIR" \
   --hot-list .q4t-work/moe-residency-20260930/hot-lists/hot-final-12288.json \
   --fixtures .q4t-work/moe-residency-20260930/e2e-fixtures-v2 \
-  --output .q4t-work/e2e/ram-host16g --clear-model-cache \
+  --output .q4t-work/e2e/ram-host16g/run --clear-model-cache \
   --host-cache-max-bytes 17179869184
 ```
 

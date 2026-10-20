@@ -280,7 +280,7 @@ def main():
     if gpu['status'] != 'OK' or gpu['pids']:
         ap.error('GPU compute state unavailable or occupied')
     out.mkdir(parents=True, exist_ok=False)
-    unit = f'q4t-ram-{time.time_ns()}-{os.getpid()}.service'
+    unit = f'q4t-ram-{time.time_ns()}-{os.getpid()}.scope'
     paths = model_files(args.model_dir)
     tool_dir = out / 'tools'
     tool_dir.mkdir()
@@ -385,15 +385,13 @@ def main():
         finally:
             # The service's final cgroup counters are also saved by the
             # runner before its unit disappears. Never stop unrelated units.
-            from isolated_service import unit_properties
+            from isolated_scope import scope_properties, stop_owned_scope
             try:
-                props = unit_properties(unit)
+                props = scope_properties(unit)
                 if props.get('LoadState') != 'not-found':
-                    subprocess.run(['sudo', '-n', 'systemctl', 'stop', unit],
-                                   capture_output=True, timeout=40)
-                    subprocess.run(['sudo', '-n', 'systemctl', 'reset-failed', unit],
-                                   capture_output=True, timeout=15)
-                props = unit_properties(unit)
+                    spec = json.loads((http / 'isolation/spec.json').read_text())
+                    stop_owned_scope(unit, spec['token'])
+                props = scope_properties(unit)
                 cleanup_failed = props.get('LoadState') != 'not-found'
             except Exception as error:
                 props = {'unknown': str(error)}

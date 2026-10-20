@@ -1,0 +1,1294 @@
+{
+  "status": "AUDITED_DESCRIPTIVE_BASELINE",
+  "sealed_files": 745,
+  "binary_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+  "guard_status": "COMPLETED",
+  "modes": {
+    "resident": {
+      "metrics": [
+        {
+          "length": 1024,
+          "outputs": [
+            "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+            "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+            "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15"
+          ],
+          "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 1.105665587936528,
+              "decode_tps": 18.68348511411672
+            },
+            {
+              "ttft": 0.982710400945507,
+              "decode_tps": 18.737697633635758
+            },
+            {
+              "ttft": 0.9872091460274532,
+              "decode_tps": 18.724697783965897
+            }
+          ]
+        },
+        {
+          "length": 4096,
+          "outputs": [
+            "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+            "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+            "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828"
+          ],
+          "prompt_sha256": "0cb9f47cdf9ea33d5fe3f4267bcfd347494b3883770c8b293bb5aacf9bb2602d",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 2.8906736680073664,
+              "decode_tps": 17.98783641759274
+            },
+            {
+              "ttft": 2.877036044956185,
+              "decode_tps": 18.012090229849676
+            },
+            {
+              "ttft": 2.874310515006073,
+              "decode_tps": 18.03981330033627
+            }
+          ]
+        },
+        {
+          "length": 8192,
+          "outputs": [
+            "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+            "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+            "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f"
+          ],
+          "prompt_sha256": "e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 5.389616990927607,
+              "decode_tps": 18.267523554091024
+            },
+            {
+              "ttft": 5.384820190956816,
+              "decode_tps": 18.228621714050245
+            },
+            {
+              "ttft": 5.381655766977929,
+              "decode_tps": 18.24124191933875
+            }
+          ]
+        },
+        {
+          "length": 45056,
+          "outputs": [
+            "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+            "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+            "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae"
+          ],
+          "prompt_sha256": "82da2659b9ef07afac3ef134b735ff8d2ce9c6a37f4565a777f9d76a05d7f478",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 31.790869325981475,
+              "decode_tps": 17.952189316678226
+            },
+            {
+              "ttft": 31.820633259951137,
+              "decode_tps": 18.015817063738357
+            },
+            {
+              "ttft": 31.806040080962703,
+              "decode_tps": 17.96332612832243
+            }
+          ]
+        },
+        {
+          "length": 204800,
+          "outputs": [
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+          ],
+          "prompt_sha256": "959679d2f533ca72d15a5ed3f3a2e2361f63dbf3a88384ab8ec2d750d5e34bf5",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 165.23093678592704,
+              "decode_tps": 17.1887957647301
+            },
+            {
+              "ttft": 165.26870021189097,
+              "decode_tps": 17.2055591496921
+            },
+            {
+              "ttft": 165.24796861293726,
+              "decode_tps": 17.200226294230813
+            }
+          ]
+        }
+      ],
+      "requests": 15,
+      "server_exit": 0,
+      "monitor_samples": 947,
+      "gpu_status_counts": {
+        "no_target": 2,
+        "no_matching_compute_process": 1,
+        "scheduled_skip": 859,
+        "ok": 85
+      },
+      "context_not_yet_visible_samples": [
+        {
+          "phase": "startup",
+          "t": "1792485608.683973"
+        }
+      ],
+      "nvml_observed_peak_bytes": 88548794368,
+      "process_observed_rss_peak_bytes": 1777524736,
+      "process_observed_swap_peak_bytes": 0,
+      "model_cache_endpoints": [
+        {
+          "t": 1792485607.6839068,
+          "phase": "before_start",
+          "model_file_cache_bytes": 152051712,
+          "model_file_cache_known_bytes": 152051712,
+          "model_file_cache_start_t": 1792485607.6841493,
+          "model_file_cache_end_t": 1792485608.0433218,
+          "model_file_cache_status": "ok"
+        },
+        {
+          "t": 1792486553.78308,
+          "phase": "after_exit",
+          "model_file_cache_bytes": 198930432,
+          "model_file_cache_known_bytes": 198930432,
+          "model_file_cache_start_t": 1792486553.7842925,
+          "model_file_cache_end_t": 1792486554.1399484,
+          "model_file_cache_status": "ok"
+        }
+      ],
+      "sampled_process_io_deltas_by_phase": {
+        "startup": {
+          "syscr": 251281,
+          "write_bytes": 4096,
+          "rchar": 77878983119,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 77842612224,
+          "syscw": 29,
+          "wchar": 1361
+        },
+        "requests:context-1024:run1": {
+          "syscr": 2,
+          "write_bytes": 8192,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 26685440,
+          "syscw": 15,
+          "wchar": 1421
+        },
+        "requests:context-1024:run2": {
+          "syscr": 2,
+          "write_bytes": 4096,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 0,
+          "syscw": 13,
+          "wchar": 1221
+        },
+        "requests:context-1024:run3": {
+          "syscr": 2,
+          "write_bytes": 16384,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 0,
+          "syscw": 13,
+          "wchar": 1221
+        },
+        "requests:context-4096:run1": {
+          "syscr": 2,
+          "write_bytes": 12288,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 4788224,
+          "syscw": 13,
+          "wchar": 1222
+        },
+        "requests:context-4096:run2": {
+          "syscr": 2,
+          "write_bytes": 12288,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 0,
+          "syscw": 13,
+          "wchar": 1222
+        },
+        "requests:context-4096:run3": {
+          "syscr": 2,
+          "write_bytes": 12288,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 0,
+          "syscw": 13,
+          "wchar": 1222
+        },
+        "requests:context-8192:run1": {
+          "syscr": 2,
+          "write_bytes": 12288,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 9039872,
+          "syscw": 13,
+          "wchar": 1222
+        },
+        "requests:context-8192:run2": {
+          "syscr": 2,
+          "write_bytes": 12288,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 0,
+          "syscw": 13,
+          "wchar": 1222
+        },
+        "requests:context-8192:run3": {
+          "syscr": 2,
+          "write_bytes": 16384,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 0,
+          "syscw": 13,
+          "wchar": 1222
+        },
+        "requests:context-45056:run1": {
+          "syscr": 2,
+          "write_bytes": 12288,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 2199552,
+          "syscw": 13,
+          "wchar": 1224
+        },
+        "requests:context-45056:run2": {
+          "syscr": 2,
+          "write_bytes": 12288,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 0,
+          "syscw": 13,
+          "wchar": 1242
+        },
+        "requests:context-45056:run3": {
+          "syscr": 2,
+          "write_bytes": 12288,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 0,
+          "syscw": 13,
+          "wchar": 1242
+        },
+        "requests:context-204800:run1": {
+          "syscr": 2,
+          "write_bytes": 16384,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 4169728,
+          "syscw": 13,
+          "wchar": 1247
+        },
+        "requests:context-204800:run2": {
+          "syscr": 2,
+          "write_bytes": 12288,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 0,
+          "syscw": 13,
+          "wchar": 1247
+        },
+        "requests:context-204800:run3": {
+          "syscr": 2,
+          "write_bytes": 12288,
+          "rchar": 2048,
+          "cancelled_write_bytes": 0,
+          "read_bytes": 0,
+          "syscw": 13,
+          "wchar": 1247
+        }
+      },
+      "sampled_io_scope": "consecutive known samples only; not full request totals or expert-only SSD bytes",
+      "software_residency": [],
+      "resource_coverage": {
+        "schema_version": 1,
+        "samples_file": "resource-samples.jsonl",
+        "sample_count": 947,
+        "live_pid_sample_count": 945,
+        "last_live_pid_sample": {
+          "sequence": 945,
+          "phase": "requests:context-204800:run3",
+          "start_t": 1792486552.7921574,
+          "end_t": 1792486552.7928782,
+          "binding": {
+            "root_pid": 2197601,
+            "actual_cgroup_path": "/sys/fs/cgroup/user.slice/user-2002.slice/session-5.scope",
+            "expected_cgroup_path": null,
+            "expected_matches_actual": null,
+            "status": "bound_to_live_pid"
+          },
+          "cgroup_path": "/sys/fs/cgroup/user.slice/user-2002.slice/session-5.scope",
+          "cgroup_identity": {
+            "device": 29,
+            "inode": 6748
+          },
+          "cgroup_consistent_identity": true,
+          "memory_current_bytes": 3419156480,
+          "memory_peak_bytes": 96069079040
+        },
+        "final_sample": {
+          "sequence": 946,
+          "phase": "after_exit",
+          "start_t": 1792486553.7832277,
+          "end_t": 1792486553.784008,
+          "binding": {
+            "root_pid": null,
+            "actual_cgroup_path": null,
+            "expected_cgroup_path": "/sys/fs/cgroup/user.slice/user-2002.slice/session-5.scope",
+            "expected_matches_actual": null,
+            "status": "configured_path_without_live_pid"
+          },
+          "cgroup_path": "/sys/fs/cgroup/user.slice/user-2002.slice/session-5.scope",
+          "cgroup_identity": {
+            "device": 29,
+            "inode": 6748
+          },
+          "cgroup_consistent_identity": true,
+          "memory_current_bytes": 2238259200,
+          "memory_peak_bytes": 96069079040
+        },
+        "observed_cgroup_counter_peaks_bytes": {
+          "memory.current": 18974052352,
+          "memory.peak": 96069079040,
+          "memory.swap.current": 400203776
+        },
+        "cgroup_paths": [
+          "/sys/fs/cgroup/user.slice/user-2002.slice/session-5.scope"
+        ],
+        "binding_mismatch_samples": 0,
+        "process_io_unknown_observations": 0,
+        "cgroup_unknown_observations": {
+          "io.stat": 946,
+          "memory.pressure": 946,
+          "io.pressure": 946
+        },
+        "model_device_stat_unknown_observations": 0,
+        "notes": [
+          "Cgroup memory.current/peak measure charge, not complete physical RAM.",
+          "Thor cudaMalloc device bytes and externally charged warm cache may be absent from this cgroup.",
+          "memory.stat file includes shmem; kernel and other views have overlapping subsets.",
+          "rchar/wchar are logical bytes; read_bytes/write_bytes and io.stat describe storage accounting.",
+          "Model-device stats are global background for selected filesystem devices; parent disks are not added.",
+          "No physical total or I/O sum is formed across these overlapping views.",
+          "Endpoint references locate original rows; the last live sample is not guaranteed to be the final request boundary.",
+          "Missing/reset/new-identity counter intervals remain null with reasons in the sidecar."
+        ]
+      },
+      "physical_ram_total": null,
+      "shared_cgroup_is_not_experiment_owned": true
+    },
+    "offload": {
+      "metrics": [
+        {
+          "length": 1024,
+          "outputs": [
+            "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+            "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15",
+            "0e1e7da55f600ba0bf8d5eb598b33eec8fab3dc134b41ff482dab803a5562d15"
+          ],
+          "prompt_sha256": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 16.49301189102698,
+              "decode_tps": 5.632540041431533
+            },
+            {
+              "ttft": 5.840537574025802,
+              "decode_tps": 6.408065852085532
+            },
+            {
+              "ttft": 4.3239764489699155,
+              "decode_tps": 6.5226984889252355
+            }
+          ]
+        },
+        {
+          "length": 4096,
+          "outputs": [
+            "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+            "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828",
+            "541b0b8f2b1e9140f1f15ec5b57cb7b3cc5e9a22c5ab1ffb70451578a5623828"
+          ],
+          "prompt_sha256": "0cb9f47cdf9ea33d5fe3f4267bcfd347494b3883770c8b293bb5aacf9bb2602d",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 15.098628200008534,
+              "decode_tps": 6.160057444546101
+            },
+            {
+              "ttft": 13.493134790915065,
+              "decode_tps": 6.333613953150028
+            },
+            {
+              "ttft": 13.361944945994765,
+              "decode_tps": 6.297968247319037
+            }
+          ]
+        },
+        {
+          "length": 8192,
+          "outputs": [
+            "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+            "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f",
+            "3171cac48aedfa9db651009dc7c5aa54a7e59bcd0c856ebaafe26c70013f2a1f"
+          ],
+          "prompt_sha256": "e4c57e9fca8d72d694b167a2f56f8527a51e5ab84830983e47ed434d0708e39a",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 23.12215248204302,
+              "decode_tps": 5.625660400905282
+            },
+            {
+              "ttft": 22.90679260098841,
+              "decode_tps": 5.757637339446394
+            },
+            {
+              "ttft": 22.629353889031336,
+              "decode_tps": 5.699669169740651
+            }
+          ]
+        },
+        {
+          "length": 45056,
+          "outputs": [
+            "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+            "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae",
+            "0e59305d32f2895cdf1cb1c61a38ece56702dfe329b3d357a76bdbf4f7ad7dae"
+          ],
+          "prompt_sha256": "82da2659b9ef07afac3ef134b735ff8d2ce9c6a37f4565a777f9d76a05d7f478",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 134.38258486497216,
+              "decode_tps": 6.024091077132891
+            },
+            {
+              "ttft": 134.29659540299326,
+              "decode_tps": 6.056111658278522
+            },
+            {
+              "ttft": 134.09141578502022,
+              "decode_tps": 6.059863664446945
+            }
+          ]
+        },
+        {
+          "length": 204800,
+          "outputs": [
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+          ],
+          "prompt_sha256": "959679d2f533ca72d15a5ed3f3a2e2361f63dbf3a88384ab8ec2d750d5e34bf5",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 718.0218391889939,
+              "decode_tps": 5.192776934378264
+            },
+            {
+              "ttft": 718.7461809479864,
+              "decode_tps": 5.2344736098725155
+            },
+            {
+              "ttft": 717.6169334180886,
+              "decode_tps": 5.2721461226870705
+            }
+          ]
+        }
+      ],
+      "requests": 15,
+      "server_exit": 0,
+      "monitor_samples": 3442,
+      "gpu_status_counts": {
+        "no_target": 2,
+        "no_matching_compute_process": 1,
+        "scheduled_skip": 3127,
+        "ok": 312
+      },
+      "context_not_yet_visible_samples": [
+        {
+          "phase": "startup",
+          "t": "1792486555.2951584"
+        }
+      ],
+      "nvml_observed_peak_bytes": 54625263616,
+      "process_observed_rss_peak_bytes": 4939046912,
+      "process_observed_swap_peak_bytes": 73121792,
+      "model_cache_endpoints": [
+        {
+          "t": 1792486554.2937634,
+          "phase": "before_start",
+          "model_file_cache_bytes": 198930432,
+          "model_file_cache_known_bytes": 198930432,
+          "model_file_cache_start_t": 1792486554.2940032,
+          "model_file_cache_end_t": 1792486554.6518166,
+          "model_file_cache_status": "ok"
+        },
+        {
+          "t": 1792489995.8573146,
+          "phase": "after_exit",
+          "model_file_cache_bytes": 65431531520,
+          "model_file_cache_known_bytes": 65431531520,
+          "model_file_cache_start_t": 1792489995.8582788,
+          "model_file_cache_end_t": 1792489996.5997813,
+          "model_file_cache_status": "ok"
+        }
+      ],
+      "sampled_process_io_deltas_by_phase": {
+        "startup": {
+          "read_bytes": 9751724032,
+          "syscr": 5439,
+          "wchar": 958,
+          "syscw": 18,
+          "rchar": 9776638197,
+          "write_bytes": 0,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-1024:run1": {
+          "read_bytes": 67323756544,
+          "syscr": 81432,
+          "wchar": 2713187,
+          "syscw": 37064,
+          "rchar": 77063337966,
+          "write_bytes": 2764800,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-1024:run2": {
+          "read_bytes": 7329017856,
+          "syscr": 53075,
+          "wchar": 2712522,
+          "syscw": 37049,
+          "rchar": 49979725496,
+          "write_bytes": 2744320,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-1024:run3": {
+          "read_bytes": 27881472,
+          "syscr": 52742,
+          "wchar": 2712521,
+          "syscw": 37049,
+          "rchar": 49675594856,
+          "write_bytes": 2748416,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-4096:run1": {
+          "read_bytes": 14802890752,
+          "syscr": 142148,
+          "wchar": 2741847,
+          "syscw": 37461,
+          "rchar": 135006357968,
+          "write_bytes": 2781184,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-4096:run2": {
+          "read_bytes": 633032704,
+          "syscr": 141761,
+          "wchar": 2741848,
+          "syscw": 37461,
+          "rchar": 134660754968,
+          "write_bytes": 2785280,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-4096:run3": {
+          "read_bytes": 4587520,
+          "syscr": 141593,
+          "wchar": 2741848,
+          "syscw": 37461,
+          "rchar": 134552926832,
+          "write_bytes": 2793472,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-8192:run1": {
+          "read_bytes": 3397869568,
+          "syscr": 229607,
+          "wchar": 2770105,
+          "syscw": 37866,
+          "rchar": 218246914136,
+          "write_bytes": 2813952,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-8192:run2": {
+          "read_bytes": 556773376,
+          "syscr": 229181,
+          "wchar": 2770105,
+          "syscw": 37866,
+          "rchar": 217912370432,
+          "write_bytes": 2830336,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-8192:run3": {
+          "read_bytes": 12234752,
+          "syscr": 229235,
+          "wchar": 2770106,
+          "syscw": 37866,
+          "rchar": 217917900080,
+          "write_bytes": 2822144,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-45056:run1": {
+          "read_bytes": 3240177664,
+          "syscr": 1198526,
+          "wchar": 3187975,
+          "syscw": 43715,
+          "rchar": 1145386405352,
+          "write_bytes": 3305472,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-45056:run2": {
+          "read_bytes": 1848176640,
+          "syscr": 1198637,
+          "wchar": 3187994,
+          "syscw": 43715,
+          "rchar": 1145436172184,
+          "write_bytes": 3321856,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-45056:run3": {
+          "read_bytes": 91115520,
+          "syscr": 1198256,
+          "wchar": 3187994,
+          "syscw": 43715,
+          "rchar": 1145145865664,
+          "write_bytes": 3330048,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-204800:run1": {
+          "read_bytes": 1747025920,
+          "syscr": 6379757,
+          "wchar": 5368650,
+          "syscw": 74370,
+          "rchar": 6107042786912,
+          "write_bytes": 5926912,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-204800:run2": {
+          "read_bytes": 1662046208,
+          "syscr": 6379583,
+          "wchar": 5368651,
+          "syscw": 74370,
+          "rchar": 6106876897472,
+          "write_bytes": 5922816,
+          "cancelled_write_bytes": 0
+        },
+        "requests:context-204800:run3": {
+          "read_bytes": 332132352,
+          "syscr": 6379292,
+          "wchar": 5368650,
+          "syscw": 74370,
+          "rchar": 6106605944720,
+          "write_bytes": 5926912,
+          "cancelled_write_bytes": 0
+        },
+        "shutdown": {
+          "read_bytes": 6381568,
+          "syscr": 0,
+          "wchar": 100,
+          "syscw": 2,
+          "rchar": 0,
+          "write_bytes": 0,
+          "cancelled_write_bytes": 0
+        }
+      },
+      "sampled_io_scope": "consecutive known samples only; not full request totals or expert-only SSD bytes",
+      "software_residency": [
+        {
+          "id": "chatcmpl-auto-0",
+          "finish": "length",
+          "in": 1024,
+          "out": 256,
+          "loads": 28440,
+          "load_mb": 78631.4,
+          "misses": 28440,
+          "hits": 585480,
+          "evictions": 16152,
+          "dmiss": 7304,
+          "dlook": 122400,
+          "pmiss": 21136,
+          "plook": 491520,
+          "l2h": 0,
+          "l2m": 27817,
+          "l2ev": 27049,
+          "nvme_mb": 76909.1,
+          "mh": 623,
+          "mw": 15412,
+          "msk": 740,
+          "ld2h": 0,
+          "ld2m": 6795,
+          "ld2ev": 6795,
+          "lp2h": 0,
+          "lp2m": 21022,
+          "lp2ev": 20254,
+          "pmr": 671,
+          "pme": 1359
+        },
+        {
+          "id": "chatcmpl-auto-1",
+          "finish": "length",
+          "in": 1024,
+          "out": 256,
+          "loads": 19237,
+          "load_mb": 53186.8,
+          "misses": 19237,
+          "hits": 594683,
+          "evictions": 19237,
+          "dmiss": 7026,
+          "dlook": 122400,
+          "pmiss": 12211,
+          "plook": 491520,
+          "l2h": 0,
+          "l2m": 18077,
+          "l2ev": 18077,
+          "nvme_mb": 49979.7,
+          "mh": 1160,
+          "mw": 17492,
+          "msk": 1745,
+          "ld2h": 0,
+          "ld2m": 6038,
+          "ld2ev": 6038,
+          "lp2h": 0,
+          "lp2m": 12039,
+          "lp2ev": 12039,
+          "pmr": 370,
+          "pme": 756
+        },
+        {
+          "id": "chatcmpl-auto-2",
+          "finish": "length",
+          "in": 1024,
+          "out": 256,
+          "loads": 18768,
+          "load_mb": 51890.1,
+          "misses": 18768,
+          "hits": 595152,
+          "evictions": 18768,
+          "dmiss": 6590,
+          "dlook": 122400,
+          "pmiss": 12178,
+          "plook": 491520,
+          "l2h": 0,
+          "l2m": 17967,
+          "l2ev": 17967,
+          "nvme_mb": 49675.6,
+          "mh": 801,
+          "mw": 15677,
+          "msk": 3091,
+          "ld2h": 0,
+          "ld2m": 5972,
+          "ld2ev": 5972,
+          "lp2h": 0,
+          "lp2m": 11995,
+          "lp2ev": 11995,
+          "pmr": 371,
+          "pme": 758
+        },
+        {
+          "id": "chatcmpl-auto-3",
+          "finish": "length",
+          "in": 4096,
+          "out": 256,
+          "loads": 49582,
+          "load_mb": 137085.1,
+          "misses": 49582,
+          "hits": 2038898,
+          "evictions": 49582,
+          "dmiss": 6656,
+          "dlook": 122420,
+          "pmiss": 42926,
+          "plook": 1966060,
+          "l2h": 0,
+          "l2m": 48830,
+          "l2ev": 48830,
+          "nvme_mb": 135006.4,
+          "mh": 752,
+          "mw": 41463,
+          "msk": 8119,
+          "ld2h": 0,
+          "ld2m": 6366,
+          "ld2ev": 6366,
+          "lp2h": 0,
+          "lp2m": 42464,
+          "lp2ev": 42464,
+          "pmr": 1381,
+          "pme": 2829
+        },
+        {
+          "id": "chatcmpl-auto-4",
+          "finish": "length",
+          "in": 4096,
+          "out": 256,
+          "loads": 49582,
+          "load_mb": 137085.1,
+          "misses": 49582,
+          "hits": 2038898,
+          "evictions": 49582,
+          "dmiss": 6467,
+          "dlook": 122420,
+          "pmiss": 43115,
+          "plook": 1966060,
+          "l2h": 0,
+          "l2m": 48705,
+          "l2ev": 48705,
+          "nvme_mb": 134660.8,
+          "mh": 877,
+          "mw": 38303,
+          "msk": 11279,
+          "ld2h": 0,
+          "ld2m": 6053,
+          "ld2ev": 6053,
+          "lp2h": 0,
+          "lp2m": 42652,
+          "lp2ev": 42652,
+          "pmr": 1384,
+          "pme": 2836
+        },
+        {
+          "id": "chatcmpl-auto-5",
+          "finish": "length",
+          "in": 4096,
+          "out": 256,
+          "loads": 49411,
+          "load_mb": 136612.3,
+          "misses": 49411,
+          "hits": 2039069,
+          "evictions": 49411,
+          "dmiss": 6340,
+          "dlook": 122420,
+          "pmiss": 43071,
+          "plook": 1966060,
+          "l2h": 0,
+          "l2m": 48666,
+          "l2ev": 48666,
+          "nvme_mb": 134552.9,
+          "mh": 745,
+          "mw": 37358,
+          "msk": 12053,
+          "ld2h": 0,
+          "ld2m": 6049,
+          "ld2ev": 6049,
+          "lp2h": 0,
+          "lp2m": 42617,
+          "lp2ev": 42617,
+          "pmr": 1402,
+          "pme": 2871
+        },
+        {
+          "id": "chatcmpl-auto-6",
+          "finish": "length",
+          "in": 8192,
+          "out": 256,
+          "loads": 80135,
+          "load_mb": 221558.5,
+          "misses": 80135,
+          "hits": 3974425,
+          "evictions": 80135,
+          "dmiss": 8118,
+          "dlook": 122400,
+          "pmiss": 72017,
+          "plook": 3932160,
+          "l2h": 0,
+          "l2m": 78937,
+          "l2ev": 78937,
+          "nvme_mb": 218246.9,
+          "mh": 1198,
+          "mw": 60683,
+          "msk": 19452,
+          "ld2h": 0,
+          "ld2m": 7734,
+          "ld2ev": 7734,
+          "lp2h": 0,
+          "lp2m": 71203,
+          "lp2ev": 71203,
+          "pmr": 2309,
+          "pme": 4711
+        },
+        {
+          "id": "chatcmpl-auto-7",
+          "finish": "length",
+          "in": 8192,
+          "out": 256,
+          "loads": 80030,
+          "load_mb": 221268.2,
+          "misses": 80030,
+          "hits": 3974530,
+          "evictions": 80030,
+          "dmiss": 7993,
+          "dlook": 122400,
+          "pmiss": 72037,
+          "plook": 3932160,
+          "l2h": 0,
+          "l2m": 78816,
+          "l2ev": 78816,
+          "nvme_mb": 217912.4,
+          "mh": 1214,
+          "mw": 61004,
+          "msk": 19026,
+          "ld2h": 0,
+          "ld2m": 7559,
+          "ld2ev": 7559,
+          "lp2h": 0,
+          "lp2m": 71257,
+          "lp2ev": 71257,
+          "pmr": 2322,
+          "pme": 4745
+        },
+        {
+          "id": "chatcmpl-auto-8",
+          "finish": "length",
+          "in": 8192,
+          "out": 256,
+          "loads": 79936,
+          "load_mb": 221008.3,
+          "misses": 79936,
+          "hits": 3974624,
+          "evictions": 79936,
+          "dmiss": 7932,
+          "dlook": 122400,
+          "pmiss": 72004,
+          "plook": 3932160,
+          "l2h": 0,
+          "l2m": 78818,
+          "l2ev": 78818,
+          "nvme_mb": 217917.9,
+          "mh": 1118,
+          "mw": 59519,
+          "msk": 20417,
+          "ld2h": 0,
+          "ld2m": 7574,
+          "ld2ev": 7574,
+          "lp2h": 0,
+          "lp2m": 71244,
+          "lp2ev": 71244,
+          "pmr": 2306,
+          "pme": 4713
+        },
+        {
+          "id": "chatcmpl-auto-9",
+          "finish": "length",
+          "in": 45056,
+          "out": 256,
+          "loads": 419273,
+          "load_mb": 1159212.7,
+          "misses": 419273,
+          "hits": 21330007,
+          "evictions": 419273,
+          "dmiss": 6906,
+          "dlook": 122400,
+          "pmiss": 412367,
+          "plook": 21626880,
+          "l2h": 0,
+          "l2m": 414271,
+          "l2ev": 414271,
+          "nvme_mb": 1145386.4,
+          "mh": 5002,
+          "mw": 308082,
+          "msk": 111191,
+          "ld2h": 0,
+          "ld2m": 6669,
+          "ld2ev": 6669,
+          "lp2h": 0,
+          "lp2m": 407602,
+          "lp2ev": 407602,
+          "pmr": 14047,
+          "pme": 28810
+        },
+        {
+          "id": "chatcmpl-auto-10",
+          "finish": "length",
+          "in": 45056,
+          "out": 256,
+          "loads": 419300,
+          "load_mb": 1159287.3,
+          "misses": 419300,
+          "hits": 21329980,
+          "evictions": 419300,
+          "dmiss": 6863,
+          "dlook": 122400,
+          "pmiss": 412437,
+          "plook": 21626880,
+          "l2h": 0,
+          "l2m": 414289,
+          "l2ev": 414289,
+          "nvme_mb": 1145436.2,
+          "mh": 5011,
+          "mw": 306919,
+          "msk": 112381,
+          "ld2h": 0,
+          "ld2m": 6630,
+          "ld2ev": 6630,
+          "lp2h": 0,
+          "lp2m": 407659,
+          "lp2ev": 407659,
+          "pmr": 14022,
+          "pme": 28766
+        },
+        {
+          "id": "chatcmpl-auto-11",
+          "finish": "length",
+          "in": 45056,
+          "out": 256,
+          "loads": 419271,
+          "load_mb": 1159207.2,
+          "misses": 419271,
+          "hits": 21330009,
+          "evictions": 419271,
+          "dmiss": 6857,
+          "dlook": 122400,
+          "pmiss": 412414,
+          "plook": 21626880,
+          "l2h": 0,
+          "l2m": 414184,
+          "l2ev": 414184,
+          "nvme_mb": 1145145.9,
+          "mh": 5087,
+          "mw": 305038,
+          "msk": 114233,
+          "ld2h": 0,
+          "ld2m": 6634,
+          "ld2ev": 6634,
+          "lp2h": 0,
+          "lp2m": 407550,
+          "lp2ev": 407550,
+          "pmr": 14043,
+          "pme": 28809
+        },
+        {
+          "id": "chatcmpl-auto-12",
+          "finish": "length",
+          "in": 204800,
+          "out": 256,
+          "loads": 2235604,
+          "load_mb": 6181033.7,
+          "misses": 2235604,
+          "hits": 96190796,
+          "evictions": 2235604,
+          "dmiss": 8873,
+          "dlook": 122430,
+          "pmiss": 2226731,
+          "plook": 98303970,
+          "l2h": 0,
+          "l2m": 2208836,
+          "l2ev": 2208836,
+          "nvme_mb": 6107042.8,
+          "mh": 26768,
+          "mw": 1625950,
+          "msk": 609654,
+          "ld2h": 0,
+          "ld2m": 8521,
+          "ld2ev": 8521,
+          "lp2h": 0,
+          "lp2m": 2200315,
+          "lp2ev": 2200315,
+          "pmr": 77529,
+          "pme": 159780
+        },
+        {
+          "id": "chatcmpl-auto-13",
+          "finish": "length",
+          "in": 204800,
+          "out": 256,
+          "loads": 2235540,
+          "load_mb": 6180856.8,
+          "misses": 2235540,
+          "hits": 96190860,
+          "evictions": 2235540,
+          "dmiss": 8834,
+          "dlook": 122430,
+          "pmiss": 2226706,
+          "plook": 98303970,
+          "l2h": 0,
+          "l2m": 2208776,
+          "l2ev": 2208776,
+          "nvme_mb": 6106876.9,
+          "mh": 26764,
+          "mw": 1628843,
+          "msk": 606697,
+          "ld2h": 0,
+          "ld2m": 8479,
+          "ld2ev": 8479,
+          "lp2h": 0,
+          "lp2m": 2200297,
+          "lp2ev": 2200297,
+          "pmr": 77526,
+          "pme": 159775
+        },
+        {
+          "id": "chatcmpl-auto-14",
+          "finish": "length",
+          "in": 204800,
+          "out": 256,
+          "loads": 2235516,
+          "load_mb": 6180790.4,
+          "misses": 2235516,
+          "hits": 96190884,
+          "evictions": 2235516,
+          "dmiss": 8818,
+          "dlook": 122430,
+          "pmiss": 2226698,
+          "plook": 98303970,
+          "l2h": 0,
+          "l2m": 2208678,
+          "l2ev": 2208678,
+          "nvme_mb": 6106605.9,
+          "mh": 26838,
+          "mw": 1627618,
+          "msk": 607898,
+          "ld2h": 0,
+          "ld2m": 8478,
+          "ld2ev": 8478,
+          "lp2h": 0,
+          "lp2m": 2200200,
+          "lp2ev": 2200200,
+          "pmr": 77527,
+          "pme": 159775
+        }
+      ],
+      "resource_coverage": {
+        "schema_version": 1,
+        "samples_file": "resource-samples.jsonl",
+        "sample_count": 3442,
+        "live_pid_sample_count": 3440,
+        "last_live_pid_sample": {
+          "sequence": 3440,
+          "phase": "shutdown",
+          "start_t": 1792489994.8661478,
+          "end_t": 1792489994.8668766,
+          "binding": {
+            "root_pid": 2202516,
+            "actual_cgroup_path": "/sys/fs/cgroup/user.slice/user-2002.slice/session-5.scope",
+            "expected_cgroup_path": null,
+            "expected_matches_actual": null,
+            "status": "bound_to_live_pid"
+          },
+          "cgroup_path": "/sys/fs/cgroup/user.slice/user-2002.slice/session-5.scope",
+          "cgroup_identity": {
+            "device": 29,
+            "inode": 6748
+          },
+          "cgroup_consistent_identity": true,
+          "memory_current_bytes": 68241252352,
+          "memory_peak_bytes": 96069079040
+        },
+        "final_sample": {
+          "sequence": 3441,
+          "phase": "after_exit",
+          "start_t": 1792489995.8573937,
+          "end_t": 1792489995.858054,
+          "binding": {
+            "root_pid": null,
+            "actual_cgroup_path": null,
+            "expected_cgroup_path": "/sys/fs/cgroup/user.slice/user-2002.slice/session-5.scope",
+            "expected_matches_actual": null,
+            "status": "configured_path_without_live_pid"
+          },
+          "cgroup_path": "/sys/fs/cgroup/user.slice/user-2002.slice/session-5.scope",
+          "cgroup_identity": {
+            "device": 29,
+            "inode": 6748
+          },
+          "cgroup_consistent_identity": true,
+          "memory_current_bytes": 67095756800,
+          "memory_peak_bytes": 96069079040
+        },
+        "observed_cgroup_counter_peaks_bytes": {
+          "memory.current": 72460087296,
+          "memory.peak": 96069079040,
+          "memory.swap.current": 439382016
+        },
+        "cgroup_paths": [
+          "/sys/fs/cgroup/user.slice/user-2002.slice/session-5.scope"
+        ],
+        "binding_mismatch_samples": 0,
+        "process_io_unknown_observations": 0,
+        "cgroup_unknown_observations": {
+          "io.stat": 3441,
+          "memory.pressure": 3441,
+          "io.pressure": 3441
+        },
+        "model_device_stat_unknown_observations": 0,
+        "notes": [
+          "Cgroup memory.current/peak measure charge, not complete physical RAM.",
+          "Thor cudaMalloc device bytes and externally charged warm cache may be absent from this cgroup.",
+          "memory.stat file includes shmem; kernel and other views have overlapping subsets.",
+          "rchar/wchar are logical bytes; read_bytes/write_bytes and io.stat describe storage accounting.",
+          "Model-device stats are global background for selected filesystem devices; parent disks are not added.",
+          "No physical total or I/O sum is formed across these overlapping views.",
+          "Endpoint references locate original rows; the last live sample is not guaranteed to be the final request boundary.",
+          "Missing/reset/new-identity counter intervals remain null with reasons in the sidecar."
+        ]
+      },
+      "physical_ram_total": null,
+      "shared_cgroup_is_not_experiment_owned": true
+    }
+  },
+  "cross_mode_output_identity": [
+    {
+      "length": 1024,
+      "outputs_equal": true
+    },
+    {
+      "length": 4096,
+      "outputs_equal": true
+    },
+    {
+      "length": 8192,
+      "outputs_equal": true
+    },
+    {
+      "length": 45056,
+      "outputs_equal": true
+    },
+    {
+      "length": 204800,
+      "outputs_equal": true
+    }
+  ],
+  "optimization_acceptance": false,
+  "statistical_noninferiority": false,
+  "strict_physical_ram_acceptance": false,
+  "cold_ssd_acceptance": false,
+  "limitations": [
+    "fixed resident then offload order with inherited page cache",
+    "one service per mode; requests are not independent service replicates",
+    "CPU-only scope probes and host checks occurred during descriptive baseline",
+    "process storage accounting includes PLE and other model reads",
+    "global device counters include unrelated I/O; shared cgroup peaks may predate stage",
+    "NVML, RSS, pinned, cache and cgroup counters overlap; never add peaks"
+  ]
+}

@@ -21,7 +21,7 @@ import threading
 import time
 import traceback
 
-from isolated_service import IsolatedService, UNIT_PATTERN
+from isolated_scope import IsolatedScope, SCOPE_PATTERN as UNIT_PATTERN
 from monitor_memory import find_pids
 import nvml_process_query
 from offload_policy import AXES, partition_path_evidence, policy_environment
@@ -324,7 +324,7 @@ def main():
     if not out.is_relative_to(ROOT / '.q4t-work'):
         parser.error('output must be under .q4t-work/')
     if not UNIT_PATTERN.fullmatch(args.systemd_unit):
-        parser.error('systemd-unit must be a unique q4t-*.service')
+        parser.error('systemd-unit must be a unique q4t-*.scope')
     if any(value <= 0 for value in (args.startup_timeout_s, args.request_timeout_s,
                                     args.cancel_timeout_s, args.contract_timeout_s)):
         parser.error('timeouts must be positive')
@@ -380,6 +380,8 @@ def main():
                '--request-deadline-ms', '1800000', '--moe-resident-slots', '256',
                '--moe-hot-list', str(args.hot_list.resolve())]
     sources = [Path(__file__), ROOT / 'tools/evalscope/isolated_service.py',
+               ROOT / 'tools/evalscope/isolated_scope.py',
+               ROOT / 'tools/evalscope/scope_payload.py',
                ROOT / 'tools/evalscope/monitor_memory.py',
                ROOT / 'tools/evalscope/nvml_process_query.py',
                ROOT / 'tools/evalscope/resource_metrics.py',
@@ -420,7 +422,7 @@ def main():
                 raise RuntimeError('monitor did not become ready')
             time.sleep(.1)
         (out / 'memory-phase.txt').write_text('startup\n')
-        service = IsolatedService(command, cwd=ROOT, env=env, log_path=out / 'server.log',
+        service = IsolatedScope(command, cwd=ROOT, env=env, log_path=out / 'server.log',
                                   unit=args.systemd_unit, memory_max=args.host_cache_max_bytes,
                                   evidence=out / 'isolation')
         (out / 'server.pid').write_text(str(service.pid) + '\n')

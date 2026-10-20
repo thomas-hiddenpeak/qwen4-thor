@@ -12,7 +12,8 @@ BASE_ENVIRONMENT = {
     'Q4T_MOE_PREAD_MERGE': '1', 'Q4T_MOE_INLINE_MISS_LIMIT': '1',
 }
 RUN_TOOLS = ('run_budget_experiment.py', 'run_acceptance.py',
-             'isolated_service.py', 'monitor_memory.py', 'file_cache.py',
+             'isolated_service.py', 'isolated_scope.py', 'scope_payload.py',
+             'monitor_memory.py', 'file_cache.py',
              'resource_metrics.py', 'memory_accounting.py',
              'nvml_process_query.py')
 
