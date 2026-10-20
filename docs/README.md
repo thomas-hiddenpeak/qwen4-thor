@@ -1,5 +1,7 @@
 # docs/ — 开发记录文档体系
 
+最新专项：[SSD expert offload基础设施审计](OFFLOAD_INFRASTRUCTURE_AUDIT_2026-10-20.md)。
+
 本目录包含当前入口与按日期冻结的历史报告。先读[STATUS](STATUS.md)和
 [EVALUATION](EVALUATION.md)；下表专题的“进行中/下一步/当前”仅代表成文
 时的状态，不是当前任务队列或发布承诺。实现以src/代码为准。

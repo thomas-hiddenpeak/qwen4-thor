@@ -2,6 +2,17 @@
 
 更新：2026-10-20。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+## 当前研究准备审计
+
+**SSD expert offload基础设施静态审计完成（2026-10-20）。** 已有真实
+buffered SSD读取、L2/mirror/GPU槽位及路由回放/E2E工具，但未全面闭合。
+发现专家payload部分H2D/D2H/event失败后claim与缓存身份保护缺口，
+尚未注入复现；旧offload runner/monitor仍直接依赖nvidia-smi，外层
+NVML不能替代内部查询。严格物理RAM上限仍不可认证。先补payload
+错误合同和工具接入，再冻结资源协议建立当前offload基线；可立即做
+离线分析。新增GPU采样0、运行时未改、默认3ae53f26保持。详见
+[完整审计与优先级](OFFLOAD_INFRASTRUCTURE_AUDIT_2026-10-20.md)。
+
 ## 当前交付
 
 **资源准入与回收合同审计已修复部署并收尾（2026-10-20）。** 默认

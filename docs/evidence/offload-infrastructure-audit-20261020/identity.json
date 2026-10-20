@@ -1,0 +1,36 @@
+{
+  "scope": "static code and historical evidence audit; no GPU sampling, no performance acceptance",
+  "source_commit": "321c0b4d8d5bd116826a51093472db689d5b0b4d",
+  "default_sha256": "3ae53f268119d0b391e974d6989cc1ee6a182e38e79503f793d562f0a822ea98",
+  "historical_commit": "7672b591644add0bbc05b8782da3127c80edc04d",
+  "sources": {
+    "src/quant/moe_residency.cpp": "b048150eb155a6a62ee69f0e69ef753138f885d5e629a73dbe1dca007bb7116d",
+    "include/q4t/quant/moe_residency.h": "d126efa43930961dad6511614da365b105e6330058cf61df3bf6dd3c0b58a027",
+    "src/io/safetensors.cpp": "7c6363fa04e765fca3558c8f3ca16146eac6e98b7e83baab80df0c03df8a6c76",
+    "src/io/weight_loader.cpp": "f6d168b287f96ab5dcaff818f8e5882e9a082b92d38047548ef779f4d53cb2a3",
+    "src/model/moe.cu": "991bf0e474f8009116ce1855edafbd1e6021fbf183a88d6d376ea07324ad8249",
+    "src/model/model.cu": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194",
+    "src/model/decoder_layer.cu": "4d8e53e7d0a031dbdba68b7a5558f3baf93061a92c11312809790ef98170b15d",
+    "src/mtp/mtp.cu": "d193da0c9bc8f10ec1d218595b51c9cf13e58d66a922237e65aca6c6a0ed0537",
+    "src/server/chat_server.cpp": "fc268974aa7770dd5bd899cf2391c6c7b68169dbc3ce46796f53a693868a205a",
+    "src/server/chat_scheduler.cpp": "7b8802c089332bc0e0367ac0fcee0b1e4facb38a4273194f949cc29896ac84e5",
+    "src/runtime/memory_budget.cpp": "2092df212a95f809ffa1f822d6c2e1cc84f3dd2b5c1b2c99eb1bf40337707942",
+    "src/ple/page_reader.cpp": "4b80624706c76f5609ac92b6dcdb7891111baeae21298aaeeb1950b8e72ce4b6",
+    "tests/quant_moe_residency_test.cpp": "8f6551c216765ee8bfa8c488d212f274bf126447785d25f39b5ea6fff5996368",
+    "tests/weight_loader_contract_test.cpp": "1f70f70a175d670fc263a9679899e80af8bcf55ec08ba4f49682ae7b3fd6e8bd",
+    "tools/evalscope/run_offload_lifecycle.py": "4d9e3585745625e20fc86b975b892c91a3d5e54d454e2c8951f701045ac39b85",
+    "tools/evalscope/run_budget_experiment.py": "3a48be17504e5100a81f86c6c486d06a6a8dae790361049b441a1f4619099047",
+    "tools/evalscope/monitor_memory.py": "098d91eb208ce85961b23a88b029a80e122ff0b1b37bed7b9eaa898d1b5d6fc5",
+    "tools/evalscope/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+    "tools/evalscope/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+    "tools/evalscope/gpu_exclusive.py": "caf58b5f0fe03a5e2db37896d9b6d689203b457220d52cbdaa7867ebe7d8d27d",
+    "tools/trace/offload_replay.py": "6d7410fd1e820e7068862240728f08cef6978a4985261f4110d087121f900c8a",
+    "tools/trace/run_offload_study.py": "6c757b0e6e1faca8ec5ca788d8362087f85423379970615df3e984618d2c23d2",
+    "tools/evalscope/offload_policy.py": "a1001c54b764fa221e8eb8e714e153699a09d952a58f8b1bb13e164d7b96ada3"
+  },
+  "historical_files": {
+    "OFFLOAD_RAM_PROTOCOL_2026-10-02.md": "16e9ee7c27c7a0d4eda05f4763729bfee7605b6f8282b714a9b1130268b9eb7f",
+    "OFFLOAD_MIRROR_RECYCLE_2026-10-06.md": "7625fd5f29eb9f6fae2db645174559cec0f953bff34c90c45647e747a33bbcbc",
+    "OFFLOAD_DECODE_SUPPLY_2026-10-06.md": "fec0c9e59396c100478cfda3b472806072d070d51f5ec4b19a94607e0b4e0e1a"
+  }
+}
