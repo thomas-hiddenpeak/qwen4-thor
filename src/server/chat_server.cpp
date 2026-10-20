@@ -19,7 +19,7 @@
 #include "q4t/quant/moe_residency.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/runtime/residency_config.h"
-#ifdef Q4T_STARTUP_RESOURCE_PLAN
+#if defined(Q4T_STARTUP_RESOURCE_PLAN) || defined(Q4T_STARTUP_RESERVATION)
 #include "q4t/runtime/startup_plan.h"
 #endif
 #include "q4t/vision/vision.h"
@@ -200,6 +200,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
 #ifdef Q4T_STARTUP_RESOURCE_PLAN
         // Metadata preflight must not evict the cache under investigation.
         mtp_loader->SetKeepPageCache(true, "");
+#elif defined(Q4T_STARTUP_RESERVATION)
+        // Header inspection must not clear an inherited hot startup state.
+        if (opts.startup_plan != StartupPlanMode::kOff) {
+          mtp_loader->SetKeepPageCache(true, "");
+        }
 #endif
         // Sum mapped tensor bytes from shard headers: the exported index's
         // total_size does not match the tensors listed in its MTP weight_map.
@@ -259,11 +264,33 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // requests. Each in-flight request owns one seq_id.
   max_seq_ = eff_max_seq;
   cfg.max_seq = max_seq_;
+  bool planned_startup = false;
 #ifdef Q4T_STARTUP_RESOURCE_PLAN
   {
     PhaseTimer pt("startup_resource_plan");
     s = runtime::PrepareStartupReservation(cfg, opts);
     if (!s.ok()) return s;
+    planned_startup = true;
+  }
+#elif defined(Q4T_STARTUP_RESERVATION)
+  if (opts.startup_plan == StartupPlanMode::kOff) {
+    std::fprintf(stderr, "[q4t][startup-plan] mode=off active=0\n");
+  } else {
+    const Status supported = runtime::CheckStartupPlanSupport(cfg, opts);
+    if (!supported.ok()) {
+      if (opts.startup_plan == StartupPlanMode::kRequired) return supported;
+      std::fprintf(stderr,
+                   "[q4t][startup-plan] mode=auto active=0 reason=%s\n",
+                   supported.message().c_str());
+    } else {
+      PhaseTimer pt("startup_resource_plan");
+      s = startup_reservation_.Prepare(cfg, opts);
+      if (!s.ok()) return s;
+      planned_startup = true;
+      std::fprintf(stderr, "[q4t][startup-plan] mode=%s active=1\n",
+                   opts.startup_plan == StartupPlanMode::kRequired
+                       ? "required" : "auto");
+    }
   }
 #endif
   seq_free_.assign(static_cast<size_t>(max_seq_), true);
@@ -327,8 +354,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   std::fprintf(stderr, "\n");
 
   // Load the MTP draft model (optional). Borrowed embed/lm_head from the main
-  // model. On failure the server falls back to plain decode (mirrors the CLI
-  // --mtp behavior). Skipped entirely when opts.no_mtp is set.
+  // model. Legacy loading falls back to plain decode on failure; a selected
+  // startup plan must fail because its resource contract includes MTP.
+  // Skipped entirely when opts.no_mtp is set.
   if (!capabilities.mtp) {
     std::fprintf(stderr, "[q4t] MTP disabled; plain decode\n");
   } else {
@@ -342,24 +370,21 @@ Status ChatServer::Start(const ServerOptions& opts) {
     // Stage 2c: pool the draft full-attention KV/indexer for max_seq sequences
     // so concurrent MTP requests own independent draft-state slices (Stage 1).
     mcfg.max_seq = max_seq_;
-#ifdef Q4T_STARTUP_RESOURCE_PLAN
-    mcfg.initial_scratch_capacity = mtp_k_ + 1;
-#endif
+    if (planned_startup) mcfg.initial_scratch_capacity = mtp_k_ + 1;
     s = mtp::LoadMtp(mcfg, model_.Get().head.embed_tokens, model_.Get().head.lm_head,
                      &mtp_, nullptr);
     if (!s.ok()) {
-#ifdef Q4T_STARTUP_RESOURCE_PLAN
-      return Status::Fail("planned MTP load failed: " + s.message());
-#else
+      if (planned_startup) {
+        return Status::Fail("planned MTP load failed: " + s.message());
+      }
       std::fprintf(stderr, "[q4t] MTP load failed (%s); plain decode only\n",
                    s.message().c_str());
-#endif
     } else {
       mtp_loaded_ = true;
-#ifdef Q4T_STARTUP_RESOURCE_PLAN
-      s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
-      if (!s.ok()) return s;
-#endif
+      if (planned_startup) {
+        s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
+        if (!s.ok()) return s;
+      }
       std::fprintf(stderr, "[q4t] MTP loaded (k=%d max_seq=%d)\n", mtp_k_,
                    max_seq_);
     }
@@ -465,6 +490,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
 #ifdef Q4T_STARTUP_RESOURCE_PLAN
   s = runtime::CompleteStartupReservation();
   if (!s.ok()) return s;
+#elif defined(Q4T_STARTUP_RESERVATION)
+  if (planned_startup) {
+    s = startup_reservation_.Complete();
+    if (!s.ok()) return s;
+  }
 #endif
   return Status();
 }

@@ -8,6 +8,8 @@
 
 namespace q4t::server {
 
+enum class StartupPlanMode { kAuto, kOff, kRequired };
+
 struct ServerOptions {
   // Numeric IPv4 only. Remote access requires an explicit address.
   std::string host = "127.0.0.1";
@@ -16,8 +18,8 @@ struct ServerOptions {
   int max_tokens = 256;  // default cap when the request omits max_tokens
   int max_prefill = 0;   // 0 = use ModelConfig default (2048); >0 overrides
   // Max sequence length (sizes the full-attention KV/indexer/rope caches).
-  // 0 = use ModelConfig default (8192); >0 overrides (e.g. 262144 for the
-  // model's full context; see PHASES.md 262K memory budget — use max_seq=1).
+  // 0 = derive capacity with the memory budget, or use ModelConfig's 8192
+  // when --no-budget is set. Positive requests may be capped by the budget.
   int max_len = 0;
   // Max concurrent sequences (per-sequence recurrent-state pool size). Each
   // in-flight request owns one seq_id; the model's SSM/conv/PLE-conv/KV/indexer
@@ -39,6 +41,9 @@ struct ServerOptions {
   // Set no_budget=true to disable the cap (legacy behavior, user's own risk).
   double mem_fraction = 0.90;
   bool no_budget = false;
+  // Auto reserves supported text startup resources before pinned loading.
+  // Off preserves the existing allocator; required rejects unsupported modes.
+  StartupPlanMode startup_plan = StartupPlanMode::kAuto;
   // Controlled full-request observation; empty directory means zero capture.
   std::string moe_trace_dir;
   std::string moe_trace_workload;

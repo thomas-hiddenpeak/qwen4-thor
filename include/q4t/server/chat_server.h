@@ -33,6 +33,9 @@
 #include "q4t/server/request_control.h"
 #include "q4t/status.h"
 #include "q4t/runtime/memory_budget.h"
+#ifdef Q4T_STARTUP_RESERVATION
+#include "q4t/runtime/startup_reservation.h"
+#endif
 #include "q4t/text/tokenizer.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/vision.h"
@@ -100,6 +103,11 @@ class ChatServer {
   void RequestStop();
 
  private:
+#ifdef Q4T_STARTUP_RESERVATION
+  // Destroy last: model, MTP, scheduler and request buffers release their
+  // handed allocations before the reservation reclaims unhanded blocks.
+  runtime::StartupReservation startup_reservation_;
+#endif
   void HandleClient(int fd);
   void Dispatch(int fd, const std::string& method, const std::string& path,
                 const std::string& body);

@@ -35,6 +35,10 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (!std::isfinite(options.mem_fraction) || options.mem_fraction <= 0 ||
       options.mem_fraction > 1)
     return Status::Fail("mem-fraction must be finite and in (0,1]");
+  if (options.startup_plan != StartupPlanMode::kAuto &&
+      options.startup_plan != StartupPlanMode::kOff &&
+      options.startup_plan != StartupPlanMode::kRequired)
+    return Status::Fail("startup-plan must be auto, off or required");
   if (options.moe_trace_dir.empty() != options.moe_trace_workload.empty())
     return Status::Fail("moe-trace-dir and moe-trace-workload are required together");
   if (options.moe_trace_max_mib < 1 || options.moe_trace_max_mib > 4096)
@@ -93,7 +97,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--mtp-k") integer = &parsed.mtp_k;
     if (!integer && key != "--host" && key != "--model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
-        key != "--moe-trace-workload" && key != "--moe-hot-list")
+        key != "--moe-trace-workload" && key != "--moe-hot-list" &&
+        key != "--startup-plan")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
@@ -108,6 +113,16 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.model_dir = value;
     } else if (key == "--moe-hot-list") {
       parsed.moe_hot_list = value;
+    } else if (key == "--startup-plan") {
+      if (value == "auto") {
+        parsed.startup_plan = StartupPlanMode::kAuto;
+      } else if (value == "off") {
+        parsed.startup_plan = StartupPlanMode::kOff;
+      } else if (value == "required") {
+        parsed.startup_plan = StartupPlanMode::kRequired;
+      } else {
+        return Status::Fail("startup-plan must be auto, off or required");
+      }
     } else {
       const char* end = value.data() + value.size();
       const auto result =

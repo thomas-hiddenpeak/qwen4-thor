@@ -274,20 +274,31 @@ target_include_directories(q4t PRIVATE include)
 target_link_libraries(q4t PRIVATE q4t_model q4t_text q4t_ple q4t_quant
                                   q4t_server CUDA::cudart)
 
+add_library(q4t_startup_plan STATIC
+  src/runtime/startup_plan.cpp
+  src/runtime/startup_model_plan.cpp
+  src/runtime/startup_mtp_plan.cpp)
+target_include_directories(q4t_startup_plan PUBLIC include)
+target_link_libraries(q4t_startup_plan PUBLIC q4t_model q4t_runtime)
+target_link_libraries(q4t_server PUBLIC q4t_startup_plan)
+
 if(Q4T_STARTUP_RESOURCE_PLAN)
-  add_library(q4t_startup_plan STATIC
-    src/runtime/startup_plan.cpp
-    src/runtime/startup_model_plan.cpp
-    src/runtime/startup_mtp_plan.cpp)
-  target_include_directories(q4t_startup_plan PUBLIC include)
-  target_link_libraries(q4t_startup_plan PUBLIC q4t_model q4t_runtime)
   target_compile_definitions(q4t_server PRIVATE Q4T_STARTUP_RESOURCE_PLAN=1)
-  target_link_libraries(q4t_server PUBLIC q4t_startup_plan)
   target_sources(q4t PRIVATE tools/verify/startup_plan/reservation.cpp)
   target_link_libraries(q4t PRIVATE ${CMAKE_DL_LIBS})
   foreach(api cudaMalloc cudaFree cudaHostAlloc cudaMallocHost cudaFreeHost
               cudaMallocAsync cudaFreeAsync cudaStreamSynchronize
               cudaDeviceSynchronize cudaEventRecord cudaEventSynchronize)
+    target_link_options(q4t PRIVATE "LINKER:--wrap=${api}")
+  endforeach()
+else()
+  # PUBLIC keeps ChatServer's member layout identical in all translation units.
+  target_compile_definitions(q4t_server PUBLIC Q4T_STARTUP_RESERVATION=1)
+  target_sources(q4t PRIVATE src/runtime/startup_reservation.cpp)
+  # Only allocation ownership is intercepted; no event/sync tracing is linked
+  # into the production executable. Non-planned operation passes through.
+  foreach(api cudaMalloc cudaFree cudaHostAlloc cudaMallocHost
+              cudaMallocAsync cudaFreeAsync)
     target_link_options(q4t PRIVATE "LINKER:--wrap=${api}")
   endforeach()
 endif()

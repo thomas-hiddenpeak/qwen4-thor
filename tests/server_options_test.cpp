@@ -8,6 +8,7 @@
 namespace {
 using q4t::server::CapabilitiesFor;
 using q4t::server::ServerOptions;
+using q4t::server::StartupPlanMode;
 ServerOptions Defaults() {
   ServerOptions options;
   options.model_dir = "/read-only-model";
@@ -150,5 +151,25 @@ Q4T_TEST(serve_trace_options_are_explicit_and_bounded) {
     Q4T_CHECK(!Parse({"--moe-trace-max-mib", value}, &options));
     Q4T_CHECK(options.moe_trace_max_mib == 128);
   }
+  return true;
+}
+
+Q4T_TEST(serve_startup_plan_modes_are_explicit_and_transactional) {
+  auto options = Defaults();
+  Q4T_CHECK(Parse({}, &options));
+  Q4T_CHECK(options.startup_plan == StartupPlanMode::kAuto);
+  Q4T_CHECK(Parse({"--startup-plan", "required"}, &options));
+  Q4T_CHECK(options.startup_plan == StartupPlanMode::kRequired);
+  for (const auto value : {"", "on", "true", "AUTO", "--no-mtp"}) {
+    Q4T_CHECK(!Parse({"--startup-plan", value}, &options));
+    Q4T_CHECK(options.startup_plan == StartupPlanMode::kRequired);
+  }
+  Q4T_CHECK(!Parse({"--startup-plan"}, &options));
+  Q4T_CHECK(Parse({"--startup-plan", "off", "--allow-media"}, &options));
+  Q4T_CHECK(options.startup_plan == StartupPlanMode::kOff);
+  Q4T_CHECK(Parse({"--startup-plan", "auto"}, &options));
+  Q4T_CHECK(options.startup_plan == StartupPlanMode::kAuto);
+  options.startup_plan = static_cast<StartupPlanMode>(99);
+  Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
   return true;
 }

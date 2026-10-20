@@ -52,6 +52,11 @@ Status PlanMtpResources(const mtp::MtpConfig& cfg, StartupPlan* plan);
 Status PlanVerifyResources(const model::ModelConfig& cfg, int k,
                            StartupPlan* plan);
 // cfg is the effective, post-budget configuration, not the CLI request.
+// Pure support selection: no file reads, device allocation or fallback after
+// a checkpoint/plan error. Auto mode may use the legacy path only if this
+// configuration is unsupported; BuildStartupPlan failures remain failures.
+Status CheckStartupPlanSupport(const model::ModelConfig& cfg,
+                               const server::ServerOptions& opts);
 Status BuildStartupPlan(const model::ModelConfig& cfg,
                         const server::ServerOptions& opts, StartupPlan* plan);
 

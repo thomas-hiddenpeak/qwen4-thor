@@ -33,6 +33,7 @@ serve_default_is_single_text_greedy
 serve_capabilities_allow_explicit_combinations
 serve_rejects_malformed_numeric_options
 serve_validates_before_load_and_preserves_failed_parse
+serve_startup_plan_modes_are_explicit_and_transactional
 
 # Offline MoE trace contracts (no runtime collector enabled).
 router_trace_chunked_prefill_and_decode

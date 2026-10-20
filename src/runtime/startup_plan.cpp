@@ -1,6 +1,7 @@
 #include "q4t/runtime/startup_plan.h"
 
 #include <algorithm>
+#include <cstdlib>
 #include <limits>
 
 #include "q4t/io/model_config.h"
@@ -109,10 +110,8 @@ Status StartupPlan::AddTensor(const io::WeightLoader& loader,
   return Add(name, shape, io::DtypeSize(dtype));
 }
 
-Status BuildStartupPlan(const model::ModelConfig& cfg,
-                        const server::ServerOptions& opts,
-                        StartupPlan* output) {
-  if (!output) return Status::Fail("startup plan: null output");
+Status CheckStartupPlanSupport(const model::ModelConfig& cfg,
+                               const server::ServerOptions& opts) {
   // Bound dimensions before invoking existing workspace formulas, some of
   // which use int intermediates. A new architecture requires its own contract.
   if (cfg.num_layers != 48 || cfg.hs != 2560 || cfg.hc != 4 ||
@@ -120,6 +119,8 @@ Status BuildStartupPlan(const model::ModelConfig& cfg,
       cfg.shared_is != 640 || cfg.topk != 10 || cfg.vocab != 248320 ||
       cfg.max_len < 1 || cfg.max_len > 262144 || cfg.max_seq < 1 ||
       cfg.max_seq > 64 || cfg.max_prefill < 1 || cfg.max_prefill > 8192 ||
+      cfg.max_seq > cfg.max_prefill || cfg.ple_ngram_size != 3 ||
+      cfg.ple_heads_per_ngram != 8 ||
       cfg.ple_capacity_tokens != 8192 || cfg.ple_row_bytes != 160 ||
       cfg.ple_total_rows != 320001536) {
     return Status::Fail("startup plan: unsupported dimensions or capacity");
@@ -134,12 +135,30 @@ Status BuildStartupPlan(const model::ModelConfig& cfg,
       return Status::Fail("startup plan: FP8 projection shadows unsupported");
     }
   }
+  // Match the planner's raw environment contract as well as the runtime's
+  // cached projection selection, so auto never starts an unsupported plan.
+  for (const char* name : {"Q4T_FP8_PROJ", "Q4T_FP8_ATTN", "Q4T_FP8_GDN",
+                           "Q4T_FP8_LMHEAD", "Q4T_FP8_SHARED", "Q4T_FP8_HC"}) {
+    const char* value = std::getenv(name);
+    if (value && *value && !(value[0] == '0' && value[1] == '\0')) {
+      return Status::Fail("startup plan: FP8 projection shadows unsupported");
+    }
+  }
   if (!opts.no_mtp && (cfg.max_seq != 1 || opts.mtp_k < 1 || opts.mtp_k > 16 ||
                        cfg.max_prefill < std::max(4, opts.mtp_k + 1) ||
                        cfg.max_len < opts.mtp_k + 1)) {
     return Status::Fail("startup plan: unsupported MTP capacity");
   }
-  Status status = CheckArchitecture(cfg);
+  return Status();
+}
+
+Status BuildStartupPlan(const model::ModelConfig& cfg,
+                        const server::ServerOptions& opts,
+                        StartupPlan* output) {
+  if (!output) return Status::Fail("startup plan: null output");
+  Status status = CheckStartupPlanSupport(cfg, opts);
+  if (!status.ok()) return status;
+  status = CheckArchitecture(cfg);
   if (!status.ok()) return status;
   ResidencyConfig residency;
   status = LoadResidencyConfig(cfg.moe_hot_list, cfg.num_layers, cfg.E,
