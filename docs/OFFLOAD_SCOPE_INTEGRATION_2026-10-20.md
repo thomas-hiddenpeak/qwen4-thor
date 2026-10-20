@@ -44,3 +44,15 @@ PID/starttime/token/真实退出，不伪造service的MainPID；旧service证据
 当前草稿尚未重新做CPU实机或GPU实机，初版CPU通过仅覆盖原SHA。
 下一步等待基线封存后将候选移入正式位置、直接复核主机合同并进行
 有界真实GPU接入，不追加五档性能样本。
+
+## 正式接入后实机验收预算（启动前冻结）
+
+同一GPU lease覆盖完整驱动，先做CPU scope正常退出/TERM/KILL/启动
+失败及64MiB受控OOM，确认实际memcg限制与清理，不将OOM当模型失败。
+GPU最多2次加载：新budget runner以C256、L2=16、mirror8、16GiB
+host/cache上限、max-len262144、普通模式完成1条1024-token质量请求，
+对比最终19ea4e57已封存质量结果；另一次相同runner在NVML确认目标PID
+进入GPU后发送SIGINT，要求该scope及后代清理，原中断证据完整保留。
+每次runner上限1200秒，无自动扩样。全程不清模型缓存，不宣称严格
+物理RAM限额、SSD冷态或性能收益。lifecycle入口的公共启动/清理后端
+复用此次GPU覆盖，业务六题/取消完整序列不在本次新增复测范围。
