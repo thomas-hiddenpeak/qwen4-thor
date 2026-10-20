@@ -80,6 +80,11 @@ MTP 可能成组输出 token，本工具不把 SSE chunk 间隔当成精确 toke
 
 ## 有界资源探索与独立服务
 
+Thor的MoE容量后备只在SSD；CPU/GPU分配共用物理RAM，host中转、
+L2/mirror和文件页缓存必须计入统一RAM，不能称作独立CPU卸载层。
+默认全驻留健康不等于SSD offload验收。资源条件和逻辑/物理I/O
+口径遵循[SSD offload合同](../../docs/SSD_OFFLOAD_CONTRACT.md)。
+
 `run_acceptance.py --mode performance --perf-lengths 45056 --perf-repeats 3`
 只运行选定档位。plan/results/exit明确标为partial；不能替代五档或
 offload六档验收。显式选档时每发启动一个evalscope client，服务保持

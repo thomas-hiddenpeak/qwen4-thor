@@ -6,6 +6,12 @@
 共享CPU缓存后续优先级已由[SSD前提对齐审计](SSD_OFFLOAD_ALIGNMENT_AUDIT_2026-10-21.md)
 修正。原阶段不新增分支、不写模型/reference的边界保持。
 
+当前约束见[SSD offload合同](SSD_OFFLOAD_CONTRACT.md)：Thor的host与
+device分配共享同一物理RAM，MoE专家容量后备只有SSD；有界主机
+staging/cache必须计入统一RAM预算，不能算作容量卸载。下文E阶段的
+共享CPU缓存提案现已搁置，仅保留历史研究，不是正在推进的CPU
+offload或独立替代路线。
+
 ## 阶段及边界
 
 A. 可靠性：修复专家payload部分复制/event失败的源与目标保护、缓存

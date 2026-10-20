@@ -1,0 +1,263 @@
+{
+  "schema": 1,
+  "date": "2026-10-21",
+  "status": "READ_ONLY_ASSESSMENT_NO_RUNTIME_VALIDATION",
+  "source_head": "56a5df76fbdc1e91782cd2c4794deb6e8a4672ad",
+  "input_seal": {
+    "path": ".q4t-work/ssd-direct-evaluation-20261021/local-io-v1/seal.json",
+    "sha256": "a110b3e2cfea6d7bcc08c69fd600e1d72bad3a9edb9987b8e8627a3d30d81699",
+    "verified_files": 5,
+    "files": {
+      "collect.py": {
+        "sha256": "10b9da62dedfc3abc6f793a69f03df8fb5bd165bcd1ea419fe6c8cf13a42fe19",
+        "bytes": 6348
+      },
+      "commands.json": {
+        "sha256": "a83ec5801f5c1a76e0df40c9fcef20521198cc0bcdd96bec080758ab640dea01",
+        "bytes": 32385
+      },
+      "header-alignment.json": {
+        "sha256": "cd5a1df460069e4d0b26c609d0bc814b6eae022d4c4e23921961ddefcc2f181d",
+        "bytes": 261035
+      },
+      "paths.json": {
+        "sha256": "37e6867fa96b8fb1bbfe5a5d6564794765f788db6ed79562089d934c4808dd39",
+        "bytes": 2163
+      },
+      "sources.json": {
+        "sha256": "8e51d25d2c71f27700b551b15e7a8e14a6e67b5655be6634a7b599b09477c5a2",
+        "bytes": 1250
+      }
+    }
+  },
+  "derived_summary": {
+    "path": ".q4t-work/ssd-direct-evaluation-20261021/local-review-v1/summary.json",
+    "sha256": "5a5a63e33cfb2132aca8a0738d473eb88cec364b94a0e5be602148d8e19f8972"
+  },
+  "verified_source_files": {
+    "CMakeLists.txt": {
+      "sha256": "74a41515c96b37d7ea227b24bb629d5ad3260dfa6d6def6384708e0c74c33416",
+      "bytes": 25113
+    },
+    "src/io/safetensors.cpp": {
+      "sha256": "7c6363fa04e765fca3558c8f3ca16146eac6e98b7e83baab80df0c03df8a6c76",
+      "bytes": 11482
+    },
+    "src/io/weight_loader.cpp": {
+      "sha256": "f6d168b287f96ab5dcaff818f8e5882e9a082b92d38047548ef779f4d53cb2a3",
+      "bytes": 10951
+    },
+    "src/quant/moe_residency.cpp": {
+      "sha256": "6916f8e711c5703fb07b06c724c38680fb4fc20e0f3e025fcfa8eebdd8fec2d3",
+      "bytes": 71768
+    },
+    "include/q4t/quant/moe_residency.h": {
+      "sha256": "154c04d9fc62866af7993b4769679d0abcb8e78770770d929f52d0dc55abda36",
+      "bytes": 30200
+    },
+    "include/q4t/quant/swizzle.h": {
+      "sha256": "f0c2c88a22f45092de70542dfd3e8046f56e52f3703defbcae2d84e240678ccf",
+      "bytes": 3185
+    },
+    "src/ple/page_reader.cpp": {
+      "sha256": "4b80624706c76f5609ac92b6dcdb7891111baeae21298aaeeb1950b8e72ce4b6",
+      "bytes": 12992
+    },
+    "src/ple/ple_embedding.cpp": {
+      "sha256": "af7e6b7ad21660c165fae6ef5e5c9176246ca11d235d6bcdf1e74f7d26285c6b",
+      "bytes": 7554
+    },
+    "include/q4t/ple/page_reader.h": {
+      "sha256": "d01fc2871d3e7a1057753fa0c9ee28d88beb8001988b2a402ae97819f2baa6f7",
+      "bytes": 3764
+    }
+  },
+  "local_inventory": {
+    "environment": {
+      "l4t": "39.2.1",
+      "jetpack_marketing_version": "UNKNOWN: no nvidia-jetpack metapackage; use L4T as observed",
+      "os": "Ubuntu 24.04.5",
+      "kernel": "6.8.12-1021-tegra",
+      "loaded_nvidia_version": "595.78",
+      "cuda_default": "13.3.0",
+      "cufile_package": "1.18.0.66-1",
+      "nvidia_fs": "not loaded; modinfo and module/dev paths absent in observed kernel",
+      "gds_tools": "installed under /usr/local/cuda-13.3/gds/tools; never run",
+      "cufile_use_pci_p2pdma": false,
+      "cufile_allow_compat_mode": true,
+      "fast_path": "UNKNOWN: no initialization or functional probe"
+    },
+    "storage": {
+      "model_filesystem": "ext4",
+      "model_mount": "/",
+      "model_source": "/dev/nvme0n1p1",
+      "nvme": "WD PC SN5000S SDEPNSJ-1T00",
+      "nvme_pci": "0005:01:00.0",
+      "nvme_link": "16.0 GT/s x4",
+      "gpu_pci": "0000:01:00.0",
+      "logical_block_bytes": 512,
+      "physical_block_bytes": 512,
+      "topology_limit": "Different PCI domains; this inventory alone cannot establish GDS/P2P routing support"
+    },
+    "sampled_headers": [
+      {
+        "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0000-0127.safetensors",
+        "header_bytes": 200736,
+        "header_sha256": "272fca540718b96f0e7063f2f7ff6ab76ebd2f7ccd7fdedf9d2cea300ee6fe2e",
+        "expert_count": 128,
+        "regions": {
+          "weight": {
+            "count": 128,
+            "lengths": [
+              2457600
+            ],
+            "offset_mod4096": [
+              3104
+            ],
+            "offset_mod512": [
+              32
+            ],
+            "aligned4096": 0,
+            "contiguous": true
+          },
+          "scale": {
+            "count": 128,
+            "lengths": [
+              307200
+            ],
+            "offset_mod4096": [
+              3104
+            ],
+            "offset_mod512": [
+              32
+            ],
+            "aligned4096": 0,
+            "contiguous": true
+          },
+          "six_scalar_scales": {
+            "count": 128,
+            "lengths": [
+              24
+            ],
+            "aligned4096": 0,
+            "contiguous": true,
+            "offset_mod4096_distinct_count": 128,
+            "offset_mod4096_min_max": [
+              32,
+              3080
+            ],
+            "offset_mod512_distinct_count": 64,
+            "offset_mod512_min_max": [
+              0,
+              504
+            ]
+          }
+        }
+      },
+      {
+        "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00047-experts-0384-0511.safetensors",
+        "header_bytes": 203592,
+        "header_sha256": "dceaf5bab790caf5d3ad1a040087cf9e970e6d94bcac58bf61a22660bb9198cf",
+        "expert_count": 128,
+        "regions": {
+          "weight": {
+            "count": 128,
+            "lengths": [
+              2457600
+            ],
+            "offset_mod4096": [
+              1864
+            ],
+            "offset_mod512": [
+              328
+            ],
+            "aligned4096": 0,
+            "contiguous": true
+          },
+          "scale": {
+            "count": 128,
+            "lengths": [
+              307200
+            ],
+            "offset_mod4096": [
+              1864
+            ],
+            "offset_mod512": [
+              328
+            ],
+            "aligned4096": 0,
+            "contiguous": true
+          },
+          "six_scalar_scales": {
+            "count": 128,
+            "lengths": [
+              24
+            ],
+            "aligned4096": 0,
+            "contiguous": true,
+            "offset_mod4096_distinct_count": 128,
+            "offset_mod4096_min_max": [
+              16,
+              4088
+            ],
+            "offset_mod512_distinct_count": 64,
+            "offset_mod512_min_max": [
+              0,
+              504
+            ]
+          }
+        }
+      }
+    ],
+    "moe_findings": [
+      {
+        "source": "src/io/safetensors.cpp:113,133,253-257",
+        "fact": "Read-only buffered safetensors fd; explicit pread payload reads. Absolute file offset includes 8-byte header length plus JSON header."
+      },
+      {
+        "source": "src/quant/moe_residency.cpp:268-335,719-827",
+        "fact": "Expert reads use packed down/gate/up weights, raw scales and six float scalars; two header samples show unaligned absolute offsets despite 4KiB-multiple weight/scale lengths."
+      },
+      {
+        "source": "src/quant/moe_residency.cpp:841-862,1269-1297",
+        "fact": "Host merges gate/up scales, swizzles scale layout, uploads separate device regions and retains four scalar host values. Replacing the read API alone cannot eliminate this host transformation."
+      },
+      {
+        "source": "src/quant/moe_residency.cpp:1299-1314",
+        "fact": "Current CUDA events protect pinned staging ownership; a new IO path must establish completion before GPU use and before slot reuse."
+      }
+    ],
+    "ple_findings": [
+      {
+        "source": "src/ple/page_reader.cpp:97-149,187-220,279-286,339-348",
+        "fact": "Separate PLE raw-row path: O_RDONLY fd, 160-byte row slicing/dedup into 4KiB pages, io_uring host page pool, CPU scatter into host output. Fixed registered IO buffers are not evidence of SSD-to-GPU DMA."
+      },
+      {
+        "source": "src/ple/ple_embedding.cpp:173-197",
+        "fact": "Gather writes pinned staging, explicit H2D copies FP8 rows, then GPU converts FP8 to BF16; direct device reads would also require device gather/scatter or new staging design."
+      }
+    ],
+    "engineering_inferences": [
+      "cuFile library/tool installation does not establish a working direct path; current compatibility setting could mask POSIX fallback.",
+      "An MoE candidate needs an alignment strategy and device layout/scale conversion design; original model files must remain read-only.",
+      "Larger expert weight ranges are a more targeted first integration surface than PLE random 4KiB gather, contingent on platform support.",
+      "Thor unified physical RAM means fewer logical host copies is not automatically fewer physical bytes, lower RAM, or faster E2E."
+    ],
+    "limitations": [
+      "Two sampled expert shards only, not an all-model alignment census.",
+      "Explicitly read 404328 header bytes and no model payload; OS readahead from those reads is not excluded.",
+      "No CUDA/NVML/cuFile initialization, gdscheck/gdsio, benchmark, cache advice, installation, or model modification.",
+      "No fast-path, performance, physical SSD byte, or support verdict follows from this local inventory.",
+      "CUDA version.json bundled driver/module versions are not the loaded driver/module facts."
+    ]
+  },
+  "default_binary": {
+    "path": "build/q4t",
+    "sha256": "5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191"
+  },
+  "release_metadata": {
+    "path": "build/q4t.release.json",
+    "sha256": "e1a14429064aae3d046bbea6c743c2355071b09893cb9bc090deb7aecdf6be10"
+  },
+  "verification_scope": "Rehashed sealed collector inputs, original derived summary, nine current source files and default artifacts; no GPU, payload, or performance test."
+}

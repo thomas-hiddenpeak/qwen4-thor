@@ -39,7 +39,9 @@ reference/
   3. io_uring 提交/完成队列管理, 32 MiB 注册页池
   4. 独立 CUDA stream 上 FP8→BF16 转换的同步点
   5. PLE 输出在 forward pass 中的融合位置
-  6. 24-32 GB GPU 的 grouped CPU-offload 策略 (专家块预取)
+  6. 独立显存24-32 GB GPU的grouped CPU-offload策略，仅借鉴专家块
+     预取/生命周期。Thor的CPU/GPU共用DRAM，不能移植为容量卸载；
+     本项目专家容量后备仅SSD，见[合同](SSD_OFFLOAD_CONTRACT.md)。
 - 固定 commit: `155a949` (v0.3.0, 2026-09-03 克隆, 2026-09-14 更新,
   `--depth 1`)
 

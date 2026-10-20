@@ -211,5 +211,6 @@ python3 -B tools/verify/startup_delivery/deploy.py --rollback \
 `d05f28e21b513cdb3862ca428adc7db9ebe119fbcc9d73f668a0f2ef1f313c39`，
 见[封存复核](evidence/startup-delivery-20261021/final-seal-verification.json)。
 验收、部署与本次文档整理不再追加GPU。阶段沿用main，无新增分支；
-旧detached工作区依赖的证据路径保留。真实共享CPU专家缓存和性能
-优化仍未启动，后续另定范围与相应验收。
+旧detached工作区依赖的证据路径保留。共享CPU专家缓存方案已搁置，
+仅保留历史研究，不是下一阶段候选或容量卸载路线。后续SSD策略遵循
+[统一RAM与SSD合同](SSD_OFFLOAD_CONTRACT.md)，另定范围与相应验收。

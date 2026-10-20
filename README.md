@@ -5,10 +5,10 @@
 构建的原生 C++23 (host + device, CUDA 13.3) 推理引擎。
 
 核心特性:**PLE SSD Stream** —— 51.2 GB FP8 n-gram 哈希嵌入查找表 (PLE,
-技术报告称 N-gram Embedding Layer, 仅 Layer 2 一层) 不驻留内存,通过
+技术报告称 N-gram Embedding Layer, 仅 Layer 2 一层) 不主动整表常驻,通过
 Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的整表。
-仍需页池、pinned staging 和 GPU scratch；读取是否被已提交 GPU 工作掩盖
-取决于实际调度，不保证固定重叠比例。
+文件页缓存、页池、pinned staging 和 GPU scratch 都占统一RAM；
+读取是否被已提交GPU工作掩盖取决于实际调度，不保证固定重叠比例。
 
 ## 能力概览
 
@@ -19,9 +19,11 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
   `serve --allow-media`进入未验收实验路径（部署身份见STATUS）
 - **MTP 推测解码**: 默认开启 T>1 batch verifier（k=3），`--no-mtp` 回退；
   当前单流近 tie 合同、质量与性能验收状态见 STATUS
-- **专家按需驻留**: 实现了可选 MoE 分层驻留；默认全部专家驻留，
-  `--moe-resident-slots` 显式启用按需读取，不与 PLE 整表流式读取混为一谈；
-  offload 研究结果不等于当前默认 MTP 基线验收
+- **专家SSD卸载**: 默认全部专家驻留，非零`--moe-resident-slots`
+  显式启用配置的device槽位与SSD后备读取。Thor主机内存和GPU共用
+  DRAM，CPU缓存不构成容量卸载；中转、缓存与工作集均计入统一RAM。
+  与PLE是不同机制，offload研究不等于默认MTP验收，见
+  [SSD offload合同](docs/SSD_OFFLOAD_CONTRACT.md)
 - **连续批处理**: token 级打包、多请求调度；已完成有界槽位和生命周期
   验证，不能据此保证所有路径均不存在状态污染
 - **长上下文**: 流式 top-k QSA；当前正式单流评估覆盖 1K、4K、8K、44K、

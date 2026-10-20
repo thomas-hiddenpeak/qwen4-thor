@@ -15,6 +15,7 @@ Qwen3.8-Flash-Next (qwen4_exp) 的原生推理引擎,
 |---|---|
 | 当前进展到哪了、下一步做什么 | [docs/STATUS.md](docs/STATUS.md) |
 | 整体架构设计 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| 统一内存与SSD专家卸载边界 | [docs/SSD_OFFLOAD_CONTRACT.md](docs/SSD_OFFLOAD_CONTRACT.md) |
 | 分阶段计划与范围 | [docs/PHASES.md](docs/PHASES.md) |
 | 开发日志 (按日期分文件, 时间倒序) | [docs/log/](docs/log/README.md) |
 | 已完成 / 已解决归档 | [docs/DONE.md](docs/DONE.md) |
@@ -44,6 +45,12 @@ Qwen3.8-Flash-Next (qwen4_exp) 的原生推理引擎,
    运行；一个阶段的完整驱动持有同一把锁，不在中间空档释放。
    锁跨本仓库 worktree 共享。检测到竞争或监控失败记 ENV_ABORT，
    仅停止自己的进程，保留现场；轮询不能证明没有短于采样间隔的干扰。
+9. **MoE专家容量卸载只能到SSD（2026-10-21用户明确）**：Thor的host、
+   device与managed分配共用物理DRAM，移到CPU内存仍是RAM驻留，不能
+   称为容量offload。staging、L2、mirror和文件页缓存均计入统一RAM；
+   有界中转不等于CPU卸载路线。共享主机缓存方案已搁置，只保留历史
+   研究，不自动恢复。定义、计量与验收见
+   [SSD offload合同](docs/SSD_OFFLOAD_CONTRACT.md)。
 
 ## 快速上手
 

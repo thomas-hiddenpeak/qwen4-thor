@@ -1,6 +1,7 @@
 # docs/ — 开发记录文档体系
 
-最新专项：[SSD offload前提对齐审计](SSD_OFFLOAD_ALIGNMENT_AUDIT_2026-10-21.md)。
+现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
+最新专项：[NVIDIA SSD直读评估](SSD_DIRECT_IO_EVALUATION_2026-10-21.md)。
 
 本目录包含当前入口与按日期冻结的历史报告。先读[STATUS](STATUS.md)和
 [EVALUATION](EVALUATION.md)；下表专题的“进行中/下一步/当前”仅代表成文
@@ -8,6 +9,8 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [SSD offload合同](SSD_OFFLOAD_CONTRACT.md) | SSD唯一容量后备、DRAM缓存/中转和逻辑/物理I/O定义 | 用户明确原则，当前规范 |
+| [NVIDIA SSD直读评估](SSD_DIRECT_IO_EVALUATION_2026-10-21.md) | GDS平台资格、本机只读盘点、权重布局与工程优先级 | 原生GDS暂不接入，SSD主线继续 |
 | [SSD offload前提对齐审计](SSD_OFFLOAD_ALIGNMENT_AUDIT_2026-10-21.md) | 近期代码/缓存条件与SSD目标对齐、后续优先级 | 只读审计完成，先核验SSD资源与读取约束 |
 | [启动资源计划正式交付](STARTUP_DELIVERY_2026-10-21.md) | 正式运行时、实际默认与有界验收/部署 | 已交付默认5a456351，回退与证据封存 |
 | [启动资源计划的临时锁页准备](STARTUP_CACHE_PREPARATION_2026-10-21.md) | 实际预热归属、默认MTP/重启/容量边界与回收 | 有界可靠性通过，默认保持 |

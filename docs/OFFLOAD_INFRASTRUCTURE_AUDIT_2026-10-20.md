@@ -6,6 +6,13 @@
 采样0，未跑性能矩阵，未对缺口做故障复现。源码和历史文件摘要见
 [身份清单](evidence/offload-infrastructure-audit-20261020/identity.json)。
 
+当前注释（2026-10-21）：下文保留审计当时的实现、缺口和推进建议，
+后续修复与交付以[STATUS](STATUS.md)为准，不重复执行旧计划。当前
+[SSD offload合同](SSD_OFFLOAD_CONTRACT.md)明确：Thor的host/device
+分配共享同一物理RAM，MoE专家容量后备只有SSD；有界主机staging/cache
+计入统一RAM预算，不算容量卸载。后来的跨层共享主机缓存方案已搁置，
+仅保留历史研究记录，不是正在推进的CPU offload或独立替代路线。
+
 ## 结论
 
 **研究基础已存在，但不能认定SSD offload所需基础设施已经完整闭合。**
@@ -19,7 +26,8 @@ MTP专家卸载等另有条件，不能由通用可靠性验收推导通过。
 
 这里的offload指从只读SSD checkpoint按需加载不可变专家权重；驱逐
 GPU副本不需要写回SSD。现有mirror writeback是GPU→CPU pinned缓存，
-不是SSD写回。PLE的SSD读取与专家权重读取是两条独立链路。
+不是SSD写回，也不是移出统一RAM的容量卸载。PLE的SSD读取与专家
+权重读取是两条独立链路。
 
 ## 逐项完备性
 
@@ -28,7 +36,7 @@ GPU副本不需要写回SSD。现有mirror writeback是GPU→CPU pinned缓存，
 | 权重寻址与布局 | WeightLoader、SafetensorsFile；专家weights/SF/scalar描述符，邻接范围判定，scale merge/swizzle | 已有；可直接读取原模型，无需先重排或写模型目录 |
 | SSD专家读取 | ReadExpert/ReadRun、pread/preadv、持久worker；短读/EINTR处理 | 已有buffered按需读取；不等于每次访问物理SSD，不是可取消异步I/O队列 |
 | GPU专家缓存 | 每层C槽、LRU、同plan去重/保留、slot ID映射、每层容量/热列表 | 已有可研究基线；部分失败后的槽位有效性有缺口 |
-| CPU缓存 | pinned L2、mirror ring、claim/event/in-flight、统计与预算 | 正常路径已有；部分复制失败后的保护未闭合 |
+| 统一RAM内主机缓存 | pinned L2、mirror ring、claim/event/in-flight、统计与预算 | 正常路径已有；不增加容量后备，部分复制失败后的保护未闭合 |
 | 前向接入 | router IDs/weights D2H、prefill分块、gather/scatter、slot-mode decode | 已接入真实模型；D2H同步和分块成本在关键路径，不是免费接口 |
 | 正常异步所有权 | 单model stream顺序，元数据快照、完成边界、loader共享所有权 | 最近已有验收；不能代替专家payload错误出口验收 |
 | 路由与策略研究 | trace格式/校验、working set、离线replay、partition/chunk-order | 已有；不是通用任意策略模拟器，不预测实际SSD或延迟 |

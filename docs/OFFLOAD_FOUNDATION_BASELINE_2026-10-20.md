@@ -5,6 +5,11 @@
 单一GPU lease正常完成，745份文件封存摘要复核通过。不作优化收益、
 统计非劣、严格物理RAM或冷SSD接受结论。
 
+当前解释以[SSD offload合同](SSD_OFFLOAD_CONTRACT.md)为准：Thor的
+host/device分配使用同一物理RAM，只有SSD是MoE专家容量后备。
+有界主机staging、L2、mirror及文件页缓存都计入统一RAM预算；从
+device移到host不算容量卸载。以下历史数据和失败边界保持。
+
 ## 身份与方法
 
 默认二进制19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469，
@@ -57,7 +62,8 @@ L2 miss=8,315,667，mirror hit=103,958。软件nvme_mb合计22,991,355.8
 ## 工程决定与后续
 
 2026-10-21更新：以下为当时的候选选择，不是当前下一步授权。现先
-核验受限内存与SSD供给条件，共享主机缓存仅保留为候选，见
+核验受限统一RAM与SSD供给条件；共享主机缓存方案已搁置，仅保留
+历史研究记录，不是正在推进的CPU offload或独立替代路线。见
 [前提对齐审计](SSD_OFFLOAD_ALIGNMENT_AUDIT_2026-10-21.md)。原基线数据
 与限制保持，不重写为严格SSD/RAM或性能接受。
 

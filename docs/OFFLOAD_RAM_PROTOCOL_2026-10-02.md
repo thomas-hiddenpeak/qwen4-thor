@@ -1,5 +1,10 @@
 # Offload RAM预算与缓存协议：修复、有界对照与推进建议（2026-10-02）
 
+2026-10-21当前定义：MoE容量卸载仅到SSD，CPU/GPU共用DRAM，host
+缓存/中转与文件页缓存均计入统一RAM。以下保留当时测量与未闭合项，
+不把host/cache限额解释为整机RAM上限；当前规范见
+[SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
+
 本阶段Goal已完成预算/工具修复、固定HTTP质量与两组有界资源对照。
 首轮校准和冻结过程保留如下；完整物理RAM仍未知，当前未接受新的
 性能策略或完整性能矩阵。GEMM冻结，Phase D off。

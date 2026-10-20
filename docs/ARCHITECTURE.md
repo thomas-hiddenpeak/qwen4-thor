@@ -1,6 +1,7 @@
 # ARCHITECTURE.md — 当前实现与设计边界
 
-2026-10-17按代码静态核对。本文描述当前模块，不把设计目标或旧实测
+2026-10-17按代码静态核对，2026-10-21补正SSD卸载与统一RAM边界。
+本文描述当前模块，不把设计目标或旧实测
 当作已交付功能；验收范围见[STATUS](STATUS.md)和[EVALUATION](EVALUATION.md)。
 旧设计记录见[历史版本](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/7356f235e972b5e1be201923a4ba27b214b31e12/docs/ARCHITECTURE.md)。
 
@@ -28,7 +29,8 @@
 ## PLE实际数据流
 
 每token计算16个row ID，每行160字节，因此FP8查表数据为2560字节/token。
-51,200,245,760字节sidecar不整表驻留，不能将这个文件大小当作运行时
+51,200,245,760字节sidecar不主动整表常驻，读取产生的文件页缓存仍占RAM。
+不能将这个文件大小当作运行时
 工作内存，也不能把全部约47.68 GiB都描述为无额外成本的节省。
 
 ```text
@@ -64,8 +66,16 @@ prefetch”的执行器。I/O可能与此前已入队的GPU工作重叠，实际
 ## 专家驻留与内存预算
 
 PLE sidecar流式读取和MoE专家按需驻留是两个机制。serve默认
-moe_resident_slots=0，全部专家驻留；非零显式启用有限GPU槽位、主机
-缓存与按需NVMe读取。该路径的研究结论不能替代默认全驻留MTP验收。
+moe_resident_slots=0，全部专家驻留；非零显式启用配置的GPU槽位与SSD
+后备。**SSD是唯一容量卸载目标**：host/device/managed共用DRAM，
+放到CPU内存仍是RAM驻留。既有staging/L2/mirror只是占用该RAM的
+中转或缓存，不构成独立容量层，也不代表已满足低RAM目标。该路径
+的研究结论不能替代默认全驻留MTP验收。
+
+当前专家miss经buffered pread/preadv读checkpoint，可能命中文件页
+缓存；host合并/swizzle scale后H2D到device槽。驱逐不写回原模型。
+PLE的io_uring也读host页池，二者均未接入cuFile/GDS。
+数据流、容量和I/O术语遵循[SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
 
 统一物理内存不等于零拷贝：CPU/GPU仍有各自分配、H2D/D2H和同步，
 不能把重叠的驱动、进程、cgroup计数简单相加为物理总量。
