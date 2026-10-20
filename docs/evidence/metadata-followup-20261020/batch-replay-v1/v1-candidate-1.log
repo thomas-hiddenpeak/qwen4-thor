@@ -1,0 +1,18 @@
+[  8%] Built target q4t_trace
+[ 16%] Built target q4t_io
+[ 29%] Built target q4t_ple
+[ 45%] Built target q4t_quant
+[ 95%] Built target q4t_model
+[100%] Building CXX object CMakeFiles/q4t_metadata_batch_replay.dir/tools/verify/inference_metadata/batch_replay.cpp.o
+/home/rm01/models/dev/qwen4-thor/tools/verify/inference_metadata/batch_replay.cpp: In function ‘int main(int, char**)’:
+/home/rm01/models/dev/qwen4-thor/tools/verify/inference_metadata/batch_replay.cpp:125:42: error: narrowing conversion of ‘cfg.q4t::model::ModelConfig::eos_token_id’ from ‘int64_t’ {aka ‘long int’} to ‘int32_t’ {aka ‘int’} [-Werror=narrowing]
+  125 |     const int32_t prior[] = {42, 43, cfg.eos_token_id, cfg.eos_token_id};
+      |                                      ~~~~^~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/tools/verify/inference_metadata/batch_replay.cpp:125:60: error: narrowing conversion of ‘cfg.q4t::model::ModelConfig::eos_token_id’ from ‘int64_t’ {aka ‘long int’} to ‘int32_t’ {aka ‘int’} [-Werror=narrowing]
+  125 |     const int32_t prior[] = {42, 43, cfg.eos_token_id, cfg.eos_token_id};
+      |                                                        ~~~~^~~~~~~~~~~~
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_metadata_batch_replay.dir/build.make:79: CMakeFiles/q4t_metadata_batch_replay.dir/tools/verify/inference_metadata/batch_replay.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:1571: CMakeFiles/q4t_metadata_batch_replay.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1578: CMakeFiles/q4t_metadata_batch_replay.dir/rule] Error 2
+gmake: *** [Makefile:661: q4t_metadata_batch_replay] Error 2

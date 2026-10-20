@@ -1,0 +1,9 @@
+[
+  "cmake",
+  "--build",
+  ".q4t-work/metadata-followup-20261020/batch-parent-build",
+  "--target",
+  "q4t_metadata_batch_replay",
+  "--parallel",
+  "8"
+]

@@ -494,3 +494,9 @@ add_executable(q4t_metadata_batch_entry EXCLUDE_FROM_ALL
 target_include_directories(q4t_metadata_batch_entry PRIVATE include)
 target_link_libraries(q4t_metadata_batch_entry PRIVATE q4t_model)
 target_compile_options(q4t_metadata_batch_entry PRIVATE -Wall -Wextra -Werror)
+
+add_executable(q4t_metadata_batch_replay EXCLUDE_FROM_ALL
+  tools/verify/inference_metadata/batch_replay.cpp)
+target_include_directories(q4t_metadata_batch_replay PRIVATE include)
+target_link_libraries(q4t_metadata_batch_replay PRIVATE q4t_model)
+target_compile_options(q4t_metadata_batch_replay PRIVATE -Wall -Wextra -Werror)

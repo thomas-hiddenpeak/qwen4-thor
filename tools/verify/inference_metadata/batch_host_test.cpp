@@ -229,4 +229,5 @@ int main() {
     std::cerr << "FAIL " << error.what() << '\n';
     return 1;
   }
+  return 0;
 }

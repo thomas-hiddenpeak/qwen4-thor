@@ -1,0 +1,6 @@
+In file included from tools/verify/inference_metadata/batch_allocation_test.cpp:3:
+tools/verify/inference_metadata/batch_host_test.cpp: In function ‘int BatchOriginalMain()’:
+tools/verify/inference_metadata/batch_host_test.cpp:232:1: error: control reaches end of non-void function [-Werror=return-type]
+  232 | }
+      | ^
+cc1plus: all warnings being treated as errors

@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "started": 1792456058.5854895,
+  "completed": [
+    "parent",
+    "candidate"
+  ],
+  "current": "candidate",
+  "bitexact_files": 78,
+  "finished": 1792456087.407488
+}

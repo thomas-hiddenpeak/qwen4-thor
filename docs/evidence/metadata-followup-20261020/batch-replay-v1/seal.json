@@ -1,0 +1,12 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792456058.4413085,
+  "finished": 1792456088.2302258,
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_batch_replay.py"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}

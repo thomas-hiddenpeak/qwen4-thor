@@ -1,0 +1,64 @@
+[  0%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_trace.cpp.o
+[  4%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/sha256.cpp.o
+[  4%] Building CXX object CMakeFiles/q4t_io.dir/src/io/json.cpp.o
+[  4%] Building CXX object CMakeFiles/q4t_trace.dir/src/trace/router_collector.cpp.o
+[  8%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ngram_hash.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_io.dir/src/io/safetensors.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ngram_hash_derive.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_io.dir/src/io/model_config.cpp.o
+[ 16%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/page_reader.cpp.o
+[ 20%] Building CXX object CMakeFiles/q4t_io.dir/src/io/weight_loader.cpp.o
+[ 20%] Building CUDA object CMakeFiles/q4t_ple.dir/src/ple/fp8_convert.cu.o
+[ 25%] Building CXX object CMakeFiles/q4t_ple.dir/src/ple/ple_embedding.cpp.o
+[ 25%] Linking CXX static library libq4t_ple.a
+[ 29%] Linking CXX static library libq4t_trace.a
+[ 29%] Built target q4t_ple
+[ 29%] Built target q4t_trace
+[ 29%] Linking CXX static library libq4t_io.a
+[ 29%] Built target q4t_io
+[ 33%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/dequant.cu.o
+[ 33%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/act_quant.cu.o
+[ 33%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/moe_weights.cpp.o
+[ 37%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/moe_gemm.cu.o
+[ 37%] Building CUDA object CMakeFiles/q4t_quant.dir/src/quant/moe_decode.cu.o
+[ 41%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/moe_residency.cpp.o
+[ 41%] Building CXX object CMakeFiles/q4t_quant.dir/src/quant/lt_cache.cpp.o
+[ 45%] Linking CXX static library libq4t_quant.a
+[ 45%] Built target q4t_quant
+[ 50%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/hyperconnection.cu.o
+[ 50%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/linear_attention.cu.o
+[ 54%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/full_attention.cu.o
+[ 54%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/qsa_decode.cu.o
+[ 58%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/streaming_topk.cu.o
+[ 58%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/decode_topk.cu.o
+[ 62%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/short_topk.cu.o
+[ 62%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/indexer_decode.cu.o
+[ 66%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/moe.cu.o
+[ 66%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/ple_layer.cu.o
+[ 70%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/decoder_layer.cu.o
+[ 70%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/model_head.cu.o
+[ 75%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/model.cu.o
+[ 75%] Building CXX object CMakeFiles/q4t_model.dir/src/model/model_owner.cpp.o
+[ 79%] Building CXX object CMakeFiles/q4t_model.dir/src/model/decode_metadata_upload.cpp.o
+[ 79%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/gemv.cu.o
+[ 83%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/gemv_hc_inject.cu.o
+[ 83%] Building CUDA object CMakeFiles/q4t_model.dir/src/model/small_m_gemm.cu.o
+[ 87%] Building CUDA object CMakeFiles/q4t_model.dir/src/mtp/moe_bf16.cu.o
+[ 87%] Building CUDA object CMakeFiles/q4t_model.dir/src/mtp/mtp.cu.o
+[ 91%] Building CUDA object CMakeFiles/q4t_model.dir/src/vision/vision.cu.o
+[ 91%] Building CXX object CMakeFiles/q4t_model.dir/src/vision/processor.cpp.o
+[ 95%] Linking CXX static library libq4t_model.a
+[ 95%] Built target q4t_model
+[100%] Building CXX object CMakeFiles/q4t_metadata_batch_replay.dir/tools/verify/inference_metadata/batch_replay.cpp.o
+/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-parent-source/tools/verify/inference_metadata/batch_replay.cpp: In function ‘int main(int, char**)’:
+/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-parent-source/tools/verify/inference_metadata/batch_replay.cpp:125:42: error: narrowing conversion of ‘cfg.q4t::model::ModelConfig::eos_token_id’ from ‘int64_t’ {aka ‘long int’} to ‘int32_t’ {aka ‘int’} [-Werror=narrowing]
+  125 |     const int32_t prior[] = {42, 43, cfg.eos_token_id, cfg.eos_token_id};
+      |                                      ~~~~^~~~~~~~~~~~
+/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-parent-source/tools/verify/inference_metadata/batch_replay.cpp:125:60: error: narrowing conversion of ‘cfg.q4t::model::ModelConfig::eos_token_id’ from ‘int64_t’ {aka ‘long int’} to ‘int32_t’ {aka ‘int’} [-Werror=narrowing]
+  125 |     const int32_t prior[] = {42, 43, cfg.eos_token_id, cfg.eos_token_id};
+      |                                                        ~~~~^~~~~~~~~~~~
+cc1plus: all warnings being treated as errors
+gmake[3]: *** [CMakeFiles/q4t_metadata_batch_replay.dir/build.make:79: CMakeFiles/q4t_metadata_batch_replay.dir/tools/verify/inference_metadata/batch_replay.cpp.o] Error 1
+gmake[2]: *** [CMakeFiles/Makefile2:1534: CMakeFiles/q4t_metadata_batch_replay.dir/all] Error 2
+gmake[1]: *** [CMakeFiles/Makefile2:1541: CMakeFiles/q4t_metadata_batch_replay.dir/rule] Error 2
+gmake: *** [Makefile:648: q4t_metadata_batch_replay] Error 2

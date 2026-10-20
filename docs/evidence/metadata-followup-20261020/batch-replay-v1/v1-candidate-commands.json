@@ -1,0 +1,22 @@
+[
+  [
+    "cmake",
+    "-S",
+    "/home/rm01/models/dev/qwen4-thor",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/build",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=g++-14",
+    "-DCMAKE_CUDA_HOST_COMPILER=g++-14",
+    "-DQ4T_CUDA_ARCHITECTURES=110a"
+  ],
+  [
+    "cmake",
+    "--build",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/build",
+    "--target",
+    "q4t_metadata_batch_replay",
+    "--parallel",
+    "8"
+  ]
+]

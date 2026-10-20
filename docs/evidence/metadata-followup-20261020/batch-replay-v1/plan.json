@@ -1,0 +1,21 @@
+{
+  "parent": "48185ed",
+  "candidate": "b6870c0",
+  "binaries": {
+    "parent": "0bfa7aec901b6054f558b742dd304637fe6fd3c0669723771ec5202783e74bdf",
+    "candidate": "34c9752f7b39a6b8ae1e15ba9dc462d29f92b38407d5a9f766b9a1106d0a52d8"
+  },
+  "layers": 4,
+  "main_loads": 2,
+  "draft_loads": 2,
+  "successful_main_forwards_per_side": 9,
+  "expected_rejections_per_side": 1,
+  "draft_extends_per_side": 2,
+  "draft_chunks_per_side": 6,
+  "expected_exact_files": 78,
+  "timeout_per_side": 900,
+  "retries": 0,
+  "main_model_identity": "prior payload hashes plus checked stat identity",
+  "mtp_model_identity": "new payload hashes and stat identity",
+  "fixture_sha256": "0431c3f49c651a56ffc33316b0ab7a5145394025dc93cdc3362638d32b791aac"
+}

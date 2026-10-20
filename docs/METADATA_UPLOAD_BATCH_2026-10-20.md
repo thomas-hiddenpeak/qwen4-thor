@@ -131,3 +131,19 @@ int溢出；Mixed范围检查避免base+len溢出。这些是同接入路径的
 批次pageable块保留按拷贝序号观察到的容量上界直到Free；额外host
 驻留取决于实际布局/配置，不是零成本。此内存与event/快照复制
 成本不能被解释为已获性能接受；本轮不追加统计性能样本。
+
+## 收尾覆盖补验：host分配失败
+
+模型差分通过后逐项审查发现：实现合同包含host块表/源分配失败时
+保护已提交源，但原10组只直接注入CUDA API错误。因此新增2项纯
+host故障注入，源码仍不链接cudart：第二Copy扩容块表时new失败；
+先建两块并完成，再复用时第二块new[]增长失败。均在第一Copy已
+提交后触发，要求已提交源正确排空、后续Begin拒绝；不重复原10组。
+一次构建/执行，-Wall -Wextra -Werror，GPU/模型/HTTP新增0。
+此补验不改生产类，原GPU和模型证据按未变身份复用。
+
+两项分配失败补验通过，生产类源码未变。首次组合夹具将原main
+重命名复用mock后，隐式return不再适用，编译以return-type拒绝；
+给原main补等价的显式return 0后仅执行新增2例，零警告且无cudart。
+原10例未重复运行、原GPU和模型差分不变。失败/通过证据见
+[分配失败补验](evidence/metadata-followup-20261020/batch-allocation/audit.json)。

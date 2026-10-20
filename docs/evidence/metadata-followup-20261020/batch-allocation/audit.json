@@ -1,0 +1,13 @@
+{
+  "status": "PASS_TWO_ALLOCATION_CASES",
+  "first_build": "FAILED: renamed included main requires explicit return",
+  "fix": "explicit return 0, equivalent to original main implicit success",
+  "production_changed": false,
+  "gpu_work": 0,
+  "sha256": {
+    "src/model/metadata_upload_batch.cpp": "476bfb42336468f5f644f4675495315dc4d5ae2db494bf4f0fe43d1b82395e87",
+    "include/q4t/model/metadata_upload_batch.h": "32c5b20cdda7f7cccaad12467c19e30a05bbb434b268ac05e5e4c86c4d0bd83d",
+    "tools/verify/inference_metadata/batch_allocation_test.cpp": "bdbaf8adb1eb6516b012dc42d156eb01900567fda561eb577d977f6ac5edcd62",
+    "tools/verify/inference_metadata/batch_host_test.cpp": "fb1bbefbe3950623c581c3f7456f0bc6b7a8d6b187a6c379f35b0652f7cb28a0"
+  }
+}

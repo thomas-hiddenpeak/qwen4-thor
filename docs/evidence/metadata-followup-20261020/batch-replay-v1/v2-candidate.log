@@ -1,0 +1,8 @@
+[  8%] Built target q4t_io
+[ 20%] Built target q4t_ple
+[ 29%] Built target q4t_trace
+[ 45%] Built target q4t_quant
+[ 95%] Built target q4t_model
+[100%] Building CXX object CMakeFiles/q4t_metadata_batch_replay.dir/tools/verify/inference_metadata/batch_replay.cpp.o
+[100%] Linking CXX executable q4t_metadata_batch_replay
+[100%] Built target q4t_metadata_batch_replay
