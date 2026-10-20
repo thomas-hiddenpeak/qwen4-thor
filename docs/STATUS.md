@@ -12,7 +12,7 @@
 归属兼容仍待处理，不在本轮宣称严格RAM或SSD冷态。
 见[阶段计划](OFFLOAD_FOUNDATION_PLAN_2026-10-20.md)。
 限额工具scope候选已通过CPU后代归属/退出/清理检查及7项host合同，
-尚未接入真实GPU；见[接入记录](OFFLOAD_SCOPE_INTEGRATION_2026-10-20.md)。
+暂存接入草稿另通过103项host合同，尚未接入真实GPU；见[接入记录](OFFLOAD_SCOPE_INTEGRATION_2026-10-20.md)。
 
 ## 当前研究准备审计
 
