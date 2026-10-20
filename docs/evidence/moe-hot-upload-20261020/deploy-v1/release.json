@@ -1,0 +1,18 @@
+{
+  "version": "moe-hot-upload-20261020",
+  "binary_sha256": "d4232b63e53bece8c82bd87d8dcac628fb089f4f7eddc163535030133107f7a6",
+  "source_commit": "7bb190f",
+  "tested_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-hot-upload-20261020/acceptance-v1/run/sources.json",
+  "tested_source_manifest_sha256": "0490c328fd403bcc090a8a75b99f3da16b1b6788d453a3a76be7ccdf8b506611",
+  "source_note": "7bb190f differs from tested sources only by recorded owner line wrap",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/moe-hot-upload-20261020/CMakeCache.txt",
+  "build_cache_sha256": "bc48bbca5d4f486b2fb70bec01c3b61529af6ff5345b3664e04c510cfa9ae45a",
+  "acceptance": "ENGINEERING_ACCEPTED_RELIABILITY",
+  "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/docs/MOE_HOT_UPLOAD_DEPLOYMENT_2026-10-20.md",
+  "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-hot-upload-20261020/deploy-v1/acceptance-decision.md",
+  "acceptance_snapshot_sha256": "4585ffe0aeaa5f6e09ca72b9a918ad8b1ec8a9424d57ed652b30b1f3acd95cc9",
+  "acceptance_report": "/home/rm01/models/dev/qwen4-thor/docs/MOE_HOT_UPLOAD_AUDIT_2026-10-20.md",
+  "scope": "default executable; no persistent service; reliability change; no performance claim",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-hot-upload-20261020/deploy-v1/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-hot-upload-20261020/deploy-v1/previous/q4t.release.json"
+}
