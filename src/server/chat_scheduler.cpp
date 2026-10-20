@@ -45,6 +45,7 @@ int ChatServer::AllocSeqId(RequestControl* control, int fd) {
   std::unique_lock<std::mutex> lock(seq_mu_);
   for (;;) {
     if (seq_stopping_) return -1;
+    if (!gpu_healthy_.load(std::memory_order_relaxed)) return -3;
     if (RequestCancelled(control, fd)) return -2;
     for (int i = 0; i < max_seq_; ++i) {
       if (seq_free_[static_cast<size_t>(i)]) {
@@ -251,7 +252,10 @@ void ChatServer::SchedulerLoop() {
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
         cudaError_t copy_error = cudaSuccess;
-        if (Bp == 1) {
+        // Health may change while this group waits for model_mu_.
+        if (!gpu_healthy_.load(std::memory_order_relaxed))
+          sp = Status::Fail("GPU unhealthy; restart server");
+        if (sp.ok() && Bp == 1) {
           sp = model::ModelBeginSequence(model_.Get(), pf[0]->seq, nullptr,
                                           pf[0]->seq_id);
           if (sp.ok() && router_trace_) router_trace_->BeginForward(
@@ -268,7 +272,7 @@ void ChatServer::SchedulerLoop() {
                 d_prefill_logits_,
                 static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
           }
-        } else {
+        } else if (sp.ok()) {
           std::vector<int32_t> pk_tokens;
           std::vector<int> pk_lens(Bp), pk_seq(Bp);
           for (int i = 0; i < Bp; ++i) {
@@ -356,7 +360,9 @@ void ChatServer::SchedulerLoop() {
       Status s;
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
-        s = mtp::MtpSpeculativeStepMulti(model_.Get(), mtp_, seqs.data(),
+        s = !gpu_healthy_.load(std::memory_order_relaxed)
+                ? Status::Fail("GPU unhealthy; restart server")
+                : mtp::MtpSpeculativeStepMulti(model_.Get(), mtp_, seqs.data(),
                                          b_tok.data(), d0.data(), g_in.data(),
                                          B, mtp_k_, accepted.data(),
                                          acc_count.data(), next_b.data(),
@@ -422,6 +428,8 @@ void ChatServer::SchedulerLoop() {
     for (auto* request : plain_reqs) sequences.push_back(request->seq);
     {
       const std::lock_guard<std::mutex> lock(model_mu_);
+      if (!gpu_healthy_.load(std::memory_order_relaxed))
+        s = Status::Fail("GPU unhealthy; restart server");
       for (int i = 0; i < B && s.ok(); ++i)
         s = sequences[i]->Submit({&tokens[i], 1},
                                   model::ModelSequence::Stage::kDecode,

@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "sealed_files": 286,
+  "candidate_sha256": "3ae53f268119d0b391e974d6989cc1ee6a182e38e79503f793d562f0a822ea98",
+  "source_base_commit": "7e0d9b10f1c0655348abfecda59de6d8779cf0d3",
+  "source_manifest_sha256": "9f61b9c3ec9c1af0b16d59861fe9289bc11d5c948f2d4ca5f6306161826ac5e3",
+  "source_patch_sha256": "19d1745611883a42ea097f5a9954d87d982fca19b10edcab3f513f176fd284b9",
+  "quality": {
+    "off": {
+      "passed": 3,
+      "startup_ms": {
+        "tokenizer": "299",
+        "budget": "420",
+        "model_load": "29249",
+        "startup_total": "29969"
+      }
+    },
+    "on": {
+      "passed": 3,
+      "startup_ms": {
+        "tokenizer": "423",
+        "budget": "416",
+        "model_load": "29604",
+        "mtp_load": "3073",
+        "startup_total": "33517"
+      }
+    }
+  },
+  "diagnostic_handlers": 7,
+  "host_tests": 53,
+  "fault_scenarios": 4,
+  "seconds": 334.50254368782043,
+  "performance_acceptance": false,
+  "deployed": false
+}

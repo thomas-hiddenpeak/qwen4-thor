@@ -202,6 +202,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     RequestDiagnostics::Scope wait(diagnostic, Wait::kSlot);
     seq_id = AllocSeqId(control.get(), fd);
   }
+  if (seq_id == -3) {
+    SendError(fd, 503, "GPU unhealthy; restart server");
+    return;
+  }
   if (seq_id == -2) {
     count_abort();
     SendError(fd, 409, "request cancelled before admission");
@@ -283,6 +287,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // pipeline runs on the default stream and self-synchronizes internally.
     {
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      if (!gpu_healthy_.load(std::memory_order_relaxed)) {
+        SendError(fd, 503, "GPU unhealthy; restart server");
+        cleanup();
+        return;
+      }
       if (!RunVisionPipeline(items, &d_vfeats, &vfeats.num_tokens, &counts,
                              &grids, &verr)) {
         SendError(fd, 400, verr);
@@ -472,7 +481,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     s = pr.ok ? Status() : Status::Fail("batched prefill failed");
   } else {
     auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
-    s = cancelled() ? Status::Fail("request cancelled")
+    s = !gpu_healthy_.load(std::memory_order_relaxed)
+            ? Status::Fail("GPU unhealthy; restart server")
+            : cancelled() ? Status::Fail("request cancelled")
                     : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
     if (s.ok()) {
       if (!chunked) {
@@ -630,7 +641,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   if (use_mtp) {
     {
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
-      s = mtp::MtpResetState(mtp_, nullptr, seq_id);
+      s = !gpu_healthy_.load(std::memory_order_relaxed)
+              ? Status::Fail("GPU unhealthy; restart server")
+              : mtp::MtpResetState(mtp_, nullptr, seq_id);
       if (s.ok()) {
         mtp_b = next_token;
         // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
@@ -866,7 +879,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
         if (router_trace_) router_trace_->BeginForward(
             trace::RouteStage::kDecode, seq.position, 1);
-        s = model::ModelDecodeStepSeq(model_.Get(), &seq, tok_id, d_prefill_logits_,
+        s = !gpu_healthy_.load(std::memory_order_relaxed)
+                ? Status::Fail("GPU unhealthy; restart server")
+                : model::ModelDecodeStepSeq(model_.Get(), &seq, tok_id, d_prefill_logits_,
                                       nullptr, nullptr, seq_id,
                                       model::SequenceCompletion::kDeferred);
         cudaError_t copy_error = cudaSuccess;

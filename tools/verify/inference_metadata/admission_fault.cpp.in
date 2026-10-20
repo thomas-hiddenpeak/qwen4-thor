@@ -1,0 +1,31 @@
+// Test-only barrier and one-shot D2H failure. Never linked into q4t.
+#include <cuda_runtime_api.h>
+#include <dlfcn.h>
+#include <unistd.h>
+
+#include <atomic>
+#include <cstdio>
+#include <cstdlib>
+
+extern "C" cudaError_t CUDARTAPI cudaMemcpyAsync(
+    void* dst, const void* src, size_t bytes, cudaMemcpyKind kind,
+    cudaStream_t stream) {
+  static const auto real = reinterpret_cast<decltype(&cudaMemcpyAsync)>(
+      dlsym(RTLD_NEXT, "cudaMemcpyAsync"));
+  static std::atomic<bool> fired{false};
+  if (!real) std::_Exit(127);
+  if (kind == cudaMemcpyDeviceToHost && bytes == 496640) {
+    std::fprintf(stderr, "[admission-fault] logits-readback\n");
+    if (!fired.exchange(true)) {
+      const char* release = std::getenv("Q4T_TEST_ADMISSION_RELEASE");
+      if (!release) std::_Exit(126);
+      std::fprintf(stderr, "[admission-fault] waiting\n");
+      for (int i = 0; i < 3000; ++i) {
+        if (access(release, F_OK) == 0) return cudaErrorInvalidValue;
+        usleep(10000);
+      }
+      std::_Exit(125);
+    }
+  }
+  return real(dst, src, bytes, kind, stream);
+}

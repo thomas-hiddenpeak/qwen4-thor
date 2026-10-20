@@ -110,6 +110,8 @@ class ChatServer {
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.
+  // Negative results: -1 stopping, -2 cancelled, -3 GPU unhealthy.
+  // Admission is provisional: recheck GPU health under model_mu_ at submit.
   int AllocSeqId(RequestControl* control, int fd);
   RequestRegistry requests_;
   std::mutex connections_mu_;

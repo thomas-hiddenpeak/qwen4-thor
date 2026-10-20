@@ -1,0 +1,14 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792478374.471761,
+  "finished": 1792478709.6891665,
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_admission_acceptance.py",
+    "--output",
+    ".q4t-work/resource-admission-20261020/acceptance-v1/run"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}

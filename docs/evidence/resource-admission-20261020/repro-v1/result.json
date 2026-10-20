@@ -1,0 +1,21 @@
+{
+  "first": {
+    "status": 500,
+    "body": "{\"error\":{\"message\":\"prefill failed: batched prefill failed\",\"type\":\"invalid_request_error\",\"code\":null}}"
+  },
+  "waiter": {
+    "status": 200,
+    "body": "{\"id\":\"fault-waiter\",\"object\":\"chat.completion\",\"created\":1792478293,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"71\"},\"finish_reason\":\"length\"}],\"usage\":{\"prompt_tokens\":1024,\"completion_tokens\":2,\"total_tokens\":1026}}"
+  },
+  "health": {
+    "status": 503,
+    "body": "{\"status\":\"unhealthy\",\"gpu_healthy\":false,\"requests_running\":1,\"seq_slots_free\":1,\"seq_slots_total\":1}"
+  },
+  "followup": {
+    "status": 503,
+    "body": "{\"error\":{\"message\":\"GPU unhealthy after a device error; restart the server\",\"type\":\"invalid_request_error\",\"code\":null}}"
+  },
+  "readbacks": 2,
+  "slots": 1,
+  "inline": false
+}

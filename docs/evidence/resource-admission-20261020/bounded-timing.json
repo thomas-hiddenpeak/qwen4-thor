@@ -1,0 +1,68 @@
+{
+  "classification": "reliability_non_performance",
+  "comparison": "historical unpaired single samples; not a performance acceptance or causal estimate",
+  "prior_results": ".q4t-work/request-diagnostics-20261020/acceptance-v1/run",
+  "candidate_results": ".q4t-work/resource-admission-20261020/acceptance-v1/run",
+  "rows": [
+    {
+      "mode": "off",
+      "id": "1024-10",
+      "ttft_before": 0.8670781800756231,
+      "ttft_after": 0.8752430130261928,
+      "ttft_delta_pct": 0.9416489929267469,
+      "latency_before": 1.2002672380767763,
+      "latency_after": 1.2097967760637403,
+      "latency_delta_pct": 0.7939513538862686
+    },
+    {
+      "mode": "off",
+      "id": "8192-10",
+      "ttft_before": 5.160264206002466,
+      "ttft_after": 5.157655858085491,
+      "ttft_delta_pct": -0.050546790103145334,
+      "latency_before": 5.494417787995189,
+      "latency_after": 5.491873175022192,
+      "latency_delta_pct": -0.04631269537888061
+    },
+    {
+      "mode": "off",
+      "id": "45056-50",
+      "ttft_before": 30.339606628986076,
+      "ttft_after": 30.27512530295644,
+      "ttft_delta_pct": -0.21253184597335162,
+      "latency_before": 30.674812285928056,
+      "latency_after": 30.612207349040546,
+      "latency_delta_pct": -0.2040923227302982
+    },
+    {
+      "mode": "on",
+      "id": "1024-10",
+      "ttft_before": 1.0902379450853914,
+      "ttft_after": 1.0884283599443734,
+      "ttft_delta_pct": -0.16598075210786378,
+      "latency_before": 1.1788382960949093,
+      "latency_after": 1.1761124819749966,
+      "latency_delta_pct": -0.23122884020161383
+    },
+    {
+      "mode": "on",
+      "id": "8192-10",
+      "ttft_before": 5.763572551077232,
+      "ttft_after": 5.768688037991524,
+      "ttft_delta_pct": 0.08875548748554785,
+      "latency_before": 5.852789201075211,
+      "latency_after": 5.858498097979464,
+      "latency_delta_pct": 0.09754147481004782
+    },
+    {
+      "mode": "on",
+      "id": "45056-50",
+      "ttft_before": 31.79833211004734,
+      "ttft_after": 31.817326051997952,
+      "ttft_delta_pct": 0.059732510135690475,
+      "latency_before": 31.890591391013004,
+      "latency_after": 31.9096657410264,
+      "latency_delta_pct": 0.059811841616630446
+    }
+  ]
+}

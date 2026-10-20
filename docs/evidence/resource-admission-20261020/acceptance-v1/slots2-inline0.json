@@ -1,0 +1,21 @@
+{
+  "first": {
+    "status": 500,
+    "body": "{\"error\":{\"message\":\"prefill failed: batched prefill failed\",\"type\":\"invalid_request_error\",\"code\":null}}"
+  },
+  "waiter": {
+    "status": 500,
+    "body": "{\"error\":{\"message\":\"prefill failed: batched prefill failed\",\"type\":\"invalid_request_error\",\"code\":null}}"
+  },
+  "health": {
+    "status": 503,
+    "body": "{\"status\":\"unhealthy\",\"gpu_healthy\":false,\"requests_running\":1,\"seq_slots_free\":2,\"seq_slots_total\":2}"
+  },
+  "followup": {
+    "status": 503,
+    "body": "{\"error\":{\"message\":\"GPU unhealthy after a device error; restart the server\",\"type\":\"invalid_request_error\",\"code\":null}}"
+  },
+  "readbacks": 1,
+  "slots": 2,
+  "inline": false
+}

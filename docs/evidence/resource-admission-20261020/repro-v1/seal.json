@@ -1,0 +1,17 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792478261.3740747,
+  "finished": 1792478294.2715015,
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/request_admission_contract.py",
+    "--binary",
+    "build/q4t",
+    "--output",
+    ".q4t-work/resource-admission-20261020/repro-v1/run",
+    "--baseline"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}
