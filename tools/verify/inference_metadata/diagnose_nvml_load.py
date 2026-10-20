@@ -67,7 +67,7 @@ def observe(folder):
     return 0
 
 
-def main():
+def main(reclaim_before_load=False):
     from file_cache import model_files, observe_files
     from run_budget_experiment import run_owned_runner
     OUT.mkdir(parents=True, exist_ok=False)
@@ -86,6 +86,8 @@ def main():
         shutil.copy2(old / name, OUT / name)
     command = json.loads((old / 'normal-command.json').read_text())
     command = [a.replace(str(old), str(OUT)) for a in command if a != '--clear-model-cache']
+    if reclaim_before_load:
+        command.append('--clear-model-cache')
     command[command.index('--output') + 1] = str(OUT / 'normal')
     model = Path(command[command.index('--model-dir') + 1])
     binary = Path(command[command.index('--binary') + 1])
@@ -96,7 +98,8 @@ def main():
         prewarm_timeout_seconds=180, run_timeout_seconds=1200,
         scope_limit_bytes=64 << 30, binary_sha256=digest, command=command,
         observer_interval_seconds=.2, observer_max_seconds=300,
-        performance_acceptance=False, controlled_prewarm_not_historical_replay=True))
+        performance_acceptance=False, reclaim_before_load=reclaim_before_load,
+        controlled_prewarm_not_historical_replay=True))
     started = time.time()
     observer = subprocess.Popen(['sudo', '-n', sys.executable, '-B', str(Path(__file__).resolve()),
                                  '--observe', str(OUT)])
@@ -155,5 +158,8 @@ def main():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--observe', type=Path)
+    parser.add_argument('--reclaim-before-load', action='store_true')
     args = parser.parse_args()
-    sys.exit(observe(args.observe) if args.observe else main())
+    if args.reclaim_before_load:
+        OUT = ROOT / '.q4t-work/nvml-load-20261020/diagnostic-v2/run'
+    sys.exit(observe(args.observe) if args.observe else main(args.reclaim_before_load))

@@ -47,3 +47,25 @@ v5定向回收模型文件缓存后52次守卫查询全部OK，最长0.0851秒�
 若修改生产工具或运行时，验证失败/清理合同与受影响HTTP质量。
 未修复的热缓存问题不得用冷缓存通过冒充已修复。缓存策略真实优化
 不能跨过该可靠性出口；离线筛选可在不依赖GPU的范围进行。
+
+## 首轮证据与第二轮变量冻结
+
+diagnostic-v1受控只读预热67,987,279,488 bytes，cache端点68,717,608,960
+bytes。守卫39次查询，最后CLEANUP_FAILED约6.007秒；阶段ENV_ABORT。
+内核栈直接观察模型线程nv_alloc_system_pages → __alloc_pages →
+try_to_compact_pages/migrate_pages，NVML线程rmapiLockAcquire →
+os_acquire_rwlock_read。模型最终完成model_load 23,706ms并启动HTTP，
+随后被守卫清理；本轮kernel没有NV_ERR_NO_MEMORY记录。
+因此初始化超时不要求先有分配失败；单凭旧报错不能断定模型已OOM。
+全机compact_stall增959、compact_fail增545、compact_success增414，
+这些是系统背景计数，不冒充模型独占计数；模型栈提供归属证据。
+
+历史v3精确kernel时间1792490496.375145，晚于wrapper的清理SIGTERM
+1792490495.629844约0.745秒。报错可能与清理中断有关，未证明，不能
+沿用“分配失败先导致NVML超时”的确定因果。原日志保持不改。
+
+第二轮仅改变加载前定向回收：同预热文件/64GiB上界、同模型/夹具/
+memcg/监控/observer，新增--clear-model-cache并要求payload零驻留门。
+最多一次模型加载与1K质量，不新增性能样本；原阶段v5的中断合同复用。
+若通过，建立明确的卸载研究启动cache合同，不宣称驱动内部已修复，
+不偷偷在请求间回收缓存，也不接受继承缓存启动模式。
