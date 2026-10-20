@@ -1,0 +1,143 @@
+{
+  "status": "PASS_LOCALITY_SCREEN_ONLY",
+  "payload_slots": 768,
+  "payload_bytes": 2516594688,
+  "variants": [
+    {
+      "name": "calibration-retrieval-45056-serial_eager",
+      "sequence_sha256": "3a3ddc3d1d852350b9c1babdf62b3333fdc07c70a0cb512eef014c0039e93396",
+      "rows": [
+        {
+          "request": "calibration-retrieval-45056-r1",
+          "phase": "prefill",
+          "load_requests": 334730,
+          "shared_hits": 229540,
+          "local_hits": 0
+        },
+        {
+          "request": "calibration-retrieval-45056-r1",
+          "phase": "decode",
+          "load_requests": 618,
+          "shared_hits": 7,
+          "local_hits": 0
+        },
+        {
+          "request": "calibration-retrieval-45056-r2",
+          "phase": "prefill",
+          "load_requests": 327151,
+          "shared_hits": 225460,
+          "local_hits": 0
+        },
+        {
+          "request": "calibration-retrieval-45056-r2",
+          "phase": "decode",
+          "load_requests": 618,
+          "shared_hits": 7,
+          "local_hits": 0
+        }
+      ],
+      "shared_slots": 768,
+      "local_slots": 768
+    },
+    {
+      "name": "calibration-retrieval-45056-batch_deferred",
+      "sequence_sha256": "3a3ddc3d1d852350b9c1babdf62b3333fdc07c70a0cb512eef014c0039e93396",
+      "rows": [
+        {
+          "request": "calibration-retrieval-45056-r1",
+          "phase": "prefill",
+          "load_requests": 334730,
+          "shared_hits": 229540,
+          "local_hits": 0
+        },
+        {
+          "request": "calibration-retrieval-45056-r1",
+          "phase": "decode",
+          "load_requests": 618,
+          "shared_hits": 7,
+          "local_hits": 0
+        },
+        {
+          "request": "calibration-retrieval-45056-r2",
+          "phase": "prefill",
+          "load_requests": 327151,
+          "shared_hits": 225460,
+          "local_hits": 0
+        },
+        {
+          "request": "calibration-retrieval-45056-r2",
+          "phase": "decode",
+          "load_requests": 618,
+          "shared_hits": 7,
+          "local_hits": 0
+        }
+      ],
+      "shared_slots": 768,
+      "local_slots": 768
+    },
+    {
+      "name": "holdout-business-join-45k-serial_eager",
+      "sequence_sha256": "dd772fb0df3d92cb001ca8d778a31a93ff0598b275ffd083eebb925c5bf383c2",
+      "rows": [
+        {
+          "request": "holdout-business-join-45k-r1",
+          "phase": "prefill",
+          "load_requests": 394311,
+          "shared_hits": 284990,
+          "local_hits": 0
+        },
+        {
+          "request": "holdout-business-join-45k-r1",
+          "phase": "decode",
+          "load_requests": 784,
+          "shared_hits": 10,
+          "local_hits": 0
+        }
+      ],
+      "shared_slots": 768,
+      "local_slots": 768
+    },
+    {
+      "name": "holdout-business-join-45k-batch_deferred",
+      "sequence_sha256": "dd772fb0df3d92cb001ca8d778a31a93ff0598b275ffd083eebb925c5bf383c2",
+      "rows": [
+        {
+          "request": "holdout-business-join-45k-r1",
+          "phase": "prefill",
+          "load_requests": 394311,
+          "shared_hits": 284990,
+          "local_hits": 0
+        },
+        {
+          "request": "holdout-business-join-45k-r1",
+          "phase": "decode",
+          "load_requests": 784,
+          "shared_hits": 10,
+          "local_hits": 0
+        }
+      ],
+      "shared_slots": 768,
+      "local_slots": 768
+    }
+  ],
+  "first_calibration_gpu_loads_match_runtime": true,
+  "holdout_replay_starts_empty_unlike_capture_history": true,
+  "decision": "PROCEED_TO_CLAIM_EVENT_MODEL_NOT_RUNTIME_DEPLOYMENT",
+  "schedules_may_have_identical_access_sequences": true,
+  "performance_acceptance": false,
+  "predicted_physical_ssd_bytes": null,
+  "long_decode_coverage": false,
+  "artifact_hashes": {
+    "results.json": "14679972a90e71907fdb1efad32ace94fe20ff68de31de4cd3743518e3e4fd82",
+    "layout-validation.json": "e3e84dbc0d07be7a7c4f647b04208681223cfdf1ed1448120fac38528baf3f1c",
+    "calibration-retrieval-45056-serial_eager.json": "ab78b5300e38c6fa1b5a55a94c4604746962761fb15a9f0b395438c8f5b34afe",
+    "sources.json": "44b140f2b10e3cffada7cf5a90ce402dfe4d2f4ee4975242616da0f645f5bd23",
+    "state.json": "83821b06f8d1e384d2becf1ad578a22d8a95ca5aa0abc3e5c98d616818d924c9",
+    "holdout-business-join-45k-source.json": "f68f88a9f1338d2b415777090ee80649b298e536936202bdf282b35f4d572520",
+    "holdout-business-join-45k-batch_deferred.json": "3c562863c9a569deece6f11e435050b38745a230e574fa3f44199a4a60f53486",
+    "plan.json": "d5aa0ef222b54daccaba4f4e96715df25260b49cedc3fd354bded9389815caed",
+    "holdout-business-join-45k-serial_eager.json": "fa6b25bd308d1ff6960245e0da111d05253cc72c363fae282a35be5e3c56d215",
+    "calibration-retrieval-45056-batch_deferred.json": "70a70a31e9f5c3282ab0cc09d7f30b5f4e30bb4373d2283a5983619c11c1b108",
+    "calibration-retrieval-45056-source.json": "d0cdff0e9f3cd9e0839ab7ee4c99a2944ffd28cb19a01f513b92746aeb4092e2"
+  }
+}

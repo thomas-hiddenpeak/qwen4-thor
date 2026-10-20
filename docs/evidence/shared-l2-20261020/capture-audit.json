@@ -1,0 +1,35 @@
+{
+  "status": "PASS_CURRENT_ROUTE_CAPTURE",
+  "sealed_files": 34,
+  "binary_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+  "requests": [
+    {
+      "id": "calibration-retrieval-45056",
+      "response_id": "chatcmpl-auto-0",
+      "summary": {
+        "forwards": 12,
+        "prefill_rows": 45056,
+        "decode_rows": 6,
+        "route_ids": 21629760,
+        "output_tokens": 7
+      },
+      "trace_sha256": "90bba576bad0fdd3e5813f4308bb66fe9930cba769d1c9ab01396776c7cfd61f",
+      "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423"
+    },
+    {
+      "id": "holdout-business-join-45k",
+      "response_id": "chatcmpl-auto-1",
+      "summary": {
+        "forwards": 12,
+        "prefill_rows": 45056,
+        "decode_rows": 6,
+        "route_ids": 21629760,
+        "output_tokens": 7
+      },
+      "trace_sha256": "32fa08dec4d1eaa67355a797c46f698fb357108c873574ba3508352e46a71aa0",
+      "prompt_sha256": "c9cab04e87acd6b55cc980f97d6b5280c8ad90b6b8364bab0ce3b0c8dc63c5ea"
+    }
+  ],
+  "performance_acceptance": false,
+  "holdout_semantic_quality_acceptance": false
+}
