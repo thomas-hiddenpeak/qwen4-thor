@@ -4,6 +4,17 @@
 
 ## 当前交付
 
+**元数据加固默认入口已部署并通过短健康检查（2026-10-20）。**
+默认build/q4t现为c8f4b241，匹配真实构建缓存及release sidecar；
+旧B1a 44abd8b1可回退。默认MTP与普通模式各1条固定1024-token
+请求通过，2服务正常关停，NVML整段COMPLETED，83文件封存核验。
+没有常驻服务、无新性能矩阵；此前“未部署”均为历史状态。
+后续目标active：继续其余上传源分组补强；性能方法已离线审查，
+不追加采样、不宣称非劣。见[部署、回退及下一组范围](INFERENCE_METADATA_FOLLOWUP_2026-10-20.md)
+和[性能方法边界](INFERENCE_METADATA_PERFORMANCE_METHOD_2026-10-20.md)。
+
+以下为本次部署前的接受与验证记录，默认入口身份以上述最新记录为准。
+
 **推理元数据加固已获本项独立工程接受（2026-10-20）。**
 用户明确接受本报告披露的计时不确定性，保留容量修复与单入口owner；
 状态ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY。审计、直接合同、
@@ -179,6 +190,13 @@ archive/main-convergence-delivery-20261017标签保护并从远端独立取回�
 完整研究与两个旧研究分支仍按[归档索引](ARCHIVED_RESEARCH.md)恢复。
 
 ## 已接受生产基线
+
+当前默认build/q4t为已接受元数据加固版本
+c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d，
+源码3d5564e；2条短健康检查完成。完整运行时验证复用恢复阶段，
+工程接受保留计时不确定性。部署和回退见[后续交付](INFERENCE_METADATA_FOLLOWUP_2026-10-20.md)。
+
+以下B1a/B1b描述为前代部署记录，B1a现在作为回退版本保留。
 
 B1b源码按PR #7合入；此前main为a893dc8，包含B1a合并c3f3c45。
 默认build/q4t及release元数据为已接受B1a binary
