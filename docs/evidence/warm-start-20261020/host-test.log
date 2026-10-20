@@ -1,0 +1,6 @@
+[alloc-observer] cudaMalloc begin id=0 bytes=123 mono=689717.573719909 caller_offset=3044 result=-1
+[alloc-observer] cudaMalloc end id=0 bytes=123 mono=689717.573758065 caller_offset=3044 result=0
+[alloc-observer] cudaMallocHost begin id=1 bytes=789 mono=689717.573759565 caller_offset=3140 result=-1
+[alloc-observer] cudaMallocHost end id=1 bytes=789 mono=689717.573760556 caller_offset=3140 result=2
+[alloc-observer] cudaHostAlloc begin id=2 bytes=321 mono=689717.573761361 caller_offset=3196 result=-1
+[alloc-observer] cudaHostAlloc end id=2 bytes=321 mono=689717.573762047 caller_offset=3196 result=1

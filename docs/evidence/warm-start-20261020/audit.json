@@ -1,0 +1,294 @@
+{
+  "partial_reclaim_bytes": 16996773792,
+  "remaining_model_cache_bytes": 54050951168,
+  "status": "VERIFIED_DIAGNOSTIC_EVIDENCE",
+  "identity": {
+    "default_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+    "unwrapped_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+    "observer_sha256": "b0f68b55768d411f3c4f0271f472d7b9ee0fb7becb8780c928d030eed8b41549",
+    "source_sha256": "033b87e3c0bca928683ce1662ed6d9955254891a62ff5c88c3d633f4ae4ca363",
+    "link_command": [
+      "/usr/bin/g++-14",
+      "-O3",
+      "-DNDEBUG",
+      "CMakeFiles/q4t.dir/src/main.cpp.o",
+      "-o",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/warm-start-20261020/q4t",
+      "-L/usr/local/cuda-13.3/targets/sbsa-linux/lib/stubs",
+      "-L/usr/local/cuda-13.3/targets/sbsa-linux/lib",
+      "-Wl,-rpath,/usr/local/cuda-13.3/targets/sbsa-linux/lib",
+      "libq4t_model.a",
+      "libq4t_text.a",
+      "libq4t_ple.a",
+      "libq4t_quant.a",
+      "libq4t_server.a",
+      "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so",
+      "libq4t_model.a",
+      "libq4t_ple.a",
+      "/usr/lib/aarch64-linux-gnu/liburing.so",
+      "libq4t_quant.a",
+      "libq4t_trace.a",
+      "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so",
+      "libq4t_text.a",
+      "/usr/lib/aarch64-linux-gnu/libicui18n.so",
+      "/usr/lib/aarch64-linux-gnu/libicuuc.so",
+      "/usr/lib/aarch64-linux-gnu/libicudata.so",
+      "libq4t_io.a",
+      "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so",
+      "-ldl",
+      "/usr/lib/aarch64-linux-gnu/librt.a",
+      "libq4t_runtime.a",
+      "-lcudadevrt",
+      "-lcudart_static",
+      "-lrt",
+      "-lpthread",
+      "-ldl",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/warm-start-20261020/observer.o",
+      "-Wl,--wrap=cudaMalloc,--wrap=cudaHostAlloc,--wrap=cudaMallocHost"
+    ]
+  },
+  "results": [
+    {
+      "stage": "diagnostic-v1",
+      "seal": {
+        "guard_exit": 75,
+        "guard_status": "ENV_ABORT",
+        "started": 1792499351.296397,
+        "finished": 1792499384.6698499,
+        "command": [
+          "python3",
+          "-B",
+          "tools/verify/inference_metadata/diagnose_warm_start.py"
+        ],
+        "seal_scope": "after guard completion; preserves interrupted child manifests"
+      },
+      "sealed_files": 128,
+      "completed_allocations": 1435,
+      "unfinished_allocations": {
+        "1435": {
+          "api": "cudaMalloc",
+          "id": 1435,
+          "bytes": 209715200,
+          "mono": 689464.042814344,
+          "caller_offset": 676380,
+          "result": -1
+        }
+      },
+      "pending_evidence": [
+        {
+          "allocation": {
+            "api": "cudaMalloc",
+            "id": 1435,
+            "bytes": 209715200,
+            "mono": 689464.042814344,
+            "caller_offset": 676380,
+            "result": -1
+          },
+          "observer_end": 689465.647454892,
+          "simultaneous_samples": [],
+          "duration_not_measured_without_end_record": true,
+          "caller": "q4t::quant::MoEResidency::Init(q4t::io::WeightLoader const&, int, int, int, int, int, CUstream_st*)::{lambda(void**, unsigned long)#1}::operator()(void**, unsigned long) const [clone .isra.0]\nmoe_residency.cpp:?"
+        }
+      ],
+      "longest_allocations": [
+        {
+          "api": "cudaMalloc",
+          "id": 1433,
+          "bytes": 419430400,
+          "mono": 689458.599364858,
+          "caller_offset": 676380,
+          "result": -1,
+          "gu_index": 46,
+          "end": 689464.010344853,
+          "duration": 5.41097999503836,
+          "returncode": 0
+        },
+        {
+          "api": "cudaMalloc",
+          "id": 1405,
+          "bytes": 209715200,
+          "mono": 689455.47472213,
+          "caller_offset": 676380,
+          "result": -1,
+          "end": 689456.774769257,
+          "duration": 1.3000471270643175,
+          "returncode": 0
+        },
+        {
+          "api": "cudaMalloc",
+          "id": 1403,
+          "bytes": 419430400,
+          "mono": 689454.629488006,
+          "caller_offset": 676380,
+          "result": -1,
+          "gu_index": 45,
+          "end": 689455.444829308,
+          "duration": 0.8153413019608706,
+          "returncode": 0
+        },
+        {
+          "api": "cudaMalloc",
+          "id": 1415,
+          "bytes": 6553600,
+          "mono": 689457.103866103,
+          "caller_offset": 257136,
+          "result": -1,
+          "end": 689457.484507102,
+          "duration": 0.38064099906478077,
+          "returncode": 0
+        },
+        {
+          "api": "cudaMalloc",
+          "id": 1423,
+          "bytes": 31457280,
+          "mono": 689457.941353258,
+          "caller_offset": 454224,
+          "result": -1,
+          "end": 689458.278418016,
+          "duration": 0.3370647580595687,
+          "returncode": 0
+        }
+      ],
+      "simultaneous_compaction_lock_samples": [
+        689459.802697283,
+        689460.036408814,
+        689460.501959885,
+        689460.967870068,
+        689463.537058036
+      ],
+      "slowest_caller": "q4t::quant::MoEResidency::Init(q4t::io::WeightLoader const&, int, int, int, int, int, CUstream_st*)::{lambda(void**, unsigned long)#1}::operator()(void**, unsigned long) const [clone .isra.0]\nmoe_residency.cpp:?"
+    },
+    {
+      "stage": "diagnostic-v2",
+      "seal": {
+        "guard_exit": 75,
+        "guard_status": "ENV_ABORT",
+        "started": 1792499473.3729632,
+        "finished": 1792499514.4357102,
+        "command": [
+          "python3",
+          "-B",
+          "tools/verify/inference_metadata/diagnose_warm_start.py",
+          "--reclaim-prefix"
+        ],
+        "seal_scope": "after guard completion; preserves interrupted child manifests"
+      },
+      "sealed_files": 130,
+      "completed_allocations": 1492,
+      "unfinished_allocations": {
+        "1492": {
+          "api": "cudaMalloc",
+          "id": 1492,
+          "bytes": 2348023808,
+          "mono": 689578.851553548,
+          "caller_offset": 71916,
+          "result": -1
+        }
+      },
+      "pending_evidence": [
+        {
+          "allocation": {
+            "api": "cudaMalloc",
+            "id": 1492,
+            "bytes": 2348023808,
+            "mono": 689578.851553548,
+            "caller_offset": 71916,
+            "result": -1
+          },
+          "observer_end": 689595.161409617,
+          "simultaneous_samples": [
+            689580.171794556,
+            689582.309806788,
+            689582.786348237,
+            689583.024444673,
+            689584.208794797,
+            689584.921306952,
+            689585.634069554,
+            689586.109583924,
+            689587.537643194,
+            689588.014350708,
+            689588.966209638,
+            689589.441281155,
+            689591.104174394,
+            689591.343091362,
+            689591.820031058,
+            689592.059093502,
+            689592.298502997,
+            689592.538509841,
+            689592.77770882,
+            689593.015524125,
+            689593.254158857,
+            689593.492269713,
+            689593.731391774,
+            689594.446172272,
+            689594.685596064
+          ],
+          "duration_not_measured_without_end_record": true,
+          "caller": "q4t::model::LoadModel(q4t::model::ModelConfig const&, q4t::model::Model*, CUstream_st*)::{lambda(void**, unsigned long)#1}::operator()(void**, unsigned long) const [clone .isra.0]\ntmpxft_00216266_00000000-6_model.cudafe1.cpp:?"
+        }
+      ],
+      "longest_allocations": [
+        {
+          "api": "cudaMalloc",
+          "id": 0,
+          "bytes": 1271398400,
+          "mono": 689571.055804956,
+          "caller_offset": 404576,
+          "result": -1,
+          "end": 689571.283664359,
+          "duration": 0.22785940300673246,
+          "returncode": 0
+        },
+        {
+          "api": "cudaHostAlloc",
+          "id": 158,
+          "bytes": 52429056,
+          "mono": 689573.379919574,
+          "caller_offset": 680796,
+          "result": -1,
+          "end": 689573.410871641,
+          "duration": 0.030952066997997463,
+          "returncode": 0
+        },
+        {
+          "api": "cudaHostAlloc",
+          "id": 1042,
+          "bytes": 52429056,
+          "mono": 689577.378935226,
+          "caller_offset": 680796,
+          "result": -1,
+          "end": 689577.405149776,
+          "duration": 0.0262145500164479,
+          "returncode": 0
+        },
+        {
+          "api": "cudaHostAlloc",
+          "id": 706,
+          "bytes": 52429056,
+          "mono": 689576.042695078,
+          "caller_offset": 680796,
+          "result": -1,
+          "end": 689576.06839714,
+          "duration": 0.02570206206291914,
+          "returncode": 0
+        },
+        {
+          "api": "cudaHostAlloc",
+          "id": 798,
+          "bytes": 52429056,
+          "mono": 689576.490070496,
+          "caller_offset": 680796,
+          "result": -1,
+          "end": 689576.515756502,
+          "duration": 0.02568600606173277,
+          "returncode": 0
+        }
+      ],
+      "simultaneous_compaction_lock_samples": [],
+      "slowest_caller": "q4t::model::LoadModelHead(q4t::io::WeightLoader const&, int, int, int, int, float, q4t::model::ModelHeadWeights*, CUstream_st*)\n??:?"
+    }
+  ],
+  "warm_start_fixed": false,
+  "performance_acceptance": false,
+  "driver_lock_owner_proven": false
+}
