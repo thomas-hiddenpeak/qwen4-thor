@@ -1,0 +1,97 @@
+# 新入口元数据加固最终审查与部署决定稿
+
+状态：PREPARED_NOT_ACCEPTED_NOT_DEPLOYED。本次推进目标仍active；
+以下是针对753d9769的具体决定稿，尚无本项接受决定。默认c8f4b241。
+
+## 身份、复核与价值
+
+候选运行时源码b6870c0，binary完整摘要及缓存摘要见
+[离线审计](evidence/metadata-followup-20261020/final-review-v1/audit.json)。
+重新核验HTTP162、差分174、原部署83文件，共419文件全部匹配。
+当前src/include与b6870c0无差异。首次将整个CMake也要求相同的检查
+失败；人工审查发现仅新增EXCLUDE_FROM_ALL差分测试目标，生产目标
+未变，保留[差异](evidence/metadata-followup-20261020/final-review-v1/cmake-diff.patch)。
+没有重编译或重跑已通过的GPU用例。
+
+收益是五个主模型入口与MTP分块入口的CPU上传来源由明确owner保有，
+包括未Finish早退后复用及错误保留；同时拒绝已覆盖的非法slot、容量
+与整数溢出输入。不是已复现模型答案错误的修复，也不是性能优化。
+逐项验证和范围见[后续结果](METADATA_FOLLOWUP_RESULT_2026-10-20.md)。
+
+## 源码可见的成本
+
+下表为每次调用新增CPU快照memcpy字节数，按本机int/int32为4字节。
+T为本次token数，L=max_len，V为视觉token数，B为ragged序列数，
+c为MTP本chunk token数。它不是测量值，也不是耗时估计。
+
+| 入口 | 新增快照复制字节 |
+|---|---:|
+| RunPrefill | 8T + 12L，视觉再加4V |
+| ModelDecodeStep | 20 |
+| ModelDecodeBatch | 20T |
+| ModelPrefillBatch / ModelMixedBatch | 28T + 4(B+1) |
+| MTP chunked extend | 8c，max_seq>1时12c |
+
+例如L=208896，仅RunPrefill的全长RoPE快照就有2506752字节，约
+2.39MiB；不能仅因decode单步只有20字节而断言整体成本可忽略。
+每批记录事件，下一Begin等待上批完成。首次/增长分配还会零初始化
+新块再memcpy；按拷贝序号保留各块历史最大容量，直到Free，不等于
+当前调用字节数，混合不同入口后也可能高于任一次调用的容量。
+RunPrefill事件还排在Embed及可能的视觉注入之后，不能描述成只等
+H2D、不可能增加等待。MTP每chunk也经过此生命周期。
+
+审查未发现需要重跑既有合同的新增正确性失败。对象不是线程安全的，
+完成事件不保护后续GPU消费者；依赖外部串行化和stream存活。设备
+完成失败时保留源而不是保证恢复。LoadMtp权重加载期、ResetState
+错误传播、MTP取消矩阵及视觉语义仍不在本次证明范围，不扩大结论。
+
+## 接受路线与待决问题
+
+EVALUATION的删除冗余路线不适用于新增快照和事件；3d5564e的独立
+决定也不覆盖本身份。结构整理的直接/HTTP合同已满足本轮冻结范围，
+但新候选没有五档性能对照。旧c8f4b241的0.4219%观察下降既不是
+本候选的观察值，也不能限制其风险。
+
+建议把决定限定为：是否接受753d9769的所有权加固收益，以及**性能
+尚未测量、可能退化且幅度未知**这一风险，并将其设为默认入口。
+若明确接受，可记录本身份独立工程决定
+ENGINEERING_ACCEPTED_WITH_UNMEASURED_PERFORMANCE；不写性能保持、
+统计非劣或优化通过，也不修改通用五档规则。现有继续推进授权
+用于审查和准备，不代替这个尚未披露过的具体接受决定。
+
+若不接受上述未知风险，继续保留默认c8f4b241。下一步先冻结该身份
+两模式五档的有界描述性对照预算，再获采样授权；不能把质量请求
+当作性能矩阵。若要求统计非劣，还需损失界限、独立启动设计与方差
+依据，见[方法审查](INFERENCE_METADATA_PERFORMANCE_METHOD_2026-10-20.md)。
+当前性能采样预算仍为0；不自动扩充采样或设容差。
+
+## 已准备的包与条件部署方案
+
+本地.q4t-work/metadata-followup-20261020/final-review-v1已保存：
+封存HTTP实际使用的candidate/q4t及真实CMakeCache、当前默认的
+previous/q4t及原release sidecar/缓存、所有摘要。候选包不生成
+“已接受”的sidecar，默认build/q4t保持不变。准备包不是部署或回退
+演练，也没有常驻服务。
+
+接受之后的冻结部署边界：
+
+1. 同一NVML GPU lease覆盖身份复核、替换、两模式健康检查和结束。
+   执行前重核源码、419文件中相关证据、包摘要及默认c8f身份；
+   不匹配立即停止。沿用源码和候选binary，不重新构建另一个身份。
+2. 保存本项接受决定，创建独立release sidecar，明确753d9769来源、
+   真实缓存、未测性能及c8f回退对；分别原子替换binary和sidecar。
+   两文件不是跨文件原子事务，异常/中断后必须核对两者，不能仅凭
+   其中之一宣称部署成功。
+3. 最多2次模型加载：默认MTP、普通模式各1条固定1024-token质量
+   请求，复用batch-http-v1对应参考。每服务最多600秒含启动，
+   无重试。输出/输入长度/终止合同一致、server退出0、guard完整
+   结束才标部署健康通过。健康请求不用于性能接受。
+4. 合同或环境失败停止自己的服务、保留证据，不采集替代样本。
+   复核备份后恢复c8f binary及原sidecar，校验两者与缓存；不覆盖
+   未知的并发修改。SIGKILL/断电恢复需重新取得lease核查现场。
+5. 成功后封存全部证据并更新STATUS/日志、提交推送。新回退锚点是
+   c8f，而不是44abd8b1；旧deploy_accepted.py/rollback_accepted.py
+   写死前一身份，不直接用于本次。对应执行器在接受路线确定后接入。
+
+以上健康检查仅作为部署方案，尚未执行；本轮新增GPU加载和性能
+请求均为0。目标保持active，待本项接受决定，未标blocked或complete。

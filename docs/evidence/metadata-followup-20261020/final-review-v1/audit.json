@@ -1,0 +1,26 @@
+{
+  "status": "PREPARED_NOT_ACCEPTED_NOT_DEPLOYED",
+  "source_commit": "b6870c0",
+  "review_head": "866aa5044275a7e51a63e7df7e445a483effdb4b",
+  "runtime_source_diff_empty": true,
+  "cmake_review": "Only added EXCLUDE_FROM_ALL q4t_metadata_batch_replay target; production targets unchanged. Initial blanket CMake equality check failed; reviewed diff retained.",
+  "candidate_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+  "default_sha256": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+  "sealed_files_verified": {
+    "batch-http-v1": 162,
+    "batch-replay-v1": 174,
+    "deploy-v1": 83
+  },
+  "prepared_files": {
+    "cmake-diff.patch": "f32a6e9693d624a945e17041bdf88b94a82f17cb4b0c4774a3d89e915c870262",
+    "candidate/q4t": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+    "candidate/CMakeCache.txt": "7b9347bd5fc029e9c5887119b70b80138fbbd94365744b32acefa04634ceb8fb",
+    "previous/q4t.release.json": "e4d5033a8a9cd55eae523263c72c0bcb164bc8cb80693109f36f4f8a703df0e9",
+    "previous/q4t": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+    "previous/CMakeCache.txt": "28833e67982cbcf27e8cf3763b5c987376240519fb8b8aec4479d54f47d35e24"
+  },
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/final-review-v1",
+  "new_gpu_loads": 0,
+  "new_performance_samples": 0,
+  "default_unchanged": true
+}
