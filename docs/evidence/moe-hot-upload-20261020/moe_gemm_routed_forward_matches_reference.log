@@ -1,0 +1,3 @@
+  MoE routed forward M=4 k=3 max_abs=0.0063768 max_rel=0.0063768
+[PASS] moe_gemm_routed_forward_matches_reference
+1 tests, 1 passed, 0 failed, 0 skipped

@@ -1,0 +1,14 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792474300.0211346,
+  "finished": 1792474828.091371,
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_hot_acceptance.py",
+    "--output",
+    ".q4t-work/moe-hot-upload-20261020/acceptance-v1/run"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}

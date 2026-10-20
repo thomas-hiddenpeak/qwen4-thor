@@ -1,0 +1,16 @@
+[q4t][residency] chunk_order=0 policy=original prefill_only=1 tie=original_chunk_index
+[q4t][residency] partition=0 policy=original prefill_only=1 budget=32*T*k
+[q4t][residency][diag] layer=2 flush size=6 book=60 actual=60
+[q4t][residency][diag] layer=2 flush size=8 book=64 actual=64
+[q4t][residency][diag] layer=2 flush size=7 book=60 actual=60
+[q4t][residency][diag] layer=2 flush size=7 book=60 actual=60
+[q4t][residency][diag] layer=2 flush size=4 book=38 actual=38
+[q4t][residency][diag] layer=2 T=32 D=64 chunks=5 max_distinct=64 resident_before=0 overlap=10,14,15,7 new=54,46,45,31 chunk_order=0 diag_order=original_partition partition=0
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][residency][diag] layer=2 flush size=1 book=10 actual=10
+[q4t][residency][diag] layer=2 T=1 D=64 chunks=1 max_distinct=10 resident_before=64 overlap= new= chunk_order=0 diag_order=original_partition partition=0
+  T=32 C=64: BIT-EXACT=true loads=234 misses=234
+  T=1 C=64: BIT-EXACT=true loads=239 misses=239
+[PASS] moe_forward_residency_bitexact
+1 tests, 1 passed, 0 failed, 0 skipped

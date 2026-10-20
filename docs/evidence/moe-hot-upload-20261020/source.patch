@@ -1,0 +1,219 @@
+diff --git a/docs/STATUS.md b/docs/STATUS.md
+index d3102b2..28e6c33 100644
+--- a/docs/STATUS.md
++++ b/docs/STATUS.md
+@@ -4,6 +4,11 @@
+ 
+ ## 当前交付
+ 
++**MoE热路径上传审计进行中（2026-10-20）。** 已确认offset_h、驻留
++分块三类上传源及紧邻D2H错误出口缺少完成保证；按冻结范围复用
++现有owner修复，准备一次有界合同/真实MoE/两模式HTTP验收。默认
++bc348458保持，不作性能优化主张。见[审计与预算](MOE_HOT_UPLOAD_AUDIT_2026-10-20.md)。
++
+ **Megatron可靠性加固已替换默认程序（2026-10-20）。** 用户授权收尾后，
+ 默认build/q4t由753d9769更新为bc348458（运行时0494f21），发布
+ sidecar及真实缓存同步。默认MTP k=3/普通各1条1024-token健康
+diff --git a/docs/log/2026-10-20.md b/docs/log/2026-10-20.md
+index 8f88ee6..f78a46b 100644
+--- a/docs/log/2026-10-20.md
++++ b/docs/log/2026-10-20.md
+@@ -1,5 +1,13 @@
+ # 2026-10-20
+ 
++## MoE热路径异步host存储审计启动
++
++- 做了什么：冻结offset_h、驻留分块H2D及紧邻D2H失败出口范围，
++  确认合同缺口，复用owner补完成边界；默认bc348458保持。
++- 为什么：device异步释放和调用方后续等待不能保护已销毁局部源。
++- 下一步：一次构建与合同/MoE真实参考、22条HTTP有界质量验收。
++
++
+ ## Megatron可靠性候选默认部署收尾
+ 
+ - 做了什么：按用户“那么收尾吧”授权，将默认753d替换为已验收
+diff --git a/include/q4t/io/pending_host_storage.h b/include/q4t/io/pending_host_storage.h
+index dbdb87e..06c16e5 100644
+--- a/include/q4t/io/pending_host_storage.h
++++ b/include/q4t/io/pending_host_storage.h
+@@ -10,9 +10,10 @@
+ 
+ namespace q4t::io {
+ 
+-// Loading-only ownership. Mark before a possibly queued upload, then Drain
+-// before mutating the storage. The stream must outlive this object. Device
+-// destinations remain caller-owned. Failed completion retains the host source;
++// Host transfer storage ownership. Mark before a possibly queued transfer,
++// then Drain before reading or mutating the storage. The stream must outlive
++// this object. Device storage remains caller-owned. Failed completion retains
++// the host storage;
+ // it does not make a failed CUDA context recoverable.
+ template <class Storage>
+ class PendingHostStorage {
+@@ -25,7 +26,7 @@ class PendingHostStorage {
+     const Status status = Drain();
+     if (pending_) {
+       (void)storage_.release();
+-      std::fprintf(stderr, "load source retained after failed drain: %s\n",
++      std::fprintf(stderr, "host transfer storage retained after failed drain: %s\n",
+                    status.message().c_str());
+     }
+   }
+@@ -38,7 +39,7 @@ class PendingHostStorage {
+     if (!pending_) return Status();
+     const cudaError_t error = cudaStreamSynchronize(stream_);
+     if (error != cudaSuccess)
+-      return Status::Fail(std::string("load source completion: ") +
++      return Status::Fail(std::string("host transfer storage completion: ") +
+                           cudaGetErrorString(error));
+     pending_ = false;
+     return Status();
+diff --git a/src/model/moe.cu b/src/model/moe.cu
+index 0d0bf09..c31574c 100644
+--- a/src/model/moe.cu
++++ b/src/model/moe.cu
+@@ -24,6 +24,8 @@
+ #include <string>
+ #include <vector>
+ 
++#include "q4t/io/pending_host_storage.h"
++#include "q4t/model/metadata_upload_batch.h"
+ #include "q4t/model/linear.h"
+ #include "q4t/model/moe_chunk_order.h"
+ #include "q4t/model/moe_partition.h"
+@@ -503,12 +505,20 @@ Status Q4T_MOE_FORWARD_NAME(const uint16_t* x, const quant::MoEWeightLayout& rou
+     if (diagnostics) diagnostics->partition_requested = partition_mode == 1;
+     const int C = residency->Slots();
+     if (C < k) return Status::Fail("residency slots below top-k");
+-    std::vector<int32_t> ids_h(static_cast<size_t>(T) * k);
+-    std::vector<float> rw_h(static_cast<size_t>(T) * k);
++    struct RoutingReadback {
++      std::vector<int32_t> ids;
++      std::vector<float> weights;
++    };
++    io::PendingHostStorage<RoutingReadback> readback(stream);
++    auto& ids_h = readback.Get().ids;
++    auto& rw_h = readback.Get().weights;
++    ids_h.resize(static_cast<size_t>(T) * k);
++    rw_h.resize(static_cast<size_t>(T) * k);
+     const bool tim = residency->TimingEnabled();
+     const auto t_d2h =
+         tim ? std::chrono::steady_clock::now()
+             : std::chrono::steady_clock::time_point{};
++    readback.MarkPending();
+     if (cudaMemcpyAsync(ids_h.data(), d_eid,
+                         ids_h.size() * sizeof(int32_t),
+                         cudaMemcpyDeviceToHost, stream) != cudaSuccess)
+@@ -516,7 +526,7 @@ Status Q4T_MOE_FORWARD_NAME(const uint16_t* x, const quant::MoEWeightLayout& rou
+     if (cudaMemcpyAsync(rw_h.data(), d_rw, rw_h.size() * sizeof(float),
+                         cudaMemcpyDeviceToHost, stream) != cudaSuccess)
+       return Status::Fail("residency D2H router weights");
+-    if (cudaStreamSynchronize(stream) != cudaSuccess)
++    if (!readback.Drain().ok())
+       return Status::Fail("residency stream sync");
+     if (tim) {
+       residency->RecordD2HSync(static_cast<uint64_t>(
+@@ -839,23 +849,26 @@ Status Q4T_MOE_FORWARD_NAME(const uint16_t* x, const quant::MoEWeightLayout& rou
+           rw_sub[static_cast<size_t>(i) * k + jj] = rw_h[base + jj];
+         }
+       }
+-      if (cudaMemcpyAsync(d_tokidx, toks.data(),
+-                          static_cast<size_t>(T_sub) * sizeof(int32_t),
+-                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
+-        return Status::Fail("residency H2D token idx");
++      // Snapshot all three sources; the event covers uploads and early exits.
++      // GPU buffers remain ordered by the caller stream and buf's async free.
++      MetadataUploadBatch uploads;
++      s = uploads.Begin(stream);
++      if (!s.ok()) return s;
++      s = uploads.Copy(d_tokidx, toks.data(),
++                       static_cast<size_t>(T_sub) * sizeof(int32_t));
++      if (!s.ok()) return s;
+       const int total = T_sub * hs;
+       GatherTokenRowsKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0,
+                               stream>>>(x, d_tokidx, T_sub, hs, d_xsub);
+       if (cudaGetLastError() != cudaSuccess)
+         return Status::Fail("residency gather launch");
+-      if (cudaMemcpyAsync(d_idsub, sub.slots.data(),
+-                          sub.slots.size() * sizeof(int32_t),
+-                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
+-        return Status::Fail("residency H2D slot ids");
+-      if (cudaMemcpyAsync(d_rwsub, rw_sub.data(),
+-                          rw_sub.size() * sizeof(float),
+-                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
+-        return Status::Fail("residency H2D router weights");
++      s = uploads.Copy(d_idsub, sub.slots.data(),
++                       sub.slots.size() * sizeof(int32_t));
++      if (!s.ok()) return s;
++      s = uploads.Copy(d_rwsub, rw_sub.data(), rw_sub.size() * sizeof(float));
++      if (!s.ok()) return s;
++      s = uploads.Finish();
++      if (!s.ok()) return s;
+       if (cudaMemsetAsync(d_ysub, 0,
+                           static_cast<size_t>(T_sub) * hs * sizeof(float),
+                           stream) != cudaSuccess)
+@@ -906,6 +919,8 @@ Status Q4T_MOE_FORWARD_NAME(const uint16_t* x, const quant::MoEWeightLayout& rou
+         diagnostics->executed_token_rows.insert(
+             diagnostics->executed_token_rows.end(), toks.begin(), toks.end());
+       }
++      s = uploads.Drain();
++      if (!s.ok()) return s;
+       // Stage sub-chunk j+1 while the GPU runs sub-chunk j's GEMM: stage
+       // chunk 0, then commit + stage the remaining chunks. Their H2Ds are
+       // stream-ordered after sub-chunk j's GEMM, so any slot eviction is
+diff --git a/src/quant/moe_gemm.cu b/src/quant/moe_gemm.cu
+index b972822..5b41183 100644
+--- a/src/quant/moe_gemm.cu
++++ b/src/quant/moe_gemm.cu
+@@ -19,6 +19,7 @@
+ #include <string>
+ #include <vector>
+ 
++#include "q4t/io/pending_host_storage.h"
+ #include "q4t/quant/fp4_gemm.h"
+ #include "q4t/quant/moe_decode.h"
+ #include "q4t/quant/format.h"
+@@ -358,7 +359,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
+ 
+   // Host-side scratch for per-expert counts (the token lists stay on device;
+   // the gather/scatter kernels read d_token_list directly).
+-  std::vector<int32_t> counts_h(E, 0);
++  io::PendingHostStorage<std::vector<int32_t>> counts_owner(stream, E, 0);
++  auto& counts_h = counts_owner.Get();
+   // Keep routing metadata in the stream-ordered pool, with one allocation
+   // and one lifetime. An expert can select all M tokens, so its list needs
+   // capacity M (not k). Align each region as separate CUDA allocations were.
+@@ -428,11 +430,12 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
+   }
+ 
+   // 2. Read counts to host (one sync). Token lists stay on device.
++  counts_owner.MarkPending();
+   if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
+                       cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
+     return fail("cudaMemcpy counts");
+   }
+-  if (cudaStreamSynchronize(stream) != cudaSuccess) {
++  if (!counts_owner.Drain().ok()) {
+     return fail("stream sync");
+   }
+ 
+@@ -453,13 +456,18 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
+   //    single deterministic gather over all tokens instead of one scatter
+   //    launch per expert (the per-expert ScatterAddKernel was launch-overhead
+   //    dominated: median ~3.5us, below the ~5us launch cost).
+-  std::vector<int32_t> offset_h(E + 1, 0);
++  io::PendingHostStorage<std::vector<int32_t>> offset_owner(stream, E + 1, 0);
++  auto& offset_h = offset_owner.Get();
+   for (int e = 0; e < E; ++e) offset_h[e + 1] = offset_h[e] + counts_h[e];
++  offset_owner.MarkPending();
+   if (cudaMemcpyAsync(d_offset, offset_h.data(),
+                       static_cast<size_t>(E + 1) * sizeof(int32_t),
+                       cudaMemcpyHostToDevice, stream) != cudaSuccess) {
+     return fail("cudaMemcpy offset");
+   }
++  // Complete this small source upload before queuing expert work. Pool frees
++  // order device storage only; they cannot protect a local host vector.
++  if (!offset_owner.Drain().ok()) return fail("offset upload completion");
+   // Zero row_of_flat only when a count was clamped: then some (token,slot) flat
+   // is dropped and left uncovered by BuildRowOfFlatKernel, so it must map to
+   // grouped row 0 instead of an uninitialized garbage row (keeps the combine's

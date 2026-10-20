@@ -1,0 +1,12 @@
+--- include/q4t/io/pending_host_storage.h
++++ include/q4t/io/pending_host_storage.h
+@@ -26,7 +26,8 @@
+     const Status status = Drain();
+     if (pending_) {
+       (void)storage_.release();
+-      std::fprintf(stderr, "host transfer storage retained after failed drain: %s\n",
++      std::fprintf(stderr,
++                   "host transfer storage retained after failed drain: %s\n",
+                    status.message().c_str());
+     }
+   }

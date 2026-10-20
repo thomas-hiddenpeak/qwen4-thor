@@ -1,0 +1,19 @@
+{
+  "status": "PASS_RUNTIME_CONTRACTS",
+  "started": 1792474300.1655345,
+  "completed": [
+    "host-storage",
+    "host-batch",
+    "host-load",
+    "host-required",
+    "moe_gemm_routed_forward_matches_reference",
+    "moe_forward_residency_bitexact",
+    "moe_partition_runtime_numerical_contract",
+    "quality-off",
+    "quality-on"
+  ],
+  "current": "quality-on",
+  "performance_acceptance": false,
+  "deployed": false,
+  "finished": 1792474827.8019714
+}

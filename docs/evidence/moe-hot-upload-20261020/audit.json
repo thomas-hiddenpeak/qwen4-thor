@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "sealed_files": 281,
+  "candidate_sha256": "d4232b63e53bece8c82bd87d8dcac628fb089f4f7eddc163535030133107f7a6",
+  "source_base_commit": "63d090ab6964ba9ed785caeb67587184973324ca",
+  "source_manifest_sha256": "0490c328fd403bcc090a8a75b99f3da16b1b6788d453a3a76be7ccdf8b506611",
+  "source_patch_sha256": "c77ccfb8c6d5fc26ad246e7811b9bfdcfd56ff00b0c1a122c35db1bfd8b9bdd7",
+  "quality": {
+    "off": {
+      "passed": 11,
+      "startup_ms": {
+        "tokenizer": "296",
+        "budget": "420",
+        "model_load": "29124",
+        "startup_total": "29841"
+      }
+    },
+    "on": {
+      "passed": 11,
+      "startup_ms": {
+        "tokenizer": "419",
+        "budget": "424",
+        "model_load": "26575",
+        "mtp_load": "2924",
+        "startup_total": "30343"
+      }
+    }
+  },
+  "direct_gpu_tests": 3,
+  "seconds": 527.6364369392395,
+  "performance_acceptance": false,
+  "deployed": false
+}

@@ -1,0 +1,161 @@
+{
+  "off": [
+    {
+      "id": "1024-10",
+      "input_tokens": 1024,
+      "ttft_s": 0.8759839320555329,
+      "reference_ttft_s": 0.8720111990114674,
+      "observed_change_pct": 0.45558280083664027
+    },
+    {
+      "id": "1024-50",
+      "input_tokens": 1024,
+      "ttft_s": 0.7668567749205977,
+      "reference_ttft_s": 0.7677724100649357,
+      "observed_change_pct": -0.11925866732571677
+    },
+    {
+      "id": "1024-90",
+      "input_tokens": 1024,
+      "ttft_s": 0.771005145041272,
+      "reference_ttft_s": 0.7706469440599903,
+      "observed_change_pct": 0.046480555595862505
+    },
+    {
+      "id": "4096-10",
+      "input_tokens": 4096,
+      "ttft_s": 2.624143065069802,
+      "reference_ttft_s": 2.6312577599892393,
+      "observed_change_pct": -0.2703914085355974
+    },
+    {
+      "id": "4096-50",
+      "input_tokens": 4096,
+      "ttft_s": 2.620126781053841,
+      "reference_ttft_s": 2.6215007950086147,
+      "observed_change_pct": -0.05241325722233903
+    },
+    {
+      "id": "4096-90",
+      "input_tokens": 4096,
+      "ttft_s": 2.6199214790249243,
+      "reference_ttft_s": 2.619752851082012,
+      "observed_change_pct": 0.006436788220032241
+    },
+    {
+      "id": "8192-10",
+      "input_tokens": 8192,
+      "ttft_s": 5.152916531078517,
+      "reference_ttft_s": 5.146903314976953,
+      "observed_change_pct": 0.11683172839223044
+    },
+    {
+      "id": "8192-50",
+      "input_tokens": 8192,
+      "ttft_s": 5.151031463989057,
+      "reference_ttft_s": 5.153690785984509,
+      "observed_change_pct": -0.05160034053039997
+    },
+    {
+      "id": "8192-90",
+      "input_tokens": 8192,
+      "ttft_s": 5.151153156068176,
+      "reference_ttft_s": 5.149762507993728,
+      "observed_change_pct": 0.02700412052574208
+    },
+    {
+      "id": "45056-50",
+      "input_tokens": 45056,
+      "ttft_s": 30.31798032601364,
+      "reference_ttft_s": 30.33303984196391,
+      "observed_change_pct": -0.04964723624381051
+    },
+    {
+      "id": "204800-50",
+      "input_tokens": 204800,
+      "ttft_s": 158.6634774430422,
+      "reference_ttft_s": 158.68013846699614,
+      "observed_change_pct": -0.010499753853820959
+    }
+  ],
+  "on": [
+    {
+      "id": "1024-10",
+      "input_tokens": 1024,
+      "ttft_s": 1.0932775320252404,
+      "reference_ttft_s": 1.1036706469021738,
+      "observed_change_pct": -0.9416862635701295
+    },
+    {
+      "id": "1024-50",
+      "input_tokens": 1024,
+      "ttft_s": 0.9156855799956247,
+      "reference_ttft_s": 0.9264079090207815,
+      "observed_change_pct": -1.1574090549907323
+    },
+    {
+      "id": "1024-90",
+      "input_tokens": 1024,
+      "ttft_s": 0.9232869349652901,
+      "reference_ttft_s": 0.9306751800468192,
+      "observed_change_pct": -0.793858613609677
+    },
+    {
+      "id": "4096-10",
+      "input_tokens": 4096,
+      "ttft_s": 2.955801324918866,
+      "reference_ttft_s": 2.9520167749142274,
+      "observed_change_pct": 0.12820218491977897
+    },
+    {
+      "id": "4096-50",
+      "input_tokens": 4096,
+      "ttft_s": 2.9340313960565254,
+      "reference_ttft_s": 2.931462215958163,
+      "observed_change_pct": 0.0876415900698424
+    },
+    {
+      "id": "4096-90",
+      "input_tokens": 4096,
+      "ttft_s": 2.935868330998346,
+      "reference_ttft_s": 2.9230040829861537,
+      "observed_change_pct": 0.44010366208762086
+    },
+    {
+      "id": "8192-10",
+      "input_tokens": 8192,
+      "ttft_s": 5.712169757927768,
+      "reference_ttft_s": 5.704061798052862,
+      "observed_change_pct": 0.14214361909039575
+    },
+    {
+      "id": "8192-50",
+      "input_tokens": 8192,
+      "ttft_s": 5.701409891946241,
+      "reference_ttft_s": 5.707522279000841,
+      "observed_change_pct": -0.1070935294828157
+    },
+    {
+      "id": "8192-90",
+      "input_tokens": 8192,
+      "ttft_s": 5.675489350920543,
+      "reference_ttft_s": 5.685865762992762,
+      "observed_change_pct": -0.1824948478339916
+    },
+    {
+      "id": "45056-50",
+      "input_tokens": 45056,
+      "ttft_s": 31.78663719096221,
+      "reference_ttft_s": 31.770040289964527,
+      "observed_change_pct": 0.05224073009100216
+    },
+    {
+      "id": "204800-50",
+      "input_tokens": 204800,
+      "ttft_s": 166.58275057002902,
+      "reference_ttft_s": 166.35319360904396,
+      "observed_change_pct": 0.1379937204719628
+    }
+  ],
+  "scope": "Unpaired historical same-fixture observations only; no noninferiority or optimization claim"
+}

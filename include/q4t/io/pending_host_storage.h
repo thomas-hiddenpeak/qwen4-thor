@@ -10,9 +10,10 @@
 
 namespace q4t::io {
 
-// Loading-only ownership. Mark before a possibly queued upload, then Drain
-// before mutating the storage. The stream must outlive this object. Device
-// destinations remain caller-owned. Failed completion retains the host source;
+// Host transfer storage ownership. Mark before a possibly queued transfer,
+// then Drain before reading or mutating the storage. The stream must outlive
+// this object. Device storage remains caller-owned. Failed completion retains
+// the host storage;
 // it does not make a failed CUDA context recoverable.
 template <class Storage>
 class PendingHostStorage {
@@ -25,7 +26,8 @@ class PendingHostStorage {
     const Status status = Drain();
     if (pending_) {
       (void)storage_.release();
-      std::fprintf(stderr, "load source retained after failed drain: %s\n",
+      std::fprintf(stderr,
+                   "host transfer storage retained after failed drain: %s\n",
                    status.message().c_str());
     }
   }
@@ -38,7 +40,7 @@ class PendingHostStorage {
     if (!pending_) return Status();
     const cudaError_t error = cudaStreamSynchronize(stream_);
     if (error != cudaSuccess)
-      return Status::Fail(std::string("load source completion: ") +
+      return Status::Fail(std::string("host transfer storage completion: ") +
                           cudaGetErrorString(error));
     pending_ = false;
     return Status();

@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include "q4t/io/pending_host_storage.h"
 #include "q4t/quant/fp4_gemm.h"
 #include "q4t/quant/moe_decode.h"
 #include "q4t/quant/format.h"
@@ -358,7 +359,8 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
 
   // Host-side scratch for per-expert counts (the token lists stay on device;
   // the gather/scatter kernels read d_token_list directly).
-  std::vector<int32_t> counts_h(E, 0);
+  io::PendingHostStorage<std::vector<int32_t>> counts_owner(stream, E, 0);
+  auto& counts_h = counts_owner.Get();
   // Keep routing metadata in the stream-ordered pool, with one allocation
   // and one lifetime. An expert can select all M tokens, so its list needs
   // capacity M (not k). Align each region as separate CUDA allocations were.
@@ -428,11 +430,12 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   }
 
   // 2. Read counts to host (one sync). Token lists stay on device.
+  counts_owner.MarkPending();
   if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
                       cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
     return fail("cudaMemcpy counts");
   }
-  if (cudaStreamSynchronize(stream) != cudaSuccess) {
+  if (!counts_owner.Drain().ok()) {
     return fail("stream sync");
   }
 
@@ -453,13 +456,18 @@ Status MoERoutedForward(const uint16_t* x, const int32_t* expert_ids,
   //    single deterministic gather over all tokens instead of one scatter
   //    launch per expert (the per-expert ScatterAddKernel was launch-overhead
   //    dominated: median ~3.5us, below the ~5us launch cost).
-  std::vector<int32_t> offset_h(E + 1, 0);
+  io::PendingHostStorage<std::vector<int32_t>> offset_owner(stream, E + 1, 0);
+  auto& offset_h = offset_owner.Get();
   for (int e = 0; e < E; ++e) offset_h[e + 1] = offset_h[e] + counts_h[e];
+  offset_owner.MarkPending();
   if (cudaMemcpyAsync(d_offset, offset_h.data(),
                       static_cast<size_t>(E + 1) * sizeof(int32_t),
                       cudaMemcpyHostToDevice, stream) != cudaSuccess) {
     return fail("cudaMemcpy offset");
   }
+  // Complete this small source upload before queuing expert work. Pool frees
+  // order device storage only; they cannot protect a local host vector.
+  if (!offset_owner.Drain().ok()) return fail("offset upload completion");
   // Zero row_of_flat only when a count was clamped: then some (token,slot) flat
   // is dropped and left uncovered by BuildRowOfFlatKernel, so it must map to
   // grouped row 0 instead of an uninitialized garbage row (keeps the combine's

@@ -1,0 +1,7 @@
+{
+  "file": "include/q4t/io/pending_host_storage.h",
+  "change": "line wrap only; whitespace-split tokens identical",
+  "tested_sha256": "6f106a81793e1fc64cf06c803d81e617536444c1e2b4fe7d5d36395e6a145a28",
+  "final_sha256": "ad3eb6eb4416407d4240a99c09ec18a4e56a4532fd65969fc248a9e4f610ebc7",
+  "gpu_rerun": false
+}

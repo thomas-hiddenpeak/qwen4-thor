@@ -24,6 +24,8 @@
 #include <string>
 #include <vector>
 
+#include "q4t/io/pending_host_storage.h"
+#include "q4t/model/metadata_upload_batch.h"
 #include "q4t/model/linear.h"
 #include "q4t/model/moe_chunk_order.h"
 #include "q4t/model/moe_partition.h"
@@ -503,12 +505,20 @@ Status Q4T_MOE_FORWARD_NAME(const uint16_t* x, const quant::MoEWeightLayout& rou
     if (diagnostics) diagnostics->partition_requested = partition_mode == 1;
     const int C = residency->Slots();
     if (C < k) return Status::Fail("residency slots below top-k");
-    std::vector<int32_t> ids_h(static_cast<size_t>(T) * k);
-    std::vector<float> rw_h(static_cast<size_t>(T) * k);
+    struct RoutingReadback {
+      std::vector<int32_t> ids;
+      std::vector<float> weights;
+    };
+    io::PendingHostStorage<RoutingReadback> readback(stream);
+    auto& ids_h = readback.Get().ids;
+    auto& rw_h = readback.Get().weights;
+    ids_h.resize(static_cast<size_t>(T) * k);
+    rw_h.resize(static_cast<size_t>(T) * k);
     const bool tim = residency->TimingEnabled();
     const auto t_d2h =
         tim ? std::chrono::steady_clock::now()
             : std::chrono::steady_clock::time_point{};
+    readback.MarkPending();
     if (cudaMemcpyAsync(ids_h.data(), d_eid,
                         ids_h.size() * sizeof(int32_t),
                         cudaMemcpyDeviceToHost, stream) != cudaSuccess)
@@ -516,7 +526,7 @@ Status Q4T_MOE_FORWARD_NAME(const uint16_t* x, const quant::MoEWeightLayout& rou
     if (cudaMemcpyAsync(rw_h.data(), d_rw, rw_h.size() * sizeof(float),
                         cudaMemcpyDeviceToHost, stream) != cudaSuccess)
       return Status::Fail("residency D2H router weights");
-    if (cudaStreamSynchronize(stream) != cudaSuccess)
+    if (!readback.Drain().ok())
       return Status::Fail("residency stream sync");
     if (tim) {
       residency->RecordD2HSync(static_cast<uint64_t>(
@@ -839,23 +849,26 @@ Status Q4T_MOE_FORWARD_NAME(const uint16_t* x, const quant::MoEWeightLayout& rou
           rw_sub[static_cast<size_t>(i) * k + jj] = rw_h[base + jj];
         }
       }
-      if (cudaMemcpyAsync(d_tokidx, toks.data(),
-                          static_cast<size_t>(T_sub) * sizeof(int32_t),
-                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
-        return Status::Fail("residency H2D token idx");
+      // Snapshot all three sources; the event covers uploads and early exits.
+      // GPU buffers remain ordered by the caller stream and buf's async free.
+      MetadataUploadBatch uploads;
+      s = uploads.Begin(stream);
+      if (!s.ok()) return s;
+      s = uploads.Copy(d_tokidx, toks.data(),
+                       static_cast<size_t>(T_sub) * sizeof(int32_t));
+      if (!s.ok()) return s;
       const int total = T_sub * hs;
       GatherTokenRowsKernel<<<(total + kBlock - 1) / kBlock, kBlock, 0,
                               stream>>>(x, d_tokidx, T_sub, hs, d_xsub);
       if (cudaGetLastError() != cudaSuccess)
         return Status::Fail("residency gather launch");
-      if (cudaMemcpyAsync(d_idsub, sub.slots.data(),
-                          sub.slots.size() * sizeof(int32_t),
-                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
-        return Status::Fail("residency H2D slot ids");
-      if (cudaMemcpyAsync(d_rwsub, rw_sub.data(),
-                          rw_sub.size() * sizeof(float),
-                          cudaMemcpyHostToDevice, stream) != cudaSuccess)
-        return Status::Fail("residency H2D router weights");
+      s = uploads.Copy(d_idsub, sub.slots.data(),
+                       sub.slots.size() * sizeof(int32_t));
+      if (!s.ok()) return s;
+      s = uploads.Copy(d_rwsub, rw_sub.data(), rw_sub.size() * sizeof(float));
+      if (!s.ok()) return s;
+      s = uploads.Finish();
+      if (!s.ok()) return s;
       if (cudaMemsetAsync(d_ysub, 0,
                           static_cast<size_t>(T_sub) * hs * sizeof(float),
                           stream) != cudaSuccess)
@@ -906,6 +919,8 @@ Status Q4T_MOE_FORWARD_NAME(const uint16_t* x, const quant::MoEWeightLayout& rou
         diagnostics->executed_token_rows.insert(
             diagnostics->executed_token_rows.end(), toks.begin(), toks.end());
       }
+      s = uploads.Drain();
+      if (!s.ok()) return s;
       // Stage sub-chunk j+1 while the GPU runs sub-chunk j's GEMM: stage
       // chunk 0, then commit + stage the remaining chunks. Their H2Ds are
       // stream-ordered after sub-chunk j's GEMM, so any slot eviction is
