@@ -26,8 +26,10 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
   验证，不能据此保证所有路径均不存在状态污染
 - **长上下文**: 流式 top-k QSA；当前正式单流评估覆盖 1K、4K、8K、44K、
   200K，历史 262K 运行记录不代替当前发布验收
-- **资源管理**: 启动内存预算、auto-length 和运行时 preflight；不保证
-  任意配置或异常输入不 OOM，媒体解压等预算仍待完善
+- **资源管理**: 启动内存预算、auto-length、运行时 preflight，以及由
+  配置/张量形状推导的设备预留与所有权核对；受测热缓存启动已完成
+  [有界可靠性交付](docs/STARTUP_DELIVERY_2026-10-21.md)。不保证任意
+  配置或异常输入不 OOM，媒体解压等预算仍待完善
 - **HTTP API**: OpenAI 风格 chat/completions 流式/非流式接口，以及模型、
   健康、指标和取消接口；仅 greedy，不代表支持全部 OpenAI 参数语义
 - **验证边界**: 已有数值缺陷修复、状态/故障测试和五档 HTTP 性能参考。
@@ -102,11 +104,17 @@ python3 tools/evalscope/gpu_exclusive.py \
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
 | `--mem-fraction` | `0.90`，启动内存预算比例 |
 | `--moe-resident-slots` | `0`，所有专家驻留；非零启用按需驻留 |
+| `--startup-plan` | 默认`auto`；`off`保留旧分配路径，`required`要求支持并启用预留计划 |
 
 `--model-dir DIR` 可覆盖代码中的本机默认模型路径。完整参数解析见
 [src/server/server_options.cpp](src/server/server_options.cpp)。当前 main 使用
 T>1 batch verifier；`--mtp-verifier` 已移除，sequential 实现在历史提交
 `7f6a69c` 中保留。当前交付与基线见 [STATUS](docs/STATUS.md)。
+
+启动计划在`auto`下仅对明确不支持的模式在计划开始前选择旧路径；
+元数据、预留或交付失败直接停止。支持范围与本次1K可靠性验证见
+[正式交付记录](docs/STARTUP_DELIVERY_2026-10-21.md)，不代表新增长输入、
+并发或性能优化结论。
 
 `generate` 是另一套调用路径：输出上限默认 64，默认尝试加载 MTP，
 接受 `--mtp`、`--mtp-k`、`--max-prefill`、`--model-dir`、`--max-tokens`，

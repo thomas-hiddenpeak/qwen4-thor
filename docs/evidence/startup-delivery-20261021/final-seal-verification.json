@@ -1,0 +1,15 @@
+{
+  "status": "PASS_EXACT_FILE_SET_AND_SHA256",
+  "manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/final-evidence.json",
+  "manifest_identity": {
+    "sha256": "d05f28e21b513cdb3862ca428adc7db9ebe119fbcc9d73f668a0f2ef1f313c39",
+    "bytes": 743054
+  },
+  "file_count": 4161,
+  "total_file_bytes": 139366378,
+  "excluded": [
+    "final-evidence.json"
+  ],
+  "gpu_execution": false,
+  "cache_operations": false
+}
