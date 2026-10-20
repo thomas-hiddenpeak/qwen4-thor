@@ -11,7 +11,7 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'tools/evalscope'))
 BASE = ROOT / '.q4t-work/shared-l2-20261020'
-OUT = BASE / 'capture-v1/run'
+OUT = BASE / 'capture-v2/run'
 MODEL = ROOT.parent / 'llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream'
 
 
@@ -64,8 +64,9 @@ def main():
         if '[trace] enabled full-request' not in (OUT / 'server.log').read_text():
             raise RuntimeError('trace capture disabled')
         for index, item in enumerate(requests):
-            body = dict(model='qwen3.8-flash-next', messages=[dict(role='user', content=item['prompt'])],
+            body = dict(model='qwen3.8-flash-next', prompt=item['prompt'],
                         temperature=0, max_tokens=item['max_tokens'], stream=False)
+            save(OUT / f'http-request-{index}.json', body)
             req = urllib.request.Request('http://127.0.0.1:8741/v1/chat/completions',
                 data=json.dumps(body).encode(), headers={'Content-Type':'application/json'})
             before = time.time()
@@ -77,6 +78,8 @@ def main():
             if (choice['finish_reason'] not in ('stop', 'length') or
                     result['usage']['prompt_tokens'] <= 0 or result['usage']['completion_tokens'] <= 0):
                 raise RuntimeError('invalid captured HTTP completion')
+            if index == 0 and result['usage']['prompt_tokens'] != 45056:
+                raise RuntimeError('calibration raw prompt token count changed')
             if item.get('expected') and choice['message']['content'].strip() != item['expected']:
                 raise RuntimeError('calibration retrieval quality changed')
             state['completed'].append(dict(index=index, id=item['id'], response_id=result['id'],
