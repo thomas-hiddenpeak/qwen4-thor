@@ -1,0 +1,24 @@
+{
+  "candidate_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+  "route": "engineering",
+  "validity": "valid",
+  "contracts": "pass",
+  "measurement": "complete",
+  "regression": "not_established",
+  "statistics": "inconclusive",
+  "engineering_decision": "accepted",
+  "request_budget": 60,
+  "requests_used": 60,
+  "plan_reference": "docs/METADATA_BATCH_PERFORMANCE_2026-10-20.md",
+  "evidence_reference": "docs/evidence/metadata-followup-20261020/batch-http-v1/audit.json; docs/evidence/metadata-followup-20261020/batch-performance-v1/audit.json; docs/evidence/metadata-followup-20261020/batch-deploy-v1/audit.json",
+  "route_reference": "docs/METADATA_BATCH_DEPLOYMENT_2026-10-20.md",
+  "decision_reference": "docs/METADATA_BATCH_DEPLOYMENT_2026-10-20.md",
+  "reference_sha256": {
+    "docs/METADATA_BATCH_PERFORMANCE_2026-10-20.md": "d8173f1ce4d240fb407cc859941897b898533380b2101a12027b5b9a52dfb4b5",
+    "docs/METADATA_BATCH_DEPLOYMENT_2026-10-20.md": "6c1da8c1d0648dd2d8998422db95a1a0b2d39c975b843dce20c8e5cd646b5cdd",
+    "docs/evidence/metadata-followup-20261020/batch-http-v1/audit.json": "ea7b4eb2da98fb98c58bdf520fde8ddc1139afaa4635848db2ce3209b297fc2c",
+    "docs/evidence/metadata-followup-20261020/batch-performance-v1/audit.json": "c1d23e5204b18f158ffda43e47fc1e372620b2aa7fb442fc83b7055156abdfb1",
+    "docs/evidence/metadata-followup-20261020/batch-deploy-v1/audit.json": "53ec39cc0edd928d4f227be3df18f1ead97b079b85cb009bf79a16c6e98f1653"
+  },
+  "scope": "Existing audited 753d performance decision; health requests are a separate deployment budget."
+}

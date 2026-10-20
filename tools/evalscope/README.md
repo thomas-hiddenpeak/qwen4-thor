@@ -300,3 +300,13 @@ trace时间不替代E2E验收，profiler事件不完整时不能推导完整因�
 
 已有验证范围、原始身份及归档恢复见
 [主线收敛记录](../../docs/MAIN_CONVERGENCE_2026-10-17.md)。
+
+
+## 性能决策账本（2026-10-20）
+
+常规改动默认有界测量后工程决定；不要把已测的统计不足重新标成
+未测/失败，也不要在用户已接受同一身份后反复要求确认。具体规则见
+[性能决策协议](../../docs/PERFORMANCE_DECISION_PROTOCOL.md)。
+`performance_decision.py <ledger.json>`只检查已审计账本的状态与
+下一步，不跑GPU、不验证统计结论、不颁发部署许可。host回归：
+`python3 -B -m unittest discover -s tools/evalscope -p test_performance_decision.py`。

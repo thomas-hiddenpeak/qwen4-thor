@@ -102,6 +102,8 @@
 ## 现行入口（2026-10-17）
 
 先读 [STATUS.md](STATUS.md) 与 [EVALUATION.md](EVALUATION.md)。
+常规改动的测量、统计与工程决策分工见
+[性能决策协议](PERFORMANCE_DECISION_PROTOCOL.md)。
 当前主线工具与规则交付见[收敛记录](MAIN_CONVERGENCE_2026-10-17.md)，
 默认MTP与PLE修复验收见[数值收口](MTP_NUMERICAL_CLOSURE_2026-10-16.md)。
 [Offload 分支收尾](MAIN_WRAPUP_2026-10-07.md)是此前阶段历史。

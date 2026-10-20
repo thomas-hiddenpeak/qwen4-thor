@@ -1,0 +1,16 @@
+{
+  "status": "PASS_HOST_DECISION_PROTOCOL",
+  "host_tests": 11,
+  "real_ledger": "metadata-batch-ledger.json",
+  "cli_matches_function": true,
+  "gpu_requests": 0,
+  "statistical_calibration_performed": false,
+  "default_binary_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+  "sha256": {
+    "AGENTS.md": "c97f2cd4db9cb7991a35839c484086b02bf860b2ef70a002c6a3941ae5be1d45",
+    "docs/EVALUATION.md": "6816d35b6c4f908fc8dcfa439189b1fe657fb8521310c4e64c1c9589fefb2798",
+    "docs/PERFORMANCE_DECISION_PROTOCOL.md": "6afbfb3f289420bae91e5f28219f73ef12946249ad40ea32ea31014d39255e4f",
+    "tools/evalscope/performance_decision.py": "64d95ad0cda824965f20c03a7ecc9242ab49c58b7ed2f0d8ded89fda742046cf",
+    "tools/evalscope/test_performance_decision.py": "dd5517aeaa23460153d4e00d94fc586f9b66f7948a190d4fff6d2b5f1259e3d9"
+  }
+}
