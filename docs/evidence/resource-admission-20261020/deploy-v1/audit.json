@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "sealed_files": 86,
+  "binary_sha256": "3ae53f268119d0b391e974d6989cc1ee6a182e38e79503f793d562f0a822ea98",
+  "previous_sha256": "3eb9b2a032db927988468e38855d67892a2a21482e7e2142ae64ce6de513a9a8",
+  "health": {
+    "on": {
+      "requests": 1,
+      "exact_match": true,
+      "server_exit": 0
+    },
+    "off": {
+      "requests": 1,
+      "exact_match": true,
+      "server_exit": 0
+    }
+  },
+  "guard_status": "COMPLETED",
+  "seconds": 74.22847437858582,
+  "rollback_verified": true,
+  "rollback_exercised": false,
+  "performance_samples": 0
+}

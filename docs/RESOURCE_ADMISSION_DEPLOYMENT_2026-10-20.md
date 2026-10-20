@@ -1,7 +1,7 @@
 # 资源准入修复默认部署
 
-状态：ENGINEERING_ACCEPTED_RELIABILITY，等待部署健康检查。用户授权“具备条件后直接收尾”，适用
-AGENTS持续授权。当前默认3eb9b2a0；候选
+状态：DEPLOYED_ACCEPTED_HEALTH_VERIFIED。默认3ae53f26，运行时源码5599aa0。用户授权“具备条件后直接收尾”，适用
+AGENTS持续授权。旧默认3eb9b2a0；新默认
 3ae53f268119d0b391e974d6989cc1ee6a182e38e79503f793d562f0a822ea98。
 
 验收条件：53项host、普通/MTP共6条质量、7-handler回收合同、4种
@@ -25,3 +25,11 @@ python3 -B tools/evalscope/gpu_exclusive.py \
 ```
 
 恢复3eb9b2a0；不能用旧阶段部署器回退本次版本。
+
+## 收尾结果
+
+默认MTP k=3和普通模式各1条1024-token健康请求通过，输出与参考一致，
+两服务exit0，无常驻服务。单一NVML lease约74.23秒，COMPLETED/child0；
+86份部署文件封存复核，binary/sidecar/真实缓存一致。旧3eb9b2a0回退包
+完整核验，未演练回退。[部署审计](evidence/resource-admission-20261020/deploy-v1/audit.json)。
+按非性能可靠性任务完成验收、备份部署与收尾，无追加采样或性能主张。
