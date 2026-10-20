@@ -7,22 +7,27 @@
 已按用户授权启动SSD offload基础阶段：先补专家payload失败合同与
 监控接入，可靠性验收后直接收尾，再冻结资源协议建立当前offload
 基线并筛选单一后续策略。目标active。可靠性候选19ea4e57已验收：53host、9类payload故障、
-5项驻留、最终9条质量范围通过，549文件复核，正在直接部署；
-资源基线尚未执行。默认替换以部署记录为准。
+5项驻留、最终9条质量范围通过，549文件复核；默认已替换，
+两模式健康检查及86份部署文件复核通过。资源基线尚未执行。
 见[阶段计划](OFFLOAD_FOUNDATION_PLAN_2026-10-20.md)。
 
 ## 当前研究准备审计
 
-**SSD expert offload基础设施静态审计完成（2026-10-20）。** 已有真实
-buffered SSD读取、L2/mirror/GPU槽位及路由回放/E2E工具，但未全面闭合。
-发现专家payload部分H2D/D2H/event失败后claim与缓存身份保护缺口，
-尚未注入复现；旧offload runner/monitor仍直接依赖nvidia-smi，外层
-NVML不能替代内部查询。严格物理RAM上限仍不可认证。先补payload
-错误合同和工具接入，再冻结资源协议建立当前offload基线；可立即做
-离线分析。新增GPU采样0、运行时未改、默认3ae53f26保持。详见
-[完整审计与优先级](OFFLOAD_INFRASTRUCTURE_AUDIT_2026-10-20.md)。
+**SSD expert offload基础设施审计后续正在推进（2026-10-20）。**
+payload失败合同与NVML查询接入已修复验证。严格物理RAM上限仍不可
+认证；进入资源基线时发现旧systemd service不属于外层lease的子进程，
+需要解决归属兼容或明确使用后代进程观测协议，不能跳过独占检查。
+见[初始审计](OFFLOAD_INFRASTRUCTURE_AUDIT_2026-10-20.md)及
+[可靠性结果](OFFLOAD_FOUNDATION_RESULT_2026-10-20.md)。
 
 ## 当前交付
+
+**SSD offload基础可靠性已部署（2026-10-20）。** 当前默认build/q4t
+为19ea4e57（源码166a535），发布元数据与真实构建缓存匹配。旧3ae53f26
+完整回退包已核验；无常驻服务、无性能优化结论。见
+[部署与回退](OFFLOAD_FOUNDATION_DEPLOYMENT_2026-10-20.md)。
+
+以下为历史交付，当前默认以上述记录为准。
 
 **资源准入与回收合同审计已修复部署并收尾（2026-10-20）。** 默认
 build/q4t为3ae53f26（源码5599aa0）。实测修复GPU失效后排队请求
