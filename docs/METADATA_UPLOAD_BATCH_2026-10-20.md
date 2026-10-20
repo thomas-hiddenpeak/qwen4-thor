@@ -1,5 +1,10 @@
 # 剩余元数据上传源：批次所有权方案
 
+最终更新：本轮约定交付已完成，新增入口HTTP质量和普通取消回归
+通过；新候选未部署、无新性能接受。当前结论见
+[最终报告](METADATA_FOLLOWUP_RESULT_2026-10-20.md)，下文冻结卡与
+阶段状态保留，不覆盖最终结果。
+
 状态：DESIGN_FROZEN_OBJECT_STAGE。父版本d6bb9a8，当前部署c8f4b241
 保持；这是预防性来源寿命加固，不声称复现旧模型pageable损坏。
 目标覆盖RunPrefill、ModelDecodeStep/Batch、ragged prefill/mixed和

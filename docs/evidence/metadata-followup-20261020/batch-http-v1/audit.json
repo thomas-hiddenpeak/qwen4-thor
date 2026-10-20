@@ -1,0 +1,43 @@
+{
+  "status": "PASS_RUNTIME_CONTRACTS_NOT_PERFORMANCE_ACCEPTANCE",
+  "quality": {
+    "off": {
+      "quality_pass": 11,
+      "shutdown": {
+        "server": 0,
+        "completed": 11,
+        "http_output_checks_passed": true,
+        "performance_scope": null,
+        "partial_performance_matrix": null,
+        "full_five_tier_completed": false,
+        "full_offload_matrix_completed": false,
+        "performance_acceptance": false,
+        "failure": null,
+        "cleanup_failure": null
+      }
+    },
+    "on": {
+      "quality_pass": 11,
+      "shutdown": {
+        "server": 0,
+        "completed": 11,
+        "http_output_checks_passed": true,
+        "performance_scope": null,
+        "partial_performance_matrix": null,
+        "full_five_tier_completed": false,
+        "full_offload_matrix_completed": false,
+        "performance_acceptance": false,
+        "failure": null,
+        "cleanup_failure": null
+      }
+    }
+  },
+  "cancellation_groups": 8,
+  "sealed_files_verified": 162,
+  "nvml_queries_ok": 556,
+  "elapsed_seconds": 605.1842331886292,
+  "candidate_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+  "default_sha256": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+  "performance_samples_added": 0,
+  "candidate_deployed": false
+}

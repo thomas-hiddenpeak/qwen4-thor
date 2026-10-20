@@ -1,0 +1,14 @@
+{
+  "records": [
+    "queued explicit/deadline/FIN/RST without waiting for GPU slots",
+    "prefill explicit cancellation with unaffected active survivor",
+    "active prefill FIN/RST",
+    "decode explicit/deadline without normal completion",
+    "non-streaming decode cancellation",
+    "deadline numeric boundaries rejected before GPU admission",
+    "old cancellation credential cannot cancel new generation; reuse canary",
+    "shutdown drains active request and interrupts incomplete HTTP reader"
+  ],
+  "failure": null,
+  "server_exit": 0
+}

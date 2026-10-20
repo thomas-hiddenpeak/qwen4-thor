@@ -1,0 +1,12 @@
+{
+  "guard_exit": 0,
+  "guard_status": "COMPLETED",
+  "started": 1792456135.158894,
+  "finished": 1792456740.6742592,
+  "command": [
+    "python3",
+    "-B",
+    "tools/verify/inference_metadata/run_batch_http.py"
+  ],
+  "seal_scope": "after guard completion; preserves interrupted child manifests"
+}
