@@ -81,3 +81,16 @@ scope，最终memory.events文件消失。计数未知未当0或通过；v1 guar
 [systemd scope官方说明](https://www.freedesktop.org/software/systemd/man/latest/systemd.scope.html)
 一致。每次创建scope都校验实际OOMPolicy，因此v2重验受影响的scope
 启动/退出/清理CPU项，再执行尚未开始的2次GPU预算；不重跑五档。
+
+## v2 GPU环境中断与一次定向复现
+
+v2五项CPU实机均通过，含保留的OOM计数。GPU加载时NVML worker卡在
+init，超过既定5秒（实际5.39秒）后guard记录ENV_ABORT并清理，未发
+HTTP。最后观测NVML目标PID分配约41.20GB；已观测memcg max/oom事件
+均0，不能据此断言限额导致超时。清理后NVML查询0.064秒返回OK且
+无计算PID，scope列表为空；保留原始超时/中断记录，不视作验收通过。
+
+v3仅对未完成GPU部分做一次同配置诊断复现，仍用16GiB host/cache限额、
+NVML默认后端和5秒门；无定向cache驱逐。复用v2相同scope源码及封存
+CPU五项证据，不重复CPU采样。原GPU预算的正常质量/受控中断仍待完成，
+额外v2中断加载单列为ENV_ABORT，不能隐藏在2次有效加载的计数中。

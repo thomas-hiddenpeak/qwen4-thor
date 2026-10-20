@@ -12,7 +12,7 @@ import time
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'tools/evalscope'))
 STAGE = ROOT / '.q4t-work/offload-foundation-20261020'
-OUT = STAGE / 'scope-integration-v2/run'
+OUT = STAGE / 'scope-integration-v3/run'
 PACKAGE = ROOT / '.q4t-work/releases/offload-foundation-20261020'
 MODEL = '/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream'
 EXPECTED = '19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469'
@@ -83,6 +83,24 @@ def cpu_contracts(env):
     save(OUT / 'cpu-contracts.json', results)
 
 
+def reuse_cpu_contracts():
+    previous = STAGE / 'scope-integration-v2'
+    manifest = read(previous / 'sealed-files.json')
+    for name, digest in manifest.items():
+        require(sha(previous / name) == digest, 'CPU reuse seal: ' + name)
+    prior = previous / 'run'
+    require(read(prior / 'state.json')['completed'] == ['cpu'], 'CPU phase not complete')
+    for name in ('isolated_scope.py', 'scope_payload.py', 'resource_metrics.py', 'isolated_service.py'):
+        key = 'tools/evalscope/' + name
+        require(sha(ROOT / key) == read(prior / 'sources.json')[key], 'CPU reuse source: ' + name)
+    for case in ('normal', 'terminate', 'kill', 'startup_failure', 'oom'):
+        shutil.copytree(prior / ('cpu-' + case), OUT / ('cpu-' + case))
+    shutil.copy2(prior / 'cpu-contracts.json', OUT / 'cpu-contracts.json')
+    save(OUT / 'cpu-reuse.json', dict(source=str(previous),
+        sealed_manifest_sha256=sha(previous / 'sealed-files.json'),
+        scope='completed CPU phase only; later GPU ENV_ABORT is not reused as a pass'))
+
+
 def main():
     from isolated_scope import scope_properties, stop_owned_scope
     from run_budget_experiment import run_owned_runner, process_group_state
@@ -117,7 +135,7 @@ def main():
     state = dict(status='RUNNING', started=time.time(), completed=[])
     save(OUT / 'state.json', state)
     try:
-        cpu_contracts(env)
+        reuse_cpu_contracts()
         state['completed'].append('cpu')
         save(OUT / 'state.json', state)
         common = [sys.executable, '-B', 'tools/evalscope/run_budget_experiment.py',

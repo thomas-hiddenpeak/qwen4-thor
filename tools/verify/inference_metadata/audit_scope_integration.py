@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[3]
-STAGE = ROOT / '.q4t-work/offload-foundation-20261020/scope-integration-v2'
+STAGE = ROOT / '.q4t-work/offload-foundation-20261020/scope-integration-v3'
 EXPECTED = '19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469'
 
 
@@ -63,6 +63,14 @@ def main():
         require(sha(ROOT / name) == sha(out / 'source' / name) == expected,
                 'integration source identity: ' + name)
     require(sha(ROOT / 'build/q4t') == EXPECTED, 'default binary identity')
+    reuse = read(out / 'cpu-reuse.json')
+    previous = Path(reuse['source'])
+    require(sha(previous / 'sealed-files.json') == reuse['sealed_manifest_sha256'], 'CPU reuse identity')
+    prior_manifest = read(previous / 'sealed-files.json')
+    for name, digest in prior_manifest.items():
+        require(sha(previous / name) == digest, 'CPU source seal')
+        if name.startswith('run/cpu-'):
+            require(sha(out / name.removeprefix('run/')) == digest, 'copied CPU evidence')
     cpu = {}
     for case, rc in [('normal', 0), ('terminate', -15), ('kill', -9), ('oom', -9)]:
         folder = out / ('cpu-' + case) / 'scope'
@@ -115,7 +123,7 @@ def main():
             not process['group']['errors'] and wrapper['failure'] and not wrapper['cleanup_failed'] and
             wrapper['unit_after_cleanup']['LoadState'] == 'not-found', 'interrupted cleanup')
     print(json.dumps(dict(status='PASS', sealed_files=len(manifest), guard_status=guard['status'],
-        binary_sha256=EXPECTED, cpu=cpu, quality_requests=1, gpu_interruptions=1,
+        binary_sha256=EXPECTED, cpu=cpu, cpu_reused_from=str(previous), quality_requests=1, gpu_interruptions=1,
         normal_scope_nvml_peak_bytes=peak['gpu_peak_bytes'],
         interrupted_payload_exit=end['returncode'], performance_acceptance=False,
         strict_physical_ram_acceptance=False, lifecycle_six_fixture_rerun=False), indent=2))
