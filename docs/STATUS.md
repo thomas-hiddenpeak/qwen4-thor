@@ -2,6 +2,10 @@
 
 更新：2026-10-20。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+临时参考评估已记录：DeepInfer固定774ce244b87c，重点保留Engram查表
+发起/消费分离及固定token路径数值对照入口。仅静态参考，暂不实现或
+新增GPU验证，不改变以下热启动定位主线；见[参考文档](REFERENCE.md#deepinfer)。
+
 ## 当前推进目标
 
 **独立设备VMM原型已按有界预算收尾，未接受接入模型。** Thor支持

@@ -279,6 +279,69 @@ reference/
   不平衡; Thor 均匀带宽受限, 这些**不迁移** (见 docs/log/2026-09-17.md
   融合负结果)。取其**架构设计**, 慎取其 datacenter-kernel 策略。
 
+## DeepInfer
+
+Engram / 数值一致性专项参考，暂不实施。
+
+- 仓库：[deepseek-ai/DeepInfer](https://github.com/deepseek-ai/DeepInfer)。
+- 固定 commit：`774ce244b87cc0eb8d4b94ab9f5de2ab22049f01`
+  （2026-10-20浅克隆并静态评估；以下上游链接均固定该版本）。
+- 本地临时快照：`.q4t-work/deepinfer-assessment-20261020/upstream/`；
+  未纳入`reference/`或本项目构建，长期查阅以固定版本链接为入口。
+- 结论：保留Engram与数值一致性验证方法；当前不展开实现、不启动
+  新测试或性能采样，不改变热启动定位主线。尚无Thor适配、质量或
+  性能通过结论，也不作为qwen4_exp数学语义的权威参考。
+
+### Engram：查表发起与层内消费分离
+
+| 固定版本入口 | 重点参考 |
+|---|---|
+| [deepseek.py][deepinfer-model]：`DeepseekModel.forward` | 层循环前计算n-gram哈希并发起`engram_runtime.fetch`，向各层传递`embed_hook` |
+| [v4_modules/engram.py][deepinfer-engram]：`EngramRuntime.fetch`、`Engram.forward` | 返回按层索引的hook；层内消费查表结果，再做融合KV投影与门控注入 |
+| [parallel_utils/userbuffer.py][deepinfer-userbuffer]：`userbuffer.allocate_engram` | 经DeepEP `EngramBuffer`选择CPU RDMA存储，也支持强制GPU存储 |
+
+与本项目PLE的n-gram查表、投影、门控注入相近，值得借鉴的是读取
+发起/消费接口和缓冲所有权边界。其RDMA主机表与本项目NVMe、io_uring、
+pinned staging不同；hook不证明延迟已完全隐藏。Engram的压缩词表、
+哈希及门控数学不直接替代PLE语义，任何流水实现仍须独立验收。
+
+### 数值一致性：固定token路径比较执行方式
+
+| 固定版本入口 | 验证方法及边界 |
+|---|---|
+| [test_batch_invariant.py][deepinfer-batch-test]：`_run_batch_invariant`、`_get_result` | 先混批生成，再以输出作为单条运行的`golden_token_ids`，严格比较token、token logprob、top-token IDs和top-logprobs |
+| [test_kl.py][deepinfer-kl-test]：`_run_kl` | 先按golden token逐步decode，再将输出并入prompt重新prefill，比较所选token的logprob；当前夹具涉及图文、多卡及NextN |
+| [worker/runtime_config.py][deepinfer-kernel-config]：`configure_worker_kernels` | batch-invariant模式为DeepGEMM与TileKernels启用deterministic算法 |
+| [testing.py][deepinfer-diff]：`cal_diff` | `kl`为所选token logprob差值的`mean(exp(x-y)-1-(x-y))`，不是完整词表分布KL |
+
+本项目已有[混批差分](../tests/model_mixed_batch_test.cpp)及
+[普通/verify路径三角对照](../tests/mtp_path_triangle_test.cpp)。后续相关
+改动可参考固定token前缀、改变批次组成/行位置/分块的对照方法；这只是
+候选验证思路，不新增测试要求或自动执行队列。以上上游测试本次均未运行，
+不把测试源码、deterministic开关或上游断言当作本项目已通过证据。
+
+### 其余评估结论与适用边界
+
+- DSpark动态验证长度可参考接受率与执行成本联合决策，但依赖训练好的
+  Confidence Head；本项目现有MTP路径没有对应头。异步调度也需先取得
+  本机CPU/GPU空转证据，再评估状态、取消和槽位复用的复杂度。
+- SWA bounded replay包含近似窗口状态重建，不能用于恢复本项目依赖
+  更早历史的DeltaNet完整状态；见[官方部署说明][deepinfer-qa]。
+- [该版README][deepinfer-readme]列出DeepSeek-V4.1-Flash、SM100/Ascend
+  支持及多卡性能图；不能外推到Thor SM110a、qwen4_exp或NVFP4专家。
+- 已检查运行时未提供本项目所需的NVMe专家共享缓存或热启动直接修复。
+  相关建议限于方法参考，不据此调整当前共享缓存/热启动工程决定。
+
+[deepinfer-model]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/deepinfer/model_executor/models/deepseek.py
+[deepinfer-engram]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/deepinfer/model_executor/models/v4_modules/engram.py
+[deepinfer-userbuffer]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/deepinfer/model_executor/parallel_utils/userbuffer.py
+[deepinfer-batch-test]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/tests/models/test_batch_invariant.py
+[deepinfer-kl-test]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/tests/models/test_kl.py
+[deepinfer-kernel-config]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/deepinfer/worker/runtime_config.py
+[deepinfer-diff]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/deepinfer/testing.py
+[deepinfer-qa]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/doc/inference_deployment_qa.md
+[deepinfer-readme]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/README.md
+
 ## Qwen3.8-Next 官方技术报告 (目标模型权威设计文档)
 
 - 文件: `pdf/tech_report.pdf` (PDF 1.5, 2026-08-26, Qwen Team)
