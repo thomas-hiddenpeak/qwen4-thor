@@ -326,3 +326,12 @@ trace时间不替代E2E验收，profiler事件不完整时不能推导完整因�
 `performance_decision.py <ledger.json>`只检查已审计账本的状态与
 下一步，不跑GPU、不验证统计结论、不颁发部署许可。host回归：
 `python3 -B -m unittest discover -s tools/evalscope -p test_performance_decision.py`。
+
+### 2026-10-20 scope实机接受边界
+
+当前源码scope工具通过五类CPU合同及64GiB memcg、
+`--clear-model-cache`条件下的GPU质量/中断清理。16GiB与64GiB
+继承缓存加载曾触发NVML初始化超时（ENV_ABORT），未获接受。
+本文16GiB示例仅是参数用法，不代表当前环境验证通过；
+具体证据与限制见[接入记录](../../docs/OFFLOAD_SCOPE_INTEGRATION_2026-10-20.md)。
+定向回收只使用只读文件描述符的缓存建议，不修改模型内容，不保证物理SSD冷态。

@@ -43,8 +43,11 @@ checkpoint逻辑专家读取量、2,764,816字节的mirror payload和L2 staging
 
 本次机制字节核对及来源SHA保存在
 .q4t-work/offload-foundation-20261020/strategy-screen/mechanism-screen.json。
-当前基线完整结果尚待封存；最终选择会结合实际软件L2命中、prefill/decode
-读取分布及可归属的资源观察，保留不支持该假设的结果。
+当前基线已封存并复核：15条offload请求L2 hit为0；prefill miss占
+全部软件加载98.6748%（该矩阵长度加权）。约22.99TB逻辑读取与
+约112.77GB进程存储计数属于不同范围，不能换算专家SSD命中率。
+这些观察支持优先减少CPU专家供给重复工作，尚未证明共享缓存命中率
+或提速。最终保留本候选；详见[基线结果](OFFLOAD_FOUNDATION_BASELINE_2026-10-20.md)。
 
 ## 下一阶段边界
 

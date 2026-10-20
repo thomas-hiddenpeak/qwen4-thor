@@ -75,3 +75,13 @@ mirror8、workers16、stream1、chunk-order/partition0、无hot-list。
 共享cgroup数据标为非进程独占；RSS/CUDA/pinned/cache不相加，NVMe逻辑
 字节不等于物理SSD读取，不认证严格54GB RAM或SSD冷态。端点页缓存检查
 在HTTP计时外。结果用于识别资源/供给瓶颈，策略优化另按规范验收。
+
+## 最终完成映射
+
+A：payload失败合同、claim发布顺序、9类故障与5项驻留通过。
+B：NVML统一、scope后代归属及五类CPU/两项GPU合同通过；GPU接入
+仅接受64GiB且定向模型页缓存回收条件，继承缓存加载ENV_ABORT保留。
+C：最终9条质量范围、默认替换/回退包与两模式健康检查完成。
+D：当前身份五档30请求完成并复核，描述性基线，不接受优化/严格RAM。
+E：选定同payload预算跨层共享CPU缓存，尚未实施优化；保留后续机制
+回放、低预算/继承缓存环境及实际SSD归属任务。当前目标不扩展为这些任务。

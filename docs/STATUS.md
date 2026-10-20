@@ -4,30 +4,26 @@
 
 ## 当前推进目标
 
-已按用户授权启动SSD offload基础阶段：先补专家payload失败合同与
-监控接入，可靠性验收后直接收尾，再冻结资源协议建立当前offload
-基线并筛选单一后续策略。目标active。可靠性候选19ea4e57已验收：53host、9类payload故障、
-5项驻留、最终9条质量范围通过，549文件复核；默认已替换，
-两模式健康检查及86份部署文件复核通过。资源基线两模式30请求已完成，745份封存文件复核通过，五档输出
-跨模式一致；独立memcg限额scope候选已接入，正在推进实机验证。
-不宣称严格RAM、SSD冷态或优化收益。
-见[阶段计划](OFFLOAD_FOUNDATION_PLAN_2026-10-20.md)。
-下一策略候选为同payload预算的跨层共享CPU专家缓存，已核对当前字节
-布局，尚无优化收益结论；见[机制筛选](OFFLOAD_NEXT_STRATEGY_2026-10-20.md)。
-限额工具scope候选已通过CPU后代归属/退出/清理检查及7项host合同，
-暂存接入草稿另通过103项host合同，正式路径103项host复核通过，实机驱动和离线审计已准备，v1 CPU OOM计数保留失败已定位为systemd默认stop，已显式配置continue，
-v2 CPU已通过，GPU加载因NVML init超时ENV_ABORT，正在做一次
-同配置GPU定向复现也ENV_ABORT；内核出现GPU分配失败，当前仅改变
-memcg为64GiB仍中断，当前做一次定向模型页缓存回收对照，CPU证据复用；见[接入记录](OFFLOAD_SCOPE_INTEGRATION_2026-10-20.md)。
+**SSD expert offload基础阶段已完成有界验收与策略筛选（2026-10-20）。**
+运行时payload失败合同已修复部署；默认19ea4e57（源码166a535），
+回退包保留，最终9条质量范围及两模式部署健康通过。无性能优化主张。
 
-## 当前研究准备审计
+全驻留/C256五档30条HTTP基线完成，745份封存文件复核，五档输出
+跨模式一致；见[基线与资源边界](OFFLOAD_FOUNDATION_BASELINE_2026-10-20.md)。
+NVML查询和scope后代归属已接入：103项host、五类CPU实机合同、
+64GiB memcg且定向模型缓存回收条件下1条GPU质量及1次中断清理通过，
+240份封存文件复核。16GiB继承缓存及64GiB继承缓存加载曾ENV_ABORT，
+没有接受这些配置；不把定向缓存回收作为驱动根因修复。
+见[接入结果及失败历史](OFFLOAD_SCOPE_INTEGRATION_2026-10-20.md)。
 
-**SSD expert offload基础设施审计后续正在推进（2026-10-20）。**
-payload失败合同与NVML查询接入已修复验证。严格物理RAM上限仍不可
-认证；进入资源基线时发现旧systemd service不属于外层lease的子进程，
-需要解决归属兼容或明确使用后代进程观测协议，不能跳过独占检查。
-见[初始审计](OFFLOAD_INFRASTRUCTURE_AUDIT_2026-10-20.md)及
-[可靠性结果](OFFLOAD_FOUNDATION_RESULT_2026-10-20.md)。
+严格物理RAM总量、专家独占SSD读取、继承缓存下驱动分配故障根因
+仍未闭合；它们是后续低预算/SSD策略研究的明确边界，不能宣称基础
+验收已证明任意低预算配置可用。当前无常驻服务，无残留scope。
+
+下一策略仅选定**同payload字节预算的跨层共享CPU专家缓存**，优先离线
+校准/留出回放，未实现、未接受性能收益。当前L2零命中、prefill占本矩阵
+软件加载98.67%支持该方向；见[机制筛选](OFFLOAD_NEXT_STRATEGY_2026-10-20.md)。
+本目标不自动开展新优化。完整范围见[阶段计划](OFFLOAD_FOUNDATION_PLAN_2026-10-20.md)。
 
 ## 当前交付
 

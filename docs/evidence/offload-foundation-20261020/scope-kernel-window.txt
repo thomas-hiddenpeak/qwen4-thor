@@ -1,0 +1,3 @@
+Oct 20 18:00:17 localhost.localdomain kernel: tegra-i2c 810c630000.i2c: I2C transfer timed out
+Oct 20 18:01:36 localhost.localdomain kernel: NVRM: GPU0 nvCheckOkFailedNoLog: Check failed: Out of memory [NV_ERR_NO_MEMORY] (0x00000051) returned from _memdescAllocInternal(pMemDesc) @ mem_desc.c:1336
+Oct 20 18:02:32 localhost.localdomain kernel: tegra-i2c 810c630000.i2c: I2C transfer timed out

@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "sealed_files": 240,
+  "guard_status": "COMPLETED",
+  "binary_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+  "cpu": {
+    "normal": {
+      "returncode": 0,
+      "unit_removed": true
+    },
+    "terminate": {
+      "returncode": -15,
+      "unit_removed": true
+    },
+    "kill": {
+      "returncode": -9,
+      "unit_removed": true
+    },
+    "oom": {
+      "returncode": -9,
+      "unit_removed": true
+    },
+    "startup_failure": {
+      "expected_exec_failure": true,
+      "unit_removed": true
+    }
+  },
+  "cpu_reused_from": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-foundation-20261020/scope-integration-v2",
+  "quality_requests": 1,
+  "gpu_interruptions": 1,
+  "normal_scope_nvml_peak_bytes": 55699005440,
+  "interrupted_payload_exit": -15,
+  "performance_acceptance": false,
+  "strict_physical_ram_acceptance": false,
+  "lifecycle_six_fixture_rerun": false
+}

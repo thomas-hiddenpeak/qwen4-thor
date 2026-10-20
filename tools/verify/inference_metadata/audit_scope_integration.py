@@ -24,7 +24,7 @@ def sha(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def scope_identity(folder, limit):
+def scope_identity(folder, limit, wrapper_cleanup=False):
     identity, spec = read(folder / 'identity.json'), read(folder / 'spec.json')
     payload, props = read(folder / 'payload.json'), identity['properties']
     require(identity['kind'] == 'scope' and
@@ -40,9 +40,22 @@ def scope_identity(folder, limit):
             props['OOMPolicy'] == 'continue', 'scope limits')
     end = read(folder / 'payload-exit.json')
     require(end['token'] == identity['token'], 'payload exit owner')
-    cleanup = read(folder / 'cleanup.json')
-    require(cleanup['unit_removed'] and cleanup['properties_after']['LoadState'] == 'not-found',
-            'scope not removed')
+    if not wrapper_cleanup:
+        cleanup = read(folder / 'cleanup.json')
+        require(cleanup['unit_removed'] and cleanup['properties_after']['LoadState'] == 'not-found',
+                'scope not removed')
+    else:
+        # SIGTERM can end the inner runner before its Python finally runs.
+        # The outer wrapper owns group reaping and exact-unit cleanup.
+        outer = folder.parents[1]
+        cleanup = read(outer / 'wrapper-exit.json')
+        group = read(outer / 'runner-process-group.json')
+        require(not cleanup['cleanup_failed'] and
+                cleanup['unit_after_cleanup']['LoadState'] == 'not-found' and
+                group['runner_reaped'] and group['cleanup_complete'] and
+                not group['after_cleanup']['live_pids'] and
+                not group['after_cleanup']['errors'] and end['returncode'] == -15,
+                'outer wrapper cleanup not proved')
     return identity, end
 
 
@@ -88,6 +101,10 @@ def main():
             read(failed / 'spec.json')['command'] == ['/q4t-intentionally-missing-scope-payload'],
             'intended startup failure/cleanup')
     cpu['startup_failure'] = dict(expected_exec_failure=True, unit_removed=True)
+    for case in ('normal', 'interrupted'):
+        gate = read(out / case / 'cache-gate.json')
+        require(gate['cold_payload_established'] and not gate['advice_errors'] and
+                gate['payload_resident_bytes'] == 0, 'cache advice gate')
     normal = out / 'normal'
     identity, end = scope_identity(normal / 'http/isolation', 64 << 30)
     require(end['returncode'] == 0 and int((normal / 'http/server.pid').read_text()) == identity['pid'],
@@ -113,7 +130,7 @@ def main():
     require(statuses <= {'ok', 'scheduled_skip', 'no_target', 'no_matching_compute_process'},
             'resource NVML query failure')
     interrupted = out / 'interrupted'
-    identity, end = scope_identity(interrupted / 'http/isolation', 64 << 30)
+    identity, end = scope_identity(interrupted / 'http/isolation', 64 << 30, wrapper_cleanup=True)
     proof = read(out / 'interrupt-proof.json')
     require(proof['signal'] == 'SIGINT' and proof['pid'] == identity['pid'] and
             proof['identity'] == identity and proof['nvml']['status'] == 'OK' and

@@ -119,3 +119,29 @@ v5保持64GiB及原有监控门，唯一新增--clear-model-cache：只读打开
 文件，POSIX_FADV_DONTNEED后观测payload驻留必须为0才启动。每次
 加载前执行，无全机drop_caches、无文件内容修改。仅验证既定质量/
 中断合同，不追加五档或声称冷SSD性能；若仍失败不自动继续重试。
+
+## 最终验收范围与保留
+
+v5 guard COMPLETED，正常GPU HTTP输出精确匹配既有1024-token参考；
+中断时NVML确认真实目标PID后SIGINT wrapper，payload退出-15，
+runner进程组回收、scope消失。两次启动前payload页缓存均观测为0。
+五类CPU实机复用v2同源码封存证据；正式工具103项host已通过。
+离线复核240文件通过，见[evidence审计](evidence/offload-foundation-20261020/scope-integration-audit.json)。
+
+审计初次错误要求中断runner的cleanup.json，而SIGTERM结束runner后
+由wrapper负责回收，实际封存的是wrapper-exit与runner-process-group。
+修正审计对应实际合同，仍要求token/PID/starttime、真实payload退出、
+wrapper无cleanup_failed、runner_reaped及无存活组员；未将文件缺失
+自动当PASS。定向负例验证cleanup_failed和未reaped都会被拒绝。
+没有为审计路径修正重跑GPU，生产工具源码未变。
+
+全过程GPU共5次加载尝试：v2/v3/v4三个ENV_ABORT，v5正常和中断两个
+合同通过；v1 CPU失败未进入GPU。失败原样封存，不纳入性能或数值PASS。
+接受范围仅为64GiB memcg、定向模型缓存回收的scope工具接入。NVML
+保持默认且超时门不变；继承缓存下故障未解决，16GiB未获接受。
+此对照支持调查缓存/驱动分配压力，不证明内部根因，更不认证物理RAM。
+正常路径NVML观测峰55,699,005,440 bytes，不能加memcg/RSS形成总量。
+CPU受控OOM只证明普通匿名页限额；lifecycle完整六题不重新执行。
+
+原始v1至v5与kernel窗口留在.q4t-work/offload-foundation-20261020/。
+默认运行时已部署，后续只有工具与文档变化，不重复部署或整模型采样。
