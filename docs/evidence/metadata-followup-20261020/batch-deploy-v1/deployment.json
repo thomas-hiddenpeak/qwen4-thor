@@ -1,0 +1,14 @@
+{
+  "status": "DEPLOYED_HEALTH_CHECKED",
+  "health_completed": [
+    "on",
+    "off"
+  ],
+  "performance_samples": 0,
+  "performance_acceptance": false,
+  "persistent_service": false,
+  "binary_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+  "previous_sha256": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+  "requests": 2,
+  "loads": 2
+}

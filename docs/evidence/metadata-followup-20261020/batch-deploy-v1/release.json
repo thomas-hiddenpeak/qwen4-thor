@@ -1,0 +1,15 @@
+{
+  "version": "metadata-batch-hardening-20261020",
+  "binary_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+  "source_commit": "b6870c0",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/releases/metadata-batch-20261020/CMakeCache.txt",
+  "build_cache_sha256": "7b9347bd5fc029e9c5887119b70b80138fbbd94365744b32acefa04634ceb8fb",
+  "acceptance": "ENGINEERING_ACCEPTED_WITH_TIMING_UNCERTAINTY",
+  "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/docs/METADATA_BATCH_DEPLOYMENT_2026-10-20.md",
+  "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-deploy-v1/acceptance-decision.md",
+  "acceptance_snapshot_sha256": "7d0b70c8805ac44525ec1a267fff45bd65d3eb356ec87ba5134eb0aa2d626d71",
+  "performance_report": "/home/rm01/models/dev/qwen4-thor/docs/METADATA_BATCH_PERFORMANCE_RESULT_2026-10-20.md",
+  "scope": "default executable; no persistent service; statistical noninferiority unproven",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-deploy-v1/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-deploy-v1/previous/q4t.release.json"
+}

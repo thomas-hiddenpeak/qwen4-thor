@@ -1,9 +1,10 @@
 # 新入口元数据加固最终审查与部署决定稿
 
-状态：MEASURED_ACCEPTANCE_PENDING_NOT_DEPLOYED。两模式五档60条
-补测已按用户授权完成，见[实测结果与接受建议](METADATA_BATCH_PERFORMANCE_RESULT_2026-10-20.md)。
-下述离线成本审查及部署方案保持，原未测性能决定稿仅为历史记录。
-尚无本项接受决定，默认c8f4b241。
+状态：DEPLOYED_ACCEPTED_HEALTH_VERIFIED。用户在两模式五档60条
+实测后明确接受并授权部署；默认753d9769已通过两模式短健康检查，
+c8f回退包保留。接受决定与终态见
+[部署交付](METADATA_BATCH_DEPLOYMENT_2026-10-20.md)。
+下述离线成本审查保持；测量前决定稿和执行前准备段为历史记录。
 
 ## 身份、复核与价值
 
@@ -69,7 +70,7 @@ ENGINEERING_ACCEPTED_WITH_UNMEASURED_PERFORMANCE；不写性能保持、
 完成。当前待决风险改为结果报告披露的观察变化及统计不确定性，
 不再要求接受“未测性能”，也不自动扩充采样或设容差。
 
-## 已准备的包与条件部署方案
+## 执行前准备的包与部署方案
 
 本地.q4t-work/metadata-followup-20261020/final-review-v1已保存：
 封存HTTP实际使用的candidate/q4t及真实CMakeCache、当前默认的
@@ -97,6 +98,5 @@ previous/q4t及原release sidecar/缓存、所有摘要。候选包不生成
    c8f，而不是44abd8b1；旧deploy_accepted.py/rollback_accepted.py
    写死前一身份，不直接用于本次。对应执行器在接受路线确定后接入。
 
-以上健康检查仅作为部署方案，尚未执行。离线准备阶段GPU加载和
-性能请求为0；后续授权补测新增4加载/60请求并已完成，默认不变。
-整体目标待本项接受与部署，未标完成。
+上述方案已执行：753d默认，两模式各1条健康请求通过，无新性能
+样本。离线准备和60条补测分别保留原始记录；完整终态见部署交付。

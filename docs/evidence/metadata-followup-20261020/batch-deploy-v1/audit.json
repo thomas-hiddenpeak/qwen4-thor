@@ -1,0 +1,31 @@
+{
+  "status": "DEPLOYED_ACCEPTED_HEALTH_VERIFIED",
+  "binary_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+  "rollback_sha256": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+  "sealed_files_verified": 86,
+  "nvml_queries_ok": 68,
+  "elapsed_seconds": 72.25735116004944,
+  "health": {
+    "on": {
+      "actual_input": 1024,
+      "finish": [
+        "stop"
+      ],
+      "server_exit": 0,
+      "exact_match": true,
+      "server_pid_absent": 2100061
+    },
+    "off": {
+      "actual_input": 1024,
+      "finish": [
+        "stop"
+      ],
+      "server_exit": 0,
+      "exact_match": true,
+      "server_pid_absent": 2100919
+    }
+  },
+  "statistical_performance": "INSUFFICIENT_EVIDENCE",
+  "rollback_rehearsed": false,
+  "persistent_service": false
+}
