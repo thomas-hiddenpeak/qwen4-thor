@@ -1,0 +1,531 @@
+{
+  "status": "AUDIT_COMPLETE_SSD_PRECONDITIONS_REMAIN_OPEN",
+  "audited_commit": "3fb1c3e041b6664362fb5ba5c31d14bda234de16",
+  "comparison_base": "166a535",
+  "binary": {
+    "path": "build/q4t",
+    "bytes": 4445872,
+    "sha256": "5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191"
+  },
+  "compiled_source": "3f2c704848088228494eaae99de994f9012d6321",
+  "actual_compiler_source_files_matched": 150,
+  "unchanged_runtime_paths": [
+    "src/quant",
+    "src/io",
+    "src/model/model.cu",
+    "src/model/decoder_layer.cu",
+    "src/runtime/memory_budget.cpp",
+    "include/q4t/quant/moe_residency.h"
+  ],
+  "runtime_source_identities": [
+    {
+      "path": "src/model/model.cu",
+      "bytes": 92673,
+      "sha256": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194"
+    },
+    {
+      "path": "src/model/decoder_layer.cu",
+      "bytes": 31620,
+      "sha256": "4d8e53e7d0a031dbdba68b7a5558f3baf93061a92c11312809790ef98170b15d"
+    },
+    {
+      "path": "src/runtime/memory_budget.cpp",
+      "bytes": 17162,
+      "sha256": "2092df212a95f809ffa1f822d6c2e1cc84f3dd2b5c1b2c99eb1bf40337707942"
+    },
+    {
+      "path": "include/q4t/quant/moe_residency.h",
+      "bytes": 30200,
+      "sha256": "154c04d9fc62866af7993b4769679d0abcb8e78770770d929f52d0dc55abda36"
+    },
+    {
+      "path": "src/quant/moe_residency.cpp",
+      "bytes": 71768,
+      "sha256": "6916f8e711c5703fb07b06c724c38680fb4fc20e0f3e025fcfa8eebdd8fec2d3"
+    },
+    {
+      "path": "src/io/safetensors.cpp",
+      "bytes": 11482,
+      "sha256": "7c6363fa04e765fca3558c8f3ca16146eac6e98b7e83baab80df0c03df8a6c76"
+    },
+    {
+      "path": "src/server/chat_server.cpp",
+      "bytes": 21436,
+      "sha256": "d91d2723e8fae93d7457c315152e0402122a724d7cda9e6ef7cfc088e7ec1628"
+    },
+    {
+      "path": "src/runtime/startup_model_plan.cpp",
+      "bytes": 15747,
+      "sha256": "a67e2f152174b0c22653b048f3fcd79df33afa75df176f492769a3dbcfc21782"
+    },
+    {
+      "path": "src/runtime/startup_mtp_plan.cpp",
+      "bytes": 9870,
+      "sha256": "92ecf8b11c90b6c1d1f55a5e6df4d7e504d1dcfcfac236ca3999e8e09c141a88"
+    },
+    {
+      "path": "src/runtime/startup_reservation.cpp",
+      "bytes": 11015,
+      "sha256": "ad902dd13caa53c1250a896939e46e376afb4fc9d0d7336a51b130f1cecc58ec"
+    },
+    {
+      "path": "tools/evalscope/memory_accounting.py",
+      "bytes": 13851,
+      "sha256": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3"
+    }
+  ],
+  "original_seal_verification": {
+    "root_manifest": {
+      "path": ".q4t-work/startup-delivery-20261021/final-evidence.json",
+      "bytes": 743054,
+      "sha256": "d05f28e21b513cdb3862ca428adc7db9ebe119fbcc9d73f668a0f2ef1f313c39"
+    },
+    "acceptance_receipt": {
+      "path": "docs/evidence/startup-delivery-20261021/final-seal-verification.json",
+      "bytes": 444,
+      "sha256": "f69db31214026f0945d618cd3626b06efbd85796d6d1fa96729ad11b20af0cf5"
+    },
+    "stages": {
+      "boundary-v2": {
+        "seal": {
+          "path": ".q4t-work/startup-delivery-20261021/boundary-v2/sealed-files.json",
+          "bytes": 33680,
+          "sha256": "caeb90426d82100d941ef92c0dbe2688610e9be0622a81d15790296f2a05504d"
+        },
+        "verified_inputs": {
+          "boundary-v2/resources/cache/000039.json": "a879636d992027b638ff92290e3aaa92c48ed674dbad454194becef07f68610f",
+          "boundary-v2/resources/cache/000109.json": "9c148b5b74b487356272215b398fe4343381f4ba646d1f7d0ab2af7e0613c128",
+          "boundary-v2/resources/cache/000022.json": "68f29251f887bfd6592ec5fff6de47f3916d327513370833d0f4485a01aaccce",
+          "boundary-v2/resources/cache/000048.json": "acae981fbd7f1a02db186e9e0dd915be7248d8548ea38ef60f057d8e8200a679",
+          "boundary-v2/resources/cache/000065.json": "28c42da8c735fd415a7171100730be7d43866d283db238490998e4bf6128baa6",
+          "boundary-v2/resources/cache/000108.json": "6d433f5e3473cc9650a7cf2ac568f9d3494d1f8663760db123e1bea31ec68d97",
+          "boundary-v2/resources/cache/000034.json": "5e82cf101438672c2104dce77847dd62850efbe280ab33c0c157c85972a9032a",
+          "boundary-v2/resources/cache/000063.json": "8e1f4e59da37530a07a31f592f1771c6320ab36cb77f8edf10640f660d3d9d80",
+          "boundary-v2/resources/cache/000030.json": "75da073f6e712ac9d13c06934143f8905c44704feb26758070c474e7ac4aefd7",
+          "boundary-v2/resources/cache/000099.json": "5bef80ae5f41797f504f6c0229f1e45ad0b8ba7c9118ec082f7249f42e4f2d0c",
+          "boundary-v2/resources/cache/000015.json": "985f58cac9aadd87fd6769d2647bdb0326686c591f6d3311e16f764a6a05851a",
+          "boundary-v2/resources/cache/000017.json": "2e260959f0092f400d97949957dd2f7f6c0ed3ffb1c1fb60b25a90637feb6009",
+          "boundary-v2/resources/cache/000062.json": "d618dddc53867926a29628257451945cd94e0c2021d0418be2daeff39908b912",
+          "boundary-v2/resources/cache/000084.json": "4cf936550789b1651030f5c75ab807c5cc8199318d9280185deceda24431287a",
+          "boundary-v2/resources/cache/000027.json": "ce30b1577a19a1e53e7777530c52e6f3c37a72a0c5a959c68f0aae173cd44078",
+          "boundary-v2/resources/cache/000013.json": "c15f553b8f9e12a75fa6cfc9fe79589b80da0470cc1e27ccffba1d2847d1e235",
+          "boundary-v2/resources/cache/000059.json": "9ab64d173749a0cce2afc53a9a9c8a27ee3220369c74deb21f32b82ff2e5a9ce",
+          "boundary-v2/resources/cache/000036.json": "64f730b214557d19cc5edfed6f1d78d704e24d193c80742103fa9f9780c8e38e",
+          "boundary-v2/resources/cache/000054.json": "b401d95ec4677f1a6b00f846a86170672704457117c5fa08cfdd87ca1768c4b4",
+          "boundary-v2/resources/cache/000075.json": "b983b458b465e9e6d2442552716735bb03df388538ec0e22fc7c65d38ca9d443",
+          "boundary-v2/resources/cache/000001.json": "a3af0aa30702f5a2c65414a837375af08b7f782a52b23255dc2dfc713d2b8c56",
+          "boundary-v2/resources/cache/000021.json": "d5e508ca8f938a82336bbe0bd28015c85422ad23811972ff433adaa4d1858918",
+          "boundary-v2/resources/cache/000085.json": "101e5eb9ccd1697221931613fa07ca71f31eb3b2be092df7730520a909e8faf3",
+          "boundary-v2/resources/cache/000029.json": "105e38af0e0c5fde6f92151b4a39760a0bfd054c07558a6d2972a16301190e3c",
+          "boundary-v2/resources/cache/000105.json": "bda8317562809548d605d7cb7d8dd24fd446f3585f31ecc2a81e9dacf0b36377",
+          "boundary-v2/resources/cache/000008.json": "73841f42a5c0b1c74ad1cf39418805215bdbaacac94daf5ba37995699ed4a6fc",
+          "boundary-v2/resources/cache/000007.json": "967823a8f96004a52530cb0e78d7acf2c75b9a46e853c15a2fa60c8122ea8b63",
+          "boundary-v2/resources/cache/000071.json": "1eed1c70be9f886033aacf365ad730ec39ed96ae1faf344b514c4f3de94ca135",
+          "boundary-v2/resources/cache/000080.json": "233b825b0c5ebc46c822f0e17805369ca4c583f1ae5b6eba11d9134815842493",
+          "boundary-v2/resources/cache/000057.json": "1fd19ac6410a807936860a855383d63ee7fb335c378a299a96cb7600c56133cd",
+          "boundary-v2/resources/cache/000023.json": "878916a47910378e436d757c7c206d945370383062d9dca40b44d7fba0c17ed9",
+          "boundary-v2/resources/cache/000058.json": "c3d0d69db1a8f11c703921001d6dc6ad189d301a60a2fd774a36db9ec1fd335e",
+          "boundary-v2/resources/cache/000061.json": "ffe4a77b7f84fc2f839215f7c71a21daddeba60383c819a47767240233005f00",
+          "boundary-v2/resources/cache/000107.json": "fa7536632ed43e697573a6b14ecd36d51a089fb76729882024bf73b337b1b34c",
+          "boundary-v2/resources/cache/000033.json": "3cc34caa48f9a1e6afa1d108351eabe420629c9eee17c9d227c1ccde67346fa3",
+          "boundary-v2/resources/cache/000044.json": "ee5fa4122302ea603e5519701a829518237ff8d32dccedce249c8363060612d7",
+          "boundary-v2/resources/cache/000090.json": "5fd45b661d9a570c835df5e9e15838d5cb998ece6845074abd647818edd8d0fc",
+          "boundary-v2/resources/cache/000024.json": "684eca300829a378ae75df28d289eb0538dede0a53a6a38c4892d5f573befc5a",
+          "boundary-v2/resources/cache/000009.json": "5d9b5e45cf4a3d08c51ba7bba132b2a99d0e6e012dda3da61cc77e1a1cf983b0",
+          "boundary-v2/resources/cache/000031.json": "c31b868641ca87044a80115df6ec1727a7502ecbf8cef5f1beac5d24f90e62b7",
+          "boundary-v2/resources/cache/000035.json": "f2f85f3c9219c42093405bddbb688045fb6284e1513a16b9d5046245f6a1508f",
+          "boundary-v2/resources/cache/000102.json": "19ac46971a746ddaccf122be84f6bec95a77268d3a0579456c4cc3a1e7665145",
+          "boundary-v2/resources/cache/000003.json": "58cb2750b17a5caa3dd84e00ee1737721e1b2960bc6063ce8c3978a927a90485",
+          "boundary-v2/resources/cache/000060.json": "39aac5d9fba33ea85a4d10b9aceb374ee6ca0665c36ab2c8d1f0c2cb91e91af8",
+          "boundary-v2/resources/cache/000069.json": "6132f4d1a44799da9f41d79b1c9b92a848010a0639798d3d69a152a28a7394d6",
+          "boundary-v2/resources/cache/000016.json": "6040b0b423da3ef36f6612102efb71f81696178bbbd820ab720678300601c286",
+          "boundary-v2/resources/cache/000101.json": "b88b2c88af2689d8af0c6cc5a38d6b472774a315d6afe0fe2bdd804297aa17a2",
+          "boundary-v2/resources/cache/000078.json": "316ad9ce47cad4910a034900b548c3911adfca6643f4d36cf4634384f58e8113",
+          "boundary-v2/resources/cache/000089.json": "8bb8d7d06a8d75b7e969d64829811461a0f82c02f9b53ef3eb9c84e02e2232b4",
+          "boundary-v2/resources/cache/000018.json": "8fedd3712cdeb41f09e182fb046ddf3ad9cdf1129e419dec41f1f4e29d101947",
+          "boundary-v2/resources/cache/000094.json": "933c05d80dcebf2e3b3be965a911b386d2f97a149b15027673d87147563bb3fc",
+          "boundary-v2/resources/cache/000073.json": "5869282ac74fe707c2697479819d2951711a8b18c310daed46be987c22833a72",
+          "boundary-v2/resources/cache/000043.json": "1c58919e6d7650cc60a77e7a1c3bf966719c0a0eba4843b3acb16e55f6de54e0",
+          "boundary-v2/resources/cache/000081.json": "750dba50ee961da4e28c66a3467ca51e07c03d868cce437ef9dc65995c085177",
+          "boundary-v2/resources/cache/000074.json": "ed2a1973984d739f5f3a09989daf2e4019b4531fc050d27e3c7c82b30fbdebcc",
+          "boundary-v2/resources/cache/000079.json": "2db582628d32e0289dcfe7d7b449847617af4c2037041118493c3c08167342b7",
+          "boundary-v2/resources/cache/000052.json": "055f93adb4b2375bce4d4be447f6ac8111a596b55dac312567e5308e618529f1",
+          "boundary-v2/resources/cache/000020.json": "41239d3b2659fdd6e4c8d220a2a0d407f15b2409632671a4ed19d5e1654529ab",
+          "boundary-v2/resources/cache/000082.json": "6b51187311b3aed4f81e16ef9bd53fcabdce53b6abf3f7ad2f631ec084c721ec",
+          "boundary-v2/resources/cache/000088.json": "73a50e0e10956f8ac5656d60d08832f21e0f4b832ca8af1f4d95e0aede60f161",
+          "boundary-v2/resources/cache/000000.json": "36e366cf7ce3724bac88354adf4dee77f4c4acbe59b03c54fa32dd688f40ddaa",
+          "boundary-v2/resources/cache/000083.json": "9d915876b938df6957fe20a30ed2ad7a5e496d37848b9285f8f3a4649cbca929",
+          "boundary-v2/resources/cache/000072.json": "98992d5923a690355a96f8301a7d10220b66b0578fafe1384601887a0907025c",
+          "boundary-v2/resources/cache/000014.json": "90e2fe38aa335d9fe9062099fce24f5fa9ebe45103109ca0d266bff07adfe5d3",
+          "boundary-v2/resources/cache/000004.json": "c443db26adf605a3a7d6e501f39ef940912a2f317c50f7efc6a3fe5fec11c760",
+          "boundary-v2/resources/cache/000032.json": "f12f21ae689a8e95a34dfb4d39f1db76107e43e136910cfce9417f8514d80787",
+          "boundary-v2/resources/cache/000055.json": "0a688e64d97923e60e7f415204189ee47f0b10dbecafb7d265163783fac7f36d",
+          "boundary-v2/resources/cache/000045.json": "c29a8cbdea63dd4a3d5c89f2cda9c94b28176faa972ffc6e33eb4827cae24373",
+          "boundary-v2/resources/cache/000012.json": "8d6ef2a7e7bae5016373c0456981ad19bb51c70534a88326a4b97b4a125f2cef",
+          "boundary-v2/resources/cache/000040.json": "d0fff672b003032e91c474a7c1e888f08fde604a0654ba0f14b8ec48cac5575c",
+          "boundary-v2/resources/cache/000068.json": "74e394945713cfec6491eed0a050f597196776661f867badd7438eb83b877cd0",
+          "boundary-v2/resources/cache/000047.json": "8c96546bc289984f70c7bfcf58a87053f0170a14be2b21acb274c5c55f48a77a",
+          "boundary-v2/resources/cache/000077.json": "64843a6ab9a2f42c7ce4eba138ddd525c1aeb652c5515702de726889db234340",
+          "boundary-v2/resources/cache/000037.json": "d603e46984f300720b8125b9093d7a20097c437154a9c6ed213a65c1ec4b5a9b",
+          "boundary-v2/resources/cache/000010.json": "f8a9c2e84c6c49d0f0d229b3514c07342a2cfa8c823cdac9fddad7e3b2acf1ae",
+          "boundary-v2/resources/cache/000104.json": "bed01ffae757af9c8d347ef6fac9bd711154168451fc698b868ad2a72378cc66",
+          "boundary-v2/resources/cache/000053.json": "b07e006131839c223a5a49847b561115d93565f6eff529263278e041d37dc8cb",
+          "boundary-v2/resources/cache/000097.json": "151e488687a41d2a376b1619cd245469940edc0e93444c9663cc0baba44e5a32",
+          "boundary-v2/resources/cache/000103.json": "19d1869b83a8f6d4e8014752376adfd5b4843e43f816d21e297bff98646d5a70",
+          "boundary-v2/resources/cache/000095.json": "4d5663cbc9e28a10feca6b64b2c00a0abcd8eeb54812426a17e1731d802d7718",
+          "boundary-v2/resources/cache/000028.json": "92f288536ef1a1c5791ca6ec2f7f5db8d34c010537e7e4be56ccdfa61dda52a1",
+          "boundary-v2/resources/cache/000026.json": "ac6fd2beec7548f7a753af7add646d0ddd6ab1abf17e4ad763811c51ab3dad17",
+          "boundary-v2/resources/cache/000098.json": "f002afafb560c371eb1bc50cfec44423939d0f607b964b13b496b724c69df21d",
+          "boundary-v2/resources/cache/000038.json": "be835111af57d2951f40b7d8d8a5deec1b79cf9dacd6dc74aa06823c12b4f33d",
+          "boundary-v2/resources/cache/000049.json": "eb70fb05693763015e63ec45492f9a5892d29292dcff01202bcb95e6d5526763",
+          "boundary-v2/resources/cache/000092.json": "8bf4309cece3f930c22c33236891be29b76597e41d263651169dfcf278438a52",
+          "boundary-v2/resources/cache/000005.json": "5ff5bfd0befe50002d4f7ac407d84086abc27205e62e23c728dda421d76f6800",
+          "boundary-v2/resources/cache/000106.json": "01a8eae4667194b91c791f4aaf5783c31092974475f268391519feb4e8c637f4",
+          "boundary-v2/resources/cache/000067.json": "81af884388caeacc32afef2730af5a5c1d30afabdcd41db0380aef86f0c84cdb",
+          "boundary-v2/resources/cache/000091.json": "1dee01190e999c47eae1d56c6910dc70ba3e2cee43d6dd334d9ee6aadf7d31df",
+          "boundary-v2/resources/cache/000076.json": "80dda65a0717a98c68755a77ed8325ca338c5768036f953727283a160255ff3b",
+          "boundary-v2/resources/cache/000051.json": "1b7f3061e5c7f4b67e2be418f460bffd7cc238e1731398f4f317af8d4295c5c1",
+          "boundary-v2/resources/cache/000066.json": "23c39f19d1e42f7b986f919435c71097bf26cf4f4f202b4546eb7c3728a3ea08",
+          "boundary-v2/resources/cache/000096.json": "8876fc6315531d1f060e9efdb54d1bb5a80f2cfcc9bfa75a9239423c11be58d4",
+          "boundary-v2/resources/cache/000042.json": "b238a928bf1bff1d202aaaf2dc75f80f48e17153b1aec45dbc3d3fa5de515eee",
+          "boundary-v2/resources/cache/000006.json": "deb9932992382154af0ca48ae90f2e28fe7f85077c3b7b618a6746e76f6ed3aa",
+          "boundary-v2/resources/cache/000056.json": "a1420295edbef4aeb59bde88a6991f1e324c1c411181c2a6622dd9b6f352bca2",
+          "boundary-v2/resources/cache/000050.json": "b0b40f1dbc536c6a8dfb1e8408a113e9092bce024b66a7b47fb598a127267825",
+          "boundary-v2/resources/cache/000019.json": "df9aa5d131f5cc4311ec778e8da5c0798f9f7fe00ae2152b641c37869e1cf9c6",
+          "boundary-v2/resources/cache/000002.json": "3fa93ec7d02b56256e708e90d044c8762f3aea4965680d2e668348883b7b16f6",
+          "boundary-v2/resources/cache/000011.json": "8f6f63749d29a772e3df705e58c7409f2ad1f37f5a5567fba57379bb02da360e",
+          "boundary-v2/resources/cache/000070.json": "60b66b343878d3d968bb06c91a1a2968aeb5979168f8a682a40481c49c9359b5",
+          "boundary-v2/resources/cache/000025.json": "f75c5eea3e07480a862d116222af3ba5376106e02862ec905f1114fbcd802370",
+          "boundary-v2/resources/cache/000046.json": "d602504919dfed839f2f0688e0c6d6a104faf1c6f4dcfe1a08bc4ab0f99b5c66",
+          "boundary-v2/resources/cache/000093.json": "fd57e160666f8de3de1e6279e56d18ff94e26f8cfdf589d03a016746b426a996",
+          "boundary-v2/resources/cache/000064.json": "d1021c30a936f01ca4ccd3eccdbd2b9ec5dd1dee16b45dca9e7177d2fc8cd0fb",
+          "boundary-v2/resources/cache/000087.json": "a361837dfd9539b45f0614b7091a8373e8ea9c295dde9bcb1071d273d2f550e5",
+          "boundary-v2/resources/cache/000100.json": "aea3753104125f19f65ddf21d28e38474602524326b0de0758532df64ff13694",
+          "boundary-v2/resources/cache/000041.json": "e2ffd77f7a89afa6f94d8b8106108a267592d15606755152f5e23d950076712f",
+          "boundary-v2/resources/cache/000086.json": "0d8efe840747f7225bbb3a3d36c35b6d820ba48134997e20e90c6533935109e1",
+          "boundary-v2/run/normal/http/events.jsonl": "0e4c0c61a7d1af403df67e2d265a1d7b745b803651e5851b1098c9334ad8166e",
+          "boundary-v2/resources/cgroup.jsonl": "41f50f66c79ea06bf4f15ef21f7ec2d24fccc69b51ad78081835eb13101a03c0",
+          "boundary-v2/resources/resources.jsonl": "e2e457d23c8f629eca810502e1d035f7650f81d93a95d5dfebf746fd02cd4a4d"
+        },
+        "count": 113
+      },
+      "c256-hot-v1": {
+        "seal": {
+          "path": ".q4t-work/startup-delivery-20261021/c256-hot-v1/sealed-files.json",
+          "bytes": 35766,
+          "sha256": "1808f68a7eb76422a91441c5e89d366d270f201423607cbc9befbab6cbb87743"
+        },
+        "verified_inputs": {
+          "c256-hot-v1/resources/cache/000039.json": "73b1e60e0ec792621331b013109eddc9c1ec76070a1d7fd9063a9625421dafda",
+          "c256-hot-v1/resources/cache/000109.json": "cd6472765b6b366bc30a35c4f8460364e41e85a942ae0788be277bdf4e927cf9",
+          "c256-hot-v1/resources/cache/000022.json": "46f8e61f8844e0bf77376b41d103a764601c45f7279c244a4017cd4ed3367b82",
+          "c256-hot-v1/resources/cache/000048.json": "7e5bc604b435020fbb21b5a8df8b460d225fa2d0f2c8ba887e243d1a8275b9bd",
+          "c256-hot-v1/resources/cache/000065.json": "09e3680923a4032922cc17d0f89cc7fb6bf027cf43247e16f014a45fa2e69747",
+          "c256-hot-v1/resources/cache/000108.json": "7e39e9b2d9f28877fde4de8c545666602b41c1da12b9d83ad00d0d0340203fb2",
+          "c256-hot-v1/resources/cache/000034.json": "50a7d9c10b39c84d9400fada841fdbd1876286020de5e66fcf71de814c4c5561",
+          "c256-hot-v1/resources/cache/000063.json": "a34ba4aa141ed0d57564ac3fe7c6e796da6d2ca458249fc3f5d53001601c454c",
+          "c256-hot-v1/resources/cache/000030.json": "66386d23d245cf8a08ff7f37f4d07a2bb0fd1f7cb8bec7c4b1df7d4af862a2d9",
+          "c256-hot-v1/resources/cache/000099.json": "ab71e0e4da6ffacf75d632e49b2816aae7c1ef730fa0d0509b0c3148b97997f4",
+          "c256-hot-v1/resources/cache/000015.json": "f24774a119b94b80469fd25b59ed7af9c6fbf09a61432bc4b93b0ef0cffd7b59",
+          "c256-hot-v1/resources/cache/000017.json": "eca1d4bf72aa964b502c9ea39a7047aabc9c29a9d59eca315ee237264fb5f630",
+          "c256-hot-v1/resources/cache/000062.json": "cf463d43859db05d4923d9e4f00ef80315bc7b81d02616d0cad25f5e41ce56ee",
+          "c256-hot-v1/resources/cache/000084.json": "d46cc44cec2a25c7b021ee34be4db92e1c97214566aba86e8c495a4c57275de9",
+          "c256-hot-v1/resources/cache/000027.json": "cc87c9044c0023b6d8066c775fc230e384c0a601c060ddcfda2fa25edb833e74",
+          "c256-hot-v1/resources/cache/000013.json": "14782489010b51e5f652002ee9c721d9a5e8adcc9e98ca63e7eaec5aa727f7b8",
+          "c256-hot-v1/resources/cache/000059.json": "c02d84887434a61cbde497d835659d5d937028ea5f4b1fb94cd5f08d8f3f1f09",
+          "c256-hot-v1/resources/cache/000036.json": "47ec24fa15db700609f0cc0d0173aedffd55c982cce613b26397f030c42a38d0",
+          "c256-hot-v1/resources/cache/000054.json": "2a8955b33c29ea97bd510e87d277965dc2b1164a897741c3b9b2039f7f1381d3",
+          "c256-hot-v1/resources/cache/000075.json": "2963ce57e9ed857945b88d7b9eb480a14166b9b08179c5dffea9fa8ea874e3e8",
+          "c256-hot-v1/resources/cache/000001.json": "efe5caf6548854ea9e1b1e8a803189e0675cb3392e45b23ffb8a146214f8ca3d",
+          "c256-hot-v1/resources/cache/000021.json": "da838d3a3aee905eea8407d9713339751294f5f2167f3ae01c04141e855e9972",
+          "c256-hot-v1/resources/cache/000085.json": "25f49059e84a883d32e5cc1139c66bc9a3a507a7d1e67dd2cc89c6cbc6430566",
+          "c256-hot-v1/resources/cache/000029.json": "3de98582abe03e5668bb25a026fbb4ef256ea8bfd617f2c03e51ad27d49cffa2",
+          "c256-hot-v1/resources/cache/000105.json": "e0036fef08cf7968cac95bdc56e20bfa346df75a01a5cc7fbcc11da62dd255ae",
+          "c256-hot-v1/resources/cache/000008.json": "085ae9a7c440534826b1e215ed213aa91a19642eb5fd5a7c74aed6d3e37a58d9",
+          "c256-hot-v1/resources/cache/000007.json": "9882d04ccb49cf72d283b247813ad787427dffe3e39588194548e08ee5f783b8",
+          "c256-hot-v1/resources/cache/000071.json": "8599db1d94e15c0ea7d8620d62ade48d6153a25eb9c550c9c11fb5af3ce5279d",
+          "c256-hot-v1/resources/cache/000080.json": "2b4a167b94208f251cf0aaaf6fd3e38c174520e5cc25a61649935261613d8754",
+          "c256-hot-v1/resources/cache/000057.json": "4ebb899aee2182b8af9216ff06657dfe3481230aca92490ae8a820c0efb93a0c",
+          "c256-hot-v1/resources/cache/000113.json": "62f27a9ffbd2f7f26a5f9aad7d288e3e4cf39a1b9b211ff39c6eef8f6f5f8a60",
+          "c256-hot-v1/resources/cache/000023.json": "f055eb5acb440c077297375ec2f707ba70dcac7204dcfc0686eb2a56ef556da2",
+          "c256-hot-v1/resources/cache/000112.json": "a2f5da3d83c4f8eee50a1f8e8e01c9f8738278e0e9b36c9ef9e00883b598ccac",
+          "c256-hot-v1/resources/cache/000058.json": "ab8f1af7776a65e870a9329f1c5db414df441352cd322f4d5783111efd906906",
+          "c256-hot-v1/resources/cache/000061.json": "583bcd552509098d8e4505680c4172d4eddfd1974a20265de637b4cfd162fa52",
+          "c256-hot-v1/resources/cache/000107.json": "a1d03b269cb5ae55d483cf49bb357944dabb2521a826b968c0917a8b752a98eb",
+          "c256-hot-v1/resources/cache/000033.json": "7cb271a3aebd5f01edc82a7e224862f750d6458366db9d831c38bb51ab229101",
+          "c256-hot-v1/resources/cache/000044.json": "5b905232e0488c85c3ab5ef454cb79cf36f5d5d24ce0123c625c46ae2a4d3b86",
+          "c256-hot-v1/resources/cache/000090.json": "fa88819a0c7089eb10e20eca6fca0abb1fc644e7c32f2da5bd8f41b520ca7aeb",
+          "c256-hot-v1/resources/cache/000024.json": "9a28c819254d5ed0b72204ff5079a45a8a8a6d3041e0794922059e03c6bc22f0",
+          "c256-hot-v1/resources/cache/000009.json": "9694224c1e2c5644b6caa6cf1576bc61adc0f7cfadd172e19c5fd8673b5c4754",
+          "c256-hot-v1/resources/cache/000031.json": "8fe9c9daeef9c71f10ab5797db43db84bb83867dc3979421b289f54e444cde72",
+          "c256-hot-v1/resources/cache/000035.json": "cccdf103ad1995bbecdd2ae97f3b732eb68eaee998434c2fd908bd09f9b62990",
+          "c256-hot-v1/resources/cache/000102.json": "03892cd2721f85dc30208a541c1c6faea4d824c151cf452cdd8ba31f91bd82e8",
+          "c256-hot-v1/resources/cache/000003.json": "817472f61f59298e1313c6cdc98e31283991bc9bb99f8e2a5c7319a5a677ed74",
+          "c256-hot-v1/resources/cache/000060.json": "9f218d4e5847a79aab4a4bcbe712bd79aa1b4c53b92c31d97540c2b9cdebd8db",
+          "c256-hot-v1/resources/cache/000069.json": "54432c48417619dbfbefd59249f568167c9fb5d9c7b3284e886689595fa684ef",
+          "c256-hot-v1/resources/cache/000016.json": "39dd13a824441ad7508109742e3382f093911ae5690a7c99160a477eb6c07e73",
+          "c256-hot-v1/resources/cache/000101.json": "ad08d02b14bafba3035f97b60570fa3463e8856951b820e4ad3f8f62e3959b0e",
+          "c256-hot-v1/resources/cache/000078.json": "847cf5e09e228ebe8fee901fefd486259d6e68d000822fbeb5582a0e617052e9",
+          "c256-hot-v1/resources/cache/000089.json": "543419868f5e2f2ca7bbcf045f41d40264fc3253e5ffa72f2a0677f0913a0ab9",
+          "c256-hot-v1/resources/cache/000018.json": "dc433381dcb2ae57fbcdc52e8f658a3f5b937346e85163dc185c2e8c0c70e401",
+          "c256-hot-v1/resources/cache/000094.json": "ce93b42ac335306922e2cad4f2a76e41c94df2ae587f86040bc74ffef40224ef",
+          "c256-hot-v1/resources/cache/000116.json": "1e7ad8378745dd1ffee640e8915c8cc1793dfef401e2c2a56eae54608675cf66",
+          "c256-hot-v1/resources/cache/000073.json": "07b7bf6fbd279f9f934e671ea2dbb6c3a58f6660165e62e94e1c6fb99b0ed2ec",
+          "c256-hot-v1/resources/cache/000043.json": "084b8318029d221fbd47dece615d89c631e96acfed53ce431e7962c98c7765af",
+          "c256-hot-v1/resources/cache/000081.json": "b301ea5aa97bf645229983d047edb7c0b9a3841a4479e031d9003180c8ce6b82",
+          "c256-hot-v1/resources/cache/000074.json": "0548d4a6cd4060a3ccbeff198a58e6831f49b5de7a07a9d6498798b476b91228",
+          "c256-hot-v1/resources/cache/000079.json": "e3915870d320f5e93895360d63c5d6fe7c8c839f77b00be15ac72ff94317f264",
+          "c256-hot-v1/resources/cache/000052.json": "c7c5cce140c11ebdc7411e5a81aa2be80dbeff4bab064d247996836a19d745cd",
+          "c256-hot-v1/resources/cache/000020.json": "8cea3716ed949cd98b183bfde32b509ca47b0932b819b20ac0aa0f9df22ca6ba",
+          "c256-hot-v1/resources/cache/000082.json": "36f7531d2d5d9902918e93d169cacd37f2c8d88300c93ceaae0fed89103d6027",
+          "c256-hot-v1/resources/cache/000088.json": "df71c3f02c847ede4d28e5f8366bc37bc8848e37cb207730eab43a9d01c5704e",
+          "c256-hot-v1/resources/cache/000000.json": "c561f1b89d55bdd498c140255254dee8175e3b1769729095f4aaf9301dc86c9a",
+          "c256-hot-v1/resources/cache/000083.json": "b5f279f536d7b6e6fa5137c897f1b14bb821d8f7cc5949ae0759dabbd6e44979",
+          "c256-hot-v1/resources/cache/000072.json": "7c4fb45c7ebba910bcac7ad1204afe623897c7b6d6190130546c46de7b4d7c6a",
+          "c256-hot-v1/resources/cache/000014.json": "1ad7d3ee68bd626ada2ea825197f28f82de6465f0ee3bb943a59ab877a142224",
+          "c256-hot-v1/resources/cache/000004.json": "b5b9b1ab5a3480499528ea79258bbf0e1c138e5b3988d0144f6e01c1591ed5ac",
+          "c256-hot-v1/resources/cache/000032.json": "288779a73aabf82ccbc4cd402aafb319126fed389c725623f8498fbe9704c954",
+          "c256-hot-v1/resources/cache/000055.json": "518d70e1eb8b348b283b372bf541bae74d276a06e0b2391300f8213e08d6e145",
+          "c256-hot-v1/resources/cache/000045.json": "b90fbc750e48672fd5e90e04aa08810a182ee2e21d4df36cf2ff7381a48d8814",
+          "c256-hot-v1/resources/cache/000012.json": "42bcbfc711ccbf3ce50be3d547a69367171e7b111b58a816deed9cda8ef8a37e",
+          "c256-hot-v1/resources/cache/000040.json": "00e3aa261e534812e48b4ff9b70687bce332c342c2e66b2b68624c6e14a2955e",
+          "c256-hot-v1/resources/cache/000068.json": "ab44c275225a9e0af2655dc08675a96d72e68ad24b295665c9e5203f443ed2fc",
+          "c256-hot-v1/resources/cache/000047.json": "5277318169b411b1b661d888883c8eb1fbd783e8ff625a8d9768f94e15b10b7d",
+          "c256-hot-v1/resources/cache/000077.json": "163696b4b09ef4f2f731f848afada90daf533300c3398f242a41f5a9a261d965",
+          "c256-hot-v1/resources/cache/000037.json": "70efedec2901f56dea10963ba5510e32ded65f3e6bb1ce14286cd77074a01ce8",
+          "c256-hot-v1/resources/cache/000010.json": "38d2ac4453219ddb2e16000250f1abd7529e972d12263faf482cdad14d4b4456",
+          "c256-hot-v1/resources/cache/000115.json": "c2978632a5409f853098a5375e9ffeb519f86f4238e3e17212ae6df3a09c5aba",
+          "c256-hot-v1/resources/cache/000104.json": "55c3e7882cd40193c41b036ba368e450d53870609d7b846703f7cd4463753999",
+          "c256-hot-v1/resources/cache/000053.json": "3616eb894638e35fceca8eaf238c448cf9a436e9844fe2f0fe1da9b1bf53a4d9",
+          "c256-hot-v1/resources/cache/000097.json": "ea569b3439b1ae22f6f37bdf3025b3b563139e8118970d59e64e4683539f077b",
+          "c256-hot-v1/resources/cache/000114.json": "14955eb740ef80fd0f800743f075b1d83581a678d4e99f71ba4a5bc45295d17f",
+          "c256-hot-v1/resources/cache/000103.json": "fbaa54b583bebf25a9f043d86dac7673046a9290031c4543add150391538523e",
+          "c256-hot-v1/resources/cache/000110.json": "436e832cbf0a182bf8da1418e496828ace9427c991211a884eaf04e58b9b5b59",
+          "c256-hot-v1/resources/cache/000095.json": "2dda389e30894db7c24fd505fd240e3d59d114325dafa62e0b42230d1955f0e9",
+          "c256-hot-v1/resources/cache/000028.json": "3a45521e8364f0cb2d5f91ab9a3bda459a5f18ab21ec0b653b740c75ab23570a",
+          "c256-hot-v1/resources/cache/000026.json": "eaa9e98024f7c0915618f67a422abcf263e03cf6022d90943d5cdc9e8dd20210",
+          "c256-hot-v1/resources/cache/000098.json": "bf429d301065a4465899744a5e478dc1453a52201c52b8fd62f30b98dec02aef",
+          "c256-hot-v1/resources/cache/000111.json": "c4595cf3598a19af880ef065b1ee3235c83b3bedb41cab5efd7c7e63f1066b3e",
+          "c256-hot-v1/resources/cache/000038.json": "3d4182f0cfdbfe503f95f42f7e9e8cfd35a5f84edbd7d130132ac7c09f7130a9",
+          "c256-hot-v1/resources/cache/000049.json": "97b3845c3035cf2e1be90a35c9709b798544ac06d0bc80b4b03831ac68cb1d45",
+          "c256-hot-v1/resources/cache/000092.json": "3157e1e134fc85b5cf5720684643474ed4b2ff5b9c267cc62a353b2491f89cd3",
+          "c256-hot-v1/resources/cache/000005.json": "c244587db4923951ed2b0704adb8e85676cb57ea61439e679270994cf6cb453d",
+          "c256-hot-v1/resources/cache/000106.json": "0cd864b126a8a51cc30b5fe3b446ed9b969f54fa05cce30ef06cd2df6f0490eb",
+          "c256-hot-v1/resources/cache/000067.json": "834ec36e6d9b49c4d4032e74221ce06d026bbf370397af7c7a16c3f7f82fcbc6",
+          "c256-hot-v1/resources/cache/000091.json": "4583ad2da855b54603e29c1ef8c61164ec04f5358f21d46b36f7380b73ec9712",
+          "c256-hot-v1/resources/cache/000076.json": "b293a44d58b48f431df8eb6b380c8b70e483377287b550c850449f570aee90ce",
+          "c256-hot-v1/resources/cache/000051.json": "ecf6df9562951740f586d15693026bf9247d1fa6251e1722daaea0591615892b",
+          "c256-hot-v1/resources/cache/000066.json": "c9aaabf638ae3802a324e27caa3fefa409948497bd389336ae96c0c15d3263d8",
+          "c256-hot-v1/resources/cache/000096.json": "44d1b6f37776c9212543bdb4b08198b5d57da243ee6a8c9df0f79243e3d050c3",
+          "c256-hot-v1/resources/cache/000042.json": "7ec8832f1ea34a2de6d3ebc36f4c4eadbcf87652724691285db6149d4965ed46",
+          "c256-hot-v1/resources/cache/000006.json": "36a621594ebe2dada361701348e60c9022e13d7caaf46a3a2c7daf48bf0c6668",
+          "c256-hot-v1/resources/cache/000056.json": "a8c9c2ddfa91d9405b4552b9b903a5d08b02e0807714337779066858fbc1d75a",
+          "c256-hot-v1/resources/cache/000050.json": "bf2e11a1f84cd60f90d42a61b6c445a217fb6abec2b86124f11264a95f9b1ab1",
+          "c256-hot-v1/resources/cache/000019.json": "b623b6430904cd8a9f1dbe0c211b3275a66d219eb29e323c9d1e46343306cf0a",
+          "c256-hot-v1/resources/cache/000002.json": "863419195f1b099982bf79184885be331af17b25bcf9c8e54dd973b4d235f834",
+          "c256-hot-v1/resources/cache/000011.json": "67ccbf9983c24ac4897d45f867c5ecd62268937399d72945a5cb5cd01d04d650",
+          "c256-hot-v1/resources/cache/000070.json": "4b25e8da8464b247b03af6c3ee85d61cc8b9d72645831e0f5bcdd33314ef6d26",
+          "c256-hot-v1/resources/cache/000025.json": "c7193c342609af9fac4b824bb901145fe1f139bd29f372704cf041210cef5d2f",
+          "c256-hot-v1/resources/cache/000046.json": "c88c91364d9372a7ffc23c3ceba44df0fde1d2438d0d72a9eea4dbb64fb41617",
+          "c256-hot-v1/resources/cache/000093.json": "53ba7301eb3c82450aab9a3710c32018bf3790eb5fc93736e17e327c49692584",
+          "c256-hot-v1/resources/cache/000064.json": "9b91e28595ed7d8288e8d715936bd077e56b1b6922044047b4b063a76a8e6088",
+          "c256-hot-v1/resources/cache/000087.json": "8655066f7aaddcf39a8242539f825944fdde1f2b1f8e592968d8711ea7310023",
+          "c256-hot-v1/resources/cache/000100.json": "5fe89114402323861e61ebb59bdc301383aae6ecb249bb5fa4bf5aa9d60c7113",
+          "c256-hot-v1/resources/cache/000041.json": "aa0c2efaf8b01211f4e13d1180657b2f2ee648a320a30dff302e4e5d6a7c0964",
+          "c256-hot-v1/resources/cache/000086.json": "80ab09eece65c99ca5ac3a42f15a98b3c6ac59359cfd7e8fefbd6c0bc2b61105",
+          "c256-hot-v1/run/normal/http/events.jsonl": "db74fc4206e9f6211a3eca376ddd03d72dc5ea1bc4be302db9b0efab2282e588",
+          "c256-hot-v1/run/locked-warm/exit.json": "9b1dd663da05e5d2890171c03c7cf4ed61019ee8c3b093bdc699054740864388",
+          "c256-hot-v1/run/cache-launch-time.json": "bc25227f968d82bf76b4c7e2c1bd24fad1b9d902c97248c1280d760f65ff785c"
+        },
+        "count": 120
+      }
+    },
+    "scope": "all files consumed by this extraction; not a new full-stage acceptance or GPU run"
+  },
+  "pinned_payloads": [
+    {
+      "layers": 48,
+      "l2_slots_per_layer": 16,
+      "mirror_slots_per_layer": 8,
+      "l2_bytes": 2516594688,
+      "mirror_bytes": 1061689344,
+      "combined_bytes": 3578284032,
+      "kind": "source-derived pinned payload; not RAM peak"
+    },
+    {
+      "layers": 48,
+      "l2_slots_per_layer": 128,
+      "mirror_slots_per_layer": 8,
+      "l2_bytes": 20132757504,
+      "mirror_bytes": 1061689344,
+      "combined_bytes": 21194446848,
+      "kind": "source-derived pinned payload; not RAM peak"
+    }
+  ],
+  "boundary_ready_window": {
+    "complete_scans": 95,
+    "expert_min": {
+      "evidence": {
+        "path": ".q4t-work/startup-delivery-20261021/boundary-v2/resources/cache/000011.json",
+        "bytes": 68613,
+        "sha256": "8f6f63749d29a772e3df705e58c7409f2ad1f37f5a5567fba57379bb02da360e"
+      },
+      "start_t": 1792519788.8891537,
+      "end_t": 1792519788.9542396,
+      "expert_bytes": 201326592,
+      "all_model_file_bytes": 10149715968
+    },
+    "expert_max": {
+      "evidence": {
+        "path": ".q4t-work/startup-delivery-20261021/boundary-v2/resources/cache/000098.json",
+        "bytes": 69726,
+        "sha256": "f002afafb560c371eb1bc50cfec44423939d0f607b964b13b496b724c69df21d"
+      },
+      "start_t": 1792519875.889048,
+      "end_t": 1792519876.2998435,
+      "expert_bytes": 58876686336,
+      "all_model_file_bytes": 63716511744
+    },
+    "all_files_max": {
+      "evidence": {
+        "path": ".q4t-work/startup-delivery-20261021/boundary-v2/resources/cache/000072.json",
+        "bytes": 69901,
+        "sha256": "98992d5923a690355a96f8301a7d10220b66b0578fafe1384601887a0907025c"
+      },
+      "start_t": 1792519849.8898013,
+      "end_t": 1792519850.3032885,
+      "expert_bytes": 58840125440,
+      "all_model_file_bytes": 63918297088
+    },
+    "scope": "sequential scans wholly inside ready-to-shutdown; not an instantaneous physical peak or ownership union"
+  },
+  "c256_hot_ready_window": {
+    "complete_scans": 36,
+    "expert_min": {
+      "evidence": {
+        "path": ".q4t-work/startup-delivery-20261021/c256-hot-v1/resources/cache/000076.json",
+        "bytes": 69999,
+        "sha256": "b293a44d58b48f431df8eb6b380c8b70e483377287b550c850449f570aee90ce"
+      },
+      "start_t": 1792518644.3955314,
+      "end_t": 1792518644.9614437,
+      "expert_bytes": 12932775936,
+      "all_model_file_bytes": 22875246592
+    },
+    "expert_max": {
+      "evidence": {
+        "path": ".q4t-work/startup-delivery-20261021/c256-hot-v1/resources/cache/000095.json",
+        "bytes": 70171,
+        "sha256": "2dda389e30894db7c24fd505fd240e3d59d114325dafa62e0b42230d1955f0e9"
+      },
+      "start_t": 1792518663.3975472,
+      "end_t": 1792518663.911746,
+      "expert_bytes": 54875619328,
+      "all_model_file_bytes": 54927106048
+    },
+    "all_files_max": {
+      "evidence": {
+        "path": ".q4t-work/startup-delivery-20261021/c256-hot-v1/resources/cache/000095.json",
+        "bytes": 70171,
+        "sha256": "2dda389e30894db7c24fd505fd240e3d59d114325dafa62e0b42230d1955f0e9"
+      },
+      "start_t": 1792518663.3975472,
+      "end_t": 1792518663.911746,
+      "expert_bytes": 54875619328,
+      "all_model_file_bytes": 54927106048
+    },
+    "scope": "sequential scans wholly inside ready-to-shutdown; not an instantaneous physical peak or ownership union"
+  },
+  "scope_current_max_observation": {
+    "evidence": {
+      "path": ".q4t-work/startup-delivery-20261021/boundary-v2/resources/cgroup.jsonl",
+      "bytes": 218508,
+      "sha256": "41f50f66c79ea06bf4f15ef21f7ec2d24fccc69b51ad78081835eb13101a03c0"
+    },
+    "line": 73,
+    "monotonic": 709932.821117012,
+    "bytes": 65105383424,
+    "limit": "68719476736\n"
+  },
+  "scope_current_unavailable_observations": [
+    {
+      "line": 109,
+      "group": {
+        "path": "/sys/fs/cgroup/system.slice/q4t-delivery-boundary-v2-1792519779621290284.scope",
+        "first_seen": {
+          "wall": 1792519779.8877816,
+          "monotonic": 709862.404656853
+        },
+        "owners": [
+          {
+            "pid": 2334313,
+            "starttime_ticks": 70986229
+          }
+        ],
+        "wall": 1792519886.2197871,
+        "monotonic": 709968.736661806,
+        "status": "removed"
+      }
+    },
+    {
+      "line": 110,
+      "group": {
+        "path": "/sys/fs/cgroup/system.slice/q4t-delivery-boundary-v2-1792519779621290284.scope",
+        "first_seen": {
+          "wall": 1792519779.8877816,
+          "monotonic": 709862.404656853
+        },
+        "owners": [
+          {
+            "pid": 2334313,
+            "starttime_ticks": 70986229
+          }
+        ],
+        "wall": 1792519887.2190387,
+        "monotonic": 709969.73591365,
+        "status": "removed"
+      }
+    }
+  ],
+  "system_memtotal": {
+    "evidence": {
+      "path": ".q4t-work/startup-delivery-20261021/boundary-v2/resources/resources.jsonl",
+      "bytes": 3642118,
+      "sha256": "e2e457d23c8f629eca810502e1d035f7650f81d93a95d5dfebf746fd02cd4a4d"
+    },
+    "bytes": 131920637952
+  },
+  "helper": {
+    "evidence": {
+      "path": ".q4t-work/startup-delivery-20261021/c256-hot-v1/run/locked-warm/exit.json",
+      "bytes": 1133,
+      "sha256": "9b1dd663da05e5d2890171c03c7cf4ed61019ee8c3b093bdc699054740864388"
+    },
+    "timing_evidence": {
+      "path": ".q4t-work/startup-delivery-20261021/c256-hot-v1/run/cache-launch-time.json",
+      "bytes": 124,
+      "sha256": "bc25227f968d82bf76b4c7e2c1bd24fad1b9d902c97248c1280d760f65ff785c"
+    },
+    "exit_reaped": true,
+    "mappings_after_release": 0,
+    "vmlck_after_release": 0,
+    "reaped_mono": 708687.487334242,
+    "server_before_start_mono": 708687.852164607
+  },
+  "prior_acceptance": {
+    "path": ".q4t-work/startup-delivery-20261021/audit-deploy-v1.json",
+    "bytes": 331296,
+    "sha256": "c2c5839575be3089013b5e094bdadc2d61fb6661ee921060cf5f37aa206a2884"
+  },
+  "script": {
+    "path": ".q4t-work/ssd-offload-alignment-20261021/audit.py",
+    "bytes": 9344,
+    "sha256": "661faa8bc3ccf2dd24f8f3f941e24c0f2553fada6e9a1656918aaf81c90915e1"
+  },
+  "gpu_execution": false,
+  "cache_operations": false,
+  "runtime_modified": false,
+  "performance_acceptance": false,
+  "strict_total_ram_accepted": false,
+  "expert_physical_ssd_io_attribution_accepted": false
+}

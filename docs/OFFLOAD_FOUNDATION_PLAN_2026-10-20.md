@@ -1,7 +1,10 @@
 # SSD expert offload 基础阶段执行计划
 
-状态：目标active，用户2026-10-20授权按基础设施审计推进。
-入口main ebf5831，默认3ae53f26保持；不新增分支、不写模型/reference。
+当前说明（2026-10-21）：本基础阶段已按下文A–E完成映射收尾；
+其原始起点为main ebf5831/默认3ae53f26。下文保留当时执行计划，
+不代表当前发布身份或待执行任务。当前入口见[STATUS](STATUS.md)，
+共享CPU缓存后续优先级已由[SSD前提对齐审计](SSD_OFFLOAD_ALIGNMENT_AUDIT_2026-10-21.md)
+修正。原阶段不新增分支、不写模型/reference的边界保持。
 
 ## 阶段及边界
 
