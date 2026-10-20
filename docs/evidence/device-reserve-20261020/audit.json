@@ -1,0 +1,204 @@
+{
+  "status": "ENGINEERING_ACCEPTED_FIXED_CONFIG_RESEARCH_PROTOTYPE",
+  "default_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+  "candidate_sha256": "f55490e276ac286474148919670d13e0f4ca83406f7294e0266454e9c51d7908",
+  "plan_sha256": "96c38dac6961dd833d272bdde7bbdc633f4975eda919a052afa54e95e80d19bb",
+  "host_contracts": 32,
+  "gpu_contracts": 3,
+  "model_loads": 2,
+  "http_requests": 2,
+  "stages": [
+    {
+      "name": "reserve-v1",
+      "sealed_files": 306,
+      "sealed_manifest_sha256": "99d0b48532a10066e2ba114831490aff7a334d380650c522a0f6dda5db205d9e",
+      "full_hot_bytes": 67987791872,
+      "runtime_accepted": true,
+      "nvml_queries": 64,
+      "nvml_max_seconds": 2.5221297530224547,
+      "physical_allocation_seconds": 0.7567978689912707,
+      "longest_physical_allocation_seconds": 0.1784214760409668,
+      "workspace_allocation_seconds": 0.02652015700004995,
+      "compaction_seconds_in_allocations": 0.020841999910771847,
+      "direct_reclaim_seconds_in_allocations": 0.013992999796755612,
+      "reservation": {
+        "status": "PASS",
+        "count": 1397,
+        "bytes": 54843473680,
+        "consumed": 1397,
+        "freed": 1397,
+        "plan_sha256": "96c38dac6961dd833d272bdde7bbdc633f4975eda919a052afa54e95e80d19bb",
+        "all_device_reserved_before_first_pinned": true,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0
+      },
+      "logical_lifecycle_matches_capture": true,
+      "http": {
+        "actual_input": 1024,
+        "actual_output": 7,
+        "text": "710003",
+        "ttft": 16.846227375906892,
+        "latency": 17.64835046394728,
+        "exact_match": true
+      },
+      "cgroup": {
+        "samples": 37,
+        "maximum_current_bytes": 32539906048,
+        "memory_max_bytes": [
+          68719476736
+        ],
+        "memory_events_maxima": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "maximum_swap_current_bytes": 0,
+        "swap_max_bytes": [
+          0
+        ]
+      },
+      "default_unchanged": true,
+      "scope_gone": true,
+      "kernel_analysis_sha256": "092b74344da4490f43efd2dfba6466989ae326ece3a0adce7b6a440d97ed084d",
+      "resource_analysis_sha256": "25f72247633280d4032f351b0b54deea66f30dd089cb95f0e8933b02074e36a1"
+    },
+    {
+      "name": "restart-v1",
+      "sealed_files": 303,
+      "sealed_manifest_sha256": "7a9b6d042658daac55161ddec54ecf87ff6be13a13e350f487bc5c7d10e8d116",
+      "full_hot_bytes": 67987791872,
+      "runtime_accepted": true,
+      "nvml_queries": 64,
+      "nvml_max_seconds": 0.10173423192463815,
+      "physical_allocation_seconds": 0.9698895689798519,
+      "longest_physical_allocation_seconds": 0.18463689205236733,
+      "workspace_allocation_seconds": 0.08482269197702408,
+      "compaction_seconds_in_allocations": 0.13660600036382675,
+      "direct_reclaim_seconds_in_allocations": 0.09104799968190491,
+      "reservation": {
+        "status": "PASS",
+        "count": 1397,
+        "bytes": 54843473680,
+        "consumed": 1397,
+        "freed": 1397,
+        "plan_sha256": "96c38dac6961dd833d272bdde7bbdc633f4975eda919a052afa54e95e80d19bb",
+        "all_device_reserved_before_first_pinned": true,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0
+      },
+      "logical_lifecycle_matches_capture": true,
+      "http": {
+        "actual_input": 1024,
+        "actual_output": 7,
+        "text": "710003",
+        "ttft": 13.025781629025005,
+        "latency": 13.806265719933435,
+        "exact_match": true
+      },
+      "cgroup": {
+        "samples": 32,
+        "maximum_current_bytes": 32868409344,
+        "memory_max_bytes": [
+          68719476736
+        ],
+        "memory_events_maxima": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0
+        },
+        "maximum_swap_current_bytes": 0,
+        "swap_max_bytes": [
+          0
+        ]
+      },
+      "default_unchanged": true,
+      "scope_gone": true,
+      "kernel_analysis_sha256": "2212b639296cb8cb17f1361ff338dc28d5a6e8d3e1f95f38a6da15feba8ea357",
+      "resource_analysis_sha256": "7896c0a39e4fdce6df5cf3ede6211020e7405b61718c5afb84a4d9c7cccbecfe"
+    }
+  ],
+  "stage_files_verified": 609,
+  "final_evidence_files": 790,
+  "final_evidence_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/device-reserve-20261020/final-evidence-v4.json",
+  "final_evidence_sha256": "7cbed4f605a8af7617b17dde5963ac13f14c5bdf77fa310bcb778458a1bbeca5",
+  "same_full_launch_vector": true,
+  "observed_files": 226,
+  "default_replaced": false,
+  "performance_acceptance": false,
+  "source_format_equivalence": {
+    "status": "PASS",
+    "scope": "Whitespace-only 80-column source formatting; exact executable identities preserve existing runtime evidence. No additional GPU or test execution.",
+    "source_before_sha256": {
+      "tools/verify/device_reserve/owner.h": "9f55f35c6edd1c65ce1b681744945c3a9d13c6daa7476d7c99b1c9387cd8c896",
+      "tools/verify/device_reserve/memory_trace.cpp": "f91b40bf72a53d1beabd4f450c002ccdbb4ceed0e668155825c19516804f43d8",
+      "tools/verify/device_reserve/gpu_contract.cpp": "1942d4d03c870c8d51ce198e5b297ea7d91d09eda7891fa8e6161dba880bd797",
+      "tools/verify/device_reserve/test_owner.cpp": "5bc967785d834c2606a44fa54c52083e838dc32e8cef67cf3e22a8fd271f74e0"
+    },
+    "source_after_sha256": {
+      "tools/verify/device_reserve/owner.h": "c4843c10a92ff381118d99f8dac12b4a657312b4972ecf1192ca4df4e00b2bc4",
+      "tools/verify/device_reserve/memory_trace.cpp": "7d24709d8edc8138f6cdcd9db4177867b1190c3dbe2027150c79e44173381882",
+      "tools/verify/device_reserve/gpu_contract.cpp": "2ae6c80b3189e1b335c823ad23fc4f15585867bbe3c7a50553b5ce671df8c760",
+      "tools/verify/device_reserve/test_owner.cpp": "b56cd337a975b3592d523d9a8116400aa9321ef2414c9c4194f225051f069281"
+    },
+    "binaries": {
+      "candidate/q4t": {
+        "reference_sha256": "f55490e276ac286474148919670d13e0f4ca83406f7294e0266454e9c51d7908",
+        "formatted_sha256": "f55490e276ac286474148919670d13e0f4ca83406f7294e0266454e9c51d7908",
+        "identical": true
+      },
+      "candidate/gpu_contract": {
+        "reference_sha256": "2107c8d62639fe88fa3eeb30c63611ea389a6a4e6b9d6221e7e60139c794d6b8",
+        "formatted_sha256": "2107c8d62639fe88fa3eeb30c63611ea389a6a4e6b9d6221e7e60139c794d6b8",
+        "identical": true
+      },
+      "owner-host-sealed/test_owner": {
+        "reference_sha256": "5e2aa61fd598b7c8e87c61d4b6c7f46598123218eff3d70b4ef883e955e76642",
+        "formatted_sha256": "5e2aa61fd598b7c8e87c61d4b6c7f46598123218eff3d70b4ef883e955e76642",
+        "identical": true
+      }
+    },
+    "test_owner_compile": {
+      "command": [
+        "g++-14",
+        "-std=c++23",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "/home/rm01/models/dev/qwen4-thor/tools/verify/device_reserve",
+        "/home/rm01/models/dev/qwen4-thor/tools/verify/device_reserve/test_owner.cpp",
+        "-o",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/device-reserve-20261020/style/test_owner"
+      ],
+      "returncode": 0
+    },
+    "test_owner_sha256": "5e2aa61fd598b7c8e87c61d4b6c7f46598123218eff3d70b4ef883e955e76642",
+    "gpu_reruns": 0
+  },
+  "scope": {
+    "mtp": false,
+    "resident_slots": 256,
+    "l2_slots": 16,
+    "mirror_k": 8,
+    "max_seq": 1,
+    "max_len": 262144,
+    "max_prefill": 8192,
+    "memcg_max_bytes": 68719476736
+  },
+  "limitations": [
+    "Trace-specific fixed configuration prototype; not a general runtime memory planner.",
+    "Two bounded starts, not long-duration stability or statistical performance proof.",
+    "Full hot vector is the prelaunch condition; file cache changes during loading/inference.",
+    "Original post-ready process-static allocations and library allocations remain outside startup owner.",
+    "Driver/pool initial state differs between runs; no unique pinned-memory or driver lock root-cause proof.",
+    "NVML remained mandatory with its original timeout; later async allocations can still wait."
+  ]
+}

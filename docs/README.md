@@ -1,6 +1,6 @@
 # docs/ — 开发记录文档体系
 
-最新专项：[完整热缓存物理回收时间轴](WARM_RECLAIM_TIMELINE_2026-10-20.md)。
+最新专项：[完整热启动设备预留原型](DEVICE_RESERVE_STARTUP_2026-10-20.md)。
 
 本目录包含当前入口与按日期冻结的历史报告。先读[STATUS](STATUS.md)和
 [EVALUATION](EVALUATION.md)；下表专题的“进行中/下一步/当前”仅代表成文
@@ -8,6 +8,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [完整热启动设备预留原型](DEVICE_RESERVE_STARTUP_2026-10-20.md) | 真实启动清单预留、失败回收及完整热启动验证 | 固定配置两次通过，独立原型收尾、默认不变 |
 | [完整热缓存物理回收时间轴](WARM_RECLAIM_TIMELINE_2026-10-20.md) | order9规整定位、唯一前置规整失败及原始证据 | 有界诊断完成，热启动未修复 |
 | [首分叉局部重放](UPSTREAM_LOCAL_REPLAY_2026-10-20.md) | GEMV精确FP32、GDN前缀状态和单a干预通过；cuBLAS解释待闭合 | 调查进行中 |
 | [上游首分叉捕获](UPSTREAM_FIRST_FORK_CAPTURE_2026-10-19.md) | layer0 a[43]同输入差异与精确点积，根因待闭合 | 调查进行中 |
