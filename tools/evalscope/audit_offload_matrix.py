@@ -195,7 +195,7 @@ def check_processes(evidence, directory, protocol, wrapper):
     if protocol['unit'].endswith('.scope'):
         payload = evidence.json(directory / 'http/isolation/payload.json')
         payload_exit = evidence.json(directory / 'http/isolation/payload-exit.json')
-        require(identity.get('kind') == 'scope' and
+        require(identity.get('kind') == 'scope' and props.get('OOMPolicy') == 'continue' and
                 re.fullmatch(r'q4t-scope-[0-9a-f]{32}', identity.get('token', '')) and
                 identity['token'] == props['Description'] == payload['token'] ==
                 payload_exit['token'] and payload_exit['returncode'] == 0 and

@@ -93,7 +93,9 @@ offload六档验收。显式选档时每发启动一个evalscope client，服务
 `--host-cache-max-bytes BYTES`设置memcg限额，swap固定0。本机需systemd
 与非交互sudo。Thor CUDA分配和外部已有缓存可能不计入此组，**不能将
 它称为全部物理RAM上限**。helper记录真实payload PID/starttime/退出码，
-退出后最多保留scope 15秒；控制器先快照再清理，helper charge计入组内。
+退出后最多保留scope 15秒；显式OOMPolicy=continue避免系统默认stop
+提前杀死helper/删除cgroup，载荷OOM仍是失败，不恢复模型。控制器先
+快照再清理，helper charge计入组内。
 清理必须匹配随机Description token，已有同名unit拒绝复用；旧.service
 实验快照仍按历史合同审计，新执行入口要求.scope。详见
 [接入验证状态](../../docs/OFFLOAD_SCOPE_INTEGRATION_2026-10-20.md)。

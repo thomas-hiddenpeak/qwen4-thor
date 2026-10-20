@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[3]
-STAGE = ROOT / '.q4t-work/offload-foundation-20261020/scope-integration-v1'
+STAGE = ROOT / '.q4t-work/offload-foundation-20261020/scope-integration-v2'
 EXPECTED = '19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469'
 
 
@@ -36,7 +36,8 @@ def scope_identity(folder, limit):
             identity['membership'] == payload['membership'] and
             '0::' + props['ControlGroup'] in identity['membership'], 'scope PID binding')
     require(int(props['MemoryMax']) == limit and props['MemorySwapMax'] == '0' and
-            props['MemoryAccounting'] == props['IOAccounting'] == 'yes', 'scope limits')
+            props['MemoryAccounting'] == props['IOAccounting'] == 'yes' and
+            props['OOMPolicy'] == 'continue', 'scope limits')
     end = read(folder / 'payload-exit.json')
     require(end['token'] == identity['token'], 'payload exit owner')
     cleanup = read(folder / 'cleanup.json')

@@ -20,7 +20,7 @@ SCOPE_PATTERN = re.compile(r'q4t-[A-Za-z0-9][A-Za-z0-9_.-]*\.scope\Z')
 
 def scope_properties(unit):
     result = subprocess.run(['sudo', '-n', 'systemctl', 'show', unit] +
-        ['--property=' + key for key in (*PROPERTIES, 'Description')],
+        ['--property=' + key for key in (*PROPERTIES, 'Description', 'OOMPolicy')],
         capture_output=True, text=True, timeout=15)
     values = dict(line.split('=', 1) for line in result.stdout.splitlines() if '=' in line)
     if not values or 'LoadState' not in values:
@@ -72,6 +72,7 @@ class IsolatedScope:
         launch = ['sudo', '-n', 'systemd-run', '--quiet', '--scope', '--unit=' + unit,
             '--description=' + self.token, '--property=MemoryAccounting=yes',
             '--property=IOAccounting=yes', '--property=MemorySwapMax=0',
+            '--property=OOMPolicy=continue',
             '--property=MemoryMax=' + str(memory_max or 'infinity'),
             '--property=TasksMax=4096', '--', '/usr/bin/setpriv',
             '--reuid=' + str(os.getuid()), '--regid=' + str(os.getgid()),
@@ -93,7 +94,8 @@ class IsolatedScope:
                 time.sleep(.05)
             identity = json.loads(payload.read_text())
             props = self._properties()
-            if identity['token'] != self.token or props.get('Description') != self.token:
+            if (identity['token'] != self.token or props.get('Description') != self.token or
+                    props.get('OOMPolicy') != 'continue'):
                 raise RuntimeError('scope ownership token mismatch')
             self.owned = True
             self.pid = identity['pid']

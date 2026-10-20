@@ -20,7 +20,7 @@ class ScopeEvidence(unittest.TestCase):
         identity.update(kind='scope', token='q4t-scope-' + 'a' * 32, start_ticks=1234)
         identity['properties'].pop('MainPID')
         identity['properties'].update(ControlGroup='/system.slice/q4t-test.scope',
-                                      Description=identity['token'])
+                                      Description=identity['token'], OOMPolicy='continue')
         identity['membership'] = ['0::/system.slice/q4t-test.scope']
         self.f.save(self.iso / 'identity.json', identity)
         self.f.save(self.iso / 'payload.json', {key:identity[key] for key in

@@ -68,3 +68,16 @@ host/cache上限、max-len262144、普通模式完成1条1024-token质量请求�
 核对封存摘要、当前工具身份、五种CPU结果、真实payload PID/starttime/
 owner token、正常HTTP质量与NVML/cgroup绑定、受控中断见证及最终清理。
 目前只有AST检查，必须等真实阶段完成后执行；脚本存在不代表验收通过。
+
+## v1具体失败与修复
+
+v1正常/TERM/KILL/启动失败完成，受控64MiB OOM使payload退出-9，
+systemd记录Result=oom-kill，但本机DefaultOOMPolicy=stop提前结束
+scope，最终memory.events文件消失。计数未知未当0或通过；v1 guard
+为COMMAND_FAILED并完成清理，GPU加载0，现场已封存。
+
+显式设置OOMPolicy=continue，仅让helper在载荷死亡后保留最终计数；
+载荷OOM仍被判失败，不自动恢复模型。机制与
+[systemd scope官方说明](https://www.freedesktop.org/software/systemd/man/latest/systemd.scope.html)
+一致。每次创建scope都校验实际OOMPolicy，因此v2重验受影响的scope
+启动/退出/清理CPU项，再执行尚未开始的2次GPU预算；不重跑五档。

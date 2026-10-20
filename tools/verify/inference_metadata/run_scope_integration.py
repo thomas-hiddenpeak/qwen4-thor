@@ -12,7 +12,7 @@ import time
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / 'tools/evalscope'))
 STAGE = ROOT / '.q4t-work/offload-foundation-20261020'
-OUT = STAGE / 'scope-integration-v1/run'
+OUT = STAGE / 'scope-integration-v2/run'
 PACKAGE = ROOT / '.q4t-work/releases/offload-foundation-20261020'
 MODEL = '/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream'
 EXPECTED = '19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469'
