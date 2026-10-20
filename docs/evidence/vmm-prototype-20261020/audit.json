@@ -1,0 +1,111 @@
+{
+  "status": "VERIFIED_DIAGNOSTIC_FAILURE",
+  "stages": {
+    "capability-v1": {
+      "seal": {
+        "guard_exit": 0,
+        "guard_status": "COMPLETED",
+        "started": 1792499956.8664951,
+        "finished": 1792499958.221423,
+        "command": [
+          ".q4t-work/vmm-prototype-20261020/probe"
+        ],
+        "seal_scope": "after guard completion; preserves interrupted child manifests"
+      },
+      "files": 5,
+      "query_statuses": [
+        "OK",
+        "OK",
+        "OK"
+      ]
+    },
+    "replay-v1": {
+      "seal": {
+        "guard_exit": 75,
+        "guard_status": "ENV_ABORT",
+        "started": 1792500093.3996918,
+        "finished": 1792500168.4176195,
+        "command": [
+          "python3",
+          "-B",
+          "tools/verify/vmm/run_replay.py"
+        ],
+        "seal_scope": "after guard completion; preserves interrupted child manifests"
+      },
+      "files": 93,
+      "query_statuses": [
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "OK",
+        "TIMEOUT"
+      ]
+    }
+  },
+  "cache_bytes_before_replay": 77265350656,
+  "begun": 1493,
+  "completed": 1492,
+  "unfinished": [
+    "1492",
+    "cudaMalloc",
+    "2348023808",
+    "690205.657687311"
+  ],
+  "simultaneous_wait_samples": [
+    690207.971641,
+    690210.053530824,
+    690212.142283036,
+    690212.375859646,
+    690212.841786395,
+    690215.878135465,
+    690230.057067544,
+    690233.876934411,
+    690236.741194444,
+    690245.12727555,
+    690245.845928058,
+    690247.754207716
+  ],
+  "probe_sha256": "1de4ec6ead60822e403db5fd66986bb91b83f108b43ecce735087a0f76f368c7",
+  "replay_sha256": "d9c84e264e3316e4c7789cc85a17f3d3c9176d5277cdfdf96532f2f02369b0d4",
+  "default_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+  "model_loads": 0,
+  "http_requests": 0,
+  "production_accepted": false,
+  "performance_acceptance": false,
+  "full_replay_release_tested": false,
+  "decision": "STOP_PROTOTYPE_WITHOUT_MODEL_INTEGRATION; ENV_ABORT not performance NO_GO"
+}
