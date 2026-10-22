@@ -184,8 +184,9 @@ MTP收益、直接合同和容量/资源通过，作本次显式启用的工程�
 
 可核验5a回退包在`delivery-package-v2/previous/`；二进制、原sidecar和
 实际CMakeCache均在181文件封存包内。恢复工具为
-`tools/mtp_subset/deploy_resume.py --base <阶段绝对路径> --rollback`，
-也必须由匹配的部署GPU lease驱动；仅识别已知旧/新身份，不覆盖未知文件。
+`tools/mtp_subset/deploy_resume.py --base <阶段绝对路径> --rollback
+--rollback-output <新的证据目录>`；由GPU守卫以该新目录下`lease/`驱动，
+新目录须在source/.q4t-work内，不复用已封存的部署lease；仅识别已知旧/新身份，不覆盖未知文件。
 此轮未执行额外回退推理或新增性能采样。
 
 源码与二进制身份分开：根工作区main仍ab762aa，本阶段实现和交付记录
@@ -196,3 +197,6 @@ MTP收益、直接合同和容量/资源通过，作本次显式启用的工程�
 [最终交付审计](evidence/mtp-subset-resume-20261023/closeout.json)，
 [三个健康合同](evidence/mtp-subset-resume-20261023/deployment.json)。
 本阶段完成并停止，不扫描其他规模，不追加采样。
+
+最终纯工具复核修正回退命令的新lease目录入口；未执行回退、无新增GPU请求，
+不改变已部署二进制/元数据或封存的健康证据。

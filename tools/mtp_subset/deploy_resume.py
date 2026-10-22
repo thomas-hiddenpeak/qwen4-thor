@@ -11,11 +11,19 @@ import time
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--base',type=Path,required=True)
 parser.add_argument('--rollback',action='store_true')
+parser.add_argument('--rollback-output',type=Path)
 args=parser.parse_args()
 b=args.base.resolve();r=b/'source';root=b.parents[1];p=b/'delivery-package-v2';out=r/'.q4t-work/deployment-v2'
 spec=importlib.util.spec_from_file_location('delivery_helpers',r/'tools/verify/startup_delivery/deploy.py')
 h=importlib.util.module_from_spec(spec);spec.loader.exec_module(h)
-h.require_guard(out)
+if args.rollback:
+ assert args.rollback_output is not None,'rollback requires a fresh evidence directory'
+ rollback_out=args.rollback_output.resolve()
+ assert rollback_out.is_relative_to(r/'.q4t-work') and rollback_out!=out
+ h.require_guard(rollback_out)
+else:
+ assert args.rollback_output is None
+ h.require_guard(out)
 h.verify_seal(p)
 old=json.loads((p/'previous/q4t.release.json').read_text())['binary_sha256']
 new=json.loads((p/'candidate/q4t.release.json').read_text())['binary_sha256']
@@ -30,7 +38,9 @@ def restore():
  h.verify_pair(root/'build/q4t',root/'build/q4t.release.json',old)
  if marker.exists():marker.unlink();h.fsync_directory(marker.parent)
 if args.rollback:
- restore();print('ROLLED_BACK');raise SystemExit(0)
+ restore()
+ h.save(rollback_out/'rollback.json',dict(status='ROLLED_BACK',binary_sha256=old,package=str(p),finished=time.time()))
+ print('ROLLED_BACK');raise SystemExit(0)
 assert not marker.exists()
 h.verify_pair(root/'build/q4t',root/'build/q4t.release.json',old)
 for name in ['q4t','q4t.release.json']:assert h.sha(root/'build'/name)==h.sha(p/'previous'/name)
