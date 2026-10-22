@@ -1,0 +1,65 @@
+{
+  "decision": "NO_GO_THIS_ROUND",
+  "reason": "first HTTP gate failed; explicit stop, no additional sampling",
+  "tested_binary_sha256": "8b7621d8806f5a34c2889a3c22776bfc3a2252add3c8eda4995996630ef4a5bc",
+  "repaired_binary_sha256": "75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d",
+  "repaired_status": "BUILD_ONLY_UNVALIDATED",
+  "default_sha256": "5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191",
+  "artifact_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "actual": {
+    "model_loads": 1,
+    "http_requests": 11,
+    "http_success_flags": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "quality_passes": 0,
+    "performance_requests": 0,
+    "direct_gpu_tests": 0,
+    "nvml_queries": 72,
+    "nvml_all_ok": true,
+    "conflicts": [],
+    "guard": "COMMAND_FAILED",
+    "server_exit": 0,
+    "gpu_release": "UNKNOWN: CUDA 700, release_unknown=1608"
+  },
+  "observations": {
+    "startup_ms": 67620,
+    "main_load_ms": 29776,
+    "mtp_load_ms": 34709,
+    "device_plan_bytes": 97023144328,
+    "added_head_and_map_bytes": 335806464,
+    "validation_cache_budget_bytes": 4294967296,
+    "memavailable_start_bytes": 126079623168,
+    "memavailable_min_bytes": 22370496512,
+    "cached_start_bytes": 11322642432,
+    "cached_max_bytes": 23961481216,
+    "observed_max_single_process_rss_bytes": 4152672256,
+    "memory_limitations": "System samples include unrelated activity; RSS overlaps unified device allocations and file cache. No attribution by summing. Failed request; no steady-state measurement.",
+    "ttft_and_decode": "NOT_ACCEPTABLE: partial/error responses",
+    "acceptance_distribution": "NOT_AVAILABLE: MTP initialization failed"
+  },
+  "not_run": [
+    "quality-off",
+    "all five-tier comparisons",
+    "projection-contract",
+    "lifecycle",
+    "replay",
+    "deployment"
+  ],
+  "raw_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023",
+  "runtime_defects": [
+    "embedding domain incorrectly reduced to subset rows",
+    "projection read full vocab rows from subset allocation"
+  ],
+  "repair_scope": "restore full embedding domain; use DraftVocab only for draft projection; built, not rerun"
+}

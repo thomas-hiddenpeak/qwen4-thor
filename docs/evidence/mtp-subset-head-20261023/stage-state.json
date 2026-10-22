@@ -1,0 +1,8 @@
+{
+  "status": "STOPPED",
+  "started": 1792697044.3903267,
+  "completed": [],
+  "current": "quality-on",
+  "error": "CalledProcessError(1, ['python3', '-B', '/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/tools/evalscope/run_acceptance.py', '--mode', 'quality', '--output', '/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/acceptance-v1/quality-on', '--binary', '/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/build/q4t', '--model-dir', '/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream', '--fixtures', '/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/fixtures/quality', '--startup-timeout', '900', '--port', '8753', '--max-len', '208896', '--allow-unqualified-binary', '--mtp', '--mtp-subset-head', '/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/artifact'])",
+  "finished": 1792697120.1116471
+}

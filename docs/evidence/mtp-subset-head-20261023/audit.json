@@ -1,0 +1,7 @@
+{
+  "frozen_files_verified": 23,
+  "failed_source_files_verified": 159,
+  "default_binary_and_release_unchanged": true,
+  "repair_build_zero_warnings": true,
+  "runtime_tests_after_failure": 0
+}

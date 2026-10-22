@@ -25,6 +25,8 @@
 // The only new kernel vs the main model is the unit-weight combine (step 4a);
 // everything else reuses model:: primitives.
 #include "q4t/mtp/mtp.h"
+#include "q4t/mtp/subset_head.h"
+#include <filesystem>
 #include "q4t/mtp/position_copy.h"
 
 #include <algorithm>
@@ -213,6 +215,10 @@ void FreeScratch(MtpModel& m) {
 
 void MtpModel::Free() {
   metadata_upload.reset();
+  if (subset_head) cudaFree(subset_head);
+  if (subset_ids) cudaFree(subset_ids);
+  subset_head = nullptr;
+  subset_ids = nullptr;
   if (fc_embedding) cudaFree(fc_embedding);
   if (fc_hidden) cudaFree(fc_hidden);
   if (pre_fc_norm_embedding) cudaFree(pre_fc_norm_embedding);
@@ -261,7 +267,8 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
     return Status::Fail("LoadMtp: model and borrowed weights are required");
   if (cfg.initial_scratch_capacity < 0 || cfg.initial_scratch_capacity > 17)
     return Status::Fail("LoadMtp: initial scratch capacity must be in [0,17]");
-  if (out->embed_tokens || out->lm_head || out->fc_embedding ||
+  if (out->subset_head || out->subset_ids || out->embed_tokens ||
+      out->lm_head || out->fc_embedding ||
       out->d_ids_scratch || out->k_max > 0)
     return Status::Fail("LoadMtp: output already owns resources");
   // Sub-loaders attach allocations to out as they proceed. Keep one failure
@@ -314,6 +321,25 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
   };
 
   Status s;
+  if (!cfg.subset_head_dir.empty()) {
+    SubsetHeadData data;
+    s = ReadSubsetHead(cfg.subset_head_dir,
+                       std::filesystem::path(cfg.mtp_dir).parent_path().string(),
+                       cfg.vocab, cfg.hs, &data);
+    if (!s.ok()) return s;
+    if (!(s = alloc(&out->subset_head, kSubsetWeightBytes))) return s;
+    if (cudaMalloc(reinterpret_cast<void**>(&out->subset_ids),
+                   kSubsetIdBytes) != cudaSuccess)
+      return Status::Fail("subset head: allocate IDs");
+    // Synchronous copies: pageable data is released before other MTP loads.
+    if (cudaMemcpy(out->subset_head, data.weights.data(), kSubsetWeightBytes,
+                   cudaMemcpyHostToDevice) != cudaSuccess ||
+        cudaMemcpy(out->subset_ids, data.ids.data(), kSubsetIdBytes,
+                   cudaMemcpyHostToDevice) != cudaSuccess)
+      return Status::Fail("subset head: upload");
+    std::fprintf(stderr, "[q4t] BF16 subset head rows=%d bytes=%zu\n",
+                 kSubsetRows, kSubsetWeightBytes + kSubsetIdBytes);
+  }
   // 1. fc projections + pre-norms (mtp.* prefix).
   if (!(s = alloc(&out->fc_embedding,
                   static_cast<size_t>(hs) * hs * sizeof(uint16_t))))
@@ -673,6 +699,11 @@ __global__ void ArgmaxBf16RowsKernel(const uint16_t* __restrict__ logits,
   if (threadIdx.x == 0) out[row] = s_i[0];
 }
 
+__global__ void RemapDraftIds(int32_t* tokens, const int32_t* ids, int rows) {
+  const int row = blockIdx.x * blockDim.x + threadIdx.x;
+  if (row < rows) tokens[row] = ids[tokens[row]];
+}
+
 Status ArgmaxBf16Rows(const uint16_t* logits, int rows, int vocab, int32_t* out,
                       cudaStream_t stream) {
   if (rows <= 0) return Status();
@@ -683,6 +714,17 @@ Status ArgmaxBf16Rows(const uint16_t* logits, int rows, int vocab, int32_t* out,
              ? Status()
              : Status::Fail("ArgmaxBf16Rows: kernel launch");
 }
+
+Status DraftArgmax(const MtpModel& model, const uint16_t* logits, int rows,
+                   int32_t* output, cudaStream_t stream) {
+  Status status = ArgmaxBf16Rows(logits, rows, model.DraftVocab(), output, stream);
+  if (!status.ok() || !model.subset_ids || rows <= 0) return status;
+  RemapDraftIds<<<(rows + 255) / 256, 256, 0, stream>>>(
+      output, model.subset_ids, rows);
+  return cudaGetLastError() == cudaSuccess
+             ? Status() : Status::Fail("subset head: remap launch");
+}
+
 
 // ---------------------------------------------------------------------------
 // Diagnostic (Q4T_MTP_GAP_DEBUG): per-row top-1/top-2 logit values + top-1
@@ -760,7 +802,7 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
     return Status::Fail("MtpDraftExtend: seq_id out of range");
   const int hc_dim = m.hc_dim();
   const int hs = m.cfg.hs;
-  const int vocab = m.cfg.vocab;
+  const int vocab = m.DraftVocab();
 
   // Chunked draft-extend (T > max_prefill): the forward workspace is sized for
   // max_prefill tokens, so a long prompt is run in chunks of max_prefill. The
@@ -851,8 +893,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
       return cleanup(Status::Fail("MtpDraftExtend: D2D out_g"));
     // out_d0 = argmax of the last chunk's final logits row (first draft token).
     {
-      Status s2 = ArgmaxBf16Rows(
-          d_logits + static_cast<size_t>(last_c - 1) * vocab, 1, vocab, d_ids,
+      Status s2 = DraftArgmax(
+          m, d_logits + static_cast<size_t>(last_c - 1) * vocab, 1, d_ids,
           stream);
       if (!s2.ok()) return cleanup(s2);
       if (cudaMemcpy(out_d0, d_ids, sizeof(int32_t), cudaMemcpyDeviceToHost) !=
@@ -931,8 +973,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   // (1 kernel + 4-byte D2H). d_ids is reused as the 1-int output (the input
   // ids are no longer needed after MtpForward).
   {
-    Status s = ArgmaxBf16Rows(d_logits + static_cast<size_t>(T - 1) * vocab,
-                              1, vocab, d_ids, stream);
+    Status s = DraftArgmax(m, d_logits + static_cast<size_t>(T - 1) * vocab,
+                           1, d_ids, stream);
     if (!s.ok()) return cleanup(s);
     if (cudaMemcpy(out_d0, d_ids, sizeof(int32_t), cudaMemcpyDeviceToHost) !=
         cudaSuccess)
@@ -1064,7 +1106,7 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
     if (!s.ok()) return cleanup(s);
     // GPU argmax (1 kernel) writes drafts[j] into the device array; the
     // next iteration reads it directly (no host round trip).
-    s = ArgmaxBf16Rows(mtp.d_logits, 1, vocab, d_drafts + j, stream);
+    s = DraftArgmax(mtp, mtp.d_logits, 1, d_drafts + j, stream);
     if (!s.ok()) return cleanup(s);
     if (cudaMemcpy(d_g, mtp.d_trunk,
                    static_cast<size_t>(hc_dim) * sizeof(uint16_t),
@@ -1479,7 +1521,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     if (!s.ok()) return cleanup(s);
     // Argmax over the B rows -> d_ext_ids (kept separate from d_ids so the
     // gather input is not clobbered; d_ext_ids is reused by the extend phase).
-    s = ArgmaxBf16Rows(d_vlogits, B, vocab, d_ext_ids, stream);
+    s = DraftArgmax(mtp, d_vlogits, B, d_ext_ids, stream);
     if (!s.ok()) return cleanup(s);
     // Scatter the new column back (device): drafts[seq_of[b], j] = argmax.
     ScatterDraftKernel<<<B, 32, 0, stream>>>(d_ext_ids, d_drafts, k_stride, j,
@@ -1687,8 +1729,9 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     for (int b = 0; b < B; ++b) {
       if (terminal[b]) continue;
       const int last = r + a[b];  // the correction row (0-indexed) of seq b.
-      s = ArgmaxBf16Rows(d_ext_logits + static_cast<size_t>(last) * vocab, 1,
-                         vocab, d_ext_ids, stream);
+      s = DraftArgmax(mtp,
+          d_ext_logits + static_cast<size_t>(last) * mtp.DraftVocab(),
+          1, d_ext_ids, stream);
       if (!s.ok()) return cleanup(s);
       if (cudaMemcpy(&next_d0[b], d_ext_ids, sizeof(int32_t),
                      cudaMemcpyDeviceToHost) != cudaSuccess)
@@ -1882,11 +1925,12 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   // a full-prompt logits buffer would be ~130 GB).
   if (compute_logits) {
     model::ModelHeadWeights head_view;
-    head_view.lm_head = const_cast<uint16_t*>(m.lm_head);
-    head_view.vocab = cfg.vocab;
+    head_view.lm_head = m.subset_head ? m.subset_head
+                                    : const_cast<uint16_t*>(m.lm_head);
+    head_view.vocab = m.DraftVocab();
     head_view.hs = hs;
     s = CheckGemm(model::Bf16Gemm(sample_hidden, head_view.lm_head, logits, T,
-                                  cfg.vocab, hs, 1.0f, 0.0f, d_hc_gemm, kGemmWs,
+                                  head_view.vocab, hs, 1.0f, 0.0f, d_hc_gemm, kGemmWs,
                                   stream));
     if (!s.ok()) return s;
   }

@@ -115,6 +115,7 @@ int RunGenerate(int argc, char** argv) {
       "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
   std::string model_dir = kDefaultModelDir;
   int max_tokens = 64;
+  std::string subset_head;
   bool use_mtp = true;  // generate defaults to MTP; no --no-mtp parser here.
   int mtp_k = 3;  // 实测最优 (k=3 1.46x; 见 docs/LOG.md 2026-09-10)
   int max_prefill = 0;  // 0 = use ModelConfig default (2048)
@@ -128,6 +129,8 @@ int RunGenerate(int argc, char** argv) {
       max_tokens = std::atoi(argv[++i]);
     } else if (a == "--mtp") {
       use_mtp = true;
+    } else if (a == "--mtp-subset-head" && i + 1 < argc) {
+      subset_head = argv[++i];
     } else if (a == "--mtp-k" && i + 1 < argc) {
       mtp_k = std::atoi(argv[++i]);
     } else if (a == "--max-prefill" && i + 1 < argc) {
@@ -139,6 +142,10 @@ int RunGenerate(int argc, char** argv) {
       if (!prompt.empty()) prompt += " ";
       prompt += a;
     }
+  }
+  if (!subset_head.empty() && mtp_k != 3) {
+    std::fprintf(stderr, "subset head requires fixed k=3\n");
+    return 2;
   }
   if (prompt.empty()) {
     std::fprintf(stderr, "Usage: q4t generate \"prompt\" "
@@ -177,12 +184,19 @@ int RunGenerate(int argc, char** argv) {
   bool mtp_loaded = false;
   if (use_mtp) {
     mcfg.mtp_dir = model_dir + "/mtp";
+    mcfg.subset_head_dir = subset_head;
     mcfg.max_prefill = cfg.max_prefill;  // MTP draft-extend runs over the whole
                                          // prompt; size its workspace to match.
     auto t_mtp0 = std::chrono::steady_clock::now();
     s = q4t::mtp::LoadMtp(mcfg, model.head.embed_tokens, model.head.lm_head,
                           &mtp, nullptr);
     if (!s.ok()) {
+      if (!subset_head.empty()) {
+        std::fprintf(stderr, "subset MTP load failed: %s\n",
+                     s.message().c_str());
+        model.Free();
+        return 1;
+      }
       std::fprintf(stderr, "MTP load failed (falling back to plain decode): "
                            "%s\n",
                    s.message().c_str());

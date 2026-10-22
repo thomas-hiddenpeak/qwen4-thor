@@ -1,3 +1,4 @@
+#include "q4t/mtp/subset_head.h"
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
 
@@ -188,6 +189,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
         breq.mtp_workspace_bytes =
             mtp::MtpWorkspaceBytes(mcfg, cfg.max_prefill, full);
         breq.mtp_k = mtp_k_;
+        if (!opts.mtp_subset_head.empty()) {
+          breq.extra_fixed_bytes += mtp::kSubsetReadCacheBudget;
+          breq.mtp_weights_bytes += mtp::kSubsetWeightBytes + mtp::kSubsetIdBytes;
+          breq.mtp_load_host_bytes = mtp::kSubsetWeightBytes + mtp::kSubsetIdBytes;
+        }
         io::WeightIndex* raw_index = nullptr;
         s = io::WeightIndex::Open(
             mcfg.mtp_dir + "/model.safetensors.index.json", &raw_index);
@@ -363,6 +369,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
     PhaseTimer pt("mtp_load");
     mtp::MtpConfig mcfg;
     mcfg.mtp_dir = opts.model_dir + "/mtp";
+    mcfg.subset_head_dir = opts.mtp_subset_head;
     mcfg.max_prefill = cfg.max_prefill;  // MTP draft-extend runs over the whole
                                          // prompt; size its workspace to match.
     mcfg.max_len = cfg.max_len;  // draft full-attn KV/indexer tracks the main
@@ -374,7 +381,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
     s = mtp::LoadMtp(mcfg, model_.Get().head.embed_tokens, model_.Get().head.lm_head,
                      &mtp_, nullptr);
     if (!s.ok()) {
-      if (planned_startup) {
+      if (planned_startup || !opts.mtp_subset_head.empty()) {
         return Status::Fail("planned MTP load failed: " + s.message());
       }
       std::fprintf(stderr, "[q4t] MTP load failed (%s); plain decode only\n",

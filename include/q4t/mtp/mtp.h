@@ -49,6 +49,7 @@ namespace mtp {
 
 // Static configuration of the MTP draft model.
 struct MtpConfig {
+  std::string subset_head_dir;  // Empty: borrowed full head.
   std::string mtp_dir;  // dir with model.safetensors.index.json + shards
   int hs = 2560;
   int hc = 4;
@@ -92,6 +93,11 @@ struct MtpModel {
   // Borrowed from the main model (must outlive this MtpModel).
   const uint16_t* embed_tokens = nullptr;  // [vocab, hs]
   const uint16_t* lm_head = nullptr;  // [vocab, hs]
+
+  // Owned independent BF16 head; full main head remains resident.
+  uint16_t* subset_head = nullptr;
+  int32_t* subset_ids = nullptr;
+  int DraftVocab() const { return subset_head ? 65536 : cfg.vocab; }
 
   // MTP-specific weights.
   uint16_t* fc_embedding = nullptr;  // [hs, hs]
@@ -234,6 +240,8 @@ Status MtpReserveScratch(MtpModel& m, int k_max);
 //                  rows (weights read once).
 // max_position: exact maximum of logical positions[0:T], not a capacity or
 // MRoPE bound. -1 preserves the attention position readback fallback.
+// When enabled, logits are packed [T, m.DraftVocab()] local rows.
+// Callers selecting tokens must remap through subset_ids.
 Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positions,
                   const uint16_t* hidden_states, uint16_t* sample_hidden,
                   uint16_t* multi_hidden, uint16_t* logits, int T,

@@ -700,6 +700,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
   if (use_mtp) {
+    int accepted_histogram[17] = {};
     bool done = false;
     while (!done && static_cast<int>(generated.size()) < max_tokens) {
       if (cancelled()) break;
@@ -744,6 +745,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         generation_failed = true;
         break;
       }
+      ++accepted_histogram[mtp_ar.mtp_accepted_count - 1];
       for (int i = 0; i < mtp_ar.mtp_accepted_count &&
                           static_cast<int>(generated.size()) < max_tokens;
            ++i) {
@@ -786,6 +788,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       mtp_d0 = mtp_ar.mtp_next_d0;
       // d_mtp_g was overwritten in place with the next step's trunk.
     }
+    std::fprintf(stderr, "[mtp-accept] request=%s draft_counts=",
+                 request_id.c_str());
+    for (int i = 0; i <= mtp_k_; ++i)
+      std::fprintf(stderr, "%s%d", i ? "," : "", accepted_histogram[i]);
+    std::fprintf(stderr, "\n");
   }
   if (mtp_sched) {
     {

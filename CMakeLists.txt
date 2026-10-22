@@ -189,6 +189,7 @@ add_library(q4t_model STATIC
   src/model/small_m_gemm.cu
   src/mtp/moe_bf16.cu
   src/mtp/mtp.cu
+  src/mtp/subset_head.cpp
   src/vision/vision.cu
   src/vision/processor.cpp)
 target_include_directories(q4t_model PUBLIC include third_party)
@@ -537,3 +538,10 @@ add_executable(q4t_metadata_batch_replay EXCLUDE_FROM_ALL
 target_include_directories(q4t_metadata_batch_replay PRIVATE include)
 target_link_libraries(q4t_metadata_batch_replay PRIVATE q4t_model)
 target_compile_options(q4t_metadata_batch_replay PRIVATE -Wall -Wextra -Werror)
+
+# Explicit independent-head diagnostics, never run by a default build.
+add_executable(q4t_subset_contract EXCLUDE_FROM_ALL tools/mtp_subset/contract.cpp)
+target_link_libraries(q4t_subset_contract PRIVATE q4t_model)
+add_executable(q4t_subset_replay EXCLUDE_FROM_ALL
+  tests/test_main.cpp tools/mtp_subset/replay.cpp)
+target_link_libraries(q4t_subset_replay PRIVATE q4t_model q4t_text q4t_runtime)

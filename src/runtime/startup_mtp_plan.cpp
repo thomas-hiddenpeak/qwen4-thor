@@ -8,6 +8,7 @@
 #include "q4t/model/model.h"
 #include "q4t/model/ple_layer.h"
 #include "q4t/mtp/mtp.h"
+#include "q4t/mtp/subset_head.h"
 #include "startup_weight_plan.h"
 
 namespace q4t::runtime {
@@ -111,6 +112,12 @@ Status PlanMtpResources(const mtp::MtpConfig& cfg, StartupPlan* plan) {
                     std::initializer_list<int64_t> shape) {
     return plan->AddTensor(*loader, name, io::Dtype::kBF16, shape);
   };
+  if (!cfg.subset_head_dir.empty()) {
+    status = plan->AddBytes("mtp.subset_head", mtp::kSubsetWeightBytes);
+    if (!status.ok()) return status;
+    status = plan->AddBytes("mtp.subset_ids", mtp::kSubsetIdBytes);
+    if (!status.ok()) return status;
+  }
   // LoadMtp allocates both projections and both norms before their uploads.
   if (!(status = tensor("mtp.fc_embedding.weight", {cfg.hs, cfg.hs})))
     return status;

@@ -292,6 +292,7 @@ def main():
     parser.add_argument('--request-deadline-ms', type=int, default=0,
                         help='serve --request-deadline-ms (0 = server '
                              'default 1200000; must be in [1000,10800000])')
+    parser.add_argument('--mtp-subset-head', type=Path)
     parser.add_argument('--mtp', action='store_true',
                         help='serve --mtp (explicit MTP opt-in). MTP results '
                              'form an independent group and must not be mixed '
@@ -448,6 +449,8 @@ def main():
         command += ['--mtp', '--mtp-k', str(args.mtp_k)]
     else:
         command += ['--no-mtp']
+    if args.mtp_subset_head:
+        command += ['--mtp-subset-head', str(args.mtp_subset_head.resolve())]
     if args.moe_trace_dir:
         command += ['--moe-trace-dir', str(args.moe_trace_dir.resolve()),
                     '--moe-trace-workload', str(args.moe_trace_workload.resolve()),

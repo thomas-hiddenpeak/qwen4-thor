@@ -1,0 +1,20 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    "python3",
+    "-B",
+    ".q4t-work/mtp-subset-head-20261023/source/tools/mtp_subset/run_stage.py"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-22T19:25:20.484285+00:00",
+    "monotonic": 887203.001173553,
+    "pid": 2665273
+  }
+}

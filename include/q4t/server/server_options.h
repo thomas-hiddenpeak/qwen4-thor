@@ -28,6 +28,7 @@ struct ServerOptions {
   // MTP speculative decode is the default (k=3, ~2x decode speedup, five-tier
   // E2E accepted 2026-10-14); --no-mtp opts back to plain greedy decode.
   bool no_mtp = false;
+  std::string mtp_subset_head;  // Explicit experimental BF16 artifact.
   // MTP speculative steps k (draft tokens per step); only meaningful when
   // MTP is enabled. Serve default 3 (measured optimum, see docs/LOG.md).
   int mtp_k = 3;

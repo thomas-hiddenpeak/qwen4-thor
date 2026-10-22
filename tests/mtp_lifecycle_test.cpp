@@ -42,7 +42,7 @@ void ResetCounters(int failure = 0) {
 
 void CheckEmpty(const q4t::mtp::MtpModel& m) {
   Check(live == borrowed, "MTP allocations survived cleanup");
-  Check(!m.fc_embedding && !m.fc_hidden && !m.pre_fc_norm_embedding &&
+  Check(!m.subset_head && !m.subset_ids && !m.fc_embedding && !m.fc_hidden && !m.pre_fc_norm_embedding &&
             !m.pre_fc_norm_hidden && !m.embed_tokens && !m.lm_head &&
             !m.attn_hc.hc_norm && !m.mlp_hc.hc_norm && !m.full_attn.q_proj &&
             !m.moe.gu && !m.moe.down && !m.moe_extra.gate && !m.mixer.hc_norm &&
@@ -87,7 +87,7 @@ extern "C" cudaError_t __wrap_cudaStreamSynchronize(cudaStream_t stream) {
 }
 
 int main(int argc, char** argv) {
-  Check(argc == 3,
+  Check(argc == 3 || argc == 4,
         "requires new fixture directory and read-only model directory");
   CheckCuda(cudaSetDevice(0), "CUDA required; no SKIP");
   for (const char* name : {"Q4T_FP8_PROJ", "Q4T_FP8_HC", "Q4T_FP8_ALL"})
@@ -247,6 +247,7 @@ int main(int argc, char** argv) {
   // final LoadMtp allocation exercise ownership beyond the four projections.
   q4t::mtp::MtpConfig cfg;
   cfg.mtp_dir = std::string(argv[2]) + "/mtp";
+  if (argc == 4) cfg.subset_head_dir = argv[3];
   cfg.max_len = 64;
   cfg.max_prefill = 16;
   ResetCounters(8);

@@ -170,6 +170,7 @@ Status BuildStartupPlan(const model::ModelConfig& cfg,
   if (!opts.no_mtp) {
     mtp::MtpConfig mtp;
     mtp.mtp_dir = cfg.model_dir + "/mtp";
+    mtp.subset_head_dir = opts.mtp_subset_head;
     mtp.max_len = cfg.max_len;
     mtp.max_seq = cfg.max_seq;
     mtp.max_prefill = cfg.max_prefill;

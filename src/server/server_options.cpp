@@ -13,6 +13,9 @@ ServerCapabilities CapabilitiesFor(const ServerOptions& options) {
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
+  if (!options.mtp_subset_head.empty() &&
+      (options.no_mtp || options.mtp_k != 3))
+    return Status::Fail("mtp-subset-head requires MTP with fixed k=3");
   in_addr address{};
   if (inet_pton(AF_INET, options.host.c_str(), &address) != 1)
     return Status::Fail("host must be a numeric IPv4 address");
@@ -98,12 +101,14 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (!integer && key != "--host" && key != "--model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
-        key != "--startup-plan")
+        key != "--startup-plan" && key != "--mtp-subset-head")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
     const auto value = args[i];
-    if (key == "--host") {
+    if (key == "--mtp-subset-head") {
+      parsed.mtp_subset_head = value;
+    } else if (key == "--host") {
       parsed.host = value;
     } else if (key == "--moe-trace-dir") {
       parsed.moe_trace_dir = value;
