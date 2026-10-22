@@ -163,3 +163,36 @@ MTP收益、直接合同和容量/资源通过，作本次显式启用的工程�
 部署首次预检因证据输出在隔离ROOT外被守卫CLI拒绝，0模型/0HTTP、
 未替换默认；旧包和错误日志保留。改用source/.q4t-work/deployment-v2
 和新delivery-package-v2，原3请求健康预算不增加。
+
+### 实际部署收尾
+
+`DEPLOYED_HEALTH_CHECKED`：默认程序已替换为受测75e85bac，发布sidecar
+同步，源码身份abe3087（包含739aff3的修正版生产代码，运行时输入未改）。
+3启动/3HTTP健康全通过、140次NVML正常，1608/1606/1541预留块分别
+全部释放。累计82验收+3健康=85HTTP；最初部署预检0加载/0HTTP单独保留。
+无常驻服务、无本轮遗留server、恢复marker已清除；1204文件封存复核，
+185份冻结输入从原快照复核。原始封存：
+`.q4t-work/mtp-subset-head-20261023/sealed-files-v2.json`，摘要
+`2757fa46e473176b9032153616c0e8f365f1565405d4099225e361f07dffb789`。
+
+固定显式配置（从仓库根运行；不改变serve默认完整head）：
+
+```bash
+./build/q4t serve --max-seq 1 --max-prefill 8192 --max-len 208896 \
+  --mtp-subset-head .q4t-work/mtp-subset-head-20261023/delivery-package-v2/artifact
+```
+
+可核验5a回退包在`delivery-package-v2/previous/`；二进制、原sidecar和
+实际CMakeCache均在181文件封存包内。恢复工具为
+`tools/mtp_subset/deploy_resume.py --base <阶段绝对路径> --rollback`，
+也必须由匹配的部署GPU lease驱动；仅识别已知旧/新身份，不覆盖未知文件。
+此轮未执行额外回退推理或新增性能采样。
+
+源码与二进制身份分开：根工作区main仍ab762aa，本阶段实现和交付记录
+位于codex/mtp-subset-head隔离工作区；发布元数据明确绑定abe3087，
+不将根目录旧源码冒充新程序来源。研究分支含独有实现/证据提交，保留；
+没有合入main或删除分支/工作区，原证据路径继续有效。
+
+[最终交付审计](evidence/mtp-subset-resume-20261023/closeout.json)，
+[三个健康合同](evidence/mtp-subset-resume-20261023/deployment.json)。
+本阶段完成并停止，不扫描其他规模，不追加采样。

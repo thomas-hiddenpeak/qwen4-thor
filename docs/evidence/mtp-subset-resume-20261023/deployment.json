@@ -1,0 +1,85 @@
+{
+  "status": "DEPLOYED_HEALTH_CHECKED",
+  "health": [
+    {
+      "name": "subset",
+      "exact_match": true,
+      "finalized": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1608,
+        "device_bytes": 97023144328,
+        "allocated": 1608,
+        "consumed": 1608,
+        "freed": 1608,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "c1c402cb95c59cff52e056f1e738ffe925fe62d1809c38eb92088d925638459f"
+      }
+    },
+    {
+      "name": "full",
+      "exact_match": true,
+      "finalized": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1606,
+        "device_bytes": 96687337864,
+        "allocated": 1606,
+        "consumed": 1606,
+        "freed": 1606,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "09f7ab7c416dcb396a687dc702ac2c8c817f381441a7c4637828d0e3ac0d8a72"
+      }
+    },
+    {
+      "name": "plain",
+      "exact_match": true,
+      "finalized": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1541,
+        "device_bytes": 87178559248,
+        "allocated": 1541,
+        "consumed": 1541,
+        "freed": 1541,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "70a2e2dde08818f12f969b9d944ab74fd70da76f7c397789babbf93e019017b4"
+      }
+    }
+  ],
+  "started": 1792702811.3209307,
+  "finished": 1792702961.219498
+}

@@ -1,0 +1,46 @@
+{
+  "status": "DELIVERED_BOUNDED_OPT_IN",
+  "candidate_sha256": "75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d",
+  "source_commit": "abe308751c46a6089a5db720eae9b5125e0a8869",
+  "health_requests": 3,
+  "health_model_starts": 3,
+  "health_nvml_queries": 140,
+  "health_nvml_max_seconds": 0.1432047770358622,
+  "health_guard": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/tools/mtp_subset/deploy_resume.py",
+      "--base",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-10-22T21:02:41.321245+00:00",
+      "monotonic": 893043.838136513,
+      "pid": 2689598
+    }
+  },
+  "retained_preflight_failures": 1,
+  "preflight_model_starts": 0,
+  "preflight_http_requests": 0,
+  "total_http_requests": 85,
+  "base_http_requests": 82,
+  "all_owned_servers_gone": true,
+  "recovery_marker_cleared": true,
+  "default_subset_enabled": false,
+  "rollback_package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/previous",
+  "package_manifest_sha256": "0ed28bbf3693366ffaebfef1ce6e78f88de42707cb0ce8aa88ac7451e29cd267",
+  "final_seal_sha256": "2757fa46e473176b9032153616c0e8f365f1565405d4099225e361f07dffb789",
+  "final_seal_files": 1204,
+  "tested_snapshot_files_verified": 185,
+  "runtime_sources_unchanged_since_test": true,
+  "branch_retained": "codex/mtp-subset-head has unique implementation/evidence commits; no main merge or branch removal",
+  "root_source_commit": "ab762aa; deployed binary source recorded separately"
+}

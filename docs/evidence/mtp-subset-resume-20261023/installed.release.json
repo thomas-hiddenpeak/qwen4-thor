@@ -1,0 +1,19 @@
+{
+  "version": "mtp-subset-bf16-20261023",
+  "binary_sha256": "75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d",
+  "source_commit": "abe308751c46a6089a5db720eae9b5125e0a8869",
+  "source_note": "production inputs unchanged from tested frozen snapshot; see frozen-plan and audit",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/candidate/CMakeCache.txt",
+  "build_cache_sha256": "30fc9b3edce11e5bfc6d3971f1ba18a54887d93a2de62d2099b1b188be183c7e",
+  "acceptance": "ENGINEERING_ACCEPTED_BOUNDED_OPT_IN",
+  "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/decision.md",
+  "acceptance_snapshot_sha256": "e708c2f62ff8364ce9aab06e077e000ef93a24d49571aaeac21b79ec291ae38b",
+  "acceptance_audit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/audit.json",
+  "acceptance_audit_sha256": "b0090250f8ec25396b6eed6c0424964a81dd282780a1012203454d618d7aada8",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/previous/q4t.release.json",
+  "scope": "default executable; subset head explicit --mtp-subset-head only; full head remains fallback/default; no persistent service",
+  "subset_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/artifact",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "atomicity": "individual atomic replaces; not cross-file atomic; recovery marker and identity-checked rollback"
+}
