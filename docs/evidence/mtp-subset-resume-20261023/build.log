@@ -1,0 +1,53 @@
+[  0%] Built target q4t_runtime
+[  6%] Built target q4t_trace
+[ 13%] Built target q4t_io
+[ 23%] Built target q4t_ple
+[ 26%] Built target q4t_text
+[ 36%] Built target q4t_quant
+[ 73%] Built target q4t_model
+[ 80%] Built target q4t_startup_plan
+[ 96%] Built target q4t_server
+[100%] Built target q4t
+[  9%] Built target q4t_trace
+[ 18%] Built target q4t_io
+[ 31%] Built target q4t_ple
+[ 45%] Built target q4t_quant
+[ 95%] Built target q4t_model
+[100%] Built target q4t_subset_contract
+[  0%] Built target q4t_runtime
+[  8%] Built target q4t_trace
+[ 29%] Built target q4t_ple
+[ 29%] Built target q4t_io
+[ 33%] Built target q4t_text
+[ 45%] Built target q4t_quant
+[ 91%] Built target q4t_model
+[ 91%] Building CXX object CMakeFiles/q4t_subset_replay.dir/tools/mtp_subset/replay.cpp.o
+[ 95%] Linking CXX executable q4t_subset_replay
+[100%] Built target q4t_subset_replay
+[  0%] Built target q4t_runtime
+[  8%] Built target q4t_trace
+[ 17%] Built target q4t_io
+[ 30%] Built target q4t_ple
+[ 43%] Built target q4t_quant
+[ 91%] Built target q4t_model
+[ 91%] Building CXX object CMakeFiles/q4t_subset_states.dir/tests/test_main.cpp.o
+[ 95%] Building CXX object CMakeFiles/q4t_subset_states.dir/tests/mtp_spec_accept_states_test.cpp.o
+[ 95%] Building CXX object CMakeFiles/q4t_subset_states.dir/tests/mtp_spec_multi_test.cpp.o
+[100%] Linking CXX executable q4t_subset_states
+[100%] Built target q4t_subset_states
+[  9%] Built target q4t_trace
+[ 19%] Built target q4t_io
+[ 33%] Built target q4t_ple
+[ 47%] Built target q4t_quant
+[100%] Built target q4t_model
+[100%] Building CXX object CMakeFiles/q4t_subset_read.dir/tools/mtp_subset/read.cpp.o
+[100%] Linking CXX executable q4t_subset_read
+[100%] Built target q4t_subset_read
+[  0%] Built target q4t_runtime
+[  8%] Built target q4t_trace
+[ 17%] Built target q4t_io
+[ 30%] Built target q4t_ple
+[ 34%] Built target q4t_text
+[ 47%] Built target q4t_quant
+[ 95%] Built target q4t_model
+[100%] Built target q4t_mtp_lifecycle

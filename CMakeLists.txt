@@ -545,3 +545,9 @@ target_link_libraries(q4t_subset_contract PRIVATE q4t_model)
 add_executable(q4t_subset_replay EXCLUDE_FROM_ALL
   tests/test_main.cpp tools/mtp_subset/replay.cpp)
 target_link_libraries(q4t_subset_replay PRIVATE q4t_model q4t_text q4t_runtime)
+
+add_executable(q4t_subset_states EXCLUDE_FROM_ALL tests/test_main.cpp
+  tests/mtp_spec_accept_states_test.cpp tests/mtp_spec_multi_test.cpp)
+target_link_libraries(q4t_subset_states PRIVATE q4t_model q4t_runtime)
+add_executable(q4t_subset_read EXCLUDE_FROM_ALL tools/mtp_subset/read.cpp)
+target_link_libraries(q4t_subset_read PRIVATE q4t_model)

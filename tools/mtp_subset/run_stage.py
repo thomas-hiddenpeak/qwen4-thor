@@ -1,4 +1,5 @@
 """One frozen stage. Always invoke through gpu_exclusive.py; no retries."""
+import argparse
 import hashlib
 import json
 import os
@@ -42,9 +43,18 @@ def sample_memory(stop):
 
 
 def main():
-    plan = json.loads((STAGE / 'frozen-plan.json').read_text())
+    global OUT
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--plan', type=Path, required=True)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    OUT = args.output.resolve()
+    if not OUT.is_relative_to(ROOT / '.q4t-work'):
+        raise ValueError('stage output must be in source/.q4t-work/')
+    plan = json.loads(args.plan.read_text())
     OUT.mkdir(parents=True, exist_ok=False)
     state = dict(status='RUNNING', started=time.time(), completed=[])
+    deadline = time.monotonic() + plan['stage_timeout_seconds']
     env = {k: v for k, v in os.environ.items()
            if not k.startswith('Q4T_') and k != 'LD_PRELOAD'}
     stop = threading.Event()
@@ -64,9 +74,26 @@ def main():
             with (OUT / (name + '-driver.log')).open('w') as log:
                 subprocess.run(step['command'], cwd=ROOT, env=step_env,
                                stdout=log, stderr=subprocess.STDOUT,
-                               timeout=step['timeout'], check=True)
+                               timeout=min(step['timeout'], max(1, deadline-time.monotonic())),
+                               check=True)
+            server_log = OUT / name / 'server.log'
+            if server_log.is_file():
+                text = server_log.read_text()
+                finalized = [json.loads(line.split('] ', 1)[1])
+                             for line in text.splitlines()
+                             if line.startswith('[startup-reservation] ')
+                             and '"event":"finalized"' in line]
+                if len(finalized) != 1 or finalized[0]['status'] != 'PASS':
+                    raise RuntimeError('startup ownership finalization failed: ' + name)
+                if 'retained after failed drain' in text or 'MTP init failed' in text:
+                    raise RuntimeError('runtime drain or MTP fallback: ' + name)
+            if not sampler.is_alive():
+                raise RuntimeError('memory sampler stopped unexpectedly')
             state['completed'].append(name)
             save('state.json', state)
+        for path, expected in plan['files'].items():
+            if sha(Path(path)) != expected:
+                raise RuntimeError('frozen identity changed at completion: ' + path)
         state['status'] = 'MEASURED_REQUIRES_REVIEW'
     except BaseException as error:
         state.update(status='STOPPED', error=repr(error))

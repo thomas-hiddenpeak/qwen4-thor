@@ -1,0 +1,51 @@
+{
+  "source_rows_bit_exact": 65536,
+  "special_ids": 21,
+  "cases": [
+    {
+      "case": "shape",
+      "returncode": 1,
+      "passed": true
+    },
+    {
+      "case": "source",
+      "returncode": 1,
+      "passed": true
+    },
+    {
+      "case": "short_ids",
+      "returncode": 1,
+      "passed": true
+    },
+    {
+      "case": "duplicate",
+      "returncode": 1,
+      "passed": true
+    },
+    {
+      "case": "range",
+      "returncode": 1,
+      "passed": true
+    },
+    {
+      "case": "unsorted",
+      "returncode": 1,
+      "passed": true
+    },
+    {
+      "case": "missing_special",
+      "returncode": 1,
+      "passed": true
+    },
+    {
+      "case": "ids_digest",
+      "returncode": 1,
+      "passed": true
+    },
+    {
+      "case": "short_weights",
+      "returncode": 1,
+      "passed": true
+    }
+  ]
+}

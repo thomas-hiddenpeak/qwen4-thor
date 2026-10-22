@@ -1,0 +1,19 @@
+{
+  "status": "MEASURED_REQUIRES_REVIEW",
+  "started": 1792698079.6920674,
+  "completed": [
+    "quality-on",
+    "artifact-contract",
+    "projection-contract",
+    "lifecycle",
+    "states",
+    "replay",
+    "quality-off",
+    "parent-off",
+    "candidate-off",
+    "candidate-on",
+    "parent-on"
+  ],
+  "current": "parent-on",
+  "finished": 1792702544.752038
+}

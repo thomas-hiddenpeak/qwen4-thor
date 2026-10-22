@@ -353,6 +353,16 @@ Q4T_TEST(mtp_k3_full_model_replay) {
                     static_cast<int>(prompt.size()), &d0, g.data(), nullptr, 0),
                 "initial draft extend");
   RequireCuda(cudaStreamSynchronize(nullptr), "initial extend completion");
+  struct DraftFrame {
+    std::vector<int32_t> ids;
+    std::vector<int> positions;
+    std::vector<uint16_t> main_trunk;
+    std::vector<uint16_t> expected_g;
+    int32_t expected_d0;
+  };
+  std::vector<DraftFrame> frames;
+  frames.push_back({shifted, positions, prefill_trunk,
+                    Read(g.data(), model.hc_dim()), d0});
   bool contracts = true, all_rows_checked = true, forced_reject = false;
   std::array<int, kRows + 1> natural_counts{};
   std::vector<int32_t> emitted;
@@ -459,6 +469,16 @@ Q4T_TEST(mtp_k3_full_model_replay) {
         mtp.d_ms_ext_multi + static_cast<size_t>(count - 1) * model.hc_dim(),
         model.hc_dim());
     const auto next_g = Read(g.data(), model.hc_dim());
+    DraftFrame frame;
+    frame.ids.assign(drafts.begin(), drafts.begin() + accepted_drafts);
+    frame.ids.push_back(next);
+    for (int row = 0; row < count; ++row)
+      frame.positions.push_back(previous.position + row);
+    frame.main_trunk.assign(target_trunk.begin(),
+                            target_trunk.begin() + count * model.hc_dim());
+    frame.expected_g = next_g;
+    frame.expected_d0 = next_d0;
+    frames.push_back(std::move(frame));
     evidence.Save(label + ".extend_last_logits.bf16", extend_logits);
     evidence.Save(label + ".extend_last_trunk.bf16", extend_g);
     evidence.Save(label + ".next_g.bf16", next_g);
@@ -533,6 +553,27 @@ Q4T_TEST(mtp_k3_full_model_replay) {
     emitted.insert(emitted.end(), accepted.begin(), accepted.begin() + count);
     bonus = next;
     d0 = next_d0;
+  }
+  // Independent draft reconstruction never performs speculative forward or
+  // reads draft scratch. It consumes only committed shifted inputs and the
+  // same-shape main trunk rows, starting from entirely empty draft state.
+  RequireStatus(q4t::mtp::MtpResetState(mtp, nullptr, 0), "fresh draft reset");
+  for (size_t index = 0; index < frames.size(); ++index) {
+    const auto& frame = frames[index];
+    RequireCuda(cudaMemcpy(trunk.data(), frame.main_trunk.data(),
+                           frame.main_trunk.size() * sizeof(uint16_t),
+                           cudaMemcpyHostToDevice), "fresh draft trunk");
+    int32_t rebuilt_d0 = -1;
+    RequireStatus(q4t::mtp::MtpDraftExtend(
+        mtp, frame.ids.data(), trunk.data(), frame.positions.data(),
+        static_cast<int>(frame.ids.size()), &rebuilt_d0, g.data(), nullptr, 0),
+        "fresh accepted-only draft extend");
+    const auto rebuilt_g = Read(g.data(), model.hc_dim());
+    const bool exact = rebuilt_d0 == frame.expected_d0 &&
+                       rebuilt_g == frame.expected_g;
+    std::printf("DRAFT_FRESH_REPLAY frame=%zu rows=%zu exact=%d\n",
+                index, frame.ids.size(), exact);
+    Require(exact, "fresh draft differs from speculative recovery");
   }
   evidence.Save("accepted_tokens.i32", emitted);
   const bool coverage = natural_counts[kRows] > 0 && forced_reject;

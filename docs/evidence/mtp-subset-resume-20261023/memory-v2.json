@@ -1,0 +1,50 @@
+{
+  "quality-on": {
+    "pid": "2668205",
+    "samples": 298,
+    "rss_peak_bytes": 4152041472,
+    "available_min_bytes": 19804848128,
+    "cached_peak_bytes": 23597522944,
+    "nvml_process_peak_bytes": 103736369152
+  },
+  "quality-off": {
+    "pid": "2672099",
+    "samples": 255,
+    "rss_peak_bytes": 1049341952,
+    "available_min_bytes": 32506814464,
+    "cached_peak_bytes": 22598492160,
+    "nvml_process_peak_bytes": 88787869696
+  },
+  "parent-off": {
+    "pid": "2674086",
+    "samples": 859,
+    "rss_peak_bytes": 1898315776,
+    "available_min_bytes": 31951585280,
+    "cached_peak_bytes": 22593040384,
+    "nvml_process_peak_bytes": 88787869696
+  },
+  "candidate-off": {
+    "pid": "2679670",
+    "samples": 859,
+    "rss_peak_bytes": 1898381312,
+    "available_min_bytes": 32541106176,
+    "cached_peak_bytes": 22638223360,
+    "nvml_process_peak_bytes": 88787869696
+  },
+  "candidate-on": {
+    "pid": "2682736",
+    "samples": 806,
+    "rss_peak_bytes": 4157399040,
+    "available_min_bytes": 19795795968,
+    "cached_peak_bytes": 22680453120,
+    "nvml_process_peak_bytes": 103738466304
+  },
+  "parent-on": {
+    "pid": "2685604",
+    "samples": 787,
+    "rss_peak_bytes": 4148875264,
+    "available_min_bytes": 17075539968,
+    "cached_peak_bytes": 20484673536,
+    "nvml_process_peak_bytes": 106393460736
+  }
+}

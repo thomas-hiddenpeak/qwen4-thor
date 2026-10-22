@@ -1,0 +1,221 @@
+MTP_REPLAY_SCOPE layers=48 max_len=208896 max_prefill=8192 max_seq=1 slot=0 k=3 prompt_tokens=1024 natural_steps=16 forced_steps=1 chat_wrap=0 recurrent_snapshot_only=1 performance_evidence=0 prompt_path=/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/fixtures/replay-prompt.txt
+[q4t] BF16 subset head rows=65536 bytes=335806464
+  replay_state=step0.before bytes=115642368 fnv64=4ce8e9561da9d005 finite=1
+MTP_REPLAY_ACTUAL step=0 mode=natural position=1024 bonus=22 seed=16
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+  replay_state=step0.actual_after bytes=115642368 fnv64=0b9c9def8870b79f finite=1
+  replay_compare=step0.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=36417688dde36b98 expected_fnv64=36417688dde36b98
+MTP_REPLAY_TARGET step=0 same_shape=B1T4 position=1024
+  replay_compare=step0.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=12b80174876758fe expected_fnv64=12b80174876758fe
+  replay_compare=step0.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=4e86ed847b924f2c expected_fnv64=4e86ed847b924f2c
+  replay_state=step0.replay_full_after bytes=115642368 fnv64=0b9c9def8870b79f finite=1
+  replay_state=step0.row0 bytes=115642368 fnv64=03ecf232e28c44e7 finite=1
+  replay_compare=step0.raw_row0 elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=03ecf232e28c44e7 expected_fnv64=03ecf232e28c44e7
+  replay_state=step0.row1 bytes=115642368 fnv64=1625f453786decde finite=1
+  replay_compare=step0.raw_row1 elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=1625f453786decde expected_fnv64=1625f453786decde
+  replay_state=step0.row2 bytes=115642368 fnv64=0e601204625a2ca7 finite=1
+  replay_compare=step0.raw_row2 elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=0e601204625a2ca7 expected_fnv64=0e601204625a2ca7
+  replay_state=step0.replay_after bytes=115642368 fnv64=0b9c9def8870b79f finite=1
+  replay_compare=step0.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=0b9c9def8870b79f expected_fnv64=0b9c9def8870b79f
+  replay_compare=step0.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=36417688dde36b98 expected_fnv64=36417688dde36b98
+MTP_REPLAY_STEP step=0 mode=natural selection_exact=1 caller_unchanged=1 count=4 accepted_drafts=3 drafts=16,15,15 predictions=16,15,15,15 correction=15 next_d0=18 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step1.before bytes=115642368 fnv64=0b9c9def8870b79f finite=1
+MTP_REPLAY_ACTUAL step=1 mode=natural position=1028 bonus=15 seed=18
+  replay_state=step1.actual_after bytes=115642368 fnv64=8ddb722e9980ff70 finite=1
+  replay_compare=step1.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=d823438eb497e003 expected_fnv64=d823438eb497e003
+MTP_REPLAY_TARGET step=1 same_shape=B1T4 position=1028
+  replay_compare=step1.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=85ca9f06683f0822 expected_fnv64=85ca9f06683f0822
+  replay_compare=step1.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=ee30d2f5173b40c1 expected_fnv64=ee30d2f5173b40c1
+  replay_state=step1.replay_after bytes=115642368 fnv64=8ddb722e9980ff70 finite=1
+  replay_compare=step1.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=8ddb722e9980ff70 expected_fnv64=8ddb722e9980ff70
+  replay_compare=step1.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=d823438eb497e003 expected_fnv64=d823438eb497e003
+MTP_REPLAY_STEP step=1 mode=natural selection_exact=1 caller_unchanged=1 count=4 accepted_drafts=3 drafts=18,248046,198 predictions=18,248046,198,248044 correction=248044 next_d0=248045 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step2.before bytes=115642368 fnv64=8ddb722e9980ff70 finite=1
+MTP_REPLAY_ACTUAL step=2 mode=natural position=1032 bonus=248044 seed=248045
+  replay_state=step2.actual_after bytes=115642368 fnv64=28bf4d3fbd43e518 finite=1
+  replay_compare=step2.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=0cf9e5b8f078391a expected_fnv64=0cf9e5b8f078391a
+MTP_REPLAY_TARGET step=2 same_shape=B1T4 position=1032
+  replay_compare=step2.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=677fbeaba844730d expected_fnv64=677fbeaba844730d
+  replay_compare=step2.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=c0fea8d85f34a613 expected_fnv64=c0fea8d85f34a613
+  replay_state=step2.replay_after bytes=115642368 fnv64=28bf4d3fbd43e518 finite=1
+  replay_compare=step2.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=28bf4d3fbd43e518 expected_fnv64=28bf4d3fbd43e518
+  replay_compare=step2.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=0cf9e5b8f078391a expected_fnv64=0cf9e5b8f078391a
+MTP_REPLAY_STEP step=2 mode=natural selection_exact=1 caller_unchanged=1 count=4 accepted_drafts=3 drafts=248045,846,198 predictions=248045,846,198,2523 correction=2523 next_d0=513 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step3.before bytes=115642368 fnv64=28bf4d3fbd43e518 finite=1
+MTP_REPLAY_ACTUAL step=3 mode=natural position=1036 bonus=2523 seed=513
+  replay_state=step3.actual_after bytes=115642368 fnv64=f005f0e6906f5713 finite=1
+  replay_compare=step3.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=ae071bab9443ed9b expected_fnv64=ae071bab9443ed9b
+MTP_REPLAY_TARGET step=3 same_shape=B1T4 position=1036
+  replay_compare=step3.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=9dacf8792ad99bd3 expected_fnv64=9dacf8792ad99bd3
+  replay_compare=step3.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=53bf31bf437c6c66 expected_fnv64=53bf31bf437c6c66
+  replay_state=step3.replay_after bytes=115642368 fnv64=f005f0e6906f5713 finite=1
+  replay_compare=step3.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=f005f0e6906f5713 expected_fnv64=f005f0e6906f5713
+  replay_compare=step3.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=ae071bab9443ed9b expected_fnv64=ae071bab9443ed9b
+MTP_REPLAY_STEP step=3 mode=natural selection_exact=1 caller_unchanged=1 count=3 accepted_drafts=2 drafts=513,264,16097 predictions=513,264,7077,2029 correction=7077 next_d0=53650 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step4.before bytes=115642368 fnv64=f005f0e6906f5713 finite=1
+MTP_REPLAY_ACTUAL step=4 mode=natural position=1039 bonus=7077 seed=53650
+  replay_state=step4.actual_after bytes=115642368 fnv64=dba2b6c2376a24c1 finite=1
+  replay_compare=step4.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=b268fb565d28cdc9 expected_fnv64=b268fb565d28cdc9
+MTP_REPLAY_TARGET step=4 same_shape=B1T4 position=1039
+  replay_compare=step4.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=38968caae08e9603 expected_fnv64=38968caae08e9603
+  replay_compare=step4.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=cfe569d0ed056a89 expected_fnv64=cfe569d0ed056a89
+  replay_state=step4.replay_after bytes=115642368 fnv64=dba2b6c2376a24c1 finite=1
+  replay_compare=step4.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=dba2b6c2376a24c1 expected_fnv64=dba2b6c2376a24c1
+  replay_compare=step4.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=b268fb565d28cdc9 expected_fnv64=b268fb565d28cdc9
+MTP_REPLAY_STEP step=4 mode=natural selection_exact=1 caller_unchanged=1 count=1 accepted_drafts=0 drafts=53650,13,5044 predictions=85683,13,4109,9845 correction=85683 next_d0=13 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step5.before bytes=115642368 fnv64=dba2b6c2376a24c1 finite=1
+MTP_REPLAY_ACTUAL step=5 mode=natural position=1040 bonus=85683 seed=13
+  replay_state=step5.actual_after bytes=115642368 fnv64=e10839a38c1fbdbb finite=1
+  replay_compare=step5.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=20c1efe9e11a1a95 expected_fnv64=20c1efe9e11a1a95
+MTP_REPLAY_TARGET step=5 same_shape=B1T4 position=1040
+  replay_compare=step5.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=9d05f67569b760fc expected_fnv64=9d05f67569b760fc
+  replay_compare=step5.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=9dc0b4dd46df61ec expected_fnv64=9dc0b4dd46df61ec
+  replay_state=step5.replay_after bytes=115642368 fnv64=e10839a38c1fbdbb finite=1
+  replay_compare=step5.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=e10839a38c1fbdbb expected_fnv64=e10839a38c1fbdbb
+  replay_compare=step5.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=20c1efe9e11a1a95 expected_fnv64=20c1efe9e11a1a95
+MTP_REPLAY_STEP step=5 mode=natural selection_exact=1 caller_unchanged=1 count=2 accepted_drafts=1 drafts=13,21134,25835 predictions=13,4109,1132,440 correction=4109 next_d0=3315 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step6.before bytes=115642368 fnv64=e10839a38c1fbdbb finite=1
+MTP_REPLAY_ACTUAL step=6 mode=natural position=1042 bonus=4109 seed=3315
+  replay_state=step6.actual_after bytes=115642368 fnv64=6cde916d3de8b44a finite=1
+  replay_compare=step6.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=e6c84d2381f9aa83 expected_fnv64=e6c84d2381f9aa83
+MTP_REPLAY_TARGET step=6 same_shape=B1T4 position=1042
+  replay_compare=step6.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=ea8cbcfa3d3e5621 expected_fnv64=ea8cbcfa3d3e5621
+  replay_compare=step6.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=55eb79c91cb94188 expected_fnv64=55eb79c91cb94188
+  replay_state=step6.replay_after bytes=115642368 fnv64=6cde916d3de8b44a finite=1
+  replay_compare=step6.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=6cde916d3de8b44a expected_fnv64=6cde916d3de8b44a
+  replay_compare=step6.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=e6c84d2381f9aa83 expected_fnv64=e6c84d2381f9aa83
+MTP_REPLAY_STEP step=6 mode=natural selection_exact=1 caller_unchanged=1 count=3 accepted_drafts=2 drafts=3315,279,4087 predictions=3315,279,3555,488 correction=3555 next_d0=4087 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step7.before bytes=115642368 fnv64=6cde916d3de8b44a finite=1
+MTP_REPLAY_ACTUAL step=7 mode=natural position=1045 bonus=3555 seed=4087
+  replay_state=step7.actual_after bytes=115642368 fnv64=646a13c78c519349 finite=1
+  replay_compare=step7.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=aaff469996045933 expected_fnv64=aaff469996045933
+MTP_REPLAY_TARGET step=7 same_shape=B1T4 position=1045
+  replay_compare=step7.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=4ba71f801ec9677b expected_fnv64=4ba71f801ec9677b
+  replay_compare=step7.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=5292ded2626c6728 expected_fnv64=5292ded2626c6728
+  replay_state=step7.replay_after bytes=115642368 fnv64=646a13c78c519349 finite=1
+  replay_compare=step7.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=646a13c78c519349 expected_fnv64=646a13c78c519349
+  replay_compare=step7.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=aaff469996045933 expected_fnv64=aaff469996045933
+MTP_REPLAY_STEP step=7 mode=natural selection_exact=1 caller_unchanged=1 count=4 accepted_drafts=3 drafts=4087,369,4252 predictions=4087,369,4252,321 correction=321 next_d0=4434 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step8.before bytes=115642368 fnv64=646a13c78c519349 finite=1
+MTP_REPLAY_ACTUAL step=8 mode=natural position=1049 bonus=321 seed=4434
+  replay_state=step8.actual_after bytes=115642368 fnv64=90761f4906407dc5 finite=1
+  replay_compare=step8.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=43c8487ca7a9f4f8 expected_fnv64=43c8487ca7a9f4f8
+MTP_REPLAY_TARGET step=8 same_shape=B1T4 position=1049
+  replay_compare=step8.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=ee3dc16b5014f7f8 expected_fnv64=ee3dc16b5014f7f8
+  replay_compare=step8.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=71003121800efff2 expected_fnv64=71003121800efff2
+  replay_state=step8.replay_after bytes=115642368 fnv64=90761f4906407dc5 finite=1
+  replay_compare=step8.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=90761f4906407dc5 expected_fnv64=90761f4906407dc5
+  replay_compare=step8.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=43c8487ca7a9f4f8 expected_fnv64=43c8487ca7a9f4f8
+MTP_REPLAY_STEP step=8 mode=natural selection_exact=1 caller_unchanged=1 count=1 accepted_drafts=0 drafts=4434,13,198 predictions=6999,364,248046,2592 correction=6999 next_d0=7021 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step9.before bytes=115642368 fnv64=90761f4906407dc5 finite=1
+MTP_REPLAY_ACTUAL step=9 mode=natural position=1050 bonus=6999 seed=7021
+  replay_state=step9.actual_after bytes=115642368 fnv64=eaffcdc1bc8342a9 finite=1
+  replay_compare=step9.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=65824a228289f14d expected_fnv64=65824a228289f14d
+MTP_REPLAY_TARGET step=9 same_shape=B1T4 position=1050
+  replay_compare=step9.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=3edff4bbad77130d expected_fnv64=3edff4bbad77130d
+  replay_compare=step9.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=bca09e9095c320c6 expected_fnv64=bca09e9095c320c6
+  replay_state=step9.replay_after bytes=115642368 fnv64=eaffcdc1bc8342a9 finite=1
+  replay_compare=step9.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=eaffcdc1bc8342a9 expected_fnv64=eaffcdc1bc8342a9
+  replay_compare=step9.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=65824a228289f14d expected_fnv64=65824a228289f14d
+MTP_REPLAY_STEP step=9 mode=natural selection_exact=1 caller_unchanged=1 count=1 accepted_drafts=0 drafts=7021,539,279 predictions=35209,539,279,2128 correction=35209 next_d0=310 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step10.before bytes=115642368 fnv64=eaffcdc1bc8342a9 finite=1
+MTP_REPLAY_ACTUAL step=10 mode=natural position=1051 bonus=35209 seed=310
+  replay_state=step10.actual_after bytes=115642368 fnv64=995d0d7939bef0b3 finite=1
+  replay_compare=step10.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=b35f36437c1156d4 expected_fnv64=b35f36437c1156d4
+MTP_REPLAY_TARGET step=10 same_shape=B1T4 position=1051
+  replay_compare=step10.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=4600efd686f6f875 expected_fnv64=4600efd686f6f875
+  replay_compare=step10.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=cb643e13b26cda0c expected_fnv64=cb643e13b26cda0c
+  replay_state=step10.replay_after bytes=115642368 fnv64=995d0d7939bef0b3 finite=1
+  replay_compare=step10.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=995d0d7939bef0b3 expected_fnv64=995d0d7939bef0b3
+  replay_compare=step10.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=b35f36437c1156d4 expected_fnv64=b35f36437c1156d4
+MTP_REPLAY_STEP step=10 mode=natural selection_exact=1 caller_unchanged=1 count=3 accepted_drafts=2 drafts=310,279,3889 predictions=310,279,2128,2128 correction=2128 next_d0=13 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step11.before bytes=115642368 fnv64=995d0d7939bef0b3 finite=1
+MTP_REPLAY_ACTUAL step=11 mode=natural position=1054 bonus=2128 seed=13
+  replay_state=step11.actual_after bytes=115642368 fnv64=3733d844463d177b finite=1
+  replay_compare=step11.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=ee2df3f97aab7af9 expected_fnv64=ee2df3f97aab7af9
+MTP_REPLAY_TARGET step=11 same_shape=B1T4 position=1054
+  replay_compare=step11.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=727726d0f4638bfd expected_fnv64=727726d0f4638bfd
+  replay_compare=step11.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=d21b87cee5516006 expected_fnv64=d21b87cee5516006
+  replay_state=step11.replay_after bytes=115642368 fnv64=3733d844463d177b finite=1
+  replay_compare=step11.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=3733d844463d177b expected_fnv64=3733d844463d177b
+  replay_compare=step11.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=ee2df3f97aab7af9 expected_fnv64=ee2df3f97aab7af9
+MTP_REPLAY_STEP step=11 mode=natural selection_exact=1 caller_unchanged=1 count=2 accepted_drafts=1 drafts=13,1368,279 predictions=13,248046,424,4087 correction=248046 next_d0=198 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step12.before bytes=115642368 fnv64=3733d844463d177b finite=1
+MTP_REPLAY_ACTUAL step=12 mode=natural position=1056 bonus=248046 seed=198
+  replay_state=step12.actual_after bytes=115642368 fnv64=0d9cabbb9d57f9fe finite=1
+  replay_compare=step12.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=9d6dbf04dd56d76d expected_fnv64=9d6dbf04dd56d76d
+MTP_REPLAY_TARGET step=12 same_shape=B1T4 position=1056
+  replay_compare=step12.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=502ddd25b33bac02 expected_fnv64=502ddd25b33bac02
+  replay_compare=step12.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=7f24be9052652ebd expected_fnv64=7f24be9052652ebd
+  replay_state=step12.replay_after bytes=115642368 fnv64=0d9cabbb9d57f9fe finite=1
+  replay_compare=step12.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=0d9cabbb9d57f9fe expected_fnv64=0d9cabbb9d57f9fe
+  replay_compare=step12.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=9d6dbf04dd56d76d expected_fnv64=9d6dbf04dd56d76d
+MTP_REPLAY_STEP step=12 mode=natural selection_exact=1 caller_unchanged=1 count=3 accepted_drafts=2 drafts=198,248045,846 predictions=198,248045,74455,248046 correction=74455 next_d0=198 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step13.before bytes=115642368 fnv64=0d9cabbb9d57f9fe finite=1
+MTP_REPLAY_ACTUAL step=13 mode=natural position=1059 bonus=74455 seed=198
+  replay_state=step13.actual_after bytes=115642368 fnv64=d4ce6bd868d27483 finite=1
+  replay_compare=step13.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=05066884ec929ce2 expected_fnv64=05066884ec929ce2
+MTP_REPLAY_TARGET step=13 same_shape=B1T4 position=1059
+  replay_compare=step13.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=e948cbbf645c555e expected_fnv64=e948cbbf645c555e
+  replay_compare=step13.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=1e968170cfa87d0d expected_fnv64=1e968170cfa87d0d
+  replay_state=step13.replay_after bytes=115642368 fnv64=d4ce6bd868d27483 finite=1
+  replay_compare=step13.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=d4ce6bd868d27483 expected_fnv64=d4ce6bd868d27483
+  replay_compare=step13.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=05066884ec929ce2 expected_fnv64=05066884ec929ce2
+MTP_REPLAY_STEP step=13 mode=natural selection_exact=1 caller_unchanged=1 count=2 accepted_drafts=1 drafts=198,760,1156 predictions=198,248068,3555,369 correction=248068 next_d0=271 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step14.before bytes=115642368 fnv64=d4ce6bd868d27483 finite=1
+MTP_REPLAY_ACTUAL step=14 mode=natural position=1061 bonus=248068 seed=271
+  replay_state=step14.actual_after bytes=115642368 fnv64=f4388b161d94b6da finite=1
+  replay_compare=step14.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=ca8eca6529c13fcc expected_fnv64=ca8eca6529c13fcc
+MTP_REPLAY_TARGET step=14 same_shape=B1T4 position=1061
+  replay_compare=step14.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=b2e9db6a39627a4e expected_fnv64=b2e9db6a39627a4e
+  replay_compare=step14.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=59fed47cd470c3f6 expected_fnv64=59fed47cd470c3f6
+  replay_state=step14.replay_after bytes=115642368 fnv64=f4388b161d94b6da finite=1
+  replay_compare=step14.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=f4388b161d94b6da expected_fnv64=f4388b161d94b6da
+  replay_compare=step14.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=ca8eca6529c13fcc expected_fnv64=ca8eca6529c13fcc
+MTP_REPLAY_STEP step=14 mode=natural selection_exact=1 caller_unchanged=1 count=2 accepted_drafts=1 drafts=271,760,1156 predictions=271,248069,3555,6587 correction=248069 next_d0=271 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step15.before bytes=115642368 fnv64=f4388b161d94b6da finite=1
+MTP_REPLAY_ACTUAL step=15 mode=natural position=1063 bonus=248069 seed=271
+  replay_state=step15.actual_after bytes=115642368 fnv64=271a12befdaf5a99 finite=1
+  replay_compare=step15.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=21df9a97eb332757 expected_fnv64=21df9a97eb332757
+MTP_REPLAY_TARGET step=15 same_shape=B1T4 position=1063
+  replay_compare=step15.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=24959e84a6bbf6b7 expected_fnv64=24959e84a6bbf6b7
+  replay_compare=step15.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=76eddb6e47b9ed36 expected_fnv64=76eddb6e47b9ed36
+  replay_state=step15.replay_after bytes=115642368 fnv64=271a12befdaf5a99 finite=1
+  replay_compare=step15.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=271a12befdaf5a99 expected_fnv64=271a12befdaf5a99
+  replay_compare=step15.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=21df9a97eb332757 expected_fnv64=21df9a97eb332757
+MTP_REPLAY_STEP step=15 mode=natural selection_exact=1 caller_unchanged=1 count=2 accepted_drafts=1 drafts=271,760,3555 predictions=271,22,3555,4087 correction=22 next_d0=16 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+  replay_state=step16.before bytes=115642368 fnv64=271a12befdaf5a99 finite=1
+MTP_REPLAY_FORCE_PROBE step=16 extra_main_verify=1 natural_candidate=0 tokens=22,97,131,211
+MTP_REPLAY_FORCE_SEED step=16 probe_argmax=16 seed=17 suffix_dependence_not_assumed=1
+MTP_REPLAY_ACTUAL step=16 mode=forced_d0 position=1065 bonus=22 seed=17
+  replay_state=step16.actual_after bytes=115642368 fnv64=59a4c2b52ab576ce finite=1
+  replay_compare=step16.next_g elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=6a859f57247ffebb expected_fnv64=6a859f57247ffebb
+MTP_REPLAY_TARGET step=16 same_shape=B1T4 position=1065
+  replay_compare=step16.target_logits elements=993280 element_bytes=2 unequal=0 first=993280 actual_fnv64=fca51c7b526e5824 expected_fnv64=fca51c7b526e5824
+  replay_compare=step16.target_trunk elements=40960 element_bytes=2 unequal=0 first=40960 actual_fnv64=8c772b3cdeed91c0 expected_fnv64=8c772b3cdeed91c0
+  replay_state=step16.replay_after bytes=115642368 fnv64=59a4c2b52ab576ce finite=1
+  replay_compare=step16.accepted_state elements=115642368 element_bytes=1 unequal=0 first=115642368 actual_fnv64=59a4c2b52ab576ce expected_fnv64=59a4c2b52ab576ce
+  replay_compare=step16.draft_g_unchanged_by_main_replay elements=10240 element_bytes=2 unequal=0 first=10240 actual_fnv64=6a859f57247ffebb expected_fnv64=6a859f57247ffebb
+MTP_REPLAY_STEP step=16 mode=forced_d0 selection_exact=1 caller_unchanged=1 count=1 accepted_drafts=0 drafts=17,15,15 predictions=16,15,15,15 correction=16 next_d0=15 replay_logits_exact=1 replay_trunk_exact=1 replay_state_exact=1
+DRAFT_FRESH_REPLAY frame=0 rows=1024 exact=1
+DRAFT_FRESH_REPLAY frame=1 rows=4 exact=1
+DRAFT_FRESH_REPLAY frame=2 rows=4 exact=1
+DRAFT_FRESH_REPLAY frame=3 rows=4 exact=1
+DRAFT_FRESH_REPLAY frame=4 rows=3 exact=1
+DRAFT_FRESH_REPLAY frame=5 rows=1 exact=1
+DRAFT_FRESH_REPLAY frame=6 rows=2 exact=1
+DRAFT_FRESH_REPLAY frame=7 rows=3 exact=1
+DRAFT_FRESH_REPLAY frame=8 rows=4 exact=1
+DRAFT_FRESH_REPLAY frame=9 rows=1 exact=1
+DRAFT_FRESH_REPLAY frame=10 rows=1 exact=1
+DRAFT_FRESH_REPLAY frame=11 rows=3 exact=1
+DRAFT_FRESH_REPLAY frame=12 rows=2 exact=1
+DRAFT_FRESH_REPLAY frame=13 rows=3 exact=1
+DRAFT_FRESH_REPLAY frame=14 rows=2 exact=1
+DRAFT_FRESH_REPLAY frame=15 rows=2 exact=1
+DRAFT_FRESH_REPLAY frame=16 rows=2 exact=1
+DRAFT_FRESH_REPLAY frame=17 rows=1 exact=1
+MTP_K3_REPLAY natural_steps=16 forced_steps=1 force_probe_extra_verify=1 actual_steps=17 replay_verifies=17 contracts=1 checkpoint_rows_exact=1 natural_count1=3 natural_count2=5 natural_count3=4 natural_count4=4 forced_reject0=1 coverage_complete=1 output_tokens=42 artifact_bytes=40085010 plain_equality_not_asserted=1
+[PASS] mtp_k3_full_model_replay
+1 tests, 1 passed, 0 failed, 0 skipped

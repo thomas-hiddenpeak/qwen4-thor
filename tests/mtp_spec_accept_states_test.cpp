@@ -195,6 +195,8 @@ Q4T_TEST(mtp_spec_accept_states) {
 
   MtpConfig mcfg;
   mcfg.mtp_dir = kMtpDir;
+  if (const char* subset = std::getenv("Q4T_TEST_SUBSET_HEAD"))
+    mcfg.subset_head_dir = subset;
   MtpModel mtp;
   s = LoadMtp(mcfg, m.head.embed_tokens, m.head.lm_head, &mtp, nullptr);
   if (!s.ok()) {
@@ -587,6 +589,8 @@ Q4T_TEST(mtp_spec_accept_states) {
   ok &= run_case("reject", b0, d0_reject, 11, 22, 0);
   // a*=1 (partial): d0 == m[0] by construction; f1 != m[1] by construction.
   ok &= run_case("partial", b0, d0_accept, f1_partial, 22, 1);
+  ok &= run_case("partial2", b0, d0_accept, f1_full,
+                 (f2_full + 1) % vocab, 2);
   // a*=3 (full): d0 == m[0], f1 == m[1], f2 == m[2] by construction.
   ok &= run_case("full", b0, d0_accept, f1_full, f2_full, 3);
 

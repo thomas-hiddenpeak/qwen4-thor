@@ -186,6 +186,8 @@ bool RunMultiStep(int k, int terminal_sequences, bool zero_head = false,
   // 2. Load the MTP draft model (pooled for B sequences).
   MtpConfig mcfg;
   mcfg.mtp_dir = kMtpDir;
+  if (const char* subset = std::getenv("Q4T_TEST_SUBSET_HEAD"))
+    mcfg.subset_head_dir = subset;
   mcfg.max_seq = B;
   mcfg.max_len = 64;
   mcfg.max_prefill = 16;
@@ -205,6 +207,10 @@ bool RunMultiStep(int k, int terminal_sequences, bool zero_head = false,
   // Test-only deterministic full acceptance: the borrowed main/draft head
   // emits tied zero logits, whose independent greedy reference selects 0.
   if (zero_head) {
+    if (mtp.subset_head) {
+      Q4T_CHECK(cudaMemset(mtp.subset_head, 0,
+                           size_t(mtp.DraftVocab()) * hs * 2) == cudaSuccess);
+    }
     Q4T_CHECK(cudaMemset(const_cast<uint16_t*>(m.head.lm_head), 0,
                          static_cast<size_t>(vocab) * hs * 2) == cudaSuccess);
   }

@@ -1,0 +1,13 @@
+{
+  "engineering_decision": "ACCEPT_BOUNDED_OPT_IN",
+  "classification": "performance optimization",
+  "statistics": "inconclusive across starts; no established noninferiority interval",
+  "target": "all five MTP decode medians >= +5%",
+  "target_met": true,
+  "quality": "22/22 exact; all 30 same-mode parent/candidate performance outputs identical",
+  "contracts": "all frozen direct checks pass",
+  "protection_review": "MTP TTFT observed lower at every tier; plain decode -0.1103%..+0.0016% and TTFT +0.0305%..+0.2218% are descriptive, not a zero-loss proof or an allowed loss band; no independent evidence of regression mechanism; same plain outputs and unchanged main compute path support bounded opt-in engineering acceptance",
+  "cost_review": "335806464 owned device bytes plus host staging and 4 GiB validation read-cache allowance; MTP ready time 64.021 vs 32.014 s; all capacity and ownership gates pass; fixed corpus support only",
+  "scope": "65536 BF16, explicit option, fixed k3, tested model/tokenizer/config; full-head default remains",
+  "deployment_authorization": "user 2026-10-20 closeout authorization and current goal; 3 health starts/requests only; no extra performance samples"
+}
