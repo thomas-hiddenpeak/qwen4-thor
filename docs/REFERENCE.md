@@ -418,6 +418,144 @@ TileKernels仍使用下文固定版本，未更新上游。以下“启发”为
 本轮出口是以上设计理解及源码入口；没有运行构建、测试、GPU/模型或
 性能采样，也没有修改运行时、默认程序或建立后续自动执行队列。
 
+### 优先方向与具体计划（2026-10-23，仅计划）
+
+本次重读本项目`13f80b2279c9264c6169925e9e8eb4d147ba6c8e`；其
+运行时代码与上述4e390943相同，上游及依赖身份不变。**只选一个优先
+候选：同一forward内有界提前读取PLE，固定前缀独立对照作为该候选的
+验证护栏。** 暂不实现、构建或执行验证；这是供后续选择的计划，不是
+已启动阶段，不改变STATUS所列SSD工作集、持续缓存与实际读取归属主线。
+
+#### 价值假设：减少到层等待，先看prefill TTFT
+
+代码依据如下：
+
+- [RunLayers](../src/model/model.cu):537、609–632当前先调用layer 0，
+  再在0-based layer 1执行Gather。地址所需token/history此前已齐备；
+  [ComputeRowIds](../src/ple/ple_embedding.cpp):131只依赖这些输入及
+  checkpoint参数，CPU读取无需等待layer 0 hidden。
+- 大批全驻留MoE有counts回传、offset上传及主机等待，见
+  [moe_gemm](../src/quant/moe_gemm.cu):432–470。专家SSD槽位路径还
+  有routing回传和LoadPhase1，见[MoE](../src/model/moe.cu):521–530、
+  827–843；这些都是当前PLE读取启动前可能经过的工作。
+- 当前Gather本来就可能与layer 0已入队的GPU尾部重叠。新增窗口是
+  **提前到layer 0主机执行/等待之前**，不能把整层耗时当新增收益。
+  令H为可新增的启动提前量、R为原主机取表耗时，理想隐藏量至多
+  `min(H, R)`；实际E2E还要扣除提前hash/旧上传等待、worker调度及
+  CPU、SSD、统一内存带宽竞争。GPU未追上host时，少等reader也未必
+  缩短请求。当前没有可支持提速百分比的实测数据。
+
+目标是prefill TTFT；decode和MTP为保护项。第一版门槛预先固定为
+`T>8`，小形状继续原Gather，不逐token创建或唤醒worker。依据是当前
+[MoE分派](../src/quant/moe_gemm.cu):337–357的小形状全驻留device路径；
+这只是控制候选范围，**8不是已测获益阈值**，也不适用于所有residency
+模式的等待性质。T为packed总行数：单流decode T=1、单流k=3 verify
+T=4不触发；B=9 decode、B=3且每序列4项的verify仍触发，不能称作
+“仅prefill开关”。首次收益验收固定全专家驻留，结论不外推SSD专家路径。
+
+#### 最小改动边界
+
+1. 在[RunLayers](../src/model/model.cu):537–609的层循环前，确认存在
+   PLE层且满足门槛后prepare；保留各入口既有的ids/history构造。
+   主线程用现有ComputeRowIds写入已有host_row_ids，将它作为本作业
+   不可变的地址快照。worker不借用入口局部token/history或活动序列对象。
+2. 在[PleEmbedding](../src/ple/ple_embedding.cpp):154–200拆清
+   staging复用权、CPU读取、主线程上传三个阶段。一个常驻纯CPU worker
+   独占现有reader/staging，只执行原Gather的页计划、读取与scatter；
+   不改[page_reader](../src/ple/page_reader.cpp)的页合并、io_uring或行顺序。
+   在PleEmbedding创建时建worker，析构时回收；不逐调用建线程。
+3. 到原layer 1位置等待本作业，再在**原CUDA stream**排队现有H2D、
+   FP8转换、scale及PLE。投影形状、norm/gate舍入、卷积、checkpoint和
+   接受逻辑均保留，不提前使用共享model workspace，不新增CUDA stream。
+4. 一个job槽、至多一个在途读取；ticket含generation、行数、状态和结果，
+   拒收旧ticket及重复提交。async/sync路径共用原upload_pending/event，
+   覆盖staging前先等旧上传；event仍只证明H2D/转换完成，不证明BF16
+   下游消费完成。主机调用串行、同stream消费的既有前提继续成立。
+5. RunLayers提前失败或取消时，局部RAII先drain所属读取再退出；析构
+   先停止提交、join worker，再等上传、释放reader及缓冲。reader目前
+   无墙钟取消机制，取消只可等待读取退出，不能承诺立即中断。读失败
+   发生时layer 0可能已改状态，按既有失败合同结束该forward，不能
+   静默重跑或因host history未提交就认为设备已回滚。
+
+实现范围预计集中于PLE接口/实现、RunLayers接入及直接受影响的测试；
+候选以默认关闭的研究开关隔离，保留原同步路径和精确父版本回退包。
+若需要跨forward预取、双缓冲、共享缓存或reader强制取消，另立范围，
+不并入这个候选。
+
+#### 代价与资源账
+
+max-prefill=8192、16 heads、每行160字节时，现有pinned staging和
+GPU FP8 scratch各20MiB、row IDs 1MiB、模型BF16输出40MiB、reader页池
+32MiB。计划复用这些分配，不再复制payload或token/history，也不增加
+投影结果缓冲。新增应用留存限于一个worker栈及固定job/同步对象：
+首版显式栈预算1MiB，新增应用留存预算2MiB；实现时核对实际栈、TLS、
+guard及对象开销，超预算即停止，不用默认线程栈冒充1MiB。
+
+现有working_memory_bytes按vector size而非capacity计scratch，不能当
+峰值上界；未来需同时登记保留capacity、模型输出、共享workspace、
+线程开销及整机统一RAM/文件页缓存。提前读不减少请求行数、FP8字节、
+H2D或GEMM计算量，也不提供容量offload。若与专家SSD读取竞争，需在
+主线资源/实际I/O合同明确后另作对照，不恢复已搁置的共享主机缓存路线。
+
+#### 验证与出口（未来实施时才启动）
+
+按[性能优化顺序](EVALUATION.md#性能优化)执行，新增调度不适用
+“删除冗余”的有限简化接受。先冻结精确父A/候选B的源码、binary、
+构建/工具/夹具、模型与PLE文件身份、开关、实际容量、缓存准备及请求
+顺序；不能把当前默认binary身份当成当前源码构建身份。全阶段同一
+GPU exclusive lease，监控失败或竞争记ENV_ABORT，仅停自己的进程。
+
+1. **首项实际测试是B普通decode模式的真实HTTP质量E2E**，此前只做
+   必要构建与静态核对。质量及五档E2E完整通过后，再做直接合同和
+   分段细分析。A/B均按plain与MTP k=3分组，max_seq=1、
+   max_prefill=8192、max_len=208896，不接受静默缩容量。
+2. 用现有[run_acceptance.py](../tools/evalscope/run_acceptance.py)：
+   现有固定检索质量A/B×两模式×11题，最多44 HTTP/4次完整加载；
+   性能A/B×两模式×五档×3，最多60 HTTP/4次完整加载。五档名义输入
+   为1024、4096、8192、45056、204800；当前snap-records实际输入按
+   runner的`[名义−48, 名义]`合同，A/B复用同一夹具并报告实际usage。
+   输出上限256，首请求单列；合计上限104 HTTP/8次完整加载。
+   精确A质量证据若身份/依赖相符，可在采样前冻结复用，
+   不是运行中挑选。每次启动前缓存条件可比；不用清全机缓存制造起点。
+3. HTTP通过后固定6组CPU作业合同：地址快照、单inflight、旧ticket
+   拒收、受控取消、读失败、析构drain，每组一次。用受控worker阻塞
+   证明资源未过早复用；借鉴[gather测试](../tests/ple_e2e_gather_test.cpp):
+   226–303的阻塞组织，但现有测试不是纯CPU测试，也不能证明RunLayers
+   新分派。门槛、同步/异步切换及前层失败回收必须进入下一项真实接入
+   验证，不能用mock owner已正确析构代替。
+4. 固定输入前缀，A/B在相同形状、布局、精度下严格比较row IDs、原始
+   行字节、转换/scale及有效输出/状态。以现有hash golden独立核对地址，
+   gather参考不再充当独立hash oracle；checkpoint对照复用
+   [PrefixBoundaryReference](../tests/model_prefix_reference.h)，
+   不让参考也调用待验证的恢复机制。小模型固定8类：fresh/EOS、分块、
+   plain T1、verify T1、verify部分/全接受、ragged、mixed/非零槽位；
+   纳入8/9门槛、9→1→9切换、T>capacity、RunLayers前层失败出口、
+   B=3/总T=12 verify。固定max_seq=3/max_prefill=32/max_len=64；
+   A/B各一次四层模型加载，每身份至多64次forward，共128次；不新增
+   跨形状一律逐位相同的合同。
+5. 记录TTFT/decode、受测夹具输出质量、RAM峰值/留存、逻辑请求字节与
+   实际SSD读取归属。reader请求页数不是实际设备I/O；分段只能解释
+   E2E，不能代替它。默认追加HTTP/profile预算为0；执行前还须按届时
+   基线耗时冻结阶段墙钟上限，未填写不启动。真实失败的定位另冻结
+   有界范围，不自动扩样或遍历worker/阈值组合。
+
+任一数值/生命周期/质量合同失败即保留首次现场并停止。完整五档也
+只提供相应描述性对照，三请求不证明跨启动微小提速或统计非劣；分别
+记录证据有效性、完整性、统计结论与工程决定。11项HTTP检索题不证明
+通用任务质量，四层直接合同也不代替完整模型HTTP。若关键路径等待本来
+很小、收益不足以承担新增线程/状态，或保护项不支持接受，保留A并
+归档候选；不把“异步已接通”当优化完成，不自动替换默认程序。
+
+#### 暂缓方向：合并K/V投影
+
+上游融合KV提供组织思路，但本地[PleLayerForward](../src/model/ple_layer.cu):
+635–650两次GEMM合并后FLOPs、62.5MiB权重均不减，主要少一次调用及
+一次可能已命中cache的输入读取。联合输出为每行交错的12800维，本地
+key/value却分别紧凑排列；须改下游stride或拆分。T=8192时联合输出
+200MiB，拆分额外读写约400MiB；若再保留联合权重副本，还多62.5MiB
+常驻RAM。改变GEMM形状亦可能改变算法/舍入；融合norm更会跨过现有
+BF16边界。当前收益占比未知、验证面较大，故不与提前读取同时推进。
+
 ### Engram：查表发起与层内消费分离
 
 | 固定版本入口 | 重点参考 |
