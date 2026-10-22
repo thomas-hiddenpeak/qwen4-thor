@@ -291,8 +291,132 @@ Engram / 数值一致性专项参考，暂不实施。
 - 本地临时快照：`.q4t-work/deepinfer-assessment-20261020/upstream/`；
   未纳入`reference/`或本项目构建，长期查阅以固定版本链接为入口。
 - 结论：保留Engram与数值一致性验证方法；当前不展开实现、不启动
-  新测试或性能采样，不改变热启动定位主线。尚无Thor适配、质量或
+  新测试或性能采样，不改变STATUS所列主线。尚无Thor适配、质量或
   性能通过结论，也不作为qwen4_exp数学语义的权威参考。
+
+### 设计学习：对本项目的启发（2026-10-23）
+
+按用户要求从实际代码推导设计原则。本项目重读版本为
+`4e3909438d83fbccbdf2241e1f6ff5c31a68b981`；DeepInfer、DeepEP及
+TileKernels仍使用下文固定版本，未更新上游。以下“启发”为代码依赖与
+生命周期分析，不是已测性能结论，也不形成实现或测试队列。
+当前主线见[STATUS](STATUS.md)，容量解释遵循
+[统一RAM/SSD合同](SSD_OFFLOAD_CONTRACT.md)；共享主机缓存保持搁置。
+
+1. **先找依赖汇合点，再考虑工作放在哪一层。**
+
+   代码事实：[DeepInfer forward][deepinfer-model]在层循环前hash/fetch，
+   [Engram.forward][deepinfer-engram]到层才projection/gate。本项目
+   [ComputeRowIds:131](../src/ple/ple_embedding.cpp)只依赖token、历史与固定参数；
+   [PleLayerForward:635](../src/model/ple_layer.cu)的key/value投影及key norm
+   也不依赖主干hidden，query norm/gate才读取对应层hidden。
+
+   启发：把PLE理解为两条在gate汇合的依赖链：
+
+   ```text
+   本次token及其有效前缀 → row IDs → 表数据/缩放 → key、value、key norm ─┐
+   前置层计算 ──────────────────────────────→ query norm ─┴→ gate/卷积
+   ```
+
+   地址已知的时点由输入前缀决定，不必与层函数的调用位置绑定。
+   prefill输入已知、decode当前token选定、verify本轮候选确定后，分别
+   具备地址计算条件；这不提供预测未知未来token的能力。
+   本项目已有ComputeRowIds/GatherRows分离，尚无提前发起/到层消费流水。
+   仅第二层有PLE，且当前Gather可能已与首层部分重叠，新增窗口未知。
+   DeepInfer仍到层才投影，也说明“依赖允许提前”不等于“应抢先使用GPU”。
+   本地投影结果来自共享workspace，提前计算会延长存活期、改变资源冲突；
+   不能把移动调用位置当成收益结论。
+
+2. **只读准备可以面向候选，状态提交必须属于确定的前缀。**
+
+   代码事实：[上游scheduler][deepinfer-scheduler]将接受token同步写入原始/
+   压缩历史。本项目[ModelSequence:38](../include/q4t/model/sequence.h)分开
+   committed history与pending tokens；[MTP:1187](../src/mtp/mtp.cu)部分接受后
+   恢复checkpoint，再推进已消费前缀。[PLE卷积](../src/model/ple_layer.cu)
+   保存的是最近9项gated_n，不是最近两个原始token。
+
+   启发：查表结果、词法历史、activation状态是三类对象。查表可以为
+   已知候选做准备，未接受分支的结果可以丢弃；词法history与卷积状态
+   则必须对应同一条序列的同一个已消费前缀。前两个原始token足以重建
+   下一位置的地址；仅凭词法窗口或查表结果不能直接恢复依赖hidden/
+   门控/舍入的卷积状态，仍需activation checkpoint或按相同数值合同
+   重放所需前缀。取表完成也不表示状态可提交。
+   本项目已有各路径context构造及PLE checkpoint，属于应保留的不变量。
+   EOS屏障只影响哈希历史，chunk结束不清卷积，fresh/reset另有生命周期；
+   不把这三种事件合并。若以后改变调度，序列、位置及前缀快照必须仍对应，
+   失败时仅保住host history也不表示设备状态已自动回滚。
+
+3. **异步接口的价值取决于所有权与背压，不取决于hook的外形。**
+
+   代码事实：[DeepEP fetch][deepinfer-deepep-buffer]分issue/wait，但每轮
+   复用固定接收区，hook不提供任意跨轮并发安全。本项目
+   [GatherRows:154](../src/ple/ple_embedding.cpp)等待upload_complete后才让CPU
+   覆盖staging；该事件覆盖H2D/转换，不覆盖输出BF16的下游消费。
+
+   启发：分别解释读取完成、转换完成、消费完成及允许复用；选择线程、
+   stream、event或hook应服务于这些边界。取消也要等所属工作退出才能
+   交还缓冲。多加一套buffer只增加容量，不自动提供有界队列和正确背压。
+   现有串行host调用/同stream顺序是有效前提，不能在引入并行时默认沿用。
+   在Thor上增加host/device副本都会占统一RAM，CPU常驻不是容量卸载；
+   上游RDMA存储只能贡献生命周期思路，不能继承其独立显存平台容量收益。
+
+4. **保持记录身份与舍入边界，再自由组织物理读取和静态准备。**
+
+   代码事实：[DeepEP issue][deepinfer-deepep-issue]将global row映射为
+   peer/local offset；本地[page_reader:187](../src/ple/page_reader.cpp)
+   按物理页排序/合并，同时保存
+   output_offset并scatter回原token/head位置。DeepInfer将固定norm权重
+   预合并；本地[PLE norm/gate](../src/model/ple_layer.cu)之间存在BF16
+   写回，融合卷积也显式保留中间舍入。
+
+   启发：可变化的是物理读取次序、分片位置及推理期不变量的准备时机；
+   不变量是row ID、head顺序、FP8字节、scale解释及规定的数值边界。
+   本地已有页合并和卷积/加法融合，学习价值在这种分层组织，不重复算作
+   新能力。词表压缩会改变模型记录身份；权重代数预乘或合并GEMM可能
+   改变舍入/算法，需单独判断，不能视为纯数据搬运。
+   大表容量、每token有效payload与同时存活的工作集也要分开：
+   本模型每token取2560个FP8字节，不需把51.2GB表整表搬入RAM；
+   但页读取、重复副本、输出及工作区仍各有成本。
+
+5. **固定前缀消除路径分叉，同时让验证结论与实际oracle匹配。**
+
+   代码事实：上游[batch test][deepinfer-batch-test]把混批输出设为
+   golden_token_ids；[sampler][deepinfer-sampler]实际覆盖输出token，
+   再从本轮logprobs取对应值及top5。[NextN接受核][deepinfer-accept-kernel]
+   还用golden与draft是否相等覆盖接受判定。因此这是受控前缀下的数值/
+   布局对照，不独立证明两次自由生成或自然接受策略相同。
+
+   启发：把“固定输入前缀时模型算得是否一致”与“采样/接受策略是否正确”
+   分开，各自选独立参照。row ID可做整数精确对照，文件字节/转换、
+   gate/conv/state及logits按各自计算合同分层，避免只比最终答案。
+   本地[PrefixBoundaryReference:13](../tests/model_prefix_reference.h)
+   只执行接受前缀，不调用checkpoint保存/恢复；单/多序列恢复测试用它
+   比较后继输出。这已体现“参照不重复待验证机制”的组织原则，
+   可与固定前缀跨布局方法互补，无需重复发明同一能力。
+   本地[hash golden](../tests/ple_ngram_hash_test.cpp)验证地址数学；
+   [gather测试](../tests/ple_e2e_gather_test.cpp)的参考也调用生产hash，
+   主要独立核对取行/转换，不能再充当独立hash参照。
+   [mixed测试](../tests/model_mixed_batch_test.cpp)仅2层且用容差；
+   [triangle](../tests/mtp_path_triangle_test.cpp)仅4层，同形状T1对照
+   进入返回条件，跨T1/T4与后缀变化只诊断输出。已有入口有复用价值，
+   测试名字、打印结果或源码存在都不代表完整模型严格不变量已通过。
+
+6. **收益和成本沿整条依赖链归因。**
+
+   代码事实：[ReadStats](../include/q4t/ple/page_reader.h)统计页请求，
+   但生产Gather尚未导出；[层计时](../src/model/model.cu)不能独立拆出
+   完整查表链。[working_memory_bytes:104](../src/ple/ple_embedding.cpp)仅为
+   对象口径，reader scratch按vector size计，不是保留capacity；模型
+   输出/共享workspace另由[启动计划](../src/runtime/startup_model_plan.cpp)登记。
+
+   启发：读请求字节、实际SSD流量、有效payload、等待时间是不同量；
+   活动元素、保留分配与整机统一RAM也不同。预取可能只是把等待和内存
+   存活期挪到前面，局部kernel减少也可能改变其他层资源竞争。
+   本项目后续选择方案，应由完整服务成本和统一RAM目标解释价值；
+   当前未测占比、额外RAM和E2E收益均保持未知，不从局部源码推算提速。
+
+本轮出口是以上设计理解及源码入口；没有运行构建、测试、GPU/模型或
+性能采样，也没有修改运行时、默认程序或建立后续自动执行队列。
 
 ### Engram：查表发起与层内消费分离
 
@@ -441,6 +565,8 @@ TileKernels核对的是[PyPI 2.1.0 wheel][deepinfer-tile-wheel]，SHA-256：
 [deepinfer-deepep-issue]: https://github.com/deepseek-ai/DeepEP/blob/93eb6eb238127e96c6d7a4a625a6dad158348509/deep_ep/include/deep_ep/impls/engram/engram_fetch.cuh
 [deepinfer-deepep-wait]: https://github.com/deepseek-ai/DeepEP/blob/93eb6eb238127e96c6d7a4a625a6dad158348509/deep_ep/include/deep_ep/impls/engram/engram_fetch_wait.cuh
 [deepinfer-tile-wheel]: https://files.pythonhosted.org/packages/89/64/9731e29c0b9d9c6a58a7e1f6353d4edbfc80591b9995f9026997fdab39c6/tile_kernels-2.1.0-py3-none-any.whl
+[deepinfer-sampler]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/deepinfer/model_executor/layers/sampler.py
+[deepinfer-accept-kernel]: https://github.com/deepseek-ai/DeepInfer/blob/774ce244b87cc0eb8d4b94ab9f5de2ab22049f01/deepinfer/model_executor/layers/tilelang_ops/cuda/sampler.py
 
 ## Qwen3.8-Next 官方技术报告 (目标模型权威设计文档)
 
