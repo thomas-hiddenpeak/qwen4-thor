@@ -159,3 +159,7 @@ MTP收益、直接合同和容量/资源通过，作本次显式启用的工程�
 [审计与原始汇总](evidence/mtp-subset-resume-20261023/analysis-v2.json)，
 [工程判定](evidence/mtp-subset-resume-20261023/decision-v2.json)，
 [身份/请求/守卫审计](evidence/mtp-subset-resume-20261023/audit-v2.json)。
+
+部署首次预检因证据输出在隔离ROOT外被守卫CLI拒绝，0模型/0HTTP、
+未替换默认；旧包和错误日志保留。改用source/.q4t-work/deployment-v2
+和新delivery-package-v2，原3请求健康预算不增加。

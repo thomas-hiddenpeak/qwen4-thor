@@ -11,7 +11,7 @@ a=json.loads((b/'analysis-v2.json').read_text())
 assert a['state']['status']=='MEASURED_REQUIRES_REVIEW'
 assert len(a['on_comparison'])==5 and all(x['decode_change_pct']>=5 and x['outputs_equal'] for x in a['on_comparison'])
 assert (b/'decision-v2.json').exists() and json.loads((b/'decision-v2.json').read_text())['engineering_decision']=='ACCEPT_BOUNDED_OPT_IN'
-p=b/'delivery-package';p.mkdir()
+p=b/'delivery-package-v2';p.mkdir()
 for sub in ['previous','candidate','artifact','health-fixture']:(p/sub).mkdir()
 for src,dest in [(root/'build/q4t',p/'previous/q4t'),(root/'build/q4t.release.json',p/'previous/q4t.release.json'),(b/'build/q4t',p/'candidate/q4t'),(b/'build/CMakeCache.txt',p/'candidate/CMakeCache.txt'),(b/'decision-v2.json',p/'decision.json'),(b/'analysis-v2.json',p/'analysis.json'),(b/'audit-v2.json',p/'audit.json'),(b/'frozen-plan-v2.json',p/'frozen-plan.json'),(r/'docs/MTP_SUBSET_RESUME_2026-10-23.md',p/'decision.md')]:shutil.copy2(src,dest)
 old=json.loads((p/'previous/q4t.release.json').read_text());shutil.copy2(old['build_cache'],p/'previous/CMakeCache.txt')
@@ -25,7 +25,7 @@ metadata=dict(version='mtp-subset-bf16-20261023',binary_sha256=sha(p/'candidate/
 save(p/'candidate/q4t.release.json',metadata)
 commands=[]
 for name,flags in [('subset',['--mtp','--mtp-subset-head',str(p/'artifact')]),('full',['--mtp']),('plain',[])]:
- commands.append(dict(name=name,command=['python3','-B',str(r/'tools/evalscope/run_acceptance.py'),'--mode','quality','--output',str(b/'deployment-v2'/name),'--binary',str(root/'build/q4t'),'--model-dir','/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream','--fixtures',str(p/'health-fixture'),'--startup-timeout','300','--port','8753','--max-len','208896',*flags]))
+ commands.append(dict(name=name,command=['python3','-B',str(r/'tools/evalscope/run_acceptance.py'),'--mode','quality','--output',str(r/'.q4t-work/deployment-v2'/name),'--binary',str(root/'build/q4t'),'--model-dir','/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream','--fixtures',str(p/'health-fixture'),'--startup-timeout','300','--port','8753','--max-len','208896',*flags]))
 save(p/'health-plan.json',dict(maximum_starts=3,maximum_requests=3,timeout_seconds=1200,purpose='deployment health only; no new performance samples',steps=commands))
 save(p/'sealed-files.json',{str(f.relative_to(p)):sha(f) for f in sorted(p.rglob('*')) if f.is_file()})
 print(p)

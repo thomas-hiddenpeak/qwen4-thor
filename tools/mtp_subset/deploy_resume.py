@@ -12,7 +12,7 @@ parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--base',type=Path,required=True)
 parser.add_argument('--rollback',action='store_true')
 args=parser.parse_args()
-b=args.base.resolve();r=b/'source';root=b.parents[1];p=b/'delivery-package';out=b/'deployment-v2'
+b=args.base.resolve();r=b/'source';root=b.parents[1];p=b/'delivery-package-v2';out=r/'.q4t-work/deployment-v2'
 spec=importlib.util.spec_from_file_location('delivery_helpers',r/'tools/verify/startup_delivery/deploy.py')
 h=importlib.util.module_from_spec(spec);spec.loader.exec_module(h)
 h.require_guard(out)

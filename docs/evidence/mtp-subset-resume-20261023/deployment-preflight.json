@@ -1,0 +1,9 @@
+{
+  "status": "PRECHECK_REJECTED",
+  "model_loads": 0,
+  "http_requests": 0,
+  "default_replaced": false,
+  "reason": "isolated GPU guard output outside its own build/.q4t-work boundary",
+  "retained_package": ".q4t-work/mtp-subset-head-20261023/delivery-package",
+  "correction": "source/.q4t-work/deployment-v2; new sealed delivery-package-v2; unchanged 3-request health budget"
+}
