@@ -1,0 +1,38 @@
+{
+  "ple": {
+    "sass_equal": true,
+    "normalized_sha256": "516ef4aae00d41fb77d480b62e916c343304fd6f7b1a002da156dd2573341fbb",
+    "bytes": 7567,
+    "normalization": "absolute archive path only"
+  },
+  "model": {
+    "sass_equal": false,
+    "normalized_sha256": "83d087cb06ba2fcc4bf375c8b527a8ae4ee587b48aae2165d602ab6356ee3e22",
+    "bytes": 18264114,
+    "normalization": "absolute archive path only",
+    "default_functions_equal": true,
+    "only_changed_unused_gdn_rows4": true,
+    "total_functions": 105,
+    "changed_functions": [
+      [
+        "member <BUILD>/libq4t_model.a:linear_attention.cu.o:",
+        "Function : _ZN3q4t5model52_GLOBAL__N__d45de309_19_linear_attention_cu_f34aee7322GatedDeltaNetRegKernelILi4EEEvPKtS4_S4_S4_S4_PfPtiiiiiii"
+      ]
+    ],
+    "reason": "only optional Q4T_GDN_REG=4 differs; frozen runners clear Q4T_ environment and production defaults to ROWS=8; prior replay clears overrides; all executed GPU functions identical"
+  },
+  "quant": {
+    "sass_equal": true,
+    "normalized_sha256": "20f0b3c04194d2502e1e245e43288d47852ee9644bc7f2aa5af14b420d5b232b",
+    "bytes": 2208497,
+    "normalization": "absolute archive path only"
+  },
+  "raw_files": {
+    "new-ple.sass": "8533ae0f651665179451c53ee5bcc708f2d26d86b3ee1b485d4fa2067c944165",
+    "old-ple.sass": "e72c53bbf35f1def4f093e9eddcf2eca3940fe31ae190fd3a873d61937609fb7",
+    "new-quant.sass": "f59245683bcf3f28eb6c20e0d06ce80e54f30e937ab284d692596a1ed33065ce",
+    "old-quant.sass": "584dccfd5102f4948a47f52142842e6f27bd00fdae882c2fcda8a85aecf45487",
+    "old-model.sass": "1ac07d10ed036bef2b7f933b5288b2f629f5f583e9efdb3d3312c504ee76db8e",
+    "new-model.sass": "de47a3f904c7e77bafeab1db2128a0aaef0d4e752256318f8291ce22235cb369"
+  }
+}

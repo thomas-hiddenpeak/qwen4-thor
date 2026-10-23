@@ -1,0 +1,18 @@
+{
+  "engineering_decision": "ACCEPT_STARTUP_BOUNDED",
+  "classification": "performance optimization: startup",
+  "candidate_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "parent_sha256": "75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d",
+  "audit_sha256": "2646cf5bf124702882d65bdcdb21a89f5bfb502b54a9641726b281b06ade9613",
+  "frozen_plan_sha256": "2214dc5d25e5a004ba8e0a67bcd29cdd75ff719f74d31e8c77edf7dc978bae2e",
+  "evidence_validity": "PASS; 587 frozen inputs, 486 run files, 308 reused HTTP evidence files; 2215 NVML queries OK",
+  "measurement_completeness": "54 HTTP, six starts, both-mode quality and full five tiers, bounded SHA and loader contracts complete",
+  "statistics": "descriptive startup benefit; no cross-start decode/TTFT noninferiority proof, no cold-storage claim",
+  "target_met": true,
+  "startup_median_saved_seconds": 25.276000000000003,
+  "startup_worst_observed_saved_seconds": 21.671,
+  "protection_review": "22/22 exact quality; all same-mode performance outputs and MTP accepted-count histograms equal; default-path SASS identical in frozen executable comparison; ordinary decode -0.2605%..+0.0684%, TTFT +0.0147%..+0.6607%; MTP decode -0.0992%..+0.1723%, TTFT -0.2304%..+0.1130%; descriptive differences, no confirmed attributable inference regression; no percentage allowance inferred",
+  "cost_review": "same resource-plan hash and owned weights; no additional model copy; full source/payload hashes retained; global memory extrema reported separately, not added",
+  "scope": "default GDN ROWS=8, fixed 65536 BF16 explicit subset, same accepted model/tokenizer; full head default; optional Q4T_GDN_REG=4 compiler variation excluded from reused evidence",
+  "deployment_authorization": "2026-10-20 user closeout authorization plus current SHA2 trial; sealed previous 75e pair, three starts/requests only; failure restores known identity"
+}

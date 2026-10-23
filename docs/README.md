@@ -9,6 +9,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [SHA2启动校验优化](SHA2_STARTUP_2026-10-23.md) | 完整hash硬件加速、两模式五档及回退 | 有界接受，启动中位减少25.276秒 |
 | [GDS最小实验与C128历史数据](GDS_MINIMAL_EXPERIMENT_2026-10-21.md) | 严格/兼容实际路径、字节校验、库缓冲限制及历史prefill/decode | 实机诊断完成，未接受原生GDS或性能优化 |
 | [SSD offload合同](SSD_OFFLOAD_CONTRACT.md) | SSD唯一容量后备、DRAM缓存/中转和逻辑/物理I/O定义 | 用户明确原则，当前规范 |
 | [NVIDIA SSD直读评估](SSD_DIRECT_IO_EVALUATION_2026-10-21.md) | GDS平台资格、本机只读盘点、权重布局与工程优先级 | 原生GDS暂不接入，SSD主线继续 |

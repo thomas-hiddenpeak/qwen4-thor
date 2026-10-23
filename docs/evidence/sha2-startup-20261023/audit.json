@@ -1,0 +1,2597 @@
+{
+  "status": "PASS_BOUNDED_EVIDENCE",
+  "source_commit": "9a902a822b96b4ea25ae9f47fa5c0a7862f175c0",
+  "parent_sha256": "75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d",
+  "candidate_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "frozen_files": 587,
+  "sealed_run_files": 486,
+  "reused_files": 308,
+  "elapsed_seconds": 2416.804319858551,
+  "http_requests": 54,
+  "guard": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      "-B",
+      "tools/mtp_subset/run_stage.py",
+      "--plan",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/frozen-plan.json",
+      "--output",
+      ".q4t-work/sha2-startup-v1"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-10-23T06:04:57.137718+00:00",
+      "monotonic": 925579.654601132,
+      "pid": 2801906
+    }
+  },
+  "nvml_queries": 2215,
+  "nvml_max_seconds": 0.25939681800082326,
+  "build_zero_warnings": true,
+  "runtime_changed": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/src/trace/sha256.cpp",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/include/q4t/trace/sha256.h"
+  ],
+  "archives_equal": {
+    "libq4t_ple.a": false,
+    "libq4t_runtime.a": true,
+    "libq4t_io.a": true,
+    "libq4t_trace.a": false,
+    "libq4t_server.a": true,
+    "libq4t_text.a": true,
+    "libq4t_quant.a": false,
+    "libq4t_startup_plan.a": true,
+    "libq4t_model.a": false
+  },
+  "code_comparison": {
+    "ple": {
+      "sass_equal": true,
+      "normalized_sha256": "516ef4aae00d41fb77d480b62e916c343304fd6f7b1a002da156dd2573341fbb",
+      "bytes": 7567,
+      "normalization": "absolute archive path only"
+    },
+    "model": {
+      "sass_equal": false,
+      "normalized_sha256": "83d087cb06ba2fcc4bf375c8b527a8ae4ee587b48aae2165d602ab6356ee3e22",
+      "bytes": 18264114,
+      "normalization": "absolute archive path only",
+      "default_functions_equal": true,
+      "only_changed_unused_gdn_rows4": true,
+      "total_functions": 105,
+      "changed_functions": [
+        [
+          "member <BUILD>/libq4t_model.a:linear_attention.cu.o:",
+          "Function : _ZN3q4t5model52_GLOBAL__N__d45de309_19_linear_attention_cu_f34aee7322GatedDeltaNetRegKernelILi4EEEvPKtS4_S4_S4_S4_PfPtiiiiiii"
+        ]
+      ],
+      "reason": "only optional Q4T_GDN_REG=4 differs; frozen runners clear Q4T_ environment and production defaults to ROWS=8; prior replay clears overrides; all executed GPU functions identical"
+    },
+    "quant": {
+      "sass_equal": true,
+      "normalized_sha256": "20f0b3c04194d2502e1e245e43288d47852ee9644bc7f2aa5af14b420d5b232b",
+      "bytes": 2208497,
+      "normalization": "absolute archive path only"
+    },
+    "raw_files": {
+      "new-ple.sass": "8533ae0f651665179451c53ee5bcc708f2d26d86b3ee1b485d4fa2067c944165",
+      "old-ple.sass": "e72c53bbf35f1def4f093e9eddcf2eca3940fe31ae190fd3a873d61937609fb7",
+      "new-quant.sass": "f59245683bcf3f28eb6c20e0d06ce80e54f30e937ab284d692596a1ed33065ce",
+      "old-quant.sass": "584dccfd5102f4948a47f52142842e6f27bd00fdae882c2fcda8a85aecf45487",
+      "old-model.sass": "1ac07d10ed036bef2b7f933b5288b2f629f5f583e9efdb3d3312c504ee76db8e",
+      "new-model.sass": "de47a3f904c7e77bafeab1db2128a0aaef0d4e752256318f8291ce22235cb369"
+    }
+  },
+  "binary_codegen": {
+    "total_functions": 120,
+    "changed_functions": [
+      "Function : _ZN3q4t5model52_GLOBAL__N__d45de309_19_linear_attention_cu_f34aee7322GatedDeltaNetRegKernelILi4EEEvPKtS4_S4_S4_S4_PfPtiiiiiii"
+    ],
+    "default_functions_equal": true,
+    "raw_files": {
+      "old-binary.sass": "0790aac4f81d043627a3a0e7a289b41d8cc6a0c244fa23e0f3fc7cc4738f0825",
+      "new-binary.sass": "fa65fd3954c08e01505ab360e7080f8322acdc5d0accec846e57489a1c8b2727"
+    },
+    "scope": "actual frozen executables; only unused Q4T_GDN_REG=4 differs; default ROWS=8 unchanged"
+  },
+  "hash_contract": "hardware_sha2=1\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-0\" portable=0 seconds=1.3425e-05 sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-0\" portable=1 seconds=5.528e-06 sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-1\" portable=0 seconds=8.287e-06 sha256=6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-1\" portable=1 seconds=5.389e-06 sha256=6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-2\" portable=0 seconds=3.732e-06 sha256=0ba6bc782735d917a64064877efe5dc6a8b0cea5905b9342711bd4698f256d71\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-2\" portable=1 seconds=3.75e-06 sha256=0ba6bc782735d917a64064877efe5dc6a8b0cea5905b9342711bd4698f256d71\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-3\" portable=0 seconds=4.148e-06 sha256=9826be3a5ed7ea6362abf4735ea9fd3824d90de789a9e09d42a3788ce31752b2\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-3\" portable=1 seconds=4.306e-06 sha256=9826be3a5ed7ea6362abf4735ea9fd3824d90de789a9e09d42a3788ce31752b2\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-4\" portable=0 seconds=3.861e-06 sha256=5fe9fbf2af7de5db93fb42d0aba5e6435506d9a21370537e5668e630ec278b7c\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-4\" portable=1 seconds=3.871e-06 sha256=5fe9fbf2af7de5db93fb42d0aba5e6435506d9a21370537e5668e630ec278b7c\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-5\" portable=0 seconds=3.851e-06 sha256=58affdb9b167c9d4a1259e484490f003a9edda5f01120f9dae26a447568d8453\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-5\" portable=1 seconds=4.296e-06 sha256=58affdb9b167c9d4a1259e484490f003a9edda5f01120f9dae26a447568d8453\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-6\" portable=0 seconds=3.565e-06 sha256=0c87cc9cf49d2f42248268eb12e2c45dbde9dba653e09557fa9da754cbbc5fd6\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-6\" portable=1 seconds=4.102e-06 sha256=0c87cc9cf49d2f42248268eb12e2c45dbde9dba653e09557fa9da754cbbc5fd6\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-7\" portable=0 seconds=3.426e-06 sha256=e353ee1d28a1e87c41f1bc1692f38e1b56d4728bc37ce0a5d30a4f26fc91c5cb\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-7\" portable=1 seconds=4.167e-06 sha256=e353ee1d28a1e87c41f1bc1692f38e1b56d4728bc37ce0a5d30a4f26fc91c5cb\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-8\" portable=0 seconds=4.306e-06 sha256=ba81f8eb292e888ad2a5f37a0f0dff5842cf3a2e62409fc647db478ade00644f\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-8\" portable=1 seconds=4.334e-06 sha256=ba81f8eb292e888ad2a5f37a0f0dff5842cf3a2e62409fc647db478ade00644f\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-9\" portable=0 seconds=4.009e-06 sha256=01a38319088fb669a13a215aac92661da8a20de9b708d7c529f832141f7cb40e\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-9\" portable=1 seconds=4.259e-06 sha256=01a38319088fb669a13a215aac92661da8a20de9b708d7c529f832141f7cb40e\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-10\" portable=0 seconds=3.926e-06 sha256=1bdc19682aac8a1218052891d74da5979fe905d1b88ca779c642dd8004c63492\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-10\" portable=1 seconds=4.445e-06 sha256=1bdc19682aac8a1218052891d74da5979fe905d1b88ca779c642dd8004c63492\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-11\" portable=0 seconds=4.148e-06 sha256=3799b279c98380a9c6fee5d2defbfe4672d97b8704208418b7fdb25245aef5b5\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-11\" portable=1 seconds=4.491e-06 sha256=3799b279c98380a9c6fee5d2defbfe4672d97b8704208418b7fdb25245aef5b5\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-12\" portable=0 seconds=3.648e-06 sha256=b559f10b36471e1a8a5ed5b33759603d62834613cb34b9a2dd52f4f3f82672b9\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-12\" portable=1 seconds=5.417e-06 sha256=b559f10b36471e1a8a5ed5b33759603d62834613cb34b9a2dd52f4f3f82672b9\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-13\" portable=0 seconds=4.612e-06 sha256=18a47be208aba8dbab5cb2299c7a3a316e19887b5dea7a629cf4f9599f9a1a9a\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-13\" portable=1 seconds=5.509e-06 sha256=18a47be208aba8dbab5cb2299c7a3a316e19887b5dea7a629cf4f9599f9a1a9a\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-14\" portable=0 seconds=3.565e-06 sha256=bc20ab1e3f39977c1ef13b374a10f8d7c5f5c27eb3013f928361c819fdf7261f\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-14\" portable=1 seconds=5.546e-06 sha256=bc20ab1e3f39977c1ef13b374a10f8d7c5f5c27eb3013f928361c819fdf7261f\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-15\" portable=0 seconds=8.4407e-05 sha256=9c34b4e2f7280a6394a9df6655716c291d696660388c6d71027cf69192da551c\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-15\" portable=1 seconds=0.00055173 sha256=9c34b4e2f7280a6394a9df6655716c291d696660388c6d71027cf69192da551c\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-16\" portable=0 seconds=6.8546e-05 sha256=eae8d83b8561ad3cc5dea389a47b2194ca2fbc43dce4d7b6ca00f33ffafe5e24\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-16\" portable=1 seconds=0.000545295 sha256=eae8d83b8561ad3cc5dea389a47b2194ca2fbc43dce4d7b6ca00f33ffafe5e24\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-17\" portable=0 seconds=6.511e-05 sha256=81183154ba9c0103baf4d80dbf0a2cab1792a0213652a8e275424627d07f45df\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-17\" portable=1 seconds=0.000543481 sha256=81183154ba9c0103baf4d80dbf0a2cab1792a0213652a8e275424627d07f45df\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-18\" portable=0 seconds=0.00107788 sha256=9949ee12941770aa3b300073b5239019230595c6e227452d0c11a7375c508422\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-18\" portable=1 seconds=0.00875928 sha256=9949ee12941770aa3b300073b5239019230595c6e227452d0c11a7375c508422\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-19\" portable=0 seconds=6.213e-06 sha256=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-19\" portable=1 seconds=4.518e-06 sha256=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-20\" portable=0 seconds=0.000958294 sha256=cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-20\" portable=1 seconds=0.00830803 sha256=cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-21\" portable=0 seconds=5.63e-06 sha256=248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-startup-v1/hash-files/vector-21\" portable=1 seconds=3.936e-06 sha256=248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1\nfile=\"/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00012.safetensors\" portable=0 seconds=3.56289 sha256=6c7c599218f8be53472c7b9ab0a9683b753cc187c5b7a49223e22348470b80e2\nfile=\"/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00012.safetensors\" portable=1 seconds=30.3812 sha256=6c7c599218f8be53472c7b9ab0a9683b753cc187c5b7a49223e22348470b80e2\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/artifact/head.bf16\" portable=0 seconds=0.32611 sha256=21522eabb4ab4f816d9f76eefe317a17e7ba668ebe838809eb4be87d84ef75c1\nfile=\"/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/artifact/head.bf16\" portable=1 seconds=2.78996 sha256=21522eabb4ab4f816d9f76eefe317a17e7ba668ebe838809eb4be87d84ef75c1\nPASS vectors=22 digests=1408 file_errors=4\n",
+  "artifact_contract": {
+    "source_rows_bit_exact": 65536,
+    "special_ids": 21,
+    "cases": [
+      {
+        "case": "shape",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "source",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "short_ids",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "duplicate",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "range",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "unsorted",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "missing_special",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "ids_digest",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "short_weights",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "source_sha256",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "tokenizer_sha256",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "tokenizer_config_sha256",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "generation_config_sha256",
+        "returncode": 1,
+        "passed": true
+      },
+      {
+        "case": "head_sha256",
+        "returncode": 1,
+        "passed": true
+      }
+    ]
+  },
+  "parent_startup_seconds": [
+    65.606,
+    63.646
+  ],
+  "candidate_startup_seconds": [
+    41.975,
+    36.725
+  ],
+  "startup_median_saved_seconds": 25.276000000000003,
+  "startup_target_met": true,
+  "memory": {
+    "samples": 2396,
+    "minimum_available_kib": 19257136,
+    "minimum_free_kib": 724876,
+    "maximum_cached_kib": 20270600,
+    "note": "host-wide physical memory; peaks are not additive or process-attributable"
+  },
+  "groups": {
+    "quality-on": {
+      "requests": 11,
+      "rows": [
+        {
+          "success": 1,
+          "actual_input": 1024,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710003",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+          "ttft": 1.0654605359304696,
+          "latency": 1.147037977934815,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923206.010346631,
+            "end_monotonic_seconds": 923207.157384609,
+            "start_utc_estimate": "2026-10-23T05:25:23.493473+00:00",
+            "end_utc_estimate": "2026-10-23T05:25:24.640511+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-0",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "1024-10",
+          "length": 1024,
+          "depth": 0.1,
+          "expected": "710003",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 1024,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710130",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+          "ttft": 0.897463082917966,
+          "latency": 0.9788035429082811,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923207.157782588,
+            "end_monotonic_seconds": 923208.136586131,
+            "start_utc_estimate": "2026-10-23T05:25:24.640908+00:00",
+            "end_utc_estimate": "2026-10-23T05:25:25.619712+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-1",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "1024-50",
+          "length": 1024,
+          "depth": 0.5,
+          "expected": "710130",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 1024,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710257",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+          "ttft": 0.9016968619544059,
+          "latency": 0.9822277879575267,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923208.136932528,
+            "end_monotonic_seconds": 923209.119160316,
+            "start_utc_estimate": "2026-10-23T05:25:25.620059+00:00",
+            "end_utc_estimate": "2026-10-23T05:25:26.602286+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-2",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "1024-90",
+          "length": 1024,
+          "depth": 0.9,
+          "expected": "710257",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 4096,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710384",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+          "ttft": 2.8553345650434494,
+          "latency": 2.9416127851000056,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923209.119467101,
+            "end_monotonic_seconds": 923212.061079886,
+            "start_utc_estimate": "2026-10-23T05:25:26.602593+00:00",
+            "end_utc_estimate": "2026-10-23T05:25:29.544206+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-3",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "4096-10",
+          "length": 4096,
+          "depth": 0.1,
+          "expected": "710384",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 4096,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710511",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+          "ttft": 2.834203563979827,
+          "latency": 2.9215908619808033,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923212.061419967,
+            "end_monotonic_seconds": 923214.983010829,
+            "start_utc_estimate": "2026-10-23T05:25:29.544546+00:00",
+            "end_utc_estimate": "2026-10-23T05:25:32.466137+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-4",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "4096-50",
+          "length": 4096,
+          "depth": 0.5,
+          "expected": "710511",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 4096,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710638",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+          "ttft": 2.834805834922008,
+          "latency": 2.920517472899519,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923214.983352735,
+            "end_monotonic_seconds": 923217.903870208,
+            "start_utc_estimate": "2026-10-23T05:25:32.466479+00:00",
+            "end_utc_estimate": "2026-10-23T05:25:35.386996+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-5",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "4096-90",
+          "length": 4096,
+          "depth": 0.9,
+          "expected": "710638",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 8192,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710765",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+          "ttft": 5.502154918038286,
+          "latency": 5.583917682990432,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923217.904274354,
+            "end_monotonic_seconds": 923223.488192037,
+            "start_utc_estimate": "2026-10-23T05:25:35.387400+00:00",
+            "end_utc_estimate": "2026-10-23T05:25:40.971318+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-6",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "8192-10",
+          "length": 8192,
+          "depth": 0.1,
+          "expected": "710765",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 8192,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710892",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+          "ttft": 5.499285912956111,
+          "latency": 5.580862113041803,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923223.488562776,
+            "end_monotonic_seconds": 923229.069424889,
+            "start_utc_estimate": "2026-10-23T05:25:40.971689+00:00",
+            "end_utc_estimate": "2026-10-23T05:25:46.552551+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-7",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "8192-50",
+          "length": 8192,
+          "depth": 0.5,
+          "expected": "710892",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 8192,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "711019",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+          "ttft": 5.490118590067141,
+          "latency": 5.573351392056793,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923229.069808702,
+            "end_monotonic_seconds": 923234.643160094,
+            "start_utc_estimate": "2026-10-23T05:25:46.552935+00:00",
+            "end_utc_estimate": "2026-10-23T05:25:52.126286+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-8",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "8192-90",
+          "length": 8192,
+          "depth": 0.9,
+          "expected": "711019",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 45056,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "711146",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+          "ttft": 31.635606786003336,
+          "latency": 31.722511018044315,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923234.643998896,
+            "end_monotonic_seconds": 923266.366509914,
+            "start_utc_estimate": "2026-10-23T05:25:52.127125+00:00",
+            "end_utc_estimate": "2026-10-23T05:26:23.849636+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-9",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "45056-50",
+          "length": 45056,
+          "depth": 0.5,
+          "expected": "711146",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 204800,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "711273",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+          "ttft": 166.2180865869159,
+          "latency": 166.31253416696563,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923266.369188523,
+            "end_monotonic_seconds": 923432.68172269,
+            "start_utc_estimate": "2026-10-23T05:26:23.852314+00:00",
+            "end_utc_estimate": "2026-10-23T05:29:10.164849+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-10",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "204800-50",
+          "length": 204800,
+          "depth": 0.5,
+          "expected": "711273",
+          "exact_match": true,
+          "length_match": true
+        }
+      ],
+      "finalized": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1608,
+        "device_bytes": 97023144328,
+        "allocated": 1608,
+        "consumed": 1608,
+        "freed": 1608,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "c1c402cb95c59cff52e056f1e738ffe925fe62d1809c38eb92088d925638459f"
+      },
+      "phase_seconds": {
+        "tokenizer": 0.309,
+        "budget": 0.421,
+        "startup_resource_plan": 2.282,
+        "model_load": 30.708,
+        "mtp_load": 8.254,
+        "startup_total": 41.975
+      },
+      "ready_seconds": 42.018817845964804,
+      "acceptance_histograms": [
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          1
+        ]
+      ]
+    },
+    "parent-start-a": {
+      "requests": 1,
+      "rows": [
+        {
+          "success": 1,
+          "actual_input": 1024,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710003",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+          "ttft": 1.060115047963336,
+          "latency": 1.1422685839934275,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923592.039411852,
+            "end_monotonic_seconds": 923593.181680436,
+            "start_utc_estimate": "2026-10-23T05:31:49.522537+00:00",
+            "end_utc_estimate": "2026-10-23T05:31:50.664806+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 7.152557373046875e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-0",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "1024-10",
+          "length": 1024,
+          "depth": 0.1,
+          "expected": "710003",
+          "exact_match": true,
+          "length_match": true
+        }
+      ],
+      "finalized": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1608,
+        "device_bytes": 97023144328,
+        "allocated": 1608,
+        "consumed": 1608,
+        "freed": 1608,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "c1c402cb95c59cff52e056f1e738ffe925fe62d1809c38eb92088d925638459f"
+      },
+      "phase_seconds": {
+        "tokenizer": 0.295,
+        "budget": 0.425,
+        "startup_resource_plan": 2.286,
+        "model_load": 27.965,
+        "mtp_load": 34.633,
+        "startup_total": 65.606
+      },
+      "ready_seconds": 66.01707574294414,
+      "acceptance_histograms": [
+        [
+          0,
+          1,
+          0,
+          1
+        ]
+      ]
+    },
+    "quality-off": {
+      "requests": 11,
+      "rows": [
+        {
+          "success": 1,
+          "actual_input": 1024,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710003",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+          "ttft": 0.8736960919341072,
+          "latency": 1.211040225927718,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923630.442536346,
+            "end_monotonic_seconds": 923631.653576572,
+            "start_utc_estimate": "2026-10-23T05:32:27.925662+00:00",
+            "end_utc_estimate": "2026-10-23T05:32:29.136703+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-0",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "1024-10",
+          "length": 1024,
+          "depth": 0.1,
+          "expected": "710003",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 1024,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710130",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+          "ttft": 0.7701226159697399,
+          "latency": 1.0926824599737301,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923631.653951275,
+            "end_monotonic_seconds": 923632.746633735,
+            "start_utc_estimate": "2026-10-23T05:32:29.137077+00:00",
+            "end_utc_estimate": "2026-10-23T05:32:30.229760+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-1",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1",
+            "chatcmpl-auto-1"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "1024-50",
+          "length": 1024,
+          "depth": 0.5,
+          "expected": "710130",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 1024,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710257",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "e647c72568b4bf9589fd5c63e8a214898769f0285839cf53987c0e47ec12e4ff",
+          "ttft": 0.7692482159473002,
+          "latency": 1.0916587989777327,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923632.746960224,
+            "end_monotonic_seconds": 923633.838619023,
+            "start_utc_estimate": "2026-10-23T05:32:30.230086+00:00",
+            "end_utc_estimate": "2026-10-23T05:32:31.321745+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-2",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2",
+            "chatcmpl-auto-2"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "1024-90",
+          "length": 1024,
+          "depth": 0.9,
+          "expected": "710257",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 4096,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710384",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "4e4b462f767736bc27913543654afae84da78917924d4f2d60f8990a6b7a3a94",
+          "ttft": 2.627016700920649,
+          "latency": 2.9643623419106007,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923633.838960438,
+            "end_monotonic_seconds": 923636.80332278,
+            "start_utc_estimate": "2026-10-23T05:32:31.322086+00:00",
+            "end_utc_estimate": "2026-10-23T05:32:34.286449+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-3",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3",
+            "chatcmpl-auto-3"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "4096-10",
+          "length": 4096,
+          "depth": 0.1,
+          "expected": "710384",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 4096,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710511",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "0e349879840c9c0cf3261f3263359482be3c1b4a9383c9bd68561014acefba6f",
+          "ttft": 2.6275634589837864,
+          "latency": 2.9627629639580846,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923636.803661298,
+            "end_monotonic_seconds": 923639.766424262,
+            "start_utc_estimate": "2026-10-23T05:32:34.286787+00:00",
+            "end_utc_estimate": "2026-10-23T05:32:37.249550+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-4",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4",
+            "chatcmpl-auto-4"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "4096-50",
+          "length": 4096,
+          "depth": 0.5,
+          "expected": "710511",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 4096,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710638",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "c40c8baf22c4a45590d30a327475c9f2163af28cee13baef0bf290cd74779074",
+          "ttft": 2.631494418019429,
+          "latency": 2.967892516986467,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923639.766780752,
+            "end_monotonic_seconds": 923642.734673269,
+            "start_utc_estimate": "2026-10-23T05:32:37.249907+00:00",
+            "end_utc_estimate": "2026-10-23T05:32:40.217799+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-5",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5",
+            "chatcmpl-auto-5"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "4096-90",
+          "length": 4096,
+          "depth": 0.9,
+          "expected": "710638",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 8192,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710765",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "b8198a7998b20d7edd3ada87edecbce958843b6bcafcf9d4983a239c6324fa02",
+          "ttft": 5.152396125020459,
+          "latency": 5.486036599962972,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923642.735084962,
+            "end_monotonic_seconds": 923648.221121562,
+            "start_utc_estimate": "2026-10-23T05:32:40.218211+00:00",
+            "end_utc_estimate": "2026-10-23T05:32:45.704247+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-6",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6",
+            "chatcmpl-auto-6"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "8192-10",
+          "length": 8192,
+          "depth": 0.1,
+          "expected": "710765",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 8192,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710892",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "d3f37a78f3f642d958c455757b859a222ab47784de1833847a5a5954aa37abb6",
+          "ttft": 5.150437889969908,
+          "latency": 5.4849438819801435,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923648.22152107,
+            "end_monotonic_seconds": 923653.706464952,
+            "start_utc_estimate": "2026-10-23T05:32:45.704647+00:00",
+            "end_utc_estimate": "2026-10-23T05:32:51.189591+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-7",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7",
+            "chatcmpl-auto-7"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "8192-50",
+          "length": 8192,
+          "depth": 0.5,
+          "expected": "710892",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 8192,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "711019",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "46616386557835b6e297f422fe33ed022202e321bde2729c7232a741939c9a47",
+          "ttft": 5.151619278942235,
+          "latency": 5.486461729975417,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923653.706883506,
+            "end_monotonic_seconds": 923659.193345236,
+            "start_utc_estimate": "2026-10-23T05:32:51.190009+00:00",
+            "end_utc_estimate": "2026-10-23T05:32:56.676471+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-8",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8",
+            "chatcmpl-auto-8"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "8192-90",
+          "length": 8192,
+          "depth": 0.9,
+          "expected": "711019",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 45056,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "711146",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "8e7d6e535925c3552adaf57319be27d987365520fa852409366c05cf32b6c423",
+          "ttft": 30.37319541897159,
+          "latency": 30.710834134952165,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923659.194196771,
+            "end_monotonic_seconds": 923689.905030906,
+            "start_utc_estimate": "2026-10-23T05:32:56.677323+00:00",
+            "end_utc_estimate": "2026-10-23T05:33:27.388157+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-9",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9",
+            "chatcmpl-auto-9"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "45056-50",
+          "length": 45056,
+          "depth": 0.5,
+          "expected": "711146",
+          "exact_match": true,
+          "length_match": true
+        },
+        {
+          "success": 1,
+          "actual_input": 204800,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "711273",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "12ba2ea94933c44aea775a49a5380161413c7d377208ae35c8ad20fab8c6f150",
+          "ttft": 158.7951561328955,
+          "latency": 159.14700543798972,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 923689.907778233,
+            "end_monotonic_seconds": 923849.054783671,
+            "start_utc_estimate": "2026-10-23T05:33:27.390904+00:00",
+            "end_utc_estimate": "2026-10-23T05:36:06.537910+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 2.384185791015625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-10",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10",
+            "chatcmpl-auto-10"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "204800-50",
+          "length": 204800,
+          "depth": 0.5,
+          "expected": "711273",
+          "exact_match": true,
+          "length_match": true
+        }
+      ],
+      "finalized": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1541,
+        "device_bytes": 87178559248,
+        "allocated": 1541,
+        "consumed": 1541,
+        "freed": 1541,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "70a2e2dde08818f12f969b9d944ab74fd70da76f7c397789babbf93e019017b4"
+      },
+      "phase_seconds": {
+        "tokenizer": 0.483,
+        "budget": 0.414,
+        "startup_resource_plan": 2.218,
+        "model_load": 27.694,
+        "startup_total": 30.81
+      },
+      "ready_seconds": 31.01111147098709,
+      "acceptance_histograms": []
+    },
+    "candidate-off": {
+      "requests": 15,
+      "rows": [
+        {
+          "length": 1024,
+          "outputs": [
+            "108edabb88b19527073e73ab3a69f9ac370843bbf145525002b4e759ef53bb43",
+            "108edabb88b19527073e73ab3a69f9ac370843bbf145525002b4e759ef53bb43",
+            "108edabb88b19527073e73ab3a69f9ac370843bbf145525002b4e759ef53bb43"
+          ],
+          "prompt_sha256": "42ad717896e530896e51cf9f6d477f1af8e3ff9089e7a62e603c4ff4c14eca34",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 0.8702589418971911,
+              "decode_tps": 18.586748939095855
+            },
+            {
+              "ttft": 0.7630085300188512,
+              "decode_tps": 18.604524094847548
+            },
+            {
+              "ttft": 0.7615684129996225,
+              "decode_tps": 18.630436001564767
+            }
+          ]
+        },
+        {
+          "length": 4096,
+          "outputs": [
+            "4ef8eb5cb3804aefa410742167ee469950fab1c5dd9fc168ad53e6b953bbe1de",
+            "4ef8eb5cb3804aefa410742167ee469950fab1c5dd9fc168ad53e6b953bbe1de",
+            "4ef8eb5cb3804aefa410742167ee469950fab1c5dd9fc168ad53e6b953bbe1de"
+          ],
+          "prompt_sha256": "a8b475725319c8d3074fd28d4aaa2ff49ed342110b6b56c08bb77a51d5d5cae8",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 2.629391568014398,
+              "decode_tps": 17.857477342114393
+            },
+            {
+              "ttft": 2.619753629085608,
+              "decode_tps": 17.857443517462126
+            },
+            {
+              "ttft": 2.6161327899899334,
+              "decode_tps": 17.857841107459382
+            }
+          ]
+        },
+        {
+          "length": 8192,
+          "outputs": [
+            "b63bf09dfd45a66e6e5fa7731d5c1c9abd20e55aa0d982b044eee98c9d478f3f",
+            "b63bf09dfd45a66e6e5fa7731d5c1c9abd20e55aa0d982b044eee98c9d478f3f",
+            "b63bf09dfd45a66e6e5fa7731d5c1c9abd20e55aa0d982b044eee98c9d478f3f"
+          ],
+          "prompt_sha256": "53e3d52b73506f6b1a4f707bd842087d1cb5dcef5f2d771aad95d30c7ec12bff",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 5.099396923091263,
+              "decode_tps": 18.04317910869272
+            },
+            {
+              "ttft": 5.099643048015423,
+              "decode_tps": 18.032450658900114
+            },
+            {
+              "ttft": 5.101588450022973,
+              "decode_tps": 18.041438345573727
+            }
+          ]
+        },
+        {
+          "length": 45056,
+          "outputs": [
+            "16b117262265154ca1addacf7acd55028f0fbb5e37fe2e09ce103dbdf7d89ae8",
+            "16b117262265154ca1addacf7acd55028f0fbb5e37fe2e09ce103dbdf7d89ae8",
+            "16b117262265154ca1addacf7acd55028f0fbb5e37fe2e09ce103dbdf7d89ae8"
+          ],
+          "prompt_sha256": "e8ba174cef9440c16c640d72d0643d19ac4a7be02733037ec3432484ed01e3f7",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 30.451430769986473,
+              "decode_tps": 17.847383460372818
+            },
+            {
+              "ttft": 30.475071755005047,
+              "decode_tps": 17.838261031707216
+            },
+            {
+              "ttft": 30.48319136200007,
+              "decode_tps": 17.8509381573797
+            }
+          ]
+        },
+        {
+          "length": 204800,
+          "outputs": [
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca",
+            "57f3581ddd0a090715729d11e1374a85afdd6b62b648e700cda1e96eb8a4c8ca"
+          ],
+          "prompt_sha256": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 159.4009586070897,
+              "decode_tps": 17.09311550575204
+            },
+            {
+              "ttft": 159.38923865102697,
+              "decode_tps": 17.05424840112324
+            },
+            {
+              "ttft": 159.34080661507323,
+              "decode_tps": 17.091586974570067
+            }
+          ]
+        }
+      ],
+      "finalized": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1541,
+        "device_bytes": 87178559248,
+        "allocated": 1541,
+        "consumed": 1541,
+        "freed": 1541,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "70a2e2dde08818f12f969b9d944ab74fd70da76f7c397789babbf93e019017b4"
+      },
+      "phase_seconds": {
+        "tokenizer": 0.424,
+        "budget": 0.424,
+        "startup_resource_plan": 2.205,
+        "model_load": 26.395,
+        "startup_total": 29.45
+      },
+      "ready_seconds": 30.008911941898987,
+      "acceptance_histograms": []
+    },
+    "parent-start-b": {
+      "requests": 1,
+      "rows": [
+        {
+          "success": 1,
+          "actual_input": 1024,
+          "actual_output": 7,
+          "http_status_code": null,
+          "status_source": "evalscope success flag; this database schema does not retain HTTP status codes",
+          "text": "710003",
+          "finish": [
+            "stop"
+          ],
+          "prompt_sha256": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+          "ttft": 1.061036886065267,
+          "latency": 1.1418617910239846,
+          "request_stream": true,
+          "requested_max_tokens": 32,
+          "requested_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective_capacity": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "timing": {
+            "start_monotonic_seconds": 924785.984417254,
+            "end_monotonic_seconds": 924787.126279045,
+            "start_utc_estimate": "2026-10-23T05:51:43.467543+00:00",
+            "end_utc_estimate": "2026-10-23T05:51:44.609405+00:00",
+            "source": "evalscope result.start_time/completed_time (perf_counter)",
+            "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+            "clock_offset_change_seconds": 9.5367431640625e-07,
+            "within_client_boundaries": true
+          },
+          "response_id": "chatcmpl-auto-0",
+          "response_id_valid": true,
+          "response_ids_observed": [
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0",
+            "chatcmpl-auto-0"
+          ],
+          "response_id_source": "actual HTTP/SSE response id fields",
+          "id": "1024-10",
+          "length": 1024,
+          "depth": 0.1,
+          "expected": "710003",
+          "exact_match": true,
+          "length_match": true
+        }
+      ],
+      "finalized": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1608,
+        "device_bytes": 97023144328,
+        "allocated": 1608,
+        "consumed": 1608,
+        "freed": 1608,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "c1c402cb95c59cff52e056f1e738ffe925fe62d1809c38eb92088d925638459f"
+      },
+      "phase_seconds": {
+        "tokenizer": 0.427,
+        "budget": 0.414,
+        "startup_resource_plan": 2.563,
+        "model_load": 25.687,
+        "mtp_load": 34.554,
+        "startup_total": 63.646
+      },
+      "ready_seconds": 64.02144197898451,
+      "acceptance_histograms": [
+        [
+          0,
+          1,
+          0,
+          1
+        ]
+      ]
+    },
+    "candidate-on": {
+      "requests": 15,
+      "rows": [
+        {
+          "length": 1024,
+          "outputs": [
+            "59c5ca09e489c4f503b3a39b06fb84142d398cbc5e41008876c49c5a82874512",
+            "59c5ca09e489c4f503b3a39b06fb84142d398cbc5e41008876c49c5a82874512",
+            "59c5ca09e489c4f503b3a39b06fb84142d398cbc5e41008876c49c5a82874512"
+          ],
+          "prompt_sha256": "42ad717896e530896e51cf9f6d477f1af8e3ff9089e7a62e603c4ff4c14eca34",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 1.0403859519865364,
+              "decode_tps": 38.47800683358869
+            },
+            {
+              "ttft": 0.8753591539571062,
+              "decode_tps": 38.47195801951687
+            },
+            {
+              "ttft": 0.8762757329968736,
+              "decode_tps": 38.48472924914275
+            }
+          ]
+        },
+        {
+          "length": 4096,
+          "outputs": [
+            "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a"
+          ],
+          "prompt_sha256": "a8b475725319c8d3074fd28d4aaa2ff49ed342110b6b56c08bb77a51d5d5cae8",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 2.874575271969661,
+              "decode_tps": 40.20585207638943
+            },
+            {
+              "ttft": 2.8273201909614727,
+              "decode_tps": 40.10373488774406
+            },
+            {
+              "ttft": 2.8246682910248637,
+              "decode_tps": 40.144706326327054
+            }
+          ]
+        },
+        {
+          "length": 8192,
+          "outputs": [
+            "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778"
+          ],
+          "prompt_sha256": "53e3d52b73506f6b1a4f707bd842087d1cb5dcef5f2d771aad95d30c7ec12bff",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 5.442887404002249,
+              "decode_tps": 42.39688936627113
+            },
+            {
+              "ttft": 5.410155753022991,
+              "decode_tps": 42.46451539863249
+            },
+            {
+              "ttft": 5.407354102004319,
+              "decode_tps": 42.5080794544068
+            }
+          ]
+        },
+        {
+          "length": 45056,
+          "outputs": [
+            "38b38a3c1dcdfb846866d658dcf2563443cf146cc9a97e7eaf7002dd86d14532",
+            "38b38a3c1dcdfb846866d658dcf2563443cf146cc9a97e7eaf7002dd86d14532",
+            "38b38a3c1dcdfb846866d658dcf2563443cf146cc9a97e7eaf7002dd86d14532"
+          ],
+          "prompt_sha256": "e8ba174cef9440c16c640d72d0643d19ac4a7be02733037ec3432484ed01e3f7",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 31.81111892592162,
+              "decode_tps": 40.59129821648368
+            },
+            {
+              "ttft": 31.857499932986684,
+              "decode_tps": 40.5187524734035
+            },
+            {
+              "ttft": 31.812876155017875,
+              "decode_tps": 40.54958846938294
+            }
+          ]
+        },
+        {
+          "length": 204800,
+          "outputs": [
+            "fa4d44346c7205d307453cd077af2ffbb3cd908190baf65977838239b1d6e0f0",
+            "fa4d44346c7205d307453cd077af2ffbb3cd908190baf65977838239b1d6e0f0",
+            "fa4d44346c7205d307453cd077af2ffbb3cd908190baf65977838239b1d6e0f0"
+          ],
+          "prompt_sha256": "f9156ff021e47b8cfeeb2e18e7b307608acec209095a8c8d991c12408153aeb4",
+          "deterministic": true,
+          "performance_scope": "five_tier",
+          "partial_performance_matrix": false,
+          "metrics": [
+            {
+              "ttft": 167.2453836729983,
+              "decode_tps": 35.928326540247404
+            },
+            {
+              "ttft": 167.2766331100138,
+              "decode_tps": 36.018536887905746
+            },
+            {
+              "ttft": 167.27143404399976,
+              "decode_tps": 36.012465330652
+            }
+          ]
+        }
+      ],
+      "finalized": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1608,
+        "device_bytes": 97023144328,
+        "allocated": 1608,
+        "consumed": 1608,
+        "freed": 1608,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "c1c402cb95c59cff52e056f1e738ffe925fe62d1809c38eb92088d925638459f"
+      },
+      "phase_seconds": {
+        "tokenizer": 0.422,
+        "budget": 0.425,
+        "startup_resource_plan": 2.379,
+        "model_load": 25.415,
+        "mtp_load": 8.083,
+        "startup_total": 36.725
+      },
+      "ready_seconds": 37.01075954386033,
+      "acceptance_histograms": [
+        [
+          11,
+          9,
+          10,
+          49
+        ],
+        [
+          11,
+          9,
+          10,
+          49
+        ],
+        [
+          11,
+          9,
+          10,
+          49
+        ],
+        [
+          4,
+          6,
+          5,
+          56
+        ],
+        [
+          4,
+          6,
+          5,
+          56
+        ],
+        [
+          4,
+          6,
+          5,
+          56
+        ],
+        [
+          5,
+          2,
+          3,
+          59
+        ],
+        [
+          5,
+          2,
+          3,
+          59
+        ],
+        [
+          5,
+          2,
+          3,
+          59
+        ],
+        [
+          4,
+          3,
+          6,
+          56
+        ],
+        [
+          4,
+          3,
+          6,
+          56
+        ],
+        [
+          4,
+          3,
+          6,
+          56
+        ],
+        [
+          4,
+          5,
+          8,
+          54
+        ],
+        [
+          4,
+          5,
+          8,
+          54
+        ],
+        [
+          4,
+          5,
+          8,
+          54
+        ]
+      ]
+    }
+  },
+  "comparisons": {
+    "on": [
+      {
+        "length": 1024,
+        "outputs_equal": true,
+        "parent_metrics": [
+          {
+            "ttft": 1.0528580149402842,
+            "decode_tps": 38.5385673847661
+          },
+          {
+            "ttft": 0.8764231179375201,
+            "decode_tps": 38.41181520056823
+          },
+          {
+            "ttft": 0.8739095899509266,
+            "decode_tps": 38.40845442072809
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 1.0403859519865364,
+            "decode_tps": 38.47800683358869
+          },
+          {
+            "ttft": 0.8753591539571062,
+            "decode_tps": 38.47195801951687
+          },
+          {
+            "ttft": 0.8762757329968736,
+            "decode_tps": 38.48472924914275
+          }
+        ],
+        "ttft": {
+          "parent": 0.8764231179375201,
+          "candidate": 0.8762757329968736,
+          "change_pct": -0.01681664228500024
+        },
+        "decode_tps": {
+          "parent": 38.41181520056823,
+          "candidate": 38.47800683358869,
+          "change_pct": 0.1723210232967176
+        }
+      },
+      {
+        "length": 4096,
+        "outputs_equal": true,
+        "parent_metrics": [
+          {
+            "ttft": 2.8805614619050175,
+            "decode_tps": 40.13813089767083
+          },
+          {
+            "ttft": 2.82925803901162,
+            "decode_tps": 40.13749255770217
+          },
+          {
+            "ttft": 2.8267187590245157,
+            "decode_tps": 40.12703449320899
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 2.874575271969661,
+            "decode_tps": 40.20585207638943
+          },
+          {
+            "ttft": 2.8273201909614727,
+            "decode_tps": 40.10373488774406
+          },
+          {
+            "ttft": 2.8246682910248637,
+            "decode_tps": 40.144706326327054
+          }
+        ],
+        "ttft": {
+          "parent": 2.82925803901162,
+          "candidate": 2.8273201909614727,
+          "change_pct": -0.06849315344966689
+        },
+        "decode_tps": {
+          "parent": 40.13749255770217,
+          "candidate": 40.144706326327054,
+          "change_pct": 0.01797264394260978
+        }
+      },
+      {
+        "length": 8192,
+        "outputs_equal": true,
+        "parent_metrics": [
+          {
+            "ttft": 5.452660187962465,
+            "decode_tps": 42.38443054257466
+          },
+          {
+            "ttft": 5.422650560038164,
+            "decode_tps": 42.476410965866656
+          },
+          {
+            "ttft": 5.4173210030421615,
+            "decode_tps": 42.397554514048515
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 5.442887404002249,
+            "decode_tps": 42.39688936627113
+          },
+          {
+            "ttft": 5.410155753022991,
+            "decode_tps": 42.46451539863249
+          },
+          {
+            "ttft": 5.407354102004319,
+            "decode_tps": 42.5080794544068
+          }
+        ],
+        "ttft": {
+          "parent": 5.422650560038164,
+          "candidate": 5.410155753022991,
+          "change_pct": -0.2304188122917772
+        },
+        "decode_tps": {
+          "parent": 42.397554514048515,
+          "candidate": 42.46451539863249,
+          "change_pct": 0.1579357237733836
+        }
+      },
+      {
+        "length": 45056,
+        "outputs_equal": true,
+        "parent_metrics": [
+          {
+            "ttft": 31.82700735691469,
+            "decode_tps": 40.52487592977675
+          },
+          {
+            "ttft": 31.84609528002329,
+            "decode_tps": 40.55403077141704
+          },
+          {
+            "ttft": 31.81492177292239,
+            "decode_tps": 40.582372042878326
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 31.81111892592162,
+            "decode_tps": 40.59129821648368
+          },
+          {
+            "ttft": 31.857499932986684,
+            "decode_tps": 40.5187524734035
+          },
+          {
+            "ttft": 31.812876155017875,
+            "decode_tps": 40.54958846938294
+          }
+        ],
+        "ttft": {
+          "parent": 31.82700735691469,
+          "candidate": 31.812876155017875,
+          "change_pct": -0.04440003340039356
+        },
+        "decode_tps": {
+          "parent": 40.55403077141704,
+          "candidate": 40.54958846938294,
+          "change_pct": -0.01095403329730571
+        }
+      },
+      {
+        "length": 204800,
+        "outputs_equal": true,
+        "parent_metrics": [
+          {
+            "ttft": 167.15297629497945,
+            "decode_tps": 36.04820849402125
+          },
+          {
+            "ttft": 167.02001130196732,
+            "decode_tps": 35.97731491073567
+          },
+          {
+            "ttft": 167.08270793501288,
+            "decode_tps": 36.0509422683718
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 167.2453836729983,
+            "decode_tps": 35.928326540247404
+          },
+          {
+            "ttft": 167.2766331100138,
+            "decode_tps": 36.018536887905746
+          },
+          {
+            "ttft": 167.27143404399976,
+            "decode_tps": 36.012465330652
+          }
+        ],
+        "ttft": {
+          "parent": 167.08270793501288,
+          "candidate": 167.27143404399976,
+          "change_pct": 0.11295370497603763
+        },
+        "decode_tps": {
+          "parent": 36.04820849402125,
+          "candidate": 36.012465330652,
+          "change_pct": -0.09915378561790034
+        }
+      }
+    ],
+    "off": [
+      {
+        "length": 1024,
+        "outputs_equal": true,
+        "parent_metrics": [
+          {
+            "ttft": 0.8620094429934397,
+            "decode_tps": 18.591066591651
+          },
+          {
+            "ttft": 0.7580001869937405,
+            "decode_tps": 18.627970370048534
+          },
+          {
+            "ttft": 0.7554373759776354,
+            "decode_tps": 18.625938111341473
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 0.8702589418971911,
+            "decode_tps": 18.586748939095855
+          },
+          {
+            "ttft": 0.7630085300188512,
+            "decode_tps": 18.604524094847548
+          },
+          {
+            "ttft": 0.7615684129996225,
+            "decode_tps": 18.630436001564767
+          }
+        ],
+        "ttft": {
+          "parent": 0.7580001869937405,
+          "candidate": 0.7630085300188512,
+          "change_pct": 0.6607311068053789
+        },
+        "decode_tps": {
+          "parent": 18.625938111341473,
+          "candidate": 18.604524094847548,
+          "change_pct": -0.11496879440872076
+        }
+      },
+      {
+        "length": 4096,
+        "outputs_equal": true,
+        "parent_metrics": [
+          {
+            "ttft": 2.627951318048872,
+            "decode_tps": 17.857839089016927
+          },
+          {
+            "ttft": 2.617660866933875,
+            "decode_tps": 17.849254607685616
+          },
+          {
+            "ttft": 2.6156323219183832,
+            "decode_tps": 17.857630990689024
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 2.629391568014398,
+            "decode_tps": 17.857477342114393
+          },
+          {
+            "ttft": 2.619753629085608,
+            "decode_tps": 17.857443517462126
+          },
+          {
+            "ttft": 2.6161327899899334,
+            "decode_tps": 17.857841107459382
+          }
+        ],
+        "ttft": {
+          "parent": 2.617660866933875,
+          "candidate": 2.619753629085608,
+          "change_pct": 0.07994779530720031
+        },
+        "decode_tps": {
+          "parent": 17.857630990689024,
+          "candidate": 17.857477342114393,
+          "change_pct": -0.000860408498259968
+        }
+      },
+      {
+        "length": 8192,
+        "outputs_equal": true,
+        "parent_metrics": [
+          {
+            "ttft": 5.088653580984101,
+            "decode_tps": 18.08856098768831
+          },
+          {
+            "ttft": 5.090911575010978,
+            "decode_tps": 18.073124624281284
+          },
+          {
+            "ttft": 5.093589690048248,
+            "decode_tps": 18.091486671692582
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 5.099396923091263,
+            "decode_tps": 18.04317910869272
+          },
+          {
+            "ttft": 5.099643048015423,
+            "decode_tps": 18.032450658900114
+          },
+          {
+            "ttft": 5.101588450022973,
+            "decode_tps": 18.041438345573727
+          }
+        ],
+        "ttft": {
+          "parent": 5.090911575010978,
+          "candidate": 5.099643048015423,
+          "change_pct": 0.17151099318448715
+        },
+        "decode_tps": {
+          "parent": 18.08856098768831,
+          "candidate": 18.041438345573727,
+          "change_pct": -0.26051072911027484
+        }
+      },
+      {
+        "length": 45056,
+        "outputs_equal": true,
+        "parent_metrics": [
+          {
+            "ttft": 30.413103729952127,
+            "decode_tps": 17.834825490492143
+          },
+          {
+            "ttft": 30.431688706041314,
+            "decode_tps": 17.848196423815704
+          },
+          {
+            "ttft": 30.411166858975776,
+            "decode_tps": 17.83517771539152
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 30.451430769986473,
+            "decode_tps": 17.847383460372818
+          },
+          {
+            "ttft": 30.475071755005047,
+            "decode_tps": 17.838261031707216
+          },
+          {
+            "ttft": 30.48319136200007,
+            "decode_tps": 17.8509381573797
+          }
+        ],
+        "ttft": {
+          "parent": 30.413103729952127,
+          "candidate": 30.475071755005047,
+          "change_pct": 0.20375436063071461
+        },
+        "decode_tps": {
+          "parent": 17.83517771539152,
+          "candidate": 17.847383460372818,
+          "change_pct": 0.06843635188880093
+        }
+      },
+      {
+        "length": 204800,
+        "outputs_equal": true,
+        "parent_metrics": [
+          {
+            "ttft": 159.32577518408652,
+            "decode_tps": 17.1059170512433
+          },
+          {
+            "ttft": 159.3740076830145,
+            "decode_tps": 17.081856021726125
+          },
+          {
+            "ttft": 159.3658627299592,
+            "decode_tps": 17.131794269700944
+          }
+        ],
+        "candidate_metrics": [
+          {
+            "ttft": 159.4009586070897,
+            "decode_tps": 17.09311550575204
+          },
+          {
+            "ttft": 159.38923865102697,
+            "decode_tps": 17.05424840112324
+          },
+          {
+            "ttft": 159.34080661507323,
+            "decode_tps": 17.091586974570067
+          }
+        ],
+        "ttft": {
+          "parent": 159.3658627299592,
+          "candidate": 159.38923865102697,
+          "change_pct": 0.014668085540625597
+        },
+        "decode_tps": {
+          "parent": 17.1059170512433,
+          "candidate": 17.091586974570067,
+          "change_pct": -0.08377263043135574
+        }
+      }
+    ]
+  }
+}
