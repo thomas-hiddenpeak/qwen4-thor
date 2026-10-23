@@ -1,4 +1,4 @@
-"""Bounded host checks after HTTP: source rows, IDs and nine load failures."""
+"""Bounded host checks after HTTP: source rows, IDs and load failures (including every hash field)."""
 import argparse
 import hashlib
 import json
@@ -37,14 +37,20 @@ def main():
             assert not target.read(1)
     results = dict(source_rows_bit_exact=65536, special_ids=len(manifest['special_ids']), cases=[])
     for case in ('shape', 'source', 'short_ids', 'duplicate', 'range', 'unsorted',
-                 'missing_special', 'ids_digest', 'short_weights'):
+                 'missing_special', 'ids_digest', 'short_weights', 'source_sha256',
+                 'tokenizer_sha256', 'tokenizer_config_sha256',
+                 'generation_config_sha256', 'head_sha256'):
         directory = args.output / case
         directory.mkdir()
         changed = dict(manifest)
         changed_ids = ids.copy()
         (directory / 'head.bf16').symlink_to((args.artifact / 'head.bf16').resolve())
         expected = 'IDs must be sorted, unique and legal'
-        if case == 'shape':
+        if case.endswith('_sha256'):
+            changed[case] = '0' * 64
+            expected = ('payload digest mismatch' if case == 'head_sha256'
+                        else 'SHA256 mismatch')
+        elif case == 'shape':
             changed['rows'] = 65535
             expected = 'unsupported format or dimensions'
         elif case == 'source':
@@ -83,7 +89,7 @@ def main():
         (args.output / 'result.json').write_text(json.dumps(results, indent=2) + '\n')
         if not passed:
             raise RuntimeError('wrong rejection: ' + case + ': ' + result.stderr)
-    print('PASS exact source rows, legal/special IDs and nine loader rejection cases')
+    print('PASS exact source rows, legal/special IDs and fourteen loader rejection cases')
 
 
 if __name__ == '__main__':

@@ -551,3 +551,10 @@ add_executable(q4t_subset_states EXCLUDE_FROM_ALL tests/test_main.cpp
 target_link_libraries(q4t_subset_states PRIVATE q4t_model q4t_runtime)
 add_executable(q4t_subset_read EXCLUDE_FROM_ALL tools/mtp_subset/read.cpp)
 target_link_libraries(q4t_subset_read PRIVATE q4t_model)
+
+# CPU-only SHA contracts, invoked after the HTTP gate for startup optimization.
+add_executable(q4t_sha256_contract EXCLUDE_FROM_ALL
+  tools/verify/sha256_contract.cpp src/trace/sha256.cpp)
+target_include_directories(q4t_sha256_contract PRIVATE include)
+target_compile_definitions(q4t_sha256_contract PRIVATE Q4T_SHA256_TESTING=1)
+target_compile_options(q4t_sha256_contract PRIVATE -Wall -Wextra)

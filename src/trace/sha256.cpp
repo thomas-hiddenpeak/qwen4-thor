@@ -3,7 +3,16 @@
 #include <algorithm>
 #include <array>
 #include <bit>
+#include <cstring>
 #include <fstream>
+
+#if defined(__aarch64__) && defined(__linux__) && \
+    __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#include <arm_neon.h>
+#include <asm/hwcap.h>
+#include <sys/auxv.h>
+#define Q4T_SHA2_ARM 1
+#endif
 
 namespace q4t::trace {
 namespace {
@@ -19,16 +28,74 @@ constexpr uint32_t kRound[] = {
     0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a,
     0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
     0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
+// Keep crypto instructions in a separately targeted function. The generic
+// caller can run on CPUs without SHA2; Linux HWCAP gates every hardware path.
+bool HasSha2() {
+#if defined(Q4T_SHA2_ARM)
+  static const bool available = (getauxval(AT_HWCAP) & HWCAP_SHA2) != 0;
+  return available;
+#else
+  return false;
+#endif
+}
+
+#if defined(Q4T_SHA2_ARM)
+__attribute__((target("+crypto"), noinline)) void TransformSha2(
+    uint32_t* state, const uint8_t* input, size_t blocks) {
+  uint32x4_t abcd = vld1q_u32(state);
+  uint32x4_t efgh = vld1q_u32(state + 4);
+  for (size_t block = 0; block < blocks; ++block, input += 64) {
+    const uint32x4_t saved_abcd = abcd;
+    const uint32x4_t saved_efgh = efgh;
+    uint32x4_t words[4];
+    for (int i = 0; i < 4; ++i) {
+      words[i] = vreinterpretq_u32_u8(vrev32q_u8(vld1q_u8(input + i * 16)));
+    }
+    for (int group = 0; group < 16; ++group) {
+      const int i = group % 4;
+      const uint32x4_t wk = vaddq_u32(words[i], vld1q_u32(kRound + group * 4));
+      const uint32x4_t old_abcd = abcd;
+      abcd = vsha256hq_u32(abcd, efgh, wk);
+      efgh = vsha256h2q_u32(efgh, old_abcd, wk);
+      if (group < 12) {
+        words[i] =
+            vsha256su1q_u32(vsha256su0q_u32(words[i], words[(i + 1) % 4]),
+                            words[(i + 2) % 4], words[(i + 3) % 4]);
+      }
+    }
+    abcd = vaddq_u32(abcd, saved_abcd);
+    efgh = vaddq_u32(efgh, saved_efgh);
+  }
+  vst1q_u32(state, abcd);
+  vst1q_u32(state + 4, efgh);
+}
+#endif
+
 class Hash {
  public:
+  explicit Hash(bool portable = false) : use_sha2_(!portable && HasSha2()) {}
+
   void Add(std::span<const uint8_t> bytes) {
     length_ += bytes.size();
-    for (auto byte : bytes) {
-      block_[used_++] = byte;
-      if (used_ == 64) {
-        Transform();
+    if (bytes.empty()) return;
+    if (used_ != 0) {
+      const size_t count = std::min(bytes.size(), block_.size() - used_);
+      std::memcpy(block_.data() + used_, bytes.data(), count);
+      used_ += count;
+      bytes = bytes.subspan(count);
+      if (used_ == block_.size()) {
+        TransformBlocks(block_.data(), 1);
         used_ = 0;
       }
+    }
+    const size_t blocks = bytes.size() / block_.size();
+    if (blocks != 0) {
+      TransformBlocks(bytes.data(), blocks);
+      bytes = bytes.subspan(blocks * block_.size());
+    }
+    if (!bytes.empty()) {
+      std::memcpy(block_.data() + used_, bytes.data(), bytes.size());
+      used_ += bytes.size();
     }
   }
   Digest Finish() {
@@ -47,11 +114,21 @@ class Hash {
   }
 
  private:
-  void Transform() {
+  void TransformBlocks(const uint8_t* input, size_t blocks) {
+#if defined(Q4T_SHA2_ARM)
+    if (use_sha2_) {
+      TransformSha2(state_.data(), input, blocks);
+      return;
+    }
+#endif
+    for (size_t i = 0; i < blocks; ++i) TransformPortable(input + i * 64);
+  }
+
+  void TransformPortable(const uint8_t* block) {
     uint32_t w[64];
     for (int i = 0; i < 16; ++i) {
       w[i] = 0;
-      for (int j = 0; j < 4; ++j) w[i] = (w[i] << 8) | block_[4 * i + j];
+      for (int j = 0; j < 4; ++j) w[i] = (w[i] << 8) | block[4 * i + j];
     }
     for (int i = 16; i < 64; ++i) {
       const auto x = w[i - 15], y = w[i - 2];
@@ -82,6 +159,7 @@ class Hash {
                                  0xa54ff53a, 0x510e527f, 0x9b05688c,
                                  0x1f83d9ab, 0x5be0cd19};
   std::array<uint8_t, 64> block_{};
+  [[maybe_unused]] bool use_sha2_;
   size_t used_ = 0;
   uint64_t length_ = 0;
 };
@@ -91,10 +169,11 @@ Digest Sha256(std::span<const uint8_t> bytes) {
   hash.Add(bytes);
   return hash.Finish();
 }
-Status HashFile(const std::string& path, Digest* digest) {
+static Status HashFileImpl(const std::string& path, Digest* digest,
+                           bool portable) {
   std::ifstream file(path, std::ios::binary);
   if (!file) return Status::Fail("trace: cannot hash " + path);
-  Hash hash;
+  Hash hash(portable);
   std::array<uint8_t, 65536> buffer;
   while (file.read(reinterpret_cast<char*>(buffer.data()), buffer.size()) ||
          file.gcount() > 0)
@@ -103,6 +182,26 @@ Status HashFile(const std::string& path, Digest* digest) {
   *digest = hash.Finish();
   return Status();
 }
+Status HashFile(const std::string& path, Digest* digest) {
+  return HashFileImpl(path, digest, false);
+}
+#if defined(Q4T_SHA256_TESTING)
+bool Sha256HardwareForTest() { return HasSha2(); }
+Digest Sha256ChunksForTest(std::span<const uint8_t> bytes, size_t chunk,
+                           bool portable) {
+  Hash hash(portable);
+  if (chunk == 0) chunk = bytes.size();
+  while (!bytes.empty()) {
+    const size_t count = std::min(chunk, bytes.size());
+    hash.Add(bytes.first(count));
+    bytes = bytes.subspan(count);
+  }
+  return hash.Finish();
+}
+Status HashFilePortableForTest(const std::string& path, Digest* digest) {
+  return HashFileImpl(path, digest, true);
+}
+#endif
 std::string HexDigest(const Digest& digest) {
   std::string out;
   for (auto b : digest) {
