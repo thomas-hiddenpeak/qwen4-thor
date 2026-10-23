@@ -51,7 +51,19 @@ q4t::mtp::SuffixProposal ScanReference(std::span<const int32_t> committed,
   result.ready = result.tokens[0] == d0;
   result.reason =
       result.ready ? SuffixReason::kReady : SuffixReason::kFirstTokenMismatch;
+  if (result.ready && result.match_length < 32) {
+    result.ready = false;
+    result.reason = SuffixReason::kShortRejected;
+  }
   return result;
+}
+
+std::vector<int32_t> LongCopy(int length) {
+  std::vector<int32_t> history;
+  for (int i = 1; i <= length; ++i) history.push_back(i);
+  history.insert(history.end(), {100001, 65536, 77, 999});
+  for (int i = 1; i < length; ++i) history.push_back(i);
+  return history;
 }
 
 // Fixture construction only: find two different trigrams that enter the
@@ -74,16 +86,16 @@ size_t FixtureBucket(int32_t a, int32_t b, int32_t c) {
 
 Q4T_TEST(suffix_pending_view_global_ids_and_query_immutability) {
   SuffixDrafter drafter;
-  const std::vector<int32_t> history{1, 2, 3, 100001, 65536, 77, 9, 1, 2};
-  Q4T_CHECK(drafter.Init(history, 200000, 64).ok());
-  const auto first = drafter.ProposeAfter(3, 100001);
+  const auto history = LongCopy(32);
+  Q4T_CHECK(drafter.Init(history, 200000, 96).ok());
+  const auto first = drafter.ProposeAfter(32, 100001);
   Q4T_CHECK(first.ready);
   const std::array<int32_t, 3> expected{100001, 65536, 77};
   Q4T_CHECK(first.tokens == expected);
-  Q4T_CHECK(first.match_length == 3 && first.match_end == 2);
+  Q4T_CHECK(first.match_length == 32 && first.match_end == 31);
   Q4T_CHECK(std::vector<int32_t>(drafter.History().begin(),
                                  drafter.History().end()) == history);
-  Q4T_CHECK(drafter.ProposeAfter(3, 100001).tokens == first.tokens);
+  Q4T_CHECK(drafter.ProposeAfter(32, 100001).tokens == first.tokens);
   Q4T_CHECK(drafter.Counters().hits == 2);
   Q4T_CHECK(drafter.Size() == history.size());
   return true;
@@ -129,11 +141,14 @@ Q4T_TEST(suffix_requires_complete_three_and_allows_periodic_pending) {
   Q4T_CHECK(!short_result.ready);
   Q4T_CHECK(short_result.match_end == 5);
   Q4T_CHECK(short_result.reason == SuffixReason::kIncomplete);
-  const std::vector<int32_t> periodic{1, 2, 3, 1, 2};
-  Q4T_CHECK(drafter.Init(periodic, 100, 16).ok());
+  std::vector<int32_t> periodic;
+  for (int i = 0; i < 11; ++i) periodic.insert(periodic.end(), {1, 2, 3});
+  periodic.insert(periodic.end(), {1, 2});
+  Q4T_CHECK(drafter.Init(periodic, 100, 64).ok());
   const auto result = drafter.ProposeAfter(3, 1);
   const std::array<int32_t, 3> expected{1, 2, 3};
   Q4T_CHECK(result.ready && result.tokens == expected);
+  Q4T_CHECK(result.match_length == 33);
   Q4T_CHECK(drafter.Size() == periodic.size());
   return true;
 }
@@ -156,7 +171,7 @@ Q4T_TEST(suffix_match_range_and_candidate_count_are_bounded) {
   history.insert(history.end(), {8, 1, 2});
   Q4T_CHECK(drafter.Init(history, 1000, 256).ok());
   const auto latest = drafter.ProposeAfter(3, 15);
-  Q4T_CHECK(latest.ready);
+  Q4T_CHECK(!latest.ready && latest.reason == SuffixReason::kShortRejected);
   Q4T_CHECK(latest.candidates_examined == 4);
   Q4T_CHECK(latest.tokens[0] == 15);
   return true;
@@ -190,7 +205,7 @@ Q4T_TEST(suffix_appends_only_supplied_committed_prefix) {
   SuffixDrafter drafter;
   std::vector<int32_t> committed{1, 2, 3, 4, 5, 6, 9, 1, 2};
   Q4T_CHECK(drafter.Init(committed, 100, 64).ok());
-  Q4T_CHECK(drafter.ProposeAfter(3, 4).ready);
+  Q4T_CHECK(drafter.ProposeAfter(3, 4).reason == SuffixReason::kShortRejected);
   // Only pending 3 and accepted draft 4 committed. The other proposal rows
   // are not submitted to Append. Querying or rejecting a row cannot index it.
   const std::array<int32_t, 2> accepted_inputs{3, 4};
@@ -202,7 +217,8 @@ Q4T_TEST(suffix_appends_only_supplied_committed_prefix) {
                                  drafter.History().end()) == committed);
   const auto expected = ScanReference(committed, 5, 6);
   const auto actual = drafter.ProposeAfter(5, 6);
-  Q4T_CHECK(actual.ready && actual.tokens == expected.tokens);
+  Q4T_CHECK(actual.ready == expected.ready && actual.tokens == expected.tokens);
+  Q4T_CHECK(actual.reason == expected.reason);
   Q4T_CHECK(drafter.Counters().appended_tokens == 2);
   return true;
 }
@@ -246,11 +262,11 @@ Q4T_TEST(suffix_invalid_inputs_do_not_partially_index_or_allocate) {
 
 Q4T_TEST(suffix_reset_releases_storage_and_request_history) {
   SuffixDrafter drafter;
-  const std::vector<int32_t> first{1, 2, 3, 4, 5, 6, 1, 2};
-  Q4T_CHECK(drafter.Init(first, 100).ok());
+  const auto first = LongCopy(32);
+  Q4T_CHECK(drafter.Init(first, 200000).ok());
   Q4T_CHECK(drafter.MemoryBytes() == 2 * 1024 * 1024);
   Q4T_CHECK(drafter.MemoryBytes() == SuffixDrafter::kMaxMemoryBytes);
-  Q4T_CHECK(drafter.ProposeAfter(3, 4).ready);
+  Q4T_CHECK(drafter.ProposeAfter(32, 100001).ready);
   drafter.Reset();
   Q4T_CHECK(!drafter.Active() && drafter.MemoryBytes() == 0);
   Q4T_CHECK(drafter.Size() == 0 && drafter.History().empty());
@@ -284,7 +300,8 @@ Q4T_TEST(suffix_numeric_token_classification_byte_truth_table) {
   Q4T_CHECK(ClassifySuffixToken("") == 0);
   Q4T_CHECK(ClassifySuffixToken(" (12.50):\r\n") == 3);
   Q4T_CHECK(ClassifySuffixToken("x1") == 2);
-  Q4T_CHECK(ClassifySuffixToken("\xC2\xA0" "1") == 2);
+  Q4T_CHECK(ClassifySuffixToken("\xC2\xA0"
+                                "1") == 2);
   Q4T_CHECK(ClassifySuffixToken(std::string_view("1\0", 2)) == 2);
   Q4T_CHECK(ClassifySuffixToken("<special>") == 0);
   return true;
@@ -317,10 +334,10 @@ Q4T_TEST(suffix_numeric_admission_is_independent_of_token_partition) {
         SuffixDrafter drafter;
         Q4T_CHECK(drafter.Init(history, classes.size(), 32, classes).ok());
         const auto proposal = drafter.ProposeAfter(3, 4);
-        Q4T_CHECK(proposal.ready == !fixture.rejected);
+        Q4T_CHECK(!proposal.ready);
         Q4T_CHECK(proposal.reason == (fixture.rejected
-                                         ? SuffixReason::kNumericRejected
-                                         : SuffixReason::kReady));
+                                          ? SuffixReason::kNumericRejected
+                                          : SuffixReason::kShortRejected));
         Q4T_CHECK(drafter.Counters().numeric_checks == 1);
         Q4T_CHECK(drafter.Counters().classified_tokens == 3);
       }
@@ -337,7 +354,7 @@ Q4T_TEST(suffix_numeric_rejection_keeps_global_proposal_and_history) {
   const std::vector<int32_t> history{70001, 70002, 70003, 100001, 65536,
                                      77,    9,     70001, 70002};
   const auto expected = ScanReference(history, 70003, 100001);
-  Q4T_CHECK(expected.ready);
+  Q4T_CHECK(expected.tokens[0] == 100001);
   SuffixDrafter drafter;
   Q4T_CHECK(drafter.Init(history, classes.size(), 64, classes).ok());
   const auto actual = drafter.ProposeAfter(70003, 100001);
@@ -371,7 +388,8 @@ Q4T_TEST(suffix_numeric_uses_full_longest_match_not_only_trigram) {
   Q4T_CHECK(drafter.Init(history, classes.size(), 64, classes).ok());
   const auto expected = ScanReference(history, 3, 4);
   const auto actual = drafter.ProposeAfter(3, 4);
-  Q4T_CHECK(actual.ready && actual.match_length == 4);
+  Q4T_CHECK(actual.reason == SuffixReason::kShortRejected);
+  Q4T_CHECK(actual.match_length == 4);
   Q4T_CHECK(actual.tokens == expected.tokens);
   Q4T_CHECK(actual.match_end == expected.match_end);
   Q4T_CHECK(drafter.Counters().classified_tokens == 4);
@@ -399,7 +417,7 @@ Q4T_TEST(suffix_numeric_existing_gates_and_newest_tie_are_preserved) {
   Q4T_CHECK(drafter.Init(tied, classes.size(), 64, classes).ok());
   const auto expected = ScanReference(tied, 3, 4);
   const auto actual = drafter.ProposeAfter(3, 4);
-  Q4T_CHECK(expected.ready && expected.match_end == 10);
+  Q4T_CHECK(expected.tokens[0] == 4 && expected.match_end == 10);
   Q4T_CHECK(actual.reason == SuffixReason::kNumericRejected);
   Q4T_CHECK(actual.match_end == expected.match_end);
   Q4T_CHECK(actual.tokens == expected.tokens);
@@ -415,11 +433,11 @@ Q4T_TEST(suffix_numeric_existing_gates_and_newest_tie_are_preserved) {
   return true;
 }
 
-Q4T_TEST(suffix_numeric_unknown_nondigit_and_absent_table_allow_lookup) {
+Q4T_TEST(suffix_short_gate_applies_after_numeric_and_without_table) {
   const std::vector<int32_t> history{1, 2, 3, 4, 5, 6, 7, 1, 2};
   // Respectively: no digit; unknown token; mixed letter/digit token.
-  const std::array<std::array<uint8_t, 3>, 3> cases{{
-      {1, 1, 1}, {3, 0, 1}, {3, 2, 1}}};
+  const std::array<std::array<uint8_t, 3>, 3> cases{
+      {{1, 1, 1}, {3, 0, 1}, {3, 2, 1}}};
   for (const auto& properties : cases) {
     std::array<uint8_t, 100> classes{};
     for (size_t i = 0; i < properties.size(); ++i) {
@@ -427,13 +445,15 @@ Q4T_TEST(suffix_numeric_unknown_nondigit_and_absent_table_allow_lookup) {
     }
     SuffixDrafter drafter;
     Q4T_CHECK(drafter.Init(history, classes.size(), 64, classes).ok());
-    Q4T_CHECK(drafter.ProposeAfter(3, 4).ready);
+    Q4T_CHECK(drafter.ProposeAfter(3, 4).reason ==
+              SuffixReason::kShortRejected);
     Q4T_CHECK(drafter.Counters().numeric_checks == 1);
     Q4T_CHECK(drafter.Counters().numeric_rejected == 0);
   }
   SuffixDrafter legacy;
   Q4T_CHECK(legacy.Init(history, 100, 64).ok());
-  Q4T_CHECK(legacy.ProposeAfter(3, 4).ready);
+  Q4T_CHECK(legacy.ProposeAfter(3, 4).reason == SuffixReason::kShortRejected);
+  Q4T_CHECK(legacy.Counters().short_rejected == 1);
   Q4T_CHECK(legacy.Counters().numeric_checks == 0);
   Q4T_CHECK(legacy.Counters().classified_tokens == 0);
   return true;
@@ -455,7 +475,7 @@ Q4T_TEST(suffix_numeric_table_size_and_request_reset_contract) {
   std::vector<uint8_t>().swap(classes);  // End the borrowed table's lifetime.
   Q4T_CHECK(drafter.ProposeAfter(3, 4).reason == SuffixReason::kInactive);
   Q4T_CHECK(drafter.Init(history, 100, 64).ok());
-  Q4T_CHECK(drafter.ProposeAfter(3, 4).ready);
+  Q4T_CHECK(drafter.ProposeAfter(3, 4).reason == SuffixReason::kShortRejected);
   Q4T_CHECK(drafter.Counters().numeric_checks == 0);
   Q4T_CHECK(drafter.Counters().numeric_rejected == 0);
   return true;
@@ -476,5 +496,67 @@ Q4T_TEST(suffix_numeric_filter_preserves_fixed_maximum_match_range) {
   Q4T_CHECK(drafter.Counters().numeric_checks == 1);
   Q4T_CHECK(drafter.Counters().classified_tokens == 64);
   Q4T_CHECK(drafter.Counters().numeric_rejected == 1);
+  return true;
+}
+
+Q4T_TEST(suffix_long_copy_admission_boundary_and_global_continuation) {
+  // Include the observed quoted-sentence length, both sides of the new
+  // boundary, and the lookup cap. No subset vocabulary is consulted.
+  for (int length : {3, 19, 31, 32, 33, 64}) {
+    const auto history = LongCopy(length);
+    SuffixDrafter drafter;
+    Q4T_CHECK(drafter.Init(history, 200000, 256).ok());
+    const auto proposal = drafter.ProposeAfter(length, 100001);
+    const auto expected = ScanReference(history, length, 100001);
+    Q4T_CHECK(proposal.match_length == length);
+    Q4T_CHECK(proposal.match_end == static_cast<uint32_t>(length - 1));
+    Q4T_CHECK(proposal.tokens == expected.tokens);
+    Q4T_CHECK(proposal.ready == (length >= 32));
+    Q4T_CHECK(proposal.reason == expected.reason);
+    Q4T_CHECK(drafter.Counters().short_rejected == (length < 32 ? 1 : 0));
+    Q4T_CHECK(drafter.Counters().hits == (length >= 32 ? 1 : 0));
+    Q4T_CHECK(std::vector<int32_t>(drafter.History().begin(),
+                                   drafter.History().end()) == history);
+  }
+  Q4T_CHECK(std::string_view(q4t::mtp::SuffixReasonName(
+                SuffixReason::kShortRejected)) == "short_rejected");
+  return true;
+}
+
+Q4T_TEST(suffix_short_fallback_commits_can_become_a_long_copy) {
+  auto history = LongCopy(32);
+  // The current query prefix ends at token 30; the committed neural prefix
+  // then makes a 32-token copy eligible without resetting the index.
+  history.pop_back();
+  SuffixDrafter drafter;
+  Q4T_CHECK(drafter.Init(history, 200000, 96).ok());
+  const auto short_copy = drafter.ProposeAfter(31, 32);
+  Q4T_CHECK(short_copy.reason == SuffixReason::kShortRejected);
+  const std::array<int32_t, 1> committed{31};
+  Q4T_CHECK(drafter.Append(committed).ok());
+  const auto long_copy = drafter.ProposeAfter(32, 100001);
+  Q4T_CHECK(long_copy.ready && long_copy.match_length == 32);
+  Q4T_CHECK(drafter.Counters().short_rejected == 1);
+  Q4T_CHECK(drafter.Counters().hits == 1);
+  drafter.Reset();
+  Q4T_CHECK(drafter.Counters().short_rejected == 1);
+  Q4T_CHECK(drafter.Init(history, 200000, 96).ok());
+  Q4T_CHECK(drafter.Counters().short_rejected == 0);
+  return true;
+}
+
+Q4T_TEST(suffix_numeric_and_d0_gates_precede_short_copy_gate) {
+  const auto history = LongCopy(19);
+  std::vector<uint8_t> classes(200000, ClassifySuffixToken("1"));
+  SuffixDrafter drafter;
+  Q4T_CHECK(drafter.Init(history, 200000, 96, classes).ok());
+  Q4T_CHECK(drafter.ProposeAfter(19, 77).reason ==
+            SuffixReason::kFirstTokenMismatch);
+  Q4T_CHECK(drafter.Counters().numeric_checks == 0);
+  Q4T_CHECK(drafter.ProposeAfter(19, 100001).reason ==
+            SuffixReason::kNumericRejected);
+  Q4T_CHECK(drafter.Counters().numeric_checks == 1);
+  Q4T_CHECK(drafter.Counters().numeric_rejected == 1);
+  Q4T_CHECK(drafter.Counters().short_rejected == 0);
   return true;
 }

@@ -1,0 +1,146 @@
+Offline runtime/work-step diagnosis, 2026-10-24
+
+Scope
+Only sealed numeric-stage logs, responses, and the existing/new CPU replay were
+read. No model, GPU, HTTP, performance sample, or runtime change was executed by
+this audit. Numeric candidate 94d004be remains NO_GO_PROTECTION_REGRESSION.
+
+Old 8K: the extra tail has one precisely located cause in the observed trace
+Four native [mtp-timing] acceptance/source sequences independently establish the
+following for both heads. Positions p are zero-based generated-token positions;
+absolute target position P=8159+p. The eight uninstrumented matrix requests have
+client-inferred boundaries that agree step-for-step with their native arm trace.
+
+At p27/P8186 a length-7 suffix proposes " correctness.\n" instead of the actual
+" correctness. Let". It accepts two drafts, but OFF neural also accepts two at
+that position. This partial suffix does NOT add observed target work.
+
+The first acceptance difference is the 26th round (zero-based step25), p78/P8237.
+The length-19 match ends in "a measurement of physical". Historical continuation
+is " memory traffic."; actual output closes the quotation: " memory traffic.\"".
+The first two global IDs match; the third is period ID13 versus period+quote
+ID1149. ON accepts two, OFF neural accepts three. The four retained source
+candidates have the same length and the same historical continuation; a simple
+same-length continuation-consensus gate would not reject this candidate.
+
+All earlier acceptance counts and boundaries agree. After p78, both arms perform
+43 more rounds, all accepting three and all ON rounds neural. OFF resumes at p82,
+ON at p81; that one-token offset persists. Their last MTP starts are p250/p249,
+ending with 254/253 committed output tokens. k3's generation gate requires more
+than four remaining outputs, so both fall back to ordinary decode with 2/3 left.
+Ordinary decode emits its pending token immediately and does not consume the
+final output token: 1/2 target T1 forwards, respectively. Both have 69 verify
+rounds; total target calls are 70/71 and rows277/278. The added tail is not a
+request leak, hidden extra output, or context-capacity exhaustion.
+
+This is observed step causality, not an oracle for a new policy: rejecting p78
+would invoke an unobserved neural proposal under the candidate's current draft
+state. The observed OFF a3 is strong mechanism evidence, but prior suffix/neural
+execution can differ numerically. A new policy's later states and speed require
+its own bounded validation. The p27 and p78 partials must not be lumped together.
+
+45K: output-format boundaries defeat short textual history reuse
+The actual prompt is45035 tokens. All12 OFF/ON pairs across two heads/two blocks
+and three repeats close every available query/match/acceptance counter. Their
+steps come from client ITL bursts plus exact production-token replay, NOT native
+server step tracing. paired-step-alignment.json retains all same-position cases.
+
+Both heads first diverge at p92/P45127: the length-8 match is " transcript
+identifies uncertain words without silently replacing them". All four retained
+sources continue ".\nEntry", but the generated numbered outline continues
+".\n2". ON suffix accepts two and OFF accepts three. This is another syntax/
+format boundary, not a pure numeric matched span; the existing numeric filter
+correctly does not reject it. Continuation consensus again passes all four.
+
+Before that divergence, full p32 has a2 both ON/OFF, and subset p33 has a1 both
+ON/OFF. They are partial suffixes without added observed target rounds. Later
+same-position comparisons expose further lower ON acceptance, but those occur
+after changed histories of proposal/extend shapes, so they are observed pairs,
+not independent neural counterfactuals. New1K p113 even has suffix a2 versus OFF
+neural a1: partial acceptance alone does not establish that a hit is uneconomic.
+
+Per-request whole-generation work (OFF -> ON; all repeats agree):
+                       full45K             subset45K
+verify                 66 -> 68            69 -> 70
+accepted draft tokens  189 -> 184           186 -> 182
+MTP committed tokens   255 -> 252           255 -> 252
+ordinary tail forward  0 -> 3               0 -> 3
+target calls/rows      66/264 -> 71/275      69/276 -> 73/283
+restore                8 -> 16              12 -> 20
+neural proposal T1     132 -> 108            138 -> 110
+draft extend calls     66 -> 68              69 -> 70
+draft extend rows      255 -> 252            255 -> 252
+
+Full14 suffix hits have a=[0,3,5,6], lengths3..10; subset15 have a=[0,3,5,7],
+lengths3..11. Both have eight partial hits, but their total cost cannot be
+computed by treating each as a lost a3 neural round. Target verify, ordinary tail,
+restores and T-dependent extend still execute despite skipped neural proposal.
+Eight extra restores request8*115642368=925138944 bytes in584 D2D copy calls
+under the unchanged full model dimensions. This is static copy payload, NOT
+measured physical DRAM traffic, transfer time, or additional resident memory.
+
+Static shape review finds no major attention branch crossover during this45K
+generation: T1..4 are all on the long small-T path, compressed groups remain
+within six2048-group slices; six*512 candidates require one merge into1024 and
+one final expansion. Both arms stay in that structure. The score-grid length
+still grows with context, and routing/numerics differ; absence of a crossover is
+not an isolated kernel-cost measurement. max_prefill8192 limits row batch size,
+not absolute position. The actual generation fallback is the output tail.
+
+Why subset has less spare benefit
+The target model and its expensive verify/restore remain full size. The neural
+head projects248320 rows for full versus65536 BF16 rows for subset at width2560:
+1271398400 versus335544320 weight bytes. A skipped neural T1 is therefore cheaper
+to begin with in subset. Four old8K diagnostic requests directly observed the
+same14 neural T1 savings reducing proposal time by105.9ms full but54.2ms subset.
+Those are old8K-only diagnostic phase sums, not45K timers or statistical estimates.
+45K has only E2E measurements and work counts, so no exact milliseconds can be
+assigned separately to its verify, tail, restore, draft or index contributions.
+The subset45K percentage loss need not be numerically greater than full45K: the
+two heads also have different acceptance changes and denominators.
+
+Fixed admission options and limits
+The selected fixed minimum32-token admission is mechanically small: retain the
+same four candidates, exact compare, longest/latest choice, full-three/global-ID,
+d0 and numeric gates; reject the selected candidate below32 without trying a
+replacement. On rejection only ready/source selection changes. Multi must still
+run existing neural proposal, target four-row verify, restore if a<3, accepted-
+prefix extend, and next_d0/next_g. It does not change pending/history commit or
+index lifetime. Its new counter must be included in query outcome and match-mean
+denominators; numeric_checks=hits+numeric_rejected+short_rejected if ordered after
+numeric. Startup/index memory remains allocated, so do not claim memory savings.
+
+On the OBSERVED old paths,32 rejects every hit in the four diagnostic probes,
+including useful full accepts. In each repeated-code/text request it drops seven
+short hits, retaining55 of62 (new code/text and old code) or54 of61 (old text).
+These are admission classifications, not new-path hit counts or throughput.
+Subset new-code retains a length64 partial at p113: latest source proposes
+" running}<|im_end|>" while output needs " running}\n". It remains a2 under the
+old trace. Thus minimum length cannot guarantee semantic scope or full acceptance.
+Changing early decisions may also expose different later short/long matches.
+
+Continuation consistency has bounded implementation options over the same four
+exact candidates, but needs an explicit definition: compare tied-longest sources
+or all qualifying sources; require two supporting sources or allow a singleton;
+exclude incomplete/collision candidates; and never read beyond committed+pending.
+Recent/overlapping occurrences are not independent evidence. p78/p92 already have
+four agreeing wrong continuations, whereas the length64 repeat-code boundary has
+conflicting continuations and could be rejected. Consensus therefore does not
+solve the diagnosed generic problem. Consulting neural d1/d2 would compute the
+very draft work intended to be skipped. No extra consensus rule or parameter scan
+is justified as part of the single min32 candidate.
+
+Correctness boundary
+Changing admission changes the actual accepted-prefix partition and future query
+positions. Existing unchanged Multi independent-prefix evidence remains a scoped
+two-layer mechanism contract, not arbitrary full-model state/output equivalence.
+Fresh host gate tests and current HTTP quality/lifecycle/performance remain
+necessary under root's frozen new stage; no old acceptance evidence is upgraded.
+
+Artifacts
+native-old8k-step-alignment.json: four native traces, exact prefix arithmetic,
+  selected text linked to prior token replay after output hash identity.
+paired-step-alignment.json:40 observed OFF/ON request pairs for old8K/new1K/new8K/
+  45K, same-position acceptance comparisons and first divergences.
+Sibling diagnosis-index/token-burst-replay.json and min32-old-path-classification.json
+  provide production replay, all-counter closure, candidate texts and rule scope.

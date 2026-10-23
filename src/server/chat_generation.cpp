@@ -849,7 +849,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                  "object_bytes=%zu init_ns=%llu append_ns=%llu "
                  "query_ns=%llu release_ns=%llu numeric_checks=%llu "
                  "classified_tokens=%llu numeric_rejected=%llu "
-                 "numeric_ns=%llu accepted=",
+                 "numeric_ns=%llu short_rejected=%llu accepted=",
                  request_id.c_str(),
                  static_cast<unsigned long long>(stats.queries),
                  static_cast<unsigned long long>(stats.hits),
@@ -870,7 +870,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                  static_cast<unsigned long long>(stats.classified_tokens),
                  static_cast<unsigned long long>(stats.numeric_rejected),
                  // numeric_ns is already included in query_ns.
-                 static_cast<unsigned long long>(stats.numeric_ns));
+                 static_cast<unsigned long long>(stats.numeric_ns),
+                 static_cast<unsigned long long>(stats.short_rejected));
     for (size_t i = 0; i < suffix_accepted.size(); ++i)
       std::fprintf(stderr, "%s%llu", i ? "," : "",
                    static_cast<unsigned long long>(suffix_accepted[i]));

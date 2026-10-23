@@ -1,0 +1,5248 @@
+{
+  "scope": "Offline unchanged production tokenizer/index; client-inferred steps, not native d0 trace",
+  "requests": 116,
+  "suffix_requests": 58,
+  "all_counter_closed_requests": 52,
+  "matched_a0_unknown_count": 14,
+  "tokenizer_identity": {
+    "tokenizer_vocab": 248077,
+    "model_vocab_scan_upper": 248320,
+    "decode_success_count": 248077,
+    "decode_failure_count": 243,
+    "unknown_classes": 243
+  },
+  "selected_raw_files_verified": 196,
+  "diagnosis_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/files.json",
+    "sha256": "10ae0ebad726d5c1c65bc3de08ad6006ba66675d196e27ecb9dcb00027e90f38",
+    "files": 14,
+    "bytes": 14481841,
+    "includes_replay_executable": true,
+    "verified": true
+  },
+  "full_replay": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/token-burst-replay.json",
+    "sha256": "6b4858fb9375fa1bcaa87df686c464bd73e3888268df8022838cc8cb8d86207d"
+  },
+  "original_raw_seal": "e3d0dbb8525680d28e00571f093adefa2a0df035c026e7a079ab5f284e0a150d",
+  "representative_probes": [
+    {
+      "tag": "block-1-full-on/context-1024/0",
+      "response_id": "chatcmpl-auto-0",
+      "prompt_tokens": 1002,
+      "histogram": [
+        2,
+        8,
+        8,
+        53
+      ],
+      "suffix_histogram": [
+        0,
+        2,
+        2,
+        4
+      ],
+      "stats": {
+        "queries": 71,
+        "hits": 8,
+        "no_match": 41,
+        "incomplete": 0,
+        "d0_mismatch": 22,
+        "numeric_rejected": 0,
+        "numeric_checks": 8,
+        "classified_tokens": 46,
+        "candidates": 53,
+        "compared": 282,
+        "matched": 121
+      },
+      "closure": {
+        "all_counter_fields_exact": true,
+        "matched_a0_unknown_positions": [],
+        "unassigned_logged_minus_known": {},
+        "all_suffix_hits_and_acceptance_exact": true
+      },
+      "mtp_output_count": 254,
+      "plain_tail_pieces": [
+        " to",
+        " catalog"
+      ],
+      "hits": [
+        {
+          "step": 5,
+          "position": 17,
+          "P": 1019,
+          "next_position": 21,
+          "accepted": 3,
+          "d0": 15,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 980,
+          "candidates": [
+            {
+              "end": 1001,
+              "match_length": 0,
+              "proposal": [
+                271,
+                248068,
+                198
+              ]
+            },
+            {
+              "end": 980,
+              "match_length": 4,
+              "proposal": [
+                15,
+                15,
+                4105
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              15,
+              15,
+              4105
+            ]
+          ],
+          "match_start": 977,
+          "matched": " at least 6",
+          "proposal": "00 words",
+          "proposal_ids": [
+            15,
+            15,
+            4105
+          ],
+          "source_context": "Task: Write a detailed operational review in at least 600 words. Discuss traceability, measurements, custody",
+          "actual_next3": "00 words",
+          "actual_next3_ids": [
+            15,
+            15,
+            4105
+          ],
+          "output_context": " wants me to write a detailed operational review of at least 6",
+          "origin": "prompt"
+        },
+        {
+          "step": 11,
+          "position": 35,
+          "P": 1037,
+          "next_position": 39,
+          "accepted": 3,
+          "d0": 11,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 989,
+          "candidates": [
+            {
+              "end": 989,
+              "match_length": 4,
+              "proposal": [
+                11,
+                23717,
+                11
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              11,
+              23717,
+              11
+            ]
+          ],
+          "match_start": 986,
+          "matched": " traceability, measurements",
+          "proposal": ", custody,",
+          "proposal_ids": [
+            11,
+            23717,
+            11
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer",
+          "actual_next3": ", custody,",
+          "actual_next3_ids": [
+            11,
+            23717,
+            11
+          ],
+          "output_context": " the numbered entries provided. I need to discuss traceability, measurements",
+          "origin": "prompt"
+        },
+        {
+          "step": 12,
+          "position": 39,
+          "P": 1041,
+          "next_position": 43,
+          "accepted": 3,
+          "d0": 11,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 8,
+          "match_end": 993,
+          "candidates": [
+            {
+              "end": 993,
+              "match_length": 8,
+              "proposal": [
+                11,
+                321,
+                3286
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              11,
+              321,
+              3286
+            ]
+          ],
+          "match_start": 986,
+          "matched": " traceability, measurements, custody, maintenance",
+          "proposal": ", and review",
+          "proposal_ids": [
+            11,
+            321,
+            3286
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:\n\n<think>\n",
+          "actual_next3": ", and review",
+          "actual_next3_ids": [
+            11,
+            321,
+            3286
+          ],
+          "output_context": ". I need to discuss traceability, measurements, custody, maintenance",
+          "origin": "prompt"
+        },
+        {
+          "step": 13,
+          "position": 43,
+          "P": 1045,
+          "next_position": 45,
+          "accepted": 1,
+          "d0": 13,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 12,
+          "match_end": 997,
+          "candidates": [
+            {
+              "end": 997,
+              "match_length": 12,
+              "proposal": [
+                13,
+                198,
+                15666
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              13,
+              198,
+              15666
+            ]
+          ],
+          "match_start": 986,
+          "matched": " traceability, measurements, custody, maintenance, and review decisions",
+          "proposal": ".\nAnswer",
+          "proposal_ids": [
+            13,
+            198,
+            15666
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:\n\n<think>\nThe user wants me",
+          "actual_next3": ". Let me",
+          "actual_next3_ids": [
+            13,
+            6558,
+            728
+          ],
+          "output_context": " discuss traceability, measurements, custody, maintenance, and review decisions",
+          "origin": "prompt"
+        },
+        {
+          "step": 33,
+          "position": 109,
+          "P": 1111,
+          "next_position": 113,
+          "accepted": 3,
+          "d0": 1973,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 962,
+          "candidates": [
+            {
+              "end": 962,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 934,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 596,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 310,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1973,
+              47733,
+              24101
+            ]
+          ],
+          "match_start": 959,
+          "matched": " transcript identifies uncertain words",
+          "proposal": " without silently replacing",
+          "proposal_ids": [
+            1973,
+            47733,
+            24101
+          ],
+          "source_context": " original recording before editing an interview. A transcript identifies uncertain words without silently replacing them.\n\nTask: Write a detailed",
+          "actual_next3": " without silently replacing",
+          "actual_next3_ids": [
+            1973,
+            47733,
+            24101
+          ],
+          "output_context": "34): Archives original recording before editing; transcript identifies uncertain words",
+          "origin": "prompt"
+        },
+        {
+          "step": 34,
+          "position": 113,
+          "P": 1115,
+          "next_position": 116,
+          "accepted": 2,
+          "d0": 13,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 8,
+          "match_end": 966,
+          "candidates": [
+            {
+              "end": 966,
+              "match_length": 8,
+              "proposal": [
+                13,
+                271,
+                6065
+              ]
+            },
+            {
+              "end": 938,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 600,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 314,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              13,
+              198,
+              5692
+            ],
+            [
+              13,
+              271,
+              6065
+            ]
+          ],
+          "match_start": 959,
+          "matched": " transcript identifies uncertain words without silently replacing them",
+          "proposal": ".\n\nTask",
+          "proposal_ids": [
+            13,
+            271,
+            6065
+          ],
+          "source_context": " original recording before editing an interview. A transcript identifies uncertain words without silently replacing them.\n\nTask: Write a detailed operational review in at",
+          "actual_next3": ".\n\n2",
+          "actual_next3_ids": [
+            13,
+            271,
+            17
+          ],
+          "output_context": " original recording before editing; transcript identifies uncertain words without silently replacing them",
+          "origin": "prompt"
+        },
+        {
+          "step": 50,
+          "position": 176,
+          "P": 1178,
+          "next_position": 178,
+          "accepted": 1,
+          "d0": 220,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 1125,
+          "candidates": [
+            {
+              "end": 1125,
+              "match_length": 3,
+              "proposal": [
+                220,
+                18,
+                11
+              ]
+            },
+            {
+              "end": 1076,
+              "match_length": 3,
+              "proposal": [
+                220,
+                16,
+                11
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              220,
+              16,
+              11
+            ],
+            [
+              220,
+              18,
+              11
+            ]
+          ],
+          "match_start": 1123,
+          "matched": "** (Entries",
+          "proposal": " 3,",
+          "proposal_ids": [
+            220,
+            18,
+            11
+          ],
+          "source_context": " them.\n\n2. **Mapping team** (Entries 3, 5, 10, ",
+          "actual_next3": " 4,",
+          "actual_next3_ids": [
+            220,
+            19,
+            11
+          ],
+          "output_context": " revised route.\n\n3. **Greenhouse controller** (Entries",
+          "origin": "generated"
+        },
+        {
+          "step": 61,
+          "position": 216,
+          "P": 1218,
+          "next_position": 219,
+          "accepted": 2,
+          "d0": 23758,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 1124,
+          "candidates": [
+            {
+              "end": 1124,
+              "match_length": 3,
+              "proposal": [
+                23758,
+                220,
+                18
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              23758,
+              220,
+              18
+            ]
+          ],
+          "match_start": 1122,
+          "matched": " team** (",
+          "proposal": "Entries 3",
+          "proposal_ids": [
+            23758,
+            220,
+            18
+          ],
+          "source_context": " replacing them.\n\n2. **Mapping team** (Entries 3, 5, 10,",
+          "actual_next3": "Entries 6",
+          "actual_next3_ids": [
+            23758,
+            220,
+            21
+          ],
+          "output_context": " before irrigation schedule changes.\n\n4. **Library team** (",
+          "origin": "generated"
+        }
+      ]
+    },
+    {
+      "tag": "block-1-full-on/context-8192/0",
+      "response_id": "chatcmpl-auto-6",
+      "prompt_tokens": 8176,
+      "histogram": [
+        11,
+        8,
+        8,
+        51
+      ],
+      "suffix_histogram": [
+        0,
+        1,
+        3,
+        3
+      ],
+      "stats": {
+        "queries": 78,
+        "hits": 7,
+        "no_match": 68,
+        "incomplete": 0,
+        "d0_mismatch": 3,
+        "numeric_rejected": 0,
+        "numeric_checks": 7,
+        "classified_tokens": 33,
+        "candidates": 31,
+        "compared": 162,
+        "matched": 56
+      },
+      "closure": {
+        "all_counter_fields_exact": true,
+        "matched_a0_unknown_positions": [],
+        "unassigned_logged_minus_known": {},
+        "all_suffix_hits_and_acceptance_exact": true
+      },
+      "mtp_output_count": 255,
+      "plain_tail_pieces": [
+        ":"
+      ],
+      "hits": [
+        {
+          "step": 5,
+          "position": 17,
+          "P": 8193,
+          "next_position": 21,
+          "accepted": 3,
+          "d0": 15,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 8154,
+          "candidates": [
+            {
+              "end": 8175,
+              "match_length": 0,
+              "proposal": [
+                271,
+                248068,
+                198
+              ]
+            },
+            {
+              "end": 8154,
+              "match_length": 4,
+              "proposal": [
+                15,
+                15,
+                4105
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              15,
+              15,
+              4105
+            ]
+          ],
+          "match_start": 8151,
+          "matched": " at least 6",
+          "proposal": "00 words",
+          "proposal_ids": [
+            15,
+            15,
+            4105
+          ],
+          "source_context": "Task: Write a detailed operational review in at least 600 words. Discuss traceability, measurements, custody",
+          "actual_next3": "00 words",
+          "actual_next3_ids": [
+            15,
+            15,
+            4105
+          ],
+          "output_context": " wants me to write a detailed operational review of at least 6",
+          "origin": "prompt"
+        },
+        {
+          "step": 11,
+          "position": 36,
+          "P": 8212,
+          "next_position": 40,
+          "accepted": 3,
+          "d0": 23717,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 5,
+          "match_end": 8164,
+          "candidates": [
+            {
+              "end": 8164,
+              "match_length": 5,
+              "proposal": [
+                23717,
+                11,
+                13017
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              23717,
+              11,
+              13017
+            ]
+          ],
+          "match_start": 8160,
+          "matched": " traceability, measurements,",
+          "proposal": " custody, maintenance",
+          "proposal_ids": [
+            23717,
+            11,
+            13017
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:",
+          "actual_next3": " custody, maintenance",
+          "actual_next3_ids": [
+            23717,
+            11,
+            13017
+          ],
+          "output_context": " archive entries provided. I need to discuss traceability, measurements,",
+          "origin": "prompt"
+        },
+        {
+          "step": 12,
+          "position": 40,
+          "P": 8216,
+          "next_position": 44,
+          "accepted": 3,
+          "d0": 321,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 9,
+          "match_end": 8168,
+          "candidates": [
+            {
+              "end": 8168,
+              "match_length": 9,
+              "proposal": [
+                321,
+                3286,
+                10856
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              321,
+              3286,
+              10856
+            ]
+          ],
+          "match_start": 8160,
+          "matched": " traceability, measurements, custody, maintenance,",
+          "proposal": " and review decisions",
+          "proposal_ids": [
+            321,
+            3286,
+            10856
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:\n\n<think>\nThe",
+          "actual_next3": " and review decisions",
+          "actual_next3_ids": [
+            321,
+            3286,
+            10856
+          ],
+          "output_context": " I need to discuss traceability, measurements, custody, maintenance,",
+          "origin": "prompt"
+        },
+        {
+          "step": 33,
+          "position": 114,
+          "P": 8290,
+          "next_position": 117,
+          "accepted": 2,
+          "d0": 8387,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 8126,
+          "candidates": [
+            {
+              "end": 8126,
+              "match_length": 4,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            },
+            {
+              "end": 7867,
+              "match_length": 4,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            },
+            {
+              "end": 7781,
+              "match_length": 4,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            },
+            {
+              "end": 7577,
+              "match_length": 4,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              8387,
+              60404,
+              13
+            ]
+          ],
+          "match_start": 8123,
+          "matched": " compares humidity readings from",
+          "proposal": " separate probes.",
+          "proposal_ids": [
+            8387,
+            60404,
+            13
+          ],
+          "source_context": " 282: The greenhouse controller compares humidity readings from separate probes. A delayed sample is marked explicitly before the",
+          "actual_next3": " separate probes,",
+          "actual_next3_ids": [
+            8387,
+            60404,
+            11
+          ],
+          "output_context": " before approving\n3. Greenhouse controller - compares humidity readings from",
+          "origin": "prompt"
+        },
+        {
+          "step": 39,
+          "position": 134,
+          "P": 8310,
+          "next_position": 137,
+          "accepted": 2,
+          "d0": 8198,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 8105,
+          "candidates": [
+            {
+              "end": 8105,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 7819,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 7673,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 7438,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              8198,
+              12037,
+              310
+            ]
+          ],
+          "match_start": 8103,
+          "matched": " original damage description",
+          "proposal": " remains attached to",
+          "proposal_ids": [
+            8198,
+            12037,
+            310
+          ],
+          "source_context": " repaired binding before returning the book. The original damage description remains attached to the catalog entry.\nEntry 2",
+          "actual_next3": " remains attached\n",
+          "actual_next3_ids": [
+            8198,
+            12037,
+            198
+          ],
+          "output_context": "\n4. Library team - photographs repaired bindings, original damage description",
+          "origin": "prompt"
+        },
+        {
+          "step": 42,
+          "position": 145,
+          "P": 8321,
+          "next_position": 148,
+          "accepted": 2,
+          "d0": 10660,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 8069,
+          "candidates": [
+            {
+              "end": 8069,
+              "match_length": 3,
+              "proposal": [
+                10660,
+                21495,
+                13
+              ]
+            },
+            {
+              "end": 8011,
+              "match_length": 3,
+              "proposal": [
+                10660,
+                21495,
+                13
+              ]
+            },
+            {
+              "end": 7955,
+              "match_length": 3,
+              "proposal": [
+                10660,
+                21495,
+                13
+              ]
+            },
+            {
+              "end": 7840,
+              "match_length": 3,
+              "proposal": [
+                10660,
+                21495,
+                13
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              10660,
+              21495,
+              13
+            ]
+          ],
+          "match_start": 8067,
+          "matched": " separates observations from",
+          "proposal": " proposed treatments.",
+          "proposal_ids": [
+            10660,
+            21495,
+            13
+          ],
+          "source_context": "280: The orchard crew separates observations from proposed treatments. A later inspection checks whether the recorded changes",
+          "actual_next3": " proposed treatments,",
+          "actual_next3_ids": [
+            10660,
+            21495,
+            11
+          ],
+          "output_context": " damage description remains attached\n5. Orchard crew - separates observations from",
+          "origin": "prompt"
+        },
+        {
+          "step": 55,
+          "position": 195,
+          "P": 8371,
+          "next_position": 197,
+          "accepted": 1,
+          "d0": 59528,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 5,
+          "match_end": 7519,
+          "candidates": [
+            {
+              "end": 7519,
+              "match_length": 5,
+              "proposal": [
+                59528,
+                13,
+                1473
+              ]
+            },
+            {
+              "end": 6319,
+              "match_length": 5,
+              "proposal": [
+                59528,
+                13,
+                1473
+              ]
+            },
+            {
+              "end": 5672,
+              "match_length": 5,
+              "proposal": [
+                59528,
+                13,
+                1473
+              ]
+            },
+            {
+              "end": 5439,
+              "match_length": 5,
+              "proposal": [
+                59528,
+                13,
+                1473
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              59528,
+              13,
+              1473
+            ]
+          ],
+          "match_start": 7515,
+          "matched": " stores fragile specimens in labelled",
+          "proposal": " drawers. An",
+          "proposal_ids": [
+            59528,
+            13,
+            1473
+          ],
+          "source_context": "Entry 261: The museum stores fragile specimens in labelled drawers. An access ledger distinguishes temporary loans from permanent",
+          "actual_next3": " drawers, access",
+          "actual_next3_ids": [
+            59528,
+            11,
+            2528
+          ],
+          "output_context": " adjustments and verification\n8. Museum - stores fragile specimens in labelled",
+          "origin": "prompt"
+        }
+      ]
+    },
+    {
+      "tag": "block-1-full-on/context-45056/0",
+      "response_id": "chatcmpl-auto-9",
+      "prompt_tokens": 45035,
+      "histogram": [
+        0,
+        4,
+        12,
+        52
+      ],
+      "suffix_histogram": [
+        0,
+        3,
+        5,
+        6
+      ],
+      "stats": {
+        "queries": 68,
+        "hits": 14,
+        "no_match": 46,
+        "incomplete": 0,
+        "d0_mismatch": 8,
+        "numeric_rejected": 0,
+        "numeric_checks": 14,
+        "classified_tokens": 62,
+        "candidates": 72,
+        "compared": 369,
+        "matched": 99
+      },
+      "closure": {
+        "all_counter_fields_exact": true,
+        "matched_a0_unknown_positions": [],
+        "unassigned_logged_minus_known": {},
+        "all_suffix_hits_and_acceptance_exact": true
+      },
+      "mtp_output_count": 252,
+      "plain_tail_pieces": [
+        ".",
+        "\n",
+        "8",
+        "."
+      ],
+      "hits": [
+        {
+          "step": 4,
+          "position": 16,
+          "P": 45051,
+          "next_position": 20,
+          "accepted": 3,
+          "d0": 21,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 45012,
+          "candidates": [
+            {
+              "end": 45012,
+              "match_length": 3,
+              "proposal": [
+                21,
+                15,
+                15
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              21,
+              15,
+              15
+            ]
+          ],
+          "match_start": 45010,
+          "matched": " at least ",
+          "proposal": "600",
+          "proposal_ids": [
+            21,
+            15,
+            15
+          ],
+          "source_context": "Task: Write a detailed operational review in at least 600 words. Discuss traceability, measurements,",
+          "actual_next3": "600",
+          "actual_next3_ids": [
+            21,
+            15,
+            15
+          ],
+          "output_context": " user wants me to write a detailed operational review of at least ",
+          "origin": "prompt"
+        },
+        {
+          "step": 7,
+          "position": 28,
+          "P": 45063,
+          "next_position": 32,
+          "accepted": 3,
+          "d0": 11,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 6,
+          "match_end": 45024,
+          "candidates": [
+            {
+              "end": 45024,
+              "match_length": 6,
+              "proposal": [
+                11,
+                13017,
+                11
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              11,
+              13017,
+              11
+            ]
+          ],
+          "match_start": 45019,
+          "matched": " traceability, measurements, custody",
+          "proposal": ", maintenance,",
+          "proposal_ids": [
+            11,
+            13017,
+            11
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:\n\n",
+          "actual_next3": ", maintenance,",
+          "actual_next3_ids": [
+            11,
+            13017,
+            11
+          ],
+          "output_context": " 600 words, discussing traceability, measurements, custody",
+          "origin": "prompt"
+        },
+        {
+          "step": 8,
+          "position": 32,
+          "P": 45067,
+          "next_position": 35,
+          "accepted": 2,
+          "d0": 3286,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 10,
+          "match_end": 45028,
+          "candidates": [
+            {
+              "end": 45028,
+              "match_length": 10,
+              "proposal": [
+                3286,
+                10856,
+                13
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              3286,
+              10856,
+              13
+            ]
+          ],
+          "match_start": 45019,
+          "matched": " traceability, measurements, custody, maintenance, and",
+          "proposal": " review decisions.",
+          "proposal_ids": [
+            3286,
+            10856,
+            13
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:\n\n<think>\nThe user",
+          "actual_next3": " review decisions based",
+          "actual_next3_ids": [
+            3286,
+            10856,
+            3018
+          ],
+          "output_context": " words, discussing traceability, measurements, custody, maintenance, and",
+          "origin": "prompt"
+        },
+        {
+          "step": 24,
+          "position": 88,
+          "P": 45123,
+          "next_position": 92,
+          "accepted": 3,
+          "d0": 1973,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 44659,
+          "candidates": [
+            {
+              "end": 44659,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 44597,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 44241,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 44211,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1973,
+              47733,
+              24101
+            ]
+          ],
+          "match_start": 44656,
+          "matched": " transcript identifies uncertain words",
+          "proposal": " without silently replacing",
+          "proposal_ids": [
+            1973,
+            47733,
+            24101
+          ],
+          "source_context": " original recording before editing an interview. A transcript identifies uncertain words without silently replacing them.\nEntry 151",
+          "actual_next3": " without silently replacing",
+          "actual_next3_ids": [
+            1973,
+            47733,
+            24101
+          ],
+          "output_context": " station** - Archives original recording before editing; transcript identifies uncertain words",
+          "origin": "prompt"
+        },
+        {
+          "step": 25,
+          "position": 92,
+          "P": 45127,
+          "next_position": 95,
+          "accepted": 2,
+          "d0": 13,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 8,
+          "match_end": 44663,
+          "candidates": [
+            {
+              "end": 44663,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 44601,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 44245,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 44215,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              13,
+              198,
+              5692
+            ]
+          ],
+          "match_start": 44656,
+          "matched": " transcript identifies uncertain words without silently replacing them",
+          "proposal": ".\nEntry",
+          "proposal_ids": [
+            13,
+            198,
+            5692
+          ],
+          "source_context": " original recording before editing an interview. A transcript identifies uncertain words without silently replacing them.\nEntry 1513: The orch",
+          "actual_next3": ".\n2",
+          "actual_next3_ids": [
+            13,
+            198,
+            17
+          ],
+          "output_context": " original recording before editing; transcript identifies uncertain words without silently replacing them",
+          "origin": "prompt"
+        },
+        {
+          "step": 29,
+          "position": 107,
+          "P": 45142,
+          "next_position": 109,
+          "accepted": 1,
+          "d0": 13534,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 5,
+          "match_end": 44956,
+          "candidates": [
+            {
+              "end": 44956,
+              "match_length": 5,
+              "proposal": [
+                13534,
+                13,
+                9988
+              ]
+            },
+            {
+              "end": 44924,
+              "match_length": 5,
+              "proposal": [
+                13534,
+                13,
+                9988
+              ]
+            },
+            {
+              "end": 44892,
+              "match_length": 5,
+              "proposal": [
+                13534,
+                13,
+                9988
+              ]
+            },
+            {
+              "end": 44740,
+              "match_length": 5,
+              "proposal": [
+                13534,
+                13,
+                9988
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              13534,
+              13,
+              9988
+            ]
+          ],
+          "match_start": 44952,
+          "matched": " original survey points beside corrected",
+          "proposal": " coordinates. Review",
+          "proposal_ids": [
+            13534,
+            13,
+            9988
+          ],
+          "source_context": "22: The mapping team keeps the original survey points beside corrected coordinates. Reviewers can compare both versions before approving a",
+          "actual_next3": " coordinates; reviewers",
+          "actual_next3_ids": [
+            13534,
+            26,
+            57043
+          ],
+          "output_context": "2. **Mapping team** - Keeps original survey points beside corrected",
+          "origin": "prompt"
+        },
+        {
+          "step": 31,
+          "position": 113,
+          "P": 45148,
+          "next_position": 116,
+          "accepted": 2,
+          "d0": 1518,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44964,
+          "candidates": [
+            {
+              "end": 44964,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            },
+            {
+              "end": 44932,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            },
+            {
+              "end": 44900,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            },
+            {
+              "end": 44748,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1518,
+              73551,
+              264
+            ]
+          ],
+          "match_start": 44962,
+          "matched": " compare both versions",
+          "proposal": " before approving a",
+          "proposal_ids": [
+            1518,
+            73551,
+            264
+          ],
+          "source_context": " points beside corrected coordinates. Reviewers can compare both versions before approving a revised route.\nEntry 15",
+          "actual_next3": " before approving revised",
+          "actual_next3_ids": [
+            1518,
+            73551,
+            30687
+          ],
+          "output_context": " - Keeps original survey points beside corrected coordinates; reviewers compare both versions",
+          "origin": "prompt"
+        },
+        {
+          "step": 36,
+          "position": 132,
+          "P": 45167,
+          "next_position": 135,
+          "accepted": 2,
+          "d0": 8387,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44985,
+          "candidates": [
+            {
+              "end": 44985,
+              "match_length": 3,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            },
+            {
+              "end": 44769,
+              "match_length": 3,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            },
+            {
+              "end": 44707,
+              "match_length": 3,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            },
+            {
+              "end": 44470,
+              "match_length": 3,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              8387,
+              60404,
+              13
+            ]
+          ],
+          "match_start": 44983,
+          "matched": " humidity readings from",
+          "proposal": " separate probes.",
+          "proposal_ids": [
+            8387,
+            60404,
+            13
+          ],
+          "source_context": "523: The greenhouse controller compares humidity readings from separate probes. A delayed sample is marked explicitly before the",
+          "actual_next3": " separate probes;",
+          "actual_next3_ids": [
+            8387,
+            60404,
+            26
+          ],
+          "output_context": "3. **Greenhouse controller** - Compares humidity readings from",
+          "origin": "prompt"
+        },
+        {
+          "step": 39,
+          "position": 143,
+          "P": 45178,
+          "next_position": 145,
+          "accepted": 1,
+          "d0": 13,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44999,
+          "candidates": [
+            {
+              "end": 44999,
+              "match_length": 3,
+              "proposal": [
+                13,
+                271,
+                6065
+              ]
+            },
+            {
+              "end": 44783,
+              "match_length": 3,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 44721,
+              "match_length": 3,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 44484,
+              "match_length": 3,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              13,
+              198,
+              5692
+            ],
+            [
+              13,
+              271,
+              6065
+            ]
+          ],
+          "match_start": 44997,
+          "matched": " irrigation schedule changes",
+          "proposal": ".\n\nTask",
+          "proposal_ids": [
+            13,
+            271,
+            6065
+          ],
+          "source_context": " A delayed sample is marked explicitly before the irrigation schedule changes.\n\nTask: Write a detailed operational review in at",
+          "actual_next3": ".\n4",
+          "actual_next3_ids": [
+            13,
+            198,
+            19
+          ],
+          "output_context": " readings from separate probes; delayed sample marked explicitly before irrigation schedule changes",
+          "origin": "prompt"
+        },
+        {
+          "step": 43,
+          "position": 157,
+          "P": 45192,
+          "next_position": 160,
+          "accepted": 2,
+          "d0": 1518,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44830,
+          "candidates": [
+            {
+              "end": 44830,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                13064,
+                279
+              ]
+            },
+            {
+              "end": 44799,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                13064,
+                279
+              ]
+            },
+            {
+              "end": 44528,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                13064,
+                279
+              ]
+            },
+            {
+              "end": 44349,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                13064,
+                279
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1518,
+              13064,
+              279
+            ]
+          ],
+          "match_start": 44828,
+          "matched": " each repaired binding",
+          "proposal": " before returning the",
+          "proposal_ids": [
+            1518,
+            13064,
+            279
+          ],
+          "source_context": "518: The library team photographs each repaired binding before returning the book. The original damage description remains attached",
+          "actual_next3": " before returning book",
+          "actual_next3_ids": [
+            1518,
+            13064,
+            2236
+          ],
+          "output_context": "\n4. **Library team** - Photographs each repaired binding",
+          "origin": "prompt"
+        },
+        {
+          "step": 45,
+          "position": 164,
+          "P": 45199,
+          "next_position": 168,
+          "accepted": 3,
+          "d0": 8198,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44839,
+          "candidates": [
+            {
+              "end": 44839,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 44808,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 44537,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 44358,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              8198,
+              12037,
+              310
+            ]
+          ],
+          "match_start": 44837,
+          "matched": " original damage description",
+          "proposal": " remains attached to",
+          "proposal_ids": [
+            8198,
+            12037,
+            310
+          ],
+          "source_context": " repaired binding before returning the book. The original damage description remains attached to the catalog entry.\nEntry 1",
+          "actual_next3": " remains attached to",
+          "actual_next3_ids": [
+            8198,
+            12037,
+            310
+          ],
+          "output_context": " - Photographs each repaired binding before returning book; original damage description",
+          "origin": "prompt"
+        },
+        {
+          "step": 53,
+          "position": 195,
+          "P": 45230,
+          "next_position": 197,
+          "accepted": 1,
+          "d0": 198,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 44692,
+          "candidates": [
+            {
+              "end": 44692,
+              "match_length": 4,
+              "proposal": [
+                198,
+                5692,
+                220
+              ]
+            },
+            {
+              "end": 44572,
+              "match_length": 4,
+              "proposal": [
+                198,
+                5692,
+                220
+              ]
+            },
+            {
+              "end": 44393,
+              "match_length": 4,
+              "proposal": [
+                198,
+                5692,
+                220
+              ]
+            },
+            {
+              "end": 44334,
+              "match_length": 4,
+              "proposal": [
+                198,
+                5692,
+                220
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              198,
+              5692,
+              220
+            ]
+          ],
+          "match_start": 44689,
+          "matched": " recorded changes persisted.",
+          "proposal": "\nEntry ",
+          "proposal_ids": [
+            198,
+            5692,
+            220
+          ],
+          "source_context": " treatments. A later inspection checks whether the recorded changes persisted.\nEntry 1514: The greenhouse controller",
+          "actual_next3": "\n6.",
+          "actual_next3_ids": [
+            198,
+            21,
+            13
+          ],
+          "output_context": " observations from proposed treatments; later inspection checks whether recorded changes persisted.",
+          "origin": "prompt"
+        },
+        {
+          "step": 57,
+          "position": 208,
+          "P": 45243,
+          "next_position": 212,
+          "accepted": 3,
+          "d0": 321,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44617,
+          "candidates": [
+            {
+              "end": 44617,
+              "match_length": 3,
+              "proposal": [
+                321,
+                1141,
+                24865
+              ]
+            },
+            {
+              "end": 44289,
+              "match_length": 3,
+              "proposal": [
+                321,
+                1141,
+                24865
+              ]
+            },
+            {
+              "end": 44043,
+              "match_length": 3,
+              "proposal": [
+                321,
+                1141,
+                24865
+              ]
+            },
+            {
+              "end": 43716,
+              "match_length": 3,
+              "proposal": [
+                321,
+                1141,
+                24865
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              321,
+              1141,
+              24865
+            ]
+          ],
+          "match_start": 44615,
+          "matched": " each replaced component",
+          "proposal": " and its inspection",
+          "proposal_ids": [
+            321,
+            1141,
+            24865
+          ],
+          "source_context": "511: The ferry workshop records each replaced component and its inspection date. A repair note identifies the technician",
+          "actual_next3": " and its inspection",
+          "actual_next3_ids": [
+            321,
+            1141,
+            24865
+          ],
+          "output_context": "\n6. **Ferry workshop** - Records each replaced component",
+          "origin": "prompt"
+        },
+        {
+          "step": 67,
+          "position": 248,
+          "P": 45283,
+          "next_position": 252,
+          "accepted": 3,
+          "d0": 852,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 44451,
+          "candidates": [
+            {
+              "end": 44451,
+              "match_length": 4,
+              "proposal": [
+                852,
+                23185,
+                424
+              ]
+            },
+            {
+              "end": 44420,
+              "match_length": 4,
+              "proposal": [
+                852,
+                23185,
+                424
+              ]
+            },
+            {
+              "end": 44118,
+              "match_length": 4,
+              "proposal": [
+                852,
+                23185,
+                424
+              ]
+            },
+            {
+              "end": 43904,
+              "match_length": 4,
+              "proposal": [
+                852,
+                23185,
+                424
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              852,
+              23185,
+              424
+            ]
+          ],
+          "match_start": 44448,
+          "matched": " scale was adjusted and",
+          "proposal": " who verified it",
+          "proposal_ids": [
+            852,
+            23185,
+            424
+          ],
+          "source_context": " batch. A calibration record explains when the scale was adjusted and who verified it.\nEntry 1506",
+          "actual_next3": " who verified it",
+          "actual_next3_ids": [
+            852,
+            23185,
+            424
+          ],
+          "output_context": " before mixing each batch; calibration record explains when scale was adjusted and",
+          "origin": "prompt"
+        }
+      ]
+    },
+    {
+      "tag": "block-1-full-on/old-8k/0",
+      "response_id": "chatcmpl-auto-19",
+      "prompt_tokens": 8159,
+      "histogram": [
+        5,
+        2,
+        4,
+        58
+      ],
+      "suffix_histogram": [
+        0,
+        0,
+        2,
+        5
+      ],
+      "stats": {
+        "queries": 69,
+        "hits": 7,
+        "no_match": 25,
+        "incomplete": 0,
+        "d0_mismatch": 31,
+        "numeric_rejected": 6,
+        "numeric_checks": 13,
+        "classified_tokens": 83,
+        "candidates": 104,
+        "compared": 590,
+        "matched": 185
+      },
+      "closure": {
+        "all_counter_fields_exact": true,
+        "matched_a0_unknown_positions": [],
+        "unassigned_logged_minus_known": {},
+        "all_suffix_hits_and_acceptance_exact": true
+      },
+      "mtp_output_count": 253,
+      "plain_tail_pieces": [
+        "3",
+        ")",
+        "\n\n"
+      ],
+      "hits": [
+        {
+          "step": 8,
+          "position": 23,
+          "P": 8182,
+          "next_position": 27,
+          "accepted": 3,
+          "d0": 11,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 8149,
+          "candidates": [
+            {
+              "end": 8149,
+              "match_length": 3,
+              "proposal": [
+                11,
+                36602,
+                11
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              11,
+              36602,
+              11
+            ]
+          ],
+          "match_start": 8147,
+          "matched": " measurement, storage",
+          "proposal": ", scheduling,",
+          "proposal_ids": [
+            11,
+            36602,
+            11
+          ],
+          "source_context": " least 500 words. Explain measurement, storage, scheduling, and correctness.\nAnswer:\n\n<think>",
+          "actual_next3": ", scheduling,",
+          "actual_next3_ids": [
+            11,
+            36602,
+            11
+          ],
+          "output_context": " technical review of 251 records, covering measurement, storage",
+          "origin": "prompt"
+        },
+        {
+          "step": 9,
+          "position": 27,
+          "P": 8186,
+          "next_position": 30,
+          "accepted": 2,
+          "d0": 55404,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 7,
+          "match_end": 8153,
+          "candidates": [
+            {
+              "end": 8153,
+              "match_length": 7,
+              "proposal": [
+                55404,
+                13,
+                198
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              55404,
+              13,
+              198
+            ]
+          ],
+          "match_start": 8147,
+          "matched": " measurement, storage, scheduling, and",
+          "proposal": " correctness.\n",
+          "proposal_ids": [
+            55404,
+            13,
+            198
+          ],
+          "source_context": " least 500 words. Explain measurement, storage, scheduling, and correctness.\nAnswer:\n\n<think>\nThe user wants",
+          "actual_next3": " correctness. Let",
+          "actual_next3_ids": [
+            55404,
+            13,
+            6558
+          ],
+          "output_context": "251 records, covering measurement, storage, scheduling, and",
+          "origin": "prompt"
+        },
+        {
+          "step": 21,
+          "position": 62,
+          "P": 8221,
+          "next_position": 66,
+          "accepted": 3,
+          "d0": 5742,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 7833,
+          "candidates": [
+            {
+              "end": 7833,
+              "match_length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ]
+            },
+            {
+              "end": 7771,
+              "match_length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ]
+            },
+            {
+              "end": 7387,
+              "match_length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ]
+            },
+            {
+              "end": 6276,
+              "match_length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              5742,
+              23975,
+              795
+            ]
+          ],
+          "match_start": 7831,
+          "matched": " cache can reuse",
+          "proposal": " recently accessed data",
+          "proposal_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "source_context": "\nRecord 243: A cache can reuse recently accessed data. An estimate of required bytes is different",
+          "actual_next3": " recently accessed data",
+          "actual_next3_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "output_context": "\n\n1. **Cache/Memory**: \"A cache can reuse",
+          "origin": "prompt"
+        },
+        {
+          "step": 22,
+          "position": 66,
+          "P": 8225,
+          "next_position": 70,
+          "accepted": 3,
+          "d0": 1473,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 7,
+          "match_end": 7837,
+          "candidates": [
+            {
+              "end": 7837,
+              "match_length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ]
+            },
+            {
+              "end": 7775,
+              "match_length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ]
+            },
+            {
+              "end": 7391,
+              "match_length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ]
+            },
+            {
+              "end": 6280,
+              "match_length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1473,
+              15572,
+              314
+            ]
+          ],
+          "match_start": 7831,
+          "matched": " cache can reuse recently accessed data.",
+          "proposal": " An estimate of",
+          "proposal_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "source_context": "\nRecord 243: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of",
+          "actual_next3": " An estimate of",
+          "actual_next3_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "output_context": "Cache/Memory**: \"A cache can reuse recently accessed data.",
+          "origin": "prompt"
+        },
+        {
+          "step": 23,
+          "position": 70,
+          "P": 8229,
+          "next_position": 74,
+          "accepted": 3,
+          "d0": 5639,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 11,
+          "match_end": 7841,
+          "candidates": [
+            {
+              "end": 7841,
+              "match_length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ]
+            },
+            {
+              "end": 7779,
+              "match_length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ]
+            },
+            {
+              "end": 7395,
+              "match_length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ]
+            },
+            {
+              "end": 6284,
+              "match_length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              5639,
+              369,
+              2086
+            ]
+          ],
+          "match_start": 7831,
+          "matched": " cache can reuse recently accessed data. An estimate of required",
+          "proposal": " bytes is different",
+          "proposal_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "source_context": "\nRecord 243: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.",
+          "actual_next3": " bytes is different",
+          "actual_next3_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "output_context": " \"A cache can reuse recently accessed data. An estimate of required",
+          "origin": "prompt"
+        },
+        {
+          "step": 24,
+          "position": 74,
+          "P": 8233,
+          "next_position": 78,
+          "accepted": 3,
+          "d0": 264,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 15,
+          "match_end": 7845,
+          "candidates": [
+            {
+              "end": 7845,
+              "match_length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ]
+            },
+            {
+              "end": 7783,
+              "match_length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ]
+            },
+            {
+              "end": 7399,
+              "match_length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ]
+            },
+            {
+              "end": 6288,
+              "match_length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              264,
+              18100,
+              314
+            ]
+          ],
+          "match_start": 7831,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from",
+          "proposal": " a measurement of",
+          "proposal_ids": [
+            264,
+            18100,
+            314
+          ],
+          "source_context": "\nRecord 243: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\nRecord 2",
+          "actual_next3": " a measurement of",
+          "actual_next3_ids": [
+            264,
+            18100,
+            314
+          ],
+          "output_context": " reuse recently accessed data. An estimate of required bytes is different from",
+          "origin": "prompt"
+        },
+        {
+          "step": 25,
+          "position": 78,
+          "P": 8237,
+          "next_position": 81,
+          "accepted": 2,
+          "d0": 4779,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 19,
+          "match_end": 7849,
+          "candidates": [
+            {
+              "end": 7849,
+              "match_length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ]
+            },
+            {
+              "end": 7787,
+              "match_length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ]
+            },
+            {
+              "end": 7403,
+              "match_length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ]
+            },
+            {
+              "end": 6292,
+              "match_length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              4779,
+              9163,
+              13
+            ]
+          ],
+          "match_start": 7831,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical",
+          "proposal": " memory traffic.",
+          "proposal_ids": [
+            4779,
+            9163,
+            13
+          ],
+          "source_context": "\nRecord 243: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\nRecord 244: The",
+          "actual_next3": " memory traffic.\"",
+          "actual_next3_ids": [
+            4779,
+            9163,
+            1149
+          ],
+          "output_context": ". An estimate of required bytes is different from a measurement of physical",
+          "origin": "prompt"
+        }
+      ]
+    },
+    {
+      "tag": "block-1-subset-on/context-1024/0",
+      "response_id": "chatcmpl-auto-0",
+      "prompt_tokens": 1002,
+      "histogram": [
+        2,
+        9,
+        10,
+        51
+      ],
+      "suffix_histogram": [
+        0,
+        2,
+        4,
+        4
+      ],
+      "stats": {
+        "queries": 72,
+        "hits": 10,
+        "no_match": 41,
+        "incomplete": 0,
+        "d0_mismatch": 21,
+        "numeric_rejected": 0,
+        "numeric_checks": 10,
+        "classified_tokens": 53,
+        "candidates": 57,
+        "compared": 290,
+        "matched": 122
+      },
+      "closure": {
+        "all_counter_fields_exact": true,
+        "matched_a0_unknown_positions": [],
+        "unassigned_logged_minus_known": {},
+        "all_suffix_hits_and_acceptance_exact": true
+      },
+      "mtp_output_count": 254,
+      "plain_tail_pieces": [
+        " to",
+        " catalog"
+      ],
+      "hits": [
+        {
+          "step": 5,
+          "position": 17,
+          "P": 1019,
+          "next_position": 21,
+          "accepted": 3,
+          "d0": 15,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 980,
+          "candidates": [
+            {
+              "end": 1001,
+              "match_length": 0,
+              "proposal": [
+                271,
+                248068,
+                198
+              ]
+            },
+            {
+              "end": 980,
+              "match_length": 4,
+              "proposal": [
+                15,
+                15,
+                4105
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              15,
+              15,
+              4105
+            ]
+          ],
+          "match_start": 977,
+          "matched": " at least 6",
+          "proposal": "00 words",
+          "proposal_ids": [
+            15,
+            15,
+            4105
+          ],
+          "source_context": "Task: Write a detailed operational review in at least 600 words. Discuss traceability, measurements, custody",
+          "actual_next3": "00 words",
+          "actual_next3_ids": [
+            15,
+            15,
+            4105
+          ],
+          "output_context": " wants me to write a detailed operational review of at least 6",
+          "origin": "prompt"
+        },
+        {
+          "step": 11,
+          "position": 35,
+          "P": 1037,
+          "next_position": 39,
+          "accepted": 3,
+          "d0": 11,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 989,
+          "candidates": [
+            {
+              "end": 989,
+              "match_length": 4,
+              "proposal": [
+                11,
+                23717,
+                11
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              11,
+              23717,
+              11
+            ]
+          ],
+          "match_start": 986,
+          "matched": " traceability, measurements",
+          "proposal": ", custody,",
+          "proposal_ids": [
+            11,
+            23717,
+            11
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer",
+          "actual_next3": ", custody,",
+          "actual_next3_ids": [
+            11,
+            23717,
+            11
+          ],
+          "output_context": " the numbered entries provided. I need to discuss traceability, measurements",
+          "origin": "prompt"
+        },
+        {
+          "step": 12,
+          "position": 39,
+          "P": 1041,
+          "next_position": 43,
+          "accepted": 3,
+          "d0": 11,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 8,
+          "match_end": 993,
+          "candidates": [
+            {
+              "end": 993,
+              "match_length": 8,
+              "proposal": [
+                11,
+                321,
+                3286
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              11,
+              321,
+              3286
+            ]
+          ],
+          "match_start": 986,
+          "matched": " traceability, measurements, custody, maintenance",
+          "proposal": ", and review",
+          "proposal_ids": [
+            11,
+            321,
+            3286
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:\n\n<think>\n",
+          "actual_next3": ", and review",
+          "actual_next3_ids": [
+            11,
+            321,
+            3286
+          ],
+          "output_context": ". I need to discuss traceability, measurements, custody, maintenance",
+          "origin": "prompt"
+        },
+        {
+          "step": 13,
+          "position": 43,
+          "P": 1045,
+          "next_position": 45,
+          "accepted": 1,
+          "d0": 13,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 12,
+          "match_end": 997,
+          "candidates": [
+            {
+              "end": 997,
+              "match_length": 12,
+              "proposal": [
+                13,
+                198,
+                15666
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              13,
+              198,
+              15666
+            ]
+          ],
+          "match_start": 986,
+          "matched": " traceability, measurements, custody, maintenance, and review decisions",
+          "proposal": ".\nAnswer",
+          "proposal_ids": [
+            13,
+            198,
+            15666
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:\n\n<think>\nThe user wants me",
+          "actual_next3": ". Let me",
+          "actual_next3_ids": [
+            13,
+            6558,
+            728
+          ],
+          "output_context": " discuss traceability, measurements, custody, maintenance, and review decisions",
+          "origin": "prompt"
+        },
+        {
+          "step": 33,
+          "position": 109,
+          "P": 1111,
+          "next_position": 113,
+          "accepted": 3,
+          "d0": 1973,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 962,
+          "candidates": [
+            {
+              "end": 962,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 934,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 596,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 310,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1973,
+              47733,
+              24101
+            ]
+          ],
+          "match_start": 959,
+          "matched": " transcript identifies uncertain words",
+          "proposal": " without silently replacing",
+          "proposal_ids": [
+            1973,
+            47733,
+            24101
+          ],
+          "source_context": " original recording before editing an interview. A transcript identifies uncertain words without silently replacing them.\n\nTask: Write a detailed",
+          "actual_next3": " without silently replacing",
+          "actual_next3_ids": [
+            1973,
+            47733,
+            24101
+          ],
+          "output_context": "34): Archives original recording before editing; transcript identifies uncertain words",
+          "origin": "prompt"
+        },
+        {
+          "step": 34,
+          "position": 113,
+          "P": 1115,
+          "next_position": 116,
+          "accepted": 2,
+          "d0": 13,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 8,
+          "match_end": 966,
+          "candidates": [
+            {
+              "end": 966,
+              "match_length": 8,
+              "proposal": [
+                13,
+                271,
+                6065
+              ]
+            },
+            {
+              "end": 938,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 600,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 314,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              13,
+              198,
+              5692
+            ],
+            [
+              13,
+              271,
+              6065
+            ]
+          ],
+          "match_start": 959,
+          "matched": " transcript identifies uncertain words without silently replacing them",
+          "proposal": ".\n\nTask",
+          "proposal_ids": [
+            13,
+            271,
+            6065
+          ],
+          "source_context": " original recording before editing an interview. A transcript identifies uncertain words without silently replacing them.\n\nTask: Write a detailed operational review in at",
+          "actual_next3": ".\n\n2",
+          "actual_next3_ids": [
+            13,
+            271,
+            17
+          ],
+          "output_context": " original recording before editing; transcript identifies uncertain words without silently replacing them",
+          "origin": "prompt"
+        },
+        {
+          "step": 45,
+          "position": 154,
+          "P": 1156,
+          "next_position": 157,
+          "accepted": 2,
+          "d0": 34773,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 785,
+          "candidates": [
+            {
+              "end": 785,
+              "match_length": 4,
+              "proposal": [
+                34773,
+                13534,
+                13
+              ]
+            },
+            {
+              "end": 558,
+              "match_length": 4,
+              "proposal": [
+                34773,
+                13534,
+                13
+              ]
+            },
+            {
+              "end": 528,
+              "match_length": 4,
+              "proposal": [
+                34773,
+                13534,
+                13
+              ]
+            },
+            {
+              "end": 443,
+              "match_length": 4,
+              "proposal": [
+                34773,
+                13534,
+                13
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              34773,
+              13534,
+              13
+            ]
+          ],
+          "match_start": 782,
+          "matched": " original survey points beside",
+          "proposal": " corrected coordinates.",
+          "proposal_ids": [
+            34773,
+            13534,
+            13
+          ],
+          "source_context": "28: The mapping team keeps the original survey points beside corrected coordinates. Reviewers can compare both versions before approving",
+          "actual_next3": " corrected coordinates;",
+          "actual_next3_ids": [
+            34773,
+            13534,
+            26
+          ],
+          "output_context": " 20, 28): Keeps original survey points beside",
+          "origin": "prompt"
+        },
+        {
+          "step": 47,
+          "position": 161,
+          "P": 1163,
+          "next_position": 164,
+          "accepted": 2,
+          "d0": 1518,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 794,
+          "candidates": [
+            {
+              "end": 794,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            },
+            {
+              "end": 567,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            },
+            {
+              "end": 537,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            },
+            {
+              "end": 452,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1518,
+              73551,
+              264
+            ]
+          ],
+          "match_start": 792,
+          "matched": " compare both versions",
+          "proposal": " before approving a",
+          "proposal_ids": [
+            1518,
+            73551,
+            264
+          ],
+          "source_context": " points beside corrected coordinates. Reviewers can compare both versions before approving a revised route.\nEntry 29",
+          "actual_next3": " before approving revised",
+          "actual_next3_ids": [
+            1518,
+            73551,
+            30687
+          ],
+          "output_context": "): Keeps original survey points beside corrected coordinates; reviewers compare both versions",
+          "origin": "prompt"
+        },
+        {
+          "step": 51,
+          "position": 176,
+          "P": 1178,
+          "next_position": 178,
+          "accepted": 1,
+          "d0": 220,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 1125,
+          "candidates": [
+            {
+              "end": 1125,
+              "match_length": 3,
+              "proposal": [
+                220,
+                18,
+                11
+              ]
+            },
+            {
+              "end": 1076,
+              "match_length": 3,
+              "proposal": [
+                220,
+                16,
+                11
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              220,
+              16,
+              11
+            ],
+            [
+              220,
+              18,
+              11
+            ]
+          ],
+          "match_start": 1123,
+          "matched": "** (Entries",
+          "proposal": " 3,",
+          "proposal_ids": [
+            220,
+            18,
+            11
+          ],
+          "source_context": " them.\n\n2. **Mapping team** (Entries 3, 5, 10, ",
+          "actual_next3": " 4,",
+          "actual_next3_ids": [
+            220,
+            19,
+            11
+          ],
+          "output_context": " revised route.\n\n3. **Greenhouse controller** (Entries",
+          "origin": "generated"
+        },
+        {
+          "step": 62,
+          "position": 216,
+          "P": 1218,
+          "next_position": 219,
+          "accepted": 2,
+          "d0": 23758,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 1124,
+          "candidates": [
+            {
+              "end": 1124,
+              "match_length": 3,
+              "proposal": [
+                23758,
+                220,
+                18
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              23758,
+              220,
+              18
+            ]
+          ],
+          "match_start": 1122,
+          "matched": " team** (",
+          "proposal": "Entries 3",
+          "proposal_ids": [
+            23758,
+            220,
+            18
+          ],
+          "source_context": " replacing them.\n\n2. **Mapping team** (Entries 3, 5, 10,",
+          "actual_next3": "Entries 6",
+          "actual_next3_ids": [
+            23758,
+            220,
+            21
+          ],
+          "output_context": " before irrigation schedule changes.\n\n4. **Library team** (",
+          "origin": "generated"
+        }
+      ]
+    },
+    {
+      "tag": "block-1-subset-on/context-8192/0",
+      "response_id": "chatcmpl-auto-6",
+      "prompt_tokens": 8176,
+      "histogram": [
+        13,
+        9,
+        8,
+        50
+      ],
+      "suffix_histogram": [
+        0,
+        3,
+        1,
+        3
+      ],
+      "stats": {
+        "queries": 80,
+        "hits": 7,
+        "no_match": 70,
+        "incomplete": 0,
+        "d0_mismatch": 3,
+        "numeric_rejected": 0,
+        "numeric_checks": 7,
+        "classified_tokens": 34,
+        "candidates": 31,
+        "compared": 166,
+        "matched": 57
+      },
+      "closure": {
+        "all_counter_fields_exact": true,
+        "matched_a0_unknown_positions": [],
+        "unassigned_logged_minus_known": {},
+        "all_suffix_hits_and_acceptance_exact": true
+      },
+      "mtp_output_count": 255,
+      "plain_tail_pieces": [
+        ":"
+      ],
+      "hits": [
+        {
+          "step": 5,
+          "position": 17,
+          "P": 8193,
+          "next_position": 21,
+          "accepted": 3,
+          "d0": 15,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 8154,
+          "candidates": [
+            {
+              "end": 8175,
+              "match_length": 0,
+              "proposal": [
+                271,
+                248068,
+                198
+              ]
+            },
+            {
+              "end": 8154,
+              "match_length": 4,
+              "proposal": [
+                15,
+                15,
+                4105
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              15,
+              15,
+              4105
+            ]
+          ],
+          "match_start": 8151,
+          "matched": " at least 6",
+          "proposal": "00 words",
+          "proposal_ids": [
+            15,
+            15,
+            4105
+          ],
+          "source_context": "Task: Write a detailed operational review in at least 600 words. Discuss traceability, measurements, custody",
+          "actual_next3": "00 words",
+          "actual_next3_ids": [
+            15,
+            15,
+            4105
+          ],
+          "output_context": " wants me to write a detailed operational review of at least 6",
+          "origin": "prompt"
+        },
+        {
+          "step": 11,
+          "position": 36,
+          "P": 8212,
+          "next_position": 40,
+          "accepted": 3,
+          "d0": 23717,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 5,
+          "match_end": 8164,
+          "candidates": [
+            {
+              "end": 8164,
+              "match_length": 5,
+              "proposal": [
+                23717,
+                11,
+                13017
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              23717,
+              11,
+              13017
+            ]
+          ],
+          "match_start": 8160,
+          "matched": " traceability, measurements,",
+          "proposal": " custody, maintenance",
+          "proposal_ids": [
+            23717,
+            11,
+            13017
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:",
+          "actual_next3": " custody, maintenance",
+          "actual_next3_ids": [
+            23717,
+            11,
+            13017
+          ],
+          "output_context": " archive entries provided. I need to discuss traceability, measurements,",
+          "origin": "prompt"
+        },
+        {
+          "step": 12,
+          "position": 40,
+          "P": 8216,
+          "next_position": 44,
+          "accepted": 3,
+          "d0": 321,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 9,
+          "match_end": 8168,
+          "candidates": [
+            {
+              "end": 8168,
+              "match_length": 9,
+              "proposal": [
+                321,
+                3286,
+                10856
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              321,
+              3286,
+              10856
+            ]
+          ],
+          "match_start": 8160,
+          "matched": " traceability, measurements, custody, maintenance,",
+          "proposal": " and review decisions",
+          "proposal_ids": [
+            321,
+            3286,
+            10856
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:\n\n<think>\nThe",
+          "actual_next3": " and review decisions",
+          "actual_next3_ids": [
+            321,
+            3286,
+            10856
+          ],
+          "output_context": " I need to discuss traceability, measurements, custody, maintenance,",
+          "origin": "prompt"
+        },
+        {
+          "step": 34,
+          "position": 115,
+          "P": 8291,
+          "next_position": 117,
+          "accepted": 1,
+          "d0": 60404,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 5,
+          "match_end": 8127,
+          "candidates": [
+            {
+              "end": 8127,
+              "match_length": 5,
+              "proposal": [
+                60404,
+                13,
+                357
+              ]
+            },
+            {
+              "end": 7868,
+              "match_length": 5,
+              "proposal": [
+                60404,
+                13,
+                357
+              ]
+            },
+            {
+              "end": 7782,
+              "match_length": 5,
+              "proposal": [
+                60404,
+                13,
+                357
+              ]
+            },
+            {
+              "end": 7578,
+              "match_length": 5,
+              "proposal": [
+                60404,
+                13,
+                357
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              60404,
+              13,
+              357
+            ]
+          ],
+          "match_start": 8123,
+          "matched": " compares humidity readings from separate",
+          "proposal": " probes. A",
+          "proposal_ids": [
+            60404,
+            13,
+            357
+          ],
+          "source_context": " 282: The greenhouse controller compares humidity readings from separate probes. A delayed sample is marked explicitly before the irrigation",
+          "actual_next3": " probes, marks",
+          "actual_next3_ids": [
+            60404,
+            11,
+            14973
+          ],
+          "output_context": " approving\n3. Greenhouse controller - compares humidity readings from separate",
+          "origin": "prompt"
+        },
+        {
+          "step": 40,
+          "position": 134,
+          "P": 8310,
+          "next_position": 137,
+          "accepted": 2,
+          "d0": 8198,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 8105,
+          "candidates": [
+            {
+              "end": 8105,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 7819,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 7673,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 7438,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              8198,
+              12037,
+              310
+            ]
+          ],
+          "match_start": 8103,
+          "matched": " original damage description",
+          "proposal": " remains attached to",
+          "proposal_ids": [
+            8198,
+            12037,
+            310
+          ],
+          "source_context": " repaired binding before returning the book. The original damage description remains attached to the catalog entry.\nEntry 2",
+          "actual_next3": " remains attached\n",
+          "actual_next3_ids": [
+            8198,
+            12037,
+            198
+          ],
+          "output_context": "\n4. Library team - photographs repaired bindings, original damage description",
+          "origin": "prompt"
+        },
+        {
+          "step": 52,
+          "position": 177,
+          "P": 8353,
+          "next_position": 179,
+          "accepted": 1,
+          "d0": 25936,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 7923,
+          "candidates": [
+            {
+              "end": 7923,
+              "match_length": 3,
+              "proposal": [
+                25936,
+                1754,
+                6937
+              ]
+            },
+            {
+              "end": 7487,
+              "match_length": 3,
+              "proposal": [
+                25936,
+                1754,
+                6937
+              ]
+            },
+            {
+              "end": 7457,
+              "match_length": 3,
+              "proposal": [
+                25936,
+                1754,
+                6937
+              ]
+            },
+            {
+              "end": 7370,
+              "match_length": 3,
+              "proposal": [
+                25936,
+                1754,
+                6937
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              25936,
+              1754,
+              6937
+            ]
+          ],
+          "match_start": 7921,
+          "matched": " weighs flour before",
+          "proposal": " mixing each batch",
+          "proposal_ids": [
+            25936,
+            1754,
+            6937
+          ],
+          "source_context": "Entry 275: The bakery weighs flour before mixing each batch. A calibration record explains when the scale",
+          "actual_next3": " mixing, calibration",
+          "actual_next3_ids": [
+            25936,
+            11,
+            36367
+          ],
+          "output_context": ", repair note identifies technician\n7. Bakery - weighs flour before",
+          "origin": "prompt"
+        },
+        {
+          "step": 57,
+          "position": 195,
+          "P": 8371,
+          "next_position": 197,
+          "accepted": 1,
+          "d0": 59528,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 5,
+          "match_end": 7519,
+          "candidates": [
+            {
+              "end": 7519,
+              "match_length": 5,
+              "proposal": [
+                59528,
+                13,
+                1473
+              ]
+            },
+            {
+              "end": 6319,
+              "match_length": 5,
+              "proposal": [
+                59528,
+                13,
+                1473
+              ]
+            },
+            {
+              "end": 5672,
+              "match_length": 5,
+              "proposal": [
+                59528,
+                13,
+                1473
+              ]
+            },
+            {
+              "end": 5439,
+              "match_length": 5,
+              "proposal": [
+                59528,
+                13,
+                1473
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              59528,
+              13,
+              1473
+            ]
+          ],
+          "match_start": 7515,
+          "matched": " stores fragile specimens in labelled",
+          "proposal": " drawers. An",
+          "proposal_ids": [
+            59528,
+            13,
+            1473
+          ],
+          "source_context": "Entry 261: The museum stores fragile specimens in labelled drawers. An access ledger distinguishes temporary loans from permanent",
+          "actual_next3": " drawers, access",
+          "actual_next3_ids": [
+            59528,
+            11,
+            2528
+          ],
+          "output_context": " adjustments and verification\n8. Museum - stores fragile specimens in labelled",
+          "origin": "prompt"
+        }
+      ]
+    },
+    {
+      "tag": "block-1-subset-on/context-45056/0",
+      "response_id": "chatcmpl-auto-9",
+      "prompt_tokens": 45035,
+      "histogram": [
+        2,
+        4,
+        14,
+        50
+      ],
+      "suffix_histogram": [
+        0,
+        3,
+        5,
+        7
+      ],
+      "stats": {
+        "queries": 70,
+        "hits": 15,
+        "no_match": 49,
+        "incomplete": 0,
+        "d0_mismatch": 6,
+        "numeric_rejected": 0,
+        "numeric_checks": 15,
+        "classified_tokens": 67,
+        "candidates": 70,
+        "compared": 358,
+        "matched": 93
+      },
+      "closure": {
+        "all_counter_fields_exact": true,
+        "matched_a0_unknown_positions": [],
+        "unassigned_logged_minus_known": {},
+        "all_suffix_hits_and_acceptance_exact": true
+      },
+      "mtp_output_count": 252,
+      "plain_tail_pieces": [
+        ".",
+        "\n",
+        "8",
+        "."
+      ],
+      "hits": [
+        {
+          "step": 6,
+          "position": 17,
+          "P": 45052,
+          "next_position": 21,
+          "accepted": 3,
+          "d0": 15,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 45013,
+          "candidates": [
+            {
+              "end": 45034,
+              "match_length": 0,
+              "proposal": [
+                271,
+                248068,
+                198
+              ]
+            },
+            {
+              "end": 45013,
+              "match_length": 4,
+              "proposal": [
+                15,
+                15,
+                4105
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              15,
+              15,
+              4105
+            ]
+          ],
+          "match_start": 45010,
+          "matched": " at least 6",
+          "proposal": "00 words",
+          "proposal_ids": [
+            15,
+            15,
+            4105
+          ],
+          "source_context": "Task: Write a detailed operational review in at least 600 words. Discuss traceability, measurements, custody",
+          "actual_next3": "00 words",
+          "actual_next3_ids": [
+            15,
+            15,
+            4105
+          ],
+          "output_context": " wants me to write a detailed operational review of at least 6",
+          "origin": "prompt"
+        },
+        {
+          "step": 8,
+          "position": 25,
+          "P": 45060,
+          "next_position": 29,
+          "accepted": 3,
+          "d0": 20934,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 45021,
+          "candidates": [
+            {
+              "end": 45021,
+              "match_length": 3,
+              "proposal": [
+                20934,
+                11,
+                23717
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              20934,
+              11,
+              23717
+            ]
+          ],
+          "match_start": 45019,
+          "matched": " traceability,",
+          "proposal": " measurements, custody",
+          "proposal_ids": [
+            20934,
+            11,
+            23717
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\n",
+          "actual_next3": " measurements, custody",
+          "actual_next3_ids": [
+            20934,
+            11,
+            23717
+          ],
+          "output_context": " of at least 600 words, discussing traceability,",
+          "origin": "prompt"
+        },
+        {
+          "step": 9,
+          "position": 29,
+          "P": 45064,
+          "next_position": 33,
+          "accepted": 3,
+          "d0": 13017,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 7,
+          "match_end": 45025,
+          "candidates": [
+            {
+              "end": 45025,
+              "match_length": 7,
+              "proposal": [
+                13017,
+                11,
+                321
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              13017,
+              11,
+              321
+            ]
+          ],
+          "match_start": 45019,
+          "matched": " traceability, measurements, custody,",
+          "proposal": " maintenance, and",
+          "proposal_ids": [
+            13017,
+            11,
+            321
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:\n\n<think>",
+          "actual_next3": " maintenance, and",
+          "actual_next3_ids": [
+            13017,
+            11,
+            321
+          ],
+          "output_context": "600 words, discussing traceability, measurements, custody,",
+          "origin": "prompt"
+        },
+        {
+          "step": 10,
+          "position": 33,
+          "P": 45068,
+          "next_position": 35,
+          "accepted": 1,
+          "d0": 10856,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 11,
+          "match_end": 45029,
+          "candidates": [
+            {
+              "end": 45029,
+              "match_length": 11,
+              "proposal": [
+                10856,
+                13,
+                198
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              10856,
+              13,
+              198
+            ]
+          ],
+          "match_start": 45019,
+          "matched": " traceability, measurements, custody, maintenance, and review",
+          "proposal": " decisions.\n",
+          "proposal_ids": [
+            10856,
+            13,
+            198
+          ],
+          "source_context": " least 600 words. Discuss traceability, measurements, custody, maintenance, and review decisions.\nAnswer:\n\n<think>\nThe user wants",
+          "actual_next3": " decisions based on",
+          "actual_next3_ids": [
+            10856,
+            3018,
+            383
+          ],
+          "output_context": ", discussing traceability, measurements, custody, maintenance, and review",
+          "origin": "prompt"
+        },
+        {
+          "step": 26,
+          "position": 88,
+          "P": 45123,
+          "next_position": 92,
+          "accepted": 3,
+          "d0": 1973,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 44659,
+          "candidates": [
+            {
+              "end": 44659,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 44597,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 44241,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            },
+            {
+              "end": 44211,
+              "match_length": 4,
+              "proposal": [
+                1973,
+                47733,
+                24101
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1973,
+              47733,
+              24101
+            ]
+          ],
+          "match_start": 44656,
+          "matched": " transcript identifies uncertain words",
+          "proposal": " without silently replacing",
+          "proposal_ids": [
+            1973,
+            47733,
+            24101
+          ],
+          "source_context": " original recording before editing an interview. A transcript identifies uncertain words without silently replacing them.\nEntry 151",
+          "actual_next3": " without silently replacing",
+          "actual_next3_ids": [
+            1973,
+            47733,
+            24101
+          ],
+          "output_context": " station** - Archives original recording before editing; transcript identifies uncertain words",
+          "origin": "prompt"
+        },
+        {
+          "step": 27,
+          "position": 92,
+          "P": 45127,
+          "next_position": 95,
+          "accepted": 2,
+          "d0": 13,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 8,
+          "match_end": 44663,
+          "candidates": [
+            {
+              "end": 44663,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 44601,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 44245,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 44215,
+              "match_length": 8,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              13,
+              198,
+              5692
+            ]
+          ],
+          "match_start": 44656,
+          "matched": " transcript identifies uncertain words without silently replacing them",
+          "proposal": ".\nEntry",
+          "proposal_ids": [
+            13,
+            198,
+            5692
+          ],
+          "source_context": " original recording before editing an interview. A transcript identifies uncertain words without silently replacing them.\nEntry 1513: The orch",
+          "actual_next3": ".\n2",
+          "actual_next3_ids": [
+            13,
+            198,
+            17
+          ],
+          "output_context": " original recording before editing; transcript identifies uncertain words without silently replacing them",
+          "origin": "prompt"
+        },
+        {
+          "step": 31,
+          "position": 106,
+          "P": 45141,
+          "next_position": 109,
+          "accepted": 2,
+          "d0": 34773,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 44955,
+          "candidates": [
+            {
+              "end": 44955,
+              "match_length": 4,
+              "proposal": [
+                34773,
+                13534,
+                13
+              ]
+            },
+            {
+              "end": 44923,
+              "match_length": 4,
+              "proposal": [
+                34773,
+                13534,
+                13
+              ]
+            },
+            {
+              "end": 44891,
+              "match_length": 4,
+              "proposal": [
+                34773,
+                13534,
+                13
+              ]
+            },
+            {
+              "end": 44739,
+              "match_length": 4,
+              "proposal": [
+                34773,
+                13534,
+                13
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              34773,
+              13534,
+              13
+            ]
+          ],
+          "match_start": 44952,
+          "matched": " original survey points beside",
+          "proposal": " corrected coordinates.",
+          "proposal_ids": [
+            34773,
+            13534,
+            13
+          ],
+          "source_context": "22: The mapping team keeps the original survey points beside corrected coordinates. Reviewers can compare both versions before approving",
+          "actual_next3": " corrected coordinates;",
+          "actual_next3_ids": [
+            34773,
+            13534,
+            26
+          ],
+          "output_context": "\n2. **Mapping team** - Keeps original survey points beside",
+          "origin": "prompt"
+        },
+        {
+          "step": 33,
+          "position": 113,
+          "P": 45148,
+          "next_position": 116,
+          "accepted": 2,
+          "d0": 1518,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44964,
+          "candidates": [
+            {
+              "end": 44964,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            },
+            {
+              "end": 44932,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            },
+            {
+              "end": 44900,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            },
+            {
+              "end": 44748,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                73551,
+                264
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1518,
+              73551,
+              264
+            ]
+          ],
+          "match_start": 44962,
+          "matched": " compare both versions",
+          "proposal": " before approving a",
+          "proposal_ids": [
+            1518,
+            73551,
+            264
+          ],
+          "source_context": " points beside corrected coordinates. Reviewers can compare both versions before approving a revised route.\nEntry 15",
+          "actual_next3": " before approving revised",
+          "actual_next3_ids": [
+            1518,
+            73551,
+            30687
+          ],
+          "output_context": " - Keeps original survey points beside corrected coordinates; reviewers compare both versions",
+          "origin": "prompt"
+        },
+        {
+          "step": 38,
+          "position": 132,
+          "P": 45167,
+          "next_position": 135,
+          "accepted": 2,
+          "d0": 8387,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44985,
+          "candidates": [
+            {
+              "end": 44985,
+              "match_length": 3,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            },
+            {
+              "end": 44769,
+              "match_length": 3,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            },
+            {
+              "end": 44707,
+              "match_length": 3,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            },
+            {
+              "end": 44470,
+              "match_length": 3,
+              "proposal": [
+                8387,
+                60404,
+                13
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              8387,
+              60404,
+              13
+            ]
+          ],
+          "match_start": 44983,
+          "matched": " humidity readings from",
+          "proposal": " separate probes.",
+          "proposal_ids": [
+            8387,
+            60404,
+            13
+          ],
+          "source_context": "523: The greenhouse controller compares humidity readings from separate probes. A delayed sample is marked explicitly before the",
+          "actual_next3": " separate probes;",
+          "actual_next3_ids": [
+            8387,
+            60404,
+            26
+          ],
+          "output_context": "3. **Greenhouse controller** - Compares humidity readings from",
+          "origin": "prompt"
+        },
+        {
+          "step": 41,
+          "position": 143,
+          "P": 45178,
+          "next_position": 145,
+          "accepted": 1,
+          "d0": 13,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44999,
+          "candidates": [
+            {
+              "end": 44999,
+              "match_length": 3,
+              "proposal": [
+                13,
+                271,
+                6065
+              ]
+            },
+            {
+              "end": 44783,
+              "match_length": 3,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 44721,
+              "match_length": 3,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            },
+            {
+              "end": 44484,
+              "match_length": 3,
+              "proposal": [
+                13,
+                198,
+                5692
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              13,
+              198,
+              5692
+            ],
+            [
+              13,
+              271,
+              6065
+            ]
+          ],
+          "match_start": 44997,
+          "matched": " irrigation schedule changes",
+          "proposal": ".\n\nTask",
+          "proposal_ids": [
+            13,
+            271,
+            6065
+          ],
+          "source_context": " A delayed sample is marked explicitly before the irrigation schedule changes.\n\nTask: Write a detailed operational review in at",
+          "actual_next3": ".\n4",
+          "actual_next3_ids": [
+            13,
+            198,
+            19
+          ],
+          "output_context": " readings from separate probes; delayed sample marked explicitly before irrigation schedule changes",
+          "origin": "prompt"
+        },
+        {
+          "step": 45,
+          "position": 157,
+          "P": 45192,
+          "next_position": 160,
+          "accepted": 2,
+          "d0": 1518,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44830,
+          "candidates": [
+            {
+              "end": 44830,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                13064,
+                279
+              ]
+            },
+            {
+              "end": 44799,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                13064,
+                279
+              ]
+            },
+            {
+              "end": 44528,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                13064,
+                279
+              ]
+            },
+            {
+              "end": 44349,
+              "match_length": 3,
+              "proposal": [
+                1518,
+                13064,
+                279
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1518,
+              13064,
+              279
+            ]
+          ],
+          "match_start": 44828,
+          "matched": " each repaired binding",
+          "proposal": " before returning the",
+          "proposal_ids": [
+            1518,
+            13064,
+            279
+          ],
+          "source_context": "518: The library team photographs each repaired binding before returning the book. The original damage description remains attached",
+          "actual_next3": " before returning book",
+          "actual_next3_ids": [
+            1518,
+            13064,
+            2236
+          ],
+          "output_context": "\n4. **Library team** - Photographs each repaired binding",
+          "origin": "prompt"
+        },
+        {
+          "step": 47,
+          "position": 164,
+          "P": 45199,
+          "next_position": 168,
+          "accepted": 3,
+          "d0": 8198,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44839,
+          "candidates": [
+            {
+              "end": 44839,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 44808,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 44537,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            },
+            {
+              "end": 44358,
+              "match_length": 3,
+              "proposal": [
+                8198,
+                12037,
+                310
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              8198,
+              12037,
+              310
+            ]
+          ],
+          "match_start": 44837,
+          "matched": " original damage description",
+          "proposal": " remains attached to",
+          "proposal_ids": [
+            8198,
+            12037,
+            310
+          ],
+          "source_context": " repaired binding before returning the book. The original damage description remains attached to the catalog entry.\nEntry 1",
+          "actual_next3": " remains attached to",
+          "actual_next3_ids": [
+            8198,
+            12037,
+            310
+          ],
+          "output_context": " - Photographs each repaired binding before returning book; original damage description",
+          "origin": "prompt"
+        },
+        {
+          "step": 55,
+          "position": 195,
+          "P": 45230,
+          "next_position": 197,
+          "accepted": 1,
+          "d0": 198,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 44692,
+          "candidates": [
+            {
+              "end": 44692,
+              "match_length": 4,
+              "proposal": [
+                198,
+                5692,
+                220
+              ]
+            },
+            {
+              "end": 44572,
+              "match_length": 4,
+              "proposal": [
+                198,
+                5692,
+                220
+              ]
+            },
+            {
+              "end": 44393,
+              "match_length": 4,
+              "proposal": [
+                198,
+                5692,
+                220
+              ]
+            },
+            {
+              "end": 44334,
+              "match_length": 4,
+              "proposal": [
+                198,
+                5692,
+                220
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              198,
+              5692,
+              220
+            ]
+          ],
+          "match_start": 44689,
+          "matched": " recorded changes persisted.",
+          "proposal": "\nEntry ",
+          "proposal_ids": [
+            198,
+            5692,
+            220
+          ],
+          "source_context": " treatments. A later inspection checks whether the recorded changes persisted.\nEntry 1514: The greenhouse controller",
+          "actual_next3": "\n6.",
+          "actual_next3_ids": [
+            198,
+            21,
+            13
+          ],
+          "output_context": " observations from proposed treatments; later inspection checks whether recorded changes persisted.",
+          "origin": "prompt"
+        },
+        {
+          "step": 59,
+          "position": 208,
+          "P": 45243,
+          "next_position": 212,
+          "accepted": 3,
+          "d0": 321,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 44617,
+          "candidates": [
+            {
+              "end": 44617,
+              "match_length": 3,
+              "proposal": [
+                321,
+                1141,
+                24865
+              ]
+            },
+            {
+              "end": 44289,
+              "match_length": 3,
+              "proposal": [
+                321,
+                1141,
+                24865
+              ]
+            },
+            {
+              "end": 44043,
+              "match_length": 3,
+              "proposal": [
+                321,
+                1141,
+                24865
+              ]
+            },
+            {
+              "end": 43716,
+              "match_length": 3,
+              "proposal": [
+                321,
+                1141,
+                24865
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              321,
+              1141,
+              24865
+            ]
+          ],
+          "match_start": 44615,
+          "matched": " each replaced component",
+          "proposal": " and its inspection",
+          "proposal_ids": [
+            321,
+            1141,
+            24865
+          ],
+          "source_context": "511: The ferry workshop records each replaced component and its inspection date. A repair note identifies the technician",
+          "actual_next3": " and its inspection",
+          "actual_next3_ids": [
+            321,
+            1141,
+            24865
+          ],
+          "output_context": "\n6. **Ferry workshop** - Records each replaced component",
+          "origin": "prompt"
+        },
+        {
+          "step": 69,
+          "position": 248,
+          "P": 45283,
+          "next_position": 252,
+          "accepted": 3,
+          "d0": 852,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 4,
+          "match_end": 44451,
+          "candidates": [
+            {
+              "end": 44451,
+              "match_length": 4,
+              "proposal": [
+                852,
+                23185,
+                424
+              ]
+            },
+            {
+              "end": 44420,
+              "match_length": 4,
+              "proposal": [
+                852,
+                23185,
+                424
+              ]
+            },
+            {
+              "end": 44118,
+              "match_length": 4,
+              "proposal": [
+                852,
+                23185,
+                424
+              ]
+            },
+            {
+              "end": 43904,
+              "match_length": 4,
+              "proposal": [
+                852,
+                23185,
+                424
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              852,
+              23185,
+              424
+            ]
+          ],
+          "match_start": 44448,
+          "matched": " scale was adjusted and",
+          "proposal": " who verified it",
+          "proposal_ids": [
+            852,
+            23185,
+            424
+          ],
+          "source_context": " batch. A calibration record explains when the scale was adjusted and who verified it.\nEntry 1506",
+          "actual_next3": " who verified it",
+          "actual_next3_ids": [
+            852,
+            23185,
+            424
+          ],
+          "output_context": " before mixing each batch; calibration record explains when scale was adjusted and",
+          "origin": "prompt"
+        }
+      ]
+    },
+    {
+      "tag": "block-1-subset-on/old-8k/0",
+      "response_id": "chatcmpl-auto-19",
+      "prompt_tokens": 8159,
+      "histogram": [
+        5,
+        2,
+        4,
+        58
+      ],
+      "suffix_histogram": [
+        0,
+        0,
+        2,
+        5
+      ],
+      "stats": {
+        "queries": 69,
+        "hits": 7,
+        "no_match": 25,
+        "incomplete": 0,
+        "d0_mismatch": 31,
+        "numeric_rejected": 6,
+        "numeric_checks": 13,
+        "classified_tokens": 83,
+        "candidates": 104,
+        "compared": 590,
+        "matched": 185
+      },
+      "closure": {
+        "all_counter_fields_exact": true,
+        "matched_a0_unknown_positions": [],
+        "unassigned_logged_minus_known": {},
+        "all_suffix_hits_and_acceptance_exact": true
+      },
+      "mtp_output_count": 253,
+      "plain_tail_pieces": [
+        "3",
+        ")",
+        "\n\n"
+      ],
+      "hits": [
+        {
+          "step": 8,
+          "position": 23,
+          "P": 8182,
+          "next_position": 27,
+          "accepted": 3,
+          "d0": 11,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 8149,
+          "candidates": [
+            {
+              "end": 8149,
+              "match_length": 3,
+              "proposal": [
+                11,
+                36602,
+                11
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              11,
+              36602,
+              11
+            ]
+          ],
+          "match_start": 8147,
+          "matched": " measurement, storage",
+          "proposal": ", scheduling,",
+          "proposal_ids": [
+            11,
+            36602,
+            11
+          ],
+          "source_context": " least 500 words. Explain measurement, storage, scheduling, and correctness.\nAnswer:\n\n<think>",
+          "actual_next3": ", scheduling,",
+          "actual_next3_ids": [
+            11,
+            36602,
+            11
+          ],
+          "output_context": " technical review of 251 records, covering measurement, storage",
+          "origin": "prompt"
+        },
+        {
+          "step": 9,
+          "position": 27,
+          "P": 8186,
+          "next_position": 30,
+          "accepted": 2,
+          "d0": 55404,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 7,
+          "match_end": 8153,
+          "candidates": [
+            {
+              "end": 8153,
+              "match_length": 7,
+              "proposal": [
+                55404,
+                13,
+                198
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              55404,
+              13,
+              198
+            ]
+          ],
+          "match_start": 8147,
+          "matched": " measurement, storage, scheduling, and",
+          "proposal": " correctness.\n",
+          "proposal_ids": [
+            55404,
+            13,
+            198
+          ],
+          "source_context": " least 500 words. Explain measurement, storage, scheduling, and correctness.\nAnswer:\n\n<think>\nThe user wants",
+          "actual_next3": " correctness. Let",
+          "actual_next3_ids": [
+            55404,
+            13,
+            6558
+          ],
+          "output_context": "251 records, covering measurement, storage, scheduling, and",
+          "origin": "prompt"
+        },
+        {
+          "step": 21,
+          "position": 62,
+          "P": 8221,
+          "next_position": 66,
+          "accepted": 3,
+          "d0": 5742,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 3,
+          "match_end": 7833,
+          "candidates": [
+            {
+              "end": 7833,
+              "match_length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ]
+            },
+            {
+              "end": 7771,
+              "match_length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ]
+            },
+            {
+              "end": 7387,
+              "match_length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ]
+            },
+            {
+              "end": 6276,
+              "match_length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              5742,
+              23975,
+              795
+            ]
+          ],
+          "match_start": 7831,
+          "matched": " cache can reuse",
+          "proposal": " recently accessed data",
+          "proposal_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "source_context": "\nRecord 243: A cache can reuse recently accessed data. An estimate of required bytes is different",
+          "actual_next3": " recently accessed data",
+          "actual_next3_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "output_context": "\n\n1. **Cache/Memory**: \"A cache can reuse",
+          "origin": "prompt"
+        },
+        {
+          "step": 22,
+          "position": 66,
+          "P": 8225,
+          "next_position": 70,
+          "accepted": 3,
+          "d0": 1473,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 7,
+          "match_end": 7837,
+          "candidates": [
+            {
+              "end": 7837,
+              "match_length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ]
+            },
+            {
+              "end": 7775,
+              "match_length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ]
+            },
+            {
+              "end": 7391,
+              "match_length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ]
+            },
+            {
+              "end": 6280,
+              "match_length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              1473,
+              15572,
+              314
+            ]
+          ],
+          "match_start": 7831,
+          "matched": " cache can reuse recently accessed data.",
+          "proposal": " An estimate of",
+          "proposal_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "source_context": "\nRecord 243: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of",
+          "actual_next3": " An estimate of",
+          "actual_next3_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "output_context": "Cache/Memory**: \"A cache can reuse recently accessed data.",
+          "origin": "prompt"
+        },
+        {
+          "step": 23,
+          "position": 70,
+          "P": 8229,
+          "next_position": 74,
+          "accepted": 3,
+          "d0": 5639,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 11,
+          "match_end": 7841,
+          "candidates": [
+            {
+              "end": 7841,
+              "match_length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ]
+            },
+            {
+              "end": 7779,
+              "match_length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ]
+            },
+            {
+              "end": 7395,
+              "match_length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ]
+            },
+            {
+              "end": 6284,
+              "match_length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              5639,
+              369,
+              2086
+            ]
+          ],
+          "match_start": 7831,
+          "matched": " cache can reuse recently accessed data. An estimate of required",
+          "proposal": " bytes is different",
+          "proposal_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "source_context": "\nRecord 243: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.",
+          "actual_next3": " bytes is different",
+          "actual_next3_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "output_context": " \"A cache can reuse recently accessed data. An estimate of required",
+          "origin": "prompt"
+        },
+        {
+          "step": 24,
+          "position": 74,
+          "P": 8233,
+          "next_position": 78,
+          "accepted": 3,
+          "d0": 264,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 15,
+          "match_end": 7845,
+          "candidates": [
+            {
+              "end": 7845,
+              "match_length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ]
+            },
+            {
+              "end": 7783,
+              "match_length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ]
+            },
+            {
+              "end": 7399,
+              "match_length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ]
+            },
+            {
+              "end": 6288,
+              "match_length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              264,
+              18100,
+              314
+            ]
+          ],
+          "match_start": 7831,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from",
+          "proposal": " a measurement of",
+          "proposal_ids": [
+            264,
+            18100,
+            314
+          ],
+          "source_context": "\nRecord 243: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\nRecord 2",
+          "actual_next3": " a measurement of",
+          "actual_next3_ids": [
+            264,
+            18100,
+            314
+          ],
+          "output_context": " reuse recently accessed data. An estimate of required bytes is different from",
+          "origin": "prompt"
+        },
+        {
+          "step": 25,
+          "position": 78,
+          "P": 8237,
+          "next_position": 81,
+          "accepted": 2,
+          "d0": 4779,
+          "d0_known": true,
+          "reason": "ready",
+          "match_length": 19,
+          "match_end": 7849,
+          "candidates": [
+            {
+              "end": 7849,
+              "match_length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ]
+            },
+            {
+              "end": 7787,
+              "match_length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ]
+            },
+            {
+              "end": 7403,
+              "match_length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ]
+            },
+            {
+              "end": 6292,
+              "match_length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ]
+            }
+          ],
+          "same_length_continuations": [
+            [
+              4779,
+              9163,
+              13
+            ]
+          ],
+          "match_start": 7831,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical",
+          "proposal": " memory traffic.",
+          "proposal_ids": [
+            4779,
+            9163,
+            13
+          ],
+          "source_context": "\nRecord 243: A cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical memory traffic.\nRecord 244: The",
+          "actual_next3": " memory traffic.\"",
+          "actual_next3_ids": [
+            4779,
+            9163,
+            1149
+          ],
+          "output_context": ". An estimate of required bytes is different from a measurement of physical",
+          "origin": "prompt"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Native d0 is observable only on a>=1 steps; matched a0 is explicitly unknown.",
+    "All matched-a0 uncertainty is in subset repeat fixtures; old8K/new1K/new8K/new45K close every counter.",
+    "Counter closure validates reconstruction against logs, but client burst inference is not independent native tracing.",
+    "No new rule, candidate binary, GPU/HTTP or performance test was run.",
+    "Old-path classification cannot predict counterfactual neural proposal quality or changed later step boundaries."
+  ],
+  "no_new_candidate_execution": true,
+  "new_gpu_requests": 0,
+  "new_http_requests": 0
+}

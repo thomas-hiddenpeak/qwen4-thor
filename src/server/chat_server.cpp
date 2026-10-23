@@ -323,7 +323,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
                  static_cast<unsigned long long>(init_ns));
     std::fprintf(stderr,
                  "[q4t] suffix enabled: k=3 match=3..64 candidates=4 "
-                 "capacity=%d global_ids=1 numeric_gate=1\n", cfg.max_len);
+                 "capacity=%d global_ids=1 numeric_gate=1 "
+                 "min_admitted_match=%d\n", cfg.max_len,
+                 mtp::SuffixDrafter::kMinAdmittedMatch);
   }
   std::fprintf(stderr,
                "[q4t][capacity] requested_max_len=%d requested_max_seq=%d "

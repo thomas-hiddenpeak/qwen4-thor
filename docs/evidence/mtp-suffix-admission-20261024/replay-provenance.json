@@ -1,0 +1,112 @@
+{
+  "actual_unchanged_code_replay_build": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-I",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/acceptance-v1/source-snapshot/include",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/replay.cpp",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/acceptance-v1/source-snapshot/src/mtp/suffix_drafter.cpp",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/build/libq4t_text.a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/build/libq4t_io.a",
+    "-licui18n",
+    "-licuuc",
+    "-licudata",
+    "-o",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/replay"
+  ],
+  "old_helper_build_log_bytes": 0,
+  "actual_unchanged_code_replay_command": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/replay",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/chunk-inputs.json"
+  ],
+  "actual_replay_identity": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/acceptance-v1/source-snapshot/src/mtp/suffix_drafter.cpp": "ae30813b85df827de1b90bd7689f19aab8ae5ba303d9e1eb07722359ea50455a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/acceptance-v1/source-snapshot/include/q4t/mtp/suffix_drafter.h": "eaa7a3e11866227f4cddf54762459562bc9daeec149856dd1f9f458c71b8945b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/acceptance-v1/source-snapshot/src/text/tokenizer.cpp": "b912142ff16248b642db74ecee8d09534bcd67ccd9cf498797983b6ac4c73423",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/acceptance-v1/source-snapshot/include/q4t/text/tokenizer.h": "10e336e6c3d47b465c2cbf03bc034dc4fc1a52c4dcf00ecda99c5724fe0979e0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/extract.py": "c8f5507091f4073ff51a90ad501e2e14b04007f147eb8f512347ffa5a121ab1f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/replay.cpp": "7ba59868c2eef0bf86a73f338cd618516651a121813da6af4f71e6f9d3c9ba1f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/replay": "26aaf7c6ef0f1d650cbf7924f6333d3aba29668b4ffe55a7a0640a55c3cf55c9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/correlate.py": "2e04122114ab844c50050a4c4b6d191af7f12c39cd734a702d6612c2aede01b1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/chunks-bursts.json": "72664a241a21774fc39ceee9fb117349841b04945493c5e360ff5244f68aea76",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/chunk-inputs.json": "9e58f16236c1fa04726386adcdeee375725fcdf4ccda4adf5db249c8ecbfdcc1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/index-replay.json": "b697bd70503d07505c735ec9133dd84efa16732a7274cce73342087f535a9f2e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/build/libq4t_text.a": "b5d23197e94116477b82f28547f4842a5033dacabd74976b513ad20ae81c3859",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/build/libq4t_io.a": "cdb78bb4b2402e6bc26e9ab72e55867702b9a26c76ff9ce5404d07bdda86818d",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+  },
+  "recommended_new_candidate_helper_compile": [
+    "g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-I",
+    "include",
+    "tools/mtp_suffix_admission/admission_replay.cpp",
+    "src/mtp/suffix_drafter.cpp",
+    ".q4t-work/suffix-admission-20261024/build/libq4t_text.a",
+    ".q4t-work/suffix-admission-20261024/build/libq4t_io.a",
+    "-licui18n",
+    "-licuuc",
+    "-licudata",
+    "-o",
+    ".q4t-work/suffix-admission-20261024/build/admission_replay"
+  ],
+  "recommended_new_helper_run_after_first_http": [
+    ".q4t-work/suffix-admission-20261024/build/admission_replay",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/index-replay.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/diagnosis-index/token-burst-replay.json"
+  ],
+  "new_helper_source_sha256": "5e591392f9d612c5e9beb2d9b5d715d17987ba018193680a97e80ecc7e38c0f5",
+  "new_helper_compile_or_execution_by_diagnosis_agent": false,
+  "static_checks": [
+    "Json Find/IsObject API checked against header; no unsupported accessor.",
+    "Position checked signed in [0,253) before index conversion; full three output tokens exist.",
+    "All global IDs bounded [0,248320); direct global candidates avoid subset remapping.",
+    "Old source match, proposal, output prefix and immutable history are independently asserted.",
+    "Numeric-before-length gate/counters checked; no matched-a0 d0 value invented.",
+    "Frozen eight sequences/116 requests/58 ON/1396 known hits bound replay size.",
+    "New helper not run before first HTTP; original numeric-code helper only ran CPU."
+  ],
+  "original_frozen_plan": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/acceptance-v1/frozen-plan.json",
+    "sha256": "dbdfea2061ad866db0f6ba83bb8106f654d753958c4484b8ca249f7999b14902"
+  },
+  "original_raw_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/acceptance-v1/run/files.json",
+    "sha256": "e3d0dbb8525680d28e00571f093adefa2a0df035c026e7a079ab5f284e0a150d"
+  },
+  "original_archive_receipt": {
+    "archive_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/archive-no-go",
+    "archive_files": 2908,
+    "archive_seal_sha256": "26675401d3be0182673065d3b3b2488c798dd928d4bebcfb66eddbd229129d68",
+    "archive_seal_verified": true,
+    "copied_payload_bytes": 298075071,
+    "candidate_sha256": "94d004be82d45d0d15110419eac060e441990bc109cad797e1f50f8386b7338a",
+    "frozen_plan_sha256": "dbdfea2061ad866db0f6ba83bb8106f654d753958c4484b8ca249f7999b14902",
+    "decision_sha256": "544fcc15688e4d2f88c9e6556dbfb09b2fbad8652c2f81dfa9a128d60e6e1c44",
+    "decision_fields": {
+      "evidence_validity": "VALID",
+      "measurement_complete": true,
+      "statistical_conclusion": "DESCRIPTIVE_ONLY; two startup pairs per head do not establish global population noninferiority. Repeated 45K losses and deterministic extra target work support rejection for the measured fixtures; tiny old-8K subset differences are not a statistical effect-size proof.",
+      "engineering_decision": "NO_GO_PROTECTION_REGRESSION"
+    },
+    "default_identity": {
+      "binary_path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+      "release_path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+      "release_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96"
+    },
+    "deployment_performed": false,
+    "original_paths_retained": true,
+    "weight_payloads_copied": false
+  },
+  "new_gpu_requests": 0,
+  "new_http_requests": 0
+}

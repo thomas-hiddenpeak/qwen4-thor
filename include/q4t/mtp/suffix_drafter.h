@@ -29,6 +29,7 @@ enum class SuffixReason {
   kIncomplete,
   kFirstTokenMismatch,
   kNumericRejected,
+  kShortRejected,
   kInvalidToken,
   kCapacityExhausted,
 };
@@ -65,6 +66,7 @@ struct SuffixCounters {
   uint64_t classified_tokens = 0;
   uint64_t numeric_rejected = 0;
   uint64_t numeric_ns = 0;  // Included in query_ns, not an additional phase.
+  uint64_t short_rejected = 0;
   uint64_t invalid_tokens = 0;
   uint64_t capacity_exhaustions = 0;
   size_t peak_memory_bytes = 0;
@@ -74,6 +76,7 @@ class SuffixDrafter {
  public:
   static constexpr int kDraftCount = 3;
   static constexpr int kMinMatch = 3;
+  static constexpr int kMinAdmittedMatch = 32;
   static constexpr int kMaxMatch = 64;
   static constexpr size_t kCandidates = 4;
   static constexpr size_t kBucketCount = size_t{1} << 16;
@@ -111,7 +114,9 @@ class SuffixDrafter {
   // search another candidate just to pass a gate. With token_classes, reject
   // a selected full match containing a digit and only allowed ASCII bytes,
   // after the full-three and d0 gates. Periodic continuations may read the
-  // pending token, but nothing beyond it.
+  // pending token, but nothing beyond it. Finally require a match of at least
+  // kMinAdmittedMatch tokens, including pending. A short rejection preserves
+  // the selected proposal and history; it never searches another candidate.
   SuffixProposal ProposeAfter(int32_t pending, int32_t d0);
 
   // Release both arrays on cancellation, failure, termination or slot reuse.

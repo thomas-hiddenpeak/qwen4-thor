@@ -1,0 +1,1874 @@
+{
+  "rule": "Only selected exact matches >=32 tokens are admitted after existing gates",
+  "scope": "One fixed candidate classified on recorded old paths; no threshold scan or new-candidate execution",
+  "source_sha256": "6b4858fb9375fa1bcaa87df686c464bd73e3888268df8022838cc8cb8d86207d",
+  "rows": [
+    {
+      "tag": "block-1-full-on/context-1024/0",
+      "group": "block-1-full-on",
+      "case": "context-1024",
+      "original_hits": 8,
+      "original_histogram": [
+        0,
+        2,
+        2,
+        4
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 3,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 8,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-full-on/context-1024/1",
+      "group": "block-1-full-on",
+      "case": "context-1024",
+      "original_hits": 8,
+      "original_histogram": [
+        0,
+        2,
+        2,
+        4
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 3,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 8,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-full-on/context-1024/2",
+      "group": "block-1-full-on",
+      "case": "context-1024",
+      "original_hits": 8,
+      "original_histogram": [
+        0,
+        2,
+        2,
+        4
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 3,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 8,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-full-on/context-8192/0",
+      "group": "block-1-full-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        1,
+        3,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-full-on/context-8192/1",
+      "group": "block-1-full-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        1,
+        3,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-full-on/context-8192/2",
+      "group": "block-1-full-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        1,
+        3,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-full-on/context-45056/0",
+      "group": "block-1-full-on",
+      "case": "context-45056",
+      "original_hits": 14,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        6
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 3,
+        "5": 1,
+        "6": 1,
+        "8": 1,
+        "10": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 14,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-1-full-on/context-45056/1",
+      "group": "block-1-full-on",
+      "case": "context-45056",
+      "original_hits": 14,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        6
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 3,
+        "5": 1,
+        "6": 1,
+        "8": 1,
+        "10": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 14,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-1-full-on/context-45056/2",
+      "group": "block-1-full-on",
+      "case": "context-45056",
+      "original_hits": 14,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        6
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 3,
+        "5": 1,
+        "6": 1,
+        "8": 1,
+        "10": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 14,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-1-full-on/old-8k/0",
+      "group": "block-1-full-on",
+      "case": "old-8k",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        0,
+        2,
+        5
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "7": 2,
+        "11": 1,
+        "15": 1,
+        "19": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 21
+    },
+    {
+      "tag": "block-1-full-on/repeat-code/0",
+      "group": "block-1-full-on",
+      "case": "repeat-code",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        62
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "48": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 46
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        55
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-1-full-on/repeat-text/0",
+      "group": "block-1-full-on",
+      "case": "repeat-text",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        62
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 47
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        55
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-1-full-on/old-repeat-code/0",
+      "group": "block-1-full-on",
+      "case": "old-repeat-code",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        62
+      ],
+      "selected_lengths": {
+        "5": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 47
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        55
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-1-full-on/old-repeat-text/0",
+      "group": "block-1-full-on",
+      "case": "old-repeat-text",
+      "original_hits": 61,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        61
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 46
+      },
+      "retained_known_hits": 54,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        54
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-1-subset-on/context-1024/0",
+      "group": "block-1-subset-on",
+      "case": "context-1024",
+      "original_hits": 10,
+      "original_histogram": [
+        0,
+        2,
+        4,
+        4
+      ],
+      "selected_lengths": {
+        "3": 3,
+        "4": 4,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 10,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-subset-on/context-1024/1",
+      "group": "block-1-subset-on",
+      "case": "context-1024",
+      "original_hits": 10,
+      "original_histogram": [
+        0,
+        2,
+        4,
+        4
+      ],
+      "selected_lengths": {
+        "3": 3,
+        "4": 4,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 10,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-subset-on/context-1024/2",
+      "group": "block-1-subset-on",
+      "case": "context-1024",
+      "original_hits": 10,
+      "original_histogram": [
+        0,
+        2,
+        4,
+        4
+      ],
+      "selected_lengths": {
+        "3": 3,
+        "4": 4,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 10,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-subset-on/context-8192/0",
+      "group": "block-1-subset-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        3,
+        1,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 1,
+        "5": 3,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-subset-on/context-8192/1",
+      "group": "block-1-subset-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        3,
+        1,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 1,
+        "5": 3,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-subset-on/context-8192/2",
+      "group": "block-1-subset-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        3,
+        1,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 1,
+        "5": 3,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-1-subset-on/context-45056/0",
+      "group": "block-1-subset-on",
+      "case": "context-45056",
+      "original_hits": 15,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        7
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 5,
+        "7": 1,
+        "8": 1,
+        "11": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 15,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-1-subset-on/context-45056/1",
+      "group": "block-1-subset-on",
+      "case": "context-45056",
+      "original_hits": 15,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        7
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 5,
+        "7": 1,
+        "8": 1,
+        "11": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 15,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-1-subset-on/context-45056/2",
+      "group": "block-1-subset-on",
+      "case": "context-45056",
+      "original_hits": 15,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        7
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 5,
+        "7": 1,
+        "8": 1,
+        "11": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 15,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-1-subset-on/old-8k/0",
+      "group": "block-1-subset-on",
+      "case": "old-8k",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        0,
+        2,
+        5
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "7": 2,
+        "11": 1,
+        "15": 1,
+        "19": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 21
+    },
+    {
+      "tag": "block-1-subset-on/repeat-code/0",
+      "group": "block-1-subset-on",
+      "case": "repeat-code",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        1,
+        61
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "15": 1,
+        "19": 1,
+        "23": 1,
+        "27": 1,
+        "31": 1,
+        "35": 1,
+        "39": 1,
+        "43": 1,
+        "47": 1,
+        "51": 1,
+        "55": 1,
+        "59": 1,
+        "63": 1,
+        "64": 47
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        1,
+        54
+      ],
+      "unknown_native_d0_positions": [
+        12,
+        120,
+        129,
+        246
+      ],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-1-subset-on/repeat-text/0",
+      "group": "block-1-subset-on",
+      "case": "repeat-text",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        62
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 47
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        55
+      ],
+      "unknown_native_d0_positions": [
+        160
+      ],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-1-subset-on/old-repeat-code/0",
+      "group": "block-1-subset-on",
+      "case": "old-repeat-code",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        62
+      ],
+      "selected_lengths": {
+        "4": 1,
+        "9": 1,
+        "13": 1,
+        "17": 1,
+        "21": 1,
+        "25": 1,
+        "29": 1,
+        "33": 1,
+        "37": 1,
+        "41": 1,
+        "45": 1,
+        "49": 1,
+        "53": 1,
+        "57": 1,
+        "62": 1,
+        "64": 47
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        55
+      ],
+      "unknown_native_d0_positions": [
+        59,
+        156
+      ],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-1-subset-on/old-repeat-text/0",
+      "group": "block-1-subset-on",
+      "case": "old-repeat-text",
+      "original_hits": 61,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        61
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 46
+      },
+      "retained_known_hits": 54,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        54
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-2-full-on/context-1024/0",
+      "group": "block-2-full-on",
+      "case": "context-1024",
+      "original_hits": 8,
+      "original_histogram": [
+        0,
+        2,
+        2,
+        4
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 3,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 8,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-full-on/context-1024/1",
+      "group": "block-2-full-on",
+      "case": "context-1024",
+      "original_hits": 8,
+      "original_histogram": [
+        0,
+        2,
+        2,
+        4
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 3,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 8,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-full-on/context-1024/2",
+      "group": "block-2-full-on",
+      "case": "context-1024",
+      "original_hits": 8,
+      "original_histogram": [
+        0,
+        2,
+        2,
+        4
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 3,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 8,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-full-on/context-8192/0",
+      "group": "block-2-full-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        1,
+        3,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-full-on/context-8192/1",
+      "group": "block-2-full-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        1,
+        3,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-full-on/context-8192/2",
+      "group": "block-2-full-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        1,
+        3,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-full-on/context-45056/0",
+      "group": "block-2-full-on",
+      "case": "context-45056",
+      "original_hits": 14,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        6
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 3,
+        "5": 1,
+        "6": 1,
+        "8": 1,
+        "10": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 14,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-2-full-on/context-45056/1",
+      "group": "block-2-full-on",
+      "case": "context-45056",
+      "original_hits": 14,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        6
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 3,
+        "5": 1,
+        "6": 1,
+        "8": 1,
+        "10": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 14,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-2-full-on/context-45056/2",
+      "group": "block-2-full-on",
+      "case": "context-45056",
+      "original_hits": 14,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        6
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 3,
+        "5": 1,
+        "6": 1,
+        "8": 1,
+        "10": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 14,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-2-full-on/old-8k/0",
+      "group": "block-2-full-on",
+      "case": "old-8k",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        0,
+        2,
+        5
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "7": 2,
+        "11": 1,
+        "15": 1,
+        "19": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 21
+    },
+    {
+      "tag": "block-2-full-on/repeat-code/0",
+      "group": "block-2-full-on",
+      "case": "repeat-code",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        62
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "48": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 46
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        55
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-2-full-on/repeat-text/0",
+      "group": "block-2-full-on",
+      "case": "repeat-text",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        62
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 47
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        55
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-2-full-on/old-repeat-code/0",
+      "group": "block-2-full-on",
+      "case": "old-repeat-code",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        62
+      ],
+      "selected_lengths": {
+        "5": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 47
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        55
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-2-full-on/old-repeat-text/0",
+      "group": "block-2-full-on",
+      "case": "old-repeat-text",
+      "original_hits": 61,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        61
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 46
+      },
+      "retained_known_hits": 54,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        54
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-2-subset-on/context-1024/0",
+      "group": "block-2-subset-on",
+      "case": "context-1024",
+      "original_hits": 10,
+      "original_histogram": [
+        0,
+        2,
+        4,
+        4
+      ],
+      "selected_lengths": {
+        "3": 3,
+        "4": 4,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 10,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-subset-on/context-1024/1",
+      "group": "block-2-subset-on",
+      "case": "context-1024",
+      "original_hits": 10,
+      "original_histogram": [
+        0,
+        2,
+        4,
+        4
+      ],
+      "selected_lengths": {
+        "3": 3,
+        "4": 4,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 10,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-subset-on/context-1024/2",
+      "group": "block-2-subset-on",
+      "case": "context-1024",
+      "original_hits": 10,
+      "original_histogram": [
+        0,
+        2,
+        4,
+        4
+      ],
+      "selected_lengths": {
+        "3": 3,
+        "4": 4,
+        "8": 2,
+        "12": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 10,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-subset-on/context-8192/0",
+      "group": "block-2-subset-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        3,
+        1,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 1,
+        "5": 3,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-subset-on/context-8192/1",
+      "group": "block-2-subset-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        3,
+        1,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 1,
+        "5": 3,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-subset-on/context-8192/2",
+      "group": "block-2-subset-on",
+      "case": "context-8192",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        3,
+        1,
+        3
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "4": 1,
+        "5": 3,
+        "9": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 13
+    },
+    {
+      "tag": "block-2-subset-on/context-45056/0",
+      "group": "block-2-subset-on",
+      "case": "context-45056",
+      "original_hits": 15,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        7
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 5,
+        "7": 1,
+        "8": 1,
+        "11": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 15,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-2-subset-on/context-45056/1",
+      "group": "block-2-subset-on",
+      "case": "context-45056",
+      "original_hits": 15,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        7
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 5,
+        "7": 1,
+        "8": 1,
+        "11": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 15,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-2-subset-on/context-45056/2",
+      "group": "block-2-subset-on",
+      "case": "context-45056",
+      "original_hits": 15,
+      "original_histogram": [
+        0,
+        3,
+        5,
+        7
+      ],
+      "selected_lengths": {
+        "3": 7,
+        "4": 5,
+        "7": 1,
+        "8": 1,
+        "11": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 15,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 12
+    },
+    {
+      "tag": "block-2-subset-on/old-8k/0",
+      "group": "block-2-subset-on",
+      "case": "old-8k",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        0,
+        2,
+        5
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "7": 2,
+        "11": 1,
+        "15": 1,
+        "19": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 21
+    },
+    {
+      "tag": "block-2-subset-on/repeat-code/0",
+      "group": "block-2-subset-on",
+      "case": "repeat-code",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        1,
+        61
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "15": 1,
+        "19": 1,
+        "23": 1,
+        "27": 1,
+        "31": 1,
+        "35": 1,
+        "39": 1,
+        "43": 1,
+        "47": 1,
+        "51": 1,
+        "55": 1,
+        "59": 1,
+        "63": 1,
+        "64": 47
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        1,
+        54
+      ],
+      "unknown_native_d0_positions": [
+        12,
+        120,
+        129,
+        246
+      ],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-2-subset-on/repeat-text/0",
+      "group": "block-2-subset-on",
+      "case": "repeat-text",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        62
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 47
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        55
+      ],
+      "unknown_native_d0_positions": [
+        160
+      ],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-2-subset-on/old-repeat-code/0",
+      "group": "block-2-subset-on",
+      "case": "old-repeat-code",
+      "original_hits": 62,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        62
+      ],
+      "selected_lengths": {
+        "4": 1,
+        "9": 1,
+        "13": 1,
+        "17": 1,
+        "21": 1,
+        "25": 1,
+        "29": 1,
+        "33": 1,
+        "37": 1,
+        "41": 1,
+        "45": 1,
+        "49": 1,
+        "53": 1,
+        "57": 1,
+        "62": 1,
+        "64": 47
+      },
+      "retained_known_hits": 55,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        55
+      ],
+      "unknown_native_d0_positions": [
+        59,
+        156
+      ],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "block-2-subset-on/old-repeat-text/0",
+      "group": "block-2-subset-on",
+      "case": "old-repeat-text",
+      "original_hits": 61,
+      "original_histogram": [
+        0,
+        0,
+        0,
+        61
+      ],
+      "selected_lengths": {
+        "6": 1,
+        "10": 1,
+        "14": 1,
+        "18": 1,
+        "22": 1,
+        "26": 1,
+        "30": 1,
+        "34": 1,
+        "38": 1,
+        "42": 1,
+        "46": 1,
+        "50": 1,
+        "54": 1,
+        "58": 1,
+        "62": 1,
+        "64": 46
+      },
+      "retained_known_hits": 54,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        54
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 64
+    },
+    {
+      "tag": "timing-full-on/old-8k/0",
+      "group": "timing-full-on",
+      "case": "old-8k",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        0,
+        2,
+        5
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "7": 2,
+        "11": 1,
+        "15": 1,
+        "19": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 21
+    },
+    {
+      "tag": "timing-subset-on/old-8k/0",
+      "group": "timing-subset-on",
+      "case": "old-8k",
+      "original_hits": 7,
+      "original_histogram": [
+        0,
+        0,
+        2,
+        5
+      ],
+      "selected_lengths": {
+        "3": 2,
+        "7": 2,
+        "11": 1,
+        "15": 1,
+        "19": 1
+      },
+      "retained_known_hits": 0,
+      "rejected_known_hits": 7,
+      "retained_known_histogram": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "unknown_native_d0_positions": [],
+      "maximum_match_every_recorded_output_prefix": 21
+    }
+  ],
+  "limits": [
+    "Retained old-path hits and acceptance are not a prediction of new-path hit counts, accepted tokens or throughput.",
+    "Matched a0 native d0 remains unknown; all logged suffix hits are independently accounted for among known a>=1 steps.",
+    "Observed material is development evidence; new candidate needs its own bounded HTTP-first acceptance."
+  ]
+}

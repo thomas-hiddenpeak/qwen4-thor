@@ -87,6 +87,8 @@ const char* SuffixReasonName(SuffixReason reason) {
       return "first_token_mismatch";
     case SuffixReason::kNumericRejected:
       return "numeric_rejected";
+    case SuffixReason::kShortRejected:
+      return "short_rejected";
     case SuffixReason::kInvalidToken:
       return "invalid_token";
     case SuffixReason::kCapacityExhausted:
@@ -255,6 +257,14 @@ SuffixProposal SuffixDrafter::ProposeAfter(int32_t pending, int32_t d0) {
       result.reason = SuffixReason::kNumericRejected;
       return result;
     }
+  }
+  // A short repeated phrase may end at a different syntactic boundary in
+  // this request. Keep only long copies; partial acceptance can otherwise
+  // add target work despite saving the two neural proposal forwards.
+  if (result.match_length < kMinAdmittedMatch) {
+    ++counters_.short_rejected;
+    result.reason = SuffixReason::kShortRejected;
+    return result;
   }
   result.ready = true;
   result.reason = SuffixReason::kReady;
