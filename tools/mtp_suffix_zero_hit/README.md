@@ -49,3 +49,26 @@ No new GPU/HTTP lifecycle validation was run after the sampler repair. The
 failed stage was not retried, and conditional performance acceptance was not
 run. Any archived forensic timing remains ENV_ABORT evidence, never a passed
 optimization result.
+
+## Authorized repaired-monitor follow-up
+
+The new [bounded decision card](../../docs/MTP_SUFFIX_ZERO_HIT_RERUN_2026-10-24.md)
+freezes 56 HTTP requests / 12 starts / 5400 seconds. It reuses the same runtime,
+checks normal repeated-scenario gains, adds first-long controls, and runs native
+MTP plus layer timing only in the last two services. All inputs remain observed
+development material. The earlier ENV_ABORT remains unchanged.
+
+```bash
+python3 -B tools/mtp_suffix_zero_hit/prepare_rerun.py \
+  --stage .q4t-work/suffix-zero-hit-rerun-20261024/diagnostic-v1
+python3 -B tools/evalscope/gpu_exclusive.py \
+  --output .q4t-work/suffix-zero-hit-rerun-20261024/diagnostic-v1/lease -- \
+  python3 -B tools/mtp_suffix_zero_hit/run_rerun.py \
+  --plan .q4t-work/suffix-zero-hit-rerun-20261024/diagnostic-v1/frozen-plan.json
+```
+
+Normal repeat cases use three-request evalscope batches. Every response is
+checked after its batch; a failure stops subsequent batches. Do not claim
+per-request synchronous fail-fast within a batch. The repaired monitor must
+remain active through final shutdown and join. No runtime acceptance or default
+replacement follows from this diagnostic matrix alone.

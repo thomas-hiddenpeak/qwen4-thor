@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[suffix零命中成本诊断](MTP_SUFFIX_ZERO_HIT_2026-10-24.md)；
+最新专项：[suffix修复监控后再验证](MTP_SUFFIX_ZERO_HIT_RERUN_2026-10-24.md)；
+[suffix零命中成本诊断](MTP_SUFFIX_ZERO_HIT_2026-10-24.md)；
 前轮结果：[suffix长匹配准入改进](MTP_SUFFIX_ADMISSION_2026-10-24.md)；
 前轮结果：[数字格式suffix准入改进](MTP_SUFFIX_NUMERIC_GATE_2026-10-23.md)；
 机制诊断见[8K回退离线取证](MTP_SUFFIX_8K_DIAGNOSIS_2026-10-23.md)；
@@ -15,6 +16,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [suffix修复监控后再验证](MTP_SUFFIX_ZERO_HIT_RERUN_2026-10-24.md) | 正常收益/首long干预/分层计时 | 冻结56HTTP/12启动；旧ENV_ABORT不合并 |
 | [suffix零命中成本](MTP_SUFFIX_ZERO_HIT_2026-10-24.md) | TTFT前段/解码归因、同身份控制、只读遥测 | 冻结26HTTP诊断；候选需机制支持，全任务有界 |
 | [suffix长匹配准入](MTP_SUFFIX_ADMISSION_2026-10-24.md) | 45K/8K步序原因、固定32-token门、两head重复保护 | 250HTTP完成；旧8K/45K额外工作消除、两head重复获益，耗时保护未闭合，NO_GO封存 |
 | [数字格式suffix准入](MTP_SUFFIX_NUMERIC_GATE_2026-10-23.md) | 确定性过滤、两head配对块、新旧材料分离 | 238HTTP完成；重复收益保留，旧8K工作门与45K保护失败，NO_GO封存 |
