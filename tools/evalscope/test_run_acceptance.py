@@ -139,6 +139,22 @@ class RunnerContractTest(unittest.TestCase):
         self.assertFalse(status['full_offload_matrix_completed'])
         self.assertFalse(status['performance_acceptance'])
 
+    def test_suffix_is_explicit_and_keeps_subset_selection(self):
+        artifact = self.root / 'subset'
+        self.invoke('--mtp', '--mtp-suffix', '--mtp-subset-head', str(artifact))
+        command = self.read('server-command.json')['argv']
+        self.assertIn('--mtp-suffix', command)
+        self.assertEqual(command[command.index('--mtp-k') + 1], '3')
+        self.assertEqual(command[command.index('--mtp-subset-head') + 1],
+                         str(artifact))
+
+    def test_suffix_rejects_plain_and_other_k_before_launch(self):
+        for options in [('--mtp-suffix',),
+                        ('--mtp', '--mtp-suffix', '--mtp-k', '2')]:
+            with self.subTest(options=options), self.assertRaises(SystemExit):
+                self.invoke(*options)
+        self.assertFalse(self.servers)
+
     def test_selected_tier_is_partial_with_per_request_evidence(self):
         self.invoke('--perf-lengths', '45056', '--perf-repeats', '3')
         self.assertEqual(len(self.clients), 3)

@@ -24,6 +24,7 @@ Q4T_TEST(serve_default_is_single_text_greedy) {
   Q4T_CHECK(Parse({}, &options));
   const auto capabilities = CapabilitiesFor(options);
   Q4T_CHECK(options.max_seq == 1 && !options.no_mtp && !options.allow_media);
+  Q4T_CHECK(!options.mtp_suffix);
   Q4T_CHECK(capabilities.Experimental());
   Q4T_CHECK(Parse({"--max-seq", "1", "--max-prefill", "8192", "--max-len",
                    "208896", "--no-mtp"},
@@ -171,5 +172,23 @@ Q4T_TEST(serve_startup_plan_modes_are_explicit_and_transactional) {
   Q4T_CHECK(options.startup_plan == StartupPlanMode::kAuto);
   options.startup_plan = static_cast<StartupPlanMode>(99);
   Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+  return true;
+}
+
+Q4T_TEST(serve_suffix_requires_single_text_fixed_k3) {
+  auto options = Defaults();
+  Q4T_CHECK(Parse({"--mtp-suffix", "--max-len", "262144"}, &options));
+  Q4T_CHECK(options.mtp_suffix && options.mtp_subset_head.empty());
+  Q4T_CHECK(Parse({"--mtp-subset-head", "/explicit-artifact"}, &options));
+  for (const auto args : {
+           std::initializer_list<std::string_view>{"--mtp-suffix", "--no-mtp"},
+           {"--mtp-suffix", "--mtp-k", "2"},
+           {"--mtp-suffix", "--max-seq", "2"},
+           {"--mtp-suffix", "--allow-media"},
+           {"--mtp-suffix", "--max-len", "262145"}}) {
+    auto rejected = Defaults();
+    Q4T_CHECK(!Parse(args, &rejected));
+    Q4T_CHECK(!rejected.mtp_suffix);
+  }
   return true;
 }

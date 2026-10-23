@@ -357,6 +357,10 @@ void ChatServer::SchedulerLoop() {
       std::vector<int32_t> accepted(static_cast<size_t>(B) * (mtp_k_ + 1));
       std::vector<int> acc_count(B, 0);
       std::vector<int32_t> next_b(B, 0), next_d0(B, 0);
+      const std::span<const int32_t> suffix =
+          B == 1 && mtp_reqs[0]->mtp_suffix_ready
+              ? std::span<const int32_t>(mtp_reqs[0]->mtp_suffix_tokens)
+              : std::span<const int32_t>();
       Status s;
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
@@ -367,7 +371,7 @@ void ChatServer::SchedulerLoop() {
                                          B, mtp_k_, accepted.data(),
                                          acc_count.data(), next_b.data(),
                                          next_d0.data(), next_g.data(),
-                                         nullptr, stop_token_ids_);
+                                         nullptr, stop_token_ids_, suffix);
         if (!s.ok())
           for (auto* sequence : seqs) sequence->Fail();
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)

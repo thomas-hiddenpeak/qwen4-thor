@@ -6,6 +6,8 @@
 #include <cmath>
 #include <limits>
 
+#include "q4t/mtp/suffix_drafter.h"
+
 namespace q4t::server {
 
 ServerCapabilities CapabilitiesFor(const ServerOptions& options) {
@@ -13,6 +15,12 @@ ServerCapabilities CapabilitiesFor(const ServerOptions& options) {
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
+  if (options.mtp_suffix &&
+      (options.no_mtp || options.mtp_k != 3 || options.max_seq != 1 ||
+       options.allow_media ||
+       options.max_len > static_cast<int>(mtp::SuffixDrafter::kMaxCapacity)))
+    return Status::Fail(
+        "mtp-suffix requires text MTP k=3, max-seq=1, max-len<=262144");
   if (!options.mtp_subset_head.empty() &&
       (options.no_mtp || options.mtp_k != 3))
     return Status::Fail("mtp-subset-head requires MTP with fixed k=3");
@@ -74,6 +82,10 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     }
     if (key == "--no-mtp") {
       parsed.no_mtp = true;
+      continue;
+    }
+    if (key == "--mtp-suffix") {
+      parsed.mtp_suffix = true;
       continue;
     }
     if (key == "--allow-media") {

@@ -355,10 +355,15 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 //   accepted_count[b] / next_b[b] / next_d0[b] : 每序列输出 (host)。
 //   next_g[b] : 每序列下一步 draft trunk (device BF16 [hc*hs], 调用方持有,
 //              各序列独立 buffer)。
+//   suffix_draft: optional complete proposal of three global token IDs, only
+//              supported for B=1, k=3, with suffix_draft[0] == d0[0]. The
+//              neural draft loop is skipped; target verify, checkpoint
+//              restore and accepted-prefix draft extend remain unchanged.
+//              IDs need not belong to an enabled subset head.
 //
 // 正确性: draft 循环与 extend 复用 Stage 1 已验证的多序列 MtpForward
 // (per-seq KV 隔离); 验证复用 Stage 2a 已 bit-exact 验证的 ModelVerifyMulti。
-// 单序列 (B=1) 不走本函数 (用 MtpSpeculativeStep, 路径更省)。
+// HTTP scheduler 使用本函数，包括单序列 B=1。
 Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                const model::ModelSequence* const* seqs,
                                const int32_t* b_tok, const int32_t* d0,
@@ -366,7 +371,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                int32_t* accepted_tokens, int* accepted_count,
                                int32_t* next_b, int32_t* next_d0,
                                uint16_t** next_g, cudaStream_t stream,
-                               std::span<const int32_t> stop_tokens = {});
+                               std::span<const int32_t> stop_tokens = {},
+                               std::span<const int32_t> suffix_draft = {});
 
 }  // namespace mtp
 }  // namespace q4t

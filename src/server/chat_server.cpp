@@ -1,4 +1,5 @@
 #include "q4t/mtp/subset_head.h"
+#include "q4t/mtp/suffix_drafter.h"
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
 
@@ -97,6 +98,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   host_ = opts.host;
   allow_media_ = opts.allow_media;
   mtp_k_ = opts.mtp_k;
+  mtp_suffix_ = opts.mtp_suffix;
   PhaseTimer total("startup_total");
   {
     PhaseTimer pt("tokenizer");
@@ -256,6 +258,13 @@ Status ChatServer::Start(const ServerOptions& opts) {
   const int eff_max_len = budget_valid_ ? budget_.max_len : opts.max_len;
   const int eff_max_seq = budget_valid_ ? budget_.max_seq : opts.max_seq;
   if (eff_max_len > 0) cfg.max_len = eff_max_len;
+  if (mtp_suffix_ &&
+      cfg.max_len > static_cast<int>(mtp::SuffixDrafter::kMaxCapacity))
+    return Status::Fail("mtp-suffix effective max-len exceeds 262144");
+  if (mtp_suffix_)
+    std::fprintf(stderr,
+                 "[q4t] suffix enabled: k=3 match=3..64 candidates=4 "
+                 "capacity=%d global_ids=1\n", cfg.max_len);
   std::fprintf(stderr,
                "[q4t][capacity] requested_max_len=%d requested_max_seq=%d "
                "requested_max_prefill=%d effective_max_len=%d "

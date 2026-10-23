@@ -167,6 +167,8 @@ class ChatServer {
     bool is_mtp = false;
     int32_t mtp_b = 0;         // bonus token t_P (step input)
     int32_t mtp_d0 = 0;        // first draft token (step input)
+    bool mtp_suffix_ready = false;
+    std::array<int32_t, 3> mtp_suffix_tokens{};
     uint16_t* mtp_g = nullptr;  // draft trunk [hc*hs] (step input + next output)
     int32_t mtp_next_b = 0;     // correction / next bonus (step output)
     int32_t mtp_next_d0 = 0;    // next first draft (step output)
@@ -293,6 +295,7 @@ class ChatServer {
   // declaration order, so mtp_ is destroyed before model_).
   mtp::MtpModel mtp_;
   bool mtp_loaded_ = false;
+  bool mtp_suffix_ = false;
   // Tiered residency observability (max_seq=1 contract: the delta between
   // consecutive request completions is that request's own load activity).
   bool residency_enabled_ = false;

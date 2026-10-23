@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <cuda_runtime.h>
+#include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/mtp_policy.h"
@@ -684,6 +685,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // Fallback: if the scheduler is unavailable or the pool is full, decode
   // plainly (the main seq is still usable).
   ActiveRequest mtp_ar;
+  mtp::SuffixDrafter suffix;
+  std::array<uint64_t, 4> suffix_accepted{};
+  std::array<uint64_t, 4> neural_accepted{};
   bool mtp_sched = false;
   if (use_mtp) {
     const std::lock_guard<std::mutex> lock(sched_mu_);
@@ -698,6 +702,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     } else {
       use_mtp = false;
     }
+  }
+  if (use_mtp && mtp_suffix_) {
+    const Status suffix_status =
+        suffix.Init(seq.history, model_.Get().cfg.vocab, max_len_);
+    if (!suffix_status.ok())
+      std::fprintf(stderr, "[suffix] request=%s disabled=%s\n",
+                   request_id.c_str(), suffix_status.message().c_str());
   }
   if (use_mtp) {
     int accepted_histogram[17] = {};
@@ -723,6 +734,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       // Register this step's input with the scheduler.
       mtp_ar.mtp_b = mtp_b;
       mtp_ar.mtp_d0 = mtp_d0;
+      mtp_ar.mtp_suffix_ready = false;
+      if (suffix.Active()) {
+        const auto proposal = suffix.ProposeAfter(mtp_b, mtp_d0);
+        mtp_ar.mtp_suffix_ready = proposal.ready;
+        mtp_ar.mtp_suffix_tokens = proposal.tokens;
+      }
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
         mtp_ar.mtp_accepted_count = 0;
@@ -746,6 +763,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         break;
       }
       ++accepted_histogram[mtp_ar.mtp_accepted_count - 1];
+      if (mtp_suffix_) {
+        auto& histogram = mtp_ar.mtp_suffix_ready ? suffix_accepted
+                                                : neural_accepted;
+        ++histogram[mtp_ar.mtp_accepted_count - 1];
+      }
       for (int i = 0; i < mtp_ar.mtp_accepted_count &&
                           static_cast<int>(generated.size()) < max_tokens;
            ++i) {
@@ -776,6 +798,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       seq.position += mtp_ar.mtp_accepted_count;
       for (int i = 0; i < mtp_ar.mtp_accepted_count; ++i)
         seq.history.push_back(mtp_ar.mtp_accepted[i]);
+      if (suffix.Active()) {
+        const Status suffix_status = suffix.Append(
+            {mtp_ar.mtp_accepted,
+             static_cast<size_t>(mtp_ar.mtp_accepted_count)});
+        if (!suffix_status.ok())
+          std::fprintf(stderr, "[suffix] request=%s disabled=%s\n",
+                       request_id.c_str(), suffix_status.message().c_str());
+      }
       if (static_cast<int>(generated.size()) >= max_tokens) {
         finish_reason = "length";
         break;
@@ -805,6 +835,42 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // scheduler so it re-evaluates (fixes a lost-wakeup deadlock where the
     // departing request's notify was consumed before the scheduler slept).
     sched_cv_.notify_one();
+  }
+  if (mtp_suffix_) {
+    const size_t indexed = suffix.Size();
+    suffix.Reset();
+    const auto& stats = suffix.Counters();
+    std::fprintf(stderr,
+                 "[suffix] request=%s queries=%llu hits=%llu "
+                 "candidates=%llu compared=%llu matched=%llu "
+                 "no_match=%llu incomplete=%llu d0_mismatch=%llu "
+                 "invalid=%llu exhausted=%llu indexed=%zu peak_bytes=%zu "
+                 "object_bytes=%zu init_ns=%llu append_ns=%llu "
+                 "query_ns=%llu release_ns=%llu accepted=",
+                 request_id.c_str(),
+                 static_cast<unsigned long long>(stats.queries),
+                 static_cast<unsigned long long>(stats.hits),
+                 static_cast<unsigned long long>(stats.candidates_examined),
+                 static_cast<unsigned long long>(stats.compared_tokens),
+                 static_cast<unsigned long long>(stats.matched_tokens),
+                 static_cast<unsigned long long>(stats.no_match),
+                 static_cast<unsigned long long>(stats.incomplete),
+                 static_cast<unsigned long long>(stats.first_token_mismatch),
+                 static_cast<unsigned long long>(stats.invalid_tokens),
+                 static_cast<unsigned long long>(stats.capacity_exhaustions),
+                 indexed, stats.peak_memory_bytes, sizeof(suffix),
+                 static_cast<unsigned long long>(stats.init_ns),
+                 static_cast<unsigned long long>(stats.append_ns),
+                 static_cast<unsigned long long>(stats.query_ns),
+                 static_cast<unsigned long long>(stats.release_ns));
+    for (size_t i = 0; i < suffix_accepted.size(); ++i)
+      std::fprintf(stderr, "%s%llu", i ? "," : "",
+                   static_cast<unsigned long long>(suffix_accepted[i]));
+    std::fprintf(stderr, " neural_accepted=");
+    for (size_t i = 0; i < neural_accepted.size(); ++i)
+      std::fprintf(stderr, "%s%llu", i ? "," : "",
+                   static_cast<unsigned long long>(neural_accepted[i]));
+    std::fprintf(stderr, "\n");
   }
   if (!use_mtp) {
     // B2b continuous batching: this request's decode steps are driven by the

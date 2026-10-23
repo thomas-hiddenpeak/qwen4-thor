@@ -190,6 +190,7 @@ add_library(q4t_model STATIC
   src/mtp/moe_bf16.cu
   src/mtp/mtp.cu
   src/mtp/subset_head.cpp
+  src/mtp/suffix_drafter.cpp
   src/vision/vision.cu
   src/vision/processor.cpp)
 target_include_directories(q4t_model PUBLIC include third_party)
@@ -411,6 +412,7 @@ if(Q4T_BUILD_TESTS)
     tests/mtp_speculative_test.cpp
     tests/mtp_spec_multi_test.cpp
     tests/mtp_spec_accept_states_test.cpp
+    tests/mtp_suffix_test.cpp
     tests/mtp_writer_row0_test.cpp
     tests/mem_alloc_probe_test.cpp
     tests/model_decode_rope_test.cpp
