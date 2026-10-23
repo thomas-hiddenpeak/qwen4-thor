@@ -57,6 +57,22 @@ uint64_t Mix(uint64_t value) {
 
 }  // namespace
 
+uint8_t ClassifySuffixToken(std::string_view decoded) {
+  bool allowed = !decoded.empty();
+  bool has_digit = false;
+  for (unsigned char byte : decoded) {
+    const bool digit = byte >= '0' && byte <= '9';
+    const bool whitespace = byte == 0x20 || (byte >= 0x09 && byte <= 0x0D);
+    const bool punctuation =
+        (byte >= 0x21 && byte <= 0x2F) || (byte >= 0x3A && byte <= 0x40) ||
+        (byte >= 0x5B && byte <= 0x60) || (byte >= 0x7B && byte <= 0x7E);
+    allowed = allowed && (digit || whitespace || punctuation);
+    has_digit = has_digit || digit;
+  }
+  return (allowed ? kSuffixAllowedAscii : 0) |
+         (has_digit ? kSuffixContainsDigit : 0);
+}
+
 const char* SuffixReasonName(SuffixReason reason) {
   switch (reason) {
     case SuffixReason::kReady:
@@ -69,6 +85,8 @@ const char* SuffixReasonName(SuffixReason reason) {
       return "incomplete";
     case SuffixReason::kFirstTokenMismatch:
       return "first_token_mismatch";
+    case SuffixReason::kNumericRejected:
+      return "numeric_rejected";
     case SuffixReason::kInvalidToken:
       return "invalid_token";
     case SuffixReason::kCapacityExhausted:
@@ -86,13 +104,17 @@ size_t SuffixDrafter::BucketFor(int32_t a, int32_t b, int32_t c) {
 }
 
 Status SuffixDrafter::Init(std::span<const int32_t> committed, int vocab,
-                           size_t capacity) {
+                           size_t capacity,
+                           std::span<const uint8_t> token_classes) {
   Reset();
   counters_ = {};
   Elapsed elapsed(&counters_.init_ns);
   if (vocab <= 0 || capacity == 0 || capacity > kMaxCapacity ||
-      committed.size() > capacity) {
-    return Status::Fail("suffix init: invalid vocabulary/history/capacity");
+      committed.size() > capacity ||
+      (!token_classes.empty() &&
+       token_classes.size() != static_cast<size_t>(vocab))) {
+    return Status::Fail(
+        "suffix init: invalid vocabulary/history/capacity/token classes");
   }
   vocab_ = vocab;
   if (!std::all_of(committed.begin(), committed.end(),
@@ -112,6 +134,7 @@ Status SuffixDrafter::Init(std::span<const int32_t> committed, int vocab,
     return Status::Fail("suffix init: bounded allocation failed");
   }
   capacity_ = capacity;
+  token_classes_ = token_classes;
   active_ = true;
   disabled_reason_ = SuffixReason::kReady;
   counters_.peak_memory_bytes = MemoryBytes();
@@ -212,6 +235,27 @@ SuffixProposal SuffixDrafter::ProposeAfter(int32_t pending, int32_t d0) {
     result.reason = SuffixReason::kFirstTokenMismatch;
     return result;
   }
+  if (!token_classes_.empty()) {
+    Elapsed classified(&counters_.numeric_ns);
+    ++counters_.numeric_checks;
+    bool allowed = true;
+    bool has_digit = false;
+    const size_t start =
+        static_cast<size_t>(result.match_end) + 1 - result.match_length;
+    // The selected source span is token-identical to the query suffix,
+    // including pending. No rejected continuation is classified or indexed.
+    for (int i = 0; i < result.match_length; ++i) {
+      const uint8_t flags = token_classes_[history_[start + i]];
+      allowed = allowed && (flags & kSuffixAllowedAscii) != 0;
+      has_digit = has_digit || (flags & kSuffixContainsDigit) != 0;
+    }
+    counters_.classified_tokens += result.match_length;
+    if (allowed && has_digit) {
+      ++counters_.numeric_rejected;
+      result.reason = SuffixReason::kNumericRejected;
+      return result;
+    }
+  }
   result.ready = true;
   result.reason = SuffixReason::kReady;
   ++counters_.hits;
@@ -222,6 +266,7 @@ void SuffixDrafter::Reset() {
   Elapsed elapsed(&counters_.release_ns);
   buckets_.reset();
   history_.reset();
+  token_classes_ = {};
   size_ = 0;
   capacity_ = 0;
   vocab_ = 0;

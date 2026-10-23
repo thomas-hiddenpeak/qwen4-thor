@@ -705,7 +705,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
   if (use_mtp && mtp_suffix_) {
     const Status suffix_status =
-        suffix.Init(seq.history, model_.Get().cfg.vocab, max_len_);
+        suffix.Init(seq.history, model_.Get().cfg.vocab, max_len_,
+                    {suffix_token_classes_.get(), suffix_token_class_count_});
     if (!suffix_status.ok())
       std::fprintf(stderr, "[suffix] request=%s disabled=%s\n",
                    request_id.c_str(), suffix_status.message().c_str());
@@ -846,7 +847,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                  "no_match=%llu incomplete=%llu d0_mismatch=%llu "
                  "invalid=%llu exhausted=%llu indexed=%zu peak_bytes=%zu "
                  "object_bytes=%zu init_ns=%llu append_ns=%llu "
-                 "query_ns=%llu release_ns=%llu accepted=",
+                 "query_ns=%llu release_ns=%llu numeric_checks=%llu "
+                 "classified_tokens=%llu numeric_rejected=%llu "
+                 "numeric_ns=%llu accepted=",
                  request_id.c_str(),
                  static_cast<unsigned long long>(stats.queries),
                  static_cast<unsigned long long>(stats.hits),
@@ -862,7 +865,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                  static_cast<unsigned long long>(stats.init_ns),
                  static_cast<unsigned long long>(stats.append_ns),
                  static_cast<unsigned long long>(stats.query_ns),
-                 static_cast<unsigned long long>(stats.release_ns));
+                 static_cast<unsigned long long>(stats.release_ns),
+                 static_cast<unsigned long long>(stats.numeric_checks),
+                 static_cast<unsigned long long>(stats.classified_tokens),
+                 static_cast<unsigned long long>(stats.numeric_rejected),
+                 // numeric_ns is already included in query_ns.
+                 static_cast<unsigned long long>(stats.numeric_ns));
     for (size_t i = 0; i < suffix_accepted.size(); ++i)
       std::fprintf(stderr, "%s%llu", i ? "," : "",
                    static_cast<unsigned long long>(suffix_accepted[i]));

@@ -7,10 +7,20 @@
 #include <cstdint>
 #include <memory>
 #include <span>
+#include <string_view>
 
 #include "q4t/status.h"
 
 namespace q4t::mtp {
+
+inline constexpr uint8_t kSuffixAllowedAscii = 1;
+inline constexpr uint8_t kSuffixContainsDigit = 2;
+
+// Classify decoded bytes without locale or Unicode normalization. Allowed
+// bytes are ASCII digits, whitespace (09..0D, 20) and punctuation. The digit
+// flag is independent of the allowed flag. Empty/unknown tokens have flags 0.
+// Decode special tokens without dropping them before calling this function.
+uint8_t ClassifySuffixToken(std::string_view decoded);
 
 enum class SuffixReason {
   kReady,
@@ -18,6 +28,7 @@ enum class SuffixReason {
   kNoMatch,
   kIncomplete,
   kFirstTokenMismatch,
+  kNumericRejected,
   kInvalidToken,
   kCapacityExhausted,
 };
@@ -50,6 +61,10 @@ struct SuffixCounters {
   uint64_t no_match = 0;
   uint64_t incomplete = 0;
   uint64_t first_token_mismatch = 0;
+  uint64_t numeric_checks = 0;
+  uint64_t classified_tokens = 0;
+  uint64_t numeric_rejected = 0;
+  uint64_t numeric_ns = 0;  // Included in query_ns, not an additional phase.
   uint64_t invalid_tokens = 0;
   uint64_t capacity_exhaustions = 0;
   size_t peak_memory_bytes = 0;
@@ -75,8 +90,14 @@ class SuffixDrafter {
   // Capacity is the committed-token budget for this request, never more than
   // kMaxCapacity. Invalid configuration, history or allocation returns failure
   // with no active index. A new Init starts fresh per-request counters.
+  // Nonempty token_classes must cover the full global vocabulary and remain
+  // alive and immutable until Reset. Empty disables numeric admission
+  // filtering.
+  // The borrowed table is not included in MemoryBytes; its owner accounts for
+  // allocation, construction and release separately.
   Status Init(std::span<const int32_t> committed, int vocab,
-              size_t capacity = kMaxCapacity);
+              size_t capacity = kMaxCapacity,
+              std::span<const uint8_t> token_classes = {});
 
   // Append only tokens already committed by the target model. Capacity
   // exhaustion disables lookup and returns success: the caller uses neural
@@ -87,8 +108,10 @@ class SuffixDrafter {
   // Query the immutable view [committed history, pending]. The pending token
   // never enters the index. Select the longest of four candidates (newest on
   // ties), THEN require three available tokens and tokens[0] == d0. Do not
-  // search another candidate just to pass either gate. Periodic continuations
-  // may read the pending token, but nothing beyond it.
+  // search another candidate just to pass a gate. With token_classes, reject
+  // a selected full match containing a digit and only allowed ASCII bytes,
+  // after the full-three and d0 gates. Periodic continuations may read the
+  // pending token, but nothing beyond it.
   SuffixProposal ProposeAfter(int32_t pending, int32_t d0);
 
   // Release both arrays on cancellation, failure, termination or slot reuse.
@@ -118,6 +141,7 @@ class SuffixDrafter {
 
   std::unique_ptr<Bucket[]> buckets_;
   std::unique_ptr<int32_t[]> history_;
+  std::span<const uint8_t> token_classes_;
   size_t size_ = 0;
   size_t capacity_ = 0;
   int vocab_ = 0;

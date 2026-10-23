@@ -296,6 +296,11 @@ class ChatServer {
   mtp::MtpModel mtp_;
   bool mtp_loaded_ = false;
   bool mtp_suffix_ = false;
+  // Immutable global-ID properties, built only for explicit suffix mode.
+  // Run drains request threads before destruction, so borrowed request spans
+  // remain valid until every request-local suffix index has been reset.
+  std::unique_ptr<uint8_t[]> suffix_token_classes_;
+  size_t suffix_token_class_count_ = 0;
   // Tiered residency observability (max_seq=1 contract: the delta between
   // consecutive request completions is that request's own load activity).
   bool residency_enabled_ = false;

@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iterator>
 #include <limits>
+#include <new>
 #include <string>
 #include <thread>
 #include <vector>
@@ -30,6 +31,22 @@ namespace q4t::server {
 
 namespace {
 constexpr const char* kDefaultModelName = "qwen3.8-flash-next";
+constexpr size_t kMaxSuffixTokenClassBytes = size_t{256} * 1024;
+
+void ReleaseSuffixTokenClasses(std::unique_ptr<uint8_t[]>* classes,
+                               size_t* count) {
+  if (!*classes) return;
+  const size_t bytes = *count;
+  const auto start = std::chrono::steady_clock::now();
+  classes->reset();
+  *count = 0;
+  const auto release_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                              std::chrono::steady_clock::now() - start)
+                              .count();
+  std::fprintf(stderr,
+               "[suffix-classes] event=release bytes=%zu release_ns=%llu\n",
+               bytes, static_cast<unsigned long long>(release_ns));
+}
 }
 
 ChatServer::~ChatServer() {
@@ -67,6 +84,8 @@ ChatServer::~ChatServer() {
     mtp_.Free();
     mtp_loaded_ = false;
   }
+  ReleaseSuffixTokenClasses(&suffix_token_classes_,
+                             &suffix_token_class_count_);
 }
 
 namespace {
@@ -261,10 +280,51 @@ Status ChatServer::Start(const ServerOptions& opts) {
   if (mtp_suffix_ &&
       cfg.max_len > static_cast<int>(mtp::SuffixDrafter::kMaxCapacity))
     return Status::Fail("mtp-suffix effective max-len exceeds 262144");
-  if (mtp_suffix_)
+  if (mtp_suffix_) {
+    PhaseTimer pt("suffix_token_classes");
+    if (cfg.vocab <= 0 ||
+        static_cast<size_t>(cfg.vocab) > kMaxSuffixTokenClassBytes) {
+      return Status::Fail("mtp-suffix token class table exceeds 256 KiB cap");
+    }
+    const auto start = std::chrono::steady_clock::now();
+    size_t bytes = static_cast<size_t>(cfg.vocab);
+    size_t unknown = 0;
+    std::unique_ptr<uint8_t[]> classes;
+    try {
+      classes = std::make_unique<uint8_t[]>(bytes);
+      std::vector<uint32_t> one(1);
+      std::string decoded;
+      for (size_t id = 0; id < bytes; ++id) {
+        one[0] = static_cast<uint32_t>(id);
+        // Preserve special-token content; dropping it could turn a match
+        // across a marker into an apparent numeric-only span. Padding IDs
+        // without tokenizer text remain unknown and do not trigger the gate.
+        const Status decoded_status = tok_->Decode(one, false, &decoded);
+        if (!decoded_status.ok() || decoded.empty()) {
+          classes[id] = 0;
+          ++unknown;
+        } else {
+          classes[id] = mtp::ClassifySuffixToken(decoded);
+        }
+      }
+    } catch (const std::bad_alloc&) {
+      ReleaseSuffixTokenClasses(&classes, &bytes);
+      return Status::Fail("mtp-suffix token class allocation failed");
+    }
+    suffix_token_classes_ = std::move(classes);
+    suffix_token_class_count_ = bytes;
+    const auto init_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                             std::chrono::steady_clock::now() - start)
+                             .count();
+    std::fprintf(stderr,
+                 "[suffix-classes] event=init bytes=%zu cap_bytes=%zu "
+                 "unknown=%zu init_ns=%llu\n",
+                 bytes, kMaxSuffixTokenClassBytes, unknown,
+                 static_cast<unsigned long long>(init_ns));
     std::fprintf(stderr,
                  "[q4t] suffix enabled: k=3 match=3..64 candidates=4 "
-                 "capacity=%d global_ids=1\n", cfg.max_len);
+                 "capacity=%d global_ids=1 numeric_gate=1\n", cfg.max_len);
+  }
   std::fprintf(stderr,
                "[q4t][capacity] requested_max_len=%d requested_max_seq=%d "
                "requested_max_prefill=%d effective_max_len=%d "

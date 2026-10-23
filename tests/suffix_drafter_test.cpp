@@ -3,12 +3,15 @@
 #include <array>
 #include <cstdint>
 #include <span>
+#include <string>
+#include <string_view>
 #include <vector>
 
 #include "q4t/test.h"
 
 namespace {
 
+using q4t::mtp::ClassifySuffixToken;
 using q4t::mtp::SuffixDrafter;
 using q4t::mtp::SuffixReason;
 
@@ -259,5 +262,219 @@ Q4T_TEST(suffix_reset_releases_storage_and_request_history) {
   Q4T_CHECK(!drafter.ProposeAfter(3, 4).ready);
   Q4T_CHECK(drafter.Counters().hits == 0);
   Q4T_CHECK(drafter.MemoryBytes() == SuffixDrafter::kIndexBytes + 32);
+  return true;
+}
+
+Q4T_TEST(suffix_numeric_token_classification_byte_truth_table) {
+  // A literal ASCII alphabet is independent of the implementation's ranges.
+  const std::string_view allowed =
+      "0123456789 \t\n\v\f\r!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+  const std::string_view digits = "0123456789";
+  for (int value = 0; value < 256; ++value) {
+    const char byte = static_cast<char>(value);
+    const uint8_t flags = ClassifySuffixToken(std::string_view(&byte, 1));
+    const bool expected_allowed = allowed.find(byte) != std::string_view::npos;
+    const bool expected_digit = digits.find(byte) != std::string_view::npos;
+    Q4T_CHECK(((flags & q4t::mtp::kSuffixAllowedAscii) != 0) ==
+              expected_allowed);
+    Q4T_CHECK(((flags & q4t::mtp::kSuffixContainsDigit) != 0) ==
+              expected_digit);
+    Q4T_CHECK(flags <= 3);
+  }
+  Q4T_CHECK(ClassifySuffixToken("") == 0);
+  Q4T_CHECK(ClassifySuffixToken(" (12.50):\r\n") == 3);
+  Q4T_CHECK(ClassifySuffixToken("x1") == 2);
+  Q4T_CHECK(ClassifySuffixToken("\xC2\xA0" "1") == 2);
+  Q4T_CHECK(ClassifySuffixToken(std::string_view("1\0", 2)) == 2);
+  Q4T_CHECK(ClassifySuffixToken("<special>") == 0);
+  return true;
+}
+
+Q4T_TEST(suffix_numeric_admission_is_independent_of_token_partition) {
+  struct Fixture {
+    std::string text;
+    bool rejected;
+  };
+  const std::array<Fixture, 6> fixtures{{
+      {", 123,", true},
+      {"1 + 2", true},
+      {"x 123", false},
+      {" \t,.", false},
+      {std::string("1\0,2", 4), false},
+      {"12\xC2\xA0", false},
+  }};
+  const std::vector<int32_t> history{1, 2, 3, 4, 5, 6, 7, 1, 2};
+  for (const auto& fixture : fixtures) {
+    const std::string_view text = fixture.text;
+    // Every partition into three nonempty tokens, including a split inside
+    // a UTF-8 sequence. Admission concerns exact bytes, not Unicode decoding.
+    for (size_t first = 1; first + 1 < text.size(); ++first) {
+      for (size_t second = first + 1; second < text.size(); ++second) {
+        std::array<uint8_t, 16> classes{};
+        classes[1] = ClassifySuffixToken(text.substr(0, first));
+        classes[2] = ClassifySuffixToken(text.substr(first, second - first));
+        classes[3] = ClassifySuffixToken(text.substr(second));
+        SuffixDrafter drafter;
+        Q4T_CHECK(drafter.Init(history, classes.size(), 32, classes).ok());
+        const auto proposal = drafter.ProposeAfter(3, 4);
+        Q4T_CHECK(proposal.ready == !fixture.rejected);
+        Q4T_CHECK(proposal.reason == (fixture.rejected
+                                         ? SuffixReason::kNumericRejected
+                                         : SuffixReason::kReady));
+        Q4T_CHECK(drafter.Counters().numeric_checks == 1);
+        Q4T_CHECK(drafter.Counters().classified_tokens == 3);
+      }
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(suffix_numeric_rejection_keeps_global_proposal_and_history) {
+  std::vector<uint8_t> classes(200000);
+  classes[70001] = ClassifySuffixToken(",");
+  classes[70002] = ClassifySuffixToken(" ");
+  classes[70003] = ClassifySuffixToken("1");
+  const std::vector<int32_t> history{70001, 70002, 70003, 100001, 65536,
+                                     77,    9,     70001, 70002};
+  const auto expected = ScanReference(history, 70003, 100001);
+  Q4T_CHECK(expected.ready);
+  SuffixDrafter drafter;
+  Q4T_CHECK(drafter.Init(history, classes.size(), 64, classes).ok());
+  const auto actual = drafter.ProposeAfter(70003, 100001);
+  Q4T_CHECK(!actual.ready && actual.reason == SuffixReason::kNumericRejected);
+  Q4T_CHECK(actual.tokens == expected.tokens);
+  Q4T_CHECK(actual.match_end == expected.match_end);
+  Q4T_CHECK(actual.match_length == expected.match_length);
+  Q4T_CHECK(std::string_view(q4t::mtp::SuffixReasonName(actual.reason)) ==
+            "numeric_rejected");
+  Q4T_CHECK(std::vector<int32_t>(drafter.History().begin(),
+                                 drafter.History().end()) == history);
+  Q4T_CHECK(drafter.Active() && drafter.Size() == history.size());
+  Q4T_CHECK(drafter.Counters().numeric_checks == 1);
+  Q4T_CHECK(drafter.Counters().classified_tokens == 3);
+  Q4T_CHECK(drafter.Counters().numeric_rejected == 1);
+  Q4T_CHECK(drafter.Counters().hits == 0);
+  Q4T_CHECK(drafter.Counters().numeric_ns <= drafter.Counters().query_ns);
+  Q4T_CHECK(drafter.MemoryBytes() == SuffixDrafter::kIndexBytes + 64 * 4);
+  return true;
+}
+
+Q4T_TEST(suffix_numeric_uses_full_longest_match_not_only_trigram) {
+  std::array<uint8_t, 100> classes{};
+  classes[1] = ClassifySuffixToken(" ");
+  classes[2] = ClassifySuffixToken("2");
+  classes[3] = ClassifySuffixToken("5");
+  classes[9] = ClassifySuffixToken("Record");
+  const std::vector<int32_t> history{9, 1, 2, 3, 4, 5, 6, 8, 1,
+                                     2, 3, 7, 8, 9, 9, 1, 2};
+  SuffixDrafter drafter;
+  Q4T_CHECK(drafter.Init(history, classes.size(), 64, classes).ok());
+  const auto expected = ScanReference(history, 3, 4);
+  const auto actual = drafter.ProposeAfter(3, 4);
+  Q4T_CHECK(actual.ready && actual.match_length == 4);
+  Q4T_CHECK(actual.tokens == expected.tokens);
+  Q4T_CHECK(actual.match_end == expected.match_end);
+  Q4T_CHECK(drafter.Counters().classified_tokens == 4);
+  Q4T_CHECK(drafter.Counters().numeric_rejected == 0);
+  return true;
+}
+
+Q4T_TEST(suffix_numeric_existing_gates_and_newest_tie_are_preserved) {
+  std::array<uint8_t, 100> classes;
+  classes.fill(ClassifySuffixToken("1"));
+  SuffixDrafter drafter;
+  const std::vector<int32_t> longest{9, 1, 2, 3, 4, 5, 6, 8, 1,
+                                     2, 3, 7, 8, 9, 9, 1, 2};
+  Q4T_CHECK(drafter.Init(longest, classes.size(), 64, classes).ok());
+  Q4T_CHECK(drafter.ProposeAfter(3, 7).reason ==
+            SuffixReason::kFirstTokenMismatch);
+  Q4T_CHECK(drafter.Counters().numeric_checks == 0);
+  Q4T_CHECK(drafter.ProposeAfter(3, 4).reason ==
+            SuffixReason::kNumericRejected);
+  Q4T_CHECK(drafter.Counters().numeric_checks == 1);
+  Q4T_CHECK(drafter.Counters().classified_tokens == 4);
+
+  const std::vector<int32_t> tied{9, 1, 2, 3, 4, 5, 6, 8, 1,
+                                  2, 3, 4, 8, 9, 7, 1, 2};
+  Q4T_CHECK(drafter.Init(tied, classes.size(), 64, classes).ok());
+  const auto expected = ScanReference(tied, 3, 4);
+  const auto actual = drafter.ProposeAfter(3, 4);
+  Q4T_CHECK(expected.ready && expected.match_end == 10);
+  Q4T_CHECK(actual.reason == SuffixReason::kNumericRejected);
+  Q4T_CHECK(actual.match_end == expected.match_end);
+  Q4T_CHECK(actual.tokens == expected.tokens);
+  Q4T_CHECK(drafter.Counters().numeric_checks == 1);
+
+  const std::vector<int32_t> incomplete{1, 1, 1, 1, 1, 1};
+  Q4T_CHECK(drafter.Init(incomplete, classes.size(), 16, classes).ok());
+  Q4T_CHECK(drafter.ProposeAfter(1, 1).reason == SuffixReason::kIncomplete);
+  Q4T_CHECK(drafter.ProposeAfter(-1, 1).reason == SuffixReason::kInvalidToken);
+  Q4T_CHECK(drafter.Counters().numeric_checks == 0);
+  Q4T_CHECK(drafter.Counters().classified_tokens == 0);
+  Q4T_CHECK(drafter.Counters().numeric_rejected == 0);
+  return true;
+}
+
+Q4T_TEST(suffix_numeric_unknown_nondigit_and_absent_table_allow_lookup) {
+  const std::vector<int32_t> history{1, 2, 3, 4, 5, 6, 7, 1, 2};
+  // Respectively: no digit; unknown token; mixed letter/digit token.
+  const std::array<std::array<uint8_t, 3>, 3> cases{{
+      {1, 1, 1}, {3, 0, 1}, {3, 2, 1}}};
+  for (const auto& properties : cases) {
+    std::array<uint8_t, 100> classes{};
+    for (size_t i = 0; i < properties.size(); ++i) {
+      classes[i + 1] = properties[i];
+    }
+    SuffixDrafter drafter;
+    Q4T_CHECK(drafter.Init(history, classes.size(), 64, classes).ok());
+    Q4T_CHECK(drafter.ProposeAfter(3, 4).ready);
+    Q4T_CHECK(drafter.Counters().numeric_checks == 1);
+    Q4T_CHECK(drafter.Counters().numeric_rejected == 0);
+  }
+  SuffixDrafter legacy;
+  Q4T_CHECK(legacy.Init(history, 100, 64).ok());
+  Q4T_CHECK(legacy.ProposeAfter(3, 4).ready);
+  Q4T_CHECK(legacy.Counters().numeric_checks == 0);
+  Q4T_CHECK(legacy.Counters().classified_tokens == 0);
+  return true;
+}
+
+Q4T_TEST(suffix_numeric_table_size_and_request_reset_contract) {
+  const std::vector<int32_t> history{1, 2, 3, 4, 5, 6, 7, 1, 2};
+  std::vector<uint8_t> classes(100, 3);
+  SuffixDrafter drafter;
+  Q4T_CHECK(!drafter.Init(history, 99, 64, classes).ok());
+  Q4T_CHECK(!drafter.Init(history, 101, 64, classes).ok());
+  Q4T_CHECK(!drafter.Active() && drafter.MemoryBytes() == 0);
+  Q4T_CHECK(drafter.Init(history, 100, 64, classes).ok());
+  Q4T_CHECK(drafter.ProposeAfter(3, 4).reason ==
+            SuffixReason::kNumericRejected);
+  drafter.Reset();
+  Q4T_CHECK(!drafter.Active() && drafter.MemoryBytes() == 0);
+  Q4T_CHECK(drafter.Counters().numeric_rejected == 1);
+  std::vector<uint8_t>().swap(classes);  // End the borrowed table's lifetime.
+  Q4T_CHECK(drafter.ProposeAfter(3, 4).reason == SuffixReason::kInactive);
+  Q4T_CHECK(drafter.Init(history, 100, 64).ok());
+  Q4T_CHECK(drafter.ProposeAfter(3, 4).ready);
+  Q4T_CHECK(drafter.Counters().numeric_checks == 0);
+  Q4T_CHECK(drafter.Counters().numeric_rejected == 0);
+  return true;
+}
+
+Q4T_TEST(suffix_numeric_filter_preserves_fixed_maximum_match_range) {
+  std::array<uint8_t, 1000> classes;
+  classes.fill(ClassifySuffixToken("1"));
+  std::vector<int32_t> history;
+  for (int32_t token = 1; token <= 70; ++token) history.push_back(token);
+  history.insert(history.end(), {101, 102, 103, 900});
+  for (int32_t token = 1; token < 70; ++token) history.push_back(token);
+  SuffixDrafter drafter;
+  Q4T_CHECK(drafter.Init(history, classes.size(), 256, classes).ok());
+  const auto proposal = drafter.ProposeAfter(70, 101);
+  Q4T_CHECK(proposal.reason == SuffixReason::kNumericRejected);
+  Q4T_CHECK(proposal.match_length == 64);
+  Q4T_CHECK(drafter.Counters().numeric_checks == 1);
+  Q4T_CHECK(drafter.Counters().classified_tokens == 64);
+  Q4T_CHECK(drafter.Counters().numeric_rejected == 1);
   return true;
 }
