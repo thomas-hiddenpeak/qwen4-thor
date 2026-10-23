@@ -9,6 +9,14 @@ The full head remains the default. See [the resume decision](../../docs/MTP_SUBS
 The original failed round remains separately preserved in
 [its report](../../docs/MTP_SUBSET_HEAD_2026-10-23.md).
 
+The subset head and the subsequent SHA2 startup optimization are now merged into
+main. The deployed binary remains `f356b2c9`; see the
+[integration and rollback record](../../docs/MTP_SUBSET_MAIN_MERGE_2026-10-23.md).
+The root [startup guide](../../README.md#使用) includes the serve command, the
+retained artifact path, option defaults and mode switching. Artifacts are local
+under `.q4t-work/` or `build/`, not distributed with a Git clone. The directory
+passed to `--mtp-subset-head` must contain all three files described below.
+
 `convert.py` selects exactly 65536 original token IDs using the frozen 24-record
 calibration input/response corpus. It copies BF16 source rows without conversion,
 forces tokenizer/generation special tokens, sorts rows by original ID, and emits
@@ -18,12 +26,16 @@ Zero-frequency ties are filled by ascending original ID; calibration support is
 only 629 distinct tokens, so this is a narrow initial shortlist, not a trained
 proposal model or a demonstrated general-purpose coverage guarantee.
 
-The explicit experimental option is `--mtp-subset-head DIR` on serve/generate.
-Serve rejects this option with `--no-mtp` or non-k3. The artifact loader checks
+The explicit opt-in option is `--mtp-subset-head DIR` on serve/generate.
+Both require k=3 for a subset. Serve rejects it with `--no-mtp`; generate has no
+`--no-mtp` option. The HTTP acceptance does not cover CLI generate. The loader checks
 fixed dimensions, dtype, hashes of payload/source/tokenizer/generation files,
 sorted unique in-range IDs and required special tokens. Failed explicit loads
 fail startup. Source/config files must stay immutable for the load; these hashes
 are consistency checks, not an adversarial artifact authenticity system.
+ARM SHA2 acceleration is selected automatically by CPU capability, with software
+fallback and the same complete hashes; it needs no CLI switch. See the
+[startup optimization](../../docs/SHA2_STARTUP_2026-10-23.md).
 
 The owned head and device mapping add 335806464 bytes. Original full-head/shared
 logits allocations remain; subset logits are packed by `MtpModel::DraftVocab()`.
@@ -50,3 +62,8 @@ pointing to the retained stage directory; they preserve that directory layout.
 The acceptance audit is a pre-deployment audit and expects the old default pair.
 `deploy_resume.py` requires the matching deployment lease and sealed accepted
 package; `--rollback` restores only known old/new identities under that lease.
+That tool covers the historical `75e85bac` to `5a456351` pair. For the current
+`f356b2c9` deployment, first use the SHA2 rollback tool to restore `75e85bac`,
+then use this tool if a full pre-subset rollback is needed. Use fresh lease/output
+directories and the commands in the integration record; preserve sealed evidence.
+To disable only the subset at runtime, remove `--mtp-subset-head` and restart.

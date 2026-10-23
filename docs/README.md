@@ -2,6 +2,8 @@
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
 最新专项：[独立草稿head与SHA2主线合入](MTP_SUBSET_MAIN_MERGE_2026-10-23.md)。
+启动参数与三种解码配置见[根README使用说明](../README.md#使用)；
+下一阶段是否可启动见[STATUS准入评估](STATUS.md#当前推进目标)。
 
 本目录包含当前入口与按日期冻结的历史报告。先读[STATUS](STATUS.md)和
 [EVALUATION](EVALUATION.md)；下表专题的“进行中/下一步/当前”仅代表成文

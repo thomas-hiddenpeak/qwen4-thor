@@ -18,7 +18,8 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
   base64 接入), 3D MRoPE；当前版本默认拒绝媒体，须显式
   `serve --allow-media`进入未验收实验路径（部署身份见STATUS）
 - **MTP 推测解码**: 默认开启 T>1 batch verifier（k=3），`--no-mtp` 回退；
-  当前单流近 tie 合同、质量与性能验收状态见 STATUS
+  默认使用完整草稿 head，`--mtp-subset-head DIR` 显式启用已验收的
+  65536 行 BF16 独立草稿 head；当前合同、质量与性能边界见 STATUS
 - **专家SSD卸载**: 默认全部专家驻留，非零`--moe-resident-slots`
   显式启用配置的device槽位与SSD后备读取。Thor主机内存和GPU共用
   DRAM，CPU缓存不构成容量卸载；中转、缓存与工作集均计入统一RAM。
@@ -91,7 +92,17 @@ python3 tools/evalscope/gpu_exclusive.py \
 ./build/q4t serve --host 127.0.0.1 --port 8000 \
   --max-seq 1 --max-prefill 8192 --max-len 208896
 # 普通 decode 回退：在上述 serve 命令末尾添加 --no-mtp
+
+# 显式使用已交付的 65536 行 BF16 独立草稿 head；仍为单流 MTP k=3
+./build/q4t serve --host 127.0.0.1 --port 8000 \
+  --max-seq 1 --max-prefill 8192 --max-len 208896 \
+  --mtp-subset-head .q4t-work/sha2-startup-20261023/delivery-package/artifact
 ```
+
+以上命令从仓库根运行。子集示例使用本机保留的交付产物；该目录包含
+`head.bf16`、`token_ids.bin` 和 `manifest.json`，不随 Git 克隆下载。
+其他机器需准备与模型及 tokenizer 匹配的产物，并将参数替换为实际目录；
+产物生成方法和固定候选边界见[转换工具说明](tools/mtp_subset/README.md)。
 
 `serve` 参数默认值来自 `ServerOptions`，不是上述示例的显式配置：
 
@@ -103,6 +114,7 @@ python3 tools/evalscope/gpu_exclusive.py \
 | `--max-len` | `0`，默认预算开启时自动推导有效长度 |
 | `--max-tokens` | 请求省略输出上限时使用 `256` |
 | `--mtp` / `--no-mtp` / `--mtp-k` | MTP 默认开，k 默认 `3`；serve 接受 k=1..16，验收仅覆盖 k=3 |
+| `--mtp-subset-head DIR` | 默认不启用，草稿使用完整 head；指定产物目录启用固定 65536 行 BF16 子集，要求 MTP 开启且 k=3 |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
 | `--mem-fraction` | `0.90`，启动内存预算比例 |
 | `--moe-resident-slots` | `0`，所有专家驻留；非零启用按需驻留 |
@@ -113,13 +125,36 @@ python3 tools/evalscope/gpu_exclusive.py \
 T>1 batch verifier；`--mtp-verifier` 已移除，sequential 实现在历史提交
 `7f6a69c` 中保留。当前交付与基线见 [STATUS](docs/STATUS.md)。
 
+### 独立草稿 head 与启动校验
+
+`--mtp-subset-head` 是进程启动参数，不是 HTTP 请求参数。不能与
+`--no-mtp` 或非 3 的 `--mtp-k` 同用。产物缺失、摘要或映射不合法时
+明确启动失败，不静默改用完整 head。
+
+移除该参数并重启即可回到完整草稿 head，MTP 仍开启；若要回到普通
+decode，移除该参数后加 `--no-mtp`。这些切换不需要更换程序。
+回退整个程序版本另见[两级回退包](docs/MTP_SUBSET_MAIN_MERGE_2026-10-23.md#两级回退包)。
+
+子集只裁剪草稿投影，主模型完整 head 继续驻留，新增权重和映射
+320.25 MiB；加载中转和文件页缓存另占统一 RAM。BF16 保持，但草稿
+候选和投影舍入可能变化，不承诺任意输入输出无损。受测收益、质量
+和资源边界见[有界验收](docs/MTP_SUBSET_RESUME_2026-10-23.md)。
+
+SHA2 校验加速无需启动参数：支持时自动使用 ARM SHA2 指令，否则走
+软件实现；源权重、tokenizer 和派生产物的完整 SHA-256 校验保留。
+它减少子集加载时的校验耗时，不省略校验，也不改变 head 的默认选择。
+实测启动成本见[SHA2 验收](docs/SHA2_STARTUP_2026-10-23.md)。
+
+### 其他入口与验收范围
+
 启动计划在`auto`下仅对明确不支持的模式在计划开始前选择旧路径；
 元数据、预留或交付失败直接停止。支持范围与本次1K可靠性验证见
 [正式交付记录](docs/STARTUP_DELIVERY_2026-10-21.md)，不代表新增长输入、
 并发或性能优化结论。
 
 `generate` 是另一套调用路径：输出上限默认 64，默认尝试加载 MTP，
-接受 `--mtp`、`--mtp-k`、`--max-prefill`、`--model-dir`、`--max-tokens`，
+接受 `--mtp`、`--mtp-k`、`--mtp-subset-head DIR`、`--max-prefill`、
+`--model-dir`、`--max-tokens`，指定子集时同样要求 k=3，
 **目前不接受 `--no-mtp`**；不能将 serve 的参数或验收直接套用到它。
 
 冻结验收范围为本机 Thor、既定 checkpoint、纯文本 greedy、单流 k=3、

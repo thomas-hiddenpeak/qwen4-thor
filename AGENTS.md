@@ -66,6 +66,10 @@ cmake --build build --parallel
 ./build/q4t serve --max-seq 1 --max-prefill 8192 --max-len 208896
 ```
 
+默认草稿使用完整head；`--mtp-subset-head DIR`显式选择65536行BF16
+独立head，要求MTP开启且k=3。产物目录、启用/回退示例和SHA2自动校验
+加速说明见[README使用说明](README.md#使用)，验收边界以STATUS为准。
+
 ## 当前评估约定（2026-09-27 用户更新）
 
 先读 docs/STATUS.md 和 docs/EVALUATION.md。**性能优化**的第一项
