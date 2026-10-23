@@ -44,7 +44,8 @@ def main():
     # Only documentation has intentionally advanced since the old freeze.
     for name, digest in old['files'].items():
         p = Path(name)
-        if p.is_relative_to(ROOT / 'docs'):
+        if (p.is_relative_to(ROOT / 'docs') or
+                p == ROOT / 'tools/mtp_suffix_admission/README.md'):
             continue
         if sha(p) != digest:
             raise RuntimeError('reused dependency differs from old freeze: ' + name)
