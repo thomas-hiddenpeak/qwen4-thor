@@ -36,7 +36,7 @@ class AdmissionStageAudit(unittest.TestCase):
         request_end = self.end.replace('id=one',f'id={identity}') if end is None else end
         tail = (release_line+request_end if release_before_end else request_end+release_line)
         text = (start + (self.banner if banner is None else banner) +
-                (release_line if early_release else '') + f'[q4t][request] id={identity} event=admitted\n' +
+                (release_line if early_release else '') + f'[q4t][request] id={identity} event=admitted stage=request\n' +
                 summary + extra + (request_end if early_release else tail) +
                 '[startup-reservation] {"event":"finalized","status":"PASS",'
                 '"release_unknown":0}\n')
