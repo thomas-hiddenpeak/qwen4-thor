@@ -1,0 +1,27 @@
+{
+  "status": "PASS_CLEANUP",
+  "time": "2026-10-23T06:26:28.624607+00:00",
+  "old_branch": "codex/mtp-subset-head",
+  "old_tip": "b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1",
+  "retained_anchor": "origin/main",
+  "retained_anchor_tip": "b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1",
+  "remote_refs_after": {
+    "refs/heads/main": "b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1"
+  },
+  "local_branches_after": [
+    "main"
+  ],
+  "source_worktree": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source",
+    "head": "b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1",
+    "detached": true,
+    "clean": true,
+    "preserved": true
+  },
+  "unique_commits_before_deletion": 0,
+  "open_pull_requests_before_deletion": [],
+  "remote_deletion": "success; exact --force-with-lease refs/heads/codex/mtp-subset-head:b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1",
+  "local_deletion": "success; git branch -d codex/mtp-subset-head",
+  "other_worktrees": "untouched; no worktree removed",
+  "evidence_paths": "all retained; no git clean or worktree prune"
+}

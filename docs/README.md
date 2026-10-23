@@ -1,7 +1,7 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[GDS最小实机实验与C128历史数据](GDS_MINIMAL_EXPERIMENT_2026-10-21.md)。
+最新专项：[独立草稿head与SHA2主线合入](MTP_SUBSET_MAIN_MERGE_2026-10-23.md)。
 
 本目录包含当前入口与按日期冻结的历史报告。先读[STATUS](STATUS.md)和
 [EVALUATION](EVALUATION.md)；下表专题的“进行中/下一步/当前”仅代表成文
@@ -9,7 +9,9 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [独立草稿head与SHA2主线合入](MTP_SUBSET_MAIN_MERGE_2026-10-23.md) | main身份、两级回退包、证据复用与分支整理 | 合入并推送，原工作区及证据保留 |
 | [SHA2启动校验优化](SHA2_STARTUP_2026-10-23.md) | 完整hash硬件加速、两模式五档及回退 | 有界接受，启动中位减少25.276秒 |
+| [独立BF16草稿head修正版验收](MTP_SUBSET_RESUME_2026-10-23.md) | 唯一65536行子集、直接合同、两模式五档及成本 | 有界接受，显式启用 |
 | [GDS最小实验与C128历史数据](GDS_MINIMAL_EXPERIMENT_2026-10-21.md) | 严格/兼容实际路径、字节校验、库缓冲限制及历史prefill/decode | 实机诊断完成，未接受原生GDS或性能优化 |
 | [SSD offload合同](SSD_OFFLOAD_CONTRACT.md) | SSD唯一容量后备、DRAM缓存/中转和逻辑/物理I/O定义 | 用户明确原则，当前规范 |
 | [NVIDIA SSD直读评估](SSD_DIRECT_IO_EVALUATION_2026-10-21.md) | GDS平台资格、本机只读盘点、权重布局与工程优先级 | 原生GDS暂不接入，SSD主线继续 |

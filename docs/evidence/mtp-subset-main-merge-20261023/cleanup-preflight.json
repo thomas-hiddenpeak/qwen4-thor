@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "time": "2026-10-23T06:23:39.793176+00:00",
+  "scope": [
+    "refs/heads/codex/mtp-subset-head"
+  ],
+  "expected_tip": "b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1",
+  "retained_anchor": "origin/main",
+  "retained_anchor_tip": "b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1",
+  "remote_refs": {
+    "refs/heads/codex/mtp-subset-head": "b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1",
+    "refs/heads/main": "b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1"
+  },
+  "open_pull_requests": [],
+  "unique_commits": 0,
+  "source_status": "clean",
+  "worktree_action": "detach at old tip; preserve path and all evidence"
+}

@@ -1,0 +1,43 @@
+{
+  "status": "PASS_POSTMERGE",
+  "time": "2026-10-23T06:29:34.983774+00:00",
+  "code_integration_tip": "b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1",
+  "build_source_commit": "9a902a822b96b4ea25ae9f47fa5c0a7862f175c0",
+  "installed_binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "installed_release_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+  "build_cache_sha256": "9e40007a1decff5ebfdde8b9ee241990e47339717f700d7511417bf950ad4d69",
+  "runtime_diff_since_test": [],
+  "rollback_packages": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2",
+      "file_count": 181,
+      "seal_unchanged": true,
+      "previous_binary_and_release_unchanged": true,
+      "verification": "full per-file hash audit reused from preflight; postmerge exact inventory, seal and rollback identities verified"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package",
+      "file_count": 275,
+      "seal_unchanged": true,
+      "previous_binary_and_release_unchanged": true,
+      "verification": "full per-file hash audit reused from preflight; postmerge exact inventory, seal and rollback identities verified"
+    }
+  ],
+  "final_seal_unchanged": true,
+  "original_source_detached_clean": true,
+  "rollback_tools_retained": true,
+  "original_log_history_unchanged": true,
+  "validation_budget": {
+    "new_model_starts": 0,
+    "new_http_requests": 0,
+    "new_gpu_tests": 0,
+    "new_builds": 0
+  },
+  "new_model_starts": 0,
+  "new_http_requests": 0,
+  "new_gpu_tests": 0,
+  "new_builds": 0,
+  "preflight_sha256": "82752abd2c64c5bd3dba41335d93932ce9a9a1ef1fa9155926025d9895195584",
+  "cleanup_sha256": "357afa0cbeca756b8734b1fe87bd780fd65e2bd874cdf06cef71a2264070c37f",
+  "phase": "after code merge and branch cleanup; before docs-only closeout commit"
+}

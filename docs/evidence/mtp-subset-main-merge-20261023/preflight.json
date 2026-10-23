@@ -1,0 +1,46 @@
+{
+  "status": "PASS_PREFLIGHT",
+  "date": "2026-10-23T06:21:14.667243+00:00",
+  "main_before": "ab762aa2cfd7b5f57d34419bc816dcce9607ce6b",
+  "branch": "codex/mtp-subset-head",
+  "branch_tip": "b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1",
+  "open_pull_requests": [],
+  "clean_worktrees": [
+    "/home/rm01/models/dev/qwen4-thor",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source"
+  ],
+  "merge_method": "fast-forward only; no runtime input change versus tested 9a902a8",
+  "runtime_changed_since_test": [],
+  "installed_binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "installed_release_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+  "build_source_commit": "9a902a822b96b4ea25ae9f47fa5c0a7862f175c0",
+  "rollback_packages": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2",
+      "files": 181,
+      "seal_sha256": "0ed28bbf3693366ffaebfef1ce6e78f88de42707cb0ce8aa88ac7451e29cd267",
+      "previous_binary_sha256": "5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191",
+      "previous_release_sha256": "e1a14429064aae3d046bbea6c743c2355071b09893cb9bc090deb7aecdf6be10"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package",
+      "files": 275,
+      "seal_sha256": "bd4b9c53778728fd776dc7123dc379eff5791b34843a2e686158d952fee16fe6",
+      "previous_binary_sha256": "75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d",
+      "previous_release_sha256": "9cbfaf7d76e62198fbc4f48b0e5ed1187d84a47705007ff5212411272ba47ab5"
+    }
+  ],
+  "final_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/final-seal.json",
+    "sha256": "fe2da9d1c84283ffe04c6958f631ff6eb16e53e0b7fbea22225a02fd1b3ae8e0",
+    "verified_files": 1866
+  },
+  "cleanup_scope": "only local and origin codex/mtp-subset-head, after origin/main contains old tip; retain source worktree detached at old tip and all ignored artifacts",
+  "validation_budget": {
+    "new_model_starts": 0,
+    "new_http_requests": 0,
+    "new_gpu_tests": 0,
+    "new_builds": 0
+  },
+  "reuse": "accepted subset 82 HTTP + 3 health and SHA2 54 HTTP + 3 health; runtime/binary unchanged"
+}

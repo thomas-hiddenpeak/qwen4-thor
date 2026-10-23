@@ -1,8 +1,9 @@
 # 子集head完整校验的SHA2启动优化
 
 2026-10-23，性能优化，有界验收及部署健康通过。父binary `75e85bac`，源码父提交
-`ef6b6577`；根main仍为`ab762aa`，不能视为运行binary源码。
-工作区与分支复用`codex/mtp-subset-head`。
+`ef6b6577`；验收时根main为`ab762aa`，不能视为运行binary源码。
+验收工作区与分支复用`codex/mtp-subset-head`。后续已一并合入main，
+原分支已整理，工作区及回退包保留，见[合入记录](MTP_SUBSET_MAIN_MERGE_2026-10-23.md)。
 
 ## 冻结范围与合同
 
@@ -143,7 +144,8 @@ hash字段不匹配的明确拒绝。软件回退是在Thor上强制选择，未
 默认仍为完整head，唯一65536 BF16子集仍需显式参数。部署阶段独立lease，
 子集/完整head MTP/普通三种模式各1条真实HTTP健康均通过，释放正常，
 114次NVML均正常。共新增57HTTP（验收54+健康3），无常驻服务、
-无恢复marker。根源码仍为ab762aa，未将工作分支合入main。
+无恢复marker。该次部署时根源码为ab762aa，工作分支尚未合入main；
+后续main合入不改变受测程序或其实际构建来源，见上方合入记录。
 
 回退包`.q4t-work/sha2-startup-20261023/delivery-package`已精确核验
 275个封存文件，包含旧75e binary/release/cache、新程序、固定artifact、

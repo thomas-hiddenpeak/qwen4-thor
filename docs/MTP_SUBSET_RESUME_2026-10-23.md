@@ -5,7 +5,7 @@
 
 ## 身份、修复与复用
 
-工作分支codex/mtp-subset-head，父提交739aff3；修正版生产binary
+验收时工作分支codex/mtp-subset-head，父提交739aff3；修正版生产binary
 75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d。
 默认及父binary保持5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191。
 源分片、tokenizer、行映射及唯一派生产物摘要沿用首轮manifest，
@@ -189,10 +189,11 @@ MTP收益、直接合同和容量/资源通过，作本次显式启用的工程�
 新目录须在source/.q4t-work内，不复用已封存的部署lease；仅识别已知旧/新身份，不覆盖未知文件。
 此轮未执行额外回退推理或新增性能采样。
 
-源码与二进制身份分开：根工作区main仍ab762aa，本阶段实现和交付记录
+源码与二进制身份分开：该次交付时根工作区main为ab762aa，实现和交付记录
 位于codex/mtp-subset-head隔离工作区；发布元数据明确绑定abe3087，
-不将根目录旧源码冒充新程序来源。研究分支含独有实现/证据提交，保留；
-没有合入main或删除分支/工作区，原证据路径继续有效。
+不将根目录旧源码冒充新程序来源。当时研究分支含独有实现/证据提交，保留。
+后续SHA2已替换部署程序；两项实现已一并合入main并整理分支，原工作区
+detached保留，原证据路径继续有效，见[主线合入记录](MTP_SUBSET_MAIN_MERGE_2026-10-23.md)。
 
 [最终交付审计](evidence/mtp-subset-resume-20261023/closeout.json)，
 [三个健康合同](evidence/mtp-subset-resume-20261023/deployment.json)。
