@@ -1,0 +1,1 @@
+{"source_requests":6,"source_hits_per_request":15,"numeric_rejected_per_request":8,"retained_per_request":7,"unknown_ids":243,"total_rejected":48,"new_gpu_requests":0,"new_http_requests":0,"scope":"inspected development prefixes only; no new-path or timing prediction"}

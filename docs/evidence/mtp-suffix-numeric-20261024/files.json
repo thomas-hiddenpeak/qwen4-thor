@@ -1,0 +1,21 @@
+{
+  "archive-no-go-receipt.json": "809142647fd53edbc4eab013d5982289f307cd53a9591917c277ef8d4654877b",
+  "audit-costs-summary.json": "8e390d43faea180382d5165a6833005dae265821a1e66558b9a56448be1acb6e",
+  "audit-costs-summary.txt": "97e1b51e55c427983c48cc6bc0680a563964836b1e601500a18614afd2c441b2",
+  "audit-evidence.json": "3807073f19835cce07379df54e453f89667d3f7694f2dfd776bb586c90c20b9b",
+  "audit-runtime-static.json": "fc4ab3dcc620d8737ca7edd1f24e493cde35a62a56cfb12e79683aa98fc45872",
+  "build-identity.json": "138cab2bb3dfa760522c6f165a8abfdcc271bba606a189ac726405979cd92cee",
+  "decision.json": "544fcc15688e4d2f88c9e6556dbfb09b2fbad8652c2f81dfa9a128d60e6e1c44",
+  "frozen-plan.json": "dbdfea2061ad866db0f6ba83bb8106f654d753958c4484b8ca249f7999b14902",
+  "host-contracts.log": "384f4ee959939d02e4ac35910eb816066c8a5080e6db7b5e64a0299cbb0ece07",
+  "numeric-development-replay.log": "857771af9847ad67baf5d7fd4f92004372e716c1642866eb125de1ef412fd652",
+  "numeric-stage-contracts.log": "ce4c957649261e22d35ba7e3841e7e6f48d38c556c70b16a376c8f4fcbab9d41",
+  "report-tables.md": "1be1867dd9014b083d41b953fcd740a714146421a4bf455590e0f4ef743b54a2",
+  "reuse.json": "6bc5c710ce4413ce6357292df393c4addbaff572b05f655721375f331810c981",
+  "scripts/analyze_numeric.py": "d6399a10e0cccc3493342dd3a6e94a427dd34adc442c4601ba3ecf6fe2fc67ac",
+  "scripts/archive_candidate.py": "4f72f1b4e0ad8ca561e5d233e958a165abd22d3b2d8eee42d542915d3d2c06e8",
+  "scripts/audit_costs.py": "6d366e3e00593e6a34bf60c78c8ec34aaa0851efdd7ea950d20f14850547e556",
+  "scripts/audit_evidence.py": "36f38d1859ace8bcb52c73e149a883024282f981e599885c7c8eaf7a0eef03d8",
+  "scripts/render_tables.py": "c65847ce3b16a6dd60349bee8e145fafd880c5b0e163afee0e1598aeffe6cc9e",
+  "summary.json": "437ea71961306b273eec8981b18de6f5d800264f818eb52391b6b4b0b39ef0e3"
+}

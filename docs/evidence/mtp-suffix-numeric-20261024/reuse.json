@@ -1,0 +1,451 @@
+{
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/states-full-driver.log",
+      "sha256": "e22398849e1835d14b05e8e15bf378ed1fee192875df6357ba8848db837060a1",
+      "scope": "Independent accepted-prefix target/draft contract, full head, a=0..3, suffix/neural switches, terminal and next request",
+      "boundary": "Test injects fixed global proposals directly into unchanged Multi; does not call request SuffixDrafter. Two-layer model coverage only; not arbitrary full-model equivalence."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/states-subset-driver.log",
+      "sha256": "7acce710e744edde5a797e4f56e20eadabf4f8705a56a00b463fd4876201c762",
+      "scope": "Independent accepted-prefix target/draft contract, subset head, a=0..3, suffix/neural switches, terminal and next request",
+      "boundary": "Test injects fixed global proposals directly into unchanged Multi; does not call request SuffixDrafter. Two-layer model coverage only; not arbitrary full-model equivalence."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/quality-plain/results.json",
+      "sha256": "dfe427088da37561060c46f6dce16a385d7458b18f029490dbd4e7d76d2421a2",
+      "scope": "11 ordinary decode exact retrieval cases passed",
+      "boundary": "Numeric table allocation and use are guarded by explicit suffix; ordinary numerical/tokenizer/scheduler dependencies unchanged. Current parent/candidate ordinary five-tier E2E is remeasured."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-subset-resume-20261023/artifact-contract.json",
+      "sha256": "a6f373f0aa88a32a1e4668ec08857f40fa7ef5099a00b521b6b5f1dee9404fbc",
+      "scope": "Unchanged BF16 subset source/artifact/projection/mapping/ownership contract",
+      "boundary": "No subset reconstruction, quantization or mapping changes; global suffix IDs still bypass subset remapping."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-subset-resume-20261023/projection-contract.log",
+      "sha256": "bffca92eca12e0d1352d24432151072ce4591a05fc83abc2f15ef4071cb9defd",
+      "scope": "Unchanged BF16 subset source/artifact/projection/mapping/ownership contract",
+      "boundary": "No subset reconstruction, quantization or mapping changes; global suffix IDs still bypass subset remapping."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-subset-resume-20261023/lifecycle.log",
+      "sha256": "02c58ec411ce5a781273029c340cdb960267d73e02d52efea17ec1c7fe61417b",
+      "scope": "Unchanged BF16 subset source/artifact/projection/mapping/ownership contract",
+      "boundary": "No subset reconstruction, quantization or mapping changes; global suffix IDs still bypass subset remapping."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/runner-contracts-driver.log",
+      "sha256": "da94e06c1938d3008190c0881d5f8374c3e61224e7cb8b4683fb5dff790ff353",
+      "scope": "Unchanged existing evalscope runner/outer stage audit host contracts",
+      "boundary": "New numeric stage checks run separately after HTTP gate; old completion is not a new optimization decision."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/stage-audit-contracts-driver.log",
+      "sha256": "660d986f7a7e4558c147089b93169b6f00e73a39731008d2c0507b0ae9056e1a",
+      "scope": "Unchanged existing evalscope runner/outer stage audit host contracts",
+      "boundary": "New numeric stage checks run separately after HTTP gate; old completion is not a new optimization decision."
+    }
+  ],
+  "unchanged_dependencies": [
+    {
+      "path": "src/model/moe.cu",
+      "sha256": "991bf0e474f8009116ce1855edafbd1e6021fbf183a88d6d376ea07324ad8249",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/gemv_hc_inject.cu",
+      "sha256": "171d3af4f3e47ef38cca206bf1ece47414e62bfe5669e4769f15376884d30c98",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/small_m_gemm.cu",
+      "sha256": "15afcd44d1b095e3d922d88cbc9bd64b7664f62076a11ef8d8dd639124870368",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/decode_topk.cu",
+      "sha256": "064bb583a92e0d8db468e9929b1816c3afcb3b98f6a597768ac05d6c0c126f0a",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/full_attention.cu",
+      "sha256": "42ad1cbb67ed915090e90580ad8777e60967ab93231afb8d9aa129fbe8b249d2",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/hyperconnection.cu",
+      "sha256": "11708a4f25d2b7d36025acf3199c5e1bc467c9a9f63d5a4feb6966854eb508df",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/ple_layer.cu",
+      "sha256": "e6a8febdd3ebb561b775063115e28d170ca3c00566085fa4d36198aa09d86982",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/bitonic_topk.cuh",
+      "sha256": "26808fb16249b95adaec639b1d498fec0f42b5d966479868beafb1cd2025b661",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/model.cu",
+      "sha256": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/streaming_topk.cu",
+      "sha256": "c20a088a043135fd2f3745fba349cc5e34afd6b6da488775879478220ab5e131",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/gemv.cu",
+      "sha256": "65e610839ce6020c81f7d60940048c59bab091a8b8e4f4128235c4a066fc2164",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/model_owner.cpp",
+      "sha256": "c22051c6431d36547c3e42d9e4b35646df348d10b5e66bc887f86cd48e21cb7e",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/linear_attention.cu",
+      "sha256": "a44ffbf25b3a86cbc16e6cbfc1e5e31a7d03df660cf2e8a94e1b7a3f5388c65f",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/indexer_decode.cu",
+      "sha256": "45f3e702c5f79bf42b5d22229397e1b0dfb20fa39488b4b8cfe112b988ec7c19",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/decoder_layer.cu",
+      "sha256": "4d8e53e7d0a031dbdba68b7a5558f3baf93061a92c11312809790ef98170b15d",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/model_head.cu",
+      "sha256": "4bd64730abfdc8e0b0abd8fbee8fe5cd2bf63d8e7489f4e6c21957c74a7ffaef",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/metadata_upload_batch.cpp",
+      "sha256": "476bfb42336468f5f644f4675495315dc4d5ae2db494bf4f0fe43d1b82395e87",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/short_topk.cu",
+      "sha256": "b7ab94337a852c1617cce5ac59ece7e678204c8d8f49585d47ef11336264b3c0",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/qsa_decode.cu",
+      "sha256": "0ef266d97f75d95cfaf56dbfcb0cf89b65c3e4da5e5a20d30c1c00428aa7db4f",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/model/decode_metadata_upload.cpp",
+      "sha256": "8d5ebf39e39860e224d84974b932fc450f79eb89508dbb57ce0abd75d80deac9",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/quant/act_quant.cu",
+      "sha256": "9b665b09759dfe67cc9d5fcf3a157968895e8d9a3c825123a9730a4b08108746",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/quant/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/quant/moe_decode.cu",
+      "sha256": "eca5bda705b838e70a5035828b2611174f81c6fc8b3bc590701e8bd56999467f",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/quant/moe_residency.cpp",
+      "sha256": "6916f8e711c5703fb07b06c724c38680fb4fc20e0f3e025fcfa8eebdd8fec2d3",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/quant/lt_cache.cpp",
+      "sha256": "7b792cb6cee20bcbf87ea745d4a5f997f93ce47de0dfc77bb90fb2bfc7397a1a",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/quant/moe_weights.cpp",
+      "sha256": "86a5cfae76a652b99e53356624433b7d0e4c369eb2aec37f3c703e86c9f148b6",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/quant/moe_gemm.cu",
+      "sha256": "89fc66033ea6550def218146022f1543fc0f2ef66d06bbe65497b1010189da98",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/quant/dequant.cu",
+      "sha256": "cdd106b6f1915bfd475459f875672a67a02be14230733920c9c108c05c923220",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/text/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/text/tokenizer.cpp",
+      "sha256": "b912142ff16248b642db74ecee8d09534bcd67ccd9cf498797983b6ac4c73423",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/short_topk.h",
+      "sha256": "ba8c218f8deac760520772a45d2e328669ca331a982bccea144bd9a4382bbfcf",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/linear_attention.h",
+      "sha256": "3abd56b1709d49b0c6fd020c954e48f73dc23f7f5316c01ded152985b9371f33",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/metadata_upload_batch.h",
+      "sha256": "32c5b20cdda7f7cccaad12467c19e30a05bbb434b268ac05e5e4c86c4d0bd83d",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/ple_layer.h",
+      "sha256": "7daadaa3c44302a4b406368e5dc3ff5ec6bdf5d76b22799570dffd48ec2b27de",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/streaming_topk.h",
+      "sha256": "3213c483cec4edca6c935a9978d1cf316c2dbb14d1f0ecb5e4c624c68892f8d7",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/moe_replay.h",
+      "sha256": "592e73835241fee87872fdef8c71978b6a0fcecda0996efa21228ebb77d03597",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/full_attention.h",
+      "sha256": "afed8dd40bb537da50cfd49d3d30f6fbf34c3318b5dca994504ce0e3c4f96926",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/decoder_workspace.h",
+      "sha256": "5fc4dc1ab58adc4749db3d95d171b91ebe6a4a0e36ae99cc647a403acc26d669",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/decode_metadata_upload.h",
+      "sha256": "8e39e78fbfd65b34975631149ca82a5a3d7181f651a58e37ac04eb65d3ba6469",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/moe_replay_io.h",
+      "sha256": "acaa3bd5f780eade9f307f069e79dacf07965f30e4231302d0d86b0a295df8cb",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/hyperconnection.h",
+      "sha256": "9a90ddc00da65800e43bea0c22e55dc1e33be0795ad437bad775611387ce65f1",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/moe_replay_gpu.h",
+      "sha256": "9fed6e72d461ec62a298fe9623a5947c81ac623a05c8b70849570e7c116f0f28",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/moe.h",
+      "sha256": "d6a5a40e704298b0a9b191ca48344b25103ddfb8bfbeed7fb7ec3b2f35f6389a",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/moe_chunk_order.h",
+      "sha256": "b9860a49639c44d2798797fc901d2ff6fc8f84faf6e4cedf978d689ca2e727b1",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/sequence.h",
+      "sha256": "f335903f961788a9339f5ad1804c5c5adfae4dd143943726f8c4578a887c2ae9",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/model_head.h",
+      "sha256": "c9d2a47c092b94d670480ef2f2f8d19d07a858edc56a9101d4d6eba3121edd5e",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/model_owner.h",
+      "sha256": "3d607452d4a255a12d38920494f4f7037b36d15f1e3338d3ff084a12d21374e4",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/qsa_decode.h",
+      "sha256": "80917298a53f8ccfd8665f1ca4b7fdb3490ce5990a8893a4944f38c04f66b921",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/hc_mix_subtiming.h",
+      "sha256": "36dcd5d6ceef80c40efaade2708da72c7cba565c4c79d0de12a6f3e5754b7db6",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/decoder_layer.h",
+      "sha256": "34db1f81f57b19fa867a23255741c84610c8b8fba52e5a315344d27238b50d63",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/decode_topk.h",
+      "sha256": "523af23ef7a13bcb169aede39b8cbf667f977258870b3c8c55ab2c47c9fab98a",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/model.h",
+      "sha256": "5c6dc610cc6a387bdc1b8109a3f533616ef8ace3807315c5bbf79f00085b8d09",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/linear.h",
+      "sha256": "8606fd8c1294de4b7d7afafb918a585d50c726d5154020aaac7444c3c9686ec2",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/gemv.h",
+      "sha256": "4a8fd98b91df2e5fb24448f327f8e8bf085a51fd22b3403ebaf82b80a6050dc8",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/layer_subtiming.h",
+      "sha256": "12704d88aa5d71240bd5ac0595a6ece5a1e23e939d07a1320e5223b8f9feeb01",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/ragged_batch.h",
+      "sha256": "09b55a867113ac7bdff092f207e8c1ddcbd186e2ed915a45f0b6fbbfdcb9a85b",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/indexer_decode.h",
+      "sha256": "d656817419b3f4e9eb691e4bddc9b6036a4bdb0c9c65a5408f7738d45e311281",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/model/moe_partition.h",
+      "sha256": "cdb01017f2c5bc041728423c18a70a3497bf89abdbeec2e4d8ac36e578a96275",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/moe_residency.h",
+      "sha256": "154c04d9fc62866af7993b4769679d0abcb8e78770770d929f52d0dc55abda36",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/lt_cache.h",
+      "sha256": "170448767e135617098b3a0378d5e0d8775d5f880a35aff0812e03d69db38dfe",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/format.h",
+      "sha256": "4f8e654989a53ca32e31b5a37a502444dcee67936fa5159b3b28b836fc84f11d",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/moe_subtiming.h",
+      "sha256": "2b5c169cfaf886d81ef81e07572806147304858335f31699eaed53abcbaece5c",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/moe_decode.h",
+      "sha256": "915173e2efdb8617b22f6052d0798a5d10576455a0254273762db5306d58b27a",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/moe_weights.h",
+      "sha256": "9ba5f77b0a73af0b50776ad3085e8bf6f5fc0ac9b7b956e7e75e4f183aae8087",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/act_quant.h",
+      "sha256": "a7e917b04bcd8550f5b6b3871c6c0c0ba130e2845d6afebe1dcc3d7ca0111da3",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/fp4_gemm.h",
+      "sha256": "237b8b93ea555da4d786b1be9c2328d7b76e79e69540a2b6ec24f54440dfeebe",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/swizzle.h",
+      "sha256": "f0c2c88a22f45092de70542dfd3e8046f56e52f3703defbcae2d84e240678ccf",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/dequant.h",
+      "sha256": "5ea55ea1dd723e44f204d86f3cb709af099a084a5d526bc617b0c07750c2bdb9",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/quant/moe_gemm.h",
+      "sha256": "12f5743e6e6c6f9e044f182b2ebb89d80bcb28ba9909d64a3a4610ea2801153e",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/text/tokenizer.h",
+      "sha256": "10e336e6c3d47b465c2cbf03bc034dc4fc1a52c4dcf00ecda99c5724fe0979e0",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/mtp/mtp.cu",
+      "sha256": "9eb47f93aef45167052234ff1086c42263336528aa473d50e8b31eb455bcd653",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/mtp/subset_head.cpp",
+      "sha256": "f356b8edf2d00022d208a4ecafb9f08eb5c56059c20c11f5da7c4e8edec7c922",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/mtp/mtp.h",
+      "sha256": "eecc4fdbcc89f9d8b1c4786075fc6bb1f6eb250e81688d6dba514bada9133074",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "include/q4t/mtp/subset_head.h",
+      "sha256": "c18121fdabf7ecc03ba279a3f4f953b9681927b75d3e1274b9d6a531deb3e34d",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/server/chat_scheduler.cpp",
+      "sha256": "84db0d947b5a07ff4f16a3588abcddc9b19f5d68231f9f1905226b864a8a28e4",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "src/server/server_options.cpp",
+      "sha256": "ffdd5076c2ed6ee7b810e7dc8542f6b28ab072118fbfb0c27703558d3571de1e",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "tests/mtp_suffix_test.cpp",
+      "sha256": "ad389d4b519c803104278a5f293472e30e65382d193964baba5a4ad0ed017f7b",
+      "equals_frozen_suffix_source": true
+    },
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "24ad7a6993fbeccf1ecc7ee7148ce2ab7881df77e77f876a8eb4b224a8debd2b",
+      "equals_frozen_suffix_source": true
+    }
+  ],
+  "plain_path_review": "Table init guarded by mtp_suffix_; request span and counters used only within existing suffix branch; destructor null table does no work. No ordinary target model changes.",
+  "explicit_nonreuse": "No old elapsed timing substitutes for current OFF/ON comparisons. Old 8K and repeat materials are development regression inputs. New table/classifier/lifecycle receives new host and HTTP evidence."
+}

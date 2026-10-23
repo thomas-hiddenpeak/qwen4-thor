@@ -1,9 +1,16 @@
 # Numeric-format suffix admission: one bounded candidate
 
-This is a new experiment after the original suffix candidate's NO_GO. It does
-not rerun or modify that sealed stage. The installed binary remains unchanged
-until an explicit reviewed acceptance decision. The frozen decision card is
+Completed 2026-10-24: **NO_GO_PROTECTION_REGRESSION**. All 238 requests and 18
+starts completed within 9676 seconds. All repeated-code/text goals passed for
+both heads, but old 8K retained one extra ordinary-tail forward and held-out
+45K regressed in both startup pairs and both heads. Quality, direct contracts
+and cancellation/recovery passed. The candidate is archived; installed f356
+and its release metadata remain unchanged. This does not authorize a rerun or
+additional parameter search. The frozen card, results and archive receipt are in
 [the numeric-admission plan](../../docs/MTP_SUFFIX_NUMERIC_GATE_2026-10-23.md).
+
+The following describes the completed experiment. It did not rerun or modify
+the original suffix candidate's sealed NO_GO stage.
 
 The main budget is **238 inference HTTP requests, 18 HTTP service startups,
 14400 seconds**, including at most 1200 seconds for direct contracts. No warmup,

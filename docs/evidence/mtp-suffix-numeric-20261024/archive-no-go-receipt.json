@@ -1,0 +1,25 @@
+{
+  "archive_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-numeric-gate-20261023/archive-no-go",
+  "archive_files": 2908,
+  "archive_seal_sha256": "26675401d3be0182673065d3b3b2488c798dd928d4bebcfb66eddbd229129d68",
+  "archive_seal_verified": true,
+  "copied_payload_bytes": 298075071,
+  "candidate_sha256": "94d004be82d45d0d15110419eac060e441990bc109cad797e1f50f8386b7338a",
+  "frozen_plan_sha256": "dbdfea2061ad866db0f6ba83bb8106f654d753958c4484b8ca249f7999b14902",
+  "decision_sha256": "544fcc15688e4d2f88c9e6556dbfb09b2fbad8652c2f81dfa9a128d60e6e1c44",
+  "decision_fields": {
+    "evidence_validity": "VALID",
+    "measurement_complete": true,
+    "statistical_conclusion": "DESCRIPTIVE_ONLY; two startup pairs per head do not establish global population noninferiority. Repeated 45K losses and deterministic extra target work support rejection for the measured fixtures; tiny old-8K subset differences are not a statistical effect-size proof.",
+    "engineering_decision": "NO_GO_PROTECTION_REGRESSION"
+  },
+  "default_identity": {
+    "binary_path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "release_path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "release_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96"
+  },
+  "deployment_performed": false,
+  "original_paths_retained": true,
+  "weight_payloads_copied": false
+}

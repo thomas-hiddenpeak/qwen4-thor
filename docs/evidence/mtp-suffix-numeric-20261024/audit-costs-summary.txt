@@ -1,0 +1,41 @@
+最终离线成本与生命周期审计
+18/18 服务组，238请求（208 MTP，118 suffix ON）；errors=[]。
+两AB/BA块及各块内重复的下列接受分布/成本形状全部一致，OFF/ON输出SHA一致。
+
+head/case | verify | ordinary tail forward | target calls(rows) | restore | neural proposal T1 | draft extend calls(rows)
+full/old-8k | 69→69 | 1→2 | 70(277)→71(278) | 10→11 | 138→124 | 69(254)→69(253)
+full/context-1024 | 70→71 | 1→1 | 71(281)→72(285) | 15→18 | 140→126 | 70(254)→71(254)
+full/context-8192 | 77→78 | 0→0 | 77(308)→78(312) | 25→27 | 154→142 | 77(255)→78(255)
+full/context-45056 | 66→68 | 0→3 | 66(264)→71(275) | 8→16 | 132→108 | 66(255)→68(252)
+subset/old-8k | 69→69 | 1→2 | 70(277)→71(278) | 10→11 | 138→124 | 69(254)→69(253)
+subset/context-1024 | 71→72 | 1→1 | 72(285)→73(289) | 17→21 | 142→124 | 71(254)→72(254)
+subset/context-8192 | 79→80 | 0→0 | 79(316)→80(320) | 28→30 | 158→146 | 79(255)→80(255)
+subset/context-45056 | 69→70 | 0→3 | 69(276)→73(283) | 12→20 | 138→110 | 69(255)→70(252)
+
+两head旧8K：均7次suffix命中、6次数字拒绝；保留的suffix接受为[0,0,2,5]。
+新1K/8K/45K数字拒绝均0。full suffix接受分别[0,2,2,4]/[0,1,3,3]/[0,3,5,6]；subset分别[0,2,4,4]/[0,3,1,3]/[0,3,5,7]。
+数字门修复了旧路径的部分低质量匹配，但新路径仍有partial acceptance，草稿计算节省不能代替净收益。
+
+四条旧8K插桩诊断 wall phase累计ms（draft/verify/extend+accept）：
+timing-full-off: 1038.2/5184.7/620.7；69轮，缺失event 0。
+timing-full-on: 932.3/5189.0/619.1；69轮，缺失event 0。
+timing-subset-on: 456.0/5185.9/357.1；69轮，缺失event 0。
+timing-subset-off: 510.2/5194.9/361.4；69轮，缺失event 0。
+full神经proposal累计少105.9ms，subset少54.2ms；同样少14次T1神经forward，子集每次原本更便宜，因此可省成本更少。
+上述只有每head每arm一条诊断；不替代正式E2E，不把差值解释为统计或精确因果分解。
+普通tail未单独计时；extend+accept包含restore/接受/seed更新；event含GPU执行和stream空闲；打印精度0.1ms。
+计数覆盖整个迭代生成（包括首个MTP轮，排除prefill/MTP初始化），并非latency−TTFT窗口。
+
+10个ON服务分类表每次248320B、cap262144B、unknown243；init 19.064546–19.563051ms（中位19.295851ms），release 0.797–2.639μs。
+所有init都先于该服务请求，release晚于全部请求end；OFF/plain均无分类表。
+118个suffix请求的索引计时合计36.791436ms = init+append+query+release；其中query 4.319856ms，numeric 0.945355ms已嵌套query，不重复相加。
+每请求索引计时合计中位225.118μs，最大1011.958μs；payload峰值均1884160B，对象240B，另加每服务共享表，不能当作RSS或统一RAM实测。
+全118请求queries=6770、hits=1844、numeric_rejected=124，suffix接受分布=[0, 120, 176, 1548]；该合计混合质量/性能/生命周期/插桩，不作为吞吐样本。
+
+取消恢复：两head明确202 cancel_requested=true；末尾SSE均为request cancelled，之前分别4/3个内容chunk，均已经执行2轮MTP并有1次suffix命中。
+full取消模型提交8token、subset提交7token，允许大于实际发出的4/3chunk；只能用模型工作量解释成本，不能把已提交等同已发出。
+取消后seq_slots_free=seq_slots_total=1；健康status=ok、gpu_healthy=true。requests_running=1包含健康查询自身，不解释为泄漏。
+恢复请求与control输出SHA、接受分布、索引语义计数完全一致；full 63verify/62hit，subset65verify/62hit。
+自然stop/取消的最后一次extend可能跳过，聚合记录保留上下界；这些具体HTTP合同不证明任意输入完整状态等价。
+
+仅CPU离线读取原始日志/响应/健康记录；未修改raw、frozen、root docs，未新增GPU/HTTP/测试。

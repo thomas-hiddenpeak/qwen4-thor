@@ -1,0 +1,936 @@
+{
+  "audit_sha256": "ab80288ccfb041ab8898556190e23358840b47a1c9bb00c45fc2efd11bab9220",
+  "scope": "Completed-stage offline cost/lifecycle audit; not engineering acceptance or environment-validity decision",
+  "groups": 18,
+  "requests": 238,
+  "mtp_requests": 208,
+  "suffix_requests": 118,
+  "errors": [],
+  "representative_work_all_repeats_identical": [
+    {
+      "head": "full",
+      "case": "old-8k",
+      "off": {
+        "requests": 2,
+        "actual_input": 8159,
+        "actual_output": 256,
+        "acceptance": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "work": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 70,
+          "total_target_forward_rows": 277,
+          "checkpoint_restore_calls": 10,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 254
+        },
+        "output_sha256": [
+          "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778"
+        ]
+      },
+      "on": {
+        "requests": 2,
+        "actual_input": 8159,
+        "actual_output": 256,
+        "acceptance": [
+          5,
+          2,
+          4,
+          58
+        ],
+        "work": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 2,
+          "total_target_forward_calls": 71,
+          "total_target_forward_rows": 278,
+          "checkpoint_restore_calls": 11,
+          "neural_proposal_forward_calls_T1": 124,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 253
+        },
+        "output_sha256": [
+          "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778"
+        ],
+        "suffix": {
+          "queries": 69,
+          "hits": 7,
+          "numeric_rejected": 6,
+          "accepted": [
+            0,
+            0,
+            2,
+            5
+          ],
+          "neural_accepted": [
+            5,
+            2,
+            2,
+            53
+          ]
+        }
+      }
+    },
+    {
+      "head": "full",
+      "case": "context-1024",
+      "off": {
+        "requests": 6,
+        "actual_input": 1002,
+        "actual_output": 256,
+        "acceptance": [
+          3,
+          5,
+          7,
+          55
+        ],
+        "work": {
+          "verify_calls_T4": 70,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 71,
+          "total_target_forward_rows": 281,
+          "checkpoint_restore_calls": 15,
+          "neural_proposal_forward_calls_T1": 140,
+          "draft_extend_calls": 70,
+          "draft_extend_rows": 254
+        },
+        "output_sha256": [
+          "05d047cead311018a9816d0d5eda60037800a31fd40c34a164bb2174d85662b2"
+        ]
+      },
+      "on": {
+        "requests": 6,
+        "actual_input": 1002,
+        "actual_output": 256,
+        "acceptance": [
+          2,
+          8,
+          8,
+          53
+        ],
+        "work": {
+          "verify_calls_T4": 71,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 72,
+          "total_target_forward_rows": 285,
+          "checkpoint_restore_calls": 18,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 71,
+          "draft_extend_rows": 254
+        },
+        "output_sha256": [
+          "05d047cead311018a9816d0d5eda60037800a31fd40c34a164bb2174d85662b2"
+        ],
+        "suffix": {
+          "queries": 71,
+          "hits": 8,
+          "numeric_rejected": 0,
+          "accepted": [
+            0,
+            2,
+            2,
+            4
+          ],
+          "neural_accepted": [
+            2,
+            6,
+            6,
+            49
+          ]
+        }
+      }
+    },
+    {
+      "head": "full",
+      "case": "context-8192",
+      "off": {
+        "requests": 6,
+        "actual_input": 8176,
+        "actual_output": 256,
+        "acceptance": [
+          10,
+          8,
+          7,
+          52
+        ],
+        "work": {
+          "verify_calls_T4": 77,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 77,
+          "total_target_forward_rows": 308,
+          "checkpoint_restore_calls": 25,
+          "neural_proposal_forward_calls_T1": 154,
+          "draft_extend_calls": 77,
+          "draft_extend_rows": 255
+        },
+        "output_sha256": [
+          "353c69a822fb26241216ceb608cd89026a62a04ecbbd4d33b61c69729bbbc749"
+        ]
+      },
+      "on": {
+        "requests": 6,
+        "actual_input": 8176,
+        "actual_output": 256,
+        "acceptance": [
+          11,
+          8,
+          8,
+          51
+        ],
+        "work": {
+          "verify_calls_T4": 78,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 78,
+          "total_target_forward_rows": 312,
+          "checkpoint_restore_calls": 27,
+          "neural_proposal_forward_calls_T1": 142,
+          "draft_extend_calls": 78,
+          "draft_extend_rows": 255
+        },
+        "output_sha256": [
+          "353c69a822fb26241216ceb608cd89026a62a04ecbbd4d33b61c69729bbbc749"
+        ],
+        "suffix": {
+          "queries": 78,
+          "hits": 7,
+          "numeric_rejected": 0,
+          "accepted": [
+            0,
+            1,
+            3,
+            3
+          ],
+          "neural_accepted": [
+            11,
+            7,
+            5,
+            48
+          ]
+        }
+      }
+    },
+    {
+      "head": "full",
+      "case": "context-45056",
+      "off": {
+        "requests": 6,
+        "actual_input": 45035,
+        "actual_output": 256,
+        "acceptance": [
+          0,
+          1,
+          7,
+          58
+        ],
+        "work": {
+          "verify_calls_T4": 66,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 264,
+          "checkpoint_restore_calls": 8,
+          "neural_proposal_forward_calls_T1": 132,
+          "draft_extend_calls": 66,
+          "draft_extend_rows": 255
+        },
+        "output_sha256": [
+          "509c5f2c0236d07841a09cc3c525ec7eb83d0818c8bdc86bd2a9e3c1f7aee66c"
+        ]
+      },
+      "on": {
+        "requests": 6,
+        "actual_input": 45035,
+        "actual_output": 256,
+        "acceptance": [
+          0,
+          4,
+          12,
+          52
+        ],
+        "work": {
+          "verify_calls_T4": 68,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 71,
+          "total_target_forward_rows": 275,
+          "checkpoint_restore_calls": 16,
+          "neural_proposal_forward_calls_T1": 108,
+          "draft_extend_calls": 68,
+          "draft_extend_rows": 252
+        },
+        "output_sha256": [
+          "509c5f2c0236d07841a09cc3c525ec7eb83d0818c8bdc86bd2a9e3c1f7aee66c"
+        ],
+        "suffix": {
+          "queries": 68,
+          "hits": 14,
+          "numeric_rejected": 0,
+          "accepted": [
+            0,
+            3,
+            5,
+            6
+          ],
+          "neural_accepted": [
+            0,
+            1,
+            7,
+            46
+          ]
+        }
+      }
+    },
+    {
+      "head": "subset",
+      "case": "old-8k",
+      "off": {
+        "requests": 2,
+        "actual_input": 8159,
+        "actual_output": 256,
+        "acceptance": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "work": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 70,
+          "total_target_forward_rows": 277,
+          "checkpoint_restore_calls": 10,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 254
+        },
+        "output_sha256": [
+          "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778"
+        ]
+      },
+      "on": {
+        "requests": 2,
+        "actual_input": 8159,
+        "actual_output": 256,
+        "acceptance": [
+          5,
+          2,
+          4,
+          58
+        ],
+        "work": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 2,
+          "total_target_forward_calls": 71,
+          "total_target_forward_rows": 278,
+          "checkpoint_restore_calls": 11,
+          "neural_proposal_forward_calls_T1": 124,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 253
+        },
+        "output_sha256": [
+          "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778"
+        ],
+        "suffix": {
+          "queries": 69,
+          "hits": 7,
+          "numeric_rejected": 6,
+          "accepted": [
+            0,
+            0,
+            2,
+            5
+          ],
+          "neural_accepted": [
+            5,
+            2,
+            2,
+            53
+          ]
+        }
+      }
+    },
+    {
+      "head": "subset",
+      "case": "context-1024",
+      "off": {
+        "requests": 6,
+        "actual_input": 1002,
+        "actual_output": 256,
+        "acceptance": [
+          4,
+          5,
+          8,
+          54
+        ],
+        "work": {
+          "verify_calls_T4": 71,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 72,
+          "total_target_forward_rows": 285,
+          "checkpoint_restore_calls": 17,
+          "neural_proposal_forward_calls_T1": 142,
+          "draft_extend_calls": 71,
+          "draft_extend_rows": 254
+        },
+        "output_sha256": [
+          "05d047cead311018a9816d0d5eda60037800a31fd40c34a164bb2174d85662b2"
+        ]
+      },
+      "on": {
+        "requests": 6,
+        "actual_input": 1002,
+        "actual_output": 256,
+        "acceptance": [
+          2,
+          9,
+          10,
+          51
+        ],
+        "work": {
+          "verify_calls_T4": 72,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 73,
+          "total_target_forward_rows": 289,
+          "checkpoint_restore_calls": 21,
+          "neural_proposal_forward_calls_T1": 124,
+          "draft_extend_calls": 72,
+          "draft_extend_rows": 254
+        },
+        "output_sha256": [
+          "05d047cead311018a9816d0d5eda60037800a31fd40c34a164bb2174d85662b2"
+        ],
+        "suffix": {
+          "queries": 72,
+          "hits": 10,
+          "numeric_rejected": 0,
+          "accepted": [
+            0,
+            2,
+            4,
+            4
+          ],
+          "neural_accepted": [
+            2,
+            7,
+            6,
+            47
+          ]
+        }
+      }
+    },
+    {
+      "head": "subset",
+      "case": "context-8192",
+      "off": {
+        "requests": 6,
+        "actual_input": 8176,
+        "actual_output": 256,
+        "acceptance": [
+          13,
+          7,
+          8,
+          51
+        ],
+        "work": {
+          "verify_calls_T4": 79,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 79,
+          "total_target_forward_rows": 316,
+          "checkpoint_restore_calls": 28,
+          "neural_proposal_forward_calls_T1": 158,
+          "draft_extend_calls": 79,
+          "draft_extend_rows": 255
+        },
+        "output_sha256": [
+          "353c69a822fb26241216ceb608cd89026a62a04ecbbd4d33b61c69729bbbc749"
+        ]
+      },
+      "on": {
+        "requests": 6,
+        "actual_input": 8176,
+        "actual_output": 256,
+        "acceptance": [
+          13,
+          9,
+          8,
+          50
+        ],
+        "work": {
+          "verify_calls_T4": 80,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 80,
+          "total_target_forward_rows": 320,
+          "checkpoint_restore_calls": 30,
+          "neural_proposal_forward_calls_T1": 146,
+          "draft_extend_calls": 80,
+          "draft_extend_rows": 255
+        },
+        "output_sha256": [
+          "353c69a822fb26241216ceb608cd89026a62a04ecbbd4d33b61c69729bbbc749"
+        ],
+        "suffix": {
+          "queries": 80,
+          "hits": 7,
+          "numeric_rejected": 0,
+          "accepted": [
+            0,
+            3,
+            1,
+            3
+          ],
+          "neural_accepted": [
+            13,
+            6,
+            7,
+            47
+          ]
+        }
+      }
+    },
+    {
+      "head": "subset",
+      "case": "context-45056",
+      "off": {
+        "requests": 6,
+        "actual_input": 45035,
+        "actual_output": 256,
+        "acceptance": [
+          3,
+          3,
+          6,
+          57
+        ],
+        "work": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 69,
+          "total_target_forward_rows": 276,
+          "checkpoint_restore_calls": 12,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 255
+        },
+        "output_sha256": [
+          "509c5f2c0236d07841a09cc3c525ec7eb83d0818c8bdc86bd2a9e3c1f7aee66c"
+        ]
+      },
+      "on": {
+        "requests": 6,
+        "actual_input": 45035,
+        "actual_output": 256,
+        "acceptance": [
+          2,
+          4,
+          14,
+          50
+        ],
+        "work": {
+          "verify_calls_T4": 70,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 73,
+          "total_target_forward_rows": 283,
+          "checkpoint_restore_calls": 20,
+          "neural_proposal_forward_calls_T1": 110,
+          "draft_extend_calls": 70,
+          "draft_extend_rows": 252
+        },
+        "output_sha256": [
+          "509c5f2c0236d07841a09cc3c525ec7eb83d0818c8bdc86bd2a9e3c1f7aee66c"
+        ],
+        "suffix": {
+          "queries": 70,
+          "hits": 15,
+          "numeric_rejected": 0,
+          "accepted": [
+            0,
+            3,
+            5,
+            7
+          ],
+          "neural_accepted": [
+            2,
+            1,
+            9,
+            43
+          ]
+        }
+      }
+    }
+  ],
+  "suffix_totals": {
+    "queries": 6770,
+    "hits": 1844,
+    "candidates": 9418,
+    "compared": 279074,
+    "matched": 78791,
+    "numeric_checks": 1968,
+    "classified_tokens": 73473,
+    "numeric_rejected": 124
+  },
+  "suffix_acceptance": [
+    0,
+    120,
+    176,
+    1548
+  ],
+  "index_time_ns": {
+    "init_ns": {
+      "count": 118,
+      "sum": 27480028,
+      "min": 36435,
+      "median": 168509.5,
+      "max": 914638
+    },
+    "append_ns": {
+      "count": 118,
+      "sum": 4399661,
+      "min": 445,
+      "median": 38554.0,
+      "max": 106085
+    },
+    "query_ns": {
+      "count": 118,
+      "sum": 4319856,
+      "min": 259,
+      "median": 32181.5,
+      "max": 187181
+    },
+    "release_ns": {
+      "count": 118,
+      "sum": 591891,
+      "min": 269,
+      "median": 1990.5,
+      "max": 28047
+    },
+    "numeric_ns": {
+      "count": 118,
+      "sum": 945355,
+      "min": 0,
+      "median": 3153.0,
+      "max": 80935
+    }
+  },
+  "index_accounted_total_ns": 36791436,
+  "index_accounted_per_request_ns": {
+    "count": 118,
+    "sum": 36791436,
+    "min": 41203,
+    "median": 225117.5,
+    "max": 1011958
+  },
+  "table": {
+    "services": 10,
+    "bytes": 248320,
+    "cap_bytes": 262144,
+    "unknown": 243,
+    "init_ns": {
+      "count": 10,
+      "sum": 193212015,
+      "min": 19064546,
+      "median": 19295850.5,
+      "max": 19563051
+    },
+    "release_ns": {
+      "count": 10,
+      "sum": 14614,
+      "min": 797,
+      "median": 1259.5,
+      "max": 2639
+    }
+  },
+  "index_payload_bytes": [
+    1884160,
+    1884160
+  ],
+  "object_bytes": [
+    240
+  ],
+  "old8k_timing": {
+    "timing-full-off": {
+      "work": {
+        "scope": "whole iterative generation; excludes initial main/MTP prefill; includes first MTP round",
+        "verify_calls_T4": 69,
+        "accepted_draft_tokens": 185,
+        "committed_by_MTP_tokens": 254,
+        "checkpoint_restore_calls": 10,
+        "suffix_hits": 0,
+        "neural_MTP_rounds": 69,
+        "neural_proposal_forward_calls_T1": 138,
+        "observed_scheduler_waits": 70,
+        "non_MTP_scheduler_waits": 1,
+        "draft_extend_calls_upper": 69,
+        "draft_extend_calls_lower": 69,
+        "draft_extend_rows_upper": 254,
+        "draft_extend_rows_lower": 254,
+        "exact_nonterminal_length_counts": true,
+        "ordinary_tail_output_tokens": 2,
+        "ordinary_tail_forward_calls_T1": 1,
+        "total_target_forward_calls": 70,
+        "total_target_forward_rows": 277,
+        "target_logical_consumed_output_tokens": 255,
+        "target_speculative_extra_rows": 22,
+        "draft_extend_calls": 69,
+        "draft_extend_rows": 254,
+        "draft_extend_shapes_T1_T2_T3_T4": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "iterative_MTP_forward_calls": 207,
+        "iterative_MTP_forward_rows": 392,
+        "iterative_MTP_shapes_T1_T2_T3_T4": [
+          143,
+          2,
+          3,
+          59
+        ]
+      },
+      "wall_ms": {
+        "draft": 1038.2,
+        "verify": 5184.7,
+        "extend_accept": 620.7
+      },
+      "gpu_event_ms": {
+        "draft": 1037.4,
+        "verify": 5184.7,
+        "extend_accept": 620.8
+      },
+      "event_samples": 69,
+      "missing_event_samples": 0
+    },
+    "timing-full-on": {
+      "work": {
+        "scope": "whole iterative generation; excludes initial main/MTP prefill; includes first MTP round",
+        "verify_calls_T4": 69,
+        "accepted_draft_tokens": 184,
+        "committed_by_MTP_tokens": 253,
+        "checkpoint_restore_calls": 11,
+        "suffix_hits": 7,
+        "neural_MTP_rounds": 62,
+        "neural_proposal_forward_calls_T1": 124,
+        "observed_scheduler_waits": 71,
+        "non_MTP_scheduler_waits": 2,
+        "draft_extend_calls_upper": 69,
+        "draft_extend_calls_lower": 69,
+        "draft_extend_rows_upper": 253,
+        "draft_extend_rows_lower": 253,
+        "exact_nonterminal_length_counts": true,
+        "ordinary_tail_output_tokens": 3,
+        "ordinary_tail_forward_calls_T1": 2,
+        "total_target_forward_calls": 71,
+        "total_target_forward_rows": 278,
+        "target_logical_consumed_output_tokens": 255,
+        "target_speculative_extra_rows": 23,
+        "draft_extend_calls": 69,
+        "draft_extend_rows": 253,
+        "draft_extend_shapes_T1_T2_T3_T4": [
+          5,
+          2,
+          4,
+          58
+        ],
+        "iterative_MTP_forward_calls": 193,
+        "iterative_MTP_forward_rows": 377,
+        "iterative_MTP_shapes_T1_T2_T3_T4": [
+          129,
+          2,
+          4,
+          58
+        ]
+      },
+      "wall_ms": {
+        "draft": 932.3,
+        "verify": 5189.0,
+        "extend_accept": 619.1
+      },
+      "gpu_event_ms": {
+        "draft": 931.5,
+        "verify": 5189.0,
+        "extend_accept": 619.1
+      },
+      "event_samples": 69,
+      "missing_event_samples": 0
+    },
+    "timing-subset-on": {
+      "work": {
+        "scope": "whole iterative generation; excludes initial main/MTP prefill; includes first MTP round",
+        "verify_calls_T4": 69,
+        "accepted_draft_tokens": 184,
+        "committed_by_MTP_tokens": 253,
+        "checkpoint_restore_calls": 11,
+        "suffix_hits": 7,
+        "neural_MTP_rounds": 62,
+        "neural_proposal_forward_calls_T1": 124,
+        "observed_scheduler_waits": 71,
+        "non_MTP_scheduler_waits": 2,
+        "draft_extend_calls_upper": 69,
+        "draft_extend_calls_lower": 69,
+        "draft_extend_rows_upper": 253,
+        "draft_extend_rows_lower": 253,
+        "exact_nonterminal_length_counts": true,
+        "ordinary_tail_output_tokens": 3,
+        "ordinary_tail_forward_calls_T1": 2,
+        "total_target_forward_calls": 71,
+        "total_target_forward_rows": 278,
+        "target_logical_consumed_output_tokens": 255,
+        "target_speculative_extra_rows": 23,
+        "draft_extend_calls": 69,
+        "draft_extend_rows": 253,
+        "draft_extend_shapes_T1_T2_T3_T4": [
+          5,
+          2,
+          4,
+          58
+        ],
+        "iterative_MTP_forward_calls": 193,
+        "iterative_MTP_forward_rows": 377,
+        "iterative_MTP_shapes_T1_T2_T3_T4": [
+          129,
+          2,
+          4,
+          58
+        ]
+      },
+      "wall_ms": {
+        "draft": 456.0,
+        "verify": 5185.9,
+        "extend_accept": 357.1
+      },
+      "gpu_event_ms": {
+        "draft": 455.3,
+        "verify": 5185.7,
+        "extend_accept": 357.1
+      },
+      "event_samples": 69,
+      "missing_event_samples": 0
+    },
+    "timing-subset-off": {
+      "work": {
+        "scope": "whole iterative generation; excludes initial main/MTP prefill; includes first MTP round",
+        "verify_calls_T4": 69,
+        "accepted_draft_tokens": 185,
+        "committed_by_MTP_tokens": 254,
+        "checkpoint_restore_calls": 10,
+        "suffix_hits": 0,
+        "neural_MTP_rounds": 69,
+        "neural_proposal_forward_calls_T1": 138,
+        "observed_scheduler_waits": 70,
+        "non_MTP_scheduler_waits": 1,
+        "draft_extend_calls_upper": 69,
+        "draft_extend_calls_lower": 69,
+        "draft_extend_rows_upper": 254,
+        "draft_extend_rows_lower": 254,
+        "exact_nonterminal_length_counts": true,
+        "ordinary_tail_output_tokens": 2,
+        "ordinary_tail_forward_calls_T1": 1,
+        "total_target_forward_calls": 70,
+        "total_target_forward_rows": 277,
+        "target_logical_consumed_output_tokens": 255,
+        "target_speculative_extra_rows": 22,
+        "draft_extend_calls": 69,
+        "draft_extend_rows": 254,
+        "draft_extend_shapes_T1_T2_T3_T4": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "iterative_MTP_forward_calls": 207,
+        "iterative_MTP_forward_rows": 392,
+        "iterative_MTP_shapes_T1_T2_T3_T4": [
+          143,
+          2,
+          3,
+          59
+        ]
+      },
+      "wall_ms": {
+        "draft": 510.2,
+        "verify": 5194.9,
+        "extend_accept": 361.4
+      },
+      "gpu_event_ms": {
+        "draft": 509.1,
+        "verify": 5194.8,
+        "extend_accept": 361.3
+      },
+      "event_samples": 69,
+      "missing_event_samples": 0
+    }
+  },
+  "lifecycle": {
+    "full": {
+      "control_recovery_response_equal": true,
+      "control_recovery_acceptance_equal": true,
+      "control_recovery_index_counts_equal": true,
+      "explicit_cancel_acknowledgement": {
+        "status": 202,
+        "body": "{\"cancel_requested\":true}"
+      },
+      "cancelled_after_suffix_hits": 1,
+      "cancelled_after_nonempty_chunks": 4,
+      "health": {
+        "cancel": {
+          "status": "ok",
+          "gpu_healthy": true,
+          "requests_running": 1,
+          "seq_slots_free": 1,
+          "seq_slots_total": 1
+        },
+        "recovery": {
+          "status": "ok",
+          "gpu_healthy": true,
+          "requests_running": 1,
+          "seq_slots_free": 1,
+          "seq_slots_total": 1
+        }
+      },
+      "limit": "These concrete HTTP cases do not prove arbitrary-input state equivalence."
+    },
+    "subset": {
+      "control_recovery_response_equal": true,
+      "control_recovery_acceptance_equal": true,
+      "control_recovery_index_counts_equal": true,
+      "explicit_cancel_acknowledgement": {
+        "status": 202,
+        "body": "{\"cancel_requested\":true}"
+      },
+      "cancelled_after_suffix_hits": 1,
+      "cancelled_after_nonempty_chunks": 3,
+      "health": {
+        "cancel": {
+          "status": "ok",
+          "gpu_healthy": true,
+          "requests_running": 1,
+          "seq_slots_free": 1,
+          "seq_slots_total": 1
+        },
+        "recovery": {
+          "status": "ok",
+          "gpu_healthy": true,
+          "requests_running": 1,
+          "seq_slots_free": 1,
+          "seq_slots_total": 1
+        }
+      },
+      "limit": "These concrete HTTP cases do not prove arbitrary-input state equivalence."
+    }
+  },
+  "limits": [
+    "Counts cover whole iterative generation, including first MTP round; latency-minus-TTFT excludes first-token work.",
+    "MTP extend+accept includes checkpoint restore and accept/seed handling; no independent restore timer exists.",
+    "CUDA-event intervals include busy and stream-idle time between markers; they are not pure GPU busy time.",
+    "Phase values are printed to 0.1 ms; summed rounded values are approximate.",
+    "No GPU phase span covers ordinary tail forwards; scheduler waits identify calls, not isolated kernel cost.",
+    "Plain-only scheduler waits can include batched prefill; they are retained as observations, not asserted as decode call counts.",
+    "Shared table init is startup cost and release is per-service teardown; neither is repeated per request.",
+    "numeric_ns is already in query_ns. Do not add them when computing index cost.",
+    "Stop/cancel aggregate logs do not fully determine terminal extend work; bounds are retained.",
+    "Requested payload/object bytes are not total process RSS, unified RAM, or measured physical DRAM traffic.",
+    "Four timing requests are separate diagnostics, never acceptance-throughput samples or independent repeated starts."
+  ]
+}

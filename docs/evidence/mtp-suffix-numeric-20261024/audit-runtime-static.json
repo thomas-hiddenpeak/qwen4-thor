@@ -1,0 +1,285 @@
+{
+  "audit_kind": "read-only static dependency and lifetime review; no test/build/GPU/HTTP executed by this audit",
+  "created_utc": "2026-10-23T14:31:11.466026+00:00",
+  "reviewed_files": {
+    "include/q4t/server/chat_server.h": "edf5073ec620d896a5779c5c9d5ec09f7432766e42ef40c1973c80c24468c294",
+    "src/server/chat_server.cpp": "7cb0ba65a41d9d146bb10e9e991625e95b8ad858a1f050afd1a1975c0f185495",
+    "src/server/chat_generation.cpp": "18492a7e486dbd2b2d153aeaccfaf6e0ca81462f9145f7a0ad43cf5ef4497980"
+  },
+  "old_frozen_plan_sha256": "a9b9e3484d347efb8f40b66f1e3ff247c0927bd4b8ba81eb401b209c70e457e2",
+  "old_source_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot",
+  "blocking_findings": [],
+  "static_findings": {
+    "owner_lifetime": "Start constructs unique ownership before serving; request Init borrows it. Run cancels/drains all detached handlers with acquire/release active_conns before returning; main destroys server only afterward. Request Reset is before statistics and plain-tail decode.",
+    "global_ids_and_specials": "Table indexes every cfg.vocab global ID. Decode(one,false) preserves special content; decoding failure or empty bytes gives flags0. Request passes main cfg.vocab and exact table count; model Load copies cfg. No subset mapping occurs.",
+    "off_path": "Table construction and request suffix Init/statistics are guarded by explicit mtp_suffix_. A fresh OFF server has null owner/count0; no classification table allocation/Decode loop. Its destructor release helper returns immediately.",
+    "failure_release": "bad_alloc during table construction explicitly releases the local array and fails Start. A later Start failure destroys the server-owned table through the existing CLI stack owner. Normal shutdown releases only after handler drain. No new exception-injection evidence is claimed.",
+    "log_accounting": "init_ns spans allocation and Decode/classification loop including loop-local scratch destruction; release_ns covers table free. Request numeric_ns is a subset of query_ns. peak_bytes excludes the borrowed shared table; table payload must be counted once. Matched-length denominator includes numeric_rejected.",
+    "proposal_state": "numeric rejection only changes ready=false before scheduler submission. Existing scheduler converts false to empty suffix span and executes the unchanged neural branch. Successful accepted-prefix commit, cancellation boundary, checkpoint/restore/draft-extend and next_d0/next_g implementation remain unchanged."
+  },
+  "source_groups": {
+    "gpu_core": {
+      "count": 88,
+      "old_identity_digest": "76038af3f80ff91565201f684e54149e95dd04f339e5bffe29306e8743097d4c",
+      "current_identity_digest": "76038af3f80ff91565201f684e54149e95dd04f339e5bffe29306e8743097d4c",
+      "mismatches": [],
+      "paths": [
+        "include/q4t/model/decode_metadata_upload.h",
+        "include/q4t/model/decode_topk.h",
+        "include/q4t/model/decoder_layer.h",
+        "include/q4t/model/decoder_workspace.h",
+        "include/q4t/model/full_attention.h",
+        "include/q4t/model/gemv.h",
+        "include/q4t/model/hc_mix_subtiming.h",
+        "include/q4t/model/hyperconnection.h",
+        "include/q4t/model/indexer_decode.h",
+        "include/q4t/model/layer_subtiming.h",
+        "include/q4t/model/linear.h",
+        "include/q4t/model/linear_attention.h",
+        "include/q4t/model/metadata_upload_batch.h",
+        "include/q4t/model/model.h",
+        "include/q4t/model/model_head.h",
+        "include/q4t/model/model_owner.h",
+        "include/q4t/model/moe.h",
+        "include/q4t/model/moe_chunk_order.h",
+        "include/q4t/model/moe_partition.h",
+        "include/q4t/model/moe_replay.h",
+        "include/q4t/model/moe_replay_gpu.h",
+        "include/q4t/model/moe_replay_io.h",
+        "include/q4t/model/ple_layer.h",
+        "include/q4t/model/qsa_decode.h",
+        "include/q4t/model/ragged_batch.h",
+        "include/q4t/model/sequence.h",
+        "include/q4t/model/short_topk.h",
+        "include/q4t/model/streaming_topk.h",
+        "include/q4t/mtp/moe_bf16.h",
+        "include/q4t/mtp/mtp.h",
+        "include/q4t/mtp/position_copy.h",
+        "include/q4t/mtp/subset_head.h",
+        "include/q4t/ple/fp8_convert.h",
+        "include/q4t/ple/ngram_hash.h",
+        "include/q4t/ple/ngram_hash_derive.h",
+        "include/q4t/ple/page_reader.h",
+        "include/q4t/ple/ple_embedding.h",
+        "include/q4t/quant/act_quant.h",
+        "include/q4t/quant/dequant.h",
+        "include/q4t/quant/format.h",
+        "include/q4t/quant/fp4_gemm.h",
+        "include/q4t/quant/lt_cache.h",
+        "include/q4t/quant/moe_decode.h",
+        "include/q4t/quant/moe_gemm.h",
+        "include/q4t/quant/moe_residency.h",
+        "include/q4t/quant/moe_subtiming.h",
+        "include/q4t/quant/moe_weights.h",
+        "include/q4t/quant/swizzle.h",
+        "src/kernels/.gitkeep",
+        "src/model/.gitkeep",
+        "src/model/bitonic_topk.cuh",
+        "src/model/decode_metadata_upload.cpp",
+        "src/model/decode_topk.cu",
+        "src/model/decoder_layer.cu",
+        "src/model/full_attention.cu",
+        "src/model/gemv.cu",
+        "src/model/gemv_hc_inject.cu",
+        "src/model/hyperconnection.cu",
+        "src/model/indexer_decode.cu",
+        "src/model/linear_attention.cu",
+        "src/model/metadata_upload_batch.cpp",
+        "src/model/model.cu",
+        "src/model/model_head.cu",
+        "src/model/model_owner.cpp",
+        "src/model/moe.cu",
+        "src/model/ple_layer.cu",
+        "src/model/qsa_decode.cu",
+        "src/model/short_topk.cu",
+        "src/model/small_m_gemm.cu",
+        "src/model/streaming_topk.cu",
+        "src/mtp/.gitkeep",
+        "src/mtp/moe_bf16.cu",
+        "src/mtp/mtp.cu",
+        "src/mtp/subset_head.cpp",
+        "src/ple/.gitkeep",
+        "src/ple/fp8_convert.cu",
+        "src/ple/ngram_hash.cpp",
+        "src/ple/ngram_hash_derive.cpp",
+        "src/ple/page_reader.cpp",
+        "src/ple/ple_embedding.cpp",
+        "src/quant/.gitkeep",
+        "src/quant/act_quant.cu",
+        "src/quant/dequant.cu",
+        "src/quant/lt_cache.cpp",
+        "src/quant/moe_decode.cu",
+        "src/quant/moe_gemm.cu",
+        "src/quant/moe_residency.cpp",
+        "src/quant/moe_weights.cpp"
+      ]
+    },
+    "runtime_io_tokenizer": {
+      "count": 25,
+      "old_identity_digest": "29abd998fe0f9d2d7b87367d255a91c3b5706e56ddf45ff40fe253dca43ae76c",
+      "current_identity_digest": "29abd998fe0f9d2d7b87367d255a91c3b5706e56ddf45ff40fe253dca43ae76c",
+      "mismatches": [],
+      "paths": [
+        "include/q4t/io/json.h",
+        "include/q4t/io/model_config.h",
+        "include/q4t/io/pending_host_storage.h",
+        "include/q4t/io/safetensors.h",
+        "include/q4t/io/weight_loader.h",
+        "include/q4t/runtime/memory_budget.h",
+        "include/q4t/runtime/reservation_owner.h",
+        "include/q4t/runtime/residency_config.h",
+        "include/q4t/runtime/startup_plan.h",
+        "include/q4t/runtime/startup_reservation.h",
+        "include/q4t/text/tokenizer.h",
+        "src/io/.gitkeep",
+        "src/io/json.cpp",
+        "src/io/model_config.cpp",
+        "src/io/safetensors.cpp",
+        "src/io/weight_loader.cpp",
+        "src/runtime/.gitkeep",
+        "src/runtime/memory_budget.cpp",
+        "src/runtime/startup_model_plan.cpp",
+        "src/runtime/startup_mtp_plan.cpp",
+        "src/runtime/startup_plan.cpp",
+        "src/runtime/startup_reservation.cpp",
+        "src/runtime/startup_weight_plan.h",
+        "src/text/.gitkeep",
+        "src/text/tokenizer.cpp"
+      ]
+    }
+  },
+  "key_dependency_identity": {
+    "src/mtp/mtp.cu": {
+      "old": "9eb47f93aef45167052234ff1086c42263336528aa473d50e8b31eb455bcd653",
+      "current": "9eb47f93aef45167052234ff1086c42263336528aa473d50e8b31eb455bcd653"
+    },
+    "include/q4t/mtp/mtp.h": {
+      "old": "eecc4fdbcc89f9d8b1c4786075fc6bb1f6eb250e81688d6dba514bada9133074",
+      "current": "eecc4fdbcc89f9d8b1c4786075fc6bb1f6eb250e81688d6dba514bada9133074"
+    },
+    "src/mtp/subset_head.cpp": {
+      "old": "f356b8edf2d00022d208a4ecafb9f08eb5c56059c20c11f5da7c4e8edec7c922",
+      "current": "f356b8edf2d00022d208a4ecafb9f08eb5c56059c20c11f5da7c4e8edec7c922"
+    },
+    "include/q4t/mtp/subset_head.h": {
+      "old": "c18121fdabf7ecc03ba279a3f4f953b9681927b75d3e1274b9d6a531deb3e34d",
+      "current": "c18121fdabf7ecc03ba279a3f4f953b9681927b75d3e1274b9d6a531deb3e34d"
+    },
+    "src/model/model.cu": {
+      "old": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194",
+      "current": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194"
+    },
+    "src/model/model_head.cu": {
+      "old": "4bd64730abfdc8e0b0abd8fbee8fe5cd2bf63d8e7489f4e6c21957c74a7ffaef",
+      "current": "4bd64730abfdc8e0b0abd8fbee8fe5cd2bf63d8e7489f4e6c21957c74a7ffaef"
+    },
+    "src/model/full_attention.cu": {
+      "old": "42ad1cbb67ed915090e90580ad8777e60967ab93231afb8d9aa129fbe8b249d2",
+      "current": "42ad1cbb67ed915090e90580ad8777e60967ab93231afb8d9aa129fbe8b249d2"
+    },
+    "src/text/tokenizer.cpp": {
+      "old": "b912142ff16248b642db74ecee8d09534bcd67ccd9cf498797983b6ac4c73423",
+      "current": "b912142ff16248b642db74ecee8d09534bcd67ccd9cf498797983b6ac4c73423"
+    },
+    "include/q4t/text/tokenizer.h": {
+      "old": "10e336e6c3d47b465c2cbf03bc034dc4fc1a52c4dcf00ecda99c5724fe0979e0",
+      "current": "10e336e6c3d47b465c2cbf03bc034dc4fc1a52c4dcf00ecda99c5724fe0979e0"
+    },
+    "src/server/chat_scheduler.cpp": {
+      "old": "84db0d947b5a07ff4f16a3588abcddc9b19f5d68231f9f1905226b864a8a28e4",
+      "current": "84db0d947b5a07ff4f16a3588abcddc9b19f5d68231f9f1905226b864a8a28e4"
+    },
+    "src/server/chat_http.cpp": {
+      "old": "4c9620a0624a0ee842c6147cba31b406912acfb1e350750d2ad53774329de650",
+      "current": "4c9620a0624a0ee842c6147cba31b406912acfb1e350750d2ad53774329de650"
+    },
+    "include/q4t/server/mtp_policy.h": {
+      "old": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+      "current": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285"
+    },
+    "tests/mtp_suffix_test.cpp": {
+      "old": "ad389d4b519c803104278a5f293472e30e65382d193964baba5a4ad0ed017f7b",
+      "current": "ad389d4b519c803104278a5f293472e30e65382d193964baba5a4ad0ed017f7b"
+    },
+    "tests/mtp_projection_path_test.cpp": {
+      "old": "5b565055218bdb0c9f07f729dc4f4df4b44051a6850ff328b58ec8922a3e5ece",
+      "current": "5b565055218bdb0c9f07f729dc4f4df4b44051a6850ff328b58ec8922a3e5ece"
+    },
+    "tests/mtp_spec_accept_states_test.cpp": {
+      "old": "60327ce2e247bb5d297a1077ed8951a4724252d3dca5c306f2661dc18bfe6189",
+      "current": "60327ce2e247bb5d297a1077ed8951a4724252d3dca5c306f2661dc18bfe6189"
+    },
+    "CMakeLists.txt": {
+      "old": "24ad7a6993fbeccf1ecc7ee7148ce2ab7881df77e77f876a8eb4b224a8debd2b",
+      "current": "24ad7a6993fbeccf1ecc7ee7148ce2ab7881df77e77f876a8eb4b224a8debd2b"
+    }
+  },
+  "build_flags_identity": {
+    "q4t_model": {
+      "old": "c362b67de898dd843269db7c279aa65e90e303db4f0447216cc096b77ecc2d3a",
+      "current": "c362b67de898dd843269db7c279aa65e90e303db4f0447216cc096b77ecc2d3a"
+    },
+    "q4t_text": {
+      "old": "db29bf2c817faa682e1f39930bd65dc85ea465892c9839231a4d64982bc7b176",
+      "current": "db29bf2c817faa682e1f39930bd65dc85ea465892c9839231a4d64982bc7b176"
+    },
+    "q4t_quant": {
+      "old": "fe16ab146cad7b8d47132cf0415807a643b8eb7c6b15cb0c2f3410ca60534702",
+      "current": "fe16ab146cad7b8d47132cf0415807a643b8eb7c6b15cb0c2f3410ca60534702"
+    },
+    "q4t_runtime": {
+      "old": "b499bda4348b46ab2fe97fa4c882c7b6c7a510d4a0002b49f3c540deb4ca03e1",
+      "current": "b499bda4348b46ab2fe97fa4c882c7b6c7a510d4a0002b49f3c540deb4ca03e1"
+    },
+    "q4t_io": {
+      "old": "db29bf2c817faa682e1f39930bd65dc85ea465892c9839231a4d64982bc7b176",
+      "current": "db29bf2c817faa682e1f39930bd65dc85ea465892c9839231a4d64982bc7b176"
+    },
+    "q4t_ple": {
+      "old": "abfd1a9d540c5ab5cbc3ee89ab93fd880c39412651ae4a1c0514a88b588307f5",
+      "current": "abfd1a9d540c5ab5cbc3ee89ab93fd880c39412651ae4a1c0514a88b588307f5"
+    }
+  },
+  "source_and_build_flags_equal": true,
+  "model_metadata": {
+    "checked": 197,
+    "mismatches": [],
+    "boundary": "metadata identity only; this audit does not reread large model weight contents"
+  },
+  "small_artifact_identity": {
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json": {
+      "expected": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+      "actual": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/manifest.json": {
+      "expected": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+      "actual": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/token_ids.bin": {
+      "expected": "71d89c6d2899c22641ac3d1f7f4957de94eddc5256b3f60bc8242f24becf590b",
+      "actual": "71d89c6d2899c22641ac3d1f7f4957de94eddc5256b3f60bc8242f24becf590b"
+    }
+  },
+  "prior_gpu_state_contracts": {
+    "full": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/states-full-driver.log",
+      "sha256": "e22398849e1835d14b05e8e15bf378ed1fee192875df6357ba8848db837060a1",
+      "pass": true,
+      "contract_line": "SUFFIX_CONTRACT accept=0,1,2,3 switches=3 terminal=1 slot_reuse=1 length_tail=1 full_target_layers=2 subset=0"
+    },
+    "subset": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/states-subset-driver.log",
+      "sha256": "7acce710e744edde5a797e4f56e20eadabf4f8705a56a00b463fd4876201c762",
+      "pass": true,
+      "contract_line": "SUFFIX_CONTRACT accept=0,1,2,3 switches=3 terminal=1 slot_reuse=1 length_tail=1 full_target_layers=2 subset=1"
+    }
+  },
+  "reuse_decision": "Reuse old full/subset fixed-k3 GPU state contracts at their original scope: GPU core, scheduler entry, tokenizer/projection and oracle sources/build flags unchanged. New classifier/table/admission host contracts and new HTTP quality/performance remain required.",
+  "limits": [
+    "Old oracle is two target layers plus actual MTP and selected head, with GdnRegOff; constructed d0 covers accepted0..3, and separate continuous switching retains computed d0/g. It is not whole-model arbitrary-input equality.",
+    "This source audit does not claim new binary/GPU output equality or prove quality/performance of changed admission decisions. Newly rejected suffix attempts now use neural proposals and may change later step boundaries.",
+    "Model weights are checked by old recorded filesystem metadata only; small tokenizer and subset metadata/ID files have fresh content hashes. Large head.bf16 bytes are not rehashed here and retain the prior sealed content identity.",
+    "The 248320-byte table is bounded allocation payload, not physical peak RAM; temporary Decode strings/vectors and allocator overhead require startup/process resource evidence.",
+    "No graceful release timing is promised for SIGKILL/process abort. Table/log construction and new rejection counts are statically reviewed, not newly executed in this audit."
+  ]
+}

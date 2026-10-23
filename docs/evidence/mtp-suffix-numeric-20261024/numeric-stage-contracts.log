@@ -1,0 +1,12 @@
+test_explicit_fallback_never_passes_with_healthy_summary (test_stage_audit.NumericStageAudit.test_explicit_fallback_never_passes_with_healthy_summary) ... ok
+test_records_nested_timing_and_exact_table_lifecycle (test_stage_audit.NumericStageAudit.test_records_nested_timing_and_exact_table_lifecycle) ... ok
+test_rejection_accounting_and_nested_cost_must_close (test_stage_audit.NumericStageAudit.test_rejection_accounting_and_nested_cost_must_close) ... ok
+test_rejects_ungated_binary_and_missing_or_duplicate_release (test_stage_audit.NumericStageAudit.test_rejects_ungated_binary_and_missing_or_duplicate_release) ... ok
+test_rejects_wrong_capacity_domain_or_zero_index_allocation (test_stage_audit.NumericStageAudit.test_rejects_wrong_capacity_domain_or_zero_index_allocation) ... ok
+test_suffix_off_must_not_construct_table (test_stage_audit.NumericStageAudit.test_suffix_off_must_not_construct_table) ... ok
+test_zero_queries_remain_valid_with_real_allocations (test_stage_audit.NumericStageAudit.test_zero_queries_remain_valid_with_real_allocations) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.009s
+
+OK

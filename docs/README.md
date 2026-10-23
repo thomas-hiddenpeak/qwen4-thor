@@ -13,7 +13,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
-| [数字格式suffix准入](MTP_SUFFIX_NUMERIC_GATE_2026-10-23.md) | 确定性过滤、两head配对块、新旧材料分离 | 候选零警告构建，238HTTP预算待统一验收 |
+| [数字格式suffix准入](MTP_SUFFIX_NUMERIC_GATE_2026-10-23.md) | 确定性过滤、两head配对块、新旧材料分离 | 238HTTP完成；重复收益保留，旧8K工作门与45K保护失败，NO_GO封存 |
 | [8K suffix回退诊断](MTP_SUFFIX_8K_DIAGNOSIS_2026-10-23.md) | 数字短匹配重放、额外目标工作、注意力阈值边界 | 离线研究完成，0新增GPU/HTTP，NO_GO保持 |
 | [固定k3 suffix草稿](MTP_SUFFIX_K3_2026-10-23.md) | 请求局部索引、独立状态合同、两head五档及成本 | NO_GO：4K/8K保护回退，默认保持 |
 | [独立草稿head与SHA2主线合入](MTP_SUBSET_MAIN_MERGE_2026-10-23.md) | main身份、两级回退包、证据复用与分支整理 | 合入并推送，原工作区及证据保留 |

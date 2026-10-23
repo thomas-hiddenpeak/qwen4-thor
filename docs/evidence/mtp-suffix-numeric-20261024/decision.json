@@ -1,0 +1,304 @@
+{
+  "task": "fixed-k3 numeric-format suffix admission",
+  "source_commit": "82ce03a7d9766353d5b3c7eeabf3cefef941d4ba",
+  "candidate_sha256": "94d004be82d45d0d15110419eac060e441990bc109cad797e1f50f8386b7338a",
+  "parent_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "frozen_plan_sha256": "dbdfea2061ad866db0f6ba83bb8106f654d753958c4484b8ca249f7999b14902",
+  "evidence_validity": "VALID",
+  "measurement_complete": true,
+  "statistical_conclusion": "DESCRIPTIVE_ONLY; two startup pairs per head do not establish global population noninferiority. Repeated 45K losses and deterministic extra target work support rejection for the measured fixtures; tiny old-8K subset differences are not a statistical effect-size proof.",
+  "engineering_decision": "NO_GO_PROTECTION_REGRESSION",
+  "reasons": [
+    "Both heads fail the frozen old-8K work gate: verify 69 to 69 but ordinary tail T1 1 to 2 in both blocks. Subset old-8K decode ratios are below 1 in both blocks.",
+    "Held-out 45K decode regresses in all four head/block comparisons, with repeated increases in verify, ordinary tail and restore work.",
+    "Subset held-out 1K and 8K show smaller repeated negative decode observations and one extra verify call; report separately.",
+    "All four repeated-code/text goals pass independently for both heads; these benefits do not offset protection regressions."
+  ],
+  "requests_used": 238,
+  "service_starts_used": 18,
+  "elapsed_seconds": 9676.01426076889,
+  "additional_sampling": 0,
+  "deployment": "NOT_PERFORMED; retain f356 default binary and 422993 release metadata; explicit 65536 BF16 artifact unchanged",
+  "deployment_health_requests": 0,
+  "artifacts": {
+    "analysis.json": "3b87beadd10f7699a2c7488719033fe1ba66766fa355c3b61dbb0a581becbe9a",
+    "audit-evidence.json": "3807073f19835cce07379df54e453f89667d3f7694f2dfd776bb586c90c20b9b",
+    "audit-costs.json": "ab80288ccfb041ab8898556190e23358840b47a1c9bb00c45fc2efd11bab9220",
+    "report-tables.md": "4a4739b83f63b2fb9777a611df3b7cfdbef1e83fbefad815cc8e4e33eecf1ecb"
+  },
+  "goals": {
+    "full": {
+      "repeat_scenarios": {
+        "repeat-code": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.1692937836319544,
+            1.1717261934924381
+          ],
+          "geometric_mean_ratio": 1.170509356720159,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "repeat-text": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.172191293357527,
+            1.1670287913105113
+          ],
+          "geometric_mean_ratio": 1.1696071940064918,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-code": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.166192642919972,
+            1.1657309059501921
+          ],
+          "geometric_mean_ratio": 1.1659617515783045,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-text": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.1664849859453466,
+            1.1633667297451733
+          ],
+          "geometric_mean_ratio": 1.1649248144820687,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        }
+      },
+      "old_8k": {
+        "role": "development_regression",
+        "paired_ratios": [
+          1.0058492323586612,
+          1.007320248274363
+        ],
+        "geometric_mean_ratio": 1.006584471599927,
+        "work": [
+          {
+            "block": 1,
+            "off": {
+              "verify_calls": 69,
+              "mtp_emitted_tokens": 254,
+              "ordinary_tail_output_tokens": 2,
+              "ordinary_tail_target_T1": 1,
+              "total_target_forward_calls": 70,
+              "target_processed_rows": 277,
+              "target_restore_calls": 10,
+              "neural_proposal_T1": 138,
+              "draft_extend_calls": 69,
+              "total_mtp_forward_calls": 207,
+              "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+            },
+            "on": {
+              "verify_calls": 69,
+              "mtp_emitted_tokens": 253,
+              "ordinary_tail_output_tokens": 3,
+              "ordinary_tail_target_T1": 2,
+              "total_target_forward_calls": 71,
+              "target_processed_rows": 278,
+              "target_restore_calls": 11,
+              "neural_proposal_T1": 124,
+              "draft_extend_calls": 69,
+              "total_mtp_forward_calls": 193,
+              "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+            },
+            "protected_count_deltas": {
+              "verify_calls": 0,
+              "ordinary_tail_output_tokens": 1,
+              "ordinary_tail_target_T1": 1
+            },
+            "does_not_increase": false
+          },
+          {
+            "block": 2,
+            "off": {
+              "verify_calls": 69,
+              "mtp_emitted_tokens": 254,
+              "ordinary_tail_output_tokens": 2,
+              "ordinary_tail_target_T1": 1,
+              "total_target_forward_calls": 70,
+              "target_processed_rows": 277,
+              "target_restore_calls": 10,
+              "neural_proposal_T1": 138,
+              "draft_extend_calls": 69,
+              "total_mtp_forward_calls": 207,
+              "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+            },
+            "on": {
+              "verify_calls": 69,
+              "mtp_emitted_tokens": 253,
+              "ordinary_tail_output_tokens": 3,
+              "ordinary_tail_target_T1": 2,
+              "total_target_forward_calls": 71,
+              "target_processed_rows": 278,
+              "target_restore_calls": 11,
+              "neural_proposal_T1": 124,
+              "draft_extend_calls": 69,
+              "total_mtp_forward_calls": 193,
+              "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+            },
+            "protected_count_deltas": {
+              "verify_calls": 0,
+              "ordinary_tail_output_tokens": 1,
+              "ordinary_tail_target_T1": 1
+            },
+            "does_not_increase": false
+          }
+        ],
+        "input_output_identity_equal": true,
+        "frozen_runtime_gate_met": false,
+        "cpu_eight_mistake_rejection": "See numeric-development-replay contract log; runtime need not contain exactly eight rejections."
+      }
+    },
+    "subset": {
+      "repeat_scenarios": {
+        "repeat-code": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.093189510819792,
+            1.0983642698196316
+          ],
+          "geometric_mean_ratio": 1.0957738356184916,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "repeat-text": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.0798868955038063,
+            1.0804084825324822
+          ],
+          "geometric_mean_ratio": 1.08014765753483,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-code": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.1101551042534408,
+            1.1102166638218849
+          ],
+          "geometric_mean_ratio": 1.1101858836109797,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-text": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.0901808874156351,
+            1.0944722727225096
+          ],
+          "geometric_mean_ratio": 1.0923244726400816,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        }
+      },
+      "old_8k": {
+        "role": "development_regression",
+        "paired_ratios": [
+          0.9994531332999985,
+          0.997404716933824
+        ],
+        "geometric_mean_ratio": 0.9984283997902447,
+        "work": [
+          {
+            "block": 1,
+            "off": {
+              "verify_calls": 69,
+              "mtp_emitted_tokens": 254,
+              "ordinary_tail_output_tokens": 2,
+              "ordinary_tail_target_T1": 1,
+              "total_target_forward_calls": 70,
+              "target_processed_rows": 277,
+              "target_restore_calls": 10,
+              "neural_proposal_T1": 138,
+              "draft_extend_calls": 69,
+              "total_mtp_forward_calls": 207,
+              "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+            },
+            "on": {
+              "verify_calls": 69,
+              "mtp_emitted_tokens": 253,
+              "ordinary_tail_output_tokens": 3,
+              "ordinary_tail_target_T1": 2,
+              "total_target_forward_calls": 71,
+              "target_processed_rows": 278,
+              "target_restore_calls": 11,
+              "neural_proposal_T1": 124,
+              "draft_extend_calls": 69,
+              "total_mtp_forward_calls": 193,
+              "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+            },
+            "protected_count_deltas": {
+              "verify_calls": 0,
+              "ordinary_tail_output_tokens": 1,
+              "ordinary_tail_target_T1": 1
+            },
+            "does_not_increase": false
+          },
+          {
+            "block": 2,
+            "off": {
+              "verify_calls": 69,
+              "mtp_emitted_tokens": 254,
+              "ordinary_tail_output_tokens": 2,
+              "ordinary_tail_target_T1": 1,
+              "total_target_forward_calls": 70,
+              "target_processed_rows": 277,
+              "target_restore_calls": 10,
+              "neural_proposal_T1": 138,
+              "draft_extend_calls": 69,
+              "total_mtp_forward_calls": 207,
+              "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+            },
+            "on": {
+              "verify_calls": 69,
+              "mtp_emitted_tokens": 253,
+              "ordinary_tail_output_tokens": 3,
+              "ordinary_tail_target_T1": 2,
+              "total_target_forward_calls": 71,
+              "target_processed_rows": 278,
+              "target_restore_calls": 11,
+              "neural_proposal_T1": 124,
+              "draft_extend_calls": 69,
+              "total_mtp_forward_calls": 193,
+              "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+            },
+            "protected_count_deltas": {
+              "verify_calls": 0,
+              "ordinary_tail_output_tokens": 1,
+              "ordinary_tail_target_T1": 1
+            },
+            "does_not_increase": false
+          }
+        ],
+        "input_output_identity_equal": true,
+        "frozen_runtime_gate_met": false,
+        "cpu_eight_mistake_rejection": "See numeric-development-replay contract log; runtime need not contain exactly eight rejections."
+      }
+    }
+  },
+  "ordinary_decode": "All five paired input/output identities match; descriptive decode change -0.106% to +0.125%; one parent/candidate startup pair cannot prove noninferiority.",
+  "quality": "22/22 new HTTP exact matches; 83/83 host and 7/7 stage contracts; six original-hit replays each reject eight numeric matches and retain seven others; both head cancellation/recovery checks pass.",
+  "state_reuse_boundary": "Unchanged core/dependencies and original controlled two-layer actual-draft/head prefix oracles only; no claim of arbitrary-input full-model bitwise equivalence."
+}
