@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[数字格式suffix准入改进](MTP_SUFFIX_NUMERIC_GATE_2026-10-23.md)；
+最新专项：[suffix长匹配准入改进](MTP_SUFFIX_ADMISSION_2026-10-24.md)；
+前轮结果：[数字格式suffix准入改进](MTP_SUFFIX_NUMERIC_GATE_2026-10-23.md)；
 机制诊断见[8K回退离线取证](MTP_SUFFIX_8K_DIAGNOSIS_2026-10-23.md)；
 原决定见[固定k3 suffix有界验收与NO_GO归档](MTP_SUFFIX_K3_2026-10-23.md)。
 启动参数与三种解码配置见[根README使用说明](../README.md#使用)；
@@ -13,6 +14,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [suffix长匹配准入](MTP_SUFFIX_ADMISSION_2026-10-24.md) | 45K/8K步序原因、固定32-token门、两head重复保护 | 唯一候选；250HTTP/18启动/4h冻结，准备构建验证 |
 | [数字格式suffix准入](MTP_SUFFIX_NUMERIC_GATE_2026-10-23.md) | 确定性过滤、两head配对块、新旧材料分离 | 238HTTP完成；重复收益保留，旧8K工作门与45K保护失败，NO_GO封存 |
 | [8K suffix回退诊断](MTP_SUFFIX_8K_DIAGNOSIS_2026-10-23.md) | 数字短匹配重放、额外目标工作、注意力阈值边界 | 离线研究完成，0新增GPU/HTTP，NO_GO保持 |
 | [固定k3 suffix草稿](MTP_SUFFIX_K3_2026-10-23.md) | 请求局部索引、独立状态合同、两head五档及成本 | NO_GO：4K/8K保护回退，默认保持 |
