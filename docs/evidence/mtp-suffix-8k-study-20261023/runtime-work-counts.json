@@ -1,0 +1,1431 @@
+{
+  "scope": "Offline static source and existing raw log arithmetic only; no new GPU, HTTP, test, or parameter scan.",
+  "source_commit": "cb912543f9a11191135bb77e44d8e1d1d598ed78",
+  "candidate_sha256": "1266ee3404e233514669c9ef4de2c6d5df0ea832a34b70cbcfde7db4ebadf392",
+  "original_engineering_decision": "NO_GO_PROTECTION_REGRESSION",
+  "counter_scope": "Whole iterative generation, excluding initial main/MTP prefill. Includes the first speculative round, whereas latency-minus-TTFT excludes work before the first emitted token. Counts are not a direct timing decomposition.",
+  "source_identity": [
+    {
+      "path": "include/q4t/server/mtp_policy.h",
+      "frozen_sha256": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+      "current_sha256": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+      "current_equals_frozen": true
+    },
+    {
+      "path": "src/mtp/mtp.cu",
+      "frozen_sha256": "9eb47f93aef45167052234ff1086c42263336528aa473d50e8b31eb455bcd653",
+      "current_sha256": "9eb47f93aef45167052234ff1086c42263336528aa473d50e8b31eb455bcd653",
+      "current_equals_frozen": true
+    },
+    {
+      "path": "src/mtp/suffix_drafter.cpp",
+      "frozen_sha256": "de7052f36ba6d1c09355f6cf6aeeece7a44f28e6203ce3d8ab71db88aa0f0810",
+      "current_sha256": "de7052f36ba6d1c09355f6cf6aeeece7a44f28e6203ce3d8ab71db88aa0f0810",
+      "current_equals_frozen": true
+    },
+    {
+      "path": "src/server/chat_generation.cpp",
+      "frozen_sha256": "6baba93ad1429b0a3a0266d67ec059828a9ffc4f97d9b3efaca1fbbc3ba03e3b",
+      "current_sha256": "6baba93ad1429b0a3a0266d67ec059828a9ffc4f97d9b3efaca1fbbc3ba03e3b",
+      "current_equals_frozen": true
+    },
+    {
+      "path": "src/server/chat_scheduler.cpp",
+      "frozen_sha256": "84db0d947b5a07ff4f16a3588abcddc9b19f5d68231f9f1905226b864a8a28e4",
+      "current_sha256": "84db0d947b5a07ff4f16a3588abcddc9b19f5d68231f9f1905226b864a8a28e4",
+      "current_equals_frozen": true
+    },
+    {
+      "path": "src/server/chat_server.cpp",
+      "frozen_sha256": "db01d2d4b8504bef4c17729566d93b8df9a663d8399d3128b50ac9081de8b349",
+      "current_sha256": "db01d2d4b8504bef4c17729566d93b8df9a663d8399d3128b50ac9081de8b349",
+      "current_equals_frozen": true
+    },
+    {
+      "path": "src/model/model.cu",
+      "frozen_sha256": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194",
+      "current_sha256": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194",
+      "current_equals_frozen": true
+    },
+    {
+      "path": "src/model/decoder_layer.cu",
+      "frozen_sha256": "4d8e53e7d0a031dbdba68b7a5558f3baf93061a92c11312809790ef98170b15d",
+      "current_sha256": "4d8e53e7d0a031dbdba68b7a5558f3baf93061a92c11312809790ef98170b15d",
+      "current_equals_frozen": true
+    },
+    {
+      "path": "src/model/full_attention.cu",
+      "frozen_sha256": "42ad1cbb67ed915090e90580ad8777e60967ab93231afb8d9aa129fbe8b249d2",
+      "current_sha256": "42ad1cbb67ed915090e90580ad8777e60967ab93231afb8d9aa129fbe8b249d2",
+      "current_equals_frozen": true
+    },
+    {
+      "path": "src/model/decode_topk.cu",
+      "frozen_sha256": "064bb583a92e0d8db468e9929b1816c3afcb3b98f6a597768ac05d6c0c126f0a",
+      "current_sha256": "064bb583a92e0d8db468e9929b1816c3afcb3b98f6a597768ac05d6c0c126f0a",
+      "current_equals_frozen": true
+    },
+    {
+      "path": "src/quant/moe_decode.cu",
+      "frozen_sha256": "eca5bda705b838e70a5035828b2611174f81c6fc8b3bc590701e8bd56999467f",
+      "current_sha256": "eca5bda705b838e70a5035828b2611174f81c6fc8b3bc590701e8bd56999467f",
+      "current_equals_frozen": true
+    }
+  ],
+  "by_mode": {
+    "full-off": {
+      "4096": {
+        "rows": [
+          {
+            "request": "chatcmpl-auto-3",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "verify_calls_T4": 71,
+            "accepted_drafts": 184,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 71,
+            "main_forward_rows": 284,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 29,
+            "observed_scheduler_waits": 71,
+            "checkpoint_restore_calls": 15,
+            "neural_draft_forward_calls_T1": 142,
+            "draft_extend_calls": 71,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 213,
+            "all_mtp_forward_rows": 397,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              146,
+              6,
+              5,
+              56
+            ],
+            "decode_tps": 35.70009008310975,
+            "latency_minus_ttft_seconds": 7.142839119071141,
+            "suffix_index_accounted_ns": 0
+          },
+          {
+            "request": "chatcmpl-auto-4",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "verify_calls_T4": 71,
+            "accepted_drafts": 184,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 71,
+            "main_forward_rows": 284,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 29,
+            "observed_scheduler_waits": 71,
+            "checkpoint_restore_calls": 15,
+            "neural_draft_forward_calls_T1": 142,
+            "draft_extend_calls": 71,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 213,
+            "all_mtp_forward_rows": 397,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              146,
+              6,
+              5,
+              56
+            ],
+            "decode_tps": 35.80846888331669,
+            "latency_minus_ttft_seconds": 7.1212204250041395,
+            "suffix_index_accounted_ns": 0
+          },
+          {
+            "request": "chatcmpl-auto-5",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "verify_calls_T4": 71,
+            "accepted_drafts": 184,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 71,
+            "main_forward_rows": 284,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 29,
+            "observed_scheduler_waits": 71,
+            "checkpoint_restore_calls": 15,
+            "neural_draft_forward_calls_T1": 142,
+            "draft_extend_calls": 71,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 213,
+            "all_mtp_forward_rows": 397,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              146,
+              6,
+              5,
+              56
+            ],
+            "decode_tps": 35.805261045233735,
+            "latency_minus_ttft_seconds": 7.12185842404142,
+            "suffix_index_accounted_ns": 0
+          }
+        ],
+        "decode_tps_median": 35.805261045233735,
+        "post_ttft_seconds_median": 7.12185842404142
+      },
+      "8192": {
+        "rows": [
+          {
+            "request": "chatcmpl-auto-6",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "verify_calls_T4": 69,
+            "accepted_drafts": 185,
+            "speculative_output_tokens": 254,
+            "tail_output_tokens": 2,
+            "tail_forward_calls_T1": 1,
+            "main_forward_calls": 70,
+            "main_forward_rows": 277,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 22,
+            "observed_scheduler_waits": 70,
+            "checkpoint_restore_calls": 10,
+            "neural_draft_forward_calls_T1": 138,
+            "draft_extend_calls": 69,
+            "draft_extend_rows": 254,
+            "all_mtp_forward_calls": 207,
+            "all_mtp_forward_rows": 392,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              143,
+              2,
+              3,
+              59
+            ],
+            "decode_tps": 37.73778934602878,
+            "latency_minus_ttft_seconds": 6.757152562960982,
+            "suffix_index_accounted_ns": 0
+          },
+          {
+            "request": "chatcmpl-auto-7",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "verify_calls_T4": 69,
+            "accepted_drafts": 185,
+            "speculative_output_tokens": 254,
+            "tail_output_tokens": 2,
+            "tail_forward_calls_T1": 1,
+            "main_forward_calls": 70,
+            "main_forward_rows": 277,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 22,
+            "observed_scheduler_waits": 70,
+            "checkpoint_restore_calls": 10,
+            "neural_draft_forward_calls_T1": 138,
+            "draft_extend_calls": 69,
+            "draft_extend_rows": 254,
+            "all_mtp_forward_calls": 207,
+            "all_mtp_forward_rows": 392,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              143,
+              2,
+              3,
+              59
+            ],
+            "decode_tps": 37.7092306315769,
+            "latency_minus_ttft_seconds": 6.762270025908947,
+            "suffix_index_accounted_ns": 0
+          },
+          {
+            "request": "chatcmpl-auto-8",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "verify_calls_T4": 69,
+            "accepted_drafts": 185,
+            "speculative_output_tokens": 254,
+            "tail_output_tokens": 2,
+            "tail_forward_calls_T1": 1,
+            "main_forward_calls": 70,
+            "main_forward_rows": 277,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 22,
+            "observed_scheduler_waits": 70,
+            "checkpoint_restore_calls": 10,
+            "neural_draft_forward_calls_T1": 138,
+            "draft_extend_calls": 69,
+            "draft_extend_rows": 254,
+            "all_mtp_forward_calls": 207,
+            "all_mtp_forward_rows": 392,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              143,
+              2,
+              3,
+              59
+            ],
+            "decode_tps": 37.7396250294987,
+            "latency_minus_ttft_seconds": 6.75682389002759,
+            "suffix_index_accounted_ns": 0
+          }
+        ],
+        "decode_tps_median": 37.73778934602878,
+        "post_ttft_seconds_median": 6.757152562960982
+      }
+    },
+    "full-on": {
+      "4096": {
+        "rows": [
+          {
+            "request": "chatcmpl-auto-3",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              9,
+              4,
+              55
+            ],
+            "suffix_hits": 11,
+            "suffix_acceptance": [
+              0,
+              3,
+              0,
+              8
+            ],
+            "neural_acceptance": [
+              5,
+              6,
+              4,
+              47
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 182,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 73,
+            "main_forward_rows": 292,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 37,
+            "observed_scheduler_waits": 73,
+            "checkpoint_restore_calls": 18,
+            "neural_draft_forward_calls_T1": 124,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 197,
+            "all_mtp_forward_rows": 379,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              129,
+              9,
+              4,
+              55
+            ],
+            "decode_tps": 35.44149138864192,
+            "latency_minus_ttft_seconds": 7.194956814986654,
+            "suffix_index_accounted_ns": 216261
+          },
+          {
+            "request": "chatcmpl-auto-4",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              9,
+              4,
+              55
+            ],
+            "suffix_hits": 11,
+            "suffix_acceptance": [
+              0,
+              3,
+              0,
+              8
+            ],
+            "neural_acceptance": [
+              5,
+              6,
+              4,
+              47
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 182,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 73,
+            "main_forward_rows": 292,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 37,
+            "observed_scheduler_waits": 73,
+            "checkpoint_restore_calls": 18,
+            "neural_draft_forward_calls_T1": 124,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 197,
+            "all_mtp_forward_rows": 379,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              129,
+              9,
+              4,
+              55
+            ],
+            "decode_tps": 35.46020076123352,
+            "latency_minus_ttft_seconds": 7.191160639980808,
+            "suffix_index_accounted_ns": 143379
+          },
+          {
+            "request": "chatcmpl-auto-5",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              9,
+              4,
+              55
+            ],
+            "suffix_hits": 11,
+            "suffix_acceptance": [
+              0,
+              3,
+              0,
+              8
+            ],
+            "neural_acceptance": [
+              5,
+              6,
+              4,
+              47
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 182,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 73,
+            "main_forward_rows": 292,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 37,
+            "observed_scheduler_waits": 73,
+            "checkpoint_restore_calls": 18,
+            "neural_draft_forward_calls_T1": 124,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 197,
+            "all_mtp_forward_rows": 379,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              129,
+              9,
+              4,
+              55
+            ],
+            "decode_tps": 35.41872059838279,
+            "latency_minus_ttft_seconds": 7.199582471977919,
+            "suffix_index_accounted_ns": 173618
+          }
+        ],
+        "decode_tps_median": 35.44149138864192,
+        "post_ttft_seconds_median": 7.194956814986654
+      },
+      "8192": {
+        "rows": [
+          {
+            "request": "chatcmpl-auto-6",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              6,
+              9,
+              4,
+              54
+            ],
+            "suffix_hits": 15,
+            "suffix_acceptance": [
+              0,
+              7,
+              3,
+              5
+            ],
+            "neural_acceptance": [
+              6,
+              2,
+              1,
+              49
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 179,
+            "speculative_output_tokens": 252,
+            "tail_output_tokens": 4,
+            "tail_forward_calls_T1": 3,
+            "main_forward_calls": 76,
+            "main_forward_rows": 295,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 40,
+            "observed_scheduler_waits": 76,
+            "checkpoint_restore_calls": 19,
+            "neural_draft_forward_calls_T1": 116,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 252,
+            "all_mtp_forward_calls": 189,
+            "all_mtp_forward_rows": 368,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              122,
+              9,
+              4,
+              54
+            ],
+            "decode_tps": 35.97858993843456,
+            "latency_minus_ttft_seconds": 7.0875484680291265,
+            "suffix_index_accounted_ns": 188576
+          },
+          {
+            "request": "chatcmpl-auto-7",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              6,
+              9,
+              4,
+              54
+            ],
+            "suffix_hits": 15,
+            "suffix_acceptance": [
+              0,
+              7,
+              3,
+              5
+            ],
+            "neural_acceptance": [
+              6,
+              2,
+              1,
+              49
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 179,
+            "speculative_output_tokens": 252,
+            "tail_output_tokens": 4,
+            "tail_forward_calls_T1": 3,
+            "main_forward_calls": 76,
+            "main_forward_rows": 295,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 40,
+            "observed_scheduler_waits": 76,
+            "checkpoint_restore_calls": 19,
+            "neural_draft_forward_calls_T1": 116,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 252,
+            "all_mtp_forward_calls": 189,
+            "all_mtp_forward_rows": 368,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              122,
+              9,
+              4,
+              54
+            ],
+            "decode_tps": 36.03722548166024,
+            "latency_minus_ttft_seconds": 7.076016441104002,
+            "suffix_index_accounted_ns": 179840
+          },
+          {
+            "request": "chatcmpl-auto-8",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              6,
+              9,
+              4,
+              54
+            ],
+            "suffix_hits": 15,
+            "suffix_acceptance": [
+              0,
+              7,
+              3,
+              5
+            ],
+            "neural_acceptance": [
+              6,
+              2,
+              1,
+              49
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 179,
+            "speculative_output_tokens": 252,
+            "tail_output_tokens": 4,
+            "tail_forward_calls_T1": 3,
+            "main_forward_calls": 76,
+            "main_forward_rows": 295,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 40,
+            "observed_scheduler_waits": 76,
+            "checkpoint_restore_calls": 19,
+            "neural_draft_forward_calls_T1": 116,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 252,
+            "all_mtp_forward_calls": 189,
+            "all_mtp_forward_rows": 368,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              122,
+              9,
+              4,
+              54
+            ],
+            "decode_tps": 36.038454739297904,
+            "latency_minus_ttft_seconds": 7.075775080942549,
+            "suffix_index_accounted_ns": 149428
+          }
+        ],
+        "decode_tps_median": 36.03722548166024,
+        "post_ttft_seconds_median": 7.076016441104002
+      }
+    },
+    "subset-off": {
+      "4096": {
+        "rows": [
+          {
+            "request": "chatcmpl-auto-3",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "verify_calls_T4": 71,
+            "accepted_drafts": 184,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 71,
+            "main_forward_rows": 284,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 29,
+            "observed_scheduler_waits": 71,
+            "checkpoint_restore_calls": 15,
+            "neural_draft_forward_calls_T1": 142,
+            "draft_extend_calls": 71,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 213,
+            "all_mtp_forward_rows": 397,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              146,
+              6,
+              5,
+              56
+            ],
+            "decode_tps": 40.163852528757374,
+            "latency_minus_ttft_seconds": 6.348992537939921,
+            "suffix_index_accounted_ns": 0
+          },
+          {
+            "request": "chatcmpl-auto-4",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "verify_calls_T4": 71,
+            "accepted_drafts": 184,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 71,
+            "main_forward_rows": 284,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 29,
+            "observed_scheduler_waits": 71,
+            "checkpoint_restore_calls": 15,
+            "neural_draft_forward_calls_T1": 142,
+            "draft_extend_calls": 71,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 213,
+            "all_mtp_forward_rows": 397,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              146,
+              6,
+              5,
+              56
+            ],
+            "decode_tps": 40.14758926385532,
+            "latency_minus_ttft_seconds": 6.351564432028681,
+            "suffix_index_accounted_ns": 0
+          },
+          {
+            "request": "chatcmpl-auto-5",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              4,
+              6,
+              5,
+              56
+            ],
+            "verify_calls_T4": 71,
+            "accepted_drafts": 184,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 71,
+            "main_forward_rows": 284,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 29,
+            "observed_scheduler_waits": 71,
+            "checkpoint_restore_calls": 15,
+            "neural_draft_forward_calls_T1": 142,
+            "draft_extend_calls": 71,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 213,
+            "all_mtp_forward_rows": 397,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              146,
+              6,
+              5,
+              56
+            ],
+            "decode_tps": 40.16686835571003,
+            "latency_minus_ttft_seconds": 6.348515840014443,
+            "suffix_index_accounted_ns": 0
+          }
+        ],
+        "decode_tps_median": 40.163852528757374,
+        "post_ttft_seconds_median": 6.348992537939921
+      },
+      "8192": {
+        "rows": [
+          {
+            "request": "chatcmpl-auto-6",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "verify_calls_T4": 69,
+            "accepted_drafts": 185,
+            "speculative_output_tokens": 254,
+            "tail_output_tokens": 2,
+            "tail_forward_calls_T1": 1,
+            "main_forward_calls": 70,
+            "main_forward_rows": 277,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 22,
+            "observed_scheduler_waits": 70,
+            "checkpoint_restore_calls": 10,
+            "neural_draft_forward_calls_T1": 138,
+            "draft_extend_calls": 69,
+            "draft_extend_rows": 254,
+            "all_mtp_forward_calls": 207,
+            "all_mtp_forward_rows": 392,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              143,
+              2,
+              3,
+              59
+            ],
+            "decode_tps": 42.43849450519012,
+            "latency_minus_ttft_seconds": 6.008695713011548,
+            "suffix_index_accounted_ns": 0
+          },
+          {
+            "request": "chatcmpl-auto-7",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "verify_calls_T4": 69,
+            "accepted_drafts": 185,
+            "speculative_output_tokens": 254,
+            "tail_output_tokens": 2,
+            "tail_forward_calls_T1": 1,
+            "main_forward_calls": 70,
+            "main_forward_rows": 277,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 22,
+            "observed_scheduler_waits": 70,
+            "checkpoint_restore_calls": 10,
+            "neural_draft_forward_calls_T1": 138,
+            "draft_extend_calls": 69,
+            "draft_extend_rows": 254,
+            "all_mtp_forward_calls": 207,
+            "all_mtp_forward_rows": 392,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              143,
+              2,
+              3,
+              59
+            ],
+            "decode_tps": 42.51371857453096,
+            "latency_minus_ttft_seconds": 5.998063885024749,
+            "suffix_index_accounted_ns": 0
+          },
+          {
+            "request": "chatcmpl-auto-8",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "suffix_hits": 0,
+            "suffix_acceptance": null,
+            "neural_acceptance": [
+              5,
+              2,
+              3,
+              59
+            ],
+            "verify_calls_T4": 69,
+            "accepted_drafts": 185,
+            "speculative_output_tokens": 254,
+            "tail_output_tokens": 2,
+            "tail_forward_calls_T1": 1,
+            "main_forward_calls": 70,
+            "main_forward_rows": 277,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 22,
+            "observed_scheduler_waits": 70,
+            "checkpoint_restore_calls": 10,
+            "neural_draft_forward_calls_T1": 138,
+            "draft_extend_calls": 69,
+            "draft_extend_rows": 254,
+            "all_mtp_forward_calls": 207,
+            "all_mtp_forward_rows": 392,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              143,
+              2,
+              3,
+              59
+            ],
+            "decode_tps": 42.55770773408753,
+            "latency_minus_ttft_seconds": 5.99186407297384,
+            "suffix_index_accounted_ns": 0
+          }
+        ],
+        "decode_tps_median": 42.51371857453096,
+        "post_ttft_seconds_median": 5.998063885024749
+      }
+    },
+    "subset-on": {
+      "4096": {
+        "rows": [
+          {
+            "request": "chatcmpl-auto-3",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              9,
+              4,
+              55
+            ],
+            "suffix_hits": 11,
+            "suffix_acceptance": [
+              0,
+              3,
+              0,
+              8
+            ],
+            "neural_acceptance": [
+              5,
+              6,
+              4,
+              47
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 182,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 73,
+            "main_forward_rows": 292,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 37,
+            "observed_scheduler_waits": 73,
+            "checkpoint_restore_calls": 18,
+            "neural_draft_forward_calls_T1": 124,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 197,
+            "all_mtp_forward_rows": 379,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              129,
+              9,
+              4,
+              55
+            ],
+            "decode_tps": 39.52304172865845,
+            "latency_minus_ttft_seconds": 6.451932565076277,
+            "suffix_index_accounted_ns": 403714
+          },
+          {
+            "request": "chatcmpl-auto-4",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              9,
+              4,
+              55
+            ],
+            "suffix_hits": 11,
+            "suffix_acceptance": [
+              0,
+              3,
+              0,
+              8
+            ],
+            "neural_acceptance": [
+              5,
+              6,
+              4,
+              47
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 182,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 73,
+            "main_forward_rows": 292,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 37,
+            "observed_scheduler_waits": 73,
+            "checkpoint_restore_calls": 18,
+            "neural_draft_forward_calls_T1": 124,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 197,
+            "all_mtp_forward_rows": 379,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              129,
+              9,
+              4,
+              55
+            ],
+            "decode_tps": 39.51283192144202,
+            "latency_minus_ttft_seconds": 6.453599694068544,
+            "suffix_index_accounted_ns": 166644
+          },
+          {
+            "request": "chatcmpl-auto-5",
+            "actual_input": 4075,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "561376dbae6277c84cf702737acf3f189345e731737ab013e6cb35594559b70a",
+            "acceptance_a0_a1_a2_a3": [
+              5,
+              9,
+              4,
+              55
+            ],
+            "suffix_hits": 11,
+            "suffix_acceptance": [
+              0,
+              3,
+              0,
+              8
+            ],
+            "neural_acceptance": [
+              5,
+              6,
+              4,
+              47
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 182,
+            "speculative_output_tokens": 255,
+            "tail_output_tokens": 1,
+            "tail_forward_calls_T1": 0,
+            "main_forward_calls": 73,
+            "main_forward_rows": 292,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 37,
+            "observed_scheduler_waits": 73,
+            "checkpoint_restore_calls": 18,
+            "neural_draft_forward_calls_T1": 124,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 255,
+            "all_mtp_forward_calls": 197,
+            "all_mtp_forward_rows": 379,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              129,
+              9,
+              4,
+              55
+            ],
+            "decode_tps": 39.514150651709414,
+            "latency_minus_ttft_seconds": 6.453384314081632,
+            "suffix_index_accounted_ns": 295866
+          }
+        ],
+        "decode_tps_median": 39.514150651709414,
+        "post_ttft_seconds_median": 6.453384314081632
+      },
+      "8192": {
+        "rows": [
+          {
+            "request": "chatcmpl-auto-6",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              6,
+              9,
+              4,
+              54
+            ],
+            "suffix_hits": 15,
+            "suffix_acceptance": [
+              0,
+              7,
+              3,
+              5
+            ],
+            "neural_acceptance": [
+              6,
+              2,
+              1,
+              49
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 179,
+            "speculative_output_tokens": 252,
+            "tail_output_tokens": 4,
+            "tail_forward_calls_T1": 3,
+            "main_forward_calls": 76,
+            "main_forward_rows": 295,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 40,
+            "observed_scheduler_waits": 76,
+            "checkpoint_restore_calls": 19,
+            "neural_draft_forward_calls_T1": 116,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 252,
+            "all_mtp_forward_calls": 189,
+            "all_mtp_forward_rows": 368,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              122,
+              9,
+              4,
+              54
+            ],
+            "decode_tps": 40.00555715783395,
+            "latency_minus_ttft_seconds": 6.374114450998604,
+            "suffix_index_accounted_ns": 172963
+          },
+          {
+            "request": "chatcmpl-auto-7",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              6,
+              9,
+              4,
+              54
+            ],
+            "suffix_hits": 15,
+            "suffix_acceptance": [
+              0,
+              7,
+              3,
+              5
+            ],
+            "neural_acceptance": [
+              6,
+              2,
+              1,
+              49
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 179,
+            "speculative_output_tokens": 252,
+            "tail_output_tokens": 4,
+            "tail_forward_calls_T1": 3,
+            "main_forward_calls": 76,
+            "main_forward_rows": 295,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 40,
+            "observed_scheduler_waits": 76,
+            "checkpoint_restore_calls": 19,
+            "neural_draft_forward_calls_T1": 116,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 252,
+            "all_mtp_forward_calls": 189,
+            "all_mtp_forward_rows": 368,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              122,
+              9,
+              4,
+              54
+            ],
+            "decode_tps": 39.997971334631025,
+            "latency_minus_ttft_seconds": 6.3753233349416405,
+            "suffix_index_accounted_ns": 199966
+          },
+          {
+            "request": "chatcmpl-auto-8",
+            "actual_input": 8159,
+            "actual_output": 256,
+            "finish": [
+              "length"
+            ],
+            "output_sha256": "4555016bc3e53ad8c5bc31f85fcfbbaad958bad23334eebb6f7ade3ea0c44778",
+            "acceptance_a0_a1_a2_a3": [
+              6,
+              9,
+              4,
+              54
+            ],
+            "suffix_hits": 15,
+            "suffix_acceptance": [
+              0,
+              7,
+              3,
+              5
+            ],
+            "neural_acceptance": [
+              6,
+              2,
+              1,
+              49
+            ],
+            "verify_calls_T4": 73,
+            "accepted_drafts": 179,
+            "speculative_output_tokens": 252,
+            "tail_output_tokens": 4,
+            "tail_forward_calls_T1": 3,
+            "main_forward_calls": 76,
+            "main_forward_rows": 295,
+            "main_logical_consumed_output_tokens": 255,
+            "main_redundant_rows": 40,
+            "observed_scheduler_waits": 76,
+            "checkpoint_restore_calls": 19,
+            "neural_draft_forward_calls_T1": 116,
+            "draft_extend_calls": 73,
+            "draft_extend_rows": 252,
+            "all_mtp_forward_calls": 189,
+            "all_mtp_forward_rows": 368,
+            "all_mtp_shapes_T1_T2_T3_T4": [
+              122,
+              9,
+              4,
+              54
+            ],
+            "decode_tps": 40.01153099072475,
+            "latency_minus_ttft_seconds": 6.373162777977996,
+            "suffix_index_accounted_ns": 202884
+          }
+        ],
+        "decode_tps_median": 40.00555715783395,
+        "post_ttft_seconds_median": 6.374114450998604
+      }
+    }
+  },
+  "comparisons": {
+    "full": {
+      "4096": {
+        "decode_tps_percent_change": -1.0159670561604162,
+        "post_ttft_median_delta_seconds": 0.0730983909452334,
+        "same_outputs_across_both_modes": true
+      },
+      "8192": {
+        "decode_tps_percent_change": -4.506262539057515,
+        "post_ttft_median_delta_seconds": 0.31886387814302,
+        "same_outputs_across_both_modes": true
+      }
+    },
+    "subset": {
+      "4096": {
+        "decode_tps_percent_change": -1.6176283801031643,
+        "post_ttft_median_delta_seconds": 0.10439177614171058,
+        "same_outputs_across_both_modes": true
+      },
+      "8192": {
+        "decode_tps_percent_change": -5.899651926001126,
+        "post_ttft_median_delta_seconds": 0.37605056597385556,
+        "same_outputs_across_both_modes": true
+      }
+    }
+  },
+  "checkpoint_static_arithmetic": {
+    "linear_layers": 36,
+    "ple_layers": 1,
+    "ssm_bytes_per_linear_layer": 3145728,
+    "conv_bytes_per_linear_layer": 61440,
+    "ple_conv_bytes": 184320,
+    "bytes_per_restore": 115642368,
+    "cuda_memcpy_async_calls_per_restore": 73,
+    "8k_extra_restores": 9,
+    "8k_extra_requested_D2D_payload_bytes": 1040781312,
+    "8k_extra_cuda_memcpy_async_calls": 657,
+    "limit": "Static copy payload, not measured physical DRAM traffic, transfer time, or additional resident allocation."
+  },
+  "head_static_arithmetic": {
+    "full_vocab": 248320,
+    "subset_vocab": 65536,
+    "hidden_size": 2560,
+    "full_BF16_weight_bytes": 1271398400,
+    "subset_BF16_weight_bytes": 335544320,
+    "subset_to_full_rows_ratio": 0.2639175257731959,
+    "limit": "Matrix dimensions describe why less neural work may save less time in subset mode; not an 8K timing attribution."
+  },
+  "indexer_threshold": {
+    "condition": "floor((max_position + 1) / 4) > 2048",
+    "first_long_max_position": 8195,
+    "first_long_T4_verify_base_P": 8192,
+    "initial_P": 8159,
+    "committed_tokens_before_T4_threshold": 33,
+    "all_four_modes_cross_threshold": true,
+    "short_path": "d_seq_id != nullptr: T1 specialized IndexerDecodeScores; T2..4 IndexerLogitsKernel; SelectShortTopk.",
+    "long_path": "T <= 4: OnePassScoreKernel and SelectDecodeTopk; two 2048-group slices near 8K, no intermediate window merge.",
+    "not_triggered": [
+      "MTP context-capacity fallback (max_len=208896)",
+      "max_prefill row-count bound (8192)",
+      "QSA T>8 generic kernel",
+      "long large-T streaming prefill path",
+      "suffix index growth allocation"
+    ],
+    "unknown": "Ordered per-round P/acceptance/source and phase timing were not logged natively in the 8K acceptance runs. This study reconstructed step order from client SSE bursts and CPU suffix replay (token-burst-replay.json); its first divergent proposal is at P=8175, before the T4 threshold. Threshold existence is established, its signed GPU cost and share of the regression are not."
+  },
+  "inputs_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/analysis.json": "dcbc4ad8f6ff50e3d549c3a05d1a961e405597c2251dfbe078ba2a9de148a86d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/decision.json": "a2cd86238a7b4f8475e084b7b34640c0fdb0379adf396710a8cd26df56c26e52",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json": "a9b9e3484d347efb8f40b66f1e3ff247c0927bd4b8ba81eb401b209c70e457e2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/src/mtp/mtp.cu": "9eb47f93aef45167052234ff1086c42263336528aa473d50e8b31eb455bcd653",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/src/mtp/suffix_drafter.cpp": "de7052f36ba6d1c09355f6cf6aeeece7a44f28e6203ce3d8ab71db88aa0f0810",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/src/server/chat_generation.cpp": "6baba93ad1429b0a3a0266d67ec059828a9ffc4f97d9b3efaca1fbbc3ba03e3b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/src/server/chat_scheduler.cpp": "84db0d947b5a07ff4f16a3588abcddc9b19f5d68231f9f1905226b864a8a28e4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/src/server/chat_server.cpp": "db01d2d4b8504bef4c17729566d93b8df9a663d8399d3128b50ac9081de8b349",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/src/model/model.cu": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/src/model/decoder_layer.cu": "4d8e53e7d0a031dbdba68b7a5558f3baf93061a92c11312809790ef98170b15d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/src/model/full_attention.cu": "42ad1cbb67ed915090e90580ad8777e60967ab93231afb8d9aa129fbe8b249d2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/src/model/decode_topk.cu": "064bb583a92e0d8db468e9929b1816c3afcb3b98f6a597768ac05d6c0c126f0a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot/src/quant/moe_decode.cu": "eca5bda705b838e70a5035828b2611174f81c6fc8b3bc590701e8bd56999467f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-full-off/server.log": "b121724c98b424356601b855d4fe1fa974057a1c699f602216e9e2f09e513451",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-full-on/server.log": "752eef90fafa13fb429857ef90e212bfce0f9c175b3a680116828e632f505feb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-subset-off/server.log": "3ea8ae0311229ee505b55476f21fd12c6f69c12927cc9e0ed83ed4ec25b4b5c0",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-subset-on/server.log": "1937b795abff25451b4510454ffa839403a149f8d9d0f4de14c6c831e4e3ff50"
+  }
+}

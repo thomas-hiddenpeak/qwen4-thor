@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[固定k3 suffix有界验收与NO_GO归档](MTP_SUFFIX_K3_2026-10-23.md)。
+最新专项：[8K suffix回退离线诊断](MTP_SUFFIX_8K_DIAGNOSIS_2026-10-23.md)；
+原决定见[固定k3 suffix有界验收与NO_GO归档](MTP_SUFFIX_K3_2026-10-23.md)。
 启动参数与三种解码配置见[根README使用说明](../README.md#使用)；
 下一阶段是否可启动见[STATUS准入评估](STATUS.md#当前推进目标)。
 
@@ -11,6 +12,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [8K suffix回退诊断](MTP_SUFFIX_8K_DIAGNOSIS_2026-10-23.md) | 数字短匹配重放、额外目标工作、注意力阈值边界 | 离线研究完成，0新增GPU/HTTP，NO_GO保持 |
 | [固定k3 suffix草稿](MTP_SUFFIX_K3_2026-10-23.md) | 请求局部索引、独立状态合同、两head五档及成本 | NO_GO：4K/8K保护回退，默认保持 |
 | [独立草稿head与SHA2主线合入](MTP_SUBSET_MAIN_MERGE_2026-10-23.md) | main身份、两级回退包、证据复用与分支整理 | 合入并推送，原工作区及证据保留 |
 | [SHA2启动校验优化](SHA2_STARTUP_2026-10-23.md) | 完整hash硬件加速、两模式五档及回退 | 有界接受，启动中位减少25.276秒 |

@@ -1,0 +1,5091 @@
+{
+  "scope": "CPU-only forensic reconstruction; client-inferred steps, not a native d0/step trace",
+  "token_identity": {
+    "method": "raw per-token SSE chunks inverted over frozen model domain [0,248320) through production Decode(skip_special=true)",
+    "tokenizer_vocab_size": 248077,
+    "model_scan_upper": 248320,
+    "decode_success_count": 248077,
+    "decode_failure_count": 243,
+    "padded_id_failure_count": 243,
+    "requests": 12,
+    "unique_matching_id_for_every_chunk": true,
+    "chunks_per_request": 256,
+    "reported_completion_tokens": 256,
+    "production_encoded_prompt_tokens": 8159,
+    "all_12_prompt_and_output_id_sequences_identical": true
+  },
+  "counter_closure_requests": 6,
+  "results": [
+    {
+      "tag": "full-on-0",
+      "response_id": "chatcmpl-auto-6",
+      "stats": {
+        "queries": 73,
+        "hits": 15,
+        "no_match": 24,
+        "incomplete": 0,
+        "d0_mismatch": 34,
+        "candidates": 117,
+        "compared": 642,
+        "matched": 201
+      },
+      "histogram": [
+        0,
+        7,
+        3,
+        5
+      ],
+      "zero_accept_no_match_positions": [
+        0,
+        1,
+        18,
+        34,
+        35,
+        46
+      ],
+      "zero_accept_matched_unknown_positions": [],
+      "hits": [
+        {
+          "position": 16,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 25",
+          "proposal": "1: A",
+          "actual_next3": "1 records,",
+          "proposal_ids": [
+            16,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            16,
+            7189,
+            11
+          ],
+          "d0": 16,
+          "match_end": 8093,
+          "origin": "prompt",
+          "context_before": " to write a detailed technical review of 25",
+          "competitors": [
+            {
+              "end": 8093,
+              "length": 3,
+              "proposal": [
+                16,
+                25,
+                357
+              ],
+              "text_partial_decode": "1:<ID:357>"
+            },
+            {
+              "end": 8061,
+              "length": 3,
+              "proposal": [
+                15,
+                25,
+                561
+              ],
+              "text_partial_decode": "0:<ID:561>"
+            },
+            {
+              "end": 777,
+              "length": 3,
+              "proposal": [
+                25,
+                561,
+                15977
+              ],
+              "text_partial_decode": ":<ID:561><ID:15977>"
+            }
+          ]
+        },
+        {
+          "position": 23,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " measurement, storage",
+          "proposal": ", scheduling,",
+          "actual_next3": ", scheduling,",
+          "proposal_ids": [
+            11,
+            36602,
+            11
+          ],
+          "actual_next3_ids": [
+            11,
+            36602,
+            11
+          ],
+          "d0": 11,
+          "match_end": 8149,
+          "origin": "prompt",
+          "context_before": " 251 records, covering measurement, storage",
+          "competitors": [
+            {
+              "end": 8149,
+              "length": 3,
+              "proposal": [
+                11,
+                36602,
+                11
+              ],
+              "text_partial_decode": ", scheduling,"
+            }
+          ]
+        },
+        {
+          "position": 27,
+          "accepted": 2,
+          "match_length": 7,
+          "matched": " measurement, storage, scheduling, and",
+          "proposal": " correctness.\n",
+          "actual_next3": " correctness. Let",
+          "proposal_ids": [
+            55404,
+            13,
+            198
+          ],
+          "actual_next3_ids": [
+            55404,
+            13,
+            6558
+          ],
+          "d0": 55404,
+          "match_end": 8153,
+          "origin": "prompt",
+          "context_before": " records, covering measurement, storage, scheduling, and",
+          "competitors": [
+            {
+              "end": 8153,
+              "length": 7,
+              "proposal": [
+                55404,
+                13,
+                198
+              ],
+              "text_partial_decode": " correctness.\n"
+            }
+          ]
+        },
+        {
+          "position": 62,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " cache can reuse",
+          "proposal": " recently accessed data",
+          "actual_next3": " recently accessed data",
+          "proposal_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "actual_next3_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "d0": 5742,
+          "match_end": 7833,
+          "origin": "prompt",
+          "context_before": " **Cache/Memory**: \"A cache can reuse",
+          "competitors": [
+            {
+              "end": 7833,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7771,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7387,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 6276,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            }
+          ]
+        },
+        {
+          "position": 66,
+          "accepted": 3,
+          "match_length": 7,
+          "matched": " cache can reuse recently accessed data.",
+          "proposal": " An estimate of",
+          "actual_next3": " An estimate of",
+          "proposal_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "actual_next3_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "d0": 1473,
+          "match_end": 7837,
+          "origin": "prompt",
+          "context_before": "**: \"A cache can reuse recently accessed data.",
+          "competitors": [
+            {
+              "end": 7837,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7775,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7391,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 6280,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            }
+          ]
+        },
+        {
+          "position": 70,
+          "accepted": 3,
+          "match_length": 11,
+          "matched": " cache can reuse recently accessed data. An estimate of required",
+          "proposal": " bytes is different",
+          "actual_next3": " bytes is different",
+          "proposal_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "actual_next3_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "d0": 5639,
+          "match_end": 7841,
+          "origin": "prompt",
+          "context_before": " can reuse recently accessed data. An estimate of required",
+          "competitors": [
+            {
+              "end": 7841,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7779,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7395,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 6284,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            }
+          ]
+        },
+        {
+          "position": 74,
+          "accepted": 3,
+          "match_length": 15,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from",
+          "proposal": " a measurement of",
+          "actual_next3": " a measurement of",
+          "proposal_ids": [
+            264,
+            18100,
+            314
+          ],
+          "actual_next3_ids": [
+            264,
+            18100,
+            314
+          ],
+          "d0": 264,
+          "match_end": 7845,
+          "origin": "prompt",
+          "context_before": " data. An estimate of required bytes is different from",
+          "competitors": [
+            {
+              "end": 7845,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7783,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7399,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 6288,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            }
+          ]
+        },
+        {
+          "position": 78,
+          "accepted": 2,
+          "match_length": 19,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical",
+          "proposal": " memory traffic.",
+          "actual_next3": " memory traffic.\"",
+          "proposal_ids": [
+            4779,
+            9163,
+            13
+          ],
+          "actual_next3_ids": [
+            4779,
+            9163,
+            1149
+          ],
+          "d0": 4779,
+          "match_end": 7849,
+          "origin": "prompt",
+          "context_before": " of required bytes is different from a measurement of physical",
+          "competitors": [
+            {
+              "end": 7849,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7787,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7403,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 6292,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            }
+          ]
+        },
+        {
+          "position": 157,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 10",
+          "proposal": "9: A",
+          "actual_next3": "9, ",
+          "proposal_ids": [
+            24,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            24,
+            11,
+            220
+          ],
+          "d0": 24,
+          "match_end": 3455,
+          "origin": "prompt",
+          "context_before": "89, 99, 10",
+          "competitors": [
+            {
+              "end": 3455,
+              "length": 3,
+              "proposal": [
+                24,
+                25,
+                357
+              ],
+              "text_partial_decode": "9:<ID:357>"
+            },
+            {
+              "end": 3424,
+              "length": 3,
+              "proposal": [
+                23,
+                25,
+                561
+              ],
+              "text_partial_decode": "8:<ID:561>"
+            },
+            {
+              "end": 3389,
+              "length": 3,
+              "proposal": [
+                22,
+                25,
+                561
+              ],
+              "text_partial_decode": "7:<ID:561>"
+            },
+            {
+              "end": 3358,
+              "length": 3,
+              "proposal": [
+                21,
+                25,
+                561
+              ],
+              "text_partial_decode": "6:<ID:561>"
+            }
+          ]
+        },
+        {
+          "position": 171,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "23,",
+          "actual_next3": "24,",
+          "proposal_ids": [
+            17,
+            18,
+            11
+          ],
+          "actual_next3_ids": [
+            17,
+            19,
+            11
+          ],
+          "d0": 17,
+          "match_end": 8325,
+          "origin": "generated",
+          "context_before": "16, 123, 1",
+          "competitors": [
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            },
+            {
+              "end": 8315,
+              "length": 3,
+              "proposal": [
+                15,
+                24,
+                11
+              ],
+              "text_partial_decode": "09,"
+            },
+            {
+              "end": 8251,
+              "length": 3,
+              "proposal": [
+                22,
+                11,
+                220
+              ],
+              "text_partial_decode": "7, "
+            }
+          ]
+        },
+        {
+          "position": 181,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "32,",
+          "actual_next3": "36,",
+          "proposal_ids": [
+            18,
+            17,
+            11
+          ],
+          "actual_next3_ids": [
+            18,
+            21,
+            11
+          ],
+          "d0": 18,
+          "match_end": 8335,
+          "origin": "generated",
+          "context_before": "24, 132, 1",
+          "competitors": [
+            {
+              "end": 8335,
+              "length": 3,
+              "proposal": [
+                18,
+                17,
+                11
+              ],
+              "text_partial_decode": "32,"
+            },
+            {
+              "end": 8330,
+              "length": 3,
+              "proposal": [
+                17,
+                19,
+                11
+              ],
+              "text_partial_decode": "24,"
+            },
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            }
+          ]
+        },
+        {
+          "position": 199,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "52,",
+          "proposal": " 58",
+          "actual_next3": " 15",
+          "proposal_ids": [
+            220,
+            20,
+            23
+          ],
+          "actual_next3_ids": [
+            220,
+            16,
+            20
+          ],
+          "d0": 220,
+          "match_end": 8273,
+          "origin": "generated",
+          "context_before": " 145, 152,",
+          "competitors": [
+            {
+              "end": 8273,
+              "length": 3,
+              "proposal": [
+                220,
+                20,
+                23
+              ],
+              "text_partial_decode": " 58"
+            }
+          ]
+        },
+        {
+          "position": 205,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "152",
+          "actual_next3": "163",
+          "proposal_ids": [
+            16,
+            20,
+            17
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            18
+          ],
+          "d0": 16,
+          "match_end": 8354,
+          "origin": "generated",
+          "context_before": "152, 155, ",
+          "competitors": [
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 215,
+          "accepted": 2,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "163",
+          "actual_next3": "166",
+          "proposal_ids": [
+            16,
+            21,
+            18
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            21
+          ],
+          "d0": 16,
+          "match_end": 8364,
+          "origin": "generated",
+          "context_before": "163, 165, ",
+          "competitors": [
+            {
+              "end": 8364,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                18
+              ],
+              "text_partial_decode": "163"
+            },
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 226,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "71,",
+          "actual_next3": "72,",
+          "proposal_ids": [
+            22,
+            16,
+            11
+          ],
+          "actual_next3_ids": [
+            22,
+            17,
+            11
+          ],
+          "d0": 22,
+          "match_end": 8380,
+          "origin": "generated",
+          "context_before": "66, 171, 1",
+          "competitors": [
+            {
+              "end": 8380,
+              "length": 3,
+              "proposal": [
+                22,
+                16,
+                11
+              ],
+              "text_partial_decode": "71,"
+            },
+            {
+              "end": 8375,
+              "length": 3,
+              "proposal": [
+                21,
+                21,
+                11
+              ],
+              "text_partial_decode": "66,"
+            },
+            {
+              "end": 8370,
+              "length": 3,
+              "proposal": [
+                21,
+                20,
+                11
+              ],
+              "text_partial_decode": "65,"
+            },
+            {
+              "end": 8365,
+              "length": 3,
+              "proposal": [
+                21,
+                18,
+                11
+              ],
+              "text_partial_decode": "63,"
+            }
+          ]
+        }
+      ],
+      "raw_counter_line": "[suffix] request=chatcmpl-auto-6 queries=73 hits=15 candidates=117 compared=642 matched=201 no_match=24 incomplete=0 d0_mismatch=34 invalid=0 exhausted=0 indexed=8411 peak_bytes=1884160 object_bytes=192 init_ns=113814 append_ns=40131 query_ns=32224 release_ns=2407 accepted=0,7,3,5 neural_accepted=6,2,1,49"
+    },
+    {
+      "tag": "full-on-1",
+      "response_id": "chatcmpl-auto-7",
+      "stats": {
+        "queries": 73,
+        "hits": 15,
+        "no_match": 24,
+        "incomplete": 0,
+        "d0_mismatch": 34,
+        "candidates": 117,
+        "compared": 642,
+        "matched": 201
+      },
+      "histogram": [
+        0,
+        7,
+        3,
+        5
+      ],
+      "zero_accept_no_match_positions": [
+        0,
+        1,
+        18,
+        34,
+        35,
+        46
+      ],
+      "zero_accept_matched_unknown_positions": [],
+      "hits": [
+        {
+          "position": 16,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 25",
+          "proposal": "1: A",
+          "actual_next3": "1 records,",
+          "proposal_ids": [
+            16,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            16,
+            7189,
+            11
+          ],
+          "d0": 16,
+          "match_end": 8093,
+          "origin": "prompt",
+          "context_before": " to write a detailed technical review of 25",
+          "competitors": [
+            {
+              "end": 8093,
+              "length": 3,
+              "proposal": [
+                16,
+                25,
+                357
+              ],
+              "text_partial_decode": "1:<ID:357>"
+            },
+            {
+              "end": 8061,
+              "length": 3,
+              "proposal": [
+                15,
+                25,
+                561
+              ],
+              "text_partial_decode": "0:<ID:561>"
+            },
+            {
+              "end": 777,
+              "length": 3,
+              "proposal": [
+                25,
+                561,
+                15977
+              ],
+              "text_partial_decode": ":<ID:561><ID:15977>"
+            }
+          ]
+        },
+        {
+          "position": 23,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " measurement, storage",
+          "proposal": ", scheduling,",
+          "actual_next3": ", scheduling,",
+          "proposal_ids": [
+            11,
+            36602,
+            11
+          ],
+          "actual_next3_ids": [
+            11,
+            36602,
+            11
+          ],
+          "d0": 11,
+          "match_end": 8149,
+          "origin": "prompt",
+          "context_before": " 251 records, covering measurement, storage",
+          "competitors": [
+            {
+              "end": 8149,
+              "length": 3,
+              "proposal": [
+                11,
+                36602,
+                11
+              ],
+              "text_partial_decode": ", scheduling,"
+            }
+          ]
+        },
+        {
+          "position": 27,
+          "accepted": 2,
+          "match_length": 7,
+          "matched": " measurement, storage, scheduling, and",
+          "proposal": " correctness.\n",
+          "actual_next3": " correctness. Let",
+          "proposal_ids": [
+            55404,
+            13,
+            198
+          ],
+          "actual_next3_ids": [
+            55404,
+            13,
+            6558
+          ],
+          "d0": 55404,
+          "match_end": 8153,
+          "origin": "prompt",
+          "context_before": " records, covering measurement, storage, scheduling, and",
+          "competitors": [
+            {
+              "end": 8153,
+              "length": 7,
+              "proposal": [
+                55404,
+                13,
+                198
+              ],
+              "text_partial_decode": " correctness.\n"
+            }
+          ]
+        },
+        {
+          "position": 62,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " cache can reuse",
+          "proposal": " recently accessed data",
+          "actual_next3": " recently accessed data",
+          "proposal_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "actual_next3_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "d0": 5742,
+          "match_end": 7833,
+          "origin": "prompt",
+          "context_before": " **Cache/Memory**: \"A cache can reuse",
+          "competitors": [
+            {
+              "end": 7833,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7771,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7387,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 6276,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            }
+          ]
+        },
+        {
+          "position": 66,
+          "accepted": 3,
+          "match_length": 7,
+          "matched": " cache can reuse recently accessed data.",
+          "proposal": " An estimate of",
+          "actual_next3": " An estimate of",
+          "proposal_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "actual_next3_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "d0": 1473,
+          "match_end": 7837,
+          "origin": "prompt",
+          "context_before": "**: \"A cache can reuse recently accessed data.",
+          "competitors": [
+            {
+              "end": 7837,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7775,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7391,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 6280,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            }
+          ]
+        },
+        {
+          "position": 70,
+          "accepted": 3,
+          "match_length": 11,
+          "matched": " cache can reuse recently accessed data. An estimate of required",
+          "proposal": " bytes is different",
+          "actual_next3": " bytes is different",
+          "proposal_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "actual_next3_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "d0": 5639,
+          "match_end": 7841,
+          "origin": "prompt",
+          "context_before": " can reuse recently accessed data. An estimate of required",
+          "competitors": [
+            {
+              "end": 7841,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7779,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7395,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 6284,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            }
+          ]
+        },
+        {
+          "position": 74,
+          "accepted": 3,
+          "match_length": 15,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from",
+          "proposal": " a measurement of",
+          "actual_next3": " a measurement of",
+          "proposal_ids": [
+            264,
+            18100,
+            314
+          ],
+          "actual_next3_ids": [
+            264,
+            18100,
+            314
+          ],
+          "d0": 264,
+          "match_end": 7845,
+          "origin": "prompt",
+          "context_before": " data. An estimate of required bytes is different from",
+          "competitors": [
+            {
+              "end": 7845,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7783,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7399,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 6288,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            }
+          ]
+        },
+        {
+          "position": 78,
+          "accepted": 2,
+          "match_length": 19,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical",
+          "proposal": " memory traffic.",
+          "actual_next3": " memory traffic.\"",
+          "proposal_ids": [
+            4779,
+            9163,
+            13
+          ],
+          "actual_next3_ids": [
+            4779,
+            9163,
+            1149
+          ],
+          "d0": 4779,
+          "match_end": 7849,
+          "origin": "prompt",
+          "context_before": " of required bytes is different from a measurement of physical",
+          "competitors": [
+            {
+              "end": 7849,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7787,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7403,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 6292,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            }
+          ]
+        },
+        {
+          "position": 157,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 10",
+          "proposal": "9: A",
+          "actual_next3": "9, ",
+          "proposal_ids": [
+            24,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            24,
+            11,
+            220
+          ],
+          "d0": 24,
+          "match_end": 3455,
+          "origin": "prompt",
+          "context_before": "89, 99, 10",
+          "competitors": [
+            {
+              "end": 3455,
+              "length": 3,
+              "proposal": [
+                24,
+                25,
+                357
+              ],
+              "text_partial_decode": "9:<ID:357>"
+            },
+            {
+              "end": 3424,
+              "length": 3,
+              "proposal": [
+                23,
+                25,
+                561
+              ],
+              "text_partial_decode": "8:<ID:561>"
+            },
+            {
+              "end": 3389,
+              "length": 3,
+              "proposal": [
+                22,
+                25,
+                561
+              ],
+              "text_partial_decode": "7:<ID:561>"
+            },
+            {
+              "end": 3358,
+              "length": 3,
+              "proposal": [
+                21,
+                25,
+                561
+              ],
+              "text_partial_decode": "6:<ID:561>"
+            }
+          ]
+        },
+        {
+          "position": 171,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "23,",
+          "actual_next3": "24,",
+          "proposal_ids": [
+            17,
+            18,
+            11
+          ],
+          "actual_next3_ids": [
+            17,
+            19,
+            11
+          ],
+          "d0": 17,
+          "match_end": 8325,
+          "origin": "generated",
+          "context_before": "16, 123, 1",
+          "competitors": [
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            },
+            {
+              "end": 8315,
+              "length": 3,
+              "proposal": [
+                15,
+                24,
+                11
+              ],
+              "text_partial_decode": "09,"
+            },
+            {
+              "end": 8251,
+              "length": 3,
+              "proposal": [
+                22,
+                11,
+                220
+              ],
+              "text_partial_decode": "7, "
+            }
+          ]
+        },
+        {
+          "position": 181,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "32,",
+          "actual_next3": "36,",
+          "proposal_ids": [
+            18,
+            17,
+            11
+          ],
+          "actual_next3_ids": [
+            18,
+            21,
+            11
+          ],
+          "d0": 18,
+          "match_end": 8335,
+          "origin": "generated",
+          "context_before": "24, 132, 1",
+          "competitors": [
+            {
+              "end": 8335,
+              "length": 3,
+              "proposal": [
+                18,
+                17,
+                11
+              ],
+              "text_partial_decode": "32,"
+            },
+            {
+              "end": 8330,
+              "length": 3,
+              "proposal": [
+                17,
+                19,
+                11
+              ],
+              "text_partial_decode": "24,"
+            },
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            }
+          ]
+        },
+        {
+          "position": 199,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "52,",
+          "proposal": " 58",
+          "actual_next3": " 15",
+          "proposal_ids": [
+            220,
+            20,
+            23
+          ],
+          "actual_next3_ids": [
+            220,
+            16,
+            20
+          ],
+          "d0": 220,
+          "match_end": 8273,
+          "origin": "generated",
+          "context_before": " 145, 152,",
+          "competitors": [
+            {
+              "end": 8273,
+              "length": 3,
+              "proposal": [
+                220,
+                20,
+                23
+              ],
+              "text_partial_decode": " 58"
+            }
+          ]
+        },
+        {
+          "position": 205,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "152",
+          "actual_next3": "163",
+          "proposal_ids": [
+            16,
+            20,
+            17
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            18
+          ],
+          "d0": 16,
+          "match_end": 8354,
+          "origin": "generated",
+          "context_before": "152, 155, ",
+          "competitors": [
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 215,
+          "accepted": 2,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "163",
+          "actual_next3": "166",
+          "proposal_ids": [
+            16,
+            21,
+            18
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            21
+          ],
+          "d0": 16,
+          "match_end": 8364,
+          "origin": "generated",
+          "context_before": "163, 165, ",
+          "competitors": [
+            {
+              "end": 8364,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                18
+              ],
+              "text_partial_decode": "163"
+            },
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 226,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "71,",
+          "actual_next3": "72,",
+          "proposal_ids": [
+            22,
+            16,
+            11
+          ],
+          "actual_next3_ids": [
+            22,
+            17,
+            11
+          ],
+          "d0": 22,
+          "match_end": 8380,
+          "origin": "generated",
+          "context_before": "66, 171, 1",
+          "competitors": [
+            {
+              "end": 8380,
+              "length": 3,
+              "proposal": [
+                22,
+                16,
+                11
+              ],
+              "text_partial_decode": "71,"
+            },
+            {
+              "end": 8375,
+              "length": 3,
+              "proposal": [
+                21,
+                21,
+                11
+              ],
+              "text_partial_decode": "66,"
+            },
+            {
+              "end": 8370,
+              "length": 3,
+              "proposal": [
+                21,
+                20,
+                11
+              ],
+              "text_partial_decode": "65,"
+            },
+            {
+              "end": 8365,
+              "length": 3,
+              "proposal": [
+                21,
+                18,
+                11
+              ],
+              "text_partial_decode": "63,"
+            }
+          ]
+        }
+      ],
+      "raw_counter_line": "[suffix] request=chatcmpl-auto-7 queries=73 hits=15 candidates=117 compared=642 matched=201 no_match=24 incomplete=0 d0_mismatch=34 invalid=0 exhausted=0 indexed=8411 peak_bytes=1884160 object_bytes=192 init_ns=115999 append_ns=31185 query_ns=31175 release_ns=1481 accepted=0,7,3,5 neural_accepted=6,2,1,49"
+    },
+    {
+      "tag": "full-on-2",
+      "response_id": "chatcmpl-auto-8",
+      "stats": {
+        "queries": 73,
+        "hits": 15,
+        "no_match": 24,
+        "incomplete": 0,
+        "d0_mismatch": 34,
+        "candidates": 117,
+        "compared": 642,
+        "matched": 201
+      },
+      "histogram": [
+        0,
+        7,
+        3,
+        5
+      ],
+      "zero_accept_no_match_positions": [
+        0,
+        1,
+        18,
+        34,
+        35,
+        46
+      ],
+      "zero_accept_matched_unknown_positions": [],
+      "hits": [
+        {
+          "position": 16,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 25",
+          "proposal": "1: A",
+          "actual_next3": "1 records,",
+          "proposal_ids": [
+            16,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            16,
+            7189,
+            11
+          ],
+          "d0": 16,
+          "match_end": 8093,
+          "origin": "prompt",
+          "context_before": " to write a detailed technical review of 25",
+          "competitors": [
+            {
+              "end": 8093,
+              "length": 3,
+              "proposal": [
+                16,
+                25,
+                357
+              ],
+              "text_partial_decode": "1:<ID:357>"
+            },
+            {
+              "end": 8061,
+              "length": 3,
+              "proposal": [
+                15,
+                25,
+                561
+              ],
+              "text_partial_decode": "0:<ID:561>"
+            },
+            {
+              "end": 777,
+              "length": 3,
+              "proposal": [
+                25,
+                561,
+                15977
+              ],
+              "text_partial_decode": ":<ID:561><ID:15977>"
+            }
+          ]
+        },
+        {
+          "position": 23,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " measurement, storage",
+          "proposal": ", scheduling,",
+          "actual_next3": ", scheduling,",
+          "proposal_ids": [
+            11,
+            36602,
+            11
+          ],
+          "actual_next3_ids": [
+            11,
+            36602,
+            11
+          ],
+          "d0": 11,
+          "match_end": 8149,
+          "origin": "prompt",
+          "context_before": " 251 records, covering measurement, storage",
+          "competitors": [
+            {
+              "end": 8149,
+              "length": 3,
+              "proposal": [
+                11,
+                36602,
+                11
+              ],
+              "text_partial_decode": ", scheduling,"
+            }
+          ]
+        },
+        {
+          "position": 27,
+          "accepted": 2,
+          "match_length": 7,
+          "matched": " measurement, storage, scheduling, and",
+          "proposal": " correctness.\n",
+          "actual_next3": " correctness. Let",
+          "proposal_ids": [
+            55404,
+            13,
+            198
+          ],
+          "actual_next3_ids": [
+            55404,
+            13,
+            6558
+          ],
+          "d0": 55404,
+          "match_end": 8153,
+          "origin": "prompt",
+          "context_before": " records, covering measurement, storage, scheduling, and",
+          "competitors": [
+            {
+              "end": 8153,
+              "length": 7,
+              "proposal": [
+                55404,
+                13,
+                198
+              ],
+              "text_partial_decode": " correctness.\n"
+            }
+          ]
+        },
+        {
+          "position": 62,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " cache can reuse",
+          "proposal": " recently accessed data",
+          "actual_next3": " recently accessed data",
+          "proposal_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "actual_next3_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "d0": 5742,
+          "match_end": 7833,
+          "origin": "prompt",
+          "context_before": " **Cache/Memory**: \"A cache can reuse",
+          "competitors": [
+            {
+              "end": 7833,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7771,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7387,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 6276,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            }
+          ]
+        },
+        {
+          "position": 66,
+          "accepted": 3,
+          "match_length": 7,
+          "matched": " cache can reuse recently accessed data.",
+          "proposal": " An estimate of",
+          "actual_next3": " An estimate of",
+          "proposal_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "actual_next3_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "d0": 1473,
+          "match_end": 7837,
+          "origin": "prompt",
+          "context_before": "**: \"A cache can reuse recently accessed data.",
+          "competitors": [
+            {
+              "end": 7837,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7775,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7391,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 6280,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            }
+          ]
+        },
+        {
+          "position": 70,
+          "accepted": 3,
+          "match_length": 11,
+          "matched": " cache can reuse recently accessed data. An estimate of required",
+          "proposal": " bytes is different",
+          "actual_next3": " bytes is different",
+          "proposal_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "actual_next3_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "d0": 5639,
+          "match_end": 7841,
+          "origin": "prompt",
+          "context_before": " can reuse recently accessed data. An estimate of required",
+          "competitors": [
+            {
+              "end": 7841,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7779,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7395,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 6284,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            }
+          ]
+        },
+        {
+          "position": 74,
+          "accepted": 3,
+          "match_length": 15,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from",
+          "proposal": " a measurement of",
+          "actual_next3": " a measurement of",
+          "proposal_ids": [
+            264,
+            18100,
+            314
+          ],
+          "actual_next3_ids": [
+            264,
+            18100,
+            314
+          ],
+          "d0": 264,
+          "match_end": 7845,
+          "origin": "prompt",
+          "context_before": " data. An estimate of required bytes is different from",
+          "competitors": [
+            {
+              "end": 7845,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7783,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7399,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 6288,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            }
+          ]
+        },
+        {
+          "position": 78,
+          "accepted": 2,
+          "match_length": 19,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical",
+          "proposal": " memory traffic.",
+          "actual_next3": " memory traffic.\"",
+          "proposal_ids": [
+            4779,
+            9163,
+            13
+          ],
+          "actual_next3_ids": [
+            4779,
+            9163,
+            1149
+          ],
+          "d0": 4779,
+          "match_end": 7849,
+          "origin": "prompt",
+          "context_before": " of required bytes is different from a measurement of physical",
+          "competitors": [
+            {
+              "end": 7849,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7787,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7403,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 6292,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            }
+          ]
+        },
+        {
+          "position": 157,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 10",
+          "proposal": "9: A",
+          "actual_next3": "9, ",
+          "proposal_ids": [
+            24,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            24,
+            11,
+            220
+          ],
+          "d0": 24,
+          "match_end": 3455,
+          "origin": "prompt",
+          "context_before": "89, 99, 10",
+          "competitors": [
+            {
+              "end": 3455,
+              "length": 3,
+              "proposal": [
+                24,
+                25,
+                357
+              ],
+              "text_partial_decode": "9:<ID:357>"
+            },
+            {
+              "end": 3424,
+              "length": 3,
+              "proposal": [
+                23,
+                25,
+                561
+              ],
+              "text_partial_decode": "8:<ID:561>"
+            },
+            {
+              "end": 3389,
+              "length": 3,
+              "proposal": [
+                22,
+                25,
+                561
+              ],
+              "text_partial_decode": "7:<ID:561>"
+            },
+            {
+              "end": 3358,
+              "length": 3,
+              "proposal": [
+                21,
+                25,
+                561
+              ],
+              "text_partial_decode": "6:<ID:561>"
+            }
+          ]
+        },
+        {
+          "position": 171,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "23,",
+          "actual_next3": "24,",
+          "proposal_ids": [
+            17,
+            18,
+            11
+          ],
+          "actual_next3_ids": [
+            17,
+            19,
+            11
+          ],
+          "d0": 17,
+          "match_end": 8325,
+          "origin": "generated",
+          "context_before": "16, 123, 1",
+          "competitors": [
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            },
+            {
+              "end": 8315,
+              "length": 3,
+              "proposal": [
+                15,
+                24,
+                11
+              ],
+              "text_partial_decode": "09,"
+            },
+            {
+              "end": 8251,
+              "length": 3,
+              "proposal": [
+                22,
+                11,
+                220
+              ],
+              "text_partial_decode": "7, "
+            }
+          ]
+        },
+        {
+          "position": 181,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "32,",
+          "actual_next3": "36,",
+          "proposal_ids": [
+            18,
+            17,
+            11
+          ],
+          "actual_next3_ids": [
+            18,
+            21,
+            11
+          ],
+          "d0": 18,
+          "match_end": 8335,
+          "origin": "generated",
+          "context_before": "24, 132, 1",
+          "competitors": [
+            {
+              "end": 8335,
+              "length": 3,
+              "proposal": [
+                18,
+                17,
+                11
+              ],
+              "text_partial_decode": "32,"
+            },
+            {
+              "end": 8330,
+              "length": 3,
+              "proposal": [
+                17,
+                19,
+                11
+              ],
+              "text_partial_decode": "24,"
+            },
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            }
+          ]
+        },
+        {
+          "position": 199,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "52,",
+          "proposal": " 58",
+          "actual_next3": " 15",
+          "proposal_ids": [
+            220,
+            20,
+            23
+          ],
+          "actual_next3_ids": [
+            220,
+            16,
+            20
+          ],
+          "d0": 220,
+          "match_end": 8273,
+          "origin": "generated",
+          "context_before": " 145, 152,",
+          "competitors": [
+            {
+              "end": 8273,
+              "length": 3,
+              "proposal": [
+                220,
+                20,
+                23
+              ],
+              "text_partial_decode": " 58"
+            }
+          ]
+        },
+        {
+          "position": 205,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "152",
+          "actual_next3": "163",
+          "proposal_ids": [
+            16,
+            20,
+            17
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            18
+          ],
+          "d0": 16,
+          "match_end": 8354,
+          "origin": "generated",
+          "context_before": "152, 155, ",
+          "competitors": [
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 215,
+          "accepted": 2,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "163",
+          "actual_next3": "166",
+          "proposal_ids": [
+            16,
+            21,
+            18
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            21
+          ],
+          "d0": 16,
+          "match_end": 8364,
+          "origin": "generated",
+          "context_before": "163, 165, ",
+          "competitors": [
+            {
+              "end": 8364,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                18
+              ],
+              "text_partial_decode": "163"
+            },
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 226,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "71,",
+          "actual_next3": "72,",
+          "proposal_ids": [
+            22,
+            16,
+            11
+          ],
+          "actual_next3_ids": [
+            22,
+            17,
+            11
+          ],
+          "d0": 22,
+          "match_end": 8380,
+          "origin": "generated",
+          "context_before": "66, 171, 1",
+          "competitors": [
+            {
+              "end": 8380,
+              "length": 3,
+              "proposal": [
+                22,
+                16,
+                11
+              ],
+              "text_partial_decode": "71,"
+            },
+            {
+              "end": 8375,
+              "length": 3,
+              "proposal": [
+                21,
+                21,
+                11
+              ],
+              "text_partial_decode": "66,"
+            },
+            {
+              "end": 8370,
+              "length": 3,
+              "proposal": [
+                21,
+                20,
+                11
+              ],
+              "text_partial_decode": "65,"
+            },
+            {
+              "end": 8365,
+              "length": 3,
+              "proposal": [
+                21,
+                18,
+                11
+              ],
+              "text_partial_decode": "63,"
+            }
+          ]
+        }
+      ],
+      "raw_counter_line": "[suffix] request=chatcmpl-auto-8 queries=73 hits=15 candidates=117 compared=642 matched=201 no_match=24 incomplete=0 d0_mismatch=34 invalid=0 exhausted=0 indexed=8411 peak_bytes=1884160 object_bytes=192 init_ns=109648 append_ns=19538 query_ns=19159 release_ns=1083 accepted=0,7,3,5 neural_accepted=6,2,1,49"
+    },
+    {
+      "tag": "subset-on-0",
+      "response_id": "chatcmpl-auto-6",
+      "stats": {
+        "queries": 73,
+        "hits": 15,
+        "no_match": 24,
+        "incomplete": 0,
+        "d0_mismatch": 34,
+        "candidates": 117,
+        "compared": 642,
+        "matched": 201
+      },
+      "histogram": [
+        0,
+        7,
+        3,
+        5
+      ],
+      "zero_accept_no_match_positions": [
+        0,
+        1,
+        18,
+        34,
+        35,
+        46
+      ],
+      "zero_accept_matched_unknown_positions": [],
+      "hits": [
+        {
+          "position": 16,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 25",
+          "proposal": "1: A",
+          "actual_next3": "1 records,",
+          "proposal_ids": [
+            16,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            16,
+            7189,
+            11
+          ],
+          "d0": 16,
+          "match_end": 8093,
+          "origin": "prompt",
+          "context_before": " to write a detailed technical review of 25",
+          "competitors": [
+            {
+              "end": 8093,
+              "length": 3,
+              "proposal": [
+                16,
+                25,
+                357
+              ],
+              "text_partial_decode": "1:<ID:357>"
+            },
+            {
+              "end": 8061,
+              "length": 3,
+              "proposal": [
+                15,
+                25,
+                561
+              ],
+              "text_partial_decode": "0:<ID:561>"
+            },
+            {
+              "end": 777,
+              "length": 3,
+              "proposal": [
+                25,
+                561,
+                15977
+              ],
+              "text_partial_decode": ":<ID:561><ID:15977>"
+            }
+          ]
+        },
+        {
+          "position": 23,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " measurement, storage",
+          "proposal": ", scheduling,",
+          "actual_next3": ", scheduling,",
+          "proposal_ids": [
+            11,
+            36602,
+            11
+          ],
+          "actual_next3_ids": [
+            11,
+            36602,
+            11
+          ],
+          "d0": 11,
+          "match_end": 8149,
+          "origin": "prompt",
+          "context_before": " 251 records, covering measurement, storage",
+          "competitors": [
+            {
+              "end": 8149,
+              "length": 3,
+              "proposal": [
+                11,
+                36602,
+                11
+              ],
+              "text_partial_decode": ", scheduling,"
+            }
+          ]
+        },
+        {
+          "position": 27,
+          "accepted": 2,
+          "match_length": 7,
+          "matched": " measurement, storage, scheduling, and",
+          "proposal": " correctness.\n",
+          "actual_next3": " correctness. Let",
+          "proposal_ids": [
+            55404,
+            13,
+            198
+          ],
+          "actual_next3_ids": [
+            55404,
+            13,
+            6558
+          ],
+          "d0": 55404,
+          "match_end": 8153,
+          "origin": "prompt",
+          "context_before": " records, covering measurement, storage, scheduling, and",
+          "competitors": [
+            {
+              "end": 8153,
+              "length": 7,
+              "proposal": [
+                55404,
+                13,
+                198
+              ],
+              "text_partial_decode": " correctness.\n"
+            }
+          ]
+        },
+        {
+          "position": 62,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " cache can reuse",
+          "proposal": " recently accessed data",
+          "actual_next3": " recently accessed data",
+          "proposal_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "actual_next3_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "d0": 5742,
+          "match_end": 7833,
+          "origin": "prompt",
+          "context_before": " **Cache/Memory**: \"A cache can reuse",
+          "competitors": [
+            {
+              "end": 7833,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7771,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7387,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 6276,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            }
+          ]
+        },
+        {
+          "position": 66,
+          "accepted": 3,
+          "match_length": 7,
+          "matched": " cache can reuse recently accessed data.",
+          "proposal": " An estimate of",
+          "actual_next3": " An estimate of",
+          "proposal_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "actual_next3_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "d0": 1473,
+          "match_end": 7837,
+          "origin": "prompt",
+          "context_before": "**: \"A cache can reuse recently accessed data.",
+          "competitors": [
+            {
+              "end": 7837,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7775,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7391,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 6280,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            }
+          ]
+        },
+        {
+          "position": 70,
+          "accepted": 3,
+          "match_length": 11,
+          "matched": " cache can reuse recently accessed data. An estimate of required",
+          "proposal": " bytes is different",
+          "actual_next3": " bytes is different",
+          "proposal_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "actual_next3_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "d0": 5639,
+          "match_end": 7841,
+          "origin": "prompt",
+          "context_before": " can reuse recently accessed data. An estimate of required",
+          "competitors": [
+            {
+              "end": 7841,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7779,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7395,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 6284,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            }
+          ]
+        },
+        {
+          "position": 74,
+          "accepted": 3,
+          "match_length": 15,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from",
+          "proposal": " a measurement of",
+          "actual_next3": " a measurement of",
+          "proposal_ids": [
+            264,
+            18100,
+            314
+          ],
+          "actual_next3_ids": [
+            264,
+            18100,
+            314
+          ],
+          "d0": 264,
+          "match_end": 7845,
+          "origin": "prompt",
+          "context_before": " data. An estimate of required bytes is different from",
+          "competitors": [
+            {
+              "end": 7845,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7783,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7399,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 6288,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            }
+          ]
+        },
+        {
+          "position": 78,
+          "accepted": 2,
+          "match_length": 19,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical",
+          "proposal": " memory traffic.",
+          "actual_next3": " memory traffic.\"",
+          "proposal_ids": [
+            4779,
+            9163,
+            13
+          ],
+          "actual_next3_ids": [
+            4779,
+            9163,
+            1149
+          ],
+          "d0": 4779,
+          "match_end": 7849,
+          "origin": "prompt",
+          "context_before": " of required bytes is different from a measurement of physical",
+          "competitors": [
+            {
+              "end": 7849,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7787,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7403,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 6292,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            }
+          ]
+        },
+        {
+          "position": 157,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 10",
+          "proposal": "9: A",
+          "actual_next3": "9, ",
+          "proposal_ids": [
+            24,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            24,
+            11,
+            220
+          ],
+          "d0": 24,
+          "match_end": 3455,
+          "origin": "prompt",
+          "context_before": "89, 99, 10",
+          "competitors": [
+            {
+              "end": 3455,
+              "length": 3,
+              "proposal": [
+                24,
+                25,
+                357
+              ],
+              "text_partial_decode": "9:<ID:357>"
+            },
+            {
+              "end": 3424,
+              "length": 3,
+              "proposal": [
+                23,
+                25,
+                561
+              ],
+              "text_partial_decode": "8:<ID:561>"
+            },
+            {
+              "end": 3389,
+              "length": 3,
+              "proposal": [
+                22,
+                25,
+                561
+              ],
+              "text_partial_decode": "7:<ID:561>"
+            },
+            {
+              "end": 3358,
+              "length": 3,
+              "proposal": [
+                21,
+                25,
+                561
+              ],
+              "text_partial_decode": "6:<ID:561>"
+            }
+          ]
+        },
+        {
+          "position": 171,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "23,",
+          "actual_next3": "24,",
+          "proposal_ids": [
+            17,
+            18,
+            11
+          ],
+          "actual_next3_ids": [
+            17,
+            19,
+            11
+          ],
+          "d0": 17,
+          "match_end": 8325,
+          "origin": "generated",
+          "context_before": "16, 123, 1",
+          "competitors": [
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            },
+            {
+              "end": 8315,
+              "length": 3,
+              "proposal": [
+                15,
+                24,
+                11
+              ],
+              "text_partial_decode": "09,"
+            },
+            {
+              "end": 8251,
+              "length": 3,
+              "proposal": [
+                22,
+                11,
+                220
+              ],
+              "text_partial_decode": "7, "
+            }
+          ]
+        },
+        {
+          "position": 181,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "32,",
+          "actual_next3": "36,",
+          "proposal_ids": [
+            18,
+            17,
+            11
+          ],
+          "actual_next3_ids": [
+            18,
+            21,
+            11
+          ],
+          "d0": 18,
+          "match_end": 8335,
+          "origin": "generated",
+          "context_before": "24, 132, 1",
+          "competitors": [
+            {
+              "end": 8335,
+              "length": 3,
+              "proposal": [
+                18,
+                17,
+                11
+              ],
+              "text_partial_decode": "32,"
+            },
+            {
+              "end": 8330,
+              "length": 3,
+              "proposal": [
+                17,
+                19,
+                11
+              ],
+              "text_partial_decode": "24,"
+            },
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            }
+          ]
+        },
+        {
+          "position": 199,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "52,",
+          "proposal": " 58",
+          "actual_next3": " 15",
+          "proposal_ids": [
+            220,
+            20,
+            23
+          ],
+          "actual_next3_ids": [
+            220,
+            16,
+            20
+          ],
+          "d0": 220,
+          "match_end": 8273,
+          "origin": "generated",
+          "context_before": " 145, 152,",
+          "competitors": [
+            {
+              "end": 8273,
+              "length": 3,
+              "proposal": [
+                220,
+                20,
+                23
+              ],
+              "text_partial_decode": " 58"
+            }
+          ]
+        },
+        {
+          "position": 205,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "152",
+          "actual_next3": "163",
+          "proposal_ids": [
+            16,
+            20,
+            17
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            18
+          ],
+          "d0": 16,
+          "match_end": 8354,
+          "origin": "generated",
+          "context_before": "152, 155, ",
+          "competitors": [
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 215,
+          "accepted": 2,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "163",
+          "actual_next3": "166",
+          "proposal_ids": [
+            16,
+            21,
+            18
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            21
+          ],
+          "d0": 16,
+          "match_end": 8364,
+          "origin": "generated",
+          "context_before": "163, 165, ",
+          "competitors": [
+            {
+              "end": 8364,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                18
+              ],
+              "text_partial_decode": "163"
+            },
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 226,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "71,",
+          "actual_next3": "72,",
+          "proposal_ids": [
+            22,
+            16,
+            11
+          ],
+          "actual_next3_ids": [
+            22,
+            17,
+            11
+          ],
+          "d0": 22,
+          "match_end": 8380,
+          "origin": "generated",
+          "context_before": "66, 171, 1",
+          "competitors": [
+            {
+              "end": 8380,
+              "length": 3,
+              "proposal": [
+                22,
+                16,
+                11
+              ],
+              "text_partial_decode": "71,"
+            },
+            {
+              "end": 8375,
+              "length": 3,
+              "proposal": [
+                21,
+                21,
+                11
+              ],
+              "text_partial_decode": "66,"
+            },
+            {
+              "end": 8370,
+              "length": 3,
+              "proposal": [
+                21,
+                20,
+                11
+              ],
+              "text_partial_decode": "65,"
+            },
+            {
+              "end": 8365,
+              "length": 3,
+              "proposal": [
+                21,
+                18,
+                11
+              ],
+              "text_partial_decode": "63,"
+            }
+          ]
+        }
+      ],
+      "raw_counter_line": "[suffix] request=chatcmpl-auto-6 queries=73 hits=15 candidates=117 compared=642 matched=201 no_match=24 incomplete=0 d0_mismatch=34 invalid=0 exhausted=0 indexed=8411 peak_bytes=1884160 object_bytes=192 init_ns=72055 append_ns=57690 query_ns=40977 release_ns=2241 accepted=0,7,3,5 neural_accepted=6,2,1,49"
+    },
+    {
+      "tag": "subset-on-1",
+      "response_id": "chatcmpl-auto-7",
+      "stats": {
+        "queries": 73,
+        "hits": 15,
+        "no_match": 24,
+        "incomplete": 0,
+        "d0_mismatch": 34,
+        "candidates": 117,
+        "compared": 642,
+        "matched": 201
+      },
+      "histogram": [
+        0,
+        7,
+        3,
+        5
+      ],
+      "zero_accept_no_match_positions": [
+        0,
+        1,
+        18,
+        34,
+        35,
+        46
+      ],
+      "zero_accept_matched_unknown_positions": [],
+      "hits": [
+        {
+          "position": 16,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 25",
+          "proposal": "1: A",
+          "actual_next3": "1 records,",
+          "proposal_ids": [
+            16,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            16,
+            7189,
+            11
+          ],
+          "d0": 16,
+          "match_end": 8093,
+          "origin": "prompt",
+          "context_before": " to write a detailed technical review of 25",
+          "competitors": [
+            {
+              "end": 8093,
+              "length": 3,
+              "proposal": [
+                16,
+                25,
+                357
+              ],
+              "text_partial_decode": "1:<ID:357>"
+            },
+            {
+              "end": 8061,
+              "length": 3,
+              "proposal": [
+                15,
+                25,
+                561
+              ],
+              "text_partial_decode": "0:<ID:561>"
+            },
+            {
+              "end": 777,
+              "length": 3,
+              "proposal": [
+                25,
+                561,
+                15977
+              ],
+              "text_partial_decode": ":<ID:561><ID:15977>"
+            }
+          ]
+        },
+        {
+          "position": 23,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " measurement, storage",
+          "proposal": ", scheduling,",
+          "actual_next3": ", scheduling,",
+          "proposal_ids": [
+            11,
+            36602,
+            11
+          ],
+          "actual_next3_ids": [
+            11,
+            36602,
+            11
+          ],
+          "d0": 11,
+          "match_end": 8149,
+          "origin": "prompt",
+          "context_before": " 251 records, covering measurement, storage",
+          "competitors": [
+            {
+              "end": 8149,
+              "length": 3,
+              "proposal": [
+                11,
+                36602,
+                11
+              ],
+              "text_partial_decode": ", scheduling,"
+            }
+          ]
+        },
+        {
+          "position": 27,
+          "accepted": 2,
+          "match_length": 7,
+          "matched": " measurement, storage, scheduling, and",
+          "proposal": " correctness.\n",
+          "actual_next3": " correctness. Let",
+          "proposal_ids": [
+            55404,
+            13,
+            198
+          ],
+          "actual_next3_ids": [
+            55404,
+            13,
+            6558
+          ],
+          "d0": 55404,
+          "match_end": 8153,
+          "origin": "prompt",
+          "context_before": " records, covering measurement, storage, scheduling, and",
+          "competitors": [
+            {
+              "end": 8153,
+              "length": 7,
+              "proposal": [
+                55404,
+                13,
+                198
+              ],
+              "text_partial_decode": " correctness.\n"
+            }
+          ]
+        },
+        {
+          "position": 62,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " cache can reuse",
+          "proposal": " recently accessed data",
+          "actual_next3": " recently accessed data",
+          "proposal_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "actual_next3_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "d0": 5742,
+          "match_end": 7833,
+          "origin": "prompt",
+          "context_before": " **Cache/Memory**: \"A cache can reuse",
+          "competitors": [
+            {
+              "end": 7833,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7771,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7387,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 6276,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            }
+          ]
+        },
+        {
+          "position": 66,
+          "accepted": 3,
+          "match_length": 7,
+          "matched": " cache can reuse recently accessed data.",
+          "proposal": " An estimate of",
+          "actual_next3": " An estimate of",
+          "proposal_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "actual_next3_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "d0": 1473,
+          "match_end": 7837,
+          "origin": "prompt",
+          "context_before": "**: \"A cache can reuse recently accessed data.",
+          "competitors": [
+            {
+              "end": 7837,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7775,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7391,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 6280,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            }
+          ]
+        },
+        {
+          "position": 70,
+          "accepted": 3,
+          "match_length": 11,
+          "matched": " cache can reuse recently accessed data. An estimate of required",
+          "proposal": " bytes is different",
+          "actual_next3": " bytes is different",
+          "proposal_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "actual_next3_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "d0": 5639,
+          "match_end": 7841,
+          "origin": "prompt",
+          "context_before": " can reuse recently accessed data. An estimate of required",
+          "competitors": [
+            {
+              "end": 7841,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7779,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7395,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 6284,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            }
+          ]
+        },
+        {
+          "position": 74,
+          "accepted": 3,
+          "match_length": 15,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from",
+          "proposal": " a measurement of",
+          "actual_next3": " a measurement of",
+          "proposal_ids": [
+            264,
+            18100,
+            314
+          ],
+          "actual_next3_ids": [
+            264,
+            18100,
+            314
+          ],
+          "d0": 264,
+          "match_end": 7845,
+          "origin": "prompt",
+          "context_before": " data. An estimate of required bytes is different from",
+          "competitors": [
+            {
+              "end": 7845,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7783,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7399,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 6288,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            }
+          ]
+        },
+        {
+          "position": 78,
+          "accepted": 2,
+          "match_length": 19,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical",
+          "proposal": " memory traffic.",
+          "actual_next3": " memory traffic.\"",
+          "proposal_ids": [
+            4779,
+            9163,
+            13
+          ],
+          "actual_next3_ids": [
+            4779,
+            9163,
+            1149
+          ],
+          "d0": 4779,
+          "match_end": 7849,
+          "origin": "prompt",
+          "context_before": " of required bytes is different from a measurement of physical",
+          "competitors": [
+            {
+              "end": 7849,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7787,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7403,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 6292,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            }
+          ]
+        },
+        {
+          "position": 157,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 10",
+          "proposal": "9: A",
+          "actual_next3": "9, ",
+          "proposal_ids": [
+            24,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            24,
+            11,
+            220
+          ],
+          "d0": 24,
+          "match_end": 3455,
+          "origin": "prompt",
+          "context_before": "89, 99, 10",
+          "competitors": [
+            {
+              "end": 3455,
+              "length": 3,
+              "proposal": [
+                24,
+                25,
+                357
+              ],
+              "text_partial_decode": "9:<ID:357>"
+            },
+            {
+              "end": 3424,
+              "length": 3,
+              "proposal": [
+                23,
+                25,
+                561
+              ],
+              "text_partial_decode": "8:<ID:561>"
+            },
+            {
+              "end": 3389,
+              "length": 3,
+              "proposal": [
+                22,
+                25,
+                561
+              ],
+              "text_partial_decode": "7:<ID:561>"
+            },
+            {
+              "end": 3358,
+              "length": 3,
+              "proposal": [
+                21,
+                25,
+                561
+              ],
+              "text_partial_decode": "6:<ID:561>"
+            }
+          ]
+        },
+        {
+          "position": 171,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "23,",
+          "actual_next3": "24,",
+          "proposal_ids": [
+            17,
+            18,
+            11
+          ],
+          "actual_next3_ids": [
+            17,
+            19,
+            11
+          ],
+          "d0": 17,
+          "match_end": 8325,
+          "origin": "generated",
+          "context_before": "16, 123, 1",
+          "competitors": [
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            },
+            {
+              "end": 8315,
+              "length": 3,
+              "proposal": [
+                15,
+                24,
+                11
+              ],
+              "text_partial_decode": "09,"
+            },
+            {
+              "end": 8251,
+              "length": 3,
+              "proposal": [
+                22,
+                11,
+                220
+              ],
+              "text_partial_decode": "7, "
+            }
+          ]
+        },
+        {
+          "position": 181,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "32,",
+          "actual_next3": "36,",
+          "proposal_ids": [
+            18,
+            17,
+            11
+          ],
+          "actual_next3_ids": [
+            18,
+            21,
+            11
+          ],
+          "d0": 18,
+          "match_end": 8335,
+          "origin": "generated",
+          "context_before": "24, 132, 1",
+          "competitors": [
+            {
+              "end": 8335,
+              "length": 3,
+              "proposal": [
+                18,
+                17,
+                11
+              ],
+              "text_partial_decode": "32,"
+            },
+            {
+              "end": 8330,
+              "length": 3,
+              "proposal": [
+                17,
+                19,
+                11
+              ],
+              "text_partial_decode": "24,"
+            },
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            }
+          ]
+        },
+        {
+          "position": 199,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "52,",
+          "proposal": " 58",
+          "actual_next3": " 15",
+          "proposal_ids": [
+            220,
+            20,
+            23
+          ],
+          "actual_next3_ids": [
+            220,
+            16,
+            20
+          ],
+          "d0": 220,
+          "match_end": 8273,
+          "origin": "generated",
+          "context_before": " 145, 152,",
+          "competitors": [
+            {
+              "end": 8273,
+              "length": 3,
+              "proposal": [
+                220,
+                20,
+                23
+              ],
+              "text_partial_decode": " 58"
+            }
+          ]
+        },
+        {
+          "position": 205,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "152",
+          "actual_next3": "163",
+          "proposal_ids": [
+            16,
+            20,
+            17
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            18
+          ],
+          "d0": 16,
+          "match_end": 8354,
+          "origin": "generated",
+          "context_before": "152, 155, ",
+          "competitors": [
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 215,
+          "accepted": 2,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "163",
+          "actual_next3": "166",
+          "proposal_ids": [
+            16,
+            21,
+            18
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            21
+          ],
+          "d0": 16,
+          "match_end": 8364,
+          "origin": "generated",
+          "context_before": "163, 165, ",
+          "competitors": [
+            {
+              "end": 8364,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                18
+              ],
+              "text_partial_decode": "163"
+            },
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 226,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "71,",
+          "actual_next3": "72,",
+          "proposal_ids": [
+            22,
+            16,
+            11
+          ],
+          "actual_next3_ids": [
+            22,
+            17,
+            11
+          ],
+          "d0": 22,
+          "match_end": 8380,
+          "origin": "generated",
+          "context_before": "66, 171, 1",
+          "competitors": [
+            {
+              "end": 8380,
+              "length": 3,
+              "proposal": [
+                22,
+                16,
+                11
+              ],
+              "text_partial_decode": "71,"
+            },
+            {
+              "end": 8375,
+              "length": 3,
+              "proposal": [
+                21,
+                21,
+                11
+              ],
+              "text_partial_decode": "66,"
+            },
+            {
+              "end": 8370,
+              "length": 3,
+              "proposal": [
+                21,
+                20,
+                11
+              ],
+              "text_partial_decode": "65,"
+            },
+            {
+              "end": 8365,
+              "length": 3,
+              "proposal": [
+                21,
+                18,
+                11
+              ],
+              "text_partial_decode": "63,"
+            }
+          ]
+        }
+      ],
+      "raw_counter_line": "[suffix] request=chatcmpl-auto-7 queries=73 hits=15 candidates=117 compared=642 matched=201 no_match=24 incomplete=0 d0_mismatch=34 invalid=0 exhausted=0 indexed=8411 peak_bytes=1884160 object_bytes=192 init_ns=140221 append_ns=30791 query_ns=27574 release_ns=1380 accepted=0,7,3,5 neural_accepted=6,2,1,49"
+    },
+    {
+      "tag": "subset-on-2",
+      "response_id": "chatcmpl-auto-8",
+      "stats": {
+        "queries": 73,
+        "hits": 15,
+        "no_match": 24,
+        "incomplete": 0,
+        "d0_mismatch": 34,
+        "candidates": 117,
+        "compared": 642,
+        "matched": 201
+      },
+      "histogram": [
+        0,
+        7,
+        3,
+        5
+      ],
+      "zero_accept_no_match_positions": [
+        0,
+        1,
+        18,
+        34,
+        35,
+        46
+      ],
+      "zero_accept_matched_unknown_positions": [],
+      "hits": [
+        {
+          "position": 16,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 25",
+          "proposal": "1: A",
+          "actual_next3": "1 records,",
+          "proposal_ids": [
+            16,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            16,
+            7189,
+            11
+          ],
+          "d0": 16,
+          "match_end": 8093,
+          "origin": "prompt",
+          "context_before": " to write a detailed technical review of 25",
+          "competitors": [
+            {
+              "end": 8093,
+              "length": 3,
+              "proposal": [
+                16,
+                25,
+                357
+              ],
+              "text_partial_decode": "1:<ID:357>"
+            },
+            {
+              "end": 8061,
+              "length": 3,
+              "proposal": [
+                15,
+                25,
+                561
+              ],
+              "text_partial_decode": "0:<ID:561>"
+            },
+            {
+              "end": 777,
+              "length": 3,
+              "proposal": [
+                25,
+                561,
+                15977
+              ],
+              "text_partial_decode": ":<ID:561><ID:15977>"
+            }
+          ]
+        },
+        {
+          "position": 23,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " measurement, storage",
+          "proposal": ", scheduling,",
+          "actual_next3": ", scheduling,",
+          "proposal_ids": [
+            11,
+            36602,
+            11
+          ],
+          "actual_next3_ids": [
+            11,
+            36602,
+            11
+          ],
+          "d0": 11,
+          "match_end": 8149,
+          "origin": "prompt",
+          "context_before": " 251 records, covering measurement, storage",
+          "competitors": [
+            {
+              "end": 8149,
+              "length": 3,
+              "proposal": [
+                11,
+                36602,
+                11
+              ],
+              "text_partial_decode": ", scheduling,"
+            }
+          ]
+        },
+        {
+          "position": 27,
+          "accepted": 2,
+          "match_length": 7,
+          "matched": " measurement, storage, scheduling, and",
+          "proposal": " correctness.\n",
+          "actual_next3": " correctness. Let",
+          "proposal_ids": [
+            55404,
+            13,
+            198
+          ],
+          "actual_next3_ids": [
+            55404,
+            13,
+            6558
+          ],
+          "d0": 55404,
+          "match_end": 8153,
+          "origin": "prompt",
+          "context_before": " records, covering measurement, storage, scheduling, and",
+          "competitors": [
+            {
+              "end": 8153,
+              "length": 7,
+              "proposal": [
+                55404,
+                13,
+                198
+              ],
+              "text_partial_decode": " correctness.\n"
+            }
+          ]
+        },
+        {
+          "position": 62,
+          "accepted": 3,
+          "match_length": 3,
+          "matched": " cache can reuse",
+          "proposal": " recently accessed data",
+          "actual_next3": " recently accessed data",
+          "proposal_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "actual_next3_ids": [
+            5742,
+            23975,
+            795
+          ],
+          "d0": 5742,
+          "match_end": 7833,
+          "origin": "prompt",
+          "context_before": " **Cache/Memory**: \"A cache can reuse",
+          "competitors": [
+            {
+              "end": 7833,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7771,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 7387,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            },
+            {
+              "end": 6276,
+              "length": 3,
+              "proposal": [
+                5742,
+                23975,
+                795
+              ],
+              "text_partial_decode": " recently accessed data"
+            }
+          ]
+        },
+        {
+          "position": 66,
+          "accepted": 3,
+          "match_length": 7,
+          "matched": " cache can reuse recently accessed data.",
+          "proposal": " An estimate of",
+          "actual_next3": " An estimate of",
+          "proposal_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "actual_next3_ids": [
+            1473,
+            15572,
+            314
+          ],
+          "d0": 1473,
+          "match_end": 7837,
+          "origin": "prompt",
+          "context_before": "**: \"A cache can reuse recently accessed data.",
+          "competitors": [
+            {
+              "end": 7837,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7775,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 7391,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            },
+            {
+              "end": 6280,
+              "length": 7,
+              "proposal": [
+                1473,
+                15572,
+                314
+              ],
+              "text_partial_decode": " An estimate of"
+            }
+          ]
+        },
+        {
+          "position": 70,
+          "accepted": 3,
+          "match_length": 11,
+          "matched": " cache can reuse recently accessed data. An estimate of required",
+          "proposal": " bytes is different",
+          "actual_next3": " bytes is different",
+          "proposal_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "actual_next3_ids": [
+            5639,
+            369,
+            2086
+          ],
+          "d0": 5639,
+          "match_end": 7841,
+          "origin": "prompt",
+          "context_before": " can reuse recently accessed data. An estimate of required",
+          "competitors": [
+            {
+              "end": 7841,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7779,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 7395,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            },
+            {
+              "end": 6284,
+              "length": 11,
+              "proposal": [
+                5639,
+                369,
+                2086
+              ],
+              "text_partial_decode": " bytes is different"
+            }
+          ]
+        },
+        {
+          "position": 74,
+          "accepted": 3,
+          "match_length": 15,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from",
+          "proposal": " a measurement of",
+          "actual_next3": " a measurement of",
+          "proposal_ids": [
+            264,
+            18100,
+            314
+          ],
+          "actual_next3_ids": [
+            264,
+            18100,
+            314
+          ],
+          "d0": 264,
+          "match_end": 7845,
+          "origin": "prompt",
+          "context_before": " data. An estimate of required bytes is different from",
+          "competitors": [
+            {
+              "end": 7845,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7783,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 7399,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            },
+            {
+              "end": 6288,
+              "length": 15,
+              "proposal": [
+                264,
+                18100,
+                314
+              ],
+              "text_partial_decode": " a measurement of"
+            }
+          ]
+        },
+        {
+          "position": 78,
+          "accepted": 2,
+          "match_length": 19,
+          "matched": " cache can reuse recently accessed data. An estimate of required bytes is different from a measurement of physical",
+          "proposal": " memory traffic.",
+          "actual_next3": " memory traffic.\"",
+          "proposal_ids": [
+            4779,
+            9163,
+            13
+          ],
+          "actual_next3_ids": [
+            4779,
+            9163,
+            1149
+          ],
+          "d0": 4779,
+          "match_end": 7849,
+          "origin": "prompt",
+          "context_before": " of required bytes is different from a measurement of physical",
+          "competitors": [
+            {
+              "end": 7849,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7787,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 7403,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            },
+            {
+              "end": 6292,
+              "length": 19,
+              "proposal": [
+                4779,
+                9163,
+                13
+              ],
+              "text_partial_decode": " memory traffic."
+            }
+          ]
+        },
+        {
+          "position": 157,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": " 10",
+          "proposal": "9: A",
+          "actual_next3": "9, ",
+          "proposal_ids": [
+            24,
+            25,
+            357
+          ],
+          "actual_next3_ids": [
+            24,
+            11,
+            220
+          ],
+          "d0": 24,
+          "match_end": 3455,
+          "origin": "prompt",
+          "context_before": "89, 99, 10",
+          "competitors": [
+            {
+              "end": 3455,
+              "length": 3,
+              "proposal": [
+                24,
+                25,
+                357
+              ],
+              "text_partial_decode": "9:<ID:357>"
+            },
+            {
+              "end": 3424,
+              "length": 3,
+              "proposal": [
+                23,
+                25,
+                561
+              ],
+              "text_partial_decode": "8:<ID:561>"
+            },
+            {
+              "end": 3389,
+              "length": 3,
+              "proposal": [
+                22,
+                25,
+                561
+              ],
+              "text_partial_decode": "7:<ID:561>"
+            },
+            {
+              "end": 3358,
+              "length": 3,
+              "proposal": [
+                21,
+                25,
+                561
+              ],
+              "text_partial_decode": "6:<ID:561>"
+            }
+          ]
+        },
+        {
+          "position": 171,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "23,",
+          "actual_next3": "24,",
+          "proposal_ids": [
+            17,
+            18,
+            11
+          ],
+          "actual_next3_ids": [
+            17,
+            19,
+            11
+          ],
+          "d0": 17,
+          "match_end": 8325,
+          "origin": "generated",
+          "context_before": "16, 123, 1",
+          "competitors": [
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            },
+            {
+              "end": 8315,
+              "length": 3,
+              "proposal": [
+                15,
+                24,
+                11
+              ],
+              "text_partial_decode": "09,"
+            },
+            {
+              "end": 8251,
+              "length": 3,
+              "proposal": [
+                22,
+                11,
+                220
+              ],
+              "text_partial_decode": "7, "
+            }
+          ]
+        },
+        {
+          "position": 181,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "32,",
+          "actual_next3": "36,",
+          "proposal_ids": [
+            18,
+            17,
+            11
+          ],
+          "actual_next3_ids": [
+            18,
+            21,
+            11
+          ],
+          "d0": 18,
+          "match_end": 8335,
+          "origin": "generated",
+          "context_before": "24, 132, 1",
+          "competitors": [
+            {
+              "end": 8335,
+              "length": 3,
+              "proposal": [
+                18,
+                17,
+                11
+              ],
+              "text_partial_decode": "32,"
+            },
+            {
+              "end": 8330,
+              "length": 3,
+              "proposal": [
+                17,
+                19,
+                11
+              ],
+              "text_partial_decode": "24,"
+            },
+            {
+              "end": 8325,
+              "length": 3,
+              "proposal": [
+                17,
+                18,
+                11
+              ],
+              "text_partial_decode": "23,"
+            },
+            {
+              "end": 8320,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                11
+              ],
+              "text_partial_decode": "16,"
+            }
+          ]
+        },
+        {
+          "position": 199,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "52,",
+          "proposal": " 58",
+          "actual_next3": " 15",
+          "proposal_ids": [
+            220,
+            20,
+            23
+          ],
+          "actual_next3_ids": [
+            220,
+            16,
+            20
+          ],
+          "d0": 220,
+          "match_end": 8273,
+          "origin": "generated",
+          "context_before": " 145, 152,",
+          "competitors": [
+            {
+              "end": 8273,
+              "length": 3,
+              "proposal": [
+                220,
+                20,
+                23
+              ],
+              "text_partial_decode": " 58"
+            }
+          ]
+        },
+        {
+          "position": 205,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "152",
+          "actual_next3": "163",
+          "proposal_ids": [
+            16,
+            20,
+            17
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            18
+          ],
+          "d0": 16,
+          "match_end": 8354,
+          "origin": "generated",
+          "context_before": "152, 155, ",
+          "competitors": [
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 215,
+          "accepted": 2,
+          "match_length": 3,
+          "matched": "5, ",
+          "proposal": "163",
+          "actual_next3": "166",
+          "proposal_ids": [
+            16,
+            21,
+            18
+          ],
+          "actual_next3_ids": [
+            16,
+            21,
+            21
+          ],
+          "d0": 16,
+          "match_end": 8364,
+          "origin": "generated",
+          "context_before": "163, 165, ",
+          "competitors": [
+            {
+              "end": 8364,
+              "length": 3,
+              "proposal": [
+                16,
+                21,
+                18
+              ],
+              "text_partial_decode": "163"
+            },
+            {
+              "end": 8354,
+              "length": 3,
+              "proposal": [
+                16,
+                20,
+                17
+              ],
+              "text_partial_decode": "152"
+            }
+          ]
+        },
+        {
+          "position": 226,
+          "accepted": 1,
+          "match_length": 3,
+          "matched": ", 1",
+          "proposal": "71,",
+          "actual_next3": "72,",
+          "proposal_ids": [
+            22,
+            16,
+            11
+          ],
+          "actual_next3_ids": [
+            22,
+            17,
+            11
+          ],
+          "d0": 22,
+          "match_end": 8380,
+          "origin": "generated",
+          "context_before": "66, 171, 1",
+          "competitors": [
+            {
+              "end": 8380,
+              "length": 3,
+              "proposal": [
+                22,
+                16,
+                11
+              ],
+              "text_partial_decode": "71,"
+            },
+            {
+              "end": 8375,
+              "length": 3,
+              "proposal": [
+                21,
+                21,
+                11
+              ],
+              "text_partial_decode": "66,"
+            },
+            {
+              "end": 8370,
+              "length": 3,
+              "proposal": [
+                21,
+                20,
+                11
+              ],
+              "text_partial_decode": "65,"
+            },
+            {
+              "end": 8365,
+              "length": 3,
+              "proposal": [
+                21,
+                18,
+                11
+              ],
+              "text_partial_decode": "63,"
+            }
+          ]
+        }
+      ],
+      "raw_counter_line": "[suffix] request=chatcmpl-auto-8 queries=73 hits=15 candidates=117 compared=642 matched=201 no_match=24 incomplete=0 d0_mismatch=34 invalid=0 exhausted=0 indexed=8411 peak_bytes=1884160 object_bytes=192 init_ns=104713 append_ns=57167 query_ns=39865 release_ns=1139 accepted=0,7,3,5 neural_accepted=6,2,1,49"
+    }
+  ],
+  "identity": {
+    "src/mtp/suffix_drafter.cpp": "de7052f36ba6d1c09355f6cf6aeeece7a44f28e6203ce3d8ab71db88aa0f0810",
+    "src/text/tokenizer.cpp": "b912142ff16248b642db74ecee8d09534bcd67ccd9cf498797983b6ac4c73423",
+    "include/q4t/text/tokenizer.h": "10e336e6c3d47b465c2cbf03bc034dc4fc1a52c4dcf00ecda99c5724fe0979e0",
+    "src/server/chat_generation.cpp": "6baba93ad1429b0a3a0266d67ec059828a9ffc4f97d9b3efaca1fbbc3ba03e3b",
+    ".q4t-work/suffix-k3-20261023/build/libq4t_text.a": "b5d23197e94116477b82f28547f4842a5033dacabd74976b513ad20ae81c3859",
+    ".q4t-work/suffix-k3-20261023/build/libq4t_io.a": "cdb78bb4b2402e6bc26e9ab72e55867702b9a26c76ff9ce5404d07bdda86818d"
+  },
+  "client_burst_sha256": "de99d605c9428b931fa62f448a92b6f0c6fe9a6c769e8c2c414a26bcb1d11d7e",
+  "replay_program_sha256": "7368adc73fc82a080704e9a629a5da62cee6cbf1f57e4010621e2d7a2f4f015c",
+  "replay_binary_sha256": "ea5a9258c351b47d0e5e38b8ca107d754a0846c58a8c7b012fb08c939e1db857",
+  "tokenizer_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+  "limits": [
+    "Step boundaries derive from client ITL natural bursts and terminal split using independently logged committed count.",
+    "d0 is actual output second token only when accepted>=1; all six a0 steps per request are no-match, so no missing d0 value is required. Any matched a0 causes replay to fail.",
+    "All six ON requests match all available aggregate counters, but client-derived boundaries are not independent native step tracing.",
+    "Replay identifies proposal mismatch and acceptance loss locations, not GPU timings or kernel-crossover causality.",
+    "No new threshold/parameter or runtime change is evaluated; no GPU/HTTP executed."
+  ]
+}

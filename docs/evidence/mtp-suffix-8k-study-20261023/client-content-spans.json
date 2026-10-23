@@ -1,0 +1,66 @@
+{
+  "scope": "Diagnostic spans between client-parsed nonempty SSE chunks; not GPU phase durations or server timestamps",
+  "boundary": {
+    "piece_index_zero_based": 82,
+    "piece": " (",
+    "meaning": "Opening parenthesis before Records list; all text fragments identical across twelve requests"
+  },
+  "arms": {
+    "full-off": {
+      "first_content_to_open_parenthesis_seconds": [
+        2.6258756540482864,
+        2.627227074932307,
+        2.6263819839805365
+      ],
+      "open_parenthesis_to_last_content_seconds": [
+        4.131070956005715,
+        4.134857841068879,
+        4.130251166992821
+      ],
+      "prefix_median": 2.6263819839805365,
+      "list_and_tail_median": 4.131070956005715
+    },
+    "full-on": {
+      "first_content_to_open_parenthesis_seconds": [
+        2.630847448017448,
+        2.6248040220234543,
+        2.6243019269313663
+      ],
+      "open_parenthesis_to_last_content_seconds": [
+        4.4565385120222345,
+        4.451027855044231,
+        4.451281405054033
+      ],
+      "prefix_median": 2.6248040220234543,
+      "list_and_tail_median": 4.451281405054033
+    },
+    "subset-off": {
+      "first_content_to_open_parenthesis_seconds": [
+        2.3387230259831995,
+        2.333818993996829,
+        2.3327406140742823
+      ],
+      "open_parenthesis_to_last_content_seconds": [
+        3.669793583918363,
+        3.6640593609772623,
+        3.6589259929023683
+      ],
+      "prefix_median": 2.333818993996829,
+      "list_and_tail_median": 3.6640593609772623
+    },
+    "subset-on": {
+      "first_content_to_open_parenthesis_seconds": [
+        2.3750004479661584,
+        2.3762817579554394,
+        2.3778147489065304
+      ],
+      "open_parenthesis_to_last_content_seconds": [
+        3.9989422080107033,
+        3.998835355974734,
+        3.9951692250324413
+      ],
+      "prefix_median": 2.3762817579554394,
+      "list_and_tail_median": 3.998835355974734
+    }
+  }
+}
