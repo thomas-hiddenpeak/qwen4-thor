@@ -1,0 +1,2302 @@
+{
+  "created_utc": "2026-10-23T21:05:46.954398+00:00",
+  "sources": {
+    "analysis.json": "4584ed7493f2fd9208047d76cf603cb4fab33ff31cfd6d5d0502045276a8cdf2",
+    "audit-evidence.json": "3a296afa13e68638f114154327aae47f7257f93cd69f325817f58a7495e83c2e",
+    "audit-costs.json": "bcffcf07929824b79c67d50fe4f5feb321f8747b0ec4953a70ab6ff9282df69f",
+    "audit-costs-findings.json": "9f6947eebf444681baaf6e5011178e0fc58ad6cace8edbc30a667b3ad44eb0a8",
+    "protection-review-runtime.json": "7e0098d13154031fecef60e7585aca180773b25c9d53fe5adbfa71f2ed3de9bc",
+    "protection-review-index.json": "a9647585a8979db62a20f51bc3156906d8f64166b753d228225d3ac79964bd14",
+    "report-tables.md": "fe82f33c03b38cfa0d688d4be1780bb139082e31b1b97f820cd878fd6c5fc938",
+    "owned-process-final-check.json": "ac6fca064b32ca4422011366b9b61894b7e3f5de8e36c752ad16f0c25fd64215"
+  },
+  "reviewer": "root",
+  "method": "Qualitative engineering review of predeclared protections; no post-hoc significance test or universal loss tolerance.",
+  "engineering_recommendation": "NO_GO_PROTECTION_NOT_CLEARED",
+  "principal_reason": "子集45K/200K TTFT两配对块均出现全部ON原值慢于OFF的重复耗时证据；新8K两head两块decode均负。不能合理把全部不利保护观测自动视作噪声。",
+  "attribution": "这些无命中请求没有额外verify/tail/extend。当前记录没有把小幅耗时变化因果归于准入门、索引、CPU/GPU调度或缓存；普通模式单对下降也提示归因限制。",
+  "rule": "相同工作不证明相同吞吐；重复收益不抵消保护项；小幅负点本身不是自动NO_GO。此次工程不放行基于跨块重复的不利耗时记录及未解决保护疑点，非要求无限样本证明严格零损失。",
+  "panel": [
+    {
+      "head": "full",
+      "case": "context-1024",
+      "role": "held_out_acceptance",
+      "assessment": "两块decode及TTFT均有利；本样本未见不利方向，不外推总体非劣。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 35.482939567319754,
+            "on_median": 35.59440852199693,
+            "on_off_ratio": 1.0031414802729548,
+            "change_pct": 0.31414802729547997,
+            "off_values": [
+              35.482939567319754,
+              35.45945626224164,
+              35.50458648196465
+            ],
+            "on_values": [
+              35.55127795155635,
+              35.59440852199693,
+              35.62266892946278
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.9162355510052294,
+            "on_median": 0.9122478020144626,
+            "on_off_ratio": 0.9956476814434982,
+            "change_pct": -0.4352318556501755,
+            "off_values": [
+              1.1003495500190184,
+              0.9162355510052294,
+              0.915780897019431
+            ],
+            "on_values": [
+              1.0792234509717673,
+              0.9111187199596316,
+              0.9122478020144626
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 35.532373637115136,
+            "on_median": 35.548560649842855,
+            "on_off_ratio": 1.0004555567520772,
+            "change_pct": 0.04555567520772019,
+            "off_values": [
+              35.532373637115136,
+              35.530793970254564,
+              35.64907991207738
+            ],
+            "on_values": [
+              35.548560649842855,
+              35.53708321422218,
+              35.60164762072866
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.9207773009547964,
+            "on_median": 0.9106767899356782,
+            "on_off_ratio": 0.9890304517621747,
+            "change_pct": -1.0969548237825255,
+            "off_values": [
+              1.0912123210728168,
+              0.917323432979174,
+              0.9207773009547964
+            ],
+            "on_values": [
+              1.0672229510964826,
+              0.9106767899356782,
+              0.9083540630526841
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-204800",
+      "role": "held_out_acceptance",
+      "assessment": "两块decode/TTFT方向混合，含单请求较慢decode；没有单独稳定损失结论，全部原值保留。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 33.07361866568878,
+            "on_median": 33.1506818555945,
+            "on_off_ratio": 1.0023300501431271,
+            "change_pct": 0.23300501431271492,
+            "off_values": [
+              33.07361866568878,
+              33.04414067278713,
+              33.13300844435774
+            ],
+            "on_values": [
+              33.1506818555945,
+              33.11256436986803,
+              33.17267394507056
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 167.157900371938,
+            "on_median": 167.23308649205137,
+            "on_off_ratio": 1.0004497910056662,
+            "change_pct": 0.04497910056662224,
+            "off_values": [
+              167.157900371938,
+              167.11307362408843,
+              167.16311966301873
+            ],
+            "on_values": [
+              167.1848351689987,
+              167.23308649205137,
+              167.2585873589851
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 33.08250898512755,
+            "on_median": 33.01640774771366,
+            "on_off_ratio": 0.9980019279237978,
+            "change_pct": -0.1998072076202173,
+            "off_values": [
+              33.09555816556944,
+              33.077758430695944,
+              33.08250898512755
+            ],
+            "on_values": [
+              33.01640774771366,
+              33.083696444071755,
+              32.58885883037437
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 167.0678857800085,
+            "on_median": 167.06515020597726,
+            "on_off_ratio": 0.9999836259732475,
+            "change_pct": -0.001637402675247479,
+            "off_values": [
+              167.0678857800085,
+              167.01971466303803,
+              167.08058167307172
+            ],
+            "on_values": [
+              167.24063669296447,
+              167.06515020597726,
+              166.39432418800425
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-4096",
+      "role": "held_out_acceptance",
+      "assessment": "decode方向混合；TTFT两块约+0.16%，原值范围重叠。单独不足以确认因果退化，也不自行归零。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 36.7336821795765,
+            "on_median": 36.800824442994966,
+            "on_off_ratio": 1.001827811954441,
+            "change_pct": 0.18278119544410387,
+            "off_values": [
+              36.71339182998815,
+              36.76001673306819,
+              36.7336821795765
+            ],
+            "on_values": [
+              36.70543341315884,
+              36.83001738113937,
+              36.800824442994966
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 2.9220500690862536,
+            "on_median": 2.9267436219379306,
+            "on_off_ratio": 1.0016062533976855,
+            "change_pct": 0.16062533976854976,
+            "off_values": [
+              2.976591712096706,
+              2.9220500690862536,
+              2.921658408944495
+            ],
+            "on_values": [
+              2.9709974880097434,
+              2.9267436219379306,
+              2.9220806589582935
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 36.66810528663306,
+            "on_median": 36.65903598421358,
+            "on_off_ratio": 0.9997526650927671,
+            "change_pct": -0.024733490723294338,
+            "off_values": [
+              36.685310423788465,
+              36.615124562496355,
+              36.66810528663306
+            ],
+            "on_values": [
+              36.665131852566155,
+              36.65903598421358,
+              36.61337880746008
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 2.9238253120565787,
+            "on_median": 2.928428304963745,
+            "on_off_ratio": 1.0015743050339518,
+            "change_pct": 0.15743050339518394,
+            "off_values": [
+              2.974380888044834,
+              2.9238253120565787,
+              2.9201602509710938
+            ],
+            "on_values": [
+              2.9644976999843493,
+              2.9223275530384853,
+              2.928428304963745
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-45056",
+      "role": "held_out_acceptance",
+      "assessment": "decode方向混合；TTFT两块均正且范围重叠。结合子集同档重复分离，保留耗时保护疑点。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 35.974794954737106,
+            "on_median": 36.07957657124128,
+            "on_off_ratio": 1.0029126397144448,
+            "change_pct": 0.2912639714444776,
+            "off_values": [
+              35.983702137824416,
+              35.974794954737106,
+              35.96088810423092
+            ],
+            "on_values": [
+              36.020673140367016,
+              36.07957657124128,
+              36.085960836269194
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 31.860071612056345,
+            "on_median": 31.907219087006524,
+            "on_off_ratio": 1.0014798295347314,
+            "change_pct": 0.14798295347313584,
+            "off_values": [
+              31.860071612056345,
+              31.856494197971188,
+              31.873094670008868
+            ],
+            "on_values": [
+              31.9173788910266,
+              31.858407354098745,
+              31.907219087006524
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 35.94163276051698,
+            "on_median": 35.92856338969406,
+            "on_off_ratio": 0.9996363723676661,
+            "change_pct": -0.036362763233388495,
+            "off_values": [
+              35.94163276051698,
+              35.971352531519315,
+              35.65303955971222
+            ],
+            "on_values": [
+              35.952694274211105,
+              35.919392007548815,
+              35.92856338969406
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 31.851410109899007,
+            "on_median": 31.885054419049993,
+            "on_off_ratio": 1.0010562894714834,
+            "change_pct": 0.10562894714833959,
+            "off_values": [
+              31.851410109899007,
+              31.896508666919544,
+              31.830814769025892
+            ],
+            "on_values": [
+              31.885054419049993,
+              31.863721139961854,
+              31.914705333067104
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-8192",
+      "role": "held_out_acceptance",
+      "assessment": "两块decode均负，TTFT均正；原值范围重叠。与子集同档不利方向构成未排除的保护问题，不能用目标工作相等放行。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 34.657223891620546,
+            "on_median": 34.63008536231561,
+            "on_off_ratio": 0.999216944513796,
+            "change_pct": -0.0783055486204054,
+            "off_values": [
+              34.61153623540677,
+              34.657223891620546,
+              34.683909560840576
+            ],
+            "on_values": [
+              34.62384436241975,
+              34.63008536231561,
+              34.65673653469881
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 5.628955369000323,
+            "on_median": 5.633800589945167,
+            "on_off_ratio": 1.000860767340869,
+            "change_pct": 0.08607673408689287,
+            "off_values": [
+              5.642519525019452,
+              5.628955369000323,
+              5.607328201062046
+            ],
+            "on_values": [
+              5.654028787976131,
+              5.633800589945167,
+              5.631990612018853
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 34.60771943931912,
+            "on_median": 34.5480352154346,
+            "on_off_ratio": 0.9982754071966756,
+            "change_pct": -0.17245928033243763,
+            "off_values": [
+              34.60771943931912,
+              34.626172266221296,
+              34.56602915220705
+            ],
+            "on_values": [
+              34.65045632873108,
+              34.5480352154346,
+              34.49711924220213
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 5.628865948994644,
+            "on_median": 5.643415958038531,
+            "on_off_ratio": 1.0025848917305422,
+            "change_pct": 0.2584891730542216,
+            "off_values": [
+              5.649278840981424,
+              5.628865948994644,
+              5.626656736945733
+            ],
+            "on_values": [
+              5.661959700053558,
+              5.637573213898577,
+              5.643415958038531
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "nonrepeat",
+      "role": "held_out_acceptance",
+      "assessment": "decode方向混合，TTFT两块有利；本样本没有重复不利decode证据。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 25.18489005579877,
+            "on_median": 25.235331550102345,
+            "on_off_ratio": 1.0020028475086378,
+            "change_pct": 0.20028475086377728,
+            "off_values": [
+              25.18489005579877
+            ],
+            "on_values": [
+              25.235331550102345
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.41312298306729645,
+            "on_median": 0.4102629319531843,
+            "on_off_ratio": 0.9930769982999318,
+            "change_pct": -0.692300170006821,
+            "off_values": [
+              0.41312298306729645
+            ],
+            "on_values": [
+              0.4102629319531843
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 25.19954267743296,
+            "on_median": 25.134062915757617,
+            "on_off_ratio": 0.9974015496029625,
+            "change_pct": -0.2598450397037544,
+            "off_values": [
+              25.19954267743296
+            ],
+            "on_values": [
+              25.134062915757617
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 0.4036555750062689,
+            "on_median": 0.397432379075326,
+            "on_off_ratio": 0.9845829060310978,
+            "change_pct": -1.541709396890223,
+            "off_values": [
+              0.4036555750062689
+            ],
+            "on_values": [
+              0.397432379075326
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "numeric-enum",
+      "role": "held_out_acceptance",
+      "assessment": "decode方向混合，TTFT两块偏高；每块单请求，不单独确认总体退化。数字门拦截后无suffix命中。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 40.894969608755424,
+            "on_median": 40.914949339400145,
+            "on_off_ratio": 1.000488562061199,
+            "change_pct": 0.04885620611989605,
+            "off_values": [
+              40.894969608755424
+            ],
+            "on_values": [
+              40.914949339400145
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 5.6282700130250305,
+            "on_median": 5.630095599102788,
+            "on_off_ratio": 1.0003243600739717,
+            "change_pct": 0.032436007397174116,
+            "off_values": [
+              5.6282700130250305
+            ],
+            "on_values": [
+              5.630095599102788
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 40.97927871888483,
+            "on_median": 40.869528346546105,
+            "on_off_ratio": 0.9973218080998545,
+            "change_pct": -0.267819190014551,
+            "off_values": [
+              40.97927871888483
+            ],
+            "on_values": [
+              40.869528346546105
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 5.620584661024623,
+            "on_median": 5.6254362219478935,
+            "on_off_ratio": 1.0008631772699579,
+            "change_pct": 0.08631772699578821,
+            "off_values": [
+              5.620584661024623
+            ],
+            "on_values": [
+              5.6254362219478935
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-45k",
+      "role": "development_regression",
+      "assessment": "目标工作门通过；decode两个块方向反转，每块单请求。小幅负GM不自动认定回退，也不称吞吐严格相等；旧工作量原因已消除。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 38.683448250641575,
+            "on_median": 38.699927599339006,
+            "on_off_ratio": 1.0004260051635174,
+            "change_pct": 0.04260051635174289,
+            "off_values": [
+              38.683448250641575
+            ],
+            "on_values": [
+              38.699927599339006
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 31.898696630029008,
+            "on_median": 31.85910290607717,
+            "on_off_ratio": 0.9987587667166763,
+            "change_pct": -0.12412332833237061,
+            "off_values": [
+              31.898696630029008
+            ],
+            "on_values": [
+              31.85910290607717
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 38.69438017851879,
+            "on_median": 38.56146220266092,
+            "on_off_ratio": 0.9965649281563719,
+            "change_pct": -0.34350718436281236,
+            "off_values": [
+              38.69438017851879
+            ],
+            "on_values": [
+              38.56146220266092
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 31.86255194095429,
+            "on_median": 31.875045067979954,
+            "on_off_ratio": 1.0003920943635907,
+            "change_pct": 0.03920943635906671,
+            "off_values": [
+              31.86255194095429
+            ],
+            "on_values": [
+              31.875045067979954
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-8k",
+      "role": "development_regression",
+      "assessment": "目标工作门通过；decode两个块方向反转，每块单请求。小幅负GM不自动认定回退，也不称吞吐严格相等；旧工作量原因已消除。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 37.52817567432403,
+            "on_median": 37.60453194443943,
+            "on_off_ratio": 1.0020346384747831,
+            "change_pct": 0.20346384747831348,
+            "off_values": [
+              37.52817567432403
+            ],
+            "on_values": [
+              37.60453194443943
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 5.6484263150487095,
+            "on_median": 5.631377913057804,
+            "on_off_ratio": 0.996981743048416,
+            "change_pct": -0.3018256951583975,
+            "off_values": [
+              5.6484263150487095
+            ],
+            "on_values": [
+              5.631377913057804
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 37.63943307685848,
+            "on_median": 37.56114484875885,
+            "on_off_ratio": 0.9979200476282475,
+            "change_pct": -0.20799523717525137,
+            "off_values": [
+              37.63943307685848
+            ],
+            "on_values": [
+              37.56114484875885
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 5.627952105016448,
+            "on_median": 5.617442529997788,
+            "on_off_ratio": 0.9981326111483266,
+            "change_pct": -0.18673888516733683,
+            "off_values": [
+              5.627952105016448
+            ],
+            "on_values": [
+              5.617442529997788
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-repeat-code",
+      "role": "development_regression",
+      "assessment": "两个块decode均正且GM>=1.05，冻结收益门通过。TTFT单列审查：完整head两块均有利。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 42.28962360696119,
+            "on_median": 48.62698018162506,
+            "on_off_ratio": 1.1498560647775709,
+            "change_pct": 14.985606477757084,
+            "off_values": [
+              42.28962360696119
+            ],
+            "on_values": [
+              48.62698018162506
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.7110130239743739,
+            "on_median": 0.7091277079889551,
+            "on_off_ratio": 0.9973484086481561,
+            "change_pct": -0.2651591351843896,
+            "off_values": [
+              0.7110130239743739
+            ],
+            "on_values": [
+              0.7091277079889551
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 42.34863004460993,
+            "on_median": 48.28226398640936,
+            "on_off_ratio": 1.140113952577662,
+            "change_pct": 14.011395257766202,
+            "off_values": [
+              42.34863004460993
+            ],
+            "on_values": [
+              48.28226398640936
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.7120494269765913,
+            "on_median": 0.7055234709987417,
+            "on_off_ratio": 0.9908349677275083,
+            "change_pct": -0.9165032272491658,
+            "off_values": [
+              0.7120494269765913
+            ],
+            "on_values": [
+              0.7055234709987417
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-repeat-text",
+      "role": "development_regression",
+      "assessment": "两个块decode均正且GM>=1.05，冻结收益门通过。TTFT单列审查：完整head两块均有利。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 42.35432015550425,
+            "on_median": 48.753017646308166,
+            "on_off_ratio": 1.1510754385222344,
+            "change_pct": 15.107543852223436,
+            "off_values": [
+              42.35432015550425
+            ],
+            "on_values": [
+              48.753017646308166
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.6304986289469525,
+            "on_median": 0.6233117170631886,
+            "on_off_ratio": 0.9886012251989074,
+            "change_pct": -1.1398774801092637,
+            "off_values": [
+              0.6304986289469525
+            ],
+            "on_values": [
+              0.6233117170631886
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 42.39209083409945,
+            "on_median": 48.44108214536308,
+            "on_off_ratio": 1.142691506652414,
+            "change_pct": 14.269150665241392,
+            "off_values": [
+              42.39209083409945
+            ],
+            "on_values": [
+              48.44108214536308
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.6334285800112411,
+            "on_median": 0.6254891820717603,
+            "on_off_ratio": 0.9874659934994724,
+            "change_pct": -1.2534006500527606,
+            "off_values": [
+              0.6334285800112411
+            ],
+            "on_values": [
+              0.6254891820717603
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "repeat-code",
+      "role": "held_out_acceptance",
+      "assessment": "两个块decode均正且GM>=1.05，冻结收益门通过。TTFT单列审查：完整head两块均有利。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 41.763821468949104,
+            "on_median": 47.74398766992366,
+            "on_off_ratio": 1.1431901102589652,
+            "change_pct": 14.319011025896522,
+            "off_values": [
+              41.763821468949104
+            ],
+            "on_values": [
+              47.74398766992366
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.8596144820330665,
+            "on_median": 0.8482988598989323,
+            "on_off_ratio": 0.986836398908297,
+            "change_pct": -1.3163601091703003,
+            "off_values": [
+              0.8596144820330665
+            ],
+            "on_values": [
+              0.8482988598989323
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 41.76461686718088,
+            "on_median": 47.50190210020073,
+            "on_off_ratio": 1.1373719110429164,
+            "change_pct": 13.737191104291636,
+            "off_values": [
+              41.76461686718088
+            ],
+            "on_values": [
+              47.50190210020073
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.8477518749423325,
+            "on_median": 0.8393607100006193,
+            "on_off_ratio": 0.9901018621253017,
+            "change_pct": -0.9898137874698287,
+            "off_values": [
+              0.8477518749423325
+            ],
+            "on_values": [
+              0.8393607100006193
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "repeat-text",
+      "role": "held_out_acceptance",
+      "assessment": "两个块decode均正且GM>=1.05，冻结收益门通过。TTFT单列审查：完整head两块均有利。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 42.403651708758694,
+            "on_median": 48.650973367001576,
+            "on_off_ratio": 1.1473298031299617,
+            "change_pct": 14.732980312996169,
+            "off_values": [
+              42.403651708758694
+            ],
+            "on_values": [
+              48.650973367001576
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.6809998110402375,
+            "on_median": 0.6633452089736238,
+            "on_off_ratio": 0.9740754670112961,
+            "change_pct": -2.5924532988703897,
+            "off_values": [
+              0.6809998110402375
+            ],
+            "on_values": [
+              0.6633452089736238
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 42.31288823322657,
+            "on_median": 48.43989991456257,
+            "on_off_ratio": 1.144802492506874,
+            "change_pct": 14.480249250687404,
+            "off_values": [
+              42.31288823322657
+            ],
+            "on_values": [
+              48.43989991456257
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.6664851290406659,
+            "on_median": 0.6619259379804134,
+            "on_off_ratio": 0.9931593506567582,
+            "change_pct": -0.68406493432418,
+            "off_values": [
+              0.6664851290406659
+            ],
+            "on_values": [
+              0.6619259379804134
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-1024",
+      "role": "held_out_acceptance",
+      "assessment": "两块decode负、TTFT正，原值范围重叠；重复不利方向保留，不能因幅度小直接判为噪声。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 38.649649617780796,
+            "on_median": 38.6028430212061,
+            "on_off_ratio": 0.9987889515936733,
+            "change_pct": -0.12110484063266869,
+            "off_values": [
+              38.56049887529568,
+              38.67976935842359,
+              38.649649617780796
+            ],
+            "on_values": [
+              38.597115440011024,
+              38.6079608126848,
+              38.6028430212061
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 0.8863202889915556,
+            "on_median": 0.8872651539277285,
+            "on_off_ratio": 1.0010660536015124,
+            "change_pct": 0.10660536015123512,
+            "off_values": [
+              1.0455893609905615,
+              0.8846939859213307,
+              0.8863202889915556
+            ],
+            "on_values": [
+              1.0613314940128475,
+              0.8860486770281568,
+              0.8872651539277285
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 38.639209484269145,
+            "on_median": 38.56271050107187,
+            "on_off_ratio": 0.9980201721459022,
+            "change_pct": -0.1979827854097782,
+            "off_values": [
+              38.69279767405247,
+              38.639209484269145,
+              38.549270408711614
+            ],
+            "on_values": [
+              38.538313990697176,
+              38.56271050107187,
+              38.574364393067476
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 0.8902383230160922,
+            "on_median": 0.8907767040655017,
+            "on_off_ratio": 1.0006047605854413,
+            "change_pct": 0.0604760585441344,
+            "off_values": [
+              1.0481124019715935,
+              0.8902383230160922,
+              0.8881149729713798
+            ],
+            "on_values": [
+              1.0532432929612696,
+              0.8879550060955808,
+              0.8907767040655017
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-204800",
+      "role": "held_out_acceptance",
+      "assessment": "TTFT在反转顺序的两块均变慢，且各块全部ON值大于全部OFF值；主要保护项未闭合。decode小幅两负但范围重叠，单独不确认因果。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 34.23722367894717,
+            "on_median": 34.22300464116581,
+            "on_off_ratio": 0.9995846906888627,
+            "change_pct": -0.041530931113731295,
+            "off_values": [
+              34.27249331498068,
+              34.22793499563881,
+              34.23722367894717
+            ],
+            "on_values": [
+              34.242193859199574,
+              34.22300464116581,
+              34.205034912160926
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 167.0803629490547,
+            "on_median": 167.3458175159758,
+            "on_off_ratio": 1.0015887837579216,
+            "change_pct": 0.1588783757921597,
+            "off_values": [
+              167.0803629490547,
+              167.1012658920372,
+              166.94483764609322
+            ],
+            "on_values": [
+              167.29604055301752,
+              167.34626176406164,
+              167.3458175159758
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 34.21923608480982,
+            "on_median": 34.211111936363885,
+            "on_off_ratio": 0.9997625853357509,
+            "change_pct": -0.023741466424909152,
+            "off_values": [
+              34.21923608480982,
+              34.232284425918294,
+              34.211430632893396
+            ],
+            "on_values": [
+              34.2229678509717,
+              34.211111936363885,
+              34.189082158230356
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 167.06277798407245,
+            "on_median": 167.2154436839046,
+            "on_off_ratio": 1.000913822346751,
+            "change_pct": 0.09138223467510809,
+            "off_values": [
+              166.99448393995408,
+              167.06506241403986,
+              167.06277798407245
+            ],
+            "on_values": [
+              167.2154436839046,
+              167.27107544103637,
+              167.18588701600675
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-4096",
+      "role": "held_out_acceptance",
+      "assessment": "decode及TTFT方向混合；B2全部ON decode低于OFF。缺少双块同向证据，不单独证明总体回退。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 41.2341305413456,
+            "on_median": 41.24575615107798,
+            "on_off_ratio": 1.0002819414300665,
+            "change_pct": 0.02819414300665457,
+            "off_values": [
+              41.23331846343891,
+              41.2341305413456,
+              41.265225358828374
+            ],
+            "on_values": [
+              41.20310022026635,
+              41.25740647494517,
+              41.24575615107798
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 2.83212303603068,
+            "on_median": 2.831532038981095,
+            "on_off_ratio": 0.9997913236670631,
+            "change_pct": -0.02086763329368635,
+            "off_values": [
+              2.877913416014053,
+              2.83212303603068,
+              2.8310605329461396
+            ],
+            "on_values": [
+              2.880988478893414,
+              2.825494853896089,
+              2.831532038981095
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 41.2574229827693,
+            "on_median": 41.18545288797724,
+            "on_off_ratio": 0.9982555843387961,
+            "change_pct": -0.17444156612038686,
+            "off_values": [
+              41.2574229827693,
+              41.256416827709366,
+              41.41499119606754
+            ],
+            "on_values": [
+              41.18349694150931,
+              41.18545288797724,
+              41.203243300428866
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 2.8268570109503344,
+            "on_median": 2.8283255690475926,
+            "on_off_ratio": 1.0005195020800732,
+            "change_pct": 0.051950208007323084,
+            "off_values": [
+              2.8814848919864744,
+              2.8268570109503344,
+              2.825642788084224
+            ],
+            "on_values": [
+              2.8760559540241957,
+              2.8283255690475926,
+              2.8279669950716197
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-45056",
+      "role": "held_out_acceptance",
+      "assessment": "TTFT在反转顺序的两块均变慢，且各块全部ON值大于全部OFF值；主要保护项未闭合。decode方向混合，不混用。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 39.416071124534284,
+            "on_median": 39.42929946571709,
+            "on_off_ratio": 1.0003356078068006,
+            "change_pct": 0.033560780680064184,
+            "off_values": [
+              39.416071124534284,
+              39.45603910965593,
+              39.37638403138488
+            ],
+            "on_values": [
+              39.430540173876786,
+              39.42929946571709,
+              39.42731428896665
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 31.81105698493775,
+            "on_median": 31.83685791201424,
+            "on_off_ratio": 1.0008110678965714,
+            "change_pct": 0.08110678965713713,
+            "off_values": [
+              31.814208977040835,
+              31.81105698493775,
+              31.767395582981408
+            ],
+            "on_values": [
+              31.902180182980374,
+              31.83685791201424,
+              31.827150275930762
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 39.463084181380765,
+            "on_median": 39.33924716880324,
+            "on_off_ratio": 0.9968619530088337,
+            "change_pct": -0.31380469911662656,
+            "off_values": [
+              39.459790582871854,
+              39.509994574817334,
+              39.463084181380765
+            ],
+            "on_values": [
+              39.33924716880324,
+              39.330951335140085,
+              39.42577269936308
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 31.797279092948884,
+            "on_median": 31.855811171000823,
+            "on_off_ratio": 1.0018407888889123,
+            "change_pct": 0.18407888889122592,
+            "off_values": [
+              31.791365068987943,
+              31.802633163984865,
+              31.797279092948884
+            ],
+            "on_values": [
+              31.855811171000823,
+              31.82663624093402,
+              31.861729746917263
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-8192",
+      "role": "held_out_acceptance",
+      "assessment": "两块decode均下降，B2全部ON值低于全部OFF值。作为未获排除的重复保护退化证据；两启动块仍非总体统计证明。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 38.6615591342276,
+            "on_median": 38.620776928668114,
+            "on_off_ratio": 0.9989451484504829,
+            "change_pct": -0.10548515495171218,
+            "off_values": [
+              38.64524489931835,
+              38.67515989659743,
+              38.6615591342276
+            ],
+            "on_values": [
+              38.662846655816956,
+              38.620776928668114,
+              38.62061926196649
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 5.4484451489988714,
+            "on_median": 5.446615227032453,
+            "on_off_ratio": 0.9996641386824359,
+            "change_pct": -0.03358613175641345,
+            "off_values": [
+              5.456636175047606,
+              5.441451344056986,
+              5.4484451489988714
+            ],
+            "on_values": [
+              5.467822030070238,
+              5.446615227032453,
+              5.437314865994267
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 38.74682769003844,
+            "on_median": 38.57386670697264,
+            "on_off_ratio": 0.9955361253197441,
+            "change_pct": -0.4463874680255886,
+            "off_values": [
+              38.767470959051906,
+              38.710192631192385,
+              38.74682769003844
+            ],
+            "on_values": [
+              38.59739618498305,
+              38.57337051114131,
+              38.57386670697264
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 5.427402311004698,
+            "on_median": 5.437093232059851,
+            "on_off_ratio": 1.0017855542117273,
+            "change_pct": 0.1785554211727325,
+            "off_values": [
+              5.444539244053885,
+              5.427402311004698,
+              5.418433351092972
+            ],
+            "on_values": [
+              5.457448436995037,
+              5.437093232059851,
+              5.432744936901145
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "nonrepeat",
+      "role": "held_out_acceptance",
+      "assessment": "decode方向混合，TTFT两块偏高；每块单请求，保留弱不利证据，不用其他场景补偿。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 28.490240639800074,
+            "on_median": 28.47303270252818,
+            "on_off_ratio": 0.9993960058993726,
+            "change_pct": -0.06039941006273919,
+            "off_values": [
+              28.490240639800074
+            ],
+            "on_values": [
+              28.47303270252818
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 0.3819171659415588,
+            "on_median": 0.388736002962105,
+            "on_off_ratio": 1.0178542302588975,
+            "change_pct": 1.785423025889754,
+            "off_values": [
+              0.3819171659415588
+            ],
+            "on_values": [
+              0.388736002962105
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 28.493532571891627,
+            "on_median": 28.52510798916465,
+            "on_off_ratio": 1.0011081608499526,
+            "change_pct": 0.11081608499525775,
+            "off_values": [
+              28.493532571891627
+            ],
+            "on_values": [
+              28.52510798916465
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.388557827915065,
+            "on_median": 0.38993769499938935,
+            "on_off_ratio": 1.0035512528256822,
+            "change_pct": 0.35512528256822495,
+            "off_values": [
+              0.388557827915065
+            ],
+            "on_values": [
+              0.38993769499938935
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "numeric-enum",
+      "role": "held_out_acceptance",
+      "assessment": "decode两块有利，TTFT方向混合；数字门拦截后无suffix命中，无额外目标工作。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 46.199826713687855,
+            "on_median": 46.21671677381527,
+            "on_off_ratio": 1.0003655870882826,
+            "change_pct": 0.0365587088282604,
+            "off_values": [
+              46.199826713687855
+            ],
+            "on_values": [
+              46.21671677381527
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 5.42086997802835,
+            "on_median": 5.435938976006582,
+            "on_off_ratio": 1.0027798117348894,
+            "change_pct": 0.27798117348893925,
+            "off_values": [
+              5.42086997802835
+            ],
+            "on_values": [
+              5.435938976006582
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 46.23466774178488,
+            "on_median": 46.316308557093535,
+            "on_off_ratio": 1.001765792192227,
+            "change_pct": 0.17657921922269448,
+            "off_values": [
+              46.23466774178488
+            ],
+            "on_values": [
+              46.316308557093535
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 5.4346818709746,
+            "on_median": 5.418798682978377,
+            "on_off_ratio": 0.9970774392368664,
+            "change_pct": -0.2922560763133575,
+            "off_values": [
+              5.4346818709746
+            ],
+            "on_values": [
+              5.418798682978377
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-45k",
+      "role": "development_regression",
+      "assessment": "目标工作门通过；decode两个块方向反转，每块单请求。小幅负GM不自动认定回退，也不称吞吐严格相等；旧工作量原因已消除。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 41.72201873063282,
+            "on_median": 41.625279338279796,
+            "on_off_ratio": 0.9976813348132171,
+            "change_pct": -0.231866518678292,
+            "off_values": [
+              41.72201873063282
+            ],
+            "on_values": [
+              41.625279338279796
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 31.78843005397357,
+            "on_median": 31.854925337946042,
+            "on_off_ratio": 1.0020918077382106,
+            "change_pct": 0.20918077382106048,
+            "off_values": [
+              31.78843005397357
+            ],
+            "on_values": [
+              31.854925337946042
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 41.60794282773755,
+            "on_median": 41.61305291274498,
+            "on_off_ratio": 1.0001228151324035,
+            "change_pct": 0.012281513240353092,
+            "off_values": [
+              41.60794282773755
+            ],
+            "on_values": [
+              41.61305291274498
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 31.806885425001383,
+            "on_median": 31.801876347977668,
+            "on_off_ratio": 0.9998425159534867,
+            "change_pct": -0.015748404651327874,
+            "off_values": [
+              31.806885425001383
+            ],
+            "on_values": [
+              31.801876347977668
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-8k",
+      "role": "development_regression",
+      "assessment": "目标工作门通过；decode两个块方向反转，每块单请求。小幅负GM不自动认定回退，也不称吞吐严格相等；旧工作量原因已消除。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 42.43079307128858,
+            "on_median": 42.34374928597117,
+            "on_off_ratio": 0.9979485703891707,
+            "change_pct": -0.20514296108292696,
+            "off_values": [
+              42.43079307128858
+            ],
+            "on_values": [
+              42.34374928597117
+            ],
+            "observed_adverse_direction": true
+          },
+          "ttft": {
+            "off_median": 5.426797432010062,
+            "on_median": 5.433003967045806,
+            "on_off_ratio": 1.001143682828317,
+            "change_pct": 0.11436828283168943,
+            "off_values": [
+              5.426797432010062
+            ],
+            "on_values": [
+              5.433003967045806
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 42.3553210707981,
+            "on_median": 42.434188089333915,
+            "on_off_ratio": 1.00186203330637,
+            "change_pct": 0.18620333063699146,
+            "off_values": [
+              42.3553210707981
+            ],
+            "on_values": [
+              42.434188089333915
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 5.435165120055899,
+            "on_median": 5.420564512023702,
+            "on_off_ratio": 0.9973136771910903,
+            "change_pct": -0.268632280890968,
+            "off_values": [
+              5.435165120055899
+            ],
+            "on_values": [
+              5.420564512023702
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-repeat-code",
+      "role": "development_regression",
+      "assessment": "两个块decode均正且GM>=1.05，冻结收益门通过。TTFT单列审查：方向混合，不据此声称总体相等。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 45.72930290397365,
+            "on_median": 49.485164460011305,
+            "on_off_ratio": 1.0821324909309145,
+            "change_pct": 8.213249093091445,
+            "off_values": [
+              45.72930290397365
+            ],
+            "on_values": [
+              49.485164460011305
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.6921424590982497,
+            "on_median": 0.6991296879714355,
+            "on_off_ratio": 1.010095073321017,
+            "change_pct": 1.0095073321017,
+            "off_values": [
+              0.6921424590982497
+            ],
+            "on_values": [
+              0.6991296879714355
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 45.7337966931062,
+            "on_median": 49.54098767337596,
+            "on_off_ratio": 1.0832467727492139,
+            "change_pct": 8.324677274921388,
+            "off_values": [
+              45.7337966931062
+            ],
+            "on_values": [
+              49.54098767337596
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.6917774259345606,
+            "on_median": 0.6902188450330868,
+            "on_off_ratio": 0.9977469908050726,
+            "change_pct": -0.22530091949274356,
+            "off_values": [
+              0.6917774259345606
+            ],
+            "on_values": [
+              0.6902188450330868
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-repeat-text",
+      "role": "development_regression",
+      "assessment": "两个块decode均正且GM>=1.05，冻结收益门通过。TTFT单列审查：两块偏高；每块单请求，保留不利方向，不能用decode收益抵消。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 47.75443882862928,
+            "on_median": 50.9674907632591,
+            "on_off_ratio": 1.0672827911591658,
+            "change_pct": 6.72827911591658,
+            "off_values": [
+              47.75443882862928
+            ],
+            "on_values": [
+              50.9674907632591
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.6008999210316688,
+            "on_median": 0.6101287570782006,
+            "on_off_ratio": 1.0153583578954164,
+            "change_pct": 1.5358357895416397,
+            "off_values": [
+              0.6008999210316688
+            ],
+            "on_values": [
+              0.6101287570782006
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 47.81769159698359,
+            "on_median": 51.07245200344003,
+            "on_off_ratio": 1.0680660294915145,
+            "change_pct": 6.806602949151452,
+            "off_values": [
+              47.81769159698359
+            ],
+            "on_values": [
+              51.07245200344003
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.6069619200425223,
+            "on_median": 0.613603881909512,
+            "on_off_ratio": 1.0109429630552842,
+            "change_pct": 1.0942963055284194,
+            "off_values": [
+              0.6069619200425223
+            ],
+            "on_values": [
+              0.613603881909512
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "repeat-code",
+      "role": "held_out_acceptance",
+      "assessment": "两个块decode均正且GM>=1.05，冻结收益门通过。TTFT单列审查：方向混合，不据此声称总体相等。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 47.218233714699366,
+            "on_median": 50.42325583459151,
+            "on_off_ratio": 1.067876789700721,
+            "change_pct": 6.7876789700721085,
+            "off_values": [
+              47.218233714699366
+            ],
+            "on_values": [
+              50.42325583459151
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.8150102630024776,
+            "on_median": 0.8179950009798631,
+            "on_off_ratio": 1.0036622090700917,
+            "change_pct": 0.36622090700917376,
+            "off_values": [
+              0.8150102630024776
+            ],
+            "on_values": [
+              0.8179950009798631
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 47.13073438810108,
+            "on_median": 50.48105915476009,
+            "on_off_ratio": 1.0710857747106282,
+            "change_pct": 7.108577471062816,
+            "off_values": [
+              47.13073438810108
+            ],
+            "on_values": [
+              50.48105915476009
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.8201496249530464,
+            "on_median": 0.8154661160660908,
+            "on_off_ratio": 0.9942894457981081,
+            "change_pct": -0.5710554201891926,
+            "off_values": [
+              0.8201496249530464
+            ],
+            "on_values": [
+              0.8154661160660908
+            ],
+            "observed_adverse_direction": false
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "repeat-text",
+      "role": "held_out_acceptance",
+      "assessment": "两个块decode均正且GM>=1.05，冻结收益门通过。TTFT单列审查：两块偏高；每块单请求，保留不利方向，不能用decode收益抵消。",
+      "blocks": [
+        {
+          "block": 1,
+          "decode": {
+            "off_median": 45.87946090330555,
+            "on_median": 48.68691731469819,
+            "on_off_ratio": 1.061192009585936,
+            "change_pct": 6.119200958593596,
+            "off_values": [
+              45.87946090330555
+            ],
+            "on_values": [
+              48.68691731469819
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.6433605831116438,
+            "on_median": 0.6445783940143883,
+            "on_off_ratio": 1.0018928901376807,
+            "change_pct": 0.18928901376806806,
+            "off_values": [
+              0.6433605831116438
+            ],
+            "on_values": [
+              0.6445783940143883
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        },
+        {
+          "block": 2,
+          "decode": {
+            "off_median": 45.82850908658575,
+            "on_median": 48.9350893807164,
+            "on_off_ratio": 1.0677870687056665,
+            "change_pct": 6.778706870566653,
+            "off_values": [
+              45.82850908658575
+            ],
+            "on_values": [
+              48.9350893807164
+            ],
+            "observed_adverse_direction": false
+          },
+          "ttft": {
+            "off_median": 0.6443437309935689,
+            "on_median": 0.6494112550280988,
+            "on_off_ratio": 1.0078646284440695,
+            "change_pct": 0.7864628444069544,
+            "off_values": [
+              0.6443437309935689
+            ],
+            "on_values": [
+              0.6494112550280988
+            ],
+            "observed_adverse_direction": true
+          },
+          "input_equal": true,
+          "output_equal": true
+        }
+      ]
+    }
+  ],
+  "plain": [
+    {
+      "case": "context-1024",
+      "decode": {
+        "off_median": 18.596144507041082,
+        "on_median": 18.53546905298837,
+        "on_off_ratio": 0.9967372024867983,
+        "change_pct": -0.32627975132016873
+      },
+      "ttft": {
+        "off_median": 0.7652523769065738,
+        "on_median": 0.7620331490179524,
+        "on_off_ratio": 0.9957932467957373,
+        "change_pct": -0.420675320426267
+      },
+      "raw_before": [
+        {
+          "request_index": 1,
+          "decode_tps": 18.535300585589066,
+          "ttft": 0.867871679016389,
+          "first_request_of_service": true
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 18.596144507041082,
+          "ttft": 0.7652523769065738,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 18.6340930379919,
+          "ttft": 0.7634816210484132,
+          "first_request_of_service": false
+        }
+      ],
+      "raw_after": [
+        {
+          "request_index": 1,
+          "decode_tps": 18.54948403699266,
+          "ttft": 0.8713125929934904,
+          "first_request_of_service": true
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 18.53546905298837,
+          "ttft": 0.7616839300608262,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 18.534023281538307,
+          "ttft": 0.7620331490179524,
+          "first_request_of_service": false
+        }
+      ],
+      "input_equal": true,
+      "output_equal": true,
+      "assessment": "单个父→候选启动对，decode五档均负；8K/200K的全部ON值低于全部OFF值。启动漂移与程序效应未分离，不能把三请求当三个独立启动。辅助保护疑点，不作单独因果证明。"
+    },
+    {
+      "case": "context-4096",
+      "decode": {
+        "off_median": 17.853027595443034,
+        "on_median": 17.842529760335488,
+        "on_off_ratio": 0.99941198572335,
+        "change_pct": -0.05880142766500063
+      },
+      "ttft": {
+        "off_median": 2.612263167044148,
+        "on_median": 2.606654347036965,
+        "on_off_ratio": 0.9978528886071119,
+        "change_pct": -0.21471113928881458
+      },
+      "raw_before": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.842927202189575,
+          "ttft": 2.6173901159781963,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.853027595443034,
+          "ttft": 2.607885616016574,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 17.857713867567895,
+          "ttft": 2.612263167044148,
+          "first_request_of_service": false
+        }
+      ],
+      "raw_after": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.856594598362516,
+          "ttft": 2.6180368369678035,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.842529760335488,
+          "ttft": 2.606654347036965,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 17.836879013377516,
+          "ttft": 2.6035611160332337,
+          "first_request_of_service": false
+        }
+      ],
+      "input_equal": true,
+      "output_equal": true,
+      "assessment": "单个父→候选启动对，decode五档均负；8K/200K的全部ON值低于全部OFF值。启动漂移与程序效应未分离，不能把三请求当三个独立启动。辅助保护疑点，不作单独因果证明。"
+    },
+    {
+      "case": "context-8192",
+      "decode": {
+        "off_median": 18.108123298792222,
+        "on_median": 17.999761978348022,
+        "on_off_ratio": 0.9940158723984707,
+        "change_pct": -0.5984127601529332
+      },
+      "ttft": {
+        "off_median": 5.096346607082523,
+        "on_median": 5.092783617903478,
+        "on_off_ratio": 0.9993008738506731,
+        "change_pct": -0.06991261493268786
+      },
+      "raw_before": [
+        {
+          "request_index": 1,
+          "decode_tps": 18.09820217275846,
+          "ttft": 5.086883042007685,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 18.108123298792222,
+          "ttft": 5.101746306987479,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 18.116637527211022,
+          "ttft": 5.096346607082523,
+          "first_request_of_service": false
+        }
+      ],
+      "raw_after": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.998842766248007,
+          "ttft": 5.09893491701223,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.999761978348022,
+          "ttft": 5.091748011065647,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 18.028463605890277,
+          "ttft": 5.092783617903478,
+          "first_request_of_service": false
+        }
+      ],
+      "input_equal": true,
+      "output_equal": true,
+      "assessment": "单个父→候选启动对，decode五档均负；8K/200K的全部ON值低于全部OFF值。启动漂移与程序效应未分离，不能把三请求当三个独立启动。辅助保护疑点，不作单独因果证明。"
+    },
+    {
+      "case": "context-45056",
+      "decode": {
+        "off_median": 17.853594645238424,
+        "on_median": 17.840652532104105,
+        "on_off_ratio": 0.9992750976264732,
+        "change_pct": -0.07249023735268478
+      },
+      "ttft": {
+        "off_median": 30.416615760070272,
+        "on_median": 30.42149871599395,
+        "on_off_ratio": 1.0001605358058963,
+        "change_pct": 0.016053580589625582
+      },
+      "raw_before": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.853594645238424,
+          "ttft": 30.402693217038177,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.83594683406092,
+          "ttft": 30.4417082821019,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 17.854247362202624,
+          "ttft": 30.416615760070272,
+          "first_request_of_service": false
+        }
+      ],
+      "raw_after": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.83099186577984,
+          "ttft": 30.42149871599395,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.84651962643369,
+          "ttft": 30.41209856106434,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 17.840652532104105,
+          "ttft": 30.421987665002234,
+          "first_request_of_service": false
+        }
+      ],
+      "input_equal": true,
+      "output_equal": true,
+      "assessment": "单个父→候选启动对，decode五档均负；8K/200K的全部ON值低于全部OFF值。启动漂移与程序效应未分离，不能把三请求当三个独立启动。辅助保护疑点，不作单独因果证明。"
+    },
+    {
+      "case": "context-204800",
+      "decode": {
+        "off_median": 17.089363974315837,
+        "on_median": 17.010956062750285,
+        "on_off_ratio": 0.9954118882549757,
+        "change_pct": -0.45881117450242703
+      },
+      "ttft": {
+        "off_median": 159.3890996099217,
+        "on_median": 159.0991429060232,
+        "on_off_ratio": 0.9981808247577274,
+        "change_pct": -0.1819175242272597
+      },
+      "raw_before": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.068522874362667,
+          "ttft": 159.31479946803302,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.097486466533862,
+          "ttft": 159.45755769195966,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 17.089363974315837,
+          "ttft": 159.3890996099217,
+          "first_request_of_service": false
+        }
+      ],
+      "raw_after": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.04299351546487,
+          "ttft": 159.33170233294368,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.010956062750285,
+          "ttft": 159.0991429060232,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 16.930531519007005,
+          "ttft": 158.46299563604407,
+          "first_request_of_service": false
+        }
+      ],
+      "input_equal": true,
+      "output_equal": true,
+      "assessment": "单个父→候选启动对，decode五档均负；8K/200K的全部ON值低于全部OFF值。启动漂移与程序效应未分离，不能把三请求当三个独立启动。辅助保护疑点，不作单独因果证明。"
+    }
+  ],
+  "other_protections": {
+    "quality": "PASS 22/22 current suffix ON; inherited unchanged numerical contracts retain their original scope.",
+    "output": "PASS all within-mode paired full outputs equal; no arbitrary-input equivalence claim.",
+    "lifecycle": "PASS actual suffix use before cancellation, release and recovery in both heads.",
+    "resources": "PASS logical bounds and lifecycle; physical monitoring reports unified RAM without adding overlapping RSS/NVML/cache.",
+    "ordinary_mode": "Measurements complete; single paired start insufficient to attribute observed decrease; no deployment approval from it."
+  },
+  "statistics": "DESCRIPTIVE_ONLY; two paired starts, correlated within-start requests; no population noninferiority, causal attribution or future-zero-loss claim.",
+  "no_more_sampling": true
+}

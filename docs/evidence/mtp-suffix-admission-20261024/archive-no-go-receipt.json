@@ -1,0 +1,42 @@
+{
+  "archive_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/archive-no-go",
+  "archive_files": 3582,
+  "archive_seal_sha256": "7cef262f473d1b991efdec7cdb794683855281f77a2c133e4adfa1c4ac15f461",
+  "archive_seal_verified": true,
+  "copied_payload_bytes": 341555928,
+  "candidate_sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+  "frozen_plan_sha256": "fd8b0e8eb1d945136cb0de3acd1f12563ebbe0e19b26eba2afa3a7dd77c58619",
+  "original_frozen_plan_sha256": "23f07598d3892712f4f05f39f85a4a821b63f75085b0f0484d4019050f19e77a",
+  "attempts": [
+    {
+      "stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/acceptance-v1",
+      "plan_sha256": "23f07598d3892712f4f05f39f85a4a821b63f75085b0f0484d4019050f19e77a",
+      "raw_seal_sha256": "c56b48adafb8957fb7611783e3f4f7c5ff3b9d04cbaefe4bd3e5030bd9023650",
+      "raw_files": 54,
+      "source_snapshot_files": 419
+    },
+    {
+      "stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/acceptance-v2",
+      "plan_sha256": "fd8b0e8eb1d945136cb0de3acd1f12563ebbe0e19b26eba2afa3a7dd77c58619",
+      "raw_seal_sha256": "6cea30d12983739f12dbcae87dbe04e8bb3d6617e65e1c3c45453678ce7ef3a1",
+      "raw_files": 2458,
+      "source_snapshot_files": 422
+    }
+  ],
+  "decision_sha256": "85a675b61b60e65bb29ce20c237fdd1ddd0b734387d675c6575eb4594ede1b32",
+  "decision_fields": {
+    "evidence_validity": "VALID",
+    "measurement_complete": true,
+    "statistical_conclusion": "DESCRIPTIVE_ONLY_INCONCLUSIVE_POPULATION_NONINFERIORITY; repeat gains and removed extra target work observed; repeated adverse protected timing remains unresolved, without a population causal-regression claim.",
+    "engineering_decision": "NO_GO_PROTECTION_NOT_CLEARED"
+  },
+  "default_identity": {
+    "binary_path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "release_path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "release_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96"
+  },
+  "deployment_performed": false,
+  "original_paths_retained": true,
+  "weight_payloads_copied": false
+}

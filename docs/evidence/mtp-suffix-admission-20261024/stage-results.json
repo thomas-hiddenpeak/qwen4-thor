@@ -1,0 +1,3854 @@
+{
+  "created_utc": "2026-10-23T21:05:46.956466+00:00",
+  "sources": {
+    "analysis.json": "4584ed7493f2fd9208047d76cf603cb4fab33ff31cfd6d5d0502045276a8cdf2",
+    "audit-evidence.json": "3a296afa13e68638f114154327aae47f7257f93cd69f325817f58a7495e83c2e",
+    "audit-costs.json": "bcffcf07929824b79c67d50fe4f5feb321f8747b0ec4953a70ab6ff9282df69f",
+    "audit-costs-findings.json": "9f6947eebf444681baaf6e5011178e0fc58ad6cace8edbc30a667b3ad44eb0a8",
+    "protection-review-runtime.json": "7e0098d13154031fecef60e7585aca180773b25c9d53fe5adbfa71f2ed3de9bc",
+    "protection-review-index.json": "a9647585a8979db62a20f51bc3156906d8f64166b753d228225d3ac79964bd14",
+    "report-tables.md": "fe82f33c03b38cfa0d688d4be1780bb139082e31b1b97f820cd878fd6c5fc938",
+    "owned-process-final-check.json": "ac6fca064b32ca4422011366b9b61894b7e3f5de8e36c752ad16f0c25fd64215"
+  },
+  "decision_sha256": "85a675b61b60e65bb29ce20c237fdd1ddd0b734387d675c6575eb4594ede1b32",
+  "protection_review_sha256": "4a256d0b7afac03aaca04b03890c7c614532d6c2c5d894110e9d8525970209c4",
+  "four_fields": {
+    "evidence_validity": "VALID",
+    "measurement_complete": true,
+    "statistical_conclusion": "DESCRIPTIVE_ONLY_INCONCLUSIVE_POPULATION_NONINFERIORITY; repeat gains and removed extra target work observed; repeated adverse protected timing remains unresolved, without a population causal-regression claim.",
+    "engineering_decision": "NO_GO_PROTECTION_NOT_CLEARED"
+  },
+  "candidate_source_commit": "cb0fa73c3271e6fbce2cd9d282838de9643d2a3b",
+  "source_commit": "e9e762343e7dacf76b46812b1d88ada16531762c",
+  "candidate_sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+  "parent_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "plan_sha256": "fd8b0e8eb1d945136cb0de3acd1f12563ebbe0e19b26eba2afa3a7dd77c58619",
+  "budget": {
+    "frozen": {
+      "http_requests": 250,
+      "http_loads": 18,
+      "stage_timeout_seconds": 14400,
+      "direct_contract_timeout_seconds": 1200,
+      "deployment_separate_max_requests": 3,
+      "deployment_separate_max_loads": 3,
+      "total_authorized_max_http": 253,
+      "retries": 0,
+      "warmups": 0
+    },
+    "admission": {
+      "min_admitted_match": 32,
+      "lookup_min_match": 3,
+      "max_match": 64,
+      "candidates": 4,
+      "order": "complete-three, d0, numeric, minimum-match",
+      "alternative_candidate_search": false,
+      "dynamic_policy": false
+    },
+    "observed": {
+      "http_requests_in_artifacts": 250,
+      "http_requests_completed": 250,
+      "http_loads_started": 18,
+      "stage_elapsed_seconds": 10941.64255952835,
+      "direct_contract_seconds": 62.660102619905956
+    },
+    "within_frozen_bounds": {
+      "http_requests_in_artifacts": true,
+      "http_requests_completed": true,
+      "http_loads_started": true,
+      "stage_elapsed_seconds": true,
+      "direct_contract_seconds": true
+    },
+    "all_within_frozen_bounds": true,
+    "successful_contract_measured_seconds": 2.660102619905956,
+    "contract_budget_scope": "Original successful host actual + conservative full 60s failed-suite allowance + current successful contracts; 60s is not a measured duration.",
+    "deployment": "Three requests/starts are separate and conditional on acceptance; never assumed executed.",
+    "scope": "Inference HTTP only; readiness/health/cancel control calls remain separate. No HTTP retries, extra warmups or added sampling. A continuation may record exactly one authorized CPU fixture-contract retest, separately from the frozen zero-inference-retry policy."
+  },
+  "goals": {
+    "full": {
+      "repeat_scenarios": {
+        "repeat-code": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.1431901102589652,
+            1.1373719110429164
+          ],
+          "geometric_mean_ratio": 1.1402772997786992,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "repeat-text": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.1473298031299617,
+            1.144802492506874
+          ],
+          "geometric_mean_ratio": 1.146065451163502,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-code": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.1498560647775709,
+            1.140113952577662
+          ],
+          "geometric_mean_ratio": 1.144974647277813,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-text": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.1510754385222344,
+            1.142691506652414
+          ],
+          "geometric_mean_ratio": 1.1468758115487308,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        }
+      },
+      "development_probes": {
+        "old-8k": {
+          "role": "development_regression",
+          "paired_decode_ratios": [
+            1.0020346384747831,
+            0.9979200476282475
+          ],
+          "geometric_mean_decode_ratio": 0.9999752267690982,
+          "work": [
+            {
+              "block": 1,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            },
+            {
+              "block": 2,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            }
+          ],
+          "input_output_identity_equal": true,
+          "frozen_work_gate_met": true,
+          "throughput_protection": "REQUIRES_REVIEW; no automatic per-block ratio>=1 gate. Equal target calls/rows do not prove equal throughput or population noninferiority."
+        },
+        "old-45k": {
+          "role": "development_regression",
+          "paired_decode_ratios": [
+            1.0004260051635174,
+            0.9965649281563719
+          ],
+          "geometric_mean_decode_ratio": 0.998493600360837,
+          "work": [
+            {
+              "block": 1,
+              "off": {
+                "verify_calls": 66,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 66,
+                "target_processed_rows": 264,
+                "target_restore_calls": 8,
+                "neural_proposal_T1": 132,
+                "draft_extend_calls": 66,
+                "total_mtp_forward_calls": 198,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 66,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 66,
+                "target_processed_rows": 264,
+                "target_restore_calls": 8,
+                "neural_proposal_T1": 132,
+                "draft_extend_calls": 66,
+                "total_mtp_forward_calls": 198,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            },
+            {
+              "block": 2,
+              "off": {
+                "verify_calls": 66,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 66,
+                "target_processed_rows": 264,
+                "target_restore_calls": 8,
+                "neural_proposal_T1": 132,
+                "draft_extend_calls": 66,
+                "total_mtp_forward_calls": 198,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 66,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 66,
+                "target_processed_rows": 264,
+                "target_restore_calls": 8,
+                "neural_proposal_T1": 132,
+                "draft_extend_calls": 66,
+                "total_mtp_forward_calls": 198,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            }
+          ],
+          "input_output_identity_equal": true,
+          "frozen_work_gate_met": true,
+          "throughput_protection": "REQUIRES_REVIEW; no automatic per-block ratio>=1 gate. Equal target calls/rows do not prove equal throughput or population noninferiority."
+        }
+      },
+      "development_replay": "See frozen development replay contract; old observed prefixes and inferred boundaries do not predict new runtime paths or elapsed performance."
+    },
+    "subset": {
+      "repeat_scenarios": {
+        "repeat-code": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.067876789700721,
+            1.0710857747106282
+          ],
+          "geometric_mean_ratio": 1.0694800786326482,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "repeat-text": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.061192009585936,
+            1.0677870687056665
+          ],
+          "geometric_mean_ratio": 1.0644844316614697,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-code": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.0821324909309145,
+            1.0832467727492139
+          ],
+          "geometric_mean_ratio": 1.0826894884905742,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-text": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.0672827911591658,
+            1.0680660294915145
+          ],
+          "geometric_mean_ratio": 1.067674338503081,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        }
+      },
+      "development_probes": {
+        "old-8k": {
+          "role": "development_regression",
+          "paired_decode_ratios": [
+            0.9979485703891707,
+            1.00186203330637
+          ],
+          "geometric_mean_decode_ratio": 0.9999033872656296,
+          "work": [
+            {
+              "block": 1,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            },
+            {
+              "block": 2,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            }
+          ],
+          "input_output_identity_equal": true,
+          "frozen_work_gate_met": true,
+          "throughput_protection": "REQUIRES_REVIEW; no automatic per-block ratio>=1 gate. Equal target calls/rows do not prove equal throughput or population noninferiority."
+        },
+        "old-45k": {
+          "role": "development_regression",
+          "paired_decode_ratios": [
+            0.9976813348132171,
+            1.0001228151324035
+          ],
+          "geometric_mean_decode_ratio": 0.9989013290502965,
+          "work": [
+            {
+              "block": 1,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 69,
+                "target_processed_rows": 276,
+                "target_restore_calls": 12,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 69,
+                "target_processed_rows": 276,
+                "target_restore_calls": 12,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            },
+            {
+              "block": 2,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 69,
+                "target_processed_rows": 276,
+                "target_restore_calls": 12,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 69,
+                "target_processed_rows": 276,
+                "target_restore_calls": 12,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            }
+          ],
+          "input_output_identity_equal": true,
+          "frozen_work_gate_met": true,
+          "throughput_protection": "REQUIRES_REVIEW; no automatic per-block ratio>=1 gate. Equal target calls/rows do not prove equal throughput or population noninferiority."
+        }
+      },
+      "development_replay": "See frozen development replay contract; old observed prefixes and inferred boundaries do not predict new runtime paths or elapsed performance."
+    }
+  },
+  "paired_aggregates": {
+    "full": {
+      "context-1024": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0031414802729548,
+              1.0004555567520772
+            ],
+            "geometric_mean_ratio": 1.0017976183579105,
+            "change_pct": 0.17976183579104799,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "ttft": {
+            "paired_ratios": [
+              0.9956476814434982,
+              0.9890304517621747
+            ],
+            "geometric_mean_ratio": 0.9923335508658492,
+            "change_pct": -0.7666449134150821,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.9960059568794182,
+              0.9990219184840089
+            ],
+            "geometric_mean_ratio": 0.997512797844307,
+            "change_pct": -0.24872021556929802,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.004010059471025,
+              1.0009790390960345
+            ],
+            "geometric_mean_ratio": 1.0024934037548872,
+            "change_pct": 0.2493403754887158,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "context-204800": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0023300501431271,
+              0.9980019279237978
+            ],
+            "geometric_mean_ratio": 1.0001636478390914,
+            "change_pct": 0.016364783909139646,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0004497910056662,
+              0.9999836259732475
+            ],
+            "geometric_mean_ratio": 1.0002166813316122,
+            "change_pct": 0.021668133161223402,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              1.0004273067098992,
+              1.0000001541310555
+            ],
+            "geometric_mean_ratio": 1.000213707617935,
+            "change_pct": 0.021370761793493287,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.999572875803136,
+              0.9999998458689684
+            ],
+            "geometric_mean_ratio": 0.9997863380432529,
+            "change_pct": -0.02136619567471021,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "context-4096": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.001827811954441,
+              0.9997526650927671
+            ],
+            "geometric_mean_ratio": 1.0007897006691806,
+            "change_pct": 0.07897006691806041,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0016062533976855,
+              1.0015743050339518
+            ],
+            "geometric_mean_ratio": 1.001590279088434,
+            "change_pct": 0.1590279088433899,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "latency": {
+            "paired_ratios": [
+              0.9987587579607987,
+              1.0004990875659512
+            ],
+            "geometric_mean_ratio": 0.9996285440293718,
+            "change_pct": -0.037145597062815394,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.0012427846357368,
+              0.9995011613981925
+            ],
+            "geometric_mean_ratio": 1.0003715940014386,
+            "change_pct": 0.03715940014386021,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "context-45056": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0029126397144448,
+              0.9996363723676661
+            ],
+            "geometric_mean_ratio": 1.001273166007073,
+            "change_pct": 0.12731660070730566,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0014798295347314,
+              1.0010562894714834
+            ],
+            "geometric_mean_ratio": 1.001268037108232,
+            "change_pct": 0.12680371082320896,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "latency": {
+            "paired_ratios": [
+              1.000694950463446,
+              0.9998621890568617
+            ],
+            "geometric_mean_ratio": 1.0002784830978466,
+            "change_pct": 0.027848309784661573,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.9993055321573032,
+              1.000137829937612
+            ],
+            "geometric_mean_ratio": 0.9997215944333981,
+            "change_pct": -0.02784055666018581,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "context-8192": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              0.999216944513796,
+              0.9982754071966756
+            ],
+            "geometric_mean_ratio": 0.9987460649045521,
+            "change_pct": -0.12539350954479112,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.000860767340869,
+              1.0025848917305422
+            ],
+            "geometric_mean_ratio": 1.0017224585990834,
+            "change_pct": 0.17224585990833763,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "latency": {
+            "paired_ratios": [
+              1.0008170865123671,
+              1.0013325420354182
+            ],
+            "geometric_mean_ratio": 1.0010747810977507,
+            "change_pct": 0.1074781097750721,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.999183580572935,
+              0.9986692312698541
+            ],
+            "geometric_mean_ratio": 0.998926372816452,
+            "change_pct": -0.1073627183547976,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "nonrepeat": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0020028475086378,
+              0.9974015496029625
+            ],
+            "geometric_mean_ratio": 0.9996995512711288,
+            "change_pct": -0.030044872887124985,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              0.9930769982999318,
+              0.9845829060310978
+            ],
+            "geometric_mean_ratio": 0.9888208315457288,
+            "change_pct": -1.1179168454271249,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.9978081177217333,
+              1.0019138880193186
+            ],
+            "geometric_mean_ratio": 0.9998588954066567,
+            "change_pct": -0.014110459334326642,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.002196697179886,
+              0.9980897679509142
+            ],
+            "geometric_mean_ratio": 1.0001411245066594,
+            "change_pct": 0.01411245066593736,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "numeric-enum": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.000488562061199,
+              0.9973218080998545
+            ],
+            "geometric_mean_ratio": 0.9989039301645071,
+            "change_pct": -0.10960698354929299,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0003243600739717,
+              1.0008631772699579
+            ],
+            "geometric_mean_ratio": 1.0005937324030032,
+            "change_pct": 0.059373240300319985,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "latency": {
+            "paired_ratios": [
+              0.9998972207388943,
+              1.0018205981429589
+            ],
+            "geometric_mean_ratio": 1.0008584474150783,
+            "change_pct": 0.0858447415078345,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.000102789825768,
+              0.9981827104110919
+            ],
+            "geometric_mean_ratio": 0.9991422888848113,
+            "change_pct": -0.08577111151887307,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "old-45k": {
+        "role": "development_regression",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0004260051635174,
+              0.9965649281563719
+            ],
+            "geometric_mean_ratio": 0.998493600360837,
+            "change_pct": -0.1506399639162992,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              0.9987587667166763,
+              1.0003920943635907
+            ],
+            "geometric_mean_ratio": 0.9995750969285363,
+            "change_pct": -0.04249030714637003,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.9988984149302854,
+              1.0009156360451863
+            ],
+            "geometric_mean_ratio": 0.9999065167926825,
+            "change_pct": -0.009348320731750182,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.0011027998976167,
+              0.9990852015772237
+            ],
+            "geometric_mean_ratio": 1.0000934919472446,
+            "change_pct": 0.009349194724461718,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "old-8k": {
+        "role": "development_regression",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0020346384747831,
+              0.9979200476282475
+            ],
+            "geometric_mean_ratio": 0.9999752267690982,
+            "change_pct": -0.0024773230901775634,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              0.996981743048416,
+              0.9981326111483266
+            ],
+            "geometric_mean_ratio": 0.9975570111307551,
+            "change_pct": -0.24429888692448776,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.997521121243116,
+              1.000291151035607
+            ],
+            "geometric_mean_ratio": 0.9989051759554586,
+            "change_pct": -0.10948240445414203,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.0024850388669413,
+              0.9997089337086452
+            ],
+            "geometric_mean_ratio": 1.0010960239979678,
+            "change_pct": 0.1096023997967821,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "old-repeat-code": {
+        "role": "development_regression",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.1498560647775709,
+              1.140113952577662
+            ],
+            "geometric_mean_ratio": 1.144974647277813,
+            "change_pct": 14.497464727781306,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "ttft": {
+            "paired_ratios": [
+              0.9973484086481561,
+              0.9908349677275083
+            ],
+            "geometric_mean_ratio": 0.9940863535407664,
+            "change_pct": -0.5913646459233646,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.8831409102535205,
+              0.8891319202207187
+            ],
+            "geometric_mean_ratio": 0.8861313522041674,
+            "change_pct": -11.386864779583261,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.1323221338630245,
+              1.1246924975449755
+            ],
+            "geometric_mean_ratio": 1.1285008678595958,
+            "change_pct": 12.85008678595958,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "old-repeat-text": {
+        "role": "development_regression",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.1510754385222344,
+              1.142691506652414
+            ],
+            "geometric_mean_ratio": 1.1468758115487308,
+            "change_pct": 14.687581154873076,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "ttft": {
+            "paired_ratios": [
+              0.9886012251989074,
+              0.9874659934994724
+            ],
+            "geometric_mean_ratio": 0.9880334463042406,
+            "change_pct": -1.1966553695759385,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.8801138990685012,
+              0.8858294999082553
+            ],
+            "geometric_mean_ratio": 0.882967074739571,
+            "change_pct": -11.703292526042897,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.1362165749891966,
+              1.128885412038738
+            ],
+            "geometric_mean_ratio": 1.1325450615414483,
+            "change_pct": 13.25450615414483,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "repeat-code": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.1431901102589652,
+              1.1373719110429164
+            ],
+            "geometric_mean_ratio": 1.1402772997786992,
+            "change_pct": 14.027729977869917,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "ttft": {
+            "paired_ratios": [
+              0.986836398908297,
+              0.9901018621253017
+            ],
+            "geometric_mean_ratio": 0.988467782060767,
+            "change_pct": -1.153221793923298,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.8885786049473673,
+              0.8927385114631026
+            ],
+            "geometric_mean_ratio": 0.8906561295464558,
+            "change_pct": -10.934387045354422,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.1253928402420093,
+              1.120148830995436
+            ],
+            "geometric_mean_ratio": 1.1227677740333128,
+            "change_pct": 12.276777403331284,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "repeat-text": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.1473298031299617,
+              1.144802492506874
+            ],
+            "geometric_mean_ratio": 1.146065451163502,
+            "change_pct": 14.606545116350201,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "ttft": {
+            "paired_ratios": [
+              0.9740754670112961,
+              0.9931593506567582
+            ],
+            "geometric_mean_ratio": 0.9835711251900481,
+            "change_pct": -1.642887480995192,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.8820142285243913,
+              0.8854273943264397
+            ],
+            "geometric_mean_ratio": 0.8837191636041377,
+            "change_pct": -11.62808363958623,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.1337685579891368,
+              1.1293980809806747
+            ],
+            "geometric_mean_ratio": 1.1315812094892517,
+            "change_pct": 13.158120948925166,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      }
+    },
+    "subset": {
+      "context-1024": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              0.9987889515936733,
+              0.9980201721459022
+            ],
+            "geometric_mean_ratio": 0.9984044878739994,
+            "change_pct": -0.159551212600062,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0010660536015124,
+              1.0006047605854413
+            ],
+            "geometric_mean_ratio": 1.0008353805167731,
+            "change_pct": 0.0835380516773121,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "latency": {
+            "paired_ratios": [
+              1.0011951714953635,
+              0.9997812213537796
+            ],
+            "geometric_mean_ratio": 1.000487946639609,
+            "change_pct": 0.04879466396090493,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.9988062552343531,
+              1.0002188265207903
+            ],
+            "geometric_mean_ratio": 0.9995122913361945,
+            "change_pct": -0.04877086638055417,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "context-204800": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              0.9995846906888627,
+              0.9997625853357509
+            ],
+            "geometric_mean_ratio": 0.9996736340552022,
+            "change_pct": -0.03263659447978462,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0015887837579216,
+              1.000913822346751
+            ],
+            "geometric_mean_ratio": 1.0012512461768899,
+            "change_pct": 0.12512461768898753,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "latency": {
+            "paired_ratios": [
+              1.0015852447199598,
+              1.0008733339657587
+            ],
+            "geometric_mean_ratio": 1.0012292260685245,
+            "change_pct": 0.12292260685244916,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.9984172643034464,
+              0.9991274280809358
+            ],
+            "geometric_mean_ratio": 0.9987722830731268,
+            "change_pct": -0.12277169268731791,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "context-4096": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0002819414300665,
+              0.9982555843387961
+            ],
+            "geometric_mean_ratio": 0.9992682492433234,
+            "change_pct": -0.07317507566766412,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              0.9997913236670631,
+              1.0005195020800732
+            ],
+            "geometric_mean_ratio": 1.0001553466033901,
+            "change_pct": 0.01553466033901163,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.9997411264302309,
+              1.0013453341592997
+            ],
+            "geometric_mean_ratio": 1.0005429087840632,
+            "change_pct": 0.054290878406315635,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.0002589406026472,
+              0.9986564733330192
+            ],
+            "geometric_mean_ratio": 0.999457385805949,
+            "change_pct": -0.05426141940509943,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "context-45056": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0003356078068006,
+              0.9968619530088337
+            ],
+            "geometric_mean_ratio": 0.9985972700055644,
+            "change_pct": -0.1402729994435581,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0008110678965714,
+              1.0018407888889123
+            ],
+            "geometric_mean_ratio": 1.0013257960275745,
+            "change_pct": 0.1325796027574544,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "latency": {
+            "paired_ratios": [
+              1.0007886263984036,
+              1.0019051263706467
+            ],
+            "geometric_mean_ratio": 1.0013467207725795,
+            "change_pct": 0.13467207725794683,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.9992119950431074,
+              0.9980984962343212
+            ],
+            "geometric_mean_ratio": 0.9986550904450553,
+            "change_pct": -0.13449095549447065,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "context-8192": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              0.9989451484504829,
+              0.9955361253197441
+            ],
+            "geometric_mean_ratio": 0.9972391801846487,
+            "change_pct": -0.27608198153512564,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              0.9996641386824359,
+              1.0017855542117273
+            ],
+            "geometric_mean_ratio": 1.0007242843039101,
+            "change_pct": 0.07242843039101388,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              1.000426340637372,
+              1.0027513431659156
+            ],
+            "geometric_mean_ratio": 1.0015881672687066,
+            "change_pct": 0.15881672687065862,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.9995738410515059,
+              0.9972562059530842
+            ],
+            "geometric_mean_ratio": 0.9984143510071237,
+            "change_pct": -0.15856489928762763,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "nonrepeat": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              0.9993960058993726,
+              1.0011081608499526
+            ],
+            "geometric_mean_ratio": 1.0002517170326224,
+            "change_pct": 0.025171703262238943,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0178542302588975,
+              1.0035512528256822
+            ],
+            "geometric_mean_ratio": 1.010677440121346,
+            "change_pct": 1.0677440121346082,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "latency": {
+            "paired_ratios": [
+              1.0013102929547368,
+              0.9990868956828165
+            ],
+            "geometric_mean_ratio": 1.0001979765043516,
+            "change_pct": 0.019797650435160463,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.9986914216662346,
+              1.0009139388386827
+            ],
+            "geometric_mean_ratio": 0.9998020626825865,
+            "change_pct": -0.019793731741346576,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "numeric-enum": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0003655870882826,
+              1.001765792192227
+            ],
+            "geometric_mean_ratio": 1.0010654448293257,
+            "change_pct": 0.10654448293256902,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0027798117348894,
+              0.9970774392368664
+            ],
+            "geometric_mean_ratio": 0.9999245605559705,
+            "change_pct": -0.007543944402954583,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              1.001193001296988,
+              0.9976616517412128
+            ],
+            "geometric_mean_ratio": 0.9994257668209757,
+            "change_pct": -0.057423317902427495,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.998808420259188,
+              1.0023438289471247
+            ],
+            "geometric_mean_ratio": 1.0005745631122267,
+            "change_pct": 0.05745631122267003,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "old-45k": {
+        "role": "development_regression",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              0.9976813348132171,
+              1.0001228151324035
+            ],
+            "geometric_mean_ratio": 0.9989013290502965,
+            "change_pct": -0.10986709497035063,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0020918077382106,
+              0.9998425159534867
+            ],
+            "geometric_mean_ratio": 1.0009665300425135,
+            "change_pct": 0.09665300425134582,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              1.0021292602217757,
+              0.9998481192936256
+            ],
+            "geometric_mean_ratio": 1.0009880399494566,
+            "change_pct": 0.09880399494566205,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.9978752638942958,
+              1.0001519037776274
+            ],
+            "geometric_mean_ratio": 0.9990129353098899,
+            "change_pct": -0.09870646901101177,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "old-8k": {
+        "role": "development_regression",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              0.9979485703891707,
+              1.00186203330637
+            ],
+            "geometric_mean_ratio": 0.9999033872656296,
+            "change_pct": -0.009661273437044926,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.001143682828317,
+              0.9973136771910903
+            ],
+            "geometric_mean_ratio": 0.9992268449747231,
+            "change_pct": -0.07731550252768615,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              1.0016229087643294,
+              0.997748699360043
+            ],
+            "geometric_mean_ratio": 0.9996839272834352,
+            "change_pct": -0.031607271656475255,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              0.9983797208009833,
+              1.0022563804306646
+            ],
+            "geometric_mean_ratio": 1.000316172650113,
+            "change_pct": 0.031617265011307794,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "old-repeat-code": {
+        "role": "development_regression",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0821324909309145,
+              1.0832467727492139
+            ],
+            "geometric_mean_ratio": 1.0826894884905742,
+            "change_pct": 8.268948849057423,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.010095073321017,
+              0.9977469908050726
+            ],
+            "geometric_mean_ratio": 1.0039020469314095,
+            "change_pct": 0.39020469314094974,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.9335964484804944,
+              0.9313842473729246
+            ],
+            "geometric_mean_ratio": 0.9324896919098037,
+            "change_pct": -6.751030809019632,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.0711266111043833,
+              1.0736707248599209
+            ],
+            "geometric_mean_ratio": 1.0723979135382509,
+            "change_pct": 7.239791353825087,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "old-repeat-text": {
+        "role": "development_regression",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.0672827911591658,
+              1.0680660294915145
+            ],
+            "geometric_mean_ratio": 1.067674338503081,
+            "change_pct": 6.767433850308091,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0153583578954164,
+              1.0109429630552842
+            ],
+            "geometric_mean_ratio": 1.0131482551402533,
+            "change_pct": 1.3148255140253307,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "latency": {
+            "paired_ratios": [
+              0.9448888640826965,
+              0.9439021365144704
+            ],
+            "geometric_mean_ratio": 0.9443953714289308,
+            "change_pct": -5.560462857106918,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.0583255216694778,
+              1.059431864083581
+            ],
+            "geometric_mean_ratio": 1.0588785483848102,
+            "change_pct": 5.887854838481021,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "repeat-code": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.067876789700721,
+              1.0710857747106282
+            ],
+            "geometric_mean_ratio": 1.0694800786326482,
+            "change_pct": 6.948007863264816,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0036622090700917,
+              0.9942894457981081
+            ],
+            "geometric_mean_ratio": 0.9989648350291448,
+            "change_pct": -0.10351649708552069,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "latency": {
+            "paired_ratios": [
+              0.9452525229423743,
+              0.9416164893779497
+            ],
+            "geometric_mean_ratio": 0.943432754481552,
+            "change_pct": -5.656724551844805,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.0579183612091383,
+              1.0620034921654988
+            ],
+            "geometric_mean_ratio": 1.0599589586536389,
+            "change_pct": 5.995895865363887,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      },
+      "repeat-text": {
+        "role": "held_out_acceptance",
+        "aggregate": {
+          "decode_tps": {
+            "paired_ratios": [
+              1.061192009585936,
+              1.0677870687056665
+            ],
+            "geometric_mean_ratio": 1.0644844316614697,
+            "change_pct": 6.4484431661469666,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "ttft": {
+            "paired_ratios": [
+              1.0018928901376807,
+              1.0078646284440695
+            ],
+            "geometric_mean_ratio": 1.0048743232162758,
+            "change_pct": 0.4874323216275789,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          },
+          "latency": {
+            "paired_ratios": [
+              0.948515169620541,
+              0.9439210496861371
+            ],
+            "geometric_mean_ratio": 0.9462153214524934,
+            "change_pct": -5.378467854750657,
+            "each_block_ratio_gt_one": false,
+            "each_block_ratio_at_least_one": false
+          },
+          "total_tps": {
+            "paired_ratios": [
+              1.054279395868867,
+              1.0594106364430687
+            ],
+            "geometric_mean_ratio": 1.0568419019731619,
+            "change_pct": 5.684190197316186,
+            "each_block_ratio_gt_one": true,
+            "each_block_ratio_at_least_one": true
+          }
+        },
+        "input_equal": true,
+        "output_equal": true
+      }
+    }
+  },
+  "plain_comparisons": [
+    {
+      "case": "context-1024",
+      "decode": {
+        "off_median": 18.596144507041082,
+        "on_median": 18.53546905298837,
+        "on_off_ratio": 0.9967372024867983,
+        "change_pct": -0.32627975132016873
+      },
+      "ttft": {
+        "off_median": 0.7652523769065738,
+        "on_median": 0.7620331490179524,
+        "on_off_ratio": 0.9957932467957373,
+        "change_pct": -0.420675320426267
+      },
+      "raw_before": [
+        {
+          "request_index": 1,
+          "decode_tps": 18.535300585589066,
+          "ttft": 0.867871679016389,
+          "first_request_of_service": true
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 18.596144507041082,
+          "ttft": 0.7652523769065738,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 18.6340930379919,
+          "ttft": 0.7634816210484132,
+          "first_request_of_service": false
+        }
+      ],
+      "raw_after": [
+        {
+          "request_index": 1,
+          "decode_tps": 18.54948403699266,
+          "ttft": 0.8713125929934904,
+          "first_request_of_service": true
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 18.53546905298837,
+          "ttft": 0.7616839300608262,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 18.534023281538307,
+          "ttft": 0.7620331490179524,
+          "first_request_of_service": false
+        }
+      ],
+      "input_equal": true,
+      "output_equal": true,
+      "assessment": "单个父→候选启动对，decode五档均负；8K/200K的全部ON值低于全部OFF值。启动漂移与程序效应未分离，不能把三请求当三个独立启动。辅助保护疑点，不作单独因果证明。"
+    },
+    {
+      "case": "context-4096",
+      "decode": {
+        "off_median": 17.853027595443034,
+        "on_median": 17.842529760335488,
+        "on_off_ratio": 0.99941198572335,
+        "change_pct": -0.05880142766500063
+      },
+      "ttft": {
+        "off_median": 2.612263167044148,
+        "on_median": 2.606654347036965,
+        "on_off_ratio": 0.9978528886071119,
+        "change_pct": -0.21471113928881458
+      },
+      "raw_before": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.842927202189575,
+          "ttft": 2.6173901159781963,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.853027595443034,
+          "ttft": 2.607885616016574,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 17.857713867567895,
+          "ttft": 2.612263167044148,
+          "first_request_of_service": false
+        }
+      ],
+      "raw_after": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.856594598362516,
+          "ttft": 2.6180368369678035,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.842529760335488,
+          "ttft": 2.606654347036965,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 17.836879013377516,
+          "ttft": 2.6035611160332337,
+          "first_request_of_service": false
+        }
+      ],
+      "input_equal": true,
+      "output_equal": true,
+      "assessment": "单个父→候选启动对，decode五档均负；8K/200K的全部ON值低于全部OFF值。启动漂移与程序效应未分离，不能把三请求当三个独立启动。辅助保护疑点，不作单独因果证明。"
+    },
+    {
+      "case": "context-8192",
+      "decode": {
+        "off_median": 18.108123298792222,
+        "on_median": 17.999761978348022,
+        "on_off_ratio": 0.9940158723984707,
+        "change_pct": -0.5984127601529332
+      },
+      "ttft": {
+        "off_median": 5.096346607082523,
+        "on_median": 5.092783617903478,
+        "on_off_ratio": 0.9993008738506731,
+        "change_pct": -0.06991261493268786
+      },
+      "raw_before": [
+        {
+          "request_index": 1,
+          "decode_tps": 18.09820217275846,
+          "ttft": 5.086883042007685,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 18.108123298792222,
+          "ttft": 5.101746306987479,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 18.116637527211022,
+          "ttft": 5.096346607082523,
+          "first_request_of_service": false
+        }
+      ],
+      "raw_after": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.998842766248007,
+          "ttft": 5.09893491701223,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.999761978348022,
+          "ttft": 5.091748011065647,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 18.028463605890277,
+          "ttft": 5.092783617903478,
+          "first_request_of_service": false
+        }
+      ],
+      "input_equal": true,
+      "output_equal": true,
+      "assessment": "单个父→候选启动对，decode五档均负；8K/200K的全部ON值低于全部OFF值。启动漂移与程序效应未分离，不能把三请求当三个独立启动。辅助保护疑点，不作单独因果证明。"
+    },
+    {
+      "case": "context-45056",
+      "decode": {
+        "off_median": 17.853594645238424,
+        "on_median": 17.840652532104105,
+        "on_off_ratio": 0.9992750976264732,
+        "change_pct": -0.07249023735268478
+      },
+      "ttft": {
+        "off_median": 30.416615760070272,
+        "on_median": 30.42149871599395,
+        "on_off_ratio": 1.0001605358058963,
+        "change_pct": 0.016053580589625582
+      },
+      "raw_before": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.853594645238424,
+          "ttft": 30.402693217038177,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.83594683406092,
+          "ttft": 30.4417082821019,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 17.854247362202624,
+          "ttft": 30.416615760070272,
+          "first_request_of_service": false
+        }
+      ],
+      "raw_after": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.83099186577984,
+          "ttft": 30.42149871599395,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.84651962643369,
+          "ttft": 30.41209856106434,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 17.840652532104105,
+          "ttft": 30.421987665002234,
+          "first_request_of_service": false
+        }
+      ],
+      "input_equal": true,
+      "output_equal": true,
+      "assessment": "单个父→候选启动对，decode五档均负；8K/200K的全部ON值低于全部OFF值。启动漂移与程序效应未分离，不能把三请求当三个独立启动。辅助保护疑点，不作单独因果证明。"
+    },
+    {
+      "case": "context-204800",
+      "decode": {
+        "off_median": 17.089363974315837,
+        "on_median": 17.010956062750285,
+        "on_off_ratio": 0.9954118882549757,
+        "change_pct": -0.45881117450242703
+      },
+      "ttft": {
+        "off_median": 159.3890996099217,
+        "on_median": 159.0991429060232,
+        "on_off_ratio": 0.9981808247577274,
+        "change_pct": -0.1819175242272597
+      },
+      "raw_before": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.068522874362667,
+          "ttft": 159.31479946803302,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.097486466533862,
+          "ttft": 159.45755769195966,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 17.089363974315837,
+          "ttft": 159.3890996099217,
+          "first_request_of_service": false
+        }
+      ],
+      "raw_after": [
+        {
+          "request_index": 1,
+          "decode_tps": 17.04299351546487,
+          "ttft": 159.33170233294368,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 2,
+          "decode_tps": 17.010956062750285,
+          "ttft": 159.0991429060232,
+          "first_request_of_service": false
+        },
+        {
+          "request_index": 3,
+          "decode_tps": 16.930531519007005,
+          "ttft": 158.46299563604407,
+          "first_request_of_service": false
+        }
+      ],
+      "input_equal": true,
+      "output_equal": true,
+      "assessment": "单个父→候选启动对，decode五档均负；8K/200K的全部ON值低于全部OFF值。启动漂移与程序效应未分离，不能把三请求当三个独立启动。辅助保护疑点，不作单独因果证明。"
+    }
+  ],
+  "costs": {
+    "audit_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/audit-costs.json",
+    "audit_sha256": "bcffcf07929824b79c67d50fe4f5feb321f8747b0ec4953a70ab6ff9282df69f",
+    "consistency": "PASS",
+    "measurement_complete": true,
+    "environment_abort": false,
+    "scope": "Derived CPU-only report; no acceptance decision, new test or inference request.",
+    "paired_whole_generation_work": [
+      {
+        "head": "full",
+        "block": 1,
+        "case": "old-8k",
+        "off": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 70,
+          "total_target_forward_rows": 277,
+          "checkpoint_restore_calls": 10,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 254,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 392
+        },
+        "on": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 70,
+          "total_target_forward_rows": 277,
+          "checkpoint_restore_calls": 10,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 254,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 392
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 0,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": 0,
+          "iterative_MTP_forward_rows": 0
+        },
+        "suffix_hits": 0,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "off_acceptance": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "on_acceptance": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 1,
+        "case": "old-45k",
+        "off": {
+          "verify_calls_T4": 66,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 264,
+          "checkpoint_restore_calls": 8,
+          "neural_proposal_forward_calls_T1": 132,
+          "draft_extend_calls": 66,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 198,
+          "iterative_MTP_forward_rows": 387
+        },
+        "on": {
+          "verify_calls_T4": 66,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 264,
+          "checkpoint_restore_calls": 8,
+          "neural_proposal_forward_calls_T1": 132,
+          "draft_extend_calls": 66,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 198,
+          "iterative_MTP_forward_rows": 387
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 0,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": 0,
+          "iterative_MTP_forward_rows": 0
+        },
+        "suffix_hits": 0,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "off_acceptance": [
+          0,
+          1,
+          7,
+          58
+        ],
+        "on_acceptance": [
+          0,
+          1,
+          7,
+          58
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 1,
+        "case": "repeat-code",
+        "off": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 189,
+          "iterative_MTP_forward_rows": 378
+        },
+        "on": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 18,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 81,
+          "iterative_MTP_forward_rows": 270
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -108,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -108,
+          "iterative_MTP_forward_rows": -108
+        },
+        "suffix_hits": 54,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "off_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 1,
+        "case": "repeat-text",
+        "off": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 189,
+          "iterative_MTP_forward_rows": 378
+        },
+        "on": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 18,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 81,
+          "iterative_MTP_forward_rows": 270
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -108,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -108,
+          "iterative_MTP_forward_rows": -108
+        },
+        "suffix_hits": 54,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "off_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 1,
+        "case": "old-repeat-code",
+        "off": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 189,
+          "iterative_MTP_forward_rows": 378
+        },
+        "on": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 16,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 79,
+          "iterative_MTP_forward_rows": 268
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -110,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -110,
+          "iterative_MTP_forward_rows": -110
+        },
+        "suffix_hits": 55,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          55
+        ],
+        "off_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 1,
+        "case": "old-repeat-text",
+        "off": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 189,
+          "iterative_MTP_forward_rows": 378
+        },
+        "on": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 16,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 79,
+          "iterative_MTP_forward_rows": 268
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -110,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -110,
+          "iterative_MTP_forward_rows": -110
+        },
+        "suffix_hits": 55,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          55
+        ],
+        "off_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 2,
+        "case": "old-8k",
+        "off": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 70,
+          "total_target_forward_rows": 277,
+          "checkpoint_restore_calls": 10,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 254,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 392
+        },
+        "on": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 70,
+          "total_target_forward_rows": 277,
+          "checkpoint_restore_calls": 10,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 254,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 392
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 0,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": 0,
+          "iterative_MTP_forward_rows": 0
+        },
+        "suffix_hits": 0,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "off_acceptance": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "on_acceptance": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 2,
+        "case": "old-45k",
+        "off": {
+          "verify_calls_T4": 66,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 264,
+          "checkpoint_restore_calls": 8,
+          "neural_proposal_forward_calls_T1": 132,
+          "draft_extend_calls": 66,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 198,
+          "iterative_MTP_forward_rows": 387
+        },
+        "on": {
+          "verify_calls_T4": 66,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 264,
+          "checkpoint_restore_calls": 8,
+          "neural_proposal_forward_calls_T1": 132,
+          "draft_extend_calls": 66,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 198,
+          "iterative_MTP_forward_rows": 387
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 0,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": 0,
+          "iterative_MTP_forward_rows": 0
+        },
+        "suffix_hits": 0,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "off_acceptance": [
+          0,
+          1,
+          7,
+          58
+        ],
+        "on_acceptance": [
+          0,
+          1,
+          7,
+          58
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 2,
+        "case": "repeat-code",
+        "off": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 189,
+          "iterative_MTP_forward_rows": 378
+        },
+        "on": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 18,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 81,
+          "iterative_MTP_forward_rows": 270
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -108,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -108,
+          "iterative_MTP_forward_rows": -108
+        },
+        "suffix_hits": 54,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "off_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 2,
+        "case": "repeat-text",
+        "off": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 189,
+          "iterative_MTP_forward_rows": 378
+        },
+        "on": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 18,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 81,
+          "iterative_MTP_forward_rows": 270
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -108,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -108,
+          "iterative_MTP_forward_rows": -108
+        },
+        "suffix_hits": 54,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "off_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 2,
+        "case": "old-repeat-code",
+        "off": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 189,
+          "iterative_MTP_forward_rows": 378
+        },
+        "on": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 16,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 79,
+          "iterative_MTP_forward_rows": 268
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -110,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -110,
+          "iterative_MTP_forward_rows": -110
+        },
+        "suffix_hits": 55,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          55
+        ],
+        "off_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "full",
+        "block": 2,
+        "case": "old-repeat-text",
+        "off": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 189,
+          "iterative_MTP_forward_rows": 378
+        },
+        "on": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 16,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 79,
+          "iterative_MTP_forward_rows": 268
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -110,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -110,
+          "iterative_MTP_forward_rows": -110
+        },
+        "suffix_hits": 55,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          55
+        ],
+        "off_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 1,
+        "case": "old-8k",
+        "off": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 70,
+          "total_target_forward_rows": 277,
+          "checkpoint_restore_calls": 10,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 254,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 392
+        },
+        "on": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 70,
+          "total_target_forward_rows": 277,
+          "checkpoint_restore_calls": 10,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 254,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 392
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 0,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": 0,
+          "iterative_MTP_forward_rows": 0
+        },
+        "suffix_hits": 0,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "off_acceptance": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "on_acceptance": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 1,
+        "case": "old-45k",
+        "off": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 69,
+          "total_target_forward_rows": 276,
+          "checkpoint_restore_calls": 12,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 393
+        },
+        "on": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 69,
+          "total_target_forward_rows": 276,
+          "checkpoint_restore_calls": 12,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 393
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 0,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": 0,
+          "iterative_MTP_forward_rows": 0
+        },
+        "suffix_hits": 0,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "off_acceptance": [
+          3,
+          3,
+          6,
+          57
+        ],
+        "on_acceptance": [
+          3,
+          3,
+          6,
+          57
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 1,
+        "case": "repeat-code",
+        "off": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 189,
+          "iterative_MTP_forward_rows": 378
+        },
+        "on": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 18,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 81,
+          "iterative_MTP_forward_rows": 270
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -108,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -108,
+          "iterative_MTP_forward_rows": -108
+        },
+        "suffix_hits": 54,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "off_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 1,
+        "case": "repeat-text",
+        "off": {
+          "verify_calls_T4": 66,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 69,
+          "total_target_forward_rows": 267,
+          "checkpoint_restore_calls": 6,
+          "neural_proposal_forward_calls_T1": 132,
+          "draft_extend_calls": 66,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 198,
+          "iterative_MTP_forward_rows": 384
+        },
+        "on": {
+          "verify_calls_T4": 66,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 69,
+          "total_target_forward_rows": 267,
+          "checkpoint_restore_calls": 4,
+          "neural_proposal_forward_calls_T1": 24,
+          "draft_extend_calls": 66,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 90,
+          "iterative_MTP_forward_rows": 276
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": -2,
+          "neural_proposal_forward_calls_T1": -108,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -108,
+          "iterative_MTP_forward_rows": -108
+        },
+        "suffix_hits": 54,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "off_acceptance": [
+          2,
+          2,
+          2,
+          60
+        ],
+        "on_acceptance": [
+          4,
+          0,
+          0,
+          62
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 1,
+        "case": "old-repeat-code",
+        "off": {
+          "verify_calls_T4": 68,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 68,
+          "total_target_forward_rows": 272,
+          "checkpoint_restore_calls": 7,
+          "neural_proposal_forward_calls_T1": 136,
+          "draft_extend_calls": 68,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 204,
+          "iterative_MTP_forward_rows": 391
+        },
+        "on": {
+          "verify_calls_T4": 67,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 67,
+          "total_target_forward_rows": 268,
+          "checkpoint_restore_calls": 5,
+          "neural_proposal_forward_calls_T1": 24,
+          "draft_extend_calls": 67,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 91,
+          "iterative_MTP_forward_rows": 279
+        },
+        "delta": {
+          "verify_calls_T4": -1,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": -1,
+          "total_target_forward_rows": -4,
+          "checkpoint_restore_calls": -2,
+          "neural_proposal_forward_calls_T1": -112,
+          "draft_extend_calls": -1,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -113,
+          "iterative_MTP_forward_rows": -112
+        },
+        "suffix_hits": 55,
+        "suffix_acceptance": [
+          0,
+          0,
+          1,
+          54
+        ],
+        "off_acceptance": [
+          3,
+          4,
+          0,
+          61
+        ],
+        "on_acceptance": [
+          4,
+          0,
+          1,
+          62
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 1,
+        "case": "old-repeat-text",
+        "off": {
+          "verify_calls_T4": 64,
+          "ordinary_tail_forward_calls_T1": 2,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 258,
+          "checkpoint_restore_calls": 1,
+          "neural_proposal_forward_calls_T1": 128,
+          "draft_extend_calls": 64,
+          "draft_extend_rows": 253,
+          "iterative_MTP_forward_calls": 192,
+          "iterative_MTP_forward_rows": 381
+        },
+        "on": {
+          "verify_calls_T4": 64,
+          "ordinary_tail_forward_calls_T1": 2,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 258,
+          "checkpoint_restore_calls": 1,
+          "neural_proposal_forward_calls_T1": 18,
+          "draft_extend_calls": 64,
+          "draft_extend_rows": 253,
+          "iterative_MTP_forward_calls": 82,
+          "iterative_MTP_forward_rows": 271
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -110,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -110,
+          "iterative_MTP_forward_rows": -110
+        },
+        "suffix_hits": 55,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          55
+        ],
+        "off_acceptance": [
+          1,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          1,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 2,
+        "case": "old-8k",
+        "off": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 70,
+          "total_target_forward_rows": 277,
+          "checkpoint_restore_calls": 10,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 254,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 392
+        },
+        "on": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 1,
+          "total_target_forward_calls": 70,
+          "total_target_forward_rows": 277,
+          "checkpoint_restore_calls": 10,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 254,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 392
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 0,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": 0,
+          "iterative_MTP_forward_rows": 0
+        },
+        "suffix_hits": 0,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "off_acceptance": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "on_acceptance": [
+          5,
+          2,
+          3,
+          59
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 2,
+        "case": "old-45k",
+        "off": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 69,
+          "total_target_forward_rows": 276,
+          "checkpoint_restore_calls": 12,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 393
+        },
+        "on": {
+          "verify_calls_T4": 69,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 69,
+          "total_target_forward_rows": 276,
+          "checkpoint_restore_calls": 12,
+          "neural_proposal_forward_calls_T1": 138,
+          "draft_extend_calls": 69,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 207,
+          "iterative_MTP_forward_rows": 393
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 0,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": 0,
+          "iterative_MTP_forward_rows": 0
+        },
+        "suffix_hits": 0,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "off_acceptance": [
+          3,
+          3,
+          6,
+          57
+        ],
+        "on_acceptance": [
+          3,
+          3,
+          6,
+          57
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 2,
+        "case": "repeat-code",
+        "off": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 126,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 189,
+          "iterative_MTP_forward_rows": 378
+        },
+        "on": {
+          "verify_calls_T4": 63,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 255,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": 18,
+          "draft_extend_calls": 63,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 81,
+          "iterative_MTP_forward_rows": 270
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -108,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -108,
+          "iterative_MTP_forward_rows": -108
+        },
+        "suffix_hits": 54,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "off_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          0,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 2,
+        "case": "repeat-text",
+        "off": {
+          "verify_calls_T4": 66,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 69,
+          "total_target_forward_rows": 267,
+          "checkpoint_restore_calls": 6,
+          "neural_proposal_forward_calls_T1": 132,
+          "draft_extend_calls": 66,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 198,
+          "iterative_MTP_forward_rows": 384
+        },
+        "on": {
+          "verify_calls_T4": 66,
+          "ordinary_tail_forward_calls_T1": 3,
+          "total_target_forward_calls": 69,
+          "total_target_forward_rows": 267,
+          "checkpoint_restore_calls": 4,
+          "neural_proposal_forward_calls_T1": 24,
+          "draft_extend_calls": 66,
+          "draft_extend_rows": 252,
+          "iterative_MTP_forward_calls": 90,
+          "iterative_MTP_forward_rows": 276
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": -2,
+          "neural_proposal_forward_calls_T1": -108,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -108,
+          "iterative_MTP_forward_rows": -108
+        },
+        "suffix_hits": 54,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "off_acceptance": [
+          2,
+          2,
+          2,
+          60
+        ],
+        "on_acceptance": [
+          4,
+          0,
+          0,
+          62
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 2,
+        "case": "old-repeat-code",
+        "off": {
+          "verify_calls_T4": 68,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 68,
+          "total_target_forward_rows": 272,
+          "checkpoint_restore_calls": 7,
+          "neural_proposal_forward_calls_T1": 136,
+          "draft_extend_calls": 68,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 204,
+          "iterative_MTP_forward_rows": 391
+        },
+        "on": {
+          "verify_calls_T4": 67,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 67,
+          "total_target_forward_rows": 268,
+          "checkpoint_restore_calls": 5,
+          "neural_proposal_forward_calls_T1": 24,
+          "draft_extend_calls": 67,
+          "draft_extend_rows": 255,
+          "iterative_MTP_forward_calls": 91,
+          "iterative_MTP_forward_rows": 279
+        },
+        "delta": {
+          "verify_calls_T4": -1,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": -1,
+          "total_target_forward_rows": -4,
+          "checkpoint_restore_calls": -2,
+          "neural_proposal_forward_calls_T1": -112,
+          "draft_extend_calls": -1,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -113,
+          "iterative_MTP_forward_rows": -112
+        },
+        "suffix_hits": 55,
+        "suffix_acceptance": [
+          0,
+          0,
+          1,
+          54
+        ],
+        "off_acceptance": [
+          3,
+          4,
+          0,
+          61
+        ],
+        "on_acceptance": [
+          4,
+          0,
+          1,
+          62
+        ],
+        "output_equal": true
+      },
+      {
+        "head": "subset",
+        "block": 2,
+        "case": "old-repeat-text",
+        "off": {
+          "verify_calls_T4": 64,
+          "ordinary_tail_forward_calls_T1": 2,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 258,
+          "checkpoint_restore_calls": 1,
+          "neural_proposal_forward_calls_T1": 128,
+          "draft_extend_calls": 64,
+          "draft_extend_rows": 253,
+          "iterative_MTP_forward_calls": 192,
+          "iterative_MTP_forward_rows": 381
+        },
+        "on": {
+          "verify_calls_T4": 64,
+          "ordinary_tail_forward_calls_T1": 2,
+          "total_target_forward_calls": 66,
+          "total_target_forward_rows": 258,
+          "checkpoint_restore_calls": 1,
+          "neural_proposal_forward_calls_T1": 18,
+          "draft_extend_calls": 64,
+          "draft_extend_rows": 253,
+          "iterative_MTP_forward_calls": 82,
+          "iterative_MTP_forward_rows": 271
+        },
+        "delta": {
+          "verify_calls_T4": 0,
+          "ordinary_tail_forward_calls_T1": 0,
+          "total_target_forward_calls": 0,
+          "total_target_forward_rows": 0,
+          "checkpoint_restore_calls": 0,
+          "neural_proposal_forward_calls_T1": -110,
+          "draft_extend_calls": 0,
+          "draft_extend_rows": 0,
+          "iterative_MTP_forward_calls": -110,
+          "iterative_MTP_forward_rows": -110
+        },
+        "suffix_hits": 55,
+        "suffix_acceptance": [
+          0,
+          0,
+          0,
+          55
+        ],
+        "off_acceptance": [
+          1,
+          0,
+          0,
+          63
+        ],
+        "on_acceptance": [
+          1,
+          0,
+          0,
+          63
+        ],
+        "output_equal": true
+      }
+    ],
+    "remaining_partial_suffix_requests": [
+      {
+        "group": "block-1-subset-on",
+        "case": "old-repeat-code",
+        "request": "chatcmpl-auto-21",
+        "histogram": [
+          0,
+          0,
+          1,
+          54
+        ]
+      },
+      {
+        "group": "block-2-subset-on",
+        "case": "old-repeat-code",
+        "request": "chatcmpl-auto-21",
+        "histogram": [
+          0,
+          0,
+          1,
+          54
+        ]
+      },
+      {
+        "group": "lifecycle-subset",
+        "case": "control",
+        "request": "suffix-subset-control",
+        "histogram": [
+          0,
+          0,
+          1,
+          54
+        ]
+      },
+      {
+        "group": "lifecycle-subset",
+        "case": "recovery",
+        "request": "suffix-subset-recovery",
+        "histogram": [
+          0,
+          0,
+          1,
+          54
+        ]
+      }
+    ],
+    "all_suffix_acceptance": [
+      0,
+      0,
+      4,
+      1106
+    ],
+    "operations": {
+      "init_ns": {
+        "sum_ms": 28.056652,
+        "maximum_per_request_ms": 0.895169
+      },
+      "append_ns": {
+        "sum_ms": 5.444485,
+        "maximum_per_request_ms": 0.098088
+      },
+      "query_ns": {
+        "sum_ms": 5.666892,
+        "maximum_per_request_ms": 0.204245
+      },
+      "release_ns": {
+        "sum_ms": 0.719945,
+        "maximum_per_request_ms": 0.023862
+      },
+      "numeric_ns": {
+        "sum_ms": 1.230179,
+        "maximum_per_request_ms": 0.084382
+      }
+    },
+    "resource_costs": {
+      "suffix_requests": 124,
+      "counters": {
+        "queries": 7236,
+        "hits": 1110,
+        "no_match": 4449,
+        "incomplete": 0,
+        "d0_mismatch": 826,
+        "numeric_checks": 1961,
+        "numeric_rejected": 132,
+        "short_rejected": 719,
+        "classified_tokens": 74812,
+        "matched": 79239,
+        "candidates": 9007,
+        "compared": 287472,
+        "init_ns": 28056652,
+        "append_ns": 5444485,
+        "query_ns": 5666892,
+        "release_ns": 719945,
+        "numeric_ns": 1230179,
+        "accepted": [
+          0,
+          0,
+          4,
+          1106
+        ],
+        "neural_accepted": [
+          578,
+          564,
+          423,
+          4561
+        ]
+      },
+      "matched_query_count": 2787,
+      "mean_match_length_all_matched_queries": 28.431646932185146,
+      "hit_rate": 0.15339966832504145,
+      "index_operation_total_ns": 39887974,
+      "numeric_ns_included_in_query_ns": true,
+      "shared_table_init_ns": {
+        "count": 10,
+        "sum": 193322111,
+        "minimum": 19076443,
+        "median": 19349082.5,
+        "maximum": 19596426
+      },
+      "shared_table_release_ns": {
+        "count": 10,
+        "sum": 17575,
+        "minimum": 1158,
+        "median": 1680.5,
+        "maximum": 2306
+      },
+      "request_payload_bytes": {
+        "count": 124,
+        "sum": 233635840,
+        "minimum": 1884160,
+        "median": 1884160.0,
+        "maximum": 1884160
+      },
+      "request_object_bytes": {
+        "count": 124,
+        "sum": 30752,
+        "minimum": 248,
+        "median": 248.0,
+        "maximum": 248
+      },
+      "one_stream_max_requested_bytes_including_table": 2132728,
+      "limits": [
+        "Requested sizes do not measure allocator retention, process RSS or system DRAM.",
+        "Table payload is counted once per active service, never once per request.",
+        "Constant length comparison is inside query_ns; numeric_ns must not be added again."
+      ]
+    },
+    "lifecycle": {
+      "lifecycle-full": {
+        "control_recovery_response_equal": true,
+        "control_recovery_acceptance_equal": true,
+        "control_recovery_index_counts_equal": true,
+        "explicit_cancel_acknowledgement": {
+          "status": 202,
+          "body": "{\"cancel_requested\":true}"
+        },
+        "cancelled_after_suffix_hits": 9,
+        "cancelled_after_nonempty_chunks": 64,
+        "cancellation_threshold": {
+          "required_nonempty_chunks": 64,
+          "observed_nonempty_chunks_before_cancel": 64,
+          "final_nonempty_chunks": 64,
+          "actual_suffix_hit_required_after_server_shutdown": true
+        },
+        "committed_model_tokens_at_cancel": 68,
+        "health": {
+          "cancel": {
+            "status": "ok",
+            "gpu_healthy": true,
+            "requests_running": 1,
+            "seq_slots_free": 1,
+            "seq_slots_total": 1
+          },
+          "recovery": {
+            "status": "ok",
+            "gpu_healthy": true,
+            "requests_running": 1,
+            "seq_slots_free": 1,
+            "seq_slots_total": 1
+          }
+        },
+        "limit": "These concrete HTTP cases do not prove arbitrary-input state equivalence."
+      },
+      "lifecycle-subset": {
+        "control_recovery_response_equal": true,
+        "control_recovery_acceptance_equal": true,
+        "control_recovery_index_counts_equal": true,
+        "explicit_cancel_acknowledgement": {
+          "status": 202,
+          "body": "{\"cancel_requested\":true}"
+        },
+        "cancelled_after_suffix_hits": 9,
+        "cancelled_after_nonempty_chunks": 65,
+        "cancellation_threshold": {
+          "required_nonempty_chunks": 64,
+          "observed_nonempty_chunks_before_cancel": 65,
+          "final_nonempty_chunks": 65,
+          "actual_suffix_hit_required_after_server_shutdown": true
+        },
+        "committed_model_tokens_at_cancel": 69,
+        "health": {
+          "cancel": {
+            "status": "ok",
+            "gpu_healthy": true,
+            "requests_running": 1,
+            "seq_slots_free": 1,
+            "seq_slots_total": 1
+          },
+          "recovery": {
+            "status": "ok",
+            "gpu_healthy": true,
+            "requests_running": 1,
+            "seq_slots_free": 1,
+            "seq_slots_total": 1
+          }
+        },
+        "limit": "These concrete HTTP cases do not prove arbitrary-input state equivalence."
+      }
+    },
+    "diagnostic_phase_times": [
+      {
+        "group": "timing-full-off",
+        "case": "old-45k",
+        "steps": 66,
+        "suffix_steps": 0,
+        "wall_ms_sum": {
+          "draft": 1012.1,
+          "verify": 5070.4,
+          "extend_accept": 605.9
+        },
+        "gpu_event_ms_sum": {
+          "draft": 1011.4,
+          "verify": 5070.3,
+          "extend_accept": 605.9
+        }
+      },
+      {
+        "group": "timing-full-off",
+        "case": "old-8k",
+        "steps": 69,
+        "suffix_steps": 0,
+        "wall_ms_sum": {
+          "draft": 1038.0,
+          "verify": 5186.4,
+          "extend_accept": 619.7
+        },
+        "gpu_event_ms_sum": {
+          "draft": 1036.9,
+          "verify": 5186.1,
+          "extend_accept": 619.6
+        }
+      },
+      {
+        "group": "timing-full-on",
+        "case": "old-45k",
+        "steps": 66,
+        "suffix_steps": 0,
+        "wall_ms_sum": {
+          "draft": 1012.7,
+          "verify": 5074.2,
+          "extend_accept": 597.6
+        },
+        "gpu_event_ms_sum": {
+          "draft": 1012.3,
+          "verify": 5074.0,
+          "extend_accept": 597.6
+        }
+      },
+      {
+        "group": "timing-full-on",
+        "case": "old-8k",
+        "steps": 69,
+        "suffix_steps": 0,
+        "wall_ms_sum": {
+          "draft": 1028.0,
+          "verify": 5183.8,
+          "extend_accept": 615.3
+        },
+        "gpu_event_ms_sum": {
+          "draft": 1027.0,
+          "verify": 5183.8,
+          "extend_accept": 615.4
+        }
+      },
+      {
+        "group": "timing-subset-on",
+        "case": "old-45k",
+        "steps": 69,
+        "suffix_steps": 0,
+        "wall_ms_sum": {
+          "draft": 514.1,
+          "verify": 5313.2,
+          "extend_accept": 369.7
+        },
+        "gpu_event_ms_sum": {
+          "draft": 512.7,
+          "verify": 5313.2,
+          "extend_accept": 369.6
+        }
+      },
+      {
+        "group": "timing-subset-on",
+        "case": "old-8k",
+        "steps": 69,
+        "suffix_steps": 0,
+        "wall_ms_sum": {
+          "draft": 510.7,
+          "verify": 5183.6,
+          "extend_accept": 361.8
+        },
+        "gpu_event_ms_sum": {
+          "draft": 510.0,
+          "verify": 5183.6,
+          "extend_accept": 361.9
+        }
+      },
+      {
+        "group": "timing-subset-off",
+        "case": "old-45k",
+        "steps": 69,
+        "suffix_steps": 0,
+        "wall_ms_sum": {
+          "draft": 507.8,
+          "verify": 5311.1,
+          "extend_accept": 371.3
+        },
+        "gpu_event_ms_sum": {
+          "draft": 506.9,
+          "verify": 5311.1,
+          "extend_accept": 371.5
+        }
+      },
+      {
+        "group": "timing-subset-off",
+        "case": "old-8k",
+        "steps": 69,
+        "suffix_steps": 0,
+        "wall_ms_sum": {
+          "draft": 512.5,
+          "verify": 5194.4,
+          "extend_accept": 364.5
+        },
+        "gpu_event_ms_sum": {
+          "draft": 511.7,
+          "verify": 5194.3,
+          "extend_accept": 364.5
+        }
+      }
+    ],
+    "phase_limits": [
+      "All eight current timing requests have zero admitted suffix steps; these phases describe neural fallback at old-8k/old-45k, not isolated suffix cost in long repetitions.",
+      "Whole-generation work includes the first MTP round and ordinary-tail forwards, excludes initial main/MTP prefill. TTFT/decode throughput uses its separately frozen E2E accounting.",
+      "CUDA events include stream idle and values are rounded to 0.1ms; extend+accept includes restore/accept/seed handling and does not isolate restore cost.",
+      "Cancellation has only extend lower/upper bounds; committed work may exceed received pieces.",
+      "CPU numeric_ns is within query_ns; index/table requested bytes do not prove physical-RAM delta or allocator return."
+    ]
+  },
+  "scope": "Compact derivative; full analysis/raw values/seals remain at original paths and in the independent research archive."
+}

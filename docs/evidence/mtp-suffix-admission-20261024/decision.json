@@ -1,0 +1,510 @@
+{
+  "created_utc": "2026-10-23T21:05:46.956466+00:00",
+  "evidence_validity": "VALID",
+  "measurement_complete": true,
+  "statistical_conclusion": "DESCRIPTIVE_ONLY_INCONCLUSIVE_POPULATION_NONINFERIORITY; repeat gains and removed extra target work observed; repeated adverse protected timing remains unresolved, without a population causal-regression claim.",
+  "engineering_decision": "NO_GO_PROTECTION_NOT_CLEARED",
+  "protections_accepted": false,
+  "deployment_performed": false,
+  "candidate_sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+  "parent_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "candidate_source_commit": "cb0fa73c3271e6fbce2cd9d282838de9643d2a3b",
+  "source_commit": "e9e762343e7dacf76b46812b1d88ada16531762c",
+  "frozen_plan_sha256": "fd8b0e8eb1d945136cb0de3acd1f12563ebbe0e19b26eba2afa3a7dd77c58619",
+  "analysis_sha256": "4584ed7493f2fd9208047d76cf603cb4fab33ff31cfd6d5d0502045276a8cdf2",
+  "audit_evidence_sha256": "3a296afa13e68638f114154327aae47f7257f93cd69f325817f58a7495e83c2e",
+  "audit_costs_sha256": "bcffcf07929824b79c67d50fe4f5feb321f8747b0ec4953a70ab6ff9282df69f",
+  "protection_review_sha256": "4a256d0b7afac03aaca04b03890c7c614532d6c2c5d894110e9d8525970209c4",
+  "independent_reviews": {
+    "protection-review-runtime.json": "7e0098d13154031fecef60e7585aca180773b25c9d53fe5adbfa71f2ed3de9bc",
+    "protection-review-index.json": "a9647585a8979db62a20f51bc3156906d8f64166b753d228225d3ac79964bd14"
+  },
+  "budget": {
+    "frozen": {
+      "http_requests": 250,
+      "http_loads": 18,
+      "stage_timeout_seconds": 14400,
+      "direct_contract_timeout_seconds": 1200,
+      "deployment_separate_max_requests": 3,
+      "deployment_separate_max_loads": 3,
+      "total_authorized_max_http": 253,
+      "retries": 0,
+      "warmups": 0
+    },
+    "admission": {
+      "min_admitted_match": 32,
+      "lookup_min_match": 3,
+      "max_match": 64,
+      "candidates": 4,
+      "order": "complete-three, d0, numeric, minimum-match",
+      "alternative_candidate_search": false,
+      "dynamic_policy": false
+    },
+    "observed": {
+      "http_requests_in_artifacts": 250,
+      "http_requests_completed": 250,
+      "http_loads_started": 18,
+      "stage_elapsed_seconds": 10941.64255952835,
+      "direct_contract_seconds": 62.660102619905956
+    },
+    "within_frozen_bounds": {
+      "http_requests_in_artifacts": true,
+      "http_requests_completed": true,
+      "http_loads_started": true,
+      "stage_elapsed_seconds": true,
+      "direct_contract_seconds": true
+    },
+    "all_within_frozen_bounds": true,
+    "successful_contract_measured_seconds": 2.660102619905956,
+    "contract_budget_scope": "Original successful host actual + conservative full 60s failed-suite allowance + current successful contracts; 60s is not a measured duration.",
+    "deployment": "Three requests/starts are separate and conditional on acceptance; never assumed executed.",
+    "scope": "Inference HTTP only; readiness/health/cancel control calls remain separate. No HTTP retries, extra warmups or added sampling. A continuation may record exactly one authorized CPU fixture-contract retest, separately from the frozen zero-inference-retry policy."
+  },
+  "goals": {
+    "full": {
+      "repeat_scenarios": {
+        "repeat-code": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.1431901102589652,
+            1.1373719110429164
+          ],
+          "geometric_mean_ratio": 1.1402772997786992,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "repeat-text": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.1473298031299617,
+            1.144802492506874
+          ],
+          "geometric_mean_ratio": 1.146065451163502,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-code": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.1498560647775709,
+            1.140113952577662
+          ],
+          "geometric_mean_ratio": 1.144974647277813,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-text": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.1510754385222344,
+            1.142691506652414
+          ],
+          "geometric_mean_ratio": 1.1468758115487308,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        }
+      },
+      "development_probes": {
+        "old-8k": {
+          "role": "development_regression",
+          "paired_decode_ratios": [
+            1.0020346384747831,
+            0.9979200476282475
+          ],
+          "geometric_mean_decode_ratio": 0.9999752267690982,
+          "work": [
+            {
+              "block": 1,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            },
+            {
+              "block": 2,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            }
+          ],
+          "input_output_identity_equal": true,
+          "frozen_work_gate_met": true,
+          "throughput_protection": "REQUIRES_REVIEW; no automatic per-block ratio>=1 gate. Equal target calls/rows do not prove equal throughput or population noninferiority."
+        },
+        "old-45k": {
+          "role": "development_regression",
+          "paired_decode_ratios": [
+            1.0004260051635174,
+            0.9965649281563719
+          ],
+          "geometric_mean_decode_ratio": 0.998493600360837,
+          "work": [
+            {
+              "block": 1,
+              "off": {
+                "verify_calls": 66,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 66,
+                "target_processed_rows": 264,
+                "target_restore_calls": 8,
+                "neural_proposal_T1": 132,
+                "draft_extend_calls": 66,
+                "total_mtp_forward_calls": 198,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 66,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 66,
+                "target_processed_rows": 264,
+                "target_restore_calls": 8,
+                "neural_proposal_T1": 132,
+                "draft_extend_calls": 66,
+                "total_mtp_forward_calls": 198,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            },
+            {
+              "block": 2,
+              "off": {
+                "verify_calls": 66,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 66,
+                "target_processed_rows": 264,
+                "target_restore_calls": 8,
+                "neural_proposal_T1": 132,
+                "draft_extend_calls": 66,
+                "total_mtp_forward_calls": 198,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 66,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 66,
+                "target_processed_rows": 264,
+                "target_restore_calls": 8,
+                "neural_proposal_T1": 132,
+                "draft_extend_calls": 66,
+                "total_mtp_forward_calls": 198,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            }
+          ],
+          "input_output_identity_equal": true,
+          "frozen_work_gate_met": true,
+          "throughput_protection": "REQUIRES_REVIEW; no automatic per-block ratio>=1 gate. Equal target calls/rows do not prove equal throughput or population noninferiority."
+        }
+      },
+      "development_replay": "See frozen development replay contract; old observed prefixes and inferred boundaries do not predict new runtime paths or elapsed performance."
+    },
+    "subset": {
+      "repeat_scenarios": {
+        "repeat-code": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.067876789700721,
+            1.0710857747106282
+          ],
+          "geometric_mean_ratio": 1.0694800786326482,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "repeat-text": {
+          "role": "held_out_acceptance",
+          "paired_ratios": [
+            1.061192009585936,
+            1.0677870687056665
+          ],
+          "geometric_mean_ratio": 1.0644844316614697,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-code": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.0821324909309145,
+            1.0832467727492139
+          ],
+          "geometric_mean_ratio": 1.0826894884905742,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        },
+        "old-repeat-text": {
+          "role": "development_regression",
+          "paired_ratios": [
+            1.0672827911591658,
+            1.0680660294915145
+          ],
+          "geometric_mean_ratio": 1.067674338503081,
+          "each_block_positive": true,
+          "input_output_identity_equal": true,
+          "numeric_threshold_met": true,
+          "frozen_goal_met": true
+        }
+      },
+      "development_probes": {
+        "old-8k": {
+          "role": "development_regression",
+          "paired_decode_ratios": [
+            0.9979485703891707,
+            1.00186203330637
+          ],
+          "geometric_mean_decode_ratio": 0.9999033872656296,
+          "work": [
+            {
+              "block": 1,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            },
+            {
+              "block": 2,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 254,
+                "ordinary_tail_output_tokens": 2,
+                "ordinary_tail_target_T1": 1,
+                "total_target_forward_calls": 70,
+                "target_processed_rows": 277,
+                "target_restore_calls": 10,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            }
+          ],
+          "input_output_identity_equal": true,
+          "frozen_work_gate_met": true,
+          "throughput_protection": "REQUIRES_REVIEW; no automatic per-block ratio>=1 gate. Equal target calls/rows do not prove equal throughput or population noninferiority."
+        },
+        "old-45k": {
+          "role": "development_regression",
+          "paired_decode_ratios": [
+            0.9976813348132171,
+            1.0001228151324035
+          ],
+          "geometric_mean_decode_ratio": 0.9989013290502965,
+          "work": [
+            {
+              "block": 1,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 69,
+                "target_processed_rows": 276,
+                "target_restore_calls": 12,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 69,
+                "target_processed_rows": 276,
+                "target_restore_calls": 12,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            },
+            {
+              "block": 2,
+              "off": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 69,
+                "target_processed_rows": 276,
+                "target_restore_calls": 12,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "on": {
+                "verify_calls": 69,
+                "mtp_emitted_tokens": 255,
+                "ordinary_tail_output_tokens": 1,
+                "ordinary_tail_target_T1": 0,
+                "total_target_forward_calls": 69,
+                "target_processed_rows": 276,
+                "target_restore_calls": 12,
+                "neural_proposal_T1": 138,
+                "draft_extend_calls": 69,
+                "total_mtp_forward_calls": 207,
+                "scope": "Whole iterative generation including first MTP round; excludes prefill/init. latency-minus-TTFT has a different window. Nonterminal full-256 requests only; counts are source/log derivations, not GPU timing."
+              },
+              "protected_count_deltas": {
+                "total_target_forward_calls": 0,
+                "target_processed_rows": 0
+              },
+              "does_not_increase": true
+            }
+          ],
+          "input_output_identity_equal": true,
+          "frozen_work_gate_met": true,
+          "throughput_protection": "REQUIRES_REVIEW; no automatic per-block ratio>=1 gate. Equal target calls/rows do not prove equal throughput or population noninferiority."
+        }
+      },
+      "development_replay": "See frozen development replay contract; old observed prefixes and inferred boundaries do not predict new runtime paths or elapsed performance."
+    }
+  },
+  "decision_basis": "子集45K/200K TTFT两配对块均出现全部ON原值慢于OFF的重复耗时证据；新8K两head两块decode均负。不能合理把全部不利保护观测自动视作噪声。",
+  "mechanism_result": "Fixed min32 removes old8K extra tail forward and old45K extra verify/tail/restore for both heads in both blocks. All new and development repeat goals pass.",
+  "remaining_matching_result": "1110 hits: [0,0,4,1106]; four a2 occur in subset old-repeat-code and its control/recovery. These request-level repeat results remain profitable; a2 alone does not establish an unprofitable match. Remaining protected timing regressions occur with zero suffix hits, so further admission tightening has no supporting evidence as a remedy.",
+  "next_action": "Preserve f356 installed program/sidecar and existing explicit BF16 subset; independently archive both attempts, candidate and failed-protection evidence; close and push research stage. No deployment health calls, parameter scan or added inference.",
+  "limitations": [
+    "DESCRIPTIVE_ONLY; two paired starts, correlated within-start requests; no population noninferiority, causal attribution or future-zero-loss claim.",
+    "这些无命中请求没有额外verify/tail/extend。当前记录没有把小幅耗时变化因果归于准入门、索引、CPU/GPU调度或缓存；普通模式单对下降也提示归因限制。",
+    "Reused target oracle has two GDN layers and does not directly cover target full-attention/QSA long-context state; draft full-attention state is within its original oracle scope.",
+    "Current eight timing requests have zero suffix hits; they do not measure long-repeat suffix phase timings.",
+    "Original failed CPU fixture attempt remains STOPPED; repaired continuation is separate, not a continuous lease or rewritten success."
+  ]
+}

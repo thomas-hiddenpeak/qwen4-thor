@@ -1,0 +1,7017 @@
+{
+  "created_utc": "2026-10-23T21:05:16.331952+00:00",
+  "role": "Independent bounded protection review; recommendation to root, not a deployment authorization.",
+  "evidence_validity": "VALID",
+  "measurement_complete": true,
+  "statistical_conclusion": "DESCRIPTIVE_ONLY; insufficient for population noninferiority or a general causal regression claim.",
+  "engineering_recommendation": "NO_GO_PROTECTION_NOT_CLEARED",
+  "protections_accepted": false,
+  "accepts_candidate_for_deployment": false,
+  "new_gpu_requests": 0,
+  "new_http_requests": 0,
+  "new_tests": 0,
+  "inputs": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/analysis.json": "4584ed7493f2fd9208047d76cf603cb4fab33ff31cfd6d5d0502045276a8cdf2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/report-tables.md": "fe82f33c03b38cfa0d688d4be1780bb139082e31b1b97f820cd878fd6c5fc938",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/audit-evidence.json": "3a296afa13e68638f114154327aae47f7257f93cd69f325817f58a7495e83c2e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/acceptance-v2/frozen-plan.json": "fd8b0e8eb1d945136cb0de3acd1f12563ebbe0e19b26eba2afa3a7dd77c58619",
+    "/home/rm01/models/dev/qwen4-thor/docs/MTP_SUFFIX_ADMISSION_2026-10-24.md": "0095152a9c24c7ca12655ad593d293b671f0ef7bb57a052928dbc71ceb5f3c80",
+    "/home/rm01/models/dev/qwen4-thor/docs/PERFORMANCE_DECISION_PROTOCOL.md": "e8d8ac94ad8994a99257eab3cf63f2bca9b9d4726599b46893322d1d3b3c38fe"
+  },
+  "frozen_rules": [
+    "Performance optimization: each protection reviewed separately; credible adverse observations cannot be offset by repeat benefits or target-work reductions.",
+    "No frozen requirement that every observed ratio be nonnegative; small observed differences are not automatically confirmed regression.",
+    "Two paired startup blocks and three requests per five-tier startup give descriptive evidence; requests within one startup are not independent startup repeats.",
+    "No new percentage tolerance, significance threshold, noise-derived acceptance band, parameter scan or automatic extra sampling."
+  ],
+  "primary_protection_not_cleared": {
+    "scope": "subset head, held-out context-45056 and context-204800, HTTP TTFT",
+    "evidence": [
+      {
+        "head": "subset",
+        "case": "context-204800",
+        "role": "held_out_acceptance",
+        "block": 1,
+        "metric": "ttft",
+        "startup_order": "ON_OFF",
+        "repetitions_per_start": 3,
+        "before_raw": [
+          167.0803629490547,
+          167.1012658920372,
+          166.94483764609322
+        ],
+        "after_raw": [
+          167.29604055301752,
+          167.34626176406164,
+          167.3458175159758
+        ],
+        "before_range": [
+          166.94483764609322,
+          167.1012658920372
+        ],
+        "after_range": [
+          167.29604055301752,
+          167.34626176406164
+        ],
+        "before_median": 167.0803629490547,
+        "after_median": 167.3458175159758,
+        "median_change": 0.26545456692110747,
+        "change_pct": 0.1588783757921597,
+        "median_adverse": true,
+        "observed_ranges_strictly_separated_in_adverse_direction": true,
+        "input_tokens": [
+          204781
+        ],
+        "output_identity_equal": true,
+        "window": "HTTP TTFT",
+        "first_request_of_service": [
+          false,
+          false,
+          false
+        ],
+        "on_host_index_cost_ns": [
+          {
+            "init_ns": 877892,
+            "append_ns": 51198,
+            "query_ns": 44040,
+            "numeric_ns": 4731,
+            "release_ns": 19037
+          },
+          {
+            "init_ns": 788178,
+            "append_ns": 71353,
+            "query_ns": 48390,
+            "numeric_ns": 4257,
+            "release_ns": 17963
+          },
+          {
+            "init_ns": 788899,
+            "append_ns": 67123,
+            "query_ns": 46020,
+            "numeric_ns": 5072,
+            "release_ns": 18648
+          }
+        ]
+      },
+      {
+        "head": "subset",
+        "case": "context-204800",
+        "role": "held_out_acceptance",
+        "block": 2,
+        "metric": "ttft",
+        "startup_order": "OFF_ON",
+        "repetitions_per_start": 3,
+        "before_raw": [
+          166.99448393995408,
+          167.06506241403986,
+          167.06277798407245
+        ],
+        "after_raw": [
+          167.2154436839046,
+          167.27107544103637,
+          167.18588701600675
+        ],
+        "before_range": [
+          166.99448393995408,
+          167.06506241403986
+        ],
+        "after_range": [
+          167.18588701600675,
+          167.27107544103637
+        ],
+        "before_median": 167.06277798407245,
+        "after_median": 167.2154436839046,
+        "median_change": 0.1526656998321414,
+        "change_pct": 0.09138223467510809,
+        "median_adverse": true,
+        "observed_ranges_strictly_separated_in_adverse_direction": true,
+        "input_tokens": [
+          204781
+        ],
+        "output_identity_equal": true,
+        "window": "HTTP TTFT",
+        "first_request_of_service": [
+          false,
+          false,
+          false
+        ],
+        "on_host_index_cost_ns": [
+          {
+            "init_ns": 818508,
+            "append_ns": 71613,
+            "query_ns": 42306,
+            "numeric_ns": 5037,
+            "release_ns": 19389
+          },
+          {
+            "init_ns": 818591,
+            "append_ns": 41828,
+            "query_ns": 36095,
+            "numeric_ns": 5196,
+            "release_ns": 17852
+          },
+          {
+            "init_ns": 785240,
+            "append_ns": 70941,
+            "query_ns": 44551,
+            "numeric_ns": 6073,
+            "release_ns": 17324
+          }
+        ]
+      },
+      {
+        "head": "subset",
+        "case": "context-45056",
+        "role": "held_out_acceptance",
+        "block": 1,
+        "metric": "ttft",
+        "startup_order": "ON_OFF",
+        "repetitions_per_start": 3,
+        "before_raw": [
+          31.814208977040835,
+          31.81105698493775,
+          31.767395582981408
+        ],
+        "after_raw": [
+          31.902180182980374,
+          31.83685791201424,
+          31.827150275930762
+        ],
+        "before_range": [
+          31.767395582981408,
+          31.814208977040835
+        ],
+        "after_range": [
+          31.827150275930762,
+          31.902180182980374
+        ],
+        "before_median": 31.81105698493775,
+        "after_median": 31.83685791201424,
+        "median_change": 0.025800927076488733,
+        "change_pct": 0.08110678965713713,
+        "median_adverse": true,
+        "observed_ranges_strictly_separated_in_adverse_direction": true,
+        "input_tokens": [
+          45044
+        ],
+        "output_identity_equal": true,
+        "window": "HTTP TTFT",
+        "first_request_of_service": [
+          false,
+          false,
+          false
+        ],
+        "on_host_index_cost_ns": [
+          {
+            "init_ns": 634326,
+            "append_ns": 75739,
+            "query_ns": 47704,
+            "numeric_ns": 4221,
+            "release_ns": 5055
+          },
+          {
+            "init_ns": 291659,
+            "append_ns": 83978,
+            "query_ns": 49716,
+            "numeric_ns": 3400,
+            "release_ns": 10620
+          },
+          {
+            "init_ns": 324982,
+            "append_ns": 79463,
+            "query_ns": 48071,
+            "numeric_ns": 3974,
+            "release_ns": 9564
+          }
+        ]
+      },
+      {
+        "head": "subset",
+        "case": "context-45056",
+        "role": "held_out_acceptance",
+        "block": 2,
+        "metric": "ttft",
+        "startup_order": "OFF_ON",
+        "repetitions_per_start": 3,
+        "before_raw": [
+          31.791365068987943,
+          31.802633163984865,
+          31.797279092948884
+        ],
+        "after_raw": [
+          31.855811171000823,
+          31.82663624093402,
+          31.861729746917263
+        ],
+        "before_range": [
+          31.791365068987943,
+          31.802633163984865
+        ],
+        "after_range": [
+          31.82663624093402,
+          31.861729746917263
+        ],
+        "before_median": 31.797279092948884,
+        "after_median": 31.855811171000823,
+        "median_change": 0.05853207805193961,
+        "change_pct": 0.18407888889122592,
+        "median_adverse": true,
+        "observed_ranges_strictly_separated_in_adverse_direction": true,
+        "input_tokens": [
+          45044
+        ],
+        "output_identity_equal": true,
+        "window": "HTTP TTFT",
+        "first_request_of_service": [
+          false,
+          false,
+          false
+        ],
+        "on_host_index_cost_ns": [
+          {
+            "init_ns": 516764,
+            "append_ns": 61500,
+            "query_ns": 33783,
+            "numeric_ns": 3288,
+            "release_ns": 5463
+          },
+          {
+            "init_ns": 331420,
+            "append_ns": 65305,
+            "query_ns": 38753,
+            "numeric_ns": 4295,
+            "release_ns": 8731
+          },
+          {
+            "init_ns": 329086,
+            "append_ns": 60805,
+            "query_ns": 41479,
+            "numeric_ns": 4433,
+            "release_ns": 9592
+          }
+        ]
+      }
+    ],
+    "judgement": "Both AB/BA blocks have adverse medians, and all three ON observations are slower than all three OFF observations in each block. This repeated ordered separation is a credible bounded adverse signal and is not cleared by these data. It is stronger than a single small median change, without establishing population significance or exact causal attribution.",
+    "absolute_median_changes_ms": {
+      "context-45056": [
+        25.800927076488733,
+        58.53207805193961
+      ],
+      "context-204800": [
+        265.45456692110747,
+        152.6656998321414
+      ]
+    },
+    "range_boundary": "Observed range separation is a descriptive feature, not a confidence interval, significance test, noise floor or loss tolerance."
+  },
+  "supporting_review": {
+    "new8k_decode": {
+      "evidence": [
+        {
+          "head": "full",
+          "case": "context-8192",
+          "role": "held_out_acceptance",
+          "block": 1,
+          "metric": "decode_tps",
+          "startup_order": "OFF_ON",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            34.61153623540677,
+            34.657223891620546,
+            34.683909560840576
+          ],
+          "after_raw": [
+            34.62384436241975,
+            34.63008536231561,
+            34.65673653469881
+          ],
+          "before_range": [
+            34.61153623540677,
+            34.683909560840576
+          ],
+          "after_range": [
+            34.62384436241975,
+            34.65673653469881
+          ],
+          "before_median": 34.657223891620546,
+          "after_median": 34.63008536231561,
+          "median_change": -0.027138529304934877,
+          "change_pct": -0.0783055486204054,
+          "median_adverse": true,
+          "observed_ranges_strictly_separated_in_adverse_direction": false,
+          "input_tokens": [
+            8170
+          ],
+          "output_identity_equal": true,
+          "window": "(actual_output-1)/(HTTP latency-TTFT)",
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "on_host_index_cost_ns": [
+            {
+              "init_ns": 141289,
+              "append_ns": 85880,
+              "query_ns": 42653,
+              "numeric_ns": 297,
+              "release_ns": 2370
+            },
+            {
+              "init_ns": 109084,
+              "append_ns": 59895,
+              "query_ns": 29996,
+              "numeric_ns": 379,
+              "release_ns": 935
+            },
+            {
+              "init_ns": 115798,
+              "append_ns": 98088,
+              "query_ns": 37310,
+              "numeric_ns": 417,
+              "release_ns": 1287
+            }
+          ]
+        },
+        {
+          "head": "full",
+          "case": "context-8192",
+          "role": "held_out_acceptance",
+          "block": 2,
+          "metric": "decode_tps",
+          "startup_order": "ON_OFF",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            34.60771943931912,
+            34.626172266221296,
+            34.56602915220705
+          ],
+          "after_raw": [
+            34.65045632873108,
+            34.5480352154346,
+            34.49711924220213
+          ],
+          "before_range": [
+            34.56602915220705,
+            34.626172266221296
+          ],
+          "after_range": [
+            34.49711924220213,
+            34.65045632873108
+          ],
+          "before_median": 34.60771943931912,
+          "after_median": 34.5480352154346,
+          "median_change": -0.059684223884516996,
+          "change_pct": -0.17245928033243763,
+          "median_adverse": true,
+          "observed_ranges_strictly_separated_in_adverse_direction": false,
+          "input_tokens": [
+            8170
+          ],
+          "output_identity_equal": true,
+          "window": "(actual_output-1)/(HTTP latency-TTFT)",
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "on_host_index_cost_ns": [
+            {
+              "init_ns": 115733,
+              "append_ns": 40522,
+              "query_ns": 29170,
+              "numeric_ns": 509,
+              "release_ns": 2472
+            },
+            {
+              "init_ns": 117965,
+              "append_ns": 41863,
+              "query_ns": 26345,
+              "numeric_ns": 602,
+              "release_ns": 3167
+            },
+            {
+              "init_ns": 116484,
+              "append_ns": 61477,
+              "query_ns": 32175,
+              "numeric_ns": 472,
+              "release_ns": 2787
+            }
+          ]
+        },
+        {
+          "head": "subset",
+          "case": "context-8192",
+          "role": "held_out_acceptance",
+          "block": 1,
+          "metric": "decode_tps",
+          "startup_order": "ON_OFF",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            38.64524489931835,
+            38.67515989659743,
+            38.6615591342276
+          ],
+          "after_raw": [
+            38.662846655816956,
+            38.620776928668114,
+            38.62061926196649
+          ],
+          "before_range": [
+            38.64524489931835,
+            38.67515989659743
+          ],
+          "after_range": [
+            38.62061926196649,
+            38.662846655816956
+          ],
+          "before_median": 38.6615591342276,
+          "after_median": 38.620776928668114,
+          "median_change": -0.04078220555948775,
+          "change_pct": -0.10548515495171218,
+          "median_adverse": true,
+          "observed_ranges_strictly_separated_in_adverse_direction": false,
+          "input_tokens": [
+            8170
+          ],
+          "output_identity_equal": true,
+          "window": "(actual_output-1)/(HTTP latency-TTFT)",
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "on_host_index_cost_ns": [
+            {
+              "init_ns": 87898,
+              "append_ns": 36748,
+              "query_ns": 25116,
+              "numeric_ns": 519,
+              "release_ns": 2176
+            },
+            {
+              "init_ns": 106380,
+              "append_ns": 35837,
+              "query_ns": 23649,
+              "numeric_ns": 639,
+              "release_ns": 1500
+            },
+            {
+              "init_ns": 104474,
+              "append_ns": 70750,
+              "query_ns": 30556,
+              "numeric_ns": 371,
+              "release_ns": 1212
+            }
+          ]
+        },
+        {
+          "head": "subset",
+          "case": "context-8192",
+          "role": "held_out_acceptance",
+          "block": 2,
+          "metric": "decode_tps",
+          "startup_order": "OFF_ON",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            38.767470959051906,
+            38.710192631192385,
+            38.74682769003844
+          ],
+          "after_raw": [
+            38.59739618498305,
+            38.57337051114131,
+            38.57386670697264
+          ],
+          "before_range": [
+            38.710192631192385,
+            38.767470959051906
+          ],
+          "after_range": [
+            38.57337051114131,
+            38.59739618498305
+          ],
+          "before_median": 38.74682769003844,
+          "after_median": 38.57386670697264,
+          "median_change": -0.1729609830657992,
+          "change_pct": -0.4463874680255886,
+          "median_adverse": true,
+          "observed_ranges_strictly_separated_in_adverse_direction": true,
+          "input_tokens": [
+            8170
+          ],
+          "output_identity_equal": true,
+          "window": "(actual_output-1)/(HTTP latency-TTFT)",
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "on_host_index_cost_ns": [
+            {
+              "init_ns": 110306,
+              "append_ns": 56455,
+              "query_ns": 30515,
+              "numeric_ns": 407,
+              "release_ns": 1898
+            },
+            {
+              "init_ns": 115297,
+              "append_ns": 58490,
+              "query_ns": 25310,
+              "numeric_ns": 538,
+              "release_ns": 1352
+            },
+            {
+              "init_ns": 116696,
+              "append_ns": 46650,
+              "query_ns": 23703,
+              "numeric_ns": 445,
+              "release_ns": 1481
+            }
+          ]
+        }
+      ],
+      "judgement": "All four head-by-block medians are adverse. Three paired observed ranges overlap; subset block 2 ranges are strictly separated. Thus the signal is concerning, strongest for subset B2, but does not independently establish a stable population loss. Same target work does not clear the timing protection."
+    },
+    "plain_decode": {
+      "evidence": [
+        {
+          "case": "context-1024",
+          "metric": "decode_tps",
+          "startup_pairs": 1,
+          "startup_order": "PARENT_CANDIDATE",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            18.535300585589066,
+            18.596144507041082,
+            18.6340930379919
+          ],
+          "after_raw": [
+            18.54948403699266,
+            18.53546905298837,
+            18.534023281538307
+          ],
+          "before_median": 18.596144507041082,
+          "after_median": 18.53546905298837,
+          "before_range": [
+            18.535300585589066,
+            18.6340930379919
+          ],
+          "after_range": [
+            18.534023281538307,
+            18.54948403699266
+          ],
+          "median_change": -0.06067545405271346,
+          "change_pct": -0.32627975132016873,
+          "observed_ranges_strictly_separated_in_adverse_direction": false,
+          "first_request_of_service": [
+            true,
+            false,
+            false
+          ],
+          "output_identity_equal": true
+        },
+        {
+          "case": "context-4096",
+          "metric": "decode_tps",
+          "startup_pairs": 1,
+          "startup_order": "PARENT_CANDIDATE",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            17.842927202189575,
+            17.853027595443034,
+            17.857713867567895
+          ],
+          "after_raw": [
+            17.856594598362516,
+            17.842529760335488,
+            17.836879013377516
+          ],
+          "before_median": 17.853027595443034,
+          "after_median": 17.842529760335488,
+          "before_range": [
+            17.842927202189575,
+            17.857713867567895
+          ],
+          "after_range": [
+            17.836879013377516,
+            17.856594598362516
+          ],
+          "median_change": -0.01049783510754665,
+          "change_pct": -0.05880142766500063,
+          "observed_ranges_strictly_separated_in_adverse_direction": false,
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "output_identity_equal": true
+        },
+        {
+          "case": "context-8192",
+          "metric": "decode_tps",
+          "startup_pairs": 1,
+          "startup_order": "PARENT_CANDIDATE",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            18.09820217275846,
+            18.108123298792222,
+            18.116637527211022
+          ],
+          "after_raw": [
+            17.998842766248007,
+            17.999761978348022,
+            18.028463605890277
+          ],
+          "before_median": 18.108123298792222,
+          "after_median": 17.999761978348022,
+          "before_range": [
+            18.09820217275846,
+            18.116637527211022
+          ],
+          "after_range": [
+            17.998842766248007,
+            18.028463605890277
+          ],
+          "median_change": -0.10836132044419955,
+          "change_pct": -0.5984127601529332,
+          "observed_ranges_strictly_separated_in_adverse_direction": true,
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "output_identity_equal": true
+        },
+        {
+          "case": "context-45056",
+          "metric": "decode_tps",
+          "startup_pairs": 1,
+          "startup_order": "PARENT_CANDIDATE",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            17.853594645238424,
+            17.83594683406092,
+            17.854247362202624
+          ],
+          "after_raw": [
+            17.83099186577984,
+            17.84651962643369,
+            17.840652532104105
+          ],
+          "before_median": 17.853594645238424,
+          "after_median": 17.840652532104105,
+          "before_range": [
+            17.83594683406092,
+            17.854247362202624
+          ],
+          "after_range": [
+            17.83099186577984,
+            17.84651962643369
+          ],
+          "median_change": -0.012942113134318589,
+          "change_pct": -0.07249023735268478,
+          "observed_ranges_strictly_separated_in_adverse_direction": false,
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "output_identity_equal": true
+        },
+        {
+          "case": "context-204800",
+          "metric": "decode_tps",
+          "startup_pairs": 1,
+          "startup_order": "PARENT_CANDIDATE",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            17.068522874362667,
+            17.097486466533862,
+            17.089363974315837
+          ],
+          "after_raw": [
+            17.04299351546487,
+            17.010956062750285,
+            16.930531519007005
+          ],
+          "before_median": 17.089363974315837,
+          "after_median": 17.010956062750285,
+          "before_range": [
+            17.068522874362667,
+            17.097486466533862
+          ],
+          "after_range": [
+            16.930531519007005,
+            17.04299351546487
+          ],
+          "median_change": -0.07840791156555227,
+          "change_pct": -0.45881117450242703,
+          "observed_ranges_strictly_separated_in_adverse_direction": true,
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "output_identity_equal": true
+        }
+      ],
+      "judgement": "All five tier medians are adverse; 8K and 200K observed ranges are separated. Only one parent-to-candidate startup pair was measured, with no reverse order. Timing/startup confounding cannot be separated, and three requests are not three independent startup samples. This is auxiliary unresolved protection evidence, not a standalone causal proof."
+    },
+    "full_long_ttft": {
+      "evidence": [
+        {
+          "head": "full",
+          "case": "context-204800",
+          "role": "held_out_acceptance",
+          "block": 1,
+          "metric": "ttft",
+          "startup_order": "OFF_ON",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            167.157900371938,
+            167.11307362408843,
+            167.16311966301873
+          ],
+          "after_raw": [
+            167.1848351689987,
+            167.23308649205137,
+            167.2585873589851
+          ],
+          "before_range": [
+            167.11307362408843,
+            167.16311966301873
+          ],
+          "after_range": [
+            167.1848351689987,
+            167.2585873589851
+          ],
+          "before_median": 167.157900371938,
+          "after_median": 167.23308649205137,
+          "median_change": 0.0751861201133579,
+          "change_pct": 0.04497910056662224,
+          "median_adverse": true,
+          "observed_ranges_strictly_separated_in_adverse_direction": true,
+          "input_tokens": [
+            204781
+          ],
+          "output_identity_equal": true,
+          "window": "HTTP TTFT",
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "on_host_index_cost_ns": [
+            {
+              "init_ns": 850434,
+              "append_ns": 46332,
+              "query_ns": 38815,
+              "numeric_ns": 5073,
+              "release_ns": 17685
+            },
+            {
+              "init_ns": 793200,
+              "append_ns": 54507,
+              "query_ns": 42269,
+              "numeric_ns": 4703,
+              "release_ns": 17796
+            },
+            {
+              "init_ns": 823263,
+              "append_ns": 61769,
+              "query_ns": 47092,
+              "numeric_ns": 4989,
+              "release_ns": 17250
+            }
+          ]
+        },
+        {
+          "head": "full",
+          "case": "context-204800",
+          "role": "held_out_acceptance",
+          "block": 2,
+          "metric": "ttft",
+          "startup_order": "ON_OFF",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            167.0678857800085,
+            167.01971466303803,
+            167.08058167307172
+          ],
+          "after_raw": [
+            167.24063669296447,
+            167.06515020597726,
+            166.39432418800425
+          ],
+          "before_range": [
+            167.01971466303803,
+            167.08058167307172
+          ],
+          "after_range": [
+            166.39432418800425,
+            167.24063669296447
+          ],
+          "before_median": 167.0678857800085,
+          "after_median": 167.06515020597726,
+          "median_change": -0.0027355740312486887,
+          "change_pct": -0.001637402675247479,
+          "median_adverse": false,
+          "observed_ranges_strictly_separated_in_adverse_direction": false,
+          "input_tokens": [
+            204781
+          ],
+          "output_identity_equal": true,
+          "window": "HTTP TTFT",
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "on_host_index_cost_ns": [
+            {
+              "init_ns": 895169,
+              "append_ns": 63111,
+              "query_ns": 41661,
+              "numeric_ns": 4740,
+              "release_ns": 17102
+            },
+            {
+              "init_ns": 807981,
+              "append_ns": 78155,
+              "query_ns": 40098,
+              "numeric_ns": 2795,
+              "release_ns": 18241
+            },
+            {
+              "init_ns": 768063,
+              "append_ns": 46662,
+              "query_ns": 29311,
+              "numeric_ns": 2158,
+              "release_ns": 9518
+            }
+          ]
+        },
+        {
+          "head": "full",
+          "case": "context-45056",
+          "role": "held_out_acceptance",
+          "block": 1,
+          "metric": "ttft",
+          "startup_order": "OFF_ON",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            31.860071612056345,
+            31.856494197971188,
+            31.873094670008868
+          ],
+          "after_raw": [
+            31.9173788910266,
+            31.858407354098745,
+            31.907219087006524
+          ],
+          "before_range": [
+            31.856494197971188,
+            31.873094670008868
+          ],
+          "after_range": [
+            31.858407354098745,
+            31.9173788910266
+          ],
+          "before_median": 31.860071612056345,
+          "after_median": 31.907219087006524,
+          "median_change": 0.04714747495017946,
+          "change_pct": 0.14798295347313584,
+          "median_adverse": true,
+          "observed_ranges_strictly_separated_in_adverse_direction": false,
+          "input_tokens": [
+            45044
+          ],
+          "output_identity_equal": true,
+          "window": "HTTP TTFT",
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "on_host_index_cost_ns": [
+            {
+              "init_ns": 489164,
+              "append_ns": 53215,
+              "query_ns": 43628,
+              "numeric_ns": 5915,
+              "release_ns": 5370
+            },
+            {
+              "init_ns": 316189,
+              "append_ns": 54716,
+              "query_ns": 40246,
+              "numeric_ns": 4326,
+              "release_ns": 9750
+            },
+            {
+              "init_ns": 238679,
+              "append_ns": 52369,
+              "query_ns": 39065,
+              "numeric_ns": 5414,
+              "release_ns": 9426
+            }
+          ]
+        },
+        {
+          "head": "full",
+          "case": "context-45056",
+          "role": "held_out_acceptance",
+          "block": 2,
+          "metric": "ttft",
+          "startup_order": "ON_OFF",
+          "repetitions_per_start": 3,
+          "before_raw": [
+            31.851410109899007,
+            31.896508666919544,
+            31.830814769025892
+          ],
+          "after_raw": [
+            31.885054419049993,
+            31.863721139961854,
+            31.914705333067104
+          ],
+          "before_range": [
+            31.830814769025892,
+            31.896508666919544
+          ],
+          "after_range": [
+            31.863721139961854,
+            31.914705333067104
+          ],
+          "before_median": 31.851410109899007,
+          "after_median": 31.885054419049993,
+          "median_change": 0.03364430915098637,
+          "change_pct": 0.10562894714833959,
+          "median_adverse": true,
+          "observed_ranges_strictly_separated_in_adverse_direction": false,
+          "input_tokens": [
+            45044
+          ],
+          "output_identity_equal": true,
+          "window": "HTTP TTFT",
+          "first_request_of_service": [
+            false,
+            false,
+            false
+          ],
+          "on_host_index_cost_ns": [
+            {
+              "init_ns": 503703,
+              "append_ns": 43565,
+              "query_ns": 34717,
+              "numeric_ns": 5009,
+              "release_ns": 5361
+            },
+            {
+              "init_ns": 288542,
+              "append_ns": 74437,
+              "query_ns": 35934,
+              "numeric_ns": 3946,
+              "release_ns": 9630
+            },
+            {
+              "init_ns": 334551,
+              "append_ns": 67943,
+              "query_ns": 39187,
+              "numeric_ns": 4194,
+              "release_ns": 11056
+            }
+          ]
+        }
+      ],
+      "judgement": "Full 45K medians are adverse in both blocks but the ranges overlap. Full 200K has one adverse separated block and one near-zero favorable median with a wide ON range. These do not have the same repeatability as the subset long-context TTFT pattern."
+    },
+    "other_protections": "All head/scenario/metric raw values and ranges are retained below, including favorable and mixed cases. Single-request scenarios have no within-start replication; their point ranges are deliberately not classified as separated evidence."
+  },
+  "goals_satisfied_separately": {
+    "full": {
+      "repeated_scenarios": {
+        "repeat-code": true,
+        "repeat-text": true,
+        "old-repeat-code": true,
+        "old-repeat-text": true
+      },
+      "development_work_probes": {
+        "old-8k": true,
+        "old-45k": true
+      }
+    },
+    "subset": {
+      "repeated_scenarios": {
+        "repeat-code": true,
+        "repeat-text": true,
+        "old-repeat-code": true,
+        "old-repeat-text": true
+      },
+      "development_work_probes": {
+        "old-8k": true,
+        "old-45k": true
+      }
+    }
+  },
+  "what_does_not_clear_the_protections": [
+    "Passing old8K/old45K target-forward and processed-row gates establishes that the diagnosed extra target work was removed; it does not establish unchanged HTTP TTFT/decode.",
+    "Passing every new/development repeat gain goal is necessary benefit evidence, not compensation for long-context TTFT protection.",
+    "The suffix host counters time only instrumented index operations. Their sub-millisecond scale does not explain the entire observed TTFT difference and cannot subtract it away.",
+    "Four separate timing services measure old8K/old45K iterative MTP windows. They do not directly measure new45K/200K prefill/TTFT or the ordinary-decode comparison.",
+    "Healthy sampled environment and identical outputs do not exclude timing drift, cache/frequency differences or all sub-sampling interference; no such mechanism was causally identified here."
+  ],
+  "decision_boundary": "Stop this bounded candidate without deployment or additional sampling. Retain f356 and all candidate evidence. This recommendation records protection not cleared, not a theorem of universal slowdown or a statistical noninferiority rejection.",
+  "analysis_median_recalculation_errors": [],
+  "all_mtp_metric_observations": [
+    {
+      "head": "full",
+      "case": "context-1024",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        35.482939567319754,
+        35.45945626224164,
+        35.50458648196465
+      ],
+      "after_raw": [
+        35.55127795155635,
+        35.59440852199693,
+        35.62266892946278
+      ],
+      "before_range": [
+        35.45945626224164,
+        35.50458648196465
+      ],
+      "after_range": [
+        35.55127795155635,
+        35.62266892946278
+      ],
+      "before_median": 35.482939567319754,
+      "after_median": 35.59440852199693,
+      "median_change": 0.11146895467717854,
+      "change_pct": 0.31414802729547997,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        998
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        true,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 124334,
+          "append_ns": 66913,
+          "query_ns": 40842,
+          "numeric_ns": 4008,
+          "release_ns": 16889
+        },
+        {
+          "init_ns": 55380,
+          "append_ns": 81255,
+          "query_ns": 49247,
+          "numeric_ns": 4156,
+          "release_ns": 15667
+        },
+        {
+          "init_ns": 49426,
+          "append_ns": 38564,
+          "query_ns": 36036,
+          "numeric_ns": 4546,
+          "release_ns": 2843
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-1024",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        1.1003495500190184,
+        0.9162355510052294,
+        0.915780897019431
+      ],
+      "after_raw": [
+        1.0792234509717673,
+        0.9111187199596316,
+        0.9122478020144626
+      ],
+      "before_range": [
+        0.915780897019431,
+        1.1003495500190184
+      ],
+      "after_range": [
+        0.9111187199596316,
+        1.0792234509717673
+      ],
+      "before_median": 0.9162355510052294,
+      "after_median": 0.9122478020144626,
+      "median_change": -0.003987748990766704,
+      "change_pct": -0.4352318556501755,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        998
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        true,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 124334,
+          "append_ns": 66913,
+          "query_ns": 40842,
+          "numeric_ns": 4008,
+          "release_ns": 16889
+        },
+        {
+          "init_ns": 55380,
+          "append_ns": 81255,
+          "query_ns": 49247,
+          "numeric_ns": 4156,
+          "release_ns": 15667
+        },
+        {
+          "init_ns": 49426,
+          "append_ns": 38564,
+          "query_ns": 36036,
+          "numeric_ns": 4546,
+          "release_ns": 2843
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-1024",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        35.532373637115136,
+        35.530793970254564,
+        35.64907991207738
+      ],
+      "after_raw": [
+        35.548560649842855,
+        35.53708321422218,
+        35.60164762072866
+      ],
+      "before_range": [
+        35.530793970254564,
+        35.64907991207738
+      ],
+      "after_range": [
+        35.53708321422218,
+        35.60164762072866
+      ],
+      "before_median": 35.532373637115136,
+      "after_median": 35.548560649842855,
+      "median_change": 0.01618701272771972,
+      "change_pct": 0.04555567520772019,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        998
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        true,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 132114,
+          "append_ns": 75375,
+          "query_ns": 46222,
+          "numeric_ns": 4122,
+          "release_ns": 18352
+        },
+        {
+          "init_ns": 47862,
+          "append_ns": 47992,
+          "query_ns": 34728,
+          "numeric_ns": 3871,
+          "release_ns": 16408
+        },
+        {
+          "init_ns": 52742,
+          "append_ns": 38591,
+          "query_ns": 30312,
+          "numeric_ns": 3390,
+          "release_ns": 15547
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-1024",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        1.0912123210728168,
+        0.917323432979174,
+        0.9207773009547964
+      ],
+      "after_raw": [
+        1.0672229510964826,
+        0.9106767899356782,
+        0.9083540630526841
+      ],
+      "before_range": [
+        0.917323432979174,
+        1.0912123210728168
+      ],
+      "after_range": [
+        0.9083540630526841,
+        1.0672229510964826
+      ],
+      "before_median": 0.9207773009547964,
+      "after_median": 0.9106767899356782,
+      "median_change": -0.01010051101911813,
+      "change_pct": -1.0969548237825255,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        998
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        true,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 132114,
+          "append_ns": 75375,
+          "query_ns": 46222,
+          "numeric_ns": 4122,
+          "release_ns": 18352
+        },
+        {
+          "init_ns": 47862,
+          "append_ns": 47992,
+          "query_ns": 34728,
+          "numeric_ns": 3871,
+          "release_ns": 16408
+        },
+        {
+          "init_ns": 52742,
+          "append_ns": 38591,
+          "query_ns": 30312,
+          "numeric_ns": 3390,
+          "release_ns": 15547
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-204800",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        33.07361866568878,
+        33.04414067278713,
+        33.13300844435774
+      ],
+      "after_raw": [
+        33.1506818555945,
+        33.11256436986803,
+        33.17267394507056
+      ],
+      "before_range": [
+        33.04414067278713,
+        33.13300844435774
+      ],
+      "after_range": [
+        33.11256436986803,
+        33.17267394507056
+      ],
+      "before_median": 33.07361866568878,
+      "after_median": 33.1506818555945,
+      "median_change": 0.07706318990572214,
+      "change_pct": 0.23300501431271492,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        204781
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 850434,
+          "append_ns": 46332,
+          "query_ns": 38815,
+          "numeric_ns": 5073,
+          "release_ns": 17685
+        },
+        {
+          "init_ns": 793200,
+          "append_ns": 54507,
+          "query_ns": 42269,
+          "numeric_ns": 4703,
+          "release_ns": 17796
+        },
+        {
+          "init_ns": 823263,
+          "append_ns": 61769,
+          "query_ns": 47092,
+          "numeric_ns": 4989,
+          "release_ns": 17250
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-204800",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        167.157900371938,
+        167.11307362408843,
+        167.16311966301873
+      ],
+      "after_raw": [
+        167.1848351689987,
+        167.23308649205137,
+        167.2585873589851
+      ],
+      "before_range": [
+        167.11307362408843,
+        167.16311966301873
+      ],
+      "after_range": [
+        167.1848351689987,
+        167.2585873589851
+      ],
+      "before_median": 167.157900371938,
+      "after_median": 167.23308649205137,
+      "median_change": 0.0751861201133579,
+      "change_pct": 0.04497910056662224,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": true,
+      "input_tokens": [
+        204781
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 850434,
+          "append_ns": 46332,
+          "query_ns": 38815,
+          "numeric_ns": 5073,
+          "release_ns": 17685
+        },
+        {
+          "init_ns": 793200,
+          "append_ns": 54507,
+          "query_ns": 42269,
+          "numeric_ns": 4703,
+          "release_ns": 17796
+        },
+        {
+          "init_ns": 823263,
+          "append_ns": 61769,
+          "query_ns": 47092,
+          "numeric_ns": 4989,
+          "release_ns": 17250
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-204800",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        33.09555816556944,
+        33.077758430695944,
+        33.08250898512755
+      ],
+      "after_raw": [
+        33.01640774771366,
+        33.083696444071755,
+        32.58885883037437
+      ],
+      "before_range": [
+        33.077758430695944,
+        33.09555816556944
+      ],
+      "after_range": [
+        32.58885883037437,
+        33.083696444071755
+      ],
+      "before_median": 33.08250898512755,
+      "after_median": 33.01640774771366,
+      "median_change": -0.06610123741388918,
+      "change_pct": -0.1998072076202173,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        204781
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 895169,
+          "append_ns": 63111,
+          "query_ns": 41661,
+          "numeric_ns": 4740,
+          "release_ns": 17102
+        },
+        {
+          "init_ns": 807981,
+          "append_ns": 78155,
+          "query_ns": 40098,
+          "numeric_ns": 2795,
+          "release_ns": 18241
+        },
+        {
+          "init_ns": 768063,
+          "append_ns": 46662,
+          "query_ns": 29311,
+          "numeric_ns": 2158,
+          "release_ns": 9518
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-204800",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        167.0678857800085,
+        167.01971466303803,
+        167.08058167307172
+      ],
+      "after_raw": [
+        167.24063669296447,
+        167.06515020597726,
+        166.39432418800425
+      ],
+      "before_range": [
+        167.01971466303803,
+        167.08058167307172
+      ],
+      "after_range": [
+        166.39432418800425,
+        167.24063669296447
+      ],
+      "before_median": 167.0678857800085,
+      "after_median": 167.06515020597726,
+      "median_change": -0.0027355740312486887,
+      "change_pct": -0.001637402675247479,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        204781
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 895169,
+          "append_ns": 63111,
+          "query_ns": 41661,
+          "numeric_ns": 4740,
+          "release_ns": 17102
+        },
+        {
+          "init_ns": 807981,
+          "append_ns": 78155,
+          "query_ns": 40098,
+          "numeric_ns": 2795,
+          "release_ns": 18241
+        },
+        {
+          "init_ns": 768063,
+          "append_ns": 46662,
+          "query_ns": 29311,
+          "numeric_ns": 2158,
+          "release_ns": 9518
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-4096",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        36.71339182998815,
+        36.76001673306819,
+        36.7336821795765
+      ],
+      "after_raw": [
+        36.70543341315884,
+        36.83001738113937,
+        36.800824442994966
+      ],
+      "before_range": [
+        36.71339182998815,
+        36.76001673306819
+      ],
+      "after_range": [
+        36.70543341315884,
+        36.83001738113937
+      ],
+      "before_median": 36.7336821795765,
+      "after_median": 36.800824442994966,
+      "median_change": 0.06714226341846796,
+      "change_pct": 0.18278119544410387,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        4077
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 69806,
+          "append_ns": 39041,
+          "query_ns": 32493,
+          "numeric_ns": 2370,
+          "release_ns": 1305
+        },
+        {
+          "init_ns": 78889,
+          "append_ns": 34737,
+          "query_ns": 30365,
+          "numeric_ns": 2379,
+          "release_ns": 1685
+        },
+        {
+          "init_ns": 74008,
+          "append_ns": 38691,
+          "query_ns": 32284,
+          "numeric_ns": 2647,
+          "release_ns": 1232
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-4096",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        2.976591712096706,
+        2.9220500690862536,
+        2.921658408944495
+      ],
+      "after_raw": [
+        2.9709974880097434,
+        2.9267436219379306,
+        2.9220806589582935
+      ],
+      "before_range": [
+        2.921658408944495,
+        2.976591712096706
+      ],
+      "after_range": [
+        2.9220806589582935,
+        2.9709974880097434
+      ],
+      "before_median": 2.9220500690862536,
+      "after_median": 2.9267436219379306,
+      "median_change": 0.004693552851676941,
+      "change_pct": 0.16062533976854976,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        4077
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 69806,
+          "append_ns": 39041,
+          "query_ns": 32493,
+          "numeric_ns": 2370,
+          "release_ns": 1305
+        },
+        {
+          "init_ns": 78889,
+          "append_ns": 34737,
+          "query_ns": 30365,
+          "numeric_ns": 2379,
+          "release_ns": 1685
+        },
+        {
+          "init_ns": 74008,
+          "append_ns": 38691,
+          "query_ns": 32284,
+          "numeric_ns": 2647,
+          "release_ns": 1232
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-4096",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        36.685310423788465,
+        36.615124562496355,
+        36.66810528663306
+      ],
+      "after_raw": [
+        36.665131852566155,
+        36.65903598421358,
+        36.61337880746008
+      ],
+      "before_range": [
+        36.615124562496355,
+        36.685310423788465
+      ],
+      "after_range": [
+        36.61337880746008,
+        36.665131852566155
+      ],
+      "before_median": 36.66810528663306,
+      "after_median": 36.65903598421358,
+      "median_change": -0.009069302419476344,
+      "change_pct": -0.024733490723294338,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        4077
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 66149,
+          "append_ns": 41747,
+          "query_ns": 33058,
+          "numeric_ns": 2184,
+          "release_ns": 1287
+        },
+        {
+          "init_ns": 81631,
+          "append_ns": 41054,
+          "query_ns": 30392,
+          "numeric_ns": 1730,
+          "release_ns": 3611
+        },
+        {
+          "init_ns": 76528,
+          "append_ns": 53186,
+          "query_ns": 37280,
+          "numeric_ns": 2546,
+          "release_ns": 2352
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-4096",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        2.974380888044834,
+        2.9238253120565787,
+        2.9201602509710938
+      ],
+      "after_raw": [
+        2.9644976999843493,
+        2.9223275530384853,
+        2.928428304963745
+      ],
+      "before_range": [
+        2.9201602509710938,
+        2.974380888044834
+      ],
+      "after_range": [
+        2.9223275530384853,
+        2.9644976999843493
+      ],
+      "before_median": 2.9238253120565787,
+      "after_median": 2.928428304963745,
+      "median_change": 0.004602992907166481,
+      "change_pct": 0.15743050339518394,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        4077
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 66149,
+          "append_ns": 41747,
+          "query_ns": 33058,
+          "numeric_ns": 2184,
+          "release_ns": 1287
+        },
+        {
+          "init_ns": 81631,
+          "append_ns": 41054,
+          "query_ns": 30392,
+          "numeric_ns": 1730,
+          "release_ns": 3611
+        },
+        {
+          "init_ns": 76528,
+          "append_ns": 53186,
+          "query_ns": 37280,
+          "numeric_ns": 2546,
+          "release_ns": 2352
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-45056",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        35.983702137824416,
+        35.974794954737106,
+        35.96088810423092
+      ],
+      "after_raw": [
+        36.020673140367016,
+        36.07957657124128,
+        36.085960836269194
+      ],
+      "before_range": [
+        35.96088810423092,
+        35.983702137824416
+      ],
+      "after_range": [
+        36.020673140367016,
+        36.085960836269194
+      ],
+      "before_median": 35.974794954737106,
+      "after_median": 36.07957657124128,
+      "median_change": 0.10478161650417661,
+      "change_pct": 0.2912639714444776,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        45044
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 489164,
+          "append_ns": 53215,
+          "query_ns": 43628,
+          "numeric_ns": 5915,
+          "release_ns": 5370
+        },
+        {
+          "init_ns": 316189,
+          "append_ns": 54716,
+          "query_ns": 40246,
+          "numeric_ns": 4326,
+          "release_ns": 9750
+        },
+        {
+          "init_ns": 238679,
+          "append_ns": 52369,
+          "query_ns": 39065,
+          "numeric_ns": 5414,
+          "release_ns": 9426
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-45056",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        31.860071612056345,
+        31.856494197971188,
+        31.873094670008868
+      ],
+      "after_raw": [
+        31.9173788910266,
+        31.858407354098745,
+        31.907219087006524
+      ],
+      "before_range": [
+        31.856494197971188,
+        31.873094670008868
+      ],
+      "after_range": [
+        31.858407354098745,
+        31.9173788910266
+      ],
+      "before_median": 31.860071612056345,
+      "after_median": 31.907219087006524,
+      "median_change": 0.04714747495017946,
+      "change_pct": 0.14798295347313584,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        45044
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 489164,
+          "append_ns": 53215,
+          "query_ns": 43628,
+          "numeric_ns": 5915,
+          "release_ns": 5370
+        },
+        {
+          "init_ns": 316189,
+          "append_ns": 54716,
+          "query_ns": 40246,
+          "numeric_ns": 4326,
+          "release_ns": 9750
+        },
+        {
+          "init_ns": 238679,
+          "append_ns": 52369,
+          "query_ns": 39065,
+          "numeric_ns": 5414,
+          "release_ns": 9426
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-45056",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        35.94163276051698,
+        35.971352531519315,
+        35.65303955971222
+      ],
+      "after_raw": [
+        35.952694274211105,
+        35.919392007548815,
+        35.92856338969406
+      ],
+      "before_range": [
+        35.65303955971222,
+        35.971352531519315
+      ],
+      "after_range": [
+        35.919392007548815,
+        35.952694274211105
+      ],
+      "before_median": 35.94163276051698,
+      "after_median": 35.92856338969406,
+      "median_change": -0.013069370822918813,
+      "change_pct": -0.036362763233388495,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        45044
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 503703,
+          "append_ns": 43565,
+          "query_ns": 34717,
+          "numeric_ns": 5009,
+          "release_ns": 5361
+        },
+        {
+          "init_ns": 288542,
+          "append_ns": 74437,
+          "query_ns": 35934,
+          "numeric_ns": 3946,
+          "release_ns": 9630
+        },
+        {
+          "init_ns": 334551,
+          "append_ns": 67943,
+          "query_ns": 39187,
+          "numeric_ns": 4194,
+          "release_ns": 11056
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-45056",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        31.851410109899007,
+        31.896508666919544,
+        31.830814769025892
+      ],
+      "after_raw": [
+        31.885054419049993,
+        31.863721139961854,
+        31.914705333067104
+      ],
+      "before_range": [
+        31.830814769025892,
+        31.896508666919544
+      ],
+      "after_range": [
+        31.863721139961854,
+        31.914705333067104
+      ],
+      "before_median": 31.851410109899007,
+      "after_median": 31.885054419049993,
+      "median_change": 0.03364430915098637,
+      "change_pct": 0.10562894714833959,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        45044
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 503703,
+          "append_ns": 43565,
+          "query_ns": 34717,
+          "numeric_ns": 5009,
+          "release_ns": 5361
+        },
+        {
+          "init_ns": 288542,
+          "append_ns": 74437,
+          "query_ns": 35934,
+          "numeric_ns": 3946,
+          "release_ns": 9630
+        },
+        {
+          "init_ns": 334551,
+          "append_ns": 67943,
+          "query_ns": 39187,
+          "numeric_ns": 4194,
+          "release_ns": 11056
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-8192",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        34.61153623540677,
+        34.657223891620546,
+        34.683909560840576
+      ],
+      "after_raw": [
+        34.62384436241975,
+        34.63008536231561,
+        34.65673653469881
+      ],
+      "before_range": [
+        34.61153623540677,
+        34.683909560840576
+      ],
+      "after_range": [
+        34.62384436241975,
+        34.65673653469881
+      ],
+      "before_median": 34.657223891620546,
+      "after_median": 34.63008536231561,
+      "median_change": -0.027138529304934877,
+      "change_pct": -0.0783055486204054,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        8170
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 141289,
+          "append_ns": 85880,
+          "query_ns": 42653,
+          "numeric_ns": 297,
+          "release_ns": 2370
+        },
+        {
+          "init_ns": 109084,
+          "append_ns": 59895,
+          "query_ns": 29996,
+          "numeric_ns": 379,
+          "release_ns": 935
+        },
+        {
+          "init_ns": 115798,
+          "append_ns": 98088,
+          "query_ns": 37310,
+          "numeric_ns": 417,
+          "release_ns": 1287
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-8192",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        5.642519525019452,
+        5.628955369000323,
+        5.607328201062046
+      ],
+      "after_raw": [
+        5.654028787976131,
+        5.633800589945167,
+        5.631990612018853
+      ],
+      "before_range": [
+        5.607328201062046,
+        5.642519525019452
+      ],
+      "after_range": [
+        5.631990612018853,
+        5.654028787976131
+      ],
+      "before_median": 5.628955369000323,
+      "after_median": 5.633800589945167,
+      "median_change": 0.004845220944844186,
+      "change_pct": 0.08607673408689287,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        8170
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 141289,
+          "append_ns": 85880,
+          "query_ns": 42653,
+          "numeric_ns": 297,
+          "release_ns": 2370
+        },
+        {
+          "init_ns": 109084,
+          "append_ns": 59895,
+          "query_ns": 29996,
+          "numeric_ns": 379,
+          "release_ns": 935
+        },
+        {
+          "init_ns": 115798,
+          "append_ns": 98088,
+          "query_ns": 37310,
+          "numeric_ns": 417,
+          "release_ns": 1287
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-8192",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        34.60771943931912,
+        34.626172266221296,
+        34.56602915220705
+      ],
+      "after_raw": [
+        34.65045632873108,
+        34.5480352154346,
+        34.49711924220213
+      ],
+      "before_range": [
+        34.56602915220705,
+        34.626172266221296
+      ],
+      "after_range": [
+        34.49711924220213,
+        34.65045632873108
+      ],
+      "before_median": 34.60771943931912,
+      "after_median": 34.5480352154346,
+      "median_change": -0.059684223884516996,
+      "change_pct": -0.17245928033243763,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        8170
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 115733,
+          "append_ns": 40522,
+          "query_ns": 29170,
+          "numeric_ns": 509,
+          "release_ns": 2472
+        },
+        {
+          "init_ns": 117965,
+          "append_ns": 41863,
+          "query_ns": 26345,
+          "numeric_ns": 602,
+          "release_ns": 3167
+        },
+        {
+          "init_ns": 116484,
+          "append_ns": 61477,
+          "query_ns": 32175,
+          "numeric_ns": 472,
+          "release_ns": 2787
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "context-8192",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        5.649278840981424,
+        5.628865948994644,
+        5.626656736945733
+      ],
+      "after_raw": [
+        5.661959700053558,
+        5.637573213898577,
+        5.643415958038531
+      ],
+      "before_range": [
+        5.626656736945733,
+        5.649278840981424
+      ],
+      "after_range": [
+        5.637573213898577,
+        5.661959700053558
+      ],
+      "before_median": 5.628865948994644,
+      "after_median": 5.643415958038531,
+      "median_change": 0.014550009043887258,
+      "change_pct": 0.2584891730542216,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        8170
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 115733,
+          "append_ns": 40522,
+          "query_ns": 29170,
+          "numeric_ns": 509,
+          "release_ns": 2472
+        },
+        {
+          "init_ns": 117965,
+          "append_ns": 41863,
+          "query_ns": 26345,
+          "numeric_ns": 602,
+          "release_ns": 3167
+        },
+        {
+          "init_ns": 116484,
+          "append_ns": 61477,
+          "query_ns": 32175,
+          "numeric_ns": 472,
+          "release_ns": 2787
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "nonrepeat",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        25.18489005579877
+      ],
+      "after_raw": [
+        25.235331550102345
+      ],
+      "before_range": [
+        25.18489005579877,
+        25.18489005579877
+      ],
+      "after_range": [
+        25.235331550102345,
+        25.235331550102345
+      ],
+      "before_median": 25.18489005579877,
+      "after_median": 25.235331550102345,
+      "median_change": 0.050441494303573364,
+      "change_pct": 0.20028475086377728,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        109
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 41954,
+          "append_ns": 58408,
+          "query_ns": 39855,
+          "numeric_ns": 0,
+          "release_ns": 1481
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "nonrepeat",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.41312298306729645
+      ],
+      "after_raw": [
+        0.4102629319531843
+      ],
+      "before_range": [
+        0.41312298306729645,
+        0.41312298306729645
+      ],
+      "after_range": [
+        0.4102629319531843,
+        0.4102629319531843
+      ],
+      "before_median": 0.41312298306729645,
+      "after_median": 0.4102629319531843,
+      "median_change": -0.0028600511141121387,
+      "change_pct": -0.692300170006821,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        109
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 41954,
+          "append_ns": 58408,
+          "query_ns": 39855,
+          "numeric_ns": 0,
+          "release_ns": 1481
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "nonrepeat",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        25.19954267743296
+      ],
+      "after_raw": [
+        25.134062915757617
+      ],
+      "before_range": [
+        25.19954267743296,
+        25.19954267743296
+      ],
+      "after_range": [
+        25.134062915757617,
+        25.134062915757617
+      ],
+      "before_median": 25.19954267743296,
+      "after_median": 25.134062915757617,
+      "median_change": -0.06547976167534131,
+      "change_pct": -0.2598450397037544,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        109
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 34759,
+          "append_ns": 61510,
+          "query_ns": 31162,
+          "numeric_ns": 0,
+          "release_ns": 1269
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "nonrepeat",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.4036555750062689
+      ],
+      "after_raw": [
+        0.397432379075326
+      ],
+      "before_range": [
+        0.4036555750062689,
+        0.4036555750062689
+      ],
+      "after_range": [
+        0.397432379075326,
+        0.397432379075326
+      ],
+      "before_median": 0.4036555750062689,
+      "after_median": 0.397432379075326,
+      "median_change": -0.006223195930942893,
+      "change_pct": -1.541709396890223,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        109
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 34759,
+          "append_ns": 61510,
+          "query_ns": 31162,
+          "numeric_ns": 0,
+          "release_ns": 1269
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "numeric-enum",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        40.894969608755424
+      ],
+      "after_raw": [
+        40.914949339400145
+      ],
+      "before_range": [
+        40.894969608755424,
+        40.894969608755424
+      ],
+      "after_range": [
+        40.914949339400145,
+        40.914949339400145
+      ],
+      "before_median": 40.894969608755424,
+      "after_median": 40.914949339400145,
+      "median_change": 0.019979730644720917,
+      "change_pct": 0.04885620611989605,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8166
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 117593,
+          "append_ns": 76905,
+          "query_ns": 38640,
+          "numeric_ns": 1925,
+          "release_ns": 1944
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "numeric-enum",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        5.6282700130250305
+      ],
+      "after_raw": [
+        5.630095599102788
+      ],
+      "before_range": [
+        5.6282700130250305,
+        5.6282700130250305
+      ],
+      "after_range": [
+        5.630095599102788,
+        5.630095599102788
+      ],
+      "before_median": 5.6282700130250305,
+      "after_median": 5.630095599102788,
+      "median_change": 0.0018255860777571797,
+      "change_pct": 0.032436007397174116,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8166
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 117593,
+          "append_ns": 76905,
+          "query_ns": 38640,
+          "numeric_ns": 1925,
+          "release_ns": 1944
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "numeric-enum",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        40.97927871888483
+      ],
+      "after_raw": [
+        40.869528346546105
+      ],
+      "before_range": [
+        40.97927871888483,
+        40.97927871888483
+      ],
+      "after_range": [
+        40.869528346546105,
+        40.869528346546105
+      ],
+      "before_median": 40.97927871888483,
+      "after_median": 40.869528346546105,
+      "median_change": -0.10975037233872342,
+      "change_pct": -0.267819190014551,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8166
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 103946,
+          "append_ns": 22381,
+          "query_ns": 17530,
+          "numeric_ns": 919,
+          "release_ns": 1398
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "numeric-enum",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        5.620584661024623
+      ],
+      "after_raw": [
+        5.6254362219478935
+      ],
+      "before_range": [
+        5.620584661024623,
+        5.620584661024623
+      ],
+      "after_range": [
+        5.6254362219478935,
+        5.6254362219478935
+      ],
+      "before_median": 5.620584661024623,
+      "after_median": 5.6254362219478935,
+      "median_change": 0.004851560923270881,
+      "change_pct": 0.08631772699578821,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8166
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 103946,
+          "append_ns": 22381,
+          "query_ns": 17530,
+          "numeric_ns": 919,
+          "release_ns": 1398
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-45k",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        38.683448250641575
+      ],
+      "after_raw": [
+        38.699927599339006
+      ],
+      "before_range": [
+        38.683448250641575,
+        38.683448250641575
+      ],
+      "after_range": [
+        38.699927599339006,
+        38.699927599339006
+      ],
+      "before_median": 38.683448250641575,
+      "after_median": 38.699927599339006,
+      "median_change": 0.016479348697430396,
+      "change_pct": 0.04260051635174289,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        45035
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 328686,
+          "append_ns": 59027,
+          "query_ns": 42735,
+          "numeric_ns": 4415,
+          "release_ns": 13527
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-45k",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        31.898696630029008
+      ],
+      "after_raw": [
+        31.85910290607717
+      ],
+      "before_range": [
+        31.898696630029008,
+        31.898696630029008
+      ],
+      "after_range": [
+        31.85910290607717,
+        31.85910290607717
+      ],
+      "before_median": 31.898696630029008,
+      "after_median": 31.85910290607717,
+      "median_change": -0.03959372395183891,
+      "change_pct": -0.12412332833237061,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        45035
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 328686,
+          "append_ns": 59027,
+          "query_ns": 42735,
+          "numeric_ns": 4415,
+          "release_ns": 13527
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-45k",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        38.69438017851879
+      ],
+      "after_raw": [
+        38.56146220266092
+      ],
+      "before_range": [
+        38.69438017851879,
+        38.69438017851879
+      ],
+      "after_range": [
+        38.56146220266092,
+        38.56146220266092
+      ],
+      "before_median": 38.69438017851879,
+      "after_median": 38.56146220266092,
+      "median_change": -0.1329179758578718,
+      "change_pct": -0.34350718436281236,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        45035
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 296234,
+          "append_ns": 29032,
+          "query_ns": 25928,
+          "numeric_ns": 2896,
+          "release_ns": 6611
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-45k",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        31.86255194095429
+      ],
+      "after_raw": [
+        31.875045067979954
+      ],
+      "before_range": [
+        31.86255194095429,
+        31.86255194095429
+      ],
+      "after_range": [
+        31.875045067979954,
+        31.875045067979954
+      ],
+      "before_median": 31.86255194095429,
+      "after_median": 31.875045067979954,
+      "median_change": 0.012493127025663853,
+      "change_pct": 0.03920943635906671,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        45035
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 296234,
+          "append_ns": 29032,
+          "query_ns": 25928,
+          "numeric_ns": 2896,
+          "release_ns": 6611
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-8k",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        37.52817567432403
+      ],
+      "after_raw": [
+        37.60453194443943
+      ],
+      "before_range": [
+        37.52817567432403,
+        37.52817567432403
+      ],
+      "after_range": [
+        37.60453194443943,
+        37.60453194443943
+      ],
+      "before_median": 37.52817567432403,
+      "after_median": 37.60453194443943,
+      "median_change": 0.07635627011539725,
+      "change_pct": 0.20346384747831348,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8159
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 115872,
+          "append_ns": 44160,
+          "query_ns": 40446,
+          "numeric_ns": 5944,
+          "release_ns": 1851
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-8k",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        5.6484263150487095
+      ],
+      "after_raw": [
+        5.631377913057804
+      ],
+      "before_range": [
+        5.6484263150487095,
+        5.6484263150487095
+      ],
+      "after_range": [
+        5.631377913057804,
+        5.631377913057804
+      ],
+      "before_median": 5.6484263150487095,
+      "after_median": 5.631377913057804,
+      "median_change": -0.017048401990905404,
+      "change_pct": -0.3018256951583975,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8159
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 115872,
+          "append_ns": 44160,
+          "query_ns": 40446,
+          "numeric_ns": 5944,
+          "release_ns": 1851
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-8k",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        37.63943307685848
+      ],
+      "after_raw": [
+        37.56114484875885
+      ],
+      "before_range": [
+        37.63943307685848,
+        37.63943307685848
+      ],
+      "after_range": [
+        37.56114484875885,
+        37.56114484875885
+      ],
+      "before_median": 37.63943307685848,
+      "after_median": 37.56114484875885,
+      "median_change": -0.07828822809963043,
+      "change_pct": -0.20799523717525137,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8159
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 103298,
+          "append_ns": 38421,
+          "query_ns": 28821,
+          "numeric_ns": 2733,
+          "release_ns": 1750
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-8k",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        5.627952105016448
+      ],
+      "after_raw": [
+        5.617442529997788
+      ],
+      "before_range": [
+        5.627952105016448,
+        5.627952105016448
+      ],
+      "after_range": [
+        5.617442529997788,
+        5.617442529997788
+      ],
+      "before_median": 5.627952105016448,
+      "after_median": 5.617442529997788,
+      "median_change": -0.010509575018659234,
+      "change_pct": -0.18673888516733683,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8159
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 103298,
+          "append_ns": 38421,
+          "query_ns": 28821,
+          "numeric_ns": 2733,
+          "release_ns": 1750
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-repeat-code",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        42.28962360696119
+      ],
+      "after_raw": [
+        48.62698018162506
+      ],
+      "before_range": [
+        42.28962360696119,
+        42.28962360696119
+      ],
+      "after_range": [
+        48.62698018162506,
+        48.62698018162506
+      ],
+      "before_median": 42.28962360696119,
+      "after_median": 48.62698018162506,
+      "median_change": 6.337356574663865,
+      "change_pct": 14.985606477757084,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        520
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 47889,
+          "append_ns": 42020,
+          "query_ns": 106440,
+          "numeric_ns": 43585,
+          "release_ns": 2047
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-repeat-code",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.7110130239743739
+      ],
+      "after_raw": [
+        0.7091277079889551
+      ],
+      "before_range": [
+        0.7110130239743739,
+        0.7110130239743739
+      ],
+      "after_range": [
+        0.7091277079889551,
+        0.7091277079889551
+      ],
+      "before_median": 0.7110130239743739,
+      "after_median": 0.7091277079889551,
+      "median_change": -0.0018853159854188561,
+      "change_pct": -0.2651591351843896,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        520
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 47889,
+          "append_ns": 42020,
+          "query_ns": 106440,
+          "numeric_ns": 43585,
+          "release_ns": 2047
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-repeat-code",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        42.34863004460993
+      ],
+      "after_raw": [
+        48.28226398640936
+      ],
+      "before_range": [
+        42.34863004460993,
+        42.34863004460993
+      ],
+      "after_range": [
+        48.28226398640936,
+        48.28226398640936
+      ],
+      "before_median": 42.34863004460993,
+      "after_median": 48.28226398640936,
+      "median_change": 5.933633941799428,
+      "change_pct": 14.011395257766202,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        520
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 42287,
+          "append_ns": 39543,
+          "query_ns": 121617,
+          "numeric_ns": 40678,
+          "release_ns": 1093
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-repeat-code",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.7120494269765913
+      ],
+      "after_raw": [
+        0.7055234709987417
+      ],
+      "before_range": [
+        0.7120494269765913,
+        0.7120494269765913
+      ],
+      "after_range": [
+        0.7055234709987417,
+        0.7055234709987417
+      ],
+      "before_median": 0.7120494269765913,
+      "after_median": 0.7055234709987417,
+      "median_change": -0.006525955977849662,
+      "change_pct": -0.9165032272491658,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        520
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 42287,
+          "append_ns": 39543,
+          "query_ns": 121617,
+          "numeric_ns": 40678,
+          "release_ns": 1093
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-repeat-text",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        42.35432015550425
+      ],
+      "after_raw": [
+        48.753017646308166
+      ],
+      "before_range": [
+        42.35432015550425,
+        42.35432015550425
+      ],
+      "after_range": [
+        48.753017646308166,
+        48.753017646308166
+      ],
+      "before_median": 42.35432015550425,
+      "after_median": 48.753017646308166,
+      "median_change": 6.398697490803919,
+      "change_pct": 15.107543852223436,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        423
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 44815,
+          "append_ns": 42590,
+          "query_ns": 126939,
+          "numeric_ns": 50024,
+          "release_ns": 1305
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-repeat-text",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.6304986289469525
+      ],
+      "after_raw": [
+        0.6233117170631886
+      ],
+      "before_range": [
+        0.6304986289469525,
+        0.6304986289469525
+      ],
+      "after_range": [
+        0.6233117170631886,
+        0.6233117170631886
+      ],
+      "before_median": 0.6304986289469525,
+      "after_median": 0.6233117170631886,
+      "median_change": -0.007186911883763969,
+      "change_pct": -1.1398774801092637,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        423
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 44815,
+          "append_ns": 42590,
+          "query_ns": 126939,
+          "numeric_ns": 50024,
+          "release_ns": 1305
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-repeat-text",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        42.39209083409945
+      ],
+      "after_raw": [
+        48.44108214536308
+      ],
+      "before_range": [
+        42.39209083409945,
+        42.39209083409945
+      ],
+      "after_range": [
+        48.44108214536308,
+        48.44108214536308
+      ],
+      "before_median": 42.39209083409945,
+      "after_median": 48.44108214536308,
+      "median_change": 6.048991311263634,
+      "change_pct": 14.269150665241392,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        423
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 41992,
+          "append_ns": 31029,
+          "query_ns": 106478,
+          "numeric_ns": 42412,
+          "release_ns": 1093
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "old-repeat-text",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.6334285800112411
+      ],
+      "after_raw": [
+        0.6254891820717603
+      ],
+      "before_range": [
+        0.6334285800112411,
+        0.6334285800112411
+      ],
+      "after_range": [
+        0.6254891820717603,
+        0.6254891820717603
+      ],
+      "before_median": 0.6334285800112411,
+      "after_median": 0.6254891820717603,
+      "median_change": -0.007939397939480841,
+      "change_pct": -1.2534006500527606,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        423
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 41992,
+          "append_ns": 31029,
+          "query_ns": 106478,
+          "numeric_ns": 42412,
+          "release_ns": 1093
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "repeat-code",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        41.763821468949104
+      ],
+      "after_raw": [
+        47.74398766992366
+      ],
+      "before_range": [
+        41.763821468949104,
+        41.763821468949104
+      ],
+      "after_range": [
+        47.74398766992366,
+        47.74398766992366
+      ],
+      "before_median": 41.763821468949104,
+      "after_median": 47.74398766992366,
+      "median_change": 5.980166200974558,
+      "change_pct": 14.319011025896522,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        744
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 51093,
+          "append_ns": 43559,
+          "query_ns": 131295,
+          "numeric_ns": 51847,
+          "release_ns": 1555
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "repeat-code",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.8596144820330665
+      ],
+      "after_raw": [
+        0.8482988598989323
+      ],
+      "before_range": [
+        0.8596144820330665,
+        0.8596144820330665
+      ],
+      "after_range": [
+        0.8482988598989323,
+        0.8482988598989323
+      ],
+      "before_median": 0.8596144820330665,
+      "after_median": 0.8482988598989323,
+      "median_change": -0.011315622134134173,
+      "change_pct": -1.3163601091703003,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        744
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 51093,
+          "append_ns": 43559,
+          "query_ns": 131295,
+          "numeric_ns": 51847,
+          "release_ns": 1555
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "repeat-code",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        41.76461686718088
+      ],
+      "after_raw": [
+        47.50190210020073
+      ],
+      "before_range": [
+        41.76461686718088,
+        41.76461686718088
+      ],
+      "after_range": [
+        47.50190210020073,
+        47.50190210020073
+      ],
+      "before_median": 41.76461686718088,
+      "after_median": 47.50190210020073,
+      "median_change": 5.737285233019854,
+      "change_pct": 13.737191104291636,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        744
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 46722,
+          "append_ns": 37275,
+          "query_ns": 86993,
+          "numeric_ns": 26447,
+          "release_ns": 1880
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "repeat-code",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.8477518749423325
+      ],
+      "after_raw": [
+        0.8393607100006193
+      ],
+      "before_range": [
+        0.8477518749423325,
+        0.8477518749423325
+      ],
+      "after_range": [
+        0.8393607100006193,
+        0.8393607100006193
+      ],
+      "before_median": 0.8477518749423325,
+      "after_median": 0.8393607100006193,
+      "median_change": -0.008391164941713214,
+      "change_pct": -0.9898137874698287,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        744
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 46722,
+          "append_ns": 37275,
+          "query_ns": 86993,
+          "numeric_ns": 26447,
+          "release_ns": 1880
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "repeat-text",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        42.403651708758694
+      ],
+      "after_raw": [
+        48.650973367001576
+      ],
+      "before_range": [
+        42.403651708758694,
+        42.403651708758694
+      ],
+      "after_range": [
+        48.650973367001576,
+        48.650973367001576
+      ],
+      "before_median": 42.403651708758694,
+      "after_median": 48.650973367001576,
+      "median_change": 6.247321658242882,
+      "change_pct": 14.732980312996169,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        475
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 44186,
+          "append_ns": 36653,
+          "query_ns": 89128,
+          "numeric_ns": 36996,
+          "release_ns": 1916
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "repeat-text",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.6809998110402375
+      ],
+      "after_raw": [
+        0.6633452089736238
+      ],
+      "before_range": [
+        0.6809998110402375,
+        0.6809998110402375
+      ],
+      "after_range": [
+        0.6633452089736238,
+        0.6633452089736238
+      ],
+      "before_median": 0.6809998110402375,
+      "after_median": 0.6633452089736238,
+      "median_change": -0.017654602066613734,
+      "change_pct": -2.5924532988703897,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        475
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 44186,
+          "append_ns": 36653,
+          "query_ns": 89128,
+          "numeric_ns": 36996,
+          "release_ns": 1916
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "repeat-text",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        42.31288823322657
+      ],
+      "after_raw": [
+        48.43989991456257
+      ],
+      "before_range": [
+        42.31288823322657,
+        42.31288823322657
+      ],
+      "after_range": [
+        48.43989991456257,
+        48.43989991456257
+      ],
+      "before_median": 42.31288823322657,
+      "after_median": 48.43989991456257,
+      "median_change": 6.127011681335993,
+      "change_pct": 14.480249250687404,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        475
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 37844,
+          "append_ns": 42152,
+          "query_ns": 158961,
+          "numeric_ns": 54666,
+          "release_ns": 1084
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "case": "repeat-text",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.6664851290406659
+      ],
+      "after_raw": [
+        0.6619259379804134
+      ],
+      "before_range": [
+        0.6664851290406659,
+        0.6664851290406659
+      ],
+      "after_range": [
+        0.6619259379804134,
+        0.6619259379804134
+      ],
+      "before_median": 0.6664851290406659,
+      "after_median": 0.6619259379804134,
+      "median_change": -0.004559191060252488,
+      "change_pct": -0.68406493432418,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        475
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 37844,
+          "append_ns": 42152,
+          "query_ns": 158961,
+          "numeric_ns": 54666,
+          "release_ns": 1084
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-1024",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        38.56049887529568,
+        38.67976935842359,
+        38.649649617780796
+      ],
+      "after_raw": [
+        38.597115440011024,
+        38.6079608126848,
+        38.6028430212061
+      ],
+      "before_range": [
+        38.56049887529568,
+        38.67976935842359
+      ],
+      "after_range": [
+        38.597115440011024,
+        38.6079608126848
+      ],
+      "before_median": 38.649649617780796,
+      "after_median": 38.6028430212061,
+      "median_change": -0.04680659657469732,
+      "change_pct": -0.12110484063266869,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        998
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        true,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 164751,
+          "append_ns": 40403,
+          "query_ns": 35272,
+          "numeric_ns": 3714,
+          "release_ns": 17009
+        },
+        {
+          "init_ns": 53037,
+          "append_ns": 88339,
+          "query_ns": 47323,
+          "numeric_ns": 3842,
+          "release_ns": 2676
+        },
+        {
+          "init_ns": 51333,
+          "append_ns": 68705,
+          "query_ns": 40847,
+          "numeric_ns": 3833,
+          "release_ns": 2768
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-1024",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        1.0455893609905615,
+        0.8846939859213307,
+        0.8863202889915556
+      ],
+      "after_raw": [
+        1.0613314940128475,
+        0.8860486770281568,
+        0.8872651539277285
+      ],
+      "before_range": [
+        0.8846939859213307,
+        1.0455893609905615
+      ],
+      "after_range": [
+        0.8860486770281568,
+        1.0613314940128475
+      ],
+      "before_median": 0.8863202889915556,
+      "after_median": 0.8872651539277285,
+      "median_change": 0.0009448649361729622,
+      "change_pct": 0.10660536015123512,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        998
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        true,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 164751,
+          "append_ns": 40403,
+          "query_ns": 35272,
+          "numeric_ns": 3714,
+          "release_ns": 17009
+        },
+        {
+          "init_ns": 53037,
+          "append_ns": 88339,
+          "query_ns": 47323,
+          "numeric_ns": 3842,
+          "release_ns": 2676
+        },
+        {
+          "init_ns": 51333,
+          "append_ns": 68705,
+          "query_ns": 40847,
+          "numeric_ns": 3833,
+          "release_ns": 2768
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-1024",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        38.69279767405247,
+        38.639209484269145,
+        38.549270408711614
+      ],
+      "after_raw": [
+        38.538313990697176,
+        38.56271050107187,
+        38.574364393067476
+      ],
+      "before_range": [
+        38.549270408711614,
+        38.69279767405247
+      ],
+      "after_range": [
+        38.538313990697176,
+        38.574364393067476
+      ],
+      "before_median": 38.639209484269145,
+      "after_median": 38.56271050107187,
+      "median_change": -0.07649898319727555,
+      "change_pct": -0.1979827854097782,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        998
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        true,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 164974,
+          "append_ns": 66851,
+          "query_ns": 48607,
+          "numeric_ns": 4713,
+          "release_ns": 15231
+        },
+        {
+          "init_ns": 53872,
+          "append_ns": 83108,
+          "query_ns": 45306,
+          "numeric_ns": 4166,
+          "release_ns": 1065
+        },
+        {
+          "init_ns": 50834,
+          "append_ns": 75773,
+          "query_ns": 45141,
+          "numeric_ns": 4279,
+          "release_ns": 954
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-1024",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        1.0481124019715935,
+        0.8902383230160922,
+        0.8881149729713798
+      ],
+      "after_raw": [
+        1.0532432929612696,
+        0.8879550060955808,
+        0.8907767040655017
+      ],
+      "before_range": [
+        0.8881149729713798,
+        1.0481124019715935
+      ],
+      "after_range": [
+        0.8879550060955808,
+        1.0532432929612696
+      ],
+      "before_median": 0.8902383230160922,
+      "after_median": 0.8907767040655017,
+      "median_change": 0.0005383810494095087,
+      "change_pct": 0.0604760585441344,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        998
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        true,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 164974,
+          "append_ns": 66851,
+          "query_ns": 48607,
+          "numeric_ns": 4713,
+          "release_ns": 15231
+        },
+        {
+          "init_ns": 53872,
+          "append_ns": 83108,
+          "query_ns": 45306,
+          "numeric_ns": 4166,
+          "release_ns": 1065
+        },
+        {
+          "init_ns": 50834,
+          "append_ns": 75773,
+          "query_ns": 45141,
+          "numeric_ns": 4279,
+          "release_ns": 954
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-204800",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        34.27249331498068,
+        34.22793499563881,
+        34.23722367894717
+      ],
+      "after_raw": [
+        34.242193859199574,
+        34.22300464116581,
+        34.205034912160926
+      ],
+      "before_range": [
+        34.22793499563881,
+        34.27249331498068
+      ],
+      "after_range": [
+        34.205034912160926,
+        34.242193859199574
+      ],
+      "before_median": 34.23722367894717,
+      "after_median": 34.22300464116581,
+      "median_change": -0.014219037781359134,
+      "change_pct": -0.041530931113731295,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        204781
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 877892,
+          "append_ns": 51198,
+          "query_ns": 44040,
+          "numeric_ns": 4731,
+          "release_ns": 19037
+        },
+        {
+          "init_ns": 788178,
+          "append_ns": 71353,
+          "query_ns": 48390,
+          "numeric_ns": 4257,
+          "release_ns": 17963
+        },
+        {
+          "init_ns": 788899,
+          "append_ns": 67123,
+          "query_ns": 46020,
+          "numeric_ns": 5072,
+          "release_ns": 18648
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-204800",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        167.0803629490547,
+        167.1012658920372,
+        166.94483764609322
+      ],
+      "after_raw": [
+        167.29604055301752,
+        167.34626176406164,
+        167.3458175159758
+      ],
+      "before_range": [
+        166.94483764609322,
+        167.1012658920372
+      ],
+      "after_range": [
+        167.29604055301752,
+        167.34626176406164
+      ],
+      "before_median": 167.0803629490547,
+      "after_median": 167.3458175159758,
+      "median_change": 0.26545456692110747,
+      "change_pct": 0.1588783757921597,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": true,
+      "input_tokens": [
+        204781
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 877892,
+          "append_ns": 51198,
+          "query_ns": 44040,
+          "numeric_ns": 4731,
+          "release_ns": 19037
+        },
+        {
+          "init_ns": 788178,
+          "append_ns": 71353,
+          "query_ns": 48390,
+          "numeric_ns": 4257,
+          "release_ns": 17963
+        },
+        {
+          "init_ns": 788899,
+          "append_ns": 67123,
+          "query_ns": 46020,
+          "numeric_ns": 5072,
+          "release_ns": 18648
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-204800",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        34.21923608480982,
+        34.232284425918294,
+        34.211430632893396
+      ],
+      "after_raw": [
+        34.2229678509717,
+        34.211111936363885,
+        34.189082158230356
+      ],
+      "before_range": [
+        34.211430632893396,
+        34.232284425918294
+      ],
+      "after_range": [
+        34.189082158230356,
+        34.2229678509717
+      ],
+      "before_median": 34.21923608480982,
+      "after_median": 34.211111936363885,
+      "median_change": -0.008124148445936896,
+      "change_pct": -0.023741466424909152,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        204781
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 818508,
+          "append_ns": 71613,
+          "query_ns": 42306,
+          "numeric_ns": 5037,
+          "release_ns": 19389
+        },
+        {
+          "init_ns": 818591,
+          "append_ns": 41828,
+          "query_ns": 36095,
+          "numeric_ns": 5196,
+          "release_ns": 17852
+        },
+        {
+          "init_ns": 785240,
+          "append_ns": 70941,
+          "query_ns": 44551,
+          "numeric_ns": 6073,
+          "release_ns": 17324
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-204800",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        166.99448393995408,
+        167.06506241403986,
+        167.06277798407245
+      ],
+      "after_raw": [
+        167.2154436839046,
+        167.27107544103637,
+        167.18588701600675
+      ],
+      "before_range": [
+        166.99448393995408,
+        167.06506241403986
+      ],
+      "after_range": [
+        167.18588701600675,
+        167.27107544103637
+      ],
+      "before_median": 167.06277798407245,
+      "after_median": 167.2154436839046,
+      "median_change": 0.1526656998321414,
+      "change_pct": 0.09138223467510809,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": true,
+      "input_tokens": [
+        204781
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 818508,
+          "append_ns": 71613,
+          "query_ns": 42306,
+          "numeric_ns": 5037,
+          "release_ns": 19389
+        },
+        {
+          "init_ns": 818591,
+          "append_ns": 41828,
+          "query_ns": 36095,
+          "numeric_ns": 5196,
+          "release_ns": 17852
+        },
+        {
+          "init_ns": 785240,
+          "append_ns": 70941,
+          "query_ns": 44551,
+          "numeric_ns": 6073,
+          "release_ns": 17324
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-4096",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        41.23331846343891,
+        41.2341305413456,
+        41.265225358828374
+      ],
+      "after_raw": [
+        41.20310022026635,
+        41.25740647494517,
+        41.24575615107798
+      ],
+      "before_range": [
+        41.23331846343891,
+        41.265225358828374
+      ],
+      "after_range": [
+        41.20310022026635,
+        41.25740647494517
+      ],
+      "before_median": 41.2341305413456,
+      "after_median": 41.24575615107798,
+      "median_change": 0.011625609732377029,
+      "change_pct": 0.02819414300665457,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        4077
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 100528,
+          "append_ns": 49391,
+          "query_ns": 36048,
+          "numeric_ns": 3122,
+          "release_ns": 1575
+        },
+        {
+          "init_ns": 82787,
+          "append_ns": 41030,
+          "query_ns": 32707,
+          "numeric_ns": 3205,
+          "release_ns": 1389
+        },
+        {
+          "init_ns": 77741,
+          "append_ns": 49037,
+          "query_ns": 39627,
+          "numeric_ns": 3018,
+          "release_ns": 1453
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-4096",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        2.877913416014053,
+        2.83212303603068,
+        2.8310605329461396
+      ],
+      "after_raw": [
+        2.880988478893414,
+        2.825494853896089,
+        2.831532038981095
+      ],
+      "before_range": [
+        2.8310605329461396,
+        2.877913416014053
+      ],
+      "after_range": [
+        2.825494853896089,
+        2.880988478893414
+      ],
+      "before_median": 2.83212303603068,
+      "after_median": 2.831532038981095,
+      "median_change": -0.0005909970495849848,
+      "change_pct": -0.02086763329368635,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        4077
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 100528,
+          "append_ns": 49391,
+          "query_ns": 36048,
+          "numeric_ns": 3122,
+          "release_ns": 1575
+        },
+        {
+          "init_ns": 82787,
+          "append_ns": 41030,
+          "query_ns": 32707,
+          "numeric_ns": 3205,
+          "release_ns": 1389
+        },
+        {
+          "init_ns": 77741,
+          "append_ns": 49037,
+          "query_ns": 39627,
+          "numeric_ns": 3018,
+          "release_ns": 1453
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-4096",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        41.2574229827693,
+        41.256416827709366,
+        41.41499119606754
+      ],
+      "after_raw": [
+        41.18349694150931,
+        41.18545288797724,
+        41.203243300428866
+      ],
+      "before_range": [
+        41.256416827709366,
+        41.41499119606754
+      ],
+      "after_range": [
+        41.18349694150931,
+        41.203243300428866
+      ],
+      "before_median": 41.2574229827693,
+      "after_median": 41.18545288797724,
+      "median_change": -0.07197009479205718,
+      "change_pct": -0.17444156612038686,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": true,
+      "input_tokens": [
+        4077
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 99900,
+          "append_ns": 52210,
+          "query_ns": 31311,
+          "numeric_ns": 1897,
+          "release_ns": 1083
+        },
+        {
+          "init_ns": 179159,
+          "append_ns": 44894,
+          "query_ns": 32885,
+          "numeric_ns": 2593,
+          "release_ns": 1417
+        },
+        {
+          "init_ns": 82907,
+          "append_ns": 50048,
+          "query_ns": 34233,
+          "numeric_ns": 2861,
+          "release_ns": 1120
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-4096",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        2.8814848919864744,
+        2.8268570109503344,
+        2.825642788084224
+      ],
+      "after_raw": [
+        2.8760559540241957,
+        2.8283255690475926,
+        2.8279669950716197
+      ],
+      "before_range": [
+        2.825642788084224,
+        2.8814848919864744
+      ],
+      "after_range": [
+        2.8279669950716197,
+        2.8760559540241957
+      ],
+      "before_median": 2.8268570109503344,
+      "after_median": 2.8283255690475926,
+      "median_change": 0.0014685580972582102,
+      "change_pct": 0.051950208007323084,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        4077
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 99900,
+          "append_ns": 52210,
+          "query_ns": 31311,
+          "numeric_ns": 1897,
+          "release_ns": 1083
+        },
+        {
+          "init_ns": 179159,
+          "append_ns": 44894,
+          "query_ns": 32885,
+          "numeric_ns": 2593,
+          "release_ns": 1417
+        },
+        {
+          "init_ns": 82907,
+          "append_ns": 50048,
+          "query_ns": 34233,
+          "numeric_ns": 2861,
+          "release_ns": 1120
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-45056",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        39.416071124534284,
+        39.45603910965593,
+        39.37638403138488
+      ],
+      "after_raw": [
+        39.430540173876786,
+        39.42929946571709,
+        39.42731428896665
+      ],
+      "before_range": [
+        39.37638403138488,
+        39.45603910965593
+      ],
+      "after_range": [
+        39.42731428896665,
+        39.430540173876786
+      ],
+      "before_median": 39.416071124534284,
+      "after_median": 39.42929946571709,
+      "median_change": 0.013228341182802694,
+      "change_pct": 0.033560780680064184,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        45044
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 634326,
+          "append_ns": 75739,
+          "query_ns": 47704,
+          "numeric_ns": 4221,
+          "release_ns": 5055
+        },
+        {
+          "init_ns": 291659,
+          "append_ns": 83978,
+          "query_ns": 49716,
+          "numeric_ns": 3400,
+          "release_ns": 10620
+        },
+        {
+          "init_ns": 324982,
+          "append_ns": 79463,
+          "query_ns": 48071,
+          "numeric_ns": 3974,
+          "release_ns": 9564
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-45056",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        31.814208977040835,
+        31.81105698493775,
+        31.767395582981408
+      ],
+      "after_raw": [
+        31.902180182980374,
+        31.83685791201424,
+        31.827150275930762
+      ],
+      "before_range": [
+        31.767395582981408,
+        31.814208977040835
+      ],
+      "after_range": [
+        31.827150275930762,
+        31.902180182980374
+      ],
+      "before_median": 31.81105698493775,
+      "after_median": 31.83685791201424,
+      "median_change": 0.025800927076488733,
+      "change_pct": 0.08110678965713713,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": true,
+      "input_tokens": [
+        45044
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 634326,
+          "append_ns": 75739,
+          "query_ns": 47704,
+          "numeric_ns": 4221,
+          "release_ns": 5055
+        },
+        {
+          "init_ns": 291659,
+          "append_ns": 83978,
+          "query_ns": 49716,
+          "numeric_ns": 3400,
+          "release_ns": 10620
+        },
+        {
+          "init_ns": 324982,
+          "append_ns": 79463,
+          "query_ns": 48071,
+          "numeric_ns": 3974,
+          "release_ns": 9564
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-45056",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        39.459790582871854,
+        39.509994574817334,
+        39.463084181380765
+      ],
+      "after_raw": [
+        39.33924716880324,
+        39.330951335140085,
+        39.42577269936308
+      ],
+      "before_range": [
+        39.459790582871854,
+        39.509994574817334
+      ],
+      "after_range": [
+        39.330951335140085,
+        39.42577269936308
+      ],
+      "before_median": 39.463084181380765,
+      "after_median": 39.33924716880324,
+      "median_change": -0.12383701257752477,
+      "change_pct": -0.31380469911662656,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": true,
+      "input_tokens": [
+        45044
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 516764,
+          "append_ns": 61500,
+          "query_ns": 33783,
+          "numeric_ns": 3288,
+          "release_ns": 5463
+        },
+        {
+          "init_ns": 331420,
+          "append_ns": 65305,
+          "query_ns": 38753,
+          "numeric_ns": 4295,
+          "release_ns": 8731
+        },
+        {
+          "init_ns": 329086,
+          "append_ns": 60805,
+          "query_ns": 41479,
+          "numeric_ns": 4433,
+          "release_ns": 9592
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-45056",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        31.791365068987943,
+        31.802633163984865,
+        31.797279092948884
+      ],
+      "after_raw": [
+        31.855811171000823,
+        31.82663624093402,
+        31.861729746917263
+      ],
+      "before_range": [
+        31.791365068987943,
+        31.802633163984865
+      ],
+      "after_range": [
+        31.82663624093402,
+        31.861729746917263
+      ],
+      "before_median": 31.797279092948884,
+      "after_median": 31.855811171000823,
+      "median_change": 0.05853207805193961,
+      "change_pct": 0.18407888889122592,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": true,
+      "input_tokens": [
+        45044
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 516764,
+          "append_ns": 61500,
+          "query_ns": 33783,
+          "numeric_ns": 3288,
+          "release_ns": 5463
+        },
+        {
+          "init_ns": 331420,
+          "append_ns": 65305,
+          "query_ns": 38753,
+          "numeric_ns": 4295,
+          "release_ns": 8731
+        },
+        {
+          "init_ns": 329086,
+          "append_ns": 60805,
+          "query_ns": 41479,
+          "numeric_ns": 4433,
+          "release_ns": 9592
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-8192",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        38.64524489931835,
+        38.67515989659743,
+        38.6615591342276
+      ],
+      "after_raw": [
+        38.662846655816956,
+        38.620776928668114,
+        38.62061926196649
+      ],
+      "before_range": [
+        38.64524489931835,
+        38.67515989659743
+      ],
+      "after_range": [
+        38.62061926196649,
+        38.662846655816956
+      ],
+      "before_median": 38.6615591342276,
+      "after_median": 38.620776928668114,
+      "median_change": -0.04078220555948775,
+      "change_pct": -0.10548515495171218,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        8170
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 87898,
+          "append_ns": 36748,
+          "query_ns": 25116,
+          "numeric_ns": 519,
+          "release_ns": 2176
+        },
+        {
+          "init_ns": 106380,
+          "append_ns": 35837,
+          "query_ns": 23649,
+          "numeric_ns": 639,
+          "release_ns": 1500
+        },
+        {
+          "init_ns": 104474,
+          "append_ns": 70750,
+          "query_ns": 30556,
+          "numeric_ns": 371,
+          "release_ns": 1212
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-8192",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        5.456636175047606,
+        5.441451344056986,
+        5.4484451489988714
+      ],
+      "after_raw": [
+        5.467822030070238,
+        5.446615227032453,
+        5.437314865994267
+      ],
+      "before_range": [
+        5.441451344056986,
+        5.456636175047606
+      ],
+      "after_range": [
+        5.437314865994267,
+        5.467822030070238
+      ],
+      "before_median": 5.4484451489988714,
+      "after_median": 5.446615227032453,
+      "median_change": -0.001829921966418624,
+      "change_pct": -0.03358613175641345,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        8170
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 87898,
+          "append_ns": 36748,
+          "query_ns": 25116,
+          "numeric_ns": 519,
+          "release_ns": 2176
+        },
+        {
+          "init_ns": 106380,
+          "append_ns": 35837,
+          "query_ns": 23649,
+          "numeric_ns": 639,
+          "release_ns": 1500
+        },
+        {
+          "init_ns": 104474,
+          "append_ns": 70750,
+          "query_ns": 30556,
+          "numeric_ns": 371,
+          "release_ns": 1212
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-8192",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        38.767470959051906,
+        38.710192631192385,
+        38.74682769003844
+      ],
+      "after_raw": [
+        38.59739618498305,
+        38.57337051114131,
+        38.57386670697264
+      ],
+      "before_range": [
+        38.710192631192385,
+        38.767470959051906
+      ],
+      "after_range": [
+        38.57337051114131,
+        38.59739618498305
+      ],
+      "before_median": 38.74682769003844,
+      "after_median": 38.57386670697264,
+      "median_change": -0.1729609830657992,
+      "change_pct": -0.4463874680255886,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": true,
+      "input_tokens": [
+        8170
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 110306,
+          "append_ns": 56455,
+          "query_ns": 30515,
+          "numeric_ns": 407,
+          "release_ns": 1898
+        },
+        {
+          "init_ns": 115297,
+          "append_ns": 58490,
+          "query_ns": 25310,
+          "numeric_ns": 538,
+          "release_ns": 1352
+        },
+        {
+          "init_ns": 116696,
+          "append_ns": 46650,
+          "query_ns": 23703,
+          "numeric_ns": 445,
+          "release_ns": 1481
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "context-8192",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        5.444539244053885,
+        5.427402311004698,
+        5.418433351092972
+      ],
+      "after_raw": [
+        5.457448436995037,
+        5.437093232059851,
+        5.432744936901145
+      ],
+      "before_range": [
+        5.418433351092972,
+        5.444539244053885
+      ],
+      "after_range": [
+        5.432744936901145,
+        5.457448436995037
+      ],
+      "before_median": 5.427402311004698,
+      "after_median": 5.437093232059851,
+      "median_change": 0.009690921055153012,
+      "change_pct": 0.1785554211727325,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "input_tokens": [
+        8170
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 110306,
+          "append_ns": 56455,
+          "query_ns": 30515,
+          "numeric_ns": 407,
+          "release_ns": 1898
+        },
+        {
+          "init_ns": 115297,
+          "append_ns": 58490,
+          "query_ns": 25310,
+          "numeric_ns": 538,
+          "release_ns": 1352
+        },
+        {
+          "init_ns": 116696,
+          "append_ns": 46650,
+          "query_ns": 23703,
+          "numeric_ns": 445,
+          "release_ns": 1481
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "nonrepeat",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        28.490240639800074
+      ],
+      "after_raw": [
+        28.47303270252818
+      ],
+      "before_range": [
+        28.490240639800074,
+        28.490240639800074
+      ],
+      "after_range": [
+        28.47303270252818,
+        28.47303270252818
+      ],
+      "before_median": 28.490240639800074,
+      "after_median": 28.47303270252818,
+      "median_change": -0.017207937271894735,
+      "change_pct": -0.06039941006273919,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        109
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 39787,
+          "append_ns": 86431,
+          "query_ns": 46659,
+          "numeric_ns": 0,
+          "release_ns": 1463
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "nonrepeat",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.3819171659415588
+      ],
+      "after_raw": [
+        0.388736002962105
+      ],
+      "before_range": [
+        0.3819171659415588,
+        0.3819171659415588
+      ],
+      "after_range": [
+        0.388736002962105,
+        0.388736002962105
+      ],
+      "before_median": 0.3819171659415588,
+      "after_median": 0.388736002962105,
+      "median_change": 0.006818837020546198,
+      "change_pct": 1.785423025889754,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        109
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 39787,
+          "append_ns": 86431,
+          "query_ns": 46659,
+          "numeric_ns": 0,
+          "release_ns": 1463
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "nonrepeat",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        28.493532571891627
+      ],
+      "after_raw": [
+        28.52510798916465
+      ],
+      "before_range": [
+        28.493532571891627,
+        28.493532571891627
+      ],
+      "after_range": [
+        28.52510798916465,
+        28.52510798916465
+      ],
+      "before_median": 28.493532571891627,
+      "after_median": 28.52510798916465,
+      "median_change": 0.0315754172730216,
+      "change_pct": 0.11081608499525775,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        109
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 40833,
+          "append_ns": 58329,
+          "query_ns": 35708,
+          "numeric_ns": 0,
+          "release_ns": 2148
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "nonrepeat",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.388557827915065
+      ],
+      "after_raw": [
+        0.38993769499938935
+      ],
+      "before_range": [
+        0.388557827915065,
+        0.388557827915065
+      ],
+      "after_range": [
+        0.38993769499938935,
+        0.38993769499938935
+      ],
+      "before_median": 0.388557827915065,
+      "after_median": 0.38993769499938935,
+      "median_change": 0.00137986708432436,
+      "change_pct": 0.35512528256822495,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        109
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 40833,
+          "append_ns": 58329,
+          "query_ns": 35708,
+          "numeric_ns": 0,
+          "release_ns": 2148
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "numeric-enum",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        46.199826713687855
+      ],
+      "after_raw": [
+        46.21671677381527
+      ],
+      "before_range": [
+        46.199826713687855,
+        46.199826713687855
+      ],
+      "after_range": [
+        46.21671677381527,
+        46.21671677381527
+      ],
+      "before_median": 46.199826713687855,
+      "after_median": 46.21671677381527,
+      "median_change": 0.016890060127416007,
+      "change_pct": 0.0365587088282604,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8166
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 105760,
+          "append_ns": 41815,
+          "query_ns": 25683,
+          "numeric_ns": 2435,
+          "release_ns": 1898
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "numeric-enum",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        5.42086997802835
+      ],
+      "after_raw": [
+        5.435938976006582
+      ],
+      "before_range": [
+        5.42086997802835,
+        5.42086997802835
+      ],
+      "after_range": [
+        5.435938976006582,
+        5.435938976006582
+      ],
+      "before_median": 5.42086997802835,
+      "after_median": 5.435938976006582,
+      "median_change": 0.015068997978232801,
+      "change_pct": 0.27798117348893925,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8166
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 105760,
+          "append_ns": 41815,
+          "query_ns": 25683,
+          "numeric_ns": 2435,
+          "release_ns": 1898
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "numeric-enum",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        46.23466774178488
+      ],
+      "after_raw": [
+        46.316308557093535
+      ],
+      "before_range": [
+        46.23466774178488,
+        46.23466774178488
+      ],
+      "after_range": [
+        46.316308557093535,
+        46.316308557093535
+      ],
+      "before_median": 46.23466774178488,
+      "after_median": 46.316308557093535,
+      "median_change": 0.08164081530865275,
+      "change_pct": 0.17657921922269448,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8166
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 115928,
+          "append_ns": 34372,
+          "query_ns": 21543,
+          "numeric_ns": 1148,
+          "release_ns": 2592
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "numeric-enum",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        5.4346818709746
+      ],
+      "after_raw": [
+        5.418798682978377
+      ],
+      "before_range": [
+        5.4346818709746,
+        5.4346818709746
+      ],
+      "after_range": [
+        5.418798682978377,
+        5.418798682978377
+      ],
+      "before_median": 5.4346818709746,
+      "after_median": 5.418798682978377,
+      "median_change": -0.01588318799622357,
+      "change_pct": -0.2922560763133575,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8166
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 115928,
+          "append_ns": 34372,
+          "query_ns": 21543,
+          "numeric_ns": 1148,
+          "release_ns": 2592
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-45k",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        41.72201873063282
+      ],
+      "after_raw": [
+        41.625279338279796
+      ],
+      "before_range": [
+        41.72201873063282,
+        41.72201873063282
+      ],
+      "after_range": [
+        41.625279338279796,
+        41.625279338279796
+      ],
+      "before_median": 41.72201873063282,
+      "after_median": 41.625279338279796,
+      "median_change": -0.09673939235302242,
+      "change_pct": -0.231866518678292,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        45035
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 322631,
+          "append_ns": 50970,
+          "query_ns": 39605,
+          "numeric_ns": 5600,
+          "release_ns": 5380
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-45k",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        31.78843005397357
+      ],
+      "after_raw": [
+        31.854925337946042
+      ],
+      "before_range": [
+        31.78843005397357,
+        31.78843005397357
+      ],
+      "after_range": [
+        31.854925337946042,
+        31.854925337946042
+      ],
+      "before_median": 31.78843005397357,
+      "after_median": 31.854925337946042,
+      "median_change": 0.06649528397247195,
+      "change_pct": 0.20918077382106048,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        45035
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 322631,
+          "append_ns": 50970,
+          "query_ns": 39605,
+          "numeric_ns": 5600,
+          "release_ns": 5380
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-45k",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        41.60794282773755
+      ],
+      "after_raw": [
+        41.61305291274498
+      ],
+      "before_range": [
+        41.60794282773755,
+        41.60794282773755
+      ],
+      "after_range": [
+        41.61305291274498,
+        41.61305291274498
+      ],
+      "before_median": 41.60794282773755,
+      "after_median": 41.61305291274498,
+      "median_change": 0.005110085007430598,
+      "change_pct": 0.012281513240353092,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        45035
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 316837,
+          "append_ns": 42739,
+          "query_ns": 35848,
+          "numeric_ns": 4556,
+          "release_ns": 9825
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-45k",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        31.806885425001383
+      ],
+      "after_raw": [
+        31.801876347977668
+      ],
+      "before_range": [
+        31.806885425001383,
+        31.806885425001383
+      ],
+      "after_range": [
+        31.801876347977668,
+        31.801876347977668
+      ],
+      "before_median": 31.806885425001383,
+      "after_median": 31.801876347977668,
+      "median_change": -0.005009077023714781,
+      "change_pct": -0.015748404651327874,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        45035
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 316837,
+          "append_ns": 42739,
+          "query_ns": 35848,
+          "numeric_ns": 4556,
+          "release_ns": 9825
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-8k",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        42.43079307128858
+      ],
+      "after_raw": [
+        42.34374928597117
+      ],
+      "before_range": [
+        42.43079307128858,
+        42.43079307128858
+      ],
+      "after_range": [
+        42.34374928597117,
+        42.34374928597117
+      ],
+      "before_median": 42.43079307128858,
+      "after_median": 42.34374928597117,
+      "median_change": -0.08704378531741241,
+      "change_pct": -0.20514296108292696,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8159
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 113649,
+          "append_ns": 40019,
+          "query_ns": 38018,
+          "numeric_ns": 5019,
+          "release_ns": 2102
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-8k",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        5.426797432010062
+      ],
+      "after_raw": [
+        5.433003967045806
+      ],
+      "before_range": [
+        5.426797432010062,
+        5.426797432010062
+      ],
+      "after_range": [
+        5.433003967045806,
+        5.433003967045806
+      ],
+      "before_median": 5.426797432010062,
+      "after_median": 5.433003967045806,
+      "median_change": 0.006206535035744309,
+      "change_pct": 0.11436828283168943,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8159
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 113649,
+          "append_ns": 40019,
+          "query_ns": 38018,
+          "numeric_ns": 5019,
+          "release_ns": 2102
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-8k",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        42.3553210707981
+      ],
+      "after_raw": [
+        42.434188089333915
+      ],
+      "before_range": [
+        42.3553210707981,
+        42.3553210707981
+      ],
+      "after_range": [
+        42.434188089333915,
+        42.434188089333915
+      ],
+      "before_median": 42.3553210707981,
+      "after_median": 42.434188089333915,
+      "median_change": 0.07886701853581712,
+      "change_pct": 0.18620333063699146,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8159
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 114474,
+          "append_ns": 29021,
+          "query_ns": 27377,
+          "numeric_ns": 3673,
+          "release_ns": 2287
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-8k",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        5.435165120055899
+      ],
+      "after_raw": [
+        5.420564512023702
+      ],
+      "before_range": [
+        5.435165120055899,
+        5.435165120055899
+      ],
+      "after_range": [
+        5.420564512023702,
+        5.420564512023702
+      ],
+      "before_median": 5.435165120055899,
+      "after_median": 5.420564512023702,
+      "median_change": -0.01460060803219676,
+      "change_pct": -0.268632280890968,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        8159
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 114474,
+          "append_ns": 29021,
+          "query_ns": 27377,
+          "numeric_ns": 3673,
+          "release_ns": 2287
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-repeat-code",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        45.72930290397365
+      ],
+      "after_raw": [
+        49.485164460011305
+      ],
+      "before_range": [
+        45.72930290397365,
+        45.72930290397365
+      ],
+      "after_range": [
+        49.485164460011305,
+        49.485164460011305
+      ],
+      "before_median": 45.72930290397365,
+      "after_median": 49.485164460011305,
+      "median_change": 3.755861556037658,
+      "change_pct": 8.213249093091445,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        520
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 49157,
+          "append_ns": 58413,
+          "query_ns": 153691,
+          "numeric_ns": 46269,
+          "release_ns": 1973
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-repeat-code",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.6921424590982497
+      ],
+      "after_raw": [
+        0.6991296879714355
+      ],
+      "before_range": [
+        0.6921424590982497,
+        0.6921424590982497
+      ],
+      "after_range": [
+        0.6991296879714355,
+        0.6991296879714355
+      ],
+      "before_median": 0.6921424590982497,
+      "after_median": 0.6991296879714355,
+      "median_change": 0.006987228873185813,
+      "change_pct": 1.0095073321017,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        520
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 49157,
+          "append_ns": 58413,
+          "query_ns": 153691,
+          "numeric_ns": 46269,
+          "release_ns": 1973
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-repeat-code",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        45.7337966931062
+      ],
+      "after_raw": [
+        49.54098767337596
+      ],
+      "before_range": [
+        45.7337966931062,
+        45.7337966931062
+      ],
+      "after_range": [
+        49.54098767337596,
+        49.54098767337596
+      ],
+      "before_median": 45.7337966931062,
+      "after_median": 49.54098767337596,
+      "median_change": 3.807190980269759,
+      "change_pct": 8.324677274921388,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        520
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 43898,
+          "append_ns": 57286,
+          "query_ns": 141329,
+          "numeric_ns": 43320,
+          "release_ns": 1694
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-repeat-code",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.6917774259345606
+      ],
+      "after_raw": [
+        0.6902188450330868
+      ],
+      "before_range": [
+        0.6917774259345606,
+        0.6917774259345606
+      ],
+      "after_range": [
+        0.6902188450330868,
+        0.6902188450330868
+      ],
+      "before_median": 0.6917774259345606,
+      "after_median": 0.6902188450330868,
+      "median_change": -0.0015585809014737606,
+      "change_pct": -0.22530091949274356,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        520
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 43898,
+          "append_ns": 57286,
+          "query_ns": 141329,
+          "numeric_ns": 43320,
+          "release_ns": 1694
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-repeat-text",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        47.75443882862928
+      ],
+      "after_raw": [
+        50.9674907632591
+      ],
+      "before_range": [
+        47.75443882862928,
+        47.75443882862928
+      ],
+      "after_range": [
+        50.9674907632591,
+        50.9674907632591
+      ],
+      "before_median": 47.75443882862928,
+      "after_median": 50.9674907632591,
+      "median_change": 3.213051934629817,
+      "change_pct": 6.72827911591658,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        423
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 40954,
+          "append_ns": 66306,
+          "query_ns": 204245,
+          "numeric_ns": 84382,
+          "release_ns": 1482
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-repeat-text",
+      "role": "development_regression",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.6008999210316688
+      ],
+      "after_raw": [
+        0.6101287570782006
+      ],
+      "before_range": [
+        0.6008999210316688,
+        0.6008999210316688
+      ],
+      "after_range": [
+        0.6101287570782006,
+        0.6101287570782006
+      ],
+      "before_median": 0.6008999210316688,
+      "after_median": 0.6101287570782006,
+      "median_change": 0.009228836046531796,
+      "change_pct": 1.5358357895416397,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        423
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 40954,
+          "append_ns": 66306,
+          "query_ns": 204245,
+          "numeric_ns": 84382,
+          "release_ns": 1482
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-repeat-text",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        47.81769159698359
+      ],
+      "after_raw": [
+        51.07245200344003
+      ],
+      "before_range": [
+        47.81769159698359,
+        47.81769159698359
+      ],
+      "after_range": [
+        51.07245200344003,
+        51.07245200344003
+      ],
+      "before_median": 47.81769159698359,
+      "after_median": 51.07245200344003,
+      "median_change": 3.254760406456434,
+      "change_pct": 6.806602949151452,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        423
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 43899,
+          "append_ns": 64631,
+          "query_ns": 169570,
+          "numeric_ns": 57636,
+          "release_ns": 2075
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "old-repeat-text",
+      "role": "development_regression",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.6069619200425223
+      ],
+      "after_raw": [
+        0.613603881909512
+      ],
+      "before_range": [
+        0.6069619200425223,
+        0.6069619200425223
+      ],
+      "after_range": [
+        0.613603881909512,
+        0.613603881909512
+      ],
+      "before_median": 0.6069619200425223,
+      "after_median": 0.613603881909512,
+      "median_change": 0.006641961866989732,
+      "change_pct": 1.0942963055284194,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        423
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 43899,
+          "append_ns": 64631,
+          "query_ns": 169570,
+          "numeric_ns": 57636,
+          "release_ns": 2075
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "repeat-code",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        47.218233714699366
+      ],
+      "after_raw": [
+        50.42325583459151
+      ],
+      "before_range": [
+        47.218233714699366,
+        47.218233714699366
+      ],
+      "after_range": [
+        50.42325583459151,
+        50.42325583459151
+      ],
+      "before_median": 47.218233714699366,
+      "after_median": 50.42325583459151,
+      "median_change": 3.205022119892142,
+      "change_pct": 6.7876789700721085,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        744
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 47631,
+          "append_ns": 63356,
+          "query_ns": 181227,
+          "numeric_ns": 61662,
+          "release_ns": 1722
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "repeat-code",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.8150102630024776
+      ],
+      "after_raw": [
+        0.8179950009798631
+      ],
+      "before_range": [
+        0.8150102630024776,
+        0.8150102630024776
+      ],
+      "after_range": [
+        0.8179950009798631,
+        0.8179950009798631
+      ],
+      "before_median": 0.8150102630024776,
+      "after_median": 0.8179950009798631,
+      "median_change": 0.002984737977385521,
+      "change_pct": 0.36622090700917376,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        744
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 47631,
+          "append_ns": 63356,
+          "query_ns": 181227,
+          "numeric_ns": 61662,
+          "release_ns": 1722
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "repeat-code",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        47.13073438810108
+      ],
+      "after_raw": [
+        50.48105915476009
+      ],
+      "before_range": [
+        47.13073438810108,
+        47.13073438810108
+      ],
+      "after_range": [
+        50.48105915476009,
+        50.48105915476009
+      ],
+      "before_median": 47.13073438810108,
+      "after_median": 50.48105915476009,
+      "median_change": 3.350324766659007,
+      "change_pct": 7.108577471062816,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        744
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 41935,
+          "append_ns": 37080,
+          "query_ns": 92157,
+          "numeric_ns": 31814,
+          "release_ns": 1759
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "repeat-code",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.8201496249530464
+      ],
+      "after_raw": [
+        0.8154661160660908
+      ],
+      "before_range": [
+        0.8201496249530464,
+        0.8201496249530464
+      ],
+      "after_range": [
+        0.8154661160660908,
+        0.8154661160660908
+      ],
+      "before_median": 0.8201496249530464,
+      "after_median": 0.8154661160660908,
+      "median_change": -0.0046835088869556785,
+      "change_pct": -0.5710554201891926,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        744
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 41935,
+          "append_ns": 37080,
+          "query_ns": 92157,
+          "numeric_ns": 31814,
+          "release_ns": 1759
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "repeat-text",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "decode_tps",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        45.87946090330555
+      ],
+      "after_raw": [
+        48.68691731469819
+      ],
+      "before_range": [
+        45.87946090330555,
+        45.87946090330555
+      ],
+      "after_range": [
+        48.68691731469819,
+        48.68691731469819
+      ],
+      "before_median": 45.87946090330555,
+      "after_median": 48.68691731469819,
+      "median_change": 2.807456411392643,
+      "change_pct": 6.119200958593596,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        475
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 44518,
+          "append_ns": 58745,
+          "query_ns": 165629,
+          "numeric_ns": 58325,
+          "release_ns": 2046
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "repeat-text",
+      "role": "held_out_acceptance",
+      "block": 1,
+      "metric": "ttft",
+      "startup_order": "ON_OFF",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.6433605831116438
+      ],
+      "after_raw": [
+        0.6445783940143883
+      ],
+      "before_range": [
+        0.6433605831116438,
+        0.6433605831116438
+      ],
+      "after_range": [
+        0.6445783940143883,
+        0.6445783940143883
+      ],
+      "before_median": 0.6433605831116438,
+      "after_median": 0.6445783940143883,
+      "median_change": 0.0012178109027445316,
+      "change_pct": 0.18928901376806806,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        475
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 44518,
+          "append_ns": 58745,
+          "query_ns": 165629,
+          "numeric_ns": 58325,
+          "release_ns": 2046
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "repeat-text",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "decode_tps",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        45.82850908658575
+      ],
+      "after_raw": [
+        48.9350893807164
+      ],
+      "before_range": [
+        45.82850908658575,
+        45.82850908658575
+      ],
+      "after_range": [
+        48.9350893807164,
+        48.9350893807164
+      ],
+      "before_median": 45.82850908658575,
+      "after_median": 48.9350893807164,
+      "median_change": 3.1065802941306515,
+      "change_pct": 6.778706870566653,
+      "median_adverse": false,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        475
+      ],
+      "output_identity_equal": true,
+      "window": "(actual_output-1)/(HTTP latency-TTFT)",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 38955,
+          "append_ns": 39571,
+          "query_ns": 93278,
+          "numeric_ns": 36585,
+          "release_ns": 1648
+        }
+      ]
+    },
+    {
+      "head": "subset",
+      "case": "repeat-text",
+      "role": "held_out_acceptance",
+      "block": 2,
+      "metric": "ttft",
+      "startup_order": "OFF_ON",
+      "repetitions_per_start": 1,
+      "before_raw": [
+        0.6443437309935689
+      ],
+      "after_raw": [
+        0.6494112550280988
+      ],
+      "before_range": [
+        0.6443437309935689,
+        0.6443437309935689
+      ],
+      "after_range": [
+        0.6494112550280988,
+        0.6494112550280988
+      ],
+      "before_median": 0.6443437309935689,
+      "after_median": 0.6494112550280988,
+      "median_change": 0.005067524034529924,
+      "change_pct": 0.7864628444069544,
+      "median_adverse": true,
+      "observed_ranges_strictly_separated_in_adverse_direction": null,
+      "input_tokens": [
+        475
+      ],
+      "output_identity_equal": true,
+      "window": "HTTP TTFT",
+      "first_request_of_service": [
+        false
+      ],
+      "on_host_index_cost_ns": [
+        {
+          "init_ns": 38955,
+          "append_ns": 39571,
+          "query_ns": 93278,
+          "numeric_ns": 36585,
+          "release_ns": 1648
+        }
+      ]
+    }
+  ],
+  "all_plain_metric_observations": [
+    {
+      "case": "context-1024",
+      "metric": "decode_tps",
+      "startup_pairs": 1,
+      "startup_order": "PARENT_CANDIDATE",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        18.535300585589066,
+        18.596144507041082,
+        18.6340930379919
+      ],
+      "after_raw": [
+        18.54948403699266,
+        18.53546905298837,
+        18.534023281538307
+      ],
+      "before_median": 18.596144507041082,
+      "after_median": 18.53546905298837,
+      "before_range": [
+        18.535300585589066,
+        18.6340930379919
+      ],
+      "after_range": [
+        18.534023281538307,
+        18.54948403699266
+      ],
+      "median_change": -0.06067545405271346,
+      "change_pct": -0.32627975132016873,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "first_request_of_service": [
+        true,
+        false,
+        false
+      ],
+      "output_identity_equal": true
+    },
+    {
+      "case": "context-1024",
+      "metric": "ttft",
+      "startup_pairs": 1,
+      "startup_order": "PARENT_CANDIDATE",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        0.867871679016389,
+        0.7652523769065738,
+        0.7634816210484132
+      ],
+      "after_raw": [
+        0.8713125929934904,
+        0.7616839300608262,
+        0.7620331490179524
+      ],
+      "before_median": 0.7652523769065738,
+      "after_median": 0.7620331490179524,
+      "before_range": [
+        0.7634816210484132,
+        0.867871679016389
+      ],
+      "after_range": [
+        0.7616839300608262,
+        0.8713125929934904
+      ],
+      "median_change": -0.00321922788862139,
+      "change_pct": -0.420675320426267,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "first_request_of_service": [
+        true,
+        false,
+        false
+      ],
+      "output_identity_equal": true
+    },
+    {
+      "case": "context-4096",
+      "metric": "decode_tps",
+      "startup_pairs": 1,
+      "startup_order": "PARENT_CANDIDATE",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        17.842927202189575,
+        17.853027595443034,
+        17.857713867567895
+      ],
+      "after_raw": [
+        17.856594598362516,
+        17.842529760335488,
+        17.836879013377516
+      ],
+      "before_median": 17.853027595443034,
+      "after_median": 17.842529760335488,
+      "before_range": [
+        17.842927202189575,
+        17.857713867567895
+      ],
+      "after_range": [
+        17.836879013377516,
+        17.856594598362516
+      ],
+      "median_change": -0.01049783510754665,
+      "change_pct": -0.05880142766500063,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "output_identity_equal": true
+    },
+    {
+      "case": "context-4096",
+      "metric": "ttft",
+      "startup_pairs": 1,
+      "startup_order": "PARENT_CANDIDATE",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        2.6173901159781963,
+        2.607885616016574,
+        2.612263167044148
+      ],
+      "after_raw": [
+        2.6180368369678035,
+        2.606654347036965,
+        2.6035611160332337
+      ],
+      "before_median": 2.612263167044148,
+      "after_median": 2.606654347036965,
+      "before_range": [
+        2.607885616016574,
+        2.6173901159781963
+      ],
+      "after_range": [
+        2.6035611160332337,
+        2.6180368369678035
+      ],
+      "median_change": -0.005608820007182658,
+      "change_pct": -0.21471113928881458,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "output_identity_equal": true
+    },
+    {
+      "case": "context-8192",
+      "metric": "decode_tps",
+      "startup_pairs": 1,
+      "startup_order": "PARENT_CANDIDATE",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        18.09820217275846,
+        18.108123298792222,
+        18.116637527211022
+      ],
+      "after_raw": [
+        17.998842766248007,
+        17.999761978348022,
+        18.028463605890277
+      ],
+      "before_median": 18.108123298792222,
+      "after_median": 17.999761978348022,
+      "before_range": [
+        18.09820217275846,
+        18.116637527211022
+      ],
+      "after_range": [
+        17.998842766248007,
+        18.028463605890277
+      ],
+      "median_change": -0.10836132044419955,
+      "change_pct": -0.5984127601529332,
+      "observed_ranges_strictly_separated_in_adverse_direction": true,
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "output_identity_equal": true
+    },
+    {
+      "case": "context-8192",
+      "metric": "ttft",
+      "startup_pairs": 1,
+      "startup_order": "PARENT_CANDIDATE",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        5.086883042007685,
+        5.101746306987479,
+        5.096346607082523
+      ],
+      "after_raw": [
+        5.09893491701223,
+        5.091748011065647,
+        5.092783617903478
+      ],
+      "before_median": 5.096346607082523,
+      "after_median": 5.092783617903478,
+      "before_range": [
+        5.086883042007685,
+        5.101746306987479
+      ],
+      "after_range": [
+        5.091748011065647,
+        5.09893491701223
+      ],
+      "median_change": -0.003562989179044962,
+      "change_pct": -0.06991261493268786,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "output_identity_equal": true
+    },
+    {
+      "case": "context-45056",
+      "metric": "decode_tps",
+      "startup_pairs": 1,
+      "startup_order": "PARENT_CANDIDATE",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        17.853594645238424,
+        17.83594683406092,
+        17.854247362202624
+      ],
+      "after_raw": [
+        17.83099186577984,
+        17.84651962643369,
+        17.840652532104105
+      ],
+      "before_median": 17.853594645238424,
+      "after_median": 17.840652532104105,
+      "before_range": [
+        17.83594683406092,
+        17.854247362202624
+      ],
+      "after_range": [
+        17.83099186577984,
+        17.84651962643369
+      ],
+      "median_change": -0.012942113134318589,
+      "change_pct": -0.07249023735268478,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "output_identity_equal": true
+    },
+    {
+      "case": "context-45056",
+      "metric": "ttft",
+      "startup_pairs": 1,
+      "startup_order": "PARENT_CANDIDATE",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        30.402693217038177,
+        30.4417082821019,
+        30.416615760070272
+      ],
+      "after_raw": [
+        30.42149871599395,
+        30.41209856106434,
+        30.421987665002234
+      ],
+      "before_median": 30.416615760070272,
+      "after_median": 30.42149871599395,
+      "before_range": [
+        30.402693217038177,
+        30.4417082821019
+      ],
+      "after_range": [
+        30.41209856106434,
+        30.421987665002234
+      ],
+      "median_change": 0.004882955923676491,
+      "change_pct": 0.016053580589625582,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "output_identity_equal": true
+    },
+    {
+      "case": "context-204800",
+      "metric": "decode_tps",
+      "startup_pairs": 1,
+      "startup_order": "PARENT_CANDIDATE",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        17.068522874362667,
+        17.097486466533862,
+        17.089363974315837
+      ],
+      "after_raw": [
+        17.04299351546487,
+        17.010956062750285,
+        16.930531519007005
+      ],
+      "before_median": 17.089363974315837,
+      "after_median": 17.010956062750285,
+      "before_range": [
+        17.068522874362667,
+        17.097486466533862
+      ],
+      "after_range": [
+        16.930531519007005,
+        17.04299351546487
+      ],
+      "median_change": -0.07840791156555227,
+      "change_pct": -0.45881117450242703,
+      "observed_ranges_strictly_separated_in_adverse_direction": true,
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "output_identity_equal": true
+    },
+    {
+      "case": "context-204800",
+      "metric": "ttft",
+      "startup_pairs": 1,
+      "startup_order": "PARENT_CANDIDATE",
+      "repetitions_per_start": 3,
+      "before_raw": [
+        159.31479946803302,
+        159.45755769195966,
+        159.3890996099217
+      ],
+      "after_raw": [
+        159.33170233294368,
+        159.0991429060232,
+        158.46299563604407
+      ],
+      "before_median": 159.3890996099217,
+      "after_median": 159.0991429060232,
+      "before_range": [
+        159.31479946803302,
+        159.45755769195966
+      ],
+      "after_range": [
+        158.46299563604407,
+        159.33170233294368
+      ],
+      "median_change": -0.2899567038984969,
+      "change_pct": -0.1819175242272597,
+      "observed_ranges_strictly_separated_in_adverse_direction": false,
+      "first_request_of_service": [
+        false,
+        false,
+        false
+      ],
+      "output_identity_equal": true
+    }
+  ]
+}

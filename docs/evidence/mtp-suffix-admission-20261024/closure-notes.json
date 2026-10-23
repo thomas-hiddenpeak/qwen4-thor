@@ -1,0 +1,21 @@
+{
+  "created_utc": "2026-10-23T21:09:23.170916+00:00",
+  "decision_sha256": "85a675b61b60e65bb29ce20c237fdd1ddd0b734387d675c6575eb4594ede1b32",
+  "archive_receipt_sha256": "9e7ba2fb11dac7662b0a0369b28ecb4cca48e3c5fd2e34290941651b298b3abe",
+  "archive_unchanged": true,
+  "engineering_decision": "NO_GO_PROTECTION_NOT_CLEARED",
+  "clarification": {
+    "field": "decision.json.remaining_matching_result",
+    "quoted_phrase": "Remaining protected timing regressions occur with zero suffix hits",
+    "scope": "This refers to the principal new 8K / 45K / 200K adverse observations, not every protected TTFT observation. All new five-tier requests have zero hits. Subset repeat-text and old-repeat-text have suffix hits and adverse TTFT medians in both blocks; their separate review is preserved in the root panel and final report.",
+    "effect": "Wording clarification only; no change to raw evidence, hashes, measured values, protection judgments or NO_GO. No new inference."
+  },
+  "default_identity": {
+    "binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "release_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96"
+  },
+  "deployment_performed": false,
+  "conditional_deployment_http_requests": 0,
+  "conditional_deployment_starts": 0,
+  "retention": "Original archive/decision remain immutable. This later clarification is tracked separately in Git."
+}

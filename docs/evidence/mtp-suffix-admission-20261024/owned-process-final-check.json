@@ -1,0 +1,17 @@
+{
+  "created_utc": "2026-10-23T20:59:34.363138+00:00",
+  "source": "Read-only /proc stat scan against all retained unified-memory process start_ticks plus guard PID absence.",
+  "known_process_identities": 164,
+  "missing_identities": 164,
+  "reused_pids": [],
+  "live_owned": [],
+  "zombie_owned": [],
+  "guard_pid_present": {
+    "2998792": false,
+    "3006373": false
+  },
+  "sample_records_without_identity": 0,
+  "errors": [],
+  "status": "PASS",
+  "boundary": "No GPU/HTTP/NVML or process mutation performed. Known sampled process identities only; short-lived or unsampled detached activity is outside this snapshot claim."
+}

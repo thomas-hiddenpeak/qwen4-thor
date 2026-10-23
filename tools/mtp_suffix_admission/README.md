@@ -1,5 +1,16 @@
 # Fixed k3 suffix admission: one minimum-match candidate
 
+Final bounded outcome (2026-10-24): **NO_GO_PROTECTION_NOT_CLEARED**.
+The fixed min32 candidate completed 250 HTTP requests / 18 starts within the
+original four-hour budget. Both old regression probes lose their extra target
+work, and all repeat-gain gates pass in full and subset heads. Repeated adverse
+protected timing remains unresolved, so the installed f356 program and explicit
+BF16 subset remain unchanged. The original fixture failure and one repaired
+continuation are separately preserved; no extra inference sampling or deployment
+health run followed. See the [final report](../../docs/MTP_SUFFIX_ADMISSION_2026-10-24.md)
+and [evidence index](../../docs/evidence/mtp-suffix-admission-20261024/README.md).
+Commands below describe the frozen historical stage, not a request to rerun it.
+
 This stage evaluates one rule: after the existing complete-three, d0 and numeric
 gates, admit the selected suffix only when its match length is at least 32.
 Lookup still uses the 3–64 token range, four candidates, longest match and newest
