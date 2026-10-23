@@ -1,0 +1,2317 @@
+{
+  "version": 1,
+  "classification": "performance optimization: fixed-k3 suffix",
+  "source_commit": "cb912543f9a11191135bb77e44d8e1d1d598ed78",
+  "source_note": "commit plus frozen files and source snapshot; includes dirty source",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t",
+  "candidate_sha256": "1266ee3404e233514669c9ef4de2c6d5df0ea832a34b70cbcfde7db4ebadf392",
+  "parent": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/parent/q4t",
+  "parent_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "parent_release": {
+    "version": "sha2-startup-20261023",
+    "binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "source_commit": "9a902a822b96b4ea25ae9f47fa5c0a7862f175c0",
+    "source_note": "exact runtime inputs frozen before HTTP; tested-source retained",
+    "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/candidate/CMakeCache.txt",
+    "build_cache_sha256": "9e40007a1decff5ebfdde8b9ee241990e47339717f700d7511417bf950ad4d69",
+    "acceptance": "ACCEPT_STARTUP_BOUNDED",
+    "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/decision.md",
+    "acceptance_snapshot_sha256": "80b4facadfce7154bd3374987316555d27551a1474f67ed2b3324325edf62d95",
+    "acceptance_audit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/audit.json",
+    "acceptance_audit_sha256": "2646cf5bf124702882d65bdcdb21a89f5bfb502b54a9641726b281b06ade9613",
+    "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/previous/q4t",
+    "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/previous/q4t.release.json",
+    "subset_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact",
+    "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+    "scope": "full-head default; same explicit 65536 BF16 subset; no persistent service",
+    "atomicity": "individual atomic replaces; recovery marker; identity-checked rollback"
+  },
+  "artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "model": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "port": 8754,
+  "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run",
+  "lease": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/lease",
+  "stage_timeout_seconds": 14400,
+  "resource_sample_interval_seconds": 1,
+  "resource_sample_max_age_seconds": 5,
+  "direct_contract_timeout_seconds": 1200,
+  "http_requests": 177,
+  "http_loads": 19,
+  "deployment_separate_max_requests": 3,
+  "deployment_separate_max_loads": 3,
+  "retries": 0,
+  "warmups": 0,
+  "scope": "single sequence, greedy, MTP k3; full head default; subset explicit",
+  "goal": "each head separately: >=5% median final decode gain on BOTH repeated code and text",
+  "goal_note": "descriptive investment threshold; not a tolerated protection-item loss",
+  "protections": [
+    "all direct target/draft/history/lifecycle contracts",
+    "33/33 exact retrieval answers",
+    "six five-tier matrices including concurrent-stage parent/candidate plain",
+    "per-tier TTFT/plain decode, deterministic output and full 256-token finish",
+    "nonrepeat scenario, index initialization/growth/free and unified RAM"
+  ],
+  "statistics": "one startup per arm/group; no cross-start noninferiority or fixed noise band",
+  "cache": "natural inherited warm page cache; no drop_caches, no warmups, no SSD cold claim",
+  "order_note": "full OFF->ON and subset ON->OFF; not independent repeated startup blocks",
+  "stop": "first HTTP/quality/contract failure, identity change, timeout or ENV_ABORT; no extra samples",
+  "diagnostics": "12 separate timing requests after regular matrix, not acceptance timing",
+  "reused_evidence": {
+    "records": [
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-subset-resume-20261023/artifact-contract.json",
+        "sha256": "a6f373f0aa88a32a1e4668ec08857f40fa7ef5099a00b521b6b5f1dee9404fbc",
+        "scope": "65536-row BF16 source identity, ordering, special IDs, negative loader checks",
+        "boundary": "Subset artifact/loader/shapes unchanged; not new suffix state evidence"
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-subset-resume-20261023/projection-contract.log",
+        "sha256": "bffca92eca12e0d1352d24432151072ce4591a05fc83abc2f15ef4071cb9defd",
+        "scope": "T1/T4/T17 subset projection, global mapping and tie rule",
+        "boundary": "Subset projection and mapping unchanged; suffix candidates bypass mapping and receive new tests"
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-subset-resume-20261023/lifecycle.log",
+        "sha256": "02c58ec411ce5a781273029c340cdb960267d73e02d52efea17ec1c7fe61417b",
+        "scope": "MTP allocation failure/ownership cleanup",
+        "boundary": "MTP resource allocation owners unchanged; request-local suffix cleanup receives new tests"
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/sha2-startup-20261023/audit.json",
+        "sha256": "2646cf5bf124702882d65bdcdb21a89f5bfb502b54a9641726b281b06ade9613",
+        "scope": "f356 historical 11 subset and 11 ordinary retrieval quality, exact SHA validation",
+        "boundary": "Same subset and hash dependencies; candidate ON and ordinary quality retested. No claim this audit contains 11 full-head quality requests"
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-mainline-ready-20261016/raw-manifest.json",
+        "sha256": "1bebe1fb9f1e9d3da51440389ddc6e5f6b0ee5b40756c82777701f5468a5196b",
+        "scope": "historical full-head MTP acceptance evidence anchor",
+        "boundary": "Historical coverage only; current candidate full-head ON 11 questions and OFF five-tier outputs are measured. Not same-binary full-head OFF quality evidence"
+      }
+    ],
+    "explicit_nonreuse": "No old elapsed timing used as concurrent suffix comparison; no legacy single-sequence state test substitutes for new Multi suffix oracle."
+  },
+  "scenarios": [
+    {
+      "id": "repeat-code",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/scenarios/repeat-code.jsonl",
+      "input_tokens": 443,
+      "output_tokens": 256,
+      "repeats": 3,
+      "prompt_sha256": "cabb83dd8abe41bcc91abc8df97ea0028e0b1d475cbb189d9932b2aafc22b745",
+      "role": "held-out acceptance; never used for tuning"
+    },
+    {
+      "id": "repeat-text",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/scenarios/repeat-text.jsonl",
+      "input_tokens": 383,
+      "output_tokens": 256,
+      "repeats": 3,
+      "prompt_sha256": "a367ffb1a987f4fa8a64fccce4b3b26ec0f6453dfafe52bbbe61a934387a2e3f",
+      "role": "held-out acceptance; never used for tuning"
+    },
+    {
+      "id": "nonrepeat",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/scenarios/nonrepeat.jsonl",
+      "input_tokens": 108,
+      "output_tokens": 256,
+      "repeats": 3,
+      "prompt_sha256": "d8487f6b93b50d614758f986ec7752aa501f0d288c8657e24cdc38449a4a8d4b",
+      "role": "held-out acceptance; never used for tuning"
+    }
+  ],
+  "steps": [
+    {
+      "name": "quality-full-on",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "quality",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/quality-full-on",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/quality",
+        "--startup-timeout",
+        "900",
+        "--port",
+        "8754",
+        "--max-len",
+        "208896",
+        "--allow-unqualified-binary",
+        "--mtp",
+        "--mtp-k",
+        "3",
+        "--mtp-suffix"
+      ],
+      "timeout": 2400,
+      "http_requests": 11,
+      "http_loads": 1,
+      "kind": "quality"
+    },
+    {
+      "name": "host-contracts",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t_host_tests"
+      ],
+      "timeout": 60,
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build.log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build-final.log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/configure.log"
+      ],
+      "kind": "contract",
+      "http_requests": 0,
+      "http_loads": 0
+    },
+    {
+      "name": "runner-contracts",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/evalscope",
+        "-p",
+        "test_run_acceptance.py",
+        "-v"
+      ],
+      "timeout": 30,
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build.log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build-final.log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/configure.log"
+      ],
+      "kind": "contract",
+      "http_requests": 0,
+      "http_loads": 0
+    },
+    {
+      "name": "stage-audit-contracts",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tools/mtp_suffix",
+        "-p",
+        "test_stage_audit.py",
+        "-v"
+      ],
+      "timeout": 30,
+      "kind": "contract",
+      "http_requests": 0,
+      "http_loads": 0
+    },
+    {
+      "name": "states-full",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t_tests",
+        "mtp_suffix_states"
+      ],
+      "timeout": 540,
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build.log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build-final.log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/configure.log"
+      ],
+      "kind": "contract",
+      "http_requests": 0,
+      "http_loads": 0
+    },
+    {
+      "name": "states-subset",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t_tests",
+        "mtp_suffix_states"
+      ],
+      "timeout": 540,
+      "env": {
+        "Q4T_TEST_SUBSET_HEAD": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact"
+      },
+      "files": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build.log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build-final.log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/configure.log"
+      ],
+      "kind": "contract",
+      "http_requests": 0,
+      "http_loads": 0
+    },
+    {
+      "name": "quality-subset-on",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "quality",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/quality-subset-on",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/quality",
+        "--startup-timeout",
+        "900",
+        "--port",
+        "8754",
+        "--max-len",
+        "208896",
+        "--allow-unqualified-binary",
+        "--mtp",
+        "--mtp-k",
+        "3",
+        "--mtp-subset-head",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact",
+        "--mtp-suffix"
+      ],
+      "timeout": 2400,
+      "http_requests": 11,
+      "http_loads": 1,
+      "kind": "quality"
+    },
+    {
+      "name": "quality-plain",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "quality",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/quality-plain",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/quality",
+        "--startup-timeout",
+        "900",
+        "--port",
+        "8754",
+        "--max-len",
+        "208896",
+        "--allow-unqualified-binary"
+      ],
+      "timeout": 2400,
+      "http_requests": 11,
+      "http_loads": 1,
+      "kind": "quality"
+    },
+    {
+      "name": "performance-full-off",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "performance",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-full-off",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance",
+        "--startup-timeout",
+        "900",
+        "--port",
+        "8754",
+        "--max-len",
+        "208896",
+        "--allow-unqualified-binary",
+        "--mtp",
+        "--mtp-k",
+        "3"
+      ],
+      "timeout": 2400,
+      "http_requests": 15,
+      "http_loads": 1,
+      "kind": "performance"
+    },
+    {
+      "name": "scenarios-full-off",
+      "timeout": 900,
+      "http_requests": 9,
+      "http_loads": 1,
+      "kind": "scenarios",
+      "head": "full",
+      "suffix": false,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json",
+        "--custom-step",
+        "scenarios-full-off"
+      ]
+    },
+    {
+      "name": "performance-full-on",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "performance",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-full-on",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance",
+        "--startup-timeout",
+        "900",
+        "--port",
+        "8754",
+        "--max-len",
+        "208896",
+        "--allow-unqualified-binary",
+        "--mtp",
+        "--mtp-k",
+        "3",
+        "--mtp-suffix"
+      ],
+      "timeout": 2400,
+      "http_requests": 15,
+      "http_loads": 1,
+      "kind": "performance"
+    },
+    {
+      "name": "scenarios-full-on",
+      "timeout": 900,
+      "http_requests": 9,
+      "http_loads": 1,
+      "kind": "scenarios",
+      "head": "full",
+      "suffix": true,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json",
+        "--custom-step",
+        "scenarios-full-on"
+      ]
+    },
+    {
+      "name": "performance-subset-on",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "performance",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-subset-on",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance",
+        "--startup-timeout",
+        "900",
+        "--port",
+        "8754",
+        "--max-len",
+        "208896",
+        "--allow-unqualified-binary",
+        "--mtp",
+        "--mtp-k",
+        "3",
+        "--mtp-subset-head",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact",
+        "--mtp-suffix"
+      ],
+      "timeout": 2400,
+      "http_requests": 15,
+      "http_loads": 1,
+      "kind": "performance"
+    },
+    {
+      "name": "scenarios-subset-on",
+      "timeout": 900,
+      "http_requests": 9,
+      "http_loads": 1,
+      "kind": "scenarios",
+      "head": "subset",
+      "suffix": true,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json",
+        "--custom-step",
+        "scenarios-subset-on"
+      ]
+    },
+    {
+      "name": "performance-subset-off",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "performance",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-subset-off",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance",
+        "--startup-timeout",
+        "900",
+        "--port",
+        "8754",
+        "--max-len",
+        "208896",
+        "--allow-unqualified-binary",
+        "--mtp",
+        "--mtp-k",
+        "3",
+        "--mtp-subset-head",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact"
+      ],
+      "timeout": 2400,
+      "http_requests": 15,
+      "http_loads": 1,
+      "kind": "performance"
+    },
+    {
+      "name": "scenarios-subset-off",
+      "timeout": 900,
+      "http_requests": 9,
+      "http_loads": 1,
+      "kind": "scenarios",
+      "head": "subset",
+      "suffix": false,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json",
+        "--custom-step",
+        "scenarios-subset-off"
+      ]
+    },
+    {
+      "name": "performance-parent-plain",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "performance",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-parent-plain",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/parent/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance",
+        "--startup-timeout",
+        "900",
+        "--port",
+        "8754",
+        "--max-len",
+        "208896",
+        "--allow-unqualified-binary"
+      ],
+      "timeout": 2400,
+      "http_requests": 15,
+      "http_loads": 1,
+      "kind": "performance"
+    },
+    {
+      "name": "performance-candidate-plain",
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py",
+        "--mode",
+        "performance",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-candidate-plain",
+        "--binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--fixtures",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance",
+        "--startup-timeout",
+        "900",
+        "--port",
+        "8754",
+        "--max-len",
+        "208896",
+        "--allow-unqualified-binary",
+        "--reference",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/run/performance-parent-plain/results.json"
+      ],
+      "timeout": 2400,
+      "http_requests": 15,
+      "http_loads": 1,
+      "kind": "performance"
+    },
+    {
+      "name": "lifecycle-full",
+      "timeout": 900,
+      "http_requests": 3,
+      "http_loads": 1,
+      "kind": "lifecycle",
+      "head": "full",
+      "suffix": true,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json",
+        "--custom-step",
+        "lifecycle-full"
+      ]
+    },
+    {
+      "name": "lifecycle-subset",
+      "timeout": 900,
+      "http_requests": 3,
+      "http_loads": 1,
+      "kind": "lifecycle",
+      "head": "subset",
+      "suffix": true,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json",
+        "--custom-step",
+        "lifecycle-subset"
+      ]
+    },
+    {
+      "name": "timing-full-off",
+      "timeout": 900,
+      "http_requests": 3,
+      "http_loads": 1,
+      "kind": "timing",
+      "head": "full",
+      "suffix": false,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json",
+        "--custom-step",
+        "timing-full-off"
+      ]
+    },
+    {
+      "name": "timing-full-on",
+      "timeout": 900,
+      "http_requests": 3,
+      "http_loads": 1,
+      "kind": "timing",
+      "head": "full",
+      "suffix": true,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json",
+        "--custom-step",
+        "timing-full-on"
+      ]
+    },
+    {
+      "name": "timing-subset-on",
+      "timeout": 900,
+      "http_requests": 3,
+      "http_loads": 1,
+      "kind": "timing",
+      "head": "subset",
+      "suffix": true,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json",
+        "--custom-step",
+        "timing-subset-on"
+      ]
+    },
+    {
+      "name": "timing-subset-off",
+      "timeout": 900,
+      "http_requests": 3,
+      "http_loads": 1,
+      "kind": "timing",
+      "head": "subset",
+      "suffix": false,
+      "command": [
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py",
+        "--plan",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/frozen-plan.json",
+        "--custom-step",
+        "timing-subset-off"
+      ]
+    }
+  ],
+  "files": {
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/generation_config.json": "e70c136c1b78ddc1fb0905bac8e733a4dc448d4f852a5dd75143fffc70be550e",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00012.safetensors": "6c7c599218f8be53472c7b9ab0a9683b753cc187c5b7a49223e22348470b80e2",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/head.bf16": "21522eabb4ab4f816d9f76eefe317a17e7ba668ebe838809eb4be87d84ef75c1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/manifest.json": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/token_ids.bin": "71d89c6d2899c22641ac3d1f7f4957de94eddc5256b3f60bc8242f24becf590b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/candidate/CMakeCache.txt": "9e40007a1decff5ebfdde8b9ee241990e47339717f700d7511417bf950ad4d69",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance/context-1024/requests.jsonl": "528326cd60d67d902741dc90cb858b09768d281636b93cf635683326d833fb78",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance/context-204800/requests.jsonl": "d80c69b853d708c8be0ab85b492dab4a749f5d5e470f45d4d73dddc2f611e0c7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance/context-4096/requests.jsonl": "1cc86f32fc09456c8c0808fbd8bfce4319888bf0b7a8b86c637f7ba1c74b71ec",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance/context-45056/requests.jsonl": "4ed61fc792d09b96ecfed463d08dd0d005899a6f6eb8df93e7255ef412e10c1c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/performance/context-8192/requests.jsonl": "771ea15e835b96c7d912c4efc123b1d0423dca5e639a39df26b315b3b67822fc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/quality/manifest.json": "e2a542bf2c27b4404844b2e60e861c80e6c670d32bcd78685ad053f7fb833ae1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/quality/requests.jsonl": "22cce46de658df1988cacbe311bc74a7d6f1e7125c48e11e1cd9a0dd97ab4c42",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/fixtures/replay-prompt.txt": "9f0c45cf798569d3b2af33bd7847fdfbd5254c4e37a9d774a2fbd22b42516392",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/parent/CMakeCache.txt": "9e40007a1decff5ebfdde8b9ee241990e47339717f700d7511417bf950ad4d69",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/parent/q4t": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/parent/q4t.release.json": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/scenarios/manifest.json": "9776be40f01c75eafb9d16488fab453b438e0312b66d35c1ca321414c888f463",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/scenarios/nonrepeat.jsonl": "b78132a2c5cdc0ba175759a9b2a8d8c22210586913a9f5cd4a91e35b18735499",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/scenarios/repeat-code.jsonl": "2393f173bd57132ced8459cda49b913cd87dd44f44ec24834ad7cc503e212e27",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/scenarios/repeat-text.jsonl": "88580053179a2f2e9a5285e627cd2b5c88dee4cb0e4c4413035e743496f0e259",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/CMakeCache.txt": "7e09d27529a8a70e7606fe5c8d4449300bb72d5c2531384757d8543d3a34cb41",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t": "1266ee3404e233514669c9ef4de2c6d5df0ea832a34b70cbcfde7db4ebadf392",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t_host_tests": "180ca20cbd6fd4888617fc436aadb7f4e132a61c95c8846551d6808ce95e2874",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build/q4t_tests": "382464af8b387e38fc8f674c40009893eee573b28e04e52fe31b4d1ea7a1e332",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build-final.log": "ff3b703c345a67419c6ad7e5a8543bff1cc978ff9d4745098a9103df57e04567",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/build.log": "0a3fd02ea2e62443d5d1b41bda47e9673ee3b175f9adc26e08b9c2cbb1ae83bf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/configure.log": "70fa9660eb35eb470dbcddcd3ed3842483ed81259e29dfe3ae13ef925f6755d6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/contracts.json": "b06a1ddd71d28170913842f42fcb7963855992cc0fe561c8fe7ecf27a144f738",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/reuse.json": "5525d6e9be0a52ac92b85fbc006f1efc4e79ada06c1ba7dd90e67c1715dd4aa8",
+    "/home/rm01/models/dev/qwen4-thor/AGENTS.md": "54383943f06a198eea0b97575689371cae48600124b48d1d884dc83f4ea68a76",
+    "/home/rm01/models/dev/qwen4-thor/CMakeLists.txt": "24ad7a6993fbeccf1ecc7ee7148ce2ab7881df77e77f876a8eb4b224a8debd2b",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "/home/rm01/models/dev/qwen4-thor/cmake/HostTestSources.cmake": "8f22e9565fb5cf13bf431abb36a752ec4a3e4a293fe384b0ad4d7b287f0a8bcb",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/io/json.h": "95efbb81c98760b4bbbaa2f2432b41be717a8251cfa51621d4a196d45a92fe6f",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/io/model_config.h": "7a63bc468f44712945a5ad0e949fa571b0b0a6a5a614473d52d21df395dfcac1",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/io/pending_host_storage.h": "ad3eb6eb4416407d4240a99c09ec18a4e56a4532fd65969fc248a9e4f610ebc7",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/io/safetensors.h": "9fb9bb093bd89c2c9ca962180ab56ac7400d347b71f696dc6208147a2e45e557",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/io/weight_loader.h": "7ab571114149b60bc26465cc2d635f60b787793ec814cc71f9686f4b6a445233",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/log.h": "8e6c7a5da27abc4cca1d8b5544419c018fe7b29547294eb7ae0ac7f16e72ff0c",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/decode_metadata_upload.h": "8e39e78fbfd65b34975631149ca82a5a3d7181f651a58e37ac04eb65d3ba6469",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/decode_topk.h": "523af23ef7a13bcb169aede39b8cbf667f977258870b3c8c55ab2c47c9fab98a",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/decoder_layer.h": "34db1f81f57b19fa867a23255741c84610c8b8fba52e5a315344d27238b50d63",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/decoder_workspace.h": "5fc4dc1ab58adc4749db3d95d171b91ebe6a4a0e36ae99cc647a403acc26d669",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/full_attention.h": "afed8dd40bb537da50cfd49d3d30f6fbf34c3318b5dca994504ce0e3c4f96926",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/gemv.h": "4a8fd98b91df2e5fb24448f327f8e8bf085a51fd22b3403ebaf82b80a6050dc8",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/hc_mix_subtiming.h": "36dcd5d6ceef80c40efaade2708da72c7cba565c4c79d0de12a6f3e5754b7db6",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/hyperconnection.h": "9a90ddc00da65800e43bea0c22e55dc1e33be0795ad437bad775611387ce65f1",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/indexer_decode.h": "d656817419b3f4e9eb691e4bddc9b6036a4bdb0c9c65a5408f7738d45e311281",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/layer_subtiming.h": "12704d88aa5d71240bd5ac0595a6ece5a1e23e939d07a1320e5223b8f9feeb01",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/linear.h": "8606fd8c1294de4b7d7afafb918a585d50c726d5154020aaac7444c3c9686ec2",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/linear_attention.h": "3abd56b1709d49b0c6fd020c954e48f73dc23f7f5316c01ded152985b9371f33",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/metadata_upload_batch.h": "32c5b20cdda7f7cccaad12467c19e30a05bbb434b268ac05e5e4c86c4d0bd83d",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/model.h": "5c6dc610cc6a387bdc1b8109a3f533616ef8ace3807315c5bbf79f00085b8d09",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/model_head.h": "c9d2a47c092b94d670480ef2f2f8d19d07a858edc56a9101d4d6eba3121edd5e",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/model_owner.h": "3d607452d4a255a12d38920494f4f7037b36d15f1e3338d3ff084a12d21374e4",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/moe.h": "d6a5a40e704298b0a9b191ca48344b25103ddfb8bfbeed7fb7ec3b2f35f6389a",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/moe_chunk_order.h": "b9860a49639c44d2798797fc901d2ff6fc8f84faf6e4cedf978d689ca2e727b1",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/moe_partition.h": "cdb01017f2c5bc041728423c18a70a3497bf89abdbeec2e4d8ac36e578a96275",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/moe_replay.h": "592e73835241fee87872fdef8c71978b6a0fcecda0996efa21228ebb77d03597",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/moe_replay_gpu.h": "9fed6e72d461ec62a298fe9623a5947c81ac623a05c8b70849570e7c116f0f28",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/moe_replay_io.h": "acaa3bd5f780eade9f307f069e79dacf07965f30e4231302d0d86b0a295df8cb",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/ple_layer.h": "7daadaa3c44302a4b406368e5dc3ff5ec6bdf5d76b22799570dffd48ec2b27de",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/qsa_decode.h": "80917298a53f8ccfd8665f1ca4b7fdb3490ce5990a8893a4944f38c04f66b921",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/ragged_batch.h": "09b55a867113ac7bdff092f207e8c1ddcbd186e2ed915a45f0b6fbbfdcb9a85b",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/sequence.h": "f335903f961788a9339f5ad1804c5c5adfae4dd143943726f8c4578a887c2ae9",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/short_topk.h": "ba8c218f8deac760520772a45d2e328669ca331a982bccea144bd9a4382bbfcf",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/streaming_topk.h": "3213c483cec4edca6c935a9978d1cf316c2dbb14d1f0ecb5e4c624c68892f8d7",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/mtp/moe_bf16.h": "ae788a148f8be7cbe9b901f6ee1ceb741dba95efa11908700865a116b0ddff1c",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/mtp/mtp.h": "eecc4fdbcc89f9d8b1c4786075fc6bb1f6eb250e81688d6dba514bada9133074",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/mtp/position_copy.h": "84eb6b5168521660f98ca67588a54e96a13179c5fb35dedcb813a270b86e516f",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/mtp/subset_head.h": "c18121fdabf7ecc03ba279a3f4f953b9681927b75d3e1274b9d6a531deb3e34d",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/mtp/suffix_drafter.h": "db1658e889cf3000a47e512414d0876d72b9bc73ca93424427d17c2980109872",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/ple/fp8_convert.h": "fb1cf1342287ef791d1304d6614977c17e6f584023d2ad1c3249a5effd60d3ec",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/ple/ngram_hash.h": "574f279fe1e92ed15ce62a358232487038bc8e790bf668e481def9481c2866e5",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/ple/ngram_hash_derive.h": "509203a563e39fcc1da1a37b7014f146325ea09c2cd7c4b50cea62a412c72425",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/ple/page_reader.h": "d01fc2871d3e7a1057753fa0c9ee28d88beb8001988b2a402ae97819f2baa6f7",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/ple/ple_embedding.h": "8ab9f25fc869f405cfbea3406be7e26a744dc9ed39273f06a4f0e59593b14edb",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/act_quant.h": "a7e917b04bcd8550f5b6b3871c6c0c0ba130e2845d6afebe1dcc3d7ca0111da3",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/dequant.h": "5ea55ea1dd723e44f204d86f3cb709af099a084a5d526bc617b0c07750c2bdb9",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/format.h": "4f8e654989a53ca32e31b5a37a502444dcee67936fa5159b3b28b836fc84f11d",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/fp4_gemm.h": "237b8b93ea555da4d786b1be9c2328d7b76e79e69540a2b6ec24f54440dfeebe",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/lt_cache.h": "170448767e135617098b3a0378d5e0d8775d5f880a35aff0812e03d69db38dfe",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/moe_decode.h": "915173e2efdb8617b22f6052d0798a5d10576455a0254273762db5306d58b27a",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/moe_gemm.h": "12f5743e6e6c6f9e044f182b2ebb89d80bcb28ba9909d64a3a4610ea2801153e",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/moe_residency.h": "154c04d9fc62866af7993b4769679d0abcb8e78770770d929f52d0dc55abda36",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/moe_subtiming.h": "2b5c169cfaf886d81ef81e07572806147304858335f31699eaed53abcbaece5c",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/moe_weights.h": "9ba5f77b0a73af0b50776ad3085e8bf6f5fc0ac9b7b956e7e75e4f183aae8087",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/quant/swizzle.h": "f0c2c88a22f45092de70542dfd3e8046f56e52f3703defbcae2d84e240678ccf",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/runtime/memory_budget.h": "32c3fbce834030830f01b829ebf4db77e0a7761881607d145255b10ad25ff67d",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/runtime/reservation_owner.h": "3cbb96a5c17ba9f58dc0a1fe765a2e43003014453d202721f5616fd740dfffd4",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/runtime/residency_config.h": "f80caa282aabd0b365f6da58fcc822d5759cdc84f18bb62e2f24ef1de296a97c",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/runtime/startup_plan.h": "51c91bf9f4b4f0ef0c555662e9d9566caa7709e86c80eb31bcdbbb596ed8ae77",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/runtime/startup_reservation.h": "44375b9027780fb4f908da7349d14a4bed7c5b50c9c90ed5ffc352be61a63b8e",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/chat_contract.h": "cc1fc63b8f551dcf705c1692cc9b551d64040487245827ea74fbb190010c7bdf",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/chat_server.h": "45f0d8b651c1f34631292cde164183ed03350681823dbe4712525181eec7187a",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/chat_template.h": "5be2647b6559eca3373642188ce5f79bd7672139991ecc148d4e722c4730c1b0",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/http_request.h": "7c5f076db8fec2f745223a499f1510ce8e08208ee120e3e5b682b8ee80c53b43",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/request_control.h": "cb0f13e2a2622f98a2acd3981a7b6c0b87eefad65e008751eec88393ff1ea38b",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/request_diagnostics.h": "5e977ad816a934865ac87a8a01efe576cfdeb4eb727d0170b3d85762600f8c28",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/scheduler_submission.h": "71263678302ec6862ac002828d13bb2c42065b364b3710f82965c10d505b52f6",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/server/server_options.h": "a64e7c8064b40a939a1a76fdb9200c5ec2d0d7a262d097cc7428bf9fa4b833f5",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/status.h": "2d8b7a3407cf08fb805ba003235b83d6496d53a948d7d20821a4fa1604a97378",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/test.h": "95167428b6552604a9be39b112335358091a44e38eae8dfbab2fc88727f2f623",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/text/tokenizer.h": "10e336e6c3d47b465c2cbf03bc034dc4fc1a52c4dcf00ecda99c5724fe0979e0",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/trace/router_collector.h": "1de51f3e2188b8bfa0a544abfb7a5c3a62777a9b521c5e2b9ee044c7ce21a7a9",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/trace/router_trace.h": "4db4b53fe8971cb38faaaf7bb12311823aa0eb8bd3a068472c5c6372a5901a72",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/trace/sha256.h": "b423a7fa2fdf78d69ed485564b1ee8f5173688d2462902a3a7d25002619495ad",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/vision/processor.h": "b4fc9a88b0b5b50e8a48fd649eb3cc1a67275863e68827a2f176d0683ef771f7",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/vision/vision.h": "8d6e588be7523b35867eb94d9e2a16bf04252dbf2677cb618cd1ee0c544246f2",
+    "/home/rm01/models/dev/qwen4-thor/src/core/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/io/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
+    "/home/rm01/models/dev/qwen4-thor/src/io/model_config.cpp": "4791ce942c19cd0528bc6c713f979015b713e1658f0b0b9829b4f60d33da1caa",
+    "/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp": "7c6363fa04e765fca3558c8f3ca16146eac6e98b7e83baab80df0c03df8a6c76",
+    "/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp": "f6d168b287f96ab5dcaff818f8e5882e9a082b92d38047548ef779f4d53cb2a3",
+    "/home/rm01/models/dev/qwen4-thor/src/kernels/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/main.cpp": "0e1779c17274c11509bf308541e1fcd891e046b4f95be4375b54c7ad9c991839",
+    "/home/rm01/models/dev/qwen4-thor/src/model/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/model/bitonic_topk.cuh": "26808fb16249b95adaec639b1d498fec0f42b5d966479868beafb1cd2025b661",
+    "/home/rm01/models/dev/qwen4-thor/src/model/decode_metadata_upload.cpp": "8d5ebf39e39860e224d84974b932fc450f79eb89508dbb57ce0abd75d80deac9",
+    "/home/rm01/models/dev/qwen4-thor/src/model/decode_topk.cu": "064bb583a92e0d8db468e9929b1816c3afcb3b98f6a597768ac05d6c0c126f0a",
+    "/home/rm01/models/dev/qwen4-thor/src/model/decoder_layer.cu": "4d8e53e7d0a031dbdba68b7a5558f3baf93061a92c11312809790ef98170b15d",
+    "/home/rm01/models/dev/qwen4-thor/src/model/full_attention.cu": "42ad1cbb67ed915090e90580ad8777e60967ab93231afb8d9aa129fbe8b249d2",
+    "/home/rm01/models/dev/qwen4-thor/src/model/gemv.cu": "65e610839ce6020c81f7d60940048c59bab091a8b8e4f4128235c4a066fc2164",
+    "/home/rm01/models/dev/qwen4-thor/src/model/gemv_hc_inject.cu": "171d3af4f3e47ef38cca206bf1ece47414e62bfe5669e4769f15376884d30c98",
+    "/home/rm01/models/dev/qwen4-thor/src/model/hyperconnection.cu": "11708a4f25d2b7d36025acf3199c5e1bc467c9a9f63d5a4feb6966854eb508df",
+    "/home/rm01/models/dev/qwen4-thor/src/model/indexer_decode.cu": "45f3e702c5f79bf42b5d22229397e1b0dfb20fa39488b4b8cfe112b988ec7c19",
+    "/home/rm01/models/dev/qwen4-thor/src/model/linear_attention.cu": "a44ffbf25b3a86cbc16e6cbfc1e5e31a7d03df660cf2e8a94e1b7a3f5388c65f",
+    "/home/rm01/models/dev/qwen4-thor/src/model/metadata_upload_batch.cpp": "476bfb42336468f5f644f4675495315dc4d5ae2db494bf4f0fe43d1b82395e87",
+    "/home/rm01/models/dev/qwen4-thor/src/model/model.cu": "6e0cad0b64f2d4ff3cf10178832bab4a1c948f75319b46f74c25c81d478e8194",
+    "/home/rm01/models/dev/qwen4-thor/src/model/model_head.cu": "4bd64730abfdc8e0b0abd8fbee8fe5cd2bf63d8e7489f4e6c21957c74a7ffaef",
+    "/home/rm01/models/dev/qwen4-thor/src/model/model_owner.cpp": "c22051c6431d36547c3e42d9e4b35646df348d10b5e66bc887f86cd48e21cb7e",
+    "/home/rm01/models/dev/qwen4-thor/src/model/moe.cu": "991bf0e474f8009116ce1855edafbd1e6021fbf183a88d6d376ea07324ad8249",
+    "/home/rm01/models/dev/qwen4-thor/src/model/ple_layer.cu": "e6a8febdd3ebb561b775063115e28d170ca3c00566085fa4d36198aa09d86982",
+    "/home/rm01/models/dev/qwen4-thor/src/model/qsa_decode.cu": "0ef266d97f75d95cfaf56dbfcb0cf89b65c3e4da5e5a20d30c1c00428aa7db4f",
+    "/home/rm01/models/dev/qwen4-thor/src/model/short_topk.cu": "b7ab94337a852c1617cce5ac59ece7e678204c8d8f49585d47ef11336264b3c0",
+    "/home/rm01/models/dev/qwen4-thor/src/model/small_m_gemm.cu": "15afcd44d1b095e3d922d88cbc9bd64b7664f62076a11ef8d8dd639124870368",
+    "/home/rm01/models/dev/qwen4-thor/src/model/streaming_topk.cu": "c20a088a043135fd2f3745fba349cc5e34afd6b6da488775879478220ab5e131",
+    "/home/rm01/models/dev/qwen4-thor/src/mtp/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/mtp/moe_bf16.cu": "efa293bb4d1ccd296f04455b7bfa71d845a6dfeb3f33f0a74a528df6afbfde43",
+    "/home/rm01/models/dev/qwen4-thor/src/mtp/mtp.cu": "9eb47f93aef45167052234ff1086c42263336528aa473d50e8b31eb455bcd653",
+    "/home/rm01/models/dev/qwen4-thor/src/mtp/subset_head.cpp": "f356b8edf2d00022d208a4ecafb9f08eb5c56059c20c11f5da7c4e8edec7c922",
+    "/home/rm01/models/dev/qwen4-thor/src/mtp/suffix_drafter.cpp": "de7052f36ba6d1c09355f6cf6aeeece7a44f28e6203ce3d8ab71db88aa0f0810",
+    "/home/rm01/models/dev/qwen4-thor/src/ple/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/ple/fp8_convert.cu": "f7cf797941fc1443fe2129859a0292a442bc9ec7dd6d894f3f8747375380b733",
+    "/home/rm01/models/dev/qwen4-thor/src/ple/ngram_hash.cpp": "2a5b9b72182f2bd15dc830ce79ddc73c3aa279f5af598c7e4bf871549db6d8cb",
+    "/home/rm01/models/dev/qwen4-thor/src/ple/ngram_hash_derive.cpp": "44e967e51dc3da0ff55da18cff4dbeef5739aed12d5ab3365babf0887e6c6d8e",
+    "/home/rm01/models/dev/qwen4-thor/src/ple/page_reader.cpp": "4b80624706c76f5609ac92b6dcdb7891111baeae21298aaeeb1950b8e72ce4b6",
+    "/home/rm01/models/dev/qwen4-thor/src/ple/ple_embedding.cpp": "af7e6b7ad21660c165fae6ef5e5c9176246ca11d235d6bcdf1e74f7d26285c6b",
+    "/home/rm01/models/dev/qwen4-thor/src/quant/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/quant/act_quant.cu": "9b665b09759dfe67cc9d5fcf3a157968895e8d9a3c825123a9730a4b08108746",
+    "/home/rm01/models/dev/qwen4-thor/src/quant/dequant.cu": "cdd106b6f1915bfd475459f875672a67a02be14230733920c9c108c05c923220",
+    "/home/rm01/models/dev/qwen4-thor/src/quant/lt_cache.cpp": "7b792cb6cee20bcbf87ea745d4a5f997f93ce47de0dfc77bb90fb2bfc7397a1a",
+    "/home/rm01/models/dev/qwen4-thor/src/quant/moe_decode.cu": "eca5bda705b838e70a5035828b2611174f81c6fc8b3bc590701e8bd56999467f",
+    "/home/rm01/models/dev/qwen4-thor/src/quant/moe_gemm.cu": "89fc66033ea6550def218146022f1543fc0f2ef66d06bbe65497b1010189da98",
+    "/home/rm01/models/dev/qwen4-thor/src/quant/moe_residency.cpp": "6916f8e711c5703fb07b06c724c38680fb4fc20e0f3e025fcfa8eebdd8fec2d3",
+    "/home/rm01/models/dev/qwen4-thor/src/quant/moe_weights.cpp": "86a5cfae76a652b99e53356624433b7d0e4c369eb2aec37f3c703e86c9f148b6",
+    "/home/rm01/models/dev/qwen4-thor/src/runtime/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/runtime/memory_budget.cpp": "2092df212a95f809ffa1f822d6c2e1cc84f3dd2b5c1b2c99eb1bf40337707942",
+    "/home/rm01/models/dev/qwen4-thor/src/runtime/startup_model_plan.cpp": "a67e2f152174b0c22653b048f3fcd79df33afa75df176f492769a3dbcfc21782",
+    "/home/rm01/models/dev/qwen4-thor/src/runtime/startup_mtp_plan.cpp": "e38d3352b386876f79a1ce7b7e48efe790cb59b76692c9a3d39195eaa031ac7f",
+    "/home/rm01/models/dev/qwen4-thor/src/runtime/startup_plan.cpp": "dd56e1ab75a2aee6efd58bc91ab9720e5999311d3c86e4b62d15cbd6827cf840",
+    "/home/rm01/models/dev/qwen4-thor/src/runtime/startup_reservation.cpp": "ad902dd13caa53c1250a896939e46e376afb4fc9d0d7336a51b130f1cecc58ec",
+    "/home/rm01/models/dev/qwen4-thor/src/runtime/startup_weight_plan.h": "f5dac32c3e033f439639a98c69f25fb4e36a45358ff05982540ea5c212b7e8c9",
+    "/home/rm01/models/dev/qwen4-thor/src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_contract.cpp": "1cb0428043f67c97066b28ce6d182a8d843d19ec0576d3606371596d82138ed1",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_generation.cpp": "6baba93ad1429b0a3a0266d67ec059828a9ffc4f97d9b3efaca1fbbc3ba03e3b",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_http.cpp": "4c9620a0624a0ee842c6147cba31b406912acfb1e350750d2ad53774329de650",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_input.cpp": "1b1c5baf72f418c1377c07c48e8499adb3e01ad72d0b3ebccaa09cbfc7075992",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_metrics.cpp": "c3f67a0064eeeda1000506ed3a30ed319ae8099074f1d34ce3a93817dfcd6db3",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_scheduler.cpp": "84db0d947b5a07ff4f16a3588abcddc9b19f5d68231f9f1905226b864a8a28e4",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_server.cpp": "db01d2d4b8504bef4c17729566d93b8df9a663d8399d3128b50ac9081de8b349",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_server_internal.h": "35df8cb1239e5ea12cef6fe5f20ac8c423363788fd407a3e0ea8d198956e3feb",
+    "/home/rm01/models/dev/qwen4-thor/src/server/chat_template.cpp": "92cf8636acf780d5dc45b160d0ad704d9ed794b8d33fd2411387ad458f316cc9",
+    "/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp": "a0609922a91e8517b410bf0c6e236dd524f0584be152362fd17e316039c66aaa",
+    "/home/rm01/models/dev/qwen4-thor/src/server/server_options.cpp": "ffdd5076c2ed6ee7b810e7dc8542f6b28ab072118fbfb0c27703558d3571de1e",
+    "/home/rm01/models/dev/qwen4-thor/src/text/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/text/tokenizer.cpp": "b912142ff16248b642db74ecee8d09534bcd67ccd9cf498797983b6ac4c73423",
+    "/home/rm01/models/dev/qwen4-thor/src/trace/router_collector.cpp": "4fd211de0e37872efc4c181742056fda28585ce71165916f52508a366c3101a5",
+    "/home/rm01/models/dev/qwen4-thor/src/trace/router_trace.cpp": "6061ecefdd4c6542b557887af5dd0eedbd206bf7b67764f4cbfe9c76e9dbb543",
+    "/home/rm01/models/dev/qwen4-thor/src/trace/sha256.cpp": "f4bf76148014282f5283c9c2fab9c87b6aa678d6ace2a983126b31f5c8492883",
+    "/home/rm01/models/dev/qwen4-thor/src/vision/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/src/vision/processor.cpp": "4c89891ac97efb242a234914f9d99a46fedcd2484b1d21681eddd9fa4e170080",
+    "/home/rm01/models/dev/qwen4-thor/src/vision/vision.cu": "24bc85502996f5fecd45b07f6a03326335484c775cad6cbeed31c28239937d08",
+    "/home/rm01/models/dev/qwen4-thor/tests/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/rm01/models/dev/qwen4-thor/tests/budget_host/CMakeLists.txt": "cc63a2b2588e0a2dcd8a3eb32537d72c96ebae8960fa85f3a3f58ee153ec8546",
+    "/home/rm01/models/dev/qwen4-thor/tests/chunk_order_host/CMakeLists.txt": "56d5c66819a07d80904edf61ab03ed557641f3d06ae7e2c47e65b9980d3332ba",
+    "/home/rm01/models/dev/qwen4-thor/tests/decode_topk_test.cpp": "5e472824331329c7994fe0b66f8e882c0e6b29ff62ad6c3813e09e2971bddb39",
+    "/home/rm01/models/dev/qwen4-thor/tests/fixtures/mtp-verify-1k-prompt.txt": "a72fade2611451e1f33ca088f0554474ec9d9032efccf04cc5581a2c25be2d98",
+    "/home/rm01/models/dev/qwen4-thor/tests/gemm_t1_vs_tk1_test.cpp": "84c943f577c0a16c799d414659e050fc7f1f72397925cc93cd9f5f0a631b1939",
+    "/home/rm01/models/dev/qwen4-thor/tests/gemv_fp8_test.cpp": "5a11936af6989145ad2ab47167898f38bd36752238dbe3214e9b6c530c76acce",
+    "/home/rm01/models/dev/qwen4-thor/tests/host/CMakeLists.txt": "6a1ad4661aa828979a017466248ec9ed915c20216522f9e24dfc549165f8d812",
+    "/home/rm01/models/dev/qwen4-thor/tests/io_host/CMakeLists.txt": "b4395efbf99c8c89fda3fb442dc47d98148a608fbc417162057f3b594bad5d44",
+    "/home/rm01/models/dev/qwen4-thor/tests/io_json_test.cpp": "5d9e74a5ec0e1670a3e925f7a470c55abc28ab9e58d6f4f373e863195b52e124",
+    "/home/rm01/models/dev/qwen4-thor/tests/io_model_config_test.cpp": "f83215be1023b29017325d085ac737131a0c80ff43a6d6acf28bea4ab4fcb3d8",
+    "/home/rm01/models/dev/qwen4-thor/tests/io_read_contract_test.cpp": "8dad5956da44eaeffb86339ddd78d0dc3210caca1680137777cb0f8d91dc77c0",
+    "/home/rm01/models/dev/qwen4-thor/tests/io_safetensors_test.cpp": "72b3e9ad1c93c86596c648b68424121ef98ec752a828e62ae03d309e22e13e48",
+    "/home/rm01/models/dev/qwen4-thor/tests/io_weight_loader_test.cpp": "9eda7cfaaacff978c4c603fcb19bdf445a1db2b159cc4a15647ccb214f37f089",
+    "/home/rm01/models/dev/qwen4-thor/tests/mem_alloc_probe_test.cpp": "822fc5f097c92f0d1d8a41c3c9b770d1a3bd8650648dfb63d0dbdb02572e748a",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_decode_rope_test.cpp": "90a3410f59e70df14e1c988e3a08b70373e8b01b0612e72b82f74f6ff114c1ff",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_decoder_layer_test.cpp": "56cd03aad8a16fec3c67fc5cf75dadb9abb068acfee3214914a054ecf9f50d54",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_forward_test.cpp": "d4f51f3a24072e761bc6451293b91e01486b7dcb279bfd7a02e67aacf6d3237b",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_full_attention_test.cpp": "22794dc82cfbef81b9aafa3ecda0c4b7b660cab2adbb88f587cd3567ea21f7e4",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_head_test.cpp": "cc19a232cc2fd7b99cf72fd64a9705873d07c4fa8c60de774e199a4e02d01f0a",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_hyperconnection_test.cpp": "35ded437427d73d0d6b4db980e057761b917b03064457238f1512e35b3a8309b",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_linear_attention_test.cpp": "302218f1db57d87148eafe79d9b16d4af74d0b1a9dda7452b7eb256851dc27c2",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_mixed_batch_test.cpp": "0b83f27a9c6424a9c2fa4c13b715da9339360122530842f73540169aa06a2bf0",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_moe_chunk_order_test.cpp": "0266f9252df1b05c5e0ec3f451396bce94a042efff4954245cd187df76a1bd74",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_moe_test.cpp": "c139950031f98c9a7ee513e5740768993df92a86b724214987a14eea86c761ae",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_ple_layer_test.cpp": "2fcfdfc410d605e9174e0291139129a3abddbadd83d42b84dc77c409f2951040",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_prefill_batch_test.cpp": "a8235ff218ea3ffc6e5d22e3bef203cce2a0ffa3048d47b347f915d5c205977c",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_prefix_reference.h": "200eb3693357de3d5d1f87e936694109f56f94dfa14982de551b6d662ee168e8",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_sequence_test.cpp": "1b9e714f0c6e5b3a2c3a10f1a6d9dc6b3de740b604dac4e462d2fc0a4fdcf0b6",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_verify_ckpt_samepath_test.cpp": "a131f5670661f7663f6a0581f72edc78890968c5d35d7fcc56485d1a058cdfcb",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_verify_ckpt_test.cpp": "466cd72fe20d953939b790db85c9975f5e4fa66b078efe81c1fa30188692696a",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_verify_multi_test.cpp": "61af4229de0bc7677e769a7ac9722b7866488979e0c4ac78c2530e7df1f1d5fd",
+    "/home/rm01/models/dev/qwen4-thor/tests/model_vision_inject_test.cpp": "bd7612977703a2186bd83dc8860eabed9bf1e346797989ac53da872bbf029117",
+    "/home/rm01/models/dev/qwen4-thor/tests/moe_chunk_order_replay_fixture.cpp": "8667ea74fd5f54576fb494e0c128a032da2412e564f7c109176c2b703efe0195",
+    "/home/rm01/models/dev/qwen4-thor/tests/moe_decode_grouped_test.cpp": "3bd309a8fcf94b30de9d007da363786dba03d5b2d7229f186f2ef3b5dad359c0",
+    "/home/rm01/models/dev/qwen4-thor/tests/moe_replay_contract_test.cpp": "eba5b9095018d3441439fd7efb85bb0079c2997a3aa2f1c9f7f0a3e9b2e219d5",
+    "/home/rm01/models/dev/qwen4-thor/tests/moe_replay_io_test.cpp": "71f5420337b0bd0f37cd1ec28ce01f6c54eeb04cab7974a0426b4687e7f23fda",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_checkpoint_layout_test.cpp": "beb92400d457d79e15772b2e7a7ab7d9135c84c0d131b8931ebea7d254518c12",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_draft_test.cpp": "afed91c9e134ea7b737b116a3e480e30611cfb57344649f3b53048d04356b3af",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_hc_first_fork_test.cpp": "06dae9c8ebf8ceb177fd6cbbb2a5053d1594baf8da20313a1ee267daac9b5d77",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_k3_replay_test.cpp": "f4d0a9ae21dad6f9625c0cd599f1ee5ba87017a34deeee77a229cf021ed1f06b",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_lifecycle_test.cpp": "6397674dab2fa346f11c7e0370315b4d7468941659669f2dbae706e703afd97b",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_moe_path_test.cpp": "500ac26c5b662107e17380d2e3940f5d38e4e255ee59ec57bf663cddb6ce0656",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_path_triangle_test.cpp": "7a680534dd65da95a8a39d5f0b522a9ee5d9e3146ba26ee552128dddd270a63e",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_position_copy_test.cpp": "8bdf6c94a553e88e8ea9e25f7e871dbd76b311d8d9f85265a41dd3e71fb2267f",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_position_metadata_test.cpp": "5fb69ad7b4043d44fd5a9e04fc3975e1e5f17b87ac3f3ba69f33cb6b8c8fe334",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_projection_path_test.cpp": "5b565055218bdb0c9f07f729dc4f4df4b44051a6850ff328b58ec8922a3e5ece",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_sixcell_test.cpp": "99d65ab762fcb841740d56098ba1eb2f7ecea2926645091173b1b8e83e3d0d55",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_spec_accept_states_test.cpp": "60327ce2e247bb5d297a1077ed8951a4724252d3dca5c306f2661dc18bfe6189",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_spec_multi_test.cpp": "8a5a694a12f4d11ea89f47da35695ef135142a8cc1d19e58f29440ea9a67845b",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_speculative_test.cpp": "17b142605973eca0525ba15d743be1b1e515de29a11d7c5265c6e53850629c26",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_suffix_test.cpp": "ad389d4b519c803104278a5f293472e30e65382d193964baba5a4ad0ed017f7b",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_verify_numerics_test.cpp": "58efaa7ae85e19048fbe918fe7df96321ef61d7a2a77950b89def7bce3f3fafa",
+    "/home/rm01/models/dev/qwen4-thor/tests/mtp_writer_row0_test.cpp": "f2eb07a652726b596f36ca5cf594d1897d0825155486714df3bac0b194850e2c",
+    "/home/rm01/models/dev/qwen4-thor/tests/partition_host/CMakeLists.txt": "61476b3eb694c36ea3afd9ae9536b4d70c28fb298b15ad5e51dd9761765b45c1",
+    "/home/rm01/models/dev/qwen4-thor/tests/partition_host/partition_test.cpp": "dea36a4e4e5480d62bfeb9ec1f32b9d6472eaafe5244e82aaa641bf12adf0239",
+    "/home/rm01/models/dev/qwen4-thor/tests/ple_e2e_gather_test.cpp": "60eaf847a76b85b12a4bd25dd0cd64e63cec637e5c34fc886e43a4606192f8ad",
+    "/home/rm01/models/dev/qwen4-thor/tests/ple_fp8_convert_test.cpp": "f0f87732ccbd0fecd1e2993309a393f4fb9132b1515aa5d240cf94ed4819b03b",
+    "/home/rm01/models/dev/qwen4-thor/tests/ple_ngram_hash_test.cpp": "57c470fd1836e8451f392192b45fad7d1b5a496596461b6576f75508817fff08",
+    "/home/rm01/models/dev/qwen4-thor/tests/ple_page_reader_test.cpp": "c8e232c85875e19f804fcc71b0728bbe55c75ee05069f94b6868a3666b922f7b",
+    "/home/rm01/models/dev/qwen4-thor/tests/ple_working_memory_test.cpp": "28d037061035884e020ad837fb2b155ad969f5c6893c7385f1fe197322058760",
+    "/home/rm01/models/dev/qwen4-thor/tests/quant_fp4_test.cpp": "5c8a3bedace30f151cbfe0ccad5d6052f8ba209ec72910b00bf0c176ce9a1977",
+    "/home/rm01/models/dev/qwen4-thor/tests/quant_moe_gemm_test.cpp": "4c207dcf974dc86f0fd442571c0dc179cd6e7f0aaba839b5cf17e424663a3759",
+    "/home/rm01/models/dev/qwen4-thor/tests/quant_moe_load_test.cpp": "097cf781efd84eca3cbb3939d0867df1f33dbd4870895f1943c4146e321833f8",
+    "/home/rm01/models/dev/qwen4-thor/tests/quant_moe_residency_test.cpp": "f60a6ae75b0d44c3cbf34e5ff84e254ef2b740fea27a05aafd96caa06f3a871e",
+    "/home/rm01/models/dev/qwen4-thor/tests/router_trace_hash_test.cpp": "e1acbcd743529846e972f2d8cf6baf2fc788a4793742e302e59446ac1e301123",
+    "/home/rm01/models/dev/qwen4-thor/tests/router_trace_test.cpp": "ff7941def092baee8a698782e12b0cff4c2ec2ebbd2baeab98e2141265580d5e",
+    "/home/rm01/models/dev/qwen4-thor/tests/runtime_memory_budget_test.cpp": "316491171590ca182714415198e500e2c5ffb3615bed9c4e6334525b1b111d88",
+    "/home/rm01/models/dev/qwen4-thor/tests/server_chat_contract_test.cpp": "77d9d42f76882a26f6d6fd3551c400629d98a42204e111fb6563c83b2002ef02",
+    "/home/rm01/models/dev/qwen4-thor/tests/server_http_request_test.cpp": "a67281213455ba46f6cd6bf288381df1a3405e76d770de14cc6ed55a045c3d7c",
+    "/home/rm01/models/dev/qwen4-thor/tests/server_mtp_policy_test.cpp": "339a81c81f75893e2eeb1071b2b2048fbab0341a69a069ff10bc41126ba72254",
+    "/home/rm01/models/dev/qwen4-thor/tests/server_options_test.cpp": "cc589f340f17f8ced48512f46b4ceb18b59fe9bed35b398104a0804e9fa8bda4",
+    "/home/rm01/models/dev/qwen4-thor/tests/server_request_diagnostics_test.cpp": "a523858939f5768f3e472443420ed4382e857896188c436dd14df48162a8cccf",
+    "/home/rm01/models/dev/qwen4-thor/tests/server_scheduler_submission_test.cpp": "d643e1627b565d0234b8d31e52ce04c3f0f9c0ce5d3640d1ddc921f20e280bb9",
+    "/home/rm01/models/dev/qwen4-thor/tests/server_state_contract_test.cpp": "607fc2266951cfe0a2a65f8a22ac7c02e7363739ee90dc0e1bbb218bd857b83e",
+    "/home/rm01/models/dev/qwen4-thor/tests/startup_plan_support_test.cpp": "f551861759721fa3a1610c7d2c5bb927c430d2c1464e4027a9a70af82643231d",
+    "/home/rm01/models/dev/qwen4-thor/tests/startup_reservation_test.cpp": "a39a5220a509840026cbea84e0172054926fc9d8b1c4a063f15024e0a21c1ee9",
+    "/home/rm01/models/dev/qwen4-thor/tests/streaming_topk_test.cpp": "00618dcbebb10638fe6fa3042dfb702a060a1b7060b95428a90c4026cc1c7f11",
+    "/home/rm01/models/dev/qwen4-thor/tests/suffix_drafter_test.cpp": "ef6effa883673bdbebfdc2b3f993619d31ae91b6e1bf7408eeaa0026aa60366e",
+    "/home/rm01/models/dev/qwen4-thor/tests/support/mtp_hc_dot_envelope.h": "7521cd0ce12d2fae122a3b644d411f7a05581e90e6c20dc11a94b5072ef50bef",
+    "/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp": "b1f05d33e2e5c8fec563cb6957b8568b1389fee6936a233dcacdb706a04adf71",
+    "/home/rm01/models/dev/qwen4-thor/tests/text_tokenizer_test.cpp": "ab44c29d81a65b8017549ab9ab223a17e8550f27589d79e9130dca40b5555932",
+    "/home/rm01/models/dev/qwen4-thor/tests/video_processor_test.cpp": "14535dd5665c7ff9ca6a151fcc7690c12718c18141a83957a2c34903ddecdbe0",
+    "/home/rm01/models/dev/qwen4-thor/tests/vision_e2e_test.cpp": "0056934ee23d86815487e0a5c64dd20f2538a5327a6cffb77b66b81a9c01b35b",
+    "/home/rm01/models/dev/qwen4-thor/tests/vision_forward_test.cpp": "977b186b4814be2ffceced88e8ca786e6fd23a1eb73319fe0749a18fa4a72955",
+    "/home/rm01/models/dev/qwen4-thor/tests/vision_processor_test.cpp": "06228e68d77a84ea589b5eb713571b26a7479b3cf9654fb956fdc2c5cb2bf4df",
+    "/home/rm01/models/dev/qwen4-thor/tests/weight_loader_contract_test.cpp": "1f70f70a175d670fc263a9679899e80af8bcf55ec08ba4f49682ae7b3fd6e8bd",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/README.md": "f98320737235f959008d36abfbf6bd1511e3f59bba0bcd59fe35ef8388db689c",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/analyze_http_trace.py": "8532a42cf3880b3654631989ff4dc790c0819f24f23071de5470b7675d52da85",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/audit_offload_matrix.py": "78f726555324ea467c1fc367bf7140872da0137f997e3c7929686489f4ae871f",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/compare_chunk_order.py": "adefa79c60ca0aa3d06ad55823f90562c5eaafca237f43189f9243fe39e9df89",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/disconnect_e2e.py": "ce84ed9366d8781c581b6e0f8b4b84241eab13e6df10444edef82e7cb7a76591",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/file_cache.py": "d25d6fa846af504e40eec850eb4f9c0cfa168f798d8aca826642214821eb9b73",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/chat_template_cases.jsonl": "670afc63b321539c2f86aff7c15a1b351bd7bb35ca9e01373466c7ad2353f27c",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/chat_template_cases.metadata.json": "583f4bf8a88594cf436f3c9462deaf855a6a448eaffa3444894b5003e69ab22f",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/limits_reference.json": "43e9a6fa48be5bdd41fc310397ed90bbdd8db7d6ce7d8fb370ab364beba82270",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/mtp_sustained_v1.json": "8de952c2389a4c391c99f0dcb6a2cb7c6ec6c7b3bcff8171fa1be787843cadcf",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference.json": "5b8c9b102c55bdad1324d7ebadcd5f69d24d4bc4fbd9f5ad9bfdb6ac654e0b8d",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference.metadata.json": "d25aa0e9c66ad9ef298e32152cfdbe45dc5f7b1049edbef7db4fcc970c6efe04",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference_legacy_20260921.json": "bd415673acb05de86f870804cef2e6772dc4300aea092d6b6790d9f4a00254b6",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference_pre_cancel_20260927.json": "ae2257447aa31cd91f3c5221fbc30e363ea712500bef2824760130e557c6ea1d",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference_pre_cancel_20260927.metadata.json": "f967b956c9ca2d598222596c5316ba27b533400a05cfd4eb35bfcde9ab131545",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference_pre_listen_address_20260927.json": "97f8bc10ea74377b49123307783d808a760271f20cc6f5187a9f75245b449744",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference_pre_listen_address_20260927.metadata.json": "38b3e8d40888defa03d7de95e7540792bb74fe67460fd9d206e054373a486981",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference_pre_request_control_20260927.json": "309e7341732161b515acb46909da53536d594863227d05d06ff110cdfe52580c",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference_pre_request_control_20260927.metadata.json": "d80aae81ac66374c07c84d8db51993d6507e15445940af796177d6491157b6fb",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference_pre_text_v1_20260928.json": "2a72d67f8f9c3d705f666b8316b3c4dbf37ef60e929bd6ebcd3bd46d2efcb1b4",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/performance_reference_pre_text_v1_20260928.metadata.json": "f69fb2282a78518a46dbef78b1bbcef94894bf713d9180bb14f525ec55c116e5",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/quality_reference.json": "c3fc4073b75ba9abafe39299a2cd8b632664b89f35c14660706110ca78bc98dc",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py": "caf58b5f0fe03a5e2db37896d9b6d689203b457220d52cbdaa7867ebe7d8d27d",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/isolated_scope.py": "07b47a1258c5584589a24f948d6516ada4dcba2bb16fd3c5e48acd90abd4de4b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/isolated_service.py": "c561ec8a8cf1c05e2ceb8ba08959af3624db9ee832723103b691ee2edb713521",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/memory_accounting.py": "e0e7418359db1ee021e9d2aa096ef929212a62b47fd91d06086d0c11f4acf6f3",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/monitor_memory.py": "7d07bc8febc62bdc9d07e370fd62f7d0a978d63a10de918f4e5a6b9d7d152249",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/nvml_context_fixture.cpp": "67b57e3f04945201a47743f28acde6786c697ddbd239e32e0a99ca51408596d0",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/nvml_process_query.py": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/observe_serve_logits_allocation.py": "8357d3b42f4ea4e8175623430c99106010c51e6ee5b72c392feda555e0bcab30",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/offload_policy.py": "9aa25f770c4c362e5a2f823f7f217db49693e6e4e32d9d7cb84ca1665726d259",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041557/qwen3.8-flash-next/benchmark.log": "8a52cbe4b46e5972b0d2c04969328c6c400b380255d15a96fbf14135a4113795",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041612/qwen3.8-flash-next/benchmark.log": "e2e237cc2afefb15aa6f07ee6a46b305cb2bfd7c25379a4bc618ee0c9b3b1d03",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041612/qwen3.8-flash-next/parallel_1_number_8/benchmark_data.db": "58d3b005af0ecfefd44e72eaec3534dd3ac60fb633a7f6f4fb864f5273ad2ebe",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041701/qwen3.8-flash-next/benchmark.log": "21b720c77a514d1de58870c6489129085106a56f6ffbb6e770daf3f48859d5a2",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041701/qwen3.8-flash-next/parallel_1_number_8/benchmark_args.json": "6fd3033a894edac18b365da0e49ca1119efb62ed4d215e77091b29f456964929",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041701/qwen3.8-flash-next/parallel_1_number_8/benchmark_data.db": "2a918dda22d1aa5f3b1918b1947d5fd9b8c568d24b9ec41c56c878a70b99bef5",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041701/qwen3.8-flash-next/parallel_1_number_8/benchmark_percentile.json": "40d2e8e9c54c6b680915c68f6c8d6d2892da11c0b5149f03062d8bc9d57ec4a7",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041701/qwen3.8-flash-next/parallel_1_number_8/benchmark_summary.json": "f4ac1126ec7ce1c93e2c7422fac04c5b4ba53a3e2f354a226c553ef8c19e0a18",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041701/qwen3.8-flash-next/parallel_1_number_8/workload_throughput.json": "518da02c00e8af749a9b19d066962f4a12e1ecedc9f3f4e0ce7de30f6940f4a7",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041701/qwen3.8-flash-next/parallel_1_number_8/workload_timeline.json": "c23ff1e2c3d45a801b3b0fe700a7f9fcf8ccd81d21f1a527fc3813d6d22e07af",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041701/qwen3.8-flash-next/perf_report.html": "a4feb61d9de2412849d8bd7c62e1a8d584e5c7609bf51c94ccc789fc1bfaa0db",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041701/qwen3.8-flash-next/performance_summary.txt": "2d690510a5b8a25a15560d03dd34eb02699ab9122b370d055a75901cf72d024e",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/benchmark.log": "01ea83e6f525566697022e381b6cdfb828cfdd8e896c9cbe80a2dfd310115be8",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_4_number_16/benchmark_args.json": "272f49198afbfa37334c48bf614e4e327975d7f003fa8000b72eb780ebec3651",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_4_number_16/benchmark_data.db": "e82b6d332ccc561eb15d6234511fa9fec57ce6f1ecf533d496e55feb2bc523a7",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_4_number_16/benchmark_percentile.json": "bce26040a9d56941e9b2b8b59aa403f4e6272fc14e1a3f6e8ae2babea9435831",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_4_number_16/benchmark_summary.json": "7bd9f8d15309446bf94e499b8f72978ddb424e568fe8b6283646ca9ba6f37491",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_4_number_16/workload_throughput.json": "b34145928a82787a3b5ce94309166d3192f38e711aa4b615dbfa545a9ec14b78",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_4_number_16/workload_timeline.json": "f1e8de4e8d08fea9c48a94eaba9503bf49eb2611be9c66cdde7a8607cf8eed89",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_8_number_16/benchmark_args.json": "1ea5ec8a752d29b5529a523ebf1c717bc7fea3035784bbbfd170a42fa7420768",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_8_number_16/benchmark_data.db": "a5ca7dd5a4c6fc6b1b7723ccc12c398132d93f9bd937ecc374626d30101cab5d",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_8_number_16/benchmark_percentile.json": "900efe0044673e608f8128085d5885ebfec1a6b8807bfc8a25e0f208bd20793a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_8_number_16/benchmark_summary.json": "82ff756185acaafcb3deaa2c425b825a8e2b14ade968515b4fc1e3e6407807fa",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_8_number_16/workload_throughput.json": "a7f219645fe71d15fd02efa6b59de6bc58274c0b461102de263decc8bf0fafd5",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/parallel_8_number_16/workload_timeline.json": "fa8dad21bcc53e8cf24e9bb624202f3edd9337011c891810f4dca193fcba7135",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/perf_report.html": "9ecce4de81e4faf903f4cfba573224c71def0147c30d2381423286a93ff9daa1",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_041911/qwen3.8-flash-next/performance_summary.txt": "74b8fd0110911f6e5ae437a3ce57946569ff1f32bec6083e305b261d24907a55",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_042224/qwen3.8-flash-next/benchmark.log": "4b4fe23625a716e86489a3dc0ad6da321e0af8f48ea50731c9e988ffc3f058ca",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_042224/qwen3.8-flash-next/parallel_1_number_4/benchmark_args.json": "b4b7ba25170e7bf02fea5c77f4f9414837647184ffe4d4d041f3969693302c6b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_042224/qwen3.8-flash-next/parallel_1_number_4/benchmark_data.db": "a428b82541bf8256b26ed8e366e08c31d8fe1c1662cbc79bc7932c53f0210c47",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_042224/qwen3.8-flash-next/parallel_1_number_4/benchmark_percentile.json": "537f517d7f39e55d5a810f1655d01b044ee96bfb76c0adf67d6b213038b7697a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_042224/qwen3.8-flash-next/parallel_1_number_4/benchmark_summary.json": "cca76185957e065d3ac80bcee4ee67aafb199aa3aa339bc13834a4fc54a96535",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_042224/qwen3.8-flash-next/parallel_1_number_4/workload_throughput.json": "d879a4f17c0fb4620a8e14f7a34bc7f081c3cdecaa562c27d831bd3f2b6c3c32",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_042224/qwen3.8-flash-next/parallel_1_number_4/workload_timeline.json": "971e30c6b3c6bb8c403e4164dfc5ffae3f85078c655664e4e461493d7d1cfb32",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_042224/qwen3.8-flash-next/perf_report.html": "d2b536ed86aabd4771fc0d1809e8dcc2b6ae430bcf22aa03eca436e9a4a2ce90",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_042224/qwen3.8-flash-next/performance_summary.txt": "5a0bbb5ac08bb83dbc47e6f335ecddb6a7a3e7f543b550b6c6da8bd738b0f936",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/benchmark.log": "144b607ace086cf9c30f0aa29e92d58a519155c385c0c5de339553c9bbb2957f",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_1_number_8/benchmark_args.json": "c684c16e7de48c9284ec5d9f612264b29d74fe7621e38dce7f180082084b5666",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_1_number_8/benchmark_data.db": "91cf1b3ecdb66dba8787d3a9c44a0fb1638f1d655750d864ef4ff88f29246e16",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_1_number_8/benchmark_percentile.json": "7316cd8646f57003dd2417cf4fe1a134ba3bfd9d59be2e36a8728d22567c8e69",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_1_number_8/benchmark_summary.json": "b65b60ed890f5cd6fe166ee61c8c85311db30812ae4f9189b3df24718a613384",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_1_number_8/workload_throughput.json": "8af508cee023143a6c0e2c9b5f17e36345744d9ef0eb71579097fa6b1e19eca9",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_1_number_8/workload_timeline.json": "e0372e37f501ddcdcddfb2d681f9150f32dd2638f3b34961a3e45cc7a8c4c8da",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_4_number_16/benchmark_args.json": "1c9db1081a37dc83112478b871810cad8c9b8357f2ee97d9bf23781b450c6332",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_4_number_16/benchmark_data.db": "5caf0c0d540ce4dd62bc5cb28b9fef5811093cca74516114d6aab057ca12171a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_4_number_16/benchmark_percentile.json": "ee9d6a7ba48a140cfeb0a78948f2555ec989f569fe4c3da130cc07a725c02f27",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_4_number_16/benchmark_summary.json": "06e64283e009b6cdc72b607e9582a0a343d1b973655bdf022166ea9af6a78766",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_4_number_16/workload_throughput.json": "71e96145a3b0ade39ae4b41013e53edab6dcb0bdda2fcd1b00cbb298f1614285",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_4_number_16/workload_timeline.json": "8de40820c684bb471388f99911347b937961a0238052df71651f279ce06a8910",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_8_number_16/benchmark_args.json": "65de3e60f733cb2969b5788f19ad0b36d1897e79e54ded8171e3ec7492a01b4a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_8_number_16/benchmark_data.db": "ab8aab07eb436ec7fc61b9cdec9b854a3ee71305d632493589e4acd113d265d6",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_8_number_16/benchmark_percentile.json": "98fdec339b5704ddcd898777558beb94d195c5faeed43e8181114574709a19b3",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_8_number_16/benchmark_summary.json": "a8f55f9495040ca2c09e4503f04c05720a2a7b1fa2a71a5c7d94cf7c533f1d9c",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_8_number_16/workload_throughput.json": "324563fb87141a0af68ef78bf6003eb85e9787c739b1adfd9a1a89df0d8e6aeb",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/parallel_8_number_16/workload_timeline.json": "2faf0dc216f550c34ad06d9ed90e416584824bca5991e31b27464d7a36dcf4d3",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/perf_report.html": "e274ef60ac2e1648c2a755067fba3435c45133d889bb1f887a90acde71b13fcc",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161538/qwen3.8-flash-next/performance_summary.txt": "31d4abfb144a4619035b8aece7d47f0c7989ad5c5fd1b1cbbedb4990ee4564fa",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161951/qwen3.8-flash-next/benchmark.log": "af3476a5a024180a58c8716babbb82519452f26e52180e91fd79fd4448ca2704",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161951/qwen3.8-flash-next/parallel_1_number_4/benchmark_args.json": "39ad0ea793cf594a42b21f8d1723b9c25b54caf5d1f2e4bca0f1c0a6ff9d9cc3",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161951/qwen3.8-flash-next/parallel_1_number_4/benchmark_data.db": "f0aa837b7aab570517df38fc770ad46e8e73b199b0d996fc5f00f0989e93c46f",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161951/qwen3.8-flash-next/parallel_1_number_4/benchmark_percentile.json": "bb166c139328feda3d63ace2341c81b986e71e39c9f21334a219e3052c9030ff",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161951/qwen3.8-flash-next/parallel_1_number_4/benchmark_summary.json": "439ae0fa7c96b8da5cfc65997cf3f1a6896665b7ecfb80ae13539e144d70d9fe",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161951/qwen3.8-flash-next/parallel_1_number_4/workload_throughput.json": "cf8e0cda8c4709d8b186d47edc6da5e6aa4a11af433c038b621c7ba51477905d",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161951/qwen3.8-flash-next/parallel_1_number_4/workload_timeline.json": "9c427fc3db5c365cb6686963a4ba83c5403941421e8d0d2beec60992f10e2a40",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161951/qwen3.8-flash-next/perf_report.html": "d52c220bf41536697b0693378c2d141bb85d8d56d4e2f2e433ca17b51369aec2",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/outputs/20260920_161951/qwen3.8-flash-next/performance_summary.txt": "bb8cba4c98fb6d7333685b90d59cac79e05b8b87238430ffbcfcfd75ada3334f",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/performance_decision.py": "64d95ad0cda824965f20c03a7ecc9242ab49c58b7ed2f0d8ded89fda742046cf",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/physical_ram.py": "81f301aee0e3e0643a789dec8756f99574195995be95483ae0be71045baabf30",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/prepare_inputs.py": "9e58b85f96e0f060dfba77b740a9fdd2579cbb77b3ba4d9ae0f8682b93f5e21a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/prepare_quality.py": "140e7c8008f00928b271201d5116534af8f89ae7f57302a24c272a6c8607143a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/profile_http.py": "68471dc195c86fd75536547b85d18e2ce4ed9fb97b0beb477a2a8b82f92a9362",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/profile_prefill_batch_rows.py": "5cb1300dea3c060adfc364613983c7f9dd7b9ad0fa2d263ce099d184e232c81b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/profile_serve_logits_capacity.py": "19275a8b5d65cb31a50ccdc1d4b04885fa7b079308ec61e5a76a1d5fc33ae026",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/quality_review/README.md": "bfd1a7ec0ec3b78569d34266befbdf4da0ff0a7ec0c7a5fe0679c797300e0f5c",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/quality_review/analyze.py": "461c97997941d4fe825a3d4c54fed506382c04fc34737ce2d1a73422bf5c5ef2",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/quality_review/finish.py": "9acab64b9fa163954a93aeceb36438a63620dcb1d51571d1eeab5a4d8f0e49ad",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/quality_review/frozen_plan.json": "26ad6eeafd17a87f5db9dd3661cf9f7e3f3211dd57e275157c387a7520bd0732",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/quality_review/prepare.py": "c8c374e1f390bb8eab1f2c7bc574832edeb329f648b968d31e3d43748b4bca1f",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/quality_review/repeat.py": "79d0a40bec63ff23086c927901c87cd220bab0315f4d8153b78ceffe3aaeea14",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/quality_review/run.py": "c19ea1c9e3afa0b5440a7b4e82483b2a445b27459ffc5c9c574299189d7785a2",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/quality_review/seal.py": "35734fbb1b95b28ca62a5ae5594354b908c15ab297dafb5ec80633a5d859c961",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/quality_review/validate.py": "36a4eeaaf3dd712995f4a68e6f303bdf1562c873210c2356510bd8775dad0460",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/request_cancellation_contract.py": "bacf6082fcdcc0aa15195b628451ce5947de6612eb5ae9ff0f7f54c38a3becb1",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/resource_metrics.py": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/response_identity.py": "2102fb7a401786a55dba5b8845985b69a36b4279c52a6e4d1610a11ccd1b6e7a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_accept_failure.py": "4e2fe2a3200b488c0752086088b2aa9853d5fed35ea8638434505d11015642e8",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_acceptance.py": "d02ad75b36c2ace3a3984faea9fc30c05c78effc34d5ead56eefe34bbe8001a8",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_baseline.sh": "851a31a791770b84a37d8858d34e6e178fcab1bb995730aa354a3a64bdcbe912",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_budget_experiment.py": "a0500c3635f7fc65999fcf9107d2730c0f000f4a8b0a3182a465d6478eae12f4",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_chat_template.py": "dec305c3e3bd10f32caaebf3fb40d0cde2a6750c25aecb60268d5d76424ed022",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_chunk_interleave.py": "8ccb331d39640256a78853e007398a0379953436b5e2012e7ba8861fd9164cad",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_chunk_lifecycle.py": "bfa4cf5feb1bcb57e2895930f6bb4347ef4816e449f574dbf49e7ce6cb3b93d5",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_control_soak.py": "864225353a6af2cb6a6e61678f31e5341d993a46427d36e74e0990e5d631fd69",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_decode_failure.py": "135455a1cf447154586acfb8a0743d6e29d46f976e16e3d3c99373508c579495",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_input_boundary.py": "96790c27ad3446babb71e46cf4ba2812f7fa7d1d87c0fbac7562bd8e8d1d40de",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_isolated_control.py": "4ee82977660ff1d9534e502309b4b23b432d040aa2dc7ef9c07f8b174e243e85",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_offload_lifecycle.py": "eac4ec71d7961c8e9b4197cbc95881ecae3a4addfc843e28fdc90ba8ff55c52a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_prefill_batch_rows.py": "67acae1b55a79e0ea149352f6e84c85cf37144981b673438853af65b4eefa354",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_prefill_consumers.py": "d91d99855ee2775d345c634dd57daf89b11cf777a7ed10ec6d540f3779daa074",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_proxy_admission.py": "1c021c3b3da8dd01b8a6adea5cdf643002fbb382058ac4842a64e28036eaf3d0",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_request_cancellation.py": "9a79edd223fefa4e69c32148f1805941ac5ed4094f76a4f8e96b0fc74ad3473b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_state_lifecycle.py": "d751c1901680f2a94b9591edb3263b57295f5c4069c4cffa4e07359326886357",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_state_readback_failure.py": "3e583acdfcd8dfa433080a97728808bdc57afad20f8fc5cf46c37def16efdcc8",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/run_vision_determinism.py": "59af9cd6ead61bcb99e89569e07e1fd4c4f4291936185618ce971b044cc6f542",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/scope_payload.py": "d2379a360e3a4c4e9133a6d9707d43611f8e3a4e9e0f7d4e5266869c559af783",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_cache_preparation.py": "13329f0c4e033c879d11b70a8c88f864ae32ddde901bbad76e47dcb95ee2e83c",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_chunk_order_protocol.py": "ab64a38f44186f6dcee72b02a81da59b3700bc6d7e6db9a467c37c223bc46b26",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_gpu_exclusive.py": "b4f4e3c688f683e3828cd1c6340a5d8e134a03f95f50b9d066c17bceecd556d1",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_isolated_scope.py": "1a634bbcfef86652a078c26028be5d45ceb83f29ae46387e01ddb0c788d1d20d",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_isolated_service.py": "a34842a3bbad63c2647f456a2f48685047e9f6f1ae95377b66c03e0197b0734b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_memory_accounting.py": "559fb428478f0b7fb5c68321c6acba28136e1fff397404744668489a3ee80dae",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_monitor_schedule.py": "274136648b7729b28f4e52f0d86772b00c8acd9987fadf0f189ba321adbce422",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_nvml_memory.py": "b893269271c11b5ae8ff986480079f44f25a302a3e077b26481bd8b0ec92d3d5",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_nvml_process_query.py": "db104dddd2938caf96b8873778b9389d7024d07d6bcfa897b88c34565886bc0b",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_offload_lifecycle.py": "adaba8e27a0371848918e819ae7ddee8238914d5c6fb7a83852f56b3a0b78fea",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_offload_matrix_audit.py": "b58ad4ee86ecb89935ae7fbe27b60a40ef06d7080d5dd7ab8254f2420f24aef9",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_partition_protocol.py": "91d36913050b36d4b0a5041bfbeb59f7f1ffe872290be8d7e8cf4f5e7afc00b9",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_performance_decision.py": "dd5517aeaa23460153d4e00d94fc586f9b66f7948a190d4fff6d2b5f1259e3d9",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_physical_ram.py": "d91682cb11b54472ac32b92b8fd49d4a0b4a71eaa981373ce6a447653d517849",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_request_cancellation.py": "8bfb794e6c193a9968b2cb88b35b92f4f201fc4fbc959ef2576e2f4f360a076e",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_resource_metrics.py": "291e64ce6fd95d178b8601733d3fb349df2eba0391a93f09948bc36bac7eb131",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_response_identity.py": "128d7ffd040578b4506e061c1b7c7abea05f286eaf2e03e8f26c55c96023d63a",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_run_acceptance.py": "c4bec6dcd75ae29e7a1c64a20204593a177086cea6ebe3e95ace9a54b86e76b7",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_scope_matrix.py": "cefffa25d2b78bb66169f53758d0a72a9aec5cddb44046e29414325c4db5a2dc",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/verify_nvml_context.py": "e68a820322a725e7b89f2c6810982df32a9273a3f857d878f154db498807ad6e",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/README.md": "1c3c67db5df6f0e92c6e9de691984b920dddd11cd463cb4af08eaf0ca23ae5f5",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/prepare.py": "aee6df02f8fa7c85a3a653aaeccb944908361df19ccff8ff1e51b624e8d7773b",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py": "9e26bffdb78979fa7e0c78c43e9d8a44e02a799c753ca5fabd72758ae3c81edd",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/test_stage_audit.py": "88c5b67637e42f4ad089509d98866e1e7c6aeec08d9c299e5ddbfd8b1566d3a7",
+    "/usr/bin/python3": "c86f21d0da9290ece2d7d49a3f7ed52aed59cb029abdf0ea25c79634f6cbe960"
+  },
+  "model_file_metadata": {
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440446477565178,
+      "device": 66305,
+      "inode": 3293810
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440448761564571,
+      "device": 66305,
+      "inode": 3293811
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440462149561133,
+      "device": 66305,
+      "inode": 3293806
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00000-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440436829567812,
+      "device": 66305,
+      "inode": 3293813
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440460621561515,
+      "device": 66305,
+      "inode": 3293812
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440465905560206,
+      "device": 66305,
+      "inode": 3293809
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440472253558676,
+      "device": 66305,
+      "inode": 3293814
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00001-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440435633568146,
+      "device": 66305,
+      "inode": 3293815
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00002-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440460069561653,
+      "device": 66305,
+      "inode": 3293816
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00002-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440447765564835,
+      "device": 66305,
+      "inode": 3293817
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00002-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440458901561948,
+      "device": 66305,
+      "inode": 3293818
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00002-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440462009561168,
+      "device": 66305,
+      "inode": 3293819
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00003-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440471117558946,
+      "device": 66305,
+      "inode": 3293820
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00003-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440476937557575,
+      "device": 66305,
+      "inode": 3293821
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00003-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440498597552801,
+      "device": 66305,
+      "inode": 3293822
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00003-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440479765556923,
+      "device": 66305,
+      "inode": 3293823
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00004-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440501865552124,
+      "device": 66305,
+      "inode": 3293824
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00004-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440481853556446,
+      "device": 66305,
+      "inode": 3293825
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00004-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440499945552520,
+      "device": 66305,
+      "inode": 3293826
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00004-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440501965552104,
+      "device": 66305,
+      "inode": 3293827
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00005-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440491945554213,
+      "device": 66305,
+      "inode": 3293828
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00005-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440488889554878,
+      "device": 66305,
+      "inode": 3293829
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00005-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440510169550456,
+      "device": 66305,
+      "inode": 3293830
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00005-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440508749550737,
+      "device": 66305,
+      "inode": 3293831
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00006-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440516613549212,
+      "device": 66305,
+      "inode": 3293832
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00006-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440507605550964,
+      "device": 66305,
+      "inode": 3293833
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00006-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440526529547380,
+      "device": 66305,
+      "inode": 3293834
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00006-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440529833546791,
+      "device": 66305,
+      "inode": 3293835
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00007-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440516241549282,
+      "device": 66305,
+      "inode": 3293836
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00007-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440525849547502,
+      "device": 66305,
+      "inode": 3293837
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00007-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440539633545111,
+      "device": 66305,
+      "inode": 3293838
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00007-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440525241547612,
+      "device": 66305,
+      "inode": 3293839
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00008-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440544697544279,
+      "device": 66305,
+      "inode": 3293840
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00008-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440530133546738,
+      "device": 66305,
+      "inode": 3293841
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00008-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440543989544394,
+      "device": 66305,
+      "inode": 3293842
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00008-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440548085543737,
+      "device": 66305,
+      "inode": 3293843
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00009-experts-0000-0127.safetensors": {
+      "size": 354098208,
+      "mtime_ns": 1788440549557543505,
+      "device": 66305,
+      "inode": 3293844
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00009-experts-0128-0255.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440553777542851,
+      "device": 66305,
+      "inode": 3293845
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00009-experts-0256-0383.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440543793544426,
+      "device": 66305,
+      "inode": 3293846
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00009-experts-0384-0511.safetensors": {
+      "size": 354099528,
+      "mtime_ns": 1788440566693540956,
+      "device": 66305,
+      "inode": 3293847
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00010-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440577049539548,
+      "device": 66305,
+      "inode": 3293848
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00010-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440556445542447,
+      "device": 66305,
+      "inode": 3293849
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00010-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440581893538924,
+      "device": 66305,
+      "inode": 3293850
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00010-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440560109541902,
+      "device": 66305,
+      "inode": 3293851
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00011-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440589981537929,
+      "device": 66305,
+      "inode": 3293852
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00011-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440591925537699,
+      "device": 66305,
+      "inode": 3293853
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00011-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440565565541115,
+      "device": 66305,
+      "inode": 3293854
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00011-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440596137537211,
+      "device": 66305,
+      "inode": 3293855
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00012-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440571073540348,
+      "device": 66305,
+      "inode": 3293856
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00012-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440602053536552,
+      "device": 66305,
+      "inode": 3293857
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00012-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440607753535946,
+      "device": 66305,
+      "inode": 3293858
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00012-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440580805539063,
+      "device": 66305,
+      "inode": 3293859
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00013-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440588381538121,
+      "device": 66305,
+      "inode": 3293860
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00013-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440591529537746,
+      "device": 66305,
+      "inode": 3293861
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00013-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440620497534692,
+      "device": 66305,
+      "inode": 3293862
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00013-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440598325536964,
+      "device": 66305,
+      "inode": 3293863
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00014-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440628285533993,
+      "device": 66305,
+      "inode": 3293864
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00014-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440628105534009,
+      "device": 66305,
+      "inode": 3293865
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00014-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440633213533577,
+      "device": 66305,
+      "inode": 3293866
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00014-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440635373533401,
+      "device": 66305,
+      "inode": 3293867
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00015-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440609473535769,
+      "device": 66305,
+      "inode": 3293868
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00015-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440613849535329,
+      "device": 66305,
+      "inode": 3293869
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00015-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440651329532217,
+      "device": 66305,
+      "inode": 3293870
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00015-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440646037532587,
+      "device": 66305,
+      "inode": 3293871
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00016-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440623461534421,
+      "device": 66305,
+      "inode": 3293872
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00016-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440633797533529,
+      "device": 66305,
+      "inode": 3293873
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00016-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440635093533423,
+      "device": 66305,
+      "inode": 3293874
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00016-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440651185532227,
+      "device": 66305,
+      "inode": 3293875
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00017-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440642837532822,
+      "device": 66305,
+      "inode": 3293876
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00017-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440664677531381,
+      "device": 66305,
+      "inode": 3293877
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00017-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440652145532162,
+      "device": 66305,
+      "inode": 3293878
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00017-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440668613531161,
+      "device": 66305,
+      "inode": 3293879
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00018-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440647101532511,
+      "device": 66305,
+      "inode": 3293880
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00018-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440679697530605,
+      "device": 66305,
+      "inode": 3293881
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00018-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440669809531097,
+      "device": 66305,
+      "inode": 3293882
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00018-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440665049531360,
+      "device": 66305,
+      "inode": 3293883
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00019-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440683457530437,
+      "device": 66305,
+      "inode": 3293884
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00019-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440680141530585,
+      "device": 66305,
+      "inode": 3293885
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00019-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440662657531499,
+      "device": 66305,
+      "inode": 3293886
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00019-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440698945529857,
+      "device": 66305,
+      "inode": 3293887
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00020-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440679153530630,
+      "device": 66305,
+      "inode": 3293888
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00020-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440681857530507,
+      "device": 66305,
+      "inode": 3293889
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00020-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440707285529616,
+      "device": 66305,
+      "inode": 3293890
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00020-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440689681530183,
+      "device": 66305,
+      "inode": 3293891
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00021-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440700289529815,
+      "device": 66305,
+      "inode": 3293892
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00021-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440711305529518,
+      "device": 66305,
+      "inode": 3293893
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00021-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440711621529510,
+      "device": 66305,
+      "inode": 3293894
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00021-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440694017530023,
+      "device": 66305,
+      "inode": 3293895
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00022-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440715237529433,
+      "device": 66305,
+      "inode": 3293896
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00022-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440721081529326,
+      "device": 66305,
+      "inode": 3293897
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00022-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440706697529632,
+      "device": 66305,
+      "inode": 3293898
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00022-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440728837529221,
+      "device": 66305,
+      "inode": 3293899
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00023-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440717477529389,
+      "device": 66305,
+      "inode": 3293900
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00023-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440725349529263,
+      "device": 66305,
+      "inode": 3293901
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00023-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440720981529328,
+      "device": 66305,
+      "inode": 3293902
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00023-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440742657529135,
+      "device": 66305,
+      "inode": 3293903
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00024-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440742737529134,
+      "device": 66305,
+      "inode": 3293904
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00024-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440749649529139,
+      "device": 66305,
+      "inode": 3293905
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00024-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440735265529165,
+      "device": 66305,
+      "inode": 3293906
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00024-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440737161529153,
+      "device": 66305,
+      "inode": 3293907
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00025-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440748101529136,
+      "device": 66305,
+      "inode": 3293908
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00025-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440752185529149,
+      "device": 66305,
+      "inode": 3293909
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00025-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440752197529149,
+      "device": 66305,
+      "inode": 3293910
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00025-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440752985529153,
+      "device": 66305,
+      "inode": 3293911
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00026-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440758593529192,
+      "device": 66305,
+      "inode": 3293912
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00026-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440771449529357,
+      "device": 66305,
+      "inode": 3293913
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00026-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440763949529248,
+      "device": 66305,
+      "inode": 3293914
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00026-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440776145529444,
+      "device": 66305,
+      "inode": 3293915
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00027-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440766965529288,
+      "device": 66305,
+      "inode": 3293916
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00027-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440769533529326,
+      "device": 66305,
+      "inode": 3293919
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00027-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440787621529712,
+      "device": 66305,
+      "inode": 3293918
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00027-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440781257529553,
+      "device": 66305,
+      "inode": 3293917
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00028-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440777309529467,
+      "device": 66305,
+      "inode": 3293920
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00028-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440787037529696,
+      "device": 66305,
+      "inode": 3293921
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00028-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440792525529851,
+      "device": 66305,
+      "inode": 3293922
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00028-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440787057529696,
+      "device": 66305,
+      "inode": 3293923
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00029-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440818433530822,
+      "device": 66305,
+      "inode": 3293924
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00029-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440793745529888,
+      "device": 66305,
+      "inode": 3293925
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00029-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440802957530194,
+      "device": 66305,
+      "inode": 3293926
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00029-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440806889530341,
+      "device": 66305,
+      "inode": 3293927
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00030-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440805069530271,
+      "device": 66305,
+      "inode": 3293928
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00030-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440809357530437,
+      "device": 66305,
+      "inode": 3293929
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00030-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440813669530614,
+      "device": 66305,
+      "inode": 3293930
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00030-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440814837530663,
+      "device": 66305,
+      "inode": 3293931
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00031-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440812893530581,
+      "device": 66305,
+      "inode": 3293932
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00031-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440822029530987,
+      "device": 66305,
+      "inode": 3293933
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00031-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440838333531829,
+      "device": 66305,
+      "inode": 3293934
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00031-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440826049531181,
+      "device": 66305,
+      "inode": 3293935
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00032-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440828713531314,
+      "device": 66305,
+      "inode": 3293936
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00032-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440832657531519,
+      "device": 66305,
+      "inode": 3293937
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00032-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440846289532293,
+      "device": 66305,
+      "inode": 3293938
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00032-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440846785532323,
+      "device": 66305,
+      "inode": 3293939
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00033-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440849389532482,
+      "device": 66305,
+      "inode": 3293940
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00033-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440840117531930,
+      "device": 66305,
+      "inode": 3293941
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00033-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440845841532266,
+      "device": 66305,
+      "inode": 3293942
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00033-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440848869532451,
+      "device": 66305,
+      "inode": 3293943
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00034-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440855893532898,
+      "device": 66305,
+      "inode": 3293944
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00034-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440866305533610,
+      "device": 66305,
+      "inode": 3293945
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00034-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440859545533142,
+      "device": 66305,
+      "inode": 3293946
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00034-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440876489534361,
+      "device": 66305,
+      "inode": 3293947
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00035-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440878193534491,
+      "device": 66305,
+      "inode": 3293948
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00035-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440864945533514,
+      "device": 66305,
+      "inode": 3293949
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00035-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440880849534698,
+      "device": 66305,
+      "inode": 3293950
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00035-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440866301533610,
+      "device": 66305,
+      "inode": 3293951
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00036-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440878533534518,
+      "device": 66305,
+      "inode": 3293952
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00036-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440880417534664,
+      "device": 66305,
+      "inode": 3293953
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00036-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440890253535459,
+      "device": 66305,
+      "inode": 3293954
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00036-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440890073535444,
+      "device": 66305,
+      "inode": 3293957
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00037-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440887349535219,
+      "device": 66305,
+      "inode": 3293956
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00037-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440898297536145,
+      "device": 66305,
+      "inode": 3293955
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00037-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440899517536251,
+      "device": 66305,
+      "inode": 3293958
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00037-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440903245536582,
+      "device": 66305,
+      "inode": 3293959
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00038-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440907869537002,
+      "device": 66305,
+      "inode": 3293960
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00038-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440910117537209,
+      "device": 66305,
+      "inode": 3293961
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00038-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440908953537102,
+      "device": 66305,
+      "inode": 3293962
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00038-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440912293537413,
+      "device": 66305,
+      "inode": 3293963
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00039-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440916357537799,
+      "device": 66305,
+      "inode": 3293964
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00039-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440919553538107,
+      "device": 66305,
+      "inode": 3293965
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00039-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440930389539190,
+      "device": 66305,
+      "inode": 3293966
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00039-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440924429538588,
+      "device": 66305,
+      "inode": 3293967
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00040-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440936505539825,
+      "device": 66305,
+      "inode": 3293968
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00040-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440932321539388,
+      "device": 66305,
+      "inode": 3293969
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00040-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440939929540188,
+      "device": 66305,
+      "inode": 3293970
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00040-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440930089539159,
+      "device": 66305,
+      "inode": 3293971
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00041-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440939985540193,
+      "device": 66305,
+      "inode": 3293972
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00041-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440938325540017,
+      "device": 66305,
+      "inode": 3293973
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00041-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440954841325380,
+      "device": 66305,
+      "inode": 3293974
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00041-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440949193436630,
+      "device": 66305,
+      "inode": 3293975
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00042-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440966965090277,
+      "device": 66305,
+      "inode": 3293976
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00042-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440950853403817,
+      "device": 66305,
+      "inode": 3293977
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00042-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440955745307676,
+      "device": 66305,
+      "inode": 3293978
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00042-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440956313296569,
+      "device": 66305,
+      "inode": 3293979
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00043-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440973684962114,
+      "device": 66305,
+      "inode": 3293980
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00043-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440972300988387,
+      "device": 66305,
+      "inode": 3293981
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00043-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440966441100338,
+      "device": 66305,
+      "inode": 3293982
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00043-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440968325064220,
+      "device": 66305,
+      "inode": 3293983
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00044-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440984372761362,
+      "device": 66305,
+      "inode": 3293984
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00044-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440983796772085,
+      "device": 66305,
+      "inode": 3293985
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00044-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440973952957032,
+      "device": 66305,
+      "inode": 3293986
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00044-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440992348613983,
+      "device": 66305,
+      "inode": 3293987
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00045-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440991880622572,
+      "device": 66305,
+      "inode": 3293988
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00045-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440986308725399,
+      "device": 66305,
+      "inode": 3293989
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00045-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440997492520019,
+      "device": 66305,
+      "inode": 3293990
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00045-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788440997780514782,
+      "device": 66305,
+      "inode": 3293991
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00046-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788440995844550028,
+      "device": 66305,
+      "inode": 3293992
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00046-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441011492268520,
+      "device": 66305,
+      "inode": 3293993
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00046-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441012180256317,
+      "device": 66305,
+      "inode": 3293994
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00046-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441006768352695,
+      "device": 66305,
+      "inode": 3293995
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00047-experts-0000-0127.safetensors": {
+      "size": 354099744,
+      "mtime_ns": 1788441012344253412,
+      "device": 66305,
+      "inode": 3293996
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00047-experts-0128-0255.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441019204132581,
+      "device": 66305,
+      "inode": 3293997
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00047-experts-0256-0383.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441016376182219,
+      "device": 66305,
+      "inode": 3293998
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/layer-00047-experts-0384-0511.safetensors": {
+      "size": 354101064,
+      "mtime_ns": 1788441023668054726,
+      "device": 66305,
+      "inode": 3293999
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00001.safetensors": {
+      "size": 1273114461,
+      "mtime_ns": 1788441072983233526,
+      "device": 66305,
+      "inode": 3294002
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00010.safetensors": {
+      "size": 323564201,
+      "mtime_ns": 1788441027891981608,
+      "device": 66305,
+      "inode": 3294003
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00011.safetensors": {
+      "size": 10727387912,
+      "mtime_ns": 1788441457602701387,
+      "device": 66305,
+      "inode": 3294005
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-bf16-00012.safetensors": {
+      "size": 3683689888,
+      "mtime_ns": 1788441195229472953,
+      "device": 66305,
+      "inode": 3294007
+    },
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/model-plefp8-scale.safetensors": {
+      "size": 146,
+      "mtime_ns": 1788441024148046389,
+      "device": 66305,
+      "inode": 3294009
+    }
+  },
+  "source_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/acceptance-v1/source-snapshot"
+}

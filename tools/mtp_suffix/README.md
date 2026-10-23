@@ -1,5 +1,11 @@
 # Fixed-k3 suffix acceptance
 
+The 2026-10-23 frozen experiment is complete: **NO_GO_PROTECTION_REGRESSION**.
+Both repeated-scenario goals were met, but 4K/8K protections regressed in both
+head modes. The installed binary remains unchanged; the candidate is retained
+only on the research branch. See the [result and archive](../../docs/MTP_SUFFIX_K3_2026-10-23.md).
+Do not rerun the completed stage or treat driver completion as acceptance.
+
 This directory freezes and runs one bounded performance experiment. It does not
 change the installed binary or declare an acceptance decision. Generated files
 belong in a new `.q4t-work/` directory. Model and reference directories remain

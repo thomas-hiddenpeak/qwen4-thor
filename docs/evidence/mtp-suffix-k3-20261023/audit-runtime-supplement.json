@@ -1,0 +1,303 @@
+{
+  "errors": [],
+  "kind": "read-only supplemental coverage audit",
+  "analysis_correction": "Initial file-only audit attempt incorrectly required actual_input==nominal performance tier; runner freezes [tier-48,tier]. No inference was run; this correction follows existing frozen runner source, not a changed acceptance rule.",
+  "all_performance_nominal_tiers": [
+    1024,
+    4096,
+    8192,
+    45056,
+    204800
+  ],
+  "actual_inputs": {
+    "performance-full-off": {
+      "1024": [
+        1006,
+        1006,
+        1006
+      ],
+      "4096": [
+        4075,
+        4075,
+        4075
+      ],
+      "8192": [
+        8159,
+        8159,
+        8159
+      ],
+      "45056": [
+        45050,
+        45050,
+        45050
+      ],
+      "204800": [
+        204789,
+        204789,
+        204789
+      ]
+    },
+    "scenarios-full-off": {
+      "repeat-code": [
+        443,
+        443,
+        443
+      ],
+      "repeat-text": [
+        383,
+        383,
+        383
+      ],
+      "nonrepeat": [
+        108,
+        108,
+        108
+      ]
+    },
+    "performance-full-on": {
+      "1024": [
+        1006,
+        1006,
+        1006
+      ],
+      "4096": [
+        4075,
+        4075,
+        4075
+      ],
+      "8192": [
+        8159,
+        8159,
+        8159
+      ],
+      "45056": [
+        45050,
+        45050,
+        45050
+      ],
+      "204800": [
+        204789,
+        204789,
+        204789
+      ]
+    },
+    "scenarios-full-on": {
+      "repeat-code": [
+        443,
+        443,
+        443
+      ],
+      "repeat-text": [
+        383,
+        383,
+        383
+      ],
+      "nonrepeat": [
+        108,
+        108,
+        108
+      ]
+    },
+    "performance-subset-on": {
+      "1024": [
+        1006,
+        1006,
+        1006
+      ],
+      "4096": [
+        4075,
+        4075,
+        4075
+      ],
+      "8192": [
+        8159,
+        8159,
+        8159
+      ],
+      "45056": [
+        45050,
+        45050,
+        45050
+      ],
+      "204800": [
+        204789,
+        204789,
+        204789
+      ]
+    },
+    "scenarios-subset-on": {
+      "repeat-code": [
+        443,
+        443,
+        443
+      ],
+      "repeat-text": [
+        383,
+        383,
+        383
+      ],
+      "nonrepeat": [
+        108,
+        108,
+        108
+      ]
+    },
+    "performance-subset-off": {
+      "1024": [
+        1006,
+        1006,
+        1006
+      ],
+      "4096": [
+        4075,
+        4075,
+        4075
+      ],
+      "8192": [
+        8159,
+        8159,
+        8159
+      ],
+      "45056": [
+        45050,
+        45050,
+        45050
+      ],
+      "204800": [
+        204789,
+        204789,
+        204789
+      ]
+    },
+    "scenarios-subset-off": {
+      "repeat-code": [
+        443,
+        443,
+        443
+      ],
+      "repeat-text": [
+        383,
+        383,
+        383
+      ],
+      "nonrepeat": [
+        108,
+        108,
+        108
+      ]
+    },
+    "performance-parent-plain": {
+      "1024": [
+        1006,
+        1006,
+        1006
+      ],
+      "4096": [
+        4075,
+        4075,
+        4075
+      ],
+      "8192": [
+        8159,
+        8159,
+        8159
+      ],
+      "45056": [
+        45050,
+        45050,
+        45050
+      ],
+      "204800": [
+        204789,
+        204789,
+        204789
+      ]
+    },
+    "performance-candidate-plain": {
+      "1024": [
+        1006,
+        1006,
+        1006
+      ],
+      "4096": [
+        4075,
+        4075,
+        4075
+      ],
+      "8192": [
+        8159,
+        8159,
+        8159
+      ],
+      "45056": [
+        45050,
+        45050,
+        45050
+      ],
+      "204800": [
+        204789,
+        204789,
+        204789
+      ]
+    },
+    "timing-full-off": {
+      "repeat-code": [
+        443
+      ],
+      "repeat-text": [
+        383
+      ],
+      "nonrepeat": [
+        108
+      ]
+    },
+    "timing-full-on": {
+      "repeat-code": [
+        443
+      ],
+      "repeat-text": [
+        383
+      ],
+      "nonrepeat": [
+        108
+      ]
+    },
+    "timing-subset-on": {
+      "repeat-code": [
+        443
+      ],
+      "repeat-text": [
+        383
+      ],
+      "nonrepeat": [
+        108
+      ]
+    },
+    "timing-subset-off": {
+      "repeat-code": [
+        443
+      ],
+      "repeat-text": [
+        383
+      ],
+      "nonrepeat": [
+        108
+      ]
+    }
+  },
+  "all_frozen_input_length_contracts_and_actual_prompt_hashes_match": true,
+  "first_gate": {
+    "first_frozen_step": "quality-full-on",
+    "clean_shutdown_unix": 1792754881.4568105,
+    "contract_log_mtimes": {
+      "host-contracts": 1792754883.2190306,
+      "runner-contracts": 1792754883.6590269,
+      "stage-audit-contracts": 1792754883.883025,
+      "states-full": 1792754891.806955,
+      "states-subset": 1792754904.810841
+    },
+    "qualification": "plan and driver code enforce first gate; filesystem timestamps are supplementary observations, not cryptographic chronology"
+  },
+  "lifecycle_frozen_prompt_and_exact_usage": true,
+  "health_requests_running_note": "HandleHealth reports active_conns_, so its HTTP connection may account for requests_running=1 while seq_slots_free=seq_slots_total=1."
+}

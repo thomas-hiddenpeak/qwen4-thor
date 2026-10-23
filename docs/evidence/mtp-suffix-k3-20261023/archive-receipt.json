@@ -1,0 +1,18 @@
+{
+  "archive_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-k3-20261023/archive-no-go",
+  "archive_files": 1834,
+  "archive_seal_sha256": "ed7ce80c3e1e9991060b32fbc33458b80fc8c8ac2a834bd48c496cba25883f36",
+  "archive_seal_verified": true,
+  "candidate_sha256": "1266ee3404e233514669c9ef4de2c6d5df0ea832a34b70cbcfde7db4ebadf392",
+  "parent_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "source_commit": "cb912543f9a11191135bb77e44d8e1d1d598ed78",
+  "frozen_plan_sha256": "a9b9e3484d347efb8f40b66f1e3ff247c0927bd4b8ba81eb401b209c70e457e2",
+  "analysis_sha256": "dcbc4ad8f6ff50e3d549c3a05d1a961e405597c2251dfbe078ba2a9de148a86d",
+  "audit_sha256": "69ad021ff11065bc4c01924c941b76693918abcdee2ed9636d77fa15cfe6284e",
+  "decision_sha256": "a2cd86238a7b4f8475e084b7b34640c0fdb0379adf396710a8cd26df56c26e52",
+  "analysis_summary_sha256": "69432c6ffd52be21df28e51815a508f41c88a77937bc2f819678492330bcccd3",
+  "default_binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "default_release_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+  "deployment_health_requests": 0,
+  "deployment_performed": false
+}

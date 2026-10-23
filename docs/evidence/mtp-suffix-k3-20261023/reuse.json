@@ -1,0 +1,35 @@
+{
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-subset-resume-20261023/artifact-contract.json",
+      "sha256": "a6f373f0aa88a32a1e4668ec08857f40fa7ef5099a00b521b6b5f1dee9404fbc",
+      "scope": "65536-row BF16 source identity, ordering, special IDs, negative loader checks",
+      "boundary": "Subset artifact/loader/shapes unchanged; not new suffix state evidence"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-subset-resume-20261023/projection-contract.log",
+      "sha256": "bffca92eca12e0d1352d24432151072ce4591a05fc83abc2f15ef4071cb9defd",
+      "scope": "T1/T4/T17 subset projection, global mapping and tie rule",
+      "boundary": "Subset projection and mapping unchanged; suffix candidates bypass mapping and receive new tests"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-subset-resume-20261023/lifecycle.log",
+      "sha256": "02c58ec411ce5a781273029c340cdb960267d73e02d52efea17ec1c7fe61417b",
+      "scope": "MTP allocation failure/ownership cleanup",
+      "boundary": "MTP resource allocation owners unchanged; request-local suffix cleanup receives new tests"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/sha2-startup-20261023/audit.json",
+      "sha256": "2646cf5bf124702882d65bdcdb21a89f5bfb502b54a9641726b281b06ade9613",
+      "scope": "f356 historical 11 subset and 11 ordinary retrieval quality, exact SHA validation",
+      "boundary": "Same subset and hash dependencies; candidate ON and ordinary quality retested. No claim this audit contains 11 full-head quality requests"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-mainline-ready-20261016/raw-manifest.json",
+      "sha256": "1bebe1fb9f1e9d3da51440389ddc6e5f6b0ee5b40756c82777701f5468a5196b",
+      "scope": "historical full-head MTP acceptance evidence anchor",
+      "boundary": "Historical coverage only; current candidate full-head ON 11 questions and OFF five-tier outputs are measured. Not same-binary full-head OFF quality evidence"
+    }
+  ],
+  "explicit_nonreuse": "No old elapsed timing used as concurrent suffix comparison; no legacy single-sequence state test substitutes for new Multi suffix oracle."
+}
