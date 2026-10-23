@@ -1,0 +1,26 @@
+{
+  "classification": "performance optimization investigation; stopped on frozen environment failure condition",
+  "evidence_validity": "ENV_ABORT",
+  "measurement_completeness": {
+    "http_matrix": "COMPLETE_26_OF_26_6_OF_6",
+    "diagnostic_environment": "INCOMPLETE_FINAL_TELEMETRY_ATTEMPT",
+    "conditional_stage_b": "NOT_RUN",
+    "conditional_health": "NOT_RUN"
+  },
+  "statistical_conclusion": "NO_ACCEPTANCE_INFERENCE_ENV_ABORT",
+  "engineering_decision": "STOP_ENV_ABORT_KEEP_DELIVERED_F356",
+  "runtime_candidate_selected": false,
+  "runtime_changed": false,
+  "deployed": false,
+  "goal_claim": "No claim of eliminating 8K throughput or subset45K/200K TTFT losses, or new acceptance of repeat gains.",
+  "requests": 26,
+  "loads": 6,
+  "stage_elapsed_seconds": 1583.4343390159775,
+  "stopping_reason": "Frozen monitor-failure condition reached; wall/request budgets were not exhausted. No retry or expansion.",
+  "audit_sha256": "b078abab992c1bb4dc9ddacd8762a2f3ec036b69d723dbe3c72c8024779b7af3",
+  "raw_seal_sha256": "c268218f0dd5f46d490242500c8b70331e933e5529f3310b1a687e9b1f811956",
+  "installed_program_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "measured_program_sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+  "historical_evidence_scope": "Previous valid min32 runtime/quality/contracts and repeat gains remain unchanged evidence; not a new successful five-tier acceptance.",
+  "forensic_use": "Completed raw records may describe observed locations only, explicitly ENV_ABORT; they cannot trigger a runtime candidate or acceptance."
+}

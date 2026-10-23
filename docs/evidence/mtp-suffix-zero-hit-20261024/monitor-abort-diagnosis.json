@@ -1,0 +1,257 @@
+{
+  "created_utc": "2026-10-23T22:05:04.481793+00:00",
+  "scope": "Offline monitor failure localization only; no performance analysis or acceptance. One isolated CPU-only fault test is newly executed; no HTTP/GPU or environmental resampling.",
+  "evidence_validity": "SEALED_ABORT_EVIDENCE_RETAINED",
+  "measurement_complete": false,
+  "statistical_conclusion": "NO_PERFORMANCE_CONCLUSION",
+  "engineering_decision": "ENV_ABORT_PRESERVED_NO_RETRY_NO_DEPLOY",
+  "historical_failed_pid_and_relative_file_proven": false,
+  "stage": {
+    "status": "ENV_ABORT",
+    "requests_completed": 26,
+    "loads_started": 6,
+    "completed_groups": [
+      "first-http",
+      "subset-off-a1",
+      "subset-on-b",
+      "subset-off-a2",
+      "full-on",
+      "full-off"
+    ],
+    "elapsed_seconds": 1583.4343390159775,
+    "error": "EnvironmentAbort('resource monitor failed/stale: {\\'failures\\': [\"ENV_ABORT telemetry: PermissionError(13, \\'Permission denied\\')\"], \\'age_seconds\\': 5.213002189993858}')",
+    "postflight": {
+      "status": "ENV_ABORT",
+      "state_sha256": "5f7c1c050ffe22d67921375f3d178e0937ef42b8e45f35c6c1d137e0b67ddf69",
+      "monitor_failures": [
+        "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+      ],
+      "cleanup_errors": [],
+      "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+    },
+    "outer_guard": {
+      "status": "COMMAND_FAILED",
+      "command": [
+        "python3",
+        "-B",
+        "tools/mtp_suffix_zero_hit/run_diagnostic.py",
+        "--plan",
+        ".q4t-work/suffix-zero-hit-20261024/diagnostic-v1/frozen-plan.json"
+      ],
+      "compute_backend": "nvml",
+      "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+      "poll_interval_seconds": 1.0,
+      "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+      "performance_acceptance": false,
+      "child_returncode": 1,
+      "external_lease": false,
+      "finished": {
+        "utc": "2026-10-23T21:59:37.749132+00:00",
+        "monotonic": 982860.266016312,
+        "pid": 3102246
+      }
+    },
+    "lease_released": {
+      "utc": "2026-10-23T21:59:37.749354+00:00",
+      "monotonic": 982860.266231507,
+      "pid": 3102246,
+      "event": "lease_released",
+      "status": "COMMAND_FAILED"
+    }
+  },
+  "raw_integrity": {
+    "consumed_raw_seal_checks": {
+      "state.json": true,
+      "telemetry-summary.json": true,
+      "unified-memory.jsonl": true,
+      "full-off/events.jsonl": true,
+      "full-off/exit.json": true
+    },
+    "frozen_source_checks": {
+      "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py": true,
+      "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/run_diagnostic.py": true,
+      "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py": true,
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py": true
+    },
+    "inputs_sha256": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/frozen-plan.json": "db5de3fceded778640a9c3b1ca8173509f401cbed923e28049e69991fe093408",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/files.json": "c268218f0dd5f46d490242500c8b70331e933e5529f3310b1a687e9b1f811956",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/state.json": "5f7c1c050ffe22d67921375f3d178e0937ef42b8e45f35c6c1d137e0b67ddf69",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/telemetry-summary.json": "9a49002e840c5b1b3465076b0c092ea97f09cafb1bf606393f7b4a7c355506c8",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/unified-memory.jsonl": "1816def27eeaec3f82e059bce5acdcd7d9a11ea120877a5711075839a21c0c1e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-off/events.jsonl": "11582b39ede5d593aa883095c1f0cd8f462c4fc124c4da929cf1d061dd594920",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-off/exit.json": "d84f0077b3396482b6c2339f46f1a65af27dcbec1261cb28ea2b1eecd11c6d3c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/postflight.json": "3679bc685c0a7cf3024dca03fa1dbf2d27f9bed25a4f32578802cc8c83957c7b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/lease/exit.json": "7c7ac7cea862f32b79cbd524203e38ce10e13b05d00f143fdc5e51d960232242",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/lease/events.jsonl": "6c63cb602f702f1671bf3908dfef4de2fb0a76c878de6dbff89bff1305bcaf10",
+      "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py": "d4b6548b8c34885af78526420742ffce73f0262fd91ba68de23420f9f25360d8",
+      "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/run_diagnostic.py": "d8fd72910d3de94babf6f3a3c6845a49a18380675a16d6bcc3b89bebb01761ba",
+      "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix/run_stage.py": "9e26bffdb78979fa7e0c78c43e9d8a44e02a799c753ca5fabd72758ae3c81edd",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py": "caf58b5f0fe03a5e2db37896d9b6d689203b457220d52cbdaa7867ebe7d8d27d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/monitor-abort-cpu-mock.json": "fabebe5809a06fd2a926b8926b3e88c8032eb758c8b16c3d9e18342e3f15d8a2",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/monitor_abort_cpu_mock.py": "ad4744c78b6c30d8d4fe323691cf800873b9be16044def59fb312a9580f30d86",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/telemetry_exit_prototype.py": "473d0b472304cbea8a54bf5fb95fcf2fbea47c9b1f7c57aec8e5fa243fd42cbe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/owned-cleanup-check.json": "2628ca6b5664dd0a6c92e6abe2c6e825ec9b53718f882843e1570addbdc09fee"
+    }
+  },
+  "telemetry": {
+    "summary": {
+      "schema": 1,
+      "sampler_status": "ENV_ABORT",
+      "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/unified-memory.jsonl",
+      "started_monotonic": 981275.96904689,
+      "started_unix_seconds": 1792791193.4521732,
+      "finished_monotonic": 982855.191947344,
+      "finished_unix_seconds": 1792792772.6751027,
+      "sampler_elapsed_seconds": 1579.222900453955,
+      "sample_attempts": 1580,
+      "flushed_samples": 1579,
+      "unflushed_attempts": 1,
+      "final_successful_cycle_duration_seconds": 0.02281502599362284,
+      "final_successful_write_flush_seconds": 0.00033564900513738394,
+      "successful_cycle_duration_total_seconds": 37.494764791452326,
+      "successful_write_flush_total_seconds": 0.5716976511757821,
+      "final_failed_attempt_elapsed_seconds": 0.02472302201204002,
+      "final_attempt_read_counts": {
+        "source_file_read_attempts": 53,
+        "ownership_file_read_attempts": 890,
+        "ownership_readlink_attempts": 445,
+        "owned_file_read_attempts": 9,
+        "directory_scan_attempts": 1
+      },
+      "total_read_counts": {
+        "source_file_read_attempts": 83740,
+        "ownership_file_read_attempts": 1411184,
+        "ownership_readlink_attempts": 705530,
+        "owned_file_read_attempts": 72839,
+        "directory_scan_attempts": 3155
+      },
+      "setup_file_read_attempts": 1,
+      "total_file_read_attempts": 1567764,
+      "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+      "sampler_failure": "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')",
+      "failures_at_exit": [
+        "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+      ],
+      "last_flushed_heartbeat": 982854.189926339,
+      "source_count": 53
+    },
+    "flushed_rows_counted": 1579,
+    "last_successful_row": {
+      "monotonic": 982854.167111313,
+      "sample_finished_monotonic": 982854.189585051,
+      "counts": {
+        "source_file_read_attempts": 53,
+        "ownership_file_read_attempts": 898,
+        "ownership_readlink_attempts": 449,
+        "owned_file_read_attempts": 40,
+        "directory_scan_attempts": 2
+      },
+      "owner": {
+        "pid": 3102252,
+        "start_ticks": 98127588
+      },
+      "owned_processes": {
+        "3102252": {
+          "observation": "OK",
+          "start_ticks": 98127588,
+          "state": "S",
+          "executable": "/usr/bin/python3.12",
+          "threads": 0
+        },
+        "3114212": {
+          "observation": "OK",
+          "start_ticks": 98255264,
+          "state": "S",
+          "executable": "/usr/bin/python3.12",
+          "threads": 0
+        },
+        "3114215": {
+          "observation": "OK",
+          "start_ticks": 98255273,
+          "state": "S",
+          "executable": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/build/q4t",
+          "threads": 5
+        },
+        "3116971": {
+          "observation": "OK",
+          "start_ticks": 98284242,
+          "state": "R",
+          "executable": "/usr/bin/python3.12",
+          "threads": 0
+        }
+      }
+    }
+  },
+  "chronology": {
+    "last_request_group_completed": {
+      "event": "case_completed",
+      "monotonic_seconds": 982854.521916609,
+      "unix_seconds": 1792792772.0050428,
+      "utc": "2026-10-23T21:59:32.005043+00:00",
+      "clock_pair_uncertainty_seconds": 7.500057108700275e-07,
+      "case": "repeat-text",
+      "role": "development_diagnostic",
+      "requests": 1
+    },
+    "server_shutdown_complete": {
+      "event": "server_after_shutdown",
+      "monotonic_seconds": 982855.1371241279,
+      "unix_seconds": 1792792772.6202502,
+      "utc": "2026-10-23T21:59:32.620250+00:00",
+      "clock_pair_uncertainty_seconds": 7.269554771482944e-07,
+      "pid": 3114215,
+      "server_returncode": 0
+    },
+    "final_attempt_start_reconstructed_monotonic": 982855.167224322,
+    "final_attempt_finished_monotonic": 982855.191947344,
+    "attempt_start_after_server_shutdown_ms": 30.100194038823247,
+    "attempt_finish_after_server_shutdown_ms": 54.823216050863266,
+    "attempt_start_after_last_case_completed_ms": 645.3077129554003,
+    "last_successful_flush_before_failed_start_ms": 977.2979830158874,
+    "stage_finished_after_sampler_failure_ms": 4211.001634597778,
+    "note": "Final attempt start reconstructed by subtracting stored failed-attempt elapsed from stored summary monotonic end; no missing row was reconstructed."
+  },
+  "directly_observed": [
+    "All 26 HTTP requests and 6 groups were recorded completed; last group exit server=0 and HTTP output checks passed. This does not clear the separate monitor contract.",
+    "The sampler failed with PermissionError errno13; 1580 attempts, 1579 flushed and one unflushed attempt. No traceback, failed PID, relative file or operation was preserved in the original summary.",
+    "The final attempt counted all53 frozen source reads before890 ownership stat/cmdline attempts and445 readlinks, then9 owned content read attempts; directory scans=1. Owned reads occur after the source loop and ownership scanner return, so frozen sources were not the failing operation.",
+    "The last successful row saw live stage owner3102252, full-off worker3114212, q4t3114215 and evalscope3116971. The q4t server was already reaped by its worker before the final attempt began.",
+    "Outer lease records COMMAND_FAILED child1, no listed monitor conflicts in the final observed polls and a lease_released event; stage/postflight remain ENV_ABORT.",
+    "A newly created own unreaped CPU child reproduced io EACCES on this kernel. The frozen _read_task raises; the prototype checks the same pinned directory and records explicit terminal state. This establishes a possible mechanism, not the failed historical PID."
+  ],
+  "strongest_inference": {
+    "description": "After5 content reads of stable owner PID3102252, the next sorted owned process most plausibly was full-off Python worker3114212, with stat/status/schedstat succeeding and io as ninth attempted read. Worker exit after server shutdown can make proc io access return EACCES.",
+    "confidence": "STRONG_INFERENCE_NOT_PROVEN",
+    "alternatives": "The failed attempt did not preserve its ownership list or partial task row. Intervening PID removal/reuse, a directory-open permission failure after a different partial read sequence, or another non-io permission failure cannot be excluded solely from aggregate counters.",
+    "counter_example_test_scope": "Mock matches the original nine-read failure after assumed first process five reads; live owned-zombie reproduction confirms the kernel mechanism only."
+  },
+  "prototype": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/telemetry_exit_prototype.py",
+    "sha256": "473d0b472304cbea8a54bf5fb95fcf2fbea47c9b1f7c57aec8e5fa243fd42cbe",
+    "deployed": false,
+    "frozen_tool_modified": false,
+    "runtime_changed": false,
+    "behavior": "Add PID/start_ticks, pinned fd, relative file, operation and traceback context. Only io EACCES on an owned process may be classified EXITED_DURING_IO_READ, and only after stat via the same pinned fd proves identical start_ticks and stateZ/X. Preserve original error and traceback in that terminal row. Live/inaccessible/reused identities and non-io errors still abort. Stable source permissions remain fatal.",
+    "future_validation": "Before adopting this monitoring change, test a real complete stage lifecycle under the same guard; CPU mocks do not demonstrate production monitor completeness. Do not retroactively rewrite ENV_ABORT or approve old measurements."
+  },
+  "cpu_validation": {
+    "artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/monitor-abort-cpu-mock.json",
+    "mock_cases": 9,
+    "assertions_passed": true,
+    "kernel_mechanism_reproduced": true,
+    "own_child_reaped": true,
+    "no_gpu_http": true
+  },
+  "cleanup": {
+    "root_owned_cleanup_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/owned-cleanup-check.json",
+    "scope": "Root independently checked recorded PID+start_ticks after shutdown. This diagnosis sent no signals to stage processes."
+  },
+  "remaining_uncertainty": [
+    "Historical failed PID/file/syscall cannot be recovered because the failed attempt was not flushed and repr omitted context.",
+    "No performance conclusion is computed from ENV_ABORT evidence.",
+    "Sampling cannot rule out interference shorter than its interval.",
+    "The prototype is a monitor correctness change only; it is not a zero-hit runtime performance improvement."
+  ]
+}

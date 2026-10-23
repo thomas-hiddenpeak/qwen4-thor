@@ -1,0 +1,3338 @@
+{
+  "status": "FORENSIC_ONLY_ENV_ABORT",
+  "created_utc": "2026-10-23T22:07:35.935376+00:00",
+  "evidence_validity": "ENV_ABORT",
+  "http_matrix_complete": true,
+  "measurement_complete": false,
+  "statistical_conclusion": "FORENSIC_DESCRIPTIVE_ONLY; no new statistical acceptance conclusion",
+  "engineering_decision": "NO_PERFORMANCE_ACCEPTANCE_OR_CANDIDATE_TRIGGER_FROM_THIS_DATA",
+  "root_cause": "UNKNOWN",
+  "candidate_trigger_allowed": false,
+  "performance_acceptance": false,
+  "new_inference_requests": 0,
+  "new_gpu_queries": 0,
+  "plan_sha256": "db5de3fceded778640a9c3b1ca8173509f401cbed923e28049e69991fe093408",
+  "candidate_sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+  "runtime_source": "cb0fa73c3271e6fbce2cd9d282838de9643d2a3b",
+  "request_count": 26,
+  "service_count": 6,
+  "groups": [
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "name": "first-http",
+      "head": "full",
+      "suffix_enabled": true,
+      "native_timing": false,
+      "requests": 1,
+      "server_exit": 0,
+      "server_end_monotonic": 981336.435776716,
+      "ended_before_failed_sample": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "name": "subset-off-a1",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "requests": 5,
+      "server_exit": 0,
+      "server_end_monotonic": 981644.6968065205,
+      "ended_before_failed_sample": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "name": "subset-on-b",
+      "head": "subset",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "requests": 5,
+      "server_exit": 0,
+      "server_end_monotonic": 981948.5962535446,
+      "ended_before_failed_sample": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "name": "subset-off-a2",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "requests": 5,
+      "server_exit": 0,
+      "server_end_monotonic": 982251.4752046929,
+      "ended_before_failed_sample": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "name": "full-on",
+      "head": "full",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "requests": 5,
+      "server_exit": 0,
+      "server_end_monotonic": 982552.5033532709,
+      "ended_before_failed_sample": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "name": "full-off",
+      "head": "full",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "requests": 5,
+      "server_exit": 0,
+      "server_end_monotonic": 982855.1371241279,
+      "ended_before_failed_sample": true
+    }
+  ],
+  "requests": [
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "first-http",
+      "head": "full",
+      "suffix_enabled": true,
+      "native_timing": false,
+      "case": "context-8192",
+      "request_id": "chatcmpl-auto-0",
+      "first_request_of_service": true,
+      "comparison_eligible": false,
+      "actual_input": 8170,
+      "actual_output": 256,
+      "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+      "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "http_window": {
+        "start_monotonic_seconds": 981321.394552774,
+        "end_monotonic_seconds": 981334.598590003,
+        "start_utc_estimate": "2026-10-23T21:33:58.877678+00:00",
+        "end_utc_estimate": "2026-10-23T21:34:12.081716+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 4.76837158203125e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 0,
+        "id": "chatcmpl-auto-0",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 5198.345,
+        "line": 37
+      },
+      "metrics": {
+        "ttft_ms": 5844.52478995081,
+        "latency_ms": 13204.037228948437,
+        "post_ttft_ms": 7359.512438997626,
+        "decode_tps": 34.64903444537574,
+        "handler_prefill_entry_ms": 8.671,
+        "handler_prefill_done_ms": 5198.345,
+        "handler_prefill_interval_ms": 5189.674,
+        "ttft_minus_handler_done_ms": 646.1797899508101
+      },
+      "work": {
+        "verify_T4": 75,
+        "ordinary_tail_T1": 0,
+        "target_calls": 75,
+        "target_rows": 300,
+        "restore": 22,
+        "neural_proposal_T1": 150,
+        "extend_calls": 75,
+        "extend_rows": 255,
+        "histogram": [
+          6,
+          11,
+          5,
+          53
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-0",
+        "queries": 75,
+        "hits": 0,
+        "candidates": 18,
+        "compared": 77,
+        "matched": 23,
+        "no_match": 69,
+        "incomplete": 0,
+        "d0_mismatch": 5,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 8425,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 229989,
+        "append_ns": 51017,
+        "query_ns": 29245,
+        "release_ns": 16110,
+        "numeric_checks": 1,
+        "classified_tokens": 6,
+        "numeric_rejected": 0,
+        "numeric_ns": 389,
+        "short_rejected": 1,
+        "accepted": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "neural_accepted": [
+          6,
+          11,
+          5,
+          53
+        ],
+        "line": 41
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 229989,
+        "append_ns": 51017,
+        "query_ns": 29245,
+        "release_ns": 16110,
+        "numeric_ns": 389,
+        "sum_nonoverlapping_direct_ns": 326361,
+        "query_append_release_ns": 96372
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-off-a1",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "context-8192",
+      "request_id": "chatcmpl-auto-0",
+      "first_request_of_service": true,
+      "comparison_eligible": true,
+      "actual_input": 8170,
+      "actual_output": 256,
+      "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+      "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "http_window": {
+        "start_monotonic_seconds": 981384.103187243,
+        "end_monotonic_seconds": 981396.362407615,
+        "start_utc_estimate": "2026-10-23T21:35:01.586313+00:00",
+        "end_utc_estimate": "2026-10-23T21:35:13.845533+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 9.5367431640625e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 0,
+        "id": "chatcmpl-auto-0",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 5194.49,
+        "line": 35
+      },
+      "metrics": {
+        "ttft_ms": 5644.487102981657,
+        "latency_ms": 12259.220371954143,
+        "post_ttft_ms": 6614.733268972486,
+        "decode_tps": 38.55030726576991,
+        "handler_prefill_entry_ms": 8.642,
+        "handler_prefill_done_ms": 5194.49,
+        "handler_prefill_interval_ms": 5185.848,
+        "ttft_minus_handler_done_ms": 449.997102981657
+      },
+      "work": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 3,
+        "target_calls": 77,
+        "target_rows": 299,
+        "restore": 22,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 252,
+        "histogram": [
+          7,
+          8,
+          7,
+          52
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-off-a1",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "context-45056",
+      "request_id": "chatcmpl-auto-1",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 45044,
+      "actual_output": 256,
+      "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+      "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+      "http_window": {
+        "start_monotonic_seconds": 981401.712825693,
+        "end_monotonic_seconds": 981439.955123776,
+        "start_utc_estimate": "2026-10-23T21:35:19.195951+00:00",
+        "end_utc_estimate": "2026-10-23T21:35:57.438249+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 7.152557373046875e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 1,
+        "id": "chatcmpl-auto-1",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 30383.217,
+        "line": 129
+      },
+      "metrics": {
+        "ttft_ms": 31769.907504087314,
+        "latency_ms": 38242.29808303062,
+        "post_ttft_ms": 6472.390578943305,
+        "decode_tps": 39.39811679931587,
+        "handler_prefill_entry_ms": 38.438,
+        "handler_prefill_done_ms": 30383.217,
+        "handler_prefill_interval_ms": 30344.779000000002,
+        "ttft_minus_handler_done_ms": 1386.6905040873135
+      },
+      "work": {
+        "verify_T4": 73,
+        "ordinary_tail_T1": 0,
+        "target_calls": 73,
+        "target_rows": 292,
+        "restore": 18,
+        "neural_proposal_T1": 146,
+        "extend_calls": 73,
+        "extend_rows": 255,
+        "histogram": [
+          7,
+          5,
+          6,
+          55
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-off-a1",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "context-204800",
+      "request_id": "chatcmpl-auto-2",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 204781,
+      "actual_output": 256,
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "http_window": {
+        "start_monotonic_seconds": 981445.33862089,
+        "end_monotonic_seconds": 981619.679008889,
+        "start_utc_estimate": "2026-10-23T21:36:02.821747+00:00",
+        "end_utc_estimate": "2026-10-23T21:38:57.162135+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 7.152557373046875e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 2,
+        "id": "chatcmpl-auto-2",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 159149.622,
+        "line": 237
+      },
+      "metrics": {
+        "ttft_ms": 166878.67652997375,
+        "latency_ms": 174340.3879989637,
+        "post_ttft_ms": 7461.711468989961,
+        "decode_tps": 34.17446534347401,
+        "handler_prefill_entry_ms": 166.174,
+        "handler_prefill_done_ms": 159149.622,
+        "handler_prefill_interval_ms": 158983.448,
+        "ttft_minus_handler_done_ms": 7729.054529973742
+      },
+      "work": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 2,
+        "target_calls": 76,
+        "target_rows": 298,
+        "restore": 20,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 253,
+        "histogram": [
+          8,
+          7,
+          5,
+          54
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-off-a1",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "repeat-code",
+      "request_id": "chatcmpl-auto-3",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 744,
+      "actual_output": 256,
+      "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+      "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+      "http_window": {
+        "start_monotonic_seconds": 981625.081396532,
+        "end_monotonic_seconds": 981631.308958018,
+        "start_utc_estimate": "2026-10-23T21:39:02.564522+00:00",
+        "end_utc_estimate": "2026-10-23T21:39:08.792084+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 4.76837158203125e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 3,
+        "id": "chatcmpl-auto-3",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 695.464,
+        "line": 322
+      },
+      "metrics": {
+        "ttft_ms": 817.669490003027,
+        "latency_ms": 6227.561485953629,
+        "post_ttft_ms": 5409.891995950602,
+        "decode_tps": 47.13587631525212,
+        "handler_prefill_entry_ms": 1.747,
+        "handler_prefill_done_ms": 695.464,
+        "handler_prefill_interval_ms": 693.7170000000001,
+        "ttft_minus_handler_done_ms": 122.20549000302697
+      },
+      "work": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 126,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-off-a1",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "repeat-text",
+      "request_id": "chatcmpl-auto-4",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 475,
+      "actual_output": 256,
+      "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+      "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+      "http_window": {
+        "start_monotonic_seconds": 981636.698749971,
+        "end_monotonic_seconds": 981642.918172484,
+        "start_utc_estimate": "2026-10-23T21:39:14.181876+00:00",
+        "end_utc_estimate": "2026-10-23T21:39:20.401298+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 4,
+        "id": "chatcmpl-auto-4",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 524.759,
+        "line": 396
+      },
+      "metrics": {
+        "ttft_ms": 638.8810940552503,
+        "latency_ms": 6219.422513036989,
+        "post_ttft_ms": 5580.541418981738,
+        "decode_tps": 45.69449106365184,
+        "handler_prefill_entry_ms": 1.21,
+        "handler_prefill_done_ms": 524.759,
+        "handler_prefill_interval_ms": 523.549,
+        "ttft_minus_handler_done_ms": 114.12209405525027
+      },
+      "work": {
+        "verify_T4": 66,
+        "ordinary_tail_T1": 3,
+        "target_calls": 69,
+        "target_rows": 267,
+        "restore": 6,
+        "neural_proposal_T1": 132,
+        "extend_calls": 66,
+        "extend_rows": 252,
+        "histogram": [
+          2,
+          2,
+          2,
+          60
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-on-b",
+      "head": "subset",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "case": "context-8192",
+      "request_id": "chatcmpl-auto-0",
+      "first_request_of_service": true,
+      "comparison_eligible": true,
+      "actual_input": 8170,
+      "actual_output": 256,
+      "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+      "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "http_window": {
+        "start_monotonic_seconds": 981688.286693596,
+        "end_monotonic_seconds": 981700.542278447,
+        "start_utc_estimate": "2026-10-23T21:40:05.769819+00:00",
+        "end_utc_estimate": "2026-10-23T21:40:18.025404+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 4.76837158203125e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 0,
+        "id": "chatcmpl-auto-0",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 5190.663,
+        "line": 38
+      },
+      "metrics": {
+        "ttft_ms": 5646.870272932574,
+        "latency_ms": 12255.584850907326,
+        "post_ttft_ms": 6608.714577974752,
+        "decode_tps": 38.58541581593694,
+        "handler_prefill_entry_ms": 8.617,
+        "handler_prefill_done_ms": 5190.663,
+        "handler_prefill_interval_ms": 5182.045999999999,
+        "ttft_minus_handler_done_ms": 456.2072729325746
+      },
+      "work": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 3,
+        "target_calls": 77,
+        "target_rows": 299,
+        "restore": 22,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 252,
+        "histogram": [
+          7,
+          8,
+          7,
+          52
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-0",
+        "queries": 74,
+        "hits": 0,
+        "candidates": 10,
+        "compared": 45,
+        "matched": 17,
+        "no_match": 70,
+        "incomplete": 0,
+        "d0_mismatch": 3,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 8422,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 186712,
+        "append_ns": 52265,
+        "query_ns": 27416,
+        "release_ns": 20601,
+        "numeric_checks": 1,
+        "classified_tokens": 6,
+        "numeric_rejected": 0,
+        "numeric_ns": 436,
+        "short_rejected": 1,
+        "accepted": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "neural_accepted": [
+          7,
+          8,
+          7,
+          52
+        ],
+        "line": 116
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 186712,
+        "append_ns": 52265,
+        "query_ns": 27416,
+        "release_ns": 20601,
+        "numeric_ns": 436,
+        "sum_nonoverlapping_direct_ns": 286994,
+        "query_append_release_ns": 100282
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-on-b",
+      "head": "subset",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "case": "context-45056",
+      "request_id": "chatcmpl-auto-1",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 45044,
+      "actual_output": 256,
+      "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+      "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+      "http_window": {
+        "start_monotonic_seconds": 981705.923588512,
+        "end_monotonic_seconds": 981744.209917543,
+        "start_utc_estimate": "2026-10-23T21:40:23.406719+00:00",
+        "end_utc_estimate": "2026-10-23T21:41:01.693048+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": -4.0531158447265625e-06,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 1,
+        "id": "chatcmpl-auto-1",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 30432.566,
+        "line": 133
+      },
+      "metrics": {
+        "ttft_ms": 31819.786606007256,
+        "latency_ms": 38286.3290309906,
+        "post_ttft_ms": 6466.542424983345,
+        "decode_tps": 39.433747316775204,
+        "handler_prefill_entry_ms": 38.382,
+        "handler_prefill_done_ms": 30432.566,
+        "handler_prefill_interval_ms": 30394.183999999997,
+        "ttft_minus_handler_done_ms": 1387.2206060072567
+      },
+      "work": {
+        "verify_T4": 73,
+        "ordinary_tail_T1": 0,
+        "target_calls": 73,
+        "target_rows": 292,
+        "restore": 18,
+        "neural_proposal_T1": 146,
+        "extend_calls": 73,
+        "extend_rows": 255,
+        "histogram": [
+          7,
+          5,
+          6,
+          55
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-1",
+        "queries": 73,
+        "hits": 0,
+        "candidates": 45,
+        "compared": 251,
+        "matched": 77,
+        "no_match": 58,
+        "incomplete": 0,
+        "d0_mismatch": 4,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 45299,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 474620,
+        "append_ns": 62722,
+        "query_ns": 43903,
+        "release_ns": 6352,
+        "numeric_checks": 11,
+        "classified_tokens": 62,
+        "numeric_rejected": 0,
+        "numeric_ns": 4020,
+        "short_rejected": 11,
+        "accepted": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "neural_accepted": [
+          7,
+          5,
+          6,
+          55
+        ],
+        "line": 208
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 474620,
+        "append_ns": 62722,
+        "query_ns": 43903,
+        "release_ns": 6352,
+        "numeric_ns": 4020,
+        "sum_nonoverlapping_direct_ns": 587597,
+        "query_append_release_ns": 112977
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-on-b",
+      "head": "subset",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "case": "context-204800",
+      "request_id": "chatcmpl-auto-2",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 204781,
+      "actual_output": 256,
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "http_window": {
+        "start_monotonic_seconds": 981749.577958771,
+        "end_monotonic_seconds": 981924.201597889,
+        "start_utc_estimate": "2026-10-23T21:41:07.061085+00:00",
+        "end_utc_estimate": "2026-10-23T21:44:01.684724+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 4.76837158203125e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 2,
+        "id": "chatcmpl-auto-2",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 159438.701,
+        "line": 242
+      },
+      "metrics": {
+        "ttft_ms": 167167.8541309666,
+        "latency_ms": 174623.63911792636,
+        "post_ttft_ms": 7455.78498695977,
+        "decode_tps": 34.20163006926797,
+        "handler_prefill_entry_ms": 166.525,
+        "handler_prefill_done_ms": 159438.701,
+        "handler_prefill_interval_ms": 159272.176,
+        "ttft_minus_handler_done_ms": 7729.153130966588
+      },
+      "work": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 2,
+        "target_calls": 76,
+        "target_rows": 298,
+        "restore": 20,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 253,
+        "histogram": [
+          8,
+          7,
+          5,
+          54
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-2",
+        "queries": 74,
+        "hits": 0,
+        "candidates": 68,
+        "compared": 338,
+        "matched": 90,
+        "no_match": 56,
+        "incomplete": 0,
+        "d0_mismatch": 6,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 205034,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 835833,
+        "append_ns": 57455,
+        "query_ns": 39990,
+        "release_ns": 18287,
+        "numeric_checks": 12,
+        "classified_tokens": 68,
+        "numeric_rejected": 0,
+        "numeric_ns": 4482,
+        "short_rejected": 12,
+        "accepted": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "neural_accepted": [
+          8,
+          7,
+          5,
+          54
+        ],
+        "line": 318
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 835833,
+        "append_ns": 57455,
+        "query_ns": 39990,
+        "release_ns": 18287,
+        "numeric_ns": 4482,
+        "sum_nonoverlapping_direct_ns": 951565,
+        "query_append_release_ns": 115732
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-on-b",
+      "head": "subset",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "case": "repeat-code",
+      "request_id": "chatcmpl-auto-3",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 744,
+      "actual_output": 256,
+      "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+      "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+      "http_window": {
+        "start_monotonic_seconds": 981929.662857529,
+        "end_monotonic_seconds": 981935.53522924,
+        "start_utc_estimate": "2026-10-23T21:44:07.145983+00:00",
+        "end_utc_estimate": "2026-10-23T21:44:13.018355+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 4.76837158203125e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 3,
+        "id": "chatcmpl-auto-3",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 696.767,
+        "line": 328
+      },
+      "metrics": {
+        "ttft_ms": 819.2432119976729,
+        "latency_ms": 5872.371710953303,
+        "post_ttft_ms": 5053.12849895563,
+        "decode_tps": 50.46378694955074,
+        "handler_prefill_entry_ms": 1.239,
+        "handler_prefill_done_ms": 696.767,
+        "handler_prefill_interval_ms": 695.528,
+        "ttft_minus_handler_done_ms": 122.47621199767286
+      },
+      "work": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 18,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-3",
+        "queries": 63,
+        "hits": 54,
+        "candidates": 247,
+        "compared": 12055,
+        "matched": 3470,
+        "no_match": 1,
+        "incomplete": 0,
+        "d0_mismatch": 0,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 996,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 49695,
+        "append_ns": 38491,
+        "query_ns": 103616,
+        "release_ns": 2371,
+        "numeric_checks": 62,
+        "classified_tokens": 3470,
+        "numeric_rejected": 0,
+        "numeric_ns": 36847,
+        "short_rejected": 8,
+        "accepted": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "neural_accepted": [
+          0,
+          0,
+          0,
+          9
+        ],
+        "line": 393
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 49695,
+        "append_ns": 38491,
+        "query_ns": 103616,
+        "release_ns": 2371,
+        "numeric_ns": 36847,
+        "sum_nonoverlapping_direct_ns": 194173,
+        "query_append_release_ns": 144478
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-on-b",
+      "head": "subset",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "case": "repeat-text",
+      "request_id": "chatcmpl-auto-4",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 475,
+      "actual_output": 256,
+      "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+      "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+      "http_window": {
+        "start_monotonic_seconds": 981940.931217451,
+        "end_monotonic_seconds": 981946.810650975,
+        "start_utc_estimate": "2026-10-23T21:44:18.414343+00:00",
+        "end_utc_estimate": "2026-10-23T21:44:24.293777+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 7.152557373046875e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 4,
+        "id": "chatcmpl-auto-4",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 524.359,
+        "line": 403
+      },
+      "metrics": {
+        "ttft_ms": 639.6954690571874,
+        "latency_ms": 5879.433523979969,
+        "post_ttft_ms": 5239.738054922782,
+        "decode_tps": 48.66655495505642,
+        "handler_prefill_entry_ms": 1.225,
+        "handler_prefill_done_ms": 524.359,
+        "handler_prefill_interval_ms": 523.134,
+        "ttft_minus_handler_done_ms": 115.3364690571874
+      },
+      "work": {
+        "verify_T4": 66,
+        "ordinary_tail_T1": 3,
+        "target_calls": 69,
+        "target_rows": 267,
+        "restore": 4,
+        "neural_proposal_T1": 24,
+        "extend_calls": 66,
+        "extend_rows": 252,
+        "histogram": [
+          4,
+          0,
+          0,
+          62
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-4",
+        "queries": 66,
+        "hits": 54,
+        "candidates": 259,
+        "compared": 13857,
+        "matched": 3710,
+        "no_match": 1,
+        "incomplete": 0,
+        "d0_mismatch": 4,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 727,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 45481,
+        "append_ns": 45722,
+        "query_ns": 126298,
+        "release_ns": 3166,
+        "numeric_checks": 61,
+        "classified_tokens": 3454,
+        "numeric_rejected": 0,
+        "numeric_ns": 41810,
+        "short_rejected": 7,
+        "accepted": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "neural_accepted": [
+          4,
+          0,
+          0,
+          8
+        ],
+        "line": 471
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 45481,
+        "append_ns": 45722,
+        "query_ns": 126298,
+        "release_ns": 3166,
+        "numeric_ns": 41810,
+        "sum_nonoverlapping_direct_ns": 220667,
+        "query_append_release_ns": 175186
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-off-a2",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "context-8192",
+      "request_id": "chatcmpl-auto-0",
+      "first_request_of_service": true,
+      "comparison_eligible": true,
+      "actual_input": 8170,
+      "actual_output": 256,
+      "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+      "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "http_window": {
+        "start_monotonic_seconds": 981991.037591381,
+        "end_monotonic_seconds": 982003.256051698,
+        "start_utc_estimate": "2026-10-23T21:45:08.520717+00:00",
+        "end_utc_estimate": "2026-10-23T21:45:20.739177+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 7.152557373046875e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 0,
+        "id": "chatcmpl-auto-0",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 5181.315,
+        "line": 35
+      },
+      "metrics": {
+        "ttft_ms": 5628.631509025581,
+        "latency_ms": 12218.46031700261,
+        "post_ttft_ms": 6589.828807977028,
+        "decode_tps": 38.695997639774944,
+        "handler_prefill_entry_ms": 7.758,
+        "handler_prefill_done_ms": 5181.315,
+        "handler_prefill_interval_ms": 5173.557,
+        "ttft_minus_handler_done_ms": 447.3165090255816
+      },
+      "work": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 3,
+        "target_calls": 77,
+        "target_rows": 299,
+        "restore": 22,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 252,
+        "histogram": [
+          7,
+          8,
+          7,
+          52
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-off-a2",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "context-45056",
+      "request_id": "chatcmpl-auto-1",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 45044,
+      "actual_output": 256,
+      "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+      "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+      "http_window": {
+        "start_monotonic_seconds": 982008.605955701,
+        "end_monotonic_seconds": 982046.862579874,
+        "start_utc_estimate": "2026-10-23T21:45:26.089081+00:00",
+        "end_utc_estimate": "2026-10-23T21:46:04.345706+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 1,
+        "id": "chatcmpl-auto-1",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 30412.776,
+        "line": 129
+      },
+      "metrics": {
+        "ttft_ms": 31796.289514983073,
+        "latency_ms": 38256.62417302374,
+        "post_ttft_ms": 6460.334658040665,
+        "decode_tps": 39.4716393960523,
+        "handler_prefill_entry_ms": 39.205,
+        "handler_prefill_done_ms": 30412.776,
+        "handler_prefill_interval_ms": 30373.571,
+        "ttft_minus_handler_done_ms": 1383.5135149830712
+      },
+      "work": {
+        "verify_T4": 73,
+        "ordinary_tail_T1": 0,
+        "target_calls": 73,
+        "target_rows": 292,
+        "restore": 18,
+        "neural_proposal_T1": 146,
+        "extend_calls": 73,
+        "extend_rows": 255,
+        "histogram": [
+          7,
+          5,
+          6,
+          55
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-off-a2",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "context-204800",
+      "request_id": "chatcmpl-auto-2",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 204781,
+      "actual_output": 256,
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "http_window": {
+        "start_monotonic_seconds": 982052.230214221,
+        "end_monotonic_seconds": 982226.535063558,
+        "start_utc_estimate": "2026-10-23T21:46:09.713340+00:00",
+        "end_utc_estimate": "2026-10-23T21:49:04.018189+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 7.152557373046875e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 2,
+        "id": "chatcmpl-auto-2",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 159134.397,
+        "line": 237
+      },
+      "metrics": {
+        "ttft_ms": 166847.89725893643,
+        "latency_ms": 174304.84933697153,
+        "post_ttft_ms": 7456.952078035101,
+        "decode_tps": 34.19627715606726,
+        "handler_prefill_entry_ms": 160.306,
+        "handler_prefill_done_ms": 159134.397,
+        "handler_prefill_interval_ms": 158974.091,
+        "ttft_minus_handler_done_ms": 7713.50025893643
+      },
+      "work": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 2,
+        "target_calls": 76,
+        "target_rows": 298,
+        "restore": 20,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 253,
+        "histogram": [
+          8,
+          7,
+          5,
+          54
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-off-a2",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "repeat-code",
+      "request_id": "chatcmpl-auto-3",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 744,
+      "actual_output": 256,
+      "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+      "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+      "http_window": {
+        "start_monotonic_seconds": 982231.897150693,
+        "end_monotonic_seconds": 982238.127236517,
+        "start_utc_estimate": "2026-10-23T21:49:09.380276+00:00",
+        "end_utc_estimate": "2026-10-23T21:49:15.610362+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 7.152557373046875e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 3,
+        "id": "chatcmpl-auto-3",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 698.53,
+        "line": 322
+      },
+      "metrics": {
+        "ttft_ms": 820.4912149813026,
+        "latency_ms": 6230.085824034177,
+        "post_ttft_ms": 5409.594609052874,
+        "decode_tps": 47.138467561554684,
+        "handler_prefill_entry_ms": 2.003,
+        "handler_prefill_done_ms": 698.53,
+        "handler_prefill_interval_ms": 696.5269999999999,
+        "ttft_minus_handler_done_ms": 121.96121498130265
+      },
+      "work": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 126,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "subset-off-a2",
+      "head": "subset",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "repeat-text",
+      "request_id": "chatcmpl-auto-4",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 475,
+      "actual_output": 256,
+      "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+      "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+      "http_window": {
+        "start_monotonic_seconds": 982243.500639517,
+        "end_monotonic_seconds": 982249.724112211,
+        "start_utc_estimate": "2026-10-23T21:49:20.983765+00:00",
+        "end_utc_estimate": "2026-10-23T21:49:27.207238+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 7.152557373046875e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 4,
+        "id": "chatcmpl-auto-4",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 528.802,
+        "line": 396
+      },
+      "metrics": {
+        "ttft_ms": 642.7356050116941,
+        "latency_ms": 6223.472694051452,
+        "post_ttft_ms": 5580.737089039758,
+        "decode_tps": 45.692888937700566,
+        "handler_prefill_entry_ms": 1.163,
+        "handler_prefill_done_ms": 528.802,
+        "handler_prefill_interval_ms": 527.639,
+        "ttft_minus_handler_done_ms": 113.93360501169411
+      },
+      "work": {
+        "verify_T4": 66,
+        "ordinary_tail_T1": 3,
+        "target_calls": 69,
+        "target_rows": 267,
+        "restore": 6,
+        "neural_proposal_T1": 132,
+        "extend_calls": 66,
+        "extend_rows": 252,
+        "histogram": [
+          2,
+          2,
+          2,
+          60
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "full-on",
+      "head": "full",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "case": "context-8192",
+      "request_id": "chatcmpl-auto-0",
+      "first_request_of_service": true,
+      "comparison_eligible": true,
+      "actual_input": 8170,
+      "actual_output": 256,
+      "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+      "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "http_window": {
+        "start_monotonic_seconds": 982290.048625662,
+        "end_monotonic_seconds": 982303.268175925,
+        "start_utc_estimate": "2026-10-23T21:50:07.531752+00:00",
+        "end_utc_estimate": "2026-10-23T21:50:20.751302+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 0,
+        "id": "chatcmpl-auto-0",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 5195.84,
+        "line": 37
+      },
+      "metrics": {
+        "ttft_ms": 5841.570338001475,
+        "latency_ms": 13219.55026302021,
+        "post_ttft_ms": 7377.979925018735,
+        "decode_tps": 34.562306022993475,
+        "handler_prefill_entry_ms": 7.842,
+        "handler_prefill_done_ms": 5195.84,
+        "handler_prefill_interval_ms": 5187.9980000000005,
+        "ttft_minus_handler_done_ms": 645.7303380014746
+      },
+      "work": {
+        "verify_T4": 75,
+        "ordinary_tail_T1": 0,
+        "target_calls": 75,
+        "target_rows": 300,
+        "restore": 22,
+        "neural_proposal_T1": 150,
+        "extend_calls": 75,
+        "extend_rows": 255,
+        "histogram": [
+          6,
+          11,
+          5,
+          53
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-0",
+        "queries": 75,
+        "hits": 0,
+        "candidates": 18,
+        "compared": 77,
+        "matched": 23,
+        "no_match": 69,
+        "incomplete": 0,
+        "d0_mismatch": 5,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 8425,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 289695,
+        "append_ns": 80999,
+        "query_ns": 35170,
+        "release_ns": 27361,
+        "numeric_checks": 1,
+        "classified_tokens": 6,
+        "numeric_rejected": 0,
+        "numeric_ns": 444,
+        "short_rejected": 1,
+        "accepted": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "neural_accepted": [
+          6,
+          11,
+          5,
+          53
+        ],
+        "line": 116
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 289695,
+        "append_ns": 80999,
+        "query_ns": 35170,
+        "release_ns": 27361,
+        "numeric_ns": 444,
+        "sum_nonoverlapping_direct_ns": 433225,
+        "query_append_release_ns": 143530
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "full-on",
+      "head": "full",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "case": "context-45056",
+      "request_id": "chatcmpl-auto-1",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 45044,
+      "actual_output": 256,
+      "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+      "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+      "http_window": {
+        "start_monotonic_seconds": 982308.648984272,
+        "end_monotonic_seconds": 982347.612961315,
+        "start_utc_estimate": "2026-10-23T21:50:26.132110+00:00",
+        "end_utc_estimate": "2026-10-23T21:51:05.096087+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 1,
+        "id": "chatcmpl-auto-1",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 30386.538,
+        "line": 131
+      },
+      "metrics": {
+        "ttft_ms": 31865.149791003205,
+        "latency_ms": 38963.97704293486,
+        "post_ttft_ms": 7098.827251931652,
+        "decode_tps": 35.92142630750907,
+        "handler_prefill_entry_ms": 36.217,
+        "handler_prefill_done_ms": 30386.538,
+        "handler_prefill_interval_ms": 30350.321,
+        "ttft_minus_handler_done_ms": 1478.6117910032044
+      },
+      "work": {
+        "verify_T4": 71,
+        "ordinary_tail_T1": 0,
+        "target_calls": 71,
+        "target_rows": 284,
+        "restore": 14,
+        "neural_proposal_T1": 142,
+        "extend_calls": 71,
+        "extend_rows": 255,
+        "histogram": [
+          6,
+          3,
+          5,
+          57
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-1",
+        "queries": 71,
+        "hits": 0,
+        "candidates": 38,
+        "compared": 223,
+        "matched": 77,
+        "no_match": 57,
+        "incomplete": 0,
+        "d0_mismatch": 2,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 45299,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 419732,
+        "append_ns": 44485,
+        "query_ns": 29830,
+        "release_ns": 6648,
+        "numeric_checks": 12,
+        "classified_tokens": 68,
+        "numeric_rejected": 0,
+        "numeric_ns": 3388,
+        "short_rejected": 12,
+        "accepted": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "neural_accepted": [
+          6,
+          3,
+          5,
+          57
+        ],
+        "line": 204
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 419732,
+        "append_ns": 44485,
+        "query_ns": 29830,
+        "release_ns": 6648,
+        "numeric_ns": 3388,
+        "sum_nonoverlapping_direct_ns": 500695,
+        "query_append_release_ns": 80963
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "full-on",
+      "head": "full",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "case": "context-204800",
+      "request_id": "chatcmpl-auto-2",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 204781,
+      "actual_output": 256,
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "http_window": {
+        "start_monotonic_seconds": 982353.010408214,
+        "end_monotonic_seconds": 982527.717197375,
+        "start_utc_estimate": "2026-10-23T21:51:10.493534+00:00",
+        "end_utc_estimate": "2026-10-23T21:54:05.200323+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 4.76837158203125e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 2,
+        "id": "chatcmpl-auto-2",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 158993.637,
+        "line": 238
+      },
+      "metrics": {
+        "ttft_ms": 166934.8376680864,
+        "latency_ms": 174706.78916107863,
+        "post_ttft_ms": 7771.95149299223,
+        "decode_tps": 32.8102922708572,
+        "handler_prefill_entry_ms": 161.662,
+        "handler_prefill_done_ms": 158993.637,
+        "handler_prefill_interval_ms": 158831.97499999998,
+        "ttft_minus_handler_done_ms": 7941.200668086414
+      },
+      "work": {
+        "verify_T4": 70,
+        "ordinary_tail_T1": 0,
+        "target_calls": 70,
+        "target_rows": 280,
+        "restore": 12,
+        "neural_proposal_T1": 140,
+        "extend_calls": 70,
+        "extend_rows": 255,
+        "histogram": [
+          4,
+          5,
+          3,
+          58
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-2",
+        "queries": 70,
+        "hits": 0,
+        "candidates": 57,
+        "compared": 303,
+        "matched": 87,
+        "no_match": 53,
+        "incomplete": 0,
+        "d0_mismatch": 6,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 205036,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 881039,
+        "append_ns": 49137,
+        "query_ns": 32509,
+        "release_ns": 16880,
+        "numeric_checks": 11,
+        "classified_tokens": 60,
+        "numeric_rejected": 0,
+        "numeric_ns": 3456,
+        "short_rejected": 11,
+        "accepted": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "neural_accepted": [
+          4,
+          5,
+          3,
+          58
+        ],
+        "line": 310
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 881039,
+        "append_ns": 49137,
+        "query_ns": 32509,
+        "release_ns": 16880,
+        "numeric_ns": 3456,
+        "sum_nonoverlapping_direct_ns": 979565,
+        "query_append_release_ns": 98526
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "full-on",
+      "head": "full",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "case": "repeat-code",
+      "request_id": "chatcmpl-auto-3",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 744,
+      "actual_output": 256,
+      "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+      "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+      "http_window": {
+        "start_monotonic_seconds": 982533.147361696,
+        "end_monotonic_seconds": 982539.34744492,
+        "start_utc_estimate": "2026-10-23T21:54:10.630487+00:00",
+        "end_utc_estimate": "2026-10-23T21:54:16.830571+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 7.152557373046875e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 3,
+        "id": "chatcmpl-auto-3",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 697.39,
+        "line": 320
+      },
+      "metrics": {
+        "ttft_ms": 838.4111450286582,
+        "latency_ms": 6200.083223986439,
+        "post_ttft_ms": 5361.672078957781,
+        "decode_tps": 47.55979034987304,
+        "handler_prefill_entry_ms": 1.162,
+        "handler_prefill_done_ms": 697.39,
+        "handler_prefill_interval_ms": 696.228,
+        "ttft_minus_handler_done_ms": 141.02114502865822
+      },
+      "work": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 18,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-3",
+        "queries": 63,
+        "hits": 54,
+        "candidates": 247,
+        "compared": 12055,
+        "matched": 3470,
+        "no_match": 1,
+        "incomplete": 0,
+        "d0_mismatch": 0,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 996,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 44509,
+        "append_ns": 43813,
+        "query_ns": 102454,
+        "release_ns": 2657,
+        "numeric_checks": 62,
+        "classified_tokens": 3470,
+        "numeric_rejected": 0,
+        "numeric_ns": 34023,
+        "short_rejected": 8,
+        "accepted": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "neural_accepted": [
+          0,
+          0,
+          0,
+          9
+        ],
+        "line": 385
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 44509,
+        "append_ns": 43813,
+        "query_ns": 102454,
+        "release_ns": 2657,
+        "numeric_ns": 34023,
+        "sum_nonoverlapping_direct_ns": 193433,
+        "query_append_release_ns": 148924
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "full-on",
+      "head": "full",
+      "suffix_enabled": true,
+      "native_timing": true,
+      "case": "repeat-text",
+      "request_id": "chatcmpl-auto-4",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 475,
+      "actual_output": 256,
+      "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+      "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+      "http_window": {
+        "start_monotonic_seconds": 982544.782284079,
+        "end_monotonic_seconds": 982550.71095242,
+        "start_utc_estimate": "2026-10-23T21:54:22.265410+00:00",
+        "end_utc_estimate": "2026-10-23T21:54:28.194078+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 4.76837158203125e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 4,
+        "id": "chatcmpl-auto-4",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 527.302,
+        "line": 397
+      },
+      "metrics": {
+        "ttft_ms": 658.847969956696,
+        "latency_ms": 5928.668341017328,
+        "post_ttft_ms": 5269.820371060632,
+        "decode_tps": 48.38874611368914,
+        "handler_prefill_entry_ms": 1.151,
+        "handler_prefill_done_ms": 527.302,
+        "handler_prefill_interval_ms": 526.1510000000001,
+        "ttft_minus_handler_done_ms": 131.545969956696
+      },
+      "work": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 18,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "suffix_counters": {
+        "request": "chatcmpl-auto-4",
+        "queries": 63,
+        "hits": 54,
+        "candidates": 248,
+        "compared": 13229,
+        "matched": 3518,
+        "no_match": 1,
+        "incomplete": 0,
+        "d0_mismatch": 1,
+        "invalid": 0,
+        "exhausted": 0,
+        "indexed": 727,
+        "peak_bytes": 1884160,
+        "object_bytes": 248,
+        "init_ns": 41352,
+        "append_ns": 54024,
+        "query_ns": 134299,
+        "release_ns": 2371,
+        "numeric_checks": 61,
+        "classified_tokens": 3454,
+        "numeric_rejected": 0,
+        "numeric_ns": 47663,
+        "short_rejected": 7,
+        "accepted": [
+          0,
+          0,
+          0,
+          54
+        ],
+        "neural_accepted": [
+          0,
+          0,
+          0,
+          9
+        ],
+        "line": 462
+      },
+      "direct_suffix_cost_ns": {
+        "init_ns": 41352,
+        "append_ns": 54024,
+        "query_ns": 134299,
+        "release_ns": 2371,
+        "numeric_ns": 47663,
+        "sum_nonoverlapping_direct_ns": 232046,
+        "query_append_release_ns": 190694
+      }
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "full-off",
+      "head": "full",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "context-8192",
+      "request_id": "chatcmpl-auto-0",
+      "first_request_of_service": true,
+      "comparison_eligible": true,
+      "actual_input": 8170,
+      "actual_output": 256,
+      "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+      "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "http_window": {
+        "start_monotonic_seconds": 982590.995913347,
+        "end_monotonic_seconds": 982604.227123811,
+        "start_utc_estimate": "2026-10-23T21:55:08.479039+00:00",
+        "end_utc_estimate": "2026-10-23T21:55:21.710249+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 4.76837158203125e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 0,
+        "id": "chatcmpl-auto-0",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 5201.406,
+        "line": 34
+      },
+      "metrics": {
+        "ttft_ms": 5856.595452059992,
+        "latency_ms": 13231.210464029573,
+        "post_ttft_ms": 7374.615011969581,
+        "decode_tps": 34.57807622311333,
+        "handler_prefill_entry_ms": 8.447,
+        "handler_prefill_done_ms": 5201.406,
+        "handler_prefill_interval_ms": 5192.959,
+        "ttft_minus_handler_done_ms": 655.1894520599917
+      },
+      "work": {
+        "verify_T4": 75,
+        "ordinary_tail_T1": 0,
+        "target_calls": 75,
+        "target_rows": 300,
+        "restore": 22,
+        "neural_proposal_T1": 150,
+        "extend_calls": 75,
+        "extend_rows": 255,
+        "histogram": [
+          6,
+          11,
+          5,
+          53
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "full-off",
+      "head": "full",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "context-45056",
+      "request_id": "chatcmpl-auto-1",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 45044,
+      "actual_output": 256,
+      "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+      "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+      "http_window": {
+        "start_monotonic_seconds": 982609.641118359,
+        "end_monotonic_seconds": 982648.630001295,
+        "start_utc_estimate": "2026-10-23T21:55:27.124244+00:00",
+        "end_utc_estimate": "2026-10-23T21:56:06.113127+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 7.152557373046875e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 1,
+        "id": "chatcmpl-auto-1",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 30418.802,
+        "line": 127
+      },
+      "metrics": {
+        "ttft_ms": 31899.131702957675,
+        "latency_ms": 38988.88293595519,
+        "post_ttft_ms": 7089.751232997514,
+        "decode_tps": 35.967411495789136,
+        "handler_prefill_entry_ms": 38.277,
+        "handler_prefill_done_ms": 30418.802,
+        "handler_prefill_interval_ms": 30380.525,
+        "ttft_minus_handler_done_ms": 1480.3297029576752
+      },
+      "work": {
+        "verify_T4": 71,
+        "ordinary_tail_T1": 0,
+        "target_calls": 71,
+        "target_rows": 284,
+        "restore": 14,
+        "neural_proposal_T1": 142,
+        "extend_calls": 71,
+        "extend_rows": 255,
+        "histogram": [
+          6,
+          3,
+          5,
+          57
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "full-off",
+      "head": "full",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "context-204800",
+      "request_id": "chatcmpl-auto-2",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 204781,
+      "actual_output": 256,
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "http_window": {
+        "start_monotonic_seconds": 982654.055485173,
+        "end_monotonic_seconds": 982828.918443152,
+        "start_utc_estimate": "2026-10-23T21:56:11.538611+00:00",
+        "end_utc_estimate": "2026-10-23T21:59:06.401569+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 4.76837158203125e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 2,
+        "id": "chatcmpl-auto-2",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 159151.502,
+        "line": 233
+      },
+      "metrics": {
+        "ttft_ms": 167070.17263793387,
+        "latency_ms": 174862.95797897037,
+        "post_ttft_ms": 7792.785341036506,
+        "decode_tps": 32.7225746431356,
+        "handler_prefill_entry_ms": 161.727,
+        "handler_prefill_done_ms": 159151.502,
+        "handler_prefill_interval_ms": 158989.775,
+        "ttft_minus_handler_done_ms": 7918.6706379338575
+      },
+      "work": {
+        "verify_T4": 70,
+        "ordinary_tail_T1": 0,
+        "target_calls": 70,
+        "target_rows": 280,
+        "restore": 12,
+        "neural_proposal_T1": 140,
+        "extend_calls": 70,
+        "extend_rows": 255,
+        "histogram": [
+          4,
+          5,
+          3,
+          58
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "full-off",
+      "head": "full",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "repeat-code",
+      "request_id": "chatcmpl-auto-3",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 744,
+      "actual_output": 256,
+      "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+      "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+      "http_window": {
+        "start_monotonic_seconds": 982834.336310472,
+        "end_monotonic_seconds": 982841.283641642,
+        "start_utc_estimate": "2026-10-23T21:59:11.819436+00:00",
+        "end_utc_estimate": "2026-10-23T21:59:18.766767+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 7.152557373046875e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 3,
+        "id": "chatcmpl-auto-3",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 694.769,
+        "line": 314
+      },
+      "metrics": {
+        "ttft_ms": 837.3270520241931,
+        "latency_ms": 6947.331169969402,
+        "post_ttft_ms": 6110.004117945209,
+        "decode_tps": 41.73483275585031,
+        "handler_prefill_entry_ms": 1.179,
+        "handler_prefill_done_ms": 694.769,
+        "handler_prefill_interval_ms": 693.59,
+        "ttft_minus_handler_done_ms": 142.5580520241931
+      },
+      "work": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 126,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "group": "full-off",
+      "head": "full",
+      "suffix_enabled": false,
+      "native_timing": true,
+      "case": "repeat-text",
+      "request_id": "chatcmpl-auto-4",
+      "first_request_of_service": false,
+      "comparison_eligible": true,
+      "actual_input": 475,
+      "actual_output": 256,
+      "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+      "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+      "http_window": {
+        "start_monotonic_seconds": 982846.688107756,
+        "end_monotonic_seconds": 982853.367759426,
+        "start_utc_estimate": "2026-10-23T21:59:24.171233+00:00",
+        "end_utc_estimate": "2026-10-23T21:59:30.850885+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 4.76837158203125e-07,
+        "within_client_boundaries": true
+      },
+      "handler_decode_event": {
+        "instance": 4,
+        "id": "chatcmpl-auto-4",
+        "event": "stage",
+        "stage": "decode",
+        "seq": 0,
+        "elapsed_ms": 528.299,
+        "line": 390
+      },
+      "metrics": {
+        "ttft_ms": 660.5341220274568,
+        "latency_ms": 6679.651670041494,
+        "post_ttft_ms": 6019.117548014037,
+        "decode_tps": 42.3650141346941,
+        "handler_prefill_entry_ms": 1.154,
+        "handler_prefill_done_ms": 528.299,
+        "handler_prefill_interval_ms": 527.145,
+        "ttft_minus_handler_done_ms": 132.23512202745678
+      },
+      "work": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 126,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "suffix_counters": null,
+      "direct_suffix_cost_ns": null
+    }
+  ],
+  "comparisons": [
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-8192",
+      "label": "subset A2−A1",
+      "reference": "subset-off-a1",
+      "comparison": "subset-off-a2",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": -15.855593956075609,
+        "latency_ms": -40.760054951533675,
+        "post_ttft_ms": -24.904460995458066,
+        "decode_tps": 0.14569037400503504,
+        "handler_prefill_entry_ms": -0.8839999999999995,
+        "handler_prefill_done_ms": -13.175000000000182,
+        "handler_prefill_interval_ms": -12.291000000000167,
+        "ttft_minus_handler_done_ms": -2.680593956075427
+      },
+      "decode_ratio": 1.0037792273094124,
+      "work_reference": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 3,
+        "target_calls": 77,
+        "target_rows": 299,
+        "restore": 22,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 252,
+        "histogram": [
+          7,
+          8,
+          7,
+          52
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 3,
+        "target_calls": 77,
+        "target_rows": 299,
+        "restore": 22,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 252,
+        "histogram": [
+          7,
+          8,
+          7,
+          52
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-8192",
+      "label": "subset B−A1",
+      "reference": "subset-off-a1",
+      "comparison": "subset-on-b",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 2.383169950917363,
+        "latency_ms": -3.6355210468173027,
+        "post_ttft_ms": -6.018690997734666,
+        "decode_tps": 0.03510855016703118,
+        "handler_prefill_entry_ms": -0.02499999999999858,
+        "handler_prefill_done_ms": -3.8270000000002256,
+        "handler_prefill_interval_ms": -3.8020000000005894,
+        "ttft_minus_handler_done_ms": 6.210169950917589
+      },
+      "decode_ratio": 1.0009107203718246,
+      "work_reference": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 3,
+        "target_calls": 77,
+        "target_rows": 299,
+        "restore": 22,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 252,
+        "histogram": [
+          7,
+          8,
+          7,
+          52
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 3,
+        "target_calls": 77,
+        "target_rows": 299,
+        "restore": 22,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 252,
+        "histogram": [
+          7,
+          8,
+          7,
+          52
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-8192",
+      "label": "subset B−A2",
+      "reference": "subset-off-a2",
+      "comparison": "subset-on-b",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 18.238763906992972,
+        "latency_ms": 37.12453390471637,
+        "post_ttft_ms": 18.8857699977234,
+        "decode_tps": -0.11058182383800386,
+        "handler_prefill_entry_ms": 0.8590000000000009,
+        "handler_prefill_done_ms": 9.347999999999956,
+        "handler_prefill_interval_ms": 8.488999999999578,
+        "ttft_minus_handler_done_ms": 8.890763906993016
+      },
+      "decode_ratio": 0.9971422929867988,
+      "work_reference": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 3,
+        "target_calls": 77,
+        "target_rows": 299,
+        "restore": 22,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 252,
+        "histogram": [
+          7,
+          8,
+          7,
+          52
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 3,
+        "target_calls": 77,
+        "target_rows": 299,
+        "restore": 22,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 252,
+        "histogram": [
+          7,
+          8,
+          7,
+          52
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-8192",
+      "label": "full ON−OFF",
+      "reference": "full-off",
+      "comparison": "full-on",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": -15.02511405851692,
+        "latency_ms": -11.660201009362936,
+        "post_ttft_ms": 3.3649130491539836,
+        "decode_tps": -0.015770200119852973,
+        "handler_prefill_entry_ms": -0.6049999999999995,
+        "handler_prefill_done_ms": -5.5659999999998035,
+        "handler_prefill_interval_ms": -4.960999999999331,
+        "ttft_minus_handler_done_ms": -9.459114058517116
+      },
+      "decode_ratio": 0.9995439248841348,
+      "work_reference": {
+        "verify_T4": 75,
+        "ordinary_tail_T1": 0,
+        "target_calls": 75,
+        "target_rows": 300,
+        "restore": 22,
+        "neural_proposal_T1": 150,
+        "extend_calls": 75,
+        "extend_rows": 255,
+        "histogram": [
+          6,
+          11,
+          5,
+          53
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 75,
+        "ordinary_tail_T1": 0,
+        "target_calls": 75,
+        "target_rows": 300,
+        "restore": 22,
+        "neural_proposal_T1": 150,
+        "extend_calls": 75,
+        "extend_rows": 255,
+        "histogram": [
+          6,
+          11,
+          5,
+          53
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-45056",
+      "label": "subset A2−A1",
+      "reference": "subset-off-a1",
+      "comparison": "subset-off-a2",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 26.382010895758867,
+        "latency_ms": 14.32608999311924,
+        "post_ttft_ms": -12.055920902639627,
+        "decode_tps": 0.07352259673643147,
+        "handler_prefill_entry_ms": 0.7669999999999959,
+        "handler_prefill_done_ms": 29.559000000001106,
+        "handler_prefill_interval_ms": 28.791999999997643,
+        "ttft_minus_handler_done_ms": -3.1769891042422387
+      },
+      "decode_ratio": 1.001866144950809,
+      "work_reference": {
+        "verify_T4": 73,
+        "ordinary_tail_T1": 0,
+        "target_calls": 73,
+        "target_rows": 292,
+        "restore": 18,
+        "neural_proposal_T1": 146,
+        "extend_calls": 73,
+        "extend_rows": 255,
+        "histogram": [
+          7,
+          5,
+          6,
+          55
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 73,
+        "ordinary_tail_T1": 0,
+        "target_calls": 73,
+        "target_rows": 292,
+        "restore": 18,
+        "neural_proposal_T1": 146,
+        "extend_calls": 73,
+        "extend_rows": 255,
+        "histogram": [
+          7,
+          5,
+          6,
+          55
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-45056",
+      "label": "subset B−A1",
+      "reference": "subset-off-a1",
+      "comparison": "subset-on-b",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 49.879101919941604,
+        "latency_ms": 44.03094795998186,
+        "post_ttft_ms": -5.848153959959745,
+        "decode_tps": 0.035630517459331656,
+        "handler_prefill_entry_ms": -0.05600000000000449,
+        "handler_prefill_done_ms": 49.34899999999834,
+        "handler_prefill_interval_ms": 49.4049999999952,
+        "ttft_minus_handler_done_ms": 0.5301019199432631
+      },
+      "decode_ratio": 1.0009043710804966,
+      "work_reference": {
+        "verify_T4": 73,
+        "ordinary_tail_T1": 0,
+        "target_calls": 73,
+        "target_rows": 292,
+        "restore": 18,
+        "neural_proposal_T1": 146,
+        "extend_calls": 73,
+        "extend_rows": 255,
+        "histogram": [
+          7,
+          5,
+          6,
+          55
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 73,
+        "ordinary_tail_T1": 0,
+        "target_calls": 73,
+        "target_rows": 292,
+        "restore": 18,
+        "neural_proposal_T1": 146,
+        "extend_calls": 73,
+        "extend_rows": 255,
+        "histogram": [
+          7,
+          5,
+          6,
+          55
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-45056",
+      "label": "subset B−A2",
+      "reference": "subset-off-a2",
+      "comparison": "subset-on-b",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 23.497091024182737,
+        "latency_ms": 29.70485796686262,
+        "post_ttft_ms": 6.207766942679882,
+        "decode_tps": -0.03789207927709981,
+        "handler_prefill_entry_ms": -0.8230000000000004,
+        "handler_prefill_done_ms": 19.789999999997235,
+        "handler_prefill_interval_ms": 20.612999999997555,
+        "ttft_minus_handler_done_ms": 3.7070910241855017
+      },
+      "decode_ratio": 0.9990400175960037,
+      "work_reference": {
+        "verify_T4": 73,
+        "ordinary_tail_T1": 0,
+        "target_calls": 73,
+        "target_rows": 292,
+        "restore": 18,
+        "neural_proposal_T1": 146,
+        "extend_calls": 73,
+        "extend_rows": 255,
+        "histogram": [
+          7,
+          5,
+          6,
+          55
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 73,
+        "ordinary_tail_T1": 0,
+        "target_calls": 73,
+        "target_rows": 292,
+        "restore": 18,
+        "neural_proposal_T1": 146,
+        "extend_calls": 73,
+        "extend_rows": 255,
+        "histogram": [
+          7,
+          5,
+          6,
+          55
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-45056",
+      "label": "full ON−OFF",
+      "reference": "full-off",
+      "comparison": "full-on",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": -33.98191195446998,
+        "latency_ms": -24.90589302033186,
+        "post_ttft_ms": 9.07601893413812,
+        "decode_tps": -0.04598518828006348,
+        "handler_prefill_entry_ms": -2.0600000000000023,
+        "handler_prefill_done_ms": -32.263999999999214,
+        "handler_prefill_interval_ms": -30.204000000001543,
+        "ttft_minus_handler_done_ms": -1.7179119544707646
+      },
+      "decode_ratio": 0.998721476292909,
+      "work_reference": {
+        "verify_T4": 71,
+        "ordinary_tail_T1": 0,
+        "target_calls": 71,
+        "target_rows": 284,
+        "restore": 14,
+        "neural_proposal_T1": 142,
+        "extend_calls": 71,
+        "extend_rows": 255,
+        "histogram": [
+          6,
+          3,
+          5,
+          57
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 71,
+        "ordinary_tail_T1": 0,
+        "target_calls": 71,
+        "target_rows": 284,
+        "restore": 14,
+        "neural_proposal_T1": 142,
+        "extend_calls": 71,
+        "extend_rows": 255,
+        "histogram": [
+          6,
+          3,
+          5,
+          57
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-204800",
+      "label": "subset A2−A1",
+      "reference": "subset-off-a1",
+      "comparison": "subset-off-a2",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": -30.779271037317812,
+        "latency_ms": -35.53866199217737,
+        "post_ttft_ms": -4.759390954859555,
+        "decode_tps": 0.021811812593249158,
+        "handler_prefill_entry_ms": -5.867999999999995,
+        "handler_prefill_done_ms": -15.22500000000582,
+        "handler_prefill_interval_ms": -9.35700000001816,
+        "ttft_minus_handler_done_ms": -15.554271037311992
+      },
+      "decode_ratio": 1.000638248832104,
+      "work_reference": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 2,
+        "target_calls": 76,
+        "target_rows": 298,
+        "restore": 20,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 253,
+        "histogram": [
+          8,
+          7,
+          5,
+          54
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 2,
+        "target_calls": 76,
+        "target_rows": 298,
+        "restore": 20,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 253,
+        "histogram": [
+          8,
+          7,
+          5,
+          54
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-204800",
+      "label": "subset B−A1",
+      "reference": "subset-off-a1",
+      "comparison": "subset-on-b",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 289.1776009928435,
+        "latency_ms": 283.251118962653,
+        "post_ttft_ms": -5.926482030190527,
+        "decode_tps": 0.02716472579395912,
+        "handler_prefill_entry_ms": 0.3509999999999991,
+        "handler_prefill_done_ms": 289.0789999999979,
+        "handler_prefill_interval_ms": 288.7280000000028,
+        "ttft_minus_handler_done_ms": 0.0986009928456042
+      },
+      "decode_ratio": 1.0007948837098382,
+      "work_reference": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 2,
+        "target_calls": 76,
+        "target_rows": 298,
+        "restore": 20,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 253,
+        "histogram": [
+          8,
+          7,
+          5,
+          54
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 2,
+        "target_calls": 76,
+        "target_rows": 298,
+        "restore": 20,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 253,
+        "histogram": [
+          8,
+          7,
+          5,
+          54
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-204800",
+      "label": "subset B−A2",
+      "reference": "subset-off-a2",
+      "comparison": "subset-on-b",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 319.9568720301613,
+        "latency_ms": 318.78978095483035,
+        "post_ttft_ms": -1.1670910753309727,
+        "decode_tps": 0.005352913200709963,
+        "handler_prefill_entry_ms": 6.218999999999994,
+        "handler_prefill_done_ms": 304.3040000000037,
+        "handler_prefill_interval_ms": 298.08500000002095,
+        "ttft_minus_handler_done_ms": 15.652872030157596
+      },
+      "decode_ratio": 1.0001565349694728,
+      "work_reference": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 2,
+        "target_calls": 76,
+        "target_rows": 298,
+        "restore": 20,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 253,
+        "histogram": [
+          8,
+          7,
+          5,
+          54
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 74,
+        "ordinary_tail_T1": 2,
+        "target_calls": 76,
+        "target_rows": 298,
+        "restore": 20,
+        "neural_proposal_T1": 148,
+        "extend_calls": 74,
+        "extend_rows": 253,
+        "histogram": [
+          8,
+          7,
+          5,
+          54
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "context-204800",
+      "label": "full ON−OFF",
+      "reference": "full-off",
+      "comparison": "full-on",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": -135.33496984746307,
+        "latency_ms": -156.1688178917393,
+        "post_ttft_ms": -20.833848044276237,
+        "decode_tps": 0.08771762772159519,
+        "handler_prefill_entry_ms": -0.06499999999999773,
+        "handler_prefill_done_ms": -157.8650000000198,
+        "handler_prefill_interval_ms": -157.80000000001746,
+        "ttft_minus_handler_done_ms": 22.53003015255672
+      },
+      "decode_ratio": 1.002680645660625,
+      "work_reference": {
+        "verify_T4": 70,
+        "ordinary_tail_T1": 0,
+        "target_calls": 70,
+        "target_rows": 280,
+        "restore": 12,
+        "neural_proposal_T1": 140,
+        "extend_calls": 70,
+        "extend_rows": 255,
+        "histogram": [
+          4,
+          5,
+          3,
+          58
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 70,
+        "ordinary_tail_T1": 0,
+        "target_calls": 70,
+        "target_rows": 280,
+        "restore": 12,
+        "neural_proposal_T1": 140,
+        "extend_calls": 70,
+        "extend_rows": 255,
+        "histogram": [
+          4,
+          5,
+          3,
+          58
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "repeat-code",
+      "label": "subset A2−A1",
+      "reference": "subset-off-a1",
+      "comparison": "subset-off-a2",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 2.821724978275597,
+        "latency_ms": 2.52433808054775,
+        "post_ttft_ms": -0.2973868977278471,
+        "decode_tps": 0.002591246302564798,
+        "handler_prefill_entry_ms": 0.256,
+        "handler_prefill_done_ms": 3.0659999999999172,
+        "handler_prefill_interval_ms": 2.8099999999998317,
+        "ttft_minus_handler_done_ms": -0.24427502172432014
+      },
+      "decode_ratio": 1.000054973971105,
+      "work_reference": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 126,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 126,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "repeat-code",
+      "label": "subset B−A1",
+      "reference": "subset-off-a1",
+      "comparison": "subset-on-b",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 1.5737219946458936,
+        "latency_ms": -355.18977500032634,
+        "post_ttft_ms": -356.76349699497223,
+        "decode_tps": 3.327910634298618,
+        "handler_prefill_entry_ms": -0.508,
+        "handler_prefill_done_ms": 1.3029999999999973,
+        "handler_prefill_interval_ms": 1.8109999999999218,
+        "ttft_minus_handler_done_ms": 0.2707219946458963
+      },
+      "decode_ratio": 1.0706024984460039,
+      "work_reference": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 126,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 18,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "all_work_equal": false,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "repeat-code",
+      "label": "subset B−A2",
+      "reference": "subset-off-a2",
+      "comparison": "subset-on-b",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": -1.2480029836297035,
+        "latency_ms": -357.7141130808741,
+        "post_ttft_ms": -356.4661100972444,
+        "decode_tps": 3.3253193879960534,
+        "handler_prefill_entry_ms": -0.764,
+        "handler_prefill_done_ms": -1.76299999999992,
+        "handler_prefill_interval_ms": -0.99899999999991,
+        "ttft_minus_handler_done_ms": 0.5149970163702164
+      },
+      "decode_ratio": 1.0705436464105194,
+      "work_reference": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 126,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 18,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "all_work_equal": false,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "repeat-code",
+      "label": "full ON−OFF",
+      "reference": "full-off",
+      "comparison": "full-on",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 1.0840930044651031,
+        "latency_ms": -747.2479459829628,
+        "post_ttft_ms": -748.332038987428,
+        "decode_tps": 5.824957594022727,
+        "handler_prefill_entry_ms": -0.017000000000000126,
+        "handler_prefill_done_ms": 2.620999999999981,
+        "handler_prefill_interval_ms": 2.63799999999992,
+        "ttft_minus_handler_done_ms": -1.5369069955348778
+      },
+      "decode_ratio": 1.1395706466130788,
+      "work_reference": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 126,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 18,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "all_work_equal": false,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "repeat-text",
+      "label": "subset A2−A1",
+      "reference": "subset-off-a1",
+      "comparison": "subset-off-a2",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 3.8545109564438462,
+        "latency_ms": 4.0501810144633055,
+        "post_ttft_ms": 0.19567005801945925,
+        "decode_tps": -0.001602125951272626,
+        "handler_prefill_entry_ms": -0.04699999999999993,
+        "handler_prefill_done_ms": 4.043000000000006,
+        "handler_prefill_interval_ms": 4.090000000000032,
+        "ttft_minus_handler_done_ms": -0.18848904355616014
+      },
+      "decode_ratio": 0.9999649383128255,
+      "work_reference": {
+        "verify_T4": 66,
+        "ordinary_tail_T1": 3,
+        "target_calls": 69,
+        "target_rows": 267,
+        "restore": 6,
+        "neural_proposal_T1": 132,
+        "extend_calls": 66,
+        "extend_rows": 252,
+        "histogram": [
+          2,
+          2,
+          2,
+          60
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 66,
+        "ordinary_tail_T1": 3,
+        "target_calls": 69,
+        "target_rows": 267,
+        "restore": 6,
+        "neural_proposal_T1": 132,
+        "extend_calls": 66,
+        "extend_rows": 252,
+        "histogram": [
+          2,
+          2,
+          2,
+          60
+        ]
+      },
+      "all_work_equal": true,
+      "target_work_equal": true
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "repeat-text",
+      "label": "subset B−A1",
+      "reference": "subset-off-a1",
+      "comparison": "subset-on-b",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": 0.814375001937151,
+        "latency_ms": -339.98898905701935,
+        "post_ttft_ms": -340.8033640589565,
+        "decode_tps": 2.9720638914045807,
+        "handler_prefill_entry_ms": 0.015000000000000124,
+        "handler_prefill_done_ms": -0.39999999999997726,
+        "handler_prefill_interval_ms": -0.4149999999999636,
+        "ttft_minus_handler_done_ms": 1.2143750019371282
+      },
+      "decode_ratio": 1.0650420613562483,
+      "work_reference": {
+        "verify_T4": 66,
+        "ordinary_tail_T1": 3,
+        "target_calls": 69,
+        "target_rows": 267,
+        "restore": 6,
+        "neural_proposal_T1": 132,
+        "extend_calls": 66,
+        "extend_rows": 252,
+        "histogram": [
+          2,
+          2,
+          2,
+          60
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 66,
+        "ordinary_tail_T1": 3,
+        "target_calls": 69,
+        "target_rows": 267,
+        "restore": 4,
+        "neural_proposal_T1": 24,
+        "extend_calls": 66,
+        "extend_rows": 252,
+        "histogram": [
+          4,
+          0,
+          0,
+          62
+        ]
+      },
+      "all_work_equal": false,
+      "target_work_equal": false
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "repeat-text",
+      "label": "subset B−A2",
+      "reference": "subset-off-a2",
+      "comparison": "subset-on-b",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": -3.0401359545066953,
+        "latency_ms": -344.03917007148266,
+        "post_ttft_ms": -340.99903411697596,
+        "decode_tps": 2.9736660173558533,
+        "handler_prefill_entry_ms": 0.062000000000000055,
+        "handler_prefill_done_ms": -4.442999999999984,
+        "handler_prefill_interval_ms": -4.5049999999999955,
+        "ttft_minus_handler_done_ms": 1.4028640454932884
+      },
+      "decode_ratio": 1.0650794048371566,
+      "work_reference": {
+        "verify_T4": 66,
+        "ordinary_tail_T1": 3,
+        "target_calls": 69,
+        "target_rows": 267,
+        "restore": 6,
+        "neural_proposal_T1": 132,
+        "extend_calls": 66,
+        "extend_rows": 252,
+        "histogram": [
+          2,
+          2,
+          2,
+          60
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 66,
+        "ordinary_tail_T1": 3,
+        "target_calls": 69,
+        "target_rows": 267,
+        "restore": 4,
+        "neural_proposal_T1": 24,
+        "extend_calls": 66,
+        "extend_rows": 252,
+        "histogram": [
+          4,
+          0,
+          0,
+          62
+        ]
+      },
+      "all_work_equal": false,
+      "target_work_equal": false
+    },
+    {
+      "status": "FORENSIC_ONLY_ENV_ABORT",
+      "case": "repeat-text",
+      "label": "full ON−OFF",
+      "reference": "full-off",
+      "comparison": "full-on",
+      "same_prompt": true,
+      "same_output": true,
+      "metric_delta": {
+        "ttft_ms": -1.686152070760727,
+        "latency_ms": -750.9833290241659,
+        "post_ttft_ms": -749.2971769534051,
+        "decode_tps": 6.023731978995038,
+        "handler_prefill_entry_ms": -0.0029999999999998916,
+        "handler_prefill_done_ms": -0.9969999999999573,
+        "handler_prefill_interval_ms": -0.9939999999999145,
+        "ttft_minus_handler_done_ms": -0.6891520707607697
+      },
+      "decode_ratio": 1.1421864739580485,
+      "work_reference": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 126,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "work_comparison": {
+        "verify_T4": 63,
+        "ordinary_tail_T1": 3,
+        "target_calls": 66,
+        "target_rows": 255,
+        "restore": 0,
+        "neural_proposal_T1": 18,
+        "extend_calls": 63,
+        "extend_rows": 252,
+        "histogram": [
+          0,
+          0,
+          0,
+          63
+        ]
+      },
+      "all_work_equal": false,
+      "target_work_equal": true
+    }
+  ],
+  "evidence": {
+    "audit_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/audit-diagnostic-v2.json",
+    "audit_sha256": "b078abab992c1bb4dc9ddacd8762a2f3ec036b69d723dbe3c72c8024779b7af3",
+    "boundary_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/audit-boundary.json",
+    "boundary_sha256": "d72866e90d82667cac409776a1f98d90a37a42d8947f58275d91f8860da95c4d",
+    "raw_seal_sha256": "c268218f0dd5f46d490242500c8b70331e933e5529f3310b1a687e9b1f811956",
+    "raw_files_rechecked": 527,
+    "selected_raw_inputs_sha256": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/first-http/server.log": "45fdf524a8f19a59b552b902960170739a47a56efbc6c21c1c1b5e33b4818fb0",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/first-http/context-8192/responses.json": "791c0555017e20825778e2d90aa9588a2a8a2b58cb07081a7c98662d1c3f6ddd",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a1/server.log": "b8a306cbee15c6b8e47a7c3c5c13208e5067b04749c3e98b27695242af1eff65",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a1/context-8192/responses.json": "25dc824218cc0060c82bffb36de70dea8390ca7656b09b6d57cfe4937deb836d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a1/context-45056/responses.json": "16aa6d18e2f2a0a71ba5bba9a5bf0cae7f5a601dc71719e34361f53dc8fc5edf",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a1/context-204800/responses.json": "8b00e23cfd84159bacfe24dcb571a3e376a30a339f10cda0ec15d89965bc5b95",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a1/repeat-code/responses.json": "f0cf31b13752d782731d133062b0342df8ce164ee262731288e6c2c03381c59b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a1/repeat-text/responses.json": "5210ebcb7d707c1fdd63b7c84d430a66e4141116eeb5b23aa0499fde8610798e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-on-b/server.log": "1868b62a08229067805dd227539cb21026facdba13ec45e337b0e66fd80e560c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-on-b/context-8192/responses.json": "4a6f079fd9ece7bdbc8a33c36ca7ad67f44abd6d6dc25914dfb8eebf2f950b42",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-on-b/context-45056/responses.json": "14873c6ad94255c6fccdb9161d338739aef4087b5b627e665117464e7af1e65d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-on-b/context-204800/responses.json": "6d05428294dae0931a0614c291dc9a1952ba57b63a89fb4f7f99db8c5dda2573",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-on-b/repeat-code/responses.json": "301f9bec15eb425b9f8c6f05d6b33f224ed52a5ba9d66ce2f48e718734b9eb9e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-on-b/repeat-text/responses.json": "48de23cf43a82170e9a18777b855fc6da49021d8e536a083140b425c4c372354",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a2/server.log": "7d2c5cddcba6fc693204b54a71bc0b2b4241f155b332dbb7eecd65d0088655d3",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a2/context-8192/responses.json": "e6e32d1ce6a4ab73cc44ffeaa63266df03df251f364385816dd7d6eed3ce6ad4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a2/context-45056/responses.json": "a27067f75009e63f8c272ed88b5cbaea5f724a270105233636398e2db46fe686",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a2/context-204800/responses.json": "a9e4d1f5bdaeef192b7567284c01ce818ae674a4d354d7c9ee0e29f31928de35",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a2/repeat-code/responses.json": "6fc020ccab663ed3c00247a86f9cd2d6e963b5592cbfcc954e37dc7a69f32390",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/subset-off-a2/repeat-text/responses.json": "b07dd760dfea96551d583f81ba2e813011f5c595eaf91cfc309c3a030dff78e4",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-on/server.log": "740ca86d29ae975a55b9454e4abad8a4ca401b3999621b856cf1dff528eae884",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-on/context-8192/responses.json": "73bbb8da55143e03a71f8e0b558e690c26ab4b5a685138e3b37a93d5a83c27b2",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-on/context-45056/responses.json": "e12d869db6ae3d23851f2956c12f7ead857640d9cb9b8d8b3c323479c8f21e5d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-on/context-204800/responses.json": "ca96d4762480fe6124d75d930ec582fa089ed823de61b7358df1111541433146",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-on/repeat-code/responses.json": "048564322c6b0da9684ee9ade73d27c2e7b122d1bb932e846be71c95d6aa4f88",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-on/repeat-text/responses.json": "7f6e25ba97d39cc7014af89a44472d085e36893ca381c8702ce96293b563cd7d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-off/server.log": "cd6331368acb67790087f0eeedc5812fed2e58c13514f8f865984cb9c4f2314d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-off/context-8192/responses.json": "7317d565de17594bcdd3109c605ee30b02909d7322f96e1827f77df3fe426ba0",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-off/context-45056/responses.json": "edf2f3ddb5ec9373bbc2080c0bc954156ea9c80feffb16a3aa9f827597e07bfc",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-off/context-204800/responses.json": "78c0de05017948cdc4965843179dc5d9ec1f2ed648eb0d9af92574db9248259a",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-off/repeat-code/responses.json": "9f3828a40d5efd36b204ad9803f92cf7c1f35be4212555ab479481869f79622a",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-off/repeat-text/responses.json": "32ee801fd04836211c99de1bb0ac1904defb36d2e0c77abbc67f35613ebaa86d"
+    },
+    "all_http_and_servers_preceded_failed_sample": true
+  },
+  "limits": [
+    "Whole stage remains ENV_ABORT; prior-window coverage does not restore VALID.",
+    "All five comparison services have Q4T_MTP_TIMING=1; these are intrusive forensic observations.",
+    "Uninstrumented first-http is listed only, excluded from every comparison.",
+    "One A1/B/A2 and one full ON/OFF pair are not population evidence, a noise band or a loss tolerance.",
+    "TTFT uses the client request origin; handler decode elapsed uses its own origin and ends target prefill before prompt draft initialization.",
+    "Handler elapsed is printed at 0.001ms; an event-pair difference has rounding bound 0.001ms and an interval-pair difference 0.002ms.",
+    "Work counts describe generation only, excluding target prefill and full-prompt draft extend; native phase cost sums are not used here.",
+    "Direct suffix costs are host wall intervals, not pure CPU time. numeric_ns is nested in query_ns and never added twice.",
+    "OFF direct suffix cost is absent, not a measured zero. Shared table startup cost is outside request TTFT and not included here.",
+    "Equal outputs/work or small directly timed index costs do not establish equal throughput or a cause of the observed timing differences."
+  ],
+  "extraction_identity": {
+    "script_sha256": "77763a60828f803e279ef534141ad13758a13df3c2eeddbe5b6ebf8723649859",
+    "command_record": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/forensic-observations-command.json",
+    "command_record_sha256": "af62a222112399c2ed736c8ca176e2f0da3a622b3c3c0a89baf37f1f99f707b3"
+  }
+}

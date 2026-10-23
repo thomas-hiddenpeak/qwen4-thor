@@ -1,0 +1,13 @@
+{
+  "status": "ARCHIVED_ENV_ABORT",
+  "source_preserved": true,
+  "independent_copies": true,
+  "readback_verified": true,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/archive-env-abort",
+  "entries": 1004,
+  "payload_bytes": 120339754,
+  "manifest_sha256": "0344754a57b454ecb1dd1e99d72924a6f7855427982c8fccd0e4a0565e033c1c",
+  "source_report": "closure-source report precedes archive seal text",
+  "inference_or_gpu_operations": 0,
+  "seal_sha256": "46e99d46ba3581e5b0844b28644edf519282901612fd8916fb1c5f24512be751"
+}

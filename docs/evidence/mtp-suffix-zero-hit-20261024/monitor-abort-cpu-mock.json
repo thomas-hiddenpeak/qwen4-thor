@@ -1,0 +1,215 @@
+{
+  "scope": "Targeted isolated CPU mocks plus one own unreaped CPU child; no GPU/HTTP, no service or live environmental sampling. Frozen stage remains ENV_ABORT.",
+  "original_sha256": "d4b6548b8c34885af78526420742ffce73f0262fd91ba68de23420f9f25360d8",
+  "prototype_sha256": "473d0b472304cbea8a54bf5fb95fcf2fbea47c9b1f7c57aec8e5fa243fd42cbe",
+  "mock_cases": 9,
+  "assertions_passed": true,
+  "own_child_reaped": true,
+  "historical_failed_pid_and_field_proven": false,
+  "results": {
+    "original_io_denied": {
+      "result": null,
+      "reads": [
+        "stat",
+        "status",
+        "schedstat",
+        "io"
+      ],
+      "counts": {
+        "owned_file_read_attempts": 9
+      },
+      "raised": "PermissionError",
+      "errno": 13,
+      "notes": []
+    },
+    "same_identity_Z": {
+      "result": {
+        "observation": "EXITED_DURING_IO_READ",
+        "start_ticks": 42,
+        "stat": "999 (isolated CPU mock) R 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 42",
+        "status": "mock data",
+        "schedstat": "mock data",
+        "stat_after_error": "999 (isolated CPU mock) Z 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 42",
+        "terminal_error": {
+          "pid": 999,
+          "expected_start_ticks": 42,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 100,
+          "errno": 13,
+          "error": "PermissionError(13, 'isolated fixture permission denied')"
+        },
+        "terminal_error_traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/telemetry_exit_prototype.py\", line 243, in _read_task\n    row[name] = _read_at(directory_fd, name, counts, context)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/mock.py\", line 1134, in __call__\n    return self._mock_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/mock.py\", line 1138, in _mock_call\n    return self._execute_mock_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/mock.py\", line 1199, in _execute_mock_call\n    result = effect(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/monitor_abort_cpu_mock.py\", line 41, in reader\n    raise error\nPermissionError: [Errno 13] isolated fixture permission denied\n"
+      },
+      "reads": [
+        "stat",
+        "status",
+        "schedstat",
+        "io",
+        "stat"
+      ],
+      "counts": {
+        "owned_file_read_attempts": 10
+      },
+      "raised": null
+    },
+    "same_identity_X": {
+      "result": {
+        "observation": "EXITED_DURING_IO_READ",
+        "start_ticks": 42,
+        "stat": "999 (isolated CPU mock) R 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 42",
+        "status": "mock data",
+        "schedstat": "mock data",
+        "stat_after_error": "999 (isolated CPU mock) X 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 42",
+        "terminal_error": {
+          "pid": 999,
+          "expected_start_ticks": 42,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 100,
+          "errno": 13,
+          "error": "PermissionError(13, 'isolated fixture permission denied')"
+        },
+        "terminal_error_traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/telemetry_exit_prototype.py\", line 243, in _read_task\n    row[name] = _read_at(directory_fd, name, counts, context)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/mock.py\", line 1134, in __call__\n    return self._mock_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/mock.py\", line 1138, in _mock_call\n    return self._execute_mock_call(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/unittest/mock.py\", line 1199, in _execute_mock_call\n    result = effect(*args, **kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/monitor_abort_cpu_mock.py\", line 41, in reader\n    raise error\nPermissionError: [Errno 13] isolated fixture permission denied\n"
+      },
+      "reads": [
+        "stat",
+        "status",
+        "schedstat",
+        "io",
+        "stat"
+      ],
+      "counts": {
+        "owned_file_read_attempts": 10
+      },
+      "raised": null
+    },
+    "live_permission_error": {
+      "result": null,
+      "reads": [
+        "stat",
+        "status",
+        "schedstat",
+        "io",
+        "stat"
+      ],
+      "counts": {
+        "owned_file_read_attempts": 10
+      },
+      "raised": "PermissionError",
+      "errno": 13,
+      "notes": []
+    },
+    "changed_identity_permission_error": {
+      "result": null,
+      "reads": [
+        "stat",
+        "status",
+        "schedstat",
+        "io",
+        "stat"
+      ],
+      "counts": {
+        "owned_file_read_attempts": 10
+      },
+      "raised": "PermissionError",
+      "errno": 13,
+      "notes": []
+    },
+    "unknown_identity_permission_error": {
+      "result": null,
+      "reads": [
+        "stat",
+        "status",
+        "schedstat",
+        "io",
+        "stat"
+      ],
+      "counts": {
+        "owned_file_read_attempts": 10
+      },
+      "raised": "PermissionError",
+      "errno": 13,
+      "notes": [
+        "pinned identity recheck failed: FileNotFoundError(2, 'gone')"
+      ]
+    },
+    "non_io_permission_error": {
+      "result": null,
+      "reads": [
+        "stat",
+        "status"
+      ],
+      "counts": {
+        "owned_file_read_attempts": 7
+      },
+      "raised": "PermissionError",
+      "errno": 13,
+      "notes": []
+    },
+    "initial_identity_changed": {
+      "result": {
+        "observation": "PID_REUSED",
+        "expected_start_ticks": 42,
+        "observed_start_ticks": 43
+      },
+      "reads": [
+        "stat"
+      ],
+      "counts": {
+        "owned_file_read_attempts": 6
+      },
+      "raised": null
+    },
+    "error_context": {
+      "context": {
+        "pid": 999,
+        "relative_file": "io",
+        "operation": "open",
+        "directory_fd": 77,
+        "errno": 13
+      },
+      "notes": [
+        "telemetry pinned proc read: {\"directory_fd\": 77, \"errno\": 13, \"operation\": \"open\", \"pid\": 999, \"relative_file\": \"io\"}"
+      ]
+    },
+    "own_unreaped_cpu_child": {
+      "pid": 3120542,
+      "start_ticks": 98308407,
+      "initial_state": "Z",
+      "original": {
+        "raised": "PermissionError",
+        "errno": 13,
+        "error": "[Errno 13] Permission denied: 'io'",
+        "counts": {
+          "owned_file_read_attempts": 4
+        }
+      },
+      "prototype": {
+        "result": {
+          "observation": "EXITED_DURING_IO_READ",
+          "start_ticks": 98308407,
+          "stat": "3120542 (python3) Z 3120541 3120541 3120541 0 -1 4227148 233 0 0 0 0 0 0 0 20 0 1 0 98308407 0 0 18446744073709551615 0 0 0 0 0 0 0 16781312 2 1 0 0 17 12 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+          "status": "Name:\tpython3\nState:\tZ (zombie)\nTgid:\t3120542\nNgid:\t0\nPid:\t3120542\nPPid:\t3120541\nTracerPid:\t0\nUid:\t2002\t2002\t2002\t2002\nGid:\t2002\t2002\t2002\t2002\nFDSize:\t0\nGroups:\t4 24 27 29 30 44 46 100 108 111 122 983 984 993 2002 2003 \nNStgid:\t3120542\nNSpid:\t3120542\nNSpgid:\t3120541\nNSsid:\t3120541\nKthread:\t0\nThreads:\t1\nSigQ:\t0/501100\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tunknown\nCpus_allowed:\t3fff\nCpus_allowed_list:\t0-13\nMems_allowed:\t0001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0\n",
+          "schedstat": "1106082 0 1\n",
+          "stat_after_error": "3120542 (python3) Z 3120541 3120541 3120541 0 -1 4227148 233 0 0 0 0 0 0 0 20 0 1 0 98308407 0 0 18446744073709551615 0 0 0 0 0 0 0 16781312 2 1 0 0 17 12 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+          "terminal_error": {
+            "pid": 3120542,
+            "expected_start_ticks": 98308407,
+            "relative_file": "io",
+            "operation": "open",
+            "directory_fd": 3,
+            "errno": 13,
+            "error": "PermissionError(13, 'Permission denied')"
+          },
+          "terminal_error_traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/telemetry_exit_prototype.py\", line 243, in _read_task\n    row[name] = _read_at(directory_fd, name, counts, context)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/telemetry_exit_prototype.py\", line 217, in _read_at\n    fd = os.open(name, os.O_RDONLY | os.O_CLOEXEC, dir_fd=directory_fd)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nPermissionError: [Errno 13] Permission denied: 'io'\ntelemetry pinned proc read: {\"directory_fd\": 3, \"errno\": 13, \"expected_start_ticks\": 98308407, \"operation\": \"open\", \"pid\": 3120542, \"relative_file\": \"io\"}\n"
+        },
+        "counts": {
+          "owned_file_read_attempts": 5
+        },
+        "raised": null
+      },
+      "kernel_mechanism_reproduced": true
+    }
+  }
+}

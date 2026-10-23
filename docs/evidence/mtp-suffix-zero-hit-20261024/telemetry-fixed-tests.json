@@ -1,0 +1,12 @@
+{
+  "classification": "targeted monitor bug fix, not suffix performance optimization",
+  "tool_sha256": "473d0b472304cbea8a54bf5fb95fcf2fbea47c9b1f7c57aec8e5fa243fd42cbe",
+  "test_sha256": "2e41dedec7513fa00010480f9357360a969e0e4778ddf94443849863a4d9e16b",
+  "test_log_sha256": "c77f61239166477fda90946775f49cb10e83eb373ea87596d882fb5f1a84506d",
+  "tests_passed": 11,
+  "tests_skipped": 0,
+  "real_owned_zombie_reaped": true,
+  "new_http_or_gpu": 0,
+  "original_stage_outcome": "ENV_ABORT_UNCHANGED",
+  "future_full_stage_lifecycle_validation": "NOT_RUN"
+}

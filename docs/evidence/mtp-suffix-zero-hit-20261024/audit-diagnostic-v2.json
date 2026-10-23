@@ -1,0 +1,736 @@
+{
+  "created_utc": "2026-10-23T22:02:00.308254+00:00",
+  "audit_script_sha256": "f0652f51118bfdf4dc0a580c6b549d79a6e329f24ff1471b2cae7a1c706a12de",
+  "stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1",
+  "plan_sha256": "db5de3fceded778640a9c3b1ca8173509f401cbed923e28049e69991fe093408",
+  "evidence_validity": "ENV_ABORT",
+  "measurement_complete": false,
+  "http_matrix_complete": true,
+  "analysis_revision": {
+    "version": 2,
+    "prior_output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/audit-diagnostic.json",
+    "prior_output_sha256": "5a992df71162085ba9ff8965d51755e8d4d873517b3f0b4ffcbc344a3fc139aa",
+    "prior_tool_sha256": "637437b51f4698b66279d23e3bba09f2247025ee69e92277877474f0913a17a8",
+    "changes": [
+      "Normalize legal guard command paths relative to frozen ROOT.",
+      "Account for the failed final sampler attempt separately from flushed rows.",
+      "Separate completed HTTP matrix from incomplete valid-environment diagnosis."
+    ]
+  },
+  "statistical_conclusion": "NOT_EVALUATED_BY_INTEGRITY_AUDIT; diagnostic A/A is not a tolerance or noninferiority proof",
+  "engineering_decision": "PENDING_DIAGNOSTIC_REVIEW; no candidate acceptance or deployment authorized by this audit",
+  "diagnostic_only": true,
+  "performance_acceptance": false,
+  "stage_b_status": "NOT_RUN_BY_THIS_DIAGNOSTIC",
+  "checks": {
+    "evidence": 2442,
+    "environment": 16886,
+    "measurement": 1739
+  },
+  "errors": [],
+  "environment_errors": [
+    "driver telemetry/cleanup environment",
+    "postflight final monitor join",
+    "final sampler environmental failure"
+  ],
+  "measurement_gaps": [
+    "guard command completed",
+    "diagnostic stage did not finish with a valid monitoring environment",
+    "diagnostic telemetry final attempt incomplete"
+  ],
+  "state": {
+    "status": "ENV_ABORT",
+    "started": 1792791193.4517684,
+    "completed": [
+      "first-http",
+      "subset-off-a1",
+      "subset-on-b",
+      "subset-off-a2",
+      "full-on",
+      "full-off"
+    ],
+    "requests_completed": 26,
+    "loads_started": 6,
+    "contract_seconds": 0,
+    "plan_sha256": "db5de3fceded778640a9c3b1ca8173509f401cbed923e28049e69991fe093408",
+    "current": "full-off",
+    "error": "EnvironmentAbort('resource monitor failed/stale: {\\'failures\\': [\"ENV_ABORT telemetry: PermissionError(13, \\'Permission denied\\')\"], \\'age_seconds\\': 5.213002189993858}')",
+    "finished": 1792792776.8861043,
+    "elapsed_seconds": 1583.4343390159775,
+    "monitor_failures": [
+      "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+    ]
+  },
+  "identities": {
+    "plan_sha256": "db5de3fceded778640a9c3b1ca8173509f401cbed923e28049e69991fe093408",
+    "frozen_files": {
+      "checked": 505,
+      "changed": []
+    },
+    "raw_files": {
+      "checked": 527,
+      "changed": []
+    },
+    "raw_seal_sha256": "c268218f0dd5f46d490242500c8b70331e933e5529f3310b1a687e9b1f811956",
+    "missing_raw_names": [],
+    "extra_raw_names": [],
+    "source_snapshot_files": 430,
+    "source_snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidate_sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+    "parent_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "candidate_runtime_source": "cb0fa73c3271e6fbce2cd9d282838de9643d2a3b",
+    "diagnostic_tools_source": "43ef25e31c186224bc7b5b41a6509c677b619445",
+    "reused_dependency_files": 485,
+    "documentation_differences": [
+      {
+        "path": "docs/MTP_SUFFIX_ADMISSION_2026-10-24.md",
+        "before": "0095152a9c24c7ca12655ad593d293b671f0ef7bb57a052928dbc71ceb5f3c80",
+        "after": "076060149edc90692357e9da2b0e9517638f7a34a4ce23c762b33e0b58451e96"
+      },
+      {
+        "path": "tools/mtp_suffix_admission/README.md",
+        "before": "8e062cd2b5c63ece1928381fdc75c7cfff089909ff89f8b722df0dc97be972ab",
+        "after": "7a27180b7e3ef05ad6d04ea05f652c9e983bbc175d7dd3aa48fd1af494980692"
+      },
+      {
+        "path": "docs/MTP_SUFFIX_ADMISSION_CONTINUATION_2026-10-24.md",
+        "before": "06cdc39b457bf8cf1cd90b6c4e25984c12479222d711efc381e202d1fcf0ac77",
+        "after": "2a3720a99ae2802cc8fe46d9e2c208558d15145fa7bf76ad484fc2ac7659322d"
+      }
+    ],
+    "inherited_contracts": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/audit-evidence.json",
+      "sha256": "3a296afa13e68638f114154327aae47f7257f93cd69f325817f58a7495e83c2e",
+      "quality": 22,
+      "host": 86,
+      "stage_suite": 10,
+      "scope": "same program/dependencies; direct oracle original two-GDN-layer target scope only; no rerun implied"
+    },
+    "inherited_scope": "Original scopes only, including the two-GDN-layer oracle; no whole-model proof."
+  },
+  "environment": {
+    "outer_exit": {
+      "status": "COMMAND_FAILED",
+      "command": [
+        "python3",
+        "-B",
+        "tools/mtp_suffix_zero_hit/run_diagnostic.py",
+        "--plan",
+        ".q4t-work/suffix-zero-hit-20261024/diagnostic-v1/frozen-plan.json"
+      ],
+      "compute_backend": "nvml",
+      "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+      "poll_interval_seconds": 1.0,
+      "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+      "performance_acceptance": false,
+      "child_returncode": 1,
+      "external_lease": false,
+      "finished": {
+        "utc": "2026-10-23T21:59:37.749132+00:00",
+        "monotonic": 982860.266016312,
+        "pid": 3102246
+      }
+    },
+    "postflight": {
+      "status": "ENV_ABORT",
+      "state_sha256": "5f7c1c050ffe22d67921375f3d178e0937ef42b8e45f35c6c1d137e0b67ddf69",
+      "monitor_failures": [
+        "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+      ],
+      "cleanup_errors": [],
+      "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+    },
+    "monitor_samples": 1452,
+    "nvml_queries": 1452,
+    "nvml_gaps_seconds": {
+      "count": 1451,
+      "minimum": 0.08595749805681407,
+      "maximum": 1.324976745992899,
+      "total": 1584.3514800010016
+    },
+    "lease_begin": {
+      "utc": "2026-10-23T21:33:13.279872+00:00",
+      "monotonic": 981275.796750702,
+      "pid": 3102246,
+      "event": "lease_acquired"
+    },
+    "lease_end": {
+      "utc": "2026-10-23T21:59:37.749354+00:00",
+      "monotonic": 982860.266231507,
+      "pid": 3102246,
+      "event": "lease_released",
+      "status": "COMMAND_FAILED"
+    },
+    "identities": {
+      "lease/exit.json": "7c7ac7cea862f32b79cbd524203e38ce10e13b05d00f143fdc5e51d960232242",
+      "lease/events.jsonl": "6c63cb602f702f1671bf3908dfef4de2fb0a76c878de6dbff89bff1305bcaf10",
+      "lease/nvml-queries.jsonl": "37a70ec1ac01699e97a65b799e41ff8f47bdf37cd0cf4af4ca81f5aa83559851",
+      "postflight.json": "3679bc685c0a7cf3024dca03fa1dbf2d27f9bed25a4f32578802cc8c83957c7b"
+    },
+    "scope": "Polling cannot exclude short-lived or invisible interference; no live monitor is run by this audit."
+  },
+  "groups": {
+    "first-http": {
+      "head": "full",
+      "suffix_enabled": true,
+      "timing": false,
+      "diagnostic_only": true,
+      "performance_acceptance": false,
+      "complete": true,
+      "pid": 3102274,
+      "admitted": 1,
+      "raw_generation": 1,
+      "cases": [
+        {
+          "id": "context-8192",
+          "response_id": "chatcmpl-auto-0",
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 981321.394552774,
+          "end_monotonic": 981334.598590003,
+          "source_database": "context-8192/20261024_053356/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        }
+      ],
+      "started": 981279.1078723045,
+      "finished": 981336.435776716,
+      "native_timing_rows": 0,
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "diagnostic_only": false,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      }
+    },
+    "subset-off-a1": {
+      "head": "subset",
+      "suffix_enabled": false,
+      "timing": true,
+      "diagnostic_only": true,
+      "performance_acceptance": false,
+      "complete": true,
+      "pid": 3103398,
+      "admitted": 5,
+      "raw_generation": 5,
+      "cases": [
+        {
+          "id": "context-8192",
+          "response_id": "chatcmpl-auto-0",
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 981384.103187243,
+          "end_monotonic": 981396.362407615,
+          "source_database": "context-8192/20261024_053459/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "context-45056",
+          "response_id": "chatcmpl-auto-1",
+          "actual_input": 45044,
+          "actual_output": 256,
+          "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "start_monotonic": 981401.712825693,
+          "end_monotonic": 981439.955123776,
+          "source_database": "context-45056/20261024_053517/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "response_id": "chatcmpl-auto-2",
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 981445.33862089,
+          "end_monotonic": 981619.679008889,
+          "source_database": "context-204800/20261024_053600/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "response_id": "chatcmpl-auto-3",
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 981625.081396532,
+          "end_monotonic": 981631.308958018,
+          "source_database": "repeat-code/20261024_053900/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "response_id": "chatcmpl-auto-4",
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 981636.698749971,
+          "end_monotonic": 981642.918172484,
+          "source_database": "repeat-text/20261024_053912/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        }
+      ],
+      "started": 981336.794426277,
+      "finished": 981644.6968065205,
+      "native_timing_rows": 350,
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "diagnostic_only": true,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      }
+    },
+    "subset-on-b": {
+      "head": "subset",
+      "suffix_enabled": true,
+      "timing": true,
+      "diagnostic_only": true,
+      "performance_acceptance": false,
+      "complete": true,
+      "pid": 3106134,
+      "admitted": 5,
+      "raw_generation": 5,
+      "cases": [
+        {
+          "id": "context-8192",
+          "response_id": "chatcmpl-auto-0",
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 981688.286693596,
+          "end_monotonic": 981700.542278447,
+          "source_database": "context-8192/20261024_054003/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "context-45056",
+          "response_id": "chatcmpl-auto-1",
+          "actual_input": 45044,
+          "actual_output": 256,
+          "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "start_monotonic": 981705.923588512,
+          "end_monotonic": 981744.209917543,
+          "source_database": "context-45056/20261024_054021/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "response_id": "chatcmpl-auto-2",
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 981749.577958771,
+          "end_monotonic": 981924.201597889,
+          "source_database": "context-204800/20261024_054105/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "response_id": "chatcmpl-auto-3",
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 981929.662857529,
+          "end_monotonic": 981935.53522924,
+          "source_database": "repeat-code/20261024_054405/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "response_id": "chatcmpl-auto-4",
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 981940.931217451,
+          "end_monotonic": 981946.810650975,
+          "source_database": "repeat-text/20261024_054416/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        }
+      ],
+      "started": 981644.996967013,
+      "finished": 981948.5962535446,
+      "native_timing_rows": 350,
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "diagnostic_only": true,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      }
+    },
+    "subset-off-a2": {
+      "head": "subset",
+      "suffix_enabled": false,
+      "timing": true,
+      "diagnostic_only": true,
+      "performance_acceptance": false,
+      "complete": true,
+      "pid": 3108858,
+      "admitted": 5,
+      "raw_generation": 5,
+      "cases": [
+        {
+          "id": "context-8192",
+          "response_id": "chatcmpl-auto-0",
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 981991.037591381,
+          "end_monotonic": 982003.256051698,
+          "source_database": "context-8192/20261024_054506/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "context-45056",
+          "response_id": "chatcmpl-auto-1",
+          "actual_input": 45044,
+          "actual_output": 256,
+          "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "start_monotonic": 982008.605955701,
+          "end_monotonic": 982046.862579874,
+          "source_database": "context-45056/20261024_054524/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "response_id": "chatcmpl-auto-2",
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 982052.230214221,
+          "end_monotonic": 982226.535063558,
+          "source_database": "context-204800/20261024_054607/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "response_id": "chatcmpl-auto-3",
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 982231.897150693,
+          "end_monotonic": 982238.127236517,
+          "source_database": "repeat-code/20261024_054907/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "response_id": "chatcmpl-auto-4",
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 982243.500639517,
+          "end_monotonic": 982249.724112211,
+          "source_database": "repeat-text/20261024_054919/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        }
+      ],
+      "started": 981948.7672052504,
+      "finished": 982251.4752046929,
+      "native_timing_rows": 350,
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "diagnostic_only": true,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      }
+    },
+    "full-on": {
+      "head": "full",
+      "suffix_enabled": true,
+      "timing": true,
+      "diagnostic_only": true,
+      "performance_acceptance": false,
+      "complete": true,
+      "pid": 3111648,
+      "admitted": 5,
+      "raw_generation": 5,
+      "cases": [
+        {
+          "id": "context-8192",
+          "response_id": "chatcmpl-auto-0",
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 982290.048625662,
+          "end_monotonic": 982303.268175925,
+          "source_database": "context-8192/20261024_055005/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "context-45056",
+          "response_id": "chatcmpl-auto-1",
+          "actual_input": 45044,
+          "actual_output": 256,
+          "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "start_monotonic": 982308.648984272,
+          "end_monotonic": 982347.612961315,
+          "source_database": "context-45056/20261024_055024/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "response_id": "chatcmpl-auto-2",
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 982353.010408214,
+          "end_monotonic": 982527.717197375,
+          "source_database": "context-204800/20261024_055108/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "response_id": "chatcmpl-auto-3",
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 982533.147361696,
+          "end_monotonic": 982539.34744492,
+          "source_database": "repeat-code/20261024_055408/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "response_id": "chatcmpl-auto-4",
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 982544.782284079,
+          "end_monotonic": 982550.71095242,
+          "source_database": "repeat-text/20261024_055420/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        }
+      ],
+      "started": 982251.7419296284,
+      "finished": 982552.5033532709,
+      "native_timing_rows": 342,
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "diagnostic_only": true,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      }
+    },
+    "full-off": {
+      "head": "full",
+      "suffix_enabled": false,
+      "timing": true,
+      "diagnostic_only": true,
+      "performance_acceptance": false,
+      "complete": true,
+      "pid": 3114215,
+      "admitted": 5,
+      "raw_generation": 5,
+      "cases": [
+        {
+          "id": "context-8192",
+          "response_id": "chatcmpl-auto-0",
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 982590.995913347,
+          "end_monotonic": 982604.227123811,
+          "source_database": "context-8192/20261024_055506/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "context-45056",
+          "response_id": "chatcmpl-auto-1",
+          "actual_input": 45044,
+          "actual_output": 256,
+          "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+          "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+          "start_monotonic": 982609.641118359,
+          "end_monotonic": 982648.630001295,
+          "source_database": "context-45056/20261024_055525/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "response_id": "chatcmpl-auto-2",
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 982654.055485173,
+          "end_monotonic": 982828.918443152,
+          "source_database": "context-204800/20261024_055609/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "response_id": "chatcmpl-auto-3",
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 982834.336310472,
+          "end_monotonic": 982841.283641642,
+          "source_database": "repeat-code/20261024_055909/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "response_id": "chatcmpl-auto-4",
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 982846.688107756,
+          "end_monotonic": 982853.367759426,
+          "source_database": "repeat-text/20261024_055922/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; its retained SSE list does not necessarily retain wire usage chunks."
+        }
+      ],
+      "started": 982552.7309956821,
+      "finished": 982855.1371241279,
+      "native_timing_rows": 342,
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "diagnostic_only": true,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      }
+    }
+  },
+  "telemetry": {
+    "samples": 1579,
+    "source_count": 53,
+    "missing": [
+      {
+        "label": "pressure_cpu",
+        "path": "/proc/pressure/cpu",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      },
+      {
+        "label": "pressure_io",
+        "path": "/proc/pressure/io",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      },
+      {
+        "label": "pressure_memory",
+        "path": "/proc/pressure/memory",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      }
+    ],
+    "gaps_seconds": {
+      "count": 1578,
+      "minimum": 1.0000626019900665,
+      "maximum": 1.0047237469116226,
+      "total": 1578.1977996299975
+    },
+    "observed_server_pids": [
+      3102274,
+      3103398,
+      3106134,
+      3108858,
+      3111648,
+      3114215
+    ],
+    "final_summary": {
+      "schema": 1,
+      "sampler_status": "ENV_ABORT",
+      "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/unified-memory.jsonl",
+      "started_monotonic": 981275.96904689,
+      "started_unix_seconds": 1792791193.4521732,
+      "finished_monotonic": 982855.191947344,
+      "finished_unix_seconds": 1792792772.6751027,
+      "sampler_elapsed_seconds": 1579.222900453955,
+      "sample_attempts": 1580,
+      "flushed_samples": 1579,
+      "unflushed_attempts": 1,
+      "final_successful_cycle_duration_seconds": 0.02281502599362284,
+      "final_successful_write_flush_seconds": 0.00033564900513738394,
+      "successful_cycle_duration_total_seconds": 37.494764791452326,
+      "successful_write_flush_total_seconds": 0.5716976511757821,
+      "final_failed_attempt_elapsed_seconds": 0.02472302201204002,
+      "final_attempt_read_counts": {
+        "source_file_read_attempts": 53,
+        "ownership_file_read_attempts": 890,
+        "ownership_readlink_attempts": 445,
+        "owned_file_read_attempts": 9,
+        "directory_scan_attempts": 1
+      },
+      "total_read_counts": {
+        "source_file_read_attempts": 83740,
+        "ownership_file_read_attempts": 1411184,
+        "ownership_readlink_attempts": 705530,
+        "owned_file_read_attempts": 72839,
+        "directory_scan_attempts": 3155
+      },
+      "setup_file_read_attempts": 1,
+      "total_file_read_attempts": 1567764,
+      "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+      "sampler_failure": "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')",
+      "failures_at_exit": [
+        "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+      ],
+      "last_flushed_heartbeat": 982854.189926339,
+      "source_count": 53
+    },
+    "summary_sha256": "9a49002e840c5b1b3465076b0c092ea97f09cafb1bf606393f7b4a7c355506c8",
+    "scope": "1 Hz nearby samples, not exact request-boundary counters. Collection and serialization/flush costs reported separately; RAM/RSS/NVML overlap and are not added."
+  },
+  "requests": {
+    "admitted_in_completed_services": 26,
+    "raw_generation_in_completed_services": 26,
+    "completed_loads": 6,
+    "unique_server_pids": 6,
+    "state_requests": 26,
+    "state_loads": 6,
+    "expected_requests": 26,
+    "expected_loads": 6
+  },
+  "task_budget": {
+    "stage_a_elapsed_seconds": 1583.4343390159775,
+    "original_started": 1792791193.4517684,
+    "absolute_deadline_epoch": 1792816393.4517684,
+    "cumulative_http_limit": 375,
+    "cumulative_load_limit": 27,
+    "includes_conditional_b_and_health": true
+  },
+  "limits": [
+    "Integrity and contract audit only; no throughput/TTFT comparisons or causal claims.",
+    "All material is previously observed development data, not new acceptance.",
+    "Same sampled output hashes establish only these requests; not arbitrary-input equivalence.",
+    "Native phase values are rounded to 0.1 ms; whole-generation and post-TTFT windows differ."
+  ]
+}

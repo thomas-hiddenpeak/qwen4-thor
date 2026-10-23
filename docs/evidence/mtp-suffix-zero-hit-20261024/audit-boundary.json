@@ -1,0 +1,116 @@
+{
+  "created_utc": "2026-10-23T22:03:27.213743+00:00",
+  "evidence_validity": "ENV_ABORT",
+  "http_matrix_complete": true,
+  "measurement_complete": false,
+  "statistical_conclusion": "No valid performance or causal conclusion from this aborted diagnostic.",
+  "engineering_decision": "No runtime candidate accepted; no GPU retry performed by this audit.",
+  "audit_path": ".q4t-work/suffix-zero-hit-20261024/audit-diagnostic-v2.json",
+  "audit_sha256": "b078abab992c1bb4dc9ddacd8762a2f3ec036b69d723dbe3c72c8024779b7af3",
+  "inputs_sha256": {
+    ".q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/state.json": "5f7c1c050ffe22d67921375f3d178e0937ef42b8e45f35c6c1d137e0b67ddf69",
+    ".q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/telemetry-summary.json": "9a49002e840c5b1b3465076b0c092ea97f09cafb1bf606393f7b4a7c355506c8",
+    ".q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/unified-memory.jsonl": "1816def27eeaec3f82e059bce5acdcd7d9a11ea120877a5711075839a21c0c1e",
+    ".q4t-work/suffix-zero-hit-20261024/diagnostic-v1/run/full-off/events.jsonl": "11582b39ede5d593aa883095c1f0cd8f462c4fc124c4da929cf1d061dd594920",
+    ".q4t-work/suffix-zero-hit-20261024/diagnostic-v1/lease/exit.json": "7c7ac7cea862f32b79cbd524203e38ce10e13b05d00f143fdc5e51d960232242",
+    ".q4t-work/suffix-zero-hit-20261024/diagnostic-v1/lease/events.jsonl": "6c63cb602f702f1671bf3908dfef4de2fb0a76c878de6dbff89bff1305bcaf10",
+    ".q4t-work/suffix-zero-hit-20261024/diagnostic-v1/postflight.json": "3679bc685c0a7cf3024dca03fa1dbf2d27f9bed25a4f32578802cc8c83957c7b"
+  },
+  "counts": {
+    "generation_requests": 26,
+    "service_starts": 6,
+    "all_service_returncodes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "all_output_contracts_and_seal_checks_passed": true,
+    "sample_attempts": 1580,
+    "flushed_samples": 1579,
+    "unflushed_attempts": 1
+  },
+  "timeline": [
+    {
+      "event": "last_HTTP_completed",
+      "monotonic_seconds": 982853.367759426,
+      "utc_estimate": "2026-10-23T21:59:30.850886+00:00"
+    },
+    {
+      "event": "last_successful_sample_start",
+      "monotonic_seconds": 982854.167111313,
+      "utc_estimate": "2026-10-23T21:59:31.650238+00:00"
+    },
+    {
+      "event": "last_successful_sample_collection_finished",
+      "monotonic_seconds": 982854.189585051,
+      "utc_estimate": "2026-10-23T21:59:31.672711+00:00"
+    },
+    {
+      "event": "last_successful_sample_flushed",
+      "monotonic_seconds": 982854.189926339,
+      "utc_estimate": "2026-10-23T21:59:31.673053+00:00"
+    },
+    {
+      "event": "last_server_after_shutdown_returncode_0",
+      "monotonic_seconds": 982855.1371241279,
+      "utc_estimate": "2026-10-23T21:59:32.620250+00:00"
+    },
+    {
+      "event": "failed_final_sample_started",
+      "monotonic_seconds": 982855.167224322,
+      "utc_estimate": "2026-10-23T21:59:32.650351+00:00"
+    },
+    {
+      "event": "failed_final_sample_finished",
+      "monotonic_seconds": 982855.191947344,
+      "utc_estimate": "2026-10-23T21:59:32.675074+00:00"
+    },
+    {
+      "event": "driver_final_environment_abort",
+      "monotonic_seconds": 982859.4029779434,
+      "utc_estimate": "2026-10-23T21:59:36.886104+00:00"
+    }
+  ],
+  "intervals_seconds": {
+    "last_http_to_last_server_shutdown": 1.7693647019332275,
+    "last_server_shutdown_to_failed_sample_start": 0.030100194038823247,
+    "last_server_shutdown_to_failed_sample_failure": 0.054823216050863266,
+    "last_http_to_failed_sample_start": 1.7994648959720507,
+    "last_flushed_heartbeat_to_last_http": -0.8221669129561633,
+    "last_flushed_heartbeat_to_driver_finish": 5.213051604456268
+  },
+  "telemetry_failure": {
+    "error": "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')",
+    "failed_attempt_read_counts": {
+      "source_file_read_attempts": 53,
+      "ownership_file_read_attempts": 890,
+      "ownership_readlink_attempts": 445,
+      "owned_file_read_attempts": 9,
+      "directory_scan_attempts": 1
+    },
+    "all_53_frozen_sources_read_before_failure": true,
+    "failure_scope": "After frozen-source collection, during owned-process collection. The failing PID/path/syscall was not retained, so exact provenance is unproven.",
+    "successful_sample_start_gap_max": 1.0047237469116226,
+    "completion_monitor_scope": "Legacy final require_monitor rejected the failure/stale heartbeat after all services; postflight also retains ENV_ABORT. Finalize-time occurrence does not convert it to valid performance evidence."
+  },
+  "cleanup": {
+    "outer_status": "COMMAND_FAILED",
+    "outer_child_returncode": 1,
+    "postflight_cleanup_errors": [],
+    "lease_released": true,
+    "historical_owned_identities_checked": 39,
+    "gone_count": 39,
+    "same_identity_remaining": [],
+    "reused_pids": [],
+    "unreadable": [],
+    "scope": "Read-only /proc checks of previously recorded owned PID+start_ticks identities after audit; no signaling or global process matching."
+  },
+  "limits": [
+    "Prior successful 1Hz rows do not certify the unflushed final observation or absence of sub-interval interference.",
+    "All requests completed, but telemetry/environment completion failed; no throughput or TTFT acceptance is claimed.",
+    "The PermissionError contains no failing PID/path; exact file and race mechanism cannot be asserted from counts alone."
+  ]
+}

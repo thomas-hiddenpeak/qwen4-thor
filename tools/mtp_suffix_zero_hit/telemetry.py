@@ -13,6 +13,7 @@ from pathlib import Path
 import re
 import sys
 import time
+import traceback
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/evalscope'))
@@ -209,20 +210,29 @@ def _stat_identity(raw):
                 start_ticks=int(fields[19]))
 
 
-def _read_at(directory_fd, name, counts):
+def _read_at(directory_fd, name, counts, context=None):
     counts['owned_file_read_attempts'] += 1
-    fd = os.open(name, os.O_RDONLY | os.O_CLOEXEC, dir_fd=directory_fd)
-    with os.fdopen(fd, 'r', encoding='utf-8', errors='replace') as stream:
-        return stream.read()
+    operation = 'open'
+    try:
+        fd = os.open(name, os.O_RDONLY | os.O_CLOEXEC, dir_fd=directory_fd)
+        operation = 'fdopen/read/close'
+        with os.fdopen(fd, 'r', encoding='utf-8', errors='replace') as stream:
+            return stream.read()
+    except OSError as error:
+        detail = dict(context or {}, relative_file=name, operation=operation,
+                      directory_fd=directory_fd, errno=error.errno)
+        error.telemetry_context = detail
+        error.add_note('telemetry pinned proc read: ' + json.dumps(detail, sort_keys=True))
+        raise
 
 
 def _transient(error):
     return isinstance(error, OSError) and error.errno in (errno.ENOENT, errno.ESRCH)
 
 
-def _read_task(directory_fd, counts, expected_start=None, with_io=False):
+def _read_task(directory_fd, counts, expected_start=None, with_io=False, context=None):
     """Read through a pinned proc directory, validating identity twice."""
-    initial = _read_at(directory_fd, 'stat', counts)
+    initial = _read_at(directory_fd, 'stat', counts, context)
     identity = _stat_identity(initial)
     if expected_start is not None and identity['start_ticks'] != expected_start:
         return dict(observation='PID_REUSED', expected_start_ticks=expected_start,
@@ -230,13 +240,31 @@ def _read_task(directory_fd, counts, expected_start=None, with_io=False):
     row = dict(observation='OK', start_ticks=identity['start_ticks'], stat=initial)
     try:
         for name in ('status', 'schedstat') + (('io',) if with_io else ()):
-            row[name] = _read_at(directory_fd, name, counts)
-        final = _read_at(directory_fd, 'stat', counts)
+            row[name] = _read_at(directory_fd, name, counts, context)
+        final = _read_at(directory_fd, 'stat', counts, context)
         if _stat_identity(final)['start_ticks'] != identity['start_ticks']:
             return dict(observation='PID_REUSED_DURING_READ',
                         expected_start_ticks=identity['start_ticks'])
         row['stat_after'] = final
     except OSError as error:
+        detail = getattr(error, 'telemetry_context', {})
+        if (with_io and error.errno == errno.EACCES and
+                detail.get('relative_file') == 'io'):
+            # A new numeric PID is never followed. Only this already pinned
+            # proc directory may prove that the same task has actually exited.
+            try:
+                after_error = _read_at(directory_fd, 'stat', counts, context)
+                after_identity = _stat_identity(after_error)
+            except OSError as recheck_error:
+                error.add_note('pinned identity recheck failed: ' + repr(recheck_error))
+            else:
+                if (after_identity['start_ticks'] == identity['start_ticks'] and
+                        after_identity['state'] in ('Z', 'X')):
+                    row.update(observation='EXITED_DURING_IO_READ',
+                               stat_after_error=after_error,
+                               terminal_error=dict(detail, error=repr(error)),
+                               terminal_error_traceback=traceback.format_exc())
+                    return row
         if not _transient(error):
             raise
         # Thread/process exit is normal. Keep only data read through this
@@ -317,7 +345,8 @@ def _sample_processes(records, owned, counts):
             continue
         try:
             try:
-                row = _read_task(fd, counts, identity['start_ticks'], with_io=True)
+                row = _read_task(fd, counts, identity['start_ticks'], with_io=True,
+                                 context=dict(pid=pid, expected_start_ticks=identity['start_ticks']))
             except OSError as error:
                 if not _transient(error):
                     raise
@@ -343,7 +372,8 @@ def _sample_processes(records, owned, counts):
                     try:
                         thread_fd = os.open(str(tid), os.O_RDONLY | os.O_DIRECTORY |
                                             os.O_CLOEXEC, dir_fd=task_fd)
-                        threads[tid] = _read_task(thread_fd, counts)
+                        threads[tid] = _read_task(thread_fd, counts,
+                            context=dict(pid=pid, tid=tid, parent_start_ticks=identity['start_ticks']))
                     except OSError as error:
                         if not _transient(error):
                             raise
@@ -384,6 +414,7 @@ def sample(output, stop, failures, heartbeat):
     previous_cycle_seconds = previous_write_flush_seconds = None
     cycle_seconds_total = write_flush_seconds_total = 0.0
     sampler_failure = None
+    sampler_failure_context = sampler_failure_traceback = None
     try:
         if _configured is None:
             raise EnvironmentAbort('telemetry sources must be frozen/configured')
@@ -459,6 +490,8 @@ def sample(output, stop, failures, heartbeat):
                 stop.wait(max(0.0, started + INTERVAL_SECONDS - time.monotonic()))
     except BaseException as error:
         sampler_failure = 'ENV_ABORT telemetry: ' + repr(error)
+        sampler_failure_context = getattr(error, 'telemetry_context', None)
+        sampler_failure_traceback = traceback.format_exc()
         failures.append(sampler_failure)
         stop.set()
     finally:
@@ -496,6 +529,8 @@ def sample(output, stop, failures, heartbeat):
             file_count_scope='Content read attempts including failed reads and '
                              'ownership scan; readlink/directory scans separate.',
             sampler_failure=sampler_failure, failures_at_exit=list(failures),
+            sampler_failure_context=sampler_failure_context,
+            sampler_failure_traceback=sampler_failure_traceback,
             last_flushed_heartbeat=heartbeat.get('last_sample'),
             source_count=len(_configured[0]) if _configured is not None else None)
         try:

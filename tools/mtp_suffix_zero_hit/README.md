@@ -31,3 +31,21 @@ python3 -B tools/evalscope/gpu_exclusive.py \
 Do not rerun or overwrite an existing stage. The original program, subset,
 fixtures, output reference hashes, tools, model metadata and source snapshot
 are bound by the new plan. Previous raw evidence remains unchanged.
+
+The 2026-10-24 stage ended as **ENV_ABORT** after all 26 HTTP checks completed:
+the last telemetry attempt failed during owned-process shutdown. Its frozen
+sampler remains in the stage source snapshot; later tool fixes do not change
+that result. The current sampler preserves error context and treats io EACCES
+as an observed exit only after the same pinned process directory confirms the
+same start time and a terminal Z/X state. Live/unknown identity and other
+permission failures still abort. Eleven targeted CPU tests, including an owned
+zombie process, pass:
+
+```bash
+python3 -B tools/mtp_suffix_zero_hit/test_telemetry.py -v
+```
+
+No new GPU/HTTP lifecycle validation was run after the sampler repair. The
+failed stage was not retried, and conditional performance acceptance was not
+run. Any archived forensic timing remains ENV_ABORT evidence, never a passed
+optimization result.
