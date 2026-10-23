@@ -2,6 +2,17 @@
 
 更新：2026-10-24。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+固定k3 suffix零命中成本阶段启动（2026-10-24，用户授权继续）：
+旧日志离线分界显示子集45K/200K主要TTFT差值在当前suffix.Init之前已
+出现；新8K索引query/append/release仅0.061–0.137ms，不能直接解释
+6–30ms解码差。暂未证明具体硬件/调度原因，不为改而改。冻结阶段A
+26HTTP/6启动/1h，先正常evalscopeHTTP，后子集OFF→ON→OFF A/A夹逼
+与完整ON→OFF原生计时，增加只读频率/温度/线程等待观测。原6a程序及
+min32准入保持，不重建；全部材料为开发诊断。全任务自首次驱动起7h
+上限，只有机制支持才选至多一候选并冻结B验收，A+B上限372/24，条件
+健康总上限375/27。未执行新测试，默认f356和前轮NO_GO保持。见
+[零命中定位与有界预算](MTP_SUFFIX_ZERO_HIT_2026-10-24.md)。
+
 固定k3 suffix长匹配准入阶段完成（2026-10-24，
 **NO_GO_PROTECTION_NOT_CLEARED**）：唯一32-token门6a4d3d62，250HTTP/
 18启动/10941.643秒；证据VALID、测量COMPLETE、无ENV_ABORT。旧8K的
