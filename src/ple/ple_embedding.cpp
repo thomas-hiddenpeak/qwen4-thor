@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "q4t/ple/fp8_convert.h"
+#include "q4t/diagnostic/execution_observer.h"
 #include "q4t/ple/page_reader.h"
 
 namespace q4t {
@@ -164,6 +165,7 @@ Status PleEmbedding::GatherRows(const int64_t* row_ids, size_t n_rows,
   // reader. Wait before overwriting the pinned source. Completion includes
   // conversion so the shared FP8 scratch is also safe across streams.
   if (impl_->upload_pending) {
+    diagnostic::Scope wait("ple.previous_upload_wait");
     if (cudaEventSynchronize(impl_->upload_complete) != cudaSuccess) {
       impl_->upload_failed = true;
       return Status::Fail("PLE previous upload completion failed");
@@ -172,7 +174,13 @@ Status PleEmbedding::GatherRows(const int64_t* row_ids, size_t n_rows,
   }
   // The reader scatters rows into the pinned staging buffer (token-major).
   ReadStats stats;
-  Status s = impl_->reader->Gather(row_ids, n_rows, impl_->staging, &stats);
+  Status s;
+  {
+    diagnostic::Scope read("ple.reader");
+    s = impl_->reader->Gather(row_ids, n_rows, impl_->staging, &stats);
+    // Existing reader counters: IO wall ns, scatter wall ns, submitted bytes.
+    read.SetCounters(stats.io_ns, stats.scatter_ns, stats.submitted_bytes);
+  }
   if (!s.ok()) return s;
 
   // Error exits also drain submitted work before releasing buffer ownership.
@@ -185,6 +193,7 @@ Status PleEmbedding::GatherRows(const int64_t* row_ids, size_t n_rows,
   };
   // H2D the FP8 rows, then convert to BF16 on the stream.
   const size_t fp8_bytes = n_rows * row_bytes;
+  diagnostic::Scope upload("ple.upload_submit");
   if (cudaMemcpyAsync(impl_->gpu_fp8, impl_->staging, fp8_bytes,
                       cudaMemcpyHostToDevice, stream) != cudaSuccess) {
     return fail_upload("H2D staging->gpu_fp8 failed");
@@ -203,6 +212,7 @@ Status PleEmbedding::GatherRows(const int64_t* row_ids, size_t n_rows,
 Status PleEmbedding::Gather(const int64_t* tokens, size_t n_tokens,
                              const int64_t* history, uint16_t* out_bf16,
                              cudaStream_t stream) const {
+  diagnostic::Scope gather("ple.gather", -1, static_cast<int>(n_tokens));
   const int heads = impl_->config.hash_params.ngram_heads();
   const size_t n_rows = n_tokens * static_cast<size_t>(heads);
   if (n_rows > impl_->host_row_ids_cap) {

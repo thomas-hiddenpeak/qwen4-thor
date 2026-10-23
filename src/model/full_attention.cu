@@ -13,6 +13,7 @@
 // handles both regimes via the topk index list.
 #include "q4t/model/layer_subtiming.h"
 #include "q4t/model/full_attention.h"
+#include "q4t/diagnostic/execution_observer.h"
 
 #include <cublasLt.h>
 #include <cuda_bf16.h>
@@ -1618,12 +1619,18 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   if (max_pos < 0) {
     max_pos = 0;
     std::vector<int> hp(static_cast<size_t>(T));
-    if (cudaMemcpyAsync(hp.data(), d_positions,
+    {
+      diagnostic::Scope copy("attention.positions_d2h_submit", -1, T);
+      if (cudaMemcpyAsync(hp.data(), d_positions,
                         static_cast<size_t>(T) * sizeof(int),
                         cudaMemcpyDeviceToHost, stream) != cudaSuccess)
-      return Status::Fail("cudaMemcpyAsync positions failed");
-    if (cudaStreamSynchronize(stream) != cudaSuccess)
-      return Status::Fail("cudaStreamSynchronize positions failed");
+        return Status::Fail("cudaMemcpyAsync positions failed");
+    }
+    {
+      diagnostic::Scope wait("attention.positions_sync", -1, T);
+      if (cudaStreamSynchronize(stream) != cudaSuccess)
+        return Status::Fail("cudaStreamSynchronize positions failed");
+    }
     for (int i = 0; i < T; ++i) max_pos = std::max(max_pos, hp[i]);
   }
   const int n_groups_max = (max_pos + 1) / w.idx_compress;

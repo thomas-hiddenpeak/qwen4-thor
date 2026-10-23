@@ -102,7 +102,7 @@ endif()
 if(Q4T_LIBURING_LIBS)
   target_link_libraries(q4t_ple PUBLIC ${Q4T_LIBURING_LIBS})
 endif()
-target_link_libraries(q4t_ple PUBLIC CUDA::cudart)
+target_link_libraries(q4t_ple PUBLIC CUDA::cudart ${CMAKE_DL_LIBS})
 
 # ---------------------------------------------------------------------------
 # q4t_io — file/config/tokenizer IO (safetensors, JSON)

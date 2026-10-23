@@ -19,6 +19,7 @@
 #include <cstring>
 #include <vector>
 
+#include "q4t/diagnostic/execution_observer.h"
 #include "q4t/model/linear.h"
 
 namespace q4t {
@@ -322,83 +323,100 @@ Status MoeBf16RoutedForward(const uint16_t* x, const int32_t* expert_ids,
 
   // 2. Read counts to host (one sync). Token lists stay on device.
   {
-    if (cudaMemcpyAsync(counts_h.data(), d_counts, E * sizeof(int32_t),
-                        cudaMemcpyDeviceToHost, stream) != cudaSuccess) {
+    cudaError_t copy_error;
+    {
+      // Pageable D2H submission can itself block. Keep its API duration
+      // separate from the following existing synchronization call.
+      diagnostic::Scope copy_scope("mtp.api.moe_counts_d2h", -1, M);
+      copy_error = cudaMemcpyAsync(counts_h.data(), d_counts,
+                                   E * sizeof(int32_t),
+                                   cudaMemcpyDeviceToHost, stream);
+    }
+    if (copy_error != cudaSuccess) {
       cudaFreeAsync(d_counts, stream);
       cudaFreeAsync(d_token_list, stream);
       return Status::Fail("memcpy counts");
     }
-    if (cudaStreamSynchronize(stream) != cudaSuccess) {
+    cudaError_t sync_error;
+    {
+      diagnostic::Scope wait_scope("mtp.wait.moe_counts_sync", -1, M);
+      sync_error = cudaStreamSynchronize(stream);
+    }
+    if (sync_error != cudaSuccess) {
       cudaFreeAsync(d_counts, stream);
       cudaFreeAsync(d_token_list, stream);
       return Status::Fail("stream sync");
     }
   }
 
-  // 3. Per-expert BF16 GEMM chain.
-  for (int e = 0; e < E; ++e) {
-    const int M_e = counts_h[e];
-    if (M_e <= 0) continue;
+  // 3. Per-expert BF16 GEMM chain. This span measures CPU API submission;
+  // CUDA activity tracing distinguishes actual execution from stream gaps.
+  {
+    diagnostic::Scope expert_scope("mtp.moe.experts_submit", -1, M);
+    for (int e = 0; e < E; ++e) {
+      const int M_e = counts_h[e];
+      if (M_e <= 0) continue;
 
-    // Gather this expert's M_e token rows into the start of the compact
-    // buffer (rows 0..M_e-1).
-    {
-      const int total = M_e * hs;
-      const int blocks = (total + kBlock - 1) / kBlock;
-      GatherKernel<<<blocks, kBlock, 0, stream>>>(x, d_token_list, M_e, e, k, M,
-                                                  hs, d_compact);
-    }
-    if (cudaGetLastError() != cudaSuccess) {
-      cudaFreeAsync(d_counts, stream);
-      cudaFreeAsync(d_token_list, stream);
-      return Status::Fail("gather launch");
-    }
+      // Gather this expert's M_e token rows into the start of the compact
+      // buffer (rows 0..M_e-1).
+      {
+        const int total = M_e * hs;
+        const int blocks = (total + kBlock - 1) / kBlock;
+        GatherKernel<<<blocks, kBlock, 0, stream>>>(x, d_token_list, M_e, e, k, M,
+                                                    hs, d_compact);
+      }
+      if (cudaGetLastError() != cudaSuccess) {
+        cudaFreeAsync(d_counts, stream);
+        cudaFreeAsync(d_token_list, stream);
+        return Status::Fail("gather launch");
+      }
 
-    // gate/up GEMM: [M_e, 2*moe_is] = act [M_e, hs] * W_gu [2*moe_is, hs]^T.
-    // Expert e's gate/up slice is weights.gu + e*(2*moe_is*hs).
-    auto r1 = model::Bf16Gemm(d_compact, weights.gu + static_cast<size_t>(e) * (2 * moe_is) * hs,
-                              d_gu_out, M_e, 2 * moe_is, hs, 1.0f, 0.0f, gemm_ws,
-                              gemm_ws_bytes, stream);
-    if (r1.status != CUBLAS_STATUS_SUCCESS || !r1.has_algo) {
-      cudaFreeAsync(d_counts, stream);
-      cudaFreeAsync(d_token_list, stream);
-      return Status::Fail("gate/up GEMM failed");
-    }
+      // gate/up GEMM: [M_e, 2*moe_is] = act [M_e, hs] * W_gu [2*moe_is, hs]^T.
+      // Expert e's gate/up slice is weights.gu + e*(2*moe_is*hs).
+      auto r1 = model::Bf16Gemm(d_compact, weights.gu + static_cast<size_t>(e) * (2 * moe_is) * hs,
+                                d_gu_out, M_e, 2 * moe_is, hs, 1.0f, 0.0f, gemm_ws,
+                                gemm_ws_bytes, stream);
+      if (r1.status != CUBLAS_STATUS_SUCCESS || !r1.has_algo) {
+        cudaFreeAsync(d_counts, stream);
+        cudaFreeAsync(d_token_list, stream);
+        return Status::Fail("gate/up GEMM failed");
+      }
 
-    // SwiGLU: [M_e, moe_is].
-    {
-      const int total = M_e * moe_is;
-      const int blocks = (total + kBlock - 1) / kBlock;
-      SwiGLUKernel<<<blocks, kBlock, 0, stream>>>(d_gu_out, d_inter, M_e, moe_is);
-    }
-    if (cudaGetLastError() != cudaSuccess) {
-      cudaFreeAsync(d_counts, stream);
-      cudaFreeAsync(d_token_list, stream);
-      return Status::Fail("swiglu launch");
-    }
+      // SwiGLU: [M_e, moe_is].
+      {
+        const int total = M_e * moe_is;
+        const int blocks = (total + kBlock - 1) / kBlock;
+        SwiGLUKernel<<<blocks, kBlock, 0, stream>>>(d_gu_out, d_inter, M_e, moe_is);
+      }
+      if (cudaGetLastError() != cudaSuccess) {
+        cudaFreeAsync(d_counts, stream);
+        cudaFreeAsync(d_token_list, stream);
+        return Status::Fail("swiglu launch");
+      }
 
-    // down GEMM: [M_e, hs] = inter [M_e, moe_is] * W_dn [hs, moe_is]^T.
-    // Expert e's down slice is weights.down + e*(hs*moe_is).
-    auto r2 = model::Bf16Gemm(d_inter, weights.down + static_cast<size_t>(e) * hs * moe_is,
-                              d_dn_out, M_e, hs, moe_is, 1.0f, 0.0f, gemm_ws,
-                              gemm_ws_bytes, stream);
-    if (r2.status != CUBLAS_STATUS_SUCCESS || !r2.has_algo) {
-      cudaFreeAsync(d_counts, stream);
-      cudaFreeAsync(d_token_list, stream);
-      return Status::Fail("down GEMM failed");
-    }
+      // down GEMM: [M_e, hs] = inter [M_e, moe_is] * W_dn [hs, moe_is]^T.
+      // Expert e's down slice is weights.down + e*(hs*moe_is).
+      auto r2 = model::Bf16Gemm(d_inter, weights.down + static_cast<size_t>(e) * hs * moe_is,
+                                d_dn_out, M_e, hs, moe_is, 1.0f, 0.0f, gemm_ws,
+                                gemm_ws_bytes, stream);
+      if (r2.status != CUBLAS_STATUS_SUCCESS || !r2.has_algo) {
+        cudaFreeAsync(d_counts, stream);
+        cudaFreeAsync(d_token_list, stream);
+        return Status::Fail("down GEMM failed");
+      }
 
-    // Scatter-add router_w * dn_out into y.
-    {
-      const int total = M_e * hs;
-      const int blocks = (total + kBlock - 1) / kBlock;
-      ScatterAddKernel<<<blocks, kBlock, 0, stream>>>(
-          d_dn_out, d_token_list, router_w, k, M, hs, M_e, e, y);
-    }
-    if (cudaGetLastError() != cudaSuccess) {
-      cudaFreeAsync(d_counts, stream);
-      cudaFreeAsync(d_token_list, stream);
-      return Status::Fail("scatter launch");
+      // Scatter-add router_w * dn_out into y.
+      {
+        const int total = M_e * hs;
+        const int blocks = (total + kBlock - 1) / kBlock;
+        ScatterAddKernel<<<blocks, kBlock, 0, stream>>>(
+            d_dn_out, d_token_list, router_w, k, M, hs, M_e, e, y);
+      }
+      if (cudaGetLastError() != cudaSuccess) {
+        cudaFreeAsync(d_counts, stream);
+        cudaFreeAsync(d_token_list, stream);
+        return Status::Fail("scatter launch");
+      }
     }
   }
 

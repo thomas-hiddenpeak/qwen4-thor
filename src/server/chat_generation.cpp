@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <cuda_runtime.h>
+#include "q4t/diagnostic/execution_observer.h"
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/request_json.h"
@@ -423,6 +424,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return best;
   };
 
+  // Capture only the selected request's execution, after tokenization and
+  // allocation. The observer is disabled unless explicitly requested.
+  q4t::diagnostic::ProfileCapture execution_capture(T);
   diagnostic.Stage("prefill");
   // 2. Prefill (PD-ready 阶段边界 API: Begin -> Prefill). The forward uses the
   // shared per-forward scratch, so it is serialized behind model_mu_; the
@@ -481,16 +485,30 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         [&] { return pr.done; });
     s = pr.ok ? Status() : Status::Fail("batched prefill failed");
   } else {
+    // The request ID outlives this batch. Flush only after the existing final
+    // readback boundary; do not log between asynchronous chunk submissions.
+    q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
+    q4t::diagnostic::Scope execution_prefill("handler_prefill", 0, T);
     auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
-    s = !gpu_healthy_.load(std::memory_order_relaxed)
-            ? Status::Fail("GPU unhealthy; restart server")
-            : cancelled() ? Status::Fail("request cancelled")
-                    : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+    {
+      q4t::diagnostic::Scope execution_begin("target_begin_sequence", 0, T);
+      s = !gpu_healthy_.load(std::memory_order_relaxed)
+              ? Status::Fail("GPU unhealthy; restart server")
+              : cancelled()
+                    ? Status::Fail("request cancelled")
+                    : model::ModelBeginSequence(model_.Get(), &seq, nullptr,
+                                                seq_id);
+    }
+    int prefill_base = 0;
+    int prefill_tokens = std::min(chunk, T);
     if (s.ok()) {
       if (!chunked) {
         if (router_trace_) router_trace_->BeginForward(
             trace::RouteStage::kPrefill, 0, T);
         // Keep full trunk output for MTP, but only the final logits row.
+        // Deferred completion does not make this a pure CPU submission span:
+        // model internals may still wait for metadata, PLE or MoE readbacks.
+        q4t::diagnostic::Scope execution_submit("target_prefill_call", 0, T);
         s = model::ModelPrefill(model_.Get(), &seq, ids.data(), T, d_prefill_logits_,
                                 nullptr, mtp_loaded_ ? d_trunk_full : nullptr,
                                 vptr, seq_id, model::LogitsRows::kLastRow,
@@ -508,40 +526,65 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           const int base = seq.position;
           const int c = std::min(chunk, T - base);
           const bool last = (base + c == T);
+          prefill_base = base;
+          prefill_tokens = c;
+          q4t::diagnostic::Scope execution_chunk("target_prefill_chunk", base,
+                                                c);
           if (router_trace_) router_trace_->BeginForward(
               trace::RouteStage::kPrefill, base, c);
-          s = model::ModelPrefillTextChunk(
-              model_.Get(), &seq, ids.data(), T, c,
-              last ? d_prefill_logits_ : nullptr, nullptr,
-              d_trunk_full
-                  ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
-                  : nullptr, model::LogitsRows::kLastRow,
-              model::SequenceCompletion::kDeferred);
+          {
+            q4t::diagnostic::Scope execution_submit("target_prefill_call", base,
+                                                   c);
+            s = model::ModelPrefillTextChunk(
+                model_.Get(), &seq, ids.data(), T, c,
+                last ? d_prefill_logits_ : nullptr, nullptr,
+                d_trunk_full
+                    ? d_trunk_full + static_cast<size_t>(base) * trunk_hc_dim
+                    : nullptr, model::LogitsRows::kLastRow,
+                model::SequenceCompletion::kDeferred);
+          }
           if (!last) {
             model::ModelSequence* sequence = &seq;
-            s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {&sequence, 1},
-                                   s, router_trace_.get());
+            {
+              // This includes the existing stream wait and sequence commit.
+              q4t::diagnostic::Scope execution_wait(
+                  "prefill_chunk_readback_wait_commit", base, c);
+              s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {&sequence, 1},
+                                     s, router_trace_.get());
+            }
             // Diagnostic: memory trajectory across chunked prefill (the
             // 204800-tier OOM investigation). Never touches compute.
-            LogMemorySnapshot("prefill_chunk",
-                              "seq" + std::to_string(seq_id) +
-                                  "@pos" + std::to_string(seq.position));
+            {
+              q4t::diagnostic::Scope execution_memory(
+                  "prefill_chunk_memory_snapshot", base, c);
+              LogMemorySnapshot("prefill_chunk",
+                                "seq" + std::to_string(seq_id) +
+                                    "@pos" + std::to_string(seq.position));
+            }
           }
           if (last || !s.ok()) break;
         }
       }
     }
     cudaError_t copy_error = cudaSuccess;
-    if (s.ok())
+    if (s.ok()) {
+      q4t::diagnostic::Scope execution_copy(
+          "prefill_final_d2h_submit", prefill_base, prefill_tokens);
       copy_error = cudaMemcpyAsync(
           h_logits.data(), d_prefill_logits_, static_cast<size_t>(vocab) * 2,
           cudaMemcpyDeviceToHost, nullptr);
+    }
     model::ModelSequence* sequence = &seq;
     // Drain and commit while holding model_mu_, also on failed submission.
     const auto pending = seq.HasPending()
         ? std::span<model::ModelSequence* const>(&sequence, 1)
         : std::span<model::ModelSequence* const>();
-    s = FinishHostReadback(copy_error, &gpu_healthy_, pending, s, router_trace_.get());
+    {
+      q4t::diagnostic::Scope execution_wait(
+          "prefill_final_readback_wait_commit", prefill_base, prefill_tokens);
+      s = FinishHostReadback(copy_error, &gpu_healthy_, pending, s,
+                             router_trace_.get());
+    }
     if (!s.ok()) seq.Fail();
   }
   if ((prefill_cancelled || cancelled()) &&
@@ -641,10 +684,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
   if (use_mtp) {
     {
+      q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
+      q4t::diagnostic::Scope execution_init("handler_mtp_init", 0, T);
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
-      s = !gpu_healthy_.load(std::memory_order_relaxed)
-              ? Status::Fail("GPU unhealthy; restart server")
-              : mtp::MtpResetState(mtp_, nullptr, seq_id);
+      {
+        q4t::diagnostic::Scope execution_reset("prompt_draft_reset", 0, T);
+        s = !gpu_healthy_.load(std::memory_order_relaxed)
+                ? Status::Fail("GPU unhealthy; restart server")
+                : mtp::MtpResetState(mtp_, nullptr, seq_id);
+      }
       if (s.ok()) {
         mtp_b = next_token;
         // EAGLE shift: shifted_ids[p] = t_{p+1}, with t_P := b at the tail.
@@ -653,9 +701,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         shifted[T - 1] = mtp_b;
         std::vector<int> pos(T);
         for (int i = 0; i < T; ++i) pos[i] = i;
-        s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
-                                T, &mtp_d0, d_mtp_g, nullptr, seq_id);
+        {
+          // Aggregate call: includes internal submission, existing waits and
+          // cleanup. Its child spans must not be added to this parent span.
+          q4t::diagnostic::Scope execution_extend("prompt_draft_extend_call", 0,
+                                                 T);
+          s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
+                                  T, &mtp_d0, d_mtp_g, nullptr, seq_id);
+        }
         if (s.ok()) {
+          q4t::diagnostic::Scope execution_reserve("prompt_verify_reserve", 0,
+                                                  T);
           s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
           if (s.ok())
             s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
@@ -674,6 +730,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // The prompt trunk is only needed for the draft-extend above; free it now so
   // decoding requests do not hold it (bounds concurrent memory).
   if (d_trunk_full) {
+    q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
+    q4t::diagnostic::Scope execution_free("prompt_trunk_free", 0, T);
     cudaFree(d_trunk_full);
     d_trunk_full = nullptr;
   }

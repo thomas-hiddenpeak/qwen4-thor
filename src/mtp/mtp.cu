@@ -43,6 +43,7 @@
 #include <string>
 #include <vector>
 
+#include "q4t/diagnostic/execution_observer.h"
 #include "q4t/model/full_attention.h"
 #include "q4t/model/hyperconnection.h"
 #include "q4t/model/linear.h"
@@ -53,6 +54,14 @@ namespace q4t {
 namespace mtp {
 
 namespace {
+
+// The observer is disabled by default. Its CPU scopes add no CUDA work or
+// synchronization and keep existing API waits distinct from submission spans.
+template <typename Function>
+auto ObserveExecution(const char* label, Function&& function) {
+  diagnostic::Scope scope(label);
+  return function();
+}
 
 constexpr int kBlock = 256;
 constexpr size_t kGemmWs = 32u * 1024u * 1024u;  // cuBLASLt scratch per GEMM
@@ -800,6 +809,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   if (T <= 0) return Status::Fail("MtpDraftExtend: T must be > 0");
   if (seq_id < 0 || seq_id >= m.max_seq)
     return Status::Fail("MtpDraftExtend: seq_id out of range");
+  diagnostic::Batch execution("mtp.prompt_extend", seq_id, -1, T);
+  diagnostic::Scope prompt_scope("mtp.prompt_extend.total", -1, T);
   const int hc_dim = m.hc_dim();
   const int hs = m.cfg.hs;
   const int vocab = m.DraftVocab();
@@ -827,7 +838,10 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
     uint16_t* d_logits = nullptr;  // [last_c, vocab] -- last chunk's rows
     int* d_seqid = nullptr;
     auto cleanup = [&](Status s) -> Status {
-      Status drained = upload.Drain();
+      diagnostic::Scope cleanup_scope("mtp.prompt_extend.cleanup");
+      Status drained = ObserveExecution("mtp.wait.metadata_drain", [&] {
+        return upload.Drain();
+      });
       if (!drained.ok()) s = drained;
       if (d_seqid) cudaFree(d_seqid);
       if (d_ids) cudaFree(d_ids);
@@ -859,7 +873,11 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
     }
     Status s;
     for (int base = 0; base < T; base += chunk) {
-      s = upload.Begin(stream);
+      diagnostic::Scope chunk_scope("mtp.prompt_extend.chunk", base,
+                                    std::min(chunk, T - base));
+      s = ObserveExecution("mtp.api.metadata_begin", [&] {
+        return upload.Begin(stream);
+      });
       if (!s.ok()) return cleanup(s);
       const int c = (T - base < chunk) ? (T - base) : chunk;
       const bool last = (base + c >= T);
@@ -876,7 +894,9 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
         if (!(s = upload.Copy(d_seqid, seqid.data(), c * sizeof(int))).ok())
           return cleanup(s);
       }
-      s = upload.Finish();
+      s = ObserveExecution("mtp.api.metadata_finish", [&] {
+        return upload.Finish();
+      });
       if (!s.ok()) return cleanup(s);
       // main_trunk is the FULL-prompt trunk [T, hc_dim]; this chunk reads its
       // [base, base+c) rows.
@@ -887,9 +907,12 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
       if (!s.ok()) return cleanup(s);
     }
     // out_g = last row's multi_hidden (draft trunk g_{last}).
-    if (cudaMemcpy(out_g, d_multi + static_cast<size_t>(last_c - 1) * hc_dim,
-                   static_cast<size_t>(hc_dim) * sizeof(uint16_t),
-                   cudaMemcpyDeviceToDevice) != cudaSuccess)
+    if (ObserveExecution("mtp.api.prompt_out_g_d2d", [&] {
+          return cudaMemcpy(
+              out_g, d_multi + static_cast<size_t>(last_c - 1) * hc_dim,
+              static_cast<size_t>(hc_dim) * sizeof(uint16_t),
+              cudaMemcpyDeviceToDevice);
+        }) != cudaSuccess)
       return cleanup(Status::Fail("MtpDraftExtend: D2D out_g"));
     // out_d0 = argmax of the last chunk's final logits row (first draft token).
     {
@@ -897,8 +920,10 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
           m, d_logits + static_cast<size_t>(last_c - 1) * vocab, 1, d_ids,
           stream);
       if (!s2.ok()) return cleanup(s2);
-      if (cudaMemcpy(out_d0, d_ids, sizeof(int32_t), cudaMemcpyDeviceToHost) !=
-          cudaSuccess)
+      if (ObserveExecution("mtp.api.prompt_argmax_d2h", [&] {
+            return cudaMemcpy(out_d0, d_ids, sizeof(int32_t),
+                              cudaMemcpyDeviceToHost);
+          }) != cudaSuccess)
         return cleanup(Status::Fail("MtpDraftExtend: D2H argmax"));
     }
     return cleanup(Status());
@@ -918,6 +943,7 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   // layout (max_seq == 1) passes nullptr to MtpForward (bit-identical).
   int* d_seqid = nullptr;
   auto cleanup = [&](Status s) -> Status {
+    diagnostic::Scope cleanup_scope("mtp.prompt_extend.cleanup");
     if (d_seqid) cudaFree(d_seqid);
     if (!use_scratch) {
       if (d_ids) cudaFree(d_ids);
@@ -945,10 +971,15 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
       return cleanup(Status::Fail("MtpDraftExtend: cudaMalloc"));
   }
 
-  cudaMemcpy(d_ids, shifted_ids, static_cast<size_t>(T) * sizeof(int32_t),
-             cudaMemcpyHostToDevice);
-  cudaMemcpy(d_pos, positions, static_cast<size_t>(T) * sizeof(int),
-             cudaMemcpyHostToDevice);
+  ObserveExecution("mtp.api.prompt_ids_h2d", [&] {
+    return cudaMemcpy(d_ids, shifted_ids,
+                      static_cast<size_t>(T) * sizeof(int32_t),
+                      cudaMemcpyHostToDevice);
+  });
+  ObserveExecution("mtp.api.prompt_positions_h2d", [&] {
+    return cudaMemcpy(d_pos, positions, static_cast<size_t>(T) * sizeof(int),
+                      cudaMemcpyHostToDevice);
+  });
   if (m.max_seq > 1) {
     if (cudaMalloc(reinterpret_cast<void**>(&d_seqid),
                    static_cast<size_t>(T) * sizeof(int)) != cudaSuccess)
@@ -964,9 +995,11 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   if (!s.ok()) return cleanup(s);
 
   // out_g = last row's multi_hidden (draft trunk g_{last}).
-  if (cudaMemcpy(out_g, d_multi + static_cast<size_t>(T - 1) * hc_dim,
-                 static_cast<size_t>(hc_dim) * sizeof(uint16_t),
-                 cudaMemcpyDeviceToDevice) != cudaSuccess)
+  if (ObserveExecution("mtp.api.prompt_out_g_d2d", [&] {
+        return cudaMemcpy(out_g, d_multi + static_cast<size_t>(T - 1) * hc_dim,
+                          static_cast<size_t>(hc_dim) * sizeof(uint16_t),
+                          cudaMemcpyDeviceToDevice);
+      }) != cudaSuccess)
     return cleanup(Status::Fail("MtpDraftExtend: D2D out_g"));
 
   // out_d0 = argmax of the last row's logits (first draft token), on the GPU
@@ -976,8 +1009,10 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
     Status s = DraftArgmax(m, d_logits + static_cast<size_t>(T - 1) * vocab,
                            1, d_ids, stream);
     if (!s.ok()) return cleanup(s);
-    if (cudaMemcpy(out_d0, d_ids, sizeof(int32_t), cudaMemcpyDeviceToHost) !=
-        cudaSuccess)
+    if (ObserveExecution("mtp.api.prompt_argmax_d2h", [&] {
+          return cudaMemcpy(out_d0, d_ids, sizeof(int32_t),
+                            cudaMemcpyDeviceToHost);
+        }) != cudaSuccess)
       return cleanup(Status::Fail("MtpDraftExtend: D2H argmax"));
   }
   return cleanup(Status());
@@ -1405,6 +1440,10 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
       return Status::Fail("MtpSpeculativeStepMulti: seq not in decode stage");
   }
 
+  diagnostic::Batch execution("mtp.multi", seqs[0]->seq_id,
+                              seqs[0]->position, B * (k + 1));
+  diagnostic::Scope step_scope("mtp.step", seqs[0]->position, B * (k + 1));
+
   // Persistent multi-seq scratch (reserved even for max_seq == 1).
   // All buffers are sized for the worst case B = max_seq, T = k_max, so the
   // extend gather needs no cudaMalloc/cudaFree. Other diagnostic/forward
@@ -1442,7 +1481,9 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   }
   auto cleanup = [&](Status st) -> Status {
     // Complete before step-owned upload sources are destroyed, on every exit.
-    const cudaError_t error = cudaStreamSynchronize(stream);
+    const cudaError_t error = ObserveExecution("mtp.wait.cleanup_sync", [&] {
+      return cudaStreamSynchronize(stream);
+    });
     if (error != cudaSuccess)
       st = Status::Fail(std::string("MtpSpeculativeStepMulti: completion: ") +
                         cudaGetErrorString(error));
@@ -1497,9 +1538,12 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D draft seq"));
     for (int b = 0; b < B; ++b) {
       drafts_host[static_cast<size_t>(b) * k] = d0[b];
-      if (cudaMemcpy(d_g_pool + static_cast<size_t>(seq_of[b]) * hc_dim,
-                     g_in[b], static_cast<size_t>(hc_dim) * 2,
-                     cudaMemcpyDeviceToDevice) != cudaSuccess)
+      if (ObserveExecution("mtp.api.seed_g_d2d", [&] {
+            return cudaMemcpy(
+                d_g_pool + static_cast<size_t>(seq_of[b]) * hc_dim,
+                g_in[b], static_cast<size_t>(hc_dim) * 2,
+                cudaMemcpyDeviceToDevice);
+          }) != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2D g_in"));
     }
     // Seed column 0 of the draft matrix: H2D d0 -> d_ids, then scatter to
@@ -1517,6 +1561,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
       for (int b = 0; b < B; ++b)
         h_pos[static_cast<size_t>(j) * B + b] = P[b] + j - 1;
     for (int j = 1; j < k; ++j) {
+      diagnostic::Scope token_scope("mtp.draft_token", P[0] + j - 1, B);
       // Gather the previous column (device): d_ids[b] = drafts[seq_of[b], j-1].
       GatherDraftKernel<<<B, 32, 0, stream>>>(d_drafts, k_stride, j - 1, d_ids,
                                               mtp.d_ms_ext_seq, B);
@@ -1560,9 +1605,11 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     if (cudaGetLastError() != cudaSuccess)
       return cleanup(
           Status::Fail("MtpSpeculativeStepMulti: gather draft matrix"));
-    if (cudaMemcpy(drafts_host.data(), d_ext_ids,
-                   static_cast<size_t>(B) * k * sizeof(int32_t),
-                   cudaMemcpyDeviceToHost) != cudaSuccess)
+    if (ObserveExecution("mtp.api.draft_matrix_d2h", [&] {
+          return cudaMemcpy(drafts_host.data(), d_ext_ids,
+                            static_cast<size_t>(B) * k * sizeof(int32_t),
+                            cudaMemcpyDeviceToHost);
+        }) != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H draft matrix"));
   }
   if (timing) cudaEventRecord(ev_d1, stream);
@@ -1594,17 +1641,21 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     for (size_t i = 0; i < h.size(); ++i)
       vhist[static_cast<size_t>(b) * hist_len + i] = h[i];
   }
-  Status s = model::ModelVerifyMulti(main, vtok.data(), vbase.data(),
-                                     vseq.data(), vhist.data(), hist_len, B,
-                                     k + 1, d_vlogits, stream, d_vtrunk);
+  Status s = ObserveExecution("mtp.verify_forward", [&] {
+    return model::ModelVerifyMulti(main, vtok.data(), vbase.data(),
+                                   vseq.data(), vhist.data(), hist_len, B,
+                                   k + 1, d_vlogits, stream, d_vtrunk);
+  });
   if (!s.ok()) return cleanup(s);
   // Argmax over the B*(k+1) rows -> main predictions m_{b,i}.
   std::vector<int32_t> m_argmax(Tvm);
   s = ArgmaxBf16Rows(d_vlogits, static_cast<int>(Tvm), vocab,
                      reinterpret_cast<int32_t*>(d_ext_ids), stream);
   if (!s.ok()) return cleanup(s);
-  if (cudaMemcpy(m_argmax.data(), d_ext_ids, Tvm * sizeof(int32_t),
-                 cudaMemcpyDeviceToHost) != cudaSuccess)
+  if (ObserveExecution("mtp.api.verify_argmax_d2h", [&] {
+        return cudaMemcpy(m_argmax.data(), d_ext_ids, Tvm * sizeof(int32_t),
+                          cudaMemcpyDeviceToHost);
+      }) != cudaSuccess)
     return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H verify argmax"));
   // Diagnostic (Q4T_MTP_GAP_DEBUG): top-2 gap per verify row, logged per
   // sequence with the draft/main tokens. Pure observation; no behavior change.
@@ -1654,7 +1705,9 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     }
     a[b] = acc;
     if (acc < k) {
-      s = model::ModelRestoreCheckpoint(main, acc, stream, seq_of[b]);
+      s = ObserveExecution("mtp.restore_checkpoint", [&] {
+        return model::ModelRestoreCheckpoint(main, acc, stream, seq_of[b]);
+      });
       if (!s.ok()) return cleanup(s);
     }
   }
@@ -1706,6 +1759,7 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     ++r;
   }
   if (T_ext > 0) {
+    diagnostic::Scope extend_scope("mtp.accepted_extend", P[0], T_ext);
     // Gather the per-seq verify-trunk rows contiguous (the extend hidden).
     {
       if (!mtp.d_ms_gather_off ||
@@ -1751,13 +1805,17 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
           d_ext_logits + static_cast<size_t>(last) * mtp.DraftVocab(),
           1, d_ext_ids, stream);
       if (!s.ok()) return cleanup(s);
-      if (cudaMemcpy(&next_d0[b], d_ext_ids, sizeof(int32_t),
-                     cudaMemcpyDeviceToHost) != cudaSuccess)
+      if (ObserveExecution("mtp.api.next_d0_d2h", [&] {
+            return cudaMemcpy(&next_d0[b], d_ext_ids, sizeof(int32_t),
+                              cudaMemcpyDeviceToHost);
+          }) != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H next_d0"));
-      if (cudaMemcpy(next_g[b],
-                     d_ext_multi + static_cast<size_t>(last) * hc_dim,
-                     static_cast<size_t>(hc_dim) * 2, cudaMemcpyDeviceToDevice) !=
-          cudaSuccess)
+      if (ObserveExecution("mtp.api.next_g_d2d", [&] {
+            return cudaMemcpy(next_g[b],
+                              d_ext_multi + static_cast<size_t>(last) * hc_dim,
+                              static_cast<size_t>(hc_dim) * 2,
+                              cudaMemcpyDeviceToDevice);
+          }) != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2D next_g"));
       r += a[b] + 1;
     }
@@ -1817,6 +1875,7 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                   uint16_t* sample_hidden, uint16_t* multi_hidden,
                   uint16_t* logits, int T, cudaStream_t stream,
                   const int* d_seq_id, bool compute_logits, int max_position) {
+  diagnostic::Scope forward_scope("mtp.forward", max_position, T);
   const int hs = m.cfg.hs, hc = m.cfg.hc, hc_dim = hc * hs;
   if (T <= 0) return Status();
   const auto& cfg = m.cfg;
@@ -1906,11 +1965,13 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   if (!s.ok()) return s;
   // 4c. full attention. d_seq_id selects the per-token draft KV/indexer/rope
   // slice (multi-seq draft, Phase 2); null = single-seq (bit-identical).
-  s = model::FullAttentionForward(m.full_attn, d_mixed_attn, d_attn_out,
-                                  d_positions, m.d_rope_pos, m.kv_cache,
-                                  m.page_table, m.idx_raw, m.idx_comp, T,
-                                  d_attn_ws, attn_ws, stream, d_seq_id,
-                                  max_position);
+  s = ObserveExecution("mtp.attention", [&] {
+    return model::FullAttentionForward(m.full_attn, d_mixed_attn, d_attn_out,
+                                       d_positions, m.d_rope_pos, m.kv_cache,
+                                       m.page_table, m.idx_raw, m.idx_comp, T,
+                                       d_attn_ws, attn_ws, stream, d_seq_id,
+                                       max_position);
+  });
   if (!s.ok()) return s;
   // 4d. attn_hc.combine: trunk_a = attn_out + trunk (learned injection).
   s = model::HyperConnectionCombine(m.attn_hc, d_attn_out, d_trunk,
@@ -1922,8 +1983,11 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                                 T, d_hc_gemm, kGemmWs, stream);
   if (!s.ok()) return s;
   // 4f. BF16 MoE.
-  s = MoeBf16Forward(d_mixed_mlp, m.moe, m.moe_extra, d_mlp_out, T, cfg.topk,
-                     d_moe_ws, moe_carve, d_moe_gemm, kGemmWs, stream);
+  s = ObserveExecution("mtp.moe", [&] {
+    return MoeBf16Forward(d_mixed_mlp, m.moe, m.moe_extra, d_mlp_out, T,
+                          cfg.topk, d_moe_ws, moe_carve, d_moe_gemm,
+                          kGemmWs, stream);
+  });
   if (!s.ok()) return s;
 
   // 5. Final mixer: combine (learned, using mlp_hc's injection) + mix.
@@ -1942,6 +2006,7 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   // [T, vocab] buffer is only needed for the final chunk's argmax — at 262K
   // a full-prompt logits buffer would be ~130 GB).
   if (compute_logits) {
+    diagnostic::Scope head_scope("mtp.head", max_position, T);
     model::ModelHeadWeights head_view;
     head_view.lm_head = m.subset_head ? m.subset_head
                                     : const_cast<uint16_t*>(m.lm_head);

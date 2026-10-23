@@ -1,5 +1,6 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "q4t/diagnostic/execution_observer.h"
 
 #include <algorithm>
 #include <chrono>
@@ -22,10 +23,14 @@ Status FinishHostReadback(
     cudaError_t copy_error, std::atomic<bool>* gpu_healthy,
     std::span<model::ModelSequence* const> sequences,
     const Status& submitted, trace::RouterCollector* trace) {
+  diagnostic::Scope observation("host_readback.wait_and_commit");
   const cudaError_t trace_error = trace ? trace->Readback(nullptr) : cudaSuccess;
   bool gpu_complete = false;
   const Status result = model::CompleteSequenceWork(sequences, submitted, [&] {
-    const cudaError_t sync_error = cudaStreamSynchronize(nullptr);
+    const cudaError_t sync_error = [&] {
+      diagnostic::Scope wait("host_readback.stream_sync");
+      return cudaStreamSynchronize(nullptr);
+    }();
     gpu_complete = sync_error == cudaSuccess;
     if (copy_error == cudaSuccess) copy_error = trace_error;
     const cudaError_t error =
