@@ -1,0 +1,599 @@
+{
+  "created_utc": "2026-10-23T23:22:01.544866+00:00",
+  "review_script_sha256": "08215919c0428481092d26ce4a05787430a317ba3e090e285de7ebff97155ca5",
+  "source_audit_sha256": "cd25dd8c90447a1cbfd97ff869023298408897050d5bff78a44e05674d85791a",
+  "plan_sha256": "c8f66f2b1bb5e0fbd6e7adb10c8545a9a004ce9faaf1f529c33c841d6a279ec0",
+  "stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-rerun-20261024/diagnostic-v1",
+  "evidence_validity": "VALID",
+  "measurement_completeness": "COMPLETE_56_HTTP_12_STARTS_MONITOR_LIFECYCLE",
+  "statistical_conclusion": "NOT_EVALUATED_BY_CLOSURE_REVIEW; descriptive diagnostic only",
+  "engineering_conclusion": "MONITOR_REAL_STAGE_LIFECYCLE_CLOSED; runtime decision remains with root",
+  "errors": [],
+  "elapsed_seconds": 2887.428260870045,
+  "identities": {
+    "frozen_checked": 516,
+    "frozen_changed": [],
+    "raw_checked": 798,
+    "raw_changed": [],
+    "raw_seal_sha256": "b91d5e9d8ec3ecb92e8031e67698ec78e17b268d9410af92136d20c973ce0ebd",
+    "model_metadata_checked": 197,
+    "model_changed": [],
+    "snapshot_checked": 433,
+    "snapshot_changed": [],
+    "live_identity_review_finished_utc": "2026-10-23T23:22:01.097972+00:00",
+    "candidate_sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+    "runtime_source": "cb0fa73c3271e6fbce2cd9d282838de9643d2a3b",
+    "measured_tool_source": "4db614656c1eef179b7859619a997cccd24311fa",
+    "deployed_and_subset_unchanged": {
+      "/home/rm01/models/dev/qwen4-thor/build/q4t": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+      "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/manifest.json": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/head.bf16": "21522eabb4ab4f816d9f76eefe317a17e7ba668ebe838809eb4be87d84ef75c1",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/token_ids.bin": "71d89c6d2899c22641ac3d1f7f4957de94eddc5256b3f60bc8242f24becf590b"
+    }
+  },
+  "requests": {
+    "generations": 56,
+    "starts": 12,
+    "services": [
+      {
+        "name": "first-http",
+        "requests": 1,
+        "pid": 3132114,
+        "stopped_monotonic": 984730.5901982936,
+        "server_exit": 0
+      },
+      {
+        "name": "subset-off-a1",
+        "requests": 9,
+        "pid": 3133153,
+        "stopped_monotonic": 985064.6135642049,
+        "server_exit": 0
+      },
+      {
+        "name": "subset-on-b",
+        "requests": 9,
+        "pid": 3135894,
+        "stopped_monotonic": 985391.965710659,
+        "server_exit": 0
+      },
+      {
+        "name": "subset-off-a2",
+        "requests": 9,
+        "pid": 3138609,
+        "stopped_monotonic": 985720.0976531305,
+        "server_exit": 0
+      },
+      {
+        "name": "full-on",
+        "requests": 9,
+        "pid": 3141239,
+        "stopped_monotonic": 986045.2707037786,
+        "server_exit": 0
+      },
+      {
+        "name": "full-off",
+        "requests": 9,
+        "pid": 3143785,
+        "stopped_monotonic": 986382.375853537,
+        "server_exit": 0
+      },
+      {
+        "name": "first45-off",
+        "requests": 1,
+        "pid": 3146618,
+        "stopped_monotonic": 986467.5071272815,
+        "server_exit": 0
+      },
+      {
+        "name": "first45-on",
+        "requests": 1,
+        "pid": 3148256,
+        "stopped_monotonic": 986551.249038619,
+        "server_exit": 0
+      },
+      {
+        "name": "first200-on",
+        "requests": 1,
+        "pid": 3150176,
+        "stopped_monotonic": 986771.5466718464,
+        "server_exit": 0
+      },
+      {
+        "name": "first200-off",
+        "requests": 1,
+        "pid": 3153614,
+        "stopped_monotonic": 986991.8145816484,
+        "server_exit": 0
+      },
+      {
+        "name": "timing-off",
+        "requests": 3,
+        "pid": 3154860,
+        "stopped_monotonic": 987272.9624126421,
+        "server_exit": 0
+      },
+      {
+        "name": "timing-on",
+        "requests": 3,
+        "pid": 3156402,
+        "stopped_monotonic": 987554.032869996,
+        "server_exit": 0
+      }
+    ]
+  },
+  "monitor": {
+    "flushed": 2888,
+    "attempted": 2888,
+    "unflushed": 0,
+    "last_http_end": 987552.25400387,
+    "last_server_exit": 987554.032869996,
+    "barrier": {
+      "boundary_monotonic": 987557.556329393,
+      "sample_started_monotonic": 987557.981139355,
+      "flushed_monotonic": 987558.001913667
+    },
+    "final_sample_start": 987557.981139355,
+    "final_sample_collection_end": 987558.001716877,
+    "final_flush": 987558.001913667,
+    "sampler_finished": 987558.007079073,
+    "lease_released": 987559.252631428,
+    "postflight_sha256": "48b62b43d490b96e84af6ea7351b4ee075d8ae83a974769518d8b7315d141dc6",
+    "actual_io_exit_branch_occurrences": 3,
+    "actual_io_exit_branch_rows": [
+      {
+        "sample": 61,
+        "pid": 3132112,
+        "start_ticks": 98467364,
+        "state": "Z",
+        "executable": "",
+        "server": null,
+        "error": {
+          "pid": 3132112,
+          "expected_start_ticks": 98467364,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 5,
+          "errno": 13,
+          "error": "PermissionError(13, 'Permission denied')"
+        },
+        "sample_monotonic": 984730.590804615
+      },
+      {
+        "sample": 395,
+        "pid": 3133151,
+        "start_ticks": 98473071,
+        "state": "Z",
+        "executable": "",
+        "server": null,
+        "error": {
+          "pid": 3133151,
+          "expected_start_ticks": 98473071,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 5,
+          "errno": 13,
+          "error": "PermissionError(13, 'Permission denied')"
+        },
+        "sample_monotonic": 985064.635172694
+      },
+      {
+        "sample": 2884,
+        "pid": 3156402,
+        "start_ticks": 98727313,
+        "state": "Z",
+        "executable": "",
+        "server": "timing-on",
+        "error": {
+          "pid": 3156402,
+          "expected_start_ticks": 98727313,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 5,
+          "errno": 13,
+          "error": "PermissionError(13, 'Permission denied')"
+        },
+        "sample_monotonic": 987553.98077596
+      }
+    ]
+  },
+  "owned_cleanup": {
+    "check_started_utc": "2026-10-23T23:22:01.500752+00:00",
+    "check_finished_utc": "2026-10-23T23:22:01.544811+00:00",
+    "history_identities": 61,
+    "status_counts": {
+      "ABSENT": 61
+    },
+    "matching_owned_residuals": [],
+    "unreadable": [],
+    "rows": [
+      {
+        "pid": 3132090,
+        "expected_start_ticks": 98467050,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3132112,
+        "expected_start_ticks": 98467364,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3132114,
+        "expected_start_ticks": 98467373,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3133007,
+        "expected_start_ticks": 98471074,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3133151,
+        "expected_start_ticks": 98473071,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3133153,
+        "expected_start_ticks": 98473080,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3134092,
+        "expected_start_ticks": 98477482,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3134219,
+        "expected_start_ticks": 98479245,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3134503,
+        "expected_start_ticks": 98483618,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3135570,
+        "expected_start_ticks": 98501594,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3135727,
+        "expected_start_ticks": 98503995,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3135892,
+        "expected_start_ticks": 98506470,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3135894,
+        "expected_start_ticks": 98506482,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3136795,
+        "expected_start_ticks": 98510383,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3136923,
+        "expected_start_ticks": 98512150,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3137216,
+        "expected_start_ticks": 98516519,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3138269,
+        "expected_start_ticks": 98534534,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3138431,
+        "expected_start_ticks": 98536834,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3138607,
+        "expected_start_ticks": 98539209,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3138609,
+        "expected_start_ticks": 98539221,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3139559,
+        "expected_start_ticks": 98543022,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3139708,
+        "expected_start_ticks": 98544786,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3139965,
+        "expected_start_ticks": 98549148,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3140916,
+        "expected_start_ticks": 98567136,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3141071,
+        "expected_start_ticks": 98569541,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3141237,
+        "expected_start_ticks": 98572029,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3141239,
+        "expected_start_ticks": 98572038,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3142096,
+        "expected_start_ticks": 98575440,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3142229,
+        "expected_start_ticks": 98577297,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3142489,
+        "expected_start_ticks": 98581733,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3143461,
+        "expected_start_ticks": 98599757,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3143621,
+        "expected_start_ticks": 98602149,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3143783,
+        "expected_start_ticks": 98604548,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3143785,
+        "expected_start_ticks": 98604558,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3144680,
+        "expected_start_ticks": 98608659,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3144815,
+        "expected_start_ticks": 98610531,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3145075,
+        "expected_start_ticks": 98614976,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3146238,
+        "expected_start_ticks": 98633010,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3146403,
+        "expected_start_ticks": 98635629,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3146615,
+        "expected_start_ticks": 98638248,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3146618,
+        "expected_start_ticks": 98638257,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3147533,
+        "expected_start_ticks": 98642259,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3148254,
+        "expected_start_ticks": 98646756,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3148256,
+        "expected_start_ticks": 98646765,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3149501,
+        "expected_start_ticks": 98650666,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3150174,
+        "expected_start_ticks": 98655144,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3150176,
+        "expected_start_ticks": 98655153,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3151467,
+        "expected_start_ticks": 98659054,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3153612,
+        "expected_start_ticks": 98677177,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3153614,
+        "expected_start_ticks": 98677188,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3154380,
+        "expected_start_ticks": 98681091,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3154858,
+        "expected_start_ticks": 98699190,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3154860,
+        "expected_start_ticks": 98699201,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3155642,
+        "expected_start_ticks": 98703103,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3155716,
+        "expected_start_ticks": 98704863,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3155934,
+        "expected_start_ticks": 98709243,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3156399,
+        "expected_start_ticks": 98727304,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3156402,
+        "expected_start_ticks": 98727313,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3157247,
+        "expected_start_ticks": 98731215,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3157337,
+        "expected_start_ticks": 98732973,
+        "status": "ABSENT",
+        "observed": null
+      },
+      {
+        "pid": 3157468,
+        "expected_start_ticks": 98737350,
+        "status": "ABSENT",
+        "observed": null
+      }
+    ],
+    "guard_and_nvml_numeric_pids_checked": 2646,
+    "guard_worker_start_ticks_available": false,
+    "present_guard_pids_without_attributable_identity": [],
+    "scope": "One read-only /proc check of recorded owned identities. No signal, process scan, NVML or GPU query."
+  },
+  "reused_evidence": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/audit-evidence.json",
+    "sha256": "3a296afa13e68638f114154327aae47f7257f93cd69f325817f58a7495e83c2e",
+    "quality": 22,
+    "host": 86,
+    "stage_suite": 10,
+    "scope": "same program/dependencies; direct oracle original two-GDN-layer target scope only; no rerun implied"
+  },
+  "limits": [
+    "Original ENV_ABORT remains unchanged and is not pooled.",
+    "All inputs are development material; no new five-tier acceptance or ordinary decode matrix.",
+    "Subset A1/B/A2 has one shared B; full has one pair; three repeats are within one startup.",
+    "Native/layer timing is intrusive and separate from normal HTTP gains; events include stream idle.",
+    "1 Hz sampling cannot exclude shorter interference or provide exact request CPU/IO counters.",
+    "Actual io EACCES branch closure covers these three observed terminal identities, not every future lifecycle.",
+    "No new model, HTTP, GPU, test, monitoring loop or process signal was performed by this review."
+  ]
+}

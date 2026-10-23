@@ -45,7 +45,8 @@ zombie process, pass:
 python3 -B tools/mtp_suffix_zero_hit/test_telemetry.py -v
 ```
 
-No new GPU/HTTP lifecycle validation was run after the sampler repair. The
+At the close of the original failed stage, no new GPU/HTTP lifecycle validation
+was run after the sampler repair. The
 failed stage was not retried, and conditional performance acceptance was not
 run. Any archived forensic timing remains ENV_ABORT evidence, never a passed
 optimization result.
@@ -72,3 +73,12 @@ checked after its batch; a failure stops subsequent batches. Do not claim
 per-request synchronous fail-fast within a batch. The repaired monitor must
 remain active through final shutdown and join. No runtime acceptance or default
 replacement follows from this diagnostic matrix alone.
+
+The authorized follow-up completed 56/56 HTTP and 12/12 starts in 2887.428
+seconds with a valid environment. All 2888 samples flushed, and three actual
+terminal io-EACCES observations (including the final q4t) exercised the repaired
+branch. Normal repeated-scenario gains met the frozen descriptive targets for
+both heads. Subset 200K TTFT and 8K protection remain unresolved; no actionable
+runtime cause justified conditional B. The delivered f356 program remains.
+Do not rerun the completed matrix automatically or reinterpret it as full
+five-tier optimization acceptance; see the decision card for evidence and limits.

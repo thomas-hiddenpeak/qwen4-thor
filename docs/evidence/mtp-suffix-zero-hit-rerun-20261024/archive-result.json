@@ -1,0 +1,13 @@
+{
+  "status": "ARCHIVED_BOUNDED_DIAGNOSIS",
+  "source_preserved": true,
+  "independent_copies": true,
+  "readback_verified": true,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-rerun-20261024/archive-closed",
+  "entries": 1279,
+  "payload_bytes": 208394299,
+  "manifest_sha256": "a7d93df0bf429e0699137c0b15bd6152b3da5a3f3ecbe136b4c867705adb4d8e",
+  "source_report": "closure-source report precedes archive seal text",
+  "inference_or_gpu_operations": 0,
+  "seal_sha256": "96254073bd6c48d476137ae42715d3e5232b4c41cd78e1bdb37498f629c6cfec"
+}
