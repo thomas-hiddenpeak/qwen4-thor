@@ -1,6 +1,6 @@
 # 子集head完整校验的SHA2启动优化
 
-2026-10-23，性能优化，有界验收通过（部署健康待执行）。父binary `75e85bac`，源码父提交
+2026-10-23，性能优化，有界验收及部署健康通过。父binary `75e85bac`，源码父提交
 `ef6b6577`；根main仍为`ab762aa`，不能视为运行binary源码。
 工作区与分支复用`codex/mtp-subset-head`。
 
@@ -136,3 +136,33 @@ hash字段不匹配的明确拒绝。软件回退是在Thor上强制选择，未
 原始日志保留在隔离source的`.q4t-work/sha2-startup-v1`及其同级
 `sha2-startup-lease-v1`；源码/构建/父版本/SASS在根工作区的
 `.q4t-work/sha2-startup-20261023`，不覆盖旧75e证据包。
+
+## 交付与停止
+
+受测f356已替换根`build/q4t`并同步`q4t.release.json`，源码身份为9a902a8；
+默认仍为完整head，唯一65536 BF16子集仍需显式参数。部署阶段独立lease，
+子集/完整head MTP/普通三种模式各1条真实HTTP健康均通过，释放正常，
+114次NVML均正常。共新增57HTTP（验收54+健康3），无常驻服务、
+无恢复marker。根源码仍为ab762aa，未将工作分支合入main。
+
+回退包`.q4t-work/sha2-startup-20261023/delivery-package`已精确核验
+275个封存文件，包含旧75e binary/release/cache、新程序、固定artifact、
+受测源码及决定。正式部署receipt见
+[部署证据](evidence/sha2-startup-20261023/deployment.json)。
+两文件各自原子替换，不承诺跨文件断电原子性；恢复marker与已知身份
+回退处理半安装状态，未知身份拒绝覆盖。未执行额外GPU回退采样。
+保留隔离source和原证据路径，不能在分支整理时连同工作区删除。
+
+需要回退时，在保留的source下使用新的证据目录（下例目录尚未使用）：
+
+```bash
+python3 -B /home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/tools/evalscope/gpu_exclusive.py \
+  --output /home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-rollback-1/lease -- \
+  python3 -B /home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/tools/verify/deliver_sha2_startup.py deploy \
+  --stage /home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023 \
+  --install-root /home/rm01/models/dev/qwen4-thor \
+  --rollback-output /home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source/.q4t-work/sha2-rollback-1
+```
+
+工程接受和交付已完成，本轮停止；不扫描词表、不追加GPU/性能采样。
+回退到75e会保留原decode收益，但恢复其较慢的完整软件hash启动。

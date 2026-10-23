@@ -1,0 +1,128 @@
+{
+  "status": "DEPLOYED_HEALTH_CHECKED",
+  "binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "release_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+  "source_commit": "9a902a822b96b4ea25ae9f47fa5c0a7862f175c0",
+  "deployment": {
+    "status": "DEPLOYED_HEALTH_CHECKED",
+    "health": [
+      {
+        "name": "subset",
+        "exact_match": true,
+        "finalized": {
+          "schema": 1,
+          "event": "finalized",
+          "status": "PASS",
+          "count": 1608,
+          "device_bytes": 97023144328,
+          "allocated": 1608,
+          "consumed": 1608,
+          "freed": 1608,
+          "unhanded_remaining": 0,
+          "handed_live": 0,
+          "release_unknown": 0,
+          "error": "none",
+          "backend_rc": 0,
+          "error_index": 0,
+          "prepared": true,
+          "startup_complete": true,
+          "finalized": true,
+          "active": false,
+          "strategy": "stable_descending_bytes",
+          "plan_sha256": "c1c402cb95c59cff52e056f1e738ffe925fe62d1809c38eb92088d925638459f"
+        }
+      },
+      {
+        "name": "full",
+        "exact_match": true,
+        "finalized": {
+          "schema": 1,
+          "event": "finalized",
+          "status": "PASS",
+          "count": 1606,
+          "device_bytes": 96687337864,
+          "allocated": 1606,
+          "consumed": 1606,
+          "freed": 1606,
+          "unhanded_remaining": 0,
+          "handed_live": 0,
+          "release_unknown": 0,
+          "error": "none",
+          "backend_rc": 0,
+          "error_index": 0,
+          "prepared": true,
+          "startup_complete": true,
+          "finalized": true,
+          "active": false,
+          "strategy": "stable_descending_bytes",
+          "plan_sha256": "09f7ab7c416dcb396a687dc702ac2c8c817f381441a7c4637828d0e3ac0d8a72"
+        }
+      },
+      {
+        "name": "plain",
+        "exact_match": true,
+        "finalized": {
+          "schema": 1,
+          "event": "finalized",
+          "status": "PASS",
+          "count": 1541,
+          "device_bytes": 87178559248,
+          "allocated": 1541,
+          "consumed": 1541,
+          "freed": 1541,
+          "unhanded_remaining": 0,
+          "handed_live": 0,
+          "release_unknown": 0,
+          "error": "none",
+          "backend_rc": 0,
+          "error_index": 0,
+          "prepared": true,
+          "startup_complete": true,
+          "finalized": true,
+          "active": false,
+          "strategy": "stable_descending_bytes",
+          "plan_sha256": "70a2e2dde08818f12f969b9d944ab74fd70da76f7c397789babbf93e019017b4"
+        }
+      }
+    ],
+    "started": 1792735776.1852438,
+    "finished": 1792735897.6451936
+  },
+  "guard": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      "-B",
+      "tools/verify/deliver_sha2_startup.py",
+      "deploy",
+      "--stage",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023",
+      "--install-root",
+      "/home/rm01/models/dev/qwen4-thor"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-10-23T06:11:38.214948+00:00",
+      "monotonic": 925980.731829705,
+      "pid": 2820965
+    }
+  },
+  "nvml_queries": 114,
+  "nvml_max_seconds": 0.09454994997940958,
+  "sealed_package_files": 275,
+  "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package",
+  "package_seal_sha256": "bd4b9c53778728fd776dc7123dc379eff5791b34843a2e686158d952fee16fe6",
+  "model_starts": 3,
+  "http_requests": 3,
+  "total_new_http_requests": 57,
+  "live_q4t_processes": [],
+  "rollback_binary_sha256": "75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d",
+  "rollback_release_sha256": "9cbfaf7d76e62198fbc4f48b0e5ed1187d84a47705007ff5212411272ba47ab5",
+  "root_source_commit": "ab762aa2cfd7b5f57d34419bc816dcce9607ce6b"
+}

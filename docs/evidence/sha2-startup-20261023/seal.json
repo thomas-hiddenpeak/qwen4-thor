@@ -1,0 +1,7 @@
+{
+  "status": "PASS",
+  "files": 1866,
+  "seal_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/final-seal.json",
+  "seal_sha256": "fe2da9d1c84283ffe04c6958f631ff6eb16e53e0b7fbea22225a02fd1b3ae8e0",
+  "deployment_receipt_sha256": "e42cdd0e0f8fa1fd14cca7f6bdfb30ebe0c1400dae7298eb89842a327fb33df0"
+}
