@@ -1,0 +1,788 @@
+{
+  "created_utc": "2026-10-23T23:56:14.629714+00:00",
+  "evidence_validity": "ENV_ABORT",
+  "evidence_integrity": "PASS",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_EVALUATED_ENV_ABORT_INCOMPLETE",
+  "engineering_decision": "NO_PERFORMANCE_ACCEPTANCE_OR_RUNTIME_CANDIDATE_DECISION",
+  "scope": "Observation-only diagnostic; this failure is environmental, not an optimization-candidate failure.",
+  "prior_audit_correction": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/audit-execution.json",
+    "sha256": "d1da8843d33419ef9a4acba5bdea974f62e7aa3a9cd4cdd0ec6ce656ba410651",
+    "reason": "Auditor-only timing compatibility key polluted exact step equality; v2 preserves original dict keys. No raw change."
+  },
+  "errors": [],
+  "environment_errors": [
+    "resource sampler PermissionError; final attempt unflushed; no final fresh-monitor barrier",
+    "final sampler environmental failure"
+  ],
+  "measurement_gaps": [
+    "diagnostic telemetry final attempt incomplete",
+    "Only first service fully closed; 4 raw successful responses of planned 49, 2 starts of 13.",
+    "Repeat text client batch interrupted; normal ON, subset, CPU observer and Nsight groups not run.",
+    "No final complete sampler attempt/fresh flush or partial-service wrapper exit/finalization."
+  ],
+  "checks": {
+    "evidence": 1604,
+    "environment": 1291,
+    "measurement": 6
+  },
+  "script_sha256": "5cf311c2eeb4be901aa6040424dc2352cd1de83f6a4c3852e3e65af57e47b5bf",
+  "helper_sha256": "eebf37bf8704c884222219f6a797ad27ce7da27bbd0c6ca49c2cebf430839032",
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/audit_execution_v2.py"
+  ],
+  "identities": {
+    "plan_sha256": "a145dafe688ef60ec117d76fb5b3d6116a39b22bf92c412aede811c45e5df47b",
+    "frozen_files": {
+      "checked": 782,
+      "changed": []
+    },
+    "raw_files": {
+      "checked": 69,
+      "changed": []
+    },
+    "raw_seal_sha256": "b43a0a4976570306b2752ea3c0fab04e35ce69533bdc66985ca8f5741fa8f828",
+    "source_snapshot_files": 439,
+    "source_snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidate_sha256": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914",
+    "runtime_source": "55363f18dedb947ac52e69e10475d3082cb71a82",
+    "tools_source": "7c3984a8889e1a2ef1a71dd0ae9aa60f9e5cce0e",
+    "reference_binary_sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+    "default_binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "default_sidecar_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+    "model_metadata_files": 197,
+    "inherited_contracts": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/audit-evidence.json",
+      "sha256": "3a296afa13e68638f114154327aae47f7257f93cd69f325817f58a7495e83c2e",
+      "quality": 22,
+      "host": 86,
+      "stage_suite": 10,
+      "scope": "Original 6a mathematical contract evidence under reviewed unchanged computation dependencies only; not new-binary whole-model quality. Two-GDN-layer oracle scope unchanged."
+    },
+    "inherited_scope": "Original unchanged mathematics/state scopes only, including two GDN layers; no new observation-binary whole-model quality or stage environment proof."
+  },
+  "stage_state": {
+    "status": "ENV_ABORT",
+    "started": 1792799343.0100203,
+    "completed": [
+      "first-http"
+    ],
+    "requests_completed": 1,
+    "loads_started": 2,
+    "contract_seconds": 0,
+    "plan_sha256": "a145dafe688ef60ec117d76fb5b3d6116a39b22bf92c412aede811c45e5df47b",
+    "current": "full-off",
+    "error": "EnvironmentAbort('resource monitor failed/stale: {\\'failures\\': [\"ENV_ABORT telemetry: PermissionError(13, \\'Permission denied\\')\"], \\'age_seconds\\': 1.179564233054407}')",
+    "finished": 1792799469.2475622,
+    "elapsed_seconds": 126.23754530702718,
+    "monitor_failures": [
+      "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+    ]
+  },
+  "environment": {
+    "outer_exit": {
+      "status": "COMMAND_FAILED",
+      "command": [
+        "python3",
+        "-B",
+        "tools/mtp_suffix_execution/run_stage.py",
+        "--plan",
+        ".q4t-work/suffix-execution-20261024/diagnostic-v1/frozen-plan.json"
+      ],
+      "compute_backend": "nvml",
+      "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+      "poll_interval_seconds": 1.0,
+      "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+      "performance_acceptance": false,
+      "child_returncode": 1,
+      "external_lease": false,
+      "finished": {
+        "utc": "2026-10-23T23:51:09.807236+00:00",
+        "monotonic": 989552.324129388,
+        "pid": 3162447
+      }
+    },
+    "postflight": {
+      "status": "ENV_ABORT",
+      "state_sha256": "8b18c6a8fe0560549f15f135f75dd40c0318faafbea0a945a737f10d5c68969c",
+      "monitor_failures": [
+        "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+      ],
+      "cleanup_errors": [],
+      "child_cleanup_errors": [],
+      "final_summary_sha256": "f909495a4aefe67c95cc6f8c774726de86a66e36a00efa9fd42ef90d4ea71672",
+      "final_monitor_barrier": {},
+      "final_monitor_errors": [
+        "final sampler summary is incomplete/failed"
+      ],
+      "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+    },
+    "guard_monitor_samples": 118,
+    "stored_nvml_queries": 118,
+    "conflicts_reported": 0,
+    "lease_begin": {
+      "utc": "2026-10-23T23:49:02.844054+00:00",
+      "monotonic": 989425.36093497,
+      "pid": 3162447,
+      "event": "lease_acquired"
+    },
+    "lease_end": {
+      "utc": "2026-10-23T23:51:09.807638+00:00",
+      "monotonic": 989552.324515274,
+      "pid": 3162447,
+      "event": "lease_released",
+      "status": "COMMAND_FAILED"
+    },
+    "hashes": {
+      "lease/exit.json": "21102ab91c500843a18d12300fedf099c9fb043c7023c4135a303ac1ec457c7c",
+      "lease/events.jsonl": "35c66670b47fb957e70dad21f8cf480ca38a1e184ad48d7200e92cc591eb8a75",
+      "lease/nvml-queries.jsonl": "d1de6d3e179eacbe5d9a93f6deb4e1251a7ad4a26453b7ea5fe895fa47687d04",
+      "postflight.json": "7973183bab1210e844e717d3b576df281c73961c9046cc4e923e9157f1a36688"
+    },
+    "scope": "Stored polling only; no new GPU/NVML query. Sub-poll interference cannot be excluded."
+  },
+  "groups": {
+    "first-http": {
+      "head": "full",
+      "suffix_enabled": true,
+      "timing": false,
+      "diagnostic_only": true,
+      "performance_acceptance": false,
+      "complete": true,
+      "pid": 3162464,
+      "admitted": 1,
+      "raw_generation": 1,
+      "cases": [
+        {
+          "id": "context-8192",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 989470.998810105,
+          "end_monotonic": 989484.191893118,
+          "source_database": "context-8192/20261024_074946/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "case_groups": [
+        [
+          {
+            "id": "context-8192",
+            "ordinal": 1,
+            "response_id": "chatcmpl-auto-0",
+            "first_request_of_service": true,
+            "actual_input": 8170,
+            "actual_output": 256,
+            "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+            "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+            "start_monotonic": 989470.998810105,
+            "end_monotonic": 989484.191893118,
+            "source_database": "context-8192/20261024_074946/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+            "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+          }
+        ]
+      ],
+      "measurement_role": "first_http_gate",
+      "started": 989428.741748323,
+      "finished": 989485.9901498355,
+      "native_timing_rows": 0,
+      "layer_timing_rows": 0,
+      "layer_request_counts": [],
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": null,
+        "trace_exports_complete": null,
+        "diagnostic_only": false,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      }
+    },
+    "full-off": {
+      "complete": false,
+      "pid": 3163321,
+      "started": 989486.1991210305,
+      "head": "full",
+      "suffix": false,
+      "admitted": 3,
+      "server_success_end": 3,
+      "raw_generation": 3,
+      "cases": [
+        {
+          "id": "repeat-code",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 989529.457888172,
+          "end_monotonic": 989536.576461662,
+          "source_database": "repeat-code/20261024_075045/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-1",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 989536.576866899,
+          "end_monotonic": 989543.519427138,
+          "source_database": "repeat-code/20261024_075045/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-2",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 989543.519818635,
+          "end_monotonic": 989550.451704103,
+          "source_database": "repeat-code/20261024_075045/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "events": [
+        {
+          "event": "server_before_start",
+          "monotonic_seconds": 989486.1986279804,
+          "unix_seconds": 1792799403.6817539,
+          "utc": "2026-10-23T23:50:03.681754+00:00",
+          "clock_pair_uncertainty_seconds": 6.2951585277915e-07
+        },
+        {
+          "event": "server_started",
+          "monotonic_seconds": 989486.1991210305,
+          "unix_seconds": 1792799403.6822467,
+          "utc": "2026-10-23T23:50:03.682247+00:00",
+          "clock_pair_uncertainty_seconds": 3.3352989703416824e-07,
+          "pid": 3163321
+        },
+        {
+          "event": "server_ready",
+          "monotonic_seconds": 989525.2126691756,
+          "unix_seconds": 1792799442.6957953,
+          "utc": "2026-10-23T23:50:42.695795+00:00",
+          "clock_pair_uncertainty_seconds": 6.484915502369404e-07,
+          "pid": 3163321,
+          "capacity": {
+            "requested": {
+              "max_len": 208896,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "effective": {
+              "max_len": 208896,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "reported_requested": {
+              "max_len": 208896,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "source": "server effective capacity report",
+            "matches_requested": true,
+            "budget_enabled": "1",
+            "budget_feasible": "true",
+            "raw_lines": [
+              "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+            ]
+          }
+        },
+        {
+          "event": "client_before",
+          "monotonic_seconds": 989525.2135008955,
+          "unix_seconds": 1792799442.6966264,
+          "utc": "2026-10-23T23:50:42.696626+00:00",
+          "clock_pair_uncertainty_seconds": 2.544838935136795e-07,
+          "case": "repeat-code",
+          "request_group": "repeat-code",
+          "expected_requests": 3,
+          "requested_output": 256,
+          "expected_input_min": 744,
+          "expected_input_max": 744,
+          "capacity": {
+            "requested": {
+              "max_len": 208896,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "effective": {
+              "max_len": 208896,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "reported_requested": {
+              "max_len": 208896,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "source": "server effective capacity report",
+            "matches_requested": true,
+            "budget_enabled": "1",
+            "budget_feasible": "true",
+            "raw_lines": [
+              "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+            ]
+          }
+        },
+        {
+          "event": "client_after",
+          "monotonic_seconds": 989551.578609461,
+          "unix_seconds": 1792799469.0617356,
+          "utc": "2026-10-23T23:51:09.061736+00:00",
+          "clock_pair_uncertainty_seconds": 8.890056051313877e-07,
+          "case": "repeat-code",
+          "request_group": "repeat-code",
+          "client_returncode": 0
+        },
+        {
+          "event": "case_completed",
+          "monotonic_seconds": 989551.5837738045,
+          "unix_seconds": 1792799469.0668998,
+          "utc": "2026-10-23T23:51:09.066900+00:00",
+          "clock_pair_uncertainty_seconds": 6.7148357629776e-07,
+          "case": "repeat-code",
+          "role": "development_diagnostic",
+          "requests": 3
+        },
+        {
+          "event": "client_before",
+          "monotonic_seconds": 989551.5847068615,
+          "unix_seconds": 1792799469.0678325,
+          "utc": "2026-10-23T23:51:09.067832+00:00",
+          "clock_pair_uncertainty_seconds": 3.845198079943657e-07,
+          "case": "repeat-text",
+          "request_group": "repeat-text",
+          "expected_requests": 3,
+          "requested_output": 256,
+          "expected_input_min": 475,
+          "expected_input_max": 475,
+          "capacity": {
+            "requested": {
+              "max_len": 208896,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "effective": {
+              "max_len": 208896,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "reported_requested": {
+              "max_len": 208896,
+              "max_seq": 1,
+              "max_prefill": 8192
+            },
+            "source": "server effective capacity report",
+            "matches_requested": true,
+            "budget_enabled": "1",
+            "budget_feasible": "true",
+            "raw_lines": [
+              "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+            ]
+          }
+        }
+      ],
+      "client_batch_interrupted_before_observed_request": "repeat-text",
+      "observed_incomplete_server_requests": 0,
+      "unknown_unlogged_wire_requests": null,
+      "text_saved_sse_messages": 0,
+      "text_saved_sse_scope": "No DB/response/SSE record; not a network packet proof.",
+      "shutdown_complete_marker": true,
+      "wrapper_exit_record": null,
+      "startup_finalization_rows": 0,
+      "scope": "No actual exit code or full finalization is inferred from the shutdown text."
+    }
+  },
+  "resources": {
+    "samples": 126,
+    "source_count": 53,
+    "missing": [
+      {
+        "label": "pressure_cpu",
+        "path": "/proc/pressure/cpu",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      },
+      {
+        "label": "pressure_io",
+        "path": "/proc/pressure/io",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      },
+      {
+        "label": "pressure_memory",
+        "path": "/proc/pressure/memory",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      }
+    ],
+    "gaps_seconds": {
+      "count": 125,
+      "minimum": 1.0000773479696363,
+      "maximum": 1.00058784999419,
+      "total": 125.01440183294471
+    },
+    "observed_server_pids": [
+      3162464,
+      3163321
+    ],
+    "final_summary": {
+      "schema": 1,
+      "sampler_status": "ENV_ABORT",
+      "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/diagnostic-v1/run/unified-memory.jsonl",
+      "started_monotonic": 989425.527375897,
+      "started_unix_seconds": 1792799343.010502,
+      "finished_monotonic": 989551.565707028,
+      "finished_unix_seconds": 1792799469.0488713,
+      "sampler_elapsed_seconds": 126.03833113098517,
+      "sample_attempts": 127,
+      "flushed_samples": 126,
+      "unflushed_attempts": 1,
+      "final_successful_cycle_duration_seconds": 0.02167228003963828,
+      "final_successful_write_flush_seconds": 0.00031021900940686464,
+      "successful_cycle_duration_total_seconds": 2.9071666604140773,
+      "successful_write_flush_total_seconds": 0.04891883407253772,
+      "final_failed_attempt_elapsed_seconds": 0.023526229080744088,
+      "final_attempt_read_counts": {
+        "source_file_read_attempts": 53,
+        "ownership_file_read_attempts": 858,
+        "ownership_readlink_attempts": 429,
+        "owned_file_read_attempts": 40,
+        "directory_scan_attempts": 2
+      },
+      "total_read_counts": {
+        "source_file_read_attempts": 6731,
+        "ownership_file_read_attempts": 108260,
+        "ownership_readlink_attempts": 54129,
+        "owned_file_read_attempts": 7326,
+        "directory_scan_attempts": 250
+      },
+      "setup_file_read_attempts": 1,
+      "total_file_read_attempts": 122318,
+      "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+      "sampler_failure": "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')",
+      "failures_at_exit": [
+        "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+      ],
+      "sampler_failure_context": {
+        "pid": 3164108,
+        "expected_start_ticks": 98952521,
+        "relative_file": "io",
+        "operation": "open",
+        "directory_fd": 5,
+        "errno": 13
+      },
+      "sampler_failure_traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 457, in sample\n    row['processes'], row['q4t_threads_listed'] = _sample_processes(\n                                                  ^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 348, in _sample_processes\n    row = _read_task(fd, counts, identity['start_ticks'], with_io=True,\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 243, in _read_task\n    row[name] = _read_at(directory_fd, name, counts, context)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 217, in _read_at\n    fd = os.open(name, os.O_RDONLY | os.O_CLOEXEC, dir_fd=directory_fd)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nPermissionError: [Errno 13] Permission denied: 'io'\ntelemetry pinned proc read: {\"directory_fd\": 5, \"errno\": 13, \"expected_start_ticks\": 98952521, \"operation\": \"open\", \"pid\": 3164108, \"relative_file\": \"io\"}\n",
+      "last_flushed_heartbeat": 989550.563756202,
+      "source_count": 53
+    },
+    "summary_sha256": "f909495a4aefe67c95cc6f8c774726de86a66e36a00efa9fd42ef90d4ea71672",
+    "process_observations": {
+      "OK": 414
+    },
+    "exited_during_io": [],
+    "actual_io_exit_branch_observed": false,
+    "final_monitor_barrier": {},
+    "scope": "1 Hz nearby samples, not exact request-boundary counters. Collection and serialization/flush costs reported separately; RAM/RSS/NVML overlap and are not added."
+  },
+  "owned_cleanup": {
+    "checked_utc": "2026-10-23T23:56:14.629678+00:00",
+    "known_identities": 7,
+    "absent": [
+      {
+        "pid": 3162451,
+        "start_ticks": 98942544
+      },
+      {
+        "pid": 3162461,
+        "start_ticks": 98942865
+      },
+      {
+        "pid": 3162464,
+        "start_ticks": 98942874
+      },
+      {
+        "pid": 3163241,
+        "start_ticks": 98946675
+      },
+      {
+        "pid": 3163319,
+        "start_ticks": 98948610
+      },
+      {
+        "pid": 3163321,
+        "start_ticks": 98948619
+      },
+      {
+        "pid": 3164108,
+        "start_ticks": 98952521
+      }
+    ],
+    "reused": [],
+    "terminal": [],
+    "live": [],
+    "unreadable": [],
+    "historical_process_groups": [
+      3162451,
+      3162461,
+      3163319
+    ],
+    "remaining_group_members": [],
+    "failure_pid_last_successful_observation": {
+      "sample_monotonic": 989550.542083922,
+      "sample_finished_monotonic": 989550.563442409,
+      "observation": "OK",
+      "identity": {
+        "state": "R",
+        "ppid": 3163319,
+        "pgid": 3163319,
+        "start_ticks": 98952521,
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3",
+          "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/evalscope",
+          "perf",
+          "--model",
+          "qwen3.8-flash-next",
+          "--url",
+          "http://127.0.0.1:8758/v1/chat/completions",
+          "--api",
+          "openai",
+          "--tokenizer-path",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--dataset",
+          "line_by_line",
+          "--dataset-path",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/diagnostic-v1/run/full-off/repeat-code/requests.jsonl",
+          "--min-prompt-length",
+          "744",
+          "--max-prompt-length",
+          "744",
+          "--no-apply-chat-template",
+          "--max-tokens",
+          "256",
+          "--temperature",
+          "0",
+          "--seed",
+          "20260920",
+          "--parallel",
+          "1",
+          "--number",
+          "3",
+          "--warmup-num",
+          "0",
+          "--connect-timeout",
+          "30",
+          "--read-timeout",
+          "7200",
+          "--total-timeout",
+          "10800",
+          "--no-test-connection",
+          "--outputs-dir",
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/diagnostic-v1/run/full-off/repeat-code",
+          "--stream"
+        ],
+        "executable": "/usr/bin/python3.12"
+      },
+      "state": "R"
+    },
+    "scope": "Only /proc identity reads; no signal, GPU query or sensor sample. Historical identities are bounded by successful 1 Hz samples; unobserved short-lived processes are not reconstructed."
+  },
+  "timeline": {
+    "last_http_end_monotonic": 989550.451704103,
+    "last_flushed_sample_start_monotonic": 989550.542083922,
+    "last_flushed_heartbeat": 989550.563756202,
+    "failed_attempt_start_inferred": 989551.542180799,
+    "sampler_finalized_monotonic": 989551.565707028,
+    "partial_service_events": [
+      {
+        "event": "server_before_start",
+        "monotonic_seconds": 989486.1986279804,
+        "unix_seconds": 1792799403.6817539,
+        "utc": "2026-10-23T23:50:03.681754+00:00",
+        "clock_pair_uncertainty_seconds": 6.2951585277915e-07
+      },
+      {
+        "event": "server_started",
+        "monotonic_seconds": 989486.1991210305,
+        "unix_seconds": 1792799403.6822467,
+        "utc": "2026-10-23T23:50:03.682247+00:00",
+        "clock_pair_uncertainty_seconds": 3.3352989703416824e-07,
+        "pid": 3163321
+      },
+      {
+        "event": "server_ready",
+        "monotonic_seconds": 989525.2126691756,
+        "unix_seconds": 1792799442.6957953,
+        "utc": "2026-10-23T23:50:42.695795+00:00",
+        "clock_pair_uncertainty_seconds": 6.484915502369404e-07,
+        "pid": 3163321,
+        "capacity": {
+          "requested": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "reported_requested": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "source": "server effective capacity report",
+          "matches_requested": true,
+          "budget_enabled": "1",
+          "budget_feasible": "true",
+          "raw_lines": [
+            "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+          ]
+        }
+      },
+      {
+        "event": "client_before",
+        "monotonic_seconds": 989525.2135008955,
+        "unix_seconds": 1792799442.6966264,
+        "utc": "2026-10-23T23:50:42.696626+00:00",
+        "clock_pair_uncertainty_seconds": 2.544838935136795e-07,
+        "case": "repeat-code",
+        "request_group": "repeat-code",
+        "expected_requests": 3,
+        "requested_output": 256,
+        "expected_input_min": 744,
+        "expected_input_max": 744,
+        "capacity": {
+          "requested": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "reported_requested": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "source": "server effective capacity report",
+          "matches_requested": true,
+          "budget_enabled": "1",
+          "budget_feasible": "true",
+          "raw_lines": [
+            "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+          ]
+        }
+      },
+      {
+        "event": "client_after",
+        "monotonic_seconds": 989551.578609461,
+        "unix_seconds": 1792799469.0617356,
+        "utc": "2026-10-23T23:51:09.061736+00:00",
+        "clock_pair_uncertainty_seconds": 8.890056051313877e-07,
+        "case": "repeat-code",
+        "request_group": "repeat-code",
+        "client_returncode": 0
+      },
+      {
+        "event": "case_completed",
+        "monotonic_seconds": 989551.5837738045,
+        "unix_seconds": 1792799469.0668998,
+        "utc": "2026-10-23T23:51:09.066900+00:00",
+        "clock_pair_uncertainty_seconds": 6.7148357629776e-07,
+        "case": "repeat-code",
+        "role": "development_diagnostic",
+        "requests": 3
+      },
+      {
+        "event": "client_before",
+        "monotonic_seconds": 989551.5847068615,
+        "unix_seconds": 1792799469.0678325,
+        "utc": "2026-10-23T23:51:09.067832+00:00",
+        "clock_pair_uncertainty_seconds": 3.845198079943657e-07,
+        "case": "repeat-text",
+        "request_group": "repeat-text",
+        "expected_requests": 3,
+        "requested_output": 256,
+        "expected_input_min": 475,
+        "expected_input_max": 475,
+        "capacity": {
+          "requested": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "effective": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "reported_requested": {
+            "max_len": 208896,
+            "max_seq": 1,
+            "max_prefill": 8192
+          },
+          "source": "server effective capacity report",
+          "matches_requested": true,
+          "budget_enabled": "1",
+          "budget_feasible": "true",
+          "raw_lines": [
+            "requested_max_len=208896 requested_max_seq=1 requested_max_prefill=8192 effective_max_len=208896 effective_max_seq=1 effective_max_prefill=8192 budget_enabled=1 budget_feasible=true"
+          ]
+        }
+      }
+    ],
+    "stage_finished_unix_seconds": 1792799469.2475622,
+    "guard_released": {
+      "utc": "2026-10-23T23:51:09.807638+00:00",
+      "monotonic": 989552.324515274,
+      "pid": 3162447,
+      "event": "lease_released",
+      "status": "COMMAND_FAILED"
+    },
+    "caveat": "Failed-attempt start inferred from final accounting; exact io-error wall instant and full-off shutdown instant not separately logged."
+  },
+  "requests": {
+    "planned": 49,
+    "planned_starts": 13,
+    "starts": 2,
+    "completed_stage_requests": 1,
+    "stored_successful_responses": 4,
+    "observed_server_admitted": 4,
+    "observed_server_success_end": 4,
+    "observed_incomplete_server_requests": 0,
+    "interrupted_client_batches": 1,
+    "text_generation_observed": 0,
+    "unrun_service_count": 11
+  },
+  "no_new_gpu_http_tests": true,
+  "analyzers_executed": false
+}

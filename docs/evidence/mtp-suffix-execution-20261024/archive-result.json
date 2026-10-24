@@ -1,0 +1,14 @@
+{
+  "status": "ARCHIVED_ENV_ABORT",
+  "source_preserved": true,
+  "independent_copies": true,
+  "readback_verified": true,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/archive-closed",
+  "entries": 809,
+  "payload_bytes": 39149556,
+  "manifest_sha256": "53d2a41150cb0fcaf8cdad86eba0a895143fb386e0bb3e0c179aa74a48c8697b",
+  "runtime_observation_enabled_tested": false,
+  "deployment": false,
+  "inference_or_gpu_operations": 0,
+  "seal_sha256": "1ad488f15ba971f8a78f1e55d03a14bbbd7183ca1933ef5c3d04a6e62d153e8c"
+}

@@ -1,0 +1,18 @@
+{
+  "status": "ENV_ABORT",
+  "started": 1792799343.0100203,
+  "completed": [
+    "first-http"
+  ],
+  "requests_completed": 1,
+  "loads_started": 2,
+  "contract_seconds": 0,
+  "plan_sha256": "a145dafe688ef60ec117d76fb5b3d6116a39b22bf92c412aede811c45e5df47b",
+  "current": "full-off",
+  "error": "EnvironmentAbort('resource monitor failed/stale: {\\'failures\\': [\"ENV_ABORT telemetry: PermissionError(13, \\'Permission denied\\')\"], \\'age_seconds\\': 1.179564233054407}')",
+  "finished": 1792799469.2475622,
+  "elapsed_seconds": 126.23754530702718,
+  "monitor_failures": [
+    "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+  ]
+}

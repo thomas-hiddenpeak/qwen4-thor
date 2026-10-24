@@ -1,0 +1,35 @@
+{
+  "observation_only": true,
+  "unchanged_math_and_default_off": true,
+  "reference_binary_sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+  "allowed_changed_paths": [
+    "CMakeLists.txt",
+    "include/q4t/diagnostic/execution_observer.h",
+    "src/model/full_attention.cu",
+    "src/mtp/moe_bf16.cu",
+    "src/mtp/mtp.cu",
+    "src/ple/ple_embedding.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_scheduler.cpp"
+  ],
+  "source_commit": "55363f18dedb947ac52e69e10475d3082cb71a82",
+  "files": {
+    "CMakeLists.txt": "7afd12813a3473da37bb726b0931b86e244fde71bb5aa0225f4d947cd38aa35a",
+    "include/q4t/diagnostic/execution_observer.h": "b7c61ee4812399ad8cf0d2a7b45c9f59a3a2d165f95155044bb71acf5d88d54f",
+    "src/model/full_attention.cu": "645cc9522316c6adcf9dfa605d395c1eb809443b7eb962885346be48bffbaf19",
+    "src/mtp/moe_bf16.cu": "f33799a2abeda7054ad4779a9a21fe688b327a3a8febd8a37cdf319c2997e169",
+    "src/mtp/mtp.cu": "2a86dc34c2efc8ddb9f47ace69d71fbf104a830ed4c0e6ac17bfd555fa938045",
+    "src/ple/ple_embedding.cpp": "e4dfe84278f8cc17e787e5690584a9bcac6f1ab086167fef4bbc999e1190d070",
+    "src/server/chat_generation.cpp": "9f66d4a5750b68a80a10d3d3497d7c1579be23dbbeadaea44c4827147dc9d220",
+    "src/server/chat_scheduler.cpp": "57023d94799d7c8e2c7104d9d028eb5d85d2dba54cf5ab5655d5f6f4769847a8"
+  },
+  "review": [
+    "Default-off instrumentation adds disabled branches only: no new diagnostic clocks/allocations/CUDA synchronization; original legacy timing clocks are retained.",
+    "No CUDA kernel body, kernel dispatch shape, floating point operation, copies, acceptance rule or synchronization call order changed. Wrappers retain existing Status/error paths.",
+    "Prefill metadata P/T local variables only label spans; no actual submission argument change. MTP callable wrappers return the original CUDA/Status result.",
+    "Disabled observers still change host binary layout/instruction shape; normal same-observation-binary suffix comparisons are required, no claim of binary-identical timing.",
+    "Same-input output hashes and lifecycle must pass in new HTTP runs. Reused original 22-quality/86-host/10-stage evidence is scoped to reviewed unchanged computation and state contracts, not whole-model quality on arbitrary new input.",
+    "Original two-GDN-layer accepted-prefix oracle scope remains two layers. New observations do not broaden it.",
+    "Shared-stage repaired telemetry dependencies independently checked by prepare against existing 11-test CPU proof and previous valid final flush run."
+  ]
+}

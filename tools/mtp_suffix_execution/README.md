@@ -1,5 +1,10 @@
 # 有界执行观测阶段
 
+当前状态（2026-10-24）：首轮在4条完整HTTP响应后因监控EACCES **ENV_ABORT**。
+程序零警告构建；CPU/NVTX/Nsight开启路径尚未执行。`analyze_results.py`及
+`analyze_trace.py`仅静态/AST审查，未实际运行；后续使用前单独冻结身份。
+[阶段结果与证据边界](../../docs/MTP_SUFFIX_EXECUTION_2026-10-24.md)。
+
 本工具仅诊断已有固定 k3/min32 suffix 的 CPU 提交、等待与 GPU 执行。
 只构建一次观测程序，`Q4T_EXEC_DIAGNOSTIC` 默认关闭；不改变数学计算、
 同步边界、head 选择或默认交付程序。不包含自动优化候选、条件 B 或部署。

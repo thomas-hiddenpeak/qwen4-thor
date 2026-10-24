@@ -1,0 +1,7 @@
+{
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/diagnostic-v1/frozen-plan.json",
+  "sha256": "a145dafe688ef60ec117d76fb5b3d6116a39b22bf92c412aede811c45e5df47b",
+  "requests": 49,
+  "starts": 13,
+  "candidate": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914"
+}

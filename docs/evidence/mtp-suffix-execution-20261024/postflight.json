@@ -1,0 +1,15 @@
+{
+  "status": "ENV_ABORT",
+  "state_sha256": "8b18c6a8fe0560549f15f135f75dd40c0318faafbea0a945a737f10d5c68969c",
+  "monitor_failures": [
+    "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+  ],
+  "cleanup_errors": [],
+  "child_cleanup_errors": [],
+  "final_summary_sha256": "f909495a4aefe67c95cc6f8c774726de86a66e36a00efa9fd42ef90d4ea71672",
+  "final_monitor_barrier": {},
+  "final_monitor_errors": [
+    "final sampler summary is incomplete/failed"
+  ],
+  "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+}

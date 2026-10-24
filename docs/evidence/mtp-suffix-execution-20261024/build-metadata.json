@@ -1,0 +1,20 @@
+{
+  "runtime_source_commit": "55363f18dedb947ac52e69e10475d3082cb71a82",
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/build/q4t",
+  "binary_sha256": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914",
+  "configure_exit": 0,
+  "build_exit": 0,
+  "warnings": 0,
+  "candidate_count": 1,
+  "target": "q4t",
+  "parallel": 8,
+  "build_type": "Release",
+  "arch": "110a",
+  "startup_resource_plan": false,
+  "logs": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/configure.log": "fab3ed90b78d54c788ee5bb636e028cd7615ddc3a67306475cca4197c86ef2c7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/build.log": "a8319a81453da35d2ee16ca465082b3ef7f0cdb7b0747c2752a2aa405fddc661"
+  },
+  "default_binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "tests_run_before_first_http": 0
+}

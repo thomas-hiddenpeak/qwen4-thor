@@ -1,0 +1,484 @@
+{
+  "schema": 1,
+  "classification": "FORENSIC_ONLY_ENV_ABORT",
+  "stage_outcome": "ENV_ABORT",
+  "engineering_acceptance": false,
+  "scope": "Read-only raw-log and frozen-source review of one telemetry failure; no new process/proc/hardware sampling, GPU, HTTP, test, reproduction, monitor edit or old-evidence edit.",
+  "consumed_sha256": {
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/run/telemetry-summary.json": "f909495a4aefe67c95cc6f8c774726de86a66e36a00efa9fd42ef90d4ea71672",
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/run/state.json": "8b18c6a8fe0560549f15f135f75dd40c0318faafbea0a945a737f10d5c68969c",
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/run/unified-memory.jsonl": "ede1dbeee5ccb9c012bd9a5b5801c30720a7d9ad3e459ce58922d60869c0dedc",
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/run/full-off/events.jsonl": "765deeff38964ca2bcd5544d9352732daea0439815825682772bc5c639a37b3e",
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/run/full-off/repeat-code/client-exit.json": "80f0360053fe7acea50c863a4fbe794bb97968195b386ead5a5cef15e61c4e75",
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/run/full-off/repeat-code/command.json": "53d066c23c31ce3426335f0ccc8707d8b2e5900999790be8873ee0203c80611a",
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/lease/exit.json": "21102ab91c500843a18d12300fedf099c9fb043c7023c4135a303ac1ec457c7c",
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/frozen-plan.json": "a145dafe688ef60ec117d76fb5b3d6116a39b22bf92c412aede811c45e5df47b",
+    "tools/mtp_suffix_zero_hit/telemetry.py": "473d0b472304cbea8a54bf5fb95fcf2fbea47c9b1f7c57aec8e5fa243fd42cbe",
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/source-snapshot/tools/mtp_suffix_zero_hit/telemetry.py": "473d0b472304cbea8a54bf5fb95fcf2fbea47c9b1f7c57aec8e5fa243fd42cbe",
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/source-snapshot/tools/evalscope/run_acceptance.py": "d02ad75b36c2ace3a3984faea9fc30c05c78effc34d5ead56eefe34bbe8001a8"
+  },
+  "monitor_source_matches_frozen_plan_and_snapshot": true,
+  "stage": {
+    "started": 1792799343.0100203,
+    "finished": 1792799469.2475622,
+    "elapsed_seconds": 126.23754530702718,
+    "completed_groups": [
+      "first-http"
+    ],
+    "requests_completed_in_stage_state": 1,
+    "loads_started": 2,
+    "current_group": "full-off",
+    "lease_exit": {
+      "status": "COMMAND_FAILED",
+      "command": [
+        "python3",
+        "-B",
+        "tools/mtp_suffix_execution/run_stage.py",
+        "--plan",
+        ".q4t-work/suffix-execution-20261024/diagnostic-v1/frozen-plan.json"
+      ],
+      "compute_backend": "nvml",
+      "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+      "poll_interval_seconds": 1.0,
+      "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+      "performance_acceptance": false,
+      "child_returncode": 1,
+      "external_lease": false,
+      "finished": {
+        "utc": "2026-10-23T23:51:09.807236+00:00",
+        "monotonic": 989552.324129388,
+        "pid": 3162447
+      }
+    }
+  },
+  "failure": {
+    "exception": "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')",
+    "context": {
+      "pid": 3164108,
+      "expected_start_ticks": 98952521,
+      "relative_file": "io",
+      "operation": "open",
+      "directory_fd": 5,
+      "errno": 13
+    },
+    "traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 457, in sample\n    row['processes'], row['q4t_threads_listed'] = _sample_processes(\n                                                  ^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 348, in _sample_processes\n    row = _read_task(fd, counts, identity['start_ticks'], with_io=True,\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 243, in _read_task\n    row[name] = _read_at(directory_fd, name, counts, context)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 217, in _read_at\n    fd = os.open(name, os.O_RDONLY | os.O_CLOEXEC, dir_fd=directory_fd)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nPermissionError: [Errno 13] Permission denied: 'io'\ntelemetry pinned proc read: {\"directory_fd\": 5, \"errno\": 13, \"expected_start_ticks\": 98952521, \"operation\": \"open\", \"pid\": 3164108, \"relative_file\": \"io\"}\n",
+    "sample_attempts": 127,
+    "flushed_samples": 126,
+    "unflushed_attempts": 1,
+    "attempt_start_monotonic_reconstructed": 989551.542180799,
+    "attempt_finished_monotonic": 989551.565707028,
+    "attempt_duration_seconds": 0.023526229080744088,
+    "read_counts": {
+      "source_file_read_attempts": 53,
+      "ownership_file_read_attempts": 858,
+      "ownership_readlink_attempts": 429,
+      "owned_file_read_attempts": 40,
+      "directory_scan_attempts": 2
+    }
+  },
+  "failed_process": {
+    "pid": 3164108,
+    "start_ticks": 98952521,
+    "role": "evalscope perf client for full-off/repeat-code, three sequential requests",
+    "executable": "/usr/bin/python3.12",
+    "argv": [
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python3",
+      "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/evalscope",
+      "perf",
+      "--model",
+      "qwen3.8-flash-next",
+      "--url",
+      "http://127.0.0.1:8758/v1/chat/completions",
+      "--api",
+      "openai",
+      "--tokenizer-path",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "--dataset",
+      "line_by_line",
+      "--dataset-path",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/diagnostic-v1/run/full-off/repeat-code/requests.jsonl",
+      "--min-prompt-length",
+      "744",
+      "--max-prompt-length",
+      "744",
+      "--no-apply-chat-template",
+      "--max-tokens",
+      "256",
+      "--temperature",
+      "0",
+      "--seed",
+      "20260920",
+      "--parallel",
+      "1",
+      "--number",
+      "3",
+      "--warmup-num",
+      "0",
+      "--connect-timeout",
+      "30",
+      "--read-timeout",
+      "7200",
+      "--total-timeout",
+      "10800",
+      "--no-test-connection",
+      "--outputs-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/diagnostic-v1/run/full-off/repeat-code",
+      "--stream"
+    ],
+    "ppid": 3163319,
+    "not_q4t_server": true,
+    "q4t_pid": 3163321,
+    "q4t_start_ticks": 98948619,
+    "history_count": 26,
+    "states": {
+      "R": 5,
+      "S": 21
+    },
+    "observations": [
+      {
+        "sample": 101,
+        "monotonic": 989525.539553844,
+        "sample_finished_monotonic": 989525.56058812,
+        "observation": "OK",
+        "state": "R",
+        "state_after": "R",
+        "start_ticks": 98952521,
+        "thread_count": 14,
+        "ppid": 3163319
+      },
+      {
+        "sample": 102,
+        "monotonic": 989526.53965989,
+        "sample_finished_monotonic": 989526.560782871,
+        "observation": "OK",
+        "state": "R",
+        "state_after": "R",
+        "start_ticks": 98952521,
+        "thread_count": 27,
+        "ppid": 3163319
+      },
+      {
+        "sample": 103,
+        "monotonic": 989527.539741571,
+        "sample_finished_monotonic": 989527.560817525,
+        "observation": "OK",
+        "state": "R",
+        "state_after": "R",
+        "start_ticks": 98952521,
+        "thread_count": 29,
+        "ppid": 3163319
+      },
+      {
+        "sample": 104,
+        "monotonic": 989528.539842924,
+        "sample_finished_monotonic": 989528.560967646,
+        "observation": "OK",
+        "state": "R",
+        "state_after": "R",
+        "start_ticks": 98952521,
+        "thread_count": 29,
+        "ppid": 3163319
+      },
+      {
+        "sample": 105,
+        "monotonic": 989529.539945118,
+        "sample_finished_monotonic": 989529.56269615,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 106,
+        "monotonic": 989530.540042588,
+        "sample_finished_monotonic": 989530.565569559,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 107,
+        "monotonic": 989531.540138392,
+        "sample_finished_monotonic": 989531.565114934,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 108,
+        "monotonic": 989532.540238503,
+        "sample_finished_monotonic": 989532.563094934,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 109,
+        "monotonic": 989533.540350867,
+        "sample_finished_monotonic": 989533.563308029,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 110,
+        "monotonic": 989534.540457659,
+        "sample_finished_monotonic": 989534.563197027,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "R",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 111,
+        "monotonic": 989535.540562284,
+        "sample_finished_monotonic": 989535.565114572,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 112,
+        "monotonic": 989536.540667373,
+        "sample_finished_monotonic": 989536.565665593,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 113,
+        "monotonic": 989537.540757251,
+        "sample_finished_monotonic": 989537.564853682,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 114,
+        "monotonic": 989538.540861435,
+        "sample_finished_monotonic": 989538.563756461,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 115,
+        "monotonic": 989539.540973447,
+        "sample_finished_monotonic": 989539.565193509,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 116,
+        "monotonic": 989540.541089539,
+        "sample_finished_monotonic": 989540.565237796,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 117,
+        "monotonic": 989541.541183748,
+        "sample_finished_monotonic": 989541.565425847,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 118,
+        "monotonic": 989542.541293854,
+        "sample_finished_monotonic": 989542.564141361,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 119,
+        "monotonic": 989543.54138846,
+        "sample_finished_monotonic": 989543.564062239,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 120,
+        "monotonic": 989544.541486669,
+        "sample_finished_monotonic": 989544.564509464,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 121,
+        "monotonic": 989545.541573354,
+        "sample_finished_monotonic": 989545.564221087,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 122,
+        "monotonic": 989546.541680662,
+        "sample_finished_monotonic": 989546.565325776,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 123,
+        "monotonic": 989547.541772011,
+        "sample_finished_monotonic": 989547.564497447,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 124,
+        "monotonic": 989548.541885029,
+        "sample_finished_monotonic": 989548.564978816,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 125,
+        "monotonic": 989549.541984598,
+        "sample_finished_monotonic": 989549.565276551,
+        "observation": "OK",
+        "state": "S",
+        "state_after": "S",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      },
+      {
+        "sample": 126,
+        "monotonic": 989550.542083922,
+        "sample_finished_monotonic": 989550.563442409,
+        "observation": "OK",
+        "state": "R",
+        "state_after": "R",
+        "start_ticks": 98952521,
+        "thread_count": 34,
+        "ppid": 3163319
+      }
+    ],
+    "last_successful_raw_stat": "3164108 (evalscope) R 3163319 3163319 3163319 0 -1 4194304 146108 0 0 0 545 52 0 0 20 0 34 0 98952521 3313479680 120792 18446744073709551615 4194304 10541512 281474201130816 0 0 0 0 16781312 16386 0 0 0 17 6 0 0 0 0 0 10616216 12102016 1076813824 281474201132924 281474201133783 281474201133783 281474201137075 0\n",
+    "last_successful_raw_stat_after": "3164108 (evalscope) R 3163319 3163319 3163319 0 -1 4194304 146108 0 0 0 545 52 0 0 20 0 34 0 98952521 3313479680 120792 18446744073709551615 4194304 10541512 281474201130816 0 0 0 0 16781312 16386 0 0 0 17 6 0 0 0 0 0 10616216 12102016 1076813824 281474201132924 281474201133783 281474201133783 281474201137075 0\n",
+    "last_successful_raw_status": "Name:\tevalscope\nUmask:\t0002\nState:\tR (running)\nTgid:\t3164108\nNgid:\t0\nPid:\t3164108\nPPid:\t3163319\nTracerPid:\t0\nUid:\t2002\t2002\t2002\t2002\nGid:\t2002\t2002\t2002\t2002\nFDSize:\t64\nGroups:\t4 24 27 29 30 44 46 100 108 111 122 983 984 993 2002 2003 \nNStgid:\t3164108\nNSpid:\t3164108\nNSpgid:\t3163319\nNSsid:\t3163319\nKthread:\t0\nVmPeak:\t 3307500 kB\nVmSize:\t 3235820 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t  629104 kB\nVmRSS:\t  483584 kB\nRssAnon:\t  394300 kB\nRssFile:\t   89280 kB\nRssShmem:\t       4 kB\nVmData:\t 2628588 kB\nVmStk:\t     136 kB\nVmExe:\t    6200 kB\nVmLib:\t  172120 kB\nVmPTE:\t    1476 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffff\nThreads:\t34\nSigQ:\t0/501100\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000100004002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tunknown\nCpus_allowed:\t3fff\nCpus_allowed_list:\t0-13\nMems_allowed:\t0001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t466\nnonvoluntary_ctxt_switches:\t84\n",
+    "last_successful_raw_io": "rchar: 155795890\nwchar: 271600\nsyscr: 15655\nsyscw: 176\nread_bytes: 53248\nwrite_bytes: 323584\ncancelled_write_bytes: 4096\n"
+  },
+  "client_exit_evidence": {
+    "returncode": 0,
+    "before_monotonic": 989525.2135008955,
+    "after_monotonic": 989551.578609461,
+    "after_minus_failed_attempt_finished_ms": 12.902432936243713,
+    "after_minus_failed_attempt_started_ms": 36.4286620169878,
+    "time_scope": "client_after is logged after subprocess.run has returned and reaped the child; it is not the exact kernel exit timestamp or exact EACCES timestamp."
+  },
+  "direct_observations": [
+    "The pinned proc io open raised EACCES for owned evalscope client PID3164108/start98952521, not q4t PID3163321.",
+    "The same client identity was observed OK in samples101..126 (26 samples): five R and21 S; its final successful stat and stat_after are both R with34 threads and readable io.",
+    "The client returned0 after the failed sampling attempt; the first group passed but the complete requested stage did not finish.",
+    "All53 stable-source reads preceded the proc failure in this attempt. The traceback points to relative io open, not NVML, sysfs, q4t CUDA or model code.",
+    "Current telemetry bytes exactly match the frozen plan and source snapshot; no monitor identity drift explains the behavior."
+  ],
+  "source_control_flow_inferences": [
+    {
+      "strength": "logical inference from frozen control flow and captured traceback",
+      "statement": "The failing call had with_io=True, errno EACCES and relative_file io, so it entered the existing pinned-stat recheck. Initial stat had passed the expected-start check; otherwise io would not have been attempted."
+    },
+    {
+      "strength": "logical inference, raw recheck result missing",
+      "statement": "No pinned-identity-recheck-failed note exists and the recorded exception is the original PermissionError, so the recheck read/parse evidently completed but the conjunction same start_ticks AND state in Z/X did not produce the terminal return. This cannot identify which condition was false."
+    },
+    {
+      "strength": "timing-supported hypothesis only",
+      "statement": "The client exit recorded12.902ms after failed-attempt completion makes a process teardown permission window plausible. Neither a Z/X state at the failing instant nor the kernel credential/mm/ptrace cause was captured."
+    }
+  ],
+  "unknowns": [
+    "The failed attempt initial stat/status and after_error stat were not preserved; its state/start-tick recheck values and any credential/dumpability change are unknown.",
+    "No per-file error timestamp was recorded. The EACCES is bracketed only by the23.526ms failed attempt.",
+    "The final successful R state is roughly one sampling interval earlier, not proof of live or terminal state at failure.",
+    "Subsequent child rc0 is evidence of completed lifecycle later, not proof that the earlier EACCES satisfied the existing Z/X rule.",
+    "This review does not establish a Linux kernel defect, PID reuse, external interference, GPU fault, model issue, or suffix performance regression."
+  ],
+  "recommended_followup": [
+    {
+      "priority": 1,
+      "change": "Diagnostic-only context preservation",
+      "detail": "Before rethrowing any io EACCES, retain initial stat, already-read status/schedstat, after_error raw stat and parsed identity/state (including non-Z/X), expected identity, errno/path/operation, and monotonic timestamps before/error/recheck. Preserve any recheck failure separately. Keep the current failure decision until a new bounded policy is reviewed."
+    },
+    {
+      "priority": 2,
+      "change": "Owned-lifecycle evidence rather than broad EACCES suppression",
+      "detail": "If a future fix must tolerate this exit window, design a fixed bounded same-identity/pinned-directory recheck and independently pinned owned-process exit proof. Treat a later proven exit as missing terminal io, retaining the original error; never fabricate io=0, infer Z/X from later rc0, follow a reused PID, or forgive persistent/live-process or stable-source EACCES."
+    },
+    {
+      "priority": 3,
+      "change": "Targeted validation before any new stage",
+      "detail": "A future explicitly authorized CPU-only test should cover same-identity nonterminal EACCES followed by verified exit, persistent live EACCES, unavailable recheck, identity change and cleanup. Real HTTP lifecycle validation would require a newly bounded authorized run; this review performs none."
+    }
+  ],
+  "decision_boundary": "Keep this stage ENV_ABORT. Do not retrospectively convert its4 observed HTTP responses or subsequent client rc0 into valid performance acceptance; do not start a retry from this review."
+}

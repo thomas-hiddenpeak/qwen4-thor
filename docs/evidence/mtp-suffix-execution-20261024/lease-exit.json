@@ -1,0 +1,22 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    "python3",
+    "-B",
+    "tools/mtp_suffix_execution/run_stage.py",
+    "--plan",
+    ".q4t-work/suffix-execution-20261024/diagnostic-v1/frozen-plan.json"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-23T23:51:09.807236+00:00",
+    "monotonic": 989552.324129388,
+    "pid": 3162447
+  }
+}

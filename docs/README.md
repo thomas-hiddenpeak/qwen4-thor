@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[suffix修复监控后再验证](MTP_SUFFIX_ZERO_HIT_RERUN_2026-10-24.md)；
+最新专项：[suffix执行区间观测](MTP_SUFFIX_EXECUTION_2026-10-24.md)；
+前轮专项：[suffix修复监控后再验证](MTP_SUFFIX_ZERO_HIT_RERUN_2026-10-24.md)；
 [suffix零命中成本诊断](MTP_SUFFIX_ZERO_HIT_2026-10-24.md)；
 前轮结果：[suffix长匹配准入改进](MTP_SUFFIX_ADMISSION_2026-10-24.md)；
 前轮结果：[数字格式suffix准入改进](MTP_SUFFIX_NUMERIC_GATE_2026-10-23.md)；
@@ -16,6 +17,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [suffix执行区间观测](MTP_SUFFIX_EXECUTION_2026-10-24.md) | prefill/神经草稿CPU双钟与NVTX | 4响应后监控ENV_ABORT；CPU/GPU定位未执行，保持交付版 |
 | [suffix修复监控后再验证](MTP_SUFFIX_ZERO_HIT_RERUN_2026-10-24.md) | 正常收益/首long干预/分层计时 | 56HTTP/12启动有效；重复收益复现，根因未定，保持交付版 |
 | [suffix零命中成本](MTP_SUFFIX_ZERO_HIT_2026-10-24.md) | TTFT前段/解码归因、同身份控制、只读遥测 | 冻结26HTTP诊断；候选需机制支持，全任务有界 |
 | [suffix长匹配准入](MTP_SUFFIX_ADMISSION_2026-10-24.md) | 45K/8K步序原因、固定32-token门、两head重复保护 | 250HTTP完成；旧8K/45K额外工作消除、两head重复获益，耗时保护未闭合，NO_GO封存 |

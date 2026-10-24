@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "sampler_status": "ENV_ABORT",
+  "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+  "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/diagnostic-v1/run/unified-memory.jsonl",
+  "started_monotonic": 989425.527375897,
+  "started_unix_seconds": 1792799343.010502,
+  "finished_monotonic": 989551.565707028,
+  "finished_unix_seconds": 1792799469.0488713,
+  "sampler_elapsed_seconds": 126.03833113098517,
+  "sample_attempts": 127,
+  "flushed_samples": 126,
+  "unflushed_attempts": 1,
+  "final_successful_cycle_duration_seconds": 0.02167228003963828,
+  "final_successful_write_flush_seconds": 0.00031021900940686464,
+  "successful_cycle_duration_total_seconds": 2.9071666604140773,
+  "successful_write_flush_total_seconds": 0.04891883407253772,
+  "final_failed_attempt_elapsed_seconds": 0.023526229080744088,
+  "final_attempt_read_counts": {
+    "source_file_read_attempts": 53,
+    "ownership_file_read_attempts": 858,
+    "ownership_readlink_attempts": 429,
+    "owned_file_read_attempts": 40,
+    "directory_scan_attempts": 2
+  },
+  "total_read_counts": {
+    "source_file_read_attempts": 6731,
+    "ownership_file_read_attempts": 108260,
+    "ownership_readlink_attempts": 54129,
+    "owned_file_read_attempts": 7326,
+    "directory_scan_attempts": 250
+  },
+  "setup_file_read_attempts": 1,
+  "total_file_read_attempts": 122318,
+  "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+  "sampler_failure": "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')",
+  "failures_at_exit": [
+    "ENV_ABORT telemetry: PermissionError(13, 'Permission denied')"
+  ],
+  "sampler_failure_context": {
+    "pid": 3164108,
+    "expected_start_ticks": 98952521,
+    "relative_file": "io",
+    "operation": "open",
+    "directory_fd": 5,
+    "errno": 13
+  },
+  "sampler_failure_traceback": "Traceback (most recent call last):\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 457, in sample\n    row['processes'], row['q4t_threads_listed'] = _sample_processes(\n                                                  ^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 348, in _sample_processes\n    row = _read_task(fd, counts, identity['start_ticks'], with_io=True,\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 243, in _read_task\n    row[name] = _read_at(directory_fd, name, counts, context)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py\", line 217, in _read_at\n    fd = os.open(name, os.O_RDONLY | os.O_CLOEXEC, dir_fd=directory_fd)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nPermissionError: [Errno 13] Permission denied: 'io'\ntelemetry pinned proc read: {\"directory_fd\": 5, \"errno\": 13, \"expected_start_ticks\": 98952521, \"operation\": \"open\", \"pid\": 3164108, \"relative_file\": \"io\"}\n",
+  "last_flushed_heartbeat": 989550.563756202,
+  "source_count": 53
+}
