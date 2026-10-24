@@ -1,0 +1,43 @@
+test_all_denial_outcomes_retain_acquired_raw_state (__main__.BoundPidfdReadTests.test_all_denial_outcomes_retain_acquired_raw_state) ... ok
+test_bad_immediate_recheck_never_polls_for_exit (__main__.BoundPidfdReadTests.test_bad_immediate_recheck_never_polls_for_exit) ... ok
+test_binding_failure_keeps_poll_evidence (__main__.BoundPidfdReadTests.test_binding_failure_keeps_poll_evidence) ... ok
+test_final_disappearance_keeps_original_denial (__main__.BoundPidfdReadTests.test_final_disappearance_keeps_original_denial) ... ok
+test_final_identity_errors_and_live_contradiction_are_fatal (__main__.BoundPidfdReadTests.test_final_identity_errors_and_live_contradiction_are_fatal) ... ok
+test_immediate_disappearance_requires_bound_exit_proof (__main__.BoundPidfdReadTests.test_immediate_disappearance_requires_bound_exit_proof) ... ok
+test_initial_and_final_parse_errors_keep_raw_state (__main__.BoundPidfdReadTests.test_initial_and_final_parse_errors_keep_raw_state) ... ok
+test_live_then_terminal_is_retained_missing_io (__main__.BoundPidfdReadTests.test_live_then_terminal_is_retained_missing_io) ... ok
+test_missing_or_exhausted_budget_never_waits (__main__.BoundPidfdReadTests.test_missing_or_exhausted_budget_never_waits) ... ok
+test_persistent_live_denial_is_fatal (__main__.BoundPidfdReadTests.test_persistent_live_denial_is_fatal) ... ok
+test_poll_errors_do_not_replace_original_errno_or_retry (__main__.BoundPidfdReadTests.test_poll_errors_do_not_replace_original_errno_or_retry) ... ok
+test_ready_after_deadline_or_shared_allowance_is_fatal (__main__.BoundPidfdReadTests.test_ready_after_deadline_or_shared_allowance_is_fatal) ... ok
+test_ready_at_binding_does_not_prove_later_live_identity (__main__.BoundPidfdReadTests.test_ready_at_binding_does_not_prove_later_live_identity) ... ok
+test_wait_allowance_uses_shared_budget_and_actual_time (__main__.BoundPidfdReadTests.test_wait_allowance_uses_shared_budget_and_actual_time) ... ok
+test_live_nondumpable_owned_process_remains_fatal (__main__.OwnedZombieKernelTest.test_live_nondumpable_owned_process_remains_fatal) ... ok
+test_own_zombie_io_permission_race (__main__.OwnedZombieKernelTest.test_own_zombie_io_permission_race) ... ok
+test_complete_live_read_is_unchanged (__main__.PinnedTaskReadTests.test_complete_live_read_is_unchanged) ... ok
+test_existing_transient_exit_handling_remains (__main__.PinnedTaskReadTests.test_existing_transient_exit_handling_remains) ... ok
+test_identity_changed_after_error_remains_fatal (__main__.PinnedTaskReadTests.test_identity_changed_after_error_remains_fatal) ... ok
+test_initial_pid_reuse_stops_before_details (__main__.PinnedTaskReadTests.test_initial_pid_reuse_stops_before_details) ... ok
+test_live_task_permission_denial_remains_fatal (__main__.PinnedTaskReadTests.test_live_task_permission_denial_remains_fatal) ... ok
+test_non_io_permission_error_is_not_reclassified (__main__.PinnedTaskReadTests.test_non_io_permission_error_is_not_reclassified) ... ok
+test_other_io_error_is_not_reclassified (__main__.PinnedTaskReadTests.test_other_io_error_is_not_reclassified) ... ok
+test_read_at_preserves_pid_file_operation_and_original_errno (__main__.PinnedTaskReadTests.test_read_at_preserves_pid_file_operation_and_original_errno) ... ok
+test_same_identity_terminal_io_denial_retains_error (__main__.PinnedTaskReadTests.test_same_identity_terminal_io_denial_retains_error) ... ok
+test_unavailable_identity_recheck_keeps_original_permission_error (__main__.PinnedTaskReadTests.test_unavailable_identity_recheck_keeps_original_permission_error) ... ok
+test_owned_binding_order_and_descriptor_cleanup (__main__.PollAndOwnershipTests.test_owned_binding_order_and_descriptor_cleanup) ... ok
+test_owned_pid_capacity_remains_bounded (__main__.PollAndOwnershipTests.test_owned_pid_capacity_remains_bounded) ... ok
+test_partial_binding_closes_pidfd_and_preserves_failure (__main__.PollAndOwnershipTests.test_partial_binding_closes_pidfd_and_preserves_failure) ... ok
+test_pidfd_open_error_does_not_open_proc_or_close_unowned_fd (__main__.PollAndOwnershipTests.test_pidfd_open_error_does_not_open_proc_or_close_unowned_fd) ... ok
+test_pidfd_poll_bad_flags_or_wrong_fd_remain_errors (__main__.PollAndOwnershipTests.test_pidfd_poll_bad_flags_or_wrong_fd_remain_errors) ... ok
+test_pidfd_poll_terminal_and_nonterminal_flags (__main__.PollAndOwnershipTests.test_pidfd_poll_terminal_and_nonterminal_flags) ... ok
+test_q4t_thread_capacity_closes_all_bound_descriptors (__main__.PollAndOwnershipTests.test_q4t_thread_capacity_closes_all_bound_descriptors) ... ok
+test_fixed_64_real_traces_against_old_and_new_decisions (__main__.RecordedExitTraceReplayTests.test_fixed_64_real_traces_against_old_and_new_decisions)
+Replay decisions, not 64 native executions of the new monitor. ... ok
+test_discovered_source_failure_still_aborts_before_process_scan (__main__.SummaryFailureTests.test_discovered_source_failure_still_aborts_before_process_scan) ... ok
+test_sampler_summary_preserves_task_failure_without_source_sampling (__main__.SummaryFailureTests.test_sampler_summary_preserves_task_failure_without_source_sampling) ... ok
+test_summary_write_error_is_not_swallowed (__main__.SummaryFailureTests.test_summary_write_error_is_not_swallowed) ... ok
+
+----------------------------------------------------------------------
+Ran 37 tests in 0.136s
+
+OK

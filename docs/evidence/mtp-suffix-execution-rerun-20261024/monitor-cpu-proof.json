@@ -1,0 +1,51 @@
+{
+  "tool_sha256": "882a44789cd60fb4f6d3677b59e29324feb65e2bbad319ed95e8aa313e1cb958",
+  "test_sha256": "087c646b58d9b8ef8cf63cd5faeac10761c3f943756987323699290025bac6fd",
+  "test_log_sha256": "b102fcd9d6391470b0e4a9d5ad8e053205cb89c002a21f2cf20492e32b17bcec",
+  "tests_passed": 39,
+  "tests_skipped": 0,
+  "tests_failed": 0,
+  "tests_errors": 0,
+  "suite_runs": 2,
+  "suite_wall_seconds_reported": 0.138,
+  "suite_wall_limit_seconds": 180,
+  "new_http_or_gpu": 0,
+  "real_owned_children_reaped": true,
+  "native_suite_children": 2,
+  "bounded_exit_confirmation": {
+    "per_task_ms": 50,
+    "per_sample_ms": 100
+  },
+  "reproduction": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/exit-io-reproduction.json",
+    "sha256": "83492207c125a6d52e5ee1941eb36288524122ab973c08c372aeb6543eeffae9",
+    "status": "REPRODUCED_FIXED_64_PASS",
+    "old_monitor_failure_reproduced": true,
+    "nonterminal_error_observed": true,
+    "children": 64,
+    "live_recheck_then_exit": 56,
+    "all_children_reaped": true
+  },
+  "replay": {
+    "old_terminal": 8,
+    "old_fatal": 56,
+    "new_terminal": 64,
+    "new_after_denial_confirmation": 56,
+    "native_new_monitor_runs": 0,
+    "binding_basis": "Recorded pre-go live handshake supplies mocked nonready initial poll; the reproduction did not record a pre-error poll(0). Subsequent io denial, recheck, terminal stat and flags are recorded native traces."
+  },
+  "native_contracts": [
+    "same-identity zombie io EACCES retained",
+    "live nondumpable child io EACCES remains fatal after bounded wait"
+  ],
+  "scope": "CPU repair proof only; no GPU/HTTP or inference tests; historical failed PID has no reconstructed raw state; new full-stage lifecycle still must pass.",
+  "kernel_review_sha256": "7851acea8ef81a5d37e12d276379add1dffccba018759c4313d184219d2ca1fd",
+  "reproduction_tool_sha256": "0ea7a179e05949480c3b9e57a8904c152e19f2ead3f42e49fbaac14ffbe3606b",
+  "total_reported_suite_seconds": 0.274,
+  "concrete_second_run_reason": "Independent static review found final identity recheck could exceed the 50ms absolute deadline; fixed final deadline check and anchored start to original IO error timestamp. Added two boundary contracts; no additional reproduction or HTTP/GPU.",
+  "prior_cpu_proof": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/monitor-cpu-proof-v1.json",
+    "sha256": "d5d068ba1e1945eb159b1ea8d538f03e7efd7896c18db85ba0efc267bdd54350",
+    "tests_passed": 37
+  }
+}

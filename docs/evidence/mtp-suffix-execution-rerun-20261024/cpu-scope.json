@@ -1,0 +1,47 @@
+{
+  "task": "monitor EACCES exit-window repair then bounded execution rerun",
+  "old_stage": "../suffix-execution-20261024/diagnostic-v1",
+  "old_outcome": "ENV_ABORT_UNCHANGED",
+  "cpu_reproduction": {
+    "max_children": 64,
+    "wall_seconds": 60,
+    "shapes": [
+      "single_thread",
+      "eight_threads"
+    ],
+    "children_per_shape": 32,
+    "gpu_http_sensor_operations": 0,
+    "retry_runs": 0
+  },
+  "cpu_contract": {
+    "max_test_methods": 40,
+    "max_suite_runs": 2,
+    "second_run_only_on_concrete_failure": true,
+    "max_owned_real_children_per_suite": 2,
+    "each_owned_child_timeout_seconds": 3,
+    "total_execution_wall_seconds": 180
+  },
+  "monitor_policy": {
+    "error_field": "io",
+    "error_errno": "EACCES",
+    "same_identity_pinned_proc_required": true,
+    "pidfd_bound_before_task_reads": true,
+    "per_task_exit_wait_ms": 50,
+    "per_sample_exit_wait_ms": 100,
+    "io_retries": 0,
+    "zero_fill": false,
+    "live_timeout_or_identity_change": "ENV_ABORT",
+    "unknown_cause_remains_unknown": true
+  },
+  "rerun": {
+    "http_requests": 49,
+    "starts": 13,
+    "wall_seconds": 7200,
+    "retries": 0,
+    "candidate_binary_sha256": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914",
+    "runtime_changes": 0,
+    "optimization_candidates": 0,
+    "deployment": false
+  },
+  "frozen_before_cpu_tests": true
+}

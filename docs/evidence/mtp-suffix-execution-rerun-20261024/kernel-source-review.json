@@ -1,0 +1,302 @@
+{
+  "schema": 1,
+  "status": "STATIC_SOURCE_REVIEW_ONLY",
+  "stage_base": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024",
+  "actions": {
+    "modified_runtime": false,
+    "ran_tests": false,
+    "ran_reproduction": false,
+    "ran_http": false,
+    "ran_gpu": false,
+    "sampled_hardware": false
+  },
+  "local_kernel": {
+    "uname": [
+      "Linux",
+      "localhost.localdomain",
+      "6.8.12-1021-tegra",
+      "#1 SMP PREEMPT Thu Aug  6 21:56:04 PDT 2026",
+      "aarch64",
+      "aarch64"
+    ],
+    "header_path": "/usr/src/linux-headers-6.8.12-1021-tegra-ubuntu24.04_aarch64/3rdparty/canonical/linux-noble/include/generated/utsrelease.h",
+    "header_text": "#define UTS_RELEASE \"6.8.12-1021-tegra\"\n",
+    "complete_tegra_source_available": false,
+    "upstream_is_not_verified_byte_identical_tegra_source": true
+  },
+  "sources": [
+    {
+      "id": "proc",
+      "version": "upstream stable v6.8.12",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.8.12/fs/proc/base.c",
+      "sha256": "12c5c231cf7ddb0d15145f7b900e9244f04099e7d5143881c6d3208ee0e5dca8",
+      "bytes": 96308,
+      "physical_lines": 3935,
+      "locations": [
+        {
+          "function": "task_dump_owner",
+          "start_line": 1814,
+          "end_line": 1871,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/fs/proc/base.c#L1814-L1871"
+        },
+        {
+          "function": "proc_pid_make_inode",
+          "start_line": 1883,
+          "end_line": 1914,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/fs/proc/base.c#L1883-L1914"
+        },
+        {
+          "function": "pid_update_inode/pid_revalidate",
+          "start_line": 1989,
+          "end_line": 2021,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/fs/proc/base.c#L1989-L2021"
+        },
+        {
+          "function": "do_io_accounting",
+          "start_line": 2972,
+          "end_line": 2990,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/fs/proc/base.c#L2972-L2990"
+        },
+        {
+          "function": "tgid io entry",
+          "start_line": 3334,
+          "end_line": 3334,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/fs/proc/base.c#L3334-L3334"
+        }
+      ]
+    },
+    {
+      "id": "exit",
+      "version": "upstream stable v6.8.12",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.8.12/kernel/exit.c",
+      "sha256": "c7a2878deada686a04be224f8b5185ad022a995a297229ff8b43e8c3b53f2af9",
+      "bytes": 48977,
+      "physical_lines": 1930,
+      "locations": [
+        {
+          "function": "exit_mm",
+          "start_line": 538,
+          "end_line": 572,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/kernel/exit.c#L538-L572"
+        },
+        {
+          "function": "exit_notify",
+          "start_line": 729,
+          "end_line": 757,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/kernel/exit.c#L729-L757"
+        },
+        {
+          "function": "do_exit ordering",
+          "start_line": 811,
+          "end_line": 893,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/kernel/exit.c#L811-L893"
+        }
+      ]
+    },
+    {
+      "id": "fork",
+      "version": "upstream stable v6.8.12",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.8.12/kernel/fork.c",
+      "sha256": "3921f267c1fa8ae6bdbf8f1dfd0b7b9c75e1e28afff3d6e28a5a395bf877c7f0",
+      "bytes": 89452,
+      "physical_lines": 3548,
+      "locations": [
+        {
+          "function": "pidfd_show_fdinfo",
+          "start_line": 2042,
+          "end_line": 2069,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/kernel/fork.c#L2042-L2069"
+        },
+        {
+          "function": "pidfd_poll",
+          "start_line": 2076,
+          "end_line": 2092,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/kernel/fork.c#L2076-L2092"
+        }
+      ]
+    },
+    {
+      "id": "pid",
+      "version": "upstream stable v6.8.12",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.8.12/kernel/pid.c",
+      "sha256": "b0fa137e20740163864206a921421b3a9f17e0d53790d3a3472677257813515f",
+      "bytes": 18738,
+      "physical_lines": 748,
+      "locations": [
+        {
+          "function": "pidfd_open",
+          "start_line": 627,
+          "end_line": 646,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/kernel/pid.c#L627-L646"
+        }
+      ]
+    },
+    {
+      "id": "ptrace",
+      "version": "upstream stable v6.8.12",
+      "url": "https://raw.githubusercontent.com/gregkh/linux/v6.8.12/kernel/ptrace.c",
+      "sha256": "9066f6b4afaf09b1a1c255205b7ca4cf48bccd37144ac50ff9a2f3fd877d810f",
+      "bytes": 37663,
+      "physical_lines": 1435,
+      "locations": [
+        {
+          "function": "__ptrace_may_access",
+          "start_line": 276,
+          "end_line": 347,
+          "numbering": "1-based physical source lines",
+          "url": "https://github.com/gregkh/linux/blob/v6.8.12/kernel/ptrace.c#L276-L347"
+        }
+      ]
+    }
+  ],
+  "additional_primary_sources": [
+    {
+      "url": "https://www.man7.org/linux/man-pages/man2/pidfd_open.2.html",
+      "section": "NOTES / Use cases for PID file descriptors",
+      "claim": "Current manual distinguishes readable exit notification from hangup after reaping; without PIDFD_THREAD completion waits for the whole thread group."
+    },
+    {
+      "url": "https://docs.kernel.org/filesystems/proc.html",
+      "section": "1.1 Process-Specific Subdirectories",
+      "claim": "Pinned proc descriptors do not act on a later process reusing the numeric PID."
+    }
+  ],
+  "local_inputs": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/telemetry.py",
+      "sha256": "5fccf1ea9172d8da7d35f26f09f90bb3126760b2409bd5f646420796320fa42e",
+      "bytes": 33401
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_zero_hit/test_telemetry.py",
+      "sha256": "2e41dedec7513fa00010480f9357360a969e0e4778ddf94443849863a4d9e16b",
+      "bytes": 10430
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/monitor-failure-review.json",
+      "sha256": "62689306a80e03d83b6c4240e55002c4108facf4124f3dde3c48a165cead4561",
+      "bytes": 21428
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/monitor-failure-review.md",
+      "sha256": "9658d24d6d803143240ad0ab7413ee8d3a1ed4729407cbf8ae4b7f5d59436ae7",
+      "bytes": 3469
+    },
+    {
+      "path": "/usr/src/linux-headers-6.8.12-1021-tegra-ubuntu24.04_aarch64/3rdparty/canonical/linux-noble/include/generated/utsrelease.h",
+      "sha256": "7cecfa54a50f2e952a7e8e0c87ac20c957e65c2f29dc8be9993fcf9310ea30d2",
+      "bytes": 40
+    }
+  ],
+  "source_findings": [
+    {
+      "id": "possible_open_denial_before_z",
+      "status": "ESTABLISHED_IN_UPSTREAM_SOURCE_NOT_PROVEN_HISTORICAL_CAUSE",
+      "sources": [
+        "proc",
+        "exit"
+      ],
+      "summary": "io is owner-read-only; task_dump_owner chooses root ownership with no mm. exit_mm clears mm before exit_notify assigns EXIT_ZOMBIE. The interval can therefore expose EACCES on io open with a non-Z stat state to an unprivileged reader."
+    },
+    {
+      "id": "do_not_misattribute_ptrace",
+      "sources": [
+        "proc",
+        "ptrace"
+      ],
+      "summary": "io show has a separate ptrace access check. Its mm dumpability condition is guarded by non-null mm; mm==NULL is not itself the ptrace denial branch. Historical operation was open, so owner/mode denial is a plausible explanation, not a proven stack trace."
+    },
+    {
+      "id": "pidfd_poll_version_boundary",
+      "sources": [
+        "fork"
+      ],
+      "summary": "v6.8.12 pidfd_poll returns IN|RDNORM on whole-group exit, including when no task remains. It has no HUP branch. Current official manual also defines HUP after reaping. Accepting IN or HUP on an authenticated pidfd is compatible; neither HUP nor both bits is required."
+    }
+  ],
+  "historical_scope": {
+    "original_status": "ENV_ABORT",
+    "pid": 3164108,
+    "start_ticks": 98952521,
+    "role": "evalscope perf client, not q4t",
+    "known_operation": "open relative io through pinned proc directory",
+    "missing": [
+      "initial stat at failure",
+      "immediate recheck raw stat",
+      "exact permission-check path",
+      "exact exit timestamp"
+    ],
+    "no_retroactive_validity_change": true
+  },
+  "recommended_contract": {
+    "binding_order": [
+      "known owned PID/start snapshot",
+      "pidfd_open(pid,0)",
+      "open proc PID directory once",
+      "read initial stat from pinned directory; compare expected start",
+      "poll pidfd with zero timeout and record live binding before details"
+    ],
+    "binding_invariant": "A nonready pidfd after matching pinned stat establishes that the pidfd has not fully terminated before the proc binding. Do not combine a ready old pidfd with a new numeric PID directory. start_ticks is a coarse identity check, not a kernel object reference.",
+    "ready_at_binding": "Retain the ordinary pinned same-identity terminal Z/X handling. Do not enable new live-to-exit recovery without completed live binding; record ambiguous binding conservatively.",
+    "task_wait_limit_ms": 50,
+    "sample_cumulative_wait_limit_ms": 100,
+    "deadline_clock": "monotonic; fixed deadline, no extension on EINTR",
+    "error_gate": "only process io EACCES; no IO reread, no synthesized zero",
+    "immediate_recheck": "Retain raw state and errors on every outcome. Same-identity Z/X keeps the existing terminal path. For already-live-bound pidfd, same-identity nonterminal state may await exit proof. A narrowly recorded ENOENT/ESRCH can also use already-bound pidfd proof, but is never proof alone.",
+    "accepted_exit_flags": [
+      "POLLIN",
+      "POLLHUP"
+    ],
+    "reject_flags": [
+      "POLLERR",
+      "POLLNVAL"
+    ],
+    "final_recheck": "Use only original pinned directory. Preserve raw result; identity change or unexpected read/parse error remains failure. ENOENT/ESRCH after authenticated exit proof records reaped/missing. Do not follow numeric PID or reap with waitid/waitpid.",
+    "observation": "TERMINATED_AFTER_IO_DENIAL",
+    "semantic_limit": "This proves exit observed after an IO denial within the frozen wait policy. It does not prove exit state or permission cause at the error instant.",
+    "fd_cleanup": "Close pidfd and procfd in finally, including partial open/binding failure. Keep descriptor use sequential and bounded.",
+    "accounting": "Count proof attempts, terminal missing-IO cases, wait allowance/actual duration and budget exhaustion. Include added pidfd/FD reads and wait time in telemetry cost."
+  },
+  "mandatory_failure_states": [
+    "persistent live io EACCES / timeout",
+    "changed pinned identity before or after error",
+    "non-io EACCES",
+    "io EPERM/EIO or other nontransient errors",
+    "unbound/invalid/wrong pidfd",
+    "POLLERR/POLLNVAL or unexpected poll failure",
+    "unavailable/invalid recheck other than explicitly permitted ENOENT/ESRCH",
+    "per-task deadline or shared wait budget exhaustion",
+    "stable discovered source read failure"
+  ],
+  "evidence_on_every_denial": [
+    "owned snapshot PID/start/role",
+    "pidfd/procfd binding result and clocks",
+    "initial raw stat and parsed identity",
+    "already-read status/schedstat",
+    "original errno/relative file/operation/context/traceback",
+    "immediate raw recheck or its error",
+    "poll start/end/deadline/flags/remaining shared budget",
+    "final raw stat or disappearance/error",
+    "classification and explicit missing IO"
+  ],
+  "counterexamples": [
+    "Live task changes credentials/dumpability and remains alive: EACCES cannot become harmless without terminal proof.",
+    "Live task changes permissions and then exits within 50 ms: terminal proof is valid, but the cause of denial remains unknown; preserve it as missing terminal IO.",
+    "Old task is reaped, PID is reused before opening procdir: expected start mismatch must stop; a ready old pidfd is not proof about the new proc task.",
+    "Leader is terminal but sibling threads remain: process pidfd can remain unreadable; do not substitute leader state as whole-group completion.",
+    "Immediate pinned stat disappears after IO denial: ENOENT alone is insufficient; only previously bound pidfd completion may justify the new terminal classification.",
+    "EINTR, repeated denied processes, or millisecond rounding must not reset/inflate fixed deadlines; retain actual wait duration and scheduling overshoot."
+  ],
+  "validation": "No implementation or tests executed by this review. Root owns bounded CPU mock/kernel contracts and later real lifecycle validation."
+}

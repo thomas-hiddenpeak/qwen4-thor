@@ -1,0 +1,44 @@
+{
+  "tool_sha256": "8b2361640ea468bcb5f6e30fbcf7511f4c61a073178f5086fbfbaf7bbef0a4ed",
+  "test_sha256": "022dea97cb21c958b99fb29bc44cfa1328e66407980d5d64f62faf834f8bd8de",
+  "test_log_sha256": "84a3081b2dfca70e128deab18a5ecb0edb48d373c3c679aa42c3db1ecc1bd70e",
+  "tests_passed": 37,
+  "tests_skipped": 0,
+  "tests_failed": 0,
+  "tests_errors": 0,
+  "suite_runs": 1,
+  "suite_wall_seconds_reported": 0.136,
+  "suite_wall_limit_seconds": 180,
+  "new_http_or_gpu": 0,
+  "real_owned_children_reaped": true,
+  "native_suite_children": 2,
+  "bounded_exit_confirmation": {
+    "per_task_ms": 50,
+    "per_sample_ms": 100
+  },
+  "reproduction": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/exit-io-reproduction.json",
+    "sha256": "83492207c125a6d52e5ee1941eb36288524122ab973c08c372aeb6543eeffae9",
+    "status": "REPRODUCED_FIXED_64_PASS",
+    "old_monitor_failure_reproduced": true,
+    "nonterminal_error_observed": true,
+    "children": 64,
+    "live_recheck_then_exit": 56,
+    "all_children_reaped": true
+  },
+  "replay": {
+    "old_terminal": 8,
+    "old_fatal": 56,
+    "new_terminal": 64,
+    "new_after_denial_confirmation": 56,
+    "native_new_monitor_runs": 0,
+    "binding_basis": "Recorded pre-go live handshake supplies mocked nonready initial poll; the reproduction did not record a pre-error poll(0). Subsequent io denial, recheck, terminal stat and flags are recorded native traces."
+  },
+  "native_contracts": [
+    "same-identity zombie io EACCES retained",
+    "live nondumpable child io EACCES remains fatal after bounded wait"
+  ],
+  "scope": "CPU repair proof only; no GPU/HTTP or inference tests; historical failed PID has no reconstructed raw state; new full-stage lifecycle still must pass.",
+  "kernel_review_sha256": "7851acea8ef81a5d37e12d276379add1dffccba018759c4313d184219d2ca1fd",
+  "reproduction_tool_sha256": "0ea7a179e05949480c3b9e57a8904c152e19f2ead3f42e49fbaac14ffbe3606b"
+}

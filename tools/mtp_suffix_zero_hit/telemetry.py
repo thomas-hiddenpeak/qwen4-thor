@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import re
+import select
 import sys
 import time
 import traceback
@@ -23,6 +24,8 @@ INTERVAL_SECONDS = 1.0
 MAX_OWNED_PIDS = 2048
 MAX_Q4T_THREADS = 128
 MAX_SOURCES = 512
+EXIT_CONFIRM_TASK_MS = 50
+EXIT_CONFIRM_SAMPLE_MS = 100
 PROC_SOURCES = (
     ('meminfo', '/proc/meminfo'),
     ('cpu_stat', '/proc/stat'),
@@ -220,7 +223,8 @@ def _read_at(directory_fd, name, counts, context=None):
             return stream.read()
     except OSError as error:
         detail = dict(context or {}, relative_file=name, operation=operation,
-                      directory_fd=directory_fd, errno=error.errno)
+                      directory_fd=directory_fd, errno=error.errno,
+                      error_monotonic_ns=time.monotonic_ns())
         error.telemetry_context = detail
         error.add_note('telemetry pinned proc read: ' + json.dumps(detail, sort_keys=True))
         raise
@@ -230,46 +234,187 @@ def _transient(error):
     return isinstance(error, OSError) and error.errno in (errno.ENOENT, errno.ESRCH)
 
 
-def _read_task(directory_fd, counts, expected_start=None, with_io=False, context=None):
-    """Read through a pinned proc directory, validating identity twice."""
-    initial = _read_at(directory_fd, 'stat', counts, context)
-    identity = _stat_identity(initial)
-    if expected_start is not None and identity['start_ticks'] != expected_start:
-        return dict(observation='PID_REUSED', expected_start_ticks=expected_start,
-                    observed_start_ticks=identity['start_ticks'])
-    row = dict(observation='OK', start_ticks=identity['start_ticks'], stat=initial)
+def _poll_exit_fd(pidfd, timeout_ms):
+    """Observe one already-owned pidfd; never reap, signal, or follow a PID."""
+    started = time.monotonic_ns()
+    poller = select.poll()
+    poller.register(pidfd, select.POLLIN)
+    events = poller.poll(timeout_ms)
+    ended = time.monotonic_ns()
+    result = dict(started_ns=started, finished_ns=ended, timeout_ms=timeout_ms,
+                  events=[list(item) for item in events])
+    if any(fd != pidfd or flags & (select.POLLERR | select.POLLNVAL)
+           for fd, flags in events):
+        error = OSError(errno.EIO, 'invalid owned pidfd poll result')
+        error.telemetry_poll = result
+        raise error
+    result['ready'] = any(flags & (select.POLLIN | select.POLLHUP)
+                          for _, flags in events)
+    if events and not result['ready']:
+        error = OSError(errno.EIO, 'unexpected owned pidfd poll flags')
+        error.telemetry_poll = result
+        raise error
+    return result
+
+
+def _recheck_task(directory_fd, counts, context):
+    """Retain the raw identity even when it is live, changed, or unreadable."""
+    result = dict(started_ns=time.monotonic_ns())
     try:
+        raw = _read_at(directory_fd, 'stat', counts, context)
+        result['stat'] = raw
+        result['identity'] = _stat_identity(raw)
+    except (OSError, ValueError, IndexError) as error:
+        result.update(error=repr(error), errno=getattr(error, 'errno', None),
+                      context=getattr(error, 'telemetry_context', None))
+    result['finished_ns'] = time.monotonic_ns()
+    return result
+
+
+def _io_exit_confirmation(directory_fd, counts, context, identity,
+                          exit_fd, live_bound, exit_budget, state):
+    """Classify only a retained io denial with same-task terminal evidence.
+
+    A subsequent pidfd exit proves a bounded terminal observation, not the
+    cause of EACCES or the task's exit state at the earlier error timestamp.
+    """
+    immediate = _recheck_task(directory_fd, counts, context)
+    state['rechecks'] = [immediate]
+    after = immediate.get('identity')
+    if after is not None:
+        if after['start_ticks'] != identity['start_ticks']:
+            state['decision'] = 'IDENTITY_CHANGED'
+            return None
+        if after['state'] in ('Z', 'X'):
+            state['decision'] = 'SAME_IDENTITY_TERMINAL_STAT'
+            return 'EXITED_DURING_IO_READ'
+    elif immediate.get('errno') not in (errno.ENOENT, errno.ESRCH):
+        state['decision'] = 'IDENTITY_RECHECK_FAILED'
+        return None
+    if exit_fd is None or not live_bound:
+        state['decision'] = 'NO_PRIOR_LIVE_PIDFD_BINDING'
+        return None
+    if exit_budget is None:
+        state['decision'] = 'NO_EXIT_WAIT_BUDGET'
+        return None
+    remaining_ns = max(0, exit_budget['remaining_ns'])
+    task_deadline_ns = (state['error_observed_ns'] +
+                        EXIT_CONFIRM_TASK_MS * 1000000)
+    state['exit_confirmation_deadline_ns'] = task_deadline_ns
+    available_ns = min(remaining_ns, max(0, task_deadline_ns - time.monotonic_ns()))
+    timeout_ms = min(EXIT_CONFIRM_TASK_MS, available_ns // 1000000)
+    if timeout_ms <= 0:
+        state['decision'] = 'EXIT_WAIT_BUDGET_EXHAUSTED'
+        return None
+    started = time.monotonic_ns()
+    try:
+        counts['pidfd_wait_attempts'] = counts.get('pidfd_wait_attempts', 0) + 1
+        confirmation = _poll_exit_fd(exit_fd, timeout_ms)
+        state['exit_confirmation'] = confirmation
+    except OSError as error:
+        state['exit_confirmation'] = dict(
+            error=repr(error), errno=error.errno,
+            poll=getattr(error, 'telemetry_poll', None))
+        state['decision'] = 'EXIT_POLL_FAILED'
+        return None
+    finally:
+        spent = time.monotonic_ns() - started
+        exit_budget['remaining_ns'] = max(0, remaining_ns - spent)
+        exit_budget['spent_ns'] += spent
+        state['exit_wait_spent_ns'] = spent
+        state['sample_exit_wait_remaining_ns'] = exit_budget['remaining_ns']
+    if time.monotonic_ns() > task_deadline_ns or spent > remaining_ns:
+        state['decision'] = 'EXIT_CONFIRMATION_BUDGET_OVERRUN'
+        return None
+    if not confirmation['ready']:
+        state['decision'] = 'LIVE_TASK_EXIT_TIMEOUT'
+        return None
+    final = _recheck_task(directory_fd, counts, context)
+    state['rechecks'].append(final)
+    if time.monotonic_ns() > task_deadline_ns:
+        state['decision'] = 'EXIT_CONFIRMATION_BUDGET_OVERRUN'
+        return None
+    after = final.get('identity')
+    if after is not None:
+        if after['start_ticks'] != identity['start_ticks']:
+            state['decision'] = 'IDENTITY_CHANGED_AFTER_EXIT_POLL'
+            return None
+        if after['state'] not in ('Z', 'X'):
+            state['decision'] = 'EXIT_POLL_CONTRADICTS_LIVE_STAT'
+            return None
+    elif final.get('errno') not in (errno.ENOENT, errno.ESRCH):
+        state['decision'] = 'FINAL_IDENTITY_RECHECK_FAILED'
+        return None
+    state['decision'] = 'BOUND_PIDFD_EXIT_CONFIRMED_AFTER_IO_DENIAL'
+    state['io_missing'] = True
+    state['cause_of_permission_error_proven'] = False
+    return 'TERMINATED_AFTER_IO_DENIAL'
+
+
+def _read_task(directory_fd, counts, expected_start=None, with_io=False,
+               context=None, exit_fd=None, exit_budget=None):
+    """Read a pinned task; every failed path preserves the acquired state."""
+    started = time.monotonic_ns()
+    row, identity, binding = {}, None, None
+    live_bound = False
+    try:
+        initial = _read_at(directory_fd, 'stat', counts, context)
+        row['stat'] = initial
+        identity = _stat_identity(initial)
+        if expected_start is not None and identity['start_ticks'] != expected_start:
+            return dict(observation='PID_REUSED', expected_start_ticks=expected_start,
+                        observed_start_ticks=identity['start_ticks'], stat=initial)
+        row = dict(observation='OK', start_ticks=identity['start_ticks'], stat=initial)
+        if exit_fd is not None:
+            counts['pidfd_binding_polls'] = counts.get('pidfd_binding_polls', 0) + 1
+            binding = _poll_exit_fd(exit_fd, 0)
+            # pidfd_open precedes procdir open. A nonterminal pidfd after the
+            # initial stat excludes stitching a retired pidfd to a reused PID.
+            live_bound = not binding['ready']
+            row['pidfd_binding'] = binding
         for name in ('status', 'schedstat') + (('io',) if with_io else ()):
             row[name] = _read_at(directory_fd, name, counts, context)
         final = _read_at(directory_fd, 'stat', counts, context)
+        row['stat_after'] = final
         if _stat_identity(final)['start_ticks'] != identity['start_ticks']:
             return dict(observation='PID_REUSED_DURING_READ',
-                        expected_start_ticks=identity['start_ticks'])
+                        expected_start_ticks=identity['start_ticks'],
+                        partial_read=row, stat_after=final)
         row['stat_after'] = final
-    except OSError as error:
+    except (OSError, ValueError, IndexError) as error:
         detail = getattr(error, 'telemetry_context', {})
-        if (with_io and error.errno == errno.EACCES and
+        state = dict(read_started_ns=started,
+                     error_observed_ns=detail.get('error_monotonic_ns',
+                                                  time.monotonic_ns()),
+                     initial_identity=identity, partial_read=dict(row),
+                     original_error=dict(detail, error=repr(error)),
+                     live_pidfd_bound=live_bound, pidfd_binding=binding,
+                     pidfd_binding_error=getattr(error, 'telemetry_poll', None),
+                     rechecks=[], decision='UNCLASSIFIED_FATAL_READ')
+        classification = None
+        if (identity is not None and with_io and
+                getattr(error, 'errno', None) == errno.EACCES and
                 detail.get('relative_file') == 'io'):
-            # A new numeric PID is never followed. Only this already pinned
-            # proc directory may prove that the same task has actually exited.
-            try:
-                after_error = _read_at(directory_fd, 'stat', counts, context)
-                after_identity = _stat_identity(after_error)
-            except OSError as recheck_error:
-                error.add_note('pinned identity recheck failed: ' + repr(recheck_error))
-            else:
-                if (after_identity['start_ticks'] == identity['start_ticks'] and
-                        after_identity['state'] in ('Z', 'X')):
-                    row.update(observation='EXITED_DURING_IO_READ',
-                               stat_after_error=after_error,
-                               terminal_error=dict(detail, error=repr(error)),
-                               terminal_error_traceback=traceback.format_exc())
-                    return row
+            classification = _io_exit_confirmation(
+                directory_fd, counts, context, identity, exit_fd, live_bound,
+                exit_budget, state)
+        state['finished_ns'] = time.monotonic_ns()
+        error.telemetry_task_state = state
+        # Attach to the original error, never substitute a recheck error/errno.
+        error.add_note('telemetry task failure state: ' + json.dumps(state, sort_keys=True))
+        if classification is not None:
+            row.update(observation=classification,
+                       terminal_error=dict(detail, error=repr(error)),
+                       terminal_error_traceback=traceback.format_exc(),
+                       terminal_task_state=state)
+            if state['rechecks'][0].get('stat') is not None:
+                row['stat_after_error'] = state['rechecks'][0]['stat']
+            return row
         if not _transient(error):
             raise
-        # Thread/process exit is normal. Keep only data read through this
-        # pinned proc directory; never follow a reused numeric PID/TID.
-        row.update(observation='VANISHED_DURING_READ', error=str(error))
+        # No numerical PID is followed when an owned task disappears.
+        row.update(observation='VANISHED_DURING_READ', error=str(error),
+                   read_error_state=state)
     return row
 
 
@@ -334,19 +479,32 @@ def _owned_snapshot(records, owner_pid, owner_start, history):
 
 def _sample_processes(records, owned, counts):
     result, thread_count = {}, 0
+    exit_budget = dict(remaining_ns=EXIT_CONFIRM_SAMPLE_MS * 1000000, spent_ns=0)
     for pid in owned:
         identity = records[pid]
+        pidfd = None
         try:
+            counts['pidfd_open_attempts'] = counts.get('pidfd_open_attempts', 0) + 1
+            pidfd = os.pidfd_open(pid)
             fd = os.open(f'/proc/{pid}', os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC)
         except OSError as error:
+            if pidfd is not None:
+                os.close(pidfd)
             if not _transient(error):
+                error.telemetry_task_state = dict(
+                    pid=pid, expected_start_ticks=identity['start_ticks'],
+                    errno=error.errno, monotonic_ns=time.monotonic_ns(),
+                    decision='PIDFD_OR_PROC_BINDING_FAILED', error=repr(error))
+                error.add_note('owned task binding: ' +
+                               json.dumps(error.telemetry_task_state))
                 raise
             result[pid] = dict(identity=identity, observation='VANISHED')
             continue
         try:
             try:
                 row = _read_task(fd, counts, identity['start_ticks'], with_io=True,
-                                 context=dict(pid=pid, expected_start_ticks=identity['start_ticks']))
+                                 context=dict(pid=pid, expected_start_ticks=identity['start_ticks']),
+                                 exit_fd=pidfd, exit_budget=exit_budget)
             except OSError as error:
                 if not _transient(error):
                     raise
@@ -392,6 +550,7 @@ def _sample_processes(records, owned, counts):
                     os.close(task_fd)
         finally:
             os.close(fd)
+            os.close(pidfd)
     return result, thread_count
 
 
@@ -406,7 +565,8 @@ def sample(output, stop, failures, heartbeat):
     sampler_started, sampler_wall = time.monotonic(), time.time()
     count_keys = ('source_file_read_attempts', 'ownership_file_read_attempts',
                   'ownership_readlink_attempts', 'owned_file_read_attempts',
-                  'directory_scan_attempts')
+                  'directory_scan_attempts', 'pidfd_open_attempts',
+                  'pidfd_binding_polls', 'pidfd_wait_attempts')
     total_counts = dict.fromkeys(count_keys, 0)
     counts = None
     sample_started = None
@@ -415,6 +575,7 @@ def sample(output, stop, failures, heartbeat):
     cycle_seconds_total = write_flush_seconds_total = 0.0
     sampler_failure = None
     sampler_failure_context = sampler_failure_traceback = None
+    sampler_failure_task_state = None
     try:
         if _configured is None:
             raise EnvironmentAbort('telemetry sources must be frozen/configured')
@@ -435,7 +596,8 @@ def sample(output, stop, failures, heartbeat):
                               ownership_file_read_attempts=0,
                               ownership_readlink_attempts=0,
                               owned_file_read_attempts=0,
-                              directory_scan_attempts=0)
+                              directory_scan_attempts=0, pidfd_open_attempts=0,
+                              pidfd_binding_polls=0, pidfd_wait_attempts=0)
                 row = dict(unix_seconds=wall, monotonic=started,
                            source_values={}, unavailable=json.loads(missing_json),
                            gpu_current_frequency=json.loads(gpu_json))
@@ -491,6 +653,7 @@ def sample(output, stop, failures, heartbeat):
     except BaseException as error:
         sampler_failure = 'ENV_ABORT telemetry: ' + repr(error)
         sampler_failure_context = getattr(error, 'telemetry_context', None)
+        sampler_failure_task_state = getattr(error, 'telemetry_task_state', None)
         sampler_failure_traceback = traceback.format_exc()
         failures.append(sampler_failure)
         stop.set()
@@ -531,6 +694,9 @@ def sample(output, stop, failures, heartbeat):
             sampler_failure=sampler_failure, failures_at_exit=list(failures),
             sampler_failure_context=sampler_failure_context,
             sampler_failure_traceback=sampler_failure_traceback,
+            sampler_failure_task_state=sampler_failure_task_state,
+            exit_confirmation_policy=dict(per_task_ms=EXIT_CONFIRM_TASK_MS,
+                per_sample_ms=EXIT_CONFIRM_SAMPLE_MS, io_retries=0, zero_fill=False),
             last_flushed_heartbeat=heartbeat.get('last_sample'),
             source_count=len(_configured[0]) if _configured is not None else None)
         try:
