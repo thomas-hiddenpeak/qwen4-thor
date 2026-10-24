@@ -6,6 +6,7 @@ Importing this module does not discover or sample anything. No NVML/CUDA calls,
 frequency changes, cache changes, or subprocesses are made here.
 """
 
+import copy
 import errno
 import json
 import os
@@ -26,6 +27,9 @@ MAX_Q4T_THREADS = 128
 MAX_SOURCES = 512
 EXIT_CONFIRM_TASK_MS = 50
 EXIT_CONFIRM_SAMPLE_MS = 100
+PF_EXITING = 0x00000004
+EXIT_PENDING_MAX = 16
+EXIT_PENDING_SECONDS = 5
 PROC_SOURCES = (
     ('meminfo', '/proc/meminfo'),
     ('cpu_stat', '/proc/stat'),
@@ -243,8 +247,10 @@ def _poll_exit_fd(pidfd, timeout_ms):
     ended = time.monotonic_ns()
     result = dict(started_ns=started, finished_ns=ended, timeout_ms=timeout_ms,
                   events=[list(item) for item in events])
-    if any(fd != pidfd or flags & (select.POLLERR | select.POLLNVAL)
-           for fd, flags in events):
+    accepted = select.POLLIN | select.POLLHUP
+    allowed = accepted | getattr(select, 'POLLRDNORM', 0)
+    if (len(events) > 1 or any(fd != pidfd or flags & ~allowed
+                               for fd, flags in events)):
         error = OSError(errno.EIO, 'invalid owned pidfd poll result')
         error.telemetry_poll = result
         raise error
@@ -271,8 +277,190 @@ def _recheck_task(directory_fd, counts, context):
     return result
 
 
+def _pending_exit_evidence(state):
+    """PF_EXITING is an exit-in-progress marker, never terminal evidence.
+
+    Linux 6.8.12 exposes task->flags in proc stat field 9. Limit this path to
+    a user task whose mm is already absent in both pinned reads. No heuristic
+    based solely on R/S, missing Vm fields, or an unreadable io file qualifies.
+    """
+    try:
+        first = state['partial_read']['stat']
+        final = state['rechecks'][0]['stat']
+        initial, after = _stat_identity(first), _stat_identity(final)
+        fields = [raw.rsplit(')', 1)[1].split() for raw in (first, final)]
+        status = dict(line.split(':', 1) for line in
+                      state['partial_read']['status'].splitlines() if ':' in line)
+        error = state['original_error']
+        return bool(
+            state['live_pidfd_bound'] and error['errno'] == errno.EACCES and
+            error['relative_file'] == 'io' and
+            initial['start_ticks'] == after['start_ticks'] and
+            state['initial_identity'] == initial and
+            state['rechecks'][0]['identity'] == after and
+            state['partial_read']['start_ticks'] == initial['start_ticks'] and
+            after['state'] not in ('Z', 'X') and
+            all(int(raw.split('(', 1)[0].strip()) > 0 for raw in (first, final)) and
+            all(int(f[6]) & PF_EXITING and int(f[20]) == 0 for f in fields) and
+            status.get('Kthread', '').strip() == '0' and
+            not any(key.startswith('Vm') for key in status))
+    except (KeyError, ValueError, IndexError, TypeError):
+        return False
+
+
+class _ExitPending:
+    """Bounded same-task exit ledger; owns duplicates, never follows a PID."""
+
+    def __init__(self):
+        self.entries = {}
+        self.admitted = self.resolved = self.maximum_active = 0
+        self.last_resolutions = []
+
+    def admit(self, directory_fd, pidfd, context, identity, state):
+        if not _pending_exit_evidence(state) or pidfd is None:
+            raise EnvironmentAbort('invalid PF_EXITING pending admission')
+        raw = (state['partial_read']['stat'], state['rechecks'][0]['stat'])
+        original = state['original_error']
+        binding = state.get('pidfd_binding') or {}
+        if (not context or not isinstance(context.get('pid'), int) or
+                context.get('expected_start_ticks') != identity['start_ticks'] or
+                state['initial_identity']['start_ticks'] != identity['start_ticks'] or
+                any(_stat_identity(text)['start_ticks'] != identity['start_ticks']
+                    or int(text.split('(', 1)[0].strip()) != context['pid'] for text in raw) or
+                original.get('pid') != context['pid'] or
+                original.get('expected_start_ticks') != identity['start_ticks'] or
+                original.get('error_monotonic_ns') != state['error_observed_ns'] or
+                binding.get('ready') is not False or binding.get('events') != []):
+            raise EnvironmentAbort('pending admission identity mismatch')
+        key = str(context['pid']) + ':' + str(identity['start_ticks'])
+        if key in self.entries or len(self.entries) >= EXIT_PENDING_MAX:
+            raise EnvironmentAbort('duplicate or excessive pending exit identities')
+        deadline = state['error_observed_ns'] + EXIT_PENDING_SECONDS * 1000000000
+        now = time.monotonic_ns()
+        if now > deadline:
+            raise EnvironmentAbort('pending admission already expired')
+        proc_copy = exit_copy = None
+        try:
+            proc_copy = os.dup(directory_fd)
+            exit_copy = os.dup(pidfd)
+            state.update(decision='SAME_IDENTITY_PF_EXITING_PENDING',
+                         pending_id=key, not_terminal=True, io_missing=True,
+                         cause_of_permission_error_proven=False)
+            self.entries[key] = dict(
+                proc_fd=proc_copy, pid_fd=exit_copy, pid=context['pid'],
+                start_ticks=identity['start_ticks'], admitted_ns=now,
+                deadline_ns=deadline, context=dict(context), state=copy.deepcopy(state))
+        except BaseException:
+            for fd in (proc_copy, exit_copy):
+                if fd is not None:
+                    os.close(fd)
+            raise
+        self.admitted += 1
+        self.maximum_active = max(self.maximum_active, len(self.entries))
+        return key
+
+    def row(self, pid, start_ticks):
+        entry = self.entries.get(str(pid) + ':' + str(start_ticks))
+        if entry is None:
+            return None
+        state = copy.deepcopy(entry['state'])
+        return dict(state['partial_read'], observation='EXITING_IO_UNAVAILABLE',
+                    terminal_error=state['original_error'],
+                    terminal_task_state=state, pending_id=state['pending_id'],
+                    repeated_pending_record=True, not_terminal=True)
+
+    def snapshot(self):
+        return dict(active=len(self.entries), admitted=self.admitted,
+                    resolved=self.resolved, maximum_active=self.maximum_active,
+                    last_resolutions=copy.deepcopy(self.last_resolutions),
+                    entries=[dict(pending_id=key, **{
+                        k: copy.deepcopy(v) for k, v in entry.items()
+                        if k not in ('proc_fd', 'pid_fd')})
+                        for key, entry in sorted(self.entries.items())])
+
+    @staticmethod
+    def _failure(entry, decision, detail):
+        error = EnvironmentAbort('pending exit: ' + decision)
+        error.telemetry_context = copy.deepcopy(entry['state']['original_error'])
+        error.telemetry_task_state = dict(copy.deepcopy(entry['state']),
+            pending_resolution=dict(decision=decision, **detail))
+        return error
+
+    def resolve(self, counts):
+        self.last_resolutions = events = []
+        for key, entry in list(self.entries.items()):
+            detail = dict(pending_id=key, deadline_ns=entry['deadline_ns'])
+            if time.monotonic_ns() > entry['deadline_ns']:
+                raise self._failure(entry, 'PENDING_DEADLINE_EXPIRED', detail)
+            try:
+                counts['pending_poll_attempts'] = counts.get('pending_poll_attempts', 0) + 1
+                poll = _poll_exit_fd(entry['pid_fd'], 0)
+                detail['poll'] = poll
+            except OSError as error:
+                detail.update(error=repr(error), poll=getattr(error, 'telemetry_poll', None))
+                raise self._failure(entry, 'PENDING_POLL_FAILED', detail) from error
+            if time.monotonic_ns() > entry['deadline_ns']:
+                raise self._failure(entry, 'PENDING_DEADLINE_EXPIRED', detail)
+            final = _recheck_task(entry['proc_fd'], counts, entry['context'])
+            detail['final_recheck'] = final
+            identity = final.get('identity')
+            if identity is not None:
+                if identity['start_ticks'] != entry['start_ticks']:
+                    raise self._failure(entry, 'PENDING_TERMINAL_IDENTITY_CONTRADICTION', detail)
+                if poll['ready'] and identity['state'] not in ('Z', 'X'):
+                    raise self._failure(entry, 'PENDING_TERMINAL_IDENTITY_CONTRADICTION', detail)
+                if not poll['ready']:
+                    fields = final['stat'].rsplit(')', 1)[1].split()
+                    try:
+                        exiting = bool(int(fields[6]) & PF_EXITING)
+                    except (ValueError, IndexError):
+                        exiting = False
+                    if not exiting:
+                        raise self._failure(entry, 'PENDING_EXIT_FLAG_DISAPPEARED', detail)
+            elif final.get('errno') not in (errno.ENOENT, errno.ESRCH):
+                raise self._failure(entry, 'PENDING_FINAL_RECHECK_FAILED', detail)
+            confirmed = time.monotonic_ns()
+            if confirmed > entry['deadline_ns']:
+                raise self._failure(entry, 'PENDING_DEADLINE_EXPIRED', detail)
+            if not poll['ready']:
+                entry['last_check'] = detail
+                continue
+            events.append(dict(
+                observation='EXIT_CONFIRMED_AFTER_PENDING_IO',
+                pid=entry['pid'], start_ticks=entry['start_ticks'],
+                original_task_state=copy.deepcopy(entry['state']), **detail,
+                confirmed_ns=confirmed,
+                elapsed_since_error_seconds=(confirmed - entry['state']['error_observed_ns']) / 1e9,
+                io_missing=True, cause_of_permission_error_proven=False))
+            # Remove only after both terminal observations are saved locally.
+            removed = self.entries.pop(key)
+            close_errors = []
+            for fd in (removed['proc_fd'], removed['pid_fd']):
+                try:
+                    os.close(fd)
+                except OSError as error:
+                    close_errors.append(repr(error))
+            if close_errors:
+                raise self._failure(entry, 'PENDING_CLOSE_FAILED', dict(detail, errors=close_errors))
+            self.resolved += 1
+        return events
+
+    def close(self):
+        """Release descriptors only; closing never counts as confirmation."""
+        errors = []
+        for entry in self.entries.values():
+            for fd in (entry['proc_fd'], entry['pid_fd']):
+                try:
+                    os.close(fd)
+                except OSError as error:
+                    errors.append(repr(error))
+        self.entries.clear()
+        if errors:
+            raise EnvironmentAbort('pending descriptor cleanup failed: ' + repr(errors))
+
+
 def _io_exit_confirmation(directory_fd, counts, context, identity,
-                          exit_fd, live_bound, exit_budget, state):
+                          exit_fd, live_bound, exit_budget, state, pending=None):
     """Classify only a retained io denial with same-task terminal evidence.
 
     A subsequent pidfd exit proves a bounded terminal observation, not the
@@ -294,6 +482,16 @@ def _io_exit_confirmation(directory_fd, counts, context, identity,
     if exit_fd is None or not live_bound:
         state['decision'] = 'NO_PRIOR_LIVE_PIDFD_BINDING'
         return None
+    if pending is not None and _pending_exit_evidence(state):
+        try:
+            pending.admit(directory_fd, exit_fd, context, identity, state)
+        except BaseException as error:
+            state.update(decision='PENDING_ADMISSION_FAILED',
+                         pending_admission_error=repr(error))
+            error.telemetry_task_state = copy.deepcopy(state)
+            error.telemetry_context = copy.deepcopy(state['original_error'])
+            raise
+        return 'EXITING_IO_UNAVAILABLE'
     if exit_budget is None:
         state['decision'] = 'NO_EXIT_WAIT_BUDGET'
         return None
@@ -352,7 +550,7 @@ def _io_exit_confirmation(directory_fd, counts, context, identity,
 
 
 def _read_task(directory_fd, counts, expected_start=None, with_io=False,
-               context=None, exit_fd=None, exit_budget=None):
+               context=None, exit_fd=None, exit_budget=None, pending=None):
     """Read a pinned task; every failed path preserves the acquired state."""
     started = time.monotonic_ns()
     row, identity, binding = {}, None, None
@@ -397,7 +595,7 @@ def _read_task(directory_fd, counts, expected_start=None, with_io=False,
                 detail.get('relative_file') == 'io'):
             classification = _io_exit_confirmation(
                 directory_fd, counts, context, identity, exit_fd, live_bound,
-                exit_budget, state)
+                exit_budget, state, pending)
         state['finished_ns'] = time.monotonic_ns()
         error.telemetry_task_state = state
         # Attach to the original error, never substitute a recheck error/errno.
@@ -477,11 +675,15 @@ def _owned_snapshot(records, owner_pid, owner_start, history):
     return sorted(owned)
 
 
-def _sample_processes(records, owned, counts):
+def _sample_processes(records, owned, counts, pending=None):
     result, thread_count = {}, 0
     exit_budget = dict(remaining_ns=EXIT_CONFIRM_SAMPLE_MS * 1000000, spent_ns=0)
     for pid in owned:
         identity = records[pid]
+        prior = pending.row(pid, identity['start_ticks']) if pending is not None else None
+        if prior is not None:
+            result[pid] = dict(prior, identity=identity)
+            continue
         pidfd = None
         try:
             counts['pidfd_open_attempts'] = counts.get('pidfd_open_attempts', 0) + 1
@@ -504,7 +706,7 @@ def _sample_processes(records, owned, counts):
             try:
                 row = _read_task(fd, counts, identity['start_ticks'], with_io=True,
                                  context=dict(pid=pid, expected_start_ticks=identity['start_ticks']),
-                                 exit_fd=pidfd, exit_budget=exit_budget)
+                                 exit_fd=pidfd, exit_budget=exit_budget, pending=pending)
             except OSError as error:
                 if not _transient(error):
                     raise
@@ -566,7 +768,7 @@ def sample(output, stop, failures, heartbeat):
     count_keys = ('source_file_read_attempts', 'ownership_file_read_attempts',
                   'ownership_readlink_attempts', 'owned_file_read_attempts',
                   'directory_scan_attempts', 'pidfd_open_attempts',
-                  'pidfd_binding_polls', 'pidfd_wait_attempts')
+                  'pidfd_binding_polls', 'pidfd_wait_attempts', 'pending_poll_attempts')
     total_counts = dict.fromkeys(count_keys, 0)
     counts = None
     sample_started = None
@@ -576,6 +778,7 @@ def sample(output, stop, failures, heartbeat):
     sampler_failure = None
     sampler_failure_context = sampler_failure_traceback = None
     sampler_failure_task_state = None
+    pending = _ExitPending()
     try:
         if _configured is None:
             raise EnvironmentAbort('telemetry sources must be frozen/configured')
@@ -597,10 +800,12 @@ def sample(output, stop, failures, heartbeat):
                               ownership_readlink_attempts=0,
                               owned_file_read_attempts=0,
                               directory_scan_attempts=0, pidfd_open_attempts=0,
-                              pidfd_binding_polls=0, pidfd_wait_attempts=0)
+                              pidfd_binding_polls=0, pidfd_wait_attempts=0,
+                              pending_poll_attempts=0)
                 row = dict(unix_seconds=wall, monotonic=started,
                            source_values={}, unavailable=json.loads(missing_json),
                            gpu_current_frequency=json.loads(gpu_json))
+                row['exit_pending_resolutions'] = pending.resolve(counts)
                 for label, path in sources:
                     counts['source_file_read_attempts'] += 1
                     try:
@@ -617,7 +822,8 @@ def sample(output, stop, failures, heartbeat):
                     proc=_CountedProcPath(Path('/proc'), counts))
                 owned = _owned_snapshot(records, owner_pid, owner_start, history)
                 row['processes'], row['q4t_threads_listed'] = _sample_processes(
-                    records, owned, counts)
+                    records, owned, counts, pending=pending)
+                row['exit_pending'] = pending.snapshot()
                 row['owner'] = dict(pid=owner_pid, start_ticks=owner_start)
                 row['owned_identity_history'] = dict(history)
                 row['file_read_attempts'] = sum(counts[key] for key in (
@@ -646,9 +852,14 @@ def sample(output, stop, failures, heartbeat):
                 # The next row records this whole-cycle cost. Preserve the
                 # final cycle in heartbeat and the finally summary as well;
                 # its serialization/flush cost has no following sample row.
-                heartbeat.update(last_sample=flushed,
-                                 last_cycle_duration_seconds=previous_cycle_seconds,
-                                 last_write_flush_seconds=previous_write_flush_seconds)
+                heartbeat.update(last_any_sample=flushed,
+                                 exit_pending_count=len(pending.entries))
+                # Pending records are retained, but cannot satisfy a fresh
+                # complete-sample barrier or keep a stale complete view alive.
+                if not pending.entries:
+                    heartbeat.update(last_sample=flushed,
+                                     last_cycle_duration_seconds=previous_cycle_seconds,
+                                     last_write_flush_seconds=previous_write_flush_seconds)
                 stop.wait(max(0.0, started + INTERVAL_SECONDS - time.monotonic()))
     except BaseException as error:
         sampler_failure = 'ENV_ABORT telemetry: ' + repr(error)
@@ -658,6 +869,15 @@ def sample(output, stop, failures, heartbeat):
         failures.append(sampler_failure)
         stop.set()
     finally:
+        pending_final = pending.snapshot()
+        if pending_final['active']:
+            failures.append('ENV_ABORT telemetry stopped with unresolved exit identities')
+            stop.set()
+        try:
+            pending.close()
+        except BaseException as error:
+            failures.append('ENV_ABORT telemetry pending cleanup: ' + repr(error))
+            stop.set()
         # Count the final attempt even if a source read or flush failed. The
         # preceding attempts were accumulated at the next loop entry.
         if counts is not None:
@@ -696,7 +916,10 @@ def sample(output, stop, failures, heartbeat):
             sampler_failure_traceback=sampler_failure_traceback,
             sampler_failure_task_state=sampler_failure_task_state,
             exit_confirmation_policy=dict(per_task_ms=EXIT_CONFIRM_TASK_MS,
-                per_sample_ms=EXIT_CONFIRM_SAMPLE_MS, io_retries=0, zero_fill=False),
+                per_sample_ms=EXIT_CONFIRM_SAMPLE_MS, io_retries=0, zero_fill=False,
+                pending_capacity=EXIT_PENDING_MAX, pending_seconds=EXIT_PENDING_SECONDS,
+                pending_poll_timeout_ms=0, pending_requires_pf_exiting=True),
+            exit_pending=pending_final,
             last_flushed_heartbeat=heartbeat.get('last_sample'),
             source_count=len(_configured[0]) if _configured is not None else None)
         try:

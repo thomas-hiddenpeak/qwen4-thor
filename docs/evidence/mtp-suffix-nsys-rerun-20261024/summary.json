@@ -1,0 +1,352 @@
+{
+  "evidence_integrity": "PASS",
+  "evidence_validity": "ENV_ABORT",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_ACCEPTED_TOOL_VALIDATION_ABORT",
+  "engineering_decision": "NOT_ACCEPTED_TOOL_VALIDATION_ABORT",
+  "requests": {
+    "planned": 6,
+    "planned_model_starts": 4,
+    "raw_successful": 0,
+    "admitted": 0,
+    "completed_counter": 0,
+    "started_counter": 0
+  },
+  "elapsed_seconds": 10.026331848930568,
+  "raw_driver_status": "STOPPED",
+  "frozen_files": 1914,
+  "raw_files": 68,
+  "source_snapshot_files": 457,
+  "model_metadata_files": 197,
+  "known_owned_identities_gone": 15,
+  "cpu": {
+    "tests": 97,
+    "suite_runs": 1,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "method_counts": {
+      "test_telemetry.py": 39,
+      "test_exit_pending.py": 25,
+      "test_fixture_audit.py": 14,
+      "test_run_stage.py": 11,
+      "test_analyze_gpu.py": 8
+    },
+    "suite_elapsed_seconds": 0.856793315964751,
+    "driver_elapsed_seconds": 1.0654998139943928,
+    "frozen_sources": 15,
+    "proof_dependencies": 20,
+    "source_and_log_chain_verified": true,
+    "scope": "Existing 97 methods and source identities inspected; tests were not rerun."
+  },
+  "native": {
+    "completed_children": 64,
+    "elapsed_seconds": 0.21759909600950778,
+    "cleanup_complete": true,
+    "all_owned_reaped": true,
+    "first_non_ok_observations": {
+      "TERMINATED_AFTER_IO_DENIAL": 23,
+      "EXITING_IO_UNAVAILABLE": 15,
+      "EXITED_DURING_IO_READ": 26
+    },
+    "pending_admitted": 15,
+    "pending_resolved": 15,
+    "pending_remaining": 0,
+    "pending_error_to_confirmation_ns": {
+      "count": 15,
+      "min": 530939,
+      "median": 571171,
+      "max": 625392,
+      "total": 8574479
+    }
+  },
+  "monitor": {
+    "samples": 11,
+    "flushed": 11,
+    "unflushed": 0,
+    "elapsed_seconds": 10.025371838011779,
+    "status": "STOPPED",
+    "process_observations": {
+      "OK": 39,
+      "EXITED_DURING_IO_READ": 2
+    },
+    "process_observation_count": 41,
+    "unique_recorded_process_identities": 15,
+    "q4t_thread_observations": 0,
+    "source_rows": 583,
+    "source_count": 53,
+    "source_statuses": {
+      "OK": 583
+    },
+    "all_source_errors": 0,
+    "monitor_failures": [],
+    "immediate_terminal_cases": [
+      {
+        "sample_index": 5,
+        "pid": 3195549,
+        "start_ticks": 99869306,
+        "initial_state": "Z",
+        "final_state": "Z",
+        "decision": "SAME_IDENTITY_TERMINAL_STAT",
+        "io_missing": true,
+        "error_observed_ns": 998694506345812,
+        "final_recheck_finished_ns": 998694506404950,
+        "error_to_final_recheck_ns": 59138
+      },
+      {
+        "sample_index": 9,
+        "pid": 3195722,
+        "start_ticks": 99869713,
+        "initial_state": "Z",
+        "final_state": "Z",
+        "decision": "SAME_IDENTITY_TERMINAL_STAT",
+        "io_missing": true,
+        "error_observed_ns": 998698510085895,
+        "final_recheck_finished_ns": 998698510147885,
+        "error_to_final_recheck_ns": 61990
+      }
+    ],
+    "pending": {
+      "active": 0,
+      "admitted": 0,
+      "resolved": 0,
+      "maximum_active": 0,
+      "last_resolutions": [],
+      "entries": []
+    },
+    "total_read_counts": {
+      "source_file_read_attempts": 583,
+      "ownership_file_read_attempts": 9373,
+      "ownership_readlink_attempts": 4686,
+      "owned_file_read_attempts": 205,
+      "directory_scan_attempts": 11,
+      "pidfd_open_attempts": 41,
+      "pidfd_binding_polls": 41,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "sampling_start_interval_seconds": {
+      "count": 10,
+      "min": 1.0000818279804662,
+      "median": 1.0001092624734156,
+      "max": 1.0018549469532445,
+      "total": 10.00285083707422
+    },
+    "collection_duration_seconds": {
+      "count": 11,
+      "min": 0.01885322295129299,
+      "median": 0.02128583495505154,
+      "max": 0.022598981973715127,
+      "total": 0.234136848943308
+    },
+    "total_cycle_seconds": 0.2369726609904319,
+    "total_write_flush_seconds": 0.002784698852337897,
+    "pending_branch_covered": false,
+    "scope": "Production 1 Hz monitor on collector fixture controls only; zero model loads and zero HTTP. Two missing io values retained as same-identity terminal exceptions, not zero-filled."
+  },
+  "monitor_barriers": {
+    "failed_step": {
+      "child_pid": 3195519,
+      "complete": true,
+      "scope": "Post-owned-step-PGID cleanup only. Detached Nsight descendants are handled and audited separately by the outer guard; this is not a post-all-descendant-cleanup barrier. Normal success uses the original final barrier.",
+      "cleanup_returned": true,
+      "boundary_monotonic": 998698.959597158,
+      "sample_started_monotonic": 998699.488234941,
+      "flushed_monotonic": 998699.507278995,
+      "monitor_failures": []
+    },
+    "boundary_to_sample_start_seconds": 0.5286377830198035,
+    "boundary_to_flush_seconds": 0.5476818369934335,
+    "normal_final_barrier": {},
+    "normal_success_path_exercised": false,
+    "scope": "Failure barrier covers post-owned-step-PGID cleanup only. It does not prove all detached descendants cleaned; independent stage/lease audit owns that check."
+  },
+  "monitor_repair": {
+    "classification": "same_identity_pf_exiting_bounded_pending",
+    "capacity": 16,
+    "ttl_from_original_error_seconds": 5,
+    "poll_timeout_ms": 0,
+    "io_retries": 0,
+    "zero_fill": false,
+    "refresh_complete_heartbeat_while_pending": false,
+    "production_pending_branch_covered": false,
+    "unique_kernel_cause_proven": false
+  },
+  "collector": {
+    "completed_variants": [
+      {
+        "name": "direct-stop",
+        "target_pid": 3195549,
+        "wrapper_pid": null,
+        "known_work_complete": true,
+        "fixture_contract_passed": true,
+        "known_work_counts": {
+          "application_launches": 32,
+          "application_kernels": 32,
+          "application_copy_apis": 64,
+          "application_copies": 64,
+          "application_memset_apis": 32,
+          "application_memsets": 32,
+          "fixture_nvtx": 33,
+          "mapped_steps": 32,
+          "other_thread_apis": 0
+        },
+        "gpu_memory_coverage_complete": true
+      },
+      {
+        "name": "wrapper-stop",
+        "target_pid": 3195642,
+        "wrapper_pid": 3195632,
+        "known_work_complete": true,
+        "fixture_contract_passed": true,
+        "known_work_counts": {
+          "application_launches": 32,
+          "application_kernels": 32,
+          "application_copy_apis": 64,
+          "application_copies": 64,
+          "application_memset_apis": 32,
+          "application_memsets": 32,
+          "fixture_nvtx": 33,
+          "mapped_steps": 32,
+          "other_thread_apis": 0
+        },
+        "gpu_memory_coverage_complete": true
+      }
+    ],
+    "each_completed_actual_target_warnings": [
+      "Not all NVTX events might have been collected.",
+      "Not all CUDA events might have been collected."
+    ],
+    "wrapper_only_warnings": 4,
+    "real_capture_negative_copies_rejected": 4,
+    "candidate_gate_passed": false,
+    "fourth_variant_ran": false,
+    "third_variant": {
+      "name": "direct-external",
+      "stop_returncode": 1,
+      "failure": "StopRequest: Range collection stop is not expected.",
+      "forced_termination": true,
+      "sqlite_present": false,
+      "cause": "Noninteractive profile used with interactive stop; strong inference from official contract and explicit state rejection."
+    },
+    "warning_false_positive_proven": false,
+    "warning_actual_loss_proven": false,
+    "dropped_records": null,
+    "old_model_memset_gap_resolved": false
+  },
+  "reused_repeat_percent": {
+    "full_code": 13.6774,
+    "full_text": 14.4034,
+    "subset_code_shared_b_gm": 6.5335,
+    "subset_text_shared_b_gm": 6.7304,
+    "new_samples": 0,
+    "scope": "Previous passed development-only normal HTTP; not independent-start statistical noninferiority or five-tier optimization acceptance."
+  },
+  "identities": {
+    "plan": "f6951b0c65b2b3918ca0d2696c14b8a724e0c5e10dae4321ac0ffdac8b7e536b",
+    "runtime_source": "55363f18dedb947ac52e69e10475d3082cb71a82",
+    "observation_binary": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914",
+    "delivered_binary": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "delivered_sidecar": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "subset_manifest": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+    "fixture_binary": "ad0241d7c1e6dff1a7b0feccf04815ea6d38d246d0112a41c39c00e5e3d4b1f4",
+    "monitor": "f93f79314d3cbf29bc3062994af7ea1b343e9fb225241c9b45e84775813d6b1a",
+    "runner": "a9dbc5a03dde5e6608f1c2cf6f0c862b16f4fd7fe0620153d3ca7394102f40fc"
+  },
+  "corrections": {
+    "preparation_v1": "Not started: self-frozen stdout log changed; same preparation source/budgets, new diagnostic-v2 path. One GPU attempt total.",
+    "monitor_analysis_v1": "One multiline unittest docstring outcome missed by parser; v2 accepts the identified format. No tests or measurements rerun."
+  },
+  "limits": [
+    "CPU tight-loop native timings are not production 1 Hz or GPU exit timings; all 15 pending admissions were in the one-thread group.",
+    "Fixed known-work closure does not prove every metadata event or arbitrary model trace complete.",
+    "No new 8K/200K GPU comparison, runtime repair, five-tier acceptance or performance conclusion.",
+    "No retry, deployment, delivered binary replacement or health request."
+  ],
+  "proofs": {
+    "audit-rerun.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/audit-rerun.json",
+      "sha256": "cb34554cbdbcf5bacc2b68b8e526ddd9978e80c8ec7f7ef86bbaf3124799f7f3"
+    },
+    "audit-rerun.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/audit-rerun.md",
+      "sha256": "cd44a2493987d7dc1fcde33374112309fff95a3bedeb17acbde9b754fdc4a362"
+    },
+    "collector-rerun-analysis.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/collector-rerun-analysis.json",
+      "sha256": "9e33a13e21b77d9602b967b3ed7314fbffee63905ecc1ef5d5a7579cf411a0ad"
+    },
+    "collector-rerun-analysis.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/collector-rerun-analysis.md",
+      "sha256": "d9b4a5b9ad2fb3a82bd2e6c0469c5413d20eb1f7efa052f3f3dd1334606719b4"
+    },
+    "monitor-rerun-analysis-v2.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/monitor-rerun-analysis-v2.json",
+      "sha256": "4453425b129a712ee0a0dae944d56c77238251d4302b35a37518b48f20400c08"
+    },
+    "monitor-rerun-analysis-v2.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/monitor-rerun-analysis-v2.md",
+      "sha256": "e598f63de0326ea14723cdc0ae4371dab449c79bb3db3d16c42a710e742fe11d"
+    },
+    "monitor-rerun-analysis.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/monitor-rerun-analysis.json",
+      "sha256": "c89b50a047658ca1f3f4602a53c3b5b6553f36e8a16dedaa036d3a8d76f3439b"
+    },
+    "monitor-rerun-analysis.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/monitor-rerun-analysis.md",
+      "sha256": "08d2c6cfcb4aeb29a20f79fa1238088357eee360f30682d63a22526519241ea2"
+    },
+    "cpu-proof.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/cpu-proof.json",
+      "sha256": "921599941ba2a50c8f103417755b8900f1cbb2fb4a5c599ad576b21ad1809614"
+    },
+    "exit-pending-native.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/exit-pending-native.json",
+      "sha256": "80df75c8055a0016fe3e7be6879974b737e7a49277a4f1cbd2989a1bb99776d5"
+    },
+    "references/kernel-contract.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/references/kernel-contract.json",
+      "sha256": "954bf3320ffab0ee42abab65bd28e5894db577630e597324aa139e0b77145e54"
+    },
+    "references/source-manifest.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/references/source-manifest.json",
+      "sha256": "e4c9f1b7d273260b3084b6ba4a210245bf06848f36d339764d2b2cee4d0a984d"
+    },
+    "monitor-design-review.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/monitor-design-review.md",
+      "sha256": "cc5e9c14983bbeb45239b0b2e9562c1cab0072ef400fe69155d8a0837cc6b55f"
+    },
+    "diagnostic-v2/frozen-plan.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/diagnostic-v2/frozen-plan.json",
+      "sha256": "f6951b0c65b2b3918ca0d2696c14b8a724e0c5e10dae4321ac0ffdac8b7e536b"
+    },
+    "diagnostic-v2/run/files.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/diagnostic-v2/run/files.json",
+      "sha256": "a99b5f2ef3ee285cbe198588ae81f022cf3ef30e8c818314113fbd24a2f35782"
+    },
+    "preparation-v1-review.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/preparation-v1-review.json",
+      "sha256": "d1c15ecf8a3a167e4e3495d277b49c82fdd916a1a9fd6570c51f4f3b75916cb9"
+    }
+  },
+  "archive": {
+    "status": "ARCHIVED_ENV_ABORT_COLLECTOR_CONTROL_INCOMPLETE",
+    "source_preserved": true,
+    "independent_copies": true,
+    "readback_verified": true,
+    "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/archive-closed",
+    "entries": 1085,
+    "payload_bytes": 58051422,
+    "manifest_sha256": "680b6859cb1b35560972d119c1ed84d05a790acf33f795673333fb918e4bbbdb",
+    "evidence_integrity": "PASS",
+    "evidence_validity": "ENV_ABORT",
+    "measurement_complete": false,
+    "deployment": false,
+    "new_http": 0,
+    "new_model_starts": 0,
+    "inference_or_gpu_operations": 0,
+    "prior_archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/archive-closed",
+    "prior_seal_sha256": "685486c0ab4d9cc840a119e9d40ba6508f9e2974b01c6bf248cb396fdac430e5",
+    "seal_sha256": "4e366aef2a4f96f6c5a476f0f934490e2217816cd0b818d8ddd751fddcb45ab1"
+  }
+}

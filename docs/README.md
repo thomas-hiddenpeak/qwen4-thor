@@ -1,7 +1,10 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[suffix执行区间观测](MTP_SUFFIX_EXECUTION_2026-10-24.md)；
+最新专项：[fixture退出监控修复与Nsight补测](MTP_SUFFIX_NSYS_RERUN_2026-10-24.md)；
+[Nsight收尾诊断](MTP_SUFFIX_NSYS_2026-10-24.md)；
+[修复客户端监控后执行观测](MTP_SUFFIX_EXECUTION_RERUN_2026-10-24.md)；
+[suffix执行区间观测](MTP_SUFFIX_EXECUTION_2026-10-24.md)；
 前轮专项：[suffix修复监控后再验证](MTP_SUFFIX_ZERO_HIT_RERUN_2026-10-24.md)；
 [suffix零命中成本诊断](MTP_SUFFIX_ZERO_HIT_2026-10-24.md)；
 前轮结果：[suffix长匹配准入改进](MTP_SUFFIX_ADMISSION_2026-10-24.md)；
@@ -17,6 +20,9 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [fixture退出监控修复与Nsight补测](MTP_SUFFIX_NSYS_RERUN_2026-10-24.md) | PF_EXITING有界pending、四收尾控制 | CPU97/原生64通过；11/11采样，第三组控制生命周期错误ENV_ABORT，0模型请求 |
+| [Nsight收尾诊断](MTP_SUFFIX_NSYS_2026-10-24.md) | 已知工作、负控、memory coverage | 首fixture退出监控ENV_ABORT；目标warning未定，保持交付版 |
+| [修复客户端监控后执行观测](MTP_SUFFIX_EXECUTION_RERUN_2026-10-24.md) | 正常/CPU/profile分阶段观测 | 37正常+6CPU局部有效；首profile完整性门拒绝，GPU矩阵未完成 |
 | [suffix执行区间观测](MTP_SUFFIX_EXECUTION_2026-10-24.md) | prefill/神经草稿CPU双钟与NVTX | 4响应后监控ENV_ABORT；CPU/GPU定位未执行，保持交付版 |
 | [suffix修复监控后再验证](MTP_SUFFIX_ZERO_HIT_RERUN_2026-10-24.md) | 正常收益/首long干预/分层计时 | 56HTTP/12启动有效；重复收益复现，根因未定，保持交付版 |
 | [suffix零命中成本](MTP_SUFFIX_ZERO_HIT_2026-10-24.md) | TTFT前段/解码归因、同身份控制、只读遥测 | 冻结26HTTP诊断；候选需机制支持，全任务有界 |

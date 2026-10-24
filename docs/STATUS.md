@@ -2,6 +2,21 @@
 
 更新：2026-10-24。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+fixture退出监控修复通过CPU验证，Nsight补测有界停止（2026-10-24，ENV_ABORT）：
+同身份PF_EXITING进入最多16项/原错起5秒pending，保留缺io；原pidfd与pinned
+终态闭合后才刷新完整心跳。97项合同首suite通过，固定64原生CPU子进程全部
+回收，15次新pending全解决；该紧循环不代表生产1Hz或GPU退出延迟。
+唯一持锁阶段10.026秒，监控11/11无失败，新pending实际触发0次。前两控制
+各32 kernel/64 copy/32 memset/33 NVTX及两个实际副本负控通过，目标两条
+完整性warning仍在。第三组profile会话调用交互stop，被RangeCollectionState
+明确拒绝，StopRequest失败并需自有目标强制清理；第四组/全部模型对照未跑。
+原始STOPPED、postflight ENV_ABORT；不能称warning误报、真实丢事件或下降已修。
+独立审计1914冻结/68raw/457snapshot一致，15自有身份无残留；0模型/0HTTP。
+复用两head重复收益，完整+13.68%/+14.40%、子集共享B GM+6.53%/+6.73%；
+f356默认程序/sidecar/子集不变。监控修复与采集工具未通过分列，不追加重试。
+见[修复、控制命令原因及阶段决定](MTP_SUFFIX_NSYS_RERUN_2026-10-24.md)。
+1085条目独立封存回读通过，seal 4e366aef2a4f；保留回退身份及原证据路径。
+
 Nsight收尾完整性有界诊断停止（2026-10-24，ENV_ABORT/测量不完整）：
 30项CPU合同两suite通过；完整持锁驱动5.229秒，首fixture退出窗口io EACCES，
 同身份R、pidfd实际等待49.064ms未ready，监控5/6；0模型加载/0HTTP，不重试。

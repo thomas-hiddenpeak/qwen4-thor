@@ -48,6 +48,7 @@ _original_export = old.export_profile
 _original_diagnostics = old.audit_profile_diagnostics
 _original_telemetry_sample = old.telemetry.sample
 _original_stop_group = legacy.stop_group
+_original_require_monitor = legacy.require_monitor
 _failure_monitor = {}
 
 
@@ -60,6 +61,10 @@ def clean_env():
 
 
 def validate(plan):
+    fix = plan.get('monitor_fix', {})
+    if fix.get('classification') == 'bounded_owned_exit_pending' and fix.get(
+            'exit_pending') != dict(ttl_seconds=5, capacity=16, poll_timeout_ms=0):
+        raise ValueError('frozen exit-pending monitor contract changed')
     if ((plan['http_requests'], plan['http_loads'], plan['stage_timeout_seconds'],
          plan['direct_contract_timeout_seconds']) != (6, 4, 5400, 1200) or
             plan['fixture_variants'] != VARIANTS or
@@ -127,6 +132,22 @@ def sample_with_failure_context(output, stop, failures, heartbeat):
         _failure_monitor['returned'] = True
 
 
+def require_monitor_with_pending(sampler, failures, heartbeat, maximum_age):
+    """Do not advance a step while previously seen exits remain unresolved.
+
+    The sampler continues normally. The caller only waits for its full ledger;
+    this adds no inference-stream synchronization or additional sampling.
+    """
+    deadline = time.monotonic() + maximum_age
+    while True:
+        _original_require_monitor(sampler, failures, heartbeat, maximum_age)
+        if heartbeat.get('exit_pending_count', 0) == 0:
+            return
+        if time.monotonic() >= deadline:
+            raise legacy.EnvironmentAbort('owned exits unresolved at monitor barrier')
+        time.sleep(.05)
+
+
 def stop_group_with_final_flush(child):
     """Keep monitoring the failed owned-step cleanup before legacy joins it."""
     receipt = dict(child_pid=child.pid, complete=False,
@@ -149,7 +170,8 @@ def stop_group_with_final_flush(child):
             heartbeat = dict(_failure_monitor['heartbeat'])
             flushed = heartbeat.get('last_sample', 0)
             duration = heartbeat.get('last_cycle_duration_seconds')
-            if duration is not None and flushed - duration >= boundary:
+            if (duration is not None and flushed - duration >= boundary and
+                    heartbeat.get('exit_pending_count', 0) == 0):
                 receipt.update(complete=True, sample_started_monotonic=flushed-duration,
                                flushed_monotonic=flushed)
                 return
@@ -743,6 +765,7 @@ def main():
     legacy.clean_env = clean_env
     old.telemetry.sample = sample_with_failure_context
     legacy.stop_group = stop_group_with_final_flush
+    legacy.require_monitor = require_monitor_with_pending
     old.validate = validate
     old.custom_step = custom_step
     old.stop_profile_target = stop_profile_target

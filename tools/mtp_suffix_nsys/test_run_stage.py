@@ -39,6 +39,45 @@ def plan():
 
 
 class RunnerContracts(unittest.TestCase):
+    def test_pending_barrier_waits_for_complete_ledger(self):
+        heartbeat = dict(exit_pending_count=1)
+        def finish(_duration):
+            heartbeat['exit_pending_count'] = 0
+        with patch.object(runner, '_original_require_monitor') as check, \
+                patch.object(runner.time, 'monotonic', return_value=10), \
+                patch.object(runner.time, 'sleep', side_effect=finish) as sleep:
+            runner.require_monitor_with_pending('sampler', [], heartbeat, 5)
+        self.assertEqual(check.call_count, 2)
+        sleep.assert_called_once_with(.05)
+        self.assertEqual(heartbeat['exit_pending_count'], 0)
+
+    def test_pending_barrier_cannot_override_failure_or_deadline(self):
+        for failure in (False, True):
+            with self.subTest(failure=failure):
+                with patch.object(runner, '_original_require_monitor',
+                        side_effect=runner.legacy.EnvironmentAbort('monitor') if failure else None), \
+                        patch.object(runner.time, 'monotonic', side_effect=[10, 16]), \
+                        patch.object(runner.time, 'sleep') as sleep:
+                    with self.assertRaises(runner.legacy.EnvironmentAbort):
+                        runner.require_monitor_with_pending(None, [],
+                            dict(exit_pending_count=1), 5)
+                    sleep.assert_not_called()
+
+    def test_failure_flush_pending_is_not_complete_even_with_fresh_time(self):
+        with tempfile.TemporaryDirectory() as directory:
+            stop = MagicMock()
+            stop.is_set.return_value = False
+            context = dict(output=Path(directory)/'memory.jsonl', failures=[],
+                heartbeat=dict(last_sample=11, last_cycle_duration_seconds=.1,
+                               exit_pending_count=1), stop=stop, returned=False)
+            with patch.object(runner, '_failure_monitor', context), \
+                    patch.object(runner, '_original_stop_group'), \
+                    patch.object(runner.time, 'monotonic', side_effect=[10, 16]):
+                with self.assertRaises(runner.legacy.EnvironmentAbort):
+                    runner.stop_group_with_final_flush(MagicMock(pid=100))
+            receipt = json.loads((Path(directory)/'failure-monitor-barrier.json').read_text())
+            self.assertFalse(receipt['complete'])
+
     def test_frozen_scope_order_budget(self):
         value = plan()
         runner.validate(value)
