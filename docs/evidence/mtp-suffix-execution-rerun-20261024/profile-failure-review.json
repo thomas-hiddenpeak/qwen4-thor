@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "scope": "FORENSIC_ONLY_STOPPED_PROFILE",
+  "conclusion": "Trace completeness is not established under the frozen warning policy. Recorded application spans and launches have strong internal closure; warning alone does not prove application record loss.",
+  "stage_status_unchanged": "STOPPED",
+  "stage_error": "RuntimeError('nsys8-off failed with 1')",
+  "trace_exports_complete": false,
+  "gpu_comparison": false,
+  "performance_acceptance": false,
+  "no_new_collection": true,
+  "artifacts": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/review_profile_failure.py": "1338af585ae87587466c30d29d846549448c9f2c6b73261bb6885d81fd8f45ab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/profile-failure-script-seal.json": "a8ca87873269aa8fceabe1e4ad5d0e000d6449c47e443b51fea2d26ec805a834",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/profile-failure-data.json": "b82a2127f61e5ecaf033bcf06de282039b92433c67919e897ae67d7a61aeec7c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/profile-failure-analysis.log": "64bdf08ad4b5854daa21423ba35d3d30c3b342319e65ac1aea01a1bb5ff5c8e8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/review_profile_boundaries.py": "cfad5cdf28da7926e5b7741461f9c7580636e6ac4bb2930d2a6c179cc14e1482",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/profile-boundaries-script-seal.json": "1db26c9b1599eca32f4205bf243027fde124155bd9348e222814b46d299a982e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/profile-failure-boundaries.json": "3a5de4a52e56c0f0105995aa09e5d9862971edfd8bed85fa499d2b008b0da551",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/profile-boundaries-analysis.log": "86a48d7ecd6d5737b0697a8b3069e23dd4ddc8d37ee73bd23d9c4d8245db23f9"
+  },
+  "frozen_source_checks": [
+    {
+      "path": "include/q4t/diagnostic/execution_observer.h",
+      "current_sha256": "b7c61ee4812399ad8cf0d2a7b45c9f59a3a2d165f95155044bb71acf5d88d54f",
+      "snapshot_sha256": "b7c61ee4812399ad8cf0d2a7b45c9f59a3a2d165f95155044bb71acf5d88d54f",
+      "same": true
+    },
+    {
+      "path": "src/server/chat_generation.cpp",
+      "current_sha256": "9f66d4a5750b68a80a10d3d3497d7c1579be23dbbeadaea44c4827147dc9d220",
+      "snapshot_sha256": "9f66d4a5750b68a80a10d3d3497d7c1579be23dbbeadaea44c4827147dc9d220",
+      "same": true
+    },
+    {
+      "path": "tools/mtp_suffix_execution/run_stage.py",
+      "current_sha256": "213209e8523f044851c4a623812912f01a4afee34c477b349c9cbdef254d97c2",
+      "snapshot_sha256": "213209e8523f044851c4a623812912f01a4afee34c477b349c9cbdef254d97c2",
+      "same": true
+    }
+  ],
+  "proven": {
+    "roles": {
+      "launcher_pid": 3181142,
+      "wrapper_pid": 3181170,
+      "q4t_pid": 3181182,
+      "q4t_start_ticks": 99313627,
+      "q4t_globalPid": 334846354259968,
+      "wrapper_globalPid": 334846152933376
+    },
+    "exit": {
+      "q4t": 0,
+      "wrapper": 0,
+      "launcher": 0,
+      "export": 0,
+      "forced_target_kill": false
+    },
+    "warnings": {
+      "q4t": 2,
+      "wrapper": 4,
+      "exact_auxiliary_um_unsupported": 1
+    },
+    "capture": {
+      "begin_error": 0,
+      "end_error": 0,
+      "cpu_batches": 77,
+      "cpu_spans": 2716,
+      "cpu_flushes": 77,
+      "nvtx_ranges": 2716,
+      "nvtx_closed": 2716,
+      "nvtx_cpu_keys_identity_and_nesting_match": true
+    },
+    "cuda": {
+      "recorded_api": 714727,
+      "recorded_kernel": 266389,
+      "recorded_memcpy": 4551,
+      "recorded_memset": 7902,
+      "all_recorded_gpu_activities_have_unique_api": true,
+      "all_recorded_api_return_values_zero": true,
+      "recorded_launch_correlations": 266413,
+      "recorded_application_launch_correlations": 266389,
+      "application_launch_without_kernel": 0,
+      "unmatched_launches": 24,
+      "unmatched_thread_tid": 3181191,
+      "unmatched_thread_name": "CUPTI worker thread",
+      "unmatched_contained_in_same_thread_buffer_flush": 24
+    },
+    "counters": {
+      "cupti_produced": 1019188,
+      "cuda_collected": 993569,
+      "produced_minus_collected": 25619,
+      "separately_exported_overhead_sync_event_records": 25572,
+      "residual_not_explained_by_these_table_counts": 47,
+      "not_a_drop_count": true
+    },
+    "trace_tail": {
+      "last_gpu_activity_end_ns": 12521370466,
+      "last_application_sync_end_ns": 12521550299,
+      "profiler_stop_flush_begin_ns": 12521866484,
+      "profiler_stop_flush_end_ns": 12580175938,
+      "profiler_stop_flush_duration_ns": 58309454,
+      "profiling_stopped_target_timestamp_ns": 12580528346,
+      "last_gpu_to_stop_ns": 59157880,
+      "last_sync_to_stop_ns": 58978047,
+      "last_nvtx_end_ns": 12347896768,
+      "scope": "Nsight target timestamps only; flush duration is profiler overhead, not inference performance"
+    },
+    "diagnostic_timestamp_domains": {
+      "type1": "TargetTimestamp",
+      "type2": "HostTimestamp",
+      "warnings_are_type2": true,
+      "do_not_sort_across_domains": true
+    },
+    "sqlite_quick_check": [
+      "ok"
+    ],
+    "all_raw_input_hashes_unchanged": true
+  },
+  "capture_lifecycle": {
+    "start": "After tokenization/per-request allocation, immediately before prefill; exactly one selected input=8170 request",
+    "stop": "ProfileCapture destructor on handler return after final response and explicit cleanup; cudaProfilerStop returned success. Scheduler GPU result wait/completion precedes response. No extra runtime synchronization added.",
+    "launcher": "Process-tree capture includes a Python wrapper that does not call CUDA/NVTX. Target and launcher were allowed to exit normally after actual q4t SIGTERM; no forced kill.",
+    "export": "SQLite export exited 0. The subsequent frozen diagnostics review rejected six warnings, leaving trace_exports_complete=false; this is not a failed SQLite export command."
+  },
+  "unresolved": [
+    "The exact trigger for the two q4t completeness warnings is not recorded. No internal flush flags/results, per-source dropped counters or raw transport completeness markers were saved.",
+    "NVTX/CPU bijection and recorded launch/kernel bijection cannot detect activity/API pairs missing together, nor uninstrumented application work.",
+    "Current Nvidia forum evidence from another Nsight version explains the same CUDA warning via forced flush; this is a possible mechanism, not proof for 2026.1.3 on Thor and not a blanket NVTX exception.",
+    "META_DATA_CAPTURE reports CUDA_FLUSH_ON_CUDA_PROFILER_STOP=false, while injection diagnostics and a concrete profiler-overhead range record flushing on Stop. The metadata field cannot establish disabled flushing or the flush mode.",
+    "A single exact CLOCK_MONOTONIC-to-Nsight translation does not satisfy all CPU/NVTX enclosure bounds (empty interval by 45507 ns). This review uses native Nsight timestamps and key/correlation identity; it does not infer precise merged-clock CPU/GPU gaps.",
+    "Only nsys8-off exists. Remaining ON and 200K profile arms were stopped; no GPU phase comparison or new benefit conclusion is available."
+  ],
+  "retained_boundaries": [
+    "Original output/reference and orderly exit facts",
+    "77 batches/2716 closed spans, with matching captured NVTX keys",
+    "Process-qualified recorded CUDA correlation relationships and endpoint observations",
+    "Independent normal/CPU branch evidence is owned by separate stage audit, not validated or invalidated solely by this trace review"
+  ],
+  "future_specific_actions": [
+    "Preserve version-specific launch/capture/flush receipts and per-process diagnostic roles. Wrapper no-CUDA warnings may be classified separately in a future predeclared protocol, but cannot waive q4t completeness warnings retroactively.",
+    "Before another whole matrix, use one predeclared tool-lifecycle diagnostic on the same binary/version to obtain Nsight injection/NVLOG finalization records: actual FlushAll flags/results, produced/collected category definitions, dropped-buffer counters and terminal markers. No automatic retry or parameter scan.",
+    "Prefer establishing an exact-version collector/finalization correction with NVIDIA or a bounded tool-only lifecycle change over adding synchronization to inference. Existing tail already contains successful stream synchronization and Stop flush; extra device synchronization is not justified by current evidence.",
+    "Future analyzer should distinguish application threads from CUPTI worker launches, keep warning gate separate from internal closure, and avoid treating produced-collected as lost records or HostTimestamp warnings as in-window target times."
+  ],
+  "primary_references": [
+    {
+      "url": "https://docs.nvidia.com/nsight-systems/UserGuide/index.html#cuda-troubleshooting",
+      "use": "Application should finish GPU work and call profiler stop to flush; this supports examining finalization, not a guarantee that this capture was complete."
+    },
+    {
+      "url": "https://docs.nvidia.com/cupti/api/group__CUPTI__ACTIVITY__API.html",
+      "use": "FlushAll does not implicitly synchronize; forced flush can include incomplete records. Worker thread performs profiling-resource synchronization and buffer delivery."
+    },
+    {
+      "url": "https://forums.developer.nvidia.com/t/nsight-systems-2026-5-1-produced-112-collected-100-warning-despite-complete-coverage-of-32-kernels/384749",
+      "use": "NVIDIA forum reply attributes the same CUDA warning in a 2026.5.1 example to force flush despite expected kernels being present; not this 2026.1.3 capture."
+    },
+    {
+      "url": "https://forums.developer.nvidia.com/t/question-when-prifilling-megatron-lm/350407",
+      "use": "Different multiprocess workload showed capture-range stop/flush issues across processes; it demonstrates a lifecycle question, not a matching diagnosis for this one-CUDA-process capture."
+    }
+  ]
+}

@@ -1,0 +1,2510 @@
+{
+  "created_utc": "2026-10-24T01:00:58.695202+00:00",
+  "audit_revision": {
+    "version": 2,
+    "prior_script_sha256": "6e535849dbf577c7699bb230affaf9a1217f45bbc57f9d9945cde9109f2ed696",
+    "prior_output_sha256": "e3deeb84944eabaab3abe1f5cd48531d409f072ca21ae611712ab2cebb0a8b7e",
+    "prior_markdown_sha256": "0d926c23de7ccaf2a6e8576df60fbbb71601b1a649e4a0c5446f5dd3d49aa2fd",
+    "prior_result_retained": true,
+    "fixes": [
+      "Compare monitor proof factual fields exactly while retaining both explicit scope descriptions.",
+      "Only [q4t][request] markers are request lifecycle events; parse exec-capture separately.",
+      "Markdown partial-analysis claim is conditional on successful independent checks."
+    ],
+    "no_raw_or_frozen_change": true
+  },
+  "evidence_integrity": "PASS",
+  "evidence_validity": "PARTIAL_VALID_PROFILE_ENV_ABORT",
+  "measurement_complete": false,
+  "statistical_conclusion": "DESCRIPTIVE_COMPLETED_PREFIX_ONLY_NO_FULL_STAGE_ACCEPTANCE",
+  "engineering_decision": "NO_NEW_RUNTIME_OPTIMIZATION_OR_DELIVERY_DECISION",
+  "errors": [],
+  "monitor_environment_errors": [],
+  "environment_errors": [
+    "Required Nsight trace incomplete; actual target CUDA/NVTX warnings."
+  ],
+  "measurement_gaps": [
+    "Planned 49/13 matrix incomplete: completed prefix43 plus rejected-profile response1; three profile services/five requests not run.",
+    "Required first Nsight trace has actual q4t CUDA/NVTX completeness warnings; no successful final monitor barrier was executed."
+  ],
+  "checks": {
+    "evidence": 107297,
+    "environment": 18499,
+    "measurement": 4
+  },
+  "identities": {
+    "plan_sha256": "f999e0950cd14dd364e4cb249c1e58184cf229887380d38a6ca0a903c8db69e1",
+    "frozen_files": {
+      "checked": 1317,
+      "changed": []
+    },
+    "raw_files": {
+      "checked": 585,
+      "changed": []
+    },
+    "raw_seal_sha256": "3bf85b182a651c27fa726a257a999ec75c2a5787156638f13bfa8934815af0d5",
+    "source_snapshot_files": 443,
+    "snapshot_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "model_metadata_files": 197,
+    "runtime_source": "55363f18dedb947ac52e69e10475d3082cb71a82",
+    "tool_source": "c8d7e78b9a05627b144faad371f3fa7130436ec6",
+    "candidate_sha256": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914",
+    "default_binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "default_sidecar_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+    "monitor_fix": {
+      "tool_sha256": "882a44789cd60fb4f6d3677b59e29324feb65e2bbad319ed95e8aa313e1cb958",
+      "test_sha256": "087c646b58d9b8ef8cf63cd5faeac10761c3f943756987323699290025bac6fd",
+      "test_log_sha256": "b102fcd9d6391470b0e4a9d5ad8e053205cb89c002a21f2cf20492e32b17bcec",
+      "tests_passed": 39,
+      "tests_skipped": 0,
+      "tests_failed": 0,
+      "tests_errors": 0,
+      "suite_runs": 2,
+      "suite_wall_seconds_reported": 0.138,
+      "suite_wall_limit_seconds": 180,
+      "new_http_or_gpu": 0,
+      "real_owned_children_reaped": true,
+      "native_suite_children": 2,
+      "bounded_exit_confirmation": {
+        "per_task_ms": 50,
+        "per_sample_ms": 100
+      },
+      "reproduction": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/exit-io-reproduction.json",
+        "sha256": "83492207c125a6d52e5ee1941eb36288524122ab973c08c372aeb6543eeffae9",
+        "status": "REPRODUCED_FIXED_64_PASS",
+        "old_monitor_failure_reproduced": true,
+        "nonterminal_error_observed": true,
+        "children": 64,
+        "live_recheck_then_exit": 56,
+        "all_children_reaped": true
+      },
+      "replay": {
+        "old_terminal": 8,
+        "old_fatal": 56,
+        "new_terminal": 64,
+        "new_after_denial_confirmation": 56,
+        "native_new_monitor_runs": 0,
+        "binding_basis": "Recorded pre-go live handshake supplies mocked nonready initial poll; the reproduction did not record a pre-error poll(0). Subsequent io denial, recheck, terminal stat and flags are recorded native traces."
+      },
+      "native_contracts": [
+        "same-identity zombie io EACCES retained",
+        "live nondumpable child io EACCES remains fatal after bounded wait"
+      ],
+      "scope": "New CPU repair proof only; true GPU-stage lifecycle still requires this whole stage to finish.",
+      "kernel_review_sha256": "7851acea8ef81a5d37e12d276379add1dffccba018759c4313d184219d2ca1fd",
+      "reproduction_tool_sha256": "0ea7a179e05949480c3b9e57a8904c152e19f2ead3f42e49fbaac14ffbe3606b",
+      "total_reported_suite_seconds": 0.274,
+      "concrete_second_run_reason": "Independent static review found final identity recheck could exceed the 50ms absolute deadline; fixed final deadline check and anchored start to original IO error timestamp. Added two boundary contracts; no additional reproduction or HTTP/GPU.",
+      "prior_cpu_proof": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/monitor-cpu-proof-v1.json",
+        "sha256": "d5d068ba1e1945eb159b1ea8d538f03e7efd7896c18db85ba0efc267bdd54350",
+        "tests_passed": 37
+      },
+      "proof_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/monitor-cpu-proof.json",
+      "proof_sha256": "ed7d1451af7a5e7ab20cb36e0628c94ba2c8ceafaaef35e4d828d63ead880d75",
+      "test_log_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/monitor-cpu-tests.log"
+    },
+    "prior_abort": {
+      "outcome": "ENV_ABORT_UNCHANGED",
+      "pooled_samples": false,
+      "stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/diagnostic-v1",
+      "plan_sha256": "a145dafe688ef60ec117d76fb5b3d6116a39b22bf92c412aede811c45e5df47b",
+      "audit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/audit-execution-v2.json",
+      "audit_sha256": "a260c7037deeba0a4779da4c4ec6f36e36a1a6da70ceed623931a27df013cef5",
+      "raw_seal": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/diagnostic-v1/run/files.json",
+      "raw_seal_sha256": "b43a0a4976570306b2752ea3c0fab04e35ce69533bdc66985ca8f5741fa8f828",
+      "previous_stage_accounting": {
+        "requests_completed": 1,
+        "loads_started": 2,
+        "elapsed_seconds": 126.23754530702718
+      },
+      "raw_successful_responses": 4,
+      "scope": "New user-authorized stage, not a continuation or restoration of the failed environment; no previous response/performance sample is pooled."
+    },
+    "monitor_proof_original_scope": "CPU repair proof only; no GPU/HTTP or inference tests; historical failed PID has no reconstructed raw state; new full-stage lifecycle still must pass.",
+    "inherited_contracts": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/audit-evidence.json",
+      "sha256": "3a296afa13e68638f114154327aae47f7257f93cd69f325817f58a7495e83c2e",
+      "quality": 22,
+      "host": 86,
+      "stage_suite": 10,
+      "scope": "Original 6a mathematical contract evidence under reviewed unchanged computation dependencies only; not new-binary whole-model quality. Two-GDN-layer oracle scope unchanged."
+    },
+    "inherited_scope": "Original unchanged mathematical/state scope, including two GDN layers; not new-binary whole-model quality."
+  },
+  "stage_state": {
+    "status": "STOPPED",
+    "started": 1792801240.262251,
+    "completed": [
+      "first-http",
+      "full-off",
+      "full-on",
+      "subset-off-a1",
+      "subset-on-b",
+      "subset-off-a2",
+      "exec-off-a1",
+      "exec-on-b",
+      "exec-off-a2"
+    ],
+    "requests_completed": 43,
+    "loads_started": 10,
+    "contract_seconds": 0,
+    "plan_sha256": "f999e0950cd14dd364e4cb249c1e58184cf229887380d38a6ca0a903c8db69e1",
+    "current": "nsys8-off",
+    "error": "RuntimeError('nsys8-off failed with 1')",
+    "finished": 1792803120.3670428,
+    "elapsed_seconds": 1880.1047948520863,
+    "monitor_failures": []
+  },
+  "environment": {
+    "outer_exit": {
+      "status": "COMMAND_FAILED",
+      "command": [
+        "python3",
+        "-B",
+        "tools/mtp_suffix_execution/run_stage.py",
+        "--plan",
+        ".q4t-work/suffix-execution-rerun-20261024/diagnostic-v1/frozen-plan.json"
+      ],
+      "compute_backend": "nvml",
+      "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+      "poll_interval_seconds": 1.0,
+      "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+      "performance_acceptance": false,
+      "child_returncode": 1,
+      "external_lease": false,
+      "finished": {
+        "utc": "2026-10-24T00:52:01.329562+00:00",
+        "monotonic": 993203.846445211,
+        "pid": 3169643
+      }
+    },
+    "postflight": {
+      "status": "STOPPED",
+      "state_sha256": "05b7e8e8f3fcceca01d89222956f0ef066bd539784b349d25f0e7a38a6907a4e",
+      "monitor_failures": [],
+      "cleanup_errors": [],
+      "child_cleanup_errors": [],
+      "final_summary_sha256": "fbd679e35480cafb47dfd8ab96d941fe2da626458796d225c60352e7e045b7e8",
+      "final_monitor_barrier": {},
+      "final_monitor_errors": [],
+      "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+    },
+    "stored_nvml_queries": 1725,
+    "guard_monitor_observations": 1725,
+    "lease_begin": {
+      "utc": "2026-10-24T00:20:40.086985+00:00",
+      "monotonic": 991322.603864367,
+      "pid": 3169643,
+      "event": "lease_acquired"
+    },
+    "lease_end": {
+      "utc": "2026-10-24T00:52:01.329790+00:00",
+      "monotonic": 993203.846667545,
+      "pid": 3169643,
+      "event": "lease_released",
+      "status": "COMMAND_FAILED"
+    },
+    "hashes": {
+      "lease/exit.json": "d5e54616799af2cbeec84f81ba87c211bb9e5542bb25016dd86f21e7d5a83a31",
+      "lease/events.jsonl": "392bade755f91c62bd9a8e91cb420b3b9345e6b2c948b19a35126a2a37c26e9d",
+      "lease/nvml-queries.jsonl": "3e911052b8592ea493e3960b8b85fd1b41e43a3d7db48075a8fec437453b8d88",
+      "postflight.json": "9ea626a6486517da1f3ad5d4c2554a34251b95b1fcc83acda5e8dda9f080354b"
+    },
+    "scope": "No new monitoring; polling does not exclude interference below the sampling interval."
+  },
+  "groups": {
+    "first-http": {
+      "complete": true,
+      "http_lifecycle_complete": true,
+      "step_completed": true,
+      "pid": 3169660,
+      "started": 991325.9450673345,
+      "finished": 991383.2901071435,
+      "head": "full",
+      "suffix": true,
+      "measurement_role": "first_http_gate",
+      "raw_generation": 1,
+      "admitted": 1,
+      "cases": [
+        {
+          "id": "context-8192",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 991368.261529023,
+          "end_monotonic": 991381.467838093,
+          "source_database": "context-8192/20261024_082123/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "work": [
+        {
+          "response_id": "chatcmpl-auto-0",
+          "acceptance": [
+            6,
+            11,
+            5,
+            53
+          ],
+          "verify": 75,
+          "ordinary_tail": 0
+        }
+      ],
+      "execution": {
+        "batches": 0,
+        "spans": 0,
+        "flushes": 0,
+        "captures": [],
+        "independent_raw_checks": true,
+        "span_semantics": "Nested CPU spans not additive; non-running wall is not GPU time."
+      },
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": null,
+        "trace_exports_complete": null,
+        "diagnostic_only": false,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      },
+      "performance_acceptance": false
+    },
+    "full-off": {
+      "complete": true,
+      "http_lifecycle_complete": true,
+      "step_completed": true,
+      "pid": 3170525,
+      "started": 991383.6393525384,
+      "finished": 991474.0194553835,
+      "head": "full",
+      "suffix": false,
+      "measurement_role": "normal_diagnostic",
+      "raw_generation": 6,
+      "admitted": 6,
+      "cases": [
+        {
+          "id": "repeat-code",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 991425.9366742,
+          "end_monotonic": 991433.018978979,
+          "source_database": "repeat-code/20261024_082221/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-1",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 991433.019375749,
+          "end_monotonic": 991439.937763882,
+          "source_database": "repeat-code/20261024_082221/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-2",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 991439.938135698,
+          "end_monotonic": 991446.850451029,
+          "source_database": "repeat-code/20261024_082221/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-3",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 991452.261270104,
+          "end_monotonic": 991458.923561904,
+          "source_database": "repeat-text/20261024_082247/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-4",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 991458.923947424,
+          "end_monotonic": 991465.578940109,
+          "source_database": "repeat-text/20261024_082247/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-5",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 991465.579313749,
+          "end_monotonic": 991472.230954205,
+          "source_database": "repeat-text/20261024_082247/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "work": [
+        {
+          "response_id": "chatcmpl-auto-0",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-1",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-2",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-3",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-4",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-5",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        }
+      ],
+      "execution": {
+        "batches": 0,
+        "spans": 0,
+        "flushes": 0,
+        "captures": [],
+        "independent_raw_checks": true,
+        "span_semantics": "Nested CPU spans not additive; non-running wall is not GPU time."
+      },
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": null,
+        "trace_exports_complete": null,
+        "diagnostic_only": false,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      },
+      "performance_acceptance": false
+    },
+    "full-on": {
+      "complete": true,
+      "http_lifecycle_complete": true,
+      "step_completed": true,
+      "pid": 3171507,
+      "started": 991474.32167525,
+      "finished": 991560.3074366054,
+      "head": "full",
+      "suffix": true,
+      "measurement_role": "normal_diagnostic",
+      "raw_generation": 6,
+      "admitted": 6,
+      "cases": [
+        {
+          "id": "repeat-code",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 991516.645295942,
+          "end_monotonic": 991523.007975303,
+          "source_database": "repeat-code/20261024_082352/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-1",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 991523.008398563,
+          "end_monotonic": 991529.198679402,
+          "source_database": "repeat-code/20261024_082352/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-2",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 991529.199038671,
+          "end_monotonic": 991535.376664313,
+          "source_database": "repeat-code/20261024_082352/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-3",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 991540.799015291,
+          "end_monotonic": 991546.718585656,
+          "source_database": "repeat-text/20261024_082416/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-4",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 991546.718935185,
+          "end_monotonic": 991552.610765067,
+          "source_database": "repeat-text/20261024_082416/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-5",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 991552.611128984,
+          "end_monotonic": 991558.502556245,
+          "source_database": "repeat-text/20261024_082416/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "work": [
+        {
+          "response_id": "chatcmpl-auto-0",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-1",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-2",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-3",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-4",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-5",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        }
+      ],
+      "execution": {
+        "batches": 0,
+        "spans": 0,
+        "flushes": 0,
+        "captures": [],
+        "independent_raw_checks": true,
+        "span_semantics": "Nested CPU spans not additive; non-running wall is not GPU time."
+      },
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": null,
+        "trace_exports_complete": null,
+        "diagnostic_only": false,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      },
+      "performance_acceptance": false
+    },
+    "subset-off-a1": {
+      "complete": true,
+      "http_lifecycle_complete": true,
+      "step_completed": true,
+      "pid": 3172492,
+      "started": 991560.5973871141,
+      "finished": 991855.8644749345,
+      "head": "subset",
+      "suffix": false,
+      "measurement_role": "normal_diagnostic",
+      "raw_generation": 8,
+      "admitted": 8,
+      "cases": [
+        {
+          "id": "context-8192",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 991613.932871842,
+          "end_monotonic": 991626.17254514,
+          "source_database": "context-8192/20261024_082529/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-1",
+          "first_request_of_service": false,
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 991631.507068152,
+          "end_monotonic": 991806.130660849,
+          "source_database": "context-204800/20261024_082547/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-2",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 991811.456226812,
+          "end_monotonic": 991817.679866964,
+          "source_database": "repeat-code/20261024_082847/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-3",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 991817.680269186,
+          "end_monotonic": 991823.9003514,
+          "source_database": "repeat-code/20261024_082847/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-4",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 991823.900738614,
+          "end_monotonic": 991830.12626564,
+          "source_database": "repeat-code/20261024_082847/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-5",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 991835.437417495,
+          "end_monotonic": 991841.653390475,
+          "source_database": "repeat-text/20261024_082911/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-6",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 991841.653795587,
+          "end_monotonic": 991847.868236497,
+          "source_database": "repeat-text/20261024_082911/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-7",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 991847.868598229,
+          "end_monotonic": 991854.082646337,
+          "source_database": "repeat-text/20261024_082911/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "work": [
+        {
+          "response_id": "chatcmpl-auto-0",
+          "acceptance": [
+            7,
+            8,
+            7,
+            52
+          ],
+          "verify": 74,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-1",
+          "acceptance": [
+            8,
+            7,
+            5,
+            54
+          ],
+          "verify": 74,
+          "ordinary_tail": 2
+        },
+        {
+          "response_id": "chatcmpl-auto-2",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-3",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-4",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-5",
+          "acceptance": [
+            2,
+            2,
+            2,
+            60
+          ],
+          "verify": 66,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-6",
+          "acceptance": [
+            2,
+            2,
+            2,
+            60
+          ],
+          "verify": 66,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-7",
+          "acceptance": [
+            2,
+            2,
+            2,
+            60
+          ],
+          "verify": 66,
+          "ordinary_tail": 3
+        }
+      ],
+      "execution": {
+        "batches": 0,
+        "spans": 0,
+        "flushes": 0,
+        "captures": [],
+        "independent_raw_checks": true,
+        "span_semantics": "Nested CPU spans not additive; non-running wall is not GPU time."
+      },
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": null,
+        "trace_exports_complete": null,
+        "diagnostic_only": false,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      },
+      "performance_acceptance": false
+    },
+    "subset-on-b": {
+      "complete": true,
+      "http_lifecycle_complete": true,
+      "step_completed": true,
+      "pid": 3174114,
+      "started": 991856.1501451426,
+      "finished": 992138.3112144035,
+      "head": "subset",
+      "suffix": true,
+      "measurement_role": "normal_diagnostic",
+      "raw_generation": 8,
+      "admitted": 8,
+      "cases": [
+        {
+          "id": "context-8192",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 991898.423485581,
+          "end_monotonic": 991910.654244326,
+          "source_database": "context-8192/20261024_083013/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-1",
+          "first_request_of_service": false,
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 991916.017224712,
+          "end_monotonic": 992090.618248976,
+          "source_database": "context-204800/20261024_083031/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-2",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 992095.988539191,
+          "end_monotonic": 992101.863048343,
+          "source_database": "repeat-code/20261024_083331/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-3",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 992101.863449437,
+          "end_monotonic": 992107.74027005,
+          "source_database": "repeat-code/20261024_083331/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-4",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 992107.740645125,
+          "end_monotonic": 992113.616292975,
+          "source_database": "repeat-code/20261024_083331/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-5",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 992118.971795225,
+          "end_monotonic": 992124.845889832,
+          "source_database": "repeat-text/20261024_083354/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-6",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 992124.846253341,
+          "end_monotonic": 992130.687170731,
+          "source_database": "repeat-text/20261024_083354/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-7",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 992130.687554963,
+          "end_monotonic": 992136.535257585,
+          "source_database": "repeat-text/20261024_083354/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "work": [
+        {
+          "response_id": "chatcmpl-auto-0",
+          "acceptance": [
+            7,
+            8,
+            7,
+            52
+          ],
+          "verify": 74,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-1",
+          "acceptance": [
+            8,
+            7,
+            5,
+            54
+          ],
+          "verify": 74,
+          "ordinary_tail": 2
+        },
+        {
+          "response_id": "chatcmpl-auto-2",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-3",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-4",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-5",
+          "acceptance": [
+            4,
+            0,
+            0,
+            62
+          ],
+          "verify": 66,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-6",
+          "acceptance": [
+            4,
+            0,
+            0,
+            62
+          ],
+          "verify": 66,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-7",
+          "acceptance": [
+            4,
+            0,
+            0,
+            62
+          ],
+          "verify": 66,
+          "ordinary_tail": 3
+        }
+      ],
+      "execution": {
+        "batches": 0,
+        "spans": 0,
+        "flushes": 0,
+        "captures": [],
+        "independent_raw_checks": true,
+        "span_semantics": "Nested CPU spans not additive; non-running wall is not GPU time."
+      },
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": null,
+        "trace_exports_complete": null,
+        "diagnostic_only": false,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      },
+      "performance_acceptance": false
+    },
+    "subset-off-a2": {
+      "complete": true,
+      "http_lifecycle_complete": true,
+      "step_completed": true,
+      "pid": 3175630,
+      "started": 992138.5033799554,
+      "finished": 992422.808290805,
+      "head": "subset",
+      "suffix": false,
+      "measurement_role": "normal_diagnostic",
+      "raw_generation": 8,
+      "admitted": 8,
+      "cases": [
+        {
+          "id": "context-8192",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 992180.861379082,
+          "end_monotonic": 992193.085358585,
+          "source_database": "context-8192/20261024_083456/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-1",
+          "first_request_of_service": false,
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 992198.423813825,
+          "end_monotonic": 992373.015361524,
+          "source_database": "context-204800/20261024_083513/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-2",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 992378.410102737,
+          "end_monotonic": 992384.606858759,
+          "source_database": "repeat-code/20261024_083813/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-3",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 992384.60724963,
+          "end_monotonic": 992390.801144932,
+          "source_database": "repeat-code/20261024_083813/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-code",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-4",
+          "first_request_of_service": false,
+          "actual_input": 744,
+          "actual_output": 256,
+          "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+          "prompt_sha256": "7529de7242a3508aee2569f0d85b1621c56eb893725b4fc53fe18155d84656de",
+          "start_monotonic": 992390.801522774,
+          "end_monotonic": 992396.991713945,
+          "source_database": "repeat-code/20261024_083813/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-5",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 992402.390916847,
+          "end_monotonic": 992408.577245748,
+          "source_database": "repeat-text/20261024_083837/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 2,
+          "response_id": "chatcmpl-auto-6",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 992408.577607591,
+          "end_monotonic": 992414.78725763,
+          "source_database": "repeat-text/20261024_083837/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "repeat-text",
+          "ordinal": 3,
+          "response_id": "chatcmpl-auto-7",
+          "first_request_of_service": false,
+          "actual_input": 475,
+          "actual_output": 256,
+          "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+          "prompt_sha256": "25d5f41833f608ebafb5b0e45cd9025d08bf73af9d46093c24d21271e7b62e98",
+          "start_monotonic": 992414.787592381,
+          "end_monotonic": 992420.983300513,
+          "source_database": "repeat-text/20261024_083837/qwen3.8-flash-next/parallel_1_number_3/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "work": [
+        {
+          "response_id": "chatcmpl-auto-0",
+          "acceptance": [
+            7,
+            8,
+            7,
+            52
+          ],
+          "verify": 74,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-1",
+          "acceptance": [
+            8,
+            7,
+            5,
+            54
+          ],
+          "verify": 74,
+          "ordinary_tail": 2
+        },
+        {
+          "response_id": "chatcmpl-auto-2",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-3",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-4",
+          "acceptance": [
+            0,
+            0,
+            0,
+            63
+          ],
+          "verify": 63,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-5",
+          "acceptance": [
+            2,
+            2,
+            2,
+            60
+          ],
+          "verify": 66,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-6",
+          "acceptance": [
+            2,
+            2,
+            2,
+            60
+          ],
+          "verify": 66,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-7",
+          "acceptance": [
+            2,
+            2,
+            2,
+            60
+          ],
+          "verify": 66,
+          "ordinary_tail": 3
+        }
+      ],
+      "execution": {
+        "batches": 0,
+        "spans": 0,
+        "flushes": 0,
+        "captures": [],
+        "independent_raw_checks": true,
+        "span_semantics": "Nested CPU spans not additive; non-running wall is not GPU time."
+      },
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": null,
+        "trace_exports_complete": null,
+        "diagnostic_only": false,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      },
+      "performance_acceptance": false
+    },
+    "exec-off-a1": {
+      "complete": true,
+      "http_lifecycle_complete": true,
+      "step_completed": true,
+      "pid": 3177152,
+      "started": 992423.088949004,
+      "finished": 992660.3011728439,
+      "head": "subset",
+      "suffix": false,
+      "measurement_role": "execution_diagnostic",
+      "raw_generation": 2,
+      "admitted": 2,
+      "cases": [
+        {
+          "id": "context-8192",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 992466.357372866,
+          "end_monotonic": 992478.581848626,
+          "source_database": "context-8192/20261024_083941/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-1",
+          "first_request_of_service": false,
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 992483.942759514,
+          "end_monotonic": 992658.508557047,
+          "source_database": "context-204800/20261024_083959/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "work": [
+        {
+          "response_id": "chatcmpl-auto-0",
+          "acceptance": [
+            7,
+            8,
+            7,
+            52
+          ],
+          "verify": 74,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-1",
+          "acceptance": [
+            8,
+            7,
+            5,
+            54
+          ],
+          "verify": 74,
+          "ordinary_tail": 2
+        }
+      ],
+      "execution": {
+        "batches": 154,
+        "spans": 5938,
+        "flushes": 154,
+        "captures": [],
+        "independent_raw_checks": true,
+        "span_semantics": "Nested CPU spans not additive; non-running wall is not GPU time."
+      },
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": null,
+        "trace_exports_complete": null,
+        "diagnostic_only": true,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      },
+      "performance_acceptance": false
+    },
+    "exec-on-b": {
+      "complete": true,
+      "http_lifecycle_complete": true,
+      "step_completed": true,
+      "pid": 3178491,
+      "started": 992660.6052034395,
+      "finished": 992897.7953770595,
+      "head": "subset",
+      "suffix": true,
+      "measurement_role": "execution_diagnostic",
+      "raw_generation": 2,
+      "admitted": 2,
+      "cases": [
+        {
+          "id": "context-8192",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 992703.82103224,
+          "end_monotonic": 992716.041307213,
+          "source_database": "context-8192/20261024_084339/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-1",
+          "first_request_of_service": false,
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 992721.395570082,
+          "end_monotonic": 992896.003792786,
+          "source_database": "context-204800/20261024_084356/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "work": [
+        {
+          "response_id": "chatcmpl-auto-0",
+          "acceptance": [
+            7,
+            8,
+            7,
+            52
+          ],
+          "verify": 74,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-1",
+          "acceptance": [
+            8,
+            7,
+            5,
+            54
+          ],
+          "verify": 74,
+          "ordinary_tail": 2
+        }
+      ],
+      "execution": {
+        "batches": 154,
+        "spans": 5938,
+        "flushes": 154,
+        "captures": [],
+        "independent_raw_checks": true,
+        "span_semantics": "Nested CPU spans not additive; non-running wall is not GPU time."
+      },
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": null,
+        "trace_exports_complete": null,
+        "diagnostic_only": true,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      },
+      "performance_acceptance": false
+    },
+    "exec-off-a2": {
+      "complete": true,
+      "http_lifecycle_complete": true,
+      "step_completed": true,
+      "pid": 3179811,
+      "started": 992898.1638827765,
+      "finished": 993135.4942860645,
+      "head": "subset",
+      "suffix": false,
+      "measurement_role": "execution_diagnostic",
+      "raw_generation": 2,
+      "admitted": 2,
+      "cases": [
+        {
+          "id": "context-8192",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 992941.407330411,
+          "end_monotonic": 992953.653934446,
+          "source_database": "context-8192/20261024_084736/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        },
+        {
+          "id": "context-204800",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-1",
+          "first_request_of_service": false,
+          "actual_input": 204781,
+          "actual_output": 256,
+          "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+          "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+          "start_monotonic": 992959.037587418,
+          "end_monotonic": 993133.672024733,
+          "source_database": "context-204800/20261024_084754/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "work": [
+        {
+          "response_id": "chatcmpl-auto-0",
+          "acceptance": [
+            7,
+            8,
+            7,
+            52
+          ],
+          "verify": 74,
+          "ordinary_tail": 3
+        },
+        {
+          "response_id": "chatcmpl-auto-1",
+          "acceptance": [
+            8,
+            7,
+            5,
+            54
+          ],
+          "verify": 74,
+          "ordinary_tail": 2
+        }
+      ],
+      "execution": {
+        "batches": 154,
+        "spans": 5938,
+        "flushes": 154,
+        "captures": [],
+        "independent_raw_checks": true,
+        "span_semantics": "Nested CPU spans not additive; non-running wall is not GPU time."
+      },
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": null,
+        "trace_exports_complete": null,
+        "diagnostic_only": true,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      },
+      "performance_acceptance": false
+    },
+    "nsys8-off": {
+      "complete": false,
+      "http_lifecycle_complete": true,
+      "step_completed": false,
+      "pid": 3181182,
+      "started": 993175.761958296,
+      "finished": 993200.4005830035,
+      "head": "subset",
+      "suffix": false,
+      "measurement_role": "nsys_profile",
+      "raw_generation": 1,
+      "admitted": 1,
+      "cases": [
+        {
+          "id": "context-8192",
+          "ordinal": 1,
+          "response_id": "chatcmpl-auto-0",
+          "first_request_of_service": true,
+          "actual_input": 8170,
+          "actual_output": 256,
+          "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+          "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+          "start_monotonic": 993180.410095623,
+          "end_monotonic": 993193.15161348,
+          "source_database": "context-8192/20261024_085135/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db",
+          "count_scope": "Evalscope stored prompt/completion token counts; retained SSE may omit wire usage chunks."
+        }
+      ],
+      "work": [
+        {
+          "response_id": "chatcmpl-auto-0",
+          "acceptance": [
+            7,
+            8,
+            7,
+            52
+          ],
+          "verify": 74,
+          "ordinary_tail": 3
+        }
+      ],
+      "execution": {
+        "batches": 77,
+        "spans": 2716,
+        "flushes": 77,
+        "captures": [
+          {
+            "event": "begin",
+            "pid": "3181182",
+            "tid": "3182015",
+            "input_tokens": "8170",
+            "error": "0",
+            "line": 34
+          },
+          {
+            "event": "end",
+            "pid": "3181182",
+            "tid": "3182015",
+            "input_tokens": "8170",
+            "error": "0",
+            "line": 2971
+          }
+        ],
+        "independent_raw_checks": true,
+        "span_semantics": "Nested CPU spans not additive; non-running wall is not GPU time."
+      },
+      "server_exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null,
+        "cleanup_errors": [],
+        "execution_records_complete": true,
+        "launcher": 0,
+        "trace_exports_complete": false,
+        "diagnostic_only": true,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false
+      },
+      "performance_acceptance": false
+    }
+  },
+  "resources": {
+    "samples": 1880,
+    "source_count": 53,
+    "missing": [
+      {
+        "label": "pressure_cpu",
+        "path": "/proc/pressure/cpu",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      },
+      {
+        "label": "pressure_io",
+        "path": "/proc/pressure/io",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      },
+      {
+        "label": "pressure_memory",
+        "path": "/proc/pressure/memory",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      }
+    ],
+    "gaps_seconds": {
+      "count": 1879,
+      "minimum": 1.0000489059602842,
+      "maximum": 1.0047472080914304,
+      "total": 1879.234227687004
+    },
+    "observed_server_pids": [
+      3169660,
+      3170525,
+      3171507,
+      3172492,
+      3174114,
+      3175630,
+      3177152,
+      3178491,
+      3179811,
+      3181182
+    ],
+    "final_summary": {
+      "schema": 1,
+      "sampler_status": "STOPPED",
+      "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/diagnostic-v1/run/unified-memory.jsonl",
+      "started_monotonic": 991322.779688003,
+      "started_unix_seconds": 1792801240.2628143,
+      "finished_monotonic": 993202.883392749,
+      "finished_unix_seconds": 1792803120.3665686,
+      "sampler_elapsed_seconds": 1880.1037047459977,
+      "sample_attempts": 1880,
+      "flushed_samples": 1880,
+      "unflushed_attempts": 0,
+      "final_successful_cycle_duration_seconds": 0.02055346197448671,
+      "final_successful_write_flush_seconds": 0.00022936100140213966,
+      "successful_cycle_duration_total_seconds": 43.42743628309108,
+      "successful_write_flush_total_seconds": 0.7092243361985311,
+      "final_failed_attempt_elapsed_seconds": null,
+      "final_attempt_read_counts": {
+        "source_file_read_attempts": 53,
+        "ownership_file_read_attempts": 850,
+        "ownership_readlink_attempts": 425,
+        "owned_file_read_attempts": 15,
+        "directory_scan_attempts": 1,
+        "pidfd_open_attempts": 3,
+        "pidfd_binding_polls": 3,
+        "pidfd_wait_attempts": 0
+      },
+      "total_read_counts": {
+        "source_file_read_attempts": 99640,
+        "ownership_file_read_attempts": 1612141,
+        "ownership_readlink_attempts": 806053,
+        "owned_file_read_attempts": 91271,
+        "directory_scan_attempts": 3749,
+        "pidfd_open_attempts": 7353,
+        "pidfd_binding_polls": 7353,
+        "pidfd_wait_attempts": 0
+      },
+      "setup_file_read_attempts": 1,
+      "total_file_read_attempts": 1803053,
+      "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+      "sampler_failure": null,
+      "failures_at_exit": [],
+      "sampler_failure_context": null,
+      "sampler_failure_traceback": null,
+      "sampler_failure_task_state": null,
+      "exit_confirmation_policy": {
+        "per_task_ms": 50,
+        "per_sample_ms": 100,
+        "io_retries": 0,
+        "zero_fill": false
+      },
+      "last_flushed_heartbeat": 993202.034777366,
+      "source_count": 53
+    },
+    "summary_sha256": "fbd679e35480cafb47dfd8ab96d941fe2da626458796d225c60352e7e045b7e8",
+    "process_observations": {
+      "OK": 7350,
+      "EXITED_DURING_IO_READ": 3
+    },
+    "exited_during_io": [
+      {
+        "sample": 1101,
+        "pid": 3175628,
+        "start_ticks": 99213840,
+        "state": "Z",
+        "detail": {
+          "pid": 3175628,
+          "expected_start_ticks": 99213840,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 6,
+          "errno": 13,
+          "error_monotonic_ns": 992422934586714,
+          "error": "PermissionError(13, 'Permission denied')"
+        }
+      },
+      {
+        "sample": 1576,
+        "pid": 3178489,
+        "start_ticks": 99266051,
+        "state": "Z",
+        "detail": {
+          "pid": 3178489,
+          "expected_start_ticks": 99266051,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 6,
+          "errno": 13,
+          "error_monotonic_ns": 992897995582839,
+          "error": "PermissionError(13, 'Permission denied')"
+        }
+      },
+      {
+        "sample": 1878,
+        "pid": 3181182,
+        "start_ticks": 99313627,
+        "state": "Z",
+        "detail": {
+          "pid": 3181182,
+          "expected_start_ticks": 99313627,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 6,
+          "errno": 13,
+          "error_monotonic_ns": 993200040858995,
+          "error": "PermissionError(13, 'Permission denied')"
+        }
+      }
+    ],
+    "actual_io_exit_branch_observed": true,
+    "final_monitor_barrier": {},
+    "scope": "1 Hz nearby samples, not exact request-boundary counters. Collection and serialization/flush costs reported separately; RAM/RSS/NVML overlap and are not added."
+  },
+  "process_io": {
+    "process_observations": {
+      "OK": 7350,
+      "EXITED_DURING_IO_READ": 3
+    },
+    "missing_process_io": [
+      {
+        "sample": 1101,
+        "pid": 3175628,
+        "start_ticks": 99213840,
+        "observation": "EXITED_DURING_IO_READ",
+        "terminal_error": {
+          "pid": 3175628,
+          "expected_start_ticks": 99213840,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 6,
+          "errno": 13,
+          "error_monotonic_ns": 992422934586714,
+          "error": "PermissionError(13, 'Permission denied')"
+        },
+        "task_state": {
+          "read_started_ns": 992422934515557,
+          "error_observed_ns": 992422934586714,
+          "initial_identity": {
+            "state": "Z",
+            "ppid": 3169647,
+            "start_ticks": 99213840
+          },
+          "partial_read": {
+            "observation": "OK",
+            "start_ticks": 99213840,
+            "stat": "3175628 (python3) Z 3169647 3175628 3175628 0 -1 4227084 7377 2530229 0 154 12 3 6431 6816 20 0 1 0 99213840 0 0 18446744073709551615 0 0 0 0 0 0 0 16781312 0 1 0 0 17 10 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+            "pidfd_binding": {
+              "started_ns": 992422934534761,
+              "finished_ns": 992422934536474,
+              "timeout_ms": 0,
+              "events": [
+                [
+                  5,
+                  1
+                ]
+              ],
+              "ready": true
+            },
+            "status": "Name:\tpython3\nState:\tZ (zombie)\nTgid:\t3175628\nNgid:\t0\nPid:\t3175628\nPPid:\t3169647\nTracerPid:\t0\nUid:\t2002\t2002\t2002\t2002\nGid:\t2002\t2002\t2002\t2002\nFDSize:\t0\nGroups:\t4 24 27 29 30 44 46 100 108 111 122 983 984 993 2002 2003 \nNStgid:\t3175628\nNSpid:\t3175628\nNSpgid:\t3175628\nNSsid:\t3175628\nKthread:\t0\nThreads:\t1\nSigQ:\t0/501100\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tunknown\nCpus_allowed:\t3fff\nCpus_allowed_list:\t0-13\nMems_allowed:\t0001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t72\nnonvoluntary_ctxt_switches:\t24\n",
+            "schedstat": "159786570 4127340 96\n"
+          },
+          "original_error": {
+            "pid": 3175628,
+            "expected_start_ticks": 99213840,
+            "relative_file": "io",
+            "operation": "open",
+            "directory_fd": 6,
+            "errno": 13,
+            "error_monotonic_ns": 992422934586714,
+            "error": "PermissionError(13, 'Permission denied')"
+          },
+          "live_pidfd_bound": false,
+          "pidfd_binding": {
+            "started_ns": 992422934534761,
+            "finished_ns": 992422934536474,
+            "timeout_ms": 0,
+            "events": [
+              [
+                5,
+                1
+              ]
+            ],
+            "ready": true
+          },
+          "pidfd_binding_error": null,
+          "rechecks": [
+            {
+              "started_ns": 992422934647492,
+              "stat": "3175628 (python3) Z 3169647 3175628 3175628 0 -1 4227084 7377 2530229 0 154 12 3 6431 6816 20 0 1 0 99213840 0 0 18446744073709551615 0 0 0 0 0 0 0 16781312 0 1 0 0 17 10 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+              "identity": {
+                "state": "Z",
+                "ppid": 3169647,
+                "start_ticks": 99213840
+              },
+              "finished_ns": 992422934671344
+            }
+          ],
+          "decision": "SAME_IDENTITY_TERMINAL_STAT",
+          "finished_ns": 992422934673668
+        }
+      },
+      {
+        "sample": 1576,
+        "pid": 3178489,
+        "start_ticks": 99266051,
+        "observation": "EXITED_DURING_IO_READ",
+        "terminal_error": {
+          "pid": 3178489,
+          "expected_start_ticks": 99266051,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 6,
+          "errno": 13,
+          "error_monotonic_ns": 992897995582839,
+          "error": "PermissionError(13, 'Permission denied')"
+        },
+        "task_state": {
+          "read_started_ns": 992897995523922,
+          "error_observed_ns": 992897995582839,
+          "initial_identity": {
+            "state": "Z",
+            "ppid": 3169647,
+            "start_ticks": 99266051
+          },
+          "partial_read": {
+            "observation": "OK",
+            "start_ticks": 99266051,
+            "stat": "3178489 (python3) Z 3169647 3178489 3178489 0 -1 4227084 12276 517392 0 0 14 4 4237 5953 20 0 1 0 99266051 0 0 18446744073709551615 0 0 0 0 0 0 0 16781312 0 1 0 0 17 7 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+            "pidfd_binding": {
+              "started_ns": 992897995539598,
+              "finished_ns": 992897995541589,
+              "timeout_ms": 0,
+              "events": [
+                [
+                  5,
+                  1
+                ]
+              ],
+              "ready": true
+            },
+            "status": "Name:\tpython3\nState:\tZ (zombie)\nTgid:\t3178489\nNgid:\t0\nPid:\t3178489\nPPid:\t3169647\nTracerPid:\t0\nUid:\t2002\t2002\t2002\t2002\nGid:\t2002\t2002\t2002\t2002\nFDSize:\t0\nGroups:\t4 24 27 29 30 44 46 100 108 111 122 983 984 993 2002 2003 \nNStgid:\t3178489\nNSpid:\t3178489\nNSpgid:\t3178489\nNSsid:\t3178489\nKthread:\t0\nThreads:\t1\nSigQ:\t0/501100\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tunknown\nCpus_allowed:\t3fff\nCpus_allowed_list:\t0-13\nMems_allowed:\t0001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t67\nnonvoluntary_ctxt_switches:\t1\n",
+            "schedstat": "194844660 426732 68\n"
+          },
+          "original_error": {
+            "pid": 3178489,
+            "expected_start_ticks": 99266051,
+            "relative_file": "io",
+            "operation": "open",
+            "directory_fd": 6,
+            "errno": 13,
+            "error_monotonic_ns": 992897995582839,
+            "error": "PermissionError(13, 'Permission denied')"
+          },
+          "live_pidfd_bound": false,
+          "pidfd_binding": {
+            "started_ns": 992897995539598,
+            "finished_ns": 992897995541589,
+            "timeout_ms": 0,
+            "events": [
+              [
+                5,
+                1
+              ]
+            ],
+            "ready": true
+          },
+          "pidfd_binding_error": null,
+          "rechecks": [
+            {
+              "started_ns": 992897995629052,
+              "stat": "3178489 (python3) Z 3169647 3178489 3178489 0 -1 4227084 12276 517392 0 0 14 4 4237 5953 20 0 1 0 99266051 0 0 18446744073709551615 0 0 0 0 0 0 0 16781312 0 1 0 0 17 7 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+              "identity": {
+                "state": "Z",
+                "ppid": 3169647,
+                "start_ticks": 99266051
+              },
+              "finished_ns": 992897995646968
+            }
+          ],
+          "decision": "SAME_IDENTITY_TERMINAL_STAT",
+          "finished_ns": 992897995648857
+        }
+      },
+      {
+        "sample": 1878,
+        "pid": 3181182,
+        "start_ticks": 99313627,
+        "observation": "EXITED_DURING_IO_READ",
+        "terminal_error": {
+          "pid": 3181182,
+          "expected_start_ticks": 99313627,
+          "relative_file": "io",
+          "operation": "open",
+          "directory_fd": 6,
+          "errno": 13,
+          "error_monotonic_ns": 993200040858995,
+          "error": "PermissionError(13, 'Permission denied')"
+        },
+        "task_state": {
+          "read_started_ns": 993200040807198,
+          "error_observed_ns": 993200040858995,
+          "initial_identity": {
+            "state": "Z",
+            "ppid": 3181170,
+            "start_ticks": 99313627
+          },
+          "partial_read": {
+            "observation": "OK",
+            "start_ticks": 99313627,
+            "stat": "3181182 (q4t) Z 3181170 3181170 3181170 0 -1 4227084 306639 0 374 0 1866 4969 0 0 20 0 2 0 99313627 0 0 18446744073709551615 0 0 0 0 0 0 0 0 16394 0 0 0 17 9 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+            "pidfd_binding": {
+              "started_ns": 993200040822522,
+              "finished_ns": 993200040823902,
+              "timeout_ms": 0,
+              "events": [],
+              "ready": false
+            },
+            "status": "Name:\tq4t\nState:\tZ (zombie)\nTgid:\t3181182\nNgid:\t0\nPid:\t3181182\nPPid:\t3181170\nTracerPid:\t0\nUid:\t2002\t2002\t2002\t2002\nGid:\t2002\t2002\t2002\t2002\nFDSize:\t0\nGroups:\t4 24 27 29 30 44 46 100 108 111 122 983 984 993 2002 2003 \nNStgid:\t3181182\nNSpid:\t3181182\nNSpgid:\t3181170\nNSsid:\t3181170\nKthread:\t0\nThreads:\t2\nSigQ:\t0/501100\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t000000010000400a\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tunknown\nCpus_allowed:\t3fff\nCpus_allowed_list:\t0-13\nMems_allowed:\t0001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t4636\nnonvoluntary_ctxt_switches:\t659\n",
+            "schedstat": "15342400760 50362588 5295\n"
+          },
+          "original_error": {
+            "pid": 3181182,
+            "expected_start_ticks": 99313627,
+            "relative_file": "io",
+            "operation": "open",
+            "directory_fd": 6,
+            "errno": 13,
+            "error_monotonic_ns": 993200040858995,
+            "error": "PermissionError(13, 'Permission denied')"
+          },
+          "live_pidfd_bound": true,
+          "pidfd_binding": {
+            "started_ns": 993200040822522,
+            "finished_ns": 993200040823902,
+            "timeout_ms": 0,
+            "events": [],
+            "ready": false
+          },
+          "pidfd_binding_error": null,
+          "rechecks": [
+            {
+              "started_ns": 993200040908541,
+              "stat": "3181182 (q4t) Z 3181170 3181170 3181170 0 -1 4227084 306639 0 374 0 1866 4969 0 0 20 0 2 0 99313627 0 0 18446744073709551615 0 0 0 0 0 0 0 0 16394 0 0 0 17 9 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+              "identity": {
+                "state": "Z",
+                "ppid": 3181170,
+                "start_ticks": 99313627
+              },
+              "finished_ns": 993200040928550
+            }
+          ],
+          "decision": "SAME_IDENTITY_TERMINAL_STAT",
+          "finished_ns": 993200040930476
+        }
+      }
+    ],
+    "new_wait_classifications": 0,
+    "new_wait_attempts": 0,
+    "no_synthetic_io_zero": true,
+    "checked_utc": "2026-10-24T01:00:58.633582+00:00",
+    "owned_cleanup": {
+      "known_identities": 50,
+      "absent": [
+        {
+          "pid": 3169647,
+          "start_ticks": 99132268
+        },
+        {
+          "pid": 3169657,
+          "start_ticks": 99132586
+        },
+        {
+          "pid": 3169660,
+          "start_ticks": 99132594
+        },
+        {
+          "pid": 3170443,
+          "start_ticks": 99136396
+        },
+        {
+          "pid": 3170523,
+          "start_ticks": 99138352
+        },
+        {
+          "pid": 3170525,
+          "start_ticks": 99138363
+        },
+        {
+          "pid": 3171304,
+          "start_ticks": 99142165
+        },
+        {
+          "pid": 3171404,
+          "start_ticks": 99144799
+        },
+        {
+          "pid": 3171505,
+          "start_ticks": 99147420
+        },
+        {
+          "pid": 3171507,
+          "start_ticks": 99147432
+        },
+        {
+          "pid": 3172289,
+          "start_ticks": 99151233
+        },
+        {
+          "pid": 3172381,
+          "start_ticks": 99153649
+        },
+        {
+          "pid": 3172490,
+          "start_ticks": 99156047
+        },
+        {
+          "pid": 3172492,
+          "start_ticks": 99156059
+        },
+        {
+          "pid": 3173360,
+          "start_ticks": 99160961
+        },
+        {
+          "pid": 3173439,
+          "start_ticks": 99162727
+        },
+        {
+          "pid": 3173913,
+          "start_ticks": 99180723
+        },
+        {
+          "pid": 3174007,
+          "start_ticks": 99183123
+        },
+        {
+          "pid": 3174112,
+          "start_ticks": 99185603
+        },
+        {
+          "pid": 3174114,
+          "start_ticks": 99185614
+        },
+        {
+          "pid": 3174881,
+          "start_ticks": 99189416
+        },
+        {
+          "pid": 3174954,
+          "start_ticks": 99191176
+        },
+        {
+          "pid": 3175433,
+          "start_ticks": 99209173
+        },
+        {
+          "pid": 3175536,
+          "start_ticks": 99211472
+        },
+        {
+          "pid": 3175628,
+          "start_ticks": 99213840
+        },
+        {
+          "pid": 3175630,
+          "start_ticks": 99213850
+        },
+        {
+          "pid": 3176407,
+          "start_ticks": 99217651
+        },
+        {
+          "pid": 3176486,
+          "start_ticks": 99219419
+        },
+        {
+          "pid": 3176957,
+          "start_ticks": 99237417
+        },
+        {
+          "pid": 3177044,
+          "start_ticks": 99239814
+        },
+        {
+          "pid": 3177148,
+          "start_ticks": 99242296
+        },
+        {
+          "pid": 3177152,
+          "start_ticks": 99242308
+        },
+        {
+          "pid": 3177915,
+          "start_ticks": 99246210
+        },
+        {
+          "pid": 3178007,
+          "start_ticks": 99247969
+        },
+        {
+          "pid": 3178489,
+          "start_ticks": 99266051
+        },
+        {
+          "pid": 3178491,
+          "start_ticks": 99266060
+        },
+        {
+          "pid": 3179256,
+          "start_ticks": 99269961
+        },
+        {
+          "pid": 3179334,
+          "start_ticks": 99271716
+        },
+        {
+          "pid": 3179809,
+          "start_ticks": 99289806
+        },
+        {
+          "pid": 3179811,
+          "start_ticks": 99289816
+        },
+        {
+          "pid": 3180598,
+          "start_ticks": 99293717
+        },
+        {
+          "pid": 3180669,
+          "start_ticks": 99295479
+        },
+        {
+          "pid": 3181140,
+          "start_ticks": 99313562
+        },
+        {
+          "pid": 3181142,
+          "start_ticks": 99313574
+        },
+        {
+          "pid": 3181169,
+          "start_ticks": 99313604
+        },
+        {
+          "pid": 3181170,
+          "start_ticks": 99313604
+        },
+        {
+          "pid": 3181171,
+          "start_ticks": 99313604
+        },
+        {
+          "pid": 3181182,
+          "start_ticks": 99313627
+        },
+        {
+          "pid": 3181973,
+          "start_ticks": 99317576
+        },
+        {
+          "pid": 3182090,
+          "start_ticks": 99320043
+        }
+      ],
+      "live": [],
+      "terminal": [],
+      "reused": [],
+      "unreadable": [],
+      "historical_pgids": [
+        3169647,
+        3169657,
+        3170523,
+        3171505,
+        3172490,
+        3174112,
+        3175628,
+        3177148,
+        3178489,
+        3179809,
+        3181140,
+        3181170
+      ],
+      "remaining_group_members": []
+    },
+    "scope": "Only read-only /proc identity checks; not GPU queries or sensor samples. Historical identities reflect bounded successful polling, not every unobserved short-lived child."
+  },
+  "profile_failure": {
+    "evidence_validity": "ENV_ABORT",
+    "measurement_complete": false,
+    "classification": "REQUIRED_PROFILE_TRACE_INCOMPLETE",
+    "diagnostic_warnings": [
+      {
+        "timestamp": 969568765,
+        "timestampType": 2,
+        "source": 3,
+        "severity": 2,
+        "text": "Not all NVTX events might have been collected.",
+        "globalPid": 334846152933376,
+        "severity_name": "Warning"
+      },
+      {
+        "timestamp": 969574654,
+        "timestampType": 2,
+        "source": 3,
+        "severity": 2,
+        "text": "No NVTX events collected. Does the process use NVTX?",
+        "globalPid": 334846152933376,
+        "severity_name": "Warning"
+      },
+      {
+        "timestamp": 969575515,
+        "timestampType": 2,
+        "source": 3,
+        "severity": 2,
+        "text": "Not all NVTX events might have been collected.",
+        "globalPid": 334846354259968,
+        "severity_name": "Warning"
+      },
+      {
+        "timestamp": 969579682,
+        "timestampType": 2,
+        "source": 3,
+        "severity": 2,
+        "text": "CUDA profiling might have not been started correctly.",
+        "globalPid": 334846152933376,
+        "severity_name": "Warning"
+      },
+      {
+        "timestamp": 969580534,
+        "timestampType": 2,
+        "source": 3,
+        "severity": 2,
+        "text": "No CUDA events collected. Does the process use CUDA?",
+        "globalPid": 334846152933376,
+        "severity_name": "Warning"
+      },
+      {
+        "timestamp": 969581006,
+        "timestampType": 2,
+        "source": 3,
+        "severity": 2,
+        "text": "Not all CUDA events might have been collected.",
+        "globalPid": 334846354259968,
+        "severity_name": "Warning"
+      }
+    ],
+    "actual_q4t_warnings": [
+      {
+        "timestamp": 969575515,
+        "timestampType": 2,
+        "source": 3,
+        "severity": 2,
+        "text": "Not all NVTX events might have been collected.",
+        "globalPid": 334846354259968,
+        "severity_name": "Warning"
+      },
+      {
+        "timestamp": 969581006,
+        "timestampType": 2,
+        "source": 3,
+        "severity": 2,
+        "text": "Not all CUDA events might have been collected.",
+        "globalPid": 334846354259968,
+        "severity_name": "Warning"
+      }
+    ],
+    "unavailable_auxiliary_features": [
+      {
+        "timestamp": -41980268951,
+        "timestampType": 1,
+        "source": 1,
+        "severity": 3,
+        "text": "CUDA device 0: Unified Memory trace is not supported by the current driver version or configuration.",
+        "globalPid": 334846354259968,
+        "severity_name": "Error"
+      }
+    ],
+    "actual_exit_receipt": {
+      "target": {
+        "pid": 3181182,
+        "returncode": 0,
+        "wrapper_pid": 3181170,
+        "finished_monotonic": 993200.157255714
+      },
+      "launcher_returncode": 0,
+      "forced_target_kill": false,
+      "scope": "Actual q4t pidfd signal only; launcher allowed to finish trace."
+    },
+    "http_response_valid": true,
+    "execution_records_complete": true,
+    "diagnostics_sha256": "43417306a4e0ff53ca2e181e31f5ccb6a9b4ca746f007bbe2820b49af925d655",
+    "sqlite_sha256": "3eb37bcf20823ff36de8915764b25f24902b3516ea0ad52262c0c2cf3f9f1c6a",
+    "report_sha256": "8973388b1144c3871948e7b6df962ae3220cecc7e9244d08afaf79f69866ef9d",
+    "scope": "Trace environment/integrity failure, not runtime performance failure. No trace-based attribution or acceptance; later three profile services not run."
+  },
+  "requests": {
+    "planned": 49,
+    "planned_starts": 13,
+    "started": 10,
+    "completed_prefix": 43,
+    "normal": 37,
+    "cpu": 6,
+    "rejected_profile_http_success": 1,
+    "raw_successful": 44,
+    "unrun_requests": 5,
+    "unrun_starts": 3
+  },
+  "partial_analysis": {
+    "supported": true,
+    "normal_groups": [
+      "first-http",
+      "full-off",
+      "full-on",
+      "subset-off-a1",
+      "subset-on-b",
+      "subset-off-a2"
+    ],
+    "normal_requests": 37,
+    "cpu_groups": [
+      "exec-off-a1",
+      "exec-on-b",
+      "exec-off-a2"
+    ],
+    "cpu_requests": 6,
+    "excluded_groups": [
+      "nsys8-off",
+      "nsys8-on",
+      "nsys200-on",
+      "nsys200-off"
+    ],
+    "scope": "Completed prefix only; full has one pair, subset shares B between A1/A2; within-start requests are not independent starts. No full-stage valid/performance acceptance."
+  },
+  "monitor_boundary": {
+    "success_barrier_executed": false,
+    "stored_final_monitor_barrier": {},
+    "last_server_launcher_shutdown": 993200.4005830035,
+    "last_sample_start": 993202.014223904,
+    "last_sample_flush": 993202.034777366,
+    "sampler_stopped": 993202.883392749,
+    "observed_post_shutdown_sample": true,
+    "join_reported_clean": true,
+    "scope": "Actual final sampled coverage is retained; it is not the skipped second-verify/fresh-barrier success protocol."
+  },
+  "audit_script_sha256": "32dac6cf693a00222a5bd7d0a872361837bb4b8e8e381de52a57288ce9cb5337",
+  "helper_sha256": "eebf37bf8704c884222219f6a797ad27ce7da27bbd0c6ca49c2cebf430839032",
+  "command": [
+    "python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/audit_rerun_v2.py"
+  ],
+  "no_new_gpu_http_nvml_sensor_tests": true
+}

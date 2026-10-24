@@ -1,0 +1,26 @@
+{
+  "created_utc": "2026-10-24T01:01:26.474870+00:00",
+  "purpose": "Freeze final offline analysis with independently audited complete normal/CPU prefix; no new measurement. v1 was successful pending audit; v2 adds caveats/CPU summary only and binds independent audit v2.",
+  "sha256": {
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_execution/analyze_partial.py": "ec08327b34509cc3529fa4fa3dcd68ac7280ad5bb9c2e2978148afd482543bc6",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_execution/analyze_results.py": "9d7c92c3a94a10ab0dc2b304cff2ca6bea2255b1a83f2f0f4df3692d35ac8d51",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_execution/spec.py": "9b742b39278e313e8c857ab4eecc77ec11b2489f5bd48903864ba99790547c20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/audit-rerun-v2.json": "fbf7f43cadcb645d73abb403117c1ae9a3c028fc7cb0e59f3ccee0ea5100fb03",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/diagnostic-v1/frozen-plan.json": "f999e0950cd14dd364e4cb249c1e58184cf229887380d38a6ca0a903c8db69e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/normal-cpu-analysis-freeze-v1.json": "4ee3aeacb8038e2c0d0ba3925e25d878ba6a589177c9de8988b2ad7d98fc7dab",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/analyze_partial_v1.py": "df25f6f867aeb9fbe5dcdf13a83c28151dec643fd18d1d4935302baf0711635a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/normal-cpu-analysis-pending-audit-v1.json": "7a12daad950855e61df49955c065a20ed5b123e012428c7e212a4cae4bc58a0b"
+  },
+  "command": [
+    "python3",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_execution/analyze_partial.py",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/diagnostic-v1/frozen-plan.json",
+    "--audit",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/audit-rerun-v2.json",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/normal-cpu-analysis.json",
+    "--markdown",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/normal-cpu-analysis.md"
+  ]
+}

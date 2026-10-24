@@ -1,0 +1,21 @@
+{
+  "created_utc": "2026-10-24T00:58:04.276783+00:00",
+  "purpose": "Freeze offline completed-prefix analysis v1 before execution. No GPU, model, HTTP or live sampling.",
+  "sha256": {
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_execution/analyze_partial.py": "df25f6f867aeb9fbe5dcdf13a83c28151dec643fd18d1d4935302baf0711635a",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_execution/analyze_results.py": "9d7c92c3a94a10ab0dc2b304cff2ca6bea2255b1a83f2f0f4df3692d35ac8d51",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_execution/spec.py": "9b742b39278e313e8c857ab4eecc77ec11b2489f5bd48903864ba99790547c20",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/diagnostic-v1/frozen-plan.json": "f999e0950cd14dd364e4cb249c1e58184cf229887380d38a6ca0a903c8db69e1"
+  },
+  "output_scope": "37 normal + 6 CPU HTTP from 9 actually completed groups; all profile excluded; pending independent audit",
+  "command": [
+    "python3",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_execution/analyze_partial.py",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/diagnostic-v1/frozen-plan.json",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/normal-cpu-analysis-pending-audit-v1.json",
+    "--markdown",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/normal-cpu-analysis-pending-audit-v1.md"
+  ]
+}

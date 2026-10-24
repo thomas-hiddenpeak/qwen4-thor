@@ -1,0 +1,18 @@
+{
+  "status": "ARCHIVED_STOPPED_TRACE_INCOMPLETE",
+  "source_preserved": true,
+  "independent_copies": true,
+  "readback_verified": true,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/archive-closed",
+  "entries": 1360,
+  "payload_bytes": 266090463,
+  "manifest_sha256": "c3fe2779879debdb210ad038eeb192910415a401c3bc6a475aadbc2aff133b8b",
+  "runtime_observation_enabled_tested": true,
+  "completed_normal_http": 37,
+  "completed_cpu_observation_http": 6,
+  "profile_http_completed_but_gpu_trace_unaccepted": 1,
+  "measurement_complete": false,
+  "deployment": false,
+  "inference_or_gpu_operations": 0,
+  "seal_sha256": "c97deae2c1bdbb68030e271c556fc115e1e7a281f5b456925cc4f115a75040f4"
+}
