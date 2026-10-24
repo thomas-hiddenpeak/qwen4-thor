@@ -1,0 +1,167 @@
+{
+  "evidence_integrity": "PASS",
+  "evidence_validity": "ENV_ABORT",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_ACCEPTED_TOOL_VALIDATION_ABORT",
+  "engineering_decision": "NOT_ACCEPTED_TOOL_VALIDATION_ABORT",
+  "elapsed_seconds": 5.229048475972377,
+  "requests": {
+    "planned": 6,
+    "planned_model_starts": 4,
+    "raw_successful": 0,
+    "admitted": 0,
+    "completed_counter": 0,
+    "started_counter": 0
+  },
+  "frozen_files": 1394,
+  "raw_files": 22,
+  "source_snapshot_files": 453,
+  "model_metadata_files": 197,
+  "known_owned_identities_gone": 6,
+  "cpu": {
+    "methods": 30,
+    "suites": 2,
+    "failed": 0,
+    "skipped": 0,
+    "elapsed_seconds": 1.6793324251193553
+  },
+  "fixture": {
+    "variant": "direct-stop",
+    "core_known_work_complete": true,
+    "kernels": 32,
+    "copies": 64,
+    "memset_apis": 32,
+    "memset_activities": 32,
+    "nvtx_ranges": 33,
+    "independent_output_checks": 32,
+    "output_mismatches": 0,
+    "memset_bytes": {
+      "512": 16,
+      "16384": 16
+    },
+    "actual_target_warnings": [
+      "Not all NVTX events might have been collected.",
+      "Not all CUDA events might have been collected."
+    ],
+    "online_group_completed": false,
+    "real_capture_negative_copies_executed": 0,
+    "candidate_gate_passed": false
+  },
+  "collector": {
+    "observed_stop_flush_flag": 0,
+    "observed_control_thread_flush_flag": 1,
+    "flag1_is_forced": true,
+    "cuda_finish_and_done_observed": true,
+    "nvtx_finish_observed": true,
+    "verifier_branch_proven": false,
+    "consumer_terminal_proven": false,
+    "dropped_records": null,
+    "produced_and_imported_counts_comparable": false
+  },
+  "monitor": {
+    "flushed": 5,
+    "attempts": 6,
+    "failed_task": 3189205,
+    "io_errno": 13,
+    "initial_state": "R",
+    "recheck_state": "R",
+    "fdsize": 0,
+    "vsize_bytes": 0,
+    "rss_pages": 0,
+    "pidfd_exit_observed_within_wait": false,
+    "wait_ms": 49.063582,
+    "error_after_ready_ms": 16.985916066914797,
+    "decision": "LIVE_TASK_EXIT_TIMEOUT",
+    "exit_teardown_inference_not_kernel_cause_proof": true,
+    "successful_final_barrier": false
+  },
+  "old_trace_memory_gap": {
+    "successful_memset_apis": 14283,
+    "recorded_memsets": 7902,
+    "without_any_gpu_activity": 6381,
+    "verify_gaps": 6216,
+    "verify_rounds": 74,
+    "gaps_per_verify": 84,
+    "api_arguments_unavailable": true,
+    "cublaslt_projection_source_match_only": true
+  },
+  "reused_repeat_percent": {
+    "full_code": 13.6774,
+    "full_text": 14.4034,
+    "subset_code_shared_b_gm": 6.5335,
+    "subset_text_shared_b_gm": 6.7304,
+    "new_samples": 0,
+    "scope": "Previous passed development-only normal HTTP; not independent-start statistical noninferiority or five-tier optimization acceptance."
+  },
+  "identities": {
+    "observation_binary": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914",
+    "runtime_source": "55363f18dedb947ac52e69e10475d3082cb71a82",
+    "delivered_binary": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "subset_manifest": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+    "fixture_binary": "ad0241d7c1e6dff1a7b0feccf04815ea6d38d246d0112a41c39c00e5e3d4b1f4"
+  },
+  "proofs": {
+    "audit-stage.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/audit-stage.json",
+      "sha256": "92f57626fce89717f30be59d1162ea2e33dfe7705862208c8154413e9e0c52ed"
+    },
+    "result-analysis.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/result-analysis.json",
+      "sha256": "7720f878919505a13acd8a903f2f8b0e31a0c7e2ba2872891302db4a7da9138d"
+    },
+    "collector-result-review.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/collector-result-review.json",
+      "sha256": "8ac2d00079f4b47a86973b205483d357e46a0cc8d4570d6b5d2dcd105bd73641"
+    },
+    "monitor-exit-forensics.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/monitor-exit-forensics.json",
+      "sha256": "7cf7d7f0de9510f408ab4a6de5e5e47ab5cdff93ed51f7a56ba0668e702b5736"
+    },
+    "cpu-proof.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/cpu-proof.json",
+      "sha256": "6424d143b703e08cb67fa601900eed1a6578d9314027b76859b0d3afb2376479"
+    },
+    "memory-coverage-old.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/memory-coverage-old.json",
+      "sha256": "597287851d26f2abed9fa776359d6837c320abb14b943086d301d5d2ef90f4a3"
+    },
+    "memory-source-review.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/memory-source-review.md",
+      "sha256": "8adc979d61a7a161d03bf9dc0aeb4bf0d925f06f171b45d5a7205c9f54e3f9ab"
+    },
+    "nsys-mechanism-review.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/nsys-mechanism-review.json",
+      "sha256": "73331586a1ae753b74016c33f9cad8e0b647465503ff0608be7ab60c8a9b4b88"
+    },
+    "diagnostic-v1/frozen-plan.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/diagnostic-v1/frozen-plan.json",
+      "sha256": "a995b1e6526da86dddaaca9870c1bebe875bc3f69666bf2ae1a31c0dd7d41a8a"
+    }
+  },
+  "limits": [
+    "Environmental abort never establishes performance regression or optimization acceptance.",
+    "Fixed known-work closure does not prove every metadata event or arbitrary model trace complete.",
+    "Three collector variants and all four model profile groups remain unmeasured.",
+    "No retry, additional GPU, model deployment or replacement of delivered binary."
+  ],
+  "archive": {
+    "status": "ARCHIVED_ENV_ABORT_TOOL_VALIDATION_INCOMPLETE",
+    "source_preserved": true,
+    "independent_copies": true,
+    "readback_verified": true,
+    "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-20261024/archive-closed",
+    "entries": 591,
+    "payload_bytes": 41361125,
+    "manifest_sha256": "b971c03b0d7f664d5e21e548906e8103e6dc6305ddc30277103ba8f09b09145f",
+    "evidence_integrity": "PASS",
+    "evidence_validity": "ENV_ABORT",
+    "measurement_complete": false,
+    "deployment": false,
+    "new_http": 0,
+    "new_model_starts": 0,
+    "inference_or_gpu_operations": 0,
+    "prior_archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/archive-closed",
+    "prior_seal_sha256": "c97deae2c1bdbb68030e271c556fc115e1e7a281f5b456925cc4f115a75040f4",
+    "seal_sha256": "685486c0ab4d9cc840a119e9d40ba6508f9e2974b01c6bf248cb396fdac430e5"
+  }
+}
