@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/scope.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/scope.json",
+      "sha256": "0406cfc176edecbde729530e8af5f86f442b0d119b98b361e6535bd07089e557"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/cpu-exit-v1.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/cpu-exit-v1.json",
+      "sha256": "d829dbdbdad1eacfc54f7c0b68dcf9976d4c7b219d769920a03ea73f5781a9ea"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/cpu-result-v1.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/cpu-result-v1.json",
+      "sha256": "ac37a340c085699290ea3625e0f50edd6c64f20c42edf59dba4894717da64be0"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/offline-proof.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/offline-proof.json",
+      "sha256": "55ca4f7e077c1d765fbc18c3856f38f907f95c8c18384b2fc2096e1251d64bac"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/run/state.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/run/state.json",
+      "sha256": "2b2ea56ca20b7c4ecb67030612589572e94f7d34308d9cc328c83106a11771a3"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/warning-terminal-order.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/warning-terminal-order.json",
+      "sha256": "7f6223328eb5dd6f653709bd8c0c618fa59a0f57d86882ec697a8ade4f6ae58a"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/terminal-review.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/terminal-review.json",
+      "sha256": "9dbb5ef80179692c747e3cfcb5c337374da3d93e994e519124f665e74c0b6279"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/final-raw-seal.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/final-raw-seal.json",
+      "sha256": "cd7f1da1884c87be5f5126698e213544b55d099bed2733cb4b462916db17ef1d"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/archive-final/seal.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/archive-final/seal.json",
+      "sha256": "b33862096924dbb2d9fa2cc13e0a92ab7aa17081dff2434ef17aac05393aa289"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/final-nvlog-reconciliation.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/final-nvlog-reconciliation.json",
+      "sha256": "4bae1766e6a7eee5d91c16c5f785b791e8b108870536e0d4f0bfb2337069dae5"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/loaded-library-terminal-bindings.json",
+      "copy": "docs/evidence/mtp-suffix-callback-pairing-20261026/loaded-library-terminal-bindings.json",
+      "sha256": "f013fb068cc4170cb9f60d1f9dc8fb4d304f1d293d41d6c5bb0456d0b473ef62"
+    }
+  ],
+  "scope": "Small public receipts; full immutable raw and incremental archive stay at documented local paths. Not self-contained."
+}

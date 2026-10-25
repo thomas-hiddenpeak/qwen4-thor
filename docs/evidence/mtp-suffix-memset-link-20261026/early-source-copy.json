@@ -1,0 +1,39 @@
+{
+  "plan_sha256": "79d753afcf59bd074917803deada4ce193c6be9129b5af6ac404e8ca07412ab2",
+  "created_unix": 1792956970.0994265,
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/mechanism_analyze.py": {
+      "copy": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/archive-final/source/tools/mtp_suffix_nsys/mechanism_analyze.py",
+      "sha256": "18605883addfc44fc2c4c4aa091d38b8c4d8909f5cd6b45d556fa8e9a5156556",
+      "source_device": 66305,
+      "source_inode": 4099061,
+      "copy_device": 66305,
+      "copy_inode": 5117904
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/test_mechanism_analyze.py": {
+      "copy": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/archive-final/source/tools/mtp_suffix_nsys/test_mechanism_analyze.py",
+      "sha256": "b07c781b6e21445bad88394e9ec64fc393d51fe52abaa74c02969d8131acaecd",
+      "source_device": 66305,
+      "source_inode": 4099062,
+      "copy_device": 66305,
+      "copy_inode": 5117905
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/mechanism_stage.py": {
+      "copy": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/archive-final/source/tools/mtp_suffix_nsys/mechanism_stage.py",
+      "sha256": "268b9d3dfc4d083c613640c235d09facae7c324af35970d86373644e3d1619f9",
+      "source_device": 66305,
+      "source_inode": 4099055,
+      "copy_device": 66305,
+      "copy_inode": 5117906
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/test_mechanism_stage.py": {
+      "copy": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/archive-final/source/tools/mtp_suffix_nsys/test_mechanism_stage.py",
+      "sha256": "1043a50c531a71f08c5113789596984b03f14642e75d6818673d74af24c7c0ce",
+      "source_device": 66305,
+      "source_inode": 4099056,
+      "copy_device": 66305,
+      "copy_inode": 5117907
+    }
+  },
+  "scope": "Frozen live identities checked before independent copies; later authorized source edits must use these exact copies for historical identity checks."
+}

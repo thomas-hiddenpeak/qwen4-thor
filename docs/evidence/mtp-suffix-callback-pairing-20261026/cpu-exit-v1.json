@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/cpu_suite.py",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/cpu-methods-v1.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/cpu-result-v1.json"
+  ],
+  "returncode": 0,
+  "failure": null,
+  "elapsed_seconds": 0.32526255189441144,
+  "sources_changed": [],
+  "source_read_errors": [],
+  "cleanup_errors": [],
+  "temporary_remaining": [],
+  "child_pid": 3433325,
+  "source_files": 416,
+  "log_sha256": "8d1ab66779494c210ed366fd827548ad96f310ddced9d4d544b72b9448c6bd87",
+  "outcome": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/cpu-result-v1.json",
+  "outcome_sha256": "ac37a340c085699290ea3625e0f50edd6c64f20c42edf59dba4894717da64be0"
+}

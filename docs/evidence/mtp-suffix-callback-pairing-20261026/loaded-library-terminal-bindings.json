@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libcupti-sbsa.so.13.4": {
+      "sha256": "22f558a271943b628b97daf70dd1754db190394c6d0597c3fd9d00fd4e15f45e",
+      "binding": "fully_verified_package_manifest"
+    },
+    "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1": {
+      "sha256": "c052fd6522969504193195cb06b6f3044b4b11b16f9e227357ced12c9d45ac1d",
+      "binding": "plan.files"
+    },
+    "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcupti.so.2026.2.0": {
+      "sha256": "6c6cfec85a8c08ff5abb230a4233e71b2a991ae0b0e8196bb7e64b7e2699becc",
+      "binding": "plan.files"
+    },
+    "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27": {
+      "sha256": "6c15bfbf538088ce72f9d83d81200b37ecff3409b905fe1696887d0f9084f11f",
+      "binding": "plan.files"
+    },
+    "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29": {
+      "sha256": "83b2ccdccdbb285613a97e8be332d1b17cbd55e267e1d2e047adb3081660335e",
+      "binding": "plan.files"
+    }
+  },
+  "package_manifest_sha256": "876d4201d6d7d5dba20eeaa77d988c722fbc0862dfc4d6dc015ed47352d7a1d1",
+  "scope": "Direct plan identity or exact path in independently verified complete pinned package manifest; no other fallback"
+}

@@ -1,0 +1,189 @@
+{
+  "schema": 1,
+  "evidence_integrity": "PASS",
+  "evidence_validity": "INVALID",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_EVALUATED_DIAGNOSTIC_ONLY",
+  "engineering_decision": "NOT_ACCEPTED_CALLBACK_CONTRACT_INVALID",
+  "performance_acceptance": false,
+  "model_qualification": false,
+  "plan_sha256": "79d753afcf59bd074917803deada4ce193c6be9129b5af6ac404e8ca07412ab2",
+  "plan_files_verified": 2940,
+  "nsight_files_verified": 1765,
+  "scope_indirect_references": {
+    "cpu_reuse": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-parameter-20261026/cpu-proof.json",
+      "sha256": "dfe7aae9e80e9e3f712977042cf57f6127b900e496b299d461a1d9f4734a1cfd",
+      "methods": 55,
+      "reason": "No tested Python source or dependency changed; new wrapper only selects distinct phase output root.",
+      "in_plan_files": false
+    },
+    "prior_phase_result": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-parameter-20261026/terminal-review.json",
+      "sha256": "8a2347e111756018bb66686673e8aa04a701ce8d75e734efa305d2e507792364",
+      "in_plan_files": false
+    }
+  },
+  "early_source_copy": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/early-source-copy.json",
+    "sha256": "ee82ca4439b306215a09e0b16e9e6bd5f3c1ae6bf9c497baa09acc85828135b9"
+  },
+  "raw_state": {
+    "schema": 1,
+    "plan_sha256": "79d753afcf59bd074917803deada4ce193c6be9129b5af6ac404e8ca07412ab2",
+    "status": "INVALID",
+    "captures": [
+      {
+        "mode": "cupti",
+        "pid": 3430351,
+        "ready": {
+          "pid": 3430351,
+          "tid": 3430351,
+          "mode": "cupti",
+          "passed": true,
+          "gemm_calls": 2,
+          "controls": 2,
+          "M": 4,
+          "N": 48,
+          "K": 2560,
+          "workspace_bytes": 33554432,
+          "profiler_start_error": 0,
+          "profiler_stop_error": 0,
+          "final_sync_error": 0
+        },
+        "normal_target_exit": true,
+        "launcher_returncode": 0
+      }
+    ],
+    "new_model_loads": 0,
+    "new_http": 0,
+    "performance_acceptance": false,
+    "raw_manifest_scope": "Driver-boundary observation; live NVLOG may append during daemon cleanup. Preserve this manifest and independently seal/reconcile after the outer guard returns.",
+    "errors": [],
+    "started_unix": 1792956805.473409,
+    "elapsed_seconds": 4.555055645992979,
+    "finished_unix": 1792956810.0280645
+  },
+  "analysis_errors": [
+    "ValueError: duplicate/bad callback ENTER"
+  ],
+  "partial_actual_output": {
+    "exact_checks": 4,
+    "independently_matched": true,
+    "summary": [
+      {
+        "event": "summary",
+        "mode": "cupti",
+        "api_enter_count": 922,
+        "api_exit_count": 922,
+        "activity_count": 842,
+        "drops": 0,
+        "overflow": 0,
+        "errors": 0,
+        "flushed": true,
+        "subscriber_used": true,
+        "record_count": 2686,
+        "buffer_requests": 1,
+        "buffer_completions": 1,
+        "buffers_outstanding": 0,
+        "collector_limit_bytes": 67108864,
+        "collector_owned_bytes": 27279360,
+        "configured_cupti_buffer_bytes": 5242880,
+        "opaque_library_allocations_bounded": false
+      }
+    ],
+    "scope": "Exact fixed outputs only; invalid callback association does not become valid CUDA parameter/activity evidence."
+  },
+  "build_elapsed_seconds": 11.551410861080512,
+  "cleanup_evidence_valid": true,
+  "lease": {
+    "status": "COMMAND_FAILED",
+    "acquired": {
+      "utc": "2026-10-25T19:33:25.283368+00:00",
+      "monotonic": 1146887.800246789,
+      "pid": 3430342,
+      "event": "lease_acquired"
+    },
+    "released": {
+      "utc": "2026-10-25T19:33:30.922292+00:00",
+      "monotonic": 1146893.439169543,
+      "pid": 3430342,
+      "event": "lease_released",
+      "status": "COMMAND_FAILED"
+    },
+    "monitor_observations": 7,
+    "queries": 7,
+    "conflicts": 0
+  },
+  "owned_processes": [
+    {
+      "pid": 3430342,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3430344,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3430346,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3430347,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3430349,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3430351,
+      "expected_start_ticks": 114688922,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3430360,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3430362,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3430364,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3430366,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    }
+  ],
+  "pgid_members": [],
+  "proc_scan_limitations": [],
+  "default_identities": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/manifest.json": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce"
+  },
+  "checks": {
+    "passed": 5177
+  },
+  "errors": [],
+  "final_raw_seal_sha256": "96913f301f69b0fb65c777e2fa6b60e92667d9d86d493e9871040e51d7a130d6",
+  "audit_seconds": 1.4267236408777535,
+  "limits": [
+    "No new sampling, tests, build, GPU, export or analyzer rerun.",
+    "Only this plan2940 and package1765; parent large snapshot was not rescanned.",
+    "Polling cannot exclude interference shorter than poll intervals.",
+    "Historical tool source identities use independently copied pre-edit sources; subsequent authorized edits do not alter these archived inputs."
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "plan_sha256": "34975398c0117dcf5c91343705ac904c795ffd76f4c98b42c16c3481adf1fe31",
+  "status": "BOUNDED_MECHANISM_COMPLETE",
+  "captures": [
+    {
+      "mode": "nsys",
+      "pid": 3433839,
+      "ready": {
+        "pid": 3433839,
+        "tid": 3433839,
+        "mode": "nsys",
+        "passed": true,
+        "gemm_calls": 2,
+        "controls": 2,
+        "M": 4,
+        "N": 48,
+        "K": 2560,
+        "workspace_bytes": 33554432,
+        "profiler_start_error": 0,
+        "profiler_stop_error": 0,
+        "final_sync_error": 0
+      },
+      "normal_target_exit": true,
+      "launcher_returncode": 0
+    }
+  ],
+  "new_model_loads": 0,
+  "new_http": 0,
+  "performance_acceptance": false,
+  "raw_manifest_scope": "Driver-boundary observation; live NVLOG may append during daemon cleanup. Preserve this manifest and independently seal/reconcile after the outer guard returns.",
+  "errors": [],
+  "started_unix": 1792957232.8098402,
+  "reused_cupti": {
+    "raw": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/cupti/server.log",
+    "analysis": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/cupti-analysis.json",
+    "proof": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/offline-proof.json",
+    "raw_sha256": "3cc033f1437d8cedc48a4b2dc7694ab2cf6411bdda2648aa9c295514589a2425",
+    "analysis_sha256": "53c5441c066adee5aa9f9d77d61f89b7a829177b1d8d7affc7aaa26165363664",
+    "proof_sha256": "55ca4f7e077c1d765fbc18c3856f38f907f95c8c18384b2fc2096e1251d64bac"
+  },
+  "analysis_status": "LOCAL_MECHANISM_OBSERVED",
+  "analysis_errors": [],
+  "elapsed_seconds": 10.472696747863665,
+  "finished_unix": 1792957243.2821095
+}

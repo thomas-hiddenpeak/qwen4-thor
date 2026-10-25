@@ -31,6 +31,7 @@ LIMITS = [
     'API/activity closure cannot exclude loss of both an API and its activity.',
     'Profiler warnings remain recorded; local observation does not waive model gates.',
     'Algorithm/key and kernel-family correspondence is not cross-process event identity.',
+    'OS/CUPTI thread correspondence is inferred from unique API identities, not a direct pthread sample.',
 ]
 
 
@@ -238,16 +239,22 @@ def _cupti(log, result):
                   collector_summary=shared['summary'],
                   actual_counts=shared['counts'])
     pairs, stacks, enter_seqs = {}, defaultdict(list), set()
+    by_correlation = defaultdict(list)
     parameter_fields = ('domain', 'name', 'pid', 'tid', 'correlation_id', 'enter_seq', 'phase',
                         'parent_runtime_correlation_id', 'context_uid', 'is_memset',
-                        'count', 'dev_ptr', 'value', 'stream')
+                        'count', 'dev_ptr', 'value', 'stream', 'cbid')
     for row in shared['groups']['api']:
         require(row.get('domain') in ('runtime', 'driver') and row.get('site') in ('enter', 'exit'),
                 'invalid API domain/site')
         require(row.get('pid') == shared['pid'], 'callback process identity differs')
         tid = integer(row.get('tid'), 'callback tid', 1)
         corr = integer(row.get('correlation_id'), 'callback correlation', 1)
-        key = (row['domain'], corr)
+        entry = integer(row.get('enter_seq'), 'callback enter_seq', 1)
+        integer(row.get('cbid'), 'callback cbid', 1)
+        # correlationId relates activity to an API; it is not the identity of
+        # every callback invocation. The producer stores its unique ENTER seq
+        # in CUPTI correlationData and recovers that exact seq at EXIT.
+        key = (row['domain'], corr, entry)
         integer(row.get('count'), 'memset count')
         require(type(row.get('is_memset')) is bool, 'missing is_memset field')
         require(isinstance(row.get('name'), str) and row['name'], 'missing callback name')
@@ -258,10 +265,10 @@ def _cupti(log, result):
                     'duplicate/bad callback ENTER')
             enter_seqs.add(row['enter_seq'])
             parent = next((p for p in reversed(stack) if p[0] == 'runtime'), None)
-            if row['domain'] == 'driver':
-                require(row['parent_runtime_correlation_id'] == (parent[1] if parent else 0),
-                        'driver/runtime callback bridge does not match thread nesting')
-            pairs[key] = dict(enter=row, depth=len(stack), activities=[])
+            require(row['parent_runtime_correlation_id'] == (parent[1] if parent else 0),
+                    'callback runtime bridge does not match thread nesting')
+            pairs[key] = dict(enter=row, depth=len(stack), parent=parent, activities=[])
+            by_correlation[(row['domain'], corr)].append(key)
             stack.append(key)
         else:
             require(key in pairs and 'exit' not in pairs[key] and stack and stack[-1] == key,
@@ -274,7 +281,33 @@ def _cupti(log, result):
             stack.pop()
     require(pairs and all(not stack for stack in stacks.values()) and
             all('exit' in pair for pair in pairs.values()), 'incomplete callbacks')
+    shared_correlations = []
+    for (domain, corr), keys in by_correlation.items():
+        if len(keys) == 1:
+            continue
+        members = [pairs[key] for key in keys]
+        parent = members[0]['parent']
+        # Only the observed, provable case is admitted: sequential driver
+        # invocations inside one exact runtime parent, sharing its correlation.
+        # Cross-parent/thread reuse and overlapping callbacks remain invalid.
+        require(domain == 'driver' and parent is not None and parent[1] == corr and
+                all(p['parent'] == parent and
+                    p['enter']['tid'] == pairs[parent]['enter']['tid'] and
+                    pairs[parent]['enter']['seq'] < p['enter']['seq'] <
+                    p['exit']['seq'] < pairs[parent]['exit']['seq']
+                    for p in members) and
+                all(a['exit']['seq'] < b['enter']['seq']
+                    for a, b in zip(members, members[1:])),
+                'correlation reuse is not sequential drivers inside one runtime parent')
+        shared_correlations.append(dict(domain=domain, correlation_id=corr,
+                                        parent_enter_seq=parent[2],
+                                        enter_seqs=[key[2] for key in keys]))
     activity_api, gpu = {}, []
+    os_to_cupti, cupti_to_os, thread_evidence = {}, {}, Counter()
+    activity_candidates = defaultdict(list)
+    for key, pair in pairs.items():
+        row = pair['enter']
+        activity_candidates[(key[0], key[1], row['cbid'], pair['exit']['retval'])].append(key)
     for row in shared['groups']['activity']:
         require(row.get('kind') in ('runtime', 'driver', 'kernel', 'copy', 'memset'),
                 'unknown activity kind')
@@ -283,13 +316,26 @@ def _cupti(log, result):
         require(end >= start, 'negative activity interval')
         corr = integer(row.get('correlation_id'), 'activity correlation', 1)
         if row['kind'] in ('runtime', 'driver'):
-            key = (row['kind'], corr)
-            require(key in pairs and key not in activity_api, 'duplicate/unmatched API activity')
-            require(row.get('thread_id') == pairs[key]['enter']['tid'] and
-                    isinstance(row.get('name'), str) and bool(row['name']) and
-                    row.get('cbid') == pairs[key]['enter'].get('cbid') and
-                    row.get('return_value') == pairs[key]['exit']['retval'],
-                    'API activity/callback identity or return differs')
+            cbid = integer(row.get('cbid'), 'activity cbid', 1)
+            require(type(row.get('return_value')) is int, 'missing activity return value')
+            candidates = activity_candidates[(row['kind'], corr, cbid, row['return_value'])]
+            require(len(candidates) == 1, 'API activity has no unique callback identity')
+            key = candidates[0]
+            require(key not in activity_api, 'duplicate API activity for callback')
+            require(isinstance(row.get('name'), str) and bool(row['name']),
+                    'missing API activity name')
+            os_tid = pairs[key]['enter']['tid']
+            cupti_tid = integer(row.get('thread_id'), 'activity thread id', 1)
+            # Installed cupti_activity.h:11166-11182 documents Linux DEFAULT
+            # as pthread_self(), SYSTEM as SYS_gettid. This probe records the
+            # latter in callbacks but leaves activity mode DEFAULT. Infer a
+            # bijection only from the unique PID/domain/corr/cbid/return join;
+            # never use a guessed thread map to resolve an ambiguous API join.
+            require(os_to_cupti.get(os_tid, cupti_tid) == cupti_tid and
+                    cupti_to_os.get(cupti_tid, os_tid) == os_tid,
+                    'OS/CUPTI thread correspondence is not bijective')
+            os_to_cupti[os_tid], cupti_to_os[cupti_tid] = cupti_tid, os_tid
+            thread_evidence[os_tid] += 1
             activity_api[key] = row
         else:
             gpu.append(row)
@@ -305,16 +351,17 @@ def _cupti(log, result):
         require(pair['exit']['retval'] == 0, 'activity linked to unsuccessful API')
         require(row['start'] >= activity_api[key]['start'], 'GPU activity precedes owner API')
         pair['activities'].append(row)
-        parent = pair['enter']['parent_runtime_correlation_id'] if key[0] == 'driver' else 0
-        if parent:
-            parent_key = ('runtime', parent)
+        parent_key = pair['parent'] if key[0] == 'driver' else None
+        parent = parent_key[1] if parent_key else 0
+        if parent_key:
             require(parent_key in pairs and pairs[parent_key]['enter']['tid'] == pair['enter']['tid'],
                     'missing same-thread parent runtime API')
             pairs[parent_key]['activities'].append(row)
         runtime_corr = row.get('runtime_correlation_id')
         if row['kind'] == 'copy' and runtime_corr not in (None, 0):
             require(runtime_corr == (parent if parent else key[1]) and
-                    ('runtime', runtime_corr) in pairs, 'copy runtime correlation bridge differs')
+                    len(by_correlation[('runtime', runtime_corr)]) == 1,
+                    'copy runtime correlation bridge differs')
     memsets = []
     for key, pair in pairs.items():
         row = pair['enter']
@@ -386,6 +433,13 @@ def _cupti(log, result):
         phases[phase] = dict(memsets=internal, kernel_names=[a['name'] for a in phase_kernels],
                              adjacent_launches=adjacent, representative_reproduced=matched)
     result.update(controls=controls, readbacks=readbacks, gemm_phases=phases, memset_calls=memsets,
+                  callback_pairing=dict(identity='PID/TID/domain/enter_seq with CBID and strict nesting',
+                                        pairs=len(pairs), shared_driver_correlations=shared_correlations),
+                  thread_correspondence=dict(method='INFERRED_FROM_UNIQUE_API_IDENTITIES',
+                                             directly_sampled_pthread=False,
+                                             mappings=[dict(os_tid=t, cupti_tid=c,
+                                                            unique_api_matches=thread_evidence[t])
+                                                       for t, c in sorted(os_to_cupti.items())]),
                   api_activity_count=len(activity_api), gpu_activity_counts=dict(Counter(a['kind'] for a in gpu)),
                   api_name_aliases=[dict(domain=k[0], cbid=a['cbid'], callback=pairs[k]['enter']['name'],
                                          activity=a['name']) for k, a in activity_api.items()

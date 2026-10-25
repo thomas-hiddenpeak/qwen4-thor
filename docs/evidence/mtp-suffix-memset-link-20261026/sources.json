@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "entries": [
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/scope.json",
+      "copy": "docs/evidence/mtp-suffix-memset-link-20261026/scope.json",
+      "sha256": "b8c29a40c995e082c88cb0381a89a9b7aba3a02e0c64dc9d31b5a64ecc4dd437"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/terminal-review.json",
+      "copy": "docs/evidence/mtp-suffix-memset-link-20261026/terminal-review.json",
+      "sha256": "2e19d568abd5bee29bc4586792b48199d2fc1d2c8eb44dcfdaf2979add31d77a"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/final-raw-seal.json",
+      "copy": "docs/evidence/mtp-suffix-memset-link-20261026/final-raw-seal.json",
+      "sha256": "96913f301f69b0fb65c777e2fa6b60e92667d9d86d493e9871040e51d7a130d6"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/archive-final/seal.json",
+      "copy": "docs/evidence/mtp-suffix-memset-link-20261026/archive-final/seal.json",
+      "sha256": "12fe481116b0097db68cfa1c3dd8ab81519b3f54e970c78d3fb4a94b6a7853dc"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/early-source-copy.json",
+      "copy": "docs/evidence/mtp-suffix-memset-link-20261026/early-source-copy.json",
+      "sha256": "ee82ca4439b306215a09e0b16e9e6bd5f3c1ae6bf9c497baa09acc85828135b9"
+    }
+  ],
+  "scope": "Small public receipts; full immutable raw and incremental archive stay at documented local paths. Not self-contained."
+}

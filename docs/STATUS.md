@@ -2,6 +2,19 @@
 
 更新：2026-10-26。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+固定GEMM参数机制对照已闭合，模型GPU归因仍未完成（2026-10-26）：
+补原HC链接后唯一构建11.551秒/零warning，原CUPTI正常结束但回调解析
+INVALID；原件保留。修共享correlation及线程编号口径，CPU23首suite通过；
+一次原日志离线复用确认两次生产GEMM实际memset count=0，正控制512字节
+有对应活动。唯一Nsight10.473秒正常完成，同算法2kernel/4copy/1memset/
+5NVTX齐全，LOCAL_MECHANISM_OBSERVED。通用warning保留；producer与consumer
+均有终止标记，但consumer因时间晚于session stop而过滤，支持具体收尾
+解释，不能授予全模型完整性或反填旧6381参数。0新模型/HTTP；两head收益
+按身份复用，五档已测齐但保护NO_GO保持。下一步有限实际8K参数账本与
+200K/8K GPU对照，默认未替换，完整目标active。
+见[回调身份及机制结论](MTP_SUFFIX_CALLBACK_PAIRING_2026-10-26.md)和
+[链接修复原失败封存](MTP_SUFFIX_MEMSET_LINK_2026-10-26.md)。
+
 固定生产GEMM参数诊断有界停止（2026-10-26，链接未完成）：
 55项CPU首suite通过，0.675325秒/414源不变；新日志快照及驱动仅CPU验证。
 两次构建10.698530秒，首重复元数据include修复后四对象编译0warning，

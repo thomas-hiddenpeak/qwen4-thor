@@ -54,6 +54,47 @@ class StageContracts(unittest.TestCase):
             stage.save(path, {'status': 'PASS'})
         self.assertEqual(json.loads(path.read_text())['status'], 'STOPPED')
 
+    def reuse_plan(self):
+        raw, analysis, proof = [self.base/name for name in ('raw', 'analysis', 'proof')]
+        raw.write_text('immutable captured records')
+        result = dict(status='VALID_AND_REPRODUCED', eligible_nsys=True,
+            local_mechanism_valid=True, errors=[], performance_acceptance=False,
+            model_qualification=False, source=dict(path=str(raw), sha256=stage.sha(raw)))
+        analysis.write_text(json.dumps(result))
+        proof.write_text(json.dumps(dict(analysis_sha256=stage.sha(analysis),
+            raw_sha256=stage.sha(raw), analyzer_sha256=stage.sha(
+                Path(stage.__file__).with_name('mechanism_analyze.py')),
+            binary_sha256='binary', runs=1, elapsed_seconds=0.1)))
+        paths = dict(raw=str(raw), analysis=str(analysis), proof=str(proof))
+        return dict(binary_sha256='binary', files={p: stage.sha(p) for p in paths.values()},
+            reused_cupti={**paths, **{k+'_sha256': stage.sha(p) for k, p in paths.items()}})
+
+    def test_reuse_requires_frozen_raw_and_analysis(self):
+        plan = self.reuse_plan()
+        self.assertTrue(stage.reused_cupti_result(plan)['eligible_nsys'])
+        Path(plan['reused_cupti']['raw']).write_text('changed')
+        with self.assertRaisesRegex(ValueError, 'identity differs'):
+            stage.reused_cupti_result(plan)
+
+    def test_reuse_rejects_stale_analyzer_or_noneligible_result(self):
+        for change in ('analyzer', 'eligibility'):
+            with self.subTest(change=change):
+                plan = self.reuse_plan()
+                field = 'proof' if change == 'analyzer' else 'analysis'
+                path = Path(plan['reused_cupti'][field])
+                data = json.loads(path.read_text())
+                data['analyzer_sha256' if change == 'analyzer' else 'eligible_nsys'] = 'stale'
+                path.write_text(json.dumps(data))
+                plan['files'][str(path)] = plan['reused_cupti'][field+'_sha256'] = stage.sha(path)
+                if field == 'analysis':
+                    proof = Path(plan['reused_cupti']['proof'])
+                    data = json.loads(proof.read_text())
+                    data['analysis_sha256'] = stage.sha(path)
+                    proof.write_text(json.dumps(data))
+                    plan['files'][str(proof)] = plan['reused_cupti']['proof_sha256'] = stage.sha(proof)
+                with self.assertRaises(ValueError):
+                    stage.reused_cupti_result(plan)
+
     def test_pidfd_cleanup_failure_preserves_env_abort_receipt(self):
         class Child:
             pid = 7

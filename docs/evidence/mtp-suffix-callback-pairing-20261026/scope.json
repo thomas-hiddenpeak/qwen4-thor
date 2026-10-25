@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "classification": "SPECIFIC_CALLBACK_IDENTITY_FIX_WITH_EXISTING_CAPTURE_REUSE",
+  "created_unix": 1792956910.2140062,
+  "work_wall_seconds": 1800,
+  "cpu_total_seconds": 120,
+  "cpu_max_methods": 24,
+  "cpu_suites": 2,
+  "cpu_repeat_rule": "Only after concrete CPU failure repair; no unchanged suite repetition",
+  "offline_analysis_runs": 1,
+  "offline_analysis_seconds": 60,
+  "build_attempts": 0,
+  "cupti_only_processes": 0,
+  "gpu_stage_attempts": 1,
+  "gpu_stage_seconds": 600,
+  "nsys_processes": 1,
+  "nsys_including_export_seconds": 300,
+  "cleanup_reserved_seconds": 180,
+  "model_loads": 0,
+  "http_requests": 0,
+  "runtime_changes": 0,
+  "source_failure": "Actual nested driver callbacks share correlation ID 119 within runtime parent; analyzer incorrectly keys individual callback invocations by domain/correlation alone",
+  "fixed_workload": {
+    "M": 4,
+    "N": 48,
+    "K": 2560,
+    "workspace_bytes": 33554432,
+    "gemm_calls": 2,
+    "memset_controls_bytes": [
+      0,
+      512
+    ]
+  },
+  "allowed_change": "Pair callback invocations by recorded unique enter_seq/PID/TID/domain/cbid with nesting; join activities only with unambiguous supported identities. Preserve reject for ambiguous ownership/missing data.",
+  "conditional_nsys": "Only corrected offline analysis of unchanged prior CUPTI raw is valid and representative. Reuse exact probe binary; separate Nsight process, same pinned tool/options; no new CUPTI sample, shape or algorithm sweep.",
+  "stop_conditions": [
+    "CPU bound reached or offline analysis invalid/not reproduced: no Nsight",
+    "Nsight failure: preserve, no retry",
+    "ENV or monitoring or cleanup failure: ENV_ABORT own processes only"
+  ],
+  "evidence_scope": "Local mechanism only; old6381/model completeness/normal performance not accepted",
+  "frozen_inputs": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/cupti/server.log": "3cc033f1437d8cedc48a4b2dc7694ab2cf6411bdda2648aa9c295514589a2425",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/cupti/analysis.json": "dee0568587b0bc36d85cebe15e167dc933ce0a30a6f31e12b27bb077fff69a5c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/state.json": "05b23d80c82538713afded6bf18996729b046dd8cd33ece17bd63c8decf07015",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/frozen-plan.json": "79d753afcf59bd074917803deada4ce193c6be9129b5af6ac404e8ca07412ab2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/build/mechanism_probe": "16b3303c505ea9fabe82e3289f6f647dbfd533b13da4b049d4a7aa035fec63b3",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/mechanism_analyze.py": "18605883addfc44fc2c4c4aa091d38b8c4d8909f5cd6b45d556fa8e9a5156556",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/mechanism_stage.py": "268b9d3dfc4d083c613640c235d09facae7c324af35970d86373644e3d1619f9"
+  }
+}

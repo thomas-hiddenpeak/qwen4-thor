@@ -1,4 +1,4 @@
-"""Eight CPU contracts for the bounded offline parameter analyzer; no CUDA."""
+"""Sixteen CPU contracts for the bounded offline parameter analyzer; no CUDA."""
 import copy
 import json
 from pathlib import Path
@@ -106,6 +106,56 @@ def records(mode='cupti'):
 def write_log(path, items):
     path.write_text(''.join('[mechanism-' + kind + '] ' + json.dumps(row) + '\n'
                             for kind, row in items))
+
+
+def resequence(items):
+    """Keep independent callback entry references while ordering raw records."""
+    entry_map = {}
+    sequence = 0
+    for _, row in items:
+        if row.get('event') not in ('api', 'activity'):
+            continue
+        sequence += 1
+        if row.get('site') == 'enter':
+            entry_map[row['enter_seq']] = sequence
+        row['seq'] = sequence
+    for _, row in items:
+        if row.get('event') == 'api':
+            row['enter_seq'] = entry_map[row['enter_seq']]
+    summary = next(r for _, r in items if r.get('event') == 'summary')
+    summary.update(api_enter_count=sum(r.get('site') == 'enter' for _, r in items),
+                   api_exit_count=sum(r.get('site') == 'exit' for _, r in items),
+                   activity_count=sum(r.get('event') == 'activity' for _, r in items),
+                   record_count=sequence)
+    return items
+
+
+def shared_driver_records(cbids=(304, 303), *, overlap=False, activities=False):
+    items = records()
+    index = next(i for i, (_, r) in enumerate(items)
+                 if r.get('site') == 'enter' and r.get('correlation_id') == 1)
+    parent = items[index][1]
+    added, exits = [], []
+    for ordinal, cbid in enumerate(cbids):
+        entry = -ordinal - 1
+        row = dict(parent, seq=entry, enter_seq=entry, domain='driver',
+                   cbid=cbid, name='cuShared' + str(cbid), is_memset=False,
+                   count=0, parent_runtime_correlation_id=1)
+        end = dict(row, site='exit', retval=0)
+        added.append(('event', row))
+        if overlap:
+            exits.insert(0, ('event', end))
+        else:
+            added.append(('event', end))
+    items[index + 1:index + 1] = added + exits
+    if activities:
+        template = next(r for _, r in items if r.get('kind') == 'runtime' and
+                        r.get('correlation_id') == 1)
+        index = next(i for i, (_, r) in enumerate(items) if r.get('event') == 'summary')
+        items[index:index] = [('event', dict(template, kind='driver', cbid=cbid,
+                                             name='cuShared' + str(cbid) + '_v3020'))
+                              for cbid in dict.fromkeys(cbids)]
+    return resequence(items)
 
 
 def sql_fixture(path):
@@ -284,6 +334,120 @@ class MechanismContracts(unittest.TestCase):
         link = self.root / 'link.log'
         link.symlink_to(path)
         self.assertEqual(m.analyze_cupti(link)['status'], 'INVALID')
+
+    def test_sequential_shared_driver_correlation_has_distinct_pairs(self):
+        result = self.analyze(shared_driver_records())
+        self.assertEqual(result['errors'], [])
+        self.assertEqual(result['status'], 'VALID_AND_REPRODUCED')
+        groups = result['callback_pairing']['shared_driver_correlations']
+        self.assertEqual(len(groups), 1)
+        self.assertEqual(groups[0]['correlation_id'], 1)
+        self.assertEqual(len(set(groups[0]['enter_seqs'])), 2)
+        self.assertLess(groups[0]['parent_enter_seq'], min(groups[0]['enter_seqs']))
+
+    def test_shared_correlation_activity_uses_unique_cbid(self):
+        result = self.analyze(shared_driver_records(activities=True))
+        original = self.analyze(records())
+        self.assertEqual(result['errors'], [])
+        self.assertEqual(result['api_activity_count'], original['api_activity_count'] + 2)
+        for phase in ('control_zero', 'control_nonzero'):
+            for field in ('count', 'gpu_bytes', 'gpu_activity_count', 'classification'):
+                self.assertEqual(result['controls'][phase][field], original['controls'][phase][field])
+
+    def test_callback_instance_identity_and_stack_remain_strict(self):
+        for mutation in ('cbid', 'pid', 'tid', 'entry', 'retval', 'reordered_exit'):
+            with self.subTest(mutation=mutation):
+                items = shared_driver_records()
+                children = [r for _, r in items if r.get('domain') == 'driver' and
+                            r.get('correlation_id') == 1]
+                end = children[1]
+                if mutation == 'cbid':
+                    end['cbid'] += 1
+                elif mutation == 'pid':
+                    end['pid'] += 1
+                elif mutation == 'tid':
+                    end['tid'] += 1
+                elif mutation == 'entry':
+                    end['enter_seq'] = children[2]['enter_seq']
+                elif mutation == 'retval':
+                    children[0]['retval'] = 0
+                else:
+                    first, second = children[1], children[3]
+                    first['enter_seq'], second['enter_seq'] = second['enter_seq'], first['enter_seq']
+                result = self.analyze(items)
+                self.assertEqual(result['status'], 'INVALID')
+                self.assertFalse(result['eligible_nsys'])
+
+    def test_correlation_reuse_requires_one_parent_and_no_overlap(self):
+        for mutation in ('runtime_reuse', 'different_parent', 'parent_missing', 'overlap'):
+            with self.subTest(mutation=mutation):
+                items = shared_driver_records(overlap=mutation == 'overlap')
+                for _, row in items:
+                    if row.get('event') != 'api':
+                        continue
+                    if mutation == 'runtime_reuse' and row['domain'] == 'runtime' and row['correlation_id'] == 3:
+                        row['correlation_id'] = 1
+                    elif mutation == 'different_parent' and row['domain'] == 'driver' and row['correlation_id'] == 1011:
+                        row['correlation_id'] = 1
+                    elif mutation == 'parent_missing' and row['domain'] == 'driver' and row['correlation_id'] == 1:
+                        row['parent_runtime_correlation_id'] = 0
+                result = self.analyze(items)
+                self.assertEqual(result['status'], 'INVALID')
+                self.assertFalse(result['eligible_nsys'])
+
+    def test_ambiguous_duplicate_or_bad_return_activity_rejected(self):
+        for mutation in ('ambiguous', 'duplicate', 'return'):
+            with self.subTest(mutation=mutation):
+                items = shared_driver_records((304, 304) if mutation == 'ambiguous' else (304, 303),
+                                              activities=True)
+                row = next(r for _, r in items if r.get('kind') == 'driver' and
+                           r.get('correlation_id') == 1)
+                if mutation == 'duplicate':
+                    index = next(i for i, (_, r) in enumerate(items) if r.get('event') == 'summary')
+                    items.insert(index, ('event', dict(row)))
+                    resequence(items)
+                elif mutation == 'return':
+                    row['return_value'] = 1
+                result = self.analyze(items)
+                self.assertEqual(result['status'], 'INVALID')
+                self.assertFalse(result['eligible_nsys'])
+
+    def test_pthread_and_os_tid_bijection_is_explicitly_inferred(self):
+        items = shared_driver_records()
+        for _, row in items:
+            if row.get('kind') in ('runtime', 'driver'):
+                row['thread_id'] = 2367240384
+        result = self.analyze(items)
+        self.assertEqual(result['errors'], [])
+        mapping = result['thread_correspondence']
+        self.assertFalse(mapping['directly_sampled_pthread'])
+        self.assertEqual(mapping['method'], 'INFERRED_FROM_UNIQUE_API_IDENTITIES')
+        self.assertEqual(mapping['mappings'], [dict(os_tid=TID, cupti_tid=2367240384,
+                                                   unique_api_matches=result['api_activity_count'])])
+
+    def test_thread_map_rejects_one_to_many_many_to_one_and_invalid_id(self):
+        for mutation in ('one_to_many', 'many_to_one', 'invalid_id'):
+            with self.subTest(mutation=mutation):
+                items = records()
+                if mutation == 'many_to_one':
+                    for _, row in items:
+                        if row.get('event') == 'api' and row['correlation_id'] == 3:
+                            row['tid'] = TID + 1
+                else:
+                    row = next(r for _, r in items if r.get('kind') == 'runtime')
+                    row['thread_id'] = TID + 1 if mutation == 'one_to_many' else 0
+                result = self.analyze(items)
+                self.assertEqual(result['status'], 'INVALID')
+                self.assertFalse(result['eligible_nsys'])
+
+    def test_gpu_ownership_stays_unique_after_callback_reuse_fix(self):
+        items = shared_driver_records(activities=True)
+        kernel = next(r for _, r in items if r.get('kind') == 'kernel')
+        kernel['correlation_id'] = 1
+        result = self.analyze(items)
+        self.assertEqual(result['status'], 'INVALID')
+        self.assertIn('GPU activity has no unique process-local API correlation', result['errors'][0])
+        self.assertFalse(result['eligible_nsys'])
 
 
 if __name__ == '__main__':

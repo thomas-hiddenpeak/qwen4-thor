@@ -1,0 +1,62 @@
+{
+  "schema": 1,
+  "classification": "SPECIFIC_PRODUCTION_LINK_DEPENDENCY_FIX",
+  "created_unix": 1792956538.3948762,
+  "source_commit": "dd6a7af5fe574673068e666bda2294898a7d82fc",
+  "work_wall_seconds": 1800,
+  "build_attempts": 1,
+  "build_total_seconds": 300,
+  "cpu_max_methods": 0,
+  "cpu_total_seconds": 120,
+  "cpu_suites": 0,
+  "gpu_stage_attempts": 1,
+  "gpu_stage_seconds": 600,
+  "cupti_only_processes": 1,
+  "cupti_only_seconds": 120,
+  "conditional_nsys_processes": 1,
+  "nsys_including_export_seconds": 300,
+  "cleanup_reserved_seconds": 180,
+  "model_loads": 0,
+  "http_requests": 0,
+  "normal_throughput_claim": false,
+  "runtime_changes": 0,
+  "fixed_workload": {
+    "production_function": "q4t::model::Bf16Gemm",
+    "M": 4,
+    "N": 48,
+    "K": 2560,
+    "workspace_bytes": 33554432,
+    "gemm_calls": 2,
+    "meaning": [
+      "first heuristic",
+      "same cached plan"
+    ],
+    "memset_controls_bytes": [
+      0,
+      512
+    ],
+    "input": "deterministic exact-output-checkable BF16 data"
+  },
+  "source_justification_sha256": "2dce2f88687b881d761456e03937061d2d27544c34b0e0ff799c4f27b494642d",
+  "conditional_nsys": "Only if CUPTI control/params/activity/output valid, no drops/overflow/errors, and representative internal memset/kernel family reproduced. Distinct process IDs/correlation IDs never joined across captures.",
+  "stop_conditions": [
+    "subscription/callback missing, output mismatch, dropped/overflow, ownership or environment error",
+    "fixed workload does not reproduce internal memset path: NOT_REPRODUCED; no shape sweep",
+    "nsys lifecycle/export failure: keep raw, no retry",
+    "budget expires: keep incomplete evidence, no automatic sampling extension"
+  ],
+  "warning_handling": "Preserve actual warnings. Local mechanism diagnosis does not waive model completeness gate or retrospectively explain old6381.",
+  "specific_tool_fix": "immutable early NVLOG prefix receipt distinct from final daemon log; original auditFAIL unchanged",
+  "identity_freeze": "Before tests and GPU, hash actual selected source/probe/binary/libs/pinnedtool plus existing parentmanifest; no model changes.",
+  "cpu_reuse": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-parameter-20261026/cpu-proof.json",
+    "sha256": "dfe7aae9e80e9e3f712977042cf57f6127b900e496b299d461a1d9f4734a1cfd",
+    "methods": 55,
+    "reason": "No tested Python source or dependency changed; new wrapper only selects distinct phase output root."
+  },
+  "prior_phase_result": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-parameter-20261026/terminal-review.json",
+    "sha256": "8a2347e111756018bb66686673e8aa04a701ce8d75e734efa305d2e507792364"
+  },
+  "specific_fix": "Add original src/model/gemv_hc_inject.cu to unchanged compile flags and link; freeze source and fifth .d. No stub, shape or model changes."
+}

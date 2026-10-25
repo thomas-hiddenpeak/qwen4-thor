@@ -1,0 +1,346 @@
+{
+  "schema": 1,
+  "evidence_integrity": "PASS",
+  "evidence_validity": "VALID_LOCAL_MECHANISM_ONLY",
+  "measurement_complete": true,
+  "measurement_scope": "This fixed local diagnostic only; model/performance qualification incomplete",
+  "statistical_conclusion": "NOT_EVALUATED_DIAGNOSTIC_ONLY",
+  "engineering_decision": "LOCAL_MECHANISM_OBSERVED_NO_MODEL_OR_PERFORMANCE_ACCEPTANCE",
+  "performance_acceptance": false,
+  "model_qualification": false,
+  "whole_trace_completeness_claimed": false,
+  "old_phase_status": "INVALID_UNCHANGED",
+  "plan_sha256": "34975398c0117dcf5c91343705ac904c795ffd76f4c98b42c16c3481adf1fe31",
+  "plan_files_verified": 2963,
+  "nsight_files_verified": 1765,
+  "cpu": {
+    "new_methods": 23,
+    "new_source_files": 416,
+    "elapsed_seconds": 0.32526255189441144,
+    "reused_methods": 42
+  },
+  "offline_reuse": {
+    "runs": 1,
+    "elapsed_seconds": 0.05399674689397216,
+    "error": null,
+    "raw_sha256": "3cc033f1437d8cedc48a4b2dc7694ab2cf6411bdda2648aa9c295514589a2425",
+    "analyzer_sha256": "57713213e2eff885477737e837fdb7f05c04d1d12d7b521d02fe75d0ccdd3235",
+    "binary_sha256": "16b3303c505ea9fabe82e3289f6f647dbfd533b13da4b049d4a7aa035fec63b3",
+    "analysis_sha256": "53c5441c066adee5aa9f9d77d61f89b7a829177b1d8d7affc7aaa26165363664",
+    "raw_unchanged": true,
+    "analyzer_unchanged": true
+  },
+  "raw_state": {
+    "schema": 1,
+    "plan_sha256": "34975398c0117dcf5c91343705ac904c795ffd76f4c98b42c16c3481adf1fe31",
+    "status": "BOUNDED_MECHANISM_COMPLETE",
+    "captures": [
+      {
+        "mode": "nsys",
+        "pid": 3433839,
+        "ready": {
+          "pid": 3433839,
+          "tid": 3433839,
+          "mode": "nsys",
+          "passed": true,
+          "gemm_calls": 2,
+          "controls": 2,
+          "M": 4,
+          "N": 48,
+          "K": 2560,
+          "workspace_bytes": 33554432,
+          "profiler_start_error": 0,
+          "profiler_stop_error": 0,
+          "final_sync_error": 0
+        },
+        "normal_target_exit": true,
+        "launcher_returncode": 0
+      }
+    ],
+    "new_model_loads": 0,
+    "new_http": 0,
+    "performance_acceptance": false,
+    "raw_manifest_scope": "Driver-boundary observation; live NVLOG may append during daemon cleanup. Preserve this manifest and independently seal/reconcile after the outer guard returns.",
+    "errors": [],
+    "started_unix": 1792957232.8098402,
+    "reused_cupti": {
+      "raw": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/cupti/server.log",
+      "analysis": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/cupti-analysis.json",
+      "proof": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/offline-proof.json",
+      "raw_sha256": "3cc033f1437d8cedc48a4b2dc7694ab2cf6411bdda2648aa9c295514589a2425",
+      "analysis_sha256": "53c5441c066adee5aa9f9d77d61f89b7a829177b1d8d7affc7aaa26165363664",
+      "proof_sha256": "55ca4f7e077c1d765fbc18c3856f38f907f95c8c18384b2fc2096e1251d64bac"
+    },
+    "analysis_status": "LOCAL_MECHANISM_OBSERVED",
+    "analysis_errors": [],
+    "elapsed_seconds": 10.472696747863665,
+    "finished_unix": 1792957243.2821095
+  },
+  "local_counts": {
+    "api": 505,
+    "nvtx": 5,
+    "gpu": {
+      "kernel": 2,
+      "copy": 4,
+      "memset": 1
+    },
+    "phases": {
+      "control_zero": {
+        "api_count": 3,
+        "memset_correlation_ids": [
+          12
+        ],
+        "gpu_counts": {
+          "kernel": 0,
+          "copy": 1,
+          "memset": 0
+        },
+        "nsys_parameters": "UNAVAILABLE; not filled from another process"
+      },
+      "control_nonzero": {
+        "api_count": 3,
+        "memset_correlation_ids": [
+          15
+        ],
+        "gpu_counts": {
+          "kernel": 0,
+          "copy": 1,
+          "memset": 1
+        },
+        "nsys_parameters": "UNAVAILABLE; not filled from another process"
+      },
+      "gemm_first": {
+        "api_count": 491,
+        "memset_correlation_ids": [
+          699
+        ],
+        "gpu_counts": {
+          "kernel": 1,
+          "copy": 1,
+          "memset": 0
+        },
+        "nsys_parameters": "UNAVAILABLE; not filled from another process"
+      },
+      "gemm_cached": {
+        "api_count": 6,
+        "memset_correlation_ids": [
+          709
+        ],
+        "gpu_counts": {
+          "kernel": 1,
+          "copy": 1,
+          "memset": 0
+        },
+        "nsys_parameters": "UNAVAILABLE; not filled from another process"
+      }
+    },
+    "exact_output_checks": 4
+  },
+  "warnings": [
+    {
+      "timestamp": 27859967,
+      "timestampType": 2,
+      "source": 3,
+      "severity": 2,
+      "text": "Not all NVTX events might have been collected.",
+      "globalPid": 339085235322880
+    },
+    {
+      "timestamp": 27864514,
+      "timestampType": 2,
+      "source": 3,
+      "severity": 2,
+      "text": "Not all CUDA events might have been collected.",
+      "globalPid": 339085235322880
+    }
+  ],
+  "warnings_disposition": "RETAINED_LOCAL_MECHANISM_ONLY_NO_MODEL_WAIVER",
+  "nvlog": {
+    "final_snapshot_sha256": "3578e96d7b5d8d69753b175f214a677c3291d59b8c8fffdcb8d8fbb580ffb289",
+    "reconciliation_sha256": "4bae1766e6a7eee5d91c16c5f785b791e8b108870536e0d4f0bfb2337069dae5",
+    "appended_bytes": 0,
+    "target_records_equal": true,
+    "driver_manifest_differences": []
+  },
+  "cleanup_evidence_valid": true,
+  "lease": {
+    "status": "COMPLETED",
+    "monitor_observations": 12,
+    "queries": 12,
+    "conflicts": 0,
+    "acquired": {
+      "utc": "2026-10-25T19:40:32.617176+00:00",
+      "monotonic": 1147315.134055793,
+      "pid": 3433791,
+      "event": "lease_acquired"
+    },
+    "released": {
+      "utc": "2026-10-25T19:40:43.672268+00:00",
+      "monotonic": 1147326.189144784,
+      "pid": 3433791,
+      "event": "lease_released",
+      "status": "COMPLETED"
+    },
+    "current_lock_records": []
+  },
+  "owned_processes": [
+    {
+      "pid": 3433325,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433791,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433793,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433795,
+      "expected_start_ticks": 114731522,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433796,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433804,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433806,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433824,
+      "expected_start_ticks": 114731668,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433838,
+      "expected_start_ticks": 114731685,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433839,
+      "expected_start_ticks": 114731685,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433857,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433867,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433869,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433871,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433873,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433882,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433884,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433889,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433892,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3433894,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    }
+  ],
+  "pgid_members": [],
+  "proc_scan_limitations": [],
+  "default_identities": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/manifest.json": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce"
+  },
+  "historical_scope_sources": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/cupti/server.log": {
+      "actual_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/cupti/server.log",
+      "sha256": "3cc033f1437d8cedc48a4b2dc7694ab2cf6411bdda2648aa9c295514589a2425"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/cupti/analysis.json": {
+      "actual_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/cupti/analysis.json",
+      "sha256": "dee0568587b0bc36d85cebe15e167dc933ce0a30a6f31e12b27bb077fff69a5c"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/state.json": {
+      "actual_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/run/state.json",
+      "sha256": "05b23d80c82538713afded6bf18996729b046dd8cd33ece17bd63c8decf07015"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/frozen-plan.json": {
+      "actual_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/frozen-plan.json",
+      "sha256": "79d753afcf59bd074917803deada4ce193c6be9129b5af6ac404e8ca07412ab2"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/build/mechanism_probe": {
+      "actual_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/build/mechanism_probe",
+      "sha256": "16b3303c505ea9fabe82e3289f6f647dbfd533b13da4b049d4a7aa035fec63b3"
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/mechanism_analyze.py": {
+      "actual_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/archive-final/source/tools/mtp_suffix_nsys/mechanism_analyze.py",
+      "sha256": "18605883addfc44fc2c4c4aa091d38b8c4d8909f5cd6b45d556fa8e9a5156556"
+    },
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/mechanism_stage.py": {
+      "actual_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/archive-final/source/tools/mtp_suffix_nsys/mechanism_stage.py",
+      "sha256": "268b9d3dfc4d083c613640c235d09facae7c324af35970d86373644e3d1619f9"
+    }
+  },
+  "checks": {
+    "passed": 5652
+  },
+  "errors": [],
+  "final_raw_seal_sha256": "cd7f1da1884c87be5f5126698e213544b55d099bed2733cb4b462916db17ef1d",
+  "audit_seconds": 1.5538270380347967,
+  "limits": [
+    "One fixed shape and two cache phases; no population or performance claim.",
+    "CUPTI and Nsight are separate processes; their correlation IDs are never joined.",
+    "Missing parameters/records are UNKNOWN, never inferred as a zero byte count.",
+    "Observed zero-byte calls do not retroactively identify the old 6381 calls.",
+    "API/activity closure cannot exclude loss of both an API and its activity.",
+    "Profiler warnings remain recorded; local observation does not waive model gates.",
+    "Algorithm/key and kernel-family correspondence is not cross-process event identity.",
+    "OS/CUPTI thread correspondence is inferred from unique API identities, not a direct pthread sample.",
+    "No new tests/build/GPU/model/HTTP/export/analyzer execution.",
+    "Old phase INVALID preserved; only its existing raw received a separately versioned offline interpretation.",
+    "Final NVLOG equality does not establish trace completeness or waive actual warnings.",
+    "Parent large snapshots and shared-library copies are excluded; external SHA anchors remain required.",
+    "Polling cannot exclude interference shorter than its intervals."
+  ]
+}

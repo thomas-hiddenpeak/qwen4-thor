@@ -1,0 +1,292 @@
+{
+  "schema": 1,
+  "classification": "READ_ONLY_LOCAL_TERMINAL_MARKER_ORDER",
+  "scope": "Existing completed fixed-shape diagnostic only; no GPU/HTTP/test/export and no raw changes.",
+  "sources": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/run/nsys/nvlog.log": {
+      "sha256": "52cbf9c123d0bb0769e197770cd5c7679204a707b3110fb233c9fd763e82a07c",
+      "bytes": 1015207
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/run/nsys/analysis.json": {
+      "sha256": "05860af30f62b74febb714be5a59c2645b771d00dac11f40726bb5d3891d0e56",
+      "bytes": 70530
+    }
+  },
+  "target_pid": 3433839,
+  "producer": {
+    "profiler_stop_context_sync": [
+      {
+        "line": 4146,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | InjectionInterface.cpp:79 [ActivityFlushAll]: Synchronizing the caller's current CUDA context before cudaProfilerStop CUPTI activity flush"
+      },
+      {
+        "line": 4147,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | InjectionInterface.cpp:83 [ActivityFlushAll]: Finished synchronizing the caller's current CUDA context before cudaProfilerStop CUPTI activity flush: CUresult=0"
+      },
+      {
+        "line": 4148,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | ContextSynchronization.cpp:298 [SynchronizeKnownContexts]: Synchronizing 1 known CUDA context(s) before cudaProfilerStop flush"
+      },
+      {
+        "line": 4149,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | ContextSynchronization.cpp:281 [SynchronizeContext]: Synchronizing CUDA context 0xaaab1b8bb4b0 before cudaProfilerStop flush"
+      },
+      {
+        "line": 4150,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | ContextSynchronization.cpp:286 [SynchronizeContext]: Finished synchronizing CUDA context 0xaaab1b8bb4b0 before cudaProfilerStop flush: CUresult=0"
+      },
+      {
+        "line": 4151,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | ContextSynchronization.cpp:327 [SynchronizeKnownContexts]: Finished synchronizing known CUDA contexts before cudaProfilerStop flush: attempted=1 succeeded=1"
+      }
+    ],
+    "profiler_stop_flush": [
+      {
+        "line": 4145,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | InjectionInterface.cpp:66 [ActivityFlushAll]: Starting CUPTI activity flush for cudaProfilerStop: requested_mode=2 effective_mode=2"
+      },
+      {
+        "line": 4152,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | InjectionInterface.cpp:122 [ActivityFlushAll]: Waiting to acquire CUPTI activity flush lock for cudaProfilerStop: mode=2"
+      },
+      {
+        "line": 4153,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | InjectionInterface.cpp:130 [ActivityFlushAll]: Acquired CUPTI activity flush lock for cudaProfilerStop: mode=2"
+      },
+      {
+        "line": 4154,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for cudaProfilerStop: flags=0"
+      },
+      {
+        "line": 4168,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for cudaProfilerStop: CUptiResult=0"
+      },
+      {
+        "line": 4169,
+        "raw": "I03:40:34.894| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433839 | InjectionInterface.cpp:155 [ActivityFlushAll]: Released CUPTI activity flush lock for cudaProfilerStop: mode=2"
+      }
+    ],
+    "analysis_stop_flush": [
+      {
+        "line": 4236,
+        "raw": "I03:40:34.895| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433843 | InjectionInterface.cpp:66 [ActivityFlushAll]: Starting CUPTI activity flush for analysis stop: requested_mode=3 effective_mode=3"
+      },
+      {
+        "line": 4304,
+        "raw": "I03:40:34.895| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433843 | InjectionInterface.cpp:122 [ActivityFlushAll]: Waiting to acquire CUPTI activity flush lock for analysis stop: mode=3"
+      },
+      {
+        "line": 4305,
+        "raw": "I03:40:34.895| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433843 | InjectionInterface.cpp:130 [ActivityFlushAll]: Acquired CUPTI activity flush lock for analysis stop: mode=3"
+      },
+      {
+        "line": 4306,
+        "raw": "I03:40:34.895| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433843 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for analysis stop: flags=1"
+      },
+      {
+        "line": 4320,
+        "raw": "I03:40:34.895| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433843 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for analysis stop: CUptiResult=0"
+      },
+      {
+        "line": 4321,
+        "raw": "I03:40:34.895| quadd_cuda_tracing |                  mechanism_probe pid=3433839 tid= 3433843 | InjectionInterface.cpp:155 [ActivityFlushAll]: Released CUPTI activity flush lock for analysis stop: mode=3"
+      }
+    ],
+    "cuda_done": [
+      {
+        "line": 4322,
+        "raw": "I03:40:34.895| Injection |                  mechanism_probe pid=3433839 tid= 3433843 | CudaInjectionInit.cpp:1567 [ReportCUDADone]: CUDA: ReportCUDADone: START."
+      },
+      {
+        "line": 4324,
+        "raw": "I03:40:34.895| Injection |                  mechanism_probe pid=3433839 tid= 3433843 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+      },
+      {
+        "line": 6313,
+        "raw": "I03:40:38.896| Injection |                  mechanism_probe pid=3433839 tid= 3433839 | CudaInjectionInit.cpp:1567 [ReportCUDADone]: CUDA: ReportCUDADone: START."
+      },
+      {
+        "line": 6315,
+        "raw": "I03:40:38.896| Injection |                  mechanism_probe pid=3433839 tid= 3433839 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+      }
+    ],
+    "cuda_finish_sent": [
+      {
+        "line": 4323,
+        "raw": "I03:40:34.895| Injection |                  mechanism_probe pid=3433839 tid= 3433843 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: CUDAFinish."
+      },
+      {
+        "line": 6314,
+        "raw": "I03:40:38.896| Injection |                  mechanism_probe pid=3433839 tid= 3433839 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: CUDAFinish."
+      }
+    ],
+    "nvtx_finish_sent": [
+      {
+        "line": 4368,
+        "raw": "I03:40:34.895| Injection |                  mechanism_probe pid=3433839 tid= 3433843 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: NVTXFinish."
+      }
+    ],
+    "producer_summary": [
+      {
+        "line": 4325,
+        "raw": "I03:40:34.895| Injection |                  mechanism_probe pid=3433839 tid= 3433843 | CudaInjectionInit.cpp:2301 [FinalDiagnosticHandler]: CUPTI: Number of CUPTI events produced: 531, CUPTI buffers in use: 0."
+      },
+      {
+        "line": 6316,
+        "raw": "I03:40:38.896| Injection |                  mechanism_probe pid=3433839 tid= 3433839 | CudaInjectionInit.cpp:2301 [FinalDiagnosticHandler]: CUPTI: Number of CUPTI events produced: 531, CUPTI buffers in use: 0."
+      }
+    ]
+  },
+  "consumer_session_stop": {
+    "line": 4295,
+    "raw": "I03:40:34.895| quadd_daemon_evtsrc_trace |                             nsys pid=3433816 tid= 3433822 | Trace.cpp:1154 [Stop]: Trace[0xffff9010f1b0]: Stop(1147317411894363)"
+  },
+  "consumer_terminal_filters": [
+    {
+      "marker": "CUDA profiling finished",
+      "consumer_read": {
+        "line": 5517,
+        "raw": "I03:40:35.035| quadd_verbose_daemon_evtsrc_trace_event_details |                             nsys pid=3433816 tid= 3433821 | Trace.cpp:2171 [ReadStorageImpl]: { Timestamp=1147338509339981 Serial=4 EndTimestamp=1147338509339981 Event={ Trace={ Name={ Text=\"CUDA profiling finished\" } Type=7 } } TimestampType=3 ThreadId=0 }"
+      },
+      "consumer_filter": {
+        "line": 5519,
+        "raw": "I03:40:35.035| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3433816 tid= 3433821 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010f1b0]: Event ignored: start timestamp 1147317412495769 > session stop timestamp 1147317411894363"
+      },
+      "converted_start_ns": 1147317412495769,
+      "session_stop_ns": 1147317411894363,
+      "after_stop_ns": 601406,
+      "after_stop_ms": 0.601406
+    },
+    {
+      "marker": "NVTX profiling finished",
+      "consumer_read": {
+        "line": 5526,
+        "raw": "I03:40:35.035| quadd_verbose_daemon_evtsrc_trace_event_details |                             nsys pid=3433816 tid= 3433821 | Trace.cpp:2171 [ReadStorageImpl]: { Timestamp=1147338509513148 Serial=5 EndTimestamp=1147338509513148 Event={ Trace={ Name={ Text=\"NVTX profiling finished\" } Type=3 } } TimestampType=3 ThreadId=0 }"
+      },
+      "consumer_filter": {
+        "line": 5528,
+        "raw": "I03:40:35.035| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3433816 tid= 3433821 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010f1b0]: Event ignored: start timestamp 1147317412668936 > session stop timestamp 1147317411894363"
+      },
+      "converted_start_ns": 1147317412668936,
+      "session_stop_ns": 1147317411894363,
+      "after_stop_ns": 774573,
+      "after_stop_ms": 0.774573
+    }
+  ],
+  "consumer_batch_summary": [
+    {
+      "line": 5531,
+      "raw": "I03:40:35.035| quadd_daemon_evtsrc_trace |                             nsys pid=3433816 tid= 3433821 | Trace.cpp:2478 [ReadStorageImpl]: Trace[0xffff9010f1b0]: Events diagnostic: 2, service: 0, added: 50, ignored: 8, from file pid 3433839, uid 2002."
+    }
+  ],
+  "consumer_host_total": [
+    {
+      "line": 5534,
+      "raw": "I03:40:35.035| quadd_daemon_evtsrc_trace |                             nsys pid=3433816 tid= 3433821 | Trace.cpp:2495 [ReadStorageImpl]: Trace[0xffff9010f1b0]: Number of events to send to the host: 553"
+    }
+  ],
+  "import": {
+    "start": [
+      {
+        "line": 5698,
+        "raw": "I03:40:35.810| qdstrm_import |                             nsys pid=3433860 tid= 3433862 | Import.cpp:17 [ImportAsync]: Starting asynchronous import..."
+      }
+    ],
+    "input_finished": [
+      {
+        "line": 5963,
+        "raw": "I03:40:35.822| qdstrm_import |                             nsys pid=3433860 tid= 3433862 | QdstrmImporter.cpp:545 [Import]: Reading events from QDSTRM file completed."
+      }
+    ],
+    "all_events_processed": [
+      {
+        "line": 6019,
+        "raw": "I03:40:35.839| qdstrm_import |                             nsys pid=3433860 tid= 3433861 | QdstrmImporter.cpp:798 [HandleEHEndOfData]: All events processed."
+      }
+    ],
+    "report_saved": [
+      {
+        "line": 6067,
+        "raw": "I03:40:35.842| qdstrm_import |                             nsys pid=3433860 tid= 3433861 | QdstrmImporter.cpp:591 [SaveReport]: Report file saved: /home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/run/nsys/trace.1.nsys-rep"
+      }
+    ],
+    "success": [
+      {
+        "line": 6075,
+        "raw": "I03:40:35.842| quadd_agent_import |                             nsys pid=3433816 tid= 3433822 | RunRpcImport.cpp:52 [operator()]: RPC import succeeded: output='/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/run/nsys/trace.1.nsys-rep'"
+      }
+    ],
+    "back_to_launched": [
+      {
+        "line": 6142,
+        "raw": "I03:40:35.851| quadd_agent_session |                             nsys pid=3433816 tid= 3433822 | Session.cpp:1292 [SetState]: Session state transition: RangeImportation -> Launched."
+      }
+    ]
+  },
+  "shutdown": [
+    {
+      "line": 6229,
+      "raw": "I03:40:38.846| quadd_agent_session |                             nsys pid=3433816 tid= 3433822 | Session.cpp:1292 [SetState]: Session state transition: Launched -> Shutdown."
+    }
+  ],
+  "warnings": [
+    {
+      "analysis_text_line": 3214,
+      "exported_record": {
+        "source_row": 12,
+        "timestamp": 27859967,
+        "timestampType": 2,
+        "source": 3,
+        "severity": 2,
+        "text": "Not all NVTX events might have been collected.",
+        "globalPid": 339085235322880
+      }
+    },
+    {
+      "analysis_text_line": 3232,
+      "exported_record": {
+        "source_row": 14,
+        "timestamp": 27864514,
+        "timestampType": 2,
+        "source": 3,
+        "severity": 2,
+        "text": "Not all CUDA events might have been collected.",
+        "globalPid": 339085235322880
+      }
+    }
+  ],
+  "warning_emission_order": {
+    "exact_emitter_log_observed": false,
+    "exact_wall_time": null,
+    "statement": "Warnings are present in the exported report. Their raw DIAGNOSTIC timestamp and timestampType are retained; no matching warning-emitter NVLOG record was observed. Do not equate timestampType=2 values with the producer/consumer wall clock or claim exact emission order inside import."
+  },
+  "observed_order": [
+    "Actual target cudaProfilerStop synchronizes and flushes flags=0 with result 0.",
+    "Analysis stop then flushes flags=1 with result 0 and the target sends CUDAFinish and NVTXFinish.",
+    "Consumer reads both service markers and explicitly ignores each because converted start exceeds the same session stop.",
+    "Input import, all-events-processed, report save and return to Launched complete before later session shutdown.",
+    "Exported report contains the two target CUDA/NVTX possible-incompleteness warnings; their emission instant is not recorded here."
+  ],
+  "local_conclusion": "A specific terminal-service-marker filtering path is observed. Missing producer emission or premature user shutdown is not the explanation for those two marker omissions. Filtering is a concrete mechanism hypothesis for the consumer warnings; the warning-creation branch itself was not observed.",
+  "limitations": [
+    "Does not prove all API/activity/NVTX records complete or waive model trace warnings.",
+    "Does not establish that forced flush is the unique warning cause.",
+    "531 produced CUPTI events, exported API count and mixed service/diagnostic host counts have different domains; subtraction is not a dropped-record count.",
+    "Two fixed production GEMM zero-count observations do not retroactively provide arguments for old6381 calls or other model shapes.",
+    "No profiler option change, resampling or trace re-export was performed."
+  ],
+  "extraction_correction": {
+    "first_attempt": "FAILED_BEFORE_OUTPUT_WRITE",
+    "reason": "A fixed four-line lookahead also selected the next event filter.",
+    "repair": "Bind filter only within the selected ReadStorage record before the next ReadStorage record.",
+    "raw_modified": false,
+    "old_output_overwritten": false
+  },
+  "whole_trace_complete": false,
+  "model_qualification": false,
+  "warning_waiver": false,
+  "new_gpu": 0,
+  "new_http": 0,
+  "new_tests": 0,
+  "new_exports": 0
+}

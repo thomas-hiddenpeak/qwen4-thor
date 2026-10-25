@@ -99,6 +99,33 @@ def loaded_libraries(plan, pid):
     return selected
 
 
+def reused_cupti_result(plan):
+    """Use one independently reanalyzed immutable capture, never sample again."""
+    reused = plan['reused_cupti']
+    for field in ('raw', 'analysis', 'proof'):
+        path = reused[field]
+        if sha(path) != reused[field + '_sha256'] or plan['files'].get(path) != sha(path):
+            raise ValueError('reused CUPTI ' + field + ' identity differs')
+    proof = json.loads(Path(reused['proof']).read_text())
+    result = json.loads(Path(reused['analysis']).read_text())
+    analyzer = str(Path(__file__).with_name('mechanism_analyze.py'))
+    if (proof.get('analysis_sha256') != reused['analysis_sha256'] or
+            proof.get('raw_sha256') != reused['raw_sha256'] or
+            proof.get('analyzer_sha256') != sha(analyzer) or
+            proof.get('binary_sha256') != plan['binary_sha256'] or
+            proof.get('runs') != 1 or proof.get('elapsed_seconds', 61) > 60):
+        raise ValueError('reused CUPTI analysis provenance differs')
+    if (result.get('status') != 'VALID_AND_REPRODUCED' or
+            result.get('eligible_nsys') is not True or
+            result.get('local_mechanism_valid') is not True or result.get('errors') or
+            result.get('source', {}).get('sha256') != reused['raw_sha256'] or
+            result.get('source', {}).get('path') != reused['raw'] or
+            result.get('model_qualification') is not False or
+            result.get('performance_acceptance') is not False):
+        raise ValueError('reused CUPTI capture is not a valid local mechanism')
+    return result
+
+
 def capture(plan, mode, output, whole_deadline):
     output.mkdir()
     log = output / 'server.log'
@@ -267,9 +294,15 @@ def run(plan_path):
         if time.monotonic() >= deadline:
             raise TimeoutError('phase work budget expired before capture')
         analyze = module('mechanism_analyze')
-        state['captures'].append(capture(plan, 'cupti', output/'cupti', deadline))
-        result = analyze.analyze_cupti(output/'cupti/server.log')
-        save(output/'cupti/analysis.json', result)
+        if 'reused_cupti' in plan:
+            if scope.get('cupti_only_processes') != 0 or scope.get('build_attempts') != 0:
+                raise ValueError('reuse scope must forbid new CUPTI capture and build')
+            result = reused_cupti_result(plan)
+            state['reused_cupti'] = plan['reused_cupti']
+        else:
+            state['captures'].append(capture(plan, 'cupti', output/'cupti', deadline))
+            result = analyze.analyze_cupti(output/'cupti/server.log')
+            save(output/'cupti/analysis.json', result)
         if result.get('eligible_nsys') is not True:
             state['status'] = result['status']
             return 1

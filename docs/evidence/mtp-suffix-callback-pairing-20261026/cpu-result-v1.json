@@ -1,0 +1,11 @@
+{
+  "tests": 23,
+  "test_modules": {
+    "test_mechanism_analyze.py": 16,
+    "test_mechanism_stage.py": 7
+  },
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "elapsed_seconds": 0.13702922989614308
+}

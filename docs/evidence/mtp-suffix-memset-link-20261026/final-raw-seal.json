@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "scope": "Terminal run and released lease originals; driver manifest retained separately",
+  "files": {
+    "run/state.json": "05b23d80c82538713afded6bf18996729b046dd8cd33ece17bd63c8decf07015",
+    "run/files.json": "b435d12b7ceac3ac073ce973bd496a11129d5b6ae86e5eadd0d8575f4a7e63ae",
+    "run/cupti/analysis.json": "dee0568587b0bc36d85cebe15e167dc933ce0a30a6f31e12b27bb077fff69a5c",
+    "run/cupti/ready-boundary.json": "b75cf49395d6204b8d2e412b7e7a4fa36833d2378f1a0699a060aaceaceb0ab6",
+    "run/cupti/fixture-owned-identity.json": "221edae957a42f1b5633a897eb93073bad0a9441962eb1f2e822af63e796f6cf",
+    "run/cupti/release": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run/cupti/server.log": "3cc033f1437d8cedc48a4b2dc7694ab2cf6411bdda2648aa9c295514589a2425",
+    "run/cupti/loaded-libraries.json": "c351a6ecb65d50d2d5f0be51f71e4e87eb296c39b37eab636878bee9ab4658e8",
+    "run/cupti/probe-command.json": "f6ce28977947887a67b046c07ff4caf2f009071114a74c50bce76e88922d27fe",
+    "run/cupti/launcher.json": "24eca5bcbc7b6b58514cddc933c6c791a517110e56de509b32f1e9357dfc18d7",
+    "run/cupti/cleanup.json": "4bd819e79141931b43fac64170b3e8d2d7c69b9a4d12fa6f18b55de575dbcab0",
+    "lease/nvml-queries.jsonl": "3b40ef48ddac97274bcda97ce29affd938c8e0d09a09c4dbe03d4960debef8ea",
+    "lease/events.jsonl": "29abd5ca998198b7afc5f0c5f337e0d7b12caa9dd47564a2f83b8fb6be821879",
+    "lease/exit.json": "991304ad4fbf5c495f5c2c02e7e2f46179f3350b6939b3a730bc2ce265a4d3ba"
+  },
+  "plan_sha256": "79d753afcf59bd074917803deada4ce193c6be9129b5af6ac404e8ca07412ab2"
+}

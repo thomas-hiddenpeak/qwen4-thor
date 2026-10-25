@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "kind": "bounded_nvlog_prefix_reconciliation",
+  "captured_snapshot": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/run/nsys/nvlog-snapshot.log",
+    "device": 66305,
+    "inode": 5119295,
+    "bytes": 1015207,
+    "mtime_ns": 1792957241993349251,
+    "mode": 292,
+    "sha256": "52cbf9c123d0bb0769e197770cd5c7679204a707b3110fb233c9fd763e82a07c"
+  },
+  "final_observation": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/run/nsys/nvlog.log",
+    "device": 66305,
+    "inode": 5119273,
+    "bytes": 1015207,
+    "mtime_ns": 1792957241921349409,
+    "mode": 420,
+    "sha256": "52cbf9c123d0bb0769e197770cd5c7679204a707b3110fb233c9fd763e82a07c"
+  },
+  "exact_prefix": true,
+  "target_pid": 3433839,
+  "snapshot_target": {
+    "complete_line_count": 515,
+    "complete_lines_sha256": "b2946c99d026aa9f36753bb2b581b5a3a02bdacc19a0d09a2bb7c85b6e26e12c",
+    "flush_flags": [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    "cuda_done": [
+      "I03:40:34.895| Injection |                  mechanism_probe pid=3433839 tid= 3433843 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE.",
+      "I03:40:38.896| Injection |                  mechanism_probe pid=3433839 tid= 3433839 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+    ],
+    "nvtx_terminal": [
+      "I03:40:34.895| Injection |                  mechanism_probe pid=3433839 tid= 3433843 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: NVTXFinish."
+    ],
+    "explicit_loss": []
+  },
+  "final_target": {
+    "complete_line_count": 515,
+    "complete_lines_sha256": "b2946c99d026aa9f36753bb2b581b5a3a02bdacc19a0d09a2bb7c85b6e26e12c",
+    "flush_flags": [
+      0,
+      0,
+      0,
+      1,
+      1,
+      1
+    ],
+    "cuda_done": [
+      "I03:40:34.895| Injection |                  mechanism_probe pid=3433839 tid= 3433843 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE.",
+      "I03:40:38.896| Injection |                  mechanism_probe pid=3433839 tid= 3433839 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+    ],
+    "nvtx_terminal": [
+      "I03:40:34.895| Injection |                  mechanism_probe pid=3433839 tid= 3433843 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: NVTXFinish."
+    ],
+    "explicit_loss": []
+  },
+  "target_records_equal": true,
+  "appended_bytes": 0,
+  "appended_or_boundary_completed_lines": 0,
+  "snapshot_has_partial_last_line": false,
+  "appended_loss": [],
+  "appended_errors": [],
+  "appended_warnings": [],
+  "final_has_partial_last_line": false,
+  "warning_waiver": false,
+  "trace_complete": false,
+  "qualification": "NOT_EVALUATED",
+  "scope": "Exact preserved prefix and stable final observation only; appended diagnostics remain raw evidence, never an automatic audit upgrade or trace qualification."
+}

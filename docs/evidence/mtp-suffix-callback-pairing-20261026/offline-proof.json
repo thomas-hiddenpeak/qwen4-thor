@@ -1,0 +1,11 @@
+{
+  "runs": 1,
+  "elapsed_seconds": 0.05399674689397216,
+  "error": null,
+  "raw_sha256": "3cc033f1437d8cedc48a4b2dc7694ab2cf6411bdda2648aa9c295514589a2425",
+  "analyzer_sha256": "57713213e2eff885477737e837fdb7f05c04d1d12d7b521d02fe75d0ccdd3235",
+  "binary_sha256": "16b3303c505ea9fabe82e3289f6f647dbfd533b13da4b049d4a7aa035fec63b3",
+  "analysis_sha256": "53c5441c066adee5aa9f9d77d61f89b7a829177b1d8d7affc7aaa26165363664",
+  "raw_unchanged": true,
+  "analyzer_unchanged": true
+}
