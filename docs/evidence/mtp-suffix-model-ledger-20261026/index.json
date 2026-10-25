@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "files": {
+    "scope.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/scope.json",
+      "sha256": "87c8e5f92e8a08ce9ee53b0dc96fe69079973b41cea0d0d6f3a99705dc1f3cc8"
+    },
+    "cpu-proof.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/cpu-proof.json",
+      "sha256": "1a74f64e230575fa118624d6098d2b2781c943f444a2249b05df02e598454c6e"
+    },
+    "build-proof.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/build-proof.json",
+      "sha256": "7a542bdb18ef7fa40a48d8abaf64b12f4fc7e2d68238bb7176ee0a1d907b90a5"
+    },
+    "terminal-review.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/terminal-review.json",
+      "sha256": "4e14e08d1e0ef83b28af8cfc0a99861f562dfed89e874477001b46b0347aaabc"
+    },
+    "final-raw-seal.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/final-raw-seal.json",
+      "sha256": "99d3c8eb6d8c43739c04944afd2541c63c4998c6e6320436d4e0ecddac400a36"
+    },
+    "postflight.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/postflight.json",
+      "sha256": "8be1166c0801cca55df2065298522d2db427a1cded439cb3c22dc6e114240bd3"
+    },
+    "archive-seal.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/archive-final/seal.json",
+      "sha256": "ea482bd0af9bc64f7db314d5da570d7c7f043a4e2720be36b9910d29643525c3"
+    },
+    "terminal-review-exit.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/terminal-review-exit.json",
+      "sha256": "6ffeaf1d60509802b379042b16cdb1987a10b730b55cf96b177a5bedd855b58f"
+    },
+    "terminal-review-execution-freeze.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/terminal-review-execution-freeze.json",
+      "sha256": "fb795ada6b0c5f3dff0dda15d0babea3051906f87dc7659bd7a6d98c59eb2d81"
+    },
+    "terminal-review-execution.log": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/terminal-review-execution.log",
+      "sha256": "703da4dbce985ed1f4d281d0c01b39638658c11ca6200915bb8ac225339bc45a"
+    },
+    "stage-close.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/stage-close.json",
+      "sha256": "7e534e3ec037d586301093d0b80e0ce1c23e3566ca5c72e4614c1fee6a9531f6"
+    }
+  },
+  "local_raw_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026",
+  "archive_manifest_sha256": "0d39839e8c84fa7bd6817217a04f256178e98444238a47916d8870f2675762b7",
+  "self_contained": false
+}

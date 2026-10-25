@@ -1,0 +1,668 @@
+{
+  "schema": 1,
+  "evidence_integrity": "PASS",
+  "evidence_validity": "VALID_ACTUAL_8K_MEMSET_LOCAL_ONLY",
+  "measurement_complete": true,
+  "measurement_scope": "One fixed fixture and one actual subset8K suffix-off parameter capture; no 200K/off-on performance pair",
+  "statistical_conclusion": "NOT_EVALUATED_DIAGNOSTIC_ONLY",
+  "engineering_decision": "ACTUAL_ZERO_MEMSET_MECHANISM_OBSERVED_NO_PERFORMANCE_ACCEPTANCE",
+  "performance_acceptance": false,
+  "model_qualification": false,
+  "whole_trace_completeness_claimed": false,
+  "plan_sha256": "7ed1a8c92fc871daf4e81290daeb90cff1091d605d8c6ac1116723ef2dac7e89",
+  "plan_files_verified": 21284,
+  "model_metadata_verified": 197,
+  "raw_state": {
+    "status": "MEASURED_REQUIRES_REVIEW",
+    "started": 1792958919.1003156,
+    "completed": [
+      "fixture-ledger",
+      "model8-off"
+    ],
+    "requests_completed": 1,
+    "loads_started": 1,
+    "contract_seconds": 3.6193665370810777,
+    "plan_sha256": "7ed1a8c92fc871daf4e81290daeb90cff1091d605d8c6ac1116723ef2dac7e89",
+    "current": "model8-off",
+    "finished": 1792959010.1892774,
+    "elapsed_seconds": 91.08896476216614,
+    "monitor_failures": []
+  },
+  "postflight": {
+    "status": "MEASURED_REQUIRES_REVIEW",
+    "state_sha256": "f5bbaffa26df5b20450dec792617ace96e7d52daddabf2c3eee807cf3a8fd081",
+    "monitor_failures": [],
+    "cleanup_errors": [],
+    "child_cleanup_errors": [],
+    "final_summary_sha256": "3c5d9ba005bd9a01f9be91065c1090a3937d2fe6711f94a560115b4935af5695",
+    "final_monitor_barrier": {
+      "boundary_monotonic": 1149091.701384123,
+      "sample_started_monotonic": 1149092.63703393,
+      "flushed_monotonic": 1149092.657575812
+    },
+    "final_monitor_errors": [],
+    "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+  },
+  "build": {
+    "attempts": 1,
+    "seconds": 1.999854699941352,
+    "binary_sha256": "04e88936e20636d8a181c78c08c19d8359b4fc5636993b489665905a017cf5cc",
+    "warnings": 0
+  },
+  "cpu": {
+    "methods": 28,
+    "source_files": 422,
+    "suite_runs": 1,
+    "seconds": 0.2751345450524241
+  },
+  "observations": {
+    "fixture-ledger": {
+      "pid": 3440068,
+      "counts": {
+        "runtime_memset_calls": 4,
+        "driver_bridge_calls": 1,
+        "zero_calls": 3,
+        "nonzero_calls": 1,
+        "memset_activities": 1,
+        "nonzero_bytes": 512
+      },
+      "byte_count_distribution": {
+        "0": 3,
+        "512": 1
+      },
+      "ledger_sha256": "210a1520e72bf6e194ffb5ee44ab37d280beb4e0ddb2cc0cadef83a08ae653e8",
+      "ledger_bytes": 7337,
+      "analysis_sha256": "a801da0257c62f99fe3b23eb0ef63ad1c7fd955c9ef4ef08f9d3b6537ad1a89d",
+      "oracle_sha256": "4acdb08622338da25192c62ce1781633976e38a53bb9a7a389f5af08a744d783",
+      "explicit_owned_bytes": 38934792,
+      "configured_cupti_bytes": 5242880,
+      "drops": 0,
+      "overflow": 0,
+      "errors": 0
+    },
+    "model8-off": {
+      "pid": 3440109,
+      "counts": {
+        "runtime_memset_calls": 14283,
+        "driver_bridge_calls": 7902,
+        "zero_calls": 6381,
+        "nonzero_calls": 7902,
+        "memset_activities": 7902,
+        "nonzero_bytes": 11325984640
+      },
+      "byte_count_distribution": {
+        "0": 6381,
+        "10240": 299,
+        "184320": 1,
+        "2048": 271,
+        "20480": 8,
+        "2052": 3552,
+        "30720": 7,
+        "3145728": 36,
+        "40960": 3604,
+        "427819008": 13,
+        "53477376": 26,
+        "61440": 36,
+        "83660800": 49
+      },
+      "ledger_sha256": "d2507ef6caa13c232ea4dd574ca0bb355adbf5520fc60a0550ccccd00c2070e5",
+      "ledger_bytes": 25682376,
+      "analysis_sha256": "c1c4b5db444dcebcd2f1003d8f86efcc7991aab34bd718fcf06757900c81915b",
+      "oracle_sha256": "0a92ed6107cdf5064832d496dcbaa9c6927277432c7803ee8b6de4d88d49adf1",
+      "explicit_owned_bytes": 38934792,
+      "configured_cupti_bytes": 5242880,
+      "drops": 0,
+      "overflow": 0,
+      "errors": 0,
+      "host_counts": {
+        "batches": 77,
+        "spans": 2716,
+        "flushes": 77
+      },
+      "diagnostic_only_http": {
+        "ttft_seconds": 5.753296795068309,
+        "latency_seconds": 12.400840610032901,
+        "performance_sample": false,
+        "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e"
+      }
+    }
+  },
+  "loaded_libraries": {
+    "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1": "c052fd6522969504193195cb06b6f3044b4b11b16f9e227357ced12c9d45ac1d",
+    "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29": "83b2ccdccdbb285613a97e8be332d1b17cbd55e267e1d2e047adb3081660335e",
+    "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcupti.so.2026.2.0": "6c6cfec85a8c08ff5abb230a4233e71b2a991ae0b0e8196bb7e64b7e2699becc",
+    "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcublasLt.so.13.5.1.27": "6c15bfbf538088ce72f9d83d81200b37ecff3409b905fe1696887d0f9084f11f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/build-v1/libq4t_memset_ledger.so": "04e88936e20636d8a181c78c08c19d8359b4fc5636993b489665905a017cf5cc"
+  },
+  "lease": {
+    "status": "COMPLETED",
+    "observations": 86,
+    "queries": 86,
+    "conflicts": 0,
+    "current_lock_records": []
+  },
+  "telemetry": {
+    "samples": 92,
+    "exit_pending": {
+      "active": 0,
+      "admitted": 1,
+      "resolved": 1,
+      "maximum_active": 1,
+      "last_resolutions": [],
+      "entries": []
+    },
+    "max_sample_seconds": 0.05105891590937972,
+    "system_used_proxy_peak_bytes": 112724590592,
+    "system_available_min_bytes": 19196047360,
+    "swap_used_peak_bytes": 2015567872,
+    "scope": "System MemTotal-MemAvailable proxy includes other processes; not a sum of host/device/managed allocations and not collector incremental peak. Opaque CUDA/CUPTI RAM not hard bounded.",
+    "unavailable": [
+      {
+        "label": "pressure_cpu",
+        "path": "/proc/pressure/cpu",
+        "reason": "missing_or_not_readable_at_discovery",
+        "status": "UNAVAILABLE"
+      },
+      {
+        "label": "pressure_io",
+        "path": "/proc/pressure/io",
+        "reason": "missing_or_not_readable_at_discovery",
+        "status": "UNAVAILABLE"
+      },
+      {
+        "label": "pressure_memory",
+        "path": "/proc/pressure/memory",
+        "reason": "missing_or_not_readable_at_discovery",
+        "status": "UNAVAILABLE"
+      }
+    ]
+  },
+  "owned_processes": [
+    {
+      "pid": 3439984,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440054,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440056,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440058,
+      "expected_start_ticks": 114900146,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440059,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440064,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440066,
+      "expected_start_ticks": 114900307,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440068,
+      "expected_start_ticks": 114900322,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440077,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440079,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440086,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440105,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440107,
+      "expected_start_ticks": 114900765,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440109,
+      "expected_start_ticks": 114900779,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440110,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440112,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440121,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440124,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440141,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440157,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440204,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440234,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440264,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440294,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440310,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440340,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440359,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440389,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440419,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440435,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440452,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440482,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440512,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440532,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440534,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440536,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440538,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440556,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440558,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440574,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440591,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440607,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440637,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440639,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440641,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440648,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440654,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440660,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440711,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440741,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440776,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440811,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440843,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440876,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440905,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440935,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440976,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3440993,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441003,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441007,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441009,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441024,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441027,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441030,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441033,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441042,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441058,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441061,
+      "expected_start_ticks": 114906535,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441075,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441092,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441114,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441119,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441121,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441131,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441133,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441136,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441138,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441140,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441142,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441144,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441146,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441149,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441151,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441157,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441160,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441162,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441183,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441185,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441187,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441189,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441191,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441193,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441200,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3441203,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    }
+  ],
+  "pgid_members": [],
+  "proc_scan_errors": [],
+  "checks": {
+    "passed": 22419
+  },
+  "errors": [],
+  "final_raw_seal_sha256": "99d3c8eb6d8c43739c04944afd2541c63c4998c6e6320436d4e0ecddac400a36",
+  "audit_seconds": 2.4309506257995963,
+  "limits": [
+    "No new tests, build, model, HTTP or analyzer execution in this audit.",
+    "Only four selected memset runtime APIs and their GPU memory activities; no kernel timing collection.",
+    "6381 explicit zero calls in this new process do not retroactively supply parameters to old 6381 Nsight records.",
+    "No kernel-time comparison or suffix performance acceptance; previous protection NO_GO remains.",
+    "No default executable/release/subset changes; frozen identities verified.",
+    "Polling cannot exclude interference shorter than its intervals."
+  ]
+}

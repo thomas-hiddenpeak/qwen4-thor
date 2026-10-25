@@ -2,6 +2,18 @@
 
 更新：2026-10-26。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+真实8K参数机制已闭合，性能交付仍未通过（2026-10-26）：
+原f0ff推理程序不变，独立观察器首构建1.999855秒/零warning，CPU28首轮
+通过；唯一持锁91.088965秒，固定probe后一次subset OFF HTTP正常完成。
+实采14283次memset：6381次真实count0，7902次非零全部有MEMSET activity，
+零drops/overflow/errors。输出SHA一致，74个闭合T4 host spans及77−74推导
+的3次尾部单行工作符合原合同；本轮不采kernel耗时。92/92监控落盘、
+1次退出pending已解决，94个记录PID均不再活动，lease正常释放。终审PASS，
+局部证据VALID；不跨进程反填旧6381，不当整trace或性能通过。原五档已测齐
+但保护NO_GO保持，两head重复收益按身份复用，默认/元数据不替换。
+下一步仅补有界子集200K/8K的GPU耗时对照和具体因果分析，不再盲改收尾。
+见[实际模型参数结果](MTP_SUFFIX_MODEL_LEDGER_2026-10-26.md)。
+
 固定GEMM参数机制对照已闭合，模型GPU归因仍未完成（2026-10-26）：
 补原HC链接后唯一构建11.551秒/零warning，原CUPTI正常结束但回调解析
 INVALID；原件保留。修共享correlation及线程编号口径，CPU23首suite通过；

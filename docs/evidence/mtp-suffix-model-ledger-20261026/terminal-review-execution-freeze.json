@@ -1,0 +1,7 @@
+{
+  "script": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/terminal_close.py",
+  "sha256": "4a16ddfcf4225008349f771b8f26aa36388dafe16ee862360fdcd44f8ced1296",
+  "runs": 1,
+  "max_seconds": 180,
+  "mode": "offline identity/terminal audit and archival copy only"
+}

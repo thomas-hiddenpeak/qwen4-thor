@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[回调身份与固定机制对照](MTP_SUFFIX_CALLBACK_PAIRING_2026-10-26.md)；
+最新专项：[实际8K参数机制](MTP_SUFFIX_MODEL_LEDGER_2026-10-26.md)；
+[回调身份与固定机制对照](MTP_SUFFIX_CALLBACK_PAIRING_2026-10-26.md)；
 [生产链接依赖修复](MTP_SUFFIX_MEMSET_LINK_2026-10-26.md)；
 [固定GEMM参数诊断](MTP_SUFFIX_MEMSET_PARAMETER_2026-10-26.md)；
 [报告绑定修复与有限证据](MTP_SUFFIX_REPORT_BINDING_2026-10-26.md)；
@@ -29,6 +30,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [实际8K参数机制](MTP_SUFFIX_MODEL_LEDGER_2026-10-26.md) | 独立CUPTI参数观察及单次真实HTTP | CPU28/固定控制/实际8K通过；6381实参0，7902非零活动全覆盖，非性能验收 |
 | [回调身份与固定机制对照](MTP_SUFFIX_CALLBACK_PAIRING_2026-10-26.md) | 共享回调ID/线程口径、原日志复用及条件Nsight | CPU23、原日志参数及单次Nsight局部机制有效；warning/全模型边界保留，0模型HTTP |
 | [生产链接依赖修复](MTP_SUFFIX_MEMSET_LINK_2026-10-26.md) | 原HC对象及固定参数binary身份 | 唯一构建通过，CUPTI正常退出但原解析INVALID，后续只复用原日志修复 |
 | [固定GEMM参数诊断](MTP_SUFFIX_MEMSET_PARAMETER_2026-10-26.md) | 独立CUPTI参数/条件Nsight与不可变日志前缀 | CPU55通过；两次构建后漏生产对象停止，0GPU/模型/HTTP；最小依赖修正待后续 |

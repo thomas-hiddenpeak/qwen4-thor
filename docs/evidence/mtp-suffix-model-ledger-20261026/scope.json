@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "classification": "ACTUAL_MODEL_MEMSET_PARAMETER_DIAGNOSTIC",
+  "created_unix": 1792958150.7118626,
+  "source_commit": "0134c80fadbfb8a40b6b1c8c20fea2efba9b1a4b",
+  "work_wall_seconds": 3600,
+  "build_attempts": 2,
+  "build_total_seconds": 300,
+  "build_repeat_rule": "Only after concrete compile/link failure fix; no unchanged build repeat",
+  "cpu_max_methods": 32,
+  "cpu_total_seconds": 120,
+  "cpu_suites": 2,
+  "cpu_repeat_rule": "Only concrete failed contract repair",
+  "gpu_stage_attempts": 1,
+  "gpu_stage_seconds": 900,
+  "fixture_processes": 1,
+  "fixture_seconds": 120,
+  "model_loads": 1,
+  "http_requests": 1,
+  "model_step_seconds": 600,
+  "cleanup_reserved_seconds": 180,
+  "retries": 0,
+  "warmups": 0,
+  "nsys_processes": 0,
+  "runtime_changes": 0,
+  "normal_performance_claim": false,
+  "fixture": "Existing mechanism_probe --mode nsys, without Nsight; new preload sole subscriber; same M4N48K2560/32MiB, four exact outputs, 0/512 controls",
+  "model": {
+    "head": "subset65536",
+    "suffix": false,
+    "mtp_k": 3,
+    "greedy": true,
+    "max_seq": 1,
+    "input_tokens": 8170,
+    "output_tokens": 256,
+    "expected_output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+    "expected_work": {
+      "t4": 74,
+      "t1": 3
+    }
+  },
+  "collector": {
+    "record_capacity": 131072,
+    "host_buffer_count": 8,
+    "host_buffer_bytes": 1048576,
+    "device_buffer_count": 4,
+    "device_buffer_bytes": 1048576,
+    "explicit_allocation_limit_bytes": 67108864,
+    "log_limit_bytes": 67108864,
+    "opaque_library_memory_hard_bounded": false,
+    "runtime_cbids": [
+      49,
+      51,
+      233,
+      235
+    ],
+    "activity_kinds": [
+      "selected_runtime_api",
+      "memset"
+    ],
+    "driver_callbacks": "all frozen driver memset cbids, only for same-thread runtime-owner correlation bridge; direct or ambiguous driver work remains UNKNOWN",
+    "thread_id_type": "SYSTEM",
+    "flush_flags": [
+      0,
+      1
+    ],
+    "cuda_sync_added": false,
+    "cupti_finalize": false
+  },
+  "activation": "Only server/fixture LD_PRELOAD; interpose dynamic cudaProfilerStart/Stop and call RTLD_NEXT original exactly once, return exact original result. Client/driver env clean. One interval, no retries.",
+  "stop_conditions": [
+    "fixture missing/overflow/drop/unknown owner/param/output/API or cleanup failure: do not start model",
+    "model partial/ambiguous/missing nonzero activity/changed output: no repeat",
+    "environment conflict or monitoring or forced/failed own cleanup: ENV_ABORT",
+    "budget expires: preserve incomplete evidence, no extension"
+  ],
+  "scope": "No retrospective substitution for old6381. Local actual8K parameters/activity coverage only; no whole-trace or performance acceptance.",
+  "frozen_inputs": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/frozen-plan.json": "c71846e9741c69ae86569de58e4c42dcef0437e7093bb5762a1f67cc00297892",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/terminal-review.json": "9dbb5ef80179692c747e3cfcb5c337374da3d93e994e519124f665e74c0b6279",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/warning-terminal-order.json": "7f6223328eb5dd6f653709bd8c0c618fa59a0f57d86882ec697a8ade4f6ae58a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-link-20261026/build/mechanism_probe": "16b3303c505ea9fabe82e3289f6f647dbfd533b13da4b049d4a7aa035fec63b3",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/build/q4t": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/manifest.json": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/fixtures/context-8192.jsonl": "bfc82c68950890905c999c22de45cea615061f66052bfb2aac281fc4907644ac"
+  }
+}

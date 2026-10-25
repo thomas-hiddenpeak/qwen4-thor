@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "scope": "Final wrapper receipts follow the already sealed incremental archive; no raw inference artifacts changed.",
+  "archive": {
+    "manifest_sha256": "0d39839e8c84fa7bd6817217a04f256178e98444238a47916d8870f2675762b7",
+    "seal_sha256": "ea482bd0af9bc64f7db314d5da570d7c7f043a4e2720be36b9910d29643525c3"
+  },
+  "final_receipts": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/terminal-review-exit.json": "6ffeaf1d60509802b379042b16cdb1987a10b730b55cf96b177a5bedd855b58f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/terminal-review-execution.log": "703da4dbce985ed1f4d281d0c01b39638658c11ca6200915bb8ac225339bc45a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/terminal-review-execution-freeze.json": "fb795ada6b0c5f3dff0dda15d0babea3051906f87dc7659bd7a6d98c59eb2d81"
+  },
+  "note": "Archive preserves the execution log as copied while audit was running; its final complete version and wrapper exit are bound here separately. Original sealed archive is not overwritten."
+}
