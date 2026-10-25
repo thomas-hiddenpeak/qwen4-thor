@@ -1,0 +1,1150 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T18:04:15.460648+00:00",
+  "stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1",
+  "script_sha256": "7234219d54748bfef029bbf931429b17220cb2fbf80fdfbf45c1a0dba497a0f8",
+  "helper_sha256": "55f526d891e8352db57882dbef6911df308d2ebb74ae64876a03c515c651d809",
+  "helper_dependencies": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-zero-hit-rerun-20261024/audit_rerun.py": "eebf37bf8704c884222219f6a797ad27ce7da27bbd0c6ca49c2cebf430839032",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/audit_rerun_v2.py": "32dac6cf693a00222a5bd7d0a872361837bb4b8e8e381de52a57288ce9cb5337"
+  },
+  "raw_state": {
+    "status": "STOPPED",
+    "started": 1792951377.5202212,
+    "completed": [],
+    "requests_completed": 0,
+    "loads_started": 0,
+    "contract_seconds": 0,
+    "plan_sha256": "325496bd3065367b04f58d40ac8e71d7ed3cb070c5e263e3f0ce3aca80be058a",
+    "current": "fixture-controls",
+    "error": "RuntimeError('fixture-controls failed with 1')",
+    "finished": 1792951430.5820065,
+    "elapsed_seconds": 53.06178862997331,
+    "monitor_failures": []
+  },
+  "performance_acceptance": false,
+  "identities": {
+    "plan_sha256": "325496bd3065367b04f58d40ac8e71d7ed3cb070c5e263e3f0ce3aca80be058a",
+    "state_sha256": "3a879101af05f30cf5cebf8c5752ccdeb165e9a249c0e367d8a18026f3126fd7",
+    "raw_seal_sha256": "8a4c5224134493e7cd5fc18bcc61318ac55950c1196c99926f3f5b4aacb76931",
+    "frozen": {
+      "checked": 46544,
+      "changed": []
+    },
+    "raw": {
+      "checked": 33,
+      "changed": []
+    },
+    "source_snapshot_reuse": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/source-snapshot-reuse.json",
+      "sha256": "38232a56eb47c84d6637abffc783f91a18e823316a4f2edaed3f17caa00ea4f0"
+    },
+    "source_snapshot_files": 21297,
+    "overlay_files": 13,
+    "default_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "default_sidecar_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+    "model_metadata_files": 197,
+    "terminal_external_files": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/postflight.json": "8d1bd49dc529c38b3b8dd8fee91e43693fb41f13388a23f3072769dae74643cd",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/lease/events.jsonl": "2ab32010e7eca8c5d91da60b04b4fdaac2c6ca7bbe931466cba99a90f65994c6",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/lease/exit.json": "c9b63bbd4ad4ee86d029511885b98dcc0cba4871ab7b6e0d6b583cad99160449",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/lease/nvml-queries.jsonl": "02e5e1376e11b244c977f9cfc4e8ac7835d775929925420c2d8db356a1b2320c"
+    }
+  },
+  "tool_and_reuse": {
+    "tool": {
+      "version": "2026.5.1.161-265138896106v0",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+      "sha256": "dbe02661b00efbfb4c9c3cd3c2d8df6fecd6e80ac794305892e233e0d712a527",
+      "package_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/nsight-systems-cli-2026.5.1_2026.5.1.161-1_arm64.deb",
+      "package_sha256": "087c08b5ddf3ed6f913748f8206d6bbdc225f2aa275ff33af4c487e8b319c8ab",
+      "package_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted",
+      "manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted-manifest.json",
+      "manifest_sha256": "876d4201d6d7d5dba20eeaa77d988c722fbc0862dfc4d6dc015ed47352d7a1d1",
+      "package_files": 1765,
+      "symlinks": {
+        "opt/nvidia/nsight-systems-cli/2026.5.1/bin/nsys": {
+          "link": "../target-linux-sbsa-armv8/nsys",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+          "sha256": "dbe02661b00efbfb4c9c3cd3c2d8df6fecd6e80ac794305892e233e0d712a527"
+        },
+        "opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libbpf.so": {
+          "link": "libbpf.so.1",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libbpf.so.1.3.0",
+          "sha256": "b28c87899e3bd3ceb6f5956566178a4c1e0b6a4a41c172ac195ab87511d3c7bb"
+        },
+        "opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libbpf.so.1": {
+          "link": "libbpf.so.1.3.0",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libbpf.so.1.3.0",
+          "sha256": "b28c87899e3bd3ceb6f5956566178a4c1e0b6a4a41c172ac195ab87511d3c7bb"
+        },
+        "opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libcrypto.so": {
+          "link": "libcrypto.so.3",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libcrypto.so.3",
+          "sha256": "dd5a4b956f5908a7e513b94b70a2ed964e3a852e704ceaaf98d2ecd1f11408ea"
+        },
+        "opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libdw.so": {
+          "link": "libdw.so.1",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libdw.so.1",
+          "sha256": "f063c83a1fd99463733dc68536b15d8d835588fc5df69a3ad47bb9eebad92cd2"
+        },
+        "opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libelf.so": {
+          "link": "libelf.so.1",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libelf.so.1",
+          "sha256": "db3623072913f039ba382ae297503751b03d701a3ed3e295319d4f02fef7f8c9"
+        },
+        "opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libssl.so": {
+          "link": "libssl.so.3",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libssl.so.3",
+          "sha256": "dd3b8a268f8f677d12d61e08bca990a1819842550f623d094a57857f119569dc"
+        },
+        "opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libz.so": {
+          "link": "libz.so.1",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libz.so.1.3.1",
+          "sha256": "6bef892b2fc519dc27d0e1c23cf209f58b975b4eb192a4bf930856c7f00bd417"
+        },
+        "opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libz.so.1": {
+          "link": "libz.so.1.3.1",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libz.so.1.3.1",
+          "sha256": "6bef892b2fc519dc27d0e1c23cf209f58b975b4eb192a4bf930856c7f00bd417"
+        },
+        "opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/python/bin/libcrypto.so": {
+          "link": "libcrypto.so.3",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/python/bin/libcrypto.so.3",
+          "sha256": "dd5a4b956f5908a7e513b94b70a2ed964e3a852e704ceaaf98d2ecd1f11408ea"
+        },
+        "opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/python/bin/libssl.so": {
+          "link": "libssl.so.3",
+          "resolved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/python/bin/libssl.so.3",
+          "sha256": "dd3b8a268f8f677d12d61e08bca990a1819842550f623d094a57857f119569dc"
+        }
+      },
+      "result_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/result-v2.json",
+      "result_sha256": "64c7d474493822d969565a6364ee2da962671c1dcb4d5ad95b085b4874291105",
+      "capability_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/automatic-capability.json",
+      "capability_sha256": "e2e02f6ddb39350f8262bc86c1c775402ad7a9ec985b05675d49b91ab5aaacb9",
+      "qualified": false,
+      "scope": "Same isolated 2026.5.1 package; fixed automatic lifecycle remains unqualified until controls pass."
+    },
+    "backend_requested": {
+      "requested": "cuda",
+      "nvtx": true,
+      "documented_default": "hardware/HES on supported Blackwell or newer",
+      "fallback_possible": true,
+      "actual": "UNOBSERVED",
+      "policy": "Single fixed documented auto selection; no cuda-sw fallback trial. Missing old private-log markers is unavailable tool qualification, never by itself proof of lost application events. Qualify same-version workload and per-trace diagnostics; do not pool cross-version GPU times."
+    },
+    "current_cpu_proof": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/cpu-proof.json",
+      "sha256": "f818bd137d08cfd2b320673ecfb1b24f8d889ca50a3d3d14fea79e2b9b0d6544",
+      "tests": 46,
+      "suite_runs": 1
+    },
+    "current_cpu_tests": 46,
+    "historical_cpu32": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/cpu-proof.json",
+      "sha256": "8c86269186be00ca101784645f495fb87a2e7f81e4a22dba7029e5adaa060cce",
+      "tests": 32,
+      "suite_runs": 1,
+      "scope": "Historical manual lifecycle only; changed collector requires current CPU proof."
+    },
+    "cpu86_reused": true,
+    "native64_reused": true,
+    "new_native_runs": 0,
+    "normal_http_reuse": {
+      "prior_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/diagnostic-v1/frozen-plan.json",
+      "prior_plan_sha256": "f999e0950cd14dd364e4cb249c1e58184cf229887380d38a6ca0a903c8db69e1",
+      "normal_http_requests": 37,
+      "cpu_http_requests": 6,
+      "monitor_cpu_tests": 39,
+      "repeat_full_code_percent": 13.6774,
+      "repeat_full_text_percent": 14.4034,
+      "repeat_subset_code_shared_b_gm_percent": 6.5335,
+      "repeat_subset_text_shared_b_gm_percent": 6.7304,
+      "pooled_new_samples": false,
+      "scope": "Same unchanged executable and dependencies; descriptive development evidence, not five-tier acceptance."
+    },
+    "old_stage_validity": "ENV_ABORT"
+  },
+  "budget": {
+    "allowed_http": 6,
+    "allowed_model_loads": 4,
+    "allowed_controls": 2,
+    "allowed_seconds": 4800,
+    "actual_state_http": 0,
+    "actual_state_loads": 0,
+    "elapsed_seconds": 53.06178862997331
+  },
+  "environment": {
+    "guard": {
+      "status": "COMMAND_FAILED",
+      "command": [
+        "python3",
+        "-B",
+        "tools/mtp_suffix_nsys/run_stage.py",
+        "--plan",
+        ".q4t-work/suffix-auto-stop-20261026/diagnostic-v1/frozen-plan.json"
+      ],
+      "compute_backend": "nvml",
+      "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+      "poll_interval_seconds": 1.0,
+      "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+      "performance_acceptance": false,
+      "child_returncode": 1,
+      "external_lease": false,
+      "finished": {
+        "utc": "2026-10-25T18:03:51.733347+00:00",
+        "monotonic": 1141514.250229766,
+        "pid": 3416847
+      }
+    },
+    "postflight": {
+      "status": "ENV_ABORT",
+      "state_sha256": "3a879101af05f30cf5cebf8c5752ccdeb165e9a249c0e367d8a18026f3126fd7",
+      "monitor_failures": [],
+      "cleanup_errors": [],
+      "child_cleanup_errors": [
+        {
+          "step": "fixture-controls",
+          "errors": [
+            {
+              "variant": "direct-interactive",
+              "errors": [
+                "session shutdown: RuntimeError('interactive shutdown failed with 1')"
+              ],
+              "forced_termination": true
+            }
+          ]
+        }
+      ],
+      "final_summary_sha256": "e738cb312c86489732fdc621952466c31aefe21bf888bc749cba54da3a96a4e8",
+      "final_monitor_barrier": {},
+      "final_monitor_errors": [],
+      "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+    },
+    "queries": 52,
+    "observations": 52,
+    "lease_begin": {
+      "utc": "2026-10-25T18:02:57.286576+00:00",
+      "monotonic": 1141459.803456431,
+      "pid": 3416847,
+      "event": "lease_acquired"
+    },
+    "lease_end": {
+      "utc": "2026-10-25T18:03:51.733590+00:00",
+      "monotonic": 1141514.250467998,
+      "pid": 3416847,
+      "event": "lease_released",
+      "status": "COMMAND_FAILED"
+    },
+    "outer_detached_cleanup": {
+      "completed_without_reported_error": true,
+      "after_child_return": true,
+      "release_after_cleanup": true,
+      "scope": "Frozen guard stop_owned runs in finally before lease_released; no detached process cleanup timestamp or post-cleanup resource sample is invented."
+    },
+    "scope": "Stored observations only; polling cannot exclude shorter unobserved interference."
+  },
+  "fixtures": {
+    "groups": {
+      "direct-interactive": {
+        "present": true,
+        "complete": false,
+        "exit": {
+          "complete": false,
+          "failure": "TimeoutError('automatic report-ready deadline exceeded')",
+          "launcher": 143,
+          "cleanup_errors": [
+            "session shutdown: RuntimeError('interactive shutdown failed with 1')"
+          ],
+          "forced_termination": true,
+          "started_monotonic": 1141465.449579103,
+          "finished_monotonic": 1141512.478789902,
+          "performance_acceptance": false,
+          "actual_fixture_pid": 3416958
+        },
+        "controls": {
+          "start": {
+            "verb": "start",
+            "session": "q4t-suffix-3416921-114146530-f2ad40bf93a0abe0-direct-interactive",
+            "command": [
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+              "start",
+              "--capture-range=cudaProfilerApi",
+              "--capture-range-end=stop",
+              "--flush-on-cudaprofilerstop=true",
+              "--sample=none",
+              "--cpuctxsw=none",
+              "--stop-on-exit=true",
+              "--after-report-ready=/usr/bin/python3.12 -B /home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/report_ready.py --session q4t-suffix-3416921-114146530-f2ad40bf93a0abe0-direct-interactive --nonce 42d7fa46b355c63638225951829d04f1 --output /home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/report-ready-callback.json --report /home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/trace.nsys-rep",
+              "--session-new=q4t-suffix-3416921-114146530-f2ad40bf93a0abe0-direct-interactive",
+              "--output=/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/trace"
+            ],
+            "owner": {
+              "pid": 3416921,
+              "start_ticks": 114146530,
+              "ppid": 3416851,
+              "pgid": 3416921,
+              "state": "R"
+            },
+            "started_monotonic": 1141465.450720123,
+            "deadline_monotonic": 1141495.450720123,
+            "finished_monotonic": 1141465.601817749,
+            "pid": 3416925,
+            "returncode": 0,
+            "failure": null,
+            "forced_control_cleanup": false,
+            "cleanup_errors": [],
+            "scope": "Control process only; not target exit or trace completeness"
+          },
+          "stop": null,
+          "shutdown": {
+            "verb": "shutdown",
+            "session": "q4t-suffix-3416921-114146530-f2ad40bf93a0abe0-direct-interactive",
+            "command": [
+              "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+              "shutdown",
+              "--session=q4t-suffix-3416921-114146530-f2ad40bf93a0abe0-direct-interactive",
+              "--kill=none"
+            ],
+            "owner": {
+              "pid": 3416921,
+              "start_ticks": 114146530,
+              "ppid": 3416851,
+              "pgid": 3416921,
+              "state": "R"
+            },
+            "started_monotonic": 1141512.376702813,
+            "deadline_monotonic": 1141527.376702813,
+            "finished_monotonic": 1141512.477793835,
+            "pid": 3417506,
+            "returncode": 1,
+            "failure": "RuntimeError('interactive shutdown failed with 1')",
+            "forced_control_cleanup": false,
+            "cleanup_errors": [],
+            "scope": "Control process only; not target exit or trace completeness"
+          }
+        },
+        "owner": {
+          "owner": {
+            "pid": 3416921,
+            "start_ticks": 114146530,
+            "ppid": 3416851,
+            "pgid": 3416921,
+            "state": "R"
+          },
+          "started_monotonic": 1141465.450355697,
+          "original_subreaper": 0,
+          "verified_subreaper": 1,
+          "failure": null,
+          "scope": "Only this step driver; not model runtime",
+          "finished_monotonic": 1141465.450507077
+        },
+        "launch": {
+          "session": "q4t-suffix-3416921-114146530-f2ad40bf93a0abe0-direct-interactive",
+          "owner": {
+            "pid": 3416921,
+            "start_ticks": 114146530,
+            "ppid": 3416851,
+            "pgid": 3416921,
+            "state": "R"
+          },
+          "pid": 3416943,
+          "started_monotonic": 1141465.602266175,
+          "failure": null,
+          "scope": "Launch-control identity; caller independently binds target",
+          "finished_monotonic": 1141465.602674519
+        },
+        "close": {
+          "owner": {
+            "pid": 3416921,
+            "start_ticks": 114146530,
+            "ppid": 3416851,
+            "pgid": 3416921,
+            "state": "R"
+          },
+          "original_subreaper": 0,
+          "restored_subreaper": 0,
+          "start_succeeded": true,
+          "stop_succeeded": false,
+          "shutdown_succeeded": false,
+          "failure": null,
+          "scope": "Subreaper restoration only; not collection or target success"
+        },
+        "reap": {
+          "failure": null,
+          "known_identities": [
+            {
+              "pid": 3416958,
+              "start_ticks": 114146576,
+              "ppid": 3416957,
+              "pgid": 3416958,
+              "state": "S"
+            },
+            {
+              "pid": 3416957,
+              "start_ticks": 114146576,
+              "ppid": 3416943,
+              "pgid": 3416921,
+              "state": "S"
+            },
+            {
+              "pid": 3416943,
+              "start_ticks": 114146560,
+              "ppid": 3416921,
+              "pgid": 3416921,
+              "state": "S"
+            }
+          ],
+          "reaped": [
+            {
+              "pid": 3416957,
+              "start_ticks": 114146576,
+              "ppid": 3416921,
+              "pgid": 3416921,
+              "state": "Z",
+              "wait_status": 15,
+              "returncode": -15
+            }
+          ],
+          "remaining": [],
+          "not_children": [],
+          "vanished": [
+            {
+              "pid": 3416958,
+              "start_ticks": 114146576,
+              "ppid": 3416957,
+              "pgid": 3416958,
+              "state": "S"
+            }
+          ],
+          "excluded_popen_pids": [
+            3416925,
+            3416943,
+            3417506
+          ],
+          "started_monotonic": 1141512.478069539,
+          "deadline_monotonic": 1141517.478069539,
+          "scope": "Only previously proved identities; no whole-system cleanup claim",
+          "finished_monotonic": 1141512.478174549,
+          "complete": true
+        },
+        "target_exit": null,
+        "target_exit_observed": false,
+        "target_exit_status": "UNKNOWN",
+        "ready": {
+          "receipt": {
+            "pid": 3416958,
+            "tid": 3416958,
+            "completed_steps": 32,
+            "profiler_start_error": 0,
+            "profiler_stop_error": 0,
+            "final_sync_error": 0,
+            "passed": true
+          },
+          "observed_monotonic": 1141467.2121786,
+          "session": "q4t-suffix-3416921-114146530-f2ad40bf93a0abe0-direct-interactive"
+        },
+        "automatic_report_ready": {
+          "schema": 1,
+          "mode": "interactive_api_auto_stop",
+          "session": "q4t-suffix-3416921-114146530-f2ad40bf93a0abe0-direct-interactive",
+          "owner": {
+            "pid": 3416921,
+            "start_ticks": 114146530,
+            "ppid": 3416851,
+            "pgid": 3416921,
+            "state": "R"
+          },
+          "started_monotonic": 1141467.212627702,
+          "deadline_monotonic": 1141512.212627702,
+          "callback": null,
+          "report": null,
+          "report_ready_succeeded": false,
+          "failure": "TimeoutError('automatic report-ready deadline exceeded')",
+          "scope": "Callback/report binding only; target exit and trace integrity are independent",
+          "finished_monotonic": 1141512.212778991
+        },
+        "callback": null,
+        "automatic_close": {
+          "schema": 1,
+          "session": "q4t-suffix-3416921-114146530-f2ad40bf93a0abe0-direct-interactive",
+          "report_ready_succeeded": false,
+          "stop_succeeded": false,
+          "shutdown_succeeded": false,
+          "scope": "Closing or shutdown cannot make report collection successful"
+        },
+        "report": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/trace.nsys-rep",
+          "bytes": 82008,
+          "sha256": "27eee58d0fd8cd068c859ba195dc931aabd91ea1f884b5945ed7daeed30a6f27"
+        },
+        "identities": [
+          {
+            "pid": 3416921,
+            "start_ticks": 114146530,
+            "ppid": 3416851,
+            "pgid": 3416921,
+            "state": "R"
+          },
+          {
+            "pid": 3416958,
+            "start_ticks": 114146576,
+            "ppid": 3416957,
+            "pgid": 3416958,
+            "state": "S",
+            "wrapper_pid": null,
+            "interactive_ownership": {
+              "owner": {
+                "pid": 3416921,
+                "start_ticks": 114146530,
+                "ppid": 3416851,
+                "pgid": 3416921,
+                "state": "R"
+              },
+              "target": {
+                "pid": 3416958,
+                "start_ticks": 114146576,
+                "ppid": 3416957,
+                "pgid": 3416958,
+                "state": "S"
+              },
+              "chain": [
+                {
+                  "pid": 3416958,
+                  "start_ticks": 114146576,
+                  "ppid": 3416957,
+                  "pgid": 3416958,
+                  "state": "S"
+                },
+                {
+                  "pid": 3416957,
+                  "start_ticks": 114146576,
+                  "ppid": 3416943,
+                  "pgid": 3416921,
+                  "state": "S"
+                },
+                {
+                  "pid": 3416943,
+                  "start_ticks": 114146560,
+                  "ppid": 3416921,
+                  "pgid": 3416921,
+                  "state": "S"
+                }
+              ]
+            }
+          },
+          {
+            "pid": 3416958,
+            "start_ticks": 114146576,
+            "ppid": 3416957,
+            "pgid": 3416958,
+            "state": "S"
+          },
+          {
+            "pid": 3416957,
+            "start_ticks": 114146576,
+            "ppid": 3416943,
+            "pgid": 3416921,
+            "state": "S"
+          },
+          {
+            "pid": 3416943,
+            "start_ticks": 114146560,
+            "ppid": 3416921,
+            "pgid": 3416921,
+            "state": "S"
+          },
+          {
+            "pid": 3416943,
+            "start_ticks": 114146560,
+            "ppid": 3416921,
+            "pgid": 3416921,
+            "state": "R"
+          },
+          {
+            "pid": 3416958,
+            "start_ticks": 114146576,
+            "ppid": 3416957,
+            "pgid": 3416958,
+            "state": "S"
+          },
+          {
+            "pid": 3416957,
+            "start_ticks": 114146576,
+            "ppid": 3416943,
+            "pgid": 3416921,
+            "state": "S"
+          },
+          {
+            "pid": 3416943,
+            "start_ticks": 114146560,
+            "ppid": 3416921,
+            "pgid": 3416921,
+            "state": "S"
+          }
+        ],
+        "scope": "No launcher return code is substituted for an absent target exit receipt. Report-ready/callback binding is independent of trace integrity. Callback PID alone does not prove ancestry or defend against hostile same-UID writers.",
+        "sql": {
+          "status": "UNOBSERVED",
+          "backend_actual": "UNOBSERVED",
+          "reason": "No exported SQLite; no export requested by this audit."
+        },
+        "target_nvlog": {
+          "status": "OBSERVED_TARGET_LOG",
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+          "sha256": "7aa5e429bdc47e6fb3defc1c9707e1cb77fc85ab7e1477bd63ab26b16d13704a",
+          "target_pid": 3416958,
+          "target_log_lines": 450,
+          "evidence": [
+            {
+              "line": 1207,
+              "text": "I02:03:03.334| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | CuptiLibrary.cpp:92 [LoadCuptiLibrary]: Loaded CUPTI library /home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libcupti-sbsa.so.13.4"
+            },
+            {
+              "line": 1388,
+              "text": "I02:03:03.373| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:66 [ActivityFlushAll]: Starting CUPTI activity flush for cuInit finished: requested_mode=0 effective_mode=0"
+            },
+            {
+              "line": 1389,
+              "text": "I02:03:03.373| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for cuInit finished: flags=0"
+            },
+            {
+              "line": 1400,
+              "text": "I02:03:03.373| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for cuInit finished: CUptiResult=0"
+            },
+            {
+              "line": 1405,
+              "text": "I02:03:03.373| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | CallbackHandler.cpp:1387 [ResourceCallbackHandler]: Enabling HES trace via CUPTI"
+            },
+            {
+              "line": 1410,
+              "text": "E02:03:03.386| Cupti_Public |                          fixture pid=3416958 tid= 3416958 | :7484 []: CUPTI Error 27: CUPTI_ERROR_NOT_SUPPORTED"
+            },
+            {
+              "line": 1411,
+              "text": "E02:03:03.386| Cupti_Public |                          fixture pid=3416958 tid= 3416958 | :7484 []: Failed to enable HW trace."
+            },
+            {
+              "line": 1413,
+              "text": "I02:03:03.386| Cupti_Public |                          fixture pid=3416958 tid= 3416958 | :7486 []: HW trace is enabled"
+            },
+            {
+              "line": 1415,
+              "text": "I02:03:03.386| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | CallbackHandler.cpp:1412 [ResourceCallbackHandler]: CUPTI failed to enable HES trace. Falling back to legacy (software instrumentation) tracing. CUptiResult=27"
+            },
+            {
+              "line": 1422,
+              "text": "I02:03:03.483| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:66 [ActivityFlushAll]: Starting CUPTI activity flush for context created: requested_mode=0 effective_mode=0"
+            },
+            {
+              "line": 1423,
+              "text": "I02:03:03.483| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for context created: flags=0"
+            },
+            {
+              "line": 1430,
+              "text": "I02:03:03.483| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for context created: CUptiResult=0"
+            },
+            {
+              "line": 2649,
+              "text": "I02:03:03.685| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:66 [ActivityFlushAll]: Starting CUPTI activity flush for cudaProfilerStop: requested_mode=2 effective_mode=2"
+            },
+            {
+              "line": 2650,
+              "text": "I02:03:03.685| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:79 [ActivityFlushAll]: Synchronizing the caller's current CUDA context before cudaProfilerStop CUPTI activity flush"
+            },
+            {
+              "line": 2651,
+              "text": "I02:03:03.685| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:83 [ActivityFlushAll]: Finished synchronizing the caller's current CUDA context before cudaProfilerStop CUPTI activity flush: CUresult=0"
+            },
+            {
+              "line": 2656,
+              "text": "I02:03:03.685| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:122 [ActivityFlushAll]: Waiting to acquire CUPTI activity flush lock for cudaProfilerStop: mode=2"
+            },
+            {
+              "line": 2657,
+              "text": "I02:03:03.685| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:130 [ActivityFlushAll]: Acquired CUPTI activity flush lock for cudaProfilerStop: mode=2"
+            },
+            {
+              "line": 2658,
+              "text": "I02:03:03.685| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for cudaProfilerStop: flags=0"
+            },
+            {
+              "line": 2727,
+              "text": "I02:03:03.686| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for cudaProfilerStop: CUptiResult=0"
+            },
+            {
+              "line": 2728,
+              "text": "I02:03:03.686| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | InjectionInterface.cpp:155 [ActivityFlushAll]: Released CUPTI activity flush lock for cudaProfilerStop: mode=2"
+            },
+            {
+              "line": 2812,
+              "text": "E02:03:03.686| Injection |                          fixture pid=3416958 tid= 3416962 | CudaInjectionInit.cpp:1897 [CheckForHesUsage]: HES data collection failed, CUPTI_ERROR_NOT_SUPPORTED"
+            },
+            {
+              "line": 2814,
+              "text": "I02:03:03.686| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416962 | InjectionInterface.cpp:66 [ActivityFlushAll]: Starting CUPTI activity flush for analysis stop: requested_mode=3 effective_mode=3"
+            },
+            {
+              "line": 2815,
+              "text": "I02:03:03.686| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416962 | InjectionInterface.cpp:79 [ActivityFlushAll]: Synchronizing the caller's current CUDA context before analysis stop CUPTI activity flush"
+            },
+            {
+              "line": 2879,
+              "text": "I02:03:03.686| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416962 | InjectionInterface.cpp:83 [ActivityFlushAll]: Finished synchronizing the caller's current CUDA context before analysis stop CUPTI activity flush: CUresult=201"
+            },
+            {
+              "line": 2893,
+              "text": "I02:03:03.686| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416962 | InjectionInterface.cpp:122 [ActivityFlushAll]: Waiting to acquire CUPTI activity flush lock for analysis stop: mode=3"
+            },
+            {
+              "line": 2894,
+              "text": "I02:03:03.686| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416962 | InjectionInterface.cpp:130 [ActivityFlushAll]: Acquired CUPTI activity flush lock for analysis stop: mode=3"
+            },
+            {
+              "line": 2895,
+              "text": "I02:03:03.686| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416962 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for analysis stop: flags=1"
+            },
+            {
+              "line": 2939,
+              "text": "I02:03:03.687| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416962 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for analysis stop: CUptiResult=0"
+            },
+            {
+              "line": 2940,
+              "text": "I02:03:03.687| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416962 | InjectionInterface.cpp:155 [ActivityFlushAll]: Released CUPTI activity flush lock for analysis stop: mode=3"
+            },
+            {
+              "line": 2941,
+              "text": "I02:03:03.687| Injection |                          fixture pid=3416958 tid= 3416962 | CudaInjectionInit.cpp:1567 [ReportCUDADone]: CUDA: ReportCUDADone: START."
+            },
+            {
+              "line": 2943,
+              "text": "I02:03:03.687| Injection |                          fixture pid=3416958 tid= 3416962 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+            },
+            {
+              "line": 3002,
+              "text": "I02:03:03.687| Injection |                          fixture pid=3416958 tid= 3416962 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: NVTXFinish."
+            }
+          ],
+          "backend_actual": "SOFTWARE_FALLBACK",
+          "backend_evidence": [
+            {
+              "line": 1415,
+              "text": "I02:03:03.386| quadd_cuda_tracing |                          fixture pid=3416958 tid= 3416958 | CallbackHandler.cpp:1412 [ResourceCallbackHandler]: CUPTI failed to enable HES trace. Falling back to legacy (software instrumentation) tracing. CUptiResult=27"
+            }
+          ],
+          "scope": "Explicit actual-target NVLOG fallback only; not evidence of complete CUDA/NVTX collection or successful lifecycle. CUptiResult numeric values retain their raw text; no independent enum interpretation."
+        },
+        "stored_diagnostics": null,
+        "stored_terminal_evidence": null
+      },
+      "wrapper-interactive": {
+        "present": false,
+        "complete": false,
+        "identities": [],
+        "sql": {
+          "status": "UNOBSERVED",
+          "backend_actual": "UNOBSERVED",
+          "reason": "No exported SQLite; no export requested by this audit."
+        },
+        "target_nvlog": {
+          "status": "UNOBSERVED",
+          "backend_actual": "UNOBSERVED"
+        },
+        "stored_diagnostics": null,
+        "stored_terminal_evidence": null
+      }
+    },
+    "new_attempted": 1,
+    "new_results": 0,
+    "historical_controls": {
+      "controls": {
+        "direct-stop": {
+          "reference": {
+            "source_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/diagnostic-v2/frozen-plan.json",
+            "source_plan_sha256": "f6951b0c65b2b3918ca0d2696c14b8a724e0c5e10dae4321ac0ffdac8b7e536b",
+            "source_raw_seal": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/diagnostic-v2/run/files.json",
+            "source_raw_seal_sha256": "a99b5f2ef3ee285cbe198588ae81f022cf3ef30e8c818314113fbd24a2f35782",
+            "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/diagnostic-v2/run/fixture-controls/direct-stop",
+            "known_work_audit_sha256": "dd4796ab8f7bff6e58f5d6a59ef67755730d67b170692160e256e6479a5a5bc2",
+            "negative_controls_sha256": "97acd4662938ee0231e42cd53c32316752bcdbb5484e4307d41e219b98df0e0d",
+            "exit_sha256": "9d0be0bdfd6d0dafb7cc61301b41aa2a1dfd84608117716c1a6c781aec8ba24e",
+            "profile_diagnostics_sha256": "68080e0e32b8b31890926a1d769a90cc321a6ec41abf9667fa61981503ade2dd",
+            "raw_hashes": {
+              "trace.sqlite": "b5b698d23748f87ddc2a375afbf506535ea697e68e6186b7f5112af38f38dc32",
+              "server.log": "ef29d653627c54ea60a96021a9e6c724673139d619604e289cfabf2973071026",
+              "known-work-audit.json": "dd4796ab8f7bff6e58f5d6a59ef67755730d67b170692160e256e6479a5a5bc2",
+              "profile-diagnostics.json": "68080e0e32b8b31890926a1d769a90cc321a6ec41abf9667fa61981503ade2dd"
+            },
+            "source_stage_validity": "ENV_ABORT",
+            "scope": "historical_partial_known_work_only; no new sample or diagnostics pass"
+          },
+          "checks_passed": true,
+          "known_work_complete": true,
+          "negative_controls_passed": true,
+          "diagnostics_valid": false,
+          "warnings_require_review": [
+            {
+              "timestamp": 18898546,
+              "timestampType": 2,
+              "source": 3,
+              "severity": 2,
+              "text": "Not all NVTX events might have been collected.",
+              "globalPid": 335087392522240,
+              "severity_name": "Warning"
+            },
+            {
+              "timestamp": 18904787,
+              "timestampType": 2,
+              "source": 3,
+              "severity": 2,
+              "text": "Not all CUDA events might have been collected.",
+              "globalPid": 335087392522240,
+              "severity_name": "Warning"
+            }
+          ],
+          "source_stage_validity": "ENV_ABORT",
+          "new_sample": false
+        },
+        "wrapper-stop": {
+          "reference": {
+            "source_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/diagnostic-v2/frozen-plan.json",
+            "source_plan_sha256": "f6951b0c65b2b3918ca0d2696c14b8a724e0c5e10dae4321ac0ffdac8b7e536b",
+            "source_raw_seal": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/diagnostic-v2/run/files.json",
+            "source_raw_seal_sha256": "a99b5f2ef3ee285cbe198588ae81f022cf3ef30e8c818314113fbd24a2f35782",
+            "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/diagnostic-v2/run/fixture-controls/wrapper-stop",
+            "known_work_audit_sha256": "3396eed79ae39290151e30660732123283774ec50ed5b104bac7f38236a15c2b",
+            "negative_controls_sha256": "f2e66570cd891d028e9787f1e714c5dc27a7194baa0dfa4f4dc57cf1dfd675e6",
+            "exit_sha256": "f2ad1f1ee87fbc29e0337bbf2d9cad52e528c60be1da6013f005559bc17a0354",
+            "profile_diagnostics_sha256": "398a5c17032b3abe07300e9f29d57f0a1110b80b524e312585d0fd27253949dc",
+            "raw_hashes": {
+              "trace.sqlite": "82ae4507f7e53a488a1d43910809ef1c1a52600dea09e8ac25088aca0f916858",
+              "server.log": "b3e7e5183738ceb1808b5eb2c4d836b946570a1b3a0834471f76a76827411478",
+              "known-work-audit.json": "3396eed79ae39290151e30660732123283774ec50ed5b104bac7f38236a15c2b",
+              "profile-diagnostics.json": "398a5c17032b3abe07300e9f29d57f0a1110b80b524e312585d0fd27253949dc"
+            },
+            "source_stage_validity": "ENV_ABORT",
+            "scope": "historical_partial_known_work_only; no new sample or diagnostics pass"
+          },
+          "checks_passed": true,
+          "known_work_complete": true,
+          "negative_controls_passed": true,
+          "diagnostics_valid": false,
+          "warnings_require_review": [
+            {
+              "timestamp": 20838698,
+              "timestampType": 2,
+              "source": 3,
+              "severity": 2,
+              "text": "Not all NVTX events might have been collected.",
+              "globalPid": 335088952803328,
+              "severity_name": "Warning"
+            },
+            {
+              "timestamp": 20843818,
+              "timestampType": 2,
+              "source": 3,
+              "severity": 2,
+              "text": "Not all CUDA events might have been collected.",
+              "globalPid": 335088952803328,
+              "severity_name": "Warning"
+            }
+          ],
+          "source_stage_validity": "ENV_ABORT",
+          "new_sample": false
+        }
+      },
+      "scope": "Historical local contracts only; not pooled with new captures, no environment or diagnostics promotion."
+    },
+    "gate": null,
+    "gate_passed": false,
+    "known_work_recomputed": {
+      "direct-interactive": false,
+      "wrapper-interactive": false
+    },
+    "parent_exit": {
+      "complete": false,
+      "failure": "EnvironmentAbort('fixture owned cleanup failed: [\"session shutdown: RuntimeError(\\'interactive shutdown failed with 1\\')\"]')",
+      "completed_variants": 0,
+      "new_captures": 0,
+      "reused_local_controls": 2,
+      "cleanup_errors": [
+        {
+          "variant": "direct-interactive",
+          "errors": [
+            "session shutdown: RuntimeError('interactive shutdown failed with 1')"
+          ],
+          "forced_termination": true
+        }
+      ],
+      "started_monotonic": 1141465.44109235,
+      "finished_monotonic": 1141512.478942439,
+      "measurement_role": "collector_contract",
+      "performance_acceptance": false
+    }
+  },
+  "models": {
+    "nsys8-off": {
+      "present": false,
+      "complete": false,
+      "raw_generation": 0,
+      "admitted": 0
+    },
+    "nsys8-on": {
+      "present": false,
+      "complete": false,
+      "raw_generation": 0,
+      "admitted": 0
+    },
+    "nsys200-on": {
+      "present": false,
+      "complete": false,
+      "raw_generation": 0,
+      "admitted": 0
+    },
+    "nsys200-off": {
+      "present": false,
+      "complete": false,
+      "raw_generation": 0,
+      "admitted": 0
+    }
+  },
+  "resources": {
+    "telemetry": {
+      "samples": 54,
+      "source_count": 53,
+      "missing": [
+        {
+          "label": "pressure_cpu",
+          "path": "/proc/pressure/cpu",
+          "status": "UNAVAILABLE",
+          "reason": "missing_or_not_readable_at_discovery"
+        },
+        {
+          "label": "pressure_io",
+          "path": "/proc/pressure/io",
+          "status": "UNAVAILABLE",
+          "reason": "missing_or_not_readable_at_discovery"
+        },
+        {
+          "label": "pressure_memory",
+          "path": "/proc/pressure/memory",
+          "status": "UNAVAILABLE",
+          "reason": "missing_or_not_readable_at_discovery"
+        }
+      ],
+      "gaps_seconds": {
+        "count": 53,
+        "minimum": 1.0000747970771044,
+        "maximum": 1.0023541499394923,
+        "total": 53.00763899600133
+      },
+      "observed_server_pids": [],
+      "final_summary": {
+        "schema": 1,
+        "sampler_status": "STOPPED",
+        "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+        "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1/run/unified-memory.jsonl",
+        "started_monotonic": 1141460.045451199,
+        "started_unix_seconds": 1792951377.5285773,
+        "finished_monotonic": 1141513.098487881,
+        "finished_unix_seconds": 1792951430.5816388,
+        "sampler_elapsed_seconds": 53.05303668207489,
+        "sample_attempts": 54,
+        "flushed_samples": 54,
+        "unflushed_attempts": 0,
+        "final_successful_cycle_duration_seconds": 0.02003151597455144,
+        "final_successful_write_flush_seconds": 0.0002109999768435955,
+        "successful_cycle_duration_total_seconds": 1.1992252059280872,
+        "successful_write_flush_total_seconds": 0.015200009103864431,
+        "final_failed_attempt_elapsed_seconds": null,
+        "final_attempt_read_counts": {
+          "source_file_read_attempts": 53,
+          "ownership_file_read_attempts": 846,
+          "ownership_readlink_attempts": 423,
+          "owned_file_read_attempts": 5,
+          "directory_scan_attempts": 1,
+          "pidfd_open_attempts": 1,
+          "pidfd_binding_polls": 1,
+          "pidfd_wait_attempts": 0,
+          "pending_poll_attempts": 0
+        },
+        "total_read_counts": {
+          "source_file_read_attempts": 2862,
+          "ownership_file_read_attempts": 46436,
+          "ownership_readlink_attempts": 23218,
+          "owned_file_read_attempts": 1680,
+          "directory_scan_attempts": 54,
+          "pidfd_open_attempts": 336,
+          "pidfd_binding_polls": 336,
+          "pidfd_wait_attempts": 0,
+          "pending_poll_attempts": 0
+        },
+        "setup_file_read_attempts": 1,
+        "total_file_read_attempts": 50979,
+        "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+        "sampler_failure": null,
+        "failures_at_exit": [],
+        "sampler_failure_context": null,
+        "sampler_failure_traceback": null,
+        "sampler_failure_task_state": null,
+        "exit_confirmation_policy": {
+          "per_task_ms": 50,
+          "per_sample_ms": 100,
+          "io_retries": 0,
+          "zero_fill": false,
+          "pending_capacity": 16,
+          "pending_seconds": 5,
+          "pending_poll_timeout_ms": 0,
+          "pending_requires_pf_exiting": true
+        },
+        "exit_pending": {
+          "active": 0,
+          "admitted": 0,
+          "resolved": 0,
+          "maximum_active": 0,
+          "last_resolutions": [],
+          "entries": []
+        },
+        "last_flushed_heartbeat": 1141513.073427165,
+        "source_count": 53
+      },
+      "summary_sha256": "e738cb312c86489732fdc621952466c31aefe21bf888bc749cba54da3a96a4e8",
+      "process_observations": {
+        "OK": 336
+      },
+      "exited_during_io": [],
+      "actual_io_exit_branch_observed": false,
+      "final_monitor_barrier": {},
+      "scope": "1 Hz nearby samples, not exact request-boundary counters. Collection and serialization/flush costs reported separately; RAM/RSS/NVML overlap and are not added."
+    },
+    "pending": {
+      "active": 0,
+      "admitted": 0,
+      "resolved": 0,
+      "maximum_active": 0,
+      "last_resolutions": [],
+      "entries": []
+    },
+    "pending_branch_observed": false,
+    "process_observations": {
+      "OK": 336
+    },
+    "missing_io": [],
+    "identity_check_utc": "2026-10-25T18:04:24.161858+00:00",
+    "owned_identities": [
+      {
+        "pid": 3416851,
+        "expected_start_ticks": 114145989,
+        "source": "stored process row",
+        "status": "ABSENT"
+      },
+      {
+        "pid": 3416921,
+        "expected_start_ticks": 114146530,
+        "source": "stable subreaper owner",
+        "status": "ABSENT"
+      },
+      {
+        "pid": 3416935,
+        "expected_start_ticks": 114146554,
+        "source": "stored monitor history",
+        "status": "ABSENT"
+      },
+      {
+        "pid": 3416943,
+        "expected_start_ticks": 114146560,
+        "source": "recorded adopted identity",
+        "status": "ABSENT"
+      },
+      {
+        "pid": 3416957,
+        "expected_start_ticks": 114146576,
+        "source": "recorded adopted identity",
+        "status": "ABSENT"
+      },
+      {
+        "pid": 3416958,
+        "expected_start_ticks": 114146576,
+        "source": "recorded adopted identity",
+        "status": "ABSENT"
+      },
+      {
+        "pid": 3416959,
+        "expected_start_ticks": 114146576,
+        "source": "stored monitor history",
+        "status": "ABSENT"
+      }
+    ],
+    "historical_pgids": [
+      3416851,
+      3416921,
+      3416935,
+      3416958
+    ],
+    "pgid_members": [],
+    "pgid_scan_unreadable": [],
+    "barriers": {
+      "success_barrier": {},
+      "failure_barrier": {
+        "child_pid": 3416921,
+        "complete": true,
+        "scope": "Post-owned-step-PGID cleanup only. Detached Nsight descendants are handled and audited separately by the outer guard; this is not a post-all-descendant-cleanup barrier. Normal success uses the original final barrier.",
+        "cleanup_returned": true,
+        "boundary_monotonic": 1141512.747753402,
+        "sample_started_monotonic": 1141513.053395649,
+        "flushed_monotonic": 1141513.073427165,
+        "monitor_failures": []
+      },
+      "sampler_finished_monotonic": 1141513.098487881,
+      "last_successful_flush_monotonic": 1141513.073427165,
+      "joined_summary_sha256": "e738cb312c86489732fdc621952466c31aefe21bf888bc749cba54da3a96a4e8",
+      "scope": "The failure path covers only owned-step PGID cleanup. Outer guard detached cleanup occurs separately before lease release; no post-all-cleanup sample is claimed."
+    },
+    "cost_seconds": {
+      "collection": {
+        "count": 54,
+        "minimum": 0.01966220000758767,
+        "maximum": 0.051096160197630525,
+        "total": 1.1837615282274783
+      },
+      "cycle": {
+        "count": 54,
+        "minimum": 0.019967830972746015,
+        "maximum": 0.051316142082214355,
+        "total": 1.1992252059280872
+      },
+      "flush": {
+        "count": 54,
+        "minimum": 0.00018861121498048306,
+        "maximum": 0.0003227780107408762,
+        "total": 0.015200009103864431
+      }
+    },
+    "scope": "Stored resource observations plus read-only recorded PID and PGID checks; no live sensor/NVML queries. Failure barrier covers step PGID, not all detached descendants. An unreadable unrelated proc stat is retained as scan coverage limitation; no claim about unrecorded detached identities."
+  },
+  "raw_after": {
+    "checked": 33,
+    "changed": []
+  },
+  "evidence_integrity": "PASS",
+  "evidence_validity": "ENV_ABORT",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_EVALUATED_DIAGNOSTIC_ONLY",
+  "engineering_decision": "NOT_ACCEPTED_TOOL_VALIDATION_ABORT",
+  "actual_http_requests": 0,
+  "actual_model_loads": 0,
+  "errors": [],
+  "environment_errors": [
+    "monitor/cleanup environmental closure"
+  ],
+  "measurement_gaps": [
+    "entire two-control/6HTTP/4-load qualification not complete"
+  ],
+  "checks": {
+    "evidence": 70476,
+    "environment": 672,
+    "measurement": 3
+  }
+}

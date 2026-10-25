@@ -22,6 +22,7 @@ legacy, save = old.legacy, old.save
 sys.path.insert(0, str(HERE))
 import fixture_audit
 import interactive
+import automatic
 
 VARIANTS = [dict(name='direct-stop', wrapper=False, external=False),
             dict(name='wrapper-stop', wrapper=True, external=False),
@@ -72,7 +73,8 @@ def validate(plan):
     controlled = 'interactive_contract' in plan['nsys']
     stage_seconds, fixture_seconds = (4800, 600) if controlled else (5400, 1200)
     variants = INTERACTIVE_VARIANTS if controlled else VARIANTS
-    if controlled and (plan['nsys']['interactive_contract'] != interactive.contract() or
+    if controlled and (plan['nsys']['interactive_contract'] not in
+            (interactive.contract(), automatic.contract()) or
             set(plan.get('fixture_reuse', {})) != {'direct-stop', 'wrapper-stop'} or
             plan.get('fixture_new_captures') != 2 or
             plan.get('fixture_reused_local_controls') != 2 or
@@ -267,6 +269,14 @@ def session_name(name):
     return interactive.make_name(name)
 
 
+def automatic_collection(plan):
+    return plan['nsys'].get('interactive_contract') == automatic.contract()
+
+
+def session_class(plan):
+    return automatic.Session if automatic_collection(plan) else interactive.Session
+
+
 def finish_interactive(session, errors):
     """Close control ownership after the independently owned target is stopped."""
     receipt = dict(session=session.name, shutdown=None, adopted=None, errors=[],
@@ -309,7 +319,7 @@ def bind_model_target(plan, output, session, *, cleanup=False):
 
 
 def session_stop(plan, output, name, *, timeout=45, check=None):
-    """Stop only a session created through the supported interactive path."""
+    """Complete exactly the preselected lifecycle; no stop-error fallback."""
     if not re.fullmatch(r'q4t-suffix-[0-9]+-[a-z0-9-]+', name):
         raise ValueError('refusing non-owned or malformed session name')
     session = plan.get('_interactive_session')
@@ -318,7 +328,15 @@ def session_stop(plan, output, name, *, timeout=45, check=None):
         raise RuntimeError('external stop requires the bound interactive session')
     if check:
         check()
-    return session.stop(timeout=timeout)
+    if automatic_collection(plan):
+        result = session.await_report(timeout=timeout, check=check)
+        # The target is still held alive. This cancels no active collection:
+        # report-ready has already acknowledged its automatic completion.
+        if check:
+            check()
+        session.shutdown()
+        return result
+    return session.stop(timeout=timeout, check=check)
 
 
 def capture_end_receipt(text, target_pid):
@@ -340,13 +358,22 @@ def stop_profile_target(plan, output, launcher):
             if re.search(r'^\[exec-capture\] event=end ', raw, re.M):
                 receipt = capture_end_receipt(raw, identity['pid'])
                 break
-            if launcher.poll() is not None or time.monotonic() >= deadline:
+            launcher_code = launcher.poll()
+            if ((launcher_code is not None and
+                 (not automatic_collection(plan) or launcher_code != 0)) or
+                    time.monotonic() >= deadline):
                 raise RuntimeError('actual-target capture end did not arrive before stop')
             time.sleep(.05)
         save(output / 'external-stop-boundary.json', dict(
             receipt=receipt, observed_monotonic=time.monotonic(),
             session=plan['_active_session'], target_pid=identity['pid']))
-        session_stop(plan, output, plan['_active_session'], timeout=45)
+        def target_alive():
+            actual = old.proc_identity(identity['pid'])
+            if (actual['start_ticks'] != identity['start_ticks'] or
+                    actual['state'] in ('Z', 'X')):
+                raise RuntimeError('model target exited before report completion')
+        session_stop(plan, output, plan['_active_session'], timeout=45,
+                     check=target_alive)
     except BaseException as error:
         control_error = error
     finally:
@@ -606,7 +633,7 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
     try:
         with (output / 'server.log').open('x') as stream:
             if controlled:
-                control = interactive.Session(plan['nsys']['path'], output, session,
+                control = session_class(plan)(plan['nsys']['path'], output, session,
                     cwd=ROOT, env=env, deadline=deadline, check=check)
                 control.start()
                 launcher = control.launch(target, stream,
@@ -617,7 +644,9 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
             save(output / 'launcher-identity.json', old.proc_identity(launcher.pid))
             while True:
                 check()
-                if launcher.poll() is not None:
+                launcher_code = launcher.poll()
+                if (launcher_code is not None and
+                        (not automatic_collection(plan) or launcher_code != 0)):
                     raise RuntimeError('fixture launcher exited before ready')
                 if fixture_rows(output / 'server.log', 'fixture-error'):
                     raise RuntimeError('fixture error before ready')
@@ -628,6 +657,8 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
                         (output / 'fixture-target-identity.json').is_file()):
                     identity, fd = pin_fixture(plan, output, launcher.pid,
                         configs[0]['pid'], variant['wrapper'], session=control)
+                if fd is not None and pidfd_exited(fd, 0):
+                    raise RuntimeError('actual fixture exited before ready')
                 ready = fixture_ready(output / 'server.log')
                 if ready is not None:
                     if identity is None and variant['wrapper']:
@@ -640,15 +671,19 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
                     break
                 time.sleep(.05)
             if variant['external']:
+                def target_alive():
+                    check()
+                    if pidfd_exited(fd, 0):
+                        raise RuntimeError('fixture exited before report completion')
                 session_stop(dict(plan, _interactive_session=control), output, session,
-                    timeout=min(45, deadline-time.monotonic()), check=check)
-            # No CUDA cleanup until the explicit session stop has completed.
+                    timeout=min(45, deadline-time.monotonic()), check=target_alive)
+            # No CUDA cleanup until the selected collection has completed.
             (output / 'release').touch(exist_ok=False)
-            while launcher.poll() is None:
+            # Auto completion may end launch control before the held target.
+            # Observe both independently after releasing actual fixture work.
+            while launcher.poll() is None or not pidfd_exited(fd, 0):
                 check()
                 time.sleep(.05)
-            if not pidfd_exited(fd, 0):
-                raise RuntimeError('fixture remains live after launcher exit')
             exits = fixture_rows(output / 'server.log', 'fixture-exit')
             if (launcher.returncode != 0 or len(exits) != 1 or
                     exits[0].get('pid') != identity['pid'] or exits[0].get('released') is not True or
@@ -936,7 +971,7 @@ def interactive_model_step(plan, name, plan_path):
         if time.monotonic() >= deadline:
             raise TimeoutError('frozen interactive model group budget expired')
 
-    session = interactive.Session(plan['nsys']['path'], output, session_name(name),
+    session = session_class(plan)(plan['nsys']['path'], output, session_name(name),
         cwd=ROOT, env=env, deadline=deadline, check=check)
     local = dict(plan, _active_session=session.name, _interactive_session=session)
     passed, failure, server, server_pid, target_exit = False, None, None, None, None
@@ -1012,7 +1047,8 @@ def interactive_model_step(plan, name, plan_path):
                 cleanup_errors=cleanup_errors, execution_records_complete=execution['complete'],
                 launcher=server.returncode if server else None, trace_exports_complete=False,
                 diagnostic_only=True, performance_acceptance_sample=False,
-                performance_acceptance=False, collection_lifecycle='interactive_start_launch_stop'))
+                performance_acceptance=False,
+                collection_lifecycle=plan['nsys']['interactive_contract']['mode']))
     if not clean:
         raise RuntimeError('interactive diagnostic group failed')
     export_profile(plan, output)

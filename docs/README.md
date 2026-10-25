@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[新采集工具资格](MTP_SUFFIX_NSYS_265_2026-10-26.md)；
+最新专项：[API自动收尾验证](MTP_SUFFIX_AUTOMATIC_2026-10-26.md)；
+[新采集工具资格](MTP_SUFFIX_NSYS_265_2026-10-26.md)；
 [采集合同与固定依赖候选](MTP_SUFFIX_COLLECTOR_DEPENDENCY_2026-10-26.md)；
 [固定k3 suffix交付目标](MTP_SUFFIX_DELIVERY_2026-10-26.md)；
 [fixture退出监控修复与Nsight补测](MTP_SUFFIX_NSYS_RERUN_2026-10-24.md)；
@@ -23,6 +24,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [API自动收尾验证](MTP_SUFFIX_AUTOMATIC_2026-10-26.md) | 自动API stop与回调完成确认 | CPU46通过；报告已生成但回调未闭合，ENV_ABORT/0HTTP，不交付 |
 | [新采集工具资格](MTP_SUFFIX_NSYS_265_2026-10-26.md) | 固定2026.5.1.161、两控制及条件6HTTP | 首控制仍拒绝stop；ENV_ABORT，0模型HTTP，审计与负向归档 |
 | [采集合同与固定依赖候选](MTP_SUFFIX_COLLECTOR_DEPENDENCY_2026-10-26.md) | 完整目标矩阵、官方合同因果修正、单一2026.5.1包 | 包身份准备证据；资格另见新阶段 |
 | [固定k3 suffix交付目标](MTP_SUFFIX_DELIVERY_2026-10-26.md) | interactive采集工具与条件200K/8K GPU对照 | CPU32通过；首控制仍拒绝stop，ENV_ABORT，0模型HTTP，负向归档不交付 |

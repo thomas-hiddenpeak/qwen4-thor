@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "classification": "collector lifecycle repair, no runtime change",
+  "source_entry": "9e85a95914bbd19259acec50e1712236b500ba0e",
+  "stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/diagnostic-v1",
+  "plan_sha256": "325496bd3065367b04f58d40ac8e71d7ed3cb070c5e263e3f0ce3aca80be058a",
+  "audit_sha256": "1b1f4e0ab3b93efb2d6490014df562e5b1d0fa378d8fa2d98807e0de5854fd97",
+  "audit_elapsed_seconds": 8.874061154900119,
+  "cpu": {
+    "tests": 46,
+    "suite_runs": 1,
+    "elapsed_seconds": 0.42473334399983287,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "proof_sha256": "f818bd137d08cfd2b320673ecfb1b24f8d889ca50a3d3d14fea79e2b9b0d6544",
+    "reused_methods": 86,
+    "reused_native_children": 64
+  },
+  "actual": {
+    "elapsed_seconds": 53.06178862997331,
+    "fixture_attempts": 1,
+    "completed_fixture_controls": 0,
+    "model_loads": 0,
+    "http_requests": 0,
+    "exports": 0,
+    "monitor_samples": 54,
+    "monitor_attempts": 54,
+    "monitor_failures": [],
+    "pending_admitted": 0,
+    "owned_identities_absent": 7,
+    "lease_released": true
+  },
+  "finding": "Auto API stop generated/imported report and returned to Launched; configured callback produced no receipt within45s. Dispatch/helperexecution UNKNOWN. Forcedcleanup followed by shutdown noactivesession. Report82008bytes notexported/notintegrityvalidated.",
+  "decision": {
+    "evidence_integrity": "PASS",
+    "evidence_validity": "ENV_ABORT",
+    "measurement_complete": false,
+    "statistical_conclusion": "NOT_EVALUATED_DIAGNOSTIC_ONLY",
+    "engineering_decision": "NOT_ACCEPTED_TOOL_VALIDATION_ABORT"
+  },
+  "runtime_optimization_decision": "NO_GO_PROTECTION_NOT_CLEARED unchanged",
+  "deployment": false,
+  "default_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "default_sidecar_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "reused_repeat_gain_percent": {
+    "full_code": 13.6774,
+    "full_text": 14.4034,
+    "subset_shared_B_geomean_code": 6.5335,
+    "subset_shared_B_geomean_text": 6.7304
+  },
+  "remaining": [
+    "collector completion acknowledgement and actual event integrity",
+    "unknown6381memset parameter/correlation explanation",
+    "subset200K/8KGPU pairedattribution",
+    "evidencebased runtimefix ifavailable then affected performanceprotections and delivery"
+  ],
+  "goal_complete": false
+}

@@ -1,5 +1,15 @@
 # Nsight collector lifecycle controls
 
+The automatic API-stop/report-ready repair is frozen in
+`docs/MTP_SUFFIX_AUTOMATIC_2026-10-26.md`. It keeps manual control available for
+historical plans, selects one lifecycle before the stage, and never promotes
+shutdown into capture success. All actual-target warnings and memory-coverage
+gates remain blocking. CPU46 passed once. The single stage ended after 53.061789 seconds. It
+generated/imported the direct report and returned to Launched, but no callback
+receipt arrived within 45 seconds. Cleanup then failed; ENV_ABORT, zero models,
+HTTP or exports. Registration is proven; callback dispatch remains unknown.
+No new capture is authorized by this failed stage. See the stage document.
+
 This is a bounded tool diagnosis, not an inference benchmark or a replacement
 for the suffix performance acceptance matrix. The frozen scope and budgets are
 in `docs/MTP_SUFFIX_NSYS_2026-10-24.md`; the bounded monitor repair and rerun

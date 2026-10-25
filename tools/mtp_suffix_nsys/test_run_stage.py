@@ -1,6 +1,7 @@
 """Pure CPU contracts for role binding and named-session control; no profilers."""
 import copy
 import importlib.util
+import itertools
 import json
 import os
 from pathlib import Path
@@ -49,10 +50,12 @@ def plan(controlled=False):
 
 class RunnerContracts(unittest.TestCase):
     def test_fixture_interactive_stop_precedes_release_and_session_cleanup(self):
-        for stop_fails in (False, True):
-            with self.subTest(stop_fails=stop_fails), tempfile.TemporaryDirectory() as directory:
+        for automatic_mode, stop_fails in itertools.product((False, True), repeat=2):
+            with self.subTest(automatic=automatic_mode, stop_fails=stop_fails), tempfile.TemporaryDirectory() as directory:
                 parent = Path(directory)
                 value = plan(True)
+                if automatic_mode:
+                    value['nsys']['interactive_contract'] = runner.automatic.contract()
                 value.update(fixture_binary='/fake/fixture', fixture_log_config='log={log}\n')
                 variant = value['fixture_variants'][0]
                 output = parent/variant['name']
@@ -60,8 +63,9 @@ class RunnerContracts(unittest.TestCase):
                 session.name, session.output = 'q4t-suffix-100-test', output
                 session.owner = dict(pid=100,start_ticks=1)
                 session.can_shutdown, session.shutdown_attempted = True, False
-                launcher.pid, launcher.returncode = 200, None
+                launcher.pid, launcher.returncode = 200, 0 if automatic_mode else None
                 calls = []
+                target_checks = [0]
                 session.start.side_effect = lambda: calls.append('start')
                 def launch(target, stream, envvars=None):
                     calls.append('launch')
@@ -76,8 +80,9 @@ class RunnerContracts(unittest.TestCase):
                 session.launch.side_effect = launch
                 def poll():
                     if not (output/'release').exists():
-                        return None
-                    if launcher.returncode is None:
+                        return launcher.returncode
+                    if not (output/'mock-target-exit').exists():
+                        (output/'mock-target-exit').touch()
                         with (output/'server.log').open('a') as target_log:
                             target_log.write('[fixture-exit] ' + json.dumps(dict(
                                 pid=10,released=True,returncode=0)) + '\n')
@@ -85,26 +90,33 @@ class RunnerContracts(unittest.TestCase):
                     return 0
                 launcher.poll.side_effect = poll
                 def stop(**_kwargs):
-                    calls.append('stop')
+                    calls.append('report-ready' if automatic_mode else 'stop')
                     self.assertFalse((output/'release').exists())
                     if stop_fails:
                         raise RuntimeError('control stop rejected')
                 session.stop.side_effect = stop
+                session.await_report.side_effect = stop
                 def shutdown():
-                    self.assertTrue((output/'release').exists())
+                    self.assertEqual((output/'release').exists(), not automatic_mode or stop_fails)
                     calls.append('shutdown')
+                    session.shutdown_attempted = True
                 session.shutdown.side_effect = shutdown
+                def target_exited(*_args):
+                    if not (output/'release').exists():
+                        return False
+                    target_checks[0] += 1
+                    return target_checks[0] >= 2
                 session.reap_adopted.return_value = dict(reaped=[],remaining=[],not_children=[],vanished=[])
                 session.close.side_effect = lambda: calls.append('close')
                 def export(*_args):
                     path = output/'trace.sqlite'
                     path.write_bytes(b'fake exported database')
                     return path
-                with patch.object(runner.interactive, 'Session', return_value=session), \
+                with patch.object(runner.automatic if automatic_mode else runner.interactive, 'Session', return_value=session), \
                         patch.object(runner, 'session_name', return_value=session.name), \
                         patch.object(runner, 'pin_fixture', return_value=(dict(pid=10,wrapper_pid=None),123)) as pin, \
                         patch.object(runner.old, 'proc_identity', return_value=dict(pid=200,start_ticks=1)), \
-                        patch.object(runner, 'pidfd_exited', return_value=True), \
+                        patch.object(runner, 'pidfd_exited', side_effect=target_exited), \
                         patch.object(runner.os, 'close'), \
                         patch.object(runner.signal, 'pidfd_send_signal'), \
                         patch.object(runner, 'export_database', side_effect=export), \
@@ -127,7 +139,10 @@ class RunnerContracts(unittest.TestCase):
                         self.assertTrue(result['known_work_complete'])
                     forbidden.assert_not_called()
                     self.assertIs(pin.call_args.kwargs['session'], session)
-                self.assertEqual(calls,['start','launch','stop','shutdown','close'])
+                self.assertEqual(calls,['start','launch',
+                    'report-ready' if automatic_mode else 'stop','shutdown','close'])
+                if automatic_mode:
+                    session.stop.assert_not_called()
                 self.assertFalse((output/'profile-command.json').exists())
                 receipt = json.loads((output/'exit.json').read_text())
                 self.assertEqual(receipt['complete'],not stop_fails)
@@ -266,9 +281,11 @@ class RunnerContracts(unittest.TestCase):
                     runner.reused_control_evidence(bad)
 
     def test_model_interactive_sequence_and_real_target_exit_are_independent(self):
-        for stop_fails in (False, True):
-            with self.subTest(stop_fails=stop_fails), tempfile.TemporaryDirectory() as directory:
+        for automatic_mode, stop_fails in itertools.product((False, True), repeat=2):
+            with self.subTest(automatic=automatic_mode, stop_fails=stop_fails), tempfile.TemporaryDirectory() as directory:
                 value = plan(True)
+                if automatic_mode:
+                    value['nsys']['interactive_contract'] = runner.automatic.contract()
                 value.update(output=directory, candidate='/fake/q4t', model='/fake/model',
                              artifact='/fake/subset', port=9999)
                 step = value['steps'][1]
@@ -286,30 +303,35 @@ class RunnerContracts(unittest.TestCase):
                     calls.append('launch')
                     self.assertIn('--target-wrapper', target)
                     self.assertEqual(envvars['Q4T_EXEC_PROFILE_INPUT'], '8170')
-                    (output/'target-identity.json').write_text(json.dumps(dict(pid=10)))
+                    (output/'target-identity.json').write_text(json.dumps(dict(pid=10, start_ticks=50)))
                     stream.write('serving on port 9999\n[exec-capture] event=begin pid=10 error=0\n'
                                  '[exec-capture] event=end pid=10 error=0\n')
                     stream.flush()
                     return launcher
                 session.launch.side_effect = launch
                 def stop(**_kwargs):
-                    calls.append('stop')
+                    calls.append('report-ready' if automatic_mode else 'stop')
                     if stop_fails:
                         raise RuntimeError('interactive stop failed')
                 session.stop.side_effect = stop
+                session.await_report.side_effect = stop
                 def target_stop(*_args):
                     calls.append('target-exit')
                     launcher.returncode = 0
                     launcher.poll.return_value = 0
                     return dict(returncode=0)
-                session.shutdown.side_effect = lambda: calls.append('shutdown')
+                def shutdown():
+                    calls.append('shutdown')
+                    session.shutdown_attempted = True
+                session.shutdown.side_effect = shutdown
                 session.reap_adopted.return_value = dict(reaped=[], remaining=[], not_children=[], vanished=[])
                 session.close.side_effect = lambda: calls.append('close')
                 batch = [dict(outputs=['correct-output'], responses=[dict(actual_output=256, finish=['length'])])]
                 with patch.object(runner.legacy, 'require_guard'), \
-                        patch.object(runner.interactive, 'Session', return_value=session), \
+                        patch.object(runner.automatic if automatic_mode else runner.interactive, 'Session', return_value=session), \
                         patch.object(runner, 'session_name', return_value=session.name), \
                         patch.object(runner, 'bind_model_target', return_value=dict(pid=10,start_ticks=50)), \
+                        patch.object(runner.old, 'proc_identity', return_value=dict(pid=10,start_ticks=50,state='S')), \
                         patch.object(runner.old.http, 'event'), \
                         patch.object(runner.old.http, 'capacity_evidence', return_value=dict(matches_requested=True)), \
                         patch.object(runner.old.admission, 'run_cases', return_value=batch), \
@@ -325,7 +347,12 @@ class RunnerContracts(unittest.TestCase):
                         runner.interactive_model_step(value, step['name'], Path(directory)/'plan.json')
                         export.assert_called_once()
                     forbidden.assert_not_called()
-                self.assertEqual(calls, ['start','launch','stop','target-exit','shutdown','close'])
+                completion = 'report-ready' if automatic_mode else 'stop'
+                tail = (['shutdown','target-exit'] if automatic_mode and not stop_fails
+                        else ['target-exit','shutdown'])
+                self.assertEqual(calls, ['start','launch',completion,*tail,'close'])
+                if automatic_mode:
+                    session.stop.assert_not_called()
                 receipt = json.loads((output/'exit.json').read_text())
                 self.assertEqual(receipt['server'], 0)
                 self.assertEqual(receipt['http_output_checks_passed'], not stop_fails)
@@ -387,6 +414,12 @@ class RunnerContracts(unittest.TestCase):
             runner.validate(bad)
         controlled = plan(True)
         runner.validate(controlled)
+        automatic = copy.deepcopy(controlled)
+        automatic['nsys']['interactive_contract'] = runner.automatic.contract()
+        runner.validate(automatic)
+        automatic['nsys']['interactive_contract']['report_timeout_seconds'] = 46
+        with self.assertRaises(ValueError):
+            runner.validate(automatic)
         for key, changed in [('stage_timeout_seconds', 4801),
                 ('direct_contract_timeout_seconds', 601), ('fixture_new_captures', 4),
                 ('fixture_reused_local_controls', 0), ('fixture_candidate', 'wrapper-external')]:
@@ -482,7 +515,7 @@ class RunnerContracts(unittest.TestCase):
             with patch.object(runner.subprocess, 'Popen') as spawn:
                 self.assertEqual(runner.session_stop(value, output, session.name),
                                  dict(returncode=0, scope='control only'))
-                session.stop.assert_called_once_with(timeout=45)
+                session.stop.assert_called_once_with(timeout=45, check=None)
                 spawn.assert_not_called()
             with patch.object(runner.subprocess, 'Popen') as spawn:
                 with self.assertRaises(ValueError):
@@ -585,7 +618,7 @@ class RunnerContracts(unittest.TestCase):
                     runner.pidfd_exited(7, 50)
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
-            (output/'target-identity.json').write_text(json.dumps(dict(pid=10)))
+            (output/'target-identity.json').write_text(json.dumps(dict(pid=10, start_ticks=50)))
             begin = '[exec-capture] event=begin pid=10 error=0 input_tokens=8170\n'
             end = '[exec-capture] event=end pid=10 error=0 input_tokens=8170\n'
             log = output/'server.log'

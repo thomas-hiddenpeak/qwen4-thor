@@ -1,0 +1,1059 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T17:52:39.401838+00:00",
+  "scope": "FORENSIC_ONLY_HISTORICALLY_INCOMPLETE_TRACE",
+  "performance_acceptance": false,
+  "source": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/diagnostic-v1/run/nsys8-off/trace.sqlite",
+    "sha256": "3eb37bcf20823ff36de8915764b25f24902b3516ea0ad52262c0c2cf3f9f1c6a",
+    "unchanged_after_read": true,
+    "target_pid": 3181182
+  },
+  "script": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-range-contract-20261026/analyze_memset_neighbors.py",
+    "sha256": "63a8626626ece18f54312c7f43b1ca02e766826bf9ac67d2b530d6ccf994889e"
+  },
+  "query": {
+    "sql": {
+      "strings": "SELECT id,value FROM StringIds",
+      "kernels": "SELECT correlationId,demangledName FROM CUPTI_ACTIVITY_KIND_KERNEL WHERE ((globalPid>>24)&16777215)=?",
+      "copies": "SELECT correlationId FROM CUPTI_ACTIVITY_KIND_MEMCPY WHERE ((globalPid>>24)&16777215)=?",
+      "memsets": "SELECT correlationId FROM CUPTI_ACTIVITY_KIND_MEMSET WHERE ((globalPid>>24)&16777215)=?",
+      "apis": "SELECT rowid,start,end,globalTid,correlationId,nameId,returnValue,callchainId FROM CUPTI_ACTIVITY_KIND_RUNTIME WHERE ((globalTid>>24)&16777215)=? ORDER BY start,rowid",
+      "nvtx": "SELECT rowid,start,end,globalTid,text,textId FROM NVTX_EVENTS WHERE ((globalTid>>24)&16777215)=? AND end IS NOT NULL"
+    },
+    "parameters": {
+      "pid": 3181182
+    },
+    "connection": "mode=ro&immutable=1; PRAGMA query_only=ON",
+    "method": "Group API rows by exact globalTid; sort by start,rowid. Mark cudaMemsetAsync missing only if its correlationId has no same-target kernel/copy/memset activity. Inspect immediately preceding/following exported API and first later correlated-kernel API. NVTX owner is narrowest same-TID range fully containing the API interval."
+  },
+  "source_schema": {
+    "CUPTI_ACTIVITY_KIND_RUNTIME": [
+      {
+        "cid": 0,
+        "name": "start",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 1,
+        "name": "end",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "eventClass",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "globalTid",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "correlationId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "nameId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "returnValue",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "callchainId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "CUPTI_ACTIVITY_KIND_KERNEL": [
+      {
+        "cid": 0,
+        "name": "start",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 1,
+        "name": "end",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "deviceId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "contextId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "greenContextId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "streamId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "correlationId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "globalPid",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "demangledName",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 9,
+        "name": "shortName",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 10,
+        "name": "mangledName",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 11,
+        "name": "launchType",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 12,
+        "name": "cacheConfig",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 13,
+        "name": "registersPerThread",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 14,
+        "name": "gridX",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 15,
+        "name": "gridY",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 16,
+        "name": "gridZ",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 17,
+        "name": "blockX",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 18,
+        "name": "blockY",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 19,
+        "name": "blockZ",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 20,
+        "name": "staticSharedMemory",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 21,
+        "name": "dynamicSharedMemory",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 22,
+        "name": "localMemoryPerThread",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 23,
+        "name": "localMemoryTotal",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 24,
+        "name": "gridId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 25,
+        "name": "sharedMemoryExecuted",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 26,
+        "name": "graphNodeId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 27,
+        "name": "sharedMemoryLimitConfig",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 28,
+        "name": "qmdBulkReleaseDone",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 29,
+        "name": "qmdPreexitDone",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 30,
+        "name": "qmdLastCtaDone",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 31,
+        "name": "graphId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 32,
+        "name": "clusterX",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 33,
+        "name": "clusterY",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 34,
+        "name": "clusterZ",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 35,
+        "name": "clusterSchedulingPolicy",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 36,
+        "name": "maxPotentialClusterSize",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 37,
+        "name": "maxActiveClusters",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 38,
+        "name": "sharedMemoryRequestedPercentage",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 39,
+        "name": "tensorSizeMinusOneElements",
+        "type": "TEXT",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "CUPTI_ACTIVITY_KIND_MEMCPY": [
+      {
+        "cid": 0,
+        "name": "start",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 1,
+        "name": "end",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "deviceId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "contextId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "greenContextId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "streamId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "correlationId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "globalPid",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "bytes",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 9,
+        "name": "copyKind",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 10,
+        "name": "deprecatedSrcId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 11,
+        "name": "srcKind",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 12,
+        "name": "dstKind",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 13,
+        "name": "srcDeviceId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 14,
+        "name": "srcContextId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 15,
+        "name": "dstDeviceId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 16,
+        "name": "dstContextId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 17,
+        "name": "migrationCause",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 18,
+        "name": "graphNodeId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 19,
+        "name": "virtualAddress",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 20,
+        "name": "copyCount",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "CUPTI_ACTIVITY_KIND_MEMSET": [
+      {
+        "cid": 0,
+        "name": "start",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 1,
+        "name": "end",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "deviceId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "contextId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "greenContextId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "streamId",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "correlationId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "globalPid",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "value",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 9,
+        "name": "bytes",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 10,
+        "name": "graphNodeId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 11,
+        "name": "memKind",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      }
+    ],
+    "NVTX_EVENTS": [
+      {
+        "cid": 0,
+        "name": "start",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 1,
+        "name": "end",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 2,
+        "name": "eventType",
+        "type": "INTEGER",
+        "notnull": 1,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 3,
+        "name": "rangeId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 4,
+        "name": "category",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 5,
+        "name": "color",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 6,
+        "name": "text",
+        "type": "TEXT",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 7,
+        "name": "globalTid",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 8,
+        "name": "endGlobalTid",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 9,
+        "name": "textId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 10,
+        "name": "domainId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 11,
+        "name": "uint64Value",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 12,
+        "name": "int64Value",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 13,
+        "name": "doubleValue",
+        "type": "REAL",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 14,
+        "name": "uint32Value",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 15,
+        "name": "int32Value",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 16,
+        "name": "floatValue",
+        "type": "REAL",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 17,
+        "name": "jsonTextId",
+        "type": "INTEGER",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 18,
+        "name": "jsonText",
+        "type": "TEXT",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      },
+      {
+        "cid": 19,
+        "name": "binaryData",
+        "type": "TEXT",
+        "notnull": 0,
+        "default": null,
+        "pk": 0
+      }
+    ]
+  },
+  "runtime_rows": 714727,
+  "missing_memset_apis": 6381,
+  "return_values": {
+    "0": 6381
+  },
+  "callchain_ids": {
+    "None": 6381
+  },
+  "immediately_previous_api": {
+    "cuKernelGetFunction": 6381
+  },
+  "immediately_next_api": {
+    "cuLaunchKernel": 6381
+  },
+  "next_kernel_api_index_distance": {
+    "1": 6381
+  },
+  "next_kernel_family": {
+    "void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_bf16_64x128_64x4_tn_align2>(T1::Params)": 98,
+    "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_64x1_tn_align8>(T1::Params)": 6283
+  },
+  "missing_by_deepest_nvtx_owner": {
+    "target_prefill_call": 96,
+    "mtp.forward": 2,
+    "mtp.verify_forward": 6216,
+    "mtp.attention": 67
+  },
+  "kernel_family_by_deepest_nvtx_owner": {
+    "void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_bf16_64x128_64x4_tn_align2>(T1::Params)": {
+      "target_prefill_call": 96,
+      "mtp.forward": 2
+    },
+    "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_64x1_tn_align8>(T1::Params)": {
+      "mtp.verify_forward": 6216,
+      "mtp.attention": 67
+    }
+  },
+  "equal_start_api_pairs": 0,
+  "immediate_next_api_overlaps_memset": 0,
+  "missing_api_wall_ns": {
+    "min": 55,
+    "median": 120,
+    "max": 11991
+  },
+  "next_api_gap_ns": {
+    "min": 111,
+    "median": 148,
+    "max": 29361
+  },
+  "association_rows_sha256": "511901ac6ab22863e6cc913065026c59e10aaa0c4688ea43e73d7e984d49a297",
+  "examples": [
+    {
+      "source_rowid": 232627,
+      "global_tid": 334846357441983,
+      "correlation_id": 223260,
+      "start_ns": 119075650,
+      "end_ns": 119079177,
+      "return_value": 0,
+      "callchain_id": null,
+      "previous_api": "cuKernelGetFunction",
+      "immediate_next_api": "cuLaunchKernel",
+      "next_kernel_api_rowid": 501,
+      "next_kernel_correlation_id": 223261,
+      "next_kernel_family": "void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_bf16_64x128_64x4_tn_align2>(T1::Params)",
+      "nvtx_owner": "q4t|1|2|target_prefill_call|seq=0|p=0|t=8170"
+    },
+    {
+      "source_rowid": 232649,
+      "global_tid": 334846357441983,
+      "correlation_id": 223373,
+      "start_ns": 139065724,
+      "end_ns": 139066141,
+      "return_value": 0,
+      "callchain_id": null,
+      "previous_api": "cuKernelGetFunction",
+      "immediate_next_api": "cuLaunchKernel",
+      "next_kernel_api_rowid": 561,
+      "next_kernel_correlation_id": 223374,
+      "next_kernel_family": "void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_bf16_64x128_64x4_tn_align2>(T1::Params)",
+      "nvtx_owner": "q4t|1|2|target_prefill_call|seq=0|p=0|t=8170"
+    },
+    {
+      "source_rowid": 233450,
+      "global_tid": 334846357441983,
+      "correlation_id": 231183,
+      "start_ns": 316406940,
+      "end_ns": 316407264,
+      "return_value": 0,
+      "callchain_id": null,
+      "previous_api": "cuKernelGetFunction",
+      "immediate_next_api": "cuLaunchKernel",
+      "next_kernel_api_rowid": 4847,
+      "next_kernel_correlation_id": 231184,
+      "next_kernel_family": "void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_bf16_64x128_64x4_tn_align2>(T1::Params)",
+      "nvtx_owner": "q4t|1|2|target_prefill_call|seq=0|p=0|t=8170"
+    },
+    {
+      "source_rowid": 233472,
+      "global_tid": 334846357441983,
+      "correlation_id": 231272,
+      "start_ns": 323756236,
+      "end_ns": 323756968,
+      "return_value": 0,
+      "callchain_id": null,
+      "previous_api": "cuKernelGetFunction",
+      "immediate_next_api": "cuLaunchKernel",
+      "next_kernel_api_rowid": 4887,
+      "next_kernel_correlation_id": 231273,
+      "next_kernel_family": "void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_bf16_64x128_64x4_tn_align2>(T1::Params)",
+      "nvtx_owner": "q4t|1|2|target_prefill_call|seq=0|p=0|t=8170"
+    },
+    {
+      "source_rowid": 498513,
+      "global_tid": 334846357441940,
+      "correlation_id": 1276645,
+      "start_ns": 12297214251,
+      "end_ns": 12297214381,
+      "return_value": 0,
+      "callchain_id": null,
+      "previous_api": "cuKernelGetFunction",
+      "immediate_next_api": "cuLaunchKernel",
+      "next_kernel_api_rowid": 708524,
+      "next_kernel_correlation_id": 1276646,
+      "next_kernel_family": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_64x1_tn_align8>(T1::Params)",
+      "nvtx_owner": "q4t|77|19|mtp.verify_forward|seq=0|p=8421|t=4"
+    },
+    {
+      "source_rowid": 498563,
+      "global_tid": 334846357441940,
+      "correlation_id": 1276797,
+      "start_ns": 12298641233,
+      "end_ns": 12298641353,
+      "return_value": 0,
+      "callchain_id": null,
+      "previous_api": "cuKernelGetFunction",
+      "immediate_next_api": "cuLaunchKernel",
+      "next_kernel_api_rowid": 708574,
+      "next_kernel_correlation_id": 1276798,
+      "next_kernel_family": "void cutlass::Kernel2<cutlass_80_wmma_tensorop_bf16_s161616gemm_bf16_16x16_64x1_tn_align8>(T1::Params)",
+      "nvtx_owner": "q4t|77|19|mtp.verify_forward|seq=0|p=8421|t=4"
+    }
+  ],
+  "required_missing_parameters": [
+    "cudaMemsetAsync count",
+    "devPtr",
+    "value",
+    "stream",
+    "enclosing cuBLASLt call and selected algorithm/workspace identity"
+  ],
+  "limitations": [
+    "Adjacency and shared kernel family do not prove the memset caller or a zero byte count.",
+    "The runtime table does not contain parameters; all missing records have NULL callchain. No count is reconstructed.",
+    "Successful API return does not prove an activity should or should not exist.",
+    "Only subsequent launch activity is matched; it does not account for the preceding memset operation.",
+    "No collection warning is waived, no old trace validity is promoted, and no GPU timing acceptance is inferred.",
+    "A future isolated shape reproduction cannot retroactively supply parameters of these old invocations."
+  ],
+  "future_callback_review": {
+    "status": "SUITABLE_PUBLIC_INTERFACE_NOT_IMPLEMENTED_OR_EXECUTED",
+    "header_evidence": {
+      "callbacks": {
+        "path": "/usr/local/cuda-13.3/include/cupti_callbacks.h",
+        "sha256": "c0147bf1a2ee213b97fbe4e788a4c89ecfd55a5c3bede50214103f143f9249a0",
+        "excerpts": [
+          {
+            "first_line": 315,
+            "last_line": 405,
+            "text": " * \\brief Data passed into a runtime or driver API callback function.\n *\n * Data passed into a runtime or driver API callback function as the\n * \\p cbdata argument to \\ref CUpti_CallbackFunc. The \\p cbdata will\n * be this type for \\p domain equal to CUPTI_CB_DOMAIN_DRIVER_API or\n * CUPTI_CB_DOMAIN_RUNTIME_API. The callback data is valid only within\n * the invocation of the callback function that is passed the data. If\n * you need to retain some data for use outside of the callback, you\n * must make a copy of that data. For example, if you make a shallow\n * copy of CUpti_CallbackData within a callback, you cannot\n * dereference \\p functionParams outside of that callback to access\n * the function parameters. \\p functionName is an exception: the\n * string pointed to by \\p functionName is a global constant and so\n * may be accessed outside of the callback.\n */\ntypedef struct {\n  /**\n   * Point in the runtime or driver function from where the callback\n   * was issued.\n   */\n  CUpti_ApiCallbackSite callbackSite;\n\n  /**\n   * Name of the runtime or driver API function which issued the\n   * callback. This string is a global constant and so may be\n   * accessed outside of the callback.\n   */\n  const char *functionName;\n\n  /**\n   * Pointer to the arguments passed to the runtime or driver API\n   * call. See generated_cuda_runtime_api_meta.h and\n   * generated_cuda_meta.h for structure definitions for the\n   * parameters for each runtime and driver API function.\n   */\n  const void *functionParams;\n\n  /**\n   * Pointer to the return value of the runtime or driver API\n   * call. This field is only valid within the exit::CUPTI_API_EXIT\n   * callback. For a runtime API \\p functionReturnValue points to a\n   * \\p cudaError_t. For a driver API \\p functionReturnValue points\n   * to a \\p CUresult.\n   */\n  void *functionReturnValue;\n\n  /**\n   * Name of the symbol operated on by the runtime or driver API\n   * function which issued the callback. This entry is valid only for\n   * driver and runtime launch callbacks, where it returns the name of\n   * the kernel.\n   */\n  const char *symbolName;\n\n  /**\n   * Driver context current to the thread, or null if no context is\n   * current. This value can change from the entry to exit callback\n   * of a runtime API function if the runtime initializes a context.\n   */\n  CUcontext context;\n\n  /**\n   * Unique ID for the CUDA context associated with the thread. The\n   * UIDs are assigned sequentially as contexts are created and are\n   * unique within a process.\n   */\n  uint32_t contextUid;\n\n  /**\n   * Pointer to data shared between the entry and exit callbacks of\n   * a given runtime or drive API function invocation. This field\n   * can be used to pass 64-bit values from the entry callback to\n   * the corresponding exit callback.\n   */\n  uint64_t *correlationData;\n\n  /**\n   * The activity record correlation ID for this callback. For a\n   * driver domain callback (i.e. \\p domain\n   * CUPTI_CB_DOMAIN_DRIVER_API) this ID will equal the correlation ID\n   * in the CUpti_ActivityAPI record corresponding to the CUDA driver\n   * function call. For a runtime domain callback (i.e. \\p domain\n   * CUPTI_CB_DOMAIN_RUNTIME_API) this ID will equal the correlation\n   * ID in the CUpti_ActivityAPI record corresponding to the CUDA\n   * runtime function call. Within the callback, this ID can be\n   * recorded to correlate user data with the activity record. This\n   * field is new in 4.1.\n   */\n  uint32_t correlationId;\n\n} CUpti_CallbackData;"
+          },
+          {
+            "first_line": 687,
+            "last_line": 723,
+            "text": "                                           CUpti_DomainTable *domainTable);\n\n/**\n * \\brief Initialize a callback subscriber with a callback function\n * and user data.\n *\n * Initializes a callback subscriber with a callback function and\n * (optionally) a pointer to user data. The returned subscriber handle\n * can be used to enable and disable the callback for specific domains\n * and callback IDs.\n * \\note Only a single subscriber can be registered at a time. To ensure\n * that no other CUPTI client interrupts the profiling session, it's the\n * responsibility of all the CUPTI clients to call this function before\n * starting the profling session. In case profiling session is already\n * started by another CUPTI client, this function returns the error code\n * CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTED.\n * Note that this function returns the same error when application is\n * launched using NVIDIA tools like Nsight Systems,\n * Nsight Compute, cuda-gdb and cuda-memcheck.\n * \\note This function does not enable any callbacks.\n * \\note \\b Thread-safety: this function is thread safe.\n * \\note While this API is fully supported and remains available, we recommend transitioning to the new API cuptiSubscribe_v2 moving forward.\n *\n * \\param subscriber Returns handle to initialize subscriber\n * \\param callback The callback function\n * \\param userdata A pointer to user data. This data will be passed to\n * the callback function via the \\p userdata parameter.\n *\n * \\retval CUPTI_SUCCESS on success\n * \\retval CUPTI_ERROR_NOT_INITIALIZED if unable to initialize CUPTI\n * \\retval CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTED if there is already a CUPTI subscriber,\n *         or if the application is launched with NVIDIA tools like Nsight Systems, Nsight Compute, cuda-gdb and cuda-memcheck.\n * \\retval CUPTI_ERROR_INVALID_PARAMETER if \\p subscriber is NULL\n */\nCUptiResult CUPTIAPI cuptiSubscribe(CUpti_SubscriberHandle *subscriber,\n                                    CUpti_CallbackFunc callback,\n                                    void *userdata);"
+          },
+          {
+            "first_line": 879,
+            "last_line": 905,
+            "text": " * \\brief Enable or disabled callbacks for a specific domain and\n * callback ID.\n *\n * Enable or disabled callbacks for a subscriber for a specific domain\n * and callback ID.\n *\n * \\note \\b Thread-safety: a subscriber must serialize access to\n * cuptiGetCallbackState, cuptiEnableCallback, cuptiEnableDomain, and\n * cuptiEnableAllDomains. For example, if cuptiGetCallbackState(sub,\n * d, c) and cuptiEnableCallback(sub, d, c) are called concurrently,\n * the results are undefined.\n *\n * \\param enable New enable state for the callback. Zero disables the\n * callback, non-zero enables the callback.\n * \\param subscriber - Handle to callback subscription\n * \\param domain The domain of the callback\n * \\param cbid The ID of the callback\n *\n * \\retval CUPTI_SUCCESS on success\n * \\retval CUPTI_ERROR_NOT_INITIALIZED if unable to initialized CUPTI\n * \\retval CUPTI_ERROR_INVALID_PARAMETER if \\p subscriber, \\p domain or \\p\n * cbid is invalid.\n */\nCUptiResult CUPTIAPI cuptiEnableCallback(uint32_t enable,\n                                         CUpti_SubscriberHandle subscriber,\n                                         CUpti_CallbackDomain domain,\n                                         CUpti_CallbackId cbid);"
+          }
+        ]
+      },
+      "parameters": {
+        "path": "/usr/local/cuda-13.3/include/generated_cuda_runtime_api_meta.h",
+        "sha256": "2f5f7d8b0f7358d088b7258935affc733931db8272bed48a21bc95286c20ef0c",
+        "excerpts": [
+          {
+            "first_line": 2307,
+            "last_line": 2312,
+            "text": "typedef struct cudaMemsetAsync_v3020_params_st {\n    void *devPtr;\n    int value;\n    size_t count;\n    cudaStream_t stream;\n} cudaMemsetAsync_v3020_params;"
+          }
+        ]
+      }
+    },
+    "entry": "For the exact runtime memset callback, copy devPtr/value/count/stream from functionParams while callback data is valid; also retain PID/TID/contextUid/correlationId and a bounded probe call ordinal.",
+    "exit": "Copy cudaError_t from functionReturnValue only at CUPTI_API_EXIT; pair with its entry via correlationId or correlationData.",
+    "kernel_binding": "Optional driver/runtime launch callbacks expose symbolName only at launch; same-thread sequence and controlled GEMM ordinal can bind the two observed kernel families without assuming bytes.",
+    "ownership": "Use a separate process without Nsight or another subscriber; reject subscription conflicts. Header documents single-subscriber restrictions for cuptiSubscribe. Enable only required callback IDs, then disable/unsubscribe.",
+    "safety": "Bound and preallocate host records; copy scalars during callback, never retain parameter pointers or dereference devPtr. Do not add CUDA calls/synchronizations in callbacks. Detect overflow/incomplete entry-exit pairs.",
+    "probe_identity": "Freeze cuBLASLt/CUDA/CUPTI libraries, exact M/N/K, alpha/beta, layouts, selected algorithm and workspace. Require an independent output check. This remains a proposal, not a validated probe or broad model trace replacement."
+  },
+  "timing": {
+    "query_seconds": 1.155522339977324,
+    "total_elapsed_seconds": 2.01597653911449
+  },
+  "new_gpu": 0,
+  "new_http": 0,
+  "new_tests": 0,
+  "new_exports": 0
+}

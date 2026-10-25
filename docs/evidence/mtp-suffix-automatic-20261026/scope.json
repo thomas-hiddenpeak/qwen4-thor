@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "source_commit": "9e85a95914bbd19259acec50e1712236b500ba0e",
+  "created_unix": 1792950690.8548317,
+  "classification": "collector lifecycle bug repair; model runtime unchanged",
+  "fixed_change": "capture-range-end=stop; after-report-ready exact-session/report receipt; shutdown kill=none only after report ready, while target still held; no manual stop fallback",
+  "wall_seconds": 7200,
+  "cpu": {
+    "suite_runs": 1,
+    "max_methods": 64,
+    "timeout_seconds": 180,
+    "targeted_repair_runs": 1,
+    "targeted_repair_requires_concrete_failure": true
+  },
+  "gpu": {
+    "attempts": 1,
+    "full_stage_shared_lease": true,
+    "wall_seconds": 4800,
+    "controls": 2,
+    "control_group_seconds": 600,
+    "fixture_each_seconds": 300,
+    "model_loads_max": 4,
+    "http_requests_max": 6,
+    "order": [
+      "direct-interactive",
+      "wrapper-interactive",
+      "nsys8-off",
+      "nsys8-on",
+      "nsys200-on",
+      "nsys200-off"
+    ],
+    "model_precondition": "both known-work and negative controls pass; selected wrapper terminal, diagnostic and memory completeness all pass"
+  },
+  "builds": 0,
+  "tool_versions": 1,
+  "retries": 0,
+  "runtime_changes": 0,
+  "stop_conditions": [
+    "any monitor or competition failure -> ENV_ABORT",
+    "control or known-work failure -> no model",
+    "all actual-target warnings and unknown warnings still block",
+    "memory/event coverage gap -> no performance attribution",
+    "budget ends -> stop, archive explicit validity/completeness/statistics/decision"
+  ],
+  "reuse": "unchanged monitor CPU/native, fixture audit, runtime correctness and both-head repetitive evidence by hash; changed collector CPU tests rerun"
+}
