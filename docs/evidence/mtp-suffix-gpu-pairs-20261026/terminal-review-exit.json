@@ -1,0 +1,28 @@
+{
+  "children": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/compare_pairs.py"
+      ],
+      "pid": 3446088,
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/terminal_close.py"
+      ],
+      "pid": 3446089,
+      "returncode": 0
+    }
+  ],
+  "errors": [],
+  "cleanup_errors": [],
+  "changed_sources": [],
+  "elapsed_seconds": 24.50513798277825,
+  "log_sha256": "c957e4fa34665697fa8f898282ead3c27c6e0888a5d7d86deed431a8c41dfd77",
+  "freeze_sha256": "5d7c379861fb8e4883eb5e3637e698abaa32600f69d9f2df918908f58b1f5bf7"
+}

@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "classification": "BOUNDED_RECORDED_GPU_PHASE_COMPARISON",
+  "created_unix": 1792959633.5785258,
+  "source_commit": "cf14f7bf266468510b496e730ba8c4d9efbcc2f5",
+  "work_wall_seconds": 7200,
+  "builds": 0,
+  "runtime_changes": 0,
+  "cpu_max_methods": 40,
+  "cpu_total_seconds": 120,
+  "cpu_suites": 2,
+  "cpu_repeat_rule": "Only one specific recorded failed CPU contract repair; no passed-suite repeat",
+  "gpu_stage_attempts": 1,
+  "gpu_stage_seconds": 4200,
+  "model_loads": 4,
+  "http_requests": 6,
+  "nsys_captures": 4,
+  "fixture_runs": 0,
+  "warmups_extra": 0,
+  "retries": 0,
+  "cleanup_reserved_seconds": 600,
+  "per_step_seconds": 900,
+  "analysis_per_capture_seconds": 120,
+  "export_per_capture_seconds": 120,
+  "terminal_audit_seconds": 180,
+  "normal_performance_claim": false,
+  "source_log_limit_bytes": 268435456,
+  "sqlite_limit_bytes": 8589934592,
+  "order": [
+    {
+      "name": "nsys8-off",
+      "suffix": false,
+      "inputs": [
+        8170
+      ],
+      "capture": 8170
+    },
+    {
+      "name": "nsys8-on",
+      "suffix": true,
+      "inputs": [
+        8170
+      ],
+      "capture": 8170
+    },
+    {
+      "name": "nsys200-on",
+      "suffix": true,
+      "inputs": [
+        8170,
+        204781
+      ],
+      "capture": 204781
+    },
+    {
+      "name": "nsys200-off",
+      "suffix": false,
+      "inputs": [
+        8170,
+        204781
+      ],
+      "capture": 204781
+    }
+  ],
+  "common": {
+    "head": "subset65536",
+    "k": 3,
+    "greedy": true,
+    "max_seq": 1,
+    "max_prefill": 8192,
+    "max_len": 208896,
+    "output_tokens": 256,
+    "cache": "Natural inherited page cache; exact 8K predecessor for both 200K captures; no drop/affinity/power changes",
+    "collector": "Pinned Nsight2026.5.1; unchanged synchronous repeat:1:sync, trace cuda,nvtx; no preload or custom CUPTI subscriber"
+  },
+  "acceptance": {
+    "scope": "Only recorded GPU kernel/copy/memset execution and correlated CPU/API phase comparison. Full trace integrity and performance acceptance remain separate and unproved.",
+    "warning_policy": "Keep strict diagnostics unchanged. Only exact existing target generic CUDA/NVTX warning pair may support limited comparison with per-capture actual finish/normal-exit evidence and terminal-filter mechanism review. All other warnings/loss/API/ownership failures stop.",
+    "memory_policy": "Unmatched cudaMemsetAsync records stay PARAMETERS_UNOBSERVED_IN_THIS_CAPTURE. Never fill from another process or infer zero by count. Unexplained copy/other memory absence stops.",
+    "cpu_policy": "Wall-threadCPU is nonrunning wall, not GPU wait; host synchronize durations are not device busy. No parent-child double count; retain phase GPU unions and signature counts."
+  },
+  "stop_conditions": [
+    "Environment/monitor/forced or failed own cleanup => ENV_ABORT, stop own processes only",
+    "Output/work-contract/launch-kernel/PID/NVTX mismatch or explicit loss/overflow or new warning => stop; preserve incomplete data",
+    "No extra normal HTTP, fixture, parameter ledger, versions or settings to obtain a passing result",
+    "If complete pairs do not identify a cause, record attribution insufficient; do not auto-expand"
+  ],
+  "reuse": "Unchanged fixed fixture/negative controls, actual8K parameter mechanism and normal two-head repeat/correctness/quality evidence by exact identity; no historical trace promotion",
+  "frozen_inputs": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/terminal-review.json": "4e14e08d1e0ef83b28af8cfc0a99861f562dfed89e874477001b46b0347aaabc",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-model-ledger-20261026/frozen-plan.json": "7ed1a8c92fc871daf4e81290daeb90cff1091d605d8c6ac1116723ef2dac7e89",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/terminal-review.json": "9dbb5ef80179692c747e3cfcb5c337374da3d93e994e519124f665e74c0b6279",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/warning-terminal-order.json": "7f6223328eb5dd6f653709bd8c0c618fa59a0f57d86882ec697a8ade4f6ae58a",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-callback-pairing-20261026/frozen-plan.json": "34975398c0117dcf5c91343705ac904c795ffd76f4c98b42c16c3481adf1fe31",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/diagnostic-v1/frozen-plan.json": "f999e0950cd14dd364e4cb249c1e58184cf229887380d38a6ca0a903c8db69e1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/normal-cpu-analysis.json": "6d34966f2288239a46c831ef95892b648729f76e8e4fd0af43cbb576f87bb342",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/audit-rerun-v2.json": "fbf7f43cadcb645d73abb403117c1ae9a3c028fc7cb0e59f3ccee0ea5100fb03",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96"
+  }
+}

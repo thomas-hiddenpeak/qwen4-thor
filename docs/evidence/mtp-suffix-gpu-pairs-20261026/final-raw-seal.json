@@ -1,0 +1,248 @@
+{
+  "schema": 1,
+  "plan_sha256": "ec39fba4e8300241fe42c06bcc55dc65725ab42d2253889ee679b6e2fb6cc7c6",
+  "files": {
+    "run/failure-monitor-barrier.json": {
+      "sha256": "e3808053b64dce1138795aaf50e7b95d5ea5a227244a216312dafdaeb854b4ad",
+      "bytes": 466
+    },
+    "run/files.json": {
+      "sha256": "4d5897bd0610eb2f273b1163e9d550d27e6941f694ac271ebbec20ccca309675",
+      "bytes": 6365
+    },
+    "run/nsys8-off/capacity.json": {
+      "sha256": "6ffb90c902e94076ae5d748147d10daefd134166b198fe9a64b2d2bec3ac2746",
+      "bytes": 614
+    },
+    "run/nsys8-off/context-8192/20261026_043352/qwen3.8-flash-next/benchmark.log": {
+      "sha256": "8dc0810b202ebc3cfd7e3c36e791899d3cd28ba5168c0b78803ebb008ab69746",
+      "bytes": 8786
+    },
+    "run/nsys8-off/context-8192/20261026_043352/qwen3.8-flash-next/parallel_1_number_1/benchmark_args.json": {
+      "sha256": "1da1a7b52f0454a9ac50e65a5829237350332893ae0512ad7de910f56eee5fa3",
+      "bytes": 2410
+    },
+    "run/nsys8-off/context-8192/20261026_043352/qwen3.8-flash-next/parallel_1_number_1/benchmark_data.db": {
+      "sha256": "0d129efe4a709494db9dc7911936444e2ce840a2da8e4e68efc98877e2d8b32e",
+      "bytes": 114688
+    },
+    "run/nsys8-off/context-8192/20261026_043352/qwen3.8-flash-next/parallel_1_number_1/benchmark_percentile.json": {
+      "sha256": "0b394db7c990883cdf4f91d500ea953fefe7e75aa3578a999107c425e77c34c2",
+      "bytes": 3500
+    },
+    "run/nsys8-off/context-8192/20261026_043352/qwen3.8-flash-next/parallel_1_number_1/benchmark_summary.json": {
+      "sha256": "a77cded8dfb439cdec86e46fa91c50c7c69ac53e183f41277002adf8c02b6816",
+      "bytes": 563
+    },
+    "run/nsys8-off/context-8192/20261026_043352/qwen3.8-flash-next/parallel_1_number_1/workload_throughput.json": {
+      "sha256": "a4220c1c83209821c449a73ca87cf7f6c452db74b131bc0b36b312252fc715c0",
+      "bytes": 874
+    },
+    "run/nsys8-off/context-8192/20261026_043352/qwen3.8-flash-next/parallel_1_number_1/workload_timeline.json": {
+      "sha256": "5a4aea12ced9bcf67200c88fd564915dbb0a0bd56322fb6429435dfa858d8704",
+      "bytes": 216
+    },
+    "run/nsys8-off/context-8192/20261026_043352/qwen3.8-flash-next/perf_report.html": {
+      "sha256": "476d58d5e202ff0fa19d642c8a2770540cf959e81001a6736b76257d4f20beb4",
+      "bytes": 166086
+    },
+    "run/nsys8-off/context-8192/20261026_043352/qwen3.8-flash-next/performance_summary.txt": {
+      "sha256": "43cc9fffb55630d2a9bcc02695f14b7cd3505328585ec553931e2177eea39c50",
+      "bytes": 4739
+    },
+    "run/nsys8-off/context-8192/case.json": {
+      "sha256": "c53efba7c055d4f5c9a238846e970513f5e113ca8b7d1cf40c2b41a6791ac68f",
+      "bytes": 872
+    },
+    "run/nsys8-off/context-8192/client-exit.json": {
+      "sha256": "219b70a5c37088a318ba8fadea449a61646f6741aa478e41bf23c973a2ff2830",
+      "bytes": 1503
+    },
+    "run/nsys8-off/context-8192/client.log": {
+      "sha256": "fce5a421c164c85d7f2958bec799d8fa8c87a5f0fa736fb8c20e3934d5cc7afe",
+      "bytes": 16000
+    },
+    "run/nsys8-off/context-8192/command.json": {
+      "sha256": "67936e91d2370dbf54b1b3358aa47fc628f4df41aa918aef172351e940e52684",
+      "bytes": 977
+    },
+    "run/nsys8-off/context-8192/output-0.txt": {
+      "sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "bytes": 1345
+    },
+    "run/nsys8-off/context-8192/request-boundaries.json": {
+      "sha256": "a2e263dea7f7ddb10572a2fe58ba57d3fa7af5bbc6f40748c89f3ad12a7bbfee",
+      "bytes": 3087
+    },
+    "run/nsys8-off/context-8192/requests.jsonl": {
+      "sha256": "bfc82c68950890905c999c22de45cea615061f66052bfb2aac281fc4907644ac",
+      "bytes": 41476
+    },
+    "run/nsys8-off/context-8192/responses.json": {
+      "sha256": "63edd1af481aafc5e6162d4ed0da92b8b6662a66ccc832b5acdbcbd67a415853",
+      "bytes": 9240
+    },
+    "run/nsys8-off/events.jsonl": {
+      "sha256": "378d771e07ebb64044c2202c3a5416ba30f813765cd259745ee57db548a811f1",
+      "bytes": 2961
+    },
+    "run/nsys8-off/exit.json": {
+      "sha256": "8951b76c39aeaa6a185008d13a99a2cc2d598e75c9a0c5a54f2f29ac497c6108",
+      "bytes": 615
+    },
+    "run/nsys8-off/external-stop-boundary.json": {
+      "sha256": "b19ca2dc3cd420c09ac3fc99bdfd59cdd60e71f88d82dc0e4dbb065a76281862",
+      "bytes": 272
+    },
+    "run/nsys8-off/interactive-close.json": {
+      "sha256": "ca8731382bf0a978489f2fb06bc086c25dcdc2c318ca6b6b2c6a79d6bf532268",
+      "bytes": 363
+    },
+    "run/nsys8-off/interactive-final-cleanup.json": {
+      "sha256": "4e70dfb684bc3f93915d1cb54769570ac6d45df65e6b1e967c771f44d038d8fd",
+      "bytes": 1834
+    },
+    "run/nsys8-off/interactive-launch-command.json": {
+      "sha256": "1a8c753f24c505465696ea0d58db57a59c71d87c8c3bb99e1787a68c9a041cfa",
+      "bytes": 782
+    },
+    "run/nsys8-off/interactive-launch.json": {
+      "sha256": "18d43299c3030a82be730ffd18da6c854e892d091c7e7bb68aa256ff045fd79a",
+      "bytes": 397
+    },
+    "run/nsys8-off/interactive-owner.json": {
+      "sha256": "a10c45d3c2b5a5abafd3517cfe319bb812c70f66a1de1f3c3fd09695fcb1985e",
+      "bytes": 343
+    },
+    "run/nsys8-off/interactive-reap.json": {
+      "sha256": "5ac8f7a1df8de3a15f13d527c54cc442b091e19ab4cfb05cf2110e4a7bdb4023",
+      "bytes": 1384
+    },
+    "run/nsys8-off/interactive-shutdown-command.json": {
+      "sha256": "819b658ab00880251d4ec712085ee0dabbc1c95d244dfd774837e9ebc9e93036",
+      "bytes": 263
+    },
+    "run/nsys8-off/interactive-shutdown-exit.json": {
+      "sha256": "4dec587009cc997f7ab7dd92d03137a39311ef47ebd2070cb0c180cbc4e4425d",
+      "bytes": 884
+    },
+    "run/nsys8-off/interactive-shutdown.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "run/nsys8-off/interactive-start-command.json": {
+      "sha256": "17d2af611810f69f0b7d964162690755b3eb93da80cf793916060bb4b2c914b8",
+      "bytes": 529
+    },
+    "run/nsys8-off/interactive-start-exit.json": {
+      "sha256": "f0f6fdce5be05e2380cd9de061ae25b9631b0842fb5804f00d9793ff1575a08c",
+      "bytes": 1103
+    },
+    "run/nsys8-off/interactive-start.log": {
+      "sha256": "adc7930fe7c1d9037cc0552ac59a6dfef2d69662ce24cf174b065fa05bea253f",
+      "bytes": 91
+    },
+    "run/nsys8-off/memory-phase.txt": {
+      "sha256": "16c46b16fa66ae94ec43ff234101938af878ae6a87beb904124c0e94fb9d360f",
+      "bytes": 22
+    },
+    "run/nsys8-off/nvlog.config": {
+      "sha256": "0e411268909b85b6d8c712986b3820cc02a1cbd4cbb78f208813a03a19ed0d42",
+      "bytes": 279
+    },
+    "run/nsys8-off/nvlog.log": {
+      "sha256": "3ced6b9e8df8a9117eae3480eb09f3607e0b967c1eb38bc88749dd5e7a3661c3",
+      "bytes": 746229179
+    },
+    "run/nsys8-off/profile-shutdown.json": {
+      "sha256": "0ff041d140e8707013449d0bc2316b2c58175a53a004a95e2212caf98b05c00b",
+      "bytes": 272
+    },
+    "run/nsys8-off/results.json": {
+      "sha256": "17c574ff86af57fcee59702e0538300254d96c7a72f404db4c7ef81f741271b8",
+      "bytes": 11784
+    },
+    "run/nsys8-off/server-command.json": {
+      "sha256": "651b80a74ab44d746c4c887a56604941cde21ed65f8faaa3aac0931b48649022",
+      "bytes": 912
+    },
+    "run/nsys8-off/server.log": {
+      "sha256": "44d58fd10cb142b8674cbe525c779f298f7338c48e6d5e7f884737a976dde835",
+      "bytes": 680861
+    },
+    "run/nsys8-off/server.pid": {
+      "sha256": "9ee4a6fc5cc79aaca2994b0dd58c2fbf1542af3edb84e5832e516ad9d2382549",
+      "bytes": 8
+    },
+    "run/nsys8-off/step.json": {
+      "sha256": "d94c2960b74802f3a6a32dcb4d2b9e3501b2b6ef511004ba33fab4a01d8a64bd",
+      "bytes": 1413
+    },
+    "run/nsys8-off/synchronous-close.json": {
+      "sha256": "12059b3132461499dc615f00c9416034e3075c2c5f5daaeff1ef760889642a74",
+      "bytes": 257
+    },
+    "run/nsys8-off/synchronous-report-ready.json": {
+      "sha256": "5fbd3de43bb6a521705498ab6ef7a0087e315870b905fea251efc5ba644c79b9",
+      "bytes": 1366
+    },
+    "run/nsys8-off/target-cleanup-identity.json": {
+      "sha256": "9cee70674655c341af7d2dcc5a9a059befe965f928509df59c9aa84b0697f7c9",
+      "bytes": 1338
+    },
+    "run/nsys8-off/target-exit.json": {
+      "sha256": "60cc37333dca0f647936160cf6ab26769b49d677956db9560102bba85e9ee1c0",
+      "bytes": 109
+    },
+    "run/nsys8-off/target-identity.json": {
+      "sha256": "98afa75c4975b29fb7b5d838a41f99617d96d3cf938cac21dfa0600ca84830fe",
+      "bytes": 753
+    },
+    "run/nsys8-off/target-owned-identity.json": {
+      "sha256": "3b48436f9b5243ef26678942d46e880db1c727970f1ab951a14806fdc21dc0fc",
+      "bytes": 1338
+    },
+    "run/nsys8-off/trace.1.nsys-rep": {
+      "sha256": "3fb41abc3beb021ab5d43214321549fdd54c6fb84b4b6b2d1229c33fede58dc2",
+      "bytes": 22260511
+    },
+    "run/nsys8-off-command.json": {
+      "sha256": "d94c2960b74802f3a6a32dcb4d2b9e3501b2b6ef511004ba33fab4a01d8a64bd",
+      "bytes": 1413
+    },
+    "run/nsys8-off-driver.log": {
+      "sha256": "4d3b47835e889c1c48c2f7d503d4558272f13ef845cf2d5a699c945837cb18c1",
+      "bytes": 1309
+    },
+    "run/plan.json": {
+      "sha256": "ec39fba4e8300241fe42c06bcc55dc65725ab42d2253889ee679b6e2fb6cc7c6",
+      "bytes": 4849365
+    },
+    "run/state.json": {
+      "sha256": "aaec00648c067a19def3a673bf75a37eb41c1e3a4ffe251dce81034a1bb90fc6",
+      "bytes": 417
+    },
+    "run/telemetry-summary.json": {
+      "sha256": "360c4ac2ee881b080e7efb75654a68258a3db950ecef9b5256ed6257d9a19e70",
+      "bytes": 2428
+    },
+    "run/unified-memory.jsonl": {
+      "sha256": "dc729a0990327e8e81cbbd2d4b213f5117e93e6ff43982b08ee31d41bbcc2ad7",
+      "bytes": 5683079
+    },
+    "lease/events.jsonl": {
+      "sha256": "8b9e6953fe1673252046b96aa650faf990f45103459df55f0c951188b53388a9",
+      "bytes": 14542
+    },
+    "lease/exit.json": {
+      "sha256": "ab90116d60c394c3727d37f2ec0db81835740d77431843983ca48ab892f858a3",
+      "bytes": 624
+    },
+    "lease/nvml-queries.jsonl": {
+      "sha256": "f706766e55186f956e4e63ac1cd586b71c02096924776da19bc70abd8a4c76ea",
+      "bytes": 179007
+    }
+  },
+  "driver_manifest_differences": [],
+  "raw_modified_by_audit": false
+}

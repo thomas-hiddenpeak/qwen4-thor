@@ -2,6 +2,18 @@
 
 更新：2026-10-26。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+子集200K/8K GPU对照有界停止（2026-10-26，ENV_ABORT）：
+CPU37首轮通过，唯一持锁80.064455秒；首8K OFF实际1HTTP输出/host工作量
+符合旧合同，但NVLOG746229179字节超256MiB，同容量检查又阻止shutdown
+spawn。模型/launcher正常rc0，无强杀；0导出/有效capture，后3组未启动。
+一次原件统计确认99.64%字节来自两必要verbose logger，简单白名单无效；
+另6条目标CUPTI/MemoryStorage错误未分类，不能忽略。81/81监控正常，
+88记录PID全ABSENT、3PGID无残留、锁释放；终审保存完整性PASS，配对未齐。
+936文件约804MB独立封存；默认及两head重复收益不变，性能保护NO_GO保持。
+下一步先闭合测量/清理检查耦合及有界日志/新增错误机制，不能直接再跑
+相同四臂或把本次工具归档作为完整交付。目标active。见
+[GPU对照结果](MTP_SUFFIX_GPU_PAIRS_2026-10-26.md)。
+
 真实8K参数机制已闭合，性能交付仍未通过（2026-10-26）：
 原f0ff推理程序不变，独立观察器首构建1.999855秒/零warning，CPU28首轮
 通过；唯一持锁91.088965秒，固定probe后一次subset OFF HTTP正常完成。

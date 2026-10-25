@@ -1,0 +1,20 @@
+{
+  "status": "ENV_ABORT",
+  "state_sha256": "aaec00648c067a19def3a673bf75a37eb41c1e3a4ffe251dce81034a1bb90fc6",
+  "monitor_failures": [],
+  "cleanup_errors": [],
+  "child_cleanup_errors": [
+    {
+      "step": "nsys8-off",
+      "errors": [
+        "RuntimeError('bounded regular output required: nvlog.log')",
+        "session shutdown: RuntimeError('bounded regular output required: nvlog.log')",
+        "EnvironmentAbort('owned model/session cleanup failed')"
+      ]
+    }
+  ],
+  "final_summary_sha256": "360c4ac2ee881b080e7efb75654a68258a3db950ecef9b5256ed6257d9a19e70",
+  "final_monitor_barrier": {},
+  "final_monitor_errors": [],
+  "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+}

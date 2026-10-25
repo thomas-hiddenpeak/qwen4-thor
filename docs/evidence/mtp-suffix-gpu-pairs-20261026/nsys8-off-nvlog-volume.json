@@ -1,0 +1,2601 @@
+{
+  "schema": 1,
+  "classification": "FAILED_CAPTURE_LOG_VOLUME_ONLY",
+  "source": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/run/nsys8-off/nvlog.log",
+    "sha256": "3ced6b9e8df8a9117eae3480eb09f3607e0b967c1eb38bc88749dd5e7a3661c3",
+    "bytes": 746229179
+  },
+  "configured_capture_limit_bytes": 268435456,
+  "exceeded_capture_limit": true,
+  "bytes_scanned": 746229179,
+  "lines_scanned": 2066081,
+  "complete_scan": true,
+  "stop_reason": null,
+  "seconds": 17.508658956969157,
+  "target_pid": 3444178,
+  "target_header_rows": 673,
+  "target_error_examples": [
+    {
+      "line": 1503,
+      "raw": "E04:33:08.439| Cupti_Public |                              q4t pid=3444178 tid= 3444178 | :6615 []: Error: Invalid parameter for enabling raw timestamp: 255."
+    },
+    {
+      "line": 1692,
+      "raw": "E04:33:08.490| Cupti_Public |                              q4t pid=3444178 tid= 3444178 | :7484 []: CUPTI Error 27: CUPTI_ERROR_NOT_SUPPORTED"
+    },
+    {
+      "line": 1693,
+      "raw": "E04:33:08.490| Cupti_Public |                              q4t pid=3444178 tid= 3444178 | :7484 []: Failed to enable HW trace."
+    },
+    {
+      "line": 4942,
+      "raw": "E04:34:07.757| Injection |                              q4t pid=3444178 tid= 3444180 | CudaInjectionInit.cpp:1897 [CheckForHesUsage]: HES data collection failed, CUPTI_ERROR_NOT_SUPPORTED"
+    },
+    {
+      "line": 4999,
+      "raw": "E04:34:07.758| Cupti_Public |                              q4t pid=3444178 tid= 3444180 | :1918 []: Error: Activity kind 36 cannot be disabled at context level."
+    },
+    {
+      "line": 5003,
+      "raw": "E04:34:07.758| Cupti_Public |                              q4t pid=3444178 tid= 3444180 | :1918 []: Error: Activity kind 35 cannot be disabled at context level."
+    },
+    {
+      "line": 5007,
+      "raw": "E04:34:07.758| Cupti_Public |                              q4t pid=3444178 tid= 3444180 | :1918 []: Error: Activity kind 34 cannot be disabled at context level."
+    },
+    {
+      "line": 5011,
+      "raw": "E04:34:07.758| Cupti_Public |                              q4t pid=3444178 tid= 3444180 | :1918 []: Error: Activity kind 33 cannot be disabled at context level."
+    },
+    {
+      "line": 2065925,
+      "raw": "E04:34:22.934| Injection |                              q4t pid=3444178 tid= 3444178 | CudaInjectionInit.cpp:1897 [CheckForHesUsage]: HES data collection failed, CUPTI_ERROR_NOT_SUPPORTED"
+    },
+    {
+      "line": 2065964,
+      "raw": "E04:34:22.936| Injection |                              q4t pid=3444178 tid= 3444178 | MemoryStorage.cpp:65 [~MemoryStorage]: MemoryStorage 0x2a6feda0380 was not deleted before the destructor. AllocatedCount: 35, ReturnedCount: 35"
+    },
+    {
+      "line": 2065965,
+      "raw": "E04:34:22.936| Injection |                              q4t pid=3444178 tid= 3444178 | MemoryStorage.cpp:65 [~MemoryStorage]: MemoryStorage 0x2a707810000 was not deleted before the destructor. AllocatedCount: 1020242, ReturnedCount: 1020242"
+    }
+  ],
+  "statistics": [
+    {
+      "kind": "channel",
+      "value": "quadd_verbose_daemon_evtsrc_trace_events",
+      "lines": 1025775,
+      "bytes": 253262865
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_verbose_daemon_evtsrc_trace_event_details",
+      "lines": 1025602,
+      "bytes": 490264608
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_evtsrc_trace",
+      "lines": 8154,
+      "bytes": 1874375
+    },
+    {
+      "kind": "channel",
+      "value": "CONTINUATION",
+      "lines": 3287,
+      "bytes": 102596
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_verbose_daemon_process_impl",
+      "lines": 447,
+      "bytes": 160012
+    },
+    {
+      "kind": "channel",
+      "value": "Injection",
+      "lines": 426,
+      "bytes": 87831
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_analysis_modules",
+      "lines": 341,
+      "bytes": 68422
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_linux_perf",
+      "lines": 289,
+      "bytes": 60674
+    },
+    {
+      "kind": "channel",
+      "value": "Cupti_Public",
+      "lines": 225,
+      "bytes": 36508
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_common_core",
+      "lines": 191,
+      "bytes": 46364
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_verbose_linux_perf",
+      "lines": 158,
+      "bytes": 40854
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_pbcomm_tcp",
+      "lines": 155,
+      "bytes": 27568
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_process_launcher_executable",
+      "lines": 81,
+      "bytes": 20417
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_event_handler_trace",
+      "lines": 64,
+      "bytes": 12524
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_cuda_tracing",
+      "lines": 58,
+      "bytes": 12310
+    },
+    {
+      "kind": "channel",
+      "value": "qdstrm_import",
+      "lines": 53,
+      "bytes": 9158
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_evtsrc_files",
+      "lines": 49,
+      "bytes": 8059
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_agent_controller",
+      "lines": 48,
+      "bytes": 7908
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_agent",
+      "lines": 46,
+      "bytes": 7249
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_agent_session",
+      "lines": 45,
+      "bytes": 7620
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_pbcomm_proxy",
+      "lines": 38,
+      "bytes": 6897
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_common_streamsections",
+      "lines": 38,
+      "bytes": 7885
+    },
+    {
+      "kind": "channel",
+      "value": "drvacc",
+      "lines": 36,
+      "bytes": 5143
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_verbose_cuda_tracing",
+      "lines": 35,
+      "bytes": 6124
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_event_handler_perf",
+      "lines": 34,
+      "bytes": 5804
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon",
+      "lines": 32,
+      "bytes": 5192
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_verbose_deviceproperty_CPU_supp",
+      "lines": 32,
+      "bytes": 6058
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_pbcomm_session",
+      "lines": 30,
+      "bytes": 4866
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_event_handler_processinfo",
+      "lines": 27,
+      "bytes": 4480
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_pbcomm_server",
+      "lines": 24,
+      "bytes": 3959
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_analysis_service",
+      "lines": 22,
+      "bytes": 4535
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_agent_api",
+      "lines": 19,
+      "bytes": 3389
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_common_session_manager",
+      "lines": 19,
+      "bytes": 4891
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_gpuinfo_cta",
+      "lines": 19,
+      "bytes": 3290
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_agent_import",
+      "lines": 18,
+      "bytes": 3361
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_common_process_waiter",
+      "lines": 14,
+      "bytes": 3202
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_debuginfod",
+      "lines": 13,
+      "bytes": 2409
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_gpuinfo_dta",
+      "lines": 12,
+      "bytes": 2184
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_pbcomm",
+      "lines": 12,
+      "bytes": 2166
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_analysis_session_state",
+      "lines": 12,
+      "bytes": 2510
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_common_quiver_containers",
+      "lines": 11,
+      "bytes": 3005
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_evtsrc_processinfo",
+      "lines": 8,
+      "bytes": 1490
+    },
+    {
+      "kind": "channel",
+      "value": "sp_cli",
+      "lines": 6,
+      "bytes": 1188
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_gpuinfo_aggregator",
+      "lines": 6,
+      "bytes": 1290
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_process_launcher",
+      "lines": 6,
+      "bytes": 2940
+    },
+    {
+      "kind": "channel",
+      "value": "InjectionProxy",
+      "lines": 6,
+      "bytes": 2004
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_agent_rpc_importer",
+      "lines": 6,
+      "bytes": 1089
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_nic_info",
+      "lines": 5,
+      "bytes": 996
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_evtsrc_soc_metrics",
+      "lines": 4,
+      "bytes": 664
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_evtsrc_linux_perf",
+      "lines": 4,
+      "bytes": 787
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_verbose_daemon_c_elf",
+      "lines": 4,
+      "bytes": 757
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_common_process_resumer",
+      "lines": 3,
+      "bytes": 557
+    },
+    {
+      "kind": "channel",
+      "value": "nvetbls",
+      "lines": 3,
+      "bytes": 365
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_verbose_daemon",
+      "lines": 3,
+      "bytes": 686
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_gpu_health",
+      "lines": 2,
+      "bytes": 354
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_evtsrc_gpu_video_engine",
+      "lines": 2,
+      "bytes": 414
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_flight_recorder",
+      "lines": 2,
+      "bytes": 492
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_c_elf",
+      "lines": 2,
+      "bytes": 280
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_evtsrc_eventlib",
+      "lines": 2,
+      "bytes": 351
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_device",
+      "lines": 2,
+      "bytes": 329
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_event_handler_gpuctxsw",
+      "lines": 2,
+      "bytes": 372
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_event_handler_files",
+      "lines": 2,
+      "bytes": 516
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_timesync",
+      "lines": 1,
+      "bytes": 147
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_deviceproperty",
+      "lines": 1,
+      "bytes": 170
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_deviceproperty_CPU_supp",
+      "lines": 1,
+      "bytes": 170
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_ftrace",
+      "lines": 1,
+      "bytes": 202
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_devprops",
+      "lines": 1,
+      "bytes": 220
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_utc_timecor",
+      "lines": 1,
+      "bytes": 221
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_local_timecor",
+      "lines": 1,
+      "bytes": 207
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_daemon_evtsrc_gpuctxsw",
+      "lines": 1,
+      "bytes": 176
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_debug_daemon_c_elf",
+      "lines": 1,
+      "bytes": 190
+    },
+    {
+      "kind": "channel",
+      "value": "quadd_verbose_event_handler",
+      "lines": 1,
+      "bytes": 283
+    },
+    {
+      "kind": "function",
+      "value": "ReadStorageImpl",
+      "lines": 1033929,
+      "bytes": 492172306
+    },
+    {
+      "kind": "function",
+      "value": "SerializeEventImpl",
+      "lines": 1025581,
+      "bytes": 253224787
+    },
+    {
+      "kind": "function",
+      "value": "NONE",
+      "lines": 3287,
+      "bytes": 102596
+    },
+    {
+      "kind": "function",
+      "value": "GetProperty",
+      "lines": 426,
+      "bytes": 154902
+    },
+    {
+      "kind": "function",
+      "value": "",
+      "lines": 264,
+      "bytes": 42016
+    },
+    {
+      "kind": "function",
+      "value": "OpenCounterEventFile",
+      "lines": 182,
+      "bytes": 45638
+    },
+    {
+      "kind": "function",
+      "value": "ConfirmCoreEvents",
+      "lines": 134,
+      "bytes": 30748
+    },
+    {
+      "kind": "function",
+      "value": "HandleNotification",
+      "lines": 126,
+      "bytes": 22338
+    },
+    {
+      "kind": "function",
+      "value": "operator()",
+      "lines": 110,
+      "bytes": 20331
+    },
+    {
+      "kind": "function",
+      "value": "EventCollection",
+      "lines": 105,
+      "bytes": 19845
+    },
+    {
+      "kind": "function",
+      "value": "~EventCollection",
+      "lines": 105,
+      "bytes": 19950
+    },
+    {
+      "kind": "function",
+      "value": "TestCounterEvent",
+      "lines": 91,
+      "bytes": 17166
+    },
+    {
+      "kind": "function",
+      "value": "PrepareEnvironment",
+      "lines": 80,
+      "bytes": 20217
+    },
+    {
+      "kind": "function",
+      "value": "GetDemangledInfo",
+      "lines": 77,
+      "bytes": 16756
+    },
+    {
+      "kind": "function",
+      "value": "HandleEvents",
+      "lines": 62,
+      "bytes": 12151
+    },
+    {
+      "kind": "function",
+      "value": "Handle",
+      "lines": 57,
+      "bytes": 9594
+    },
+    {
+      "kind": "function",
+      "value": "Stop",
+      "lines": 52,
+      "bytes": 9562
+    },
+    {
+      "kind": "function",
+      "value": "AddBuffer",
+      "lines": 50,
+      "bytes": 7650
+    },
+    {
+      "kind": "function",
+      "value": "ReadFile",
+      "lines": 42,
+      "bytes": 6762
+    },
+    {
+      "kind": "function",
+      "value": "SetBoolConfig",
+      "lines": 38,
+      "bytes": 6228
+    },
+    {
+      "kind": "function",
+      "value": "Merge",
+      "lines": 36,
+      "bytes": 6984
+    },
+    {
+      "kind": "function",
+      "value": "ReadEventData",
+      "lines": 36,
+      "bytes": 6264
+    },
+    {
+      "kind": "function",
+      "value": "ActivityFlushAll",
+      "lines": 34,
+      "bytes": 7282
+    },
+    {
+      "kind": "function",
+      "value": "AsyncProcessor",
+      "lines": 32,
+      "bytes": 5932
+    },
+    {
+      "kind": "function",
+      "value": "Start",
+      "lines": 29,
+      "bytes": 5264
+    },
+    {
+      "kind": "function",
+      "value": "FindInstalledFile",
+      "lines": 25,
+      "bytes": 14676
+    },
+    {
+      "kind": "function",
+      "value": "Is64Bit",
+      "lines": 24,
+      "bytes": 5617
+    },
+    {
+      "kind": "function",
+      "value": "EnableActivity",
+      "lines": 21,
+      "bytes": 3543
+    },
+    {
+      "kind": "function",
+      "value": "StopRecording",
+      "lines": 20,
+      "bytes": 3190
+    },
+    {
+      "kind": "function",
+      "value": "Terminate",
+      "lines": 19,
+      "bytes": 3449
+    },
+    {
+      "kind": "function",
+      "value": "Connect",
+      "lines": 17,
+      "bytes": 3052
+    },
+    {
+      "kind": "function",
+      "value": "~ThreadData",
+      "lines": 16,
+      "bytes": 2592
+    },
+    {
+      "kind": "function",
+      "value": "bufferRequested",
+      "lines": 16,
+      "bytes": 2656
+    },
+    {
+      "kind": "function",
+      "value": "bufferCompleted",
+      "lines": 16,
+      "bytes": 2781
+    },
+    {
+      "kind": "function",
+      "value": "HandleBuffer",
+      "lines": 16,
+      "bytes": 2550
+    },
+    {
+      "kind": "function",
+      "value": "GetMaxFreqs",
+      "lines": 14,
+      "bytes": 2832
+    },
+    {
+      "kind": "function",
+      "value": "GetSockets",
+      "lines": 14,
+      "bytes": 2412
+    },
+    {
+      "kind": "function",
+      "value": "addSection",
+      "lines": 14,
+      "bytes": 2641
+    },
+    {
+      "kind": "function",
+      "value": "finalize",
+      "lines": 14,
+      "bytes": 3027
+    },
+    {
+      "kind": "function",
+      "value": "AddCudaStreamInformation",
+      "lines": 14,
+      "bytes": 3847
+    },
+    {
+      "kind": "function",
+      "value": "HandleConnect",
+      "lines": 12,
+      "bytes": 2124
+    },
+    {
+      "kind": "function",
+      "value": "ReadReply",
+      "lines": 12,
+      "bytes": 2106
+    },
+    {
+      "kind": "function",
+      "value": "HandleBuildId",
+      "lines": 12,
+      "bytes": 2560
+    },
+    {
+      "kind": "function",
+      "value": "SendReply",
+      "lines": 12,
+      "bytes": 1966
+    },
+    {
+      "kind": "function",
+      "value": "HandleSecret",
+      "lines": 12,
+      "bytes": 2248
+    },
+    {
+      "kind": "function",
+      "value": "Communicator",
+      "lines": 12,
+      "bytes": 2013
+    },
+    {
+      "kind": "function",
+      "value": "HandleSession",
+      "lines": 12,
+      "bytes": 2074
+    },
+    {
+      "kind": "function",
+      "value": "~Communicator",
+      "lines": 12,
+      "bytes": 2049
+    },
+    {
+      "kind": "function",
+      "value": "ThreadData",
+      "lines": 12,
+      "bytes": 1968
+    },
+    {
+      "kind": "function",
+      "value": "Init",
+      "lines": 11,
+      "bytes": 1966
+    },
+    {
+      "kind": "function",
+      "value": "GetFileLock",
+      "lines": 11,
+      "bytes": 2805
+    },
+    {
+      "kind": "function",
+      "value": "SetIntConfig",
+      "lines": 11,
+      "bytes": 1717
+    },
+    {
+      "kind": "function",
+      "value": "MakeSortedContainerMapValue",
+      "lines": 11,
+      "bytes": 3005
+    },
+    {
+      "kind": "function",
+      "value": "OpenStorage",
+      "lines": 10,
+      "bytes": 2394
+    },
+    {
+      "kind": "function",
+      "value": "InternalReset",
+      "lines": 10,
+      "bytes": 1770
+    },
+    {
+      "kind": "function",
+      "value": "TryCreate",
+      "lines": 10,
+      "bytes": 1895
+    },
+    {
+      "kind": "function",
+      "value": "NotifyOne",
+      "lines": 9,
+      "bytes": 1575
+    },
+    {
+      "kind": "function",
+      "value": "ProcessAgentStateChange",
+      "lines": 9,
+      "bytes": 1530
+    },
+    {
+      "kind": "function",
+      "value": "~EventHandlerImpl",
+      "lines": 9,
+      "bytes": 1584
+    },
+    {
+      "kind": "function",
+      "value": "GetConfirmedOSEvents",
+      "lines": 9,
+      "bytes": 1822
+    },
+    {
+      "kind": "function",
+      "value": "ConvertTimeAndSerializeEvent",
+      "lines": 9,
+      "bytes": 2502
+    },
+    {
+      "kind": "function",
+      "value": "parseSectionTable",
+      "lines": 9,
+      "bytes": 2007
+    },
+    {
+      "kind": "function",
+      "value": "VerifyPrerequisites",
+      "lines": 8,
+      "bytes": 1356
+    },
+    {
+      "kind": "function",
+      "value": "AcceptOne",
+      "lines": 8,
+      "bytes": 1430
+    },
+    {
+      "kind": "function",
+      "value": "SetState",
+      "lines": 8,
+      "bytes": 1438
+    },
+    {
+      "kind": "function",
+      "value": "OnApplicationExit",
+      "lines": 8,
+      "bytes": 1491
+    },
+    {
+      "kind": "function",
+      "value": "HandleReadMessage",
+      "lines": 8,
+      "bytes": 1650
+    },
+    {
+      "kind": "function",
+      "value": "AsyncProcessorHolder",
+      "lines": 7,
+      "bytes": 1404
+    },
+    {
+      "kind": "function",
+      "value": "Session",
+      "lines": 7,
+      "bytes": 1084
+    },
+    {
+      "kind": "function",
+      "value": "Initialize",
+      "lines": 7,
+      "bytes": 1102
+    },
+    {
+      "kind": "function",
+      "value": "Notify",
+      "lines": 7,
+      "bytes": 1216
+    },
+    {
+      "kind": "function",
+      "value": "NameServiceThread",
+      "lines": 7,
+      "bytes": 1165
+    },
+    {
+      "kind": "function",
+      "value": "EnableResourceCallback",
+      "lines": 7,
+      "bytes": 1297
+    },
+    {
+      "kind": "function",
+      "value": "RecordServiceTraceEventOfType",
+      "lines": 7,
+      "bytes": 1173
+    },
+    {
+      "kind": "function",
+      "value": "InitConfiguration",
+      "lines": 6,
+      "bytes": 942
+    },
+    {
+      "kind": "function",
+      "value": "GetNodeToCpuListMap",
+      "lines": 6,
+      "bytes": 1194
+    },
+    {
+      "kind": "function",
+      "value": "ClientProxy",
+      "lines": 6,
+      "bytes": 999
+    },
+    {
+      "kind": "function",
+      "value": "HandleStart",
+      "lines": 6,
+      "bytes": 1029
+    },
+    {
+      "kind": "function",
+      "value": "ConnectorImpl",
+      "lines": 6,
+      "bytes": 1023
+    },
+    {
+      "kind": "function",
+      "value": "HandleAccept",
+      "lines": 6,
+      "bytes": 1073
+    },
+    {
+      "kind": "function",
+      "value": "ReadBuildId",
+      "lines": 6,
+      "bytes": 1049
+    },
+    {
+      "kind": "function",
+      "value": "SendBuildId",
+      "lines": 6,
+      "bytes": 1035
+    },
+    {
+      "kind": "function",
+      "value": "ReadSecret",
+      "lines": 6,
+      "bytes": 1037
+    },
+    {
+      "kind": "function",
+      "value": "SendSecret",
+      "lines": 6,
+      "bytes": 1023
+    },
+    {
+      "kind": "function",
+      "value": "MTCommunicator",
+      "lines": 6,
+      "bytes": 1128
+    },
+    {
+      "kind": "function",
+      "value": "~ConnectorImpl",
+      "lines": 6,
+      "bytes": 1041
+    },
+    {
+      "kind": "function",
+      "value": "HandleTerminate",
+      "lines": 6,
+      "bytes": 1065
+    },
+    {
+      "kind": "function",
+      "value": "HandleMessage",
+      "lines": 6,
+      "bytes": 1062
+    },
+    {
+      "kind": "function",
+      "value": "~Session",
+      "lines": 6,
+      "bytes": 966
+    },
+    {
+      "kind": "function",
+      "value": "~MTCommunicator",
+      "lines": 6,
+      "bytes": 1038
+    },
+    {
+      "kind": "function",
+      "value": "~ClientProxy",
+      "lines": 6,
+      "bytes": 1041
+    },
+    {
+      "kind": "function",
+      "value": "InitializeGpuInfoListOutOfProcess",
+      "lines": 6,
+      "bytes": 1152
+    },
+    {
+      "kind": "function",
+      "value": "CreateLookupTable",
+      "lines": 6,
+      "bytes": 994
+    },
+    {
+      "kind": "function",
+      "value": "AccessFunction",
+      "lines": 6,
+      "bytes": 2004
+    },
+    {
+      "kind": "function",
+      "value": "GetBoolValue",
+      "lines": 6,
+      "bytes": 945
+    },
+    {
+      "kind": "function",
+      "value": "Deinitialize",
+      "lines": 6,
+      "bytes": 834
+    },
+    {
+      "kind": "function",
+      "value": "PumpAndDeleteProcessors",
+      "lines": 6,
+      "bytes": 1026
+    },
+    {
+      "kind": "function",
+      "value": "HandleChunkAllocationOverhead",
+      "lines": 6,
+      "bytes": 1218
+    },
+    {
+      "kind": "function",
+      "value": "CuptiExpandableBufferManager",
+      "lines": 6,
+      "bytes": 1172
+    },
+    {
+      "kind": "function",
+      "value": "OpenEventFile",
+      "lines": 6,
+      "bytes": 1380
+    },
+    {
+      "kind": "function",
+      "value": "StartEventSource",
+      "lines": 6,
+      "bytes": 1269
+    },
+    {
+      "kind": "function",
+      "value": "StartRecording",
+      "lines": 6,
+      "bytes": 916
+    },
+    {
+      "kind": "function",
+      "value": "ResetInternal",
+      "lines": 6,
+      "bytes": 1254
+    },
+    {
+      "kind": "function",
+      "value": "FinalizeQdstrm",
+      "lines": 6,
+      "bytes": 978
+    },
+    {
+      "kind": "function",
+      "value": "CreateLocalAgentAPI",
+      "lines": 5,
+      "bytes": 805
+    },
+    {
+      "kind": "function",
+      "value": "RunProcess",
+      "lines": 5,
+      "bytes": 720
+    },
+    {
+      "kind": "function",
+      "value": "Subscribe",
+      "lines": 5,
+      "bytes": 882
+    },
+    {
+      "kind": "function",
+      "value": "EnableDriverCallback",
+      "lines": 5,
+      "bytes": 914
+    },
+    {
+      "kind": "function",
+      "value": "InitDeployInfo",
+      "lines": 4,
+      "bytes": 1364
+    },
+    {
+      "kind": "function",
+      "value": "CreatePersistenceGuard",
+      "lines": 4,
+      "bytes": 660
+    },
+    {
+      "kind": "function",
+      "value": "CreateGpuInfoListFromNvDeviceAccess",
+      "lines": 4,
+      "bytes": 804
+    },
+    {
+      "kind": "function",
+      "value": "CreateGpuInfoList",
+      "lines": 4,
+      "bytes": 720
+    },
+    {
+      "kind": "function",
+      "value": "InitPython",
+      "lines": 4,
+      "bytes": 598
+    },
+    {
+      "kind": "function",
+      "value": "ConfigureDebugSymbols",
+      "lines": 4,
+      "bytes": 860
+    },
+    {
+      "kind": "function",
+      "value": "Server",
+      "lines": 4,
+      "bytes": 627
+    },
+    {
+      "kind": "function",
+      "value": "HandleResponse",
+      "lines": 4,
+      "bytes": 684
+    },
+    {
+      "kind": "function",
+      "value": "InitializeCuda",
+      "lines": 4,
+      "bytes": 672
+    },
+    {
+      "kind": "function",
+      "value": "RegisterStartStopAnalysisHandler",
+      "lines": 4,
+      "bytes": 796
+    },
+    {
+      "kind": "function",
+      "value": "~MemoryStorage",
+      "lines": 4,
+      "bytes": 930
+    },
+    {
+      "kind": "function",
+      "value": "ChangePluginsState",
+      "lines": 4,
+      "bytes": 744
+    },
+    {
+      "kind": "function",
+      "value": "SynchronizeKnownContexts",
+      "lines": 4,
+      "bytes": 946
+    },
+    {
+      "kind": "function",
+      "value": "SynchronizeContext",
+      "lines": 4,
+      "bytes": 920
+    },
+    {
+      "kind": "function",
+      "value": "LogConverters",
+      "lines": 4,
+      "bytes": 626
+    },
+    {
+      "kind": "function",
+      "value": "ReportCUDADone",
+      "lines": 4,
+      "bytes": 642
+    },
+    {
+      "kind": "function",
+      "value": "Import",
+      "lines": 4,
+      "bytes": 634
+    },
+    {
+      "kind": "function",
+      "value": "LogTimeConvInfo",
+      "lines": 4,
+      "bytes": 636
+    },
+    {
+      "kind": "function",
+      "value": "~Server",
+      "lines": 4,
+      "bytes": 636
+    },
+    {
+      "kind": "function",
+      "value": "LogTempRoot",
+      "lines": 3,
+      "bytes": 522
+    },
+    {
+      "kind": "function",
+      "value": "SaveInstanceInfo",
+      "lines": 3,
+      "bytes": 574
+    },
+    {
+      "kind": "function",
+      "value": "GetSession",
+      "lines": 3,
+      "bytes": 687
+    },
+    {
+      "kind": "function",
+      "value": "OnClientChange",
+      "lines": 3,
+      "bytes": 482
+    },
+    {
+      "kind": "function",
+      "value": "GetCudaDriverVersion",
+      "lines": 3,
+      "bytes": 486
+    },
+    {
+      "kind": "function",
+      "value": "ProcessWaiterImpl",
+      "lines": 3,
+      "bytes": 599
+    },
+    {
+      "kind": "function",
+      "value": "EventHandlerImpl",
+      "lines": 3,
+      "bytes": 465
+    },
+    {
+      "kind": "function",
+      "value": "IsRecordingFromSessionState",
+      "lines": 3,
+      "bytes": 477
+    },
+    {
+      "kind": "function",
+      "value": "InitializeInjectionCommon",
+      "lines": 3,
+      "bytes": 465
+    },
+    {
+      "kind": "function",
+      "value": "DeregisterStartStopAnalysisHandler",
+      "lines": 3,
+      "bytes": 609
+    },
+    {
+      "kind": "function",
+      "value": "PrepareAgentConfiguration",
+      "lines": 3,
+      "bytes": 547
+    },
+    {
+      "kind": "function",
+      "value": "ResourceCallbackHandler",
+      "lines": 3,
+      "bytes": 610
+    },
+    {
+      "kind": "function",
+      "value": "OpenFile",
+      "lines": 3,
+      "bytes": 668
+    },
+    {
+      "kind": "function",
+      "value": "DoGetKernelSymbols",
+      "lines": 3,
+      "bytes": 686
+    },
+    {
+      "kind": "function",
+      "value": "StartImportServer",
+      "lines": 3,
+      "bytes": 535
+    },
+    {
+      "kind": "function",
+      "value": "~RpcImportJob",
+      "lines": 3,
+      "bytes": 507
+    },
+    {
+      "kind": "function",
+      "value": "Complete",
+      "lines": 3,
+      "bytes": 603
+    },
+    {
+      "kind": "function",
+      "value": "CompleteStrand",
+      "lines": 3,
+      "bytes": 672
+    },
+    {
+      "kind": "function",
+      "value": "OpenAllDevicesImpl",
+      "lines": 2,
+      "bytes": 354
+    },
+    {
+      "kind": "function",
+      "value": "IsTargetSoC",
+      "lines": 2,
+      "bytes": 390
+    },
+    {
+      "kind": "function",
+      "value": "SpawnAgentProcess",
+      "lines": 2,
+      "bytes": 643
+    },
+    {
+      "kind": "function",
+      "value": "RestartAsDaemon",
+      "lines": 2,
+      "bytes": 323
+    },
+    {
+      "kind": "function",
+      "value": "AcceptorImpl",
+      "lines": 2,
+      "bytes": 329
+    },
+    {
+      "kind": "function",
+      "value": "Probe",
+      "lines": 2,
+      "bytes": 362
+    },
+    {
+      "kind": "function",
+      "value": "InstantiateAgent",
+      "lines": 2,
+      "bytes": 325
+    },
+    {
+      "kind": "function",
+      "value": "Configure",
+      "lines": 2,
+      "bytes": 329
+    },
+    {
+      "kind": "function",
+      "value": "ConfigureCuda",
+      "lines": 2,
+      "bytes": 328
+    },
+    {
+      "kind": "function",
+      "value": "Launch",
+      "lines": 2,
+      "bytes": 320
+    },
+    {
+      "kind": "function",
+      "value": "GetDeviceCount",
+      "lines": 2,
+      "bytes": 300
+    },
+    {
+      "kind": "function",
+      "value": "AggregateCudaToolsApiGpuInfo",
+      "lines": 2,
+      "bytes": 376
+    },
+    {
+      "kind": "function",
+      "value": "Aggregator",
+      "lines": 2,
+      "bytes": 600
+    },
+    {
+      "kind": "function",
+      "value": "PreloadPerfworksHESLibs",
+      "lines": 2,
+      "bytes": 700
+    },
+    {
+      "kind": "function",
+      "value": "ProcessSpecialEnvVars",
+      "lines": 2,
+      "bytes": 1130
+    },
+    {
+      "kind": "function",
+      "value": "RemoveOrEmptyFile",
+      "lines": 2,
+      "bytes": 494
+    },
+    {
+      "kind": "function",
+      "value": "DoLaunch",
+      "lines": 2,
+      "bytes": 294
+    },
+    {
+      "kind": "function",
+      "value": "StartCollection",
+      "lines": 2,
+      "bytes": 371
+    },
+    {
+      "kind": "function",
+      "value": "InitializeInjection",
+      "lines": 2,
+      "bytes": 323
+    },
+    {
+      "kind": "function",
+      "value": "InitializeCudaTracing",
+      "lines": 2,
+      "bytes": 339
+    },
+    {
+      "kind": "function",
+      "value": "EnableRuntimeCallback",
+      "lines": 2,
+      "bytes": 370
+    },
+    {
+      "kind": "function",
+      "value": "StatusLog",
+      "lines": 2,
+      "bytes": 369
+    },
+    {
+      "kind": "function",
+      "value": "FlightRecorderAllocator",
+      "lines": 2,
+      "bytes": 492
+    },
+    {
+      "kind": "function",
+      "value": "AnalysisServiceImpl",
+      "lines": 2,
+      "bytes": 404
+    },
+    {
+      "kind": "function",
+      "value": "InitAndStart",
+      "lines": 2,
+      "bytes": 413
+    },
+    {
+      "kind": "function",
+      "value": "GetResult",
+      "lines": 2,
+      "bytes": 428
+    },
+    {
+      "kind": "function",
+      "value": "quadd_elf_init",
+      "lines": 2,
+      "bytes": 280
+    },
+    {
+      "kind": "function",
+      "value": "OnStartAnalysis",
+      "lines": 2,
+      "bytes": 325
+    },
+    {
+      "kind": "function",
+      "value": "DisableIgoredAPIs",
+      "lines": 2,
+      "bytes": 351
+    },
+    {
+      "kind": "function",
+      "value": "OnCudaProfilerStop",
+      "lines": 2,
+      "bytes": 351
+    },
+    {
+      "kind": "function",
+      "value": "DoStop",
+      "lines": 2,
+      "bytes": 390
+    },
+    {
+      "kind": "function",
+      "value": "OnStop",
+      "lines": 2,
+      "bytes": 297
+    },
+    {
+      "kind": "function",
+      "value": "CheckForHesUsage",
+      "lines": 2,
+      "bytes": 376
+    },
+    {
+      "kind": "function",
+      "value": "OnStopAnalysis",
+      "lines": 2,
+      "bytes": 321
+    },
+    {
+      "kind": "function",
+      "value": "FinalDiagnosticHandler",
+      "lines": 2,
+      "bytes": 428
+    },
+    {
+      "kind": "function",
+      "value": "StopCudaTracing",
+      "lines": 2,
+      "bytes": 328
+    },
+    {
+      "kind": "function",
+      "value": "Load",
+      "lines": 2,
+      "bytes": 312
+    },
+    {
+      "kind": "function",
+      "value": "InstantiateImporter",
+      "lines": 2,
+      "bytes": 350
+    },
+    {
+      "kind": "function",
+      "value": "ConnectImportServer",
+      "lines": 2,
+      "bytes": 343
+    },
+    {
+      "kind": "function",
+      "value": "PreImport",
+      "lines": 2,
+      "bytes": 302
+    },
+    {
+      "kind": "function",
+      "value": "ReadCliSessionInfo",
+      "lines": 2,
+      "bytes": 354
+    },
+    {
+      "kind": "function",
+      "value": "SaveReport",
+      "lines": 2,
+      "bytes": 395
+    },
+    {
+      "kind": "function",
+      "value": "ReportMemoryUsage",
+      "lines": 2,
+      "bytes": 467
+    },
+    {
+      "kind": "function",
+      "value": "ShutdownImporterRuntime",
+      "lines": 2,
+      "bytes": 368
+    },
+    {
+      "kind": "function",
+      "value": "~AcceptorImpl",
+      "lines": 2,
+      "bytes": 335
+    },
+    {
+      "kind": "function",
+      "value": "~AnalysisServiceImpl",
+      "lines": 2,
+      "bytes": 410
+    },
+    {
+      "kind": "function",
+      "value": "~ProcessWaiterImpl",
+      "lines": 2,
+      "bytes": 454
+    },
+    {
+      "kind": "function",
+      "value": "CreateUser",
+      "lines": 1,
+      "bytes": 168
+    },
+    {
+      "kind": "function",
+      "value": "CreateSession",
+      "lines": 1,
+      "bytes": 243
+    },
+    {
+      "kind": "function",
+      "value": "SessionRegistry",
+      "lines": 1,
+      "bytes": 226
+    },
+    {
+      "kind": "function",
+      "value": "InitSyncNs",
+      "lines": 1,
+      "bytes": 147
+    },
+    {
+      "kind": "function",
+      "value": "DoConfiguration",
+      "lines": 1,
+      "bytes": 156
+    },
+    {
+      "kind": "function",
+      "value": "WriteOptionsToTheFile",
+      "lines": 1,
+      "bytes": 235
+    },
+    {
+      "kind": "function",
+      "value": "Exec",
+      "lines": 1,
+      "bytes": 200
+    },
+    {
+      "kind": "function",
+      "value": "CreateTerminationStatusFile",
+      "lines": 1,
+      "bytes": 275
+    },
+    {
+      "kind": "function",
+      "value": "CleanupNamedSemaphore",
+      "lines": 1,
+      "bytes": 224
+    },
+    {
+      "kind": "function",
+      "value": "CreateNamedSemaphore",
+      "lines": 1,
+      "bytes": 230
+    },
+    {
+      "kind": "function",
+      "value": "WaitForTermination",
+      "lines": 1,
+      "bytes": 191
+    },
+    {
+      "kind": "function",
+      "value": "WaitSignal",
+      "lines": 1,
+      "bytes": 195
+    },
+    {
+      "kind": "function",
+      "value": "SetIgnoredAPICallsConfig",
+      "lines": 1,
+      "bytes": 7647
+    },
+    {
+      "kind": "function",
+      "value": "CheckFlushOnCudaProfilerStop",
+      "lines": 1,
+      "bytes": 279
+    },
+    {
+      "kind": "function",
+      "value": "CuptiUseRawGpuTimestamps",
+      "lines": 1,
+      "bytes": 161
+    },
+    {
+      "kind": "function",
+      "value": "LoadCuptiLibrary",
+      "lines": 1,
+      "bytes": 327
+    },
+    {
+      "kind": "function",
+      "value": "SanitizeCallbacks",
+      "lines": 1,
+      "bytes": 217
+    },
+    {
+      "kind": "function",
+      "value": "SanitizeOptions",
+      "lines": 1,
+      "bytes": 161
+    },
+    {
+      "kind": "function",
+      "value": "LogInfo",
+      "lines": 1,
+      "bytes": 180
+    },
+    {
+      "kind": "function",
+      "value": "ConfigureCupti",
+      "lines": 1,
+      "bytes": 174
+    },
+    {
+      "kind": "function",
+      "value": "InitializeCudaInterfaceLibrary",
+      "lines": 1,
+      "bytes": 201
+    },
+    {
+      "kind": "function",
+      "value": "getUuid",
+      "lines": 1,
+      "bytes": 381
+    },
+    {
+      "kind": "function",
+      "value": "process_CUPTI_ACTIVITY_KIND_DEVICE",
+      "lines": 1,
+      "bytes": 278
+    },
+    {
+      "kind": "function",
+      "value": "OnContextCreated",
+      "lines": 1,
+      "bytes": 172
+    },
+    {
+      "kind": "function",
+      "value": "OnCudaProfilerStart",
+      "lines": 1,
+      "bytes": 159
+    },
+    {
+      "kind": "function",
+      "value": "CudaBacktraceOnProfilerStart",
+      "lines": 1,
+      "bytes": 173
+    },
+    {
+      "kind": "function",
+      "value": "QueryDeviceProperties",
+      "lines": 1,
+      "bytes": 164
+    },
+    {
+      "kind": "function",
+      "value": "GetCPUsOldModule",
+      "lines": 1,
+      "bytes": 170
+    },
+    {
+      "kind": "function",
+      "value": "GetNumberOfCpuFromString",
+      "lines": 1,
+      "bytes": 187
+    },
+    {
+      "kind": "function",
+      "value": "GetNumberOfPresentCpu",
+      "lines": 1,
+      "bytes": 182
+    },
+    {
+      "kind": "function",
+      "value": "ReadCapabilitiesFile",
+      "lines": 1,
+      "bytes": 187
+    },
+    {
+      "kind": "function",
+      "value": "SupportsCpuFrequencyCollection",
+      "lines": 1,
+      "bytes": 258
+    },
+    {
+      "kind": "function",
+      "value": "CheckOSAndKernel",
+      "lines": 1,
+      "bytes": 237
+    },
+    {
+      "kind": "function",
+      "value": "TestIPSamplingTriggerEvent",
+      "lines": 1,
+      "bytes": 197
+    },
+    {
+      "kind": "function",
+      "value": "IsLBRBranchSamplingSupported",
+      "lines": 1,
+      "bytes": 176
+    },
+    {
+      "kind": "function",
+      "value": "GetSupportMapImpl",
+      "lines": 1,
+      "bytes": 204
+    },
+    {
+      "kind": "function",
+      "value": "GetAvailableEvents",
+      "lines": 1,
+      "bytes": 202
+    },
+    {
+      "kind": "function",
+      "value": "GetLocalMachineOfedVersion",
+      "lines": 1,
+      "bytes": 211
+    },
+    {
+      "kind": "function",
+      "value": "GetOfedVersionFromKernelModule",
+      "lines": 1,
+      "bytes": 170
+    },
+    {
+      "kind": "function",
+      "value": "GetOfedDriverVersion",
+      "lines": 1,
+      "bytes": 161
+    },
+    {
+      "kind": "function",
+      "value": "GetNicsSysFsPaths",
+      "lines": 1,
+      "bytes": 279
+    },
+    {
+      "kind": "function",
+      "value": "AreDocaLibrariesInstalled",
+      "lines": 1,
+      "bytes": 175
+    },
+    {
+      "kind": "function",
+      "value": "GetNumProgrammableAndFixedCoreCounters",
+      "lines": 1,
+      "bytes": 230
+    },
+    {
+      "kind": "function",
+      "value": "DoQueryEventLibSources",
+      "lines": 1,
+      "bytes": 220
+    },
+    {
+      "kind": "function",
+      "value": "CreateQdstrm",
+      "lines": 1,
+      "bytes": 163
+    },
+    {
+      "kind": "function",
+      "value": "PostMortemTimeConverter",
+      "lines": 1,
+      "bytes": 185
+    },
+    {
+      "kind": "function",
+      "value": "ResetAndStart",
+      "lines": 1,
+      "bytes": 169
+    },
+    {
+      "kind": "function",
+      "value": "ProcessInfo",
+      "lines": 1,
+      "bytes": 181
+    },
+    {
+      "kind": "function",
+      "value": "Files",
+      "lines": 1,
+      "bytes": 158
+    },
+    {
+      "kind": "function",
+      "value": "StartRangeCollection",
+      "lines": 1,
+      "bytes": 171
+    },
+    {
+      "kind": "function",
+      "value": "ReadCudaConfigFile",
+      "lines": 1,
+      "bytes": 7641
+    },
+    {
+      "kind": "function",
+      "value": "StartCudaTracing",
+      "lines": 1,
+      "bytes": 165
+    },
+    {
+      "kind": "function",
+      "value": "WaitForStartStatus",
+      "lines": 1,
+      "bytes": 159
+    },
+    {
+      "kind": "function",
+      "value": "CudaBacktraceOnProfilerStop",
+      "lines": 1,
+      "bytes": 171
+    },
+    {
+      "kind": "function",
+      "value": "WaitForStopStatus",
+      "lines": 1,
+      "bytes": 157
+    },
+    {
+      "kind": "function",
+      "value": "GetEventData",
+      "lines": 1,
+      "bytes": 184
+    },
+    {
+      "kind": "function",
+      "value": "CreateStorage",
+      "lines": 1,
+      "bytes": 262
+    },
+    {
+      "kind": "function",
+      "value": "DoGetData",
+      "lines": 1,
+      "bytes": 197
+    },
+    {
+      "kind": "function",
+      "value": "~Trace",
+      "lines": 1,
+      "bytes": 160
+    },
+    {
+      "kind": "function",
+      "value": "~ProcessInfo",
+      "lines": 1,
+      "bytes": 185
+    },
+    {
+      "kind": "function",
+      "value": "~Files",
+      "lines": 1,
+      "bytes": 159
+    },
+    {
+      "kind": "function",
+      "value": "MakeCacheDir",
+      "lines": 1,
+      "bytes": 201
+    },
+    {
+      "kind": "function",
+      "value": "CurlInit",
+      "lines": 1,
+      "bytes": 159
+    },
+    {
+      "kind": "function",
+      "value": "AddSearchDir",
+      "lines": 1,
+      "bytes": 174
+    },
+    {
+      "kind": "function",
+      "value": "get_build_id_from_data",
+      "lines": 1,
+      "bytes": 207
+    },
+    {
+      "kind": "function",
+      "value": "sysfs_get_build_id",
+      "lines": 1,
+      "bytes": 203
+    },
+    {
+      "kind": "function",
+      "value": "get_kernel_build_id",
+      "lines": 1,
+      "bytes": 194
+    },
+    {
+      "kind": "function",
+      "value": "__get_kernel_symbols",
+      "lines": 1,
+      "bytes": 190
+    },
+    {
+      "kind": "function",
+      "value": "is_kernel_saved_on_host",
+      "lines": 1,
+      "bytes": 153
+    },
+    {
+      "kind": "function",
+      "value": "CreateRpcImportApi",
+      "lines": 1,
+      "bytes": 163
+    },
+    {
+      "kind": "function",
+      "value": "SpawnImporterProcess",
+      "lines": 1,
+      "bytes": 170
+    },
+    {
+      "kind": "function",
+      "value": "InitServer",
+      "lines": 1,
+      "bytes": 158
+    },
+    {
+      "kind": "function",
+      "value": "RpcImportJob",
+      "lines": 1,
+      "bytes": 156
+    },
+    {
+      "kind": "function",
+      "value": "RunRpcImport",
+      "lines": 1,
+      "bytes": 375
+    },
+    {
+      "kind": "function",
+      "value": "CreateResultGenerator",
+      "lines": 1,
+      "bytes": 169
+    },
+    {
+      "kind": "function",
+      "value": "GenerateResult",
+      "lines": 1,
+      "bytes": 167
+    },
+    {
+      "kind": "function",
+      "value": "StartImport",
+      "lines": 1,
+      "bytes": 214
+    },
+    {
+      "kind": "function",
+      "value": "ImportAsync",
+      "lines": 1,
+      "bytes": 152
+    },
+    {
+      "kind": "function",
+      "value": "QdstrmImporter",
+      "lines": 1,
+      "bytes": 156
+    },
+    {
+      "kind": "function",
+      "value": "verifyHeader",
+      "lines": 1,
+      "bytes": 210
+    },
+    {
+      "kind": "function",
+      "value": "ReadDeviceProperties",
+      "lines": 1,
+      "bytes": 180
+    },
+    {
+      "kind": "function",
+      "value": "CreateDeviceFromProperties",
+      "lines": 1,
+      "bytes": 182
+    },
+    {
+      "kind": "function",
+      "value": "HandleGpuDriverInfo",
+      "lines": 1,
+      "bytes": 165
+    },
+    {
+      "kind": "function",
+      "value": "HandleNicDriverResponse",
+      "lines": 1,
+      "bytes": 164
+    },
+    {
+      "kind": "function",
+      "value": "ReadStartAnalysisRequest",
+      "lines": 1,
+      "bytes": 187
+    },
+    {
+      "kind": "function",
+      "value": "ReadTimeConversionInfo",
+      "lines": 1,
+      "bytes": 183
+    },
+    {
+      "kind": "function",
+      "value": "LoadGpuData",
+      "lines": 1,
+      "bytes": 372
+    },
+    {
+      "kind": "function",
+      "value": "GpuCtxswEventHandler",
+      "lines": 1,
+      "bytes": 192
+    },
+    {
+      "kind": "function",
+      "value": "PerfEventHandler",
+      "lines": 1,
+      "bytes": 199
+    },
+    {
+      "kind": "function",
+      "value": "IsOutsideReportRange",
+      "lines": 1,
+      "bytes": 283
+    },
+    {
+      "kind": "function",
+      "value": "Finish",
+      "lines": 1,
+      "bytes": 174
+    },
+    {
+      "kind": "function",
+      "value": "CompleteHandling",
+      "lines": 1,
+      "bytes": 199
+    },
+    {
+      "kind": "function",
+      "value": "ContinueProcessEvents",
+      "lines": 1,
+      "bytes": 192
+    },
+    {
+      "kind": "function",
+      "value": "HandleEHEndOfData",
+      "lines": 1,
+      "bytes": 157
+    },
+    {
+      "kind": "function",
+      "value": "~QdstrmImporter",
+      "lines": 1,
+      "bytes": 159
+    },
+    {
+      "kind": "function",
+      "value": "ShutdownApi",
+      "lines": 1,
+      "bytes": 161
+    },
+    {
+      "kind": "function",
+      "value": "ShutdownImporterServer",
+      "lines": 1,
+      "bytes": 175
+    },
+    {
+      "kind": "function",
+      "value": "ReportAccessTimes",
+      "lines": 1,
+      "bytes": 201
+    },
+    {
+      "kind": "function",
+      "value": "CompleteResultGeneration",
+      "lines": 1,
+      "bytes": 183
+    },
+    {
+      "kind": "function",
+      "value": "PreStart",
+      "lines": 1,
+      "bytes": 198
+    },
+    {
+      "kind": "function",
+      "value": "NotifyTermination",
+      "lines": 1,
+      "bytes": 174
+    },
+    {
+      "kind": "function",
+      "value": "WriteTerminationStatusToFile",
+      "lines": 1,
+      "bytes": 279
+    },
+    {
+      "kind": "function",
+      "value": "LoadTerminationStatusFromFile",
+      "lines": 1,
+      "bytes": 282
+    },
+    {
+      "kind": "function",
+      "value": "DoShutdown",
+      "lines": 1,
+      "bytes": 147
+    },
+    {
+      "kind": "function",
+      "value": "RemoveUser",
+      "lines": 1,
+      "bytes": 168
+    },
+    {
+      "kind": "function",
+      "value": "RemoveSession",
+      "lines": 1,
+      "bytes": 243
+    },
+    {
+      "kind": "function",
+      "value": "~SessionRegistry",
+      "lines": 1,
+      "bytes": 168
+    },
+    {
+      "kind": "marker",
+      "value": "cudaProfilerStop",
+      "lines": 17,
+      "bytes": 0
+    },
+    {
+      "kind": "marker",
+      "value": "Event ignored: start timestamp",
+      "lines": 9,
+      "bytes": 0
+    },
+    {
+      "kind": "marker",
+      "value": "Number of CUPTI events produced:",
+      "lines": 3,
+      "bytes": 0
+    },
+    {
+      "kind": "marker",
+      "value": "Sending service event: NVTXFinish.",
+      "lines": 2,
+      "bytes": 0
+    },
+    {
+      "kind": "marker",
+      "value": "Sending service event: CUDAFinish.",
+      "lines": 2,
+      "bytes": 0
+    },
+    {
+      "kind": "marker",
+      "value": "ReportCUDADone: DONE.",
+      "lines": 2,
+      "bytes": 0
+    },
+    {
+      "kind": "marker",
+      "value": "NVTX profiling finished",
+      "lines": 2,
+      "bytes": 0
+    },
+    {
+      "kind": "marker",
+      "value": "CUDA profiling finished",
+      "lines": 1,
+      "bytes": 0
+    },
+    {
+      "kind": "marker",
+      "value": "All events processed.",
+      "lines": 1,
+      "bytes": 0
+    },
+    {
+      "kind": "marker",
+      "value": "Report file saved:",
+      "lines": 1,
+      "bytes": 0
+    },
+    {
+      "kind": "severity",
+      "value": "I",
+      "lines": 2062117,
+      "bytes": 745912353
+    },
+    {
+      "kind": "severity",
+      "value": "CONTINUATION",
+      "lines": 3287,
+      "bytes": 102596
+    },
+    {
+      "kind": "severity",
+      "value": "W",
+      "lines": 449,
+      "bytes": 166957
+    },
+    {
+      "kind": "severity",
+      "value": "E",
+      "lines": 228,
+      "bytes": 47273
+    }
+  ],
+  "marker_examples": {
+    "cudaProfilerStop": [
+      {
+        "line": 1151,
+        "target": false,
+        "raw": "I04:33:05.854| Injection |                          python3 pid=3444166 tid= 3444170 | ProfilerApiImpl.cpp:294 [Notify]: Capture range triggers = 2, capture range end action = 3, flush on cudaProfilerStop = true"
+      },
+      {
+        "line": 1261,
+        "target": false,
+        "raw": "I04:33:06.014| Injection |                              git pid=3444174 tid= 3444176 | ProfilerApiImpl.cpp:294 [Notify]: Capture range triggers = 2, capture range end action = 3, flush on cudaProfilerStop = true"
+      },
+      {
+        "line": 1412,
+        "target": true,
+        "raw": "I04:33:06.079| Injection |                              q4t pid=3444178 tid= 3444180 | ProfilerApiImpl.cpp:294 [Notify]: Capture range triggers = 2, capture range end action = 3, flush on cudaProfilerStop = true"
+      },
+      {
+        "line": 4775,
+        "target": true,
+        "raw": "I04:34:07.696| Injection |                              q4t pid=3444178 tid= 3445130 | CudaInjectionInit.cpp:2582 [OnCudaProfilerStop]: Hit cudaProfilerStop"
+      },
+      {
+        "line": 4777,
+        "target": true,
+        "raw": "I04:34:07.696| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | InjectionInterface.cpp:66 [ActivityFlushAll]: Starting CUPTI activity flush for cudaProfilerStop: requested_mode=2 effective_mode=2"
+      },
+      {
+        "line": 4778,
+        "target": true,
+        "raw": "I04:34:07.696| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | InjectionInterface.cpp:79 [ActivityFlushAll]: Synchronizing the caller's current CUDA context before cudaProfilerStop CUPTI activity flush"
+      },
+      {
+        "line": 4779,
+        "target": true,
+        "raw": "I04:34:07.696| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | InjectionInterface.cpp:83 [ActivityFlushAll]: Finished synchronizing the caller's current CUDA context before cudaProfilerStop CUPTI activity flush: CUresult=0"
+      },
+      {
+        "line": 4780,
+        "target": true,
+        "raw": "I04:34:07.696| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | ContextSynchronization.cpp:298 [SynchronizeKnownContexts]: Synchronizing 1 known CUDA context(s) before cudaProfilerStop flush"
+      },
+      {
+        "line": 4781,
+        "target": true,
+        "raw": "I04:34:07.696| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | ContextSynchronization.cpp:281 [SynchronizeContext]: Synchronizing CUDA context 0xaaab21db2d40 before cudaProfilerStop flush"
+      },
+      {
+        "line": 4782,
+        "target": true,
+        "raw": "I04:34:07.696| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | ContextSynchronization.cpp:286 [SynchronizeContext]: Finished synchronizing CUDA context 0xaaab21db2d40 before cudaProfilerStop flush: CUresult=0"
+      },
+      {
+        "line": 4783,
+        "target": true,
+        "raw": "I04:34:07.696| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | ContextSynchronization.cpp:327 [SynchronizeKnownContexts]: Finished synchronizing known CUDA contexts before cudaProfilerStop flush: attempted=1 succeeded=1"
+      },
+      {
+        "line": 4784,
+        "target": true,
+        "raw": "I04:34:07.696| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | InjectionInterface.cpp:122 [ActivityFlushAll]: Waiting to acquire CUPTI activity flush lock for cudaProfilerStop: mode=2"
+      },
+      {
+        "line": 4785,
+        "target": true,
+        "raw": "I04:34:07.696| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | InjectionInterface.cpp:130 [ActivityFlushAll]: Acquired CUPTI activity flush lock for cudaProfilerStop: mode=2"
+      },
+      {
+        "line": 4786,
+        "target": true,
+        "raw": "I04:34:07.696| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for cudaProfilerStop: flags=0"
+      },
+      {
+        "line": 4805,
+        "target": true,
+        "raw": "I04:34:07.757| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for cudaProfilerStop: CUptiResult=0"
+      },
+      {
+        "line": 4806,
+        "target": true,
+        "raw": "I04:34:07.757| quadd_cuda_tracing |                              q4t pid=3444178 tid= 3445130 | InjectionInterface.cpp:155 [ActivityFlushAll]: Released CUPTI activity flush lock for cudaProfilerStop: mode=2"
+      },
+      {
+        "line": 1803250,
+        "target": false,
+        "raw": "I04:34:17.633| quadd_verbose_daemon_evtsrc_trace_event_details |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:2171 [ReadStorageImpl]: { Timestamp=1150551271345638 Serial=0 EndTimestamp=1150551331820127 Event={ Trace={ Name={ Text=\"CUDA profiling data flush on cudaProfilerStop\" } NestingLevel=0 Type=0 } } TimestampType=3 ThreadId=3445130 }"
+      }
+    ],
+    "Sending service event: NVTXFinish.": [
+      {
+        "line": 4938,
+        "target": false,
+        "raw": "I04:34:07.757| Injection |                          python3 pid=3444166 tid= 3444170 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: NVTXFinish."
+      },
+      {
+        "line": 5029,
+        "target": true,
+        "raw": "I04:34:07.758| Injection |                              q4t pid=3444178 tid= 3444180 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: NVTXFinish."
+      }
+    ],
+    "Sending service event: CUDAFinish.": [
+      {
+        "line": 4984,
+        "target": true,
+        "raw": "I04:34:07.758| Injection |                              q4t pid=3444178 tid= 3444180 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: CUDAFinish."
+      },
+      {
+        "line": 2065921,
+        "target": true,
+        "raw": "I04:34:22.934| Injection |                              q4t pid=3444178 tid= 3444178 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: CUDAFinish."
+      }
+    ],
+    "ReportCUDADone: DONE.": [
+      {
+        "line": 4985,
+        "target": true,
+        "raw": "I04:34:07.758| Injection |                              q4t pid=3444178 tid= 3444180 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+      },
+      {
+        "line": 2065922,
+        "target": true,
+        "raw": "I04:34:22.934| Injection |                              q4t pid=3444178 tid= 3444178 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+      }
+    ],
+    "Number of CUPTI events produced:": [
+      {
+        "line": 4986,
+        "target": true,
+        "raw": "I04:34:07.758| Injection |                              q4t pid=3444178 tid= 3444180 | CudaInjectionInit.cpp:2301 [FinalDiagnosticHandler]: CUPTI: Number of CUPTI events produced: 1019896, CUPTI buffers in use: 0."
+      },
+      {
+        "line": 1803265,
+        "target": false,
+        "raw": "I04:34:17.633| quadd_verbose_daemon_evtsrc_trace_event_details |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:2171 [ReadStorageImpl]: { Timestamp=1150551332886266 Serial=0 Event={ Diagnostics={ Time=1150551332886266 Type=0 Source=0 Level=1 Text=\"Number of CUPTI events produced: \t1019896, CUPTI buffers: 50.\" } } Persistent=1 TimestampType=3 }"
+      },
+      {
+        "line": 2065923,
+        "target": true,
+        "raw": "I04:34:22.934| Injection |                              q4t pid=3444178 tid= 3444178 | CudaInjectionInit.cpp:2301 [FinalDiagnosticHandler]: CUPTI: Number of CUPTI events produced: 1019896, CUPTI buffers in use: 0."
+      }
+    ],
+    "NVTX profiling finished": [
+      {
+        "line": 5099,
+        "target": false,
+        "raw": "I04:34:08.025| quadd_verbose_daemon_evtsrc_trace_event_details |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:2171 [ReadStorageImpl]: { Timestamp=1150551332367609 Serial=2 EndTimestamp=1150551332367609 Event={ Trace={ Name={ Text=\"NVTX profiling finished\" } Type=3 } } TimestampType=3 ThreadId=0 }"
+      },
+      {
+        "line": 1803289,
+        "target": false,
+        "raw": "I04:34:17.633| quadd_verbose_daemon_evtsrc_trace_event_details |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:2171 [ReadStorageImpl]: { Timestamp=1150551333065460 Serial=5 EndTimestamp=1150551333065460 Event={ Trace={ Name={ Text=\"NVTX profiling finished\" } Type=3 } } TimestampType=3 ThreadId=0 }"
+      }
+    ],
+    "Event ignored: start timestamp": [
+      {
+        "line": 5101,
+        "target": false,
+        "raw": "I04:34:08.025| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010fc10]: Event ignored: start timestamp 1150530274497141 > session stop timestamp 1150530274312018"
+      },
+      {
+        "line": 1803257,
+        "target": false,
+        "raw": "I04:34:17.633| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010fc10]: Event ignored: start timestamp 1150530274520474 > session stop timestamp 1150530274312018"
+      },
+      {
+        "line": 1803262,
+        "target": false,
+        "raw": "I04:34:17.633| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010fc10]: Event ignored: start timestamp 1150530275007996 > session stop timestamp 1150530274312018"
+      },
+      {
+        "line": 1803291,
+        "target": false,
+        "raw": "I04:34:17.633| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010fc10]: Event ignored: start timestamp 1150530275194997 > session stop timestamp 1150530274312018"
+      },
+      {
+        "line": 2064593,
+        "target": false,
+        "raw": "I04:34:19.032| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010fc10]: Event ignored: start timestamp 1150530274565520 > session stop timestamp 1150530274312018"
+      },
+      {
+        "line": 2064595,
+        "target": false,
+        "raw": "I04:34:19.032| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010fc10]: Event ignored: start timestamp 1150530274574215 > session stop timestamp 1150530274312018"
+      },
+      {
+        "line": 2064597,
+        "target": false,
+        "raw": "I04:34:19.032| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010fc10]: Event ignored: start timestamp 1150530274564955 > session stop timestamp 1150530274312018"
+      },
+      {
+        "line": 2064599,
+        "target": false,
+        "raw": "I04:34:19.032| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010fc10]: Event ignored: start timestamp 1150530274644521 > session stop timestamp 1150530274312018"
+      },
+      {
+        "line": 2064601,
+        "target": false,
+        "raw": "I04:34:19.032| quadd_verbose_daemon_evtsrc_trace_events |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:1838 [ConvertTimeAndSerializeEvent]: Trace[0xffff9010fc10]: Event ignored: start timestamp 1150530274705558 > session stop timestamp 1150530274312018"
+      }
+    ],
+    "CUDA profiling finished": [
+      {
+        "line": 1803260,
+        "target": false,
+        "raw": "I04:34:17.633| quadd_verbose_daemon_evtsrc_trace_event_details |                             nsys pid=3444143 tid= 3444148 | Trace.cpp:2171 [ReadStorageImpl]: { Timestamp=1150551332878460 Serial=4 EndTimestamp=1150551332878460 Event={ Trace={ Name={ Text=\"CUDA profiling finished\" } Type=7 } } TimestampType=3 ThreadId=0 }"
+      }
+    ],
+    "All events processed.": [
+      {
+        "line": 2065741,
+        "target": false,
+        "raw": "I04:34:20.958| qdstrm_import |                             nsys pid=3445272 tid= 3445273 | QdstrmImporter.cpp:798 [HandleEHEndOfData]: All events processed."
+      }
+    ],
+    "Report file saved:": [
+      {
+        "line": 2065787,
+        "target": false,
+        "raw": "I04:34:21.202| qdstrm_import |                             nsys pid=3445272 tid= 3445273 | QdstrmImporter.cpp:591 [SaveReport]: Report file saved: /home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/run/nsys8-off/trace.1.nsys-rep"
+      }
+    ]
+  },
+  "trace_qualification": false,
+  "performance_acceptance": false,
+  "scope": "Single bounded failure-only streaming pass; examples are capped and no trace is exported or accepted."
+}

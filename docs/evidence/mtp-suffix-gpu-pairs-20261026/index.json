@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "files": {
+    "scope.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/scope.json",
+      "sha256": "e1b10eea282aa942b9adcfc423f3f2b4b3e31cc5a1ec952cc419caf0de1439db"
+    },
+    "cpu-proof.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/cpu-proof.json",
+      "sha256": "5fc171c69a4d1703c34b6aa33d6363cb872636f01dba01ee70fd5102e279b910"
+    },
+    "postflight.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/postflight.json",
+      "sha256": "f95e2706b8cd99c903f25042b297b61156508a6e29456625b65ed977db4a1045"
+    },
+    "terminal-review.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/terminal-review.json",
+      "sha256": "eefc95476a493c1a977cbd9f4386dcd29773ef39251faf6a695579a9beb391f8"
+    },
+    "final-raw-seal.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/final-raw-seal.json",
+      "sha256": "876e44a7e57fb0ced443364c55757ef730d2eb7ce9cc73606a6b04c68478290e"
+    },
+    "terminal-review-exit.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/terminal-review-exit.json",
+      "sha256": "880b06988821809cf5f0e4e38ed782cece3dfa0143223b3748b1b9428f594d03"
+    },
+    "terminal-review-execution-freeze.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/terminal-review-execution-freeze.json",
+      "sha256": "5d7c379861fb8e4883eb5e3637e698abaa32600f69d9f2df918908f58b1f5bf7"
+    },
+    "terminal-review-execution.log": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/terminal-review-execution.log",
+      "sha256": "c957e4fa34665697fa8f898282ead3c27c6e0888a5d7d86deed431a8c41dfd77"
+    },
+    "stage-close.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/stage-close.json",
+      "sha256": "e4e9b560f5b52c696b63790015343b4ea04f6c1481a5f55da55e64f2bdf81050"
+    },
+    "pair-comparison.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/pair-comparison.json",
+      "sha256": "8488c5fde1de57f9a02cb325426c9b616b71f184f80dec0c32526319d25697ef"
+    },
+    "pair-comparison.md": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/pair-comparison.md",
+      "sha256": "a3fad6c4931e3ff91d19f5698cd4e93bf1c2780e1e263699b488c086d16bc146"
+    },
+    "nsys8-off-nvlog-volume.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/nsys8-off-nvlog-volume.json",
+      "sha256": "ef7b5cd6c8d841d2f17201a5534c37af74eeb5cbfde01a199c18ba4c0b7984b4"
+    },
+    "archive-seal.json": {
+      "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/archive-final/seal.json",
+      "sha256": "7ab42efc648acf0545514b4ecb7b6adc26b76d85de3d9d8c9332ce8472b3613d"
+    }
+  },
+  "plan": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/frozen-plan.json",
+    "sha256": "ec39fba4e8300241fe42c06bcc55dc65725ab42d2253889ee679b6e2fb6cc7c6"
+  },
+  "raw_archive": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/archive-final",
+    "manifest_sha256": "2546770111f88a6a345f3b5664dc6c8989d8440435375ae23bc4d65e0aa5019a",
+    "seal_sha256": "7ab42efc648acf0545514b4ecb7b6adc26b76d85de3d9d8c9332ce8472b3613d",
+    "self_contained": false
+  },
+  "source_commit": "cf14f7bf266468510b496e730ba8c4d9efbcc2f5",
+  "current_runtime_unchanged": true,
+  "measurement_complete": false,
+  "evidence_validity": "ENV_ABORT",
+  "performance_acceptance": false,
+  "note": "Compact receipts only. Large raw records, candidate snapshot and dependency anchors retain their original local paths. No new GPU timing attribution or performance acceptance."
+}

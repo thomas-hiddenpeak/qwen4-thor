@@ -1,0 +1,872 @@
+{
+  "schema": 1,
+  "evidence_integrity": "PASS",
+  "evidence_validity": "ENV_ABORT",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_EVALUATED_INCOMPLETE_PAIRS",
+  "engineering_decision": "PERFORMANCE_NO_GO_UNCHANGED",
+  "performance_acceptance": false,
+  "model_qualification": false,
+  "whole_trace_completeness_claimed": false,
+  "plan_sha256": "ec39fba4e8300241fe42c06bcc55dc65725ab42d2253889ee679b6e2fb6cc7c6",
+  "scope_sha256": "e1b10eea282aa942b9adcfc423f3f2b4b3e31cc5a1ec952cc419caf0de1439db",
+  "plan_files_verified": 23211,
+  "package_files_verified": 1765,
+  "model_metadata_verified": 197,
+  "cpu": {
+    "methods": 37,
+    "suites": 1,
+    "seconds": 1.3262631730176508,
+    "source_files": 428
+  },
+  "actual_http_responses": 1,
+  "actual_model_loads": 1,
+  "captures": {
+    "nsys8-off": {
+      "status": "PARTIAL",
+      "http_responses": 1,
+      "qualified": false,
+      "inputs": {
+        "step.json": "d94c2960b74802f3a6a32dcb4d2b9e3501b2b6ef511004ba33fab4a01d8a64bd",
+        "capacity.json": "6ffb90c902e94076ae5d748147d10daefd134166b198fe9a64b2d2bec3ac2746",
+        "target-exit.json": "60cc37333dca0f647936160cf6ab26769b49d677956db9560102bba85e9ee1c0",
+        "target-owned-identity.json": "3b48436f9b5243ef26678942d46e880db1c727970f1ab951a14806fdc21dc0fc",
+        "interactive-shutdown-command.json": "819b658ab00880251d4ec712085ee0dabbc1c95d244dfd774837e9ebc9e93036",
+        "results.json": "17c574ff86af57fcee59702e0538300254d96c7a72f404db4c7ef81f741271b8",
+        "interactive-shutdown-exit.json": "4dec587009cc997f7ab7dd92d03137a39311ef47ebd2070cb0c180cbc4e4425d",
+        "interactive-launch-command.json": "1a8c753f24c505465696ea0d58db57a59c71d87c8c3bb99e1787a68c9a041cfa",
+        "target-identity.json": "98afa75c4975b29fb7b5d838a41f99617d96d3cf938cac21dfa0600ca84830fe",
+        "server-command.json": "651b80a74ab44d746c4c887a56604941cde21ed65f8faaa3aac0931b48649022",
+        "external-stop-boundary.json": "b19ca2dc3cd420c09ac3fc99bdfd59cdd60e71f88d82dc0e4dbb065a76281862",
+        "synchronous-close.json": "12059b3132461499dc615f00c9416034e3075c2c5f5daaeff1ef760889642a74",
+        "interactive-owner.json": "a10c45d3c2b5a5abafd3517cfe319bb812c70f66a1de1f3c3fd09695fcb1985e",
+        "synchronous-report-ready.json": "5fbd3de43bb6a521705498ab6ef7a0087e315870b905fea251efc5ba644c79b9",
+        "interactive-start-command.json": "17d2af611810f69f0b7d964162690755b3eb93da80cf793916060bb4b2c914b8",
+        "interactive-reap.json": "5ac8f7a1df8de3a15f13d527c54cc442b091e19ab4cfb05cf2110e4a7bdb4023",
+        "profile-shutdown.json": "0ff041d140e8707013449d0bc2316b2c58175a53a004a95e2212caf98b05c00b",
+        "interactive-close.json": "ca8731382bf0a978489f2fb06bc086c25dcdc2c318ca6b6b2c6a79d6bf532268",
+        "interactive-start-exit.json": "f0f6fdce5be05e2380cd9de061ae25b9631b0842fb5804f00d9793ff1575a08c",
+        "interactive-final-cleanup.json": "4e70dfb684bc3f93915d1cb54769570ac6d45df65e6b1e967c771f44d038d8fd",
+        "interactive-launch.json": "18d43299c3030a82be730ffd18da6c854e892d091c7e7bb68aa256ff045fd79a",
+        "exit.json": "8951b76c39aeaa6a185008d13a99a2cc2d598e75c9a0c5a54f2f29ac497c6108",
+        "target-cleanup-identity.json": "9cee70674655c341af7d2dcc5a9a059befe965f928509df59c9aa84b0697f7c9"
+      },
+      "exit": {
+        "server": 0,
+        "launcher": 0,
+        "http_output_checks_passed": false,
+        "cleanup_errors": [
+          "RuntimeError('bounded regular output required: nvlog.log')",
+          "session shutdown: RuntimeError('bounded regular output required: nvlog.log')",
+          "EnvironmentAbort('owned model/session cleanup failed')"
+        ],
+        "execution_records_complete": false,
+        "trace_exports_complete": false,
+        "diagnostic_only": true,
+        "performance_acceptance_sample": false,
+        "performance_acceptance": false,
+        "collection_lifecycle": "interactive_api_sync_stop",
+        "failure": "EnvironmentAbort('owned model/session cleanup failed')"
+      },
+      "target_pid": 3444178,
+      "independent_work": [
+        {
+          "request_id": "chatcmpl-auto-0",
+          "input_tokens": 8170,
+          "verify_T4": 74,
+          "neural_draft_T1": 148,
+          "accepted_extend_calls": 74,
+          "accepted_extend_rows": 252,
+          "restore": 22,
+          "batches": 77,
+          "spans": 2716,
+          "scheduler_waits": 77,
+          "histogram": [
+            "7,8,7,52"
+          ],
+          "tail_T1": 3
+        }
+      ],
+      "failed_nvlog_statistics": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/nsys8-off-nvlog-volume.json",
+        "sha256": "ef7b5cd6c8d841d2f17201a5534c37af74eeb5cbfde01a199c18ba4c0b7984b4",
+        "complete_scan": true,
+        "bytes_scanned": 746229179,
+        "lines_scanned": 2066081,
+        "seconds": 17.508658956969157
+      },
+      "captured_reports": [
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/run/nsys8-off/trace.1.nsys-rep",
+          "bytes": 22260511,
+          "sha256": "3fb41abc3beb021ab5d43214321549fdd54c6fb84b4b6b2d1229c33fede58dc2",
+          "bound": false
+        }
+      ],
+      "synchronous-report-ready": {
+        "schema": 1,
+        "mode": "interactive_api_sync_stop",
+        "report_binding_revision": 1,
+        "session": "q4t-suffix-3444129-115046785-b1267b4f11fc0b6d-nsys8-off",
+        "owner": {
+          "pid": 3444129,
+          "start_ticks": 115046785,
+          "ppid": 3444112,
+          "pgid": 3444129,
+          "state": "R"
+        },
+        "started_monotonic": 1150544.965987058,
+        "deadline_monotonic": 1150589.965987058,
+        "target_receipt": {
+          "pid": 3444178,
+          "start_ticks": 115046856,
+          "profiler_stop_error": 0,
+          "source": "model-capture-end",
+          "raw": {
+            "event": "end",
+            "pid": "3444178",
+            "tid": "3445130",
+            "input_tokens": "8170",
+            "error": "0"
+          },
+          "expected_input_tokens": 8170
+        },
+        "launch_log": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/run/nsys8-off/server.log",
+          "device": 66305,
+          "inode": 5123391,
+          "bytes": 0,
+          "mtime_ns": 1792960385471857044
+        },
+        "report": null,
+        "generated_observation": null,
+        "generated_observation_after_hash": null,
+        "report_ready_succeeded": false,
+        "failure": "RuntimeError('bounded regular output required: nvlog.log')",
+        "scope": "Sync application-thread return acknowledges generation; unique owned report identity and SHA256 bind content; Generated is optional consistency evidence; trace coverage remains independent",
+        "finished_monotonic": 1150544.966099493
+      },
+      "interactive-shutdown-exit": {
+        "verb": "shutdown",
+        "session": "q4t-suffix-3444129-115046785-b1267b4f11fc0b6d-nsys8-off",
+        "command": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+          "shutdown",
+          "--session=q4t-suffix-3444129-115046785-b1267b4f11fc0b6d-nsys8-off",
+          "--kill=none"
+        ],
+        "owner": {
+          "pid": 3444129,
+          "start_ticks": 115046785,
+          "ppid": 3444112,
+          "pgid": 3444129,
+          "state": "R"
+        },
+        "started_monotonic": 1150545.693376764,
+        "deadline_monotonic": 1150560.693376764,
+        "finished_monotonic": 1150545.693701674,
+        "pid": null,
+        "returncode": null,
+        "failure": "RuntimeError('bounded regular output required: nvlog.log')",
+        "forced_control_cleanup": false,
+        "cleanup_errors": [],
+        "scope": "Control process only; not target exit or trace completeness"
+      },
+      "interactive-close": {
+        "owner": {
+          "pid": 3444129,
+          "start_ticks": 115046785,
+          "ppid": 3444112,
+          "pgid": 3444129,
+          "state": "R"
+        },
+        "original_subreaper": 0,
+        "restored_subreaper": 0,
+        "start_succeeded": true,
+        "stop_succeeded": false,
+        "shutdown_succeeded": false,
+        "failure": null,
+        "scope": "Subreaper restoration only; not collection or target success"
+      },
+      "profile-shutdown": {
+        "target": {
+          "pid": 3444178,
+          "returncode": 0,
+          "wrapper_pid": 3444166,
+          "finished_monotonic": 1150545.594925549
+        },
+        "launcher_returncode": 0,
+        "forced_target_kill": false,
+        "scope": "Actual q4t pidfd signal only; launcher allowed to finish trace."
+      },
+      "target-exit": {
+        "pid": 3444178,
+        "returncode": 0,
+        "wrapper_pid": 3444166,
+        "finished_monotonic": 1150545.594925549
+      }
+    },
+    "nsys8-on": {
+      "status": "NOT_STARTED",
+      "http_responses": 0,
+      "qualified": false
+    },
+    "nsys200-on": {
+      "status": "NOT_STARTED",
+      "http_responses": 0,
+      "qualified": false
+    },
+    "nsys200-off": {
+      "status": "NOT_STARTED",
+      "http_responses": 0,
+      "qualified": false
+    }
+  },
+  "raw_state": {
+    "status": "STOPPED",
+    "started": 1792960383.3986266,
+    "completed": [],
+    "requests_completed": 0,
+    "loads_started": 1,
+    "contract_seconds": 0,
+    "plan_sha256": "ec39fba4e8300241fe42c06bcc55dc65725ab42d2253889ee679b6e2fb6cc7c6",
+    "current": "nsys8-off",
+    "error": "RuntimeError('nsys8-off failed with 1')",
+    "finished": 1792960463.4630787,
+    "elapsed_seconds": 80.06445512198843,
+    "monitor_failures": []
+  },
+  "postflight": {
+    "status": "ENV_ABORT",
+    "state_sha256": "aaec00648c067a19def3a673bf75a37eb41c1e3a4ffe251dce81034a1bb90fc6",
+    "monitor_failures": [],
+    "cleanup_errors": [],
+    "child_cleanup_errors": [
+      {
+        "step": "nsys8-off",
+        "errors": [
+          "RuntimeError('bounded regular output required: nvlog.log')",
+          "session shutdown: RuntimeError('bounded regular output required: nvlog.log')",
+          "EnvironmentAbort('owned model/session cleanup failed')"
+        ]
+      }
+    ],
+    "final_summary_sha256": "360c4ac2ee881b080e7efb75654a68258a3db950ecef9b5256ed6257d9a19e70",
+    "final_monitor_barrier": {},
+    "final_monitor_errors": [],
+    "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+  },
+  "outer_lease": {
+    "status": "COMMAND_FAILED",
+    "command": [
+      "python3",
+      "-B",
+      "tools/mtp_suffix_nsys/gpu_pair_stage.py",
+      "--plan",
+      ".q4t-work/suffix-gpu-pairs-20261026/frozen-plan.json"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 1,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-10-25T20:34:24.164907+00:00",
+      "monotonic": 1150546.681792775,
+      "pid": 3444108
+    }
+  },
+  "telemetry": {
+    "schema": 1,
+    "sampler_status": "STOPPED",
+    "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+    "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/run/unified-memory.jsonl",
+    "started_monotonic": 1150465.919224132,
+    "started_unix_seconds": 1792960383.4023504,
+    "finished_monotonic": 1150545.979450647,
+    "finished_unix_seconds": 1792960463.4626167,
+    "sampler_elapsed_seconds": 80.0602265149355,
+    "sample_attempts": 81,
+    "flushed_samples": 81,
+    "unflushed_attempts": 0,
+    "final_successful_cycle_duration_seconds": 0.0224591048900038,
+    "final_successful_write_flush_seconds": 0.0002478538081049919,
+    "successful_cycle_duration_total_seconds": 2.0115833037998527,
+    "successful_write_flush_total_seconds": 0.03810940426774323,
+    "final_failed_attempt_elapsed_seconds": null,
+    "final_attempt_read_counts": {
+      "source_file_read_attempts": 53,
+      "ownership_file_read_attempts": 870,
+      "ownership_readlink_attempts": 435,
+      "owned_file_read_attempts": 5,
+      "directory_scan_attempts": 1,
+      "pidfd_open_attempts": 1,
+      "pidfd_binding_polls": 1,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "total_read_counts": {
+      "source_file_read_attempts": 4293,
+      "ownership_file_read_attempts": 71958,
+      "ownership_readlink_attempts": 35977,
+      "owned_file_read_attempts": 7554,
+      "directory_scan_attempts": 158,
+      "pidfd_open_attempts": 654,
+      "pidfd_binding_polls": 654,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "setup_file_read_attempts": 1,
+    "total_file_read_attempts": 83806,
+    "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+    "sampler_failure": null,
+    "failures_at_exit": [],
+    "sampler_failure_context": null,
+    "sampler_failure_traceback": null,
+    "sampler_failure_task_state": null,
+    "exit_confirmation_policy": {
+      "per_task_ms": 50,
+      "per_sample_ms": 100,
+      "io_retries": 0,
+      "zero_fill": false,
+      "pending_capacity": 16,
+      "pending_seconds": 5,
+      "pending_poll_timeout_ms": 0,
+      "pending_requires_pf_exiting": true
+    },
+    "exit_pending": {
+      "active": 0,
+      "admitted": 0,
+      "resolved": 0,
+      "maximum_active": 0,
+      "last_resolutions": [],
+      "entries": []
+    },
+    "last_flushed_heartbeat": 1150545.958006783,
+    "source_count": 53
+  },
+  "failure_monitor_barrier": {
+    "child_pid": 3444129,
+    "complete": true,
+    "scope": "Post-owned-step-PGID cleanup only. Detached Nsight descendants are handled and audited separately by the outer guard; this is not a post-all-descendant-cleanup barrier. Normal success uses the original final barrier.",
+    "cleanup_returned": true,
+    "boundary_monotonic": 1150545.929045667,
+    "sample_started_monotonic": 1150545.935547678,
+    "flushed_monotonic": 1150545.958006783,
+    "monitor_failures": []
+  },
+  "memory_observations": {
+    "samples": 81,
+    "system_used_proxy_peak_bytes": 113831604224,
+    "system_available_min_bytes": 18089033728,
+    "swap_used_peak_bytes": 2047721472,
+    "max_sample_seconds": 0.054316659923642874,
+    "unavailable": [
+      {
+        "label": "pressure_cpu",
+        "path": "/proc/pressure/cpu",
+        "reason": "missing_or_not_readable_at_discovery",
+        "status": "UNAVAILABLE"
+      },
+      {
+        "label": "pressure_io",
+        "path": "/proc/pressure/io",
+        "reason": "missing_or_not_readable_at_discovery",
+        "status": "UNAVAILABLE"
+      },
+      {
+        "label": "pressure_memory",
+        "path": "/proc/pressure/memory",
+        "reason": "missing_or_not_readable_at_discovery",
+        "status": "UNAVAILABLE"
+      }
+    ],
+    "scope": "System MemTotal minus MemAvailable proxy includes other processes and cache effects; not a sum of CUDA host/device/managed allocations or an incremental collector peak."
+  },
+  "process_observation_statuses": {
+    "OK": 654
+  },
+  "thread_observation_statuses": {
+    "OK": 1071,
+    "VANISHED": 2
+  },
+  "owned_processes": [
+    {
+      "pid": 3443992,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444108,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444110,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444112,
+      "expected_start_ticks": 115046577,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444113,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444126,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444129,
+      "expected_start_ticks": 115046785,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444130,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444143,
+      "expected_start_ticks": 115046808,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444151,
+      "expected_start_ticks": 115046814,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444165,
+      "expected_start_ticks": 115046831,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444166,
+      "expected_start_ticks": 115046831,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444167,
+      "expected_start_ticks": 115046831,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444178,
+      "expected_start_ticks": 115046856,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444182,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444192,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444199,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444208,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444224,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444254,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444284,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444322,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444352,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444368,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444398,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444414,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444451,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444481,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444498,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444532,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444555,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444600,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444616,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444646,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444676,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444706,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444736,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444771,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444801,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444831,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444862,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444911,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444941,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3444971,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445001,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445003,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445005,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445007,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445009,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445029,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445031,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445038,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445057,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445059,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445062,
+      "expected_start_ticks": 115051263,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445063,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445078,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445095,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445121,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445123,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445138,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445140,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445142,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445147,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445149,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445151,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445153,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445155,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445157,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445159,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445161,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445163,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445171,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445205,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445231,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445236,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445240,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445247,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445251,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445260,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445263,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445265,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445270,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445272,
+      "expected_start_ticks": 115054225,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445288,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445294,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445304,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    },
+    {
+      "pid": 3445309,
+      "expected_start_ticks": null,
+      "status": "ABSENT"
+    }
+  ],
+  "observed_owned_pgids": [
+    3444112,
+    3444129,
+    3444166
+  ],
+  "pgid_members": [],
+  "proc_scan_errors": [],
+  "current_lock_records": [],
+  "checks": {
+    "passed": 25869
+  },
+  "integrity_errors": [],
+  "environment_errors": [
+    "postflight-child: [{'step': 'nsys8-off', 'errors': [\"RuntimeError('bounded regular output required: nvlog.log')\", \"session shutdown: RuntimeError('bounded regular output required: nvlog.log')\", \"EnvironmentAbort('owned model/session cleanup failed')\"]}]",
+    "recorded environment abort",
+    "nsys8-off: [\"RuntimeError('bounded regular output required: nvlog.log')\", \"session shutdown: RuntimeError('bounded regular output required: nvlog.log')\", \"EnvironmentAbort('owned model/session cleanup failed')\"]"
+  ],
+  "qualification_errors": [],
+  "measurement_gaps": [
+    "nsys8-off: final NVLOG has no original snapshot to reconcile",
+    "nsys8-off: local recorded-GPU gate not passed",
+    "nsys8-on: NOT_STARTED",
+    "nsys200-on: NOT_STARTED",
+    "nsys200-off: NOT_STARTED"
+  ],
+  "final_raw_seal_sha256": "876e44a7e57fb0ced443364c55757ef730d2eb7ce9cc73606a6b04c68478290e",
+  "elapsed_seconds": 21.976300196023658,
+  "limits": [
+    "Only existing recorded-GPU evidence is reviewed; no analyzer/export/capture/test was rerun.",
+    "Strict warnings/unknown memory arguments remain preserved; no cross-process parameter fill.",
+    "Failed measurement and complete preservation of failure evidence are separate outcomes.",
+    "Kernel gaps are not GPU idle proof; wall minus thread CPU is not GPU wait.",
+    "One instrumented pair is not normal performance acceptance; previous protection NO_GO remains.",
+    "Polling does not exclude interference shorter than sample intervals."
+  ]
+}
