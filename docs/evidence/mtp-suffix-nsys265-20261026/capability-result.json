@@ -1,0 +1,85 @@
+{
+  "status": "STATIC_CAPABILITY_COLLECTED_NOT_QUALIFIED",
+  "scope_sha256": "e550d405c28b09eb61b0d345e620b5aa917197c51600891381f809ea3dca154e",
+  "commands": [
+    {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+        "--version"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06384131009690464,
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/version.txt",
+      "sha256": "55a61143f9eab425f4bac326a3bc9fe816b16de4ec90586c8694834fbfd13f9a"
+    },
+    {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+        "start",
+        "--help"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06375831994228065,
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/start-help.txt",
+      "sha256": "65e2f9682dd769af3fd8f35dabf74b34e28b1febc16de1a922d14a94bcb4929a"
+    },
+    {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+        "launch",
+        "--help"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06368652288801968,
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/launch-help.txt",
+      "sha256": "97361e17d347a76fa08e10b0ce5785af059023176dc4d44b530b68f79ffefd90"
+    },
+    {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+        "stop",
+        "--help"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06367250508628786,
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/stop-help.txt",
+      "sha256": "83ca815ce73522d7b8bbe6345d47488d6e6bd4d4159b74e2bb2341586b23b244"
+    },
+    {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+        "shutdown",
+        "--help"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06367798801511526,
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/shutdown-help.txt",
+      "sha256": "816c0c82323b136c3767872ac176c572b37641921079e885d1dd31afa01326e9"
+    },
+    {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+        "profile",
+        "--help"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06360228196717799,
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/profile-help.txt",
+      "sha256": "05b2ac362d7cbe083c75700adc0d1d8f5bab1ad2b176ca7e8b2d2f9bd9844cfa"
+    },
+    {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/nsys",
+        "export",
+        "--help"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0315274849999696,
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/export-help.txt",
+      "sha256": "e894c4d820e041bad45fccfa88ec13191f76ba22efc59c4c7375fa3741318a9d"
+    }
+  ],
+  "package_files_verified": 1765,
+  "package_unchanged": true,
+  "elapsed_seconds": 1.4675659809727222
+}

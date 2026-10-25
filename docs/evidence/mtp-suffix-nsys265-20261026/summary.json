@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "source_entry_commit": "d897a1e68adda2fd460356081335fcd89abb34b2",
+  "phase": "single isolated Nsight 2026.5.1.161 qualification",
+  "plan": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/qualification-v1/frozen-plan.json",
+    "sha256": "201619eb2a524dc9347e214d6b7e63bbd1311eba9abcb43ede094cc90c620a82"
+  },
+  "audit": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/audit-v1/audit-stage.json",
+    "sha256": "f2f9e9146f9414d0a1fe75cb0b880af1ced8121de0b663a769b80e40882e1298"
+  },
+  "four_fields": {
+    "evidence_validity": "ENV_ABORT",
+    "measurement_complete": false,
+    "statistical_conclusion": "NOT_EVALUATED_DIAGNOSTIC_ONLY",
+    "engineering_decision": "NOT_ACCEPTED_TOOL_VALIDATION_ABORT"
+  },
+  "evidence_integrity": "PASS",
+  "stage_elapsed_seconds": 8.052779951132834,
+  "actual_new_fixture_attempts": 1,
+  "completed_new_fixture_controls": 0,
+  "actual_http_requests": 0,
+  "actual_model_loads": 0,
+  "monitor": {
+    "attempts": 9,
+    "flushed": 9,
+    "same_identity_exit_missing_io": 1,
+    "pending_admitted": 0,
+    "owned_identities": 7,
+    "owned_all_absent": true,
+    "recorded_pgids_empty": true
+  },
+  "reuse": {
+    "cpu32": true,
+    "cpu86": true,
+    "native64": true,
+    "normal_repeat_benefits": true,
+    "full_head_repeat_code_text_percent": [
+      13.6774,
+      14.4034
+    ],
+    "subset_shared_b_descriptive_geomean_percent": [
+      6.5335,
+      6.7304
+    ],
+    "limits": "Original identities and finite correctness/quality/statistical scope; no new optimization acceptance"
+  },
+  "default_unchanged": {
+    "binary": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "sidecar": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "subset_manifest": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce"
+  },
+  "new_runtime_candidate": false,
+  "deployment": false,
+  "full_goal_complete": false,
+  "tool_failure_cause": "Same internal RangeCollectionState::Stop rejection persists; no proven actionable local cause",
+  "backend": "Explicit target NVLOG SOFTWARE_FALLBACK; both new and old tool reported HES failure then software fallback",
+  "trace_completeness": "UNVALIDATED; report never exported after forced cleanup",
+  "target_exit_status": "UNKNOWN; launcher status not substituted",
+  "files": {
+    "audit.json": "f2f9e9146f9414d0a1fe75cb0b880af1ced8121de0b663a769b80e40882e1298",
+    "audit.md": "8a155c0120d799105ce1e0131301e9760cef070f65d809d8d32875f03997db99",
+    "capability-result.json": "b83ca7f5a9e08926d5c02c42f44a70e3ec8dbf02e6f2abd02197092b6ce5ef1c",
+    "offline-receipts.json": "95aa35976da0b36395dec2eedf634e7c6f3f2b6f261b3d31832febda21138853",
+    "offline-review-result.json": "52536f00db2fe68d06e06e57a42382a874854550f9771bb72c3fe175620ca761",
+    "preparation-review.json": "ca7611ef413899f27fc71099fb2cd0e2c0afaefd7f919ef2acce1e732a9360f4",
+    "archive-result.json": "389c8dfbd881f4e1ab31f3f573d578ac15016c2a64b27633a7d878c7c1325396"
+  },
+  "archive": {
+    "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/archive-closed",
+    "inventory_sha256": "d0d18f35073ac31150d0289b28b63b62d2631ff9b6b6cbca26fa1d9cf5b06252",
+    "manifest_sha256": "443481156a010ee447c7d15f0db475c17c9b1721a3c9f1ca4891f4aa55ba888c",
+    "seal_sha256": "7b58904be3e2c80d850073c3d667129a9aa87da23f1f14bb09ca637a97cea1ee",
+    "entries": 101,
+    "payload_bytes": 254501440,
+    "self_contained": false,
+    "source_preserved": true,
+    "scope": "Incremental immutable copies plus explicitly retained parent archive/original paths; not a standalone release rollback package."
+  }
+}

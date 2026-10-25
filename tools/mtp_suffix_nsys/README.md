@@ -7,6 +7,17 @@ are recorded in `docs/MTP_SUFFIX_NSYS_RERUN_2026-10-24.md`. The latest two-contr
 interactive stage and its failed outcome are recorded in
 `docs/MTP_SUFFIX_DELIVERY_2026-10-26.md`.
 
+`prepare_nsys265.py` binds one isolated 2026.5.1.161 dependency candidate and
+reuses unchanged CPU proofs and the large parent snapshot. Its two fresh
+controls and conditional six HTTP requests retain the existing strict gates;
+see `docs/MTP_SUFFIX_NSYS_265_2026-10-26.md`. The new version documents hardware
+trace as the default for `cuda` on supported Blackwell GPUs, with possible
+software fallback. Static help does not qualify the actual backend or trace.
+The one 2026.5.1 run also rejected the first interactive stop and ended after
+8.052780 seconds with ENV_ABORT, zero model loads and zero HTTP. Both old and
+new target logs explicitly report HES failure followed by software fallback;
+this is not a new causal explanation. No failed report was exported or retried.
+
 `fixture.cu` executes 32 independently checked kernel operations, 32 H2D and
 32 D2H transfers, 32 nonzero memsets (512/16384 bytes alternating), and 33 named
 NVTX ranges. Its ordinary CUDA allocations occur

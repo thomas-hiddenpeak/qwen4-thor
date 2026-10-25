@@ -1,0 +1,48 @@
+{
+  "status": "ARCHIVED_ENV_ABORT_TOOL_NOT_QUALIFIED",
+  "independent_copies": true,
+  "readback_verified": true,
+  "source_preserved": true,
+  "self_contained": false,
+  "external_anchors": {
+    "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/archive-closed",
+    "manifest_sha256": "e98dfe6258236e6cf17e3a6a412406086c14a828dbb371b9a0a0bb6104711e52",
+    "seal_sha256": "50d40526d7a6357199d8eff078f97a9a6b398720a865cc2f3b8ac30a0c9c5702",
+    "source_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/source-snapshot",
+    "mapping_sha256": "a3ef8d927bf819f35bec599ff28e2a2559e13c71012357b8e5c4ceec7b253b9f",
+    "snapshot_files": 21297,
+    "proofs": [
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/cpu-proof.json",
+        "sha256": "8c86269186be00ca101784645f495fb87a2e7f81e4a22dba7029e5adaa060cce",
+        "tests": 32,
+        "suite_runs": 1
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/cpu-proof.json",
+        "sha256": "921599941ba2a50c8f103417755b8900f1cbb2fb4a5c599ad576b21ad1809614"
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/exit-pending-native.json",
+        "sha256": "80df75c8055a0016fe3e7be6879974b737e7a49277a4f1cbd2989a1bb99776d5",
+        "completed_children": 64,
+        "coverage_reproduced": true,
+        "scope": "Native CPU-only coverage; zero reproduction is explicit and does not claim native coverage of the pending branch."
+      }
+    ],
+    "scope": "Original paths and prior archive chain remain required; this incremental archive is NOT self-contained."
+  },
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/archive-closed",
+  "inventory_sha256": "d0d18f35073ac31150d0289b28b63b62d2631ff9b6b6cbca26fa1d9cf5b06252",
+  "manifest_sha256": "443481156a010ee447c7d15f0db475c17c9b1721a3c9f1ca4891f4aa55ba888c",
+  "entries": 101,
+  "payload_bytes": 254501440,
+  "elapsed_seconds": 0.8407517659943551,
+  "measurement_complete": false,
+  "deployment": false,
+  "new_http": 0,
+  "new_model_starts": 0,
+  "archive_inference_or_gpu_operations": 0,
+  "scope": "Offline incremental archive only; one archived GPU fixture attempt.",
+  "seal_sha256": "7b58904be3e2c80d850073c3d667129a9aa87da23f1f14bb09ca637a97cea1ee"
+}

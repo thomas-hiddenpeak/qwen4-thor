@@ -1,0 +1,18 @@
+{
+  "scope": "Static independent review, no executed tests or profiler qualification",
+  "source": "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/prepare_nsys265.py",
+  "sha256": "aa06eafaf3fee3851f06bcd5414577b33477360e3eac81d1cf150dcc865d7a26",
+  "reviewers": [
+    "root",
+    "runtime_audit"
+  ],
+  "reviewed": [
+    "Original CPU32 full dependency ledger and explicit preparation-only exclusion",
+    "Exact package/version/ELF and all 1765 entries with contained symlinks",
+    "Original ENV_ABORT raw/snapshot binding and small immutable overlay",
+    "Current nsys path and complete static capability replace prior tool; old references historical only",
+    "Two controls, six conditional HTTP, four model starts, 4800s, no retries"
+  ],
+  "findings": [],
+  "limits": "Static review and preparation verification do not prove collector compatibility"
+}

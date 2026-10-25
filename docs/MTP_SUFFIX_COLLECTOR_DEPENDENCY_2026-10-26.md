@@ -79,3 +79,8 @@ warning与清理资格，不能复用旧collector作为新版本已通过。通�
 
 两head重复收益按原身份复用，默认f356、sidecar和子集保持。完整目标仍
 未完成。本轮是新证据及工具候选准备，没有新的性能结论或部署。
+
+后续同日已完成该固定包的一次独立资格：首interactive stop仍拒绝，
+ENV_ABORT、0模型/0HTTP；未接受该工具或交付suffix。新的实际CUPTI/backend、
+审计与归档见[资格结果](MTP_SUFFIX_NSYS_265_2026-10-26.md)，不改写本准备
+阶段的零执行记录。

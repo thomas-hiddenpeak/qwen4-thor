@@ -1,0 +1,12 @@
+{
+  "status": "COMPLETE_NO_ACTIONABLE_LOCAL_CAUSE",
+  "wall_seconds": 205.0569314956665,
+  "budget_seconds": 600,
+  "scope_sha256": "5672cce67f85473493af81f29cd68dda337edd6416399140b227cbe42b4fb3e2",
+  "receipts_sha256": "95aa35976da0b36395dec2eedf634e7c6f3f2b6f261b3d31832febda21138853",
+  "root_review": "Selected new/old logs, target identity, report hash and documented contract; no export or trace-completeness inference",
+  "independent_review": "runtime_audit: 8 fixed files; no new local repair proven",
+  "gpu_captures": 0,
+  "exports": 0,
+  "tests": 0
+}

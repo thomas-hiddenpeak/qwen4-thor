@@ -1,0 +1,98 @@
+{
+  "scope": "Offline original NVLOG receipts only. No report export, no trace completeness or suffix performance inference.",
+  "plan_sha256": "201619eb2a524dc9347e214d6b7e63bbd1311eba9abcb43ede094cc90c620a82",
+  "nvlog": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/qualification-v1/run/fixture-controls/direct-interactive/nvlog.log",
+    "sha256": "21aa945c925e18c0ea701a1074c9cc40bb99fd1fa11b335bae507a0c5c7e57f7",
+    "bytes": 899226
+  },
+  "target_identity": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/qualification-v1/run/fixture-controls/direct-interactive/fixture-owned-identity.json",
+    "sha256": "288aa8fc4d26ead6ec95eac4a802c8008c7bca0d3343541f2174c710764dfe0d",
+    "pid": 3412250
+  },
+  "trace_backend": {
+    "requested": "cuda",
+    "observed": "SOFTWARE_FALLBACK",
+    "explicit_fallback": true,
+    "evidence_lines": [
+      1400,
+      1410
+    ],
+    "limits": "Target logger reports failed HES enable and software fallback; no independently exported activity/schema evidence"
+  },
+  "cupti": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libcupti-sbsa.so.13.4",
+    "source_line": 1202,
+    "sha256": "22f558a271943b628b97daf70dd1754db190394c6d0597c3fd9d00fd4e15f45e"
+  },
+  "excerpts": [
+    {
+      "line": 1125,
+      "text": "I01:28:11.506| Injection |                          fixture pid=3412250 tid= 3412254 | ProfilerApiImpl.cpp:294 [Notify]: Capture range triggers = 2, capture range end action = 0, flush on cudaProfilerStop = true"
+    },
+    {
+      "line": 1202,
+      "text": "I01:28:11.546| quadd_cuda_tracing |                          fixture pid=3412250 tid= 3412250 | CuptiLibrary.cpp:92 [LoadCuptiLibrary]: Loaded CUPTI library /home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libcupti-sbsa.so.13.4"
+    },
+    {
+      "line": 1400,
+      "text": "I01:28:11.594| quadd_cuda_tracing |                          fixture pid=3412250 tid= 3412250 | CallbackHandler.cpp:1387 [ResourceCallbackHandler]: Enabling HES trace via CUPTI"
+    },
+    {
+      "line": 1410,
+      "text": "I01:28:11.607| quadd_cuda_tracing |                          fixture pid=3412250 tid= 3412250 | CallbackHandler.cpp:1412 [ResourceCallbackHandler]: CUPTI failed to enable HES trace. Falling back to legacy (software instrumentation) tracing. CUptiResult=27"
+    },
+    {
+      "line": 2644,
+      "text": "I01:28:11.908| Injection |                          fixture pid=3412250 tid= 3412250 | CudaInjectionInit.cpp:2586 [OnCudaProfilerStop]: Synchronizing and flushing CUPTI buffers on profiler stop"
+    },
+    {
+      "line": 2723,
+      "text": "I01:28:11.908| quadd_cuda_tracing |                          fixture pid=3412250 tid= 3412250 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for cudaProfilerStop: CUptiResult=0"
+    },
+    {
+      "line": 4235,
+      "text": "E01:28:12.000| quadd_agent |                             nsys pid=3412227 tid= 3412232 | AgentSession.cpp:82 [operator()]: /dvs/p4/build/sw/devtools/Agora/Rel/QuadD_Main/QuadD/Target/Daemon/Agent/SessionStateImpl.cpp(492): Throw in function virtual void QuadDDaemon::RangeCollectionState::Stop(QuadDDaemon::ISessionState::StopReason, boost::optional<QuadDDaemon::PendingRequestWithResponse<Agent::StopRequest, Agent::StopResponse> >)"
+    },
+    {
+      "line": 4238,
+      "text": "[QuadDCommon::tag_message*] = Range collection stop is not expected."
+    },
+    {
+      "line": 4417,
+      "text": "I01:28:12.302| quadd_verbose_daemon_evtsrc_trace_event_details |                             nsys pid=3412227 tid= 3412233 | Trace.cpp:2171 [ReadStorageImpl]: { Timestamp=1139395142639778 Serial=0 Event={ Diagnostics={ Time=1139395142639778 Type=0 Source=0 Level=1 Text=\"Loaded CUPTI library: /home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted/opt/nvidia/nsight-systems-cli/2026.5.1/target-linux-sbsa-armv8/libcupti-sbsa.so.13.4\" } } Persistent=1 TimestampType=3 }"
+    }
+  ],
+  "parent": {
+    "nvlog": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+    "sha256": "5b10207b04d32a88e1c5391eb6b0adb56c0b73be4b51d0b013b5dec2b46bf130",
+    "excerpts": [
+      {
+        "line": 1372,
+        "text": "I00:41:16.385| quadd_cuda_tracing |                          fixture pid=3406149 tid= 3406149 | CallbackHandler.cpp:728 [ResourceCallbackHandler]: CUPTI failed to enable HES trace. Falling back to legacy (software instrumentation) tracing. CUptiResult=27"
+      },
+      {
+        "line": 4943,
+        "text": "E00:41:16.747| quadd_agent |                             nsys pid=3406120 tid= 3406125 | AgentSession.cpp:80 [operator()]: /dvs/p4/build/sw/devtools/Agora/Rel/CUDA13.3/QuadD/Target/Daemon/Agent/SessionStateImpl.cpp(483): Throw in function virtual void QuadDDaemon::RangeCollectionState::Stop(QuadDDaemon::ISessionState::StopReason, boost::optional<QuadDDaemon::PendingRequestWithResponse<Agent::StopRequest, Agent::StopResponse> >)"
+      },
+      {
+        "line": 4946,
+        "text": "[QuadDCommon::tag_message*] = Range collection stop is not expected."
+      }
+    ],
+    "same_start_warning": true,
+    "start_warning_sha256": "adc7930fe7c1d9037cc0552ac59a6dfef2d69662ce24cf174b065fa05bea253f",
+    "limits": "Both tools report HES fallback with result27; start warning is unchanged. Neither is evidence that the new version caused or fixed stop rejection."
+  },
+  "report": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/qualification-v1/run/fixture-controls/direct-interactive/trace.nsys-rep",
+    "bytes": 82478,
+    "sha256": "f3c50f87ac5e283e585eef6c12ba0291a4540d043be304dcf78529f3e6fe559e",
+    "exported": false,
+    "integrity": "UNVALIDATED"
+  },
+  "conclusion": "Same StopRequest lifecycle rejection persists with the one new dependency. Work/flush receipts do not prove trace completeness or an actionable local cause.",
+  "preparation_read_correction": "Initial summary generation referenced nonexistent target-identity.json/fixture-identity.json; corrected to actual fixture-owned-identity.json. No original or output artifact was modified by failed reads; no profiler/export/test rerun.",
+  "finished_unix": 1792949477.6498091
+}
