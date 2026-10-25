@@ -1,0 +1,11 @@
+{
+  "prior_script_sha256": "cd6c9d7ed603547b4d5d58fe48451cd8b5c8a9430b903c92c6af631b77e62704",
+  "prior_result_sha256": "1b720f87d64375f6d38048d72e3ef302a86491444736e7da73764c5bd52d81a1",
+  "failure": "Prefix selector included unversioned metapackage as a second CLI build.",
+  "correction": "Select exact versioned package name nsight-systems-cli-2026.5.1; metapackage only depends on it. Preserve same version/repository, original deadline and single artifact download budget.",
+  "metadata_refetched": false,
+  "new_versions": 0,
+  "gpu_stages": 0,
+  "artifact_downloads_already_used": 0,
+  "previous_attempt_preserved": true
+}

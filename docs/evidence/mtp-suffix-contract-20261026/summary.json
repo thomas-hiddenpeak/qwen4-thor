@@ -1,0 +1,61 @@
+{
+  "goal_status": "INCOMPLETE_ACTIVE",
+  "previous_turn": "PROGRESS",
+  "current_turn": "PROGRESS",
+  "runtime_changed": false,
+  "new_profiler_invocations": 0,
+  "new_gpu": 0,
+  "new_tests": 0,
+  "new_http": 0,
+  "default_replacement": false,
+  "original_optimization_no_go_unchanged": true,
+  "new_evidence": [
+    "Generic profile-plus-stop incompatibility claim contradicted by official support example",
+    "2026.5.1 includes a related multiprocess CUDA-stop flush improvement; exact local failures not proved fixed",
+    "One pinned official ARM64 CLI artifact acquired and isolated, not qualified"
+  ],
+  "web_budget": {
+    "search_queries": 8,
+    "open_attempts": 6,
+    "successful_pages": 4
+  },
+  "package": {
+    "Package": "nsight-systems-cli-2026.5.1",
+    "Version": "2026.5.1.161-265138896106v0",
+    "Architecture": "arm64",
+    "Filename": "nsight-systems-cli-2026.5.1_2026.5.1.161-1_arm64.deb",
+    "SHA256": "087c08b5ddf3ed6f913748f8206d6bbdc225f2aa275ff33af4c487e8b319c8ab",
+    "Size": "208229554"
+  },
+  "package_result": "PREPARED_NOT_QUALIFIED",
+  "package_elapsed_seconds": 185.6827471256256,
+  "package_network_requests": {
+    "metadata": 2,
+    "artifact": 1,
+    "retries": 0
+  },
+  "package_preparation_attempts": 2,
+  "limits": [
+    "No executable/installer scripts from package invoked",
+    "No independent repository signature verification claim; official HTTPS SHA256/size chain checked",
+    "No old warning or StopRequest classification changed to passed",
+    "6381 missing memory activities remain UNKNOWN_CAPABILITY",
+    "No new optimization acceptance or five-tier result"
+  ],
+  "proof_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/scope.json": "3dbe4de0061cc8e35c263a10f79e0a9ccab8a1f61521fb192441598f5142bc83",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/review-outcome.json": "ef6b694a9fa99180d03c393658c304f8c787045adc398b4524abf867a323467f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/installed-tool-receipt.json": "63c94ee8174728a263775ad234488bfcf5a87ea0d09ab7640c213ab397f88d91",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/local-contract.md": "b9005820c11a9be7a4790a08e32132e7014a4e472a969e670518b07fe2708550",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/completion-matrix.md": "dfebdd308333f83c3b3aea4db109597262eb3fa6d9022f92d4756e83c0bced53",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/candidate-assessment.md": "31f0ca1ccc1dd1d1742cd7717d139de9251322b8e18e4746df5bc5b19ffb8cbf",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/web/manifest.json": "73ec33071c407aaab5ebe48e7e983648e3734f7a91eb7821d884cdab599690d9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/scope.json": "6f2b14a767b94abed96c9c91a41aba92e9b38dd3b606bf1b49e08dda5eb669b6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/result.json": "1b720f87d64375f6d38048d72e3ef302a86491444736e7da73764c5bd52d81a1",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/result-v2.json": "64c7d474493822d969565a6364ee2da962671c1dcb4d5ad95b085b4874291105",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/prepare_package.py": "cd6c9d7ed603547b4d5d58fe48451cd8b5c8a9430b903c92c6af631b77e62704",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/prepare_package_v2.py": "d7d5af14c41ca68b53fbd51dbadb0d6270fc03e73133a84bb3bb0b1ce26d5a0f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/specific-parser-correction.json": "3e6a84f49f7eadc8c1d7fab94638ad6c27b846bedf8bf8f61b557a03cb160cd6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/extracted-manifest.json": "876d4201d6d7d5dba20eeaa77d988c722fbc0862dfc4d6dc015ed47352d7a1d1"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "scope_sha256": "6f2b14a767b94abed96c9c91a41aba92e9b38dd3b606bf1b49e08dda5eb669b6",
+  "status": "PREPARED_NOT_QUALIFIED",
+  "requests": [
+    {
+      "operation": "reuse_verified_metadata_no_network",
+      "url": "https://developer.download.nvidia.com/devtools/repos/ubuntu2404/arm64/Packages.gz",
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/Packages.gz",
+      "started_unix": 1792947981.7030694,
+      "http_status": 200,
+      "final_url": "https://developer.download.nvidia.com/devtools/repos/ubuntu2404/arm64/Packages.gz",
+      "bytes": 19932,
+      "sha256": "c15db75351ad66ec2481b6ff33c4cc956c29ddf11873524ef10c541f678859e1",
+      "finished_unix": 1792947982.6906435
+    },
+    {
+      "operation": "reuse_verified_metadata_no_network",
+      "url": "https://developer.download.nvidia.com/devtools/repos/ubuntu2404/arm64/Release",
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/Release",
+      "started_unix": 1792947982.6907554,
+      "http_status": 200,
+      "final_url": "https://developer.download.nvidia.com/devtools/repos/ubuntu2404/arm64/Release",
+      "bytes": 498,
+      "sha256": "aa0d9510187026dd2b50a004482f3caa1cd450159a7718221ec39daa6e01524f",
+      "finished_unix": 1792947984.8975863
+    },
+    {
+      "url": "https://developer.download.nvidia.com/devtools/repos/ubuntu2404/arm64/nsight-systems-cli-2026.5.1_2026.5.1.161-1_arm64.deb",
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-dependency-20261026/nsight-systems-cli-2026.5.1_2026.5.1.161-1_arm64.deb",
+      "started_unix": 1792948052.2319255,
+      "http_status": 200,
+      "final_url": "https://developer.download.nvidia.com/devtools/repos/ubuntu2404/arm64/nsight-systems-cli-2026.5.1_2026.5.1.161-1_arm64.deb",
+      "bytes": 208229554,
+      "sha256": "087c08b5ddf3ed6f913748f8206d6bbdc225f2aa275ff33af4c487e8b319c8ab",
+      "finished_unix": 1792948093.0810542
+    }
+  ],
+  "package": {
+    "Package": "nsight-systems-cli-2026.5.1",
+    "Version": "2026.5.1.161-265138896106v0",
+    "Architecture": "arm64",
+    "Filename": "nsight-systems-cli-2026.5.1_2026.5.1.161-1_arm64.deb",
+    "SHA256": "087c08b5ddf3ed6f913748f8206d6bbdc225f2aa275ff33af4c487e8b319c8ab",
+    "Size": "208229554"
+  },
+  "profiler_invocations": 0,
+  "gpu_stages": 0,
+  "http_requests": 0,
+  "system_mutations": false,
+  "retries": 0,
+  "matching_packages": [
+    {
+      "Package": "nsight-systems-2026.5.1",
+      "Version": "2026.5.1.161-265138896106v0",
+      "Architecture": "arm64",
+      "Filename": "nsight-systems-2026.5.1_2026.5.1.161-1_arm64.deb",
+      "SHA256": "3db85a9f0045e8991572c1235b103027cc418cf4eee0f22d63ded05f61943ab8",
+      "Size": "470289134",
+      "Depends": "libc6, libglib2.0-0, libtinfo6, libxcb-xinerama0, libxcb-icccm4, libxcb-image0, libxcb-keysyms1, libxcb-randr0, libxcb-render-util0, libxcb-xfixes0, libxcb-shape0, libxkbcommon-x11-0, libxcb-xinput0, libxcb-cursor0, libfontconfig1, libdbus-1-3, libnss3, libxcomposite1, libxdamage1, libxrandr2, libxtst6, libopengl0, libegl1, libgssapi-krb5-2, libatomic1, libxi6, libxcb-dri2-0"
+    },
+    {
+      "Package": "nsight-systems-cli-2026.5.1",
+      "Version": "2026.5.1.161-265138896106v0",
+      "Architecture": "arm64",
+      "Filename": "nsight-systems-cli-2026.5.1_2026.5.1.161-1_arm64.deb",
+      "SHA256": "087c08b5ddf3ed6f913748f8206d6bbdc225f2aa275ff33af4c487e8b319c8ab",
+      "Size": "208229554",
+      "Depends": "libc6, libglib2.0-0"
+    },
+    {
+      "Package": "nsight-systems-cli",
+      "Version": "2026.5.1.161",
+      "Architecture": "arm64",
+      "Filename": "nsight-systems-cli.deb",
+      "SHA256": "7f6c70d16d8d22e2cd96b976bf7795bdad45b00970a735788c0d1c7128d619b9",
+      "Size": "2024",
+      "Depends": "nsight-systems-cli-2026.5.1"
+    },
+    {
+      "Package": "nsight-systems",
+      "Version": "2026.5.1.161",
+      "Architecture": "arm64",
+      "Filename": "nsight-systems.deb",
+      "SHA256": "9b3727ff16c946a22261c8f96cc42b33063ce7e9fc374c6f302582a94ce57475",
+      "Size": "2022",
+      "Depends": "nsight-systems-2026.5.1"
+    }
+  ],
+  "extraction": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "extracted_files": 1765,
+  "manifest_sha256": "876d4201d6d7d5dba20eeaa77d988c722fbc0862dfc4d6dc015ed47352d7a1d1",
+  "authority": "Official HTTPS repository Release->Packages.gz->package SHA256/size chain; no independent signature claim.",
+  "limits": "No package binary, installer/maintainer script, profiler, model or GPU was executed. Compatibility and runtime qualification remain unverified.",
+  "finished_unix": 1792948095.746495,
+  "elapsed_seconds": 185.6827471256256
+}

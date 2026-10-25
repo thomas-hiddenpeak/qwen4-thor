@@ -2,7 +2,17 @@
 
 更新：2026-10-26。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
-固定k3 suffix交付目标有界推进结束（2026-10-26，采集未通过/不交付）：
+固定k3 suffix交付目标继续推进（2026-10-26，固定工具候选已准备/未验）：
+官方2026.5.1提供多进程API-stop刷新改进线索；支持实例说明此前profile/stop
+一般不兼容的判断过强，已纠正。完整目标未完成，既有五档已测齐但保护未通过。
+唯一2026.5.1.161 ARM64 CLI包已校验并隔离解包（208229554字节、SHA
+087c08b5ddf3），1765文件身份绑定；185.683秒、2元数据/1包下载。仅修一次
+元包选择器误判，未重取元数据、未扩版本或预算；新profiler/测试/GPU/HTTP
+均为0，PREPARED_NOT_QUALIFIED。下一步核此构建的CLI/依赖及新有界资格，
+旧完整性/memset门不放宽，默认及两head收益证据保持。见
+[合同复核、依赖候选与完成度](MTP_SUFFIX_COLLECTOR_DEPENDENCY_2026-10-26.md)。
+
+上一有界采集阶段结束（2026-10-26，采集未通过/不交付）：
 32项CPU合同首suite通过，未变86项/64原生子进程证据复用。唯一GPU阶段
 7.042835秒，首direct-interactive在正确start/launch后仍被RangeCollectionState
 拒绝StopRequest；强制清理后自动关闭，随后shutdown报无活动会话。

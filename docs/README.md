@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[固定k3 suffix交付目标](MTP_SUFFIX_DELIVERY_2026-10-26.md)；
+最新专项：[采集合同与固定依赖候选](MTP_SUFFIX_COLLECTOR_DEPENDENCY_2026-10-26.md)；
+[固定k3 suffix交付目标](MTP_SUFFIX_DELIVERY_2026-10-26.md)；
 [fixture退出监控修复与Nsight补测](MTP_SUFFIX_NSYS_RERUN_2026-10-24.md)；
 [Nsight收尾诊断](MTP_SUFFIX_NSYS_2026-10-24.md)；
 [修复客户端监控后执行观测](MTP_SUFFIX_EXECUTION_RERUN_2026-10-24.md)；
@@ -21,6 +22,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [采集合同与固定依赖候选](MTP_SUFFIX_COLLECTOR_DEPENDENCY_2026-10-26.md) | 完整目标矩阵、官方合同因果修正、单一2026.5.1包 | 仅隔离准备，未执行profiler/GPU；新资格与优化接受仍未完成 |
 | [固定k3 suffix交付目标](MTP_SUFFIX_DELIVERY_2026-10-26.md) | interactive采集工具与条件200K/8K GPU对照 | CPU32通过；首控制仍拒绝stop，ENV_ABORT，0模型HTTP，负向归档不交付 |
 | [fixture退出监控修复与Nsight补测](MTP_SUFFIX_NSYS_RERUN_2026-10-24.md) | PF_EXITING有界pending、四收尾控制 | CPU97/原生64通过；11/11采样，第三组控制生命周期错误ENV_ABORT，0模型请求 |
 | [Nsight收尾诊断](MTP_SUFFIX_NSYS_2026-10-24.md) | 已知工作、负控、memory coverage | 首fixture退出监控ENV_ABORT；目标warning未定，保持交付版 |

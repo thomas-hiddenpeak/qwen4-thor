@@ -1,0 +1,42 @@
+{
+  "retrieved_utc": "2026-10-25T17:00:25.240029+00:00",
+  "scope": "Exact four pages already inspected through web tool; source snapshots only, no tool installation or execution.",
+  "sources": [
+    {
+      "name": "release-notes",
+      "url": "https://docs.nvidia.com/nsight-systems/ReleaseNotes/index.html",
+      "final_url": "https://docs.nvidia.com/nsight-systems/ReleaseNotes/index.html",
+      "status": 200,
+      "bytes": 46949,
+      "sha256": "61d434ad650fd0d622e56b42504762e2b0e6c7dcc1b7888f12b6f29340546adc",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/web/release-notes.html"
+    },
+    {
+      "name": "installation",
+      "url": "https://docs.nvidia.com/nsight-systems/InstallationGuide/index.html",
+      "final_url": "https://docs.nvidia.com/nsight-systems/InstallationGuide/index.html",
+      "status": 200,
+      "bytes": 56113,
+      "sha256": "af7b3b1c22ca150e927e574f306d2fefec361dfdffb162dc73f81d24e3a2663c",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/web/installation.html"
+    },
+    {
+      "name": "support-350407",
+      "url": "https://forums.developer.nvidia.com/t/question-when-prifilling-megatron-lm/350407",
+      "final_url": "https://forums.developer.nvidia.com/t/question-when-prifilling-megatron-lm/350407",
+      "status": 200,
+      "bytes": 70765,
+      "sha256": "b5313d67100fb68fa77822d3002d735ddc32743767c1cb9e4cb1ebf869b1009b",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/web/support-350407.html"
+    },
+    {
+      "name": "jetpack",
+      "url": "https://developer.nvidia.com/embedded/jetpack",
+      "final_url": "https://developer.nvidia.com/embedded/jetpack",
+      "status": 200,
+      "bytes": 46607,
+      "sha256": "054b6dee9ad6d00497f89ca048c91805101362e15af311ce99deef97908f6b9c",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-contract-review-20261026/web/jetpack.html"
+    }
+  ]
+}

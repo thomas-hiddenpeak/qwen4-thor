@@ -131,8 +131,9 @@ postflight ENV_ABORT，外层guard COMMAND_FAILED。只启动首个direct-intera
 正确代理，却在 `RangeCollectionState::Stop` 被拒绝，rc=1。强制清理导致目标
 退出、报告生成及会话自动Shutdown；后续shutdown因无活动会话返回1。
 
-这纠正了上轮的充分因果解释：profile与interactive stop混用不符合公开
-命令合同，但正确interactive同样复现拒绝。公开资料未明确验证本机版本的
+这纠正了上轮的充分因果解释：正确interactive同样复现拒绝。随后官方
+支持实例表明按命令分类将profile/stop一般判为不兼容也过强，见
+[后续合同复核](MTP_SUFFIX_COLLECTOR_DEPENDENCY_2026-10-26.md)。公开资料未明确验证本机版本的
 cudaProfilerApi + capture-range-end=none + manual stop组合。日志已定位
 内部拒绝状态，尚不能区分未说明的组合限制、实现缺陷或其他内部条件；
 没有选出有证据保证的本地补丁，不追加选项扫描或采集。

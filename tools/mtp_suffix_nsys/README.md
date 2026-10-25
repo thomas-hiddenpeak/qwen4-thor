@@ -27,11 +27,11 @@ HTTP/CPU evidence, repaired monitor, new tools, fixture binary and actual Nsight
 libraries. `run_stage.py` retains one repository-wide GPU lease through all
 four lifecycle controls, conditional model captures and final telemetry flush.
 The frozen candidate was the wrapper with explicit named-session stop.
-The rerun exposed a lifecycle error: this implementation sends interactive
-`nsys stop` to a noninteractive `nsys profile` session. Naming a session does not
-make those modes compatible. The external-stop path remains an unaccepted
-research implementation; a future repair must use the documented interactive
-`start`/`launch`/`stop` lifecycle and separately validate it. That was implemented
+The rerun observed a lifecycle rejection after sending `nsys stop` to a
+`nsys profile` session. The initial general incompatibility explanation was too
+strong: NVIDIA support also describes named profile/manual-stop combinations.
+The exact local configuration remains unaccepted. An explicit interactive
+`start`/`launch`/`stop` lifecycle was separately implemented
 in `interactive.py` and `prepare_delivery.py`, but the same internal rejection
 also occurred with the correctly interactive lifecycle on 2026-10-26. The earlier
 mode mismatch is therefore not a sufficient explanation. Unresolved target
@@ -81,3 +81,9 @@ The report was retained but not exported. No model or HTTP request ran. Seven
 recorded process identities were absent at the independent audit and the lease
 was released; absence does not supply the missing target wait status. The stage
 remains ENV_ABORT, with no validated collector fix or new performance claim.
+
+The follow-up official-source review found a related 2026.5.1 multi-process
+CUDA-stop flushing improvement. One exact ARM64 CLI package is isolated under
+`.q4t-work/suffix-nsys-dependency-20261026/`; it has not been executed or qualified.
+See `docs/MTP_SUFFIX_COLLECTOR_DEPENDENCY_2026-10-26.md` for package identity,
+the corrected compatibility inference and the unchanged integrity requirements.
