@@ -1,6 +1,21 @@
 # 当前状态
 
-更新：2026-10-24。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+更新：2026-10-26。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
+
+固定k3 suffix交付目标有界推进结束（2026-10-26，采集未通过/不交付）：
+32项CPU合同首suite通过，未变86项/64原生子进程证据复用。唯一GPU阶段
+7.042835秒，首direct-interactive在正确start/launch后仍被RangeCollectionState
+拒绝StopRequest；强制清理后自动关闭，随后shutdown报无活动会话。
+因此上轮profile/stop混用不能充分解释该拒绝，尚无确定可修的本地原因。
+监控8/8、两次同身份Z态缺io正确保留、pending0；未复现监控失败。
+原始STOPPED/postflight ENV_ABORT；0模型/0HTTP，wrapper及8K/200K GPU对照
+未运行。报告保留但未导出/验完整性，不能称warning误报或下降已修。
+独立审计23314冻结/21297snapshot/34raw一致，7自有身份无残留、lease释放。
+完整head重复+13.68%/+14.40%、子集共享B GM+6.53%/+6.73%按旧身份复用；
+原运行时NO_GO不变，f356默认/sidecar/子集保持，不追加采集或部署。
+见[交付目标、结果与出口](MTP_SUFFIX_DELIVERY_2026-10-26.md)。
+42353条目/607180719字节独立封存回读通过，seal `50d40526d7a6`；
+原证据路径、程序/sidecar/子集回退身份保留，研究提交不代表验收通过。
 
 fixture退出监控修复通过CPU验证，Nsight补测有界停止（2026-10-24，ENV_ABORT）：
 同身份PF_EXITING进入最多16项/原错起5秒pending，保留缺io；原pidfd与pinned

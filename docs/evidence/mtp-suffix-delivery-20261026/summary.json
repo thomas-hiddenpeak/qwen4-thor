@@ -1,0 +1,182 @@
+{
+  "evidence_integrity": "PASS",
+  "evidence_validity": "ENV_ABORT",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_EVALUATED_NO_MODEL_DATA",
+  "engineering_decision": "NOT_ACCEPTED_TOOL_VALIDATION_ABORT",
+  "elapsed_seconds": 7.042834783904254,
+  "raw_status": "STOPPED",
+  "requests": {
+    "planned": 6,
+    "planned_model_starts": 4,
+    "actual": 0,
+    "actual_model_starts": 0
+  },
+  "controls": {
+    "planned": 2,
+    "attempted": 1,
+    "completed": 0,
+    "second": "NOT_RUN",
+    "historical_local_controls_reused": 2
+  },
+  "cpu": {
+    "new_tests": 32,
+    "suite_runs": 1,
+    "elapsed_seconds": 0.7862245019059628,
+    "source_dependency_files": 20941,
+    "source_count_is_not_test_count": true,
+    "reused_cpu_methods": 86,
+    "native_children_reused": 64,
+    "native_proof_sha256": "80df75c8055a0016fe3e7be6879974b737e7a49277a4f1cbd2989a1bb99776d5",
+    "native_pending_scope": "CPU tight-loop reproduction only, separate from stage pending0",
+    "preparation_attempts": 2,
+    "first_preparation_created_stage": false,
+    "preparation_correction": {
+      "supersedes_description_only": ".q4t-work/suffix-delivery-20261026/prepare-attempt-1.json",
+      "sha256": "711c45065c904d3b2b51e13285169f37462c690566629916e5d53233c03300f5",
+      "correction": "Initial metadata had nonempty scope; missing field was performance_acceptance. v2 sets false and clarifies STATIC_ONLY scope. Original failure/output remain unchanged.",
+      "source_changes": false,
+      "tests_rerun": false,
+      "gpu_started": false
+    },
+    "proof_sha256": "8c86269186be00ca101784645f495fb87a2e7f81e4a22dba7029e5adaa060cce"
+  },
+  "identities": {
+    "plan_sha256": "4ea7b25871c94993ad03af9b6d3981039eebd70efbc4a3b45f2e128116f328c1",
+    "raw_seal_sha256": "942ae0a3b57c38e2808b27c4612fb53e281ab290cebd7dbb90ac279320674eca",
+    "state_sha256": "e3ec768429b899c6981807c86dd5911bc465150bdace9b17a24f0d8a3bfe523c",
+    "frozen": {
+      "checked": 23314,
+      "changed": []
+    },
+    "raw": {
+      "checked": 34,
+      "changed": []
+    },
+    "source_snapshot": {
+      "files": 21297,
+      "worktree_patch_sha256": "1b502d408e38b06451f5a526fb7cc309edba4fc90061782550d7265cab37ece1"
+    },
+    "model_metadata_files": 197,
+    "candidate_sha256": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914",
+    "runtime_source": "55363f18dedb947ac52e69e10475d3082cb71a82",
+    "default_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "default_sidecar_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce"
+  },
+  "ownership": {
+    "known_identities_absent": 7,
+    "remaining_group_members": [],
+    "target_exit_status": "UNKNOWN_NO_TARGET_EXIT_RECEIPT"
+  },
+  "monitor": {
+    "samples": 8,
+    "flushed": 8,
+    "failed": 0,
+    "sources": 53,
+    "source_observations": 424,
+    "process_observations": {
+      "OK": 14,
+      "EXITED_DURING_IO_READ": 2,
+      "VANISHED": 1
+    },
+    "pending_admitted": 0,
+    "pending_resolved": 0,
+    "pending_remaining": 0,
+    "missing_discovery_sources": [
+      {
+        "label": "pressure_cpu",
+        "path": "/proc/pressure/cpu",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      },
+      {
+        "label": "pressure_io",
+        "path": "/proc/pressure/io",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      },
+      {
+        "label": "pressure_memory",
+        "path": "/proc/pressure/memory",
+        "status": "UNAVAILABLE",
+        "reason": "missing_or_not_readable_at_discovery"
+      }
+    ],
+    "read_attempts": {
+      "source_file_read_attempts": 424,
+      "ownership_file_read_attempts": 6791,
+      "ownership_readlink_attempts": 3395,
+      "owned_file_read_attempts": 80,
+      "directory_scan_attempts": 8,
+      "pidfd_open_attempts": 17,
+      "pidfd_binding_polls": 16,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "sample_cycle_total_seconds": 0.17674668529070914,
+    "write_flush_total_seconds": 0.0018317862413823605,
+    "failed_step_barrier": "POST_STEP_PGID_ONLY",
+    "normal_success_final_barrier_present": false
+  },
+  "collector": {
+    "start_returncode": 0,
+    "stop_returncode": 1,
+    "shutdown_returncode": 1,
+    "rejecting_function": "QuadDDaemon::RangeCollectionState::Stop",
+    "message": "Range collection stop is not expected.",
+    "report_bytes": 78991,
+    "report_sha256": "523303e836f4094a402e38c511cba9969c2741950f4e077f4fd9c0a4dbb081f9",
+    "trace_integrity": "NOT_EXPORTED_NOT_VALIDATED",
+    "warning_classification": "UNKNOWN",
+    "specific_locally_repairable_cause_proven": false,
+    "previous_causal_statement_corrected": "Profile plus interactive stop misuse was not a sufficient explanation; correctly interactive use reproduced rejection."
+  },
+  "reuse": {
+    "normal_requests": 37,
+    "cpu_requests": 6,
+    "repeat_full_code_percent": 13.6774,
+    "repeat_full_text_percent": 14.4034,
+    "repeat_subset_code_shared_b_gm_percent": 6.5335,
+    "repeat_subset_text_shared_b_gm_percent": 6.7304,
+    "scope": "Existing unchanged runtime development evidence, not new independent-start noninferiority or full five-tier acceptance."
+  },
+  "decision": {
+    "runtime_no_go_unchanged": true,
+    "deployment": false,
+    "default_replacement": false,
+    "health_check": false,
+    "gpu_retry": false,
+    "reason": "Collector validation failed before model gate; no new performance claim or local runtime candidate. Preserve delivered program and archive bounded negative result."
+  },
+  "proofs": {
+    "audit-delivery.json": "6fba3a331b103612a1607ccd5ef8da9e434e971e6c7a60b9ab41c0d1285b25b2",
+    "audit-delivery.md": "41f0456011109cd8d20b49c92e791be274e382d15b2d84d4d0cd950616fb7a5b",
+    "audit-invocation-v1.json": "fead26a087630e118b8b354364309b4991b04d154691dd8d0197c181cecb4599",
+    "lifecycle-forensics.json": "2d12391c5616cf9aa9b03a91c0469be4d5e84dd395d3cbe05d5566833a63d19e",
+    "lifecycle-forensics.md": "37c2db30d73fdd94ca96551ebc2c4dd6a3d6c1df2b41094a481a064b60369436",
+    "cpu-proof.json": "8c86269186be00ca101784645f495fb87a2e7f81e4a22dba7029e5adaa060cce"
+  },
+  "archive": {
+    "status": "ARCHIVED_ENV_ABORT_COLLECTOR_CONTROL_INCOMPLETE",
+    "source_preserved": true,
+    "independent_copies": true,
+    "readback_verified": true,
+    "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/archive-closed",
+    "entries": 42353,
+    "payload_bytes": 607180719,
+    "manifest_sha256": "e98dfe6258236e6cf17e3a6a412406086c14a828dbb371b9a0a0bb6104711e52",
+    "evidence_integrity": "PASS",
+    "evidence_validity": "ENV_ABORT",
+    "measurement_complete": false,
+    "deployment": false,
+    "new_http": 0,
+    "new_model_starts": 0,
+    "archive_inference_or_gpu_operations": 0,
+    "archive_scope": "Offline copies and identity verification only. The archived stage attempted one GPU fixture capture.",
+    "prior_archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-rerun-20261024/archive-closed",
+    "prior_seal_sha256": "4e366aef2a4f96f6c5a476f0f934490e2217816cd0b818d8ddd751fddcb45ab1",
+    "seal_sha256": "50d40526d7a6357199d8eff078f97a9a6b398720a865cc2f3b8ac30a0c9c5702",
+    "publication_snapshot": "Archived public documents precede final seal paragraph and this archive field; final closure is tracked by Git."
+  }
+}

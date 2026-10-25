@@ -3,7 +3,9 @@
 This is a bounded tool diagnosis, not an inference benchmark or a replacement
 for the suffix performance acceptance matrix. The frozen scope and budgets are
 in `docs/MTP_SUFFIX_NSYS_2026-10-24.md`; the bounded monitor repair and rerun
-are recorded in `docs/MTP_SUFFIX_NSYS_RERUN_2026-10-24.md`.
+are recorded in `docs/MTP_SUFFIX_NSYS_RERUN_2026-10-24.md`. The latest two-control
+interactive stage and its failed outcome are recorded in
+`docs/MTP_SUFFIX_DELIVERY_2026-10-26.md`.
 
 `fixture.cu` executes 32 independently checked kernel operations, 32 H2D and
 32 D2H transfers, 32 nonzero memsets (512/16384 bytes alternating), and 33 named
@@ -19,7 +21,8 @@ does not simulate or prove the absence of native buffer loss. Diagnostics stay
 separate: known fixture work may be complete despite a warning, but that never
 exempts an arbitrary model trace from its integrity gate.
 
-`prepare_stage.py` binds the unchanged f0ff observation binary, previous passed
+The historical `prepare_stage.py` binds the unchanged f0ff observation binary,
+previous passed
 HTTP/CPU evidence, repaired monitor, new tools, fixture binary and actual Nsight
 libraries. `run_stage.py` retains one repository-wide GPU lease through all
 four lifecycle controls, conditional model captures and final telemetry flush.
@@ -28,7 +31,10 @@ The rerun exposed a lifecycle error: this implementation sends interactive
 `nsys stop` to a noninteractive `nsys profile` session. Naming a session does not
 make those modes compatible. The external-stop path remains an unaccepted
 research implementation; a future repair must use the documented interactive
-`start`/`launch`/`stop` lifecycle and separately validate it. Unresolved target
+`start`/`launch`/`stop` lifecycle and separately validate it. That was implemented
+in `interactive.py` and `prepare_delivery.py`, but the same internal rejection
+also occurred with the correctly interactive lifecycle on 2026-10-26. The earlier
+mode mismatch is therefore not a sufficient explanation. Unresolved target
 diagnostics stop the stage; it does not choose a more favorable variant.
 
 The six conditional HTTP requests are subset 8K OFF, 8K ON, 200K ON and 200K OFF;
@@ -58,3 +64,20 @@ persisted. The third variant failed with `Range collection stop is not expected`
 and required owned-target forced cleanup. The stage stopped after 10.026 seconds,
 with `ENV_ABORT`, no model loads or HTTP requests, and no retry. Neither the
 warning classification nor the subset 8K/200K GPU comparison is complete.
+
+The 2026-10-26 stage passed 32 affected CPU contracts, reusing 86 unchanged
+contracts and the separate native64 evidence. `prepare_delivery.py` freezes
+only two new interactive controls and conditionally four model loads/six HTTP
+requests. `run_stage.py` rejects the old profile-plus-external-stop path before
+starting it. The stable owner verifies subreaper status and actual target ancestry;
+control exit, target exit, report existence and trace coverage remain separate.
+
+The sole new stage stopped after 7.042835 seconds at its first direct control:
+start succeeded, but `RangeCollectionState::Stop` rejected the same named stop.
+Forced cleanup triggered report generation and automatic session shutdown; the
+later explicit shutdown found no active session. Monitoring flushed 8/8 samples,
+including two preserved same-identity terminal io denials, with no pending entries.
+The report was retained but not exported. No model or HTTP request ran. Seven
+recorded process identities were absent at the independent audit and the lease
+was released; absence does not supply the missing target wait status. The stage
+remains ENV_ABORT, with no validated collector fix or new performance claim.

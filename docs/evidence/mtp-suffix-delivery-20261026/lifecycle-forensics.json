@@ -1,0 +1,271 @@
+{
+  "schema": 1,
+  "scope": "READ_ONLY_LIFECYCLE_FORENSICS_ENV_ABORT; existing receipts, selected NVLOG and saved official documentation only; no export, capture, session, test or hardware query",
+  "performance_acceptance": false,
+  "measurement_complete": false,
+  "stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1",
+  "stage_state": "STOPPED",
+  "postflight_state": "ENV_ABORT",
+  "actual_http_requests": 0,
+  "actual_model_loads": 0,
+  "new_variants_attempted": [
+    "direct-interactive"
+  ],
+  "new_variants_not_run": [
+    "wrapper-interactive"
+  ],
+  "raw_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/files.json",
+    "sha256": "942ae0a3b57c38e2808b27c4612fb53e281ab290cebd7dbb90ac279320674eca",
+    "entries": 34,
+    "mismatches": []
+  },
+  "file_sha256": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/files.json": "942ae0a3b57c38e2808b27c4612fb53e281ab290cebd7dbb90ac279320674eca",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/state.json": "e3ec768429b899c6981807c86dd5911bc465150bdace9b17a24f0d8a3bfe523c",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/postflight.json": "96e298aa5aec7d3fdec268b5c3a0e227d16317198c84eaf59deb04170b9bce4b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/telemetry-summary.json": "050e8790c88e71d3edbfcc1059c96bb9b237cd81f5a309c75a314ccdd4761750",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log": "5b10207b04d32a88e1c5391eb6b0adb56c0b73be4b51d0b013b5dec2b46bf130",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.config": "dc1b0445b410fc2a80f3789d8c37cb1bcced91f92db1579328e8ca085ac0ad39",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/server.log": "02326b6b2be5219b0ba7135d3342d318ae30a7c9231709a8050309f46c199650",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/trace.nsys-rep": "523303e836f4094a402e38c511cba9969c2741950f4e077f4fd9c0a4dbb081f9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/ready-boundary.json": "2cbfaa2e98262b0d232606cf16653fd057449c344b6a054e3de3ea9a758661f5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/fixture-owned-identity.json": "551b5d1113685457f7e9e4dd10ef80c7186d17fe01f2ba8576ea9c972c7aba62",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/exit.json": "c0faee4a0abcdcc7784c912d44006e6ba963afda4982fa37b9fbfffe34f2b696",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-reap.json": "8a33f37e1351c546317236754238fa228086ce5c345188b4d7d39649955db3f6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-close.json": "483a766f50aa974a6e6be40c2a49a2edc5b9f1cf00809e99b9a8b193b05af2b7",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-final-cleanup.json": "e4de76a28d2a49dcd92e9a0e116e9375fcf7be5fa304d541a59b64da58ab5c5f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/references/nsys-start-help.txt": "ba19a842127ded3d06222cd02a9029fe554c831105ad03e24ba10fd261246eb5",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/references/nsys-stop-help.txt": "81dba69c56508cef65c5e4727b81443c6f522f82f3f8fb79a9ea16ba01923b05",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/references/nsys-shutdown-help.txt": "816c0c82323b136c3767872ac176c572b37641921079e885d1dd31afa01326e9",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/references/nsys-2026.1-guide.text.txt": "c1802b141d5aeb2b87774469dc1fb0d6d37d0b2690f20cd195561ca619a3d6f2",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/references/nsys-2026.1-guide.html": "e934f1eed56f9c2eb84f011e2bb7bd240eac603af04d2e86ef6b3514ab42869b",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/interactive-design.md": "c35e80689e139ce848719237773fdc9efef1dd0d1df9dea0469dc0bbad13c47d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/interactive-capability-v2.json": "de2b8be6327fa41d70fcb4aecc672b09b7d9fd459db0f5f974204933428c4b80",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-start-command.json": "2b4921d00ff8b137e075182439cdd4d1bf78896ada8a08d6f834cbb170ac3b91",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-start-exit.json": "0567a2565ee2674a433fd17744a6ec9a70758ed6f13600043742506f1e3c7942",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-start.log": "adc7930fe7c1d9037cc0552ac59a6dfef2d69662ce24cf174b065fa05bea253f",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-launch-command.json": "d595972980392f72454d96c98032fa88f652d16e6b645c1d6bc9fb04aef35385",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-stop-command.json": "32aed434f3c662d2f06cdc86a559795c56e0cfb6a0348b26d0a5d9bc47b768fb",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-stop-exit.json": "75a7e546ff043c3a6912054b140ede6dab4fa196b8634b6cfdad7a052ab0a5e4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-stop.log": "bc6df9b83165b3eed7c116a1f7ba723a230367727be38480def1b9ac7e949d3d",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-shutdown-command.json": "b6015b0e837f721c9746250b006d619065f2c756fb8318f62ed1ec476128a8ba",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-shutdown-exit.json": "7780cd3f9d9906b9fb77b6dcbe66b2c148c80072172c9493d25e37b83ad67e73",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-shutdown.log": "530cafe86127050fce8b6fe47a5d9a329c3603e64ad5c7073378600aafec4a51"
+  },
+  "observed": {
+    "actual_target_pid": 3406149,
+    "target_start_ticks": 113655876,
+    "wrapper_pid": null,
+    "owner_pid": 3406102,
+    "owner_start_ticks": 113655831,
+    "daemon_pid": 3406120,
+    "launch_cli_pid": 3406128,
+    "nsys_launcher_pid": 3406148,
+    "start": {
+      "returncode": 0,
+      "capture_range": "cudaProfilerApi",
+      "capture_range_end": "none",
+      "flush_on_cudaprofilerstop": true,
+      "stop_on_exit": true,
+      "states": [
+        "Idle",
+        "Configured",
+        "Started",
+        "StartRange",
+        "RangeCollection"
+      ],
+      "nvlog_lines": [
+        181,
+        185,
+        1018,
+        2680
+      ]
+    },
+    "host_fixture": {
+      "step_receipts": 32,
+      "ready": {
+        "pid": 3406149,
+        "tid": 3406149,
+        "completed_steps": 32,
+        "profiler_start_error": 0,
+        "profiler_stop_error": 0,
+        "final_sync_error": 0,
+        "passed": true
+      },
+      "fixture_exit_receipt_present": false,
+      "scope": "Host fixture receipts, not independent GPU activity/correlation coverage",
+      "all_step_ids_0_to_31": true,
+      "all_steps_passed": true
+    },
+    "stop": {
+      "returncode": 1,
+      "after_ready": true,
+      "same_named_session": true,
+      "client_agent_build_compatible": true,
+      "subscribe_succeeded": true,
+      "exception": "QuadDCommon::LogicException",
+      "function": "QuadDDaemon::RangeCollectionState::Stop",
+      "internal_source": "SessionStateImpl.cpp:483",
+      "message": "Range collection stop is not expected.",
+      "cli_message": "The request was not completed properly: StopRequest.",
+      "nvlog_lines": [
+        4918,
+        4919,
+        4938,
+        4941,
+        4942,
+        4943,
+        4946,
+        4948,
+        4949
+      ]
+    },
+    "flush": {
+      "start_cli_warning": "--flush-on-cudaprofilerstop will not take effect unless CUDA tracing is enabled.",
+      "launch_trace": [
+        "cuda",
+        "nvtx"
+      ],
+      "target_flag_observed_true": true,
+      "target_sync_flush_call_logged": true,
+      "nvlog_lines": [
+        1108,
+        1181,
+        3457,
+        3458
+      ],
+      "scope": "Target flush configuration and entry log; no available lower-level flags/producer Done proof or exported activity coverage"
+    },
+    "failure_cleanup": {
+      "forced_termination": true,
+      "launch_cli_returncode": 143,
+      "target_signal15_observed_in_daemon": true,
+      "target_independent_exit_receipt_available": false,
+      "adopted_reaped_pid": 3406148,
+      "adopted_reaped_returncode": -15,
+      "reaper_scope": "Known ancestor nsys-launcher, not the actual fixture exit receipt; unknown descendants remain outer guard responsibility",
+      "subreaper_restored": true,
+      "nvlog_lines": [
+        4972,
+        4975,
+        4976,
+        4989,
+        4993,
+        4995
+      ]
+    },
+    "report": {
+      "exists": true,
+      "bytes": 78991,
+      "sha256": "523303e836f4094a402e38c511cba9969c2741950f4e077f4fd9c0a4dbb081f9",
+      "exported": false,
+      "sqlite_exists": false,
+      "generated_after_failure_target_termination": true,
+      "nvlog_lines": [
+        4993,
+        5953,
+        8663,
+        8668,
+        8678
+      ]
+    },
+    "shutdown": {
+      "returncode": 1,
+      "cli_message": "There are no active sessions.",
+      "automatic_shutdown_before_command": true,
+      "nvlog_lines": [
+        8678,
+        8679,
+        8680,
+        8781
+      ]
+    },
+    "monitor": {
+      "attempts": 8,
+      "flushed": 8,
+      "source_read_attempts": 424,
+      "failures": [],
+      "pending_admitted": 0,
+      "pending_active": 0,
+      "scope": "Existing monitor summary only; not a fresh hardware/process audit"
+    }
+  },
+  "interpretation": [
+    {
+      "level": "PROVEN",
+      "finding": "The explicitly interactive start/launch session reaches RangeCollection, authenticates/connects the stop client and rejects StopRequest inside RangeCollectionState::Stop; this is not a session-name miss, failed start, CLI parse error or a stop timeout."
+    },
+    {
+      "level": "PROVEN",
+      "finding": "cudaProfilerStop returns success and the target logs flush=true and sync/flush entry; capture-range-end=none leaves the active range awaiting another end mechanism. No successful manual stop occurs."
+    },
+    {
+      "level": "PROVEN",
+      "finding": "After failure cleanup terminates the target, stop-on-exit processing generates/imports a report and shuts down the session. The later shutdown cannot find an active session; it is a secondary cleanup failure, retained as failure."
+    },
+    {
+      "level": "CORRECTION",
+      "finding": "The previous profile+interactive-stop misuse was a documented mismatch, but cannot be the sufficient explanation of the same RangeCollectionState rejection: this correctly interactive attempt reproduces it. The earlier static expectation that explicit interactive stop necessarily closes capture-range-end=none was not validated and is contradicted by this run."
+    },
+    {
+      "level": "INFERENCE",
+      "finding": "The bounded remaining mechanism is this installed build's capture-range state-machine handling of manual Stop with an active cudaProfilerApi range and end=none. The record proves the rejecting state/function; it does not prove whether that combination is an undocumented limitation, an implementation defect, or another internal configuration-dependent condition."
+    },
+    {
+      "level": "UNKNOWN",
+      "finding": "No export/audit was authorized or performed. Report presence and 32 host outputs do not establish CUDA/NVTX completeness, absence of target warnings, loss/drop=0, producer/consumer finalization or candidate passage."
+    }
+  ],
+  "official_contract": {
+    "url": "https://archive.docs.nvidia.com/nsight-systems/2026.1/UserGuide/index.html",
+    "saved_guide_lines": {
+      "interactive_stop": [
+        190,
+        192
+      ],
+      "named_start_launch_stop": [
+        3832,
+        3838
+      ],
+      "cuda_profiler_api_and_manual_stop_example": [
+        3844,
+        3859
+      ]
+    },
+    "installed_start_help_lines": {
+      "capture_range_end_none_ignored": [
+        32,
+        52
+      ],
+      "flush": [
+        133,
+        138
+      ],
+      "stop_on_exit": [
+        423,
+        428
+      ]
+    },
+    "limit": "The guide documents interactive manual stop alongside cudaProfilerApi, but its example uses the default end policy; the local help separately documents end=none. No saved source explicitly demonstrates this exact combination on 2026.1.3. Public examples do not reveal the internal StopReason acceptance predicate."
+  },
+  "future_clues_not_executed": [
+    "Present the exact sanitized start/launch/stop sequence, installed build identity, RangeCollectionState::Stop rejection and matched client/agent versions to NVIDIA; ask whether manual Stop is supported for cudaProfilerApi plus capture-range-end=none.",
+    "Any future change must choose one documented ending owner: automatic capture-end=stop (already has prior target-warning limitations) or a separately justified non-range interactive start/stop window. Neither is a demonstrated fix or authorization to rerun this stage; changing the captured interval requires a new explicit observation contract."
+  ],
+  "limits": [
+    "No retry or parameter scan. No source/frozen/raw changes.",
+    "NVLOG excerpts exclude session credentials; full raw file is referenced by hash only.",
+    "NVLOG clock and monotonic receipt clocks are not subtracted or treated as interchangeable.",
+    "No known-work GPU count claim is made for the unexported report.",
+    "Original STOPPED and postflight ENV_ABORT remain; 0 model/0 HTTP; no wrapper gate, GPU comparison or delivery acceptance."
+  ],
+  "engineering_boundary": {
+    "specific_locally_repairable_cause_proven": false,
+    "current_stage_ends": "ENV_ABORT_NEGATIVE_ARCHIVE",
+    "original_runtime_no_go_unchanged": true,
+    "additional_gpu_budget_recommended": false,
+    "no_speculative_option_scan": true,
+    "available_non_gpu_progress": "Correct the overstrong static compatibility inference and present the exact sanitized lifecycle/state rejection to the vendor; no validated collector fix is selected."
+  }
+}

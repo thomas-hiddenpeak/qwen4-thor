@@ -1,6 +1,5 @@
 """Bounded known-work controls, then conditional external-stop model profiles."""
 import argparse
-import copy
 import importlib.util
 import json
 import os
@@ -22,11 +21,17 @@ SPEC.loader.exec_module(old)
 legacy, save = old.legacy, old.save
 sys.path.insert(0, str(HERE))
 import fixture_audit
+import interactive
 
 VARIANTS = [dict(name='direct-stop', wrapper=False, external=False),
             dict(name='wrapper-stop', wrapper=True, external=False),
             dict(name='direct-external', wrapper=False, external=True),
             dict(name='wrapper-external', wrapper=True, external=True)]
+INTERACTIVE_VARIANTS = [
+    dict(name='direct-interactive', wrapper=False, external=True,
+         lifecycle='interactive'),
+    dict(name='wrapper-interactive', wrapper=True, external=True,
+         lifecycle='interactive')]
 OPTIONS = ['--trace=cuda,nvtx', '--sample=none', '--cpuctxsw=none',
            '--cuda-trace-scope=process-tree', '--capture-range=cudaProfilerApi',
            '--capture-range-end=none', '--flush-on-cudaprofilerstop=true',
@@ -42,7 +47,6 @@ WRAPPER_WARNINGS = frozenset((
     'CUDA profiling might have not been started correctly.',
     'No CUDA events collected. Does the process use CUDA?'))
 _original_clean_env = legacy.clean_env
-_original_custom = old.custom_step
 _original_stop_target = old.stop_profile_target
 _original_export = old.export_profile
 _original_diagnostics = old.audit_profile_diagnostics
@@ -65,9 +69,18 @@ def validate(plan):
     if fix.get('classification') == 'bounded_owned_exit_pending' and fix.get(
             'exit_pending') != dict(ttl_seconds=5, capacity=16, poll_timeout_ms=0):
         raise ValueError('frozen exit-pending monitor contract changed')
+    controlled = 'interactive_contract' in plan['nsys']
+    stage_seconds, fixture_seconds = (4800, 600) if controlled else (5400, 1200)
+    variants = INTERACTIVE_VARIANTS if controlled else VARIANTS
+    if controlled and (plan['nsys']['interactive_contract'] != interactive.contract() or
+            set(plan.get('fixture_reuse', {})) != {'direct-stop', 'wrapper-stop'} or
+            plan.get('fixture_new_captures') != 2 or
+            plan.get('fixture_reused_local_controls') != 2 or
+            plan.get('fixture_candidate') != 'wrapper-interactive'):
+        raise ValueError('interactive lifecycle or historical-control references changed')
     if ((plan['http_requests'], plan['http_loads'], plan['stage_timeout_seconds'],
-         plan['direct_contract_timeout_seconds']) != (6, 4, 5400, 1200) or
-            plan['fixture_variants'] != VARIANTS or
+         plan['direct_contract_timeout_seconds']) != (6, 4, stage_seconds, fixture_seconds) or
+            plan['fixture_variants'] != variants or
             plan['fixture_timeout_seconds'] != 300 or
             plan['fixture_nvlog_limit_bytes'] != 64 * 1024 ** 2 or
             plan['fixture_contract'] != FIXTURE_CONTRACT or
@@ -83,7 +96,7 @@ def validate(plan):
             first['http_requests'], first['http_loads'], first['timeout'],
             first['execution_diagnostic'], first['cases']) != (
                 'fixture-controls', 'contract', 'collector_contract', 0, 0,
-                1200, False, []):
+                fixture_seconds, False, []):
         raise ValueError('collector contract must be the first step')
     for step, (name, suffix, tokens, requests) in zip(steps[1:], MODEL_STEPS):
         if (step['name'], step['head'], step['suffix'], step['measurement_role'],
@@ -251,44 +264,61 @@ def audit_profile_diagnostics(db, tables, output):
 
 
 def session_name(name):
-    return 'q4t-suffix-' + str(os.getpid()) + '-' + name
+    return interactive.make_name(name)
+
+
+def finish_interactive(session, errors):
+    """Close control ownership after the independently owned target is stopped."""
+    receipt = dict(session=session.name, shutdown=None, adopted=None, errors=[],
+        scope='Only this session and proven adopted identities; outer guard audits all descendants.')
+    if session.can_shutdown and not session.shutdown_attempted:
+        try:
+            receipt['shutdown'] = session.shutdown()
+        except BaseException as error:
+            receipt['errors'].append('session shutdown: ' + repr(error))
+    try:
+        receipt['adopted'] = session.reap_adopted(timeout=5)
+        if receipt['adopted']['remaining'] or receipt['adopted']['not_children']:
+            receipt['errors'].append('proven session identities remain after shutdown')
+    except BaseException as error:
+        receipt['errors'].append('adopted identity reap: ' + repr(error))
+    try:
+        session.close()
+    except BaseException as error:
+        receipt['errors'].append('subreaper scope close: ' + repr(error))
+    errors.extend(receipt['errors'])
+    save(session.output / 'interactive-final-cleanup.json', receipt)
+
+
+def bind_model_target(plan, output, session, *, cleanup=False):
+    target = json.loads((output / 'target-identity.json').read_text())
+    actual = old.proc_identity(target['pid'])
+    if (actual['start_ticks'] != target['start_ticks'] or
+            actual['state'] in ('Z', 'X') or actual['ppid'] != target['wrapper_pid'] or
+            Path(f'/proc/{target["pid"]}/exe').resolve() != Path(plan['candidate']).resolve()):
+        raise RuntimeError('interactive target identity differs from observation binary/wrapper')
+    ownership = session.prove_descendant(target['pid'])
+    wrapper = session.prove_descendant(target['wrapper_pid'])
+    if ownership['target']['start_ticks'] != actual['start_ticks']:
+        raise RuntimeError('interactive target changed during owner binding')
+    receipt = 'target-cleanup-identity.json' if cleanup else 'target-owned-identity.json'
+    save(output / receipt, dict(target=actual,
+        wrapper=wrapper['target'], ownership=ownership,
+        candidate=plan['candidate'], scope='Stable step-owner ancestry, exact executable and wrapper.'))
+    return target
 
 
 def session_stop(plan, output, name, *, timeout=45, check=None):
-    """Stop exactly our named session; command success is not target exit."""
+    """Stop only a session created through the supported interactive path."""
     if not re.fullmatch(r'q4t-suffix-[0-9]+-[a-z0-9-]+', name):
         raise ValueError('refusing non-owned or malformed session name')
-    command = [plan['nsys']['path'], 'stop', '--session=' + name]
-    save(output / 'session-stop-command.json', command)
-    child, failure = None, None
-    started = time.monotonic()
-    try:
-        with (output / 'session-stop.log').open('x') as stream:
-            child = subprocess.Popen(command, cwd=ROOT, env=clean_env(),
-                                     stdout=stream, stderr=subprocess.STDOUT)
-            while child.poll() is None:
-                if check:
-                    check()
-                if time.monotonic() - started > timeout:
-                    raise TimeoutError('owned Nsight session stop timed out')
-                time.sleep(.05)
-            if child.returncode != 0:
-                raise RuntimeError('owned Nsight session stop failed')
-    except BaseException as error:
-        failure = repr(error)
-        raise
-    finally:
-        if child is not None and child.poll() is None:
-            child.terminate()
-            try:
-                child.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                child.kill()
-                child.wait(timeout=5)
-        save(output / 'session-stop-exit.json', dict(
-            session=name, returncode=child.returncode if child else None,
-            failure=failure, started_monotonic=started, finished_monotonic=time.monotonic(),
-            scope='Control command only; target exit and trace integrity audited separately.'))
+    session = plan.get('_interactive_session')
+    if (session is None or session.name != name or
+            Path(session.output).resolve() != Path(output).resolve()):
+        raise RuntimeError('external stop requires the bound interactive session')
+    if check:
+        check()
+    return session.stop(timeout=timeout)
 
 
 def capture_end_receipt(text, target_pid):
@@ -316,14 +346,26 @@ def stop_profile_target(plan, output, launcher):
         save(output / 'external-stop-boundary.json', dict(
             receipt=receipt, observed_monotonic=time.monotonic(),
             session=plan['_active_session'], target_pid=identity['pid']))
-        session_stop(plan, output, plan['_active_session'], timeout=90)
+        session_stop(plan, output, plan['_active_session'], timeout=45)
     except BaseException as error:
         control_error = error
     finally:
-        # Always retain the original pidfd-only target cleanup, including when
-        # receipt/stop failed. Never replace q4t returncode with launcher zero.
+        # Even startup/capture failures need a fresh stable-owner proof before
+        # the inherited pidfd signal path may consume a target identity file.
+        # An unproved target is left to the outer owned-descendant guard.
+        session = plan.get('_interactive_session')
+        if session is not None:
+            try:
+                bind_model_target(plan, output, session, cleanup=True)
+            except BaseException as error:
+                save(output / 'target-cleanup-authorization.json', dict(
+                    authorized=False, failure=repr(error),
+                    control_failure=repr(control_error) if control_error else None,
+                    scope='No target signal authorized; outer owned-process guard required.'))
+                raise RuntimeError('interactive target cleanup ownership unproved') from error
         target = _original_stop_target(plan, output, launcher)
     if control_error is not None:
+        control_error.actual_target_exit = target
         raise control_error
     return target
 
@@ -476,24 +518,35 @@ def fixture_wrapper(plan, name):
     return 0 if child is not None and child.returncode == 0 else 1
 
 
-def pin_fixture(plan, output, launcher_pid, receipt_pid, wrapper):
+def pin_fixture(plan, output, launcher_pid, receipt_pid, wrapper, session=None):
     identity = old.proc_identity(receipt_pid)
     if identity['state'] in ('Z', 'X') or Path(f'/proc/{receipt_pid}/exe').resolve() != Path(plan['fixture_binary']).resolve():
         raise RuntimeError('fixture executable/liveness mismatch')
-    ancestor, belongs = receipt_pid, False
-    for _ in range(64):
-        if ancestor == launcher_pid:
-            belongs = True
-            break
-        if ancestor <= 1:
-            break
-        ancestor = old.proc_identity(ancestor)['ppid']
-    if not belongs:
-        raise RuntimeError('fixture PID is not our launcher descendant')
+    ownership = None
+    if session is not None:
+        ownership = session.prove_descendant(receipt_pid)
+        if ownership['target']['start_ticks'] != identity['start_ticks']:
+            raise RuntimeError('interactive fixture ownership identity changed')
+    else:
+        ancestor, belongs = receipt_pid, False
+        for _ in range(64):
+            if ancestor == launcher_pid:
+                belongs = True
+                break
+            if ancestor <= 1:
+                break
+            ancestor = old.proc_identity(ancestor)['ppid']
+        if not belongs:
+            raise RuntimeError('fixture PID is not our launcher descendant')
     if wrapper:
         declared = json.loads((output / 'fixture-target-identity.json').read_text())
         if declared['pid'] != receipt_pid or declared['start_ticks'] != identity['start_ticks']:
             raise RuntimeError('wrapper fixture identity mismatch')
+        if session is not None:
+            actual_wrapper = session.prove_descendant(declared['wrapper_pid'])['target']
+            if (identity['ppid'] != declared['wrapper_pid'] or
+                    actual_wrapper['start_ticks'] != declared['wrapper_start_ticks']):
+                raise RuntimeError('interactive fixture wrapper identity mismatch')
         identity.update(wrapper_pid=declared['wrapper_pid'])
     else:
         identity.update(wrapper_pid=None)
@@ -502,6 +555,8 @@ def pin_fixture(plan, output, launcher_pid, receipt_pid, wrapper):
     try:
         if old.proc_identity(receipt_pid)['start_ticks'] != identity['start_ticks']:
             raise RuntimeError('fixture identity changed while pinning')
+        if ownership is not None:
+            identity['interactive_ownership'] = ownership
         old.save_atomic(output / 'fixture-owned-identity.json', identity)
     except BaseException:
         os.close(fd)
@@ -511,6 +566,9 @@ def pin_fixture(plan, output, launcher_pid, receipt_pid, wrapper):
 
 def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
     name = variant['name']
+    controlled = variant.get('lifecycle') == 'interactive'
+    if variant['external'] and not controlled:
+        raise ValueError('external collection requires interactive start/launch')
     output = parent_output / name
     output.mkdir()
     started = time.monotonic()
@@ -524,12 +582,15 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
     target = ([sys.executable, '-B', str(Path(__file__).resolve()), '--plan', str(plan_path),
                '--fixture-wrapper', name] if variant['wrapper'] else
               [plan['fixture_binary'], '--release', str(output / 'release')])
-    command = [plan['nsys']['path'], 'profile', *options,
-               '--session-new=' + session, '--env-var=NVLOG_CONFIG_FILE=' + str(config),
-               '--output=' + str(output / 'trace'), *target]
-    save(output / 'profile-command.json', command)
+    command = None
+    if not controlled:
+        command = [plan['nsys']['path'], 'profile', *options,
+                   '--session-new=' + session, '--env-var=NVLOG_CONFIG_FILE=' + str(config),
+                   '--output=' + str(output / 'trace'), *target]
+        save(output / 'profile-command.json', command)
     save(output / 'variant.json', dict(variant, session=session, config_sha256=legacy.sha(config)))
     launcher, fd, identity, failure = None, None, None, None
+    control, control_closed = None, False
     cleanup_errors = []
     clean, result, forced = False, None, False
 
@@ -538,13 +599,21 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
             raise TimeoutError('fixed fixture budget expired: ' + name)
         paths = list(parent_output.glob('*/nvlog.log'))
         sizes = {str(p): p.stat().st_size for p in paths}
-        if any(v > plan['fixture_nvlog_limit_bytes'] for v in sizes.values()) or sum(sizes.values()) > 4 * plan['fixture_nvlog_limit_bytes']:
+        if (any(v > plan['fixture_nvlog_limit_bytes'] for v in sizes.values()) or
+                sum(sizes.values()) > len(plan['fixture_variants']) * plan['fixture_nvlog_limit_bytes']):
             raise RuntimeError('frozen NVLOG size budget exceeded')
 
     try:
         with (output / 'server.log').open('x') as stream:
-            launcher = subprocess.Popen(command, cwd=ROOT, env=env,
-                stdout=stream, stderr=subprocess.STDOUT)
+            if controlled:
+                control = interactive.Session(plan['nsys']['path'], output, session,
+                    cwd=ROOT, env=env, deadline=deadline, check=check)
+                control.start()
+                launcher = control.launch(target, stream,
+                    envvars={'NVLOG_CONFIG_FILE': str(config)})
+            else:
+                launcher = subprocess.Popen(command, cwd=ROOT, env=env,
+                    stdout=stream, stderr=subprocess.STDOUT)
             save(output / 'launcher-identity.json', old.proc_identity(launcher.pid))
             while True:
                 check()
@@ -558,7 +627,7 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
                 if configs and identity is None and (not variant['wrapper'] or
                         (output / 'fixture-target-identity.json').is_file()):
                     identity, fd = pin_fixture(plan, output, launcher.pid,
-                                               configs[0]['pid'], variant['wrapper'])
+                        configs[0]['pid'], variant['wrapper'], session=control)
                 ready = fixture_ready(output / 'server.log')
                 if ready is not None:
                     if identity is None and variant['wrapper']:
@@ -571,7 +640,8 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
                     break
                 time.sleep(.05)
             if variant['external']:
-                session_stop(plan, output, session, timeout=min(45, deadline-time.monotonic()), check=check)
+                session_stop(dict(plan, _interactive_session=control), output, session,
+                    timeout=min(45, deadline-time.monotonic()), check=check)
             # No CUDA cleanup until the explicit session stop has completed.
             (output / 'release').touch(exist_ok=False)
             while launcher.poll() is None:
@@ -594,6 +664,11 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
                     pid=identity['pid'], wrapper_pid=None, receipt_returncode=exits[0]['returncode'],
                     exit_observed_via_pidfd=True, launcher_returncode=launcher.returncode,
                     scope='Direct fixture own main-return receipt plus observed exit; not waitpid status.'))
+        if control is not None:
+            finish_interactive(control, cleanup_errors)
+            control_closed = True
+            if cleanup_errors:
+                raise legacy.EnvironmentAbort('interactive fixture session cleanup failed')
         check()
         database = export_database(plan, output, deadline, check)
         internal = nvlog_evidence(output / 'nvlog.log', identity['pid'])
@@ -648,17 +723,18 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
                     # Discover only descendants of our still-owned launcher,
                     # then pin the exact fixture executable before signalling.
                     records = legacy.gpu_exclusive.processes()
-                    owned = {launcher.pid}
+                    owned = {control.owner['pid'] if control is not None else launcher.pid}
                     for _ in range(64):
                         expanded = owned | {pid for pid, row in records.items()
                                             if row.get('ppid') in owned}
                         if expanded == owned:
                             break
                         owned = expanded
-                    for pid in owned - {launcher.pid}:
+                    for pid in owned - {control.owner['pid'] if control is not None else launcher.pid}:
                         try:
                             if Path(f'/proc/{pid}/exe').resolve() == Path(plan['fixture_binary']).resolve():
-                                identity, fd = pin_fixture(plan, output, launcher.pid, pid, variant['wrapper'])
+                                identity, fd = pin_fixture(plan, output, launcher.pid, pid,
+                                    variant['wrapper'], session=control)
                                 break
                         except (FileNotFoundError, ProcessLookupError):
                             continue
@@ -695,6 +771,8 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
                 os.close(fd)
             except OSError as error:
                 cleanup_errors.append('target handle close: ' + repr(error))
+        if control is not None and not control_closed:
+            finish_interactive(control, cleanup_errors)
         save(output / 'exit.json', dict(complete=clean, failure=failure,
             launcher=launcher.returncode if launcher else None, cleanup_errors=cleanup_errors,
             forced_termination=forced,
@@ -704,8 +782,85 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
             raise legacy.EnvironmentAbort('fixture owned cleanup failed: ' + repr(cleanup_errors))
 
 
-def collector_gate(results):
-    if [row['name'] for row in results] != [v['name'] for v in VARIANTS]:
+def reused_control_evidence(plan):
+    """Bind historical local contracts without promoting their failed stage."""
+    references = plan['fixture_reuse']
+    if set(references) != {'direct-stop', 'wrapper-stop'}:
+        raise ValueError('expected the two historical ordinary-stop references')
+    controls = {}
+    for name in ('direct-stop', 'wrapper-stop'):
+        ref = references[name]
+        source_plan = Path(ref['source_plan'])
+        output = Path(ref['output'])
+        seal_path = Path(ref['source_raw_seal'])
+        if (legacy.sha(source_plan) != ref['source_plan_sha256'] or
+                legacy.sha(seal_path) != ref['source_raw_seal_sha256'] or
+                ref['source_stage_validity'] != 'ENV_ABORT' or
+                ref['scope'] != 'historical_partial_known_work_only; no new sample or diagnostics pass'):
+            raise RuntimeError('historical control source identity/scope changed')
+        parent = json.loads(source_plan.read_text())
+        source_run = Path(parent['output'])
+        if (output != source_run / 'fixture-controls' / name or
+                seal_path != source_run / 'files.json' or
+                parent['fixture_binary_sha256'] != plan['fixture_binary_sha256'] or
+                parent['fixture_contract'] != plan['fixture_contract']):
+            raise RuntimeError('historical fixture computation contract differs')
+        sealed = json.loads(seal_path.read_text())
+        expected = dict(ref['raw_hashes'])
+        if set(expected) != {'trace.sqlite', 'server.log', 'known-work-audit.json',
+                            'profile-diagnostics.json'}:
+            raise RuntimeError('historical raw identity inventory changed')
+        if (expected['known-work-audit.json'] != ref['known_work_audit_sha256'] or
+                expected['profile-diagnostics.json'] != ref['profile_diagnostics_sha256']):
+            raise RuntimeError('conflicting historical raw identity references')
+        expected.update({'known-work-audit.json': ref['known_work_audit_sha256'],
+            'negative-controls.json': ref['negative_controls_sha256'],
+            'exit.json': ref['exit_sha256'],
+            'profile-diagnostics.json': ref['profile_diagnostics_sha256']})
+        for relative, digest in expected.items():
+            path = output / relative
+            if (legacy.sha(path) != digest or
+                    sealed.get(str(path.relative_to(source_run))) != digest):
+                raise RuntimeError('historical control raw dependency changed: ' + relative)
+        audit = json.loads((output / 'known-work-audit.json').read_text())
+        negatives = json.loads((output / 'negative-controls.json').read_text())
+        exit_row = json.loads((output / 'exit.json').read_text())
+        diagnostics = json.loads((output / 'profile-diagnostics.json').read_text())
+        if (audit.get('known_work_complete') is not True or
+                audit.get('fixture_contract_passed') is not True or audit['errors'] or
+                audit['input_hashes'] != dict(database=expected['trace.sqlite'],
+                                             receipt=expected['server.log']) or
+                negatives['original_sha256'] != expected['trace.sqlite'] or
+                set(negatives['derivatives']) != {'drop-launch-kernel-pair', 'drop-last-nvtx'} or
+                exit_row.get('complete') is not True or exit_row['cleanup_errors'] or
+                exit_row['forced_termination'] or exit_row['failure'] is not None or
+                exit_row['actual_fixture_pid'] != audit['expected_pid'] or
+                diagnostics['actual_target_pid'] != audit['expected_pid']):
+            raise RuntimeError('historical local fixture/negative/exit contract failed')
+        for item in negatives['derivatives'].values():
+            path = Path(item['path'])
+            if (not path.is_relative_to(output / 'negative-copies') or
+                    item['expected_rejected'] is not True or
+                    legacy.sha(path) != item['sha256'] or
+                    sealed.get(str(path.relative_to(source_run))) != item['sha256']):
+                raise RuntimeError('historical negative copy identity/verdict changed')
+        controls[name] = dict(reference=ref, checks_passed=True,
+            known_work_complete=True, negative_controls_passed=True,
+            diagnostics_valid=diagnostics['valid'],
+            warnings_require_review=diagnostics['warnings_require_review'],
+            source_stage_validity='ENV_ABORT', new_sample=False)
+    return dict(controls=controls, scope='Historical local contracts only; '
+        'not pooled with new captures, no environment or diagnostics promotion.')
+
+
+def collector_gate(results, reused=None):
+    variants = INTERACTIVE_VARIANTS if reused is not None else VARIANTS
+    if [row['name'] for row in results] != [v['name'] for v in variants]:
+        return False
+    if reused is not None and (set(reused.get('controls', {})) != {'direct-stop', 'wrapper-stop'} or
+            any(row.get('checks_passed') is not True or row.get('new_sample') is not False or
+                row.get('source_stage_validity') != 'ENV_ABORT'
+                for row in reused['controls'].values())):
         return False
     chosen = results[-1]
     return (all(r['known_work_complete'] and r['negative_controls_passed'] for r in results)
@@ -717,18 +872,25 @@ def fixture_controls(plan, plan_path):
     legacy.require_guard()
     output = Path(plan['output']) / 'fixture-controls'
     output.mkdir()
-    results, failure = [], None
+    results, failure, reused = [], None, None
     started = time.monotonic()
     try:
+        if 'interactive_contract' in plan['nsys']:
+            reused = reused_control_evidence(plan)
+            save(output / 'reused-controls.json', reused)
         for variant in plan['fixture_variants']:
-            results.append(fixture_capture(plan, variant, plan_path, output, started + 1200))
+            results.append(fixture_capture(plan, variant, plan_path, output,
+                started + plan['direct_contract_timeout_seconds']))
             save(output / 'results.json', results)
-        passed = collector_gate(results)
-        save(output / 'gate.json', dict(passed=passed, candidate='wrapper-external',
+        passed = collector_gate(results, reused)
+        candidate = 'wrapper-interactive' if reused is not None else 'wrapper-external'
+        save(output / 'gate.json', dict(passed=passed, candidate=candidate,
             plan_sha256=legacy.sha(plan_path), results=results,
+            new_captures=len(results), reused_local_controls=len(reused['controls']) if reused else 0,
+            reused_controls_sha256=legacy.sha(output / 'reused-controls.json') if reused else None,
             scope='Known work and selected target diagnostics only; every model trace reaudited.'))
         if not passed:
-            raise RuntimeError('fixed wrapper-external collector gate did not clear')
+            raise RuntimeError('fixed collector gate did not clear')
     except BaseException as error:
         failure = repr(error)
         raise
@@ -743,22 +905,140 @@ def fixture_controls(plan, plan_path):
                         errors=row.get('cleanup_errors', []),
                         forced_termination=row.get('forced_termination', False)))
         save(output / 'exit.json', dict(complete=failure is None, failure=failure,
-            completed_variants=len(results), cleanup_errors=child_cleanup,
+            completed_variants=len(results), new_captures=len(results),
+            reused_local_controls=len(reused['controls']) if reused else 0,
+            cleanup_errors=child_cleanup,
             started_monotonic=started, finished_monotonic=time.monotonic(),
             measurement_role='collector_contract', performance_acceptance=False))
+
+
+def interactive_model_step(plan, name, plan_path):
+    """Keep the inherited HTTP/target contracts with interactive collection."""
+    legacy.require_guard()
+    step = next(row for row in plan['steps'] if row['name'] == name)
+    if step['measurement_role'] != 'nsys_profile' or not step['execution_diagnostic']:
+        raise ValueError('interactive model step requires frozen execution diagnostics')
+    output = Path(plan['output']) / name
+    output.mkdir(parents=True, exist_ok=False)
+    env = clean_env() | {'Q4T_EXEC_DIAGNOSTIC': '1', 'Q4T_EXEC_NVTX': '1',
+                        'Q4T_EXEC_PROFILE_INPUT': str(step['profile_input_tokens'])}
+    command = old.server_command(plan, step)
+    target_command = [sys.executable, '-B', str(Path(__file__).resolve()),
+                      '--plan', str(plan_path), '--target-wrapper', name]
+    save(output / 'server-command.json', dict(argv=command,
+        environment={k:v for k,v in env.items() if k.startswith('Q4T_')},
+        measurement_role=step['measurement_role'], diagnostic_only=True,
+        performance_acceptance_sample=False, performance_acceptance=False))
+    save(output / 'step.json', step)
+    deadline = time.monotonic() + step['timeout']
+
+    def check():
+        if time.monotonic() >= deadline:
+            raise TimeoutError('frozen interactive model group budget expired')
+
+    session = interactive.Session(plan['nsys']['path'], output, session_name(name),
+        cwd=ROOT, env=env, deadline=deadline, check=check)
+    local = dict(plan, _active_session=session.name, _interactive_session=session)
+    passed, failure, server, server_pid, target_exit = False, None, None, None, None
+    cleanup_errors = []
+    with (output / 'server.log').open('x') as log:
+        try:
+            old.http.event(output, 'server_before_start')
+            session.start()
+            server = session.launch(target_command, log,
+                envvars={k:v for k,v in env.items() if k.startswith('Q4T_')})
+            old.http.event(output, 'profile_launcher_started', pid=server.pid)
+            while True:
+                check()
+                if server.poll() is not None:
+                    raise RuntimeError('server launcher exited during startup')
+                if 'serving on port' in (output / 'server.log').read_text():
+                    target = bind_model_target(plan, output, session)
+                    server_pid = target['pid']
+                    old.http.event(output, 'server_started', pid=server_pid,
+                        start_ticks=target['start_ticks'], launcher_pid=server.pid)
+                    break
+                time.sleep(1)
+            capacity = old.http.capacity_evidence((output / 'server.log').read_text(), 208896)
+            save(output / 'capacity.json', capacity)
+            old.http.event(output, 'server_ready', pid=server_pid, capacity=capacity)
+            if not capacity['matches_requested']:
+                raise RuntimeError('effective capacity mismatch')
+            results = []
+            for case in step['cases']:
+                check()
+                batch = old.admission.run_cases(
+                    plan, dict(step, cases=[case]), output, server, env, capacity)
+                results.extend(batch)
+                save(output / 'results.json', results)
+                result = batch[0]
+                if result['outputs'] != [case['expected_output_sha256']] * case['repeats']:
+                    raise RuntimeError('diagnostic output differs from frozen reference: ' + case['id'])
+                if (len(result['responses']) != case['repeats'] or
+                        any(row['actual_output'] != 256 or row['finish'] != ['length']
+                            for row in result['responses'])):
+                    raise RuntimeError('diagnostic output length/finish changed')
+            save(output / 'output-reference-check.json', dict(passed=True,
+                reference='old 6a binary same-head full output hashes', arbitrary_input_equivalence=False))
+            raw_log = (output / 'server.log').read_text()
+            if '[layer-timing]' in raw_log or '[mtp-timing]' in raw_log:
+                raise RuntimeError('legacy intrusive timing leaked into execution-observation stage')
+            check()
+            passed = True
+        except BaseException as error:
+            failure = repr(error)
+            raise
+        finally:
+            if server is not None:
+                old.http.event(output, 'server_before_shutdown', pid=server_pid,
+                               launcher_pid=server.pid)
+                try:
+                    target_exit = stop_profile_target(local, output, server)
+                except BaseException as error:
+                    target_exit = getattr(error, 'actual_target_exit', None)
+                    cleanup_errors.append(repr(error))
+                old.http.event(output,
+                    'server_after_shutdown' if not cleanup_errors else 'server_shutdown_failed',
+                    pid=server_pid, server_returncode=target_exit['returncode'] if target_exit else None,
+                    launcher_returncode=server.returncode, errors=list(cleanup_errors))
+            finish_interactive(session, cleanup_errors)
+            log.flush()
+            execution = old.audit_execution(output, step, server_pid)
+            actual_code = target_exit['returncode'] if target_exit else None
+            clean = (passed and server is not None and server.returncode == 0 and
+                     actual_code == 0 and not cleanup_errors and execution['complete'])
+            save(output / 'exit.json', dict(server=actual_code,
+                http_output_checks_passed=clean, failure=failure,
+                cleanup_errors=cleanup_errors, execution_records_complete=execution['complete'],
+                launcher=server.returncode if server else None, trace_exports_complete=False,
+                diagnostic_only=True, performance_acceptance_sample=False,
+                performance_acceptance=False, collection_lifecycle='interactive_start_launch_stop'))
+    if not clean:
+        raise RuntimeError('interactive diagnostic group failed')
+    export_profile(plan, output)
+    result = json.loads((output / 'exit.json').read_text())
+    result['trace_exports_complete'] = True
+    save(output / 'exit.json', result)
 
 
 def custom_step(plan, name, plan_path):
     if name == 'fixture-controls':
         return fixture_controls(plan, plan_path)
     gate = json.loads((Path(plan['output']) / 'fixture-controls/gate.json').read_text())
-    if (gate.get('passed') is not True or gate.get('candidate') != 'wrapper-external' or
+    controlled = 'interactive_contract' in plan['nsys']
+    candidate = 'wrapper-interactive' if controlled else 'wrapper-external'
+    if (gate.get('passed') is not True or gate.get('candidate') != candidate or
             gate.get('plan_sha256') != legacy.sha(plan_path)):
         raise RuntimeError('conditional model phase has no same-plan collector gate')
-    local = copy.deepcopy(plan)
-    local['_active_session'] = session_name(name)
-    local['nsys']['profile_options'].append('--session-new=' + local['_active_session'])
-    return _original_custom(local, name, plan_path)
+    if controlled:
+        reused_path = Path(plan['output']) / 'fixture-controls/reused-controls.json'
+        reused = json.loads(reused_path.read_text())
+        if (gate.get('new_captures') != 2 or gate.get('reused_local_controls') != 2 or
+                gate.get('reused_controls_sha256') != legacy.sha(reused_path) or
+                not collector_gate(gate.get('results', []), reused)):
+            raise RuntimeError('interactive collector evidence is incomplete or changed')
+        return interactive_model_step(plan, name, plan_path)
+    raise ValueError('model external collection requires the interactive lifecycle')
 
 
 def main():
