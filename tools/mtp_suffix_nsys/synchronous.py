@@ -27,14 +27,14 @@ MAX_RECEIPT_BYTES = 65536
 
 def contract():
     result = manual.contract()
-    result.update(schema=4, mode='interactive_api_sync_stop',
+    result.update(schema=5, mode='interactive_api_sync_stop',
         start_options=list(START_OPTIONS), stop_options=[], stop_allowed=False,
         stop_requires_nonempty_report=False, callback=False, capture_ranges=1,
         report_wait_timeout_seconds=45, report_wait_poll_seconds=.05,
         launch_log_max_bytes=MAX_LOG_BYTES, binding_receipt_max_bytes=MAX_RECEIPT_BYTES,
         launch_log='Exact owned regular stdout file passed to launch, not a guessed filename',
         completion='Documented sync plus same owned live target post-cudaProfilerStop success receipt',
-        target_receipt_sources=['fixture-ready', 'model-capture-end'],
+        target_receipt_sources=['fixture-ready', 'model-capture-end', 'mechanism-probe'],
         report_binding_revision=1,
         report_binding='Exactly one canonical owned trace*.nsys-rep, nonempty regular no-symlink, stable fd/path identity and SHA256',
         generated_stdout='Optional; complete records must uniquely agree with the owned report; absent or unterminated final line is not a completion gate',
@@ -99,7 +99,7 @@ def _target_receipt(value):
     if (not isinstance(value, dict) or
             any(type(value.get(k)) is not int or value[k] <= 0 for k in ('pid', 'start_ticks')) or
             type(value.get('profiler_stop_error')) is not int or value['profiler_stop_error'] != 0 or
-            value.get('source') not in ('fixture-ready', 'model-capture-end') or
+            value.get('source') not in ('fixture-ready', 'model-capture-end', 'mechanism-probe') or
             not isinstance(value.get('raw'), dict)):
         raise ValueError('invalid normalized post-API-stop target receipt')
     raw = value['raw']
@@ -109,6 +109,14 @@ def _target_receipt(value):
                 any(type(raw.get(k)) is not int or raw[k] != 0 for k in
                     ('profiler_start_error', 'profiler_stop_error', 'final_sync_error'))):
             raise ValueError('fixture-ready raw receipt disagrees with API-stop success')
+    elif value['source'] == 'mechanism-probe':
+        fixed = dict(pid=value['pid'], gemm_calls=2, controls=2, M=4, N=48,
+                     K=2560, workspace_bytes=33554432, profiler_start_error=0,
+                     profiler_stop_error=0, final_sync_error=0)
+        if (raw.get('passed') is not True or
+                any(type(raw.get(k)) is not int or raw[k] != expected
+                    for k, expected in fixed.items())):
+            raise ValueError('fixed mechanism-probe receipt disagrees with API-stop success')
     elif (raw.get('event') != 'end' or raw.get('pid') != str(value['pid']) or
           raw.get('error') != '0' or type(value.get('expected_input_tokens')) is not int or
           value['expected_input_tokens'] <= 0 or

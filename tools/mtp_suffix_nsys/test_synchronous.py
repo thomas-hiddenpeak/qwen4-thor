@@ -101,7 +101,7 @@ class SynchronousContracts(unittest.TestCase):
         self.assertFalse(any('after-report-ready' in value for row in commands for value in row))
         self.assertTrue(result['report_ready_succeeded'])
         self.assertEqual(result['report']['sha256'], hashlib.sha256(report.read_bytes()).hexdigest())
-        self.assertEqual(sync.contract()['schema'], 4)
+        self.assertEqual(sync.contract()['schema'], 5)
         self.assertEqual(sync.contract()['report_binding_revision'], 1)
         self.assertEqual(session.report_path, report)
         self.assertFalse(session.stop_succeeded)
@@ -117,6 +117,32 @@ class SynchronousContracts(unittest.TestCase):
         self.assertGreaterEqual(len(checks), 2)
         self.assertEqual(session.launch_process.poll(), 0)
         self.assertNotIn('target_returncode', self.read(session))
+
+    def test_fixed_mechanism_receipt_is_distinct_from_fixture_and_model(self):
+        session, receipt = self.launched()
+        receipt.update(source='mechanism-probe', raw=dict(pid=receipt['pid'],
+            passed=True, gemm_calls=2, controls=2, M=4, N=48, K=2560,
+            workspace_bytes=33554432, profiler_start_error=0,
+            profiler_stop_error=0, final_sync_error=0))
+        report = self.generated(session)
+        session.await_report(receipt)
+        self.assertEqual(sync.bound_report(session.output), report)
+
+    def test_mechanism_shape_work_and_failure_cannot_be_relabelled(self):
+        fields = dict(pid=51, gemm_calls=2, controls=2, M=4, N=48, K=2560,
+            workspace_bytes=33554432, profiler_start_error=0,
+            profiler_stop_error=0, final_sync_error=0, passed=True)
+        receipt = dict(pid=51, start_ticks=200, profiler_stop_error=0,
+                       source='mechanism-probe', raw=fields)
+        for key in fields:
+            with self.subTest(field=key):
+                altered = dict(fields)
+                altered[key] = False if key == 'passed' else fields[key] + 1
+                with self.assertRaises(ValueError):
+                    sync._target_receipt(dict(receipt, raw=altered))
+        for source in ('fixture-ready', 'model-capture-end'):
+            with self.assertRaises(ValueError):
+                sync._target_receipt(dict(receipt, source=source))
 
     def test_normalized_and_raw_receipts_must_match(self):
         changes = [lambda r: r.update(pid=True), lambda r: r.update(start_ticks=0),

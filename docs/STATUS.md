@@ -2,6 +2,16 @@
 
 更新：2026-10-26。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+固定生产GEMM参数诊断有界停止（2026-10-26，链接未完成）：
+55项CPU首suite通过，0.675325秒/414源不变；新日志快照及驱动仅CPU验证。
+两次构建10.698530秒，首重复元数据include修复后四对象编译0warning，
+最终link漏生产HcInjectGev依赖。已核原gemv_hc_inject.cu补链方案，未再
+构建；四.d的97实际依赖身份一致。CUPTI/Nsight/模型/HTTP均0，未取得
+新的memset参数，未修复200K/8K耗时差异。固定M4/N48/K2560/32MiB不变。
+下一步仅修真实生产依赖后另行有界验证；完整目标active、两head收益
+按身份复用、默认及原性能NO_GO保持。详见
+[固定memset参数诊断](MTP_SUFFIX_MEMSET_PARAMETER_2026-10-26.md)。
+
 固定k3 suffix报告绑定修复已验证，采集资格仍未通过（2026-10-26）：
 CPU32首轮通过；唯一持锁16.055184秒，两控制正常完成同步报告绑定和
 目标回收，17/17监控无失败。各32 kernel/64 copy/32非零memset/33NVTX

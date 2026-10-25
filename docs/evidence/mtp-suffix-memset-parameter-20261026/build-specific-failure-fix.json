@@ -1,0 +1,10 @@
+{
+  "failure_sha256": "8498d3b193a0ee1065e8f1043f0b47021df9ae8ebdf8f9846c1f003426eb6bc7",
+  "specific_failure_fix": "CUDA13.3 cupti.h:88 already includes generated_cuda_runtime_api_meta.h, which has no include guard. Remove the second direct include that caused duplicate struct/type definitions. Also cap wrapper stdout to metadata; full source inventory remains in immutable receipt.",
+  "changed_sources": {
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/mechanism_probe.cu": {
+      "before": "3ec77022e0efd280ea8f8292cfb0ad19330a27c1ec1d3cd525a96d9df221223c",
+      "after": "464b318e7588a399343b4922dcc021ac98ba687a5b525f6cac0706c5cadb1a08"
+    }
+  }
+}

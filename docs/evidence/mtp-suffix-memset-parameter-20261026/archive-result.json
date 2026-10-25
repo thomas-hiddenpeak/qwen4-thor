@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "ARCHIVED_BUILD_FAILURE_NO_GPU",
+  "evidence_validity": "VALID_BOUNDED_CPU_AND_BUILD_FAILURE",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_EVALUATED_DIAGNOSTIC_ONLY",
+  "engineering_decision": "NOT_ACCEPTED_NO_LINKED_PROBE_OR_GPU_OBSERVATION",
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-memset-parameter-20261026/archive-closed",
+  "manifest_sha256": "748876a1d97d3824d49ed299c2adcd48f04a8b110cfc04dd94de6185db5dd1e3",
+  "entries": 574,
+  "payload_bytes": 32579684,
+  "readback_verified": true,
+  "independent_copies": true,
+  "source_preserved": true,
+  "self_contained": false,
+  "parent_anchor": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/archive-closed",
+  "parent_anchor_hashes": {
+    "manifest.json": "b7413526f7f42199a4b7fc62d2ef41d695cc4cb0500cfd46fd33c1bcc88fc649",
+    "seal.json": "d5683aaab387622103ba38ff0d56ed237a4b153c3b1ef29b598c13494d2745b4"
+  },
+  "no_deployment": true,
+  "new_gpu": 0,
+  "new_http": 0,
+  "new_model_loads": 0,
+  "elapsed_seconds": 0.26046633697114885,
+  "seal_sha256": "07ef90333476d58ac7efed40ecd73b7ff3608b485586cfd6ce666564b4304428"
+}

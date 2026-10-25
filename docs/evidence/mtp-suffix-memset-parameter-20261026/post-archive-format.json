@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "scope": "Post-archive repository Google C++ formatting only, no additional build/test/GPU. The failed-build compiled source remains independently archived. Current formatted candidate has not been compiled.",
+  "path": "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/mechanism_probe.cu",
+  "compiled_source_sha256": "464b318e7588a399343b4922dcc021ac98ba687a5b525f6cac0706c5cadb1a08",
+  "formatted_candidate_sha256": "f5d59a1b310b3453f2ca61dc4bffd5bd279d4d6038895ab57d73a210d4b6dd01"
+}

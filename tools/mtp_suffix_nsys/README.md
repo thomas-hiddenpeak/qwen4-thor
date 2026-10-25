@@ -121,3 +121,11 @@ Generated 路径绑定输出。旧模式与证据保留，warning/memory 门不�
 仍在，完整性门停止。全审计保留一次FAIL：direct的早期NVLOG整文件
 收据后又追加daemon日志；精确前缀核对通过，目标记录未变。不可将
 绑定修复、局部核对或producer NVTXFinish当任意trace完整性证明。
+
+`mechanism_probe.cu` / `mechanism_analyze.py` / `mechanism_stage.py` 是固定
+M4/N48/K2560、32MiB的参数诊断候选，分别运行CUPTI-only与条件Nsight；
+没有吞吐主张，也不能将一个进程的参数填进另一个进程的correlation ID。
+`nvlog_snapshot.py` 保存不可变早期前缀，最终daemon日志单独核对。
+本轮CPU55通过，但独立探针漏链生产HcInjectGev，构建额度后停止，
+0GPU/模型/HTTP，尚无可运行probe或真实新采集资格。后续最小依赖修正
+及完整边界见[固定参数诊断](../../docs/MTP_SUFFIX_MEMSET_PARAMETER_2026-10-26.md)。

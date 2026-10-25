@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "basis": "Second fixed compile attempt reached final link and failed HcInjectGev from original gemv.o. No further build in this phase.",
+  "actual_source": "/home/rm01/models/dev/qwen4-thor/src/model/gemv_hc_inject.cu",
+  "sha256": "171d3af4f3e47ef38cca206bf1ece47414e62bfe5669e4769f15376884d30c98",
+  "production_definition": "src/model/gemv_hc_inject.cu:60",
+  "production_reference": "src/model/gemv.cu:274",
+  "production_cmake": "CMakeLists.txt:187-189",
+  "minimal_future_change": [
+    "Compile this original source with the same frozen COMMON flags to gemv_hc_inject.o and gemv_hc_inject.d",
+    "Add only this object to final link",
+    "Add this source to prebuild frozen source inventory and expect five .d files instead of four",
+    "Keep M4/N48/K2560/32MiB and two calls/controls identical; no stub or runtime changes"
+  ],
+  "static_closure": "Existing production HC object defines exact HcInjectGev and has no further q4t undefined symbol; CUDA and standard ABI references remain. This is read-only evidence, not a successful new probe link.",
+  "new_builds": 0,
+  "new_gpu": 0,
+  "previous_terminal_review_sha256": "8a2347e111756018bb66686673e8aa04a701ce8d75e734efa305d2e507792364"
+}
