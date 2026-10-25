@@ -1,0 +1,85 @@
+{
+  "schema": 1,
+  "source_commit": "250b3871a8cc5907b19bf0c14ed8a65ac85ae060",
+  "classification": "collector lifecycle bug repair; inference unchanged",
+  "evidence_integrity": "PASS",
+  "evidence_validity": "ENV_ABORT",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_EVALUATED_DIAGNOSTIC_ONLY",
+  "engineering_decision": "NOT_ACCEPTED_TOOL_VALIDATION_ABORT",
+  "goal_complete": false,
+  "cpu": {
+    "tests": 62,
+    "suite_runs": 2,
+    "elapsed_seconds": 1.1496778011787683,
+    "first_error": "old minimal runner test fixture omitted nsys configuration",
+    "specific_repair": "complete existing manual plan in mock",
+    "final_errors": 0,
+    "final_failures": 0,
+    "skipped": 0
+  },
+  "gpu": {
+    "attempts": 1,
+    "wall_seconds": 53.0685313900467,
+    "controls_attempted": 1,
+    "controls_completed": 0,
+    "models": 0,
+    "http": 0,
+    "exports": 0
+  },
+  "monitor": {
+    "attempts": 54,
+    "flushed": 54,
+    "pending": 0,
+    "failures": 0,
+    "process_observations_ok": 336,
+    "missing_io": 0
+  },
+  "local_outcome": "Documented synchronous API stop and report generation succeeded; local Generated text path requirement timed out after45s. Forced own cleanup made stage ENV_ABORT; no trace completeness qualification.",
+  "identities": {
+    "plan_sha256": "089c5616f5e21cf564feabf4f5b80b7904a26f448feaff455c168a299acd1ed6",
+    "state_sha256": "cc8040257d1903dd8d4d466eeb182e303baa983737186a4dfc3207e04e2735e1",
+    "raw_seal_sha256": "d99b04ce3932ffcb438d7ab68171dd0c1d10effbac355d9477aae55c2eebfecf",
+    "frozen": {
+      "checked": 46626,
+      "changed": []
+    },
+    "raw": {
+      "checked": 33,
+      "changed": []
+    },
+    "source_snapshot_reuse": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/source-snapshot-reuse.json",
+      "sha256": "5d9ff0f26820b7a96854ce0488c7179091a74e0f8113861d76fd0ae4ad9a52b2"
+    },
+    "source_snapshot_files": 21297,
+    "overlay_files": 12,
+    "default_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "default_sidecar_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+    "model_metadata_files": 197,
+    "terminal_external_files": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/postflight.json": "0a6b2d8297799b718b64ee2bae7a0450cfebfb98f693e30a7f84ced7a6defb9d",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/lease/events.jsonl": "666b91045e51ff1733c427395b3447a4ea70bad60c2e757cd88d0a16ffd5c826",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/lease/exit.json": "a147bada2982305ead5b23b5a1b74287c3ef87fb4ecad4d04be487729ac73cab",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/lease/nvml-queries.jsonl": "f79a69035306d274d9fa8b2bdc246592b39a869551b98932b1c98b29990f8fe2"
+    }
+  },
+  "audit_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/audit-v1/audit-stage.json",
+  "audit_sha256": "0730b24d82248a6c97970c22d260d7a4839bc8efc616f3f11ae5eaedfd75d7c1",
+  "forensic_sha256": "ce88f06780a40eb845ed087e922c23ed5c6698939b4a2f871bc266f5062ad907",
+  "performance_reuse": {
+    "full_code_percent": 13.6774,
+    "full_text_percent": 14.4034,
+    "subset_code_shared_baseline_gm_percent": 6.5335,
+    "subset_text_shared_baseline_gm_percent": 6.7304,
+    "scope": "prior unchanged identity; descriptive subset shared baseline; no new normal samples"
+  },
+  "release_changed": false,
+  "remaining": [
+    "Remove unsupported Generated timing prerequisite using same sync barrier and owned unique report binding; bounded affected verification",
+    "Clear collector event/memory coverage gates before subset200K/8K GPU attribution",
+    "Evidence-driven bounded runtime improvement if supported; applicable five-tier HTTP quality/TTFT/plain/resource protection",
+    "Only accepted candidate may replace released program with rollback,metadata,healthcheck and commit/push"
+  ]
+}

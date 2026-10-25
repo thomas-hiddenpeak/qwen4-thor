@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "classification": "Concrete collector filename-binding defect; inference runtime unchanged",
+  "basis": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/offline-sync-review.json",
+    "sha256": "ce88f06780a40eb845ed087e922c23ed5c6698939b4a2f871bc266f5062ad907"
+  },
+  "status": "DESIGNED_NOT_IMPLEMENTED_NOT_TESTED",
+  "changes": [
+    "Retain exact repeat:1:sync and actual-owned-live-target APIStop success as completion barrier",
+    "Bind the unique regular nonempty report within the initially report-empty canonical owned directory and frozen trace output prefix; do not wait for Generated",
+    "Reject multiple, foreign, symlink, changing inode/size/mtime and any explicit conflicting Generated path; bind report SHA",
+    "Preserve known-work, negative controls, all actual-target warnings and successful memory API activity coverage gates",
+    "Retain independent actual target exit, ownership cleanup and full-stage monitor/lease"
+  ],
+  "new_cli_options": 0,
+  "new_tool_versions": 0,
+  "implemented": false,
+  "additional_gpu_attempts_this_stage": 0,
+  "additional_cpu_suites_this_stage": 0,
+  "delivery_authorized_by_this_evidence": false,
+  "limits": "No retroactive qualification of current ENV_ABORT; no claim of warning false positive, whole GPU coverage, or 200K/8K correction. Further implementation/validation requires its own bounded defect-repair scope."
+}

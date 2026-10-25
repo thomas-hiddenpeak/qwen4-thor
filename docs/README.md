@@ -177,3 +177,5 @@
   并在 log 索引登记。
 - **STATUS.md 是快照**。始终反映"现在"; 已完成条目移入 [DONE.md](DONE.md),
   历史时间线由 [log/](log/README.md) 承载。
+
+- [固定 k3 suffix 同步收尾合同](MTP_SUFFIX_SYNCHRONOUS_2026-10-26.md)

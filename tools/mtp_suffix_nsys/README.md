@@ -108,3 +108,8 @@ CUDA-stop flushing improvement. One exact ARM64 CLI package is isolated under
 `.q4t-work/suffix-nsys-dependency-20261026/`; it has not been executed or qualified.
 See `docs/MTP_SUFFIX_COLLECTOR_DEPENDENCY_2026-10-26.md` for package identity,
 the corrected compatibility inference and the unchanged integrity requirements.
+
+同步收尾候选使用 `synchronous.py` 和 `prepare_synchronous.py`，固定
+`repeat:1:sync`，实际目标 APIStop 返回后收据确认报告生成，再按唯一
+Generated 路径绑定输出。旧模式与证据保留，warning/memory 门不变。
+范围与结果见 [同步报告合同](../../docs/MTP_SUFFIX_SYNCHRONOUS_2026-10-26.md)。

@@ -2,6 +2,21 @@
 
 更新：2026-10-26。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+固定k3 suffix同步收尾有界阶段结束（2026-10-26，ENV_ABORT/不交付）：
+62项CPU通过（一次旧mock配置缺项修复，两suite共1.149678秒）。唯一持锁
+阶段53.068531秒，真实sync APIStop0/ready32及报告生成已完成，但本地
+Generated文本路径门45秒超时；随后强制自有清理，0模型/HTTP/导出。
+定位到具体过强依赖：同步完成与stdout及时可见错误耦合；最终有Generated，
+首次打印时刻UNKNOWN。下步只修owned唯一报告绑定，不变选项/完整性门。
+监控54/54无错误/pending0；独立审计46626冻结/21297父snapshot/33raw/
+197模型元数据一致，7身份ABSENT、PGID无残留、lease释放。默认f356/
+sidecar/子集与两head重复收益证据保持，原运行时保护NO_GO未改变。
+完整目标仍active，200K/8K GPU归因及性能保护未闭合；本轮不追加试验。
+6381memset缺项排除简单join错；当前r595+Nsight V1不满足V2多订阅合同。
+见[同步收尾结果与具体后续修复](MTP_SUFFIX_SYNCHRONOUS_2026-10-26.md)。
+926条目/57447505字节增量封存回读通过，seal `2d3ff84c5f00`；非自包含，
+继续依赖原路径和既有三层归档，研究提交不等于交付。
+
 固定k3 suffix自动收尾有界验证结束（2026-10-26，ENV_ABORT/不交付）：
 46项CPU首suite通过，唯一持锁阶段53.061789秒。自动APIStop已完成报告
 生成/导入并回到Launched；区别于旧手动Stop拒绝，当前失败点为已注册的

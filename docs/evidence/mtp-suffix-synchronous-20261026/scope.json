@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "source_commit": "250b3871a8cc5907b19bf0c14ed8a65ac85ae060",
+  "created_unix": 1792952456.2494056,
+  "classification": "collector lifecycle bug repair; model runtime unchanged",
+  "fixed_change": "capture-range-end=repeat:1:sync documented application-thread report-generation barrier; bind actual-target successful cudaProfilerStop return receipt; unique owned report path from Generated output; no callback or manual stop fallback",
+  "wall_seconds": 7200,
+  "cpu": {
+    "suite_runs": 1,
+    "max_methods": 64,
+    "timeout_seconds": 180,
+    "targeted_repair_runs": 1,
+    "targeted_repair_requires_concrete_failure": true
+  },
+  "gpu": {
+    "attempts": 1,
+    "full_stage_shared_lease": true,
+    "wall_seconds": 4800,
+    "controls": 2,
+    "control_group_seconds": 600,
+    "fixture_each_seconds": 300,
+    "model_loads_max": 4,
+    "http_requests_max": 6,
+    "order": [
+      "direct-interactive",
+      "wrapper-interactive",
+      "nsys8-off",
+      "nsys8-on",
+      "nsys200-on",
+      "nsys200-off"
+    ],
+    "model_precondition": "both known-work and negative controls pass; selected wrapper terminal, diagnostic and memory completeness all pass"
+  },
+  "builds": 0,
+  "tool_versions": 1,
+  "retries": 0,
+  "runtime_changes": 0,
+  "stop_conditions": [
+    "any monitor or competition failure -> ENV_ABORT",
+    "control or known-work failure -> no model",
+    "all actual-target warnings and unknown warnings still block",
+    "memory/event coverage gap -> no performance attribution",
+    "budget ends -> stop, archive explicit validity/completeness/statistics/decision",
+    "no report naming guesses; no weakening actual-target warning or successful memory API activity coverage gates"
+  ],
+  "reuse": "unchanged monitor CPU/native, fixture audit, runtime correctness and both-head repetitive evidence by hash; changed collector CPU tests rerun",
+  "research": "suffix-completion-contract-20261026",
+  "completion_does_not_prove_trace_integrity": true
+}

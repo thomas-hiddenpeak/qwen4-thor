@@ -23,6 +23,7 @@ sys.path.insert(0, str(HERE))
 import fixture_audit
 import interactive
 import automatic
+import synchronous
 
 VARIANTS = [dict(name='direct-stop', wrapper=False, external=False),
             dict(name='wrapper-stop', wrapper=True, external=False),
@@ -74,7 +75,7 @@ def validate(plan):
     stage_seconds, fixture_seconds = (4800, 600) if controlled else (5400, 1200)
     variants = INTERACTIVE_VARIANTS if controlled else VARIANTS
     if controlled and (plan['nsys']['interactive_contract'] not in
-            (interactive.contract(), automatic.contract()) or
+            (interactive.contract(), automatic.contract(), synchronous.contract()) or
             set(plan.get('fixture_reuse', {})) != {'direct-stop', 'wrapper-stop'} or
             plan.get('fixture_new_captures') != 2 or
             plan.get('fixture_reused_local_controls') != 2 or
@@ -273,7 +274,17 @@ def automatic_collection(plan):
     return plan['nsys'].get('interactive_contract') == automatic.contract()
 
 
+def synchronous_collection(plan):
+    return plan['nsys'].get('interactive_contract') == synchronous.contract()
+
+
+def api_completion(plan):
+    return automatic_collection(plan) or synchronous_collection(plan)
+
+
 def session_class(plan):
+    if synchronous_collection(plan):
+        return synchronous.Session
     return automatic.Session if automatic_collection(plan) else interactive.Session
 
 
@@ -318,7 +329,7 @@ def bind_model_target(plan, output, session, *, cleanup=False):
     return target
 
 
-def session_stop(plan, output, name, *, timeout=45, check=None):
+def session_stop(plan, output, name, *, timeout=45, check=None, target_receipt=None):
     """Complete exactly the preselected lifecycle; no stop-error fallback."""
     if not re.fullmatch(r'q4t-suffix-[0-9]+-[a-z0-9-]+', name):
         raise ValueError('refusing non-owned or malformed session name')
@@ -328,10 +339,14 @@ def session_stop(plan, output, name, *, timeout=45, check=None):
         raise RuntimeError('external stop requires the bound interactive session')
     if check:
         check()
-    if automatic_collection(plan):
-        result = session.await_report(timeout=timeout, check=check)
+    if api_completion(plan):
+        if synchronous_collection(plan):
+            result = session.await_report(target_receipt=target_receipt,
+                                          timeout=timeout, check=check)
+        else:
+            result = session.await_report(timeout=timeout, check=check)
         # The target is still held alive. This cancels no active collection:
-        # report-ready has already acknowledged its automatic completion.
+        # The selected callback or synchronous barrier has completed the range.
         if check:
             check()
         session.shutdown()
@@ -339,12 +354,16 @@ def session_stop(plan, output, name, *, timeout=45, check=None):
     return session.stop(timeout=timeout, check=check)
 
 
-def capture_end_receipt(text, target_pid):
+def capture_end_receipt(text, target_pid, expected_input_tokens=None):
     captures = [dict(re.findall(r'(\w+)=(\S+)', line)) for line in text.splitlines()
                 if line.startswith('[exec-capture]')]
     if ([r.get('event') for r in captures] != ['begin', 'end'] or
             any(r.get('pid') != str(target_pid) or r.get('error') != '0' for r in captures)):
         raise RuntimeError('successful actual-target capture end receipt missing')
+    if expected_input_tokens is not None and (
+            type(expected_input_tokens) is not int or expected_input_tokens <= 0 or
+            any(r.get('input_tokens') != str(expected_input_tokens) for r in captures)):
+        raise RuntimeError('capture input length differs from frozen profile request')
     return captures[-1]
 
 
@@ -356,11 +375,12 @@ def stop_profile_target(plan, output, launcher):
         while True:
             raw = (output / 'server.log').read_text()
             if re.search(r'^\[exec-capture\] event=end ', raw, re.M):
-                receipt = capture_end_receipt(raw, identity['pid'])
+                receipt = capture_end_receipt(raw, identity['pid'],
+                    plan['_profile_input_tokens'] if synchronous_collection(plan) else None)
                 break
             launcher_code = launcher.poll()
             if ((launcher_code is not None and
-                 (not automatic_collection(plan) or launcher_code != 0)) or
+                 (not api_completion(plan) or launcher_code != 0)) or
                     time.monotonic() >= deadline):
                 raise RuntimeError('actual-target capture end did not arrive before stop')
             time.sleep(.05)
@@ -373,7 +393,10 @@ def stop_profile_target(plan, output, launcher):
                     actual['state'] in ('Z', 'X')):
                 raise RuntimeError('model target exited before report completion')
         session_stop(plan, output, plan['_active_session'], timeout=45,
-                     check=target_alive)
+                     check=target_alive, target_receipt=dict(pid=identity['pid'],
+                         start_ticks=identity['start_ticks'], profiler_stop_error=0,
+                         source='model-capture-end', raw=receipt,
+                         expected_input_tokens=plan.get('_profile_input_tokens')))
     except BaseException as error:
         control_error = error
     finally:
@@ -397,8 +420,14 @@ def stop_profile_target(plan, output, launcher):
     return target
 
 
+def report_path(plan, output):
+    if synchronous_collection(plan):
+        return synchronous.bound_report(output)
+    return output / 'trace.nsys-rep'
+
+
 def export_database(plan, output, deadline=None, check=None):
-    report, database = output / 'trace.nsys-rep', output / 'trace.sqlite'
+    report, database = report_path(plan, output), output / 'trace.sqlite'
     if not report.is_file() or report.stat().st_size == 0 or database.exists():
         raise RuntimeError('missing trace report or existing export destination')
     command = [plan['nsys']['path'], 'export', '--type=sqlite',
@@ -420,6 +449,8 @@ def export_database(plan, output, deadline=None, check=None):
                 time.sleep(.05)
             if child.returncode or not database.is_file():
                 raise RuntimeError('SQLite export failed')
+            if synchronous_collection(plan) and report_path(plan, output) != report:
+                raise RuntimeError('bound report changed during export')
     except BaseException as error:
         failure = repr(error)
         raise
@@ -436,9 +467,40 @@ def export_database(plan, output, deadline=None, check=None):
     return database
 
 
+def export_synchronous_profile(plan, output):
+    """Use the bound range report with unchanged model table/diagnostic gates."""
+    report = report_path(plan, output)
+    database = export_database(plan, output)
+    with sqlite3.connect(database.resolve().as_uri() + '?mode=ro&immutable=1', uri=True) as db:
+        db.row_factory = sqlite3.Row
+        tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        counts = {}
+        for table in ('CUPTI_ACTIVITY_KIND_KERNEL', 'CUPTI_ACTIVITY_KIND_RUNTIME', 'NVTX_EVENTS'):
+            if table not in tables:
+                raise RuntimeError('required Nsight kernel/API/NVTX table missing: ' + table)
+            counts[table] = db.execute('SELECT COUNT(*) FROM ' + table).fetchone()[0]
+            if counts[table] <= 0:
+                raise RuntimeError('empty required Nsight table: ' + table)
+        try:
+            diagnostics = audit_profile_diagnostics(db, tables, output)
+        except (KeyError, ValueError, TypeError, RuntimeError, sqlite3.Error) as error:
+            diagnostics = dict(valid=False, errors=[repr(error)], schema_incomplete=True)
+        save(output / 'profile-diagnostics.json', diagnostics)
+        if not diagnostics['valid']:
+            raise RuntimeError('Nsight diagnostics report trace loss/error/warning or missing schema')
+    save(output / 'trace-evidence.json', dict(report_path=str(report),
+        report_sha256=legacy.sha(report), sqlite_sha256=legacy.sha(database),
+        tables=sorted(tables), required_counts=counts,
+        diagnostics_sha256=legacy.sha(output / 'profile-diagnostics.json'),
+        performance_acceptance=False, complete_capture_requires_offline_audit=True))
+
+
 def export_profile(plan, output):
-    # Original exporter now invokes the role-aware diagnostic function above.
-    _original_export(plan, output)
+    if synchronous_collection(plan):
+        export_synchronous_profile(plan, output)
+    else:
+        # Original exporter invokes the role-aware diagnostic function above.
+        _original_export(plan, output)
     identity = json.loads((output / 'target-identity.json').read_text())
     import analyze_gpu
     try:
@@ -646,7 +708,7 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
                 check()
                 launcher_code = launcher.poll()
                 if (launcher_code is not None and
-                        (not automatic_collection(plan) or launcher_code != 0)):
+                        (not api_completion(plan) or launcher_code != 0)):
                     raise RuntimeError('fixture launcher exited before ready')
                 if fixture_rows(output / 'server.log', 'fixture-error'):
                     raise RuntimeError('fixture error before ready')
@@ -676,7 +738,10 @@ def fixture_capture(plan, variant, plan_path, parent_output, group_deadline):
                     if pidfd_exited(fd, 0):
                         raise RuntimeError('fixture exited before report completion')
                 session_stop(dict(plan, _interactive_session=control), output, session,
-                    timeout=min(45, deadline-time.monotonic()), check=target_alive)
+                    timeout=min(45, deadline-time.monotonic()), check=target_alive,
+                    target_receipt=dict(pid=identity['pid'], start_ticks=identity['start_ticks'],
+                        profiler_stop_error=ready['profiler_stop_error'],
+                        source='fixture-ready', raw=ready))
             # No CUDA cleanup until the selected collection has completed.
             (output / 'release').touch(exist_ok=False)
             # Auto completion may end launch control before the held target.
@@ -973,7 +1038,8 @@ def interactive_model_step(plan, name, plan_path):
 
     session = session_class(plan)(plan['nsys']['path'], output, session_name(name),
         cwd=ROOT, env=env, deadline=deadline, check=check)
-    local = dict(plan, _active_session=session.name, _interactive_session=session)
+    local = dict(plan, _active_session=session.name, _interactive_session=session,
+                 _profile_input_tokens=step['profile_input_tokens'])
     passed, failure, server, server_pid, target_exit = False, None, None, None, None
     cleanup_errors = []
     with (output / 'server.log').open('x') as log:

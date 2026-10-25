@@ -1,0 +1,36 @@
+{
+  "status": "ARCHIVED_ENV_ABORT_SYNC_PATH_BINDING_NOT_QUALIFIED",
+  "independent_copies": true,
+  "readback_verified": true,
+  "source_preserved": true,
+  "self_contained": false,
+  "external_anchors": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/archive-closed",
+      "manifest_sha256": "bb9204592f022afb48222a6a7e78b7da74001b091e2cbb34e9cd68fd7c53e3a7",
+      "seal_sha256": "e8b29b5840a582405b99965d0959371a38c192ee1a958f68408ee3fb8ee924ef"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/archive-closed",
+      "manifest_sha256": "443481156a010ee447c7d15f0db475c17c9b1721a3c9f1ca4891f4aa55ba888c",
+      "seal_sha256": "7b58904be3e2c80d850073c3d667129a9aa87da23f1f14bb09ca637a97cea1ee"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/archive-closed",
+      "manifest_sha256": "e98dfe6258236e6cf17e3a6a412406086c14a828dbb371b9a0a0bb6104711e52",
+      "seal_sha256": "50d40526d7a6357199d8eff078f97a9a6b398720a865cc2f3b8ac30a0c9c5702"
+    }
+  ],
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/archive-closed",
+  "inventory_sha256": "412baba187fb046bc111ef425638e54e5fd62eb6803a87fb3419d3eee632decd",
+  "manifest_sha256": "ea2668977bbb1e4b0bfd14f2aeb705f44ed74391c08c35877d4f44e16f42aef6",
+  "entries": 926,
+  "payload_bytes": 57447505,
+  "elapsed_seconds": 0.39049848495051265,
+  "measurement_complete": false,
+  "deployment": false,
+  "new_http": 0,
+  "new_model_starts": 0,
+  "archive_gpu_operations": 0,
+  "seal_sha256": "2d3ff84c5f00541943a1d2af31dd1263dbe620ae1c6770fb35434e589d5bab97"
+}

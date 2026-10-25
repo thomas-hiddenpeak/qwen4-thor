@@ -50,12 +50,13 @@ def plan(controlled=False):
 
 class RunnerContracts(unittest.TestCase):
     def test_fixture_interactive_stop_precedes_release_and_session_cleanup(self):
-        for automatic_mode, stop_fails in itertools.product((False, True), repeat=2):
-            with self.subTest(automatic=automatic_mode, stop_fails=stop_fails), tempfile.TemporaryDirectory() as directory:
+        for mode, stop_fails in itertools.product(('manual', 'automatic', 'synchronous'), (False, True)):
+            automatic_mode = mode != 'manual'
+            with self.subTest(mode=mode, stop_fails=stop_fails), tempfile.TemporaryDirectory() as directory:
                 parent = Path(directory)
                 value = plan(True)
                 if automatic_mode:
-                    value['nsys']['interactive_contract'] = runner.automatic.contract()
+                    value['nsys']['interactive_contract'] = getattr(runner, mode).contract()
                 value.update(fixture_binary='/fake/fixture', fixture_log_config='log={log}\n')
                 variant = value['fixture_variants'][0]
                 output = parent/variant['name']
@@ -112,9 +113,9 @@ class RunnerContracts(unittest.TestCase):
                     path = output/'trace.sqlite'
                     path.write_bytes(b'fake exported database')
                     return path
-                with patch.object(runner.automatic if automatic_mode else runner.interactive, 'Session', return_value=session), \
+                with patch.object(getattr(runner, mode) if automatic_mode else runner.interactive, 'Session', return_value=session), \
                         patch.object(runner, 'session_name', return_value=session.name), \
-                        patch.object(runner, 'pin_fixture', return_value=(dict(pid=10,wrapper_pid=None),123)) as pin, \
+                        patch.object(runner, 'pin_fixture', return_value=(dict(pid=10,start_ticks=50,wrapper_pid=None),123)) as pin, \
                         patch.object(runner.old, 'proc_identity', return_value=dict(pid=200,start_ticks=1)), \
                         patch.object(runner, 'pidfd_exited', side_effect=target_exited), \
                         patch.object(runner.os, 'close'), \
@@ -143,10 +144,88 @@ class RunnerContracts(unittest.TestCase):
                     'report-ready' if automatic_mode else 'stop','shutdown','close'])
                 if automatic_mode:
                     session.stop.assert_not_called()
+                if mode == 'synchronous':
+                    receipt = session.await_report.call_args.kwargs['target_receipt']
+                    self.assertEqual((receipt['pid'], receipt['start_ticks'],
+                        receipt['profiler_stop_error']), (10, 50, 0))
                 self.assertFalse((output/'profile-command.json').exists())
                 receipt = json.loads((output/'exit.json').read_text())
                 self.assertEqual(receipt['complete'],not stop_fails)
                 self.assertEqual(receipt['forced_termination'],stop_fails)
+
+    def test_synchronous_report_path_and_export_use_binding(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            value = plan(True)
+            value['nsys'].update(interactive_contract=runner.synchronous.contract(),
+                                 export_timeout_seconds=10)
+            report = output / 'trace7.nsys-rep'
+            report.write_bytes(b'bound report')
+            child = MagicMock()
+            child.poll.return_value, child.returncode = 0, 0
+            def launch(command, **_kwargs):
+                self.assertEqual(command[-1], str(report))
+                (output / 'trace.sqlite').write_bytes(b'export')
+                return child
+            with patch.object(runner.synchronous, 'bound_report', return_value=report) as bound, \
+                    patch.object(runner.subprocess, 'Popen', side_effect=launch):
+                self.assertEqual(runner.export_database(value, output), output / 'trace.sqlite')
+                self.assertEqual(bound.call_count, 2)
+                bound.assert_called_with(output)
+            self.assertEqual(runner.report_path(plan(), output), output / 'trace.nsys-rep')
+
+    def test_synchronous_model_export_keeps_table_and_diagnostic_gates(self):
+        for defect in ('none', 'missing-table', 'empty-table', 'warning'):
+            with self.subTest(defect=defect), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory)
+                value = plan(True)
+                value['nsys']['interactive_contract'] = runner.synchronous.contract()
+                database, report = output / 'trace.sqlite', output / 'trace9.nsys-rep'
+                report.write_bytes(b'report')
+                with sqlite3.connect(database) as db:
+                    for name in ('CUPTI_ACTIVITY_KIND_KERNEL', 'CUPTI_ACTIVITY_KIND_RUNTIME', 'NVTX_EVENTS'):
+                        if defect == 'missing-table' and name == 'NVTX_EVENTS':
+                            continue
+                        db.execute('CREATE TABLE ' + name + ' (id INTEGER)')
+                        if not (defect == 'empty-table' and name == 'NVTX_EVENTS'):
+                            db.execute('INSERT INTO ' + name + ' VALUES (1)')
+                with patch.object(runner, 'report_path', return_value=report), \
+                        patch.object(runner, 'export_database', return_value=database), \
+                        patch.object(runner, 'audit_profile_diagnostics', return_value=dict(valid=defect != 'warning')):
+                    if defect == 'none':
+                        runner.export_synchronous_profile(value, output)
+                        row = json.loads((output / 'trace-evidence.json').read_text())
+                        self.assertEqual(row['report_path'], str(report))
+                        self.assertEqual(row['report_sha256'], runner.legacy.sha(report))
+                        self.assertFalse(row['performance_acceptance'])
+                    else:
+                        with self.assertRaises(RuntimeError):
+                            runner.export_synchronous_profile(value, output)
+                        self.assertFalse((output / 'trace-evidence.json').exists())
+
+    def test_export_profile_dispatch_keeps_reverse_coverage(self):
+        for mode, passed in itertools.product(('manual', 'synchronous'), (False, True)):
+            with self.subTest(mode=mode, passed=passed), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory)
+                (output / 'target-identity.json').write_text(json.dumps(dict(pid=10, wrapper_pid=9)))
+                (output / 'server.log').write_text('server')
+                (output / 'export.log').write_text('export')
+                (output / 'trace-evidence.json').write_text('{}')
+                value = plan(True)
+                if mode == 'synchronous':
+                    value['nsys']['interactive_contract'] = runner.synchronous.contract()
+                import analyze_gpu
+                with patch.object(runner, '_original_export') as old_export, \
+                        patch.object(runner, 'export_synchronous_profile') as sync_export, \
+                        patch.object(analyze_gpu, 'audit_database', return_value=dict(trace_integrity='PASS' if passed else 'FAIL')):
+                    if passed:
+                        runner.export_profile(value, output)
+                    else:
+                        with self.assertRaisesRegex(RuntimeError, 'reverse coverage'):
+                            runner.export_profile(value, output)
+                    self.assertEqual(old_export.call_count, mode == 'manual')
+                    self.assertEqual(sync_export.call_count, mode == 'synchronous')
+                    self.assertTrue((output / 'reverse-coverage-audit.json').exists())
 
     def test_interactive_target_binds_stable_owner_and_exact_wrapper(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -281,11 +360,12 @@ class RunnerContracts(unittest.TestCase):
                     runner.reused_control_evidence(bad)
 
     def test_model_interactive_sequence_and_real_target_exit_are_independent(self):
-        for automatic_mode, stop_fails in itertools.product((False, True), repeat=2):
-            with self.subTest(automatic=automatic_mode, stop_fails=stop_fails), tempfile.TemporaryDirectory() as directory:
+        for mode, stop_fails in itertools.product(('manual', 'automatic', 'synchronous'), (False, True)):
+            automatic_mode = mode != 'manual'
+            with self.subTest(mode=mode, stop_fails=stop_fails), tempfile.TemporaryDirectory() as directory:
                 value = plan(True)
                 if automatic_mode:
-                    value['nsys']['interactive_contract'] = runner.automatic.contract()
+                    value['nsys']['interactive_contract'] = getattr(runner, mode).contract()
                 value.update(output=directory, candidate='/fake/q4t', model='/fake/model',
                              artifact='/fake/subset', port=9999)
                 step = value['steps'][1]
@@ -304,8 +384,8 @@ class RunnerContracts(unittest.TestCase):
                     self.assertIn('--target-wrapper', target)
                     self.assertEqual(envvars['Q4T_EXEC_PROFILE_INPUT'], '8170')
                     (output/'target-identity.json').write_text(json.dumps(dict(pid=10, start_ticks=50)))
-                    stream.write('serving on port 9999\n[exec-capture] event=begin pid=10 error=0\n'
-                                 '[exec-capture] event=end pid=10 error=0\n')
+                    stream.write('serving on port 9999\n[exec-capture] event=begin pid=10 input_tokens=8170 error=0\n'
+                                 '[exec-capture] event=end pid=10 input_tokens=8170 error=0\n')
                     stream.flush()
                     return launcher
                 session.launch.side_effect = launch
@@ -328,7 +408,7 @@ class RunnerContracts(unittest.TestCase):
                 session.close.side_effect = lambda: calls.append('close')
                 batch = [dict(outputs=['correct-output'], responses=[dict(actual_output=256, finish=['length'])])]
                 with patch.object(runner.legacy, 'require_guard'), \
-                        patch.object(runner.automatic if automatic_mode else runner.interactive, 'Session', return_value=session), \
+                        patch.object(getattr(runner, mode) if automatic_mode else runner.interactive, 'Session', return_value=session), \
                         patch.object(runner, 'session_name', return_value=session.name), \
                         patch.object(runner, 'bind_model_target', return_value=dict(pid=10,start_ticks=50)), \
                         patch.object(runner.old, 'proc_identity', return_value=dict(pid=10,start_ticks=50,state='S')), \
@@ -353,6 +433,10 @@ class RunnerContracts(unittest.TestCase):
                 self.assertEqual(calls, ['start','launch',completion,*tail,'close'])
                 if automatic_mode:
                     session.stop.assert_not_called()
+                if mode == 'synchronous':
+                    receipt = session.await_report.call_args.kwargs['target_receipt']
+                    self.assertEqual((receipt['pid'], receipt['start_ticks'],
+                        receipt['profiler_stop_error']), (10, 50, 0))
                 receipt = json.loads((output/'exit.json').read_text())
                 self.assertEqual(receipt['server'], 0)
                 self.assertEqual(receipt['http_output_checks_passed'], not stop_fails)
@@ -420,6 +504,12 @@ class RunnerContracts(unittest.TestCase):
         automatic['nsys']['interactive_contract']['report_timeout_seconds'] = 46
         with self.assertRaises(ValueError):
             runner.validate(automatic)
+        synchronous = copy.deepcopy(controlled)
+        synchronous['nsys']['interactive_contract'] = runner.synchronous.contract()
+        runner.validate(synchronous)
+        synchronous['nsys']['interactive_contract']['start_options'].append('--capture-range-end=stop')
+        with self.assertRaises(ValueError):
+            runner.validate(synchronous)
         for key, changed in [('stage_timeout_seconds', 4801),
                 ('direct_contract_timeout_seconds', 601), ('fixture_new_captures', 4),
                 ('fixture_reused_local_controls', 0), ('fixture_candidate', 'wrapper-external')]:
@@ -466,6 +556,12 @@ class RunnerContracts(unittest.TestCase):
         text = ('[exec-capture] event=begin pid=10 error=0 input_tokens=8170\n'
                 '[exec-capture] event=end pid=10 error=0 input_tokens=8170\n')
         self.assertEqual(runner.capture_end_receipt(text, 10)['event'], 'end')
+        with self.assertRaisesRegex(RuntimeError, 'input length'):
+            runner.capture_end_receipt(text.replace(' input_tokens=8170', ''), 10, 8170)
+        matching = text
+        self.assertEqual(runner.capture_end_receipt(matching, 10, 8170)['event'], 'end')
+        with self.assertRaisesRegex(RuntimeError, 'input length'):
+            runner.capture_end_receipt(matching, 10, 204781)
         for bad in [text.replace('pid=10', 'pid=11'), text.replace('error=0', 'error=1'),
                     text.splitlines()[0], text + text]:
             with self.subTest(receipt=bad):
@@ -625,7 +721,7 @@ class RunnerContracts(unittest.TestCase):
             log.write_text(begin)
             launcher = MagicMock()
             launcher.poll.return_value = None
-            local = dict(_active_session='q4t-suffix-100-test')
+            local = dict(plan(True), _active_session='q4t-suffix-100-test')
             with patch.object(runner.time, 'monotonic', side_effect=[0, 1, 2]), \
                     patch.object(runner.time, 'sleep', side_effect=lambda _: log.write_text(begin+end)), \
                     patch.object(runner, 'session_stop') as stop, \

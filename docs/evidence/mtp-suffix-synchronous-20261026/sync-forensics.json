@@ -1,0 +1,354 @@
+{
+  "schema": 1,
+  "evidence_validity": "FORENSIC_ONLY_ENV_ABORT",
+  "measurement_complete": false,
+  "performance_acceptance": false,
+  "candidate_qualified": false,
+  "stage_status_preserved": "ENV_ABORT",
+  "stage_duration_seconds_parent_reported": 53.068531,
+  "scope": {
+    "source_files_read": 6,
+    "source_file_limit": 6,
+    "wall_budget_seconds": 120,
+    "gpu_cli_export_test_build_http_invocations": 0,
+    "frozen_files_modified": false
+  },
+  "source_files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/server.log": {
+      "sha256": "a76559049e1b718e0c43b221c37e072aa613e1ea4cac73077caa9a068df5f144",
+      "bytes": 9343,
+      "lines": 56
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log": {
+      "sha256": "18d98dd2af9830fd3d4dc3d35423c099e78e949df597471268b3e850217f40c0",
+      "bytes": 905062,
+      "lines": 5950
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/synchronous-report-ready.json": {
+      "sha256": "dce8fbc6744200c921deed01b4b416edb4de4d31698577abfae32e42bb9c95ff",
+      "bytes": 1258,
+      "lines": 41
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-start-command.json": {
+      "sha256": "2b71a4753aaf4e52f56609b245d2e94f8294a4a50e9dc11f6f57be3cb2be7baf",
+      "bytes": 578,
+      "lines": 12
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/exit.json": {
+      "sha256": "496d103f45f2fca578e998809792e396a848a5302aaf9c8a9f8308abead0b7ef",
+      "bytes": 405,
+      "lines": 13
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/ready-boundary.json": {
+      "sha256": "693f3dfbe27807d79d2e48191079eec9877536ae43754eb1efa76f1ab0b90bee",
+      "bytes": 321,
+      "lines": 13
+    }
+  },
+  "configuration": {
+    "actual_command": "--capture-range-end=repeat:1:sync",
+    "nvlog_max_count": 1,
+    "nvlog_generation_mode": "REPORT_GEN_MODE_SYNCHRONOUS",
+    "callback_configured": false,
+    "source": [
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/interactive-start-command.json",
+        "lines": [
+          4,
+          5,
+          6,
+          9,
+          11
+        ]
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+        "lines": [
+          176,
+          177,
+          178,
+          179,
+          180,
+          1118,
+          1119,
+          1120,
+          1121,
+          1122,
+          1126
+        ]
+      }
+    ]
+  },
+  "target": {
+    "pid": 3419864,
+    "start_ticks": 114301914,
+    "normalized_receipt": {
+      "pid": 3419864,
+      "start_ticks": 114301914,
+      "profiler_stop_error": 0,
+      "source": "fixture-ready",
+      "raw": {
+        "pid": 3419864,
+        "tid": 3419864,
+        "completed_steps": 32,
+        "profiler_start_error": 0,
+        "profiler_stop_error": 0,
+        "final_sync_error": 0,
+        "passed": true
+      }
+    },
+    "ready_observed_monotonic": 1143020.594097619,
+    "source": [
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/ready-boundary.json",
+        "lines": [
+          3,
+          5,
+          6,
+          7,
+          8,
+          9,
+          11
+        ]
+      },
+      {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/synchronous-report-ready.json",
+        "lines": [
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          22,
+          23,
+          24,
+          25,
+          26
+        ]
+      }
+    ]
+  },
+  "timeline": [
+    {
+      "evidence": "DIRECT",
+      "event": "Target enters cudaProfilerStop",
+      "nvlog_local_time": "02:28:57.061",
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+        "lines": [
+          2643
+        ]
+      }
+    },
+    {
+      "evidence": "DIRECT",
+      "event": "CUPTI stop flush returns zero; range enters generation",
+      "nvlog_local_time": "02:28:57.062",
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+        "lines": [
+          2723,
+          2760
+        ]
+      }
+    },
+    {
+      "evidence": "DIRECT",
+      "event": "Actual target ReportCUDADone DONE",
+      "nvlog_local_time": "02:28:57.063",
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+        "lines": [
+          2942,
+          2944
+        ]
+      }
+    },
+    {
+      "evidence": "DIRECT",
+      "event": "Sync ResultGenerator and importation begin",
+      "nvlog_local_time": "02:28:58.031",
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+        "lines": [
+          5335,
+          5336,
+          5337
+        ]
+      }
+    },
+    {
+      "evidence": "DIRECT",
+      "event": "Report file saved 100 percent",
+      "nvlog_local_time": "02:28:58.061",
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+        "lines": [
+          5721
+        ]
+      }
+    },
+    {
+      "evidence": "DIRECT",
+      "event": "Importer exits gracefully; result_ready exact trace.1 report; RangeImportation to Launched; application CUDA tracing stopped",
+      "nvlog_local_time": "02:28:58.069",
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+        "lines": [
+          5783,
+          5789,
+          5790,
+          5793,
+          5794,
+          5797,
+          5798,
+          5799,
+          5807,
+          5808,
+          5809
+        ]
+      }
+    },
+    {
+      "evidence": "DIRECT",
+      "event": "Actual target ready32 and APIStop0 consumed; then report-binding wait times out",
+      "ready_monotonic": 1143020.594097619,
+      "wait_started_monotonic": 1143020.59460718,
+      "wait_finished_monotonic": 1143065.594784811,
+      "wait_seconds": 45.000177630921826,
+      "source": [
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/server.log",
+          "lines": [
+            54
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/ready-boundary.json",
+          "lines": [
+            11
+          ]
+        },
+        {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/synchronous-report-ready.json",
+          "lines": [
+            12,
+            13,
+            36,
+            37,
+            38,
+            40
+          ]
+        }
+      ]
+    },
+    {
+      "evidence": "DIRECT",
+      "event": "Failure cleanup interrupts launcher/controller and signals owned target",
+      "nvlog_local_time": "02:29:43.078",
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+        "lines": [
+          5811,
+          5812,
+          5813,
+          5814,
+          5815
+        ]
+      }
+    },
+    {
+      "evidence": "DIRECT_METADATA_WITH_LIMIT",
+      "event": "Final server.log mtime, with Generated block as final two lines",
+      "mtime_ns": 1792952983187535156,
+      "mtime_local_plus08": "2026-10-26T02:29:43.187535+08:00",
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/server.log",
+        "lines": [
+          55,
+          56
+        ]
+      },
+      "limit": "File mtime timestamps the final write, not each line or the first visibility of the Generated block."
+    },
+    {
+      "evidence": "DIRECT",
+      "event": "Target termination signal15; session Launched to Shutdown",
+      "nvlog_local_time": "02:29:43.191",
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+        "lines": [
+          5826,
+          5828,
+          5829
+        ]
+      }
+    },
+    {
+      "evidence": "DIRECT",
+      "event": "Later shutdown command finds missing session storage and no active session",
+      "nvlog_local_time": "02:29:43.302-02:29:43.303",
+      "source": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log",
+        "lines": [
+          5930,
+          5931,
+          5933,
+          5946,
+          5949
+        ]
+      }
+    }
+  ],
+  "generated_output": {
+    "final_block_present": true,
+    "final_report_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/trace.1.nsys-rep",
+    "final_lines": [
+      55,
+      56
+    ],
+    "complete_block_consumed_during_wait": false,
+    "first_visibility_time": "UNKNOWN",
+    "explanation": "The frozen wait timed out, while final raw contains the exact block and final write mtime lies during cleanup. This strongly supports late output/flushing; per-poll read offsets and per-line timestamps were not recorded, so the exact first write/flush and its internal cause are not proven."
+  },
+  "control_result": {
+    "wait_seconds": 45.000177630921826,
+    "fixture_seconds": 47.02899005706422,
+    "forced_termination": true,
+    "launcher_returncode": 143,
+    "cleanup_errors": [
+      "session shutdown: RuntimeError('interactive shutdown failed with 1')"
+    ],
+    "normal_target_exit_proved": false
+  },
+  "findings": [
+    {
+      "evidence": "DIRECT",
+      "finding": "The documented sync mode was configured and generation/importation completed before the actual target post-APIStop success receipt. This failure is not the earlier missing after-report-ready callback; no callback was configured."
+    },
+    {
+      "evidence": "SUPPORTED_LOCAL_DEFECT",
+      "finding": "Requiring a pre-cleanup Generated stdout block as a necessary report-name gate couples the documented synchronous completion acknowledgement to an unguaranteed stdout emission/flush time. That is an over-strong local dependency; the actual API-stop success contract is separately available."
+    },
+    {
+      "evidence": "SUPPORTED_INFERENCE",
+      "finding": "The cleanup shutdown error is secondary: owned target cleanup caused session shutdown before the later shutdown command searched for it. It does not explain the initial report-name wait timeout."
+    },
+    {
+      "evidence": "UNKNOWN",
+      "finding": "Exactly when Generated was first written or became visible, and whether buffering or a different CLI output phase delayed it, cannot be proved from the final untimestamped log."
+    },
+    {
+      "evidence": "UNKNOWN",
+      "finding": "No report content was read or exported, and no GPU event/diagnostic/negative-control audit was performed. Report existence, sync completion and Done do not prove CUDA/NVTX/memset completeness or clear warnings."
+    }
+  ],
+  "minimal_later_fix": {
+    "allowed_in_this_attempt": false,
+    "description": "After verifying the same owned live target APIStop0 return under the fixed repeat:1:sync contract, bind the single nonempty nonsymlink regular .nsys-rep in the dedicated initially report-empty owned output directory. Reject zero/multiple/foreign/symlink/unstable identities; do not require Generated stdout. Preserve API receipt, report identity/hash, shutdown/target ownership and all export/coverage/diagnostic gates.",
+    "not_a_runtime_optimization": true,
+    "no_new_capture_or_timeout_expansion_this_budget": true
+  }
+}

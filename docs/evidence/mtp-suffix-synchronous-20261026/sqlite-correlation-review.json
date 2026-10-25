@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "classification": "READ_ONLY_EXPORTED_SQLITE_CORRELATION_REVIEW",
+  "scope": "Reuses the already completed read-only queries. This receipt does not rerun any query, test, profiler, export, HTTP or GPU work.",
+  "source": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-rerun-20261024/diagnostic-v1/run/nsys8-off/trace.sqlite",
+    "sha256_before": "3eb37bcf20823ff36de8915764b25f24902b3516ea0ad52262c0c2cf3f9f1c6a",
+    "sha256_after": "3eb37bcf20823ff36de8915764b25f24902b3516ea0ad52262c0c2cf3f9f1c6a",
+    "unchanged": true,
+    "product_version": "2026.1.3.243",
+    "export_schema_version": "3.24.18",
+    "target_pid": 3181182,
+    "connection": "mode=ro&immutable=1"
+  },
+  "reviewed_sources": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/analyze_gpu.py",
+      "sha256": "8d8e41c09534b6381e3126a9dc30fe3f0308b5025a3be948933a2a424d5e1a06",
+      "role": "Reviewed existing analyzer direct (globalPid, correlationId) association logic; hash at receipt creation."
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-range-contract-20261026/memset-analysis.json",
+      "sha256": "fcbb3b9f3618e08cfdc072ce51577061c3540f9b1b8f0fcec66bc7ff9f095538",
+      "role": "Prior sealed neighbor/family analysis; no reexecution."
+    }
+  ],
+  "executed_queries": [
+    "SELECT name FROM sqlite_master WHERE type='table'",
+    "PRAGMA table_info(<each exported table>)",
+    "SELECT name,value FROM META_DATA_EXPORT",
+    "SELECT * FROM StringIds",
+    "SELECT rowid AS rid,* FROM CUPTI_ACTIVITY_KIND_RUNTIME",
+    "SELECT rowid AS rid,* FROM CUPTI_ACTIVITY_KIND_KERNEL",
+    "SELECT rowid AS rid,* FROM CUPTI_ACTIVITY_KIND_MEMCPY",
+    "SELECT rowid AS rid,* FROM CUPTI_ACTIVITY_KIND_MEMSET"
+  ],
+  "analysis_rules": {
+    "target_selection": "((globalTid or globalPid >> 24) & 0xffffff) == 3181182; the shift applies to the selected ID field.",
+    "api_index": "Group all selected API rows by correlationId; retain eventClass and StringIds name.",
+    "activity_association": "For each selected activity row, count API rows having exactly its correlationId within the already selected target PID.",
+    "missing_memset": "Select target API names containing Memset with no kernel, copy or memset activity having its correlationId.",
+    "neighbors": "Order each target globalTid by (start,rowid); inspect immediate previous/next API and interval overlap; do not invent runtime-to-driver bridges."
+  },
+  "schema_findings": {
+    "api_table": "CUPTI_ACTIVITY_KIND_RUNTIME",
+    "driver_table_exists": false,
+    "runtime_correlation_id_column_exists_anywhere": false,
+    "api_event_classes": {
+      "0": 272923,
+      "1": 441804
+    },
+    "event_class_interpretation": "0 runtime, 1 driver; both domains occur in the exported API table."
+  },
+  "counts": {
+    "target_api_rows": 714727,
+    "duplicate_api_correlation_ids": 0,
+    "kernel_activities": 266389,
+    "copy_activities": 4551,
+    "memset_activities": 7902,
+    "activities_without_unique_api": {
+      "kernel": 0,
+      "copy": 0,
+      "memset": 0
+    },
+    "memset_api_rows": 14283,
+    "memset_api_without_any_gpu_activity": 6381,
+    "missing_memset_overlap_previous_api": 0,
+    "missing_memset_overlap_next_api": 0
+  },
+  "activity_to_api": {
+    "kernel": [
+      {
+        "eventClass": 0,
+        "name": "cudaLaunchKernel_v7000",
+        "activities": 207156
+      },
+      {
+        "eventClass": 1,
+        "name": "cuLaunchKernelEx",
+        "activities": 52852
+      },
+      {
+        "eventClass": 1,
+        "name": "cuLaunchKernel",
+        "activities": 6381
+      }
+    ],
+    "copy": [
+      {
+        "eventClass": 0,
+        "name": "cudaMemcpyAsync_v3020",
+        "activities": 4177
+      },
+      {
+        "eventClass": 0,
+        "name": "cudaMemcpy_v3020",
+        "activities": 374
+      }
+    ],
+    "memset": [
+      {
+        "eventClass": 0,
+        "name": "cudaMemsetAsync_v3020",
+        "activities": 7902
+      }
+    ]
+  },
+  "missing_memset_neighbor_pattern": {
+    "count": 6381,
+    "previous": "cuKernelGetFunction",
+    "next": "cuLaunchKernel",
+    "next_kernel_activities_each": 1,
+    "next_is_separate_nonoverlapping_api": true
+  },
+  "conclusion": "The 6381 unresolved memory submissions are not repaired by reading a missing DRIVER table or an existing runtimeCorrelationId bridge: neither is present. All exported GPU activities already have exactly one API association. Reassigning the following separately correlated kernel to the preceding memset has no supporting exported relation.",
+  "limitations": [
+    "This excludes a simple association bug using existing exported columns; it does not prove complete export semantics for all Nsight versions.",
+    "The CUPTI C activity struct correlationId definition cannot be blindly applied to the already normalized Nsight SQLite schema.",
+    "No count/devPtr/value/stream arguments are exported for the 6381 APIs; zero byte no-op, driver behavior and missing activity remain unproven alternatives.",
+    "Adjacent library launches and all activity-to-API joins cannot exclude loss of both an API and its activity.",
+    "No warning, memory gate, stage outcome or performance conclusion is changed by this review."
+  ],
+  "prior_query_elapsed_seconds": 6.602922406047583,
+  "execution_record": {
+    "initial_schema_inspection": "Read-only schema loop stopped with no such table CUPTI_ACTIVITY_KIND_DRIVER; subsequent query explicitly enumerated existing tables. No raw mutation occurred.",
+    "new_query_executions_for_receipt": 0,
+    "new_gpu_or_http": 0,
+    "new_tests": 0,
+    "new_exports": 0
+  },
+  "evidence_validity": "VALID_FOR_REPORTED_READ_ONLY_SCHEMA_AND_ROW_ASSOCIATIONS",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_A_PERFORMANCE_MEASUREMENT",
+  "engineering_decision": "KEEP_MEMORY_UNKNOWN; NO_JOIN_FIX_ESTABLISHED"
+}
