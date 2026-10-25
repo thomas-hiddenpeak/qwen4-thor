@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "scope_sha256": "6b803c3dc81231735f878650a6eeab1845423f8d6f3005c3079301c19836cd35",
+  "script_sha256": "c01b98c4ab47a13094f37b8f0f5fcddd9a81153f935bca66228a135f2936548c",
+  "audit_sha256": "8725fd51243ba13864a90d12df5b3b6739c52b325446c4243e54dfc348e2db03",
+  "original_audit_integrity": "FAIL",
+  "original_audit_validity": "INVALID",
+  "result": "EXACT_EARLY_PREFIX_WITH_UNCHANGED_TARGET_RECORDS",
+  "groups": {
+    "direct-interactive": {
+      "receipt_sha256": "05b4bd59541df81f66150d899230cce312b5b79d57cdb29766c45a0184e48d2a",
+      "final_log_sha256": "09a6eb51f11552287743db802544c51897b478be24a91eca9dab73ec8b5b3e4d",
+      "snapshot_bytes": 916678,
+      "final_bytes": 922220,
+      "precise_prefix_sha256": "1a6cb19f5f4eac170304e0523740fe382621c11689016c06511937474a037e21",
+      "prefix_matches": true,
+      "target_pid": 3422087,
+      "identical_target_lines": 514,
+      "differing_receipt_fields": {
+        "sha256": {
+          "stored": "1a6cb19f5f4eac170304e0523740fe382621c11689016c06511937474a037e21",
+          "final": "09a6eb51f11552287743db802544c51897b478be24a91eca9dab73ec8b5b3e4d"
+        },
+        "bytes": {
+          "stored": 916678,
+          "final": 922220
+        }
+      },
+      "appended_bytes": 5542,
+      "appended_lines": [
+        "I02:46:24.016| quadd_common_process_waiter |                             nsys pid=3422064 tid= 3422064 | ProcessWaiterImpl.cpp:236 [~ProcessWaiterImpl]: Clean up named semaphore /NSys-process_waiter-3422087-4026531836-2026.5.1",
+        "I02:46:24.016| quadd_daemon_analysis_service |                             nsys pid=3422064 tid= 3422064 | AnalysisServiceImpl.cpp:423 [ResetInternal]: AnalysisServiceImpl[0xffff900fa340]: #ResetInternal begin",
+        "I02:46:24.016| quadd_daemon_analysis_service |                             nsys pid=3422064 tid= 3422064 | AnalysisServiceImpl.cpp:428 [ResetInternal]: AnalysisServiceImpl[0xffff900fa340]: #ResetInternal end",
+        "I02:46:24.016| quadd_daemon_analysis_service |                             nsys pid=3422064 tid= 3422064 | AnalysisServiceImpl.cpp:70 [~AnalysisServiceImpl]: AnalysisServiceImpl[0xffff900fa340]: destroyed",
+        "I02:46:24.016| quadd_common_session_manager |                             nsys pid=3422064 tid= 3422064 | BaseSessionManager.cpp:384 [RemoveUser]: Removing user \"rm01\"",
+        "I02:46:24.016| quadd_common_session_manager |                             nsys pid=3422064 tid= 3422064 | BaseSessionManager.cpp:607 [RemoveSession]: Removing session \"q4t-suffix-3422051-114406127-9daf50e3e8a2d53f-direct-interactive\" with ID 103422064",
+        "I02:46:24.016| quadd_agent |                             nsys pid=3422064 tid= 3422064 | SessionRegistry.cpp:88 [~SessionRegistry]: Session unregistered: id=103422064.",
+        "I02:46:24.016| quadd_common_session_manager |                             nsys pid=3422064 tid= 3422064 | Helper.cpp:75 [GetFileLock]: Getting session manager file lock: mode=1 path=/tmp/nvidia/nsight_systems/NSys-SessionManager.lock-4026531836-2026.5.1.",
+        "I02:46:24.017| quadd_common_session_manager |                             nsys pid=3422064 tid= 3422064 | Helper.cpp:75 [GetFileLock]: Getting session manager file lock: mode=1 path=/tmp/nvidia/nsight_systems/NSys-SessionManager.lock-4026531836-2026.5.1.",
+        "E02:46:24.017| quadd_common_session_manager |                             nsys pid=3422064 tid= 3422064 | BaseSessionManager.cpp:66 [OpenStorage]: Failed to open session storage (/tmp/nvidia/nsight_systems/NSys-SessionManager-4026531836-2026.5.1): Dynamic exception type: boost::interprocess::interprocess_exception",
+        "std::exception::what: No such file or directory",
+        ".",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessorHolder.h:62 [Terminate]: AsyncProcessorHolder[0xffffd97e9fb0]: Stopping",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessor.cpp:75 [Stop]: 1MainService@AsyncProcessor[0x945eb40] is stopping.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessor.cpp:89 [Stop]: 1MainService@AsyncProcessor[0x945eb40] is waiting for 2 work threads to finish.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422065 | AsyncProcessor.cpp:57 [operator()]: Thread[3422065] stopped servicing 1MainService@AsyncProcessor.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422066 | AsyncProcessor.cpp:57 [operator()]: Thread[3422066] stopped servicing 1MainService@AsyncProcessor.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessor.cpp:97 [Stop]: 1MainService@AsyncProcessor[0x945eb40] stopped.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessor.cpp:75 [Stop]: 2TaskRunner@AsyncProcessor[0x945f310] is stopping.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessor.cpp:89 [Stop]: 2TaskRunner@AsyncProcessor[0x945f310] is waiting for 2 work threads to finish.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422067 | AsyncProcessor.cpp:57 [operator()]: Thread[3422067] stopped servicing 2TaskRunner@AsyncProcessor.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422068 | AsyncProcessor.cpp:57 [operator()]: Thread[3422068] stopped servicing 2TaskRunner@AsyncProcessor.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessor.cpp:97 [Stop]: 2TaskRunner@AsyncProcessor[0x945f310] stopped.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessor.cpp:75 [Stop]: 3AnalysisServiceImpl@AsyncProcessor[0x945f3b0] is stopping.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessor.cpp:89 [Stop]: 3AnalysisServiceImpl@AsyncProcessor[0x945f3b0] is waiting for 2 work threads to finish.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422070 | AsyncProcessor.cpp:57 [operator()]: Thread[3422070] stopped servicing 3AnalysisServiceImpl@AsyncProcessor.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422069 | AsyncProcessor.cpp:57 [operator()]: Thread[3422069] stopped servicing 3AnalysisServiceImpl@AsyncProcessor.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessor.cpp:97 [Stop]: 3AnalysisServiceImpl@AsyncProcessor[0x945f3b0] stopped.",
+        "I02:46:24.017| quadd_common_core |                             nsys pid=3422064 tid= 3422064 | AsyncProcessorHolder.h:80 [Terminate]: AsyncProcessorHolder[0xffffd97e9fb0]: Destroying"
+      ],
+      "appended_pids": [
+        "3422064"
+      ],
+      "appended_session_storage_error": true,
+      "nvtx_producer_finish": [
+        "I02:46:19.658| Injection |                          fixture pid=3422087 tid= 3422091 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: NVTXFinish."
+      ],
+      "explicit_target_loss": []
+    },
+    "wrapper-interactive": {
+      "receipt_sha256": "2caeb1d2d8d41182a85990a5bd22b7fdd2cbffeedf2ad050407cbd55a343b000",
+      "final_log_sha256": "128f4b3de8f5b29f6493e186a38a0ea73193bcb327245a266470b4333090fb38",
+      "snapshot_bytes": 980757,
+      "final_bytes": 980757,
+      "precise_prefix_sha256": "128f4b3de8f5b29f6493e186a38a0ea73193bcb327245a266470b4333090fb38",
+      "prefix_matches": true,
+      "target_pid": 3422176,
+      "identical_target_lines": 513,
+      "differing_receipt_fields": {},
+      "appended_bytes": 0,
+      "appended_lines": [],
+      "appended_pids": [],
+      "appended_session_storage_error": false,
+      "nvtx_producer_finish": [
+        "I02:46:24.943| Injection |                          fixture pid=3422176 tid= 3422178 | Init.cpp:566 [RecordServiceTraceEventOfType]: Sending service event: NVTXFinish."
+      ],
+      "explicit_target_loss": []
+    }
+  },
+  "qualification": "NOT_ACCEPTED_INCOMPLETE_TOOL_QUALIFICATION",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_EVALUATED_DIAGNOSTIC_ONLY",
+  "warning_waiver": false,
+  "new_capture": 0,
+  "new_http": 0,
+  "new_model_loads": 0,
+  "correction": "Both controls contain producer NVTXFinish; consumer warning cause remains unknown.",
+  "limits": "No whole-audit rerun or upgrade. The appended daemon session-storage error remains a fact; target stability does not prove arbitrary trace completeness.",
+  "elapsed_seconds": 0.06088860402815044
+}

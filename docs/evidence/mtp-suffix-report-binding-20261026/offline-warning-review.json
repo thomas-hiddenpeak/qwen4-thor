@@ -1,0 +1,810 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-25T18:49:40.318767+00:00",
+  "evidence_validity": "BOUNDED_OFFLINE_REVIEW_OF_COMPLETED_FIXTURE_EVIDENCE",
+  "stage_gate_passed": false,
+  "candidate_qualified": false,
+  "model_trace_validated": false,
+  "performance_acceptance": false,
+  "scope": {
+    "unique_sources_read": 8,
+    "limit_unique_sources": 8,
+    "new_cli_export_gpu_http_tests": 0,
+    "raw_or_frozen_files_modified": false,
+    "audit_functions_reexecuted": false,
+    "sqlite_requeried": false,
+    "method": "Read existing NVLOG, two saved known-work audits, two role diagnostics, aggregate results and one saved official forum source. No fresh data."
+  },
+  "source_files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/nvlog.log": {
+      "sha256": "09a6eb51f11552287743db802544c51897b478be24a91eca9dab73ec8b5b3e4d",
+      "bytes": 922220,
+      "lines": 6053
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/known-work-audit.json": {
+      "sha256": "3b8a812936982cc0f2a61e33a7c6684051f8340150a43d2ba5a6055a9ec8c7a4",
+      "bytes": 33019,
+      "lines": 1373
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/run/fixture-controls/direct-interactive/profile-diagnostics.json": {
+      "sha256": "ade7dd9f0a9c4309011b4b2514a8008b4b99e90d17d6a568447c8137c1d24896",
+      "bytes": 6160,
+      "lines": 213
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/run/fixture-controls/wrapper-interactive/nvlog.log": {
+      "sha256": "128f4b3de8f5b29f6493e186a38a0ea73193bcb327245a266470b4333090fb38",
+      "bytes": 980757,
+      "lines": 6531
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/run/fixture-controls/wrapper-interactive/known-work-audit.json": {
+      "sha256": "9d833de6f87e115202225f0a65d790fc1e8e2f2b7e2cf4a5591db1d294df016b",
+      "bytes": 35391,
+      "lines": 1454
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/run/fixture-controls/wrapper-interactive/profile-diagnostics.json": {
+      "sha256": "07aea9f4dddd0926b66095cc85cdfc4d8e8dba6bd01da369b5948bf0b63088a9",
+      "bytes": 8633,
+      "lines": 303
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/run/fixture-controls/results.json": {
+      "sha256": "73ab6373c89d328c0854396ead09b13cde43bac31efdd6b20d73c2f416c286ec",
+      "bytes": 2946,
+      "lines": 72
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-range-contract-20261026/web/forced-flush-384749.html": {
+      "sha256": "c84ee88be6f3e1bc1a00521686ef63f8f6b312c05dc48de7e58405f787fa3a03",
+      "bytes": 51055,
+      "lines": 701
+    }
+  },
+  "variants": {
+    "direct-interactive": {
+      "actual_target_pid": 3422087,
+      "wrapper_pid": null,
+      "known_work_complete": true,
+      "fixture_contract_passed": true,
+      "gpu_memory_coverage_complete": true,
+      "counts": {
+        "application_launches": 32,
+        "application_kernels": 32,
+        "application_copy_apis": 64,
+        "application_copies": 64,
+        "application_memset_apis": 32,
+        "application_memsets": 32,
+        "fixture_nvtx": 33,
+        "mapped_steps": 32,
+        "other_thread_apis": 0
+      },
+      "memory_coverage": {
+        "status": "COMPLETE",
+        "gpu_memory_coverage_complete": true,
+        "known_nonzero_memset_apis": 32,
+        "observed_activities": 32,
+        "activity_table_present": true,
+        "expected_by_bytes": {
+          "512": 16,
+          "16384": 16
+        },
+        "observed_by_bytes": {
+          "512": 16,
+          "16384": 16
+        },
+        "unmatched_by_bytes": {},
+        "unmatched_apis": [],
+        "scope": "Nonzero argument sizes come from the independent fixture ledger. Missing GPU memset activity is UNKNOWN_CAPABILITY, not proof of dropped records; model gate must require complete coverage."
+      },
+      "audit_errors": [],
+      "actual_target_warnings": [
+        {
+          "timestamp": 25789046,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 2,
+          "text": "Not all NVTX events might have been collected.",
+          "globalPid": 338888069480448,
+          "severity_name": "Warning"
+        },
+        {
+          "timestamp": 25794333,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 2,
+          "text": "Not all CUDA events might have been collected.",
+          "globalPid": 338888069480448,
+          "severity_name": "Warning"
+        }
+      ],
+      "diagnostics_valid": false,
+      "wrapper_empty_process_warnings": [],
+      "wrapper_trace_counts": {},
+      "producer_consumer_messages": [
+        {
+          "timestamp": 8923282,
+          "timestampType": 1,
+          "source": 1,
+          "severity": 1,
+          "text": "Number of CUPTI events produced: \t304, CUPTI buffers: 50.",
+          "globalPid": 338888069480448,
+          "severity_name": "Info"
+        },
+        {
+          "timestamp": 25792129,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 1,
+          "text": "Number of NVTX events collected: \t33.",
+          "globalPid": 338888069480448,
+          "severity_name": "Info"
+        },
+        {
+          "timestamp": 25795000,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 1,
+          "text": "Number of CUDA events collected: \t292.",
+          "globalPid": 338888069480448,
+          "severity_name": "Info"
+        }
+      ],
+      "nvlog_evidence": {
+        "api_stop_flush": [
+          {
+            "line": 2679,
+            "text": "I02:46:19.657| quadd_cuda_tracing |                          fixture pid=3422087 tid= 3422087 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for cudaProfilerStop: flags=0"
+          },
+          {
+            "line": 2738,
+            "text": "I02:46:19.658| quadd_cuda_tracing |                          fixture pid=3422087 tid= 3422087 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for cudaProfilerStop: CUptiResult=0"
+          }
+        ],
+        "analysis_stop_flush": [
+          {
+            "line": 2906,
+            "text": "I02:46:19.658| quadd_cuda_tracing |                          fixture pid=3422087 tid= 3422091 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for analysis stop: flags=1"
+          },
+          {
+            "line": 2945,
+            "text": "I02:46:19.658| quadd_cuda_tracing |                          fixture pid=3422087 tid= 3422091 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for analysis stop: CUptiResult=0"
+          }
+        ],
+        "cuda_done": [
+          {
+            "line": 2954,
+            "text": "I02:46:19.658| Injection |                          fixture pid=3422087 tid= 3422091 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+          },
+          {
+            "line": 5957,
+            "text": "I02:46:20.827| Injection |                          fixture pid=3422087 tid= 3422087 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+          }
+        ],
+        "producer": [
+          {
+            "line": 2955,
+            "text": "I02:46:19.658| Injection |                          fixture pid=3422087 tid= 3422091 | CudaInjectionInit.cpp:2301 [FinalDiagnosticHandler]: CUPTI: Number of CUPTI events produced: 304, CUPTI buffers in use: 0."
+          },
+          {
+            "line": 5958,
+            "text": "I02:46:20.827| Injection |                          fixture pid=3422087 tid= 3422087 | CudaInjectionInit.cpp:2301 [FinalDiagnosticHandler]: CUPTI: Number of CUPTI events produced: 304, CUPTI buffers in use: 0."
+          }
+        ],
+        "range_generation": [
+          {
+            "line": 2758,
+            "text": "I02:46:19.658| quadd_agent_session |                             nsys pid=3422064 tid= 3422070 | Session.cpp:1292 [SetState]: Session state transition: RangeCollection -> RangeGeneration."
+          }
+        ],
+        "range_importation": [
+          {
+            "line": 5336,
+            "text": "I02:46:20.627| quadd_agent_session |                             nsys pid=3422064 tid= 3422069 | Session.cpp:1292 [SetState]: Session state transition: RangeGeneration -> RangeImportation."
+          }
+        ],
+        "report_completed": [
+          {
+            "line": 5792,
+            "text": "I02:46:20.665| quadd_agent_session |                             nsys pid=3422064 tid= 3422069 | Session.cpp:1292 [SetState]: Session state transition: RangeImportation -> Launched."
+          },
+          {
+            "line": 5793,
+            "text": "I02:46:20.665| quadd_agent_session |                             nsys pid=3422064 tid= 3422069 | Session.cpp:2957 [CompleteResultGeneration]: Session is ready for another collection."
+          }
+        ],
+        "api_thread_stop_completion": [
+          {
+            "line": 5808,
+            "text": "I02:46:20.665| quadd_cuda_tracing |                          fixture pid=3422087 tid= 3422087 | InjectionInterface.cpp:1671 [StopCudaTracing]: CUDA tracing stopped"
+          }
+        ],
+        "nvtx_named_finalization": [],
+        "drop_counter": []
+      },
+      "diagnostic_source_lines": [
+        {
+          "line": 116,
+          "text": "      \"text\": \"Number of CUPTI events produced: \\t304, CUPTI buffers: 50.\","
+        },
+        {
+          "line": 125,
+          "text": "      \"text\": \"Not all NVTX events might have been collected.\","
+        },
+        {
+          "line": 134,
+          "text": "      \"text\": \"Number of NVTX events collected: \\t33.\","
+        },
+        {
+          "line": 143,
+          "text": "      \"text\": \"Not all CUDA events might have been collected.\","
+        },
+        {
+          "line": 152,
+          "text": "      \"text\": \"Number of CUDA events collected: \\t292.\","
+        },
+        {
+          "line": 191,
+          "text": "      \"text\": \"Not all NVTX events might have been collected.\","
+        },
+        {
+          "line": 200,
+          "text": "      \"text\": \"Not all CUDA events might have been collected.\","
+        },
+        {
+          "line": 207,
+          "text": "  \"valid\": false,"
+        },
+        {
+          "line": 208,
+          "text": "  \"actual_target_pid\": 3422087,"
+        },
+        {
+          "line": 209,
+          "text": "  \"wrapper_pid\": null,"
+        },
+        {
+          "line": 211,
+          "text": "  \"wrapper_trace_counts\": {},"
+        }
+      ],
+      "known_work_source_lines": [
+        {
+          "line": 3,
+          "text": "  \"known_work_complete\": true,"
+        },
+        {
+          "line": 4,
+          "text": "  \"fixture_contract_passed\": true,"
+        },
+        {
+          "line": 5,
+          "text": "  \"gpu_memory_coverage_complete\": true,"
+        },
+        {
+          "line": 8,
+          "text": "    \"gpu_memory_coverage_complete\": true,"
+        },
+        {
+          "line": 20,
+          "text": "    \"unmatched_by_bytes\": {},"
+        },
+        {
+          "line": 253,
+          "text": "  \"counts\": {"
+        },
+        {
+          "line": 254,
+          "text": "    \"application_launches\": 32,"
+        },
+        {
+          "line": 255,
+          "text": "    \"application_kernels\": 32,"
+        },
+        {
+          "line": 256,
+          "text": "    \"application_copy_apis\": 64,"
+        },
+        {
+          "line": 257,
+          "text": "    \"application_copies\": 64,"
+        },
+        {
+          "line": 258,
+          "text": "    \"application_memset_apis\": 32,"
+        },
+        {
+          "line": 259,
+          "text": "    \"application_memsets\": 32,"
+        },
+        {
+          "line": 260,
+          "text": "    \"fixture_nvtx\": 33,"
+        },
+        {
+          "line": 261,
+          "text": "    \"mapped_steps\": 32,"
+        }
+      ]
+    },
+    "wrapper-interactive": {
+      "actual_target_pid": 3422176,
+      "wrapper_pid": 3422166,
+      "known_work_complete": true,
+      "fixture_contract_passed": true,
+      "gpu_memory_coverage_complete": true,
+      "counts": {
+        "application_launches": 32,
+        "application_kernels": 32,
+        "application_copy_apis": 64,
+        "application_copies": 64,
+        "application_memset_apis": 32,
+        "application_memsets": 32,
+        "fixture_nvtx": 33,
+        "mapped_steps": 32,
+        "other_thread_apis": 0
+      },
+      "memory_coverage": {
+        "status": "COMPLETE",
+        "gpu_memory_coverage_complete": true,
+        "known_nonzero_memset_apis": 32,
+        "observed_activities": 32,
+        "activity_table_present": true,
+        "expected_by_bytes": {
+          "512": 16,
+          "16384": 16
+        },
+        "observed_by_bytes": {
+          "512": 16,
+          "16384": 16
+        },
+        "unmatched_by_bytes": {},
+        "unmatched_apis": [],
+        "scope": "Nonzero argument sizes come from the independent fixture ledger. Missing GPU memset activity is UNKNOWN_CAPABILITY, not proof of dropped records; model gate must require complete coverage."
+      },
+      "audit_errors": [],
+      "actual_target_warnings": [
+        {
+          "timestamp": 27428289,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 2,
+          "text": "Not all NVTX events might have been collected.",
+          "globalPid": 338889562652672,
+          "severity_name": "Warning"
+        },
+        {
+          "timestamp": 27433576,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 2,
+          "text": "Not all CUDA events might have been collected.",
+          "globalPid": 338889562652672,
+          "severity_name": "Warning"
+        }
+      ],
+      "diagnostics_valid": false,
+      "wrapper_empty_process_warnings": [
+        {
+          "timestamp": 27431520,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 2,
+          "text": "Not all NVTX events might have been collected.",
+          "globalPid": 338889394880512,
+          "severity_name": "Warning"
+        },
+        {
+          "timestamp": 27431974,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 2,
+          "text": "No NVTX events collected. Does the process use NVTX?",
+          "globalPid": 338889394880512,
+          "severity_name": "Warning"
+        },
+        {
+          "timestamp": 27434761,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 2,
+          "text": "CUDA profiling might have not been started correctly.",
+          "globalPid": 338889394880512,
+          "severity_name": "Warning"
+        },
+        {
+          "timestamp": 27435335,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 2,
+          "text": "No CUDA events collected. Does the process use CUDA?",
+          "globalPid": 338889394880512,
+          "severity_name": "Warning"
+        }
+      ],
+      "wrapper_trace_counts": {
+        "CUPTI_ACTIVITY_KIND_KERNEL": 0,
+        "CUPTI_ACTIVITY_KIND_MEMCPY": 0,
+        "CUPTI_ACTIVITY_KIND_MEMSET": 0,
+        "CUPTI_ACTIVITY_KIND_OVERHEAD": 0,
+        "CUPTI_ACTIVITY_KIND_RUNTIME": 0,
+        "CUPTI_ACTIVITY_KIND_SYNCHRONIZATION": 0,
+        "NVTX_EVENTS": 0
+      },
+      "producer_consumer_messages": [
+        {
+          "timestamp": 9183171,
+          "timestampType": 1,
+          "source": 1,
+          "severity": 1,
+          "text": "Number of CUPTI events produced: \t304, CUPTI buffers: 50.",
+          "globalPid": 338889562652672,
+          "severity_name": "Info"
+        },
+        {
+          "timestamp": 27430483,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 1,
+          "text": "Number of NVTX events collected: \t33.",
+          "globalPid": 338889562652672,
+          "severity_name": "Info"
+        },
+        {
+          "timestamp": 27434233,
+          "timestampType": 2,
+          "source": 3,
+          "severity": 1,
+          "text": "Number of CUDA events collected: \t292.",
+          "globalPid": 338889562652672,
+          "severity_name": "Info"
+        }
+      ],
+      "nvlog_evidence": {
+        "api_stop_flush": [
+          {
+            "line": 2966,
+            "text": "I02:46:24.941| quadd_cuda_tracing |                          fixture pid=3422176 tid= 3422176 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for cudaProfilerStop: flags=0"
+          },
+          {
+            "line": 3030,
+            "text": "I02:46:24.942| quadd_cuda_tracing |                          fixture pid=3422176 tid= 3422176 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for cudaProfilerStop: CUptiResult=0"
+          }
+        ],
+        "analysis_stop_flush": [
+          {
+            "line": 3222,
+            "text": "I02:46:24.942| quadd_cuda_tracing |                          fixture pid=3422176 tid= 3422178 | InjectionInterface.cpp:138 [ActivityFlushAll]: Calling cuptiActivityFlushAll for analysis stop: flags=1"
+          },
+          {
+            "line": 3266,
+            "text": "I02:46:24.943| quadd_cuda_tracing |                          fixture pid=3422176 tid= 3422178 | InjectionInterface.cpp:143 [ActivityFlushAll]: cuptiActivityFlushAll completed for analysis stop: CUptiResult=0"
+          }
+        ],
+        "cuda_done": [
+          {
+            "line": 3270,
+            "text": "I02:46:24.943| Injection |                          fixture pid=3422176 tid= 3422178 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+          },
+          {
+            "line": 6391,
+            "text": "I02:46:26.094| Injection |                          fixture pid=3422176 tid= 3422176 | CudaInjectionInit.cpp:1570 [ReportCUDADone]: CUDA: ReportCUDADone: DONE."
+          }
+        ],
+        "producer": [
+          {
+            "line": 3271,
+            "text": "I02:46:24.943| Injection |                          fixture pid=3422176 tid= 3422178 | CudaInjectionInit.cpp:2301 [FinalDiagnosticHandler]: CUPTI: Number of CUPTI events produced: 304, CUPTI buffers in use: 0."
+          },
+          {
+            "line": 6392,
+            "text": "I02:46:26.094| Injection |                          fixture pid=3422176 tid= 3422176 | CudaInjectionInit.cpp:2301 [FinalDiagnosticHandler]: CUPTI: Number of CUPTI events produced: 304, CUPTI buffers in use: 0."
+          }
+        ],
+        "range_generation": [
+          {
+            "line": 3050,
+            "text": "I02:46:24.942| quadd_agent_session |                             nsys pid=3422141 tid= 3422147 | Session.cpp:1292 [SetState]: Session state transition: RangeCollection -> RangeGeneration."
+          }
+        ],
+        "range_importation": [
+          {
+            "line": 5677,
+            "text": "I02:46:25.911| quadd_agent_session |                             nsys pid=3422141 tid= 3422146 | Session.cpp:1292 [SetState]: Session state transition: RangeGeneration -> RangeImportation."
+          }
+        ],
+        "report_completed": [
+          {
+            "line": 6192,
+            "text": "I02:46:25.951| quadd_agent_session |                             nsys pid=3422141 tid= 3422146 | Session.cpp:1292 [SetState]: Session state transition: RangeImportation -> Launched."
+          },
+          {
+            "line": 6193,
+            "text": "I02:46:25.951| quadd_agent_session |                             nsys pid=3422141 tid= 3422146 | Session.cpp:2957 [CompleteResultGeneration]: Session is ready for another collection."
+          }
+        ],
+        "api_thread_stop_completion": [
+          {
+            "line": 6222,
+            "text": "I02:46:25.951| quadd_cuda_tracing |                          fixture pid=3422176 tid= 3422176 | InjectionInterface.cpp:1671 [StopCudaTracing]: CUDA tracing stopped"
+          }
+        ],
+        "nvtx_named_finalization": [],
+        "drop_counter": []
+      },
+      "diagnostic_source_lines": [
+        {
+          "line": 125,
+          "text": "      \"text\": \"Number of CUPTI events produced: \\t304, CUPTI buffers: 50.\","
+        },
+        {
+          "line": 134,
+          "text": "      \"text\": \"Not all NVTX events might have been collected.\","
+        },
+        {
+          "line": 143,
+          "text": "      \"text\": \"Number of NVTX events collected: \\t33.\","
+        },
+        {
+          "line": 152,
+          "text": "      \"text\": \"Not all NVTX events might have been collected.\","
+        },
+        {
+          "line": 170,
+          "text": "      \"text\": \"Not all CUDA events might have been collected.\","
+        },
+        {
+          "line": 179,
+          "text": "      \"text\": \"Number of CUDA events collected: \\t292.\","
+        },
+        {
+          "line": 236,
+          "text": "      \"text\": \"Not all NVTX events might have been collected.\","
+        },
+        {
+          "line": 245,
+          "text": "      \"text\": \"Not all CUDA events might have been collected.\","
+        },
+        {
+          "line": 252,
+          "text": "  \"valid\": false,"
+        },
+        {
+          "line": 253,
+          "text": "  \"actual_target_pid\": 3422176,"
+        },
+        {
+          "line": 254,
+          "text": "  \"wrapper_pid\": 3422166,"
+        },
+        {
+          "line": 261,
+          "text": "      \"text\": \"Not all NVTX events might have been collected.\","
+        },
+        {
+          "line": 293,
+          "text": "  \"wrapper_trace_counts\": {"
+        }
+      ],
+      "known_work_source_lines": [
+        {
+          "line": 3,
+          "text": "  \"known_work_complete\": true,"
+        },
+        {
+          "line": 4,
+          "text": "  \"fixture_contract_passed\": true,"
+        },
+        {
+          "line": 5,
+          "text": "  \"gpu_memory_coverage_complete\": true,"
+        },
+        {
+          "line": 8,
+          "text": "    \"gpu_memory_coverage_complete\": true,"
+        },
+        {
+          "line": 20,
+          "text": "    \"unmatched_by_bytes\": {},"
+        },
+        {
+          "line": 334,
+          "text": "  \"counts\": {"
+        },
+        {
+          "line": 335,
+          "text": "    \"application_launches\": 32,"
+        },
+        {
+          "line": 336,
+          "text": "    \"application_kernels\": 32,"
+        },
+        {
+          "line": 337,
+          "text": "    \"application_copy_apis\": 64,"
+        },
+        {
+          "line": 338,
+          "text": "    \"application_copies\": 64,"
+        },
+        {
+          "line": 339,
+          "text": "    \"application_memset_apis\": 32,"
+        },
+        {
+          "line": 340,
+          "text": "    \"application_memsets\": 32,"
+        },
+        {
+          "line": 341,
+          "text": "    \"fixture_nvtx\": 33,"
+        },
+        {
+          "line": 342,
+          "text": "    \"mapped_steps\": 32,"
+        }
+      ]
+    }
+  },
+  "aggregate_results": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/run/fixture-controls/results.json",
+    "line_range": [
+      1,
+      72
+    ],
+    "variants": [
+      {
+        "name": "direct-interactive",
+        "known_work_complete": true,
+        "negative_controls_passed": true,
+        "gpu_memory_coverage_complete": true,
+        "memory_coverage": {
+          "status": "COMPLETE",
+          "gpu_memory_coverage_complete": true,
+          "known_nonzero_memset_apis": 32,
+          "observed_activities": 32,
+          "activity_table_present": true,
+          "expected_by_bytes": {
+            "512": 16,
+            "16384": 16
+          },
+          "observed_by_bytes": {
+            "512": 16,
+            "16384": 16
+          },
+          "unmatched_by_bytes": {},
+          "unmatched_apis": [],
+          "scope": "Nonzero argument sizes come from the independent fixture ledger. Missing GPU memset activity is UNKNOWN_CAPABILITY, not proof of dropped records; model gate must require complete coverage."
+        },
+        "diagnostics_valid": false,
+        "actual_target_pid": 3422087,
+        "terminal_evidence_present": true,
+        "wrapper_pid": null,
+        "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/run/fixture-controls/direct-interactive",
+        "raw_hashes": {
+          "trace.sqlite": "3b8d9a53aebaf72b9526fa17cb2da936223a29b2849b3ed949b36cac872c81b1",
+          "server.log": "0f1a366dd34dfdb35d5529a82ba5a21dff61848933aca27638eab9fa282cd496",
+          "known-work-audit.json": "3b8a812936982cc0f2a61e33a7c6684051f8340150a43d2ba5a6055a9ec8c7a4",
+          "profile-diagnostics.json": "ade7dd9f0a9c4309011b4b2514a8008b4b99e90d17d6a568447c8137c1d24896"
+        }
+      },
+      {
+        "name": "wrapper-interactive",
+        "known_work_complete": true,
+        "negative_controls_passed": true,
+        "gpu_memory_coverage_complete": true,
+        "memory_coverage": {
+          "status": "COMPLETE",
+          "gpu_memory_coverage_complete": true,
+          "known_nonzero_memset_apis": 32,
+          "observed_activities": 32,
+          "activity_table_present": true,
+          "expected_by_bytes": {
+            "512": 16,
+            "16384": 16
+          },
+          "observed_by_bytes": {
+            "512": 16,
+            "16384": 16
+          },
+          "unmatched_by_bytes": {},
+          "unmatched_apis": [],
+          "scope": "Nonzero argument sizes come from the independent fixture ledger. Missing GPU memset activity is UNKNOWN_CAPABILITY, not proof of dropped records; model gate must require complete coverage."
+        },
+        "diagnostics_valid": false,
+        "actual_target_pid": 3422176,
+        "terminal_evidence_present": true,
+        "wrapper_pid": 3422166,
+        "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/diagnostic-v1/run/fixture-controls/wrapper-interactive",
+        "raw_hashes": {
+          "trace.sqlite": "f3c70c9c02a7db62a37a4c7f59beeb28cf3883e3e02e1b52e036c82e44a89e29",
+          "server.log": "b5e68e659e2922ff3eb39ef36d101ad62a066805d0813b0774ff8e8245a60542",
+          "known-work-audit.json": "9d833de6f87e115202225f0a65d790fc1e8e2f2b7e2cf4a5591db1d294df016b",
+          "profile-diagnostics.json": "07aea9f4dddd0926b66095cc85cdfc4d8e8dba6bd01da369b5948bf0b63088a9"
+        }
+      }
+    ]
+  },
+  "parent_reported_stage_outcome": {
+    "elapsed_seconds": 16.055184,
+    "status": "STOPPED",
+    "models": 0,
+    "http_requests": 0,
+    "cleanup_errors": [],
+    "monitor_errors": [],
+    "source": "Parent completion message; full lease/monitor audit is outside this eight-source review."
+  },
+  "findings": [
+    {
+      "level": "DIRECTLY_OBSERVED",
+      "claim": "Both fixed controls have complete audited 32 launches/kernels, 64 copies, 32 nonzero memsets, 33 NVTX ranges, independent output/iteration mapping, and successful saved negative controls. Memsets cover 16 x 512 and 16 x 16384 bytes with no unmatched entries.",
+      "sources": [
+        "*/known-work-audit.json",
+        "results.json"
+      ]
+    },
+    {
+      "level": "DIRECTLY_OBSERVED",
+      "claim": "Both actual targets emit the same CUDA and NVTX completeness warnings despite that fixed-work closure. Wrapper PID3422166 has the separate four allowed empty-process warnings and zero recorded CUDA/NVTX activity across the enumerated tables; these are not the target warnings.",
+      "sources": [
+        "*/profile-diagnostics.json"
+      ]
+    },
+    {
+      "level": "DIRECTLY_OBSERVED",
+      "claim": "For each target the application-thread APIStop flush uses flags=0 and returns CUptiResult=0; the analysis-stop thread then invokes flags=1 and returns 0, emits ReportCUDADone DONE, and reports 304 produced events with zero buffers in use. Report generation/importation subsequently reaches Launched.",
+      "sources": [
+        "*/nvlog.log"
+      ],
+      "interpretation_limit": "Zero buffers in use is not a dropped-record counter; CUDA Done is not NVTX completeness proof."
+    },
+    {
+      "level": "DIRECTLY_OBSERVED",
+      "claim": "Both diagnostic reports state 304 CUPTI events produced, 292 CUDA events collected, and 33 NVTX events collected. The difference of 12 is not a proven count of dropped events because these counter domains are not established as identical.",
+      "sources": [
+        "*/profile-diagnostics.json"
+      ]
+    },
+    {
+      "level": "SUPPORTED_INFERENCE",
+      "claim": "The analysis-stop flags=1 flush and the saved official NVIDIA explanation give a specific plausible explanation for the conservative CUDA warning. The log alone does not expose the exact consumer conditional that generated this warning.",
+      "sources": [
+        "*/nvlog.log",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-range-contract-20261026/web/forced-flush-384749.html"
+      ]
+    },
+    {
+      "level": "BOUNDED_FALSE_POSITIVE_SCOPE",
+      "claim": "If interpreted as a claim that one of the independently specified fixture kernels/copies/nonzero memsets/NVTX ranges is missing, these warnings are overconservative for these two fixtures: all specified records are present. They are uncertainty warnings, not unconditional statements of loss. This does not establish that all possible record categories or arbitrary model traces are complete."
+    },
+    {
+      "level": "UNKNOWN",
+      "claim": "The local NVTX warning cause and general NVTX finalization criterion remain unproved. No named NVTX Done/finalization record was identified by the bounded search. The known 33-range NVTX fixture contract is complete, but that does not justify a generic NVTX warning exemption."
+    },
+    {
+      "level": "OBSERVED_REPAIR_WITH_SCOPE",
+      "claim": "The former required-Generated path dependency no longer prevents either direct or wrapper control from reaching report export and independent known-work audits; aggregate results record terminal evidence for both. Together with the parent lifecycle/cleanup audit this supports the specific real-environment CLI/synchronous report-binding repair. It does not qualify the collector for model comparisons while target warnings remain."
+    }
+  ],
+  "saved_official_source": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-range-contract-20261026/web/forced-flush-384749.html",
+    "url": "https://forums.developer.nvidia.com/t/nsight-systems-2026-5-1-produced-112-collected-100-warning-despite-complete-coverage-of-32-kernels/384749/2",
+    "support_reply_lines": [
+      276,
+      292
+    ],
+    "context_lines": [
+      196,
+      211,
+      228,
+      232,
+      236,
+      253,
+      254
+    ],
+    "paraphrase": "NVIDIA explains the CUDA warning in that reported case as conservative behavior when consuming forced-flush results, even though the specified work appeared complete.",
+    "transfer_limit": "Different reported environment; no automatic local NVTX or arbitrary model guarantee."
+  },
+  "engineering_boundary": {
+    "frozen_actual_target_warning_gate": "PRESERVED_BLOCKING",
+    "automatic_new_capture_or_option_scan": false,
+    "old_no_go_changed": false,
+    "recommended_next_action": "Archive this completed fixed-work evidence and the unresolved target-warning contract. Any future exemption requires a separately explicit, bounded and independently justified contract; no model measurement is authorized by this review."
+  }
+}

@@ -2,6 +2,18 @@
 
 更新：2026-10-26。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+固定k3 suffix报告绑定修复已验证，采集资格仍未通过（2026-10-26）：
+CPU32首轮通过；唯一持锁16.055184秒，两控制正常完成同步报告绑定和
+目标回收，17/17监控无失败。各32 kernel/64 copy/32非零memset/33NVTX
+及负控齐全，实际目标两类warning仍在，门禁停止，0模型/HTTP，不扩采。
+一次全审计FAIL/INVALID：direct NVLOG收据早于daemon追加5542字节。
+局部独立核对确认精确前缀、目标514行及终止字段不变；原失败、追加
+session-storage ENOENT和warning均保留。默认及两head收益身份不变，
+200K/8K GPU归因未完成，原性能NO_GO保持。下一步仅具体NVLOG快照修复
+及固定生产GEMM memset参数探针；已追到32MiB workspace，未执行探针。
+完整目标仍active。见
+[报告路径绑定修复](MTP_SUFFIX_REPORT_BINDING_2026-10-26.md)。
+
 固定k3 suffix同步收尾有界阶段结束（2026-10-26，ENV_ABORT/不交付）：
 62项CPU通过（一次旧mock配置缺项修复，两suite共1.149678秒）。唯一持锁
 阶段53.068531秒，真实sync APIStop0/ready32及报告生成已完成，但本地

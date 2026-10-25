@@ -1,0 +1,45 @@
+{
+  "status": "ARCHIVED_BOUNDED_COLLECTOR_DIAGNOSTIC",
+  "evidence_validity": "INVALID",
+  "engineering_decision": "NOT_ACCEPTED_INCOMPLETE_TOOL_QUALIFICATION",
+  "independent_copies": true,
+  "reconciliation_sha256": "e62bbcad9fe0821329a92b60de4fac363be7da878725dd0d0b90ef97f6c404ff",
+  "reconciliation_scope": "Exact early prefix and unchanged target records only; original full audit FAIL retained.",
+  "readback_verified": true,
+  "source_preserved": true,
+  "self_contained": false,
+  "external_anchors": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-sync-stop-20261026/archive-closed",
+      "manifest_sha256": "ea2668977bbb1e4b0bfd14f2aeb705f44ed74391c08c35877d4f44e16f42aef6",
+      "seal_sha256": "2d3ff84c5f00541943a1d2af31dd1263dbe620ae1c6770fb35434e589d5bab97"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-auto-stop-20261026/archive-closed",
+      "manifest_sha256": "bb9204592f022afb48222a6a7e78b7da74001b091e2cbb34e9cd68fd7c53e3a7",
+      "seal_sha256": "e8b29b5840a582405b99965d0959371a38c192ee1a958f68408ee3fb8ee924ef"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-nsys-265-20261026/archive-closed",
+      "manifest_sha256": "443481156a010ee447c7d15f0db475c17c9b1721a3c9f1ca4891f4aa55ba888c",
+      "seal_sha256": "7b58904be3e2c80d850073c3d667129a9aa87da23f1f14bb09ca637a97cea1ee"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-delivery-20261026/archive-closed",
+      "manifest_sha256": "e98dfe6258236e6cf17e3a6a412406086c14a828dbb371b9a0a0bb6104711e52",
+      "seal_sha256": "50d40526d7a6357199d8eff078f97a9a6b398720a865cc2f3b8ac30a0c9c5702"
+    }
+  ],
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-binding-20261026/archive-closed",
+  "inventory_sha256": "69958979cf3a2af94f559d28ba8ad7c33cf075da3068a498d3c26329cc512761",
+  "manifest_sha256": "b7413526f7f42199a4b7fc62d2ef41d695cc4cb0500cfd46fd33c1bcc88fc649",
+  "entries": 568,
+  "payload_bytes": 56584339,
+  "elapsed_seconds": 0.3107074729632586,
+  "measurement_complete": false,
+  "deployment": false,
+  "archive_new_http": 0,
+  "archive_new_model_starts": 0,
+  "archive_gpu_operations": 0,
+  "seal_sha256": "d5683aaab387622103ba38ff0d56ed237a4b153c3b1ef29b598c13494d2745b4"
+}

@@ -1,5 +1,6 @@
 """CPU-only contracts for synchronous report binding; no collector execution."""
 import importlib.util
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -99,6 +100,9 @@ class SynchronousContracts(unittest.TestCase):
         self.assertIn('--flush-on-cudaprofilerstop=true', commands[0])
         self.assertFalse(any('after-report-ready' in value for row in commands for value in row))
         self.assertTrue(result['report_ready_succeeded'])
+        self.assertEqual(result['report']['sha256'], hashlib.sha256(report.read_bytes()).hexdigest())
+        self.assertEqual(sync.contract()['schema'], 4)
+        self.assertEqual(sync.contract()['report_binding_revision'], 1)
         self.assertEqual(session.report_path, report)
         self.assertFalse(session.stop_succeeded)
         self.assertEqual(self.subreaper, 0)
@@ -152,21 +156,32 @@ class SynchronousContracts(unittest.TestCase):
                 self.assertFalse(session.report_ready_succeeded)
 
     def test_generated_missing_partial_duplicate_and_multiple(self):
-        for kind in ('missing', 'partial', 'duplicate', 'multiple'):
+        for kind in ('missing', 'partial', 'partial-header', 'partial-utf8', 'duplicate', 'multiple'):
             with self.subTest(kind=kind):
                 session, receipt = self.launched()
                 report = session.output / 'trace.nsys-rep'
                 report.write_bytes(b'mock')
                 text = ('nothing\n' if kind == 'missing' else
                         'Generated:\n\t' + str(report) + ('' if kind == 'partial' else '\n'))
+                if kind == 'partial-header':
+                    text = 'Generat'
                 if kind == 'duplicate':
                     text += 'Generated:\n\t' + str(report) + '\n'
                 if kind == 'multiple':
                     text += '\t' + str(session.output / 'second.nsys-rep') + '\n'
                 (session.output / 'server.log').write_text(text)
-                with self.assertRaises((TimeoutError, ValueError)):
-                    session.await_report(receipt, timeout=.1)
-                self.assertIsNotNone(self.read(session)['failure'])
+                if kind == 'partial-utf8':
+                    (session.output / 'server.log').write_bytes(b'prior line\n\xe4\xb8')
+                if kind in ('missing', 'partial', 'partial-header', 'partial-utf8'):
+                    result = session.await_report(receipt, timeout=.1)
+                    self.assertTrue(result['report_ready_succeeded'])
+                    self.assertIn(result['generated_observation']['status'], ('absent', 'partial'))
+                    self.assertEqual(sync.bound_report(session.output), report)
+                else:
+                    with self.assertRaises(ValueError):
+                        session.await_report(receipt, timeout=.1)
+                    self.assertEqual(self.read(session)['generated_observation']['status'], 'conflict')
+                    self.assertIsNotNone(self.read(session)['failure'])
 
     def test_foreign_relative_and_escaping_report_paths_rejected(self):
         for text in ('relative.nsys-rep', str(self.base / 'foreign.nsys-rep'),
@@ -178,7 +193,7 @@ class SynchronousContracts(unittest.TestCase):
                     session.await_report(receipt)
 
     def test_report_zero_symlink_extra_and_missing_rejected(self):
-        for kind in ('zero', 'symlink', 'extra', 'missing', 'fifo'):
+        for kind in ('zero', 'symlink', 'extra', 'missing', 'fifo', 'wrong-prefix'):
             with self.subTest(kind=kind):
                 session, receipt = self.launched()
                 report = self.generated(session)
@@ -191,11 +206,14 @@ class SynchronousContracts(unittest.TestCase):
                     (session.output / 'other.nsys-rep').write_bytes(b'extra')
                 elif kind == 'missing':
                     report.unlink()
+                elif kind == 'wrong-prefix':
+                    report.rename(session.output / 'other.nsys-rep')
+                    (session.output / 'server.log').write_text('no Generated line\n')
                 else:
                     report.unlink()
                     os.mkfifo(report)
-                with self.assertRaises((ValueError, OSError)):
-                    session.await_report(receipt)
+                with self.assertRaises((ValueError, OSError, TimeoutError)):
+                    session.await_report(receipt, timeout=.1)
 
     def test_launch_log_ownership_identity_and_bound_revalidation(self):
         session = self.session()
@@ -213,22 +231,39 @@ class SynchronousContracts(unittest.TestCase):
             session.await_report(receipt)
 
     def test_offline_binding_rejects_report_or_receipt_tamper(self):
-        for kind in ('report', 'failed', 'generated'):
+        for kind in ('report', 'same-size-restored-mtime', 'failed', 'generated',
+                     'late-match', 'late-conflict', 'late-foreign', 'late-multiple'):
             with self.subTest(kind=kind):
                 session, receipt = self.launched()
                 report = self.generated(session)
+                if kind.startswith('late-'):
+                    (session.output / 'server.log').write_text('before report\n')
                 session.await_report(receipt)
                 if kind == 'report':
                     report.write_bytes(b'modified report bytes')
+                elif kind == 'same-size-restored-mtime':
+                    identity = report.stat()
+                    report.write_bytes(b'X' * identity.st_size)
+                    os.utime(report, ns=(identity.st_atime_ns, identity.st_mtime_ns))
+                    self.assertEqual(report.stat().st_size, identity.st_size)
+                    self.assertEqual(report.stat().st_mtime_ns, identity.st_mtime_ns)
                 elif kind == 'failed':
                     value = self.read(session)
                     value['report_ready_succeeded'] = False
                     (session.output / 'synchronous-report-ready.json').write_text(json.dumps(value))
                 else:
                     with (session.output / 'server.log').open('a') as log:
-                        log.write('Generated:\n\t' + str(report) + '\n')
-                with self.assertRaises(ValueError):
-                    sync.bound_report(session.output)
+                        path = (session.output / 'trace-different.nsys-rep'
+                                if kind == 'late-conflict' else self.base / 'foreign.nsys-rep'
+                                if kind == 'late-foreign' else report)
+                        log.write('Generated:\n\t' + str(path) + '\n')
+                        if kind == 'late-multiple':
+                            log.write('\t' + str(session.output / 'trace-second.nsys-rep') + '\n')
+                if kind == 'late-match':
+                    self.assertEqual(sync.bound_report(session.output), report)
+                else:
+                    with self.assertRaises(ValueError):
+                        sync.bound_report(session.output)
 
     def test_bounds_once_and_failure_cleanup_never_repair_success(self):
         session, receipt = self.launched()
@@ -288,6 +323,31 @@ class SynchronousContracts(unittest.TestCase):
         with patch.object(sync, 'MAX_LOG_BYTES', 1):
             with self.assertRaises(ValueError):
                 session.await_report(receipt)
+        original_read = os.read
+        for kind in ('growth', 'shrink', 'mtime'):
+            with self.subTest(during_hash=kind):
+                session, receipt = self.launched()
+                report = self.generated(session)
+                changed = []
+                def mutate(fd, size):
+                    data = original_read(fd, size)
+                    if not changed:
+                        changed.append(True)
+                        if kind == 'growth':
+                            with report.open('ab') as stream:
+                                stream.write(b'extra')
+                        elif kind == 'shrink':
+                            report.write_bytes(b'')
+                        else:
+                            identity = report.stat()
+                            os.utime(report, ns=(identity.st_atime_ns, identity.st_mtime_ns + 1))
+                    return data
+                with patch.object(sync.os, 'read', side_effect=mutate):
+                    with self.assertRaises(ValueError):
+                        session.await_report(receipt)
+                self.assertTrue(changed)
+                self.assertFalse(session.report_ready_succeeded)
+                self.assertIsNotNone(self.read(session)['failure'])
 
     def test_preexisting_reports_and_binding_refused(self):
         for name in ('stale.nsys-rep', 'synchronous-report-ready.json', 'dangling-binding'):
@@ -301,6 +361,12 @@ class SynchronousContracts(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     sync.Session('/mock/nsys', directory, sync.make_name('stale'),
                                  cwd=self.base, env={}, deadline=100)
+        session = self.session()
+        (session.output / 'trace-created-before-start.nsys-rep').write_bytes(b'old')
+        previous_calls = len(self.calls)
+        with self.assertRaises(ValueError):
+            session.start()
+        self.assertEqual(len(self.calls), previous_calls)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "kind": "read-only source derivation; no GPU/probe/execution",
+  "source_files": {
+    "/home/rm01/models/dev/qwen4-thor/src/model/linear_attention.cu": "a44ffbf25b3a86cbc16e6cbfc1e5e31a7d03df660cf2e8a94e1b7a3f5388c65f",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/linear.h": "8606fd8c1294de4b7d7afafb918a585d50c726d5154020aaac7444c3c9686ec2",
+    "/home/rm01/models/dev/qwen4-thor/src/model/small_m_gemm.cu": "15afcd44d1b095e3d922d88cbc9bd64b7664f62076a11ef8d8dd639124870368",
+    "/home/rm01/models/dev/qwen4-thor/src/model/decoder_layer.cu": "4d8e53e7d0a031dbdba68b7a5558f3baf93061a92c11312809790ef98170b15d",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/decoder_layer.h": "34db1f81f57b19fa867a23255741c84610c8b8fba52e5a315344d27238b50d63",
+    "/home/rm01/models/dev/qwen4-thor/include/q4t/model/decoder_workspace.h": "5fc4dc1ab58adc4749db3d95d171b91ebe6a4a0e36ae99cc647a403acc26d669",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream/config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624"
+  },
+  "source_files_read": 7,
+  "phase_candidate_source_commit": "55363f18dedb947ac52e69e10475d3082cb71a82",
+  "phase_candidate_sha256": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914",
+  "workspace_bytes": 33554432,
+  "derivation": [
+    {
+      "file": "src/model/decoder_layer.cu",
+      "lines": [
+        37,
+        188,
+        198,
+        207,
+        641
+      ],
+      "meaning": "Linear attention gets exactly kGemmWs32MiB as layout.attention_bytes"
+    },
+    {
+      "file": "src/model/linear_attention.cu",
+      "lines": [
+        1502,
+        1507
+      ],
+      "meaning": "a/b calls forward same workspace and workspace_bytes to Bf16Gemm"
+    },
+    {
+      "file": "include/q4t/model/linear.h",
+      "lines": [
+        34,
+        35,
+        65,
+        77,
+        81,
+        166,
+        175
+      ],
+      "meaning": "M/N/K/workspace cache; first heuristic; reduction none; same scratch passed to cuBLASLt"
+    }
+  ],
+  "config": {
+    "hidden_size": 2560,
+    "linear_num_value_heads": 48
+  },
+  "candidate_probe_shapes": [
+    {
+      "M": 4,
+      "N": 48,
+      "K": 2560,
+      "workspace_bytes": 33554432
+    }
+  ],
+  "limits": [
+    "No probe implemented/executed; workspace derivation alone does not explain missing activities",
+    "Exact old prefill M still must be independently bound to observed workload before adding second shape",
+    "Actual cuBLASLt selected algo and callbacks must be recorded; kernel family name insufficient",
+    "Does not retroactively supply count parameters for old6381 memsets"
+  ],
+  "new_builds": 0,
+  "new_gpu": 0,
+  "new_tests": 0
+}

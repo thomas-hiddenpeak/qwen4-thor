@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "source_commit": "a7b24756eb1ee256ecdb4478094fcc0554691558",
+  "created_unix": 1792953571.2933106,
+  "classification": "collector lifecycle bug repair; model runtime unchanged",
+  "fixed_change": "Remove unsupported timely Generated prerequisite after fixed synchronous APIStop0 barrier. Bind only unique regular report in initially report-empty owned canonical output, frozen trace prefix; hash and stable identity; contradictory Generated still blocks.",
+  "wall_seconds": 7200,
+  "cpu": {
+    "suite_runs": 1,
+    "max_methods": 35,
+    "timeout_seconds": 180,
+    "targeted_repair_runs": 1,
+    "targeted_repair_requires_concrete_failure": true
+  },
+  "gpu": {
+    "attempts": 1,
+    "full_stage_shared_lease": true,
+    "wall_seconds": 4800,
+    "controls": 2,
+    "control_group_seconds": 600,
+    "fixture_each_seconds": 300,
+    "model_loads_max": 4,
+    "http_requests_max": 6,
+    "order": [
+      "direct-interactive",
+      "wrapper-interactive",
+      "nsys8-off",
+      "nsys8-on",
+      "nsys200-on",
+      "nsys200-off"
+    ],
+    "model_precondition": "both known-work and negative controls pass; selected wrapper terminal, diagnostic and memory completeness all pass"
+  },
+  "builds": 0,
+  "tool_versions": 1,
+  "retries": 0,
+  "runtime_changes": 0,
+  "stop_conditions": [
+    "any monitor or competition failure -> ENV_ABORT",
+    "control or known-work failure -> no model",
+    "all actual-target warnings and unknown warnings still block",
+    "memory/event coverage gap -> no performance attribution",
+    "budget ends -> stop, archive explicit validity/completeness/statistics/decision",
+    "no report naming guesses; no weakening actual-target warning or successful memory API activity coverage gates"
+  ],
+  "reuse": "Unchanged runner/manual/automatic, monitor/native64, fixture/analyzer/runtime and both-head repetitive evidence by hash; rerun sync13+runner19 affected contracts (<=35).",
+  "research": "suffix-sync-stop-20261026/offline-sync-review.json",
+  "completion_does_not_prove_trace_integrity": true,
+  "previous_goal_turn": "PROGRESS: CPU62, new actual synchronous stop/report-generation evidence and concrete local Generated timing dependency; no active process remains",
+  "new_cli_options": 0
+}

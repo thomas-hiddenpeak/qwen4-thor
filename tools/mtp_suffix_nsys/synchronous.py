@@ -1,8 +1,10 @@
 """One documented repeat:1:sync collection; no callback or manual-stop fallback.
 
 The application-thread post-cudaProfilerStop receipt is the completion barrier.
-Generated stdout only binds a report name. Neither proves trace completeness.
+The unique owned report is content-bound; Generated stdout is optional evidence.
+Neither the barrier nor this binding proves trace completeness.
 """
+import hashlib
 import importlib.util
 import json
 import math
@@ -25,7 +27,7 @@ MAX_RECEIPT_BYTES = 65536
 
 def contract():
     result = manual.contract()
-    result.update(schema=3, mode='interactive_api_sync_stop',
+    result.update(schema=4, mode='interactive_api_sync_stop',
         start_options=list(START_OPTIONS), stop_options=[], stop_allowed=False,
         stop_requires_nonempty_report=False, callback=False, capture_ranges=1,
         report_wait_timeout_seconds=45, report_wait_poll_seconds=.05,
@@ -33,7 +35,9 @@ def contract():
         launch_log='Exact owned regular stdout file passed to launch, not a guessed filename',
         completion='Documented sync plus same owned live target post-cudaProfilerStop success receipt',
         target_receipt_sources=['fixture-ready', 'model-capture-end'],
-        report_binding='Unique Generated absolute path and exactly one owned nonempty regular report',
+        report_binding_revision=1,
+        report_binding='Exactly one canonical owned trace*.nsys-rep, nonempty regular no-symlink, stable fd/path identity and SHA256',
+        generated_stdout='Optional; complete records must uniquely agree with the owned report; absent or unterminated final line is not a completion gate',
         binding_receipt='synchronous-report-ready.json', report_ready_is_trace_completeness=False,
         success_order=['target_api_stop_return', 'report_binding', 'shutdown_kill_none',
                        'independent_target_exit', 'reap', 'close'],
@@ -48,7 +52,7 @@ def _path(value):
     return path
 
 
-def _regular(path, *, maximum=None, read=False, allow_growth=False):
+def _regular(path, *, maximum=None, read=False, allow_growth=False, digest=False):
     before = Path(path).lstat()
     if not stat.S_ISREG(before.st_mode):
         raise ValueError('expected a regular file before opening')
@@ -69,11 +73,22 @@ def _regular(path, *, maximum=None, read=False, allow_growth=False):
                 data = stream.read(info.st_size)
             if len(data) != info.st_size:
                 raise ValueError('file shrank during read')
+        if digest:
+            checksum = hashlib.sha256()
+            remaining = info.st_size
+            while remaining:
+                chunk = os.read(fd, min(1024 * 1024, remaining))
+                if not chunk:
+                    raise ValueError('report shrank during hashing')
+                checksum.update(chunk)
+                remaining -= len(chunk)
+            row['sha256'] = checksum.hexdigest()
+        final_fd = os.fstat(fd)
         after = Path(path).lstat()
         if (after.st_dev, after.st_ino) != (info.st_dev, info.st_ino):
             raise ValueError('file identity changed after reading')
         stable = lambda value: (value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns)
-        if not allow_growth and not stable(before) == stable(info) == stable(after):
+        if not allow_growth and not stable(before) == stable(info) == stable(final_fd) == stable(after):
             raise ValueError('immutable file changed while inspecting it')
         return (row, data) if read else row
     finally:
@@ -107,13 +122,19 @@ def _generated(log, output, expected_log):
     if (identity['device'], identity['inode']) != (expected_log['device'], expected_log['inode']):
         raise ValueError('launch log identity changed')
     # An unterminated last line may still be in flight; never accept its path.
-    lines = [line.rstrip('\r\n') for line in data.decode('utf-8').splitlines(keepends=True)
-             if line.endswith('\n')]
+    complete_end = data.rfind(b'\n') + 1
+    text = data[:complete_end].decode('utf-8')
+    lines = [line.rstrip('\r\n') for line in text.splitlines(keepends=True)]
     markers = [i for i, line in enumerate(lines) if line == 'Generated:']
+    observation = dict(status='absent', marker_count=len(markers), paths=[],
+                       trailing_partial_line=complete_end != len(data),
+                       log=identity, errors=[])
     if not markers:
-        return None
+        return observation
     if len(markers) != 1:
-        raise ValueError('expected exactly one Generated block')
+        observation['errors'].append('expected at most one Generated block')
+        observation['status'] = 'conflict'
+        return observation
     paths = []
     for line in lines[markers[0] + 1:]:
         if not line.strip():
@@ -122,39 +143,71 @@ def _generated(log, output, expected_log):
             continue
         if not line[0].isspace():
             if not paths:
-                raise ValueError('Generated block lacks an indented report path')
+                observation['errors'].append('Generated block lacks an indented report path')
             break
         paths.append(line.strip())
+    observation['paths'] = paths
     if not paths:
+        observation['status'] = 'partial'
+    else:
+        observation['status'] = 'complete'
+        if len(paths) != 1:
+            observation['errors'].append('Generated block has multiple report paths')
+        for value in paths:
+            try:
+                report = _path(value)
+                if (report.parent != output or not report.name.startswith('trace') or
+                        report.suffix != '.nsys-rep'):
+                    raise ValueError('Generated report is outside the owned report namespace')
+            except ValueError as error:
+                observation['errors'].append(str(error))
+    if observation['errors']:
+        observation['status'] = 'conflict'
+    return observation
+
+
+def _check_generated(observation, path=None):
+    if observation['errors']:
+        raise ValueError('Generated evidence conflicts: ' + '; '.join(observation['errors']))
+    if path is not None and observation['paths'] and observation['paths'] != [str(path)]:
+        raise ValueError('Generated path disagrees with the unique owned report')
+
+
+def _owned_report(output):
+    if output != output.resolve():
+        raise ValueError('output must be the canonical owned directory')
+    reports = [p for p in output.iterdir() if p.name.endswith('.nsys-rep')]
+    if not reports:
         return None
-    if len(paths) != 1:
-        raise ValueError('Generated block has multiple report paths')
-    report = _path(paths[0])
-    if report.parent != output or report.suffix != '.nsys-rep':
-        raise ValueError('Generated report is outside the exact owned output directory')
-    return report
+    if len(reports) != 1 or not reports[0].name.startswith('trace'):
+        raise ValueError('owned directory must contain exactly one trace*.nsys-rep')
+    return reports[0]
 
 
 def _report(output, path):
     if output != output.resolve() or path.parent != output or path.suffix != '.nsys-rep':
         raise ValueError('report path is not inside the canonical owned directory')
-    reports = [p for p in output.iterdir() if p.name.endswith('.nsys-rep')]
-    if reports != [path]:
+    if _owned_report(output) != path:
         raise ValueError('owned directory must contain exactly the bound report')
-    result = _regular(path)
+    result = _regular(path, digest=True)
     if result['bytes'] <= 0:
         raise ValueError('report must be nonempty')
+    if _owned_report(output) != path:
+        raise ValueError('owned report set changed during hashing')
     return result
 
 
 def bound_report(output):
     """Revalidate an existing binding without requiring a live target/session."""
     output = _path(output)
+    if output != output.resolve():
+        raise ValueError('output must be the canonical owned directory')
     _, data = _regular(output / 'synchronous-report-ready.json',
                        maximum=MAX_RECEIPT_BYTES, read=True)
     value = json.loads(data)
     if (not isinstance(value, dict) or value.get('schema') != 1 or
             value.get('mode') != 'interactive_api_sync_stop' or
+            value.get('report_binding_revision') != 1 or
             value.get('report_ready_succeeded') is not True or value.get('failure') is not None):
         raise ValueError('synchronous report binding did not succeed')
     _target_receipt(value.get('target_receipt'))
@@ -163,8 +216,10 @@ def bound_report(output):
     if log.parent != output:
         raise ValueError('binding references a foreign launch log')
     path = _path(value['report']['path'])
-    if _generated(log, output, log_record) != path or _report(output, path) != value['report']:
-        raise ValueError('report or Generated binding changed after acceptance')
+    _check_generated(_generated(log, output, log_record), path)
+    if _report(output, path) != value['report']:
+        raise ValueError('report identity or content changed after acceptance')
+    _check_generated(_generated(log, output, log_record), path)
     return path
 
 
@@ -186,6 +241,8 @@ class Session(manual.Session):
     def start(self, timeout=30):
         if self._closed or self._subreaper_attempted:
             raise RuntimeError('session start may only be attempted once')
+        if any(p.name.endswith('.nsys-rep') for p in self.output.iterdir()):
+            raise ValueError('report must not preexist collection start')
         self._prepare_owner()
         result = self._control('start', [str(self.nsys), 'start', *START_OPTIONS,
             '--session-new=' + self.name, '--output=' + str(self.output / 'trace')], timeout)
@@ -215,11 +272,13 @@ class Session(manual.Session):
         self._report_wait_attempted = True
         started = time.monotonic()
         end = min(self.deadline, started + timeout)
-        result = dict(schema=1, mode='interactive_api_sync_stop', session=self.name,
+        result = dict(schema=1, mode='interactive_api_sync_stop', report_binding_revision=1,
+            session=self.name,
             owner=self.owner, started_monotonic=started, deadline_monotonic=end,
             target_receipt=target_receipt, launch_log=self._launch_log, report=None,
+            generated_observation=None, generated_observation_after_hash=None,
             report_ready_succeeded=False, failure=None,
-            scope='Sync application-thread return proves generation; Generated binds filename; trace coverage remains independent')
+            scope='Sync application-thread return acknowledges generation; unique owned report identity and SHA256 bind content; Generated is optional consistency evidence; trace coverage remains independent')
 
         def verify():
             self._owner_current()
@@ -240,11 +299,18 @@ class Session(manual.Session):
             _target_receipt(target_receipt)
             while True:
                 verify()
-                path = _generated(Path(self._launch_log['path']), self.output, self._launch_log)
+                observation = _generated(Path(self._launch_log['path']), self.output, self._launch_log)
+                result['generated_observation'] = observation
+                _check_generated(observation)
+                path = _owned_report(self.output)
                 if path is None:
                     time.sleep(min(.05, max(0, end - time.monotonic())))
                     continue
+                _check_generated(observation, path)
                 result['report'] = _report(self.output, path)
+                observation = _generated(Path(self._launch_log['path']), self.output, self._launch_log)
+                result['generated_observation_after_hash'] = observation
+                _check_generated(observation, path)
                 verify()
                 self.report_path = path
                 self.report_ready_succeeded = result['report_ready_succeeded'] = True

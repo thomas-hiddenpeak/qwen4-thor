@@ -113,3 +113,11 @@ the corrected compatibility inference and the unchanged integrity requirements.
 `repeat:1:sync`，实际目标 APIStop 返回后收据确认报告生成，再按唯一
 Generated 路径绑定输出。旧模式与证据保留，warning/memory 门不变。
 范围与结果见 [同步报告合同](../../docs/MTP_SUFFIX_SYNCHRONOUS_2026-10-26.md)。
+
+报告绑定缺陷修复由 `prepare_report_binding.py` 冻结：同步 APIStop 屏障后
+绑定唯一 owned 报告，不要求 Generated 及时出现，矛盾仍拒绝；选项和
+完整性门保持。见[本阶段记录](../../docs/MTP_SUFFIX_REPORT_BINDING_2026-10-26.md)。
+32 CPU合同和两组真实同步绑定通过；已知工作齐全但实际目标warning
+仍在，完整性门停止。全审计保留一次FAIL：direct的早期NVLOG整文件
+收据后又追加daemon日志；精确前缀核对通过，目标记录未变。不可将
+绑定修复、局部核对或producer NVTXFinish当任意trace完整性证明。

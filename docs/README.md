@@ -1,7 +1,9 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[API自动收尾验证](MTP_SUFFIX_AUTOMATIC_2026-10-26.md)；
+最新专项：[报告绑定修复与有限证据](MTP_SUFFIX_REPORT_BINDING_2026-10-26.md)；
+[同步收尾验证](MTP_SUFFIX_SYNCHRONOUS_2026-10-26.md)；
+[API自动收尾验证](MTP_SUFFIX_AUTOMATIC_2026-10-26.md)；
 [新采集工具资格](MTP_SUFFIX_NSYS_265_2026-10-26.md)；
 [采集合同与固定依赖候选](MTP_SUFFIX_COLLECTOR_DEPENDENCY_2026-10-26.md)；
 [固定k3 suffix交付目标](MTP_SUFFIX_DELIVERY_2026-10-26.md)；
@@ -24,6 +26,8 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [报告绑定修复](MTP_SUFFIX_REPORT_BINDING_2026-10-26.md) | 同步屏障后唯一owned报告/SHA绑定 | CPU32及两真实控制绑定通过；warning门未过、早期日志收据审计FAIL并局部核对，0模型HTTP |
+| [同步收尾验证](MTP_SUFFIX_SYNCHRONOUS_2026-10-26.md) | repeat:1:sync与目标成功返回收据 | CPU62；Generated文字门超时ENV_ABORT，具体修复见报告绑定阶段 |
 | [API自动收尾验证](MTP_SUFFIX_AUTOMATIC_2026-10-26.md) | 自动API stop与回调完成确认 | CPU46通过；报告已生成但回调未闭合，ENV_ABORT/0HTTP，不交付 |
 | [新采集工具资格](MTP_SUFFIX_NSYS_265_2026-10-26.md) | 固定2026.5.1.161、两控制及条件6HTTP | 首控制仍拒绝stop；ENV_ABORT，0模型HTTP，审计与负向归档 |
 | [采集合同与固定依赖候选](MTP_SUFFIX_COLLECTOR_DEPENDENCY_2026-10-26.md) | 完整目标矩阵、官方合同因果修正、单一2026.5.1包 | 包身份准备证据；资格另见新阶段 |
@@ -179,3 +183,5 @@
   历史时间线由 [log/](log/README.md) 承载。
 
 - [固定 k3 suffix 同步收尾合同](MTP_SUFFIX_SYNCHRONOUS_2026-10-26.md)
+
+- [固定 k3 suffix 报告路径绑定修复](MTP_SUFFIX_REPORT_BINDING_2026-10-26.md)
