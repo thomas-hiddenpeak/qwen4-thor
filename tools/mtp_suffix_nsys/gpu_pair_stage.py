@@ -46,6 +46,12 @@ def collection_contract(plan):
         value['stage_cleanup_override'] = order
         value['success_order'] = ['target_api_stop_return', 'report_binding',
             'independent_target_exit', 'shutdown_kill_none', 'reap', 'close']
+    ended = plan.get('ended_session_policy')
+    if ended is not None:
+        if (ended != 'bound_target_exit_exact_inactive_v1' or
+                order != 'report_bound_target_first_v1'):
+            raise ValueError('ended-session policy requires target-first cleanup')
+        value['ended_session_policy'] = ended
     return value
 
 
@@ -326,6 +332,66 @@ class MeasurementGuard:
             self._armed = False
 
 
+def recognize_ended_session(output, session, launcher, identity, fd, target,
+                            adopted, target_first, forced, prior_errors):
+    """Recognize an already ended owned session; retain the failed CLI receipt.
+
+    This is cleanup evidence only. No collector error or event-integrity rule
+    changes, and the raw shutdown return code is never rewritten to zero.
+    """
+    if (not target_first or forced or prior_errors or
+            session.report_ready_succeeded is not True or
+            session.shutdown_attempted is not True or session.shutdown_succeeded is not False or
+            identity is None or fd is None or target is None or launcher is None or
+            target.get('returncode') != 0 or launcher.returncode != 0 or
+            target.get('pid') != identity['pid'] or
+            target.get('wrapper_pid') != identity['wrapper_pid'] or
+            adopted is None or adopted.get('complete') is not True or
+            adopted.get('failure') is not None or adopted.get('remaining') or
+            adopted.get('not_children')):
+        raise ValueError('independent normal owned exit is not proved')
+    session._owner_current()
+    if not runner.pidfd_exited(fd, 0):
+        raise ValueError('owned target pidfd has not exited')
+    control_info, data = sync._regular(output/'interactive-shutdown-exit.json',
+                                       maximum=65536, read=True)
+    control = json.loads(data)
+    log_info, log = sync._regular(output/'interactive-shutdown.log',
+                                  maximum=128, read=True)
+    expected_command = [str(session.nsys), 'shutdown',
+                        '--session='+session.name, '--kill=none']
+    if (control.get('verb') != 'shutdown' or control.get('session') != session.name or
+            control.get('command') != expected_command or
+            any(control.get('owner', {}).get(k) != session.owner[k]
+                for k in ('pid', 'start_ticks')) or
+            control.get('returncode') != 1 or
+            control.get('failure') != "RuntimeError('interactive shutdown failed with 1')" or
+            control.get('forced_control_cleanup') is not False or
+            control.get('cleanup_errors') != [] or
+            not target['finished_monotonic'] <= control['started_monotonic'] <=
+                control['finished_monotonic'] <= control['deadline_monotonic'] or
+            log != b'There are no active sessions.\n'):
+        raise ValueError('shutdown is not the exact bounded inactive-session result')
+    report = sync.bound_report(output)
+    # bound_report validates content; additionally bind this session and target.
+    _, data = sync._regular(output/'synchronous-report-ready.json',
+                            maximum=65536, read=True)
+    binding = json.loads(data)
+    if (binding['session'] != session.name or
+            any(binding['target_receipt'].get(k) != identity[k]
+                for k in ('pid', 'start_ticks'))):
+        raise ValueError('report belongs to another session or target')
+    result = dict(classification='OWNED_SESSION_ALREADY_ENDED',
+        raw_shutdown_returncode=1, raw_shutdown_failure=control['failure'],
+        control_receipt=control_info, control_receipt_sha256=sha(output/'interactive-shutdown-exit.json'),
+        diagnostic=log_info, diagnostic_sha256=sha(output/'interactive-shutdown.log'),
+        target=target, session=session.name, report=str(report),
+        target_pidfd_exited=True, adopted_reap_complete=True,
+        shutdown_succeeded=False, cleanup_complete=True, trace_integrity_proven=False)
+    save(output/'ended-session.json', result)
+    return result
+
+
 def cleanup_owned(plan, output, session, launcher, identity, fd, deadline):
     """Cancel only our session and close our target within one remaining budget.
 
@@ -338,6 +404,7 @@ def cleanup_owned(plan, output, session, launcher, identity, fd, deadline):
     errors, target, shutdown, adopted = [], None, None, None
     forced_target = forced_launcher = False
     owner_ok = False
+    pending_shutdown_error = None
     target_first = (plan.get('cleanup_order') == 'report_bound_target_first_v1' and
                     session.report_ready_succeeded is True)
     actions = []
@@ -365,10 +432,19 @@ def cleanup_owned(plan, output, session, launcher, identity, fd, deadline):
             return None
 
     def shutdown_session():
+        nonlocal pending_shutdown_error
         if owner_ok and session.can_shutdown:
             actions.append(dict(event='shutdown_begin', monotonic=time.monotonic()))
-            result = attempt('session shutdown', lambda: session.shutdown(
-                timeout=min(15, left(15 if target_first else 20))))
+            result = None
+            try:
+                result = session.shutdown(timeout=min(15, left(15 if target_first else 20)))
+            except BaseException as error:
+                message = 'session shutdown: ' + repr(error)
+                if (target_first and plan.get('ended_session_policy') ==
+                        'bound_target_exit_exact_inactive_v1'):
+                    pending_shutdown_error = message
+                else:
+                    errors.append(message)
             actions.append(dict(event='shutdown_end', monotonic=time.monotonic(),
                                 returned=result is not None))
             return result
@@ -455,6 +531,16 @@ def cleanup_owned(plan, output, session, launcher, identity, fd, deadline):
             if adopted is not None and (not adopted.get('complete') or
                     adopted.get('remaining') or adopted.get('not_children')):
                 errors.append('adopted identities did not finish/reap normally')
+        if pending_shutdown_error is not None:
+            try:
+                cleanup_check()
+                shutdown = recognize_ended_session(output, session, launcher,
+                    identity, fd, target, adopted, target_first,
+                    forced_target or forced_launcher, errors)
+                cleanup_check()
+            except BaseException as error:
+                errors.extend([pending_shutdown_error,
+                               'ended-session recognition: ' + repr(error)])
     finally:
         if not session._closed:
             attempt('session close', session.close)
@@ -648,7 +734,8 @@ def custom_step(plan, name, plan_path):
         if work.get('status') != 'VALID' or work.get('errors'):
             raise RuntimeError('fixed target-work contract failed')
         check()
-        runner.export_database(plan, output, measurement.deadline, check)
+        runner.export_database(plan, output, measurement.deadline, check,
+                               report_binding_output=output)
         check()
         if not streamed:
             snapshot_logs(output, identity['pid'])

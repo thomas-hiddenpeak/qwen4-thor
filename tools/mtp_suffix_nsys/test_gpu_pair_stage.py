@@ -55,6 +55,160 @@ class PairStageContracts(unittest.TestCase):
         self.addCleanup(directory.cleanup)
         self.base = Path(directory.name)
 
+    def test_extended_contract_exports_explicit_bound_report(self):
+        value=plan(self.base);value['cleanup_order']='report_bound_target_first_v1'
+        value['nsys']['interactive_contract']=stage.collection_contract(value)
+        source=self.base/'source';source.mkdir()
+        report=source/'trace.1.nsys-rep';report.write_bytes(b'report')
+        child=MagicMock(returncode=0);child.poll.return_value=0
+        def spawn(command,**_):
+            self.assertEqual(command[-1],str(report))
+            (self.base/'trace.sqlite').write_bytes(b'sqlite')
+            return child
+        with patch.object(stage.runner.synchronous,'bound_report',return_value=report) as bound, \
+                patch.object(stage.runner,'report_path',side_effect=AssertionError('legacy selection')), \
+                patch.object(stage.runner.subprocess,'Popen',side_effect=spawn):
+            stage.runner.export_database(value,self.base,report_binding_output=source)
+        self.assertEqual(bound.call_args_list,[((source,),),((source,),)])
+
+    def test_export_rejects_invalid_or_changed_bound_report_without_fallback(self):
+        for mode in ('invalid','changed'):
+            output=self.base/mode;output.mkdir()
+            report=output/'trace.1.nsys-rep';report.write_bytes(b'report')
+            (output/'trace.nsys-rep').write_bytes(b'legacy')
+            child=MagicMock(returncode=0);child.poll.return_value=0
+            def spawn(*_,**__):
+                (output/'trace.sqlite').write_bytes(b'sqlite');return child
+            results=[ValueError('bad binding')] if mode=='invalid' else [report,ValueError('changed')]
+            with patch.object(stage.runner.synchronous,'bound_report',side_effect=results), \
+                    patch.object(stage.runner,'report_path',side_effect=AssertionError('fallback')), \
+                    patch.object(stage.runner.subprocess,'Popen',side_effect=spawn) as opened:
+                with self.assertRaises(ValueError):
+                    stage.runner.export_database(plan(output),output,report_binding_output=output)
+                self.assertEqual(opened.call_count,0 if mode=='invalid' else 1)
+
+    def test_ended_session_policy_requires_explicit_target_first(self):
+        value=plan(self.base)
+        value['ended_session_policy']='bound_target_exit_exact_inactive_v1'
+        with self.assertRaises(ValueError):stage.collection_contract(value)
+        value['cleanup_order']='report_bound_target_first_v1'
+        value['nsys']['interactive_contract']=stage.collection_contract(value)
+        stage.validate(value)
+        value['ended_session_policy']='ignore_shutdown_error'
+        with self.assertRaises(ValueError):stage.collection_contract(value)
+
+    def ended_fixture(self, output):
+        output.mkdir()
+        session=SimpleNamespace(nsys=output/'nsys',name='owned',owner=dict(pid=1,start_ticks=2),
+            report_ready_succeeded=True,shutdown_attempted=True,shutdown_succeeded=False,
+            _owner_current=lambda:None)
+        identity=dict(pid=7,start_ticks=19,wrapper_pid=8)
+        target=dict(pid=7,wrapper_pid=8,returncode=0,finished_monotonic=100)
+        adopted=dict(complete=True,failure=None,remaining=[],not_children=[])
+        control=dict(verb='shutdown',session='owned',owner=dict(pid=1,start_ticks=2),
+            command=[str(session.nsys),'shutdown','--session=owned','--kill=none'],
+            returncode=1,failure="RuntimeError('interactive shutdown failed with 1')",
+            forced_control_cleanup=False,cleanup_errors=[],started_monotonic=101,
+            finished_monotonic=102,deadline_monotonic=116)
+        stage.save(output/'interactive-shutdown-exit.json',control)
+        (output/'interactive-shutdown.log').write_text('There are no active sessions.\n')
+        stage.save(output/'synchronous-report-ready.json',dict(session='owned',target_receipt=identity))
+        args=[output,session,SimpleNamespace(returncode=0),identity,99,target,adopted,True,False,[]]
+        return args,control
+
+    def test_exact_ended_session_keeps_raw_failed_control(self):
+        args,_=self.ended_fixture(self.base/'positive')
+        raw=(args[0]/'interactive-shutdown-exit.json').read_bytes()
+        with patch.object(stage.runner,'pidfd_exited',return_value=True), \
+                patch.object(stage.sync,'bound_report',return_value=args[0]/'trace.1.nsys-rep'):
+            result=stage.recognize_ended_session(*args)
+        self.assertEqual(result['classification'],'OWNED_SESSION_ALREADY_ENDED')
+        self.assertFalse(result['shutdown_succeeded']);self.assertFalse(result['trace_integrity_proven'])
+        self.assertEqual(result['raw_shutdown_returncode'],1)
+        self.assertEqual((args[0]/'interactive-shutdown-exit.json').read_bytes(),raw)
+
+    def test_ended_session_rejects_incomplete_or_foreign_evidence(self):
+        modes=('not_ready','not_attempted','shutdown_success','no_identity','no_fd',
+            'bad_target','bad_wrapper','target_rc','launcher_rc','adopted_failure',
+            'adopted_incomplete','adopted_remaining','adopted_not_child','wrong_order',
+            'forced','prior_error','live_pidfd','verb','session','command','owner',
+            'returncode','failure','control_forced','control_cleanup','late_control',
+            'before_exit','extra_text','unknown_text','report_session','report_target',
+            'report_changed','owner_changed','missing_receipt')
+        for mode in modes:
+            with self.subTest(mode=mode):
+                args,control=self.ended_fixture(self.base/mode)
+                output,session=args[:2]
+                if mode=='not_ready':session.report_ready_succeeded=False
+                elif mode=='not_attempted':session.shutdown_attempted=False
+                elif mode=='shutdown_success':session.shutdown_succeeded=True
+                elif mode=='no_identity':args[3]=None
+                elif mode=='no_fd':args[4]=None
+                elif mode=='bad_target':args[5]['pid']=9
+                elif mode=='bad_wrapper':args[5]['wrapper_pid']=9
+                elif mode=='target_rc':args[5]['returncode']=1
+                elif mode=='launcher_rc':args[2].returncode=1
+                elif mode=='adopted_failure':args[6]['failure']='bad'
+                elif mode=='adopted_incomplete':args[6]['complete']=False
+                elif mode=='adopted_remaining':args[6]['remaining']=[7]
+                elif mode=='adopted_not_child':args[6]['not_children']=[7]
+                elif mode=='wrong_order':args[7]=False
+                elif mode=='forced':args[8]=True
+                elif mode=='prior_error':args[9]=['measurement failed']
+                elif mode in ('verb','session','command','owner','returncode','failure'):
+                    control[mode]={'owner':{},'command':[],'returncode':2}.get(mode,'foreign')
+                elif mode=='control_forced':control['forced_control_cleanup']=True
+                elif mode=='control_cleanup':control['cleanup_errors']=['error']
+                elif mode=='late_control':control['finished_monotonic']=117
+                elif mode=='before_exit':control['started_monotonic']=99
+                elif mode in ('extra_text','unknown_text'):
+                    (output/'interactive-shutdown.log').write_text('There are no active sessions.\nextra\n' if mode=='extra_text' else 'error\n')
+                elif mode in ('report_session','report_target'):
+                    binding=dict(session='foreign' if mode=='report_session' else 'owned',
+                        target_receipt=dict(args[3],pid=9 if mode=='report_target' else 7))
+                    (output/'synchronous-report-ready.json').write_text(json.dumps(binding))
+                elif mode=='owner_changed':session._owner_current=MagicMock(side_effect=RuntimeError('owner changed'))
+                (output/'interactive-shutdown-exit.json').write_text(json.dumps(control))
+                if mode=='missing_receipt':(output/'interactive-shutdown-exit.json').unlink()
+                with patch.object(stage.runner,'pidfd_exited',return_value=mode!='live_pidfd'), \
+                        patch.object(stage.sync,'bound_report',side_effect=RuntimeError('changed') if mode=='report_changed' else None,
+                                     return_value=output/'trace.1.nsys-rep'):
+                    with self.assertRaises((ValueError,RuntimeError,FileNotFoundError)):
+                        stage.recognize_ended_session(*args)
+                self.assertFalse((output/'ended-session.json').exists())
+
+    def test_ended_session_recognition_occurs_only_after_owned_reap(self):
+        for accepted in (True,False):
+            output=self.base/str(accepted);output.mkdir()
+            value=plan(output);value.update(cleanup_order='report_bound_target_first_v1',
+                ended_session_policy='bound_target_exit_exact_inactive_v1')
+            identity=dict(pid=7,start_ticks=19,wrapper_pid=8)
+            stage.save(output/'target-exit.json',dict(pid=7,wrapper_pid=8,returncode=0))
+            session=MagicMock();session.owner=dict(pid=1,start_ticks=2)
+            session.name='q4t-suffix-1-2-'+'a'*16+'-owned';session.output=output
+            session._closed=False;session.deadline=50;session.can_shutdown=True
+            session.report_ready_succeeded=True
+            session.close.side_effect=lambda:setattr(session,'_closed',True)
+            events=[]
+            def shutdown(timeout):
+                events.append('shutdown');raise RuntimeError('interactive shutdown failed with 1')
+            def reap(timeout):
+                events.append('reap');return dict(complete=True,remaining=[],not_children=[])
+            def classify(*args):
+                events.append('recognize')
+                if not accepted:raise ValueError('not proved')
+                return dict(classification='OWNED_SESSION_ALREADY_ENDED',raw_shutdown_returncode=1)
+            session.shutdown.side_effect=shutdown;session.reap_adopted.side_effect=reap
+            launcher=MagicMock(returncode=0)
+            with patch.object(stage.time,'monotonic',return_value=100), \
+                    patch.object(stage.runner,'pidfd_exited',return_value=True), \
+                    patch.object(stage,'recognize_ended_session',side_effect=classify), \
+                    patch.object(stage.os,'close'):
+                _,errors=stage.cleanup_owned(value,output,session,launcher,identity,99,150)
+            self.assertEqual(events,['shutdown','reap','recognize'])
+            self.assertEqual(bool(errors),not accepted)
+            if not accepted:self.assertIn('session shutdown:',errors[0])
+
     def test_target_first_contract_is_explicit_and_keeps_options(self):
         value=plan(self.base)
         value['cleanup_order']='report_bound_target_first_v1'
@@ -358,6 +512,9 @@ class PairStageContracts(unittest.TestCase):
             if name!='pair_work_contract':raise AssertionError(name)
             def work(*_args):calls.append('work');return dict(status='VALID',errors=[])
             return SimpleNamespace(validate_work=work)
+        def export(*_args,report_binding_output):
+            self.assertEqual(report_binding_output,output)
+            calls.append('export')
         with patch.object(stage.legacy,'require_guard'), \
                 patch.object(stage.sync,'Session',return_value=session), \
                 patch.object(stage.sync,'make_name',return_value='q4t-suffix-1-owned'), \
@@ -374,7 +531,7 @@ class PairStageContracts(unittest.TestCase):
                 patch.object(stage.os,'close'), \
                 patch.object(stage.old,'audit_execution',return_value=dict(complete=True,errors=[])), \
                 patch.object(stage,'module',side_effect=load), \
-                patch.object(stage.runner,'export_database',side_effect=lambda *_:calls.append('export')), \
+                patch.object(stage.runner,'export_database',side_effect=export), \
                 patch.object(stage,'snapshot_logs',side_effect=lambda *_:calls.append('snapshot')), \
                 patch.object(stage,'analyze_capture',side_effect=lambda *_:calls.append('analyze')):
             stage.custom_step(value,step['name'],self.base/'plan.json')

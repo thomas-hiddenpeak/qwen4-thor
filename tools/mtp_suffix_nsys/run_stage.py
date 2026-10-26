@@ -426,8 +426,15 @@ def report_path(plan, output):
     return output / 'trace.nsys-rep'
 
 
-def export_database(plan, output, deadline=None, check=None):
-    report, database = report_path(plan, output), output / 'trace.sqlite'
+def export_database(plan, output, deadline=None, check=None, *,
+                    report_binding_output=None):
+    # Callers with an extended synchronous contract must explicitly use their
+    # verified binding; exact legacy contract equality is not mode detection.
+    def selected_report():
+        if report_binding_output is not None:
+            return synchronous.bound_report(report_binding_output)
+        return report_path(plan, output)
+    report, database = selected_report(), output / 'trace.sqlite'
     if not report.is_file() or report.stat().st_size == 0 or database.exists():
         raise RuntimeError('missing trace report or existing export destination')
     command = [plan['nsys']['path'], 'export', '--type=sqlite',
@@ -449,7 +456,7 @@ def export_database(plan, output, deadline=None, check=None):
                 time.sleep(.05)
             if child.returncode or not database.is_file():
                 raise RuntimeError('SQLite export failed')
-            if synchronous_collection(plan) and report_path(plan, output) != report:
+            if (report_binding_output is not None or synchronous_collection(plan)) and selected_report() != report:
                 raise RuntimeError('bound report changed during export')
     except BaseException as error:
         failure = repr(error)

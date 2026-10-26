@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "performance_acceptance": false,
+  "overall_status": "ENV_ABORT_COMPRESSED_LOG_CAP",
+  "goal_complete": false,
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-ended-session-20261026/scope.json": {
+      "sha256": "f93a0e874e84c6401510966af4f9ef2280ced728f051aeae1c61bbf1f8c94c91",
+      "bytes": 3918
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-ended-session-20261026/frozen-plan.json": {
+      "sha256": "e1719403e6003fdeee51d8aa8862c20faf98dd837bf14558ad74ef028d42e26f",
+      "bytes": 4871521
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-ended-session-20261026/cpu-proof.json": {
+      "sha256": "230b1c59bcd0b35ab03731aa756bdab3f4f13f1bc902260889d5a9a06efdf5db",
+      "bytes": 66377
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-ended-session-20261026/cleanup-rejection.json": {
+      "sha256": "d8de0d80baa45ed4384846da2fc63a9fb09bee236107ca470445e20b2bf796a0",
+      "bytes": 3789
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-ended-session-20261026/terminal-review.json": {
+      "sha256": "446e7435dcacbb55a62ba88b761eb8a1790bb72fa4b15fadaa0f2179af9429f2",
+      "bytes": 3908
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-ended-session-20261026/archive-manifest.json": {
+      "sha256": "8db920e43562ca108be278b17c04e5fc745e85ed5968d726d93ba75e15f83a81",
+      "bytes": 107946
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-ended-session-20261026/postflight.json": {
+      "sha256": "3200c57ab9178ae369e51023bf5cc760a051a808116ebf019331f87942c1f6f3",
+      "bytes": 431
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/scope.json": {
+      "sha256": "ae053c617bc066afdef8a5f096e702a3bbb8d116f7ae7b2ad6695c85fe6e20c6",
+      "bytes": 5305
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/frozen-plan.json": {
+      "sha256": "b49539123c0e09e23cba72d0d0fafc4cce9873d9929ea7b378556ed5bec79a22",
+      "bytes": 4874489
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/cpu-exit-v1.json": {
+      "sha256": "f040304b32e86c5b5d32b49f0342bb023c162812797577e6ee4950cdc27d2990",
+      "bytes": 869
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/cpu-specific-failure-fix.json": {
+      "sha256": "df9fc7e8ca335d8ec9c04d7c4badf9422e673d5d9286e180a187e51453358105",
+      "bytes": 566
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/cpu-exit-v2.json": {
+      "sha256": "aea73f55c7a52a7d23340d58894125d085209462bf0cbc4c892bae4859beecb1",
+      "bytes": 869
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/cpu-proof.json": {
+      "sha256": "71ac35c869034ae4a3363ee1653e97b74631da815386037aa5e00b9d0cd486b1",
+      "bytes": 67460
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/saved-capture-gate-exit.json": {
+      "sha256": "80f5b102821e843a564eb7d04e1d160fa16ff6be524810800f71b31005ba366a",
+      "bytes": 296
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/saved-capture/recorded-gpu-audit.json": {
+      "sha256": "0c55bd8b958535dc3d8a23e56a5bca8b0a19acb6c8ed5c194b76281f010ee3cc",
+      "bytes": 3064208
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/recovery-exit.json": {
+      "sha256": "934d39081e98e3b5f94961482f5cb3de94246e26d6140a56ebfb44d336acee31",
+      "bytes": 126
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/capacity-stop.json": {
+      "sha256": "ff7672afc8a93e6942aa518278d0f0ad541f6555279dd19dbcae70720eef94cb",
+      "bytes": 1343
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/postflight.json": {
+      "sha256": "3e234df1b985d4d0aac7b8cbd26589f13c9f14dcd2e0ae0730eb6ce74c2b3a38",
+      "bytes": 828
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/lease/exit.json": {
+      "sha256": "64ff11f0a0972f96e6d131b136d4cda34561e35ee3faa4d22da9ab9dc98bbe9d",
+      "bytes": 570
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/terminal-review.json": {
+      "sha256": "5e3951e4d37d48d2fc111d0cdc4e03fb3872c061bcb7c843c30577a1d134afe6",
+      "bytes": 29703
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/archive-manifest.json": {
+      "sha256": "6072140b4565502cba7d02b5c993e5b35ab54a735dcc87f5ef9bb052051ec349",
+      "bytes": 234928
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/pair-comparison.json": {
+      "sha256": "1ae5d1bfb6a621154034dc2c95f66ebc6c082d260f8f9535dd2366ae29d2da6b",
+      "bytes": 12686640
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/eight-k-findings.json": {
+      "sha256": "34989edd79ae15599ae205e312416c039130db65e212ed60a83fc7fd51a3fda3",
+      "bytes": 10936
+    }
+  }
+}
