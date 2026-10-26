@@ -31,22 +31,7 @@ namespace q4t::server {
 
 namespace {
 constexpr const char* kDefaultModelName = "qwen3.8-flash-next";
-constexpr size_t kMaxSuffixTokenClassBytes = size_t{256} * 1024;
 
-void ReleaseSuffixTokenClasses(std::unique_ptr<uint8_t[]>* classes,
-                               size_t* count) {
-  if (!*classes) return;
-  const size_t bytes = *count;
-  const auto start = std::chrono::steady_clock::now();
-  classes->reset();
-  *count = 0;
-  const auto release_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
-                              std::chrono::steady_clock::now() - start)
-                              .count();
-  std::fprintf(stderr,
-               "[suffix-classes] event=release bytes=%zu release_ns=%llu\n",
-               bytes, static_cast<unsigned long long>(release_ns));
-}
 }
 
 ChatServer::~ChatServer() {
@@ -84,11 +69,23 @@ ChatServer::~ChatServer() {
     mtp_.Free();
     mtp_loaded_ = false;
   }
-  ReleaseSuffixTokenClasses(&suffix_token_classes_,
-                             &suffix_token_class_count_);
-  if (suffix_causal_.Enabled())
-    std::fprintf(stderr, "[suffix-causal-plan] consumed=%zu expected=%zu\n",
-                 suffix_causal_.Consumed(), suffix_causal_.Size());
+  if (mtp_suffix_) {
+    const size_t bytes = suffix_token_cache_.MemoryBytes();
+    suffix_token_cache_.Reset();
+    const auto& c = suffix_token_cache_.Counters();
+    std::fprintf(stderr,
+                 "[suffix-classes] event=release bytes=%zu peak_bytes=%zu "
+                 "checks=%llu lookups=%llu decodes=%llu unknown=%llu "
+                 "allocations=%llu allocation_ns=%llu release_ns=%llu\n",
+                 bytes, c.peak_bytes,
+                 static_cast<unsigned long long>(c.checks),
+                 static_cast<unsigned long long>(c.lookups),
+                 static_cast<unsigned long long>(c.decodes),
+                 static_cast<unsigned long long>(c.unknown),
+                 static_cast<unsigned long long>(c.allocations),
+                 static_cast<unsigned long long>(c.allocation_ns),
+                 static_cast<unsigned long long>(c.release_ns));
+  }
 }
 
 namespace {
@@ -121,13 +118,6 @@ Status ChatServer::Start(const ServerOptions& opts) {
   allow_media_ = opts.allow_media;
   mtp_k_ = opts.mtp_k;
   mtp_suffix_ = opts.mtp_suffix;
-  if (const char* causal = std::getenv("Q4T_SUFFIX_CAUSAL_PLAN")) {
-    if (!capabilities.mtp || opts.mtp_k != 3 || opts.max_seq != 1 ||
-        opts.allow_media || opts.host != "127.0.0.1")
-      return Status::Fail("suffix causal diagnostic requires local text B1 k3");
-    const Status loaded = suffix_causal_.Load(causal, mtp_suffix_);
-    if (!loaded.ok()) return loaded;
-  }
   PhaseTimer total("startup_total");
   {
     PhaseTimer pt("tokenizer");
@@ -291,50 +281,18 @@ Status ChatServer::Start(const ServerOptions& opts) {
       cfg.max_len > static_cast<int>(mtp::SuffixDrafter::kMaxCapacity))
     return Status::Fail("mtp-suffix effective max-len exceeds 262144");
   if (mtp_suffix_) {
-    PhaseTimer pt("suffix_token_classes");
-    if (cfg.vocab <= 0 ||
-        static_cast<size_t>(cfg.vocab) > kMaxSuffixTokenClassBytes) {
-      return Status::Fail("mtp-suffix token class table exceeds 256 KiB cap");
-    }
-    const auto start = std::chrono::steady_clock::now();
-    size_t bytes = static_cast<size_t>(cfg.vocab);
-    size_t unknown = 0;
-    std::unique_ptr<uint8_t[]> classes;
-    try {
-      classes = std::make_unique<uint8_t[]>(bytes);
-      std::vector<uint32_t> one(1);
-      std::string decoded;
-      for (size_t id = 0; id < bytes; ++id) {
-        one[0] = static_cast<uint32_t>(id);
-        // Preserve special-token content; dropping it could turn a match
-        // across a marker into an apparent numeric-only span. Padding IDs
-        // without tokenizer text remain unknown and do not trigger the gate.
-        const Status decoded_status = tok_->Decode(one, false, &decoded);
-        if (!decoded_status.ok() || decoded.empty()) {
-          classes[id] = 0;
-          ++unknown;
-        } else {
-          classes[id] = mtp::ClassifySuffixToken(decoded);
-        }
-      }
-    } catch (const std::bad_alloc&) {
-      ReleaseSuffixTokenClasses(&classes, &bytes);
-      return Status::Fail("mtp-suffix token class allocation failed");
-    }
-    suffix_token_classes_ = std::move(classes);
-    suffix_token_class_count_ = bytes;
-    const auto init_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
-                             std::chrono::steady_clock::now() - start)
-                             .count();
+    const Status configured =
+        suffix_token_cache_.Configure(tok_.get(), cfg.vocab);
+    if (!configured.ok()) return configured;
     std::fprintf(stderr,
-                 "[suffix-classes] event=init bytes=%zu cap_bytes=%zu "
-                 "unknown=%zu init_ns=%llu\n",
-                 bytes, kMaxSuffixTokenClassBytes, unknown,
-                 static_cast<unsigned long long>(init_ns));
+                 "[suffix-classes] event=configure bytes=0 vocab=%d "
+                 "cap_bytes=%zu object_bytes=%zu lazy=1\n",
+                 cfg.vocab, SuffixTokenCache::kMaxBytes,
+                 sizeof(SuffixTokenCache));
     std::fprintf(stderr,
                  "[q4t] suffix enabled: k=3 match=3..64 candidates=4 "
                  "capacity=%d global_ids=1 numeric_gate=1 "
-                 "min_admitted_match=%d\n", cfg.max_len,
+                 "min_admitted_match=%d lazy_classes=1\n", cfg.max_len,
                  mtp::SuffixDrafter::kMinAdmittedMatch);
   }
   std::fprintf(stderr,

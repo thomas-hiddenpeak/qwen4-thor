@@ -560,3 +560,145 @@ Q4T_TEST(suffix_numeric_and_d0_gates_precede_short_copy_gate) {
   Q4T_CHECK(drafter.Counters().short_rejected == 0);
   return true;
 }
+
+
+namespace {
+struct NumericSpy {
+  int calls = 0;
+  size_t tokens = 0;
+  bool numeric = false;
+  bool fail = false;
+};
+
+q4t::Status CheckNumericSpy(void* context, std::span<const int32_t> ids,
+                            bool* numeric) {
+  auto& spy = *static_cast<NumericSpy*>(context);
+  ++spy.calls;
+  spy.tokens += ids.size();
+  *numeric = spy.numeric;
+  return spy.fail ? q4t::Status::Fail("injected classifier failure")
+                  : q4t::Status();
+}
+}  // namespace
+
+Q4T_TEST(suffix_lazy_classifier_follows_full_d0_minimum_gates) {
+  for (int length : {3, 19, 31, 32, 64}) {
+    NumericSpy spy;
+    SuffixDrafter drafter;
+    const auto history = LongCopy(length);
+    Q4T_CHECK(
+        drafter.Init(history, 200000, 256, {}, {&spy, CheckNumericSpy}).ok());
+    Q4T_CHECK(drafter.ProposeAfter(length, 77).reason ==
+              SuffixReason::kFirstTokenMismatch);
+    Q4T_CHECK(spy.calls == 0);
+    const auto actual = drafter.ProposeAfter(length, 100001);
+    const auto expected = ScanReference(history, length, 100001);
+    Q4T_CHECK(actual.ready == expected.ready);
+    Q4T_CHECK(actual.tokens == expected.tokens);
+    Q4T_CHECK(actual.match_end == expected.match_end);
+    Q4T_CHECK(spy.calls == (length >= 32 ? 1 : 0));
+    Q4T_CHECK(spy.tokens == (length >= 32 ? static_cast<size_t>(length) : 0));
+  }
+  return true;
+}
+
+Q4T_TEST(suffix_lazy_numeric_rejection_preserves_global_candidate) {
+  NumericSpy spy;
+  spy.numeric = true;
+  SuffixDrafter drafter;
+  const auto history = LongCopy(32);
+  Q4T_CHECK(
+      drafter.Init(history, 200000, 256, {}, {&spy, CheckNumericSpy}).ok());
+  const auto actual = drafter.ProposeAfter(32, 100001);
+  const auto selected = ScanReference(history, 32, 100001);
+  Q4T_CHECK(!actual.ready && actual.reason == SuffixReason::kNumericRejected);
+  Q4T_CHECK(actual.tokens == selected.tokens &&
+            actual.match_end == selected.match_end);
+  Q4T_CHECK(actual.tokens[1] > 65535 && actual.tokens[2] > 65535);
+  Q4T_CHECK(drafter.Counters().numeric_rejected == 1);
+  Q4T_CHECK(drafter.Counters().classified_tokens == 32);
+  Q4T_CHECK(std::vector<int32_t>(drafter.History().begin(),
+                                 drafter.History().end()) == history);
+  return true;
+}
+
+Q4T_TEST(suffix_lazy_failure_disables_without_committing_and_recovers_fresh) {
+  NumericSpy spy;
+  spy.fail = true;
+  SuffixDrafter drafter;
+  const auto history = LongCopy(32);
+  Q4T_CHECK(
+      drafter.Init(history, 200000, 256, {}, {&spy, CheckNumericSpy}).ok());
+  const auto result = drafter.ProposeAfter(32, 100001);
+  Q4T_CHECK(!result.ready && !drafter.Active());
+  Q4T_CHECK(result.reason == SuffixReason::kClassificationFailed);
+  Q4T_CHECK(drafter.Counters().classification_failures == 1);
+  const std::array<int32_t, 1> committed{32};
+  Q4T_CHECK(drafter.Append(committed).ok());
+  Q4T_CHECK(std::vector<int32_t>(drafter.History().begin(),
+                                 drafter.History().end()) == history);
+  drafter.Reset();
+  spy.fail = false;
+  Q4T_CHECK(
+      drafter.Init(history, 200000, 256, {}, {&spy, CheckNumericSpy}).ok());
+  Q4T_CHECK(drafter.ProposeAfter(32, 100001).ready);
+  Q4T_CHECK(drafter.Counters().classification_failures == 0);
+  return true;
+}
+
+Q4T_TEST(suffix_lazy_and_eager_are_exclusive_and_reset_drops_callback) {
+  NumericSpy spy;
+  SuffixDrafter drafter;
+  const auto history = LongCopy(32);
+  std::vector<uint8_t> classes(200000);
+  Q4T_CHECK(
+      !drafter.Init(history, 200000, 256, classes, {&spy, CheckNumericSpy})
+           .ok());
+  Q4T_CHECK(!drafter.Active() && drafter.MemoryBytes() == 0);
+  Q4T_CHECK(!drafter.Init(history, 200000, 256, {}, {&spy, nullptr}).ok());
+  Q4T_CHECK(
+      drafter.Init(history, 200000, 256, {}, {&spy, CheckNumericSpy}).ok());
+  Q4T_CHECK(drafter.ProposeAfter(32, 100001).ready);
+  drafter.Reset();
+  Q4T_CHECK(drafter.Init(history, 200000, 256).ok());
+  Q4T_CHECK(drafter.ProposeAfter(32, 100001).ready && spy.calls == 1);
+  return true;
+}
+
+Q4T_TEST(suffix_lazy_ready_matches_eager_reference_across_boundaries) {
+  for (int length : {3, 19, 31, 32, 33, 64, 70}) {
+    for (uint8_t flags : {uint8_t{0}, uint8_t{1}, uint8_t{2}, uint8_t{3}}) {
+      NumericSpy spy;
+      spy.numeric = flags == 3;
+      std::vector<uint8_t> classes(200000, flags);
+      const auto history = LongCopy(length);
+      SuffixDrafter eager, lazy;
+      Q4T_CHECK(eager.Init(history, 200000, 256, classes).ok());
+      Q4T_CHECK(
+          lazy.Init(history, 200000, 256, {}, {&spy, CheckNumericSpy}).ok());
+      const auto a = eager.ProposeAfter(length, 100001);
+      const auto b = lazy.ProposeAfter(length, 100001);
+      Q4T_CHECK(a.ready == b.ready && a.tokens == b.tokens);
+      Q4T_CHECK(a.match_length == b.match_length && a.match_end == b.match_end);
+      Q4T_CHECK(spy.tokens <= 64);
+    }
+  }
+  return true;
+}
+
+
+Q4T_TEST(suffix_lazy_no_match_incomplete_and_invalid_skip_classifier) {
+  NumericSpy spy;
+  SuffixDrafter drafter;
+  const std::vector<int32_t> distinct{1, 2, 3, 4};
+  Q4T_CHECK(drafter.Init(distinct, 100, 64, {},
+                        {&spy, CheckNumericSpy}).ok());
+  Q4T_CHECK(drafter.ProposeAfter(99, 3).reason == SuffixReason::kNoMatch);
+  Q4T_CHECK(drafter.ProposeAfter(-1, 3).reason == SuffixReason::kInvalidToken);
+  const std::vector<int32_t> incomplete{1, 1, 1, 1, 1, 1};
+  Q4T_CHECK(
+      drafter.Init(incomplete, 100, 64, {}, {&spy, CheckNumericSpy}).ok());
+  Q4T_CHECK(drafter.ProposeAfter(1, 1).reason == SuffixReason::kIncomplete);
+  Q4T_CHECK(spy.calls == 0);
+  return true;
+}

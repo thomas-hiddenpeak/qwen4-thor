@@ -75,10 +75,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   using Wait = RequestDiagnostics::Wait;
   metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
   const auto t_arrive = std::chrono::steady_clock::now();
-  SuffixCausalRequest causal(suffix_causal_.Enabled());
-  if (causal.enabled)
-    causal.arrive_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
-                          t_arrive.time_since_epoch()).count();
   // Any return before generation starts (validation / alloc / encode / prefill
   // failure) counts as a pre-generation error; cleared once a token is produced.
   struct ErrGuard {
@@ -156,7 +152,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
   diagnostic.Bind(request_id);
-  if (causal.enabled) causal.request = request_id;
   struct Registration {
     RequestRegistry& registry;
     std::shared_ptr<RequestControl> control;
@@ -612,10 +607,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
 
   diagnostic.Stage("decode");
-  if (causal.enabled) {
-    causal.target_done_ns = SuffixCausalRequest::Now();
-    causal.input = T;
-  }
   // 3. Decode loop (greedy).
   const std::string id = request_id;
   const std::string model_field = model_name_;
@@ -752,25 +743,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // Fallback: if the scheduler is unavailable or the pool is full, decode
   // plainly (the main seq is still usable).
   ActiveRequest mtp_ar;
-  bool query_suffix = mtp_suffix_;
-  bool apply_suffix = true;
-  if (causal.enabled) {
-    causal.prefill_done_ns = SuffixCausalRequest::Now();
-    const Status selected = suffix_causal_.AfterPrefill(
-        T, causal.prefill_done_ns, &causal.choice, &causal.ordinal);
-    causal.selected_ns = SuffixCausalRequest::Now();
-    if (!selected.ok() || !use_mtp) {
-      std::fprintf(stderr, "[suffix-causal-error] request=%s selection=%s\n",
-                   request_id.c_str(), selected.message().c_str());
-      model::ModelEndSequence(&seq);
-      cleanup();
-      err_guard.ok = false;
-      return;
-    }
-    query_suffix = causal.choice.query;
-    apply_suffix = causal.choice.apply;
-  }
   mtp::SuffixDrafter suffix;
+  uint64_t prior_class_decodes = 0, prior_class_lookups = 0;
+  uint64_t prior_class_allocations = 0;
+  if (mtp_suffix_) {
+    const auto& before = suffix_token_cache_.Counters();
+    prior_class_decodes = before.decodes;
+    prior_class_lookups = before.lookups;
+    prior_class_allocations = before.allocations;
+  }
   std::array<uint64_t, 4> suffix_accepted{};
   std::array<uint64_t, 4> neural_accepted{};
   bool mtp_sched = false;
@@ -788,10 +769,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       use_mtp = false;
     }
   }
-  if (use_mtp && query_suffix) {
-    const Status suffix_status =
-        suffix.Init(seq.history, model_.Get().cfg.vocab, max_len_,
-                    {suffix_token_classes_.get(), suffix_token_class_count_});
+  if (use_mtp && mtp_suffix_) {
+    const Status suffix_status = suffix.Init(
+        seq.history, model_.Get().cfg.vocab, max_len_, {},
+        {this, [](void* context, std::span<const int32_t> ids, bool* numeric) {
+           auto* server = static_cast<ChatServer*>(context);
+           const std::lock_guard<std::mutex> lock(server->tok_mu_);
+           return server->suffix_token_cache_.Check(ids, numeric);
+         }});
     if (!suffix_status.ok())
       std::fprintf(stderr, "[suffix] request=%s disabled=%s\n",
                    request_id.c_str(), suffix_status.message().c_str());
@@ -823,9 +808,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       mtp_ar.mtp_suffix_ready = false;
       if (suffix.Active()) {
         const auto proposal = suffix.ProposeAfter(mtp_b, mtp_d0);
-        mtp_ar.mtp_suffix_ready = proposal.ready && apply_suffix;
+        mtp_ar.mtp_suffix_ready = proposal.ready;
         mtp_ar.mtp_suffix_tokens = proposal.tokens;
-        if (causal.enabled) causal.ready += proposal.ready;
       }
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
@@ -850,18 +834,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         break;
       }
       ++accepted_histogram[mtp_ar.mtp_accepted_count - 1];
-      if (causal.enabled) {
-        if (!causal.first_round_ns)
-          causal.first_round_ns = SuffixCausalRequest::Now();
-        ++causal.verify;
-        causal.neural += mtp_ar.mtp_suffix_ready ? 0 : 2;
-        causal.restore += mtp_ar.mtp_accepted_count < 4;
-        if (!is_stop_token(mtp_ar.mtp_next_b)) {
-          ++causal.extend;
-          causal.extend_rows += mtp_ar.mtp_accepted_count;
-        }
-      }
-      if (mtp_suffix_ && !causal.enabled) {
+      if (mtp_suffix_) {
         auto& histogram = mtp_ar.mtp_suffix_ready ? suffix_accepted
                                                 : neural_accepted;
         ++histogram[mtp_ar.mtp_accepted_count - 1];
@@ -880,7 +853,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             if (tok_->Decode(one, true, &piece).ok())
               wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
           }
-          causal.FirstContent(wrote, !piece.empty());
           if (!wrote) {  // client disconnected: stop, free the slot
             done = true;
             finish_reason = "stop";
@@ -935,41 +907,50 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // departing request's notify was consumed before the scheduler slept).
     sched_cv_.notify_one();
   }
-  if (mtp_suffix_ && !causal.enabled) {
+  if (mtp_suffix_) {
     const size_t indexed = suffix.Size();
     suffix.Reset();
     const auto& stats = suffix.Counters();
-    std::fprintf(stderr,
-                 "[suffix] request=%s queries=%llu hits=%llu "
-                 "candidates=%llu compared=%llu matched=%llu "
-                 "no_match=%llu incomplete=%llu d0_mismatch=%llu "
-                 "invalid=%llu exhausted=%llu indexed=%zu peak_bytes=%zu "
-                 "object_bytes=%zu init_ns=%llu append_ns=%llu "
-                 "query_ns=%llu release_ns=%llu numeric_checks=%llu "
-                 "classified_tokens=%llu numeric_rejected=%llu "
-                 "numeric_ns=%llu short_rejected=%llu accepted=",
-                 request_id.c_str(),
-                 static_cast<unsigned long long>(stats.queries),
-                 static_cast<unsigned long long>(stats.hits),
-                 static_cast<unsigned long long>(stats.candidates_examined),
-                 static_cast<unsigned long long>(stats.compared_tokens),
-                 static_cast<unsigned long long>(stats.matched_tokens),
-                 static_cast<unsigned long long>(stats.no_match),
-                 static_cast<unsigned long long>(stats.incomplete),
-                 static_cast<unsigned long long>(stats.first_token_mismatch),
-                 static_cast<unsigned long long>(stats.invalid_tokens),
-                 static_cast<unsigned long long>(stats.capacity_exhaustions),
-                 indexed, stats.peak_memory_bytes, sizeof(suffix),
-                 static_cast<unsigned long long>(stats.init_ns),
-                 static_cast<unsigned long long>(stats.append_ns),
-                 static_cast<unsigned long long>(stats.query_ns),
-                 static_cast<unsigned long long>(stats.release_ns),
-                 static_cast<unsigned long long>(stats.numeric_checks),
-                 static_cast<unsigned long long>(stats.classified_tokens),
-                 static_cast<unsigned long long>(stats.numeric_rejected),
-                 // numeric_ns is already included in query_ns.
-                 static_cast<unsigned long long>(stats.numeric_ns),
-                 static_cast<unsigned long long>(stats.short_rejected));
+    const auto& classes = suffix_token_cache_.Counters();
+    std::fprintf(
+        stderr,
+        "[suffix] request=%s queries=%llu hits=%llu "
+        "candidates=%llu compared=%llu matched=%llu "
+        "no_match=%llu incomplete=%llu d0_mismatch=%llu "
+        "invalid=%llu exhausted=%llu indexed=%zu peak_bytes=%zu "
+        "object_bytes=%zu init_ns=%llu append_ns=%llu "
+        "query_ns=%llu release_ns=%llu numeric_checks=%llu "
+        "classified_tokens=%llu numeric_rejected=%llu "
+        "numeric_ns=%llu short_rejected=%llu classify_failed=%llu "
+        "cache_decodes=%llu cache_lookups=%llu "
+        "cache_allocations=%llu cache_bytes=%zu accepted=",
+        request_id.c_str(), static_cast<unsigned long long>(stats.queries),
+        static_cast<unsigned long long>(stats.hits),
+        static_cast<unsigned long long>(stats.candidates_examined),
+        static_cast<unsigned long long>(stats.compared_tokens),
+        static_cast<unsigned long long>(stats.matched_tokens),
+        static_cast<unsigned long long>(stats.no_match),
+        static_cast<unsigned long long>(stats.incomplete),
+        static_cast<unsigned long long>(stats.first_token_mismatch),
+        static_cast<unsigned long long>(stats.invalid_tokens),
+        static_cast<unsigned long long>(stats.capacity_exhaustions), indexed,
+        stats.peak_memory_bytes, sizeof(suffix),
+        static_cast<unsigned long long>(stats.init_ns),
+        static_cast<unsigned long long>(stats.append_ns),
+        static_cast<unsigned long long>(stats.query_ns),
+        static_cast<unsigned long long>(stats.release_ns),
+        static_cast<unsigned long long>(stats.numeric_checks),
+        static_cast<unsigned long long>(stats.classified_tokens),
+        static_cast<unsigned long long>(stats.numeric_rejected),
+        // numeric_ns is already included in query_ns.
+        static_cast<unsigned long long>(stats.numeric_ns),
+        static_cast<unsigned long long>(stats.short_rejected),
+        static_cast<unsigned long long>(stats.classification_failures),
+        static_cast<unsigned long long>(classes.decodes - prior_class_decodes),
+        static_cast<unsigned long long>(classes.lookups - prior_class_lookups),
+        static_cast<unsigned long long>(classes.allocations -
+                                        prior_class_allocations),
+        suffix_token_cache_.MemoryBytes());
     for (size_t i = 0; i < suffix_accepted.size(); ++i)
       std::fprintf(stderr, "%s%llu", i ? "," : "",
                    static_cast<unsigned long long>(suffix_accepted[i]));
@@ -979,9 +960,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                    static_cast<unsigned long long>(neural_accepted[i]));
     std::fprintf(stderr, "\n");
   }
-  // The causal arms use identical accounting and release paths, including
-  // startup S0/S1. Legacy suffix-only logging would confound that comparison.
-  if (causal.enabled) suffix.Reset();
   if (!use_mtp) {
     // B2b continuous batching: this request's decode steps are driven by the
     // central scheduler, which packs the current token of EVERY active
@@ -1022,7 +1000,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           if (tok_->Decode(one, true, &piece).ok())
             wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
         }
-        causal.FirstContent(wrote, !piece.empty());
         if (!wrote) {  // client disconnected: stop, free the slot
           finish_reason = "stop";
           break;
@@ -1081,7 +1058,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         }
         next_token = argmax(h_logits.data());
       }
-      if (causal.enabled) ++causal.tail;
     }
     if (use_sched) {
       {
@@ -1095,10 +1071,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
   trace_output_tokens = generated.size();
-  if (causal.enabled) {
-    causal.generation_done_ns = SuffixCausalRequest::Now();
-    causal.stats = suffix.Counters();
-  }
   if (generation_failed) seq.Fail();
   model::ModelEndSequence(&seq);
   LogMemorySnapshot("request_end", id);

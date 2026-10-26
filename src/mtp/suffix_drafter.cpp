@@ -93,6 +93,8 @@ const char* SuffixReasonName(SuffixReason reason) {
       return "invalid_token";
     case SuffixReason::kCapacityExhausted:
       return "capacity_exhausted";
+    case SuffixReason::kClassificationFailed:
+      return "classification_failed";
   }
   return "unknown";
 }
@@ -107,12 +109,15 @@ size_t SuffixDrafter::BucketFor(int32_t a, int32_t b, int32_t c) {
 
 Status SuffixDrafter::Init(std::span<const int32_t> committed, int vocab,
                            size_t capacity,
-                           std::span<const uint8_t> token_classes) {
+                           std::span<const uint8_t> token_classes,
+                           SuffixNumericClassifier classifier) {
   Reset();
   counters_ = {};
   Elapsed elapsed(&counters_.init_ns);
   if (vocab <= 0 || capacity == 0 || capacity > kMaxCapacity ||
       committed.size() > capacity ||
+      (!token_classes.empty() && classifier.check) ||
+      (!classifier.check && classifier.context) ||
       (!token_classes.empty() &&
        token_classes.size() != static_cast<size_t>(vocab))) {
     return Status::Fail(
@@ -137,6 +142,7 @@ Status SuffixDrafter::Init(std::span<const int32_t> committed, int vocab,
   }
   capacity_ = capacity;
   token_classes_ = token_classes;
+  classifier_ = classifier;
   active_ = true;
   disabled_reason_ = SuffixReason::kReady;
   counters_.peak_memory_bytes = MemoryBytes();
@@ -237,22 +243,42 @@ SuffixProposal SuffixDrafter::ProposeAfter(int32_t pending, int32_t d0) {
     result.reason = SuffixReason::kFirstTokenMismatch;
     return result;
   }
-  if (!token_classes_.empty()) {
+  if (classifier_.check && result.match_length < kMinAdmittedMatch) {
+    ++counters_.short_rejected;
+    result.reason = SuffixReason::kShortRejected;
+    return result;
+  }
+  if (!token_classes_.empty() || classifier_.check) {
     Elapsed classified(&counters_.numeric_ns);
     ++counters_.numeric_checks;
-    bool allowed = true;
-    bool has_digit = false;
     const size_t start =
         static_cast<size_t>(result.match_end) + 1 - result.match_length;
-    // The selected source span is token-identical to the query suffix,
-    // including pending. No rejected continuation is classified or indexed.
-    for (int i = 0; i < result.match_length; ++i) {
-      const uint8_t flags = token_classes_[history_[start + i]];
-      allowed = allowed && (flags & kSuffixAllowedAscii) != 0;
-      has_digit = has_digit || (flags & kSuffixContainsDigit) != 0;
+    bool numeric = false;
+    if (classifier_.check) {
+      const Status status = classifier_.check(
+          classifier_.context,
+          {history_.get() + start, static_cast<size_t>(result.match_length)},
+          &numeric);
+      if (!status.ok()) {
+        ++counters_.classification_failures;
+        active_ = false;
+        disabled_reason_ = SuffixReason::kClassificationFailed;
+        result.reason = disabled_reason_;
+        return result;
+      }
+    } else {
+      // Eager reference: preserve its numeric-before-short reason counters.
+      bool allowed = true;
+      bool has_digit = false;
+      for (int i = 0; i < result.match_length; ++i) {
+        const uint8_t flags = token_classes_[history_[start + i]];
+        allowed = allowed && (flags & kSuffixAllowedAscii) != 0;
+        has_digit = has_digit || (flags & kSuffixContainsDigit) != 0;
+      }
+      numeric = allowed && has_digit;
     }
     counters_.classified_tokens += result.match_length;
-    if (allowed && has_digit) {
+    if (numeric) {
       ++counters_.numeric_rejected;
       result.reason = SuffixReason::kNumericRejected;
       return result;
@@ -277,6 +303,7 @@ void SuffixDrafter::Reset() {
   buckets_.reset();
   history_.reset();
   token_classes_ = {};
+  classifier_ = {};
   size_ = 0;
   capacity_ = 0;
   vocab_ = 0;

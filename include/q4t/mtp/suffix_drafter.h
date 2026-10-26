@@ -32,6 +32,7 @@ enum class SuffixReason {
   kShortRejected,
   kInvalidToken,
   kCapacityExhausted,
+  kClassificationFailed,
 };
 
 const char* SuffixReasonName(SuffixReason reason);
@@ -44,6 +45,14 @@ struct SuffixProposal {
   uint32_t candidates_examined = 0;
   uint32_t compared_tokens = 0;
   SuffixReason reason = SuffixReason::kInactive;
+};
+
+// Borrowed request-lifetime callback. Called on the selected source span only
+// after complete-three, d0 and min32 gates. Failure disables this request's
+// lookup; the caller falls back to neural MTP, with an explicit counter.
+struct SuffixNumericClassifier {
+  void* context = nullptr;
+  Status (*check)(void*, std::span<const int32_t>, bool*) = nullptr;
 };
 
 struct SuffixCounters {
@@ -67,6 +76,7 @@ struct SuffixCounters {
   uint64_t numeric_rejected = 0;
   uint64_t numeric_ns = 0;  // Included in query_ns, not an additional phase.
   uint64_t short_rejected = 0;
+  uint64_t classification_failures = 0;
   uint64_t invalid_tokens = 0;
   uint64_t capacity_exhaustions = 0;
   size_t peak_memory_bytes = 0;
@@ -97,10 +107,13 @@ class SuffixDrafter {
   // alive and immutable until Reset. Empty disables numeric admission
   // filtering.
   // The borrowed table is not included in MemoryBytes; its owner accounts for
-  // allocation, construction and release separately.
+  // allocation, construction and release separately. The eager table remains
+  // a reference interface. Production uses classifier instead; supplying both
+  // is invalid. Its context must remain alive until Reset.
   Status Init(std::span<const int32_t> committed, int vocab,
               size_t capacity = kMaxCapacity,
-              std::span<const uint8_t> token_classes = {});
+              std::span<const uint8_t> token_classes = {},
+              SuffixNumericClassifier classifier = {});
 
   // Append only tokens already committed by the target model. Capacity
   // exhaustion disables lookup and returns success: the caller uses neural
@@ -117,6 +130,8 @@ class SuffixDrafter {
   // pending token, but nothing beyond it. Finally require a match of at least
   // kMinAdmittedMatch tokens, including pending. A short rejection preserves
   // the selected proposal and history; it never searches another candidate.
+  // With a classifier, min32 precedes numeric classification. Ready/selection
+  // is unchanged; short numeric matches count as short_rejected instead.
   SuffixProposal ProposeAfter(int32_t pending, int32_t d0);
 
   // Release both arrays on cancellation, failure, termination or slot reuse.
@@ -147,6 +162,7 @@ class SuffixDrafter {
   std::unique_ptr<Bucket[]> buckets_;
   std::unique_ptr<int32_t[]> history_;
   std::span<const uint8_t> token_classes_;
+  SuffixNumericClassifier classifier_;
   size_t size_ = 0;
   size_t capacity_ = 0;
   int vocab_ = 0;
