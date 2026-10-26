@@ -38,6 +38,18 @@ def quality(plan,output,server,env,capacity,check):
         r.update(expected[r['prompt_sha256']]);r['exact_match']=r['text'].strip()==r['expected'];r['length_match']=r['actual_input']==r['length']
     save(output/'quality-results.json',rows)
     if len({r['id'] for r in rows})!=11 or not all(r['exact_match'] and r['length_match'] and r['finish']==['stop'] for r in rows):raise RuntimeError('quality gate failed')
+    raw=(output/'server.log').read_text()
+    parse=lambda line:dict(re.findall(r'(\w+)=(\S+)',line))
+    admitted=[parse(l)['id'] for l in raw.splitlines() if 'event=admitted ' in l]
+    ended=[parse(l) for l in raw.splitlines() if 'event=end ' in l]
+    suffix=[parse(l) for l in raw.splitlines() if l.startswith('[suffix] ')]
+    if (len(admitted)!=11 or len(ended)!=11 or len(suffix)!=11 or
+        set(admitted)!={r['response_id'] for r in rows} or
+        set(admitted)!={r['id'] for r in ended} or
+        any(r.get('released')!='1' for r in ended)):
+        raise RuntimeError('quality release/suffix lifecycle')
+    for r in suffix:audit_stats(r)
+
 
 
 def contracts(plan,output):
