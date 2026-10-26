@@ -861,7 +861,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           causal.extend_rows += mtp_ar.mtp_accepted_count;
         }
       }
-      if (mtp_suffix_) {
+      if (mtp_suffix_ && !causal.enabled) {
         auto& histogram = mtp_ar.mtp_suffix_ready ? suffix_accepted
                                                 : neural_accepted;
         ++histogram[mtp_ar.mtp_accepted_count - 1];
@@ -935,7 +935,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // departing request's notify was consumed before the scheduler slept).
     sched_cv_.notify_one();
   }
-  if (mtp_suffix_) {
+  if (mtp_suffix_ && !causal.enabled) {
     const size_t indexed = suffix.Size();
     suffix.Reset();
     const auto& stats = suffix.Counters();
@@ -979,6 +979,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                    static_cast<unsigned long long>(neural_accepted[i]));
     std::fprintf(stderr, "\n");
   }
+  // The causal arms use identical accounting and release paths, including
+  // startup S0/S1. Legacy suffix-only logging would confound that comparison.
+  if (causal.enabled) suffix.Reset();
   if (!use_mtp) {
     // B2b continuous batching: this request's decode steps are driven by the
     // central scheduler, which packs the current token of EVERY active
