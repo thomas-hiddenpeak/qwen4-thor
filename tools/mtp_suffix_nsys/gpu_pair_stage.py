@@ -56,12 +56,16 @@ def collection_contract(plan):
 
 
 def validate(plan):
-    pending = plan.get('capture_matrix') == 'pending200_projection_v1'
-    if plan.get('capture_matrix') not in (None, 'pending200_projection_v1'):
+    remaining_off = plan.get('capture_matrix') == 'remaining200_off_v1'
+    pending = plan.get('capture_matrix') in ('pending200_projection_v1', 'remaining200_off_v1')
+    if plan.get('capture_matrix') not in (None, 'pending200_projection_v1', 'remaining200_off_v1'):
         raise ValueError('unknown fixed capture matrix')
     if pending:
         proofs = plan.get('projection_qualification', {})
-        if (set(proofs) != {'cpu_review', 'full_replay', 'prefix_screen', 'reused_eight_k'} or
+        required = {'cpu_review', 'full_replay', 'prefix_screen', 'reused_eight_k'}
+        if remaining_off:
+            required |= {'saved_on_analysis', 'saved_on_review'}
+        if (set(proofs) != required or
                 any(not Path(p).is_absolute() or p not in plan['files'] for p in proofs.values())):
             raise ValueError('projection and reused 8K proof bindings required')
         if plan.get('nvlog_stream', {}).get('projection') != 'drop_serialized_ack_v1':
@@ -77,6 +81,8 @@ def validate(plan):
             raise ValueError('projection requires its fixed pending-200K matrix')
     budget = ((4, 2, 2400, 0, 0, 600, LOG_LIMIT, SQLITE_LIMIT) if pending else
               (6, 4, 4200, 0, 0, 120, LOG_LIMIT, SQLITE_LIMIT))
+    if remaining_off:
+        budget = (2, 1, 1800, 0, 0, 600, LOG_LIMIT, SQLITE_LIMIT)
     if tuple(plan.get(k) for k in ('http_requests', 'http_loads',
             'stage_timeout_seconds', 'direct_contract_timeout_seconds',
             'fixture_runs', 'analysis_per_capture_seconds',
@@ -107,6 +113,13 @@ def validate(plan):
         raise ValueError('fixed per-capture NVLOG configuration required')
     steps = plan['steps']
     expected_steps = runner.MODEL_STEPS[2:] if pending else runner.MODEL_STEPS
+    if remaining_off:
+        expected_steps = runner.MODEL_STEPS[3:]
+    step_seconds = 1680 if remaining_off else 900
+    if remaining_off and step_seconds - CLEANUP_SECONDS < (
+            840 + CLEANUP_SECONDS + plan['nsys']['export_timeout_seconds'] +
+            plan['analysis_per_capture_seconds']):
+        raise ValueError('capture, cleanup, export and analysis exceed measurement budget')
     if len(steps) != len(expected_steps):
         raise ValueError('fixed model capture count changed')
     for step, (name, suffix, tokens, requests) in zip(steps, expected_steps):
@@ -114,7 +127,7 @@ def validate(plan):
                 'execution_diagnostic', 'profile_input_tokens', 'kind',
                 'http_requests', 'http_loads', 'timeout')) != (
                 name, 'subset', suffix, 'nsys_profile', True, tokens,
-                'timing', requests, 1, 900):
+                'timing', requests, 1, step_seconds):
             raise ValueError('capture order/configuration changed')
         expected = [('context-8192', 8170)]
         if requests == 2:
@@ -318,7 +331,7 @@ class MeasurementGuard:
             raise RuntimeError('first measurement failure remains latched')
         try:
             if time.monotonic() >= self.deadline:
-                raise TimeoutError('840-second measurement deadline exhausted')
+                raise TimeoutError('measurement deadline exhausted')
             check_files(self.output)
             if self.extra_check is not None:
                 self.extra_check()
@@ -327,7 +340,7 @@ class MeasurementGuard:
             raise
 
     def expired(self, _signum, _frame):
-        error = TimeoutError('840-second measurement alarm interrupted the active call')
+        error = TimeoutError('measurement alarm interrupted the active call')
         self.latch(error, environment=True)
         # CPython subprocess.run catches BaseException, kills only its own
         # Popen child and reaps it through the context manager. It does not

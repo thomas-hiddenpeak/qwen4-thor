@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "decision": "NO_GO_PROTECTION_NOT_CLEARED",
+  "bounded_work_complete": true,
+  "optimization_delivered": false,
+  "final_review": "docs/MTP_SUFFIX_FINAL_OBSERVATION_2026-10-26.md",
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/scope.json": {
+      "sha256": "f45d093a8fb63666e42d9b9d90a93b8107b53dc1192bdde0708d1e1645bef755",
+      "bytes": 3199
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/frozen-plan.json": {
+      "sha256": "5c1be9593fdcc169cfcc39981b59fa94383b1bb71693782afaf0bf8857439a03",
+      "bytes": 4925568
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/cpu-proof.json": {
+      "sha256": "883c17a1c8f4d2af38e761a91093d3cc114336181b510235350d31e358b497fd",
+      "bytes": 67018
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/gpu-exit.json": {
+      "sha256": "5ddcf374c38415c1172fddfe3b3d2c6a53c4b1d48b4cb949ac99dcd03579a2fc",
+      "bytes": 223
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/postflight.json": {
+      "sha256": "9c072bb7c06b87977fe64de239910764ed9bcc6511d561ac31842c8c3d2df944",
+      "bytes": 590
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/terminal-review.json": {
+      "sha256": "a49e2553aeb49c5d3423b6088d8add5d34be969d70108eb4ae9d6fef880faf27",
+      "bytes": 7855
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/pair-comparison.json": {
+      "sha256": "a9b35debb002ccd21035ae4d222748c46e02614f58482f07e1beb659f782be61",
+      "bytes": 25996251
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/archive-manifest.json": {
+      "sha256": "e58d1d2f534a077f10300ac10840f82c5cdfa2f75e2abca22a62c3067f2bdf1d",
+      "bytes": 119352
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/derive_findings.py": {
+      "sha256": "ae448a4f6d140239a6865d08047028159a83b71dab6e4677d2194f4cdf5732f6",
+      "bytes": 4119
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/derive_findings-v1.py": {
+      "sha256": "f4352a34d442d496d7262333a4f719f0cc1e9e8c917528ef9cbfeddd71b2b1b3",
+      "bytes": 4095
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/findings-first-failure.json": {
+      "sha256": "1d83d88175597552024b58bb0492cc2de2e21bb83c288c69b46012613d7e4fd5",
+      "bytes": 276
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/findings.json": {
+      "sha256": "7f836d5656b6e2e92f7c0ca3518f664df2ae960b2724edc7058ef0d4ab37bc26",
+      "bytes": 61366
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/finalize_disposition.py": {
+      "sha256": "1b51e051488021043f1bc25d3fa3a6f269324c4801a5697d094a0766ce4e9644",
+      "bytes": 7877
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/MTP_SUFFIX_FINAL_OBSERVATION_2026-10-26.md": {
+      "sha256": "e0db578b1850ac57a3335a2ce8232748d462440a7062012133cde38fee9a443c",
+      "bytes": 11403
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/MTP_SUFFIX_ADMISSION_2026-10-24.md": {
+      "sha256": "076060149edc90692357e9da2b0e9517638f7a34a4ce23c762b33e0b58451e96",
+      "bytes": 20127
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/MTP_SUFFIX_EXECUTION_RERUN_2026-10-24.md": {
+      "sha256": "de7aa73820d9508a583d837f6de62a821b6f9fd2d5a15228d501a3756bfa7c1f",
+      "bytes": 12512
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/MTP_SUFFIX_K3_2026-10-23.md": {
+      "sha256": "98d0ee2ea12dcf88ace90a53e556544b3c72933dd26d4c42f2d35db83e85e822",
+      "bytes": 18840
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/MTP_SUFFIX_LOG_REUSE_2026-10-26.md": {
+      "sha256": "553b05e038da1e14ed99ecdbc5ae7e992b8cb1a52e373ae3e413a85b2f7eb95d",
+      "bytes": 3071
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-suffix-admission-20261024/decision.json": {
+      "sha256": "85a675b61b60e65bb29ce20c237fdd1ddd0b734387d675c6575eb4594ede1b32",
+      "bytes": 24522
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-suffix-admission-20261024/archive-no-go-receipt.json": {
+      "sha256": "9e7ba2fb11dac7662b0a0369b28ecb4cca48e3c5fd2e34290941651b298b3abe",
+      "bytes": 2249
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-terminal-recovery-20261026/terminal-review.json": {
+      "sha256": "2207cf0cf7716029f72879935d3eba26962f7bdac797258afa806689a97848a4",
+      "bytes": 895
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-terminal-recovery-20261026/archive-manifest.json": {
+      "sha256": "da7c44cea6a778517ee8937a842f1527fa5b07a185024a1a1d91eff1b0a04323",
+      "bytes": 891
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/pair-comparison.json": {
+      "sha256": "1ae5d1bfb6a621154034dc2c95f66ebc6c082d260f8f9535dd2366ae29d2da6b",
+      "bytes": 12686640
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-suffix-final-observation-20261026/decision.json": {
+      "sha256": "6d1e8f5d48ccda2dbb5012541a6e4cd539d3213897558ed5c5466e0afcfc035b",
+      "bytes": 4869
+    },
+    "/home/rm01/models/dev/qwen4-thor/docs/evidence/mtp-suffix-final-observation-20261026/findings.json": {
+      "sha256": "7f836d5656b6e2e92f7c0ca3518f664df2ae960b2724edc7058ef0d4ab37bc26",
+      "bytes": 61366
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/final-disposition-manifest.json": {
+      "sha256": "2a267e46b6aa0a2100260968391d125cb6dcf7ca32c9ed48b80094e2953c941b",
+      "bytes": 1239
+    }
+  },
+  "final_disposition_archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/final-disposition-archive",
+  "final_disposition_archive_files": 7,
+  "final_disposition_archive_bytes": 94005,
+  "elapsed_seconds": 0.15735672996379435
+}

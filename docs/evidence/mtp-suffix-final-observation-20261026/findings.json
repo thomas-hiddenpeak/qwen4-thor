@@ -1,0 +1,1985 @@
+{
+  "schema": 1,
+  "scope": "JSON_ONLY_DIAGNOSTIC_DERIVATION_NOT_NEW_PERFORMANCE_ACCEPTANCE",
+  "sources": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/pair-comparison.json": {
+      "sha256": "a9b35debb002ccd21035ae4d222748c46e02614f58482f07e1beb659f782be61",
+      "bytes": 25996251
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-off-completion-20261026/terminal-review.json": {
+      "sha256": "a49e2553aeb49c5d3423b6088d8add5d34be969d70108eb4ae9d6fef880faf27",
+      "bytes": 7855
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-report-dispatch-20261026/pair-comparison.json": {
+      "sha256": "1ae5d1bfb6a621154034dc2c95f66ebc6c082d260f8f9535dd2366ae29d2da6b",
+      "bytes": 12686640
+    }
+  },
+  "output_and_work_equal": true,
+  "signature_rows": 9517,
+  "all_signature_counts_and_bytes_equal": true,
+  "http200_instrumented": {
+    "decode_tps": {
+      "off": 33.476495293359804,
+      "on": 33.43489551749864,
+      "on_minus_off": -0.041599775861165256,
+      "relative_percent": -0.12426562427344523
+    },
+    "latency": {
+      "off": 176.45976404310204,
+      "on": 176.6567425208632,
+      "on_minus_off": 0.1969784777611494,
+      "relative_percent": 0.11162798433359544
+    },
+    "total_tps": {
+      "off": 1.4507556517953264,
+      "on": 1.4491380082465086,
+      "on_minus_off": -0.001617643548817771,
+      "relative_percent": -0.1115035152071231
+    },
+    "ttft": {
+      "off": 168.84247920592315,
+      "on": 169.02998023992404,
+      "on_minus_off": 0.18750103400088847,
+      "relative_percent": 0.11105086521041585
+    }
+  },
+  "http8_instrumented_reused": {
+    "decode_tps": {
+      "off": 37.83664327001344,
+      "on": 37.92580462626673,
+      "on_minus_off": 0.08916135625329247,
+      "relative_percent": 0.23564816682339895
+    },
+    "latency": {
+      "off": 12.734598872018978,
+      "on": 12.65467770700343,
+      "on_minus_off": -0.07992116501554847,
+      "relative_percent": -0.6275907534956215
+    },
+    "total_tps": {
+      "off": 20.10271407625524,
+      "on": 20.22967363746632,
+      "on_minus_off": 0.12695956121108054,
+      "relative_percent": 0.6315543300744686
+    },
+    "ttft": {
+      "off": 5.995100386906415,
+      "on": 5.931023390032351,
+      "on_minus_off": -0.06407699687406421,
+      "relative_percent": -1.0688227508919068
+    }
+  },
+  "gpu200_application": {
+    "count": {
+      "off": 2467114,
+      "on": 2467114,
+      "on_minus_off": 0,
+      "relative_percent": 0.0
+    },
+    "internal_activity_gap_ns": {
+      "off": 2247893065,
+      "on": 2284144873,
+      "on_minus_off": 36251808,
+      "relative_percent": 1.6127016255553128
+    },
+    "interval_hull_ns": {
+      "off": 176074603438,
+      "on": 176211394928,
+      "on_minus_off": 136791490,
+      "relative_percent": 0.07768950622579762
+    },
+    "sum_ns": {
+      "off": 196254760630,
+      "on": 196435347508,
+      "on_minus_off": 180586878,
+      "relative_percent": 0.092016559201058
+    },
+    "union_ns": {
+      "off": 173826710373,
+      "on": 173927250055,
+      "on_minus_off": 100539682,
+      "relative_percent": 0.05783902933229612
+    }
+  },
+  "exclusive_host200_by_stage": {
+    "generation_first_round": {
+      "cpu_exclusive_ns": {
+        "off": 52010122,
+        "on": 50521218,
+        "on_minus_off": -1488904,
+        "relative_percent": -2.8627196836800373
+      },
+      "nonrunning_exclusive_ns": {
+        "off": 58841121,
+        "on": 59032533,
+        "on_minus_off": 191412,
+        "relative_percent": 0.32530311582608107
+      },
+      "spans": {
+        "off": 37,
+        "on": 37,
+        "on_minus_off": 0,
+        "relative_percent": 0.0
+      },
+      "wall_exclusive_ns": {
+        "off": 110851243,
+        "on": 109553751,
+        "on_minus_off": -1297492,
+        "relative_percent": -1.1704803346228587
+      }
+    },
+    "generation_later_rounds": {
+      "cpu_exclusive_ns": {
+        "off": 3151934616,
+        "on": 3173622339,
+        "on_minus_off": 21687723,
+        "relative_percent": 0.6880765511412479
+      },
+      "nonrunning_exclusive_ns": {
+        "off": 4334213048,
+        "on": 4324029608,
+        "on_minus_off": -10183440,
+        "relative_percent": -0.23495476311897745
+      },
+      "spans": {
+        "off": 2647,
+        "on": 2647,
+        "on_minus_off": 0,
+        "relative_percent": 0.0
+      },
+      "wall_exclusive_ns": {
+        "off": 7486147664,
+        "on": 7497651947,
+        "on_minus_off": 11504283,
+        "relative_percent": 0.15367427302193093
+      }
+    },
+    "prefill_initialization": {
+      "cpu_exclusive_ns": {
+        "off": 90226719,
+        "on": 89388330,
+        "on_minus_off": -838389,
+        "relative_percent": -0.9292025791162839
+      },
+      "nonrunning_exclusive_ns": {
+        "off": 341854583,
+        "on": 340457663,
+        "on_minus_off": -1396920,
+        "relative_percent": -0.40862988810654866
+      },
+      "spans": {
+        "off": 131,
+        "on": 131,
+        "on_minus_off": 0,
+        "relative_percent": 0.0
+      },
+      "wall_exclusive_ns": {
+        "off": 432081302,
+        "on": 429845993,
+        "on_minus_off": -2235309,
+        "relative_percent": -0.5173352768687911
+      }
+    },
+    "prompt_draft_extend": {
+      "cpu_exclusive_ns": {
+        "off": 648537602,
+        "on": 653022087,
+        "on_minus_off": 4484485,
+        "relative_percent": 0.691476482808473
+      },
+      "nonrunning_exclusive_ns": {
+        "off": 6964313052,
+        "on": 6951279710,
+        "on_minus_off": -13033342,
+        "relative_percent": -0.18714468896909864
+      },
+      "spans": {
+        "off": 282,
+        "on": 282,
+        "on_minus_off": 0,
+        "relative_percent": 0.0
+      },
+      "wall_exclusive_ns": {
+        "off": 7612850654,
+        "on": 7604301797,
+        "on_minus_off": -8548857,
+        "relative_percent": -0.11229508351786599
+      }
+    },
+    "target_prefill": {
+      "cpu_exclusive_ns": {
+        "off": 22983183060,
+        "on": 23043961548,
+        "on_minus_off": 60778488,
+        "relative_percent": 0.264447652186961
+      },
+      "nonrunning_exclusive_ns": {
+        "off": 137315948521,
+        "on": 137394649365,
+        "on_minus_off": 78700844,
+        "relative_percent": 0.05731369505703743
+      },
+      "spans": {
+        "off": 125,
+        "on": 125,
+        "on_minus_off": 0,
+        "relative_percent": 0.0
+      },
+      "wall_exclusive_ns": {
+        "off": 160299131581,
+        "on": 160438610913,
+        "on_minus_off": 139479332,
+        "relative_percent": 0.08701190744100362
+      }
+    }
+  },
+  "api200_by_region_function_work_sums": {
+    "generation_first_round/accepted_extend / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 6,
+      "count_on": 6,
+      "off_ns": 1265522,
+      "on_ns": 1337963,
+      "on_minus_off_ns": 72441
+    },
+    "generation_first_round/accepted_extend / launch / cudaLaunchKernel_v7000": {
+      "count_off": 105,
+      "count_on": 105,
+      "off_ns": 504980,
+      "on_ns": 480779,
+      "on_minus_off_ns": -24201
+    },
+    "generation_first_round/accepted_extend / other / cuKernelGetName": {
+      "count_off": 105,
+      "count_on": 105,
+      "off_ns": 21079,
+      "on_ns": 19964,
+      "on_minus_off_ns": -1115
+    },
+    "generation_first_round/accepted_extend / copy / cudaMemcpy_v3020": {
+      "count_off": 2,
+      "count_on": 2,
+      "off_ns": 1704662,
+      "on_ns": 1683156,
+      "on_minus_off_ns": -21506
+    },
+    "generation_first_round/accepted_extend / allocation / cudaFreeAsync_v11020": {
+      "count_off": 10,
+      "count_on": 10,
+      "off_ns": 17529,
+      "on_ns": 18176,
+      "on_minus_off_ns": 647
+    },
+    "generation_first_round/accepted_extend / allocation / cudaMallocAsync_v11020": {
+      "count_off": 10,
+      "count_on": 10,
+      "off_ns": 638305,
+      "on_ns": 617778,
+      "on_minus_off_ns": -20527
+    },
+    "generation_first_round/accepted_extend / memset / cudaMemsetAsync_v3020": {
+      "count_off": 2,
+      "count_on": 2,
+      "off_ns": 27399,
+      "on_ns": 24842,
+      "on_minus_off_ns": -2557
+    },
+    "generation_first_round/accepted_extend / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 6195,
+      "on_ns": 5287,
+      "on_minus_off_ns": -908
+    },
+    "generation_first_round/proposal_1 / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 4,
+      "count_on": 4,
+      "off_ns": 1600773,
+      "on_ns": 1656083,
+      "on_minus_off_ns": 55310
+    },
+    "generation_first_round/proposal_1 / launch / cudaLaunchKernel_v7000": {
+      "count_off": 106,
+      "count_on": 106,
+      "off_ns": 661726,
+      "on_ns": 628211,
+      "on_minus_off_ns": -33515
+    },
+    "generation_first_round/proposal_1 / other / cuKernelGetName": {
+      "count_off": 106,
+      "count_on": 106,
+      "off_ns": 24714,
+      "on_ns": 24110,
+      "on_minus_off_ns": -604
+    },
+    "generation_first_round/proposal_1 / other / cuLibraryGetKernel": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 1278,
+      "on_ns": 1648,
+      "on_minus_off_ns": 370
+    },
+    "generation_first_round/proposal_1 / allocation / cudaFreeAsync_v11020": {
+      "count_off": 10,
+      "count_on": 10,
+      "off_ns": 38507,
+      "on_ns": 38418,
+      "on_minus_off_ns": -89
+    },
+    "generation_first_round/proposal_1 / allocation / cudaMallocAsync_v11020": {
+      "count_off": 10,
+      "count_on": 10,
+      "off_ns": 41448,
+      "on_ns": 44636,
+      "on_minus_off_ns": 3188
+    },
+    "generation_first_round/proposal_1 / memset / cudaMemsetAsync_v3020": {
+      "count_off": 2,
+      "count_on": 2,
+      "off_ns": 35768,
+      "on_ns": 34332,
+      "on_minus_off_ns": -1436
+    },
+    "generation_first_round/proposal_1 / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 897585,
+      "on_ns": 553602,
+      "on_minus_off_ns": -343983
+    },
+    "generation_first_round/proposal_2 / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 4,
+      "count_on": 4,
+      "off_ns": 4239583,
+      "on_ns": 4256922,
+      "on_minus_off_ns": 17339
+    },
+    "generation_first_round/proposal_2 / launch / cudaLaunchKernel_v7000": {
+      "count_off": 106,
+      "count_on": 106,
+      "off_ns": 418808,
+      "on_ns": 441205,
+      "on_minus_off_ns": 22397
+    },
+    "generation_first_round/proposal_2 / other / cuKernelGetName": {
+      "count_off": 106,
+      "count_on": 106,
+      "off_ns": 14999,
+      "on_ns": 17549,
+      "on_minus_off_ns": 2550
+    },
+    "generation_first_round/proposal_2 / allocation / cudaFreeAsync_v11020": {
+      "count_off": 10,
+      "count_on": 10,
+      "off_ns": 14888,
+      "on_ns": 19714,
+      "on_minus_off_ns": 4826
+    },
+    "generation_first_round/proposal_2 / allocation / cudaMallocAsync_v11020": {
+      "count_off": 10,
+      "count_on": 10,
+      "off_ns": 13233,
+      "on_ns": 18557,
+      "on_minus_off_ns": 5324
+    },
+    "generation_first_round/proposal_2 / memset / cudaMemsetAsync_v3020": {
+      "count_off": 2,
+      "count_on": 2,
+      "off_ns": 21388,
+      "on_ns": 23666,
+      "on_minus_off_ns": 2278
+    },
+    "generation_first_round/proposal_2 / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 5111,
+      "on_ns": 8768,
+      "on_minus_off_ns": 3657
+    },
+    "generation_first_round/step_other / copy / cudaMemcpy_v3020": {
+      "count_off": 3,
+      "count_on": 3,
+      "off_ns": 2756526,
+      "on_ns": 2713295,
+      "on_minus_off_ns": -43231
+    },
+    "generation_first_round/step_other / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 75,
+      "count_on": 75,
+      "off_ns": 624233,
+      "on_ns": 603318,
+      "on_minus_off_ns": -20915
+    },
+    "generation_first_round/step_other / launch / cudaLaunchKernel_v7000": {
+      "count_off": 3,
+      "count_on": 3,
+      "off_ns": 71260,
+      "on_ns": 58900,
+      "on_minus_off_ns": -12360
+    },
+    "generation_first_round/step_other / other / cuKernelGetName": {
+      "count_off": 3,
+      "count_on": 3,
+      "off_ns": 3435,
+      "on_ns": 3427,
+      "on_minus_off_ns": -8
+    },
+    "generation_first_round/step_other / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 761761,
+      "on_ns": 156232,
+      "on_minus_off_ns": -605529
+    },
+    "generation_first_round/target_verify / allocation / cudaFreeAsync_v11020": {
+      "count_off": 266,
+      "count_on": 266,
+      "off_ns": 359375,
+      "on_ns": 374389,
+      "on_minus_off_ns": 15014
+    },
+    "generation_first_round/target_verify / allocation / cudaMallocAsync_v11020": {
+      "count_off": 266,
+      "count_on": 266,
+      "off_ns": 305633,
+      "on_ns": 313625,
+      "on_minus_off_ns": 7992
+    },
+    "generation_first_round/target_verify / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 17,
+      "count_on": 17,
+      "off_ns": 162328,
+      "on_ns": 166768,
+      "on_minus_off_ns": 4440
+    },
+    "generation_first_round/target_verify / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 47049477,
+      "on_ns": 46958613,
+      "on_minus_off_ns": -90864
+    },
+    "generation_first_round/target_verify / launch / cuLaunchKernel": {
+      "count_off": 84,
+      "count_on": 84,
+      "off_ns": 4564188,
+      "on_ns": 4506607,
+      "on_minus_off_ns": -57581
+    },
+    "generation_first_round/target_verify / launch / cuLaunchKernelEx": {
+      "count_off": 96,
+      "count_on": 96,
+      "off_ns": 4699744,
+      "on_ns": 4516545,
+      "on_minus_off_ns": -183199
+    },
+    "generation_first_round/target_verify / launch / cudaLaunchKernel_v7000": {
+      "count_off": 1724,
+      "count_on": 1724,
+      "off_ns": 30172320,
+      "on_ns": 29923794,
+      "on_minus_off_ns": -248526
+    },
+    "generation_first_round/target_verify / memset / cudaMemsetAsync_v3020": {
+      "count_off": 180,
+      "count_on": 180,
+      "off_ns": 606849,
+      "on_ns": 673792,
+      "on_minus_off_ns": 66943
+    },
+    "generation_first_round/target_verify / other / cuKernelGetAttribute": {
+      "count_off": 192,
+      "count_on": 192,
+      "off_ns": 26577,
+      "on_ns": 28397,
+      "on_minus_off_ns": 1820
+    },
+    "generation_first_round/target_verify / other / cuKernelGetFunction": {
+      "count_off": 84,
+      "count_on": 84,
+      "off_ns": 29643,
+      "on_ns": 35901,
+      "on_minus_off_ns": 6258
+    },
+    "generation_first_round/target_verify / other / cuKernelGetName": {
+      "count_off": 1724,
+      "count_on": 1724,
+      "off_ns": 223801,
+      "on_ns": 245239,
+      "on_minus_off_ns": 21438
+    },
+    "generation_first_round/target_verify / other / cuStreamGetGreenCtx": {
+      "count_off": 180,
+      "count_on": 180,
+      "off_ns": 23853,
+      "on_ns": 24540,
+      "on_minus_off_ns": 687
+    },
+    "generation_first_round/target_verify / host_sync / cudaEventSynchronize_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 11806,
+      "on_ns": 12482,
+      "on_minus_off_ns": 676
+    },
+    "generation_first_round/target_verify / other / cudaEventRecord_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 9380,
+      "on_ns": 11981,
+      "on_minus_off_ns": 2601
+    },
+    "generation_later_rounds/accepted_extend / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 438,
+      "count_on": 438,
+      "off_ns": 146659930,
+      "on_ns": 140578051,
+      "on_minus_off_ns": -6081879
+    },
+    "generation_later_rounds/accepted_extend / launch / cudaLaunchKernel_v7000": {
+      "count_off": 14425,
+      "count_on": 14425,
+      "off_ns": 51804893,
+      "on_ns": 54111898,
+      "on_minus_off_ns": 2307005
+    },
+    "generation_later_rounds/accepted_extend / other / cuKernelGetName": {
+      "count_off": 14425,
+      "count_on": 14425,
+      "off_ns": 1756080,
+      "on_ns": 1878181,
+      "on_minus_off_ns": 122101
+    },
+    "generation_later_rounds/accepted_extend / copy / cudaMemcpy_v3020": {
+      "count_off": 146,
+      "count_on": 146,
+      "off_ns": 176934702,
+      "on_ns": 176274612,
+      "on_minus_off_ns": -660090
+    },
+    "generation_later_rounds/accepted_extend / allocation / cudaFreeAsync_v11020": {
+      "count_off": 730,
+      "count_on": 730,
+      "off_ns": 1139469,
+      "on_ns": 1268845,
+      "on_minus_off_ns": 129376
+    },
+    "generation_later_rounds/accepted_extend / allocation / cudaMallocAsync_v11020": {
+      "count_off": 730,
+      "count_on": 730,
+      "off_ns": 41436146,
+      "on_ns": 40622675,
+      "on_minus_off_ns": -813471
+    },
+    "generation_later_rounds/accepted_extend / memset / cudaMemsetAsync_v3020": {
+      "count_off": 212,
+      "count_on": 212,
+      "off_ns": 1065688,
+      "on_ns": 1261364,
+      "on_minus_off_ns": 195676
+    },
+    "generation_later_rounds/accepted_extend / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 73,
+      "count_on": 73,
+      "off_ns": 265035,
+      "on_ns": 312632,
+      "on_minus_off_ns": 47597
+    },
+    "generation_later_rounds/accepted_extend / launch / cuLaunchKernel": {
+      "count_off": 66,
+      "count_on": 66,
+      "off_ns": 280954,
+      "on_ns": 312535,
+      "on_minus_off_ns": 31581
+    },
+    "generation_later_rounds/accepted_extend / other / cuKernelGetFunction": {
+      "count_off": 66,
+      "count_on": 66,
+      "off_ns": 73655,
+      "on_ns": 94918,
+      "on_minus_off_ns": 21263
+    },
+    "generation_later_rounds/accepted_extend / other / cuStreamGetGreenCtx": {
+      "count_off": 125,
+      "count_on": 125,
+      "off_ns": 31691,
+      "on_ns": 35386,
+      "on_minus_off_ns": 3695
+    },
+    "generation_later_rounds/accepted_extend / launch / cuLaunchKernelEx": {
+      "count_off": 59,
+      "count_on": 59,
+      "off_ns": 610517,
+      "on_ns": 667698,
+      "on_minus_off_ns": 57181
+    },
+    "generation_later_rounds/accepted_extend / other / cuKernelGetAttribute": {
+      "count_off": 118,
+      "count_on": 118,
+      "off_ns": 57091,
+      "on_ns": 57982,
+      "on_minus_off_ns": 891
+    },
+    "generation_later_rounds/proposal_1 / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 292,
+      "count_on": 292,
+      "off_ns": 98563498,
+      "on_ns": 96496324,
+      "on_minus_off_ns": -2067174
+    },
+    "generation_later_rounds/proposal_1 / launch / cudaLaunchKernel_v7000": {
+      "count_off": 7738,
+      "count_on": 7738,
+      "off_ns": 29959948,
+      "on_ns": 31384964,
+      "on_minus_off_ns": 1425016
+    },
+    "generation_later_rounds/proposal_1 / other / cuKernelGetName": {
+      "count_off": 7738,
+      "count_on": 7738,
+      "off_ns": 990372,
+      "on_ns": 1079024,
+      "on_minus_off_ns": 88652
+    },
+    "generation_later_rounds/proposal_1 / allocation / cudaFreeAsync_v11020": {
+      "count_off": 730,
+      "count_on": 730,
+      "off_ns": 1193376,
+      "on_ns": 1324260,
+      "on_minus_off_ns": 130884
+    },
+    "generation_later_rounds/proposal_1 / allocation / cudaMallocAsync_v11020": {
+      "count_off": 730,
+      "count_on": 730,
+      "off_ns": 34209033,
+      "on_ns": 40564115,
+      "on_minus_off_ns": 6355082
+    },
+    "generation_later_rounds/proposal_1 / memset / cudaMemsetAsync_v3020": {
+      "count_off": 146,
+      "count_on": 146,
+      "off_ns": 1095195,
+      "on_ns": 1290647,
+      "on_minus_off_ns": 195452
+    },
+    "generation_later_rounds/proposal_1 / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 73,
+      "count_on": 73,
+      "off_ns": 248111,
+      "on_ns": 276171,
+      "on_minus_off_ns": 28060
+    },
+    "generation_later_rounds/proposal_2 / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 292,
+      "count_on": 292,
+      "off_ns": 234231034,
+      "on_ns": 230809453,
+      "on_minus_off_ns": -3421581
+    },
+    "generation_later_rounds/proposal_2 / launch / cudaLaunchKernel_v7000": {
+      "count_off": 7738,
+      "count_on": 7738,
+      "off_ns": 27035347,
+      "on_ns": 27734180,
+      "on_minus_off_ns": 698833
+    },
+    "generation_later_rounds/proposal_2 / other / cuKernelGetName": {
+      "count_off": 7738,
+      "count_on": 7738,
+      "off_ns": 858023,
+      "on_ns": 903910,
+      "on_minus_off_ns": 45887
+    },
+    "generation_later_rounds/proposal_2 / allocation / cudaFreeAsync_v11020": {
+      "count_off": 730,
+      "count_on": 730,
+      "off_ns": 868242,
+      "on_ns": 898261,
+      "on_minus_off_ns": 30019
+    },
+    "generation_later_rounds/proposal_2 / allocation / cudaMallocAsync_v11020": {
+      "count_off": 730,
+      "count_on": 730,
+      "off_ns": 859241,
+      "on_ns": 933843,
+      "on_minus_off_ns": 74602
+    },
+    "generation_later_rounds/proposal_2 / memset / cudaMemsetAsync_v3020": {
+      "count_off": 146,
+      "count_on": 146,
+      "off_ns": 629610,
+      "on_ns": 643675,
+      "on_minus_off_ns": 14065
+    },
+    "generation_later_rounds/proposal_2 / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 73,
+      "count_on": 73,
+      "off_ns": 169450,
+      "on_ns": 181066,
+      "on_minus_off_ns": 11616
+    },
+    "generation_later_rounds/step_other / copy / cudaMemcpy_v3020": {
+      "count_off": 219,
+      "count_on": 219,
+      "off_ns": 135125702,
+      "on_ns": 135423962,
+      "on_minus_off_ns": 298260
+    },
+    "generation_later_rounds/step_other / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 1533,
+      "count_on": 1533,
+      "off_ns": 9660261,
+      "on_ns": 9839223,
+      "on_minus_off_ns": 178962
+    },
+    "generation_later_rounds/step_other / launch / cudaLaunchKernel_v7000": {
+      "count_off": 219,
+      "count_on": 219,
+      "off_ns": 1844028,
+      "on_ns": 2060414,
+      "on_minus_off_ns": 216386
+    },
+    "generation_later_rounds/step_other / other / cuKernelGetName": {
+      "count_off": 219,
+      "count_on": 219,
+      "off_ns": 75301,
+      "on_ns": 88320,
+      "on_minus_off_ns": 13019
+    },
+    "generation_later_rounds/step_other / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 73,
+      "count_on": 73,
+      "off_ns": 14267226,
+      "on_ns": 15421320,
+      "on_minus_off_ns": 1154094
+    },
+    "generation_later_rounds/target_verify / allocation / cudaFreeAsync_v11020": {
+      "count_off": 19418,
+      "count_on": 19418,
+      "off_ns": 25737548,
+      "on_ns": 23524529,
+      "on_minus_off_ns": -2213019
+    },
+    "generation_later_rounds/target_verify / allocation / cudaMallocAsync_v11020": {
+      "count_off": 19418,
+      "count_on": 19418,
+      "off_ns": 18538171,
+      "on_ns": 19139221,
+      "on_minus_off_ns": 601050
+    },
+    "generation_later_rounds/target_verify / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 1241,
+      "count_on": 1241,
+      "off_ns": 6875893,
+      "on_ns": 7325934,
+      "on_minus_off_ns": 450041
+    },
+    "generation_later_rounds/target_verify / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 73,
+      "count_on": 73,
+      "off_ns": 3507281937,
+      "on_ns": 3509989568,
+      "on_minus_off_ns": 2707631
+    },
+    "generation_later_rounds/target_verify / launch / cuLaunchKernel": {
+      "count_off": 6132,
+      "count_on": 6132,
+      "off_ns": 327870932,
+      "on_ns": 326651382,
+      "on_minus_off_ns": -1219550
+    },
+    "generation_later_rounds/target_verify / launch / cuLaunchKernelEx": {
+      "count_off": 7008,
+      "count_on": 7008,
+      "off_ns": 323501469,
+      "on_ns": 325071376,
+      "on_minus_off_ns": 1569907
+    },
+    "generation_later_rounds/target_verify / launch / cudaLaunchKernel_v7000": {
+      "count_off": 125852,
+      "count_on": 125852,
+      "off_ns": 1839254908,
+      "on_ns": 1831367390,
+      "on_minus_off_ns": -7887518
+    },
+    "generation_later_rounds/target_verify / memset / cudaMemsetAsync_v3020": {
+      "count_off": 13140,
+      "count_on": 13140,
+      "off_ns": 34657062,
+      "on_ns": 34385053,
+      "on_minus_off_ns": -272009
+    },
+    "generation_later_rounds/target_verify / other / cuKernelGetAttribute": {
+      "count_off": 14016,
+      "count_on": 14016,
+      "off_ns": 1680719,
+      "on_ns": 1726875,
+      "on_minus_off_ns": 46156
+    },
+    "generation_later_rounds/target_verify / other / cuKernelGetFunction": {
+      "count_off": 6132,
+      "count_on": 6132,
+      "off_ns": 1798661,
+      "on_ns": 1919466,
+      "on_minus_off_ns": 120805
+    },
+    "generation_later_rounds/target_verify / other / cuKernelGetName": {
+      "count_off": 125852,
+      "count_on": 125852,
+      "off_ns": 14445580,
+      "on_ns": 14775214,
+      "on_minus_off_ns": 329634
+    },
+    "generation_later_rounds/target_verify / other / cuStreamGetGreenCtx": {
+      "count_off": 13140,
+      "count_on": 13140,
+      "off_ns": 1670037,
+      "on_ns": 1702900,
+      "on_minus_off_ns": 32863
+    },
+    "generation_later_rounds/target_verify / host_sync / cudaEventSynchronize_v3020": {
+      "count_off": 73,
+      "count_on": 73,
+      "off_ns": 462307,
+      "on_ns": 542279,
+      "on_minus_off_ns": 79972
+    },
+    "generation_later_rounds/target_verify / other / cudaEventRecord_v3020": {
+      "count_off": 73,
+      "count_on": 73,
+      "off_ns": 489680,
+      "on_ns": 517055,
+      "on_minus_off_ns": 27375
+    },
+    "prefill_initialization / memset / cudaMemsetAsync_v3020": {
+      "count_off": 112,
+      "count_on": 112,
+      "off_ns": 679194,
+      "on_ns": 674168,
+      "on_minus_off_ns": -5026
+    },
+    "prefill_initialization / allocation / cudaFree_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 75450413,
+      "on_ns": 75107062,
+      "on_minus_off_ns": -343351
+    },
+    "prefill_initialization / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 26,
+      "count_on": 26,
+      "off_ns": 331996630,
+      "on_ns": 330156472,
+      "on_minus_off_ns": -1840158
+    },
+    "prefill_initialization / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 17935653,
+      "on_ns": 17982328,
+      "on_minus_off_ns": 46675
+    },
+    "prefill_initialization / other / cudaMemGetInfo_v3020": {
+      "count_off": 24,
+      "count_on": 24,
+      "off_ns": 1071086,
+      "on_ns": 1076193,
+      "on_minus_off_ns": 5107
+    },
+    "profiler_helper / launch / cuLaunchKernel": {
+      "count_off": 110,
+      "count_on": 110,
+      "off_ns": 2895628,
+      "on_ns": 2708379,
+      "on_minus_off_ns": -187249
+    },
+    "prompt_draft_extend / copy / cudaMemcpy_v3020": {
+      "count_off": 2,
+      "count_on": 2,
+      "off_ns": 63981619,
+      "on_ns": 59405733,
+      "on_minus_off_ns": -4575886
+    },
+    "prompt_draft_extend / allocation / cudaFree_v3020": {
+      "count_off": 5,
+      "count_on": 5,
+      "off_ns": 979030,
+      "on_ns": 825942,
+      "on_minus_off_ns": -153088
+    },
+    "prompt_draft_extend / allocation / cudaMalloc_v3020": {
+      "count_off": 5,
+      "count_on": 5,
+      "off_ns": 21861013,
+      "on_ns": 21203708,
+      "on_minus_off_ns": -657305
+    },
+    "prompt_draft_extend / launch / cudaLaunchKernel_v7000": {
+      "count_off": 26494,
+      "count_on": 26494,
+      "off_ns": 94482164,
+      "on_ns": 93219238,
+      "on_minus_off_ns": -1262926
+    },
+    "prompt_draft_extend / other / cuKernelGetName": {
+      "count_off": 26494,
+      "count_on": 26494,
+      "off_ns": 3154513,
+      "on_ns": 3189737,
+      "on_minus_off_ns": 35224
+    },
+    "prompt_draft_extend / host_sync / cudaEventSynchronize_v3020": {
+      "count_off": 25,
+      "count_on": 25,
+      "off_ns": 283809,
+      "on_ns": 261908,
+      "on_minus_off_ns": -21901
+    },
+    "prompt_draft_extend / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 125,
+      "count_on": 125,
+      "off_ns": 6823102940,
+      "on_ns": 6817894120,
+      "on_minus_off_ns": -5208820
+    },
+    "prompt_draft_extend / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 50,
+      "count_on": 50,
+      "off_ns": 29510346,
+      "on_ns": 27059677,
+      "on_minus_off_ns": -2450669
+    },
+    "prompt_draft_extend / other / cudaEventRecord_v3020": {
+      "count_off": 25,
+      "count_on": 25,
+      "off_ns": 202367,
+      "on_ns": 204733,
+      "on_minus_off_ns": 2366
+    },
+    "prompt_draft_extend / launch / cuLaunchKernelEx": {
+      "count_off": 13357,
+      "count_on": 13357,
+      "off_ns": 62225980,
+      "on_ns": 63570759,
+      "on_minus_off_ns": 1344779
+    },
+    "prompt_draft_extend / other / cuKernelGetAttribute": {
+      "count_off": 26714,
+      "count_on": 26714,
+      "off_ns": 4010704,
+      "on_ns": 4100724,
+      "on_minus_off_ns": 90020
+    },
+    "prompt_draft_extend / other / cuStreamGetGreenCtx": {
+      "count_off": 15214,
+      "count_on": 15214,
+      "off_ns": 2051392,
+      "on_ns": 2067016,
+      "on_minus_off_ns": 15624
+    },
+    "prompt_draft_extend / allocation / cudaFreeAsync_v11020": {
+      "count_off": 250,
+      "count_on": 250,
+      "off_ns": 1426222,
+      "on_ns": 1469935,
+      "on_minus_off_ns": 43713
+    },
+    "prompt_draft_extend / allocation / cudaMallocAsync_v11020": {
+      "count_off": 250,
+      "count_on": 250,
+      "off_ns": 131862161,
+      "on_ns": 134627082,
+      "on_minus_off_ns": 2764921
+    },
+    "prompt_draft_extend / launch / cuLaunchKernel": {
+      "count_off": 50,
+      "count_on": 50,
+      "off_ns": 909919,
+      "on_ns": 909571,
+      "on_minus_off_ns": -348
+    },
+    "prompt_draft_extend / memset / cudaMemsetAsync_v3020": {
+      "count_off": 100,
+      "count_on": 100,
+      "off_ns": 832663,
+      "on_ns": 832713,
+      "on_minus_off_ns": 50
+    },
+    "prompt_draft_extend / other / cuKernelGetFunction": {
+      "count_off": 50,
+      "count_on": 50,
+      "off_ns": 149465,
+      "on_ns": 124044,
+      "on_minus_off_ns": -25421
+    },
+    "prompt_draft_extend / other / cudaEventCreateWithFlags_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 4750,
+      "on_ns": 4834,
+      "on_minus_off_ns": 84
+    },
+    "prompt_draft_extend / other / cuKernelSetAttribute": {
+      "count_off": 26,
+      "count_on": 26,
+      "off_ns": 65386456,
+      "on_ns": 62201179,
+      "on_minus_off_ns": -3185277
+    },
+    "prompt_draft_extend / other / cuLibraryGetKernel": {
+      "count_off": 13,
+      "count_on": 13,
+      "off_ns": 5213,
+      "on_ns": 6535,
+      "on_minus_off_ns": 1322
+    },
+    "prompt_draft_extend / other / cuLibraryLoadData": {
+      "count_off": 13,
+      "count_on": 13,
+      "off_ns": 993987,
+      "on_ns": 1012927,
+      "on_minus_off_ns": 18940
+    },
+    "target_prefill / host_sync / cudaEventSynchronize_v3020": {
+      "count_off": 50,
+      "count_on": 50,
+      "off_ns": 530313,
+      "on_ns": 486329,
+      "on_minus_off_ns": -43984
+    },
+    "target_prefill / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 2573,
+      "count_on": 2573,
+      "off_ns": 136012026312,
+      "on_ns": 136095694980,
+      "on_minus_off_ns": 83668668
+    },
+    "target_prefill / launch / cudaLaunchKernel_v7000": {
+      "count_off": 1123807,
+      "count_on": 1123807,
+      "off_ns": 4189794470,
+      "on_ns": 4195007406,
+      "on_minus_off_ns": 5212936
+    },
+    "target_prefill / other / cuKernelGetName": {
+      "count_off": 1123807,
+      "count_on": 1123807,
+      "off_ns": 127793575,
+      "on_ns": 131262854,
+      "on_minus_off_ns": 3469279
+    },
+    "target_prefill / other / cudaEventRecord_v3020": {
+      "count_off": 3650,
+      "count_on": 3650,
+      "off_ns": 15829693,
+      "on_ns": 14580651,
+      "on_minus_off_ns": -1249042
+    },
+    "target_prefill / allocation / cudaFreeAsync_v11020": {
+      "count_off": 6602,
+      "count_on": 6602,
+      "off_ns": 40364045,
+      "on_ns": 38943998,
+      "on_minus_off_ns": -1420047
+    },
+    "target_prefill / allocation / cudaMallocAsync_v11020": {
+      "count_off": 6602,
+      "count_on": 6602,
+      "off_ns": 6592134190,
+      "on_ns": 6539183052,
+      "on_minus_off_ns": -52951138
+    },
+    "target_prefill / device_dependency / cudaStreamWaitEvent_v3020": {
+      "count_off": 3600,
+      "count_on": 3600,
+      "off_ns": 9945916,
+      "on_ns": 9821282,
+      "on_minus_off_ns": -124634
+    },
+    "target_prefill / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 2400,
+      "count_on": 2400,
+      "off_ns": 1217722009,
+      "on_ns": 1205175119,
+      "on_minus_off_ns": -12546890
+    },
+    "target_prefill / launch / cuLaunchKernel": {
+      "count_off": 2400,
+      "count_on": 2400,
+      "off_ns": 11944379,
+      "on_ns": 12040908,
+      "on_minus_off_ns": 96529
+    },
+    "target_prefill / launch / cuLaunchKernelEx": {
+      "count_off": 1108900,
+      "count_on": 1108900,
+      "off_ns": 4422554985,
+      "on_ns": 4405239525,
+      "on_minus_off_ns": -17315460
+    },
+    "target_prefill / memset / cudaMemsetAsync_v3020": {
+      "count_off": 4800,
+      "count_on": 4800,
+      "off_ns": 40454995,
+      "on_ns": 37957441,
+      "on_minus_off_ns": -2497554
+    },
+    "target_prefill / other / cuKernelGetAttribute": {
+      "count_off": 2217800,
+      "count_on": 2217800,
+      "off_ns": 260898417,
+      "on_ns": 260774659,
+      "on_minus_off_ns": -123758
+    },
+    "target_prefill / other / cuKernelGetFunction": {
+      "count_off": 2400,
+      "count_on": 2400,
+      "off_ns": 3944678,
+      "on_ns": 3570094,
+      "on_minus_off_ns": -374584
+    },
+    "target_prefill / other / cuStreamGetGreenCtx": {
+      "count_off": 1115416,
+      "count_on": 1115416,
+      "off_ns": 137257430,
+      "on_ns": 138020750,
+      "on_minus_off_ns": 763320
+    },
+    "target_prefill / allocation / cudaFree_v3020": {
+      "count_off": 3,
+      "count_on": 3,
+      "off_ns": 390753,
+      "on_ns": 323203,
+      "on_minus_off_ns": -67550
+    },
+    "target_prefill / allocation / cudaMalloc_v3020": {
+      "count_off": 3,
+      "count_on": 3,
+      "off_ns": 1422160,
+      "on_ns": 1215898,
+      "on_minus_off_ns": -206262
+    },
+    "target_prefill / other / cuKernelSetAttribute": {
+      "count_off": 8,
+      "count_on": 8,
+      "off_ns": 80126861,
+      "on_ns": 82578786,
+      "on_minus_off_ns": 2451925
+    },
+    "target_prefill / other / cuLibraryGetKernel": {
+      "count_off": 7,
+      "count_on": 7,
+      "off_ns": 7981,
+      "on_ns": 4916,
+      "on_minus_off_ns": -3065
+    },
+    "target_prefill / other / cuLibraryLoadData": {
+      "count_off": 5,
+      "count_on": 5,
+      "off_ns": 1100937,
+      "on_ns": 559554,
+      "on_minus_off_ns": -541383
+    },
+    "unowned_application / allocation / cudaFreeAsync_v11020": {
+      "count_off": 532,
+      "count_on": 532,
+      "off_ns": 593388,
+      "on_ns": 589757,
+      "on_minus_off_ns": -3631
+    },
+    "unowned_application / allocation / cudaFree_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 44936,
+      "on_ns": 45731,
+      "on_minus_off_ns": 795
+    },
+    "unowned_application / allocation / cudaMallocAsync_v11020": {
+      "count_off": 532,
+      "count_on": 532,
+      "off_ns": 1431574,
+      "on_ns": 1329898,
+      "on_minus_off_ns": -101676
+    },
+    "unowned_application / allocation / cudaMalloc_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 32824,
+      "on_ns": 28065,
+      "on_minus_off_ns": -4759
+    },
+    "unowned_application / copy / cudaMemcpyAsync_v3020": {
+      "count_off": 16,
+      "count_on": 16,
+      "off_ns": 72373335,
+      "on_ns": 72515704,
+      "on_minus_off_ns": 142369
+    },
+    "unowned_application / host_sync / cudaEventSynchronize_v3020": {
+      "count_off": 4,
+      "count_on": 4,
+      "off_ns": 25407,
+      "on_ns": 18823,
+      "on_minus_off_ns": -6584
+    },
+    "unowned_application / host_sync / cudaStreamSynchronize_v3020": {
+      "count_off": 2,
+      "count_on": 2,
+      "off_ns": 387049,
+      "on_ns": 629907,
+      "on_minus_off_ns": 242858
+    },
+    "unowned_application / launch / cuLaunchKernelEx": {
+      "count_off": 192,
+      "count_on": 192,
+      "off_ns": 1443972,
+      "on_ns": 1511868,
+      "on_minus_off_ns": 67896
+    },
+    "unowned_application / launch / cudaLaunchKernel_v7000": {
+      "count_off": 3258,
+      "count_on": 3258,
+      "off_ns": 36138123,
+      "on_ns": 35989157,
+      "on_minus_off_ns": -148966
+    },
+    "unowned_application / memset / cudaMemsetAsync_v3020": {
+      "count_off": 96,
+      "count_on": 96,
+      "off_ns": 1255142,
+      "on_ns": 1261530,
+      "on_minus_off_ns": 6388
+    },
+    "unowned_application / other / cuKernelGetAttribute": {
+      "count_off": 384,
+      "count_on": 384,
+      "off_ns": 44502,
+      "on_ns": 47168,
+      "on_minus_off_ns": 2666
+    },
+    "unowned_application / other / cuKernelGetName": {
+      "count_off": 3258,
+      "count_on": 3258,
+      "off_ns": 363743,
+      "on_ns": 371432,
+      "on_minus_off_ns": 7689
+    },
+    "unowned_application / other / cuProfilerStart": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 25695,
+      "on_ns": 23139,
+      "on_minus_off_ns": -2556
+    },
+    "unowned_application / other / cuStreamGetGreenCtx": {
+      "count_off": 192,
+      "count_on": 192,
+      "off_ns": 25232,
+      "on_ns": 25680,
+      "on_minus_off_ns": 448
+    },
+    "unowned_application / other / cudaEventRecord_v3020": {
+      "count_off": 4,
+      "count_on": 4,
+      "off_ns": 24992,
+      "on_ns": 17112,
+      "on_minus_off_ns": -7880
+    },
+    "unowned_application / other / cudaMemGetInfo_v3020": {
+      "count_off": 1,
+      "count_on": 1,
+      "off_ns": 84185,
+      "on_ns": 65926,
+      "on_minus_off_ns": -18259
+    }
+  },
+  "gpu200_by_region_work_sums": {
+    "generation_first_round/accepted_extend": {
+      "count_off": 115,
+      "count_on": 115,
+      "off_ns": 3689161,
+      "on_ns": 3661245,
+      "on_minus_off_ns": -27916
+    },
+    "generation_first_round/proposal_1": {
+      "count_off": 112,
+      "count_on": 112,
+      "off_ns": 4949388,
+      "on_ns": 4971227,
+      "on_minus_off_ns": 21839
+    },
+    "generation_first_round/proposal_2": {
+      "count_off": 112,
+      "count_on": 112,
+      "off_ns": 4871723,
+      "on_ns": 4876029,
+      "on_minus_off_ns": 4306
+    },
+    "generation_first_round/step_other": {
+      "count_off": 81,
+      "count_on": 81,
+      "off_ns": 1118499,
+      "on_ns": 1121439,
+      "on_minus_off_ns": 2940
+    },
+    "generation_first_round/target_verify": {
+      "count_off": 2017,
+      "count_on": 2017,
+      "off_ns": 92407471,
+      "on_ns": 92134644,
+      "on_minus_off_ns": -272827
+    },
+    "generation_later_rounds/accepted_extend": {
+      "count_off": 15280,
+      "count_on": 15280,
+      "off_ns": 399947841,
+      "on_ns": 398985230,
+      "on_minus_off_ns": -962611
+    },
+    "generation_later_rounds/proposal_1": {
+      "count_off": 8176,
+      "count_on": 8176,
+      "off_ns": 271755110,
+      "on_ns": 272201290,
+      "on_minus_off_ns": 446180
+    },
+    "generation_later_rounds/proposal_2": {
+      "count_off": 8176,
+      "count_on": 8176,
+      "off_ns": 266757001,
+      "on_ns": 266253300,
+      "on_minus_off_ns": -503701
+    },
+    "generation_later_rounds/step_other": {
+      "count_off": 1971,
+      "count_on": 1971,
+      "off_ns": 26096506,
+      "on_ns": 26141356,
+      "on_minus_off_ns": 44850
+    },
+    "generation_later_rounds/target_verify": {
+      "count_off": 147241,
+      "count_on": 147241,
+      "off_ns": 6331707383,
+      "on_ns": 6327467437,
+      "on_minus_off_ns": -4239946
+    },
+    "prefill_initialization": {
+      "count_off": 113,
+      "count_on": 113,
+      "off_ns": 28440738,
+      "on_ns": 29145546,
+      "on_minus_off_ns": 704808
+    },
+    "prompt_draft_extend": {
+      "count_off": 40078,
+      "count_on": 40078,
+      "off_ns": 7540275839,
+      "on_ns": 7534415346,
+      "on_minus_off_ns": -5860493
+    },
+    "target_prefill": {
+      "count_off": 2240080,
+      "count_on": 2240080,
+      "off_ns": 181166357560,
+      "on_ns": 181357411307,
+      "on_minus_off_ns": 191053747
+    },
+    "unowned_application": {
+      "count_off": 3562,
+      "count_on": 3562,
+      "off_ns": 116386410,
+      "on_ns": 116562112,
+      "on_minus_off_ns": 175702
+    }
+  },
+  "largest_absolute_signature_time_deltas": [
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":213248,\"gridX\":96,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_tst_128x256_64x4_1x2_h_bz_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 2304,
+          "on": 2304,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 3606102139,
+          "on": 3716416432,
+          "on_minus_off": 110314293,
+          "relative_percent": 3.0591006229954143
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":0,\"gridX\":65536,\"gridY\":1,\"gridZ\":1,\"name\":\"q4t::model::<unnamed>::IndexerReduceKernel(const unsigned short *, float *, const int *, int, int, int, int, int, int)\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 3600,
+          "on": 3600,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 4064560840,
+          "on": 4113488689,
+          "on_minus_off": 48927849,
+          "relative_percent": 1.2037671700837471
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":217528,\"gridX\":20,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_ootst_128x128_256x7_2x1_2cta_v_bz_Avec16UE4M3_Bvec16UE4M3_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 413377,
+          "on": 413377,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 6482610671,
+          "on": 6518247613,
+          "on_minus_off": 35636942,
+          "relative_percent": 0.5497313321533026
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":0,\"gridX\":40,\"gridY\":8192,\"gridZ\":1,\"name\":\"q4t::model::<unnamed>::CausalConv1dWithCkptKernel(const unsigned short *, unsigned short *, const unsigned short *, unsigned short *, const unsigned short *, int, int, int, int, unsigned short *)\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 864,
+          "on": 864,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 4692861571,
+          "on": 4661958667,
+          "on_minus_off": -30902904,
+          "relative_percent": -0.6585087484993757
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":128,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":0,\"gridX\":4,\"gridY\":48,\"gridZ\":1,\"name\":\"void q4t::model::<unnamed>::GatedDeltaNetRegKernel<(int)8>(const unsigned short *, const unsigned short *, const unsigned short *, const unsigned short *, const unsigned short *, float *, unsigned short *, int, int, int, int, int, int, int)\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 864,
+          "on": 864,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 30167318854,
+          "on": 30139432411,
+          "on_minus_off": -27886443,
+          "relative_percent": -0.09243924902627709
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":217528,\"gridX\":12,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_ootst_128x128_256x7_4x1_2cta_v_bz_Avec16UE4M3_Bvec16UE4M3_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 329398,
+          "on": 329398,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 6065493419,
+          "on": 6092462172,
+          "on_minus_off": 26968753,
+          "relative_percent": 0.44462587191209657
+        }
+      }
+    },
+    {
+      "key": "[\"generation_later_rounds/target_verify/T=4/mtp.verify_forward\",\"kernel\",{\"blockX\":512,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":49152,\"gridX\":160,\"gridY\":1,\"gridZ\":1,\"name\":\"void q4t::model::<unnamed>::Bf16SmallMScatteredKernel<(int)4>(const unsigned short *, const unsigned short *, unsigned short *, int, int, int, float)\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 3504,
+          "on": 3504,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 579488449,
+          "on": 561627064,
+          "on_minus_off": -17861385,
+          "relative_percent": -3.0822676501701896
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":213296,\"gridX\":1536,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_tst_128x256_64x6_2x1_2cta_v_bz_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 864,
+          "on": 864,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 1809414348,
+          "on": 1792145993,
+          "on_minus_off": -17268355,
+          "relative_percent": -0.954361560086403
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":213240,\"gridX\":1280,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 888,
+          "on": 888,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 2652944071,
+          "on": 2665568388,
+          "on_minus_off": 12624317,
+          "relative_percent": 0.475860653754423
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":0,\"gridX\":8192,\"gridY\":2,\"gridZ\":1,\"name\":\"q4t::model::<unnamed>::SparseAttentionKernel(const unsigned short *, const unsigned short *, const int *, const int *, const int *, unsigned short *, const unsigned short *, int, int, int, int, const int *, unsigned long, int)\",\"staticSharedMemory\":43968}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 288,
+          "on": 288,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 34243553514,
+          "on": 34231373861,
+          "on_minus_off": -12179653,
+          "relative_percent": -0.035567725163276886
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":128,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":98304,\"gridX\":64,\"gridY\":1,\"gridZ\":1,\"name\":\"void cutlass::Kernel2<cutlass_80_tensorop_bf16_s16816gemm_bf16_64x128_64x4_tn_align2>(T1::Params)\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 2304,
+          "on": 2304,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 1800681596,
+          "on": 1788882121,
+          "on_minus_off": -11799475,
+          "relative_percent": -0.6552782583112537
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":182536,\"gridX\":20,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_ootst_256x128_256x3_1x2_h_bz_Avec16UE4M3_Bvec16UE4M3_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 83979,
+          "on": 83979,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 1485277623,
+          "on": 1495622394,
+          "on_minus_off": 10344771,
+          "relative_percent": 0.6964873663891424
+        }
+      }
+    },
+    {
+      "key": "[\"prompt_draft_extend/forward/T=8192/mtp.attention\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":0,\"gridX\":8192,\"gridY\":2,\"gridZ\":1,\"name\":\"q4t::model::<unnamed>::SparseAttentionKernel(const unsigned short *, const unsigned short *, const int *, const int *, const int *, unsigned short *, const unsigned short *, int, int, int, int, const int *, unsigned long, int)\",\"staticSharedMemory\":43968}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 24,
+          "on": 24,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 2856804351,
+          "on": 2866841126,
+          "on_minus_off": 10036775,
+          "relative_percent": 0.3513287494289363
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":213240,\"gridX\":320,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 1176,
+          "on": 1176,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 2688477654,
+          "on": 2679712421,
+          "on_minus_off": -8765233,
+          "relative_percent": -0.32602960217872345
+        }
+      }
+    },
+    {
+      "key": "[\"prompt_draft_extend/forward/T=8192/mtp.attention\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":0,\"gridX\":65536,\"gridY\":1,\"gridZ\":1,\"name\":\"q4t::model::<unnamed>::IndexerReduceKernel(const unsigned short *, float *, const int *, int, int, int, int, int, int)\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 300,
+          "on": 300,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 345323138,
+          "on": 336582964,
+          "on_minus_off": -8740174,
+          "relative_percent": -2.531013140509575
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":213248,\"gridX\":128,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_tst_256x128_64x4_1x4f_h_bz_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 2016,
+          "on": 2016,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 602246531,
+          "on": 608162772,
+          "on_minus_off": 5916241,
+          "relative_percent": 0.982361988897873
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":213296,\"gridX\":2560,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_tst_128x256_64x6_2x1_2cta_v_bz_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 2304,
+          "on": 2304,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 1921698114,
+          "on": 1916387308,
+          "on_minus_off": -5310806,
+          "relative_percent": -0.2763600568325253
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":0,\"gridX\":81920,\"gridY\":1,\"gridZ\":1,\"name\":\"q4t::quant::<unnamed>::CombineGroupedKernel(const unsigned short *, const int *, const float *, int, int, int, float *)\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 1152,
+          "on": 1152,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 3148476917,
+          "on": 3153636500,
+          "on_minus_off": 5159583,
+          "relative_percent": 0.16387552254681914
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":211288,\"gridX\":20,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_ootst_128x256_256x5_2x1_2cta_v_bz_Avec16UE4M3_Bvec16UE4M3_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 65621,
+          "on": 65621,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 1382474655,
+          "on": 1387485082,
+          "on_minus_off": 5010427,
+          "relative_percent": 0.36242451041534895
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":128,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":0,\"gridX\":81920,\"gridY\":1,\"gridZ\":1,\"name\":\"q4t::model::<unnamed>::MixGatePairKernel(const unsigned short *, const unsigned short *, unsigned short *, int, int, int)\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 2304,
+          "on": 2304,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 3588356127,
+          "on": 3583898906,
+          "on_minus_off": -4457221,
+          "relative_percent": -0.12421345157083152
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8173/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":0,\"gridX\":40,\"gridY\":8173,\"gridZ\":1,\"name\":\"q4t::model::<unnamed>::CausalConv1dWithCkptKernel(const unsigned short *, unsigned short *, const unsigned short *, unsigned short *, const unsigned short *, int, int, int, int, unsigned short *)\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 36,
+          "on": 36,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 195997511,
+          "on": 191813356,
+          "on_minus_off": -4184155,
+          "relative_percent": -2.1348000689661806
+        }
+      }
+    },
+    {
+      "key": "[\"prompt_draft_extend/forward/T=8173/mtp.head\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":213240,\"gridX\":8192,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_tst_256x256_64x4_2x1_2cta_v_bz_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 1,
+          "on": 1,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 27942080,
+          "on": 23949325,
+          "on_minus_off": -3992755,
+          "relative_percent": -14.289397925995484
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8173/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":217528,\"gridX\":12,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_ootst_128x128_256x7_4x1_2cta_v_bz_Avec16UE4M3_Bvec16UE4M3_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 13948,
+          "on": 13948,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 255428224,
+          "on": 259118578,
+          "on_minus_off": 3690354,
+          "relative_percent": 1.4447714282349589
+        }
+      }
+    },
+    {
+      "key": "[\"target_prefill/chunk/T=8192/target_prefill_call\",\"kernel\",{\"blockX\":256,\"blockY\":1,\"blockZ\":1,\"dynamicSharedMemory\":213296,\"gridX\":640,\"gridY\":1,\"gridZ\":1,\"name\":\"nvjet_sm110_tst_128x256_64x6_2x1_2cta_v_bz_TNT\",\"staticSharedMemory\":0}]",
+      "presence": "both",
+      "metrics": {
+        "bytes": {
+          "off": 0,
+          "on": 0,
+          "on_minus_off": 0,
+          "relative_percent": null
+        },
+        "count": {
+          "off": 1152,
+          "on": 1152,
+          "on_minus_off": 0,
+          "relative_percent": 0.0
+        },
+        "sum_ns": {
+          "off": 238982959,
+          "on": 242568444,
+          "on_minus_off": 3585485,
+          "relative_percent": 1.5003099028495948
+        }
+      }
+    }
+  ],
+  "interpretation_limits": [
+    "Exclusive CPU spans are disjoint by owner; CPU thread time includes submission and active waiting.",
+    "Host nonrunning time is not synonymous with GPU waiting or storage waiting.",
+    "CUDA API wall durations may include blocking, CPU scheduling and profiler overhead; they are not pure CPU submit cost.",
+    "Each recorded GPU event has one phase owner; summing event duration measures work, not elapsed. Do not sum overlapping unions.",
+    "Same signatures/counts/bytes show no recorded work inflation, not whole-trace completeness or suffix causality.",
+    "Both 200K arms retain six unresolved diagnostics, 8732 unknown memset parameters and original strict FAIL.",
+    "Single instrumented pair cannot clear normal five-tier protections; no new runtime fix follows from this derivation."
+  ],
+  "elapsed_seconds": 0.21714284690096974,
+  "wall_limit_seconds": 30
+}

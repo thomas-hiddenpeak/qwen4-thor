@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "task": "Fixed k3 suffix bounded investigation and final delivery decision",
+  "bounded_work_complete": true,
+  "optimization_accepted": false,
+  "optimization_delivered": false,
+  "evidence_validity": {
+    "normal_min32_matrix": "VALID_REUSED_SAME_IDENTITY",
+    "recorded_8k_200k": "VALID_FORENSIC_RECORDED_ONLY",
+    "original_failures": "UNCHANGED_ENV_ABORT_TIMEOUT_STRICT_FAIL"
+  },
+  "measurement_completeness": {
+    "normal_min32_matrix": {
+      "status": "COMPLETE_REUSED",
+      "http": 250,
+      "model_starts": 18
+    },
+    "requested_recorded_pairs": [
+      "subset8K_OFF_ON",
+      "subset200K_OFF_ON"
+    ],
+    "new_final_stage": {
+      "model_starts": 1,
+      "http": 2,
+      "retries": 0,
+      "seconds": 980.1409689399879
+    },
+    "full_trace_integrity_proven": false
+  },
+  "statistical_conclusion": "DESCRIPTIVE_ONLY; population noninferiority, suffix causal regression and regression removal not established",
+  "engineering_decision": "NO_GO_PROTECTION_NOT_CLEARED",
+  "runtime_fix_decision": "NO_SUPPORTED_SUFFIX_CAUSAL_FIX; no new runtime candidate or admission tightening",
+  "decision_basis": [
+    "Original valid complete five-tier matrix retains unresolved adverse subset45K/200K TTFT, new8K and ordinary-decode protections.",
+    "Recorded200K output, work and9517 signature counts/bytes match. Main wall/GPU difference occurs during prefill before suffix index creation.",
+    "Recorded8K did not reproduce throughput loss; neither non-reproduction nor equal work establishes normal-performance protection.",
+    "Full/subset repeat gains individually satisfy prior descriptive targets and are reused, not used to offset protections.",
+    "No concrete suffix-caused runtime defect is supported by the bounded observations; a speculative change or repeated sampling is not justified.",
+    "Original task explicitly authorizes preserving delivery and archiving candidate/failure evidence when acceptance is unmet; this closes that branch after model analysis, not just collector repair."
+  ],
+  "retained_limitations": [
+    "Six unresolved diagnostics per200K arm;8732 memset parameters unknown; strict integrity FAIL and3562 phase-unowned GPU records retained.",
+    "Recorded GPU event sums are work, not elapsed; CPU wall, threadCPU, API duration and GPU execution are separate metrics.",
+    "Single instrumented pairs and shared-ON later repeat ratios do not create independent normal-performance repetitions.",
+    "Two-layer targetGDN oracle, captured-trunk draft reference, syntheticEOS and finite cancellation coverage are not arbitrary-input full-model equivalence."
+  ],
+  "identities_rechecked": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": {
+      "sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+      "bytes": 4513624
+    },
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": {
+      "sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+      "bytes": 1613
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/build/q4t": {
+      "sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+      "bytes": 4514632
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-admission-20261024/archive-no-go/candidate/q4t": {
+      "sha256": "6a4d3d62c09d814a9342cc698e1523e1029d1d3aa3e36e1b80cf7a625a30b090",
+      "bytes": 4514632
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-execution-20261024/build/q4t": {
+      "sha256": "f0ff0fe8e11791d561bc49f4dc42762415d4ff000836bbd8c38548723906c914",
+      "bytes": 4598064
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/artifact/manifest.json": {
+      "sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+      "bytes": 1483
+    }
+  },
+  "reuse": {
+    "min32_matrix_and_quality": "docs/MTP_SUFFIX_ADMISSION_2026-10-24.md",
+    "later_normal_repeat_gains": "docs/MTP_SUFFIX_EXECUTION_RERUN_2026-10-24.md",
+    "finite_state_contracts": "docs/MTP_SUFFIX_K3_2026-10-23.md",
+    "large_log_usability": "docs/MTP_SUFFIX_LOG_REUSE_2026-10-26.md"
+  },
+  "delivery_actions": {
+    "installed_binary_or_metadata_changed": false,
+    "conditional_deployment_health_run": false,
+    "candidate_archive_reused": ".q4t-work/suffix-admission-20261024/archive-no-go",
+    "new_raw_archive_manifest_sha256": "e58d1d2f534a077f10300ac10840f82c5cdfa2f75e2abca22a62c3067f2bdf1d",
+    "branch": "codex/suffix-k3",
+    "retain_research_branch_and_evidence_paths": true,
+    "automatic_additional_sampling": false
+  },
+  "next_action": "Commit and push this final research boundary; no pending model runs or deployment. Reopening requires a concrete discriminating hypothesis and a new bounded design.",
+  "elapsed_seconds_before_seal": 0.12286200397647917
+}

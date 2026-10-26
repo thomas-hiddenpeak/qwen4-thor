@@ -30,6 +30,34 @@ class ProjectedStageContracts(unittest.TestCase):
         temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)
         self.base=Path(temporary.name)
 
+    def remaining(self):
+        value=pending_plan(self.base)
+        value.update(capture_matrix='remaining200_off_v1',http_requests=2,http_loads=1,
+                     stage_timeout_seconds=1800,steps=value['steps'][1:])
+        value['steps'][0]['timeout']=1680
+        for name in ('saved_on_analysis','saved_on_review'):
+            path=str(self.base/(name+'.json'))
+            value['projection_qualification'][name]=path;value['files'][path]='a'*64
+        return value
+
+    def test_07_only_remaining_off_allowed_after_bound_saved_on(self):
+        value=self.remaining();stage.validate(value)
+        for change in ({'http_requests':4},{'http_loads':2},{'stage_timeout_seconds':2400},
+                       {'steps':pending_plan(self.base)['steps']}):
+            with self.subTest(change=change),self.assertRaises(ValueError):stage.validate(value|change)
+        value['projection_qualification'].pop('saved_on_analysis')
+        with self.assertRaises(ValueError):stage.validate(value)
+
+    def test_08_full_phase_limits_fit_without_runtime_extension(self):
+        value=self.remaining();stage.validate(value)
+        step=value['steps'][0]
+        measurement=step['timeout']-stage.CLEANUP_SECONDS
+        required=840+stage.CLEANUP_SECONDS+value['nsys']['export_timeout_seconds']+value['analysis_per_capture_seconds']
+        self.assertEqual(measurement,required)
+        self.assertLessEqual(step['timeout'],value['stage_timeout_seconds'])
+        step['timeout']=900
+        with self.assertRaises(ValueError):stage.validate(value)
+
     def test_01_pending_matrix_rejects_extra_requests_reordering_and_loose_budgets(self):
         value=pending_plan(self.base);stage.validate(value)
         for key,bad in [('http_requests',6),('http_loads',4),('stage_timeout_seconds',2401),
