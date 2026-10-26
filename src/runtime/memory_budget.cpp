@@ -58,7 +58,8 @@ size_t PleConvPerSeqBytes(const BudgetModelParams& p) {
 // Total pooled state for (max_len, max_seq). The full-attention KV/indexer and
 // rope scale with max_len x max_seq; the linear SSM/conv and PLE-conv state
 // scale with max_seq only.
-size_t StatePoolBytes(const BudgetModelParams& p, int max_len, int max_seq) {
+size_t StatePoolBytes(const BudgetModelParams& p, int max_len, int max_seq,
+                      std::span<const int> capacities = {}) {
   const size_t full_layers =
       static_cast<size_t>(p.full_attn_layers()) +
       (p.has_mtp ? static_cast<size_t>(p.mtp_full_attn_layers) : 0u);
@@ -76,6 +77,15 @@ size_t StatePoolBytes(const BudgetModelParams& p, int max_len, int max_seq) {
       static_cast<size_t>(p.vocab) * 2u * 2u + sizeof(int32_t) +
           // d_seq_id and the per-sequence part of d_ragged_seq_offset.
           2u * sizeof(int32_t));
+  if (!capacities.empty()) {
+    const size_t tokens = SequencePoolTokens(capacities, max_len, max_seq);
+    // Large KV/index arrays are packed; page tables and RoPE stay uniform.
+    const size_t packed = Mul(
+        tokens, Mul(Mul(p.nkv, p.hd), 4u) + static_cast<size_t>(p.idx_hd) * 4u);
+    const size_t tables = Mul(max_seq, len * 4u + sizeof(size_t));
+    return Add(Mul(full_layers, Add(packed, tables)),
+               Mul(max_seq, Add(rope, per_seq_fixed)));
+  }
   return Mul(static_cast<size_t>(max_seq),
              Add(Add(Mul(full_layers, full_state), rope), per_seq_fixed));
 }
@@ -201,6 +211,7 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
   b.max_prefill = p.max_prefill;
   const bool valid =
       std::isfinite(frac) && frac > 0.0 && frac <= 1.0 && mem_total > 0 &&
+      ValidSequenceCapacities(req.seq_capacities, req.max_len, req.max_seq) &&
       req.max_len >= 0 && req.max_seq >= 0 && req.max_prefill >= 0 &&
       p.max_prefill > 0 && p.num_layers >= 0 && p.full_attn_every > 0 &&
       p.hs > 0 && p.hc > 0 && p.vocab > 0 &&
@@ -251,6 +262,17 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
     };
     const auto request_peak = [&](int len, int seq) {
       if (!p.has_mtp) return size_t{0};
+      if (!req.seq_capacities.empty()) {
+        const int rows = std::min(len, p.max_prefill);
+        const size_t held = static_cast<size_t>(rows) * p.hc_dim() * 2u +
+                            static_cast<size_t>(p.hc_dim()) * 2u;
+        // One chunk per admitted request, one serialized extend allocation.
+        // Include host token histories separately; no full-prompt device trunk.
+        return Sum(
+            {PerRequestBytes(p, rows, MtpForwardTempBytes(p, req.mtp_k, seq)),
+             Mul(held, seq - 1),
+             Mul(SequencePoolTokens(req.seq_capacities, len, seq), 8u)});
+      }
       // Every admitted request can hold a prompt trunk and rolling g.
       // Extend's chunk and temporary forward allocations run under model_mu_
       // and therefore occur only once, even with multiple admitted requests.
@@ -272,14 +294,18 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
       return len > 0 && seq > 0 && fixed <= b.budget &&
              (!p.has_mtp || len >= req.mtp_k + 1) &&
              peak_extra(len, seq) <= b.budget - fixed &&
-             StatePoolBytes(p, len, seq) <= available_for(len, seq);
+             StatePoolBytes(p, len, seq, req.seq_capacities) <=
+                 available_for(len, seq);
     };
     b.fixed = fixed_for(p.has_mtp ? req.max_seq : 1);
     constexpr int kHardMaxLen = 262144;
     const int requested_seq = req.max_seq > 0 ? req.max_seq : 8;
     int len = 0;
     int seq = requested_seq;
-    if (req.max_len > 0) {
+    if (!req.seq_capacities.empty()) {
+      // Explicit heterogeneous capacities are all-or-nothing.
+      if (fits(req.max_len, requested_seq)) len = req.max_len;
+    } else if (req.max_len > 0) {
       const int bound = std::min(req.max_len, kHardMaxLen);
       if (fits(bound, 1)) {
         len = bound;
@@ -326,7 +352,7 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
       b.max_len = len;
       b.max_seq = seq;
       b.capped = (req.max_len > 0 && len < req.max_len) || seq < requested_seq;
-      b.state_pool = StatePoolBytes(p, len, seq);
+      b.state_pool = StatePoolBytes(p, len, seq, req.seq_capacities);
       b.fixed = fixed_for(seq);
       b.per_request = request_peak(len, seq);
       if (p.has_mtp) {

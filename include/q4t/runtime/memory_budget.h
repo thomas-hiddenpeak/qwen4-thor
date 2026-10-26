@@ -17,6 +17,10 @@
 //   - MTP loading and request peaks, evaluated as separate phases
 #pragma once
 
+#include <vector>
+
+#include "q4t/runtime/sequence_capacity.h"
+
 #include <cstddef>
 #include <string>
 
@@ -65,6 +69,7 @@ struct BudgetRequest {
   double mem_fraction = 0.0;  // 0 = default 0.90, not a disabled budget
   int max_len = 0;            // 0 = auto-derive from budget
   int max_seq = 8;            // max concurrent sequences
+  std::vector<int> seq_capacities;  // Empty keeps uniform slot capacity.
   int max_prefill = 8192;     // max tokens per forward pass
   // Existing runtime sizing functions can supply these without allocation.
   // Main zero uses a scaled reference estimate. MTP requires its exact

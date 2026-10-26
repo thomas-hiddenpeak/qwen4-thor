@@ -220,6 +220,9 @@ Status LoadPleHashParams(const io::WeightLoader& loader,
 }
 
 Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
+  if (!runtime::ValidSequenceCapacities(cfg.seq_capacities, cfg.max_len,
+                                        cfg.max_seq))
+    return Status::Fail("invalid model slot capacities");
   runtime::ResidencyConfig residency_config;
   Status residency_status = runtime::LoadResidencyConfig(
       cfg.moe_hot_list, cfg.num_layers, cfg.E, cfg.moe_resident_slots,
@@ -337,10 +340,10 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
         (cfg.moe_resident_slots > 0 && !hot_lists[l].empty())
             ? &hot_lists[l]
             : nullptr;
-    s = LoadDecoderLayer(loader, l, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps,
-                         cfg.E, cfg.moe_is, cfg.shared_is, cfg.topk,
-                         cfg.max_len, cfg.max_seq, &m->layers[l], stream,
-                         c_layer[l], hot, cfg.moe_hot_protect);
+    s = LoadDecoderLayer(loader, l, cfg.hs, cfg.hc, cfg.lowrank, cfg.eps, cfg.E,
+                         cfg.moe_is, cfg.shared_is, cfg.topk, cfg.max_len,
+                         cfg.max_seq, &m->layers[l], stream, c_layer[l], hot,
+                         cfg.moe_hot_protect, cfg.seq_capacities);
     if (!s.ok()) return s;
   }
   if (lt) t_layers = NowMs() - t0;
@@ -847,7 +850,7 @@ Status RunPrefill(const Model& m, const int32_t* input_ids, int T,
                   const VisionFeatures* vision = nullptr, int seq_id = 0,
                   LogitsRows logits_rows = LogitsRows::kAllRows) {
   const ModelConfig& cfg = m.cfg;
-  if (T <= 0 || T > cfg.max_prefill || T > cfg.max_len)
+  if (T <= 0 || T > cfg.max_prefill || T > cfg.Capacity(seq_id))
     return Status::Fail("RunPrefill: invalid token capacity");
   if (seq_id < 0 || seq_id >= cfg.max_seq)
     return Status::Fail("RunPrefill: seq_id exceeds max_seq");
@@ -980,7 +983,7 @@ Status ModelDecodeStep(const Model& m, int32_t token_id, int position,
                        cudaStream_t stream, uint16_t* trunk_out, int seq_id) {
   const ModelConfig& cfg = m.cfg;
   if (position < 0) return Status::Fail("ModelDecodeStep: position < 0");
-  if (position >= cfg.max_len) {
+  if (position >= cfg.Capacity(seq_id)) {
     return Status::Fail("ModelDecodeStep: position exceeds max_len");
   }
 
@@ -1064,7 +1067,8 @@ Status ModelDecodeBatch(const Model& m, const int32_t* input_ids, int T,
   if (T <= 0) return Status::Fail("ModelDecodeBatch: T must be > 0");
   if (T > cfg.max_prefill)
     return Status::Fail("ModelDecodeBatch: T exceeds max_prefill");
-  if (base_position < 0 || T > cfg.max_len || base_position > cfg.max_len - T)
+  if (base_position < 0 || T > cfg.Capacity(seq_id) ||
+      base_position > cfg.Capacity(seq_id) - T)
     return Status::Fail("ModelDecodeBatch: position range exceeds max_len");
   if (seq_id < 0 || seq_id >= cfg.max_seq)
     return Status::Fail("ModelDecodeBatch: seq_id exceeds max_seq");
@@ -1190,7 +1194,7 @@ Status ModelDecodeBatchMulti(const Model& m, const int32_t* tokens,
   if (B > cfg.max_prefill)
     return Status::Fail("ModelDecodeBatchMulti: B exceeds max_prefill");
   for (int t = 0; t < B; ++t) {
-    if (positions[t] < 0 || positions[t] >= cfg.max_len)
+    if (positions[t] < 0 || positions[t] >= cfg.Capacity(seq_ids[t]))
       return Status::Fail("ModelDecodeBatchMulti: position exceeds max_len");
     if (seq_ids[t] < 0 || seq_ids[t] >= cfg.max_seq)
       return Status::Fail("ModelDecodeBatchMulti: seq_id exceeds max_seq");
@@ -1261,8 +1265,8 @@ Status ModelVerifyMulti(const Model& m, const int32_t* tokens,
   Status capacity = CheckVerifyCheckpointCapacity(m, T - 1);
   if (!capacity.ok()) return capacity;
   for (int b = 0; b < B; ++b) {
-    if (base_positions[b] < 0 || T > cfg.max_len ||
-        base_positions[b] > cfg.max_len - T)
+    if (base_positions[b] < 0 || T > cfg.Capacity(seq_ids[b]) ||
+        base_positions[b] > cfg.Capacity(seq_ids[b]) - T)
       return Status::Fail("ModelVerifyMulti: position range exceeds max_len");
     if (seq_ids[b] < 0 || seq_ids[b] >= cfg.max_seq)
       return Status::Fail("ModelVerifyMulti: seq_id exceeds max_seq");
@@ -1398,7 +1402,7 @@ Status ModelPrefillBatch(const Model& m, const int32_t* tokens,
   seq_offset[0] = 0;
   for (int b = 0; b < B; ++b) {
     if (lens[b] <= 0) return Status::Fail("ModelPrefillBatch: len must be > 0");
-    if (lens[b] > cfg.max_len)
+    if (lens[b] > cfg.Capacity(seq_ids[b]))
       return Status::Fail("ModelPrefillBatch: len exceeds max_len");
     if (seq_ids[b] < 0 || seq_ids[b] >= cfg.max_seq)
       return Status::Fail("ModelPrefillBatch: seq_id exceeds max_seq");
@@ -1537,8 +1541,8 @@ Status ModelMixedBatch(const Model& m, const int32_t* tokens, const int* lens,
   seq_offset[0] = 0;
   for (int b = 0; b < B; ++b) {
     if (lens[b] <= 0) return Status::Fail("ModelMixedBatch: len must be > 0");
-    if (base_positions[b] < 0 || lens[b] > cfg.max_len ||
-        base_positions[b] > cfg.max_len - lens[b])
+    if (base_positions[b] < 0 || lens[b] > cfg.Capacity(seq_ids[b]) ||
+        base_positions[b] > cfg.Capacity(seq_ids[b]) - lens[b])
       return Status::Fail("ModelMixedBatch: position range exceeds max_len");
     if (seq_ids[b] < 0 || seq_ids[b] >= cfg.max_seq)
       return Status::Fail("ModelMixedBatch: seq_id exceeds max_seq");
@@ -1840,8 +1844,9 @@ Status ModelPrefill(const Model& m, ModelSequence* seq,
       seq_id != seq->seq_id || seq->stage != ModelSequence::Stage::kPrefill ||
       seq->position != 0 || T <= 0 || T > m.cfg.max_prefill)
     return Status::Fail("ModelPrefill: invalid sequence or range");
-  Status s = seq->Submit({input_ids, static_cast<size_t>(T)},
-                         ModelSequence::Stage::kDecode, m.cfg.max_len);
+  Status s =
+      seq->Submit({input_ids, static_cast<size_t>(T)},
+                  ModelSequence::Stage::kDecode, m.cfg.Capacity(seq->seq_id));
   if (!s.ok()) return s;
   s = RunPrefill(m, input_ids, T, logits, stream, trunk_out, vision,
                  seq_id, logits_rows);
@@ -1859,8 +1864,8 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
   if (!seq || !prompt)
     return Status::Fail("ModelPrefillTextChunk: null sequence or prompt");
   const int base = seq->position;
-  if (seq->stage != ModelSequence::Stage::kPrefill ||
-      prompt_length <= 0 || prompt_length > m.cfg.max_len || base < 0 ||
+  if (seq->stage != ModelSequence::Stage::kPrefill || prompt_length <= 0 ||
+      prompt_length > m.cfg.Capacity(seq->seq_id) || base < 0 ||
       base >= prompt_length || chunk_length <= 0 ||
       chunk_length > m.cfg.max_prefill || chunk_length > prompt_length - base ||
       seq->seq_id < 0 || seq->seq_id >= m.cfg.max_seq)
@@ -1869,7 +1874,7 @@ Status ModelPrefillTextChunk(const Model& m, ModelSequence* seq,
                         ? ModelSequence::Stage::kDecode
                         : ModelSequence::Stage::kPrefill;
   Status s = seq->Submit({prompt + base, static_cast<size_t>(chunk_length)},
-                         next, m.cfg.max_len);
+                         next, m.cfg.Capacity(seq->seq_id));
   if (!s.ok()) return s;
   s = base == 0
       ? RunPrefill(m, prompt, chunk_length, logits, stream, trunk_out,
@@ -1892,7 +1897,7 @@ Status ModelDecodeStepSeq(const Model& m, ModelSequence* seq,
       seq_id != seq->seq_id || seq->stage != ModelSequence::Stage::kDecode)
     return Status::Fail("ModelDecodeStepSeq: invalid sequence slot/stage");
   Status s = seq->Submit({&token_id, 1}, ModelSequence::Stage::kDecode,
-                         m.cfg.max_len);
+                         m.cfg.Capacity(seq->seq_id));
   if (!s.ok()) return s;
   s = ModelDecodeStep(m, token_id, seq->position, seq->history.data(),
                       logits, stream, trunk_out, seq_id);

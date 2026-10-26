@@ -1,0 +1,18 @@
+{
+  "created_unix": 1793058080.434311,
+  "evidence_validity": "VALID_FOR_COMPLETED_SCOPE; no ENV_ABORT; original audit failure retained",
+  "measurement_completeness": "LONG_MATRIX_COMPLETE; 227 requests finished, 93 original protections unexecuted",
+  "statistics": "Descriptive paired results only; two blocks do not establish population noninferiority",
+  "business_result": "Unequal slots, chunked MTP prefill and 32 short-request admission validated; no 32 long-request latency guarantee",
+  "optimization_result": "NO_GO_GAIN_TARGET_MISSED",
+  "engineering_decision": "Keep delivered 90f; no candidate deployment under current frozen criteria",
+  "default_replaced": false,
+  "compatibility_repair": {
+    "cpu_tests": 9,
+    "cpu_seconds": 0.048,
+    "prior_http_reused": 21,
+    "extra_gpu_requests": 0,
+    "authorization": "PENDING_FOR_REMAINING_93_REQUESTS_5_STARTS"
+  },
+  "task_deadline_unix": 1793072029.164911
+}

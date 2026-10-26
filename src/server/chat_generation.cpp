@@ -88,7 +88,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     SendError(fd, 503, "GPU unhealthy after a device error; restart the server");
     return;
   }
-  const int chat_limit = std::max(8, max_seq_ * 2);
+  const int chat_limit = TextAdmissionLimit(max_seq_);
   if (active_chats_.fetch_add(1) >= chat_limit) {
     active_chats_.fetch_sub(1);
     SendError(fd, 503, "text request capacity exhausted");
@@ -192,6 +192,29 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   std::vector<VisionItem> items;
   if (!PrepareChatInput(fd, req, &prompt, &items)) return;
 
+  std::vector<std::uint32_t> prompt_u32;
+  std::vector<int32_t> ids;
+  const bool explicit_slots = !seq_capacities_.empty();
+  size_t required_capacity = 0;
+  if (explicit_slots) {
+    diagnostic.Stage("encode");
+    {
+      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+      s = tok_->Encode(prompt, &prompt_u32);
+    }
+    if (!s.ok()) {
+      SendError(fd, 400, "encode failed: " + s.message());
+      return;
+    }
+    required_capacity = prompt_u32.size() + static_cast<size_t>(max_tokens);
+    if (prompt_u32.empty() ||
+        required_capacity > static_cast<size_t>(max_len_)) {
+      SendError(fd, 400, "input plus output budget exceeds slot capacity");
+      return;
+    }
+    ids.assign(prompt_u32.begin(), prompt_u32.end());
+  }
+
   // B1 multi-request scheduling: each request runs on its own thread. All
   // GPU work uses the DEFAULT stream (the model's per-forward scratch is a
   // single shared allocation, and per-sequence state is pooled + isolated by
@@ -202,7 +225,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   int seq_id;
   {
     RequestDiagnostics::Scope wait(diagnostic, Wait::kSlot);
-    seq_id = AllocSeqId(control.get(), fd);
+    seq_id = AllocSeqId(control.get(), fd, required_capacity);
   }
   if (seq_id == -3) {
     SendError(fd, 503, "GPU unhealthy; restart server");
@@ -218,6 +241,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
   diagnostic.Admitted(seq_id);
+  const int request_capacity = model_.Get().cfg.Capacity(seq_id);
+  if (explicit_slots)
+    std::fprintf(stderr,
+                 "[q4t][slot-admission] request=%s slot=%d capacity=%d "
+                 "required=%zu\n",
+                 request_id.c_str(), seq_id, request_capacity,
+                 required_capacity);
   diagnostic.Stage("encode");
   metrics_.queue_seconds.Observe(
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
@@ -261,17 +291,18 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 
   // 1. Encode prompt (CPU, outside model_mu_). The tokenizer's ICU regex
   // engine is not thread-safe, so Encode is serialized behind tok_mu_.
-  std::vector<std::uint32_t> prompt_u32;
-  {
-    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-    s = tok_->Encode(prompt, &prompt_u32);
+  if (!explicit_slots) {
+    {
+      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+      s = tok_->Encode(prompt, &prompt_u32);
+    }
+    if (!s.ok()) {
+      SendError(fd, 400, "encode failed: " + s.message());
+      cleanup();
+      return;
+    }
+    ids.assign(prompt_u32.begin(), prompt_u32.end());
   }
-  if (!s.ok()) {
-    SendError(fd, 400, "encode failed: " + s.message());
-    cleanup();
-    return;
-  }
-  std::vector<int32_t> ids(prompt_u32.begin(), prompt_u32.end());
 
   // 1b. Multimodal: each <|image_pad|> (image_token_id) / <|video_pad|>
   // (video_token_id) placeholder expands to the number of merged visual tokens
@@ -321,10 +352,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     vfeats.device = d_vfeats;
   }
   const int T = static_cast<int>(ids.size());
-  if (T >= max_len_) {
+  if (T >= request_capacity) {
     SendError(fd, 400,
               "prompt too long for context: " + std::to_string(T) +
-                  " tokens >= " + std::to_string(max_len_) + " max_len");
+                  " tokens >= " + std::to_string(request_capacity) +
+                  " max_len");
     cleanup();
     return;
   }
@@ -372,6 +404,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       mtp_loaded_
           ? static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs)
           : 0;
+  const bool stream_mtp = mtp_loaded_ && explicit_slots;
+  int32_t stream_d0 = -1;
+  bool stream_draft_ready = false;
   if (mtp_loaded_) {
     // OOM preflight (runtime). On unified memory a large cudaMalloc does not
     // merely fail — it can push MemFree to zero and trip the global OOM
@@ -380,7 +415,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // fall back to plain decode if there is not enough headroom. The trunk
     // buffer (T * hc_dim * 2) plus the MTP draft logits (max_prefill * vocab *
     // 2, allocated inside MtpDraftExtend) plus a 2 GB safety margin must fit.
-    const size_t trunk_bytes = static_cast<size_t>(T) * trunk_hc_dim * 2;
+    const size_t trunk_bytes =
+        static_cast<size_t>(stream_mtp ? std::min(T, chunk) : T) *
+        trunk_hc_dim * 2;
     const size_t draft_logits_bytes =
         static_cast<size_t>(max_prefill_) *
         static_cast<size_t>(model_.Get().cfg.vocab) * 2;
@@ -406,6 +443,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                    "[q4t] trunk alloc failed for T=%d; plain decode\n", T);
       d_trunk_full = nullptr;
     }
+  }
+  if (stream_mtp &&
+      (!d_trunk_full || cudaMalloc(reinterpret_cast<void**>(&d_mtp_g),
+                                   trunk_hc_dim * 2) != cudaSuccess)) {
+    cleanup();
+    SendError(fd, 503, "streamed MTP prefill reservation failed");
+    return;
   }
   std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
 
@@ -446,7 +490,72 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const bool scheduled_chunk_prefill =
       scheduler_active_ && !mtp_loaded_ && chunked && vptr == nullptr;
   bool prefill_cancelled = false;
-  if (scheduled_chunk_prefill) {
+  if (stream_mtp) {
+    q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
+    q4t::diagnostic::Scope execution_prefill("handler_stream_mtp_prefill", 0,
+                                             T);
+    auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+    s = !gpu_healthy_.load(std::memory_order_relaxed)
+            ? Status::Fail("GPU unhealthy; restart server")
+            : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+    if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
+    std::vector<int32_t> shifted;
+    std::vector<int> positions;
+    int chunks = 0;
+    while (s.ok() && seq.position < T) {
+      if (cancelled()) {
+        prefill_cancelled = true;
+        break;
+      }
+      const int base = seq.position;
+      const int count = std::min(chunk, T - base);
+      const bool last = base + count == T;
+      if (router_trace_)
+        router_trace_->BeginForward(trace::RouteStage::kPrefill, base, count);
+      s = model::ModelPrefillTextChunk(
+          model_.Get(), &seq, ids.data(), T, count,
+          last ? d_prefill_logits_ : nullptr, nullptr, d_trunk_full,
+          model::LogitsRows::kLastRow, model::SequenceCompletion::kDeferred);
+      cudaError_t copy_error = cudaSuccess;
+      if (s.ok() && last)
+        copy_error = cudaMemcpyAsync(h_logits.data(), d_prefill_logits_,
+                                     static_cast<size_t>(vocab) * 2,
+                                     cudaMemcpyDeviceToHost, nullptr);
+      model::ModelSequence* sequence = &seq;
+      s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
+                             router_trace_.get());
+      if (!s.ok()) break;
+      shifted.resize(count);
+      positions.resize(count);
+      for (int i = 0; i < count; ++i) {
+        positions[i] = base + i;
+        shifted[i] =
+            base + i + 1 < T ? ids[base + i + 1] : argmax(h_logits.data());
+      }
+      s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full,
+                              positions.data(), count, &stream_d0, d_mtp_g,
+                              nullptr, seq_id, last);
+      // The target chunk was committed above. Drain a failed draft submission
+      // before releasing this request's storage or giving scratch to a peer.
+      s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr);
+      ++chunks;
+    }
+    if (s.ok() && !prefill_cancelled) {
+      s = model::ModelReserveVerifyCheckpoints(model_.Get(), mtp_k_);
+      if (s.ok()) s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
+      stream_draft_ready = s.ok();
+    }
+    if (!s.ok()) {
+      s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr);
+      seq.Fail();
+    }
+    std::fprintf(stderr,
+                 "[mtp-prefill] request=%s streamed=1 chunks=%d "
+                 "trunk_bytes=%zu ready=%d\n",
+                 request_id.c_str(), chunks,
+                 static_cast<size_t>(std::min(T, chunk)) * trunk_hc_dim * 2,
+                 stream_draft_ready);
+  } else if (scheduled_chunk_prefill) {
     ChunkPrefillReq pr;
     pr.fd = fd;
     pr.control = control.get();
@@ -673,8 +782,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // model verifies every draft token under the documented T>1 near-tie
   // contract; it need not be bit-identical to the T=1 arithmetic path.
   bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr;
-  int32_t mtp_b = -1, mtp_d0 = -1;
-  if (use_mtp) {
+  int32_t mtp_b = stream_draft_ready ? next_token : -1;
+  int32_t mtp_d0 = stream_draft_ready ? stream_d0 : -1;
+  if (use_mtp && !stream_mtp) {
     if (cudaMalloc(reinterpret_cast<void**>(&d_mtp_g),
                    static_cast<size_t>(mtp_.cfg.hc) *
                        static_cast<size_t>(mtp_.cfg.hs) * 2) != cudaSuccess) {
@@ -682,7 +792,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       use_mtp = false;
     }
   }
-  if (use_mtp) {
+  if (use_mtp && !stream_mtp) {
     {
       q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
       q4t::diagnostic::Scope execution_init("handler_mtp_init", 0, T);
@@ -768,7 +878,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
   if (use_mtp && mtp_suffix_) {
     const Status suffix_status = suffix.Init(
-        seq.history, model_.Get().cfg.vocab, max_len_, {},
+        seq.history, model_.Get().cfg.vocab, request_capacity, {},
         {&request_classes,
          [](void* context, std::span<const int32_t> ids, bool* numeric) {
            auto& local = *static_cast<RequestClasses*>(context);
@@ -800,7 +910,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         break;
       }
       const int remaining = max_tokens - static_cast<int>(generated.size());
-      if (!MtpGenerationStepFits(seq.position, max_len_,
+      if (!MtpGenerationStepFits(seq.position, request_capacity,
                                  model_.Get().cfg.max_prefill, mtp_k_,
                                  remaining)) {
         // No speculative work has started. Finish with ordinary decode,
@@ -888,7 +998,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         finish_reason = "length";
         break;
       }
-      if (seq.position >= max_len_) {
+      if (seq.position >= request_capacity) {
         finish_reason = "length";
         break;  // cannot decode further without exceeding the KV cache
       }
@@ -1016,7 +1126,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
       // The current token is already emitted (or buffered for non-streaming).
       // Do not prepare another token when this request cannot consume it.
-      if (step == max_tokens - 1 || seq.position + 1 >= max_len_) {
+      if (step == max_tokens - 1 || seq.position + 1 >= request_capacity) {
         finish_reason = "length";
         break;
       }

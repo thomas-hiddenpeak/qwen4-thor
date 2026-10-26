@@ -55,16 +55,19 @@ void PrintUsage(const char* prog) {
       "  serve     OpenAI-compatible HTTP API server\n"
       "            (q4t serve [--host IPv4] [--port N] [--model-dir DIR] "
       "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] "
-      "[--mtp | --no-mtp] [--mtp-suffix] [--mtp-subset-head DIR] "
+      "[--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] "
+      "[--mtp-subset-head DIR] "
       "[--allow-media] "
       "[--startup-plan auto|off|required]\n"
       "       [--moe-trace-dir DIR --moe-trace-workload FILE] "
       "[--moe-trace-max-mib N])\n"
-      "            serve: MTP is enabled by default (k=3); --no-mtp disables it.\n"
+      "            serve: MTP is enabled by default (k=3); --no-mtp disables "
+      "it.\n"
       "  bench-decode  Batched-decode throughput vs batch size\n"
       "            (q4t bench-decode [--batch B] [--steps N] [--prompt P] "
       "[--max-len L])\n"
-      "  bench-prefill Batched-prefill (ragged) vs sequential, tok/s + speedup\n"
+      "  bench-prefill Batched-prefill (ragged) vs sequential, tok/s + "
+      "speedup\n"
       "            (q4t bench-prefill [--batch B] [--prompt P] [--sweep])\n",
       prog);
 }

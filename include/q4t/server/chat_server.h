@@ -121,7 +121,7 @@ class ChatServer {
   // completion and host readback. Only then can another request reuse it.
   // Negative results: -1 stopping, -2 cancelled, -3 GPU unhealthy.
   // Admission is provisional: recheck GPU health under model_mu_ at submit.
-  int AllocSeqId(RequestControl* control, int fd);
+  int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;
@@ -244,6 +244,7 @@ class ChatServer {
   std::mutex tok_mu_;
   std::vector<bool> seq_free_;  // [max_seq]; true = available
   int max_seq_ = 8;
+  std::vector<int> seq_capacities_;
   // In-flight request-thread cap: bounds how many connections may be waiting
   // in the AllocSeqId queue at once, so a connection flood cannot spawn
   // unbounded threads. Excess connections are refused (503) to shed load.

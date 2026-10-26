@@ -315,29 +315,23 @@ __global__ void WriteIndexRawKernel(const u16* __restrict__ ik_raw,
                                     u16* __restrict__ idx_raw,
                                     const int* __restrict__ positions, int T,
                                     int hd, const int* __restrict__ d_seq_id,
-                                    size_t idx_seq_stride) {
+                                    IndexerSequenceStride idx_seq_stride) {
   int t = blockIdx.x;
   if (t >= T) return;
   int pos = positions[t];
   int d = threadIdx.x;
   if (d >= hd) return;
   // B2 multi-seq: select this token's sequence idx_raw slice.
-  u16* idx = d_seq_id
-                 ? idx_raw + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
-                 : idx_raw;
+  u16* idx = d_seq_id ? idx_raw + idx_seq_stride.Offset(d_seq_id[t]) : idx_raw;
   idx[static_cast<size_t>(pos) * hd + d] = ik_raw[static_cast<size_t>(t) * hd + d];
 }
 
-__global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
-                                       const u16* __restrict__ idx_raw,
-                                       u16* __restrict__ idx_comp,
-                                       const int* __restrict__ positions,
-                                       const int* __restrict__ rope_pos, int T,
-                                       int max_len, int hd, int compress,
-                                       float theta, float eps,
-                                       const int* __restrict__ d_seq_id,
-                                       size_t idx_seq_stride,
-                                       int rope_seq_stride) {
+__global__ void BuildCompressedKKernel(
+    const u16* __restrict__ ik_norm, const u16* __restrict__ idx_raw,
+    u16* __restrict__ idx_comp, const int* __restrict__ positions,
+    const int* __restrict__ rope_pos, int T, int max_len, int hd, int compress,
+    float theta, float eps, const int* __restrict__ d_seq_id,
+    IndexerSequenceStride idx_seq_stride, int rope_seq_stride) {
   int t = blockIdx.x;
   if (t >= T) return;
   int pos = positions[t];
@@ -345,12 +339,10 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
   if (d >= hd) return;
   // B2 multi-seq: select this token's sequence idx_raw / idx_comp / rope
   // slices (the group's raw tokens all belong to the same sequence).
-  const u16* iraw = d_seq_id
-                        ? idx_raw + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
-                        : idx_raw;
-  u16* icomp = d_seq_id
-                   ? idx_comp + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
-                   : idx_comp;
+  const u16* iraw =
+      d_seq_id ? idx_raw + idx_seq_stride.Offset(d_seq_id[t]) : idx_raw;
+  u16* icomp =
+      d_seq_id ? idx_comp + idx_seq_stride.Offset(d_seq_id[t]) : idx_comp;
   const int* rope = d_seq_id
                         ? rope_pos + static_cast<size_t>(d_seq_id[t]) *
                                          rope_seq_stride
@@ -426,22 +418,17 @@ __global__ void BuildCompressedKKernel(const u16* __restrict__ ik_norm,
 //   logits: [T, max_blocks] FP32 (out)
 //   positions: [T]
 // block = one token t, 256 threads.
-__global__ void IndexerLogitsKernel(const u16* __restrict__ iq,
-                                    const u16* __restrict__ ck,
-                                    f32* __restrict__ logits,
-                                    const int* __restrict__ positions, int T,
-                                    int n_iq, int hd, int compress,
-                                    int max_blocks, int block_off,
-                                    const int* __restrict__ d_seq_id,
-                                    size_t idx_seq_stride) {
+__global__ void IndexerLogitsKernel(
+    const u16* __restrict__ iq, const u16* __restrict__ ck,
+    f32* __restrict__ logits, const int* __restrict__ positions, int T,
+    int n_iq, int hd, int compress, int max_blocks, int block_off,
+    const int* __restrict__ d_seq_id, IndexerSequenceStride idx_seq_stride) {
   int t = blockIdx.x;
   if (t >= T) return;
   const int pos = positions[t];
   const int n_groups = (pos + 1) / compress;  // global visible groups (uncapped)
   const float inv_sqrt = 1.f / sqrtf(static_cast<float>(hd));
-  const u16* cks = d_seq_id
-                       ? ck + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
-                       : ck;
+  const u16* cks = d_seq_id ? ck + idx_seq_stride.Offset(d_seq_id[t]) : ck;
   // Scores the chunk of GLOBAL blocks [block_off, block_off + max_blocks);
   // logits written at the local column lg = g - block_off.
   for (int lg = threadIdx.x; lg < max_blocks; lg += blockDim.x) {
@@ -706,7 +693,7 @@ __global__ void IndexerLogitsBlockParKernel(
     const u16* __restrict__ iq, const u16* __restrict__ ck,
     f32* __restrict__ logits_c, const int* __restrict__ positions, int T,
     int n_iq, int hd, int compress, int max_blocks, int block_off,
-    const int* __restrict__ d_seq_id, size_t idx_seq_stride) {
+    const int* __restrict__ d_seq_id, IndexerSequenceStride idx_seq_stride) {
   const int t = blockIdx.y;
   if (t >= T) return;
   const int tile = blockIdx.x;
@@ -716,9 +703,7 @@ __global__ void IndexerLogitsBlockParKernel(
   const int global_g = block_off + g;  // global block index (ck is pre-offset)
   const float inv_sqrt = 1.f / sqrtf(static_cast<float>(hd));
   // Per-sequence idx_comp slice (T <= 4: d_seq_id[t] is fixed for this token).
-  const u16* cks = d_seq_id
-                       ? ck + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
-                       : ck;
+  const u16* cks = d_seq_id ? ck + idx_seq_stride.Offset(d_seq_id[t]) : ck;
   // Stage this token's n_iq query rows. n_iq <= 4, hd <= 128 (idx config), so
   // a fixed 512-element buffer covers it (VLA shared memory is illegal).
   __shared__ u16 s_q[512];
@@ -809,10 +794,9 @@ __global__ void OnePassScoreKernel(const u16* __restrict__ iq,
                                    const u16* __restrict__ ck,
                                    f32* __restrict__ logits,
                                    const int* __restrict__ positions, int T,
-                                   int n_iq, int hd, int compress,
-                                   int n_groups,
+                                   int n_iq, int hd, int compress, int n_groups,
                                    const int* __restrict__ d_seq_id,
-                                   size_t idx_seq_stride) {
+                                   IndexerSequenceStride idx_seq_stride) {
   const int t = blockIdx.y;
   if (t >= T) return;
   const int warp = threadIdx.x >> 5;
@@ -821,9 +805,7 @@ __global__ void OnePassScoreKernel(const u16* __restrict__ iq,
   const int pos = positions[t];
   const int n_vis = (pos + 1) / compress;  // visible blocks for this token
   const float inv_sqrt = 1.f / sqrtf(static_cast<float>(hd));
-  const u16* cks = d_seq_id
-                       ? ck + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride
-                       : ck;
+  const u16* cks = d_seq_id ? ck + idx_seq_stride.Offset(d_seq_id[t]) : ck;
   // Stage this token's query [n_iq, hd] (n_iq*hd <= 512 for the idx config).
   __shared__ u16 s_q[512];
   for (int i = threadIdx.x; i < n_iq * hd; i += blockDim.x)
@@ -1286,7 +1268,35 @@ __global__ void SparseAttentionKernel(const u16* __restrict__ q,
 
 }  // namespace
 
+Status ConfigureAttentionSlots(FullAttentionWeights* weights,
+                               std::span<const int> capacities) {
+  if (capacities.empty()) return Status();
+  if (weights->idx_seq_offsets ||
+      !runtime::ValidSequenceCapacities(capacities, weights->max_len,
+                                        capacities.size()))
+    return Status::Fail("invalid attention slot layout");
+  weights->min_slot_capacity =
+      *std::min_element(capacities.begin(), capacities.end());
+  std::vector<size_t> offsets;
+  size_t total = 0;
+  for (int capacity : capacities) {
+    offsets.push_back(total * weights->idx_head_dim);
+    total += capacity;
+  }
+  if (cudaMalloc(reinterpret_cast<void**>(&weights->idx_seq_offsets),
+                 offsets.size() * sizeof(size_t)) != cudaSuccess)
+    return Status::Fail("allocate attention slot offsets");
+  if (cudaMemcpy(weights->idx_seq_offsets, offsets.data(),
+                 offsets.size() * sizeof(size_t),
+                 cudaMemcpyHostToDevice) != cudaSuccess)
+    return Status::Fail("upload attention slot offsets");
+  return Status();
+}
+
 void FullAttentionWeights::Free() {
+  if (idx_seq_offsets) cudaFree(idx_seq_offsets);
+  idx_seq_offsets = nullptr;
+  min_slot_capacity = 0;
   auto freep = [](void* p) { if (p) cudaFree(p); };
   freep(q_proj); freep(k_proj); freep(v_proj); freep(o_proj);
   freep(q_norm); freep(k_norm);
@@ -1462,7 +1472,8 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // (2048) overruns the seq-0 slice when max_seq*max_len < 2048 (e.g. serve
   // --max-seq 2 --max-len 640 -> illegal memory access). Visible blocks are
   // always <= max_len/compress < max_len, so this cap never drops a real one.
-  const int max_blocks = std::min(kMaxBlocks, w.max_len);
+  const int max_blocks = std::min(
+      kMaxBlocks, w.min_slot_capacity > 0 ? w.min_slot_capacity : w.max_len);
   const int max_topk = kMaxTopk;
 
   // Workspace layout (BF16 unless noted).
@@ -1536,11 +1547,14 @@ Status FullAttentionForward(const FullAttentionWeights& w, const uint16_t* x,
   // select the per-token state slice via d_seq_id. Only meaningful when
   // d_seq_id != null (the pooled bases are passed in that case).
   const size_t n_pages = (w.max_len + kKvPageSize - 1) / kKvPageSize;
-  const size_t kv_seq_stride =
-      n_pages * kKvPageSize * nkv * 2 * hd;  // uint16 (one seq's paged KV)
+  const size_t kv_seq_stride = w.idx_seq_offsets
+                                   ? 0
+                                   : n_pages * kKvPageSize * nkv * 2 *
+                                         hd;  // uint16 (one seq's paged KV)
   const int pt_seq_stride = w.max_len;  // int (page_table [max_seq, max_len])
-  const size_t idx_seq_stride =
-      static_cast<size_t>(w.max_len) * idx_hd;  // uint16 (idx [max_seq, max_len, idx_hd])
+  const IndexerSequenceStride idx_seq_stride{
+      static_cast<size_t>(w.max_len) * idx_hd,
+      w.idx_seq_offsets};  // uint16 (idx [max_seq, max_len, idx_hd])
   const int rope_seq_stride = 3 * w.max_len;  // int (rope [max_seq, 3, max_len])
 
   Status s;

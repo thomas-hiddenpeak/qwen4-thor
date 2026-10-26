@@ -17,15 +17,14 @@ __global__ void IndexerDecodeLogitsKernel(
     const u16* __restrict__ iq, const u16* __restrict__ ck,
     f32* __restrict__ logits, const int* __restrict__ positions, int T,
     int n_iq, int hd, int compress, int max_blocks, int block_off,
-    const int* __restrict__ d_seq_id, size_t idx_seq_stride) {
+    const int* __restrict__ d_seq_id, IndexerSequenceStride idx_seq_stride) {
   int t = blockIdx.y;
   if (t >= T) return;
   const int pos = positions[t];
   const int n_groups =
       (pos + 1) / compress;  // global visible groups (uncapped)
   const float inv_sqrt = 1.f / sqrtf(static_cast<float>(hd));
-  const u16* cks =
-      d_seq_id ? ck + static_cast<size_t>(d_seq_id[t]) * idx_seq_stride : ck;
+  const u16* cks = d_seq_id ? ck + idx_seq_stride.Offset(d_seq_id[t]) : ck;
   // Scores the chunk of GLOBAL blocks [block_off, block_off + max_blocks);
   // logits written at the local column lg = g - block_off.
   for (int lg = blockIdx.x * blockDim.x + threadIdx.x; lg < max_blocks;
@@ -50,7 +49,8 @@ __global__ void IndexerDecodeLogitsKernel(
 
 Status IndexerDecodeScores(const uint16_t* iq, const uint16_t* ck,
                            float* logits, const int* positions, int compress,
-                           const int* seq_id, size_t idx_seq_stride,
+                           const int* seq_id,
+                           IndexerSequenceStride idx_seq_stride,
                            cudaStream_t stream) {
   if (compress <= 0 || seq_id == nullptr) {
     return Status::Fail("unsupported indexer decode shape");

@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-20261027/archive-before-compat",
+  "files": 934,
+  "bytes": 880502578,
+  "manifest_sha256": "13b80b55154f02f365683a83f49b5e3fb86e48ae85ef543d98f5f6f18b24c186",
+  "metadata": {
+    "created_unix": 1793057978.7291832,
+    "status": "RESEARCH_SNAPSHOT_PROTECTIONS_AWAIT_BOUNDED_EXCEPTION",
+    "optimization": "NO_GO_GAIN_TARGET_MISSED",
+    "measurement": "LONG_MATRIX_COMPLETE_SINGLE_PROTECTION_INCOMPLETE",
+    "candidate_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+    "default_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+    "release_sha256": "45cfe74a761f9b3a9ab1db613b42e8fde64192d869f17a0596ea5925b73e61ec",
+    "source_base": "c1ad1481dd4b97962f394c3b2437c13c5cb041ae",
+    "actual_http_requests": 227,
+    "actual_http_starts": 10,
+    "actual_gpu_fixture_attempts": 4,
+    "remaining_original_http_requests": 93,
+    "remaining_original_http_starts": 5,
+    "task_deadline_unix": 1793072029.164911,
+    "external_dependencies": [
+      "Read-only model directory and same-SHA subset artifact at original paths are retained; not copied into this research snapshot.",
+      "Some frozen commands contain original absolute paths; this is a verifiable archive, not a relocatable execution package."
+    ],
+    "original_failures_preserved": true,
+    "default_replaced": false
+  }
+}

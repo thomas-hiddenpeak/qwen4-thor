@@ -47,17 +47,17 @@ Status FinishHostReadback(
 
 }
 
-int ChatServer::AllocSeqId(RequestControl* control, int fd) {
+int ChatServer::AllocSeqId(RequestControl* control, int fd, size_t required) {
   std::unique_lock<std::mutex> lock(seq_mu_);
   for (;;) {
     if (seq_stopping_) return -1;
     if (!gpu_healthy_.load(std::memory_order_relaxed)) return -3;
     if (RequestCancelled(control, fd)) return -2;
-    for (int i = 0; i < max_seq_; ++i) {
-      if (seq_free_[static_cast<size_t>(i)]) {
-        seq_free_[static_cast<size_t>(i)] = false;
-        return i;
-      }
+    const int slot = runtime::SelectSequenceSlot(seq_capacities_, max_len_,
+                                                 seq_free_, required);
+    if (slot >= 0) {
+      seq_free_[slot] = false;
+      return slot;
     }
     // Socket EOF/deadlines need no extra watcher thread. Explicit cancellation
     // wakes this wait; timeout bounds polling even if a notification races it.
@@ -71,7 +71,7 @@ void ChatServer::FreeSeqId(int seq_id) {
     const std::lock_guard<std::mutex> lock(seq_mu_);
     if (seq_id < max_seq_) seq_free_[static_cast<size_t>(seq_id)] = true;
   }
-  seq_cv_.notify_one();  // wake one queued request
+  seq_cv_.notify_all();  // waiters may need different slot capacities
 }
 
 // B2b continuous batching: the central scheduler loop.

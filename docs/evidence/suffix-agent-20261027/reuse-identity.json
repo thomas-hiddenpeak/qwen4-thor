@@ -1,0 +1,57 @@
+{
+  "created_unix": 1793050877.7488842,
+  "files": [
+    {
+      "scope": "suffix_index_and_admission",
+      "path": "src/mtp/suffix_drafter.cpp",
+      "sha256": "6f10725ca130f1a561412b7db1705b7d31b5ecd625d1373bd40dd03fa7d55997",
+      "unchanged_from": "c1ad1481dd4b97962f394c3b2437c13c5cb041ae"
+    },
+    {
+      "scope": "suffix_index_and_admission",
+      "path": "include/q4t/mtp/suffix_drafter.h",
+      "sha256": "3eee1f41b390fd164ab56aff0134975a6b337f0bf129e9f0b0a3d2c801ec10e1",
+      "unchanged_from": "c1ad1481dd4b97962f394c3b2437c13c5cb041ae"
+    },
+    {
+      "scope": "suffix_index_and_admission",
+      "path": "include/q4t/server/suffix_token_cache.h",
+      "sha256": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
+      "unchanged_from": "c1ad1481dd4b97962f394c3b2437c13c5cb041ae"
+    },
+    {
+      "scope": "subset_artifact_format_and_global_id",
+      "path": "src/mtp/subset_head.cpp",
+      "sha256": "f356b8edf2d00022d208a4ecafb9f08eb5c56059c20c11f5da7c4e8edec7c922",
+      "unchanged_from": "c1ad1481dd4b97962f394c3b2437c13c5cb041ae"
+    },
+    {
+      "scope": "subset_artifact_format_and_global_id",
+      "path": "include/q4t/mtp/subset_head.h",
+      "sha256": "c18121fdabf7ecc03ba279a3f4f953b9681927b75d3e1274b9d6a531deb3e34d",
+      "unchanged_from": "c1ad1481dd4b97962f394c3b2437c13c5cb041ae"
+    },
+    {
+      "scope": "monitor_and_exclusive_guard",
+      "path": "tools/evalscope/monitor_memory.py",
+      "sha256": "7d07bc8febc62bdc9d07e370fd62f7d0a978d63a10de918f4e5a6b9d7d152249",
+      "unchanged_from": "c1ad1481dd4b97962f394c3b2437c13c5cb041ae"
+    },
+    {
+      "scope": "monitor_and_exclusive_guard",
+      "path": "tools/evalscope/gpu_exclusive.py",
+      "sha256": "caf58b5f0fe03a5e2db37896d9b6d689203b457220d52cbdaa7867ebe7d8d27d",
+      "unchanged_from": "c1ad1481dd4b97962f394c3b2437c13c5cb041ae"
+    }
+  ],
+  "reuse": "Only local unchanged contracts and artifact identity are reused; new layout/prefill/state/HTTP and timings require current stage evidence.",
+  "references": [
+    "docs/MTP_SUFFIX_MULTI_RESULT_2026-10-27.md",
+    "docs/MTP_SUFFIX_DELIVERED_2026-10-27.md"
+  ],
+  "not_reused": [
+    "old single/multi throughput as new long-agent acceptance",
+    "old packed-cache or streamed-prefill numerical guarantees",
+    "old failed phases as passes"
+  ]
+}

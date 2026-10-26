@@ -91,6 +91,7 @@ struct DecoderLayer {
   // Number of concurrent sequences the recurrent state (ssm/conv/ple_conv)
   // is pooled for. Sequence s uses the s-th slice. 1 = legacy layout.
   int max_seq = 1;
+  std::vector<int> seq_capacities;
 
   void Free();
   // Reset ONE sequence's per-layer state (linear SSM/conv slice, or the full
@@ -135,7 +136,8 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
                         DecoderLayer* out, cudaStream_t stream,
                         int moe_resident_slots = 0,
                         const std::vector<int>* hot_experts = nullptr,
-                        bool hot_protected = false);
+                        bool hot_protected = false,
+                        std::span<const int> seq_capacities = {});
 
 // Run one decoder layer forward for a single sequence (prefill).
 //

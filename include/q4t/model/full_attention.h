@@ -44,6 +44,8 @@
 
 #include <cstdint>
 #include <string>
+#include <span>
+#include "q4t/runtime/sequence_capacity.h"
 
 #include "q4t/io/weight_loader.h"
 #include "q4t/model/gemv.h"
@@ -61,6 +63,9 @@ struct FullAttentionWeights {
   int rot_d = 64;  // partial rotary dim (0.25 * hd)
   float rope_theta = 1e7f;
   float eps = 1e-6f;
+  // Non-null: indexer offsets in uint16 elements; KV pages are global.
+  size_t* idx_seq_offsets = nullptr;
+  int min_slot_capacity = 0;
   int max_len = 0;  // sequence capacity; sizes the persistent rope_pos rows
   // QSA indexer
   int idx_n_heads = 4;
@@ -91,6 +96,9 @@ struct FullAttentionWeights {
 
   void Free();
 };
+
+Status ConfigureAttentionSlots(FullAttentionWeights* weights,
+                               std::span<const int> capacities);
 
 // Paged KV cache: the full-attention KV is organized into pages of
 // kKvPageSize positions. A device page table (page_table[p] = physical page

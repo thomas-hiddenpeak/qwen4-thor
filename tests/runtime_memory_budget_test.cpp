@@ -40,6 +40,32 @@ BudgetModelParams MtpParams() {
 }
 }  // namespace
 
+Q4T_TEST(budget_agent_explicit_slots_are_atomic) {
+  auto request = MtpRequest(208896);
+  request.max_seq = 4;
+  request.max_prefill = 4096;
+  request.seq_capacities = {208896, 65536, 65536, 65536};
+  const auto params = MtpParams();
+  const auto roomy = ComputeMemoryBudget(params, request, kWeights, kRoom);
+  Q4T_CHECK(roomy.feasible && !roomy.capped && roomy.max_seq == 4);
+  const auto exact =
+      ComputeMemoryBudget(params, request, kWeights, roomy.estimated_total);
+  Q4T_CHECK(exact.feasible && exact.max_seq == 4 && !exact.capped);
+  const auto short_one =
+      ComputeMemoryBudget(params, request, kWeights, roomy.estimated_total - 1);
+  Q4T_CHECK(!short_one.feasible && short_one.max_seq == 0);
+  auto uniform_request = request;
+  uniform_request.seq_capacities.clear();
+  const auto uniform =
+      ComputeMemoryBudget(params, uniform_request, kWeights, kRoom);
+  const size_t saved_tokens = 3u * (208896 - 65536);
+  Q4T_CHECK(uniform.state_pool - roomy.state_pool ==
+            13u * (saved_tokens * 2560u - 4u * sizeof(size_t)));
+  Q4T_CHECK(roomy.per_request < uniform.per_request);
+  request.seq_capacities[1] = 65535;
+  Q4T_CHECK(!ComputeMemoryBudget(params, request, kWeights, kRoom).feasible);
+  return true;
+}
 
 Q4T_TEST(budget_infeasible_capacity_never_becomes_a_minimum) {
   for (int length : {0, 1024, 262144}) {

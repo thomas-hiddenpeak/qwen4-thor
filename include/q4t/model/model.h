@@ -16,6 +16,8 @@
 // stays on NVMe and is streamed per-token by the PLE embedding.
 #pragma once
 
+#include "q4t/runtime/sequence_capacity.h"
+
 #include <cuda_runtime.h>
 
 #include <array>
@@ -71,6 +73,10 @@ struct ModelConfig {
   // state slice [seq_id, ...], enabling multi-request continuous batching
   // (Phase 2). 1 = legacy single-sequence behavior (bit-identical).
   int max_seq = 1;
+  std::vector<int> seq_capacities;  // Empty keeps uniform slot capacity.
+  int Capacity(int seq) const {
+    return runtime::SequenceCapacity(seq_capacities, seq, max_len);
+  }
   float eps = 1e-6f;
 
   // Tiered expert residency: C resident slots per MoE layer (0 = all E

@@ -1,0 +1,3267 @@
+{
+  "overall_memory": {
+    "samples": 13259,
+    "physical_used_including_reclaimable_bytes": 131241218048,
+    "total_minus_available_bytes": 119035879424,
+    "cached_bytes": 16441872384,
+    "buffers_bytes": 423284736,
+    "kernel_reclaimable_bytes": 106197843968,
+    "swap_used_bytes": 2147479552,
+    "minimum_MemFree_bytes": 679419904,
+    "minimum_MemAvailable_bytes": 12884758528,
+    "MemTotal_bytes": 131920637952,
+    "q4t_rss_bytes": 4144615424
+  },
+  "services": {
+    "04-full-off": {
+      "memory": {
+        "samples": 1499,
+        "physical_used_including_reclaimable_bytes": 131181109248,
+        "total_minus_available_bytes": 117807525888,
+        "cached_bytes": 15979954176,
+        "buffers_bytes": 386953216,
+        "kernel_reclaimable_bytes": 105953632256,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 739528704,
+        "minimum_MemAvailable_bytes": 14113112064,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4127617024
+      },
+      "cases": {
+        "repeat-code": {
+          "requests": 4,
+          "acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "verify_sequence_steps": 2044,
+          "verify_token_rows": 8176,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "neural_draft_token_rows": 4088,
+          "accepted_extend_rows_upper_bound": 8176,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8176,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 429,
+            "physical_used_including_reclaimable_bytes": 118576029696,
+            "total_minus_available_bytes": 117632311296,
+            "cached_bytes": 1372221440,
+            "buffers_bytes": 244273152,
+            "kernel_reclaimable_bytes": 3458867200,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 13344608256,
+            "minimum_MemAvailable_bytes": 14288326656,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1035194368
+          }
+        },
+        "repeat-text": {
+          "requests": 4,
+          "acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "verify_sequence_steps": 2044,
+          "verify_token_rows": 8176,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "neural_draft_token_rows": 4088,
+          "accepted_extend_rows_upper_bound": 8176,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8176,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 429,
+            "physical_used_including_reclaimable_bytes": 118734536704,
+            "total_minus_available_bytes": 117516177408,
+            "cached_bytes": 1443647488,
+            "buffers_bytes": 250413056,
+            "kernel_reclaimable_bytes": 3456770048,
+            "swap_used_bytes": 2147471360,
+            "minimum_MemFree_bytes": 13186101248,
+            "minimum_MemAvailable_bytes": 14404460544,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1037910016
+          }
+        },
+        "mixed": {
+          "requests": 4,
+          "acceptance": [
+            2,
+            7,
+            3,
+            246
+          ],
+          "verify_sequence_steps": 258,
+          "verify_token_rows": 1032,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            2,
+            7,
+            3,
+            246
+          ],
+          "neural_draft_token_rows": 516,
+          "accepted_extend_rows_upper_bound": 1009,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1009,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 289,
+            "physical_used_including_reclaimable_bytes": 118819532800,
+            "total_minus_available_bytes": 117645115392,
+            "cached_bytes": 1501593600,
+            "buffers_bytes": 255561728,
+            "kernel_reclaimable_bytes": 3458830336,
+            "swap_used_bytes": 2147438592,
+            "minimum_MemFree_bytes": 13101105152,
+            "minimum_MemAvailable_bytes": 14275522560,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1041969152
+          }
+        },
+        "nonrepeat": {
+          "requests": 4,
+          "acceptance": [
+            39,
+            34,
+            27,
+            206
+          ],
+          "verify_sequence_steps": 306,
+          "verify_token_rows": 1224,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            39,
+            34,
+            27,
+            206
+          ],
+          "neural_draft_token_rows": 612,
+          "accepted_extend_rows_upper_bound": 1012,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1012,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 294,
+            "physical_used_including_reclaimable_bytes": 118846423040,
+            "total_minus_available_bytes": 117568012288,
+            "cached_bytes": 1557016576,
+            "buffers_bytes": 259887104,
+            "kernel_reclaimable_bytes": 3458863104,
+            "swap_used_bytes": 2147438592,
+            "minimum_MemFree_bytes": 13074214912,
+            "minimum_MemAvailable_bytes": 14352625664,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1042997248
+          }
+        }
+      },
+      "batches": [
+        {
+          "rows": 1,
+          "suffix": 0,
+          "steps": 45
+        },
+        {
+          "rows": 2,
+          "suffix": 0,
+          "steps": 6
+        },
+        {
+          "rows": 3,
+          "suffix": 0,
+          "steps": 1
+        },
+        {
+          "rows": 4,
+          "suffix": 0,
+          "steps": 1148
+        }
+      ],
+      "actual_verify_batch_calls": 1200,
+      "streamed_prefill_trunk_max_bytes": 83886080
+    },
+    "05-full-on": {
+      "memory": {
+        "samples": 1521,
+        "physical_used_including_reclaimable_bytes": 131173699584,
+        "total_minus_available_bytes": 117984047104,
+        "cached_bytes": 14888042496,
+        "buffers_bytes": 260222976,
+        "kernel_reclaimable_bytes": 106184617984,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 746938368,
+        "minimum_MemAvailable_bytes": 13936590848,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4131467264
+      },
+      "cases": {
+        "repeat-code": {
+          "requests": 4,
+          "acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "verify_sequence_steps": 2044,
+          "verify_token_rows": 8176,
+          "suffix_hits": 2008,
+          "suffix_queries": 2044,
+          "hit_fraction": 0.9823874755381604,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            2008
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            36
+          ],
+          "neural_draft_token_rows": 72,
+          "accepted_extend_rows_upper_bound": 8176,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8176,
+          "init_ns": 2579333,
+          "append_ns": 1539807,
+          "query_ns": 54019461,
+          "release_ns": 6156,
+          "numeric_ns": 50555987,
+          "indexed": 284580,
+          "candidates": 8156,
+          "compared": 442696,
+          "d0_mismatch": 0,
+          "short_rejected": 32,
+          "numeric_rejected": 0,
+          "cache_decodes": 69,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 421,
+            "physical_used_including_reclaimable_bytes": 118645039104,
+            "total_minus_available_bytes": 117647572992,
+            "cached_bytes": 1431502848,
+            "buffers_bytes": 243490816,
+            "kernel_reclaimable_bytes": 3491577856,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 13275598848,
+            "minimum_MemAvailable_bytes": 14273064960,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1037430784
+          }
+        },
+        "repeat-text": {
+          "requests": 4,
+          "acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "verify_sequence_steps": 2044,
+          "verify_token_rows": 8176,
+          "suffix_hits": 2008,
+          "suffix_queries": 2044,
+          "hit_fraction": 0.9823874755381604,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            2008
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            36
+          ],
+          "neural_draft_token_rows": 72,
+          "accepted_extend_rows_upper_bound": 8176,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8176,
+          "init_ns": 1705567,
+          "append_ns": 1583367,
+          "query_ns": 61489198,
+          "release_ns": 6287,
+          "numeric_ns": 57893925,
+          "indexed": 284558,
+          "candidates": 8160,
+          "compared": 507660,
+          "d0_mismatch": 4,
+          "short_rejected": 28,
+          "numeric_rejected": 0,
+          "cache_decodes": 72,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 421,
+            "physical_used_including_reclaimable_bytes": 118748848128,
+            "total_minus_available_bytes": 117605920768,
+            "cached_bytes": 1476419584,
+            "buffers_bytes": 249806848,
+            "kernel_reclaimable_bytes": 3489456128,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 13171789824,
+            "minimum_MemAvailable_bytes": 14314717184,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1044086784
+          }
+        },
+        "mixed": {
+          "requests": 4,
+          "acceptance": [
+            2,
+            7,
+            3,
+            246
+          ],
+          "verify_sequence_steps": 258,
+          "verify_token_rows": 1032,
+          "suffix_hits": 108,
+          "suffix_queries": 258,
+          "hit_fraction": 0.4186046511627907,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            108
+          ],
+          "neural_acceptance": [
+            2,
+            7,
+            3,
+            138
+          ],
+          "neural_draft_token_rows": 300,
+          "accepted_extend_rows_upper_bound": 1009,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1009,
+          "init_ns": 1856731,
+          "append_ns": 150540,
+          "query_ns": 2396972,
+          "release_ns": 5870,
+          "numeric_ns": 2152962,
+          "indexed": 279196,
+          "candidates": 652,
+          "compared": 26393,
+          "d0_mismatch": 17,
+          "short_rejected": 45,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 288,
+            "physical_used_including_reclaimable_bytes": 118814126080,
+            "total_minus_available_bytes": 117597859840,
+            "cached_bytes": 1516220416,
+            "buffers_bytes": 253685760,
+            "kernel_reclaimable_bytes": 3457949696,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 13106511872,
+            "minimum_MemAvailable_bytes": 14322778112,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1043857408
+          }
+        },
+        "nonrepeat": {
+          "requests": 4,
+          "acceptance": [
+            40,
+            38,
+            26,
+            204
+          ],
+          "verify_sequence_steps": 308,
+          "verify_token_rows": 1232,
+          "suffix_hits": 0,
+          "suffix_queries": 308,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            40,
+            38,
+            26,
+            204
+          ],
+          "neural_draft_token_rows": 616,
+          "accepted_extend_rows_upper_bound": 1010,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1010,
+          "init_ns": 1810549,
+          "append_ns": 172231,
+          "query_ns": 117335,
+          "release_ns": 5417,
+          "numeric_ns": 0,
+          "indexed": 279200,
+          "candidates": 239,
+          "compared": 1534,
+          "d0_mismatch": 25,
+          "short_rejected": 41,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 293,
+            "physical_used_including_reclaimable_bytes": 118847426560,
+            "total_minus_available_bytes": 117601107968,
+            "cached_bytes": 1568616448,
+            "buffers_bytes": 257347584,
+            "kernel_reclaimable_bytes": 3457949696,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 13073211392,
+            "minimum_MemAvailable_bytes": 14319529984,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1058172928
+          }
+        },
+        "queue-16": {
+          "requests": 16,
+          "acceptance": [
+            0,
+            0,
+            0,
+            112
+          ],
+          "verify_sequence_steps": 112,
+          "verify_token_rows": 448,
+          "suffix_hits": 0,
+          "suffix_queries": 112,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            112
+          ],
+          "neural_draft_token_rows": 224,
+          "accepted_extend_rows_upper_bound": 448,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 448,
+          "init_ns": 795006,
+          "append_ns": 42580,
+          "query_ns": 53395,
+          "release_ns": 19705,
+          "numeric_ns": 0,
+          "indexed": 12352,
+          "candidates": 384,
+          "compared": 4416,
+          "d0_mismatch": 0,
+          "short_rejected": 96,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 23269632,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 17,
+            "physical_used_including_reclaimable_bytes": 118956011520,
+            "total_minus_available_bytes": 115599831040,
+            "cached_bytes": 1575362560,
+            "buffers_bytes": 257671168,
+            "kernel_reclaimable_bytes": 3457949696,
+            "swap_used_bytes": 2147475456,
+            "minimum_MemFree_bytes": 12964626432,
+            "minimum_MemAvailable_bytes": 16320806912,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1065267200
+          }
+        },
+        "output-tail": {
+          "requests": 1,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 48956,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 953,
+          "numeric_ns": 0,
+          "indexed": 744,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 1310992,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 1,
+            "physical_used_including_reclaimable_bytes": 118942953472,
+            "total_minus_available_bytes": 115223834624,
+            "cached_bytes": 1576169472,
+            "buffers_bytes": 257843200,
+            "kernel_reclaimable_bytes": 3441172480,
+            "swap_used_bytes": 2147475456,
+            "minimum_MemFree_bytes": 12977684480,
+            "minimum_MemAvailable_bytes": 16696803328,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1064497152
+          }
+        }
+      },
+      "batches": [
+        {
+          "rows": 1,
+          "suffix": 0,
+          "steps": 73
+        },
+        {
+          "rows": 1,
+          "suffix": 1,
+          "steps": 119
+        },
+        {
+          "rows": 2,
+          "suffix": 0,
+          "steps": 7
+        },
+        {
+          "rows": 3,
+          "suffix": 0,
+          "steps": 3
+        },
+        {
+          "rows": 3,
+          "suffix": 3,
+          "steps": 2
+        },
+        {
+          "rows": 4,
+          "suffix": 0,
+          "steps": 111
+        },
+        {
+          "rows": 4,
+          "suffix": 1,
+          "steps": 6
+        },
+        {
+          "rows": 4,
+          "suffix": 2,
+          "steps": 53
+        },
+        {
+          "rows": 4,
+          "suffix": 3,
+          "steps": 2
+        },
+        {
+          "rows": 4,
+          "suffix": 4,
+          "steps": 1000
+        }
+      ],
+      "actual_verify_batch_calls": 1376,
+      "streamed_prefill_trunk_max_bytes": 83886080
+    },
+    "06-subset-on": {
+      "memory": {
+        "samples": 1888,
+        "physical_used_including_reclaimable_bytes": 131167084544,
+        "total_minus_available_bytes": 117825929216,
+        "cached_bytes": 14757933056,
+        "buffers_bytes": 423153664,
+        "kernel_reclaimable_bytes": 106183655424,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 753553408,
+        "minimum_MemAvailable_bytes": 14094708736,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4135854080
+      },
+      "cases": {
+        "quality": {
+          "requests": 11,
+          "acceptance": [
+            0,
+            11,
+            0,
+            11
+          ],
+          "verify_sequence_steps": 22,
+          "verify_token_rows": 88,
+          "suffix_hits": 0,
+          "suffix_queries": 22,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            11,
+            0,
+            11
+          ],
+          "neural_draft_token_rows": 44,
+          "accepted_extend_rows_upper_bound": 66,
+          "finish_reasons": [
+            [
+              "stop"
+            ],
+            [
+              "stop"
+            ],
+            [
+              "stop"
+            ],
+            [
+              "stop"
+            ],
+            [
+              "stop"
+            ],
+            [
+              "stop"
+            ],
+            [
+              "stop"
+            ],
+            [
+              "stop"
+            ],
+            [
+              "stop"
+            ],
+            [
+              "stop"
+            ],
+            [
+              "stop"
+            ]
+          ],
+          "init_ns": 2966945,
+          "append_ns": 7853,
+          "query_ns": 6705,
+          "release_ns": 7947,
+          "numeric_ns": 0,
+          "indexed": 289858,
+          "candidates": 18,
+          "compared": 95,
+          "d0_mismatch": 1,
+          "short_rejected": 10,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 14994352,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 329,
+            "physical_used_including_reclaimable_bytes": 122684997632,
+            "total_minus_available_bytes": 116201283584,
+            "cached_bytes": 5536952320,
+            "buffers_bytes": 236290048,
+            "kernel_reclaimable_bytes": 3034542080,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 9235640320,
+            "minimum_MemAvailable_bytes": 15719354368,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1049509888
+          }
+        },
+        "repeat-code": {
+          "requests": 4,
+          "acceptance": [
+            40,
+            0,
+            0,
+            2036
+          ],
+          "verify_sequence_steps": 2076,
+          "verify_token_rows": 8304,
+          "suffix_hits": 2000,
+          "suffix_queries": 2076,
+          "hit_fraction": 0.9633911368015414,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            2000
+          ],
+          "neural_acceptance": [
+            40,
+            0,
+            0,
+            36
+          ],
+          "neural_draft_token_rows": 152,
+          "accepted_extend_rows_upper_bound": 8184,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8184,
+          "init_ns": 1816314,
+          "append_ns": 1291042,
+          "query_ns": 45582188,
+          "release_ns": 7047,
+          "numeric_ns": 42837534,
+          "indexed": 284588,
+          "candidates": 8284,
+          "compared": 444852,
+          "d0_mismatch": 40,
+          "short_rejected": 32,
+          "numeric_rejected": 0,
+          "cache_decodes": 69,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 420,
+            "physical_used_including_reclaimable_bytes": 122644271104,
+            "total_minus_available_bytes": 116449021952,
+            "cached_bytes": 5587443712,
+            "buffers_bytes": 242282496,
+            "kernel_reclaimable_bytes": 2858389504,
+            "swap_used_bytes": 2147467264,
+            "minimum_MemFree_bytes": 9276366848,
+            "minimum_MemAvailable_bytes": 15471616000,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1053736960
+          }
+        },
+        "repeat-text": {
+          "requests": 4,
+          "acceptance": [
+            152,
+            0,
+            0,
+            2008
+          ],
+          "verify_sequence_steps": 2160,
+          "verify_token_rows": 8640,
+          "suffix_hits": 1976,
+          "suffix_queries": 2160,
+          "hit_fraction": 0.9148148148148149,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            1976
+          ],
+          "neural_acceptance": [
+            152,
+            0,
+            0,
+            32
+          ],
+          "neural_draft_token_rows": 368,
+          "accepted_extend_rows_upper_bound": 8184,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8184,
+          "init_ns": 1764267,
+          "append_ns": 1560613,
+          "query_ns": 60671511,
+          "release_ns": 6611,
+          "numeric_ns": 56913259,
+          "indexed": 284566,
+          "candidates": 8620,
+          "compared": 536492,
+          "d0_mismatch": 152,
+          "short_rejected": 28,
+          "numeric_rejected": 0,
+          "cache_decodes": 72,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 427,
+            "physical_used_including_reclaimable_bytes": 122685947904,
+            "total_minus_available_bytes": 116349538304,
+            "cached_bytes": 5634760704,
+            "buffers_bytes": 247504896,
+            "kernel_reclaimable_bytes": 2889895936,
+            "swap_used_bytes": 2147463168,
+            "minimum_MemFree_bytes": 9234690048,
+            "minimum_MemAvailable_bytes": 15571099648,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1053913088
+          }
+        },
+        "mixed": {
+          "requests": 4,
+          "acceptance": [
+            37,
+            44,
+            24,
+            203
+          ],
+          "verify_sequence_steps": 308,
+          "verify_token_rows": 1232,
+          "suffix_hits": 108,
+          "suffix_queries": 308,
+          "hit_fraction": 0.35064935064935066,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            108
+          ],
+          "neural_acceptance": [
+            37,
+            44,
+            24,
+            95
+          ],
+          "neural_draft_token_rows": 400,
+          "accepted_extend_rows_upper_bound": 1009,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1009,
+          "init_ns": 1825614,
+          "append_ns": 214706,
+          "query_ns": 5013529,
+          "release_ns": 6259,
+          "numeric_ns": 4709238,
+          "indexed": 279196,
+          "candidates": 599,
+          "compared": 26356,
+          "d0_mismatch": 12,
+          "short_rejected": 29,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 293,
+            "physical_used_including_reclaimable_bytes": 122675302400,
+            "total_minus_available_bytes": 116465602560,
+            "cached_bytes": 5696163840,
+            "buffers_bytes": 251015168,
+            "kernel_reclaimable_bytes": 2858135552,
+            "swap_used_bytes": 2147364864,
+            "minimum_MemFree_bytes": 9245335552,
+            "minimum_MemAvailable_bytes": 15455035392,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1056735232
+          }
+        },
+        "nonrepeat": {
+          "requests": 4,
+          "acceptance": [
+            69,
+            77,
+            50,
+            159
+          ],
+          "verify_sequence_steps": 355,
+          "verify_token_rows": 1420,
+          "suffix_hits": 0,
+          "suffix_queries": 355,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            69,
+            77,
+            50,
+            159
+          ],
+          "neural_draft_token_rows": 710,
+          "accepted_extend_rows_upper_bound": 1009,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1009,
+          "init_ns": 1774511,
+          "append_ns": 230804,
+          "query_ns": 158592,
+          "release_ns": 8917,
+          "numeric_ns": 0,
+          "indexed": 279199,
+          "candidates": 202,
+          "compared": 958,
+          "d0_mismatch": 17,
+          "short_rejected": 29,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 296,
+            "physical_used_including_reclaimable_bytes": 123252998144,
+            "total_minus_available_bytes": 116526551040,
+            "cached_bytes": 5740244992,
+            "buffers_bytes": 422510592,
+            "kernel_reclaimable_bytes": 3069022208,
+            "swap_used_bytes": 2147352576,
+            "minimum_MemFree_bytes": 8667639808,
+            "minimum_MemAvailable_bytes": 15394086912,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1056772096
+          }
+        },
+        "queue-32": {
+          "requests": 32,
+          "acceptance": [
+            0,
+            0,
+            0,
+            224
+          ],
+          "verify_sequence_steps": 224,
+          "verify_token_rows": 896,
+          "suffix_hits": 0,
+          "suffix_queries": 224,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            224
+          ],
+          "neural_draft_token_rows": 448,
+          "accepted_extend_rows_upper_bound": 896,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 896,
+          "init_ns": 1426922,
+          "append_ns": 137656,
+          "query_ns": 145657,
+          "release_ns": 35012,
+          "numeric_ns": 0,
+          "indexed": 24704,
+          "candidates": 768,
+          "compared": 8832,
+          "d0_mismatch": 0,
+          "short_rejected": 192,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 46539264,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 34,
+            "physical_used_including_reclaimable_bytes": 123306553344,
+            "total_minus_available_bytes": 115716030464,
+            "cached_bytes": 5745922048,
+            "buffers_bytes": 422916096,
+            "kernel_reclaimable_bytes": 3065507840,
+            "swap_used_bytes": 2147352576,
+            "minimum_MemFree_bytes": 8614084608,
+            "minimum_MemAvailable_bytes": 16204607488,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1116135424
+          }
+        },
+        "output-tail": {
+          "requests": 1,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 51287,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 778,
+          "numeric_ns": 0,
+          "indexed": 744,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 1310992,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 1,
+            "physical_used_including_reclaimable_bytes": 123449073664,
+            "total_minus_available_bytes": 115786420224,
+            "cached_bytes": 5746913280,
+            "buffers_bytes": 423002112,
+            "kernel_reclaimable_bytes": 3048759296,
+            "swap_used_bytes": 2147352576,
+            "minimum_MemFree_bytes": 8471564288,
+            "minimum_MemAvailable_bytes": 16134217728,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1115365376
+          }
+        }
+      },
+      "batches": [
+        {
+          "rows": 1,
+          "suffix": 0,
+          "steps": 107
+        },
+        {
+          "rows": 1,
+          "suffix": 1,
+          "steps": 121
+        },
+        {
+          "rows": 2,
+          "suffix": 0,
+          "steps": 41
+        },
+        {
+          "rows": 2,
+          "suffix": 2,
+          "steps": 2
+        },
+        {
+          "rows": 3,
+          "suffix": 0,
+          "steps": 6
+        },
+        {
+          "rows": 3,
+          "suffix": 1,
+          "steps": 3
+        },
+        {
+          "rows": 4,
+          "suffix": 0,
+          "steps": 141
+        },
+        {
+          "rows": 4,
+          "suffix": 1,
+          "steps": 56
+        },
+        {
+          "rows": 4,
+          "suffix": 2,
+          "steps": 50
+        },
+        {
+          "rows": 4,
+          "suffix": 3,
+          "steps": 49
+        },
+        {
+          "rows": 4,
+          "suffix": 4,
+          "steps": 943
+        }
+      ],
+      "actual_verify_batch_calls": 1519,
+      "streamed_prefill_trunk_max_bytes": 83886080
+    },
+    "07-subset-off": {
+      "memory": {
+        "samples": 1505,
+        "physical_used_including_reclaimable_bytes": 131179671552,
+        "total_minus_available_bytes": 118250262528,
+        "cached_bytes": 15426449408,
+        "buffers_bytes": 423284736,
+        "kernel_reclaimable_bytes": 106125926400,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 740966400,
+        "minimum_MemAvailable_bytes": 13670375424,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4128407552
+      },
+      "cases": {
+        "repeat-code": {
+          "requests": 4,
+          "acceptance": [
+            40,
+            0,
+            0,
+            2036
+          ],
+          "verify_sequence_steps": 2076,
+          "verify_token_rows": 8304,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            40,
+            0,
+            0,
+            2036
+          ],
+          "neural_draft_token_rows": 4152,
+          "accepted_extend_rows_upper_bound": 8184,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8184,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 425,
+            "physical_used_including_reclaimable_bytes": 121889083392,
+            "total_minus_available_bytes": 116608380928,
+            "cached_bytes": 5426249728,
+            "buffers_bytes": 357642240,
+            "kernel_reclaimable_bytes": 2081144832,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 10031554560,
+            "minimum_MemAvailable_bytes": 15312257024,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1033412608
+          }
+        },
+        "repeat-text": {
+          "requests": 4,
+          "acceptance": [
+            76,
+            76,
+            76,
+            1932
+          ],
+          "verify_sequence_steps": 2160,
+          "verify_token_rows": 8640,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            76,
+            76,
+            76,
+            1932
+          ],
+          "neural_draft_token_rows": 4320,
+          "accepted_extend_rows_upper_bound": 8184,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8184,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 432,
+            "physical_used_including_reclaimable_bytes": 122128699392,
+            "total_minus_available_bytes": 116491718656,
+            "cached_bytes": 5668208640,
+            "buffers_bytes": 365875200,
+            "kernel_reclaimable_bytes": 2112585728,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 9791938560,
+            "minimum_MemAvailable_bytes": 15428919296,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1037053952
+          }
+        },
+        "mixed": {
+          "requests": 4,
+          "acceptance": [
+            33,
+            49,
+            27,
+            199
+          ],
+          "verify_sequence_steps": 308,
+          "verify_token_rows": 1232,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            33,
+            49,
+            27,
+            199
+          ],
+          "neural_draft_token_rows": 616,
+          "accepted_extend_rows_upper_bound": 1008,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1008,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 292,
+            "physical_used_including_reclaimable_bytes": 122213261312,
+            "total_minus_available_bytes": 116562087936,
+            "cached_bytes": 5743161344,
+            "buffers_bytes": 369627136,
+            "kernel_reclaimable_bytes": 2079010816,
+            "swap_used_bytes": 2147422208,
+            "minimum_MemFree_bytes": 9707376640,
+            "minimum_MemAvailable_bytes": 15358550016,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1040138240
+          }
+        },
+        "nonrepeat": {
+          "requests": 4,
+          "acceptance": [
+            69,
+            77,
+            50,
+            159
+          ],
+          "verify_sequence_steps": 355,
+          "verify_token_rows": 1420,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            69,
+            77,
+            50,
+            159
+          ],
+          "neural_draft_token_rows": 710,
+          "accepted_extend_rows_upper_bound": 1009,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1009,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 295,
+            "physical_used_including_reclaimable_bytes": 122308222976,
+            "total_minus_available_bytes": 116597129216,
+            "cached_bytes": 5829636096,
+            "buffers_bytes": 372916224,
+            "kernel_reclaimable_bytes": 2079191040,
+            "swap_used_bytes": 2147414016,
+            "minimum_MemFree_bytes": 9612414976,
+            "minimum_MemAvailable_bytes": 15323508736,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1043750912
+          }
+        }
+      },
+      "batches": [
+        {
+          "rows": 1,
+          "suffix": 0,
+          "steps": 45
+        },
+        {
+          "rows": 2,
+          "suffix": 0,
+          "steps": 39
+        },
+        {
+          "rows": 3,
+          "suffix": 0,
+          "steps": 4
+        },
+        {
+          "rows": 4,
+          "suffix": 0,
+          "steps": 1191
+        }
+      ],
+      "actual_verify_batch_calls": 1279,
+      "streamed_prefill_trunk_max_bytes": 83886080
+    },
+    "08-full-on": {
+      "memory": {
+        "samples": 1481,
+        "physical_used_including_reclaimable_bytes": 131221434368,
+        "total_minus_available_bytes": 117980172288,
+        "cached_bytes": 15769968640,
+        "buffers_bytes": 373080064,
+        "kernel_reclaimable_bytes": 105140477952,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 699203584,
+        "minimum_MemAvailable_bytes": 13940465664,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4127961088
+      },
+      "cases": {
+        "repeat-code": {
+          "requests": 4,
+          "acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "verify_sequence_steps": 2044,
+          "verify_token_rows": 8176,
+          "suffix_hits": 2008,
+          "suffix_queries": 2044,
+          "hit_fraction": 0.9823874755381604,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            2008
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            36
+          ],
+          "neural_draft_token_rows": 72,
+          "accepted_extend_rows_upper_bound": 8176,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8176,
+          "init_ns": 2010974,
+          "append_ns": 1532113,
+          "query_ns": 68097115,
+          "release_ns": 6258,
+          "numeric_ns": 64467497,
+          "indexed": 284580,
+          "candidates": 8156,
+          "compared": 442696,
+          "d0_mismatch": 0,
+          "short_rejected": 32,
+          "numeric_rejected": 0,
+          "cache_decodes": 69,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 421,
+            "physical_used_including_reclaimable_bytes": 118972788736,
+            "total_minus_available_bytes": 117787029504,
+            "cached_bytes": 1502248960,
+            "buffers_bytes": 314667008,
+            "kernel_reclaimable_bytes": 3470356480,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 12947849216,
+            "minimum_MemAvailable_bytes": 14133608448,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1034989568
+          }
+        },
+        "repeat-text": {
+          "requests": 4,
+          "acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "verify_sequence_steps": 2044,
+          "verify_token_rows": 8176,
+          "suffix_hits": 2008,
+          "suffix_queries": 2044,
+          "hit_fraction": 0.9823874755381604,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            2008
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            36
+          ],
+          "neural_draft_token_rows": 72,
+          "accepted_extend_rows_upper_bound": 8176,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8176,
+          "init_ns": 1756262,
+          "append_ns": 1458994,
+          "query_ns": 57450383,
+          "release_ns": 7435,
+          "numeric_ns": 53925434,
+          "indexed": 284558,
+          "candidates": 8160,
+          "compared": 507660,
+          "d0_mismatch": 4,
+          "short_rejected": 28,
+          "numeric_rejected": 0,
+          "cache_decodes": 72,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 421,
+            "physical_used_including_reclaimable_bytes": 119093088256,
+            "total_minus_available_bytes": 117746307072,
+            "cached_bytes": 1574612992,
+            "buffers_bytes": 321486848,
+            "kernel_reclaimable_bytes": 3501584384,
+            "swap_used_bytes": 2146811904,
+            "minimum_MemFree_bytes": 12827549696,
+            "minimum_MemAvailable_bytes": 14174330880,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1040896000
+          }
+        },
+        "mixed": {
+          "requests": 4,
+          "acceptance": [
+            2,
+            7,
+            3,
+            246
+          ],
+          "verify_sequence_steps": 258,
+          "verify_token_rows": 1032,
+          "suffix_hits": 108,
+          "suffix_queries": 258,
+          "hit_fraction": 0.4186046511627907,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            108
+          ],
+          "neural_acceptance": [
+            2,
+            7,
+            3,
+            138
+          ],
+          "neural_draft_token_rows": 300,
+          "accepted_extend_rows_upper_bound": 1009,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1009,
+          "init_ns": 1832754,
+          "append_ns": 156278,
+          "query_ns": 2269337,
+          "release_ns": 6917,
+          "numeric_ns": 2028049,
+          "indexed": 279196,
+          "candidates": 652,
+          "compared": 26393,
+          "d0_mismatch": 17,
+          "short_rejected": 45,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 289,
+            "physical_used_including_reclaimable_bytes": 119131119616,
+            "total_minus_available_bytes": 117772709888,
+            "cached_bytes": 1635827712,
+            "buffers_bytes": 326078464,
+            "kernel_reclaimable_bytes": 3470053376,
+            "swap_used_bytes": 2146701312,
+            "minimum_MemFree_bytes": 12789518336,
+            "minimum_MemAvailable_bytes": 14147928064,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1046487040
+          }
+        },
+        "nonrepeat": {
+          "requests": 4,
+          "acceptance": [
+            34,
+            34,
+            26,
+            208
+          ],
+          "verify_sequence_steps": 302,
+          "verify_token_rows": 1208,
+          "suffix_hits": 0,
+          "suffix_queries": 302,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            34,
+            34,
+            26,
+            208
+          ],
+          "neural_draft_token_rows": 604,
+          "accepted_extend_rows_upper_bound": 1012,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1012,
+          "init_ns": 2109617,
+          "append_ns": 190359,
+          "query_ns": 131858,
+          "release_ns": 268595,
+          "numeric_ns": 0,
+          "indexed": 279202,
+          "candidates": 244,
+          "compared": 1539,
+          "d0_mismatch": 25,
+          "short_rejected": 41,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 293,
+            "physical_used_including_reclaimable_bytes": 119179624448,
+            "total_minus_available_bytes": 117721300992,
+            "cached_bytes": 1703964672,
+            "buffers_bytes": 329867264,
+            "kernel_reclaimable_bytes": 3470049280,
+            "swap_used_bytes": 2146697216,
+            "minimum_MemFree_bytes": 12741013504,
+            "minimum_MemAvailable_bytes": 14199336960,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1050836992
+          }
+        }
+      },
+      "batches": [
+        {
+          "rows": 1,
+          "suffix": 0,
+          "steps": 37
+        },
+        {
+          "rows": 2,
+          "suffix": 0,
+          "steps": 5
+        },
+        {
+          "rows": 3,
+          "suffix": 0,
+          "steps": 1
+        },
+        {
+          "rows": 3,
+          "suffix": 3,
+          "steps": 2
+        },
+        {
+          "rows": 4,
+          "suffix": 0,
+          "steps": 87
+        },
+        {
+          "rows": 4,
+          "suffix": 1,
+          "steps": 6
+        },
+        {
+          "rows": 4,
+          "suffix": 2,
+          "steps": 53
+        },
+        {
+          "rows": 4,
+          "suffix": 3,
+          "steps": 2
+        },
+        {
+          "rows": 4,
+          "suffix": 4,
+          "steps": 1000
+        }
+      ],
+      "actual_verify_batch_calls": 1193,
+      "streamed_prefill_trunk_max_bytes": 83886080
+    },
+    "09-full-off": {
+      "memory": {
+        "samples": 1494,
+        "physical_used_including_reclaimable_bytes": 131241218048,
+        "total_minus_available_bytes": 117863792640,
+        "cached_bytes": 14590017536,
+        "buffers_bytes": 331489280,
+        "kernel_reclaimable_bytes": 106195853312,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 679419904,
+        "minimum_MemAvailable_bytes": 14056845312,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4144615424
+      },
+      "cases": {
+        "repeat-code": {
+          "requests": 4,
+          "acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "verify_sequence_steps": 2044,
+          "verify_token_rows": 8176,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "neural_draft_token_rows": 4088,
+          "accepted_extend_rows_upper_bound": 8176,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8176,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 429,
+            "physical_used_including_reclaimable_bytes": 119099949056,
+            "total_minus_available_bytes": 117763710976,
+            "cached_bytes": 1666629632,
+            "buffers_bytes": 302313472,
+            "kernel_reclaimable_bytes": 3465875456,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 12820688896,
+            "minimum_MemAvailable_bytes": 14156926976,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1048911872
+          }
+        },
+        "repeat-text": {
+          "requests": 4,
+          "acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "verify_sequence_steps": 2044,
+          "verify_token_rows": 8176,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            2044
+          ],
+          "neural_draft_token_rows": 4088,
+          "accepted_extend_rows_upper_bound": 8176,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8176,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 429,
+            "physical_used_including_reclaimable_bytes": 119214419968,
+            "total_minus_available_bytes": 117704241152,
+            "cached_bytes": 1712189440,
+            "buffers_bytes": 308150272,
+            "kernel_reclaimable_bytes": 3497205760,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 12706217984,
+            "minimum_MemAvailable_bytes": 14216396800,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1054085120
+          }
+        },
+        "mixed": {
+          "requests": 4,
+          "acceptance": [
+            2,
+            7,
+            3,
+            246
+          ],
+          "verify_sequence_steps": 258,
+          "verify_token_rows": 1032,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            2,
+            7,
+            3,
+            246
+          ],
+          "neural_draft_token_rows": 516,
+          "accepted_extend_rows_upper_bound": 1009,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1009,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 289,
+            "physical_used_including_reclaimable_bytes": 119308161024,
+            "total_minus_available_bytes": 117644513280,
+            "cached_bytes": 1735589888,
+            "buffers_bytes": 312090624,
+            "kernel_reclaimable_bytes": 3465732096,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 12612476928,
+            "minimum_MemAvailable_bytes": 14276124672,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1057501184
+          }
+        },
+        "nonrepeat": {
+          "requests": 4,
+          "acceptance": [
+            34,
+            34,
+            26,
+            208
+          ],
+          "verify_sequence_steps": 302,
+          "verify_token_rows": 1208,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            34,
+            34,
+            26,
+            208
+          ],
+          "neural_draft_token_rows": 604,
+          "accepted_extend_rows_upper_bound": 1012,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1012,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 293,
+            "physical_used_including_reclaimable_bytes": 119296516096,
+            "total_minus_available_bytes": 117702893568,
+            "cached_bytes": 1830219776,
+            "buffers_bytes": 315838464,
+            "kernel_reclaimable_bytes": 3465715712,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 12624121856,
+            "minimum_MemAvailable_bytes": 14217744384,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1060126720
+          }
+        }
+      },
+      "batches": [
+        {
+          "rows": 1,
+          "suffix": 0,
+          "steps": 41
+        },
+        {
+          "rows": 2,
+          "suffix": 0,
+          "steps": 6
+        },
+        {
+          "rows": 3,
+          "suffix": 0,
+          "steps": 1
+        },
+        {
+          "rows": 4,
+          "suffix": 0,
+          "steps": 1148
+        }
+      ],
+      "actual_verify_batch_calls": 1196,
+      "streamed_prefill_trunk_max_bytes": 83886080
+    },
+    "10-subset-off": {
+      "memory": {
+        "samples": 1504,
+        "physical_used_including_reclaimable_bytes": 131174543360,
+        "total_minus_available_bytes": 118610149376,
+        "cached_bytes": 14502207488,
+        "buffers_bytes": 315990016,
+        "kernel_reclaimable_bytes": 106191368192,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 746094592,
+        "minimum_MemAvailable_bytes": 13310488576,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4143357952
+      },
+      "cases": {
+        "repeat-code": {
+          "requests": 4,
+          "acceptance": [
+            40,
+            0,
+            0,
+            2036
+          ],
+          "verify_sequence_steps": 2076,
+          "verify_token_rows": 8304,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            40,
+            0,
+            0,
+            2036
+          ],
+          "neural_draft_token_rows": 4152,
+          "accepted_extend_rows_upper_bound": 8184,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8184,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 425,
+            "physical_used_including_reclaimable_bytes": 123807006720,
+            "total_minus_available_bytes": 116676046848,
+            "cached_bytes": 6167715840,
+            "buffers_bytes": 294854656,
+            "kernel_reclaimable_bytes": 3169611776,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 8113631232,
+            "minimum_MemAvailable_bytes": 15244591104,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1047928832
+          }
+        },
+        "repeat-text": {
+          "requests": 4,
+          "acceptance": [
+            76,
+            76,
+            76,
+            1932
+          ],
+          "verify_sequence_steps": 2160,
+          "verify_token_rows": 8640,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            76,
+            76,
+            76,
+            1932
+          ],
+          "neural_draft_token_rows": 4320,
+          "accepted_extend_rows_upper_bound": 8184,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8184,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 433,
+            "physical_used_including_reclaimable_bytes": 123677442048,
+            "total_minus_available_bytes": 116513464320,
+            "cached_bytes": 6205423616,
+            "buffers_bytes": 299945984,
+            "kernel_reclaimable_bytes": 3168251904,
+            "swap_used_bytes": 2144960512,
+            "minimum_MemFree_bytes": 8243195904,
+            "minimum_MemAvailable_bytes": 15407173632,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1051627520
+          }
+        },
+        "mixed": {
+          "requests": 4,
+          "acceptance": [
+            35,
+            46,
+            26,
+            201
+          ],
+          "verify_sequence_steps": 308,
+          "verify_token_rows": 1232,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            35,
+            46,
+            26,
+            201
+          ],
+          "neural_draft_token_rows": 616,
+          "accepted_extend_rows_upper_bound": 1009,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1009,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 293,
+            "physical_used_including_reclaimable_bytes": 123773272064,
+            "total_minus_available_bytes": 116624179200,
+            "cached_bytes": 6254211072,
+            "buffers_bytes": 303472640,
+            "kernel_reclaimable_bytes": 3169193984,
+            "swap_used_bytes": 2144960512,
+            "minimum_MemFree_bytes": 8147365888,
+            "minimum_MemAvailable_bytes": 15296458752,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1055105024
+          }
+        },
+        "nonrepeat": {
+          "requests": 4,
+          "acceptance": [
+            69,
+            77,
+            50,
+            159
+          ],
+          "verify_sequence_steps": 355,
+          "verify_token_rows": 1420,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            69,
+            77,
+            50,
+            159
+          ],
+          "neural_draft_token_rows": 710,
+          "accepted_extend_rows_upper_bound": 1009,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1009,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 296,
+            "physical_used_including_reclaimable_bytes": 123756650496,
+            "total_minus_available_bytes": 116590436352,
+            "cached_bytes": 6281977856,
+            "buffers_bytes": 306839552,
+            "kernel_reclaimable_bytes": 3136409600,
+            "swap_used_bytes": 2144960512,
+            "minimum_MemFree_bytes": 8163987456,
+            "minimum_MemAvailable_bytes": 15330201600,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1055485952
+          }
+        }
+      },
+      "batches": [
+        {
+          "rows": 1,
+          "suffix": 0,
+          "steps": 41
+        },
+        {
+          "rows": 2,
+          "suffix": 0,
+          "steps": 38
+        },
+        {
+          "rows": 3,
+          "suffix": 0,
+          "steps": 6
+        },
+        {
+          "rows": 4,
+          "suffix": 0,
+          "steps": 1191
+        }
+      ],
+      "actual_verify_batch_calls": 1276,
+      "streamed_prefill_trunk_max_bytes": 83886080
+    },
+    "11-subset-on": {
+      "memory": {
+        "samples": 1498,
+        "physical_used_including_reclaimable_bytes": 131204206592,
+        "total_minus_available_bytes": 118687375360,
+        "cached_bytes": 15696834560,
+        "buffers_bytes": 402071552,
+        "kernel_reclaimable_bytes": 106197843968,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 716431360,
+        "minimum_MemAvailable_bytes": 13233262592,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4129169408
+      },
+      "cases": {
+        "repeat-code": {
+          "requests": 4,
+          "acceptance": [
+            40,
+            0,
+            0,
+            2036
+          ],
+          "verify_sequence_steps": 2076,
+          "verify_token_rows": 8304,
+          "suffix_hits": 2000,
+          "suffix_queries": 2076,
+          "hit_fraction": 0.9633911368015414,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            2000
+          ],
+          "neural_acceptance": [
+            40,
+            0,
+            0,
+            36
+          ],
+          "neural_draft_token_rows": 152,
+          "accepted_extend_rows_upper_bound": 8184,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8184,
+          "init_ns": 2082605,
+          "append_ns": 1530311,
+          "query_ns": 61698985,
+          "release_ns": 4687,
+          "numeric_ns": 58189671,
+          "indexed": 284588,
+          "candidates": 8284,
+          "compared": 444852,
+          "d0_mismatch": 40,
+          "short_rejected": 32,
+          "numeric_rejected": 0,
+          "cache_decodes": 69,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 421,
+            "physical_used_including_reclaimable_bytes": 122185912320,
+            "total_minus_available_bytes": 116674727936,
+            "cached_bytes": 5723664384,
+            "buffers_bytes": 243716096,
+            "kernel_reclaimable_bytes": 2089189376,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 9734725632,
+            "minimum_MemAvailable_bytes": 15245910016,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1037959168
+          }
+        },
+        "repeat-text": {
+          "requests": 4,
+          "acceptance": [
+            152,
+            0,
+            0,
+            2008
+          ],
+          "verify_sequence_steps": 2160,
+          "verify_token_rows": 8640,
+          "suffix_hits": 1976,
+          "suffix_queries": 2160,
+          "hit_fraction": 0.9148148148148149,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            1976
+          ],
+          "neural_acceptance": [
+            152,
+            0,
+            0,
+            32
+          ],
+          "neural_draft_token_rows": 368,
+          "accepted_extend_rows_upper_bound": 8184,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 8184,
+          "init_ns": 1541129,
+          "append_ns": 1538751,
+          "query_ns": 59086852,
+          "release_ns": 7029,
+          "numeric_ns": 55554181,
+          "indexed": 284566,
+          "candidates": 8620,
+          "compared": 536492,
+          "d0_mismatch": 152,
+          "short_rejected": 28,
+          "numeric_rejected": 0,
+          "cache_decodes": 72,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 428,
+            "physical_used_including_reclaimable_bytes": 122133409792,
+            "total_minus_available_bytes": 116561793024,
+            "cached_bytes": 5786423296,
+            "buffers_bytes": 249577472,
+            "kernel_reclaimable_bytes": 2087075840,
+            "swap_used_bytes": 2147368960,
+            "minimum_MemFree_bytes": 9787228160,
+            "minimum_MemAvailable_bytes": 15358844928,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1044619264
+          }
+        },
+        "mixed": {
+          "requests": 4,
+          "acceptance": [
+            35,
+            47,
+            25,
+            201
+          ],
+          "verify_sequence_steps": 308,
+          "verify_token_rows": 1232,
+          "suffix_hits": 108,
+          "suffix_queries": 308,
+          "hit_fraction": 0.35064935064935066,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            108
+          ],
+          "neural_acceptance": [
+            35,
+            47,
+            25,
+            93
+          ],
+          "neural_draft_token_rows": 400,
+          "accepted_extend_rows_upper_bound": 1008,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1008,
+          "init_ns": 1532083,
+          "append_ns": 237391,
+          "query_ns": 2959689,
+          "release_ns": 8519,
+          "numeric_ns": 2650258,
+          "indexed": 279195,
+          "candidates": 603,
+          "compared": 26372,
+          "d0_mismatch": 13,
+          "short_rejected": 29,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 248320,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 293,
+            "physical_used_including_reclaimable_bytes": 122686365696,
+            "total_minus_available_bytes": 116591882240,
+            "cached_bytes": 5879488512,
+            "buffers_bytes": 398057472,
+            "kernel_reclaimable_bytes": 2262376448,
+            "swap_used_bytes": 2147368960,
+            "minimum_MemFree_bytes": 9234272256,
+            "minimum_MemAvailable_bytes": 15328755712,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1042268160
+          }
+        },
+        "nonrepeat": {
+          "requests": 4,
+          "acceptance": [
+            69,
+            77,
+            50,
+            159
+          ],
+          "verify_sequence_steps": 355,
+          "verify_token_rows": 1420,
+          "suffix_hits": 0,
+          "suffix_queries": 355,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            69,
+            77,
+            50,
+            159
+          ],
+          "neural_draft_token_rows": 710,
+          "accepted_extend_rows_upper_bound": 1009,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 1009,
+          "init_ns": 1722623,
+          "append_ns": 170614,
+          "query_ns": 108887,
+          "release_ns": 5416,
+          "numeric_ns": 0,
+          "indexed": 279199,
+          "candidates": 202,
+          "compared": 958,
+          "d0_mismatch": 17,
+          "short_rejected": 29,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5817408,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 295,
+            "physical_used_including_reclaimable_bytes": 122732961792,
+            "total_minus_available_bytes": 116624867328,
+            "cached_bytes": 5944791040,
+            "buffers_bytes": 402026496,
+            "kernel_reclaimable_bytes": 2259079168,
+            "swap_used_bytes": 2147319808,
+            "minimum_MemFree_bytes": 9187676160,
+            "minimum_MemAvailable_bytes": 15295770624,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1058709504
+          }
+        }
+      },
+      "batches": [
+        {
+          "rows": 1,
+          "suffix": 0,
+          "steps": 41
+        },
+        {
+          "rows": 1,
+          "suffix": 1,
+          "steps": 1
+        },
+        {
+          "rows": 2,
+          "suffix": 0,
+          "steps": 38
+        },
+        {
+          "rows": 2,
+          "suffix": 2,
+          "steps": 1
+        },
+        {
+          "rows": 3,
+          "suffix": 0,
+          "steps": 1
+        },
+        {
+          "rows": 3,
+          "suffix": 1,
+          "steps": 3
+        },
+        {
+          "rows": 3,
+          "suffix": 3,
+          "steps": 1
+        },
+        {
+          "rows": 4,
+          "suffix": 0,
+          "steps": 93
+        },
+        {
+          "rows": 4,
+          "suffix": 1,
+          "steps": 56
+        },
+        {
+          "rows": 4,
+          "suffix": 2,
+          "steps": 50
+        },
+        {
+          "rows": 4,
+          "suffix": 3,
+          "steps": 49
+        },
+        {
+          "rows": 4,
+          "suffix": 4,
+          "steps": 943
+        }
+      ],
+      "actual_verify_batch_calls": 1277,
+      "streamed_prefill_trunk_max_bytes": 83886080
+    }
+  },
+  "limitations": [
+    "One-second observations do not bound unsampled peaks.",
+    "MemTotal-Free includes reclaimable driver/kernel allocations and file cache.",
+    "RAM includes the whole host; RSS is not an additive GPU metric.",
+    "No independent GPU verify/extend times were collected."
+  ]
+}

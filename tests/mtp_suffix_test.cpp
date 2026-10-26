@@ -117,7 +117,7 @@ struct Frame {
 
 class Fixture {
  public:
-  explicit Fixture(int slots = 1)
+  explicit Fixture(int slots = 1, bool uneven = false)
       : logits_(16u * 248320), trunk_(16u * 10240), g_(10240) {
     q4t::model::ModelConfig cfg;
     cfg.model_dir = kModelDir;
@@ -128,12 +128,14 @@ class Fixture {
     cfg.max_len = kCapacity;
     cfg.ple_capacity_tokens = 16;
     cfg.max_seq = slots;
+    if (uneven) cfg.seq_capacities = {64, 48, 48, 48, 64, 64, 64, 64};
     Check(owner_.Load(cfg, nullptr), "load controlled target");
     q4t::mtp::MtpConfig draft_cfg;
     draft_cfg.mtp_dir = kModelDir + "/mtp";
     draft_cfg.max_prefill = 16;
     draft_cfg.max_len = kCapacity;
     draft_cfg.max_seq = slots;
+    draft_cfg.seq_capacities = cfg.seq_capacities;
     if (const char* subset = std::getenv("Q4T_TEST_SUBSET_HEAD"))
       draft_cfg.subset_head_dir = subset;
     Check(q4t::mtp::LoadMtp(draft_cfg, main().head.embed_tokens,
@@ -590,9 +592,14 @@ struct Regions {
 
 class MultiFixture {
  public:
-  MultiFixture() : fixture_(8), logits_(16u * 248320), trunk_(16u * 10240),
-                   g_(4u * 10240), packed_(16u * 10240), multi_(16u * 10240),
-                   sample_(16u * 2560) {
+  explicit MultiFixture(bool uneven = false)
+      : fixture_(8, uneven),
+        logits_(16u * 248320),
+        trunk_(16u * 10240),
+        g_(4u * 10240),
+        packed_(16u * 10240),
+        multi_(16u * 10240),
+        sample_(16u * 2560) {
     for (auto& layer : main().layers) {
       target_.Add(layer.ssm_state,
                   4u * layer.linear.nv * layer.linear.kd * layer.linear.vd * 4);
@@ -602,9 +609,11 @@ class MultiFixture {
                   4u * layer.hc_dim * (layer.ple.conv_kernel - 1) *
                       layer.ple.conv_dilation * 2);
     }
-    cache_.Add(mtp().kv_cache, 4 * mtp().kv_bytes);
-    cache_.Add(mtp().idx_raw, 4 * mtp().idx_bytes);
-    cache_.Add(mtp().idx_comp, 4 * mtp().idx_bytes);
+    const size_t tokens = q4t::runtime::SequenceOffset(mtp().cfg.seq_capacities,
+                                                       4, mtp().cfg.max_len);
+    cache_.Add(mtp().kv_cache, tokens * 2048);
+    cache_.Add(mtp().idx_raw, tokens * 256);
+    cache_.Add(mtp().idx_comp, tokens * 256);
     if (mtp().subset_ids) subset_ = Read(mtp().subset_ids, mtp().DraftVocab());
     Start();
   }
@@ -627,6 +636,77 @@ class MultiFixture {
                 mtp(), shifted.data(), trunk_.data(), positions.data(), 4,
                 &d0_[slot], G(slot), nullptr, slot), "multi initial extend");
     }
+  }
+
+  void StreamInit() {
+    constexpr int T = 33;  // 16 + 16 + 1; last token crosses two chunk edges.
+    const int slot = 3;
+    const int hc = main().hc_dim();
+    Buffer hidden(size_t(T) * hc), expected_g(hc), actual_g(hc);
+    std::vector<uint16_t> input(size_t(T) * hc);
+    for (size_t i = 0; i < input.size(); ++i)
+      input[i] = 0x3d00 + (i * 17 % 256);  // finite deterministic BF16
+    Write(hidden.data(), input);
+    std::vector<int32_t> ids(T);
+    std::vector<int> pos(T);
+    for (int i = 0; i < T; ++i) {
+      ids[i] = 321 + i;
+      pos[i] = i;
+    }
+    const auto before = cache_.ReadAll();
+    int32_t expected = -1, actual = -1;
+    Check(q4t::mtp::MtpResetState(mtp(), nullptr, slot), "reference reset");
+    Check(q4t::mtp::MtpDraftExtend(mtp(), ids.data(), hidden.data(), pos.data(),
+                                   T, &expected, expected_g.data(), nullptr,
+                                   slot),
+          "legacy init");
+    const auto reference = cache_.ReadAll();
+    cache_.Restore(before);
+    Check(q4t::mtp::MtpResetState(mtp(), nullptr, slot), "stream reset");
+    for (int base = 0; base < T; base += 16) {
+      const int n = std::min(16, T - base);
+      const bool last = base + n == T;
+      Check(q4t::mtp::MtpDraftExtend(
+                mtp(), ids.data() + base, hidden.data() + size_t(base) * hc,
+                pos.data() + base, n, last ? &actual : nullptr,
+                last ? actual_g.data() : nullptr, nullptr, slot, last),
+            "streamed init");
+    }
+    const auto result = cache_.ReadAll();
+    for (size_t i = 0; i < result.size(); ++i)
+      Exact(result[i], reference[i], "stream init cache plus untouched peers");
+    Require(actual == expected, "stream init global d0");
+    Exact(Read(actual_g.data(), hc), Read(expected_g.data(), hc),
+          "stream init g");
+    // At the short boundary, fail before any metadata upload or cache write.
+    const int invalid_pos = mtp().cfg.Capacity(slot);
+    Require(!q4t::mtp::MtpDraftExtend(mtp(), ids.data(), hidden.data(),
+                                      &invalid_pos, 1, &actual, actual_g.data(),
+                                      nullptr, slot)
+                 .ok(),
+            "short slot bounds");
+    const auto after_rejection = cache_.ReadAll();
+    for (size_t i = 0; i < result.size(); ++i)
+      Exact(after_rejection[i], result[i], "no writes past short slot");
+    Check(q4t::mtp::MtpResetState(mtp(), nullptr, slot),
+          "cancelled slot reset");
+    const auto reset = cache_.ReadAll();
+    const size_t prefix = q4t::runtime::SequenceOffset(mtp().cfg.seq_capacities,
+                                                       slot, mtp().cfg.max_len);
+    for (int i = 0; i < 3; ++i) {
+      const size_t offset = prefix * (i == 0 ? 2048 : 256);
+      Exact(std::vector<uint8_t>(reset[i].begin(), reset[i].begin() + offset),
+            std::vector<uint8_t>(result[i].begin(), result[i].begin() + offset),
+            "reset leaves all preceding slots untouched");
+      Require(std::all_of(reset[i].begin() + offset, reset[i].end(),
+                          [](uint8_t b) { return b == 0; }),
+              "reset own slot");
+    }
+    std::printf(
+        "AGENT_STREAM_INIT chunks=3 cache_exact=1 d0_exact=1 "
+        "g_exact=1 bounds=1 isolated_reset=1 subset=%d\n",
+        mtp().subset_head != nullptr);
+    cache_.Restore(before);
   }
 
   // The reference creates compact neural rows on CPU, runs MtpForward
@@ -790,7 +870,10 @@ class MultiFixture {
           size_t(committed) * mtp().cfg.idx_head_dim * 2,
           size_t(committed / mtp().cfg.idx_compress) * mtp().cfg.idx_head_dim * 2};
       for (int i = 0; i < 3; ++i) {
-        const size_t offset = size_t(slots[row]) * cache_.regions[i].second / 4;
+        const size_t offset =
+            q4t::runtime::SequenceOffset(mtp().cfg.seq_capacities, slots[row],
+                                         mtp().cfg.max_len) *
+            (i == 0 ? 2048 : 256);
         Exact(std::vector<uint8_t>(actual_cache[i].begin() + offset,
                                    actual_cache[i].begin() + offset + lengths[i]),
               std::vector<uint8_t>(reference_cache[i].begin() + offset,
@@ -878,6 +961,22 @@ Q4T_TEST(mtp_suffix_multi_states) {
   f.Step({3, 1}, 1);        // contraction, one neural row in nonzero slot
   f.Step({3}, 0);           // lone remaining nonzero slot
   f.Start();               // all slots reused by new histories
+  f.Step({2, 3, 1, 0}, 6);
+  return true;
+}
+
+Q4T_TEST(mtp_suffix_agent_states) {
+  q4t::test::GdnRegOff same_gdn_kernel;
+  Cuda(cudaSetDevice(0), "CUDA required; no skip");
+  MultiFixture f(true);
+  f.StreamInit();
+  f.Step({3, 1, 0, 2}, 15);
+  f.Step({3, 1, 0, 2}, 5);
+  f.Step({2, 0, 3, 1}, 0);
+  f.Step({1, 3, 2, 0}, 10);
+  f.Step({3, 1}, 1);
+  f.Step({3}, 0);
+  f.Start();
   f.Step({2, 3, 1, 0}, 6);
   return true;
 }

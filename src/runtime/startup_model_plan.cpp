@@ -37,7 +37,8 @@ Status ValidateMainConfig(const model::ModelConfig& cfg,
       cfg.ple_row_bytes != 160) {
     return Status::Fail("startup plan: unsupported main model architecture");
   }
-  if (cfg.max_len < 1 || cfg.max_len > 262144 || cfg.max_prefill < 1 ||
+  if (!ValidSequenceCapacities(cfg.seq_capacities, cfg.max_len, cfg.max_seq) ||
+      cfg.max_len < 1 || cfg.max_len > 262144 || cfg.max_prefill < 1 ||
       cfg.max_prefill > 8192 || cfg.max_seq < 1 ||
       cfg.max_seq > cfg.max_prefill || cfg.ple_capacity_tokens < 1 ||
       cfg.ple_capacity_tokens > 262144 || cfg.moe_resident_slots < 0 ||
@@ -269,17 +270,29 @@ Status PlanMainResources(const model::ModelConfig& cfg,
     if (is_full) {
       Q4T_PLAN_TRY(
           startup_detail::PlanFull(*loader, base + ".self_attn", full, plan));
+      if (!cfg.seq_capacities.empty())
+        Q4T_PLAN_TRY(plan->Add(base + ".state.idx_offsets", {cfg.max_seq},
+                               sizeof(size_t)));
       const int64_t pages =
           (int64_t(cfg.max_len) + model::kKvPageSize - 1) / model::kKvPageSize;
       Q4T_PLAN_TRY(plan->Add(
           base + ".state.kv_cache",
-          {cfg.max_seq, pages, model::kKvPageSize, full.nkv, 2, full.hd}, 2));
+          {static_cast<int64_t>(cfg.seq_capacities.empty()
+                                    ? cfg.max_seq * pages * model::kKvPageSize
+                                    : SequencePoolTokens(cfg.seq_capacities,
+                                                         cfg.max_len,
+                                                         cfg.max_seq)),
+           full.nkv, 2, full.hd},
+          2));
       Q4T_PLAN_TRY(plan->Add(base + ".state.page_table",
                              {cfg.max_seq, cfg.max_len}, sizeof(int)));
       for (const char* name : {"idx_raw", "idx_comp"}) {
-        Q4T_PLAN_TRY(plan->Add(base + ".state." + name,
-                               {cfg.max_seq, cfg.max_len, full.idx_head_dim},
-                               2));
+        Q4T_PLAN_TRY(
+            plan->Add(base + ".state." + name,
+                      {static_cast<int64_t>(SequencePoolTokens(
+                           cfg.seq_capacities, cfg.max_len, cfg.max_seq)),
+                       full.idx_head_dim},
+                      2));
       }
     } else {
       Q4T_PLAN_TRY(PlanLinear(*loader, base + ".linear_attn", cfg.hs, plan));

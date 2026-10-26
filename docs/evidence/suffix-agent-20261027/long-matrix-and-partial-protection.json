@@ -1,0 +1,1057 @@
+{
+  "stage_state": {
+    "status": "STOPPED",
+    "started": 1793043833.4867074,
+    "completed": [
+      "01-attention-layout",
+      "02-full-states",
+      "03-subset-states",
+      "04-full-off",
+      "05-full-on",
+      "06-subset-on",
+      "07-subset-off",
+      "08-full-on",
+      "09-full-off",
+      "10-subset-off",
+      "11-subset-on"
+    ],
+    "requests_completed": 195,
+    "loads_started": 9,
+    "contract_seconds": 24.479486478026956,
+    "plan_sha256": "8e5e7fd347c3a7184dd6422d55bd1441db0991ae768ea57acd2f4f31aa38f8a9",
+    "current": "12-full-parent",
+    "error": "RuntimeError('verify/acceptance work ledger')",
+    "finished": 1793057093.7908688,
+    "elapsed_seconds": 13260.304164234083,
+    "monitor_failures": []
+  },
+  "missing_services": [
+    "13-full-candidate",
+    "14-subset-candidate",
+    "15-subset-parent",
+    "16-plain-parent",
+    "17-plain-candidate"
+  ],
+  "paired": [
+    {
+      "head": "full",
+      "block": 1,
+      "scenario": "repeat-code",
+      "off": {
+        "e2e": 19.089445560278612,
+        "decode": 12.51450908842611,
+        "ttft_mean": 265.52186355093727,
+        "ttft_max": 265.6018092480954,
+        "makespan": 429.137660081964,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 19.48503913265943,
+        "decode": 13.199710339106023,
+        "ttft_mean": 265.3262858327362,
+        "ttft_max": 265.4065599918831,
+        "makespan": 420.4251243339386,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "e2e_percent": 2.0723156737667114,
+      "decode_percent": 5.475254729037782,
+      "ttft_percent": -0.07365785837202266,
+      "output_same": true
+    },
+    {
+      "head": "full",
+      "block": 1,
+      "scenario": "repeat-text",
+      "off": {
+        "e2e": 19.097760967713185,
+        "decode": 12.466169041568593,
+        "ttft_mean": 264.7098429505713,
+        "ttft_max": 264.78788210009225,
+        "makespan": 428.9508080999367,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 19.458967856798445,
+        "decode": 13.117070728839744,
+        "ttft_mean": 264.89374316477915,
+        "ttft_max": 264.9719706210308,
+        "makespan": 420.9884131720755,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "e2e_percent": 1.8913572627488495,
+      "decode_percent": 5.221344946476436,
+      "ttft_percent": 0.06947237479271173,
+      "output_same": true
+    },
+    {
+      "head": "full",
+      "block": 1,
+      "scenario": "mixed",
+      "off": {
+        "e2e": 3.541962456167872,
+        "decode": 11.278593252093142,
+        "ttft_mean": 266.37504835479194,
+        "ttft_max": 266.45833216095343,
+        "makespan": 289.10526654985733,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "a71f9d0ed541eca0ec7e3b6c4ad7dc7271e88a8d746cc327edd3ee12b9df616f"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 3.5448701120544643,
+        "decode": 11.347486029754894,
+        "ttft_mean": 266.3160618132679,
+        "ttft_max": 266.39965800894424,
+        "makespan": 288.8681298978627,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "a71f9d0ed541eca0ec7e3b6c4ad7dc7271e88a8d746cc327edd3ee12b9df616f"
+          ]
+        ]
+      },
+      "e2e_percent": 0.08209166309849358,
+      "decode_percent": 0.610827752379195,
+      "ttft_percent": -0.022144169241222755,
+      "output_same": true
+    },
+    {
+      "head": "full",
+      "block": 1,
+      "scenario": "nonrepeat",
+      "off": {
+        "e2e": 3.488687319994996,
+        "decode": 10.595471240807356,
+        "ttft_mean": 266.50680688698776,
+        "ttft_max": 266.58468644996174,
+        "makespan": 293.52014269982465,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "6f18a7d7f58f36aed9c0ab16fb0f5fcc21a3331e376b20decac1415a6654ee51",
+            "07fd894e435b36dbc8840e318ca8e3e30ad5b8cad478815293e5276947632008"
+          ],
+          [
+            "8efb12d32820fef02bc5184e028f8412fd230ebf70c79afbc9c6ed5adbbc3c25",
+            "4e225c8e481b4ce82f84ebe7d698bc41092b91774c9f41091470d00a1b2eb800"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "a71f9d0ed541eca0ec7e3b6c4ad7dc7271e88a8d746cc327edd3ee12b9df616f"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 3.4884161681103496,
+        "decode": 10.598973786305718,
+        "ttft_mean": 266.238967053534,
+        "ttft_max": 266.3159261040855,
+        "makespan": 293.5429577929899,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "6f18a7d7f58f36aed9c0ab16fb0f5fcc21a3331e376b20decac1415a6654ee51",
+            "07fd894e435b36dbc8840e318ca8e3e30ad5b8cad478815293e5276947632008"
+          ],
+          [
+            "8efb12d32820fef02bc5184e028f8412fd230ebf70c79afbc9c6ed5adbbc3c25",
+            "a7d715131dec8262644752ea4b39c1a890dd753a2e2c0a0a5eea64d55b66b9a3"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "a71f9d0ed541eca0ec7e3b6c4ad7dc7271e88a8d746cc327edd3ee12b9df616f"
+          ]
+        ]
+      },
+      "e2e_percent": -0.007772318347143425,
+      "decode_percent": 0.03305700538238643,
+      "ttft_percent": -0.10050018481041478,
+      "output_same": false
+    },
+    {
+      "head": "subset",
+      "block": 1,
+      "scenario": "repeat-code",
+      "off": {
+        "e2e": 19.261978749736524,
+        "decode": 12.791258492272629,
+        "ttft_mean": 265.1467974674888,
+        "ttft_max": 265.22412512404844,
+        "makespan": 425.2937928359024,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 19.498653717500332,
+        "decode": 13.181110043010518,
+        "ttft_mean": 264.7197290339973,
+        "ttft_max": 264.79665147908963,
+        "makespan": 420.1315700400155,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "e2e_percent": 1.2287157557322237,
+      "decode_percent": 3.0477966728090333,
+      "ttft_percent": -0.16106867500215172,
+      "output_same": true
+    },
+    {
+      "head": "subset",
+      "block": 1,
+      "scenario": "repeat-text",
+      "off": {
+        "e2e": 18.95937442780649,
+        "decode": 12.207404547473605,
+        "ttft_mean": 264.2792982637184,
+        "ttft_max": 264.35481670708396,
+        "makespan": 432.0817667900119,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 19.15432184850158,
+        "decode": 12.550042086462499,
+        "ttft_mean": 264.4943765977514,
+        "ttft_max": 264.56983575900085,
+        "makespan": 427.6841573819984,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "e2e_percent": 1.028237621644168,
+      "decode_percent": 2.80680088594103,
+      "ttft_percent": 0.08138296697699499,
+      "output_same": true
+    },
+    {
+      "head": "subset",
+      "block": 1,
+      "scenario": "mixed",
+      "off": {
+        "e2e": 3.4988098846818407,
+        "decode": 10.743848764122006,
+        "ttft_mean": 266.0013807025389,
+        "ttft_max": 266.08286312012933,
+        "makespan": 292.6709463361185,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "929f118df74bcc1a621eda3e153672234e164851257648186bce9069da7590d0"
+          ],
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "481479c8be3d8a946c87565a55eeb5a054d77edcf33b13ea9d13a54400bfb3d7"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 3.4958196642385886,
+        "decode": 10.820099315402047,
+        "ttft_mean": 266.4773947467329,
+        "ttft_max": 266.5584479351528,
+        "makespan": 292.92128838202916,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "221a0e96659320b9b7d618d8748fc36f6a099e68f8a656f304686ea9760f2037"
+          ]
+        ]
+      },
+      "e2e_percent": -0.08546393035939737,
+      "decode_percent": 0.7097135575350855,
+      "ttft_percent": 0.17895171932447163,
+      "output_same": false
+    },
+    {
+      "head": "subset",
+      "block": 1,
+      "scenario": "nonrepeat",
+      "off": {
+        "e2e": 3.466412928298061,
+        "decode": 9.51070488037951,
+        "ttft_mean": 265.9574017582927,
+        "ttft_max": 266.0306940630544,
+        "makespan": 295.4062372779008,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "6f18a7d7f58f36aed9c0ab16fb0f5fcc21a3331e376b20decac1415a6654ee51",
+            "07fd894e435b36dbc8840e318ca8e3e30ad5b8cad478815293e5276947632008"
+          ],
+          [
+            "8efb12d32820fef02bc5184e028f8412fd230ebf70c79afbc9c6ed5adbbc3c25",
+            "4dadde15abd46fb2473933bbb49878ee856b340059881f1b9076b17db3f3e391"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "221a0e96659320b9b7d618d8748fc36f6a099e68f8a656f304686ea9760f2037"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 3.460063510799974,
+        "decode": 9.522443314336035,
+        "ttft_mean": 266.5335622805287,
+        "ttft_max": 266.60685145505704,
+        "makespan": 295.94832488009706,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "6f18a7d7f58f36aed9c0ab16fb0f5fcc21a3331e376b20decac1415a6654ee51",
+            "07fd894e435b36dbc8840e318ca8e3e30ad5b8cad478815293e5276947632008"
+          ],
+          [
+            "8efb12d32820fef02bc5184e028f8412fd230ebf70c79afbc9c6ed5adbbc3c25",
+            "4dadde15abd46fb2473933bbb49878ee856b340059881f1b9076b17db3f3e391"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "221a0e96659320b9b7d618d8748fc36f6a099e68f8a656f304686ea9760f2037"
+          ]
+        ]
+      },
+      "e2e_percent": -0.18316968086097285,
+      "decode_percent": 0.12342338558670729,
+      "ttft_percent": 0.21663639305653515,
+      "output_same": true
+    },
+    {
+      "head": "full",
+      "block": 2,
+      "scenario": "repeat-code",
+      "off": {
+        "e2e": 19.08953109597808,
+        "decode": 12.504028906804692,
+        "ttft_mean": 265.38366027275333,
+        "ttft_max": 265.4644306600094,
+        "makespan": 429.1357372170314,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 19.449638012720076,
+        "decode": 13.180147406442124,
+        "ttft_mean": 265.8611273675342,
+        "ttft_max": 265.94103400502354,
+        "makespan": 421.19035812607035,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "e2e_percent": 1.886410488196133,
+      "decode_percent": 5.407205187037656,
+      "ttft_percent": 0.17991578467573266,
+      "output_same": true
+    },
+    {
+      "head": "full",
+      "block": 2,
+      "scenario": "repeat-text",
+      "off": {
+        "e2e": 19.102885424710017,
+        "decode": 12.455015672501514,
+        "ttft_mean": 264.4479420435382,
+        "ttft_max": 264.52608743007295,
+        "makespan": 428.83573962096125,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 19.442151391833743,
+        "decode": 13.105087159934719,
+        "ttft_mean": 265.1324509268161,
+        "ttft_max": 265.21090554911643,
+        "makespan": 421.3525465829298,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "e2e_percent": 1.7759933098110858,
+      "decode_percent": 5.2193550335584815,
+      "ttft_percent": 0.25884447350519313,
+      "output_same": true
+    },
+    {
+      "head": "full",
+      "block": 2,
+      "scenario": "mixed",
+      "off": {
+        "e2e": 3.5438496558965,
+        "decode": 11.301895067322555,
+        "ttft_mean": 266.30179568193853,
+        "ttft_max": 266.3851905739866,
+        "makespan": 288.9513098548632,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "a71f9d0ed541eca0ec7e3b6c4ad7dc7271e88a8d746cc327edd3ee12b9df616f"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 3.5412833303836533,
+        "decode": 11.345472819085304,
+        "ttft_mean": 266.6198835710529,
+        "ttft_max": 266.7033655140549,
+        "makespan": 289.1607093999628,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "a71f9d0ed541eca0ec7e3b6c4ad7dc7271e88a8d746cc327edd3ee12b9df616f"
+          ]
+        ]
+      },
+      "e2e_percent": -0.07241632016122823,
+      "decode_percent": 0.38557915732864156,
+      "ttft_percent": 0.11944639287910785,
+      "output_same": true
+    },
+    {
+      "head": "full",
+      "block": 2,
+      "scenario": "nonrepeat",
+      "off": {
+        "e2e": 3.4965034489382227,
+        "decode": 10.617605078688003,
+        "ttft_mean": 266.37299028248526,
+        "ttft_max": 266.4504204799887,
+        "makespan": 292.86400398402475,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "6f18a7d7f58f36aed9c0ab16fb0f5fcc21a3331e376b20decac1415a6654ee51",
+            "07fd894e435b36dbc8840e318ca8e3e30ad5b8cad478815293e5276947632008"
+          ],
+          [
+            "8efb12d32820fef02bc5184e028f8412fd230ebf70c79afbc9c6ed5adbbc3c25",
+            "fe921a7614029ebb256e54fa9520fa4a61f6efae793f7a149e2416f54d480d6d"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "a71f9d0ed541eca0ec7e3b6c4ad7dc7271e88a8d746cc327edd3ee12b9df616f"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 3.493390004408817,
+        "decode": 10.598088314303931,
+        "ttft_mean": 266.597200389253,
+        "ttft_max": 266.6741670439951,
+        "makespan": 293.12501573190093,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "6f18a7d7f58f36aed9c0ab16fb0f5fcc21a3331e376b20decac1415a6654ee51",
+            "07fd894e435b36dbc8840e318ca8e3e30ad5b8cad478815293e5276947632008"
+          ],
+          [
+            "8efb12d32820fef02bc5184e028f8412fd230ebf70c79afbc9c6ed5adbbc3c25",
+            "fe921a7614029ebb256e54fa9520fa4a61f6efae793f7a149e2416f54d480d6d"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "a71f9d0ed541eca0ec7e3b6c4ad7dc7271e88a8d746cc327edd3ee12b9df616f"
+          ]
+        ]
+      },
+      "e2e_percent": -0.08904451475233444,
+      "decode_percent": -0.1838151281709166,
+      "ttft_percent": 0.08417148695516463,
+      "output_same": true
+    },
+    {
+      "head": "subset",
+      "block": 2,
+      "scenario": "repeat-code",
+      "off": {
+        "e2e": 19.265189284127946,
+        "decode": 12.777199113142583,
+        "ttft_mean": 264.995601384202,
+        "ttft_max": 265.07301782700233,
+        "makespan": 425.22291783289984,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 19.459095510085522,
+        "decode": 13.152285735638868,
+        "ttft_mean": 265.2329476707964,
+        "ttft_max": 265.31065476709045,
+        "makespan": 420.98565145302564,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "e2e_percent": 1.006510878755451,
+      "decode_percent": 2.9355934675109774,
+      "ttft_percent": 0.08956612311850076,
+      "output_same": true
+    },
+    {
+      "head": "subset",
+      "block": 2,
+      "scenario": "repeat-text",
+      "off": {
+        "e2e": 18.94818301795853,
+        "decode": 12.1958737473278,
+        "ttft_mean": 264.47311174549395,
+        "ttft_max": 264.5487945599016,
+        "makespan": 432.3369682589546,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 19.152565907294615,
+        "decode": 12.548029985320568,
+        "ttft_mean": 264.56946326373145,
+        "ttft_max": 264.6451246170327,
+        "makespan": 427.7233682239894,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "e2e_percent": 1.0786410978951277,
+      "decode_percent": 2.887503144823289,
+      "ttft_percent": 0.03643149868868267,
+      "output_same": true
+    },
+    {
+      "head": "subset",
+      "block": 2,
+      "scenario": "mixed",
+      "off": {
+        "e2e": 3.5006957321799037,
+        "decode": 10.749300141072558,
+        "ttft_mean": 265.9220445372048,
+        "ttft_max": 266.0045527499169,
+        "makespan": 292.5132825989276,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "221a0e96659320b9b7d618d8748fc36f6a099e68f8a656f304686ea9760f2037"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 3.4955648085070288,
+        "decode": 10.77931703310448,
+        "ttft_mean": 266.36834737297613,
+        "ttft_max": 266.45008927886374,
+        "makespan": 292.9426447788719,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "929f118df74bcc1a621eda3e153672234e164851257648186bce9069da7590d0"
+          ],
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "481479c8be3d8a946c87565a55eeb5a054d77edcf33b13ea9d13a54400bfb3d7"
+          ]
+        ]
+      },
+      "e2e_percent": -0.14656868421066838,
+      "decode_percent": 0.2792450823587034,
+      "ttft_percent": 0.16783220682139444,
+      "output_same": false
+    },
+    {
+      "head": "subset",
+      "block": 2,
+      "scenario": "nonrepeat",
+      "off": {
+        "e2e": 3.465806527183946,
+        "decode": 9.532057874704089,
+        "ttft_mean": 266.0728258524905,
+        "ttft_max": 266.1463870150037,
+        "makespan": 295.4579235650599,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "6f18a7d7f58f36aed9c0ab16fb0f5fcc21a3331e376b20decac1415a6654ee51",
+            "07fd894e435b36dbc8840e318ca8e3e30ad5b8cad478815293e5276947632008"
+          ],
+          [
+            "8efb12d32820fef02bc5184e028f8412fd230ebf70c79afbc9c6ed5adbbc3c25",
+            "4dadde15abd46fb2473933bbb49878ee856b340059881f1b9076b17db3f3e391"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "221a0e96659320b9b7d618d8748fc36f6a099e68f8a656f304686ea9760f2037"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 3.468157862901832,
+        "decode": 9.531358316054456,
+        "ttft_mean": 265.868111911288,
+        "ttft_max": 265.9413626829628,
+        "makespan": 295.25760950893164,
+        "total_output": 1024,
+        "outputs": [
+          [
+            "016a54ac3b5970897cd1b167ff58ce49d7a38c750d6fa2ea902ad347fb419e4f",
+            "46a89704e6921f7be948057d59524b98d116056fc45f0899c29aa045026552dd"
+          ],
+          [
+            "6f18a7d7f58f36aed9c0ab16fb0f5fcc21a3331e376b20decac1415a6654ee51",
+            "07fd894e435b36dbc8840e318ca8e3e30ad5b8cad478815293e5276947632008"
+          ],
+          [
+            "8efb12d32820fef02bc5184e028f8412fd230ebf70c79afbc9c6ed5adbbc3c25",
+            "4dadde15abd46fb2473933bbb49878ee856b340059881f1b9076b17db3f3e391"
+          ],
+          [
+            "f74660d6f55771f097f8609f2a89121516456a8f9b2bb6fb07293ef6a7e57186",
+            "221a0e96659320b9b7d618d8748fc36f6a099e68f8a656f304686ea9760f2037"
+          ]
+        ]
+      },
+      "e2e_percent": 0.06784382507918352,
+      "decode_percent": -0.007339009674800501,
+      "ttft_percent": -0.076939063786996,
+      "output_same": true
+    }
+  ],
+  "single_protections": [],
+  "repeated_gains": [
+    {
+      "head": "full",
+      "scenario": "repeat-code",
+      "blocks": 2,
+      "e2e_percent": 1.9793207185561323,
+      "decode_percent": 5.441224468320494,
+      "threshold_met": true,
+      "output_same": true
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-text",
+      "blocks": 2,
+      "e2e_percent": 1.8336589497848665,
+      "decode_percent": 5.220349985313333,
+      "threshold_met": true,
+      "output_same": true
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-code",
+      "blocks": 2,
+      "e2e_percent": 1.1175522806194715,
+      "decode_percent": 2.9916797903354997,
+      "threshold_met": false,
+      "output_same": true
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-text",
+      "blocks": 2,
+      "e2e_percent": 1.0534362172362588,
+      "decode_percent": 2.847144099685517,
+      "threshold_met": false,
+      "output_same": true
+    }
+  ],
+  "metric_definition": "E2E total output / group makespan; decode sum(output-1) / sum(latency-TTFT); TTFT includes queue; descriptive paired results only",
+  "telemetry": {
+    "samples": 13259,
+    "top_level_peaks": {}
+  }
+}

@@ -1,0 +1,14 @@
+test_agent_layout_cannot_use_exception (__main__.ParentCompatibilityTest.test_agent_layout_cannot_use_exception) ... ok
+test_completed_parent_without_new_ledger (__main__.ParentCompatibilityTest.test_completed_parent_without_new_ledger) ... ok
+test_missing_acceptance_record (__main__.ParentCompatibilityTest.test_missing_acceptance_record) ... ok
+test_missing_end_record (__main__.ParentCompatibilityTest.test_missing_end_record) ... ok
+test_multiple_slots_cannot_use_exception (__main__.ParentCompatibilityTest.test_multiple_slots_cannot_use_exception) ... ok
+test_stage_adapter_keeps_candidate_batch_requirement (__main__.ParentCompatibilityTest.test_stage_adapter_keeps_candidate_batch_requirement) ... ok
+test_stage_adapter_preserves_unavailable_marker (__main__.ParentCompatibilityTest.test_stage_adapter_preserves_unavailable_marker) ... ok
+test_unclean_exit (__main__.ParentCompatibilityTest.test_unclean_exit) ... ok
+test_wrong_program_identity (__main__.ParentCompatibilityTest.test_wrong_program_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.048s
+
+OK

@@ -24,6 +24,13 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (!options.mtp_subset_head.empty() &&
       (options.no_mtp || options.mtp_k != 3))
     return Status::Fail("mtp-subset-head requires MTP with fixed k=3");
+  if (!runtime::ValidSequenceCapacities(options.seq_capacities, options.max_len,
+                                        options.max_seq) ||
+      (!options.seq_capacities.empty() &&
+       (options.allow_media || options.no_budget)))
+    return Status::Fail(
+        "seq-capacities requires explicit page-aligned text "
+        "slots and an enabled budget");
   in_addr address{};
   if (inet_pton(AF_INET, options.host.c_str(), &address) != 1)
     return Status::Fail("host must be a numeric IPv4 address");
@@ -113,12 +120,28 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (!integer && key != "--host" && key != "--model-dir" &&
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
-        key != "--startup-plan" && key != "--mtp-subset-head")
+        key != "--startup-plan" && key != "--mtp-subset-head" &&
+        key != "--seq-capacities")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
     const auto value = args[i];
-    if (key == "--mtp-subset-head") {
+    if (key == "--seq-capacities") {
+      parsed.seq_capacities.clear();
+      size_t start = 0;
+      while (start < value.size()) {
+        const size_t comma = value.find(',', start);
+        const size_t end = comma == value.npos ? value.size() : comma;
+        int capacity = 0;
+        const auto result =
+            std::from_chars(value.data() + start, value.data() + end, capacity);
+        if (result.ec != std::errc() || result.ptr != value.data() + end ||
+            parsed.seq_capacities.size() >= 64 || end + 1 == value.size())
+          return Status::Fail("invalid seq-capacities list");
+        parsed.seq_capacities.push_back(capacity);
+        start = end + 1;
+      }
+    } else if (key == "--mtp-subset-head") {
       parsed.mtp_subset_head = value;
     } else if (key == "--host") {
       parsed.host = value;

@@ -1,0 +1,8 @@
+{
+  "status": "MATCH",
+  "checked_runtime_files": 160,
+  "build_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-20261027/build-2-source.json",
+  "build_source_sha256": "4e854a129bcea7b8aa99855642aeaf461e26e3707381abb3c4080129b02e404d",
+  "candidate_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+  "note": "Runtime source matches the manifest used for f2a6; later test/tool/document edits are separate."
+}

@@ -1,5 +1,9 @@
 #pragma once
 
+#include <vector>
+
+#include "q4t/runtime/sequence_capacity.h"
+
 #include <span>
 #include <string>
 #include <string_view>
@@ -7,6 +11,9 @@
 #include "q4t/status.h"
 
 namespace q4t::server {
+
+// Parsing/queued requests have a separate bound from active GPU slots.
+inline int TextAdmissionLimit(int slots) { return std::max(32, slots * 2); }
 
 enum class StartupPlanMode { kAuto, kOff, kRequired };
 
@@ -25,6 +32,7 @@ struct ServerOptions {
   // in-flight request owns one seq_id; the model's SSM/conv/PLE-conv/KV/indexer
   // state is pooled [max_seq, ...] so concurrent requests are isolated.
   int max_seq = 1;
+  std::vector<int> seq_capacities;  // Empty keeps uniform slot capacity.
   // MTP speculative decode is the default (k=3, ~2x decode speedup, five-tier
   // E2E accepted 2026-10-14); --no-mtp opts back to plain greedy decode.
   bool no_mtp = false;

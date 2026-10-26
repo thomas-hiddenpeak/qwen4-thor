@@ -1,0 +1,44 @@
+{
+  "state": {
+    "status": "STOPPED",
+    "started": 1793043833.4867074,
+    "completed": [
+      "01-attention-layout",
+      "02-full-states",
+      "03-subset-states",
+      "04-full-off",
+      "05-full-on",
+      "06-subset-on",
+      "07-subset-off",
+      "08-full-on",
+      "09-full-off",
+      "10-subset-off",
+      "11-subset-on"
+    ],
+    "requests_completed": 195,
+    "loads_started": 9,
+    "contract_seconds": 24.479486478026956,
+    "plan_sha256": "8e5e7fd347c3a7184dd6422d55bd1441db0991ae768ea57acd2f4f31aa38f8a9",
+    "current": "12-full-parent",
+    "error": "RuntimeError('verify/acceptance work ledger')",
+    "finished": 1793057093.7908688,
+    "elapsed_seconds": 13260.304164234083,
+    "monitor_failures": []
+  },
+  "postflight": {
+    "status": "STOPPED",
+    "state_sha256": "155a9224a468e37b313cd93eeeb3b6766d52b224bb0da6875dd3f043dfcb5744",
+    "monitor_failures": [],
+    "cleanup_errors": [],
+    "final_summary_sha256": "8831501da52b4285d5134bb081612d95379dd5c1255446eeabd85c378161f8ab",
+    "final_monitor_barrier": {},
+    "final_monitor_errors": [],
+    "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+  },
+  "parent_service_exit": {
+    "server": 0,
+    "http_output_checks_passed": true,
+    "failure": null
+  },
+  "original_phase": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-20261027/acceptance-resume-2"
+}

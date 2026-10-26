@@ -272,6 +272,9 @@ void MtpModel::Free() {
 Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
                const uint16_t* main_lm_head, MtpModel* out,
                cudaStream_t stream) {
+  if (!runtime::ValidSequenceCapacities(cfg.seq_capacities, cfg.max_len,
+                                        cfg.max_seq))
+    return Status::Fail("invalid MTP slot capacities");
   if (!out || !main_embed || !main_lm_head)
     return Status::Fail("LoadMtp: model and borrowed weights are required");
   if (cfg.initial_scratch_capacity < 0 || cfg.initial_scratch_capacity > 17)
@@ -413,6 +416,18 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
   const int n_pages = (cfg.max_len + model::kKvPageSize - 1) /
                       model::kKvPageSize;
   const int max_seq = cfg.max_seq > 0 ? cfg.max_seq : 1;
+  if (!runtime::ValidSequenceCapacities(cfg.seq_capacities, cfg.max_len,
+                                        max_seq))
+    return Status::Fail("invalid MTP slot capacities");
+  if (!(s = model::ConfigureAttentionSlots(&out->full_attn,
+                                           cfg.seq_capacities)))
+    return s;
+  const size_t pool_tokens =
+      runtime::SequencePoolTokens(cfg.seq_capacities, cfg.max_len, max_seq);
+  const size_t kv_tokens =
+      cfg.seq_capacities.empty()
+          ? static_cast<size_t>(max_seq) * n_pages * model::kKvPageSize
+          : pool_tokens;
   out->max_seq = max_seq;
   out->kv_bytes =
       static_cast<size_t>(n_pages) * model::kKvPageSize * cfg.nkv * 2 *
@@ -420,17 +435,20 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
   out->idx_bytes =
       static_cast<size_t>(cfg.max_len) * cfg.idx_head_dim * sizeof(uint16_t);
   if (cudaMalloc(reinterpret_cast<void**>(&out->kv_cache),
-                 static_cast<size_t>(max_seq) * out->kv_bytes) != cudaSuccess)
+                 kv_tokens * cfg.nkv * 2 * cfg.hd * sizeof(uint16_t)) !=
+      cudaSuccess)
     return Status::Fail("cudaMalloc kv_cache");
   if (cudaMalloc(reinterpret_cast<void**>(&out->page_table),
                  static_cast<size_t>(max_seq) * cfg.max_len * sizeof(int)) !=
       cudaSuccess)
     return Status::Fail("cudaMalloc page_table");
   if (cudaMalloc(reinterpret_cast<void**>(&out->idx_raw),
-                 static_cast<size_t>(max_seq) * out->idx_bytes) != cudaSuccess)
+                 pool_tokens * cfg.idx_head_dim * sizeof(uint16_t)) !=
+      cudaSuccess)
     return Status::Fail("cudaMalloc idx_raw");
   if (cudaMalloc(reinterpret_cast<void**>(&out->idx_comp),
-                 static_cast<size_t>(max_seq) * out->idx_bytes) != cudaSuccess)
+                 pool_tokens * cfg.idx_head_dim * sizeof(uint16_t)) !=
+      cudaSuccess)
     return Status::Fail("cudaMalloc idx_comp");
   // 3D MRoPE identity table [max_seq, 3, max_len]: all three rows = position
   // (pure text, delta=0). Pooled so the multi-seq attention kernels can index
@@ -453,13 +471,21 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
   }
   {
     std::vector<int> pt(cfg.max_len);
-    for (int p = 0; p < cfg.max_len; ++p)
-      pt[p] = p / model::kKvPageSize;  // identity mapping
-    for (int s = 0; s < max_seq; ++s)
+    for (int s = 0; s < max_seq; ++s) {
+      const size_t page_base =
+          cfg.seq_capacities.empty()
+              ? 0
+              : runtime::SequenceOffset(cfg.seq_capacities, s, cfg.max_len) /
+                    model::kKvPageSize;
+      const int capacity =
+          runtime::SequenceCapacity(cfg.seq_capacities, s, cfg.max_len);
+      for (int p = 0; p < cfg.max_len; ++p)
+        pt[p] = p < capacity ? page_base + p / model::kKvPageSize : -1;
       if (cudaMemcpy(out->page_table + static_cast<size_t>(s) * cfg.max_len,
                      pt.data(), static_cast<size_t>(cfg.max_len) * sizeof(int),
                      cudaMemcpyHostToDevice) != cudaSuccess)
         return Status::Fail("H2D page_table");
+    }
   }
 
   // 5. Forward workspace (sized for max_prefill tokens).
@@ -505,14 +531,27 @@ Status MtpResetState(const MtpModel& m, cudaStream_t stream, int seq_id) {
   // Per-seq byte offsets into the pooled buffers. seq_id < 0 resets ALL
   // sequences (the whole pool); seq_id >= 0 resets one slice. Byte offsets go
   // through char* (decoupled from the element type, mirroring the B1 fix).
+  if (seq_id < -1 || seq_id >= max_seq)
+    return Status::Fail("MTP reset slot out of range");
+  const auto& capacities = m.cfg.seq_capacities;
+  const size_t offset =
+      seq_id >= 0 ? runtime::SequenceOffset(capacities, seq_id, m.cfg.max_len)
+                  : 0;
+  const size_t count =
+      seq_id >= 0
+          ? runtime::SequenceCapacity(capacities, seq_id, m.cfg.max_len)
+          : runtime::SequencePoolTokens(capacities, m.cfg.max_len, max_seq);
   const size_t kv_off =
-      (seq_id >= 0) ? static_cast<size_t>(seq_id) * m.kv_bytes : 0;
-  const size_t idx_off =
-      (seq_id >= 0) ? static_cast<size_t>(seq_id) * m.idx_bytes : 0;
+      capacities.empty()
+          ? (seq_id >= 0 ? static_cast<size_t>(seq_id) * m.kv_bytes : 0)
+          : offset * m.cfg.nkv * 2 * m.cfg.hd * 2;
+  const size_t idx_off = offset * m.cfg.idx_head_dim * 2;
   const size_t kv_total =
-      (seq_id >= 0) ? m.kv_bytes : static_cast<size_t>(max_seq) * m.kv_bytes;
-  const size_t idx_total =
-      (seq_id >= 0) ? m.idx_bytes : static_cast<size_t>(max_seq) * m.idx_bytes;
+      capacities.empty()
+          ? (seq_id >= 0 ? m.kv_bytes
+                         : static_cast<size_t>(max_seq) * m.kv_bytes)
+          : count * m.cfg.nkv * 2 * m.cfg.hd * 2;
+  const size_t idx_total = count * m.cfg.idx_head_dim * 2;
   if (m.kv_cache &&
       cudaMemsetAsync(reinterpret_cast<char*>(m.kv_cache) + kv_off, 0, kv_total,
                       stream) != cudaSuccess)
@@ -805,10 +844,16 @@ Status Top2GapBf16Rows(const uint16_t* logits, int rows, int vocab, float* out,
 Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
                       int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
-                      int seq_id) {
+                      int seq_id, bool finalize) {
   if (T <= 0) return Status::Fail("MtpDraftExtend: T must be > 0");
   if (seq_id < 0 || seq_id >= m.max_seq)
     return Status::Fail("MtpDraftExtend: seq_id out of range");
+  if (!shifted_ids || !positions || !main_trunk ||
+      (finalize && (!out_d0 || !out_g)) || (!finalize && T > m.cfg.max_prefill))
+    return Status::Fail("MtpDraftExtend: invalid chunk arguments");
+  for (int t = 0; t < T; ++t)
+    if (positions[t] < 0 || positions[t] >= m.cfg.Capacity(seq_id))
+      return Status::Fail("MtpDraftExtend: position exceeds slot capacity");
   diagnostic::Batch execution("mtp.prompt_extend", seq_id, -1, T);
   diagnostic::Scope prompt_scope("mtp.prompt_extend.total", -1, T);
   const int hc_dim = m.hc_dim();
@@ -965,21 +1010,24 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
         cudaMalloc(reinterpret_cast<void**>(&d_multi),
                    static_cast<size_t>(T) * hc_dim * sizeof(uint16_t)) !=
             cudaSuccess ||
-        cudaMalloc(reinterpret_cast<void**>(&d_logits),
-                   static_cast<size_t>(T) * vocab * sizeof(uint16_t)) !=
-            cudaSuccess)
+        (finalize && cudaMalloc(reinterpret_cast<void**>(&d_logits),
+                                static_cast<size_t>(T) * vocab *
+                                    sizeof(uint16_t)) != cudaSuccess))
       return cleanup(Status::Fail("MtpDraftExtend: cudaMalloc"));
   }
 
-  ObserveExecution("mtp.api.prompt_ids_h2d", [&] {
-    return cudaMemcpy(d_ids, shifted_ids,
-                      static_cast<size_t>(T) * sizeof(int32_t),
-                      cudaMemcpyHostToDevice);
-  });
-  ObserveExecution("mtp.api.prompt_positions_h2d", [&] {
-    return cudaMemcpy(d_pos, positions, static_cast<size_t>(T) * sizeof(int),
-                      cudaMemcpyHostToDevice);
-  });
+  if (ObserveExecution("mtp.api.prompt_ids_h2d", [&] {
+        return cudaMemcpy(d_ids, shifted_ids,
+                          static_cast<size_t>(T) * sizeof(int32_t),
+                          cudaMemcpyHostToDevice);
+      }) != cudaSuccess)
+    return cleanup(Status::Fail("MtpDraftExtend: H2D ids"));
+  if (ObserveExecution("mtp.api.prompt_positions_h2d", [&] {
+        return cudaMemcpy(d_pos, positions,
+                          static_cast<size_t>(T) * sizeof(int),
+                          cudaMemcpyHostToDevice);
+      }) != cudaSuccess)
+    return cleanup(Status::Fail("MtpDraftExtend: H2D positions"));
   if (m.max_seq > 1) {
     if (cudaMalloc(reinterpret_cast<void**>(&d_seqid),
                    static_cast<size_t>(T) * sizeof(int)) != cudaSuccess)
@@ -991,8 +1039,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   }
 
   Status s = MtpForward(m, d_ids, d_pos, main_trunk, d_sample, d_multi,
-                        d_logits, T, stream, d_seqid);
-  if (!s.ok()) return cleanup(s);
+                        d_logits, T, stream, d_seqid, finalize);
+  if (!s.ok() || !finalize) return cleanup(s);
 
   // out_g = last row's multi_hidden (draft trunk g_{last}).
   if (ObserveExecution("mtp.api.prompt_out_g_d2d", [&] {
@@ -1045,6 +1093,9 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
   if (seq->stage != model::ModelSequence::Stage::kDecode)
     return Status::Fail("MtpSpeculativeStep: sequence not in decode stage");
   const int P = seq->position;
+  const int capacity = std::min(main.cfg.Capacity(0), mtp.cfg.Capacity(0));
+  if (P < 0 || k >= capacity || P > capacity - k - 1)
+    return Status::Fail("MtpSpeculativeStep: slot capacity exceeded");
   const int vocab = mtp.cfg.vocab;
   const int hc_dim = mtp.hc_dim();
 
@@ -1454,6 +1505,11 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
       return Status::Fail("MtpSpeculativeStepMulti: seq not in decode stage");
     if (seqs[b]->seq_id < 0 || seqs[b]->seq_id >= mtp.max_seq)
       return Status::Fail("MtpSpeculativeStepMulti: invalid sequence slot");
+    const int capacity = std::min(main.cfg.Capacity(seqs[b]->seq_id),
+                                  mtp.cfg.Capacity(seqs[b]->seq_id));
+    if (seqs[b]->position < 0 || k >= capacity ||
+        seqs[b]->position > capacity - k - 1)
+      return Status::Fail("MtpSpeculativeStepMulti: slot capacity exceeded");
     for (int prior = 0; prior < b; ++prior)
       if (seqs[prior]->seq_id == seqs[b]->seq_id)
         return Status::Fail("MtpSpeculativeStepMulti: duplicate sequence slot");

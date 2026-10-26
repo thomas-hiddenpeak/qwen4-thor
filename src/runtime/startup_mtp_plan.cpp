@@ -15,6 +15,8 @@ namespace q4t::runtime {
 namespace {
 
 Status CheckMtpCapacity(const mtp::MtpConfig& cfg) {
+  if (!ValidSequenceCapacities(cfg.seq_capacities, cfg.max_len, cfg.max_seq))
+    return Status::Fail("startup MTP plan: invalid slot capacities");
   // The current kernels and LoadMtp implement this architecture. Capacities
   // vary, but a new architecture needs a matching allocation contract.
   const mtp::MtpConfig supported;
@@ -164,19 +166,31 @@ Status PlanMtpResources(const mtp::MtpConfig& cfg, StartupPlan* plan) {
                                   cfg.hs, cfg.lowrank, false, plan);
   if (!status.ok()) return status;
 
+  if (!cfg.seq_capacities.empty()) {
+    status = plan->Add("mtp.state.idx_offsets", {cfg.max_seq}, sizeof(size_t));
+    if (!status.ok()) return status;
+  }
   const int64_t pages =
       (static_cast<int64_t>(cfg.max_len) + model::kKvPageSize - 1) /
       model::kKvPageSize;
-  if (!(status = plan->Add(
-            "mtp.state.kv_cache",
-            {cfg.max_seq, pages, model::kKvPageSize, cfg.nkv, 2, cfg.hd},
-            sizeof(uint16_t))))
+  if (!(status =
+            plan->Add("mtp.state.kv_cache",
+                      {static_cast<int64_t>(
+                           cfg.seq_capacities.empty()
+                               ? cfg.max_seq * pages * model::kKvPageSize
+                               : SequencePoolTokens(cfg.seq_capacities,
+                                                    cfg.max_len, cfg.max_seq)),
+                       cfg.nkv, 2, cfg.hd},
+                      sizeof(uint16_t))))
     return status;
   if (!(status = plan->Add("mtp.state.page_table", {cfg.max_seq, cfg.max_len},
                            sizeof(int))))
     return status;
   for (const char* name : {"mtp.state.idx_raw", "mtp.state.idx_comp"}) {
-    status = plan->Add(name, {cfg.max_seq, cfg.max_len, cfg.idx_head_dim},
+    status = plan->Add(name,
+                       {static_cast<int64_t>(SequencePoolTokens(
+                            cfg.seq_capacities, cfg.max_len, cfg.max_seq)),
+                        cfg.idx_head_dim},
                        sizeof(uint16_t));
     if (!status.ok()) return status;
   }

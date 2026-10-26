@@ -170,6 +170,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
       breq.mem_fraction = opts.mem_fraction;
       breq.max_len = opts.max_len;
       breq.max_seq = opts.max_seq;
+      breq.seq_capacities = opts.seq_capacities;
       breq.max_prefill = cfg.max_prefill;
       if (opts.moe_resident_slots > 0) {
         const size_t slot_bytes =
@@ -313,6 +314,15 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // requests. Each in-flight request owns one seq_id.
   max_seq_ = eff_max_seq;
   cfg.max_seq = max_seq_;
+  cfg.seq_capacities = opts.seq_capacities;
+  seq_capacities_ = opts.seq_capacities;
+  if (!seq_capacities_.empty()) {
+    std::fprintf(stderr, "[q4t][slots] capacities=");
+    for (size_t i = 0; i < seq_capacities_.size(); ++i)
+      std::fprintf(stderr, "%s%d", i ? "," : "", seq_capacities_[i]);
+    std::fprintf(stderr, " stream_mtp_prefill=%d text_admission=32\n",
+                 capabilities.mtp);
+  }
   bool planned_startup = false;
 #ifdef Q4T_STARTUP_RESOURCE_PLAN
   {
@@ -420,6 +430,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
     // Stage 2c: pool the draft full-attention KV/indexer for max_seq sequences
     // so concurrent MTP requests own independent draft-state slices (Stage 1).
     mcfg.max_seq = max_seq_;
+    mcfg.seq_capacities = cfg.seq_capacities;
     if (planned_startup) mcfg.initial_scratch_capacity = mtp_k_ + 1;
     s = mtp::LoadMtp(mcfg, model_.Get().head.embed_tokens, model_.Get().head.lm_head,
                      &mtp_, nullptr);

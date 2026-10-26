@@ -329,19 +329,24 @@ void DecoderLayer::ResetState(int seq_id, cudaStream_t stream) const {
   // >= 2 write past the allocation -> illegal memory access.)
   const size_t seq = static_cast<size_t>(seq_id);
   if (is_full_attention) {
-    const size_t kv_bytes = static_cast<size_t>(
-        (max_len + kKvPageSize - 1) / kKvPageSize) * kKvPageSize * 2 * 2 *
-        256 * 2;  // one sequence's paged KV, in bytes
-    const size_t idx_bytes =
-        static_cast<size_t>(max_len) * 128 * 2;  // one sequence's idx, bytes
+    const int capacity =
+        runtime::SequenceCapacity(seq_capacities, seq_id, max_len);
+    const size_t offset =
+        runtime::SequenceOffset(seq_capacities, seq_id, max_len);
+    const size_t kv_bytes =
+        static_cast<size_t>((capacity + kKvPageSize - 1) / kKvPageSize) *
+        kKvPageSize * 2 * 2 * 256 * 2;  // one sequence's paged KV, in bytes
+    const size_t idx_bytes = static_cast<size_t>(capacity) * 128 * 2;
     if (kv_cache)
-      cudaMemsetAsync(reinterpret_cast<char*>(kv_cache) + seq * kv_bytes, 0,
-                      kv_bytes, stream);
+      cudaMemsetAsync(
+          reinterpret_cast<char*>(kv_cache) +
+              (seq_capacities.empty() ? seq * kv_bytes : offset * 2048),
+          0, kv_bytes, stream);
     if (idx_raw)
-      cudaMemsetAsync(reinterpret_cast<char*>(idx_raw) + seq * idx_bytes, 0,
+      cudaMemsetAsync(reinterpret_cast<char*>(idx_raw) + offset * 256, 0,
                       idx_bytes, stream);
     if (idx_comp)
-      cudaMemsetAsync(reinterpret_cast<char*>(idx_comp) + seq * idx_bytes, 0,
+      cudaMemsetAsync(reinterpret_cast<char*>(idx_comp) + offset * 256, 0,
                       idx_bytes, stream);
   } else {
     if (ssm_state)
@@ -361,8 +366,8 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
                         int shared_is, int k, int max_len, int max_seq,
                         DecoderLayer* out, cudaStream_t stream,
                         int moe_resident_slots,
-                        const std::vector<int>* hot_experts,
-                        bool hot_protected) {
+                        const std::vector<int>* hot_experts, bool hot_protected,
+                        std::span<const int> seq_capacities) {
   out->layer_id = layer_id;
   out->hs = hs;
   out->hc = hc;
@@ -371,6 +376,10 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
   out->is_full_attention = (layer_id % 4 == 3);
   out->topk = k;
   out->max_len = max_len;
+  out->max_seq = max_seq;
+  if (!runtime::ValidSequenceCapacities(seq_capacities, max_len, max_seq))
+    return Status::Fail("invalid decoder slot capacities");
+  out->seq_capacities.assign(seq_capacities.begin(), seq_capacities.end());
   // ple_layer_ids = [2] is 1-indexed -> 0-indexed layer 1.
   out->has_ple = (layer_id == 1);
   const std::string base = "model.language_model.layers." +
@@ -391,6 +400,7 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
                           eps, 4, 1, 128, 2048, 4, &out->full, stream);
     if (!s.ok()) return s;
     out->full.max_len = max_len;  // for the persistent 3D MRoPE table.
+    if (!(s = ConfigureAttentionSlots(&out->full, seq_capacities))) return s;
     // Full-attention caches.
     const int nkv = 2, hd = 256, idx_hd = 128;
     auto alloc = [](void** p, size_t bytes) -> Status {
@@ -402,25 +412,40 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
     // [max_seq, max_len, idx_hd]. Sequence s uses slice s (seq_id offset).
     const int n_pages = (max_len + kKvPageSize - 1) / kKvPageSize;
     const size_t seq = static_cast<size_t>(max_seq);
-    const size_t kv_bytes =
-        seq * static_cast<size_t>(n_pages) * kKvPageSize * nkv * 2 * hd * 2;
+    const size_t pool_tokens =
+        runtime::SequencePoolTokens(seq_capacities, max_len, max_seq);
+    const size_t kv_tokens =
+        seq_capacities.empty()
+            ? seq * static_cast<size_t>(n_pages) * kKvPageSize
+            : pool_tokens;
+    const size_t kv_bytes = kv_tokens * nkv * 2 * hd * 2;
     if (!(s = alloc(reinterpret_cast<void**>(&out->kv_cache), kv_bytes)))
       return s;
     if (!(s = alloc(reinterpret_cast<void**>(&out->page_table),
                     seq * static_cast<size_t>(max_len) * 4)))
       return s;
     if (!(s = alloc(reinterpret_cast<void**>(&out->idx_raw),
-                    seq * static_cast<size_t>(max_len) * idx_hd * 2)))
+                    pool_tokens * idx_hd * 2)))
       return s;
     if (!(s = alloc(reinterpret_cast<void**>(&out->idx_comp),
-                    seq * static_cast<size_t>(max_len) * idx_hd * 2)))
+                    pool_tokens * idx_hd * 2)))
       return s;
     cudaMemset(out->kv_cache, 0, kv_bytes);
-    cudaMemset(out->idx_raw, 0, seq * static_cast<size_t>(max_len) * idx_hd * 2);
-    cudaMemset(out->idx_comp, 0, seq * static_cast<size_t>(max_len) * idx_hd * 2);
+    cudaMemset(out->idx_raw, 0, pool_tokens * idx_hd * 2);
+    cudaMemset(out->idx_comp, 0, pool_tokens * idx_hd * 2);
     std::vector<int> page_table(seq * static_cast<size_t>(max_len));
-    for (size_t i = 0; i < page_table.size(); ++i)
-      page_table[i] = (i % max_len) / kKvPageSize;  // identity per sequence
+    for (int slot = 0; slot < max_seq; ++slot) {
+      const size_t page_base =
+          seq_capacities.empty()
+              ? 0
+              : runtime::SequenceOffset(seq_capacities, slot, max_len) /
+                    kKvPageSize;
+      const int capacity =
+          runtime::SequenceCapacity(seq_capacities, slot, max_len);
+      for (int pos = 0; pos < max_len; ++pos)
+        page_table[static_cast<size_t>(slot) * max_len + pos] =
+            pos < capacity ? page_base + pos / kKvPageSize : -1;
+    }
     if (cudaMemcpy(out->page_table, page_table.data(),
                    page_table.size() * 4, cudaMemcpyHostToDevice) !=
         cudaSuccess)
@@ -539,24 +564,26 @@ Status DecoderLayerForward(const DecoderLayer& layer,
       256 * 2;  // one sequence's paged KV (nkv=2, 2 for K+V, hd=256, bf16)
   // kv_cache is a uint16_t* but kv_seq_bytes is a BYTE stride; offset via
   // char* so the element size does not double the stride (mirrors ResetState).
-  uint16_t* kv_cache = layer.kv_cache
-                           ? (d_seq_id
-                                  ? layer.kv_cache
-                                  : reinterpret_cast<uint16_t*>(
-                                        reinterpret_cast<char*>(layer.kv_cache) +
-                                        seq * kv_seq_bytes))
-                           : nullptr;
+  uint16_t* kv_cache =
+      layer.kv_cache
+          ? (d_seq_id
+                 ? layer.kv_cache
+                 : reinterpret_cast<uint16_t*>(
+                       reinterpret_cast<char*>(layer.kv_cache) +
+                       (layer.seq_capacities.empty() ? seq * kv_seq_bytes : 0)))
+          : nullptr;
   int* page_table =
       layer.page_table ? (d_seq_id ? layer.page_table
                                    : layer.page_table + seq * layer.max_len)
                        : nullptr;
+  const size_t idx_offset =
+      runtime::SequenceOffset(layer.seq_capacities, seq_id, layer.max_len) *
+      128;
   uint16_t* idx_raw =
-      layer.idx_raw ? (d_seq_id ? layer.idx_raw
-                                : layer.idx_raw + seq * layer.max_len * 128)
+      layer.idx_raw ? (d_seq_id ? layer.idx_raw : layer.idx_raw + idx_offset)
                     : nullptr;
   uint16_t* idx_comp =
-      layer.idx_comp ? (d_seq_id ? layer.idx_comp
-                                 : layer.idx_comp + seq * layer.max_len * 128)
+      layer.idx_comp ? (d_seq_id ? layer.idx_comp : layer.idx_comp + idx_offset)
                      : nullptr;
 
   // The router always emits E = mlp.E expert IDs (512) regardless of the

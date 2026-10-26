@@ -392,6 +392,7 @@ if(Q4T_BUILD_TESTS)
     tests/model_hyperconnection_test.cpp
     tests/model_linear_attention_test.cpp
     tests/model_full_attention_test.cpp
+    tests/agent_attention_layout_test.cpp
     tests/streaming_topk_test.cpp
     tests/decode_topk_test.cpp
     tests/model_decoder_layer_test.cpp
@@ -431,6 +432,11 @@ if(Q4T_BUILD_TESTS)
                                  tests/mtp_sixcell_test.cpp)
     list(APPEND Q4T_TEST_LIBS q4t_text)
   endif()
+  add_executable(q4t_agent_capacity EXCLUDE_FROM_ALL
+    tools/mtp_suffix_agent/capacity_probe.cpp)
+  target_include_directories(q4t_agent_capacity PRIVATE include)
+  target_link_libraries(q4t_agent_capacity PRIVATE ${Q4T_TEST_LIBS})
+
   add_executable(q4t_tests ${Q4T_TEST_SOURCES})
   target_include_directories(q4t_tests PRIVATE include)
   target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})

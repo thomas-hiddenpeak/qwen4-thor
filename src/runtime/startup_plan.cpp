@@ -144,6 +144,8 @@ Status CheckStartupPlanSupport(const model::ModelConfig& cfg,
       return Status::Fail("startup plan: FP8 projection shadows unsupported");
     }
   }
+  if (!ValidSequenceCapacities(cfg.seq_capacities, cfg.max_len, cfg.max_seq))
+    return Status::Fail("startup plan: invalid slot capacities");
   if (!opts.no_mtp && (opts.mtp_k < 1 || opts.mtp_k > 16 ||
                        cfg.max_prefill < std::max(4, cfg.max_seq * (opts.mtp_k + 1)) ||
                        cfg.max_len < opts.mtp_k + 1)) {
@@ -173,6 +175,7 @@ Status BuildStartupPlan(const model::ModelConfig& cfg,
     mtp.subset_head_dir = opts.mtp_subset_head;
     mtp.max_len = cfg.max_len;
     mtp.max_seq = cfg.max_seq;
+    mtp.seq_capacities = cfg.seq_capacities;
     mtp.max_prefill = cfg.max_prefill;
     mtp.initial_scratch_capacity = opts.mtp_k + 1;
     status = PlanMtpResources(mtp, &plan);

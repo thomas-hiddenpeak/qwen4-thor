@@ -19,6 +19,37 @@ bool Parse(std::initializer_list<std::string_view> args, ServerOptions* out) {
 }
 }  // namespace
 
+Q4T_TEST(serve_agent_slot_capacity_and_admission) {
+  auto options = Defaults();
+  Q4T_CHECK(Parse({"--max-seq", "4", "--max-len", "208896", "--seq-capacities",
+                   "208896,65536,65536,65536"},
+                  &options));
+  Q4T_CHECK(options.seq_capacities.size() == 4);
+  for (auto value : {"", "208896,65536", "208896,65536,65536,65535",
+                     "208896,65536,65536,65536,", "208896,0,65536,65536"}) {
+    Q4T_CHECK(!Parse({"--seq-capacities", value}, &options));
+    Q4T_CHECK(options.seq_capacities[1] == 65536);
+  }
+  Q4T_CHECK(!Parse({"--allow-media"}, &options));
+  Q4T_CHECK(!Parse({"--no-budget"}, &options));
+  std::vector<bool> free(4, true);
+  const auto choose = [&](size_t tokens) {
+    return q4t::runtime::SelectSequenceSlot(options.seq_capacities,
+                                            options.max_len, free, tokens);
+  };
+  Q4T_CHECK(choose(65536) == 1);
+  free[1] = false;
+  Q4T_CHECK(choose(32768) == 2);
+  Q4T_CHECK(choose(65537) == 0);
+  free[0] = false;
+  Q4T_CHECK(choose(65537) == -1);
+  free[1] = true;  // cancelled short request releases its own slot
+  Q4T_CHECK(choose(65536) == 1);
+  Q4T_CHECK(choose(208897) == -1);
+  Q4T_CHECK(q4t::server::TextAdmissionLimit(4) == 32);
+  return true;
+}
+
 Q4T_TEST(serve_default_is_single_text_greedy) {
   auto options = Defaults();
   Q4T_CHECK(Parse({}, &options));
