@@ -486,8 +486,9 @@ class PairStageContracts(unittest.TestCase):
             stream.write('serving on port 8764\n');stream.flush()
             return launcher
         session.launch.side_effect=launch
-        def request(_plan,_step,_output,_launcher,env,_capacity):
+        def request(_plan,_step,_output,_launcher,env,_capacity,*,client_check):
             calls.append('http')
+            client_check()
             self.assertFalse(any(k.startswith(('Q4T_','NVLOG_')) for k in env))
             with (output/'server.log').open('a') as stream:
                 stream.write('[exec-capture] event=begin pid=7 input_tokens=8170 error=0\n'

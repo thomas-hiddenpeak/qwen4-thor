@@ -630,7 +630,7 @@ def custom_step(plan, name, plan_path):
                     for case in step['cases']:
                         check(); require_live(identity, fd)
                         rows = old.admission.run_cases(plan, dict(step, cases=[case]),
-                            output, launcher, clean_env(), capacity)
+                            output, launcher, clean_env(), capacity, client_check=check)
                         results.extend(rows)
                         save(output / 'results.json', results)
                         if (len(rows) != 1 or rows[0]['outputs'] != [case['expected_output_sha256']] or

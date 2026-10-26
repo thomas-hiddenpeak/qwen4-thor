@@ -257,7 +257,7 @@ def validate_plan(plan):
         raise ValueError('duplicate step identity')
 
 
-def run_cases(plan, step, output, server, env, capacity):
+def run_cases(plan, step, output, server, env, capacity, *, client_check=None):
     results = []
     for item in step['cases']:
         case = output / item['id']
@@ -269,10 +269,11 @@ def run_cases(plan, step, output, server, env, capacity):
         save(case / 'case.json', dict(item, block=step.get('block'),
              diagnostic_only=diagnostic, performance_acceptance_sample=(
                  not diagnostic and item['role']=='held_out_acceptance')))
+        checked = {} if client_check is None else {'process_check': client_check}
         rows = http_runner.run_case(output, case, inputs, item['repeats'],
             item['input_min'], item['input_max'], item['output_tokens'], True,
             ROOT / 'tools/evalscope/.venv/bin/evalscope', Path(plan['model']),
-            plan['port'], env, server, False, capacity, 'performance')
+            plan['port'], env, server, False, capacity, 'performance', **checked)
         if any(row['prompt_sha256'] != item['prompt_sha256'] or
                row['actual_input'] != item['input_tokens'] for row in rows):
             raise RuntimeError('fixture prompt/token identity changed: '+item['id'])

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "goal_complete": false,
+  "gpu_runs": 0,
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-failure-propagation-20261026/scope.json": {
+      "sha256": "64a3749b20160f8d1fce7d7dfcedf41ead6d08dcda9c9b75164d98327c7a205b",
+      "bytes": 1868
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-failure-propagation-20261026/cpu-proof.json": {
+      "sha256": "c8586d872b3b1265b4f32b7453407c329331e21994104e4ea5c4b86d88ffe103",
+      "bytes": 66687
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-failure-propagation-20261026/cpu-exit-v1.json": {
+      "sha256": "bef23c39b7a08a51a16933522d52a53bb933844c09f5094f6b6146d7fda5106b",
+      "bytes": 884
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-failure-propagation-20261026/cpu-tests-v1.log": {
+      "sha256": "6437a584d6c37e088eb24f2e089a3818c051372e8071e973337b17e3b6b75663",
+      "bytes": 19030
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-failure-propagation-20261026/partial-volume.json": {
+      "sha256": "70a40fda99369d0ae23211da34db697c23bca661ca58955c1ab4af2d26a63451",
+      "bytes": 22227
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-failure-propagation-20261026/partial-parser-fix-scope.json": {
+      "sha256": "5a0c9f12ac72b367eb5fba513a176ba925c61a8e4db0321033268f3f7f9d7c51",
+      "bytes": 682
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-failure-propagation-20261026/partial-volume-v2.json": {
+      "sha256": "6ddfb9e466f9bd8491c86b9dd9ee303268f212771159faaa6f359462d2f9a50c",
+      "bytes": 153109
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-failure-propagation-20261026/terminal-review.json": {
+      "sha256": "6414894c802ae0d3b91decf71a500a4dc43838491537722f368980859d44256d",
+      "bytes": 2070
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-failure-propagation-20261026/archive-manifest.json": {
+      "sha256": "3666a9430954fd0ddff966b87ecda139f685f3bc5d103dbcc9c3fa9e74b0b6ad",
+      "bytes": 97233
+    }
+  }
+}

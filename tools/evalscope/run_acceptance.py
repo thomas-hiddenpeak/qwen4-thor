@@ -130,8 +130,64 @@ def request_timing(start, end, before, after):
             'within_client_boundaries': valid}
 
 
+def run_checked_client(command, env, log, check, receipt_path):
+    """Observe a live collection while waiting for only our direct client.
+
+    The normal acceptance path does not use this helper. A failed observation
+    propagates unchanged; cleanup never calls the failed check again.
+    """
+    child = None
+    started = time.monotonic()
+    failure, primary_error, cleanup_errors, checks = None, None, [], 0
+    signalled = []
+    try:
+        checks += 1
+        check()
+        child = subprocess.Popen(command, cwd=ROOT, env=env, stdout=log,
+                                 stderr=subprocess.STDOUT)
+        while True:
+            checks += 1
+            check()
+            try:
+                code = child.wait(timeout=.1)
+            except subprocess.TimeoutExpired:
+                continue
+            checks += 1
+            check()
+            return code
+    except BaseException as error:
+        failure = repr(error)
+        primary_error = error
+        raise
+    finally:
+        if child is not None and child.poll() is None:
+            try:
+                child.terminate()
+                signalled.append('TERM')
+                try:
+                    child.wait(timeout=2)
+                except subprocess.TimeoutExpired:
+                    child.kill()
+                    signalled.append('KILL')
+                    child.wait(timeout=2)
+            except BaseException as error:
+                cleanup_errors.append(repr(error))
+        try:
+            save(receipt_path, dict(pid=child.pid if child else None,
+                returncode=child.returncode if child else None, failure=failure,
+                cleanup_errors=cleanup_errors, signals=signalled, checks=checks,
+                started_monotonic=started, finished_monotonic=time.monotonic(),
+                poll_seconds=.1, cleanup_max_seconds=4,
+                scope='Only the directly owned HTTP client; original failure retained.'))
+        except BaseException as error:
+            if primary_error is None:
+                raise
+            primary_error.add_note('Client receipt also failed: ' + repr(error))
+
+
 def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
-             evalscope, model, port, env, server, bounded, capacity, mode):
+             evalscope, model, port, env, server, bounded, capacity, mode,
+             *, process_check=None):
     """Collect all available evidence even when the client returns nonzero."""
     parsed, boundaries, commands = [], [], []
     lines = inputs.read_text().splitlines()
@@ -168,8 +224,12 @@ def run_case(out, case, inputs, count, minimum, maximum, tokens, streaming,
         code = None
         try:
             with (client_dir / 'client.log').open('w') as client:
-                code = subprocess.run(cmd, cwd=ROOT, env=env, stdout=client,
-                                      stderr=subprocess.STDOUT, check=False).returncode
+                if process_check is None:
+                    code = subprocess.run(cmd, cwd=ROOT, env=env, stdout=client,
+                                          stderr=subprocess.STDOUT, check=False).returncode
+                else:
+                    code = run_checked_client(cmd, env, client, process_check,
+                                              client_dir/'client-process.json')
         finally:
             after = event(out, 'client_after', case=case.name, request_group=label,
                           client_returncode=code)
