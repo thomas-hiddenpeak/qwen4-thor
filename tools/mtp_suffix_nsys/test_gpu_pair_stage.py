@@ -55,6 +55,65 @@ class PairStageContracts(unittest.TestCase):
         self.addCleanup(directory.cleanup)
         self.base = Path(directory.name)
 
+    def test_target_first_contract_is_explicit_and_keeps_options(self):
+        value=plan(self.base)
+        value['cleanup_order']='report_bound_target_first_v1'
+        value['nsys']['interactive_contract']=stage.collection_contract(value)
+        stage.validate(value)
+        self.assertEqual(value['nsys']['interactive_contract']['start_options'],
+                         stage.sync.contract()['start_options'])
+        self.assertLess(value['nsys']['interactive_contract']['success_order'].index(
+            'independent_target_exit'),value['nsys']['interactive_contract']['success_order'].index('shutdown_kill_none'))
+        value['cleanup_order']='sleep_and_retry'
+        with self.assertRaises(ValueError):stage.validate(value)
+
+    def target_first_cleanup(self, ready, changed=False):
+        value=plan(self.base);value['cleanup_order']='report_bound_target_first_v1'
+        identity=dict(pid=7,start_ticks=19,wrapper_pid=8)
+        stage.save(self.base/'target-exit.json',dict(pid=7,wrapper_pid=8,returncode=0))
+        session=MagicMock();session.name='q4t-suffix-1-2-'+'a'*16+'-owned'
+        session.owner=dict(pid=1,start_ticks=2);session.output=self.base
+        session.deadline=50;session._closed=False;session.can_shutdown=True
+        session.report_ready_succeeded=ready
+        session.reap_adopted.return_value=dict(complete=True,remaining=[],not_children=[])
+        session.close.side_effect=lambda:setattr(session,'_closed',True)
+        launcher=MagicMock(returncode=0);launcher.poll.return_value=0
+        events=[];state={'exited':False}
+        def send(fd,sig):
+            self.assertEqual((fd,sig),(99,stage.signal.SIGTERM))
+            events.append('target');state['exited']=True
+        def shutdown(timeout):
+            session.check();self.assertLessEqual(timeout,15)
+            events.append('shutdown');return {'returncode':0}
+        session.shutdown.side_effect=shutdown
+        rebound=dict(identity,start_ticks=20) if changed else identity
+        with patch.object(stage.time,'monotonic',return_value=100), \
+                patch.object(stage.runner,'bind_model_target',return_value=rebound), \
+                patch.object(stage,'require_live'), \
+                patch.object(stage.runner,'pidfd_exited',side_effect=lambda *_:state['exited']), \
+                patch.object(stage.signal,'pidfd_send_signal',side_effect=send), \
+                patch.object(stage.os,'close'):
+            target,errors=stage.cleanup_owned(value,self.base,session,launcher,identity,99,150)
+        session.shutdown.assert_called_once();session.close.assert_called_once()
+        return events,target,errors,json.loads((self.base/'cleanup-order.json').read_text())
+
+    def test_bound_report_target_exits_before_shutdown(self):
+        events,target,errors,receipt=self.target_first_cleanup(True)
+        self.assertEqual(events,['target','shutdown']);self.assertFalse(errors)
+        self.assertEqual(target['returncode'],0);self.assertTrue(receipt['target_first'])
+        self.assertEqual([r['event'] for r in receipt['actions']],
+            ['target_term_sent','target_exit_receipt','shutdown_begin','shutdown_end'])
+
+    def test_unbound_report_failure_keeps_cancel_first(self):
+        events,target,errors,receipt=self.target_first_cleanup(False)
+        self.assertEqual(events,['shutdown','target']);self.assertFalse(errors)
+        self.assertFalse(receipt['target_first']);self.assertEqual(target['returncode'],0)
+
+    def test_target_first_identity_failure_cannot_signal_or_be_erased(self):
+        events,target,errors,receipt=self.target_first_cleanup(True,changed=True)
+        self.assertEqual(events,['shutdown']);self.assertIsNone(target)
+        self.assertTrue(errors);self.assertTrue(receipt['target_first'])
+
     def test_fixed_matrix_rejects_extra_work_and_unbound_identity(self):
         value = plan(self.base)
         stage.validate(value)

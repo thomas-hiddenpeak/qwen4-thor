@@ -37,6 +37,18 @@ def sha(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
+def collection_contract(plan):
+    value = sync.contract()
+    order = plan.get('cleanup_order')
+    if order is not None:
+        if order != 'report_bound_target_first_v1':
+            raise ValueError('unknown cleanup order')
+        value['stage_cleanup_override'] = order
+        value['success_order'] = ['target_api_stop_return', 'report_binding',
+            'independent_target_exit', 'shutdown_kill_none', 'reap', 'close']
+    return value
+
+
 def validate(plan):
     if 'nvlog_stream' in plan:
         stream = plan['nvlog_stream']
@@ -58,7 +70,7 @@ def validate(plan):
             plan.get('monitor_fix', {}).get('exit_pending') != dict(
                 ttl_seconds=5, capacity=16, poll_timeout_ms=0)):
         raise ValueError('fixed monitor contract changed')
-    if (plan['nsys']['interactive_contract'] != sync.contract() or
+    if (plan['nsys']['interactive_contract'] != collection_contract(plan) or
             plan['nsys']['export_timeout_seconds'] != 120 or
             plan['candidate_sha256'] != CANDIDATE_SHA or
             plan['files'].get(plan['candidate']) != CANDIDATE_SHA or
@@ -326,6 +338,9 @@ def cleanup_owned(plan, output, session, launcher, identity, fd, deadline):
     errors, target, shutdown, adopted = [], None, None, None
     forced_target = forced_launcher = False
     owner_ok = False
+    target_first = (plan.get('cleanup_order') == 'report_bound_target_first_v1' and
+                    session.report_ready_succeeded is True)
+    actions = []
     if launcher is None:
         # launch() can create its Popen before its final receipt raises.
         # This is still exactly the Session-owned launch child, never a PID lookup.
@@ -349,6 +364,18 @@ def cleanup_owned(plan, output, session, launcher, identity, fd, deadline):
             errors.append(label + ': ' + repr(error))
             return None
 
+    def shutdown_session():
+        if owner_ok and session.can_shutdown:
+            actions.append(dict(event='shutdown_begin', monotonic=time.monotonic()))
+            result = attempt('session shutdown', lambda: session.shutdown(
+                timeout=min(15, left(15 if target_first else 20))))
+            actions.append(dict(event='shutdown_end', monotonic=time.monotonic(),
+                                returned=result is not None))
+            return result
+        if owner_ok and session.shutdown_attempted and not session.shutdown_succeeded:
+            errors.append('previous shutdown failed; no repeated attempt authorized')
+        return None
+
     session.deadline, session.check = deadline, cleanup_check
     try:
         try:
@@ -363,13 +390,8 @@ def cleanup_owned(plan, output, session, launcher, identity, fd, deadline):
             owner_ok = True
         except BaseException as error:
             errors.append('stable cleanup owner/session: ' + repr(error))
-        if owner_ok and session.can_shutdown:
-            # _control can spend two five-second waits reclaiming its own
-            # control child. Reserve those and subsequent target cleanup.
-            shutdown = attempt('session shutdown', lambda: session.shutdown(
-                timeout=min(15, left(20))))
-        elif owner_ok and session.shutdown_attempted and not session.shutdown_succeeded:
-            errors.append('previous shutdown failed; no repeated attempt authorized')
+        if not target_first:
+            shutdown = shutdown_session()
         if owner_ok and launcher is not None:
             try:
                 already_exited = (identity is not None and fd is not None and
@@ -383,35 +405,40 @@ def cleanup_owned(plan, output, session, launcher, identity, fd, deadline):
                     if fd is None:
                         fd = os.pidfd_open(identity['pid'])
                     require_live(identity, fd)
-                    left(10)
+                    left(30 if target_first else 10)
                     signal.pidfd_send_signal(fd, signal.SIGTERM)
-                    end = min(deadline-10, time.monotonic()+30)
+                    actions.append(dict(event='target_term_sent', monotonic=time.monotonic(),
+                                        pid=identity['pid'], start_ticks=identity['start_ticks']))
+                    end = min(deadline-(30 if target_first else 10),
+                              time.monotonic()+(15 if target_first else 30))
                     while not runner.pidfd_exited(fd, 0) and time.monotonic() < end:
                         time.sleep(min(.05, max(0, end-time.monotonic())))
                     if not runner.pidfd_exited(fd, 0):
-                        left(8)
+                        left(28 if target_first else 8)
                         signal.pidfd_send_signal(fd, signal.SIGKILL)
                         forced_target = True
-                        end = min(deadline-8, time.monotonic()+2)
+                        end = min(deadline-(28 if target_first else 8), time.monotonic()+2)
                         while not runner.pidfd_exited(fd, 0) and time.monotonic() < end:
                             time.sleep(min(.05, max(0, end-time.monotonic())))
                     if not runner.pidfd_exited(fd, 0):
                         raise RuntimeError('owned actual target exit remains unconfirmed')
                 # The wrapper writes actual-target status independently of
                 # the Nsight launch-control status; give it only remaining time.
-                end = min(deadline-5, time.monotonic()+5)
+                end = min(deadline-(25 if target_first else 5), time.monotonic()+5)
                 while not (output/'target-exit.json').is_file() and time.monotonic() < end:
                     time.sleep(min(.05, max(0, end-time.monotonic())))
                 target = json.loads((output/'target-exit.json').read_text())
                 if (target['pid'] != identity['pid'] or
                         target['wrapper_pid'] != identity['wrapper_pid']):
                     raise RuntimeError('actual target exit identity differs')
+                actions.append(dict(event='target_exit_receipt', monotonic=time.monotonic(),
+                                    pid=identity['pid'], returncode=target['returncode']))
             except BaseException as error:
                 errors.append('owned actual target cleanup: ' + repr(error))
                 save(output/'target-cleanup-authorization.json',dict(
                     failure=repr(error), no_unproved_target_signal=True))
             try:
-                launcher.wait(timeout=min(5, left(5)))
+                launcher.wait(timeout=min(5, left(25 if target_first else 5)))
             except BaseException as error:
                 errors.append('owned launcher wait: ' + repr(error))
                 if launcher.poll() is None:
@@ -421,6 +448,8 @@ def cleanup_owned(plan, output, session, launcher, identity, fd, deadline):
                     if launcher.poll() is None:
                         attempt('owned launcher KILL', launcher.kill)
                         attempt('owned launcher KILL wait', lambda: launcher.wait(timeout=min(2,left(1))))
+        if target_first:
+            shutdown = shutdown_session()
         if owner_ok:
             adopted = attempt('adopted reap', lambda: session.reap_adopted(timeout=min(5,left())))
             if adopted is not None and (not adopted.get('complete') or
@@ -448,6 +477,9 @@ def cleanup_owned(plan, output, session, launcher, identity, fd, deadline):
             maximum_seconds=CLEANUP_SECONDS,original_measurement_deadline=original_deadline,
             owner_proven=owner_ok,measurement_check_used=False,
             forced_target=forced_target,forced_launcher=forced_launcher,errors=errors))
+        save(output/'cleanup-order.json',dict(target_first=target_first, actions=actions,
+            report_ready_before_cleanup=session.report_ready_succeeded is True,
+            scope='Actual control/target ordering only; does not certify profiler event completeness.'))
     return target, errors
 
 

@@ -1,0 +1,11 @@
+{
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-target-first-20261026/scope.json": "a8f1f57806468395a7d1373a0f4c83097d499ba8d00569f1e7375ecbe8180716",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-target-first-20261026/frozen-plan.json": "45f1b4d6d0b21bba360f205f21549bef1ed9bdbdaff9386d50847838d2ac6d6e",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-target-first-20261026/cpu-proof.json": "5ddb0e8f522e959b81abb5904f0c9a64f88b26127512798ca75551bbbcc4f2d9",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-target-first-20261026/cpu-exit-v1.json": "86f77bc672598fe913d2f9b4ca94958263ffd7b1f4c3cb51b1efe59d0a566a0a",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-target-first-20261026/context-receipt.json": "61c667c662be598f80b8c6d32ef2233c1a4b5442c08f5d761be0bf7ecaa4983f",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-target-first-20261026/cleanup-rejection.json": "44816ce3c233c48390ef4655c82f63c19a477116fc6f275a2be5936a12ff5b5b",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-target-first-20261026/terminal-review.json": "9912365ecba4d4f6320ae9592596d86b32f189d7f0433490c3f91e0573dc2af6",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-target-first-20261026/archive-manifest.json": "b039a98848c11be2787d74c12f3465ad56f2afa8da010ad291c9379cd3735eb3",
+  "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-target-first-20261026/postflight.json": "aa12aaf61c2a960fc3c4449a0828119615e36eb3242c07670eead79133bd38ec"
+}
