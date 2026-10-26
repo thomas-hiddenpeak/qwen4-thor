@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "created_unix": 1793002302.7426546,
+  "wall_seconds": 600,
+  "gpu_runs": 0,
+  "http_requests": 0,
+  "builds": 0,
+  "cpu_methods": 16,
+  "cpu_seconds": 30,
+  "cpu_suites": 1,
+  "retries": 0,
+  "scope": "Fix concrete missing /opt Thor driver inheritance and classify actual mapping failures ENV_ABORT; no new GPU capture",
+  "failure_anchor": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-stream-pairs-20261026/terminal-review.json",
+  "files_before": {
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/prepare_gpu_pairs.py": "a589da415dfada1b116909c2e3024378661901771647abe7c8318be14d932841",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/gpu_pair_stage.py": "5dc18431e6a640f595a6ee64005001197c79fac36b8085d915b58d4462bde5f6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-stream-pairs-20261026/terminal-review.json": "df17114635af1abe4f22a0f426855dfaf8a7db62a4841f657b3ec21db50ce136"
+  }
+}

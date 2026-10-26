@@ -38,6 +38,13 @@ def sha(path):
 
 
 def validate(plan):
+    if 'nvlog_stream' in plan:
+        stream = plan['nvlog_stream']
+        if (stream.get('mode') != 'forensic_six_errors_v1' or
+                stream.get('finish_seconds') != 10 or
+                not Path(stream['binary']).is_absolute() or
+                plan['files'].get(stream['binary']) != stream['binary_sha256']):
+            raise ValueError('frozen stream identity/policy changed')
     if tuple(plan.get(k) for k in ('http_requests', 'http_loads',
             'stage_timeout_seconds', 'direct_contract_timeout_seconds',
             'fixture_runs', 'analysis_per_capture_seconds',
@@ -112,6 +119,10 @@ def check_files(output):
             info = path.lstat()
             if not stat.S_ISREG(info.st_mode) or info.st_size > maximum:
                 raise RuntimeError('bounded regular output required: ' + name)
+    packed = output / 'nvlog-stream/nvlog.zst'
+    if packed.exists() and (not stat.S_ISREG(packed.lstat().st_mode) or
+                           packed.stat().st_size > LOG_LIMIT):
+        raise RuntimeError('bounded regular compressed NVLOG required')
 
 
 def require_live(identity, fd):
@@ -163,11 +174,12 @@ def loaded_libraries(plan, pid):
             expected = manifest[str(path.relative_to(package))]['sha256']
         digest = sha(path)
         if expected != digest:
-            raise RuntimeError('unfrozen actual CUDA/Nsight mapping: ' + str(path))
+            raise legacy.EnvironmentAbort('unfrozen actual CUDA/Nsight mapping: ' +
+                str(path) + f'; expected={expected}, actual={digest}')
         selected[str(path)] = digest
     if not all(any(Path(p).name.startswith(prefix) for p in selected)
                for prefix in ('libcuda.so', 'libcudart', 'libcublasLt')):
-        raise RuntimeError('actual CUDA/cuBLAS mapping incomplete')
+        raise legacy.EnvironmentAbort('actual CUDA/cuBLAS mapping incomplete')
     return selected
 
 
@@ -201,6 +213,11 @@ def analyze_capture(plan, output, identity, deadline, check):
         '--wrapper-pid', str(identity['wrapper_pid']), '--scratch-dir', str(output / 'audit-scratch'),
         '--nvlog-path', str(output / 'nvlog.log'),
         '--nvlog-snapshot-receipt', str(output / 'nvlog-snapshot.json')]
+    streamed = 'nvlog_stream' in plan
+    if streamed:
+        command = [sys.executable, '-B', str(HERE / 'stream_recorded_gpu.py'),
+            '--output', str(output), '--target-pid', str(identity['pid']),
+            '--wrapper-pid', str(identity['wrapper_pid'])]
     save(output / 'analysis-command.json', command)
     child, failure, forced = None, None, False
     cleanup_errors = []
@@ -217,7 +234,10 @@ def analyze_capture(plan, output, identity, deadline, check):
             if child.returncode:
                 raise RuntimeError('recorded GPU analysis rejected capture')
         result = json.loads((output / 'recorded-gpu-audit.json').read_text())
-        require_qualified(result)
+        if streamed:
+            module('stream_recorded_gpu').require_forensic(result)
+        else:
+            require_qualified(result)
         if not (output / 'strict-audit.json').is_file():
             raise RuntimeError('original strict audit was not retained')
         return result
@@ -249,6 +269,7 @@ class MeasurementGuard:
         self.failure = None
         self._armed = False
         self._old_handler = None
+        self.extra_check = None
 
     def latch(self, error, environment=False):
         if self.failure is None:
@@ -264,6 +285,8 @@ class MeasurementGuard:
             if time.monotonic() >= self.deadline:
                 raise TimeoutError('840-second measurement deadline exhausted')
             check_files(self.output)
+            if self.extra_check is not None:
+                self.extra_check()
         except BaseException as error:
             self.latch(error, environment=True)
             raise
@@ -437,7 +460,9 @@ def custom_step(plan, name, plan_path):
     measurement = MeasurementGuard(output, deadline-CLEANUP_SECONDS)
     check = measurement.check
     config = output / 'nvlog.config'
-    config.write_text(plan['nvlog_config'].format(log=str(output / 'nvlog.log')))
+    streamed = 'nvlog_stream' in plan
+    log_path = output / ('nvlog-stream/input.fifo' if streamed else 'nvlog.log')
+    config.write_text(plan['nvlog_config'].format(log=str(log_path)))
     env = clean_env() | dict(Q4T_EXEC_DIAGNOSTIC='1', Q4T_EXEC_NVTX='1',
         Q4T_EXEC_PROFILE_INPUT=str(step['profile_input_tokens']), NVLOG_CONFIG_FILE=str(config))
     command = old.server_command(plan, step)
@@ -458,12 +483,18 @@ def custom_step(plan, name, plan_path):
     launcher, identity, fd, target_exit = None, None, None, None
     http_passed, execution, clean = False, None, False
     cleanup_errors = []
+    collector = None
     try:
         try:
             with (output / 'server.log').open('x') as stream:
                 try:
                     measurement.arm()
                     check()
+                    if streamed:
+                        codec = module('nvlog_stream')
+                        collector = codec.Collector(plan['nvlog_stream']['binary'],
+                            output/'nvlog-stream', timeout_seconds=840).start()
+                        measurement.extra_check = collector.check
                     old.http.event(output, 'server_before_start')
                     session.start()
                     launcher = session.launch(wrapper, stream, envvars={k: v for k, v in env.items()
@@ -528,12 +559,28 @@ def custom_step(plan, name, plan_path):
                         cleanup_errors.append('measurement alarm release: ' + repr(error))
                     try:
                         target_exit, owned_errors = cleanup_owned(plan, output, session,
-                            launcher, identity, fd, min(deadline, time.monotonic()+CLEANUP_SECONDS))
+                            launcher, identity, fd, min(deadline-(10 if streamed else 0),
+                                time.monotonic()+CLEANUP_SECONDS-(10 if streamed else 0)))
                         cleanup_errors.extend(owned_errors)
                     except BaseException as error:
                         cleanup_errors.append('owned cleanup failed: ' + repr(error))
                     finally:
                         fd = None  # cleanup_owned owns and closes the transferred pidfd.
+                    measurement.extra_check = None
+                    if collector is not None:
+                        try:
+                            if cleanup_errors:
+                                raise RuntimeError('writer cleanup incomplete; stream cannot be certified')
+                            receipt = collector.finish(timeout_seconds=min(10,
+                                max(.001, deadline-time.monotonic())))
+                            save(output/'nvlog-stream-finish.json', receipt)
+                        except BaseException as error:
+                            cleanup_errors.append('owned NVLOG stream completion: '+repr(error))
+                        finally:
+                            try:
+                                collector.abort()
+                            except BaseException as error:
+                                cleanup_errors.append('owned NVLOG worker cleanup: '+repr(error))
                     try:
                         stream.flush()
                     except BaseException as error:
@@ -571,11 +618,13 @@ def custom_step(plan, name, plan_path):
         check()
         runner.export_database(plan, output, measurement.deadline, check)
         check()
-        snapshot_logs(output, identity['pid'])
+        if not streamed:
+            snapshot_logs(output, identity['pid'])
         analyze_capture(plan, output, identity, measurement.deadline, check)
         check()
         result = json.loads((output / 'exit.json').read_text())
-        result.update(trace_exports_complete=True, recorded_gpu_qualification=True,
+        result.update(trace_exports_complete=True, recorded_gpu_qualification=not streamed,
+                      forensic_gpu_scope_passed=streamed,
                       full_trace_integrity=False)
         save(output / 'exit.json', result)
     except BaseException as error:

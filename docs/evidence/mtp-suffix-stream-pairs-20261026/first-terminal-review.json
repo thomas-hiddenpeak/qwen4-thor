@@ -1,0 +1,109 @@
+{
+  "evidence_integrity": "PASS",
+  "evidence_validity": "ENV_ABORT_UNFROZEN_DEPENDENCY",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_EVALUATED_INCOMPLETE_PAIRS",
+  "engineering_decision": "PERFORMANCE_NO_GO_UNCHANGED",
+  "performance_acceptance": false,
+  "scope": "Failed collection preserved. Native compression verified, no new terminal parser, export or GPU analyzer.",
+  "actual_http_requests": 1,
+  "completed_captures": 0,
+  "unstarted_arms": 3,
+  "gpu_phase_seconds": 84.06659631896764,
+  "raw_states": {
+    "state": "STOPPED",
+    "postflight": "STOPPED",
+    "guard": "COMMAND_FAILED"
+  },
+  "driver_issue": {
+    "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1",
+    "sha256": "c052fd6522969504193195cb06b6f3044b4b11b16f9e227357ced12c9d45ac1d",
+    "absent_from_current_plan": true,
+    "historical_frozen_sha256": "c052fd6522969504193195cb06b6f3044b4b11b16f9e227357ced12c9d45ac1d",
+    "unchanged_from_historical_freeze": true,
+    "cause": "prepare_gpu_pairs.py keeps /usr and /lib prefixes but drops /opt/nvidia/l4t-gpu-libs/",
+    "raw_status_preserved": {
+      "state": "STOPPED",
+      "postflight": "STOPPED",
+      "guard": "COMMAND_FAILED"
+    },
+    "audit_classification": "ENV_ABORT_UNFROZEN_DEPENDENCY",
+    "classification_gap": "loaded_libraries raises RuntimeError; original raw receipts say STOPPED instead of ENV_ABORT. Do not overwrite them."
+  },
+  "http_metrics_diagnostic_only": {
+    "ttft": 6.038614677032456,
+    "latency": 12.782027418958023,
+    "decode_tps": 37.814680749792764,
+    "total_tps": 20.028121643699997
+  },
+  "host_work": {
+    "verify_T4": 74,
+    "neural_T1": 148,
+    "extend_calls": 74,
+    "extend_rows": 252,
+    "restore": 22
+  },
+  "stream": {
+    "schema": 1,
+    "status": "VALID",
+    "error": "",
+    "pid": 3517122,
+    "logical_bytes": 746099822,
+    "logical_sha256": "abe862ff33ec083160d7deaea8c7572bd501921fb7742ace954362edf8ab4628",
+    "compressed_bytes": 30482789,
+    "compressed_sha256": "e0ba7cd151b4258608c261c76c6ebf8cdd9faac9a1592874709d124ccefb268b",
+    "output_device": 66305,
+    "output_inode": 5126833,
+    "logical_limit": 8589934592,
+    "compressed_limit": 268435456,
+    "controlled_workspace_bytes": 12845056,
+    "address_space_limit_bytes": 67108864,
+    "fifo_kernel_capacity_bytes": 65536,
+    "maxrss_kib": 52676,
+    "elapsed_seconds": 81.461441,
+    "zstd_version": 10505,
+    "level": 1,
+    "window_log": 20,
+    "workers": 0,
+    "checksum": true,
+    "input_eof": true,
+    "frame_completed": true,
+    "fsynced": true
+  },
+  "stream_checksum_and_sha_verified": true,
+  "telemetry": {
+    "samples": 85,
+    "pending": 0,
+    "errors": [],
+    "max_sample_seconds": 0.059841525042429566,
+    "unified_system_used_proxy_peak": 113639669760,
+    "swap_used_peak": 2074869760,
+    "unavailable": [
+      "pressure_cpu",
+      "pressure_io",
+      "pressure_memory"
+    ],
+    "scope": "MemTotal-MemAvailable whole-system proxy, not allocation sum or incremental collector RAM."
+  },
+  "observed_processes": {
+    "3517081": "ABSENT",
+    "3517118": "ABSENT",
+    "3517122": "ABSENT",
+    "3517156": "ABSENT",
+    "3517157": "ABSENT",
+    "3517158": "ABSENT",
+    "3517133": "ABSENT",
+    "3517167": "ABSENT",
+    "3517141": "ABSENT",
+    "3518329": "ABSENT",
+    "3518438": "ABSENT"
+  },
+  "lock_released": true,
+  "normal_exit": true,
+  "archive_files": 522,
+  "archive_bytes": 75316058,
+  "archive_manifest_sha256": "0b0b7e1fd9d357c76c6d5e93fb9cdbba33dbdeda0dd4f02567ea938043f9d136",
+  "errors": [],
+  "checks": 24144,
+  "elapsed_seconds": 4.498127985978499
+}

@@ -1,0 +1,138 @@
+{
+  "evidence_integrity": "PASS",
+  "evidence_validity": "INVALID_COLLECTOR_DIAGNOSTICS",
+  "measurement_complete": false,
+  "statistical_conclusion": "NOT_EVALUATED_INCOMPLETE_PAIRS",
+  "engineering_decision": "PERFORMANCE_NO_GO_UNCHANGED",
+  "performance_acceptance": false,
+  "scope": "Original strict FAIL and new collector diagnostics preserved; no repeated export or analyzer. Incomplete GPU pairs.",
+  "actual_http_requests": 1,
+  "completed_captures": 0,
+  "unstarted_arms": 3,
+  "gpu_phase_seconds": 166.09408118296415,
+  "raw_states": {
+    "state": "STOPPED",
+    "postflight": "STOPPED",
+    "guard": "COMMAND_FAILED"
+  },
+  "driver_issue": {
+    "status": "FIXED_AND_ACTUALLY_OBSERVED",
+    "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1",
+    "sha256": "c052fd6522969504193195cb06b6f3044b4b11b16f9e227357ced12c9d45ac1d",
+    "raw_status_preserved": {
+      "state": "STOPPED",
+      "postflight": "STOPPED",
+      "guard": "COMMAND_FAILED"
+    }
+  },
+  "http_metrics_diagnostic_only": {
+    "ttft": 5.948909876868129,
+    "latency": 12.683154357830063,
+    "decode_tps": 37.86616311909948,
+    "total_tps": 20.18425328411745
+  },
+  "host_work": {
+    "verify_T4": 74,
+    "neural_T1": 148,
+    "extend_calls": 74,
+    "extend_rows": 252,
+    "restore": 22
+  },
+  "stream": {
+    "schema": 1,
+    "status": "VALID",
+    "error": "",
+    "pid": 3519373,
+    "logical_bytes": 746073161,
+    "logical_sha256": "2a3acab8611d6d43913e9c7120fcc44dfb988d6a56204cb389bc7a81b35e57f3",
+    "compressed_bytes": 30597560,
+    "compressed_sha256": "42a0dac1b32dfa91194f1faf65e8ee6ffb258d0b315f4a17516c508fb960933d",
+    "output_device": 66305,
+    "output_inode": 5127609,
+    "logical_limit": 8589934592,
+    "compressed_limit": 268435456,
+    "controlled_workspace_bytes": 12845056,
+    "address_space_limit_bytes": 67108864,
+    "fifo_kernel_capacity_bytes": 65536,
+    "maxrss_kib": 52884,
+    "elapsed_seconds": 81.920163,
+    "zstd_version": 10505,
+    "level": 1,
+    "window_log": 20,
+    "workers": 0,
+    "checksum": true,
+    "input_eof": true,
+    "frame_completed": true,
+    "fsynced": true
+  },
+  "stream_checksum_and_sha_verified": true,
+  "new_collector_errors": [
+    {
+      "line": 2065460,
+      "raw": "E16:19:56.096| Injection |                              q4t pid=3519417 tid= 3519419 | Manager.cpp:119 [WaitUntilUniqueAndDelete]: 'session connection' shared pointer is still in use",
+      "byte_offset": 746052586,
+      "raw_bytes": 183,
+      "raw_sha256": "5ae416eff3d546e943592d665adec446e9b9116dd6a45895f099edfbb054cf4a"
+    },
+    {
+      "line": 2065461,
+      "raw": "E16:19:56.096| Injection |                              q4t pid=3519417 tid= 3519419 | Init.cpp:1442 [HandleNotification]: ProfilerApi expired",
+      "byte_offset": 746052769,
+      "raw_bytes": 143,
+      "raw_sha256": "dfcdbefcf206e52b5c9d930b63b5b869d6d7a7c68a07b73cdb378a5a44341b03"
+    },
+    {
+      "line": 2065479,
+      "raw": "E16:19:56.098| Injection |                              q4t pid=3519417 tid= 3519419 | Init.cpp:1458 [HandleNotification]: Failed to handle Agent notification: Throw location unknown (consider using BOOST_THROW_EXCEPTION)",
+      "byte_offset": 746055688,
+      "raw_bytes": 222,
+      "raw_sha256": "9d4767b5ccfd7a45f9fa1409536855642b868e1ab8f46eca7f28b9d085c2d935"
+    },
+    {
+      "line": 2065484,
+      "raw": "E16:19:56.098| quadd_common_core |                              q4t pid=3519417 tid= 3519419 | AsyncProcessor.cpp:49 [operator()]: 2CommsProcessor@AsyncProcessor: Error occurred: Throw location unknown (consider using BOOST_THROW_EXCEPTION)",
+      "byte_offset": 746056177,
+      "raw_bytes": 241,
+      "raw_sha256": "b5baea68c9c55ba10265e229e930eceeac0a917b90744b9857eff93ee8838dc6"
+    }
+  ],
+  "exported_captures": 1,
+  "qualified_captures": 0,
+  "telemetry": {
+    "samples": 167,
+    "pending": 0,
+    "errors": [],
+    "max_sample_seconds": 0.0704833148047328,
+    "unified_system_used_proxy_peak": 113441050624,
+    "swap_used_peak": 2147479552,
+    "unavailable": [
+      "pressure_cpu",
+      "pressure_io",
+      "pressure_memory"
+    ],
+    "scope": "MemTotal-MemAvailable whole-system proxy, not allocation sum or incremental collector RAM."
+  },
+  "observed_processes": {
+    "3519358": "ABSENT",
+    "3519392": "ABSENT",
+    "3519371": "ABSENT",
+    "3519373": "ABSENT",
+    "3519406": "ABSENT",
+    "3519407": "ABSENT",
+    "3519408": "ABSENT",
+    "3519384": "ABSENT",
+    "3519417": "ABSENT",
+    "3520186": "ABSENT",
+    "3520320": "ABSENT",
+    "3520357": "ABSENT",
+    "3520362": "ABSENT"
+  },
+  "lock_released": true,
+  "normal_exit": true,
+  "archive_files": 144,
+  "archive_bytes": 135503494,
+  "archive_manifest_sha256": "fa15db5e75213d8b03e993cf5739e8b4d23fc779812c42e38982dba847808dcb",
+  "errors": [],
+  "checks": 23797,
+  "elapsed_seconds": 3.8187109150458127
+}

@@ -1,0 +1,44 @@
+{
+  "errors": [
+    {
+      "line": 2065460,
+      "raw": "E16:19:56.096| Injection |                              q4t pid=3519417 tid= 3519419 | Manager.cpp:119 [WaitUntilUniqueAndDelete]: 'session connection' shared pointer is still in use",
+      "byte_offset": 746052586,
+      "raw_bytes": 183,
+      "raw_sha256": "5ae416eff3d546e943592d665adec446e9b9116dd6a45895f099edfbb054cf4a"
+    },
+    {
+      "line": 2065461,
+      "raw": "E16:19:56.096| Injection |                              q4t pid=3519417 tid= 3519419 | Init.cpp:1442 [HandleNotification]: ProfilerApi expired",
+      "byte_offset": 746052769,
+      "raw_bytes": 143,
+      "raw_sha256": "dfcdbefcf206e52b5c9d930b63b5b869d6d7a7c68a07b73cdb378a5a44341b03"
+    },
+    {
+      "line": 2065479,
+      "raw": "E16:19:56.098| Injection |                              q4t pid=3519417 tid= 3519419 | Init.cpp:1458 [HandleNotification]: Failed to handle Agent notification: Throw location unknown (consider using BOOST_THROW_EXCEPTION)",
+      "byte_offset": 746055688,
+      "raw_bytes": 222,
+      "raw_sha256": "9d4767b5ccfd7a45f9fa1409536855642b868e1ab8f46eca7f28b9d085c2d935"
+    },
+    {
+      "line": 2065484,
+      "raw": "E16:19:56.098| quadd_common_core |                              q4t pid=3519417 tid= 3519419 | AsyncProcessor.cpp:49 [operator()]: 2CommsProcessor@AsyncProcessor: Error occurred: Throw location unknown (consider using BOOST_THROW_EXCEPTION)",
+      "byte_offset": 746056177,
+      "raw_bytes": 241,
+      "raw_sha256": "b5baea68c9c55ba10265e229e930eceeac0a917b90744b9857eff93ee8838dc6"
+    }
+  ],
+  "analysis_errors": [
+    "ValueError('six unresolved errors required')"
+  ],
+  "raw_states": {
+    "state": "STOPPED",
+    "postflight": "STOPPED",
+    "guard": "COMMAND_FAILED"
+  },
+  "strict_integrity": "FAIL",
+  "explicit_loss_records": [],
+  "whole_trace_complete": false,
+  "scope": "No explicit loss marker does not prove no lost events; no causal or OFF/ON conclusion."
+}

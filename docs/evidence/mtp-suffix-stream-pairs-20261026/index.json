@@ -1,0 +1,20 @@
+{
+  "files": {
+    "first-scope.json": "24420f57708f823004058adaf89cfd87b270f429de34d57ecfbb3dfda579713b",
+    "first-terminal-review.json": "df17114635af1abe4f22a0f426855dfaf8a7db62a4841f657b3ec21db50ce136",
+    "first-driver-identity-omission.json": "ffc3316fb5444e3c00d8aaf2d1f411f34d8f62a69cdb37fa9c1f1aa93b8999af",
+    "driver-fix-scope.json": "f8b3a45812df6a19f4131b84a6923e040938cde35cc1c69ae857ae0986fc38cc",
+    "driver-fix-cpu-result.json": "f0e5ea9c8d9399100ef83fcf4ae8d332e4bb205887968aa988aceb0615c322e8",
+    "final-scope.json": "abf0dd01f0f96521ecc1fe9905f4f43ba6c57f77d7ca98e16554e251db3c0395",
+    "final-terminal-review.json": "3dd671084daba4644a2464c4ed913bf524813918ba40dabb703b9c63235a5e81",
+    "final-collector-rejection.json": "e224a54c302d51a61f09cfd8f500bb6bae08d58e1f2b60a67f8a5d2eee901736"
+  },
+  "local_evidence": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-stream-pairs-20261026",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-driver-freeze-20261026",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-driver-pairs-20261026"
+  ],
+  "performance_acceptance": false,
+  "measurement_complete": false,
+  "engineering_decision": "PERFORMANCE_NO_GO_UNCHANGED"
+}

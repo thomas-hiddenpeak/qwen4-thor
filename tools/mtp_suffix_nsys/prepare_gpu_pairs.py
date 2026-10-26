@@ -23,6 +23,19 @@ def read(path): return json.loads(Path(path).read_text())
 def require(ok,message):
     if not ok: raise RuntimeError(message)
 
+def inherit_live_dependencies(parent, bind):
+    # Thor's actual driver is outside /usr and /lib. Preserve its existing
+    # frozen digest; never discover or accept a replacement after capture.
+    prefixes=(str(ROOT/'tools/evalscope/.venv')+'/',parent['artifact']+'/',
+              parent['model']+'/', '/usr/', '/lib/',
+              '/opt/nvidia/l4t-gpu-libs/')
+    selected={path:digest for path,digest in parent['files'].items()
+              if path.startswith(prefixes)}
+    require(any(Path(path).name.startswith('libcuda.so.') for path in selected),
+            'parent freeze has no actual CUDA driver; stop before GPU launch')
+    for path,digest in selected.items():
+        bind(path,digest)
+
 def main():
     require(not (BASE/'frozen-plan.json').exists(),'one preparation only')
     scope=read(BASE/'scope.json')
@@ -54,10 +67,7 @@ def main():
             and fixed['measurement_complete'] and not fixed['errors'] and not fixed['performance_acceptance'],
             'fixed same-package local mechanism evidence changed')
     # Direct live dependencies only; do not recursively import historical snapshots.
-    prefixes=(str(ROOT/'tools/evalscope/.venv')+'/',parent['artifact']+'/',
-              parent['model']+'/', '/usr/', '/lib/')
-    for path,digest in parent['files'].items():
-        if path.startswith(prefixes):bind(path,digest)
+    inherit_live_dependencies(parent,bind)
     for path,digest in original['files'].items():
         source=Path(path)
         if source==ROOT/'CMakeLists.txt' or any(source.is_relative_to(ROOT/n) for n in ('src','include','cmake')):

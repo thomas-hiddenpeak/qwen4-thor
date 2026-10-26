@@ -135,3 +135,9 @@ M4/N48/K2560、32MiB的参数诊断候选，分别运行CUPTI-only与条件Nsigh
 一次真实旧日志往返通过；尚未证明实际NVLOG FIFO兼容性，6E仍拒资格。
 `gpu_pair_stage` 清理使用独立60秒预算，原测量失败不能被清理成功擦除。
 见[CPU修复结果](../../docs/MTP_SUFFIX_LOGSTREAM_2026-10-26.md)。
+
+流式真实采集由`gpu_pair_stage`显式`nvlog_stream`计划启用；
+`stream_recorded_gpu.py`保留strict失败和未知实参，只作明确限定的区间诊断。
+实际首8K新增4条收尾错误，受限资格INVALID，后续臂未启动，不能当完整性通过。
+Thor驱动/opt依赖继承与ENV_ABORT分类已修复。见
+[流式GPU补测结果](../../docs/MTP_SUFFIX_STREAM_PAIRS_2026-10-26.md)。

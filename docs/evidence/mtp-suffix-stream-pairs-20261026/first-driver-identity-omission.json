@@ -1,0 +1,15 @@
+{
+  "path": "/opt/nvidia/l4t-gpu-libs/openrm/libcuda.so.1.1",
+  "sha256": "c052fd6522969504193195cb06b6f3044b4b11b16f9e227357ced12c9d45ac1d",
+  "absent_from_current_plan": true,
+  "historical_frozen_sha256": "c052fd6522969504193195cb06b6f3044b4b11b16f9e227357ced12c9d45ac1d",
+  "unchanged_from_historical_freeze": true,
+  "cause": "prepare_gpu_pairs.py keeps /usr and /lib prefixes but drops /opt/nvidia/l4t-gpu-libs/",
+  "raw_status_preserved": {
+    "state": "STOPPED",
+    "postflight": "STOPPED",
+    "guard": "COMMAND_FAILED"
+  },
+  "audit_classification": "ENV_ABORT_UNFROZEN_DEPENDENCY",
+  "classification_gap": "loaded_libraries raises RuntimeError; original raw receipts say STOPPED instead of ENV_ABORT. Do not overwrite them."
+}

@@ -1,7 +1,9 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[GPU对照有界停止](MTP_SUFFIX_GPU_PAIRS_2026-10-26.md)；
+最新专项：[日志流CPU修复](MTP_SUFFIX_LOGSTREAM_2026-10-26.md)；
+[流式GPU补测停止](MTP_SUFFIX_STREAM_PAIRS_2026-10-26.md)；
+[GPU对照有界停止](MTP_SUFFIX_GPU_PAIRS_2026-10-26.md)；
 [实际8K参数机制](MTP_SUFFIX_MODEL_LEDGER_2026-10-26.md)；
 [回调身份与固定机制对照](MTP_SUFFIX_CALLBACK_PAIRING_2026-10-26.md)；
 [生产链接依赖修复](MTP_SUFFIX_MEMSET_LINK_2026-10-26.md)；
