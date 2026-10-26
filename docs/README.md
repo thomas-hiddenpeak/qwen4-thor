@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[200K/8K GPU对照与最终不交付决定](MTP_SUFFIX_FINAL_OBSERVATION_2026-10-26.md)；
+最新专项：[因果消融与修复方案（未执行）](MTP_SUFFIX_CAUSAL_PLAN_2026-10-26.md)；
+[200K/8K GPU对照与最终不交付决定](MTP_SUFFIX_FINAL_OBSERVATION_2026-10-26.md)；
 [超限材料核对与ON复用](MTP_SUFFIX_LOG_REUSE_2026-10-26.md)；
 [200K筛选采集与分析期限](MTP_SUFFIX_PROJECTED_200K_2026-10-26.md)；
 [精确确认行筛选CPU核对](MTP_SUFFIX_ACK_PROJECTION_2026-10-26.md)；
