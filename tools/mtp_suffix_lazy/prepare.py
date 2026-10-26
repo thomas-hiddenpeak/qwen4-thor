@@ -2,6 +2,7 @@
 import hashlib,json,re,shutil,subprocess,sys,time
 from pathlib import Path
 from run_stage import ROOT,reuse,validate
+from object_identity import compare
 BASE=ROOT/'.q4t-work/suffix-causal-20261026'
 OLD=ROOT/'.q4t-work/suffix-admission-20261024'
 
@@ -103,9 +104,9 @@ def main():
     paths.update([Path(sys.executable).resolve(),ROOT/'tools/evalscope/.venv/bin/evalscope'])
     for folder in (ROOT/'tools/evalscope/.venv/lib').glob('python*/site-packages/evalscope'):paths.update(folder.rglob('*.py'))
     objects=[]
-    for p in (bdir/'CMakeFiles/q4t_model.dir').rglob('*.cu.o'):
-        oldobj=BASE/'build-b'/p.relative_to(bdir);current=sha(p);previous=sha(oldobj)
-        objects.append(dict(path=str(p.relative_to(bdir)),sha256=current,reference_sha256=previous,equal=current==previous));paths.update([p,oldobj])
+    for p in (bdir/'CMakeFiles').rglob('*.cu.o'):
+        oldobj=BASE/'build-b'/p.relative_to(bdir)
+        objects.append(dict(path=str(p.relative_to(bdir)),**compare(p,oldobj)));paths.update([p,oldobj])
     if not objects or not all(o['equal'] for o in objects):raise RuntimeError('GPU compute object identity changed; reuse not eligible')
     plan['unchanged_compute_objects']=objects
     snapshot=stage/'source-snapshot';snapshot.mkdir()
