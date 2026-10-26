@@ -18,11 +18,63 @@ COMPRESSED_LIMIT = 256 * 1024 ** 2
 LINE_LIMIT = 1024 ** 2
 BLOCK = 128 * 1024
 LIBRARY = '/usr/lib/aarch64-linux-gnu/libzstd.so.1.5.5'
+ACK_PROJECTION = 'drop_serialized_ack_v1'
 
 
 def require(condition, message):
     if not condition:
         raise ValueError(message)
+
+
+def projection_evidence(receipt):
+    """Validate and label a projected view; it cannot reconstruct original bytes.
+
+    Original-input and discarded-byte hashes are native attestations. Decoding
+    independently verifies only the retained view, not the removed records.
+    Legacy receipts without a projection field describe lossless encoding.
+    """
+    mode = receipt.get('projection', 'none')
+    require(mode in ('none', ACK_PROJECTION), 'unknown receipt projection')
+    if mode == 'none':
+        return None
+    require(receipt.get('status') == 'VALID' and receipt.get('error') == '' and
+            all(receipt.get(key) is True for key in
+                ('input_eof', 'frame_completed', 'fsynced')),
+            'projection requires completed input and encoded view')
+    keys = ('input_bytes', 'logical_bytes', 'discarded_bytes', 'input_lines',
+            'retained_lines', 'discarded_lines', 'logical_limit',
+            'compressed_bytes', 'compressed_limit')
+    require(all(type(receipt.get(key)) is int and receipt[key] >= 0 for key in keys),
+            'invalid projection counters')
+    require(receipt['input_bytes'] == receipt['logical_bytes'] + receipt['discarded_bytes'] and
+            receipt['input_lines'] == receipt['retained_lines'] + receipt['discarded_lines'] and
+            0 < receipt['logical_limit'] <= LOGICAL_LIMIT and
+            receipt['input_bytes'] <= receipt['logical_limit'] and
+            0 < receipt['compressed_bytes'] <= receipt['compressed_limit'] <= COMPRESSED_LIMIT and
+            receipt['input_lines'] <= receipt['input_bytes'] and
+            receipt['retained_lines'] <= receipt['logical_bytes'] and
+            receipt['discarded_lines'] <= receipt['discarded_bytes'],
+            'projection counts or byte caps differ')
+    hashes = ('input_sha256', 'logical_sha256', 'discarded_sha256', 'compressed_sha256')
+    require(all(isinstance(receipt.get(key), str) and len(receipt[key]) == 64 and
+                all(c in '0123456789abcdef' for c in receipt[key]) for key in hashes),
+            'invalid projection hashes')
+    empty = hashlib.sha256(b'').hexdigest()
+    for count, digest in (('input_bytes', 'input_sha256'), ('logical_bytes', 'logical_sha256'),
+                          ('discarded_bytes', 'discarded_sha256')):
+        require(receipt[count] != 0 or receipt[digest] == empty, 'empty projection hash differs')
+    require((receipt.get('level'), receipt.get('window_log'), receipt.get('workers'),
+             receipt.get('checksum')) == (1, 20, 0, True) and
+            type(receipt.get('controlled_workspace_bytes')) is int and
+            0 < receipt['controlled_workspace_bytes'] <= 16*1024**2 and
+            receipt.get('address_space_limit_bytes') == 64*1024**2,
+            'projection encoder configuration differs')
+    return dict(mode=mode, source_kind='PROJECTED_NVLOG_VIEW',
+                original_bytes_recoverable=False,
+                original_input={key: receipt[key] for key in ('input_bytes', 'input_sha256', 'input_lines')},
+                discarded={key: receipt[key] for key in ('discarded_bytes', 'discarded_sha256', 'discarded_lines')},
+                retained_lines=receipt['retained_lines'],
+                input_hash_scope='Native attestation; decoder verifies only retained view.')
 
 
 def _path(path):
@@ -57,7 +109,10 @@ class Collector:
     It does not stop arbitrary writers or certify their process lifecycle.
     """
     def __init__(self, binary, directory, *, timeout_seconds=900,
-                 logical_limit=LOGICAL_LIMIT, compressed_limit=COMPRESSED_LIMIT):
+                 logical_limit=LOGICAL_LIMIT, compressed_limit=COMPRESSED_LIMIT,
+                 projection='none'):
+        require(projection in ('none', ACK_PROJECTION), 'unknown requested projection')
+        self.projection = projection
         require(type(timeout_seconds) is int and 0 < timeout_seconds <= 3600,
                 'invalid worker deadline')
         require(type(logical_limit) is int and 0 < logical_limit <= LOGICAL_LIMIT and
@@ -91,6 +146,8 @@ class Collector:
                 '--logical-limit', str(self.logical_limit),
                 '--compressed-limit', str(self.compressed_limit),
                 '--timeout-seconds', str(self.timeout)]
+            if self.projection != 'none':
+                command += ['--projection', self.projection]
             (self.directory/'command.json').write_text(json.dumps(command)+'\n')
             self.child = subprocess.Popen(command, pass_fds=(reader,), close_fds=True,
                                           stdout=self.log, stderr=subprocess.STDOUT)
@@ -152,6 +209,9 @@ class Collector:
             self.child.wait(timeout=max(.001, limit-time.monotonic()))
             require(self.child.returncode == 0, 'native stream did not finish normally')
             receipt = _json(self.receipt_path)
+            require(receipt.get('projection', 'none') == self.projection,
+                    'native projection differs from requested mode')
+            projection_evidence(receipt)
             require(receipt.get('status') == 'VALID' and receipt.get('pid') == self.child.pid and
                     receipt.get('input_eof') is True and receipt.get('frame_completed') is True and
                     receipt.get('fsynced') is True, 'native completion receipt invalid')
@@ -221,11 +281,14 @@ def _library():
 
 def iter_chunks(path, *, receipt=None, logical_limit=LOGICAL_LIMIT,
                 compressed_limit=COMPRESSED_LIMIT, result=None):
-    """Yield ≤128KiB blocks; validity exists only after complete exhaustion.
+    """Yield encoded view blocks; validity exists only after complete exhaustion.
 
     Exactly one checksum-protected frame is required. Extra frames/trailing
     bytes are rejected, including when they begin in a later input block.
+    Without a receipt the decoded bytes have unspecified origin. A projected
+    receipt identifies the retained view, never original raw NVLOG.
     """
+    projection = projection_evidence(receipt) if receipt is not None else None
     require(type(logical_limit) is int and 0 < logical_limit <= LOGICAL_LIMIT and
             type(compressed_limit) is int and 0 < compressed_limit <= COMPRESSED_LIMIT,
             'invalid decoder caps')
@@ -289,6 +352,10 @@ def iter_chunks(path, *, receipt=None, logical_limit=LOGICAL_LIMIT,
                       compressed_bytes=packed, compressed_sha256=packed_hash.hexdigest(),
                       frames=1, checksum_validated=True, path=str(path),
                       device=first.st_dev, inode=first.st_ino)
+        actual['source_kind'] = ('PROJECTED_NVLOG_VIEW' if projection else
+                                 'LOSSLESS_NVLOG' if receipt is not None else 'UNSPECIFIED_ENCODED_BYTES')
+        if projection is not None:
+            actual['projection_evidence'] = projection
         if receipt is not None:
             require(receipt.get('status') == 'VALID' and receipt.get('frame_completed') is True and
                     receipt.get('input_eof') is True and receipt.get('fsynced') is True,

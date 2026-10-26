@@ -1,4 +1,5 @@
-// One bounded, lossless NVLOG FIFO encoder. No CUDA or profiler interfaces.
+// Bounded NVLOG FIFO encoder; optional explicitly recorded ACK projection.
+// Default encoding is lossless. No CUDA or profiler interfaces.
 #define ZSTD_STATIC_LINKING_ONLY
 #include <zstd.h>
 
@@ -10,6 +11,7 @@
 
 #include <array>
 #include <cerrno>
+#include <charconv>
 #include <chrono>
 #include <cstdint>
 #include <cstdio>
@@ -17,6 +19,7 @@
 #include <initializer_list>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utility>
 
 // This machine has the OpenSSL 3 runtime, but not the development headers.
@@ -38,10 +41,12 @@ constexpr uint64_t kLogicalLimit = 8ULL << 30;
 constexpr uint64_t kCompressedLimit = 256ULL << 20;
 constexpr size_t kArenaBytes = 12U << 20;
 constexpr size_t kBufferBytes = 128U << 10;
+constexpr size_t kLineBytes = 1U << 20;
 constexpr rlim_t kAddressLimit = 64U << 20;
 alignas(8) std::array<unsigned char, kArenaBytes> arena;
 std::array<unsigned char, kBufferBytes> input;
 std::array<unsigned char, kBufferBytes> output;
+std::array<unsigned char, kLineBytes> line_buffer;
 using Clock = std::chrono::steady_clock;
 
 void Require(bool condition, const char* message) {
@@ -148,16 +153,64 @@ uint64_t Number(const std::string& value) {
   return std::stoull(value);
 }
 
+bool Take(std::string_view& text, std::string_view literal) {
+  if (!text.starts_with(literal)) return false;
+  text.remove_prefix(literal.size());
+  return true;
+}
+
+bool Spaces(std::string_view& text) {
+  const size_t count = text.find_first_not_of(' ');
+  if (count == 0 || count == std::string_view::npos) return false;
+  text.remove_prefix(count);
+  return true;
+}
+
+bool Unsigned(std::string_view& text, int base = 10) {
+  uint64_t value = 0;
+  const auto result = std::from_chars(text.data(), text.data() + text.size(),
+                                      value, base);
+  if (result.ec != std::errc{} || result.ptr == text.data()) return false;
+  text.remove_prefix(static_cast<size_t>(result.ptr - text.data()));
+  return true;
+}
+
+bool SerializationAck(std::string_view text) {
+  // A deliberately narrow no-payload INFO record from the pinned tool. The
+  // terminal parser ignores this form. Unknown/changed forms are preserved.
+  if (text.size() < 14 || text.size() > 1024 || text.front() != 'I') return false;
+  for (size_t i = 1; i <= 12; ++i) {
+    if (i == 3 || i == 6) {
+      if (text[i] != ':') return false;
+    } else if (i == 9) {
+      if (text[i] != '.') return false;
+    } else if (text[i] < '0' || text[i] > '9') {
+      return false;
+    }
+  }
+  if (text.substr(1, 2) > "23" || text.substr(4, 2) > "59" ||
+      text.substr(7, 2) > "59") return false;
+  text.remove_prefix(13);
+  return Take(text, "| quadd_verbose_daemon_evtsrc_trace_events |") &&
+         Spaces(text) && Take(text, "nsys pid=") && Unsigned(text) &&
+         Take(text, " tid=") && Spaces(text) && Unsigned(text) &&
+         Take(text, " | Trace.cpp:2070 [SerializeEventImpl]: Trace[0x") &&
+         Unsigned(text, 16) &&
+         Take(text, "]: Serialized event with timestamp {") && Unsigned(text) &&
+         Take(text, ", ") && Unsigned(text) && Take(text, "}\n") && text.empty();
+}
+
 struct Options {
   std::string fifo, compressed, ready, receipt;
   uint64_t device = 0, inode = 0, logical = kLogicalLimit;
   uint64_t compressed_limit = kCompressedLimit, seconds = 900;
   int control = -1;
+  bool project = false;
 };
 
 Options Parse(int argc, char** argv) {
   Options options;
-  Require(argc == 21, "expected ten explicit option/value pairs");
+  Require(argc == 21 || argc == 23, "expected ten pairs and optional projection");
   std::string seen;
   for (int i = 1; i < argc; i += 2) {
     const std::string name = argv[i], value = argv[i + 1];
@@ -178,7 +231,10 @@ Options Parse(int argc, char** argv) {
     else if (name == "--compressed-limit") {
       options.compressed_limit = Number(value);
     } else if (name == "--timeout-seconds") options.seconds = Number(value);
-    else throw std::runtime_error("unknown option");
+    else if (name == "--projection") {
+      Require(value == "drop_serialized_ack_v1", "unknown projection");
+      options.project = true;
+    } else throw std::runtime_error("unknown option");
   }
   Require(!options.fifo.empty() && !options.compressed.empty() &&
               !options.ready.empty() && !options.receipt.empty() &&
@@ -194,14 +250,18 @@ int Encode(const Options& options) {
   const auto begin = Clock::now();
   const auto deadline = begin + std::chrono::seconds(options.seconds);
   uint64_t logical_bytes = 0, compressed_bytes = 0;
+  uint64_t input_bytes = 0, input_lines = 0, retained_lines = 0;
+  uint64_t discarded_bytes = 0, discarded_lines = 0;
+  size_t line_size = 0;
   bool finished = false, eof = false, frame = false, synced = false;
   std::string failure, logical_sha, compressed_sha;
+  std::string input_sha, discarded_sha;
   struct stat output_identity{};
   int pipe_bytes = 0;
   try {
     rlimit limit{kAddressLimit, kAddressLimit};
     Require(setrlimit(RLIMIT_AS, &limit) == 0, "64MiB address-space cap failed");
-    Digest raw_hash, compressed_hash;
+    Digest raw_hash, compressed_hash, input_hash, discarded_hash;
     Require(ZSTD_versionNumber() == ZSTD_VERSION_NUMBER,
             "zstd header/library version mismatch");
     ZSTD_CCtx* context = ZSTD_initStaticCCtx(arena.data(), arena.size());
@@ -245,6 +305,16 @@ int Encode(const Options& options) {
       compressed_bytes += count;
       Pinned(destination.value, options.compressed, false);
     };
+    const auto encode = [&](const unsigned char* data, size_t size) {
+      logical_bytes += size;
+      raw_hash.Add(data, size);
+      ZSTD_inBuffer in{data, size, 0};
+      while (in.pos < in.size) {
+        ZSTD_outBuffer out{output.data(), output.size(), 0};
+        CheckZstd(ZSTD_compressStream2(context, &out, &in, ZSTD_e_continue));
+        emit(out.pos);
+      }
+    };
     while (!eof) {
       Require(Clock::now() < deadline, "encoder deadline exhausted");
       Pinned(fifo.value, options.fifo, true);
@@ -273,17 +343,40 @@ int Encode(const Options& options) {
         eof = true;
         break;
       }
-      Require(static_cast<uint64_t>(size) <= options.logical - logical_bytes,
+      Require(static_cast<uint64_t>(size) <= options.logical - input_bytes,
               "logical byte cap exceeded");
-      logical_bytes += static_cast<uint64_t>(size);
-      raw_hash.Add(input.data(), static_cast<size_t>(size));
-      ZSTD_inBuffer in{input.data(), static_cast<size_t>(size), 0};
-      while (in.pos < in.size) {
-        ZSTD_outBuffer out{output.data(), output.size(), 0};
-        CheckZstd(ZSTD_compressStream2(context, &out, &in, ZSTD_e_continue));
-        emit(out.pos);
+      input_bytes += static_cast<uint64_t>(size);
+      input_hash.Add(input.data(), static_cast<size_t>(size));
+      if (!options.project) {
+        encode(input.data(), static_cast<size_t>(size));
+        continue;
+      }
+      size_t offset = 0;
+      while (offset < static_cast<size_t>(size)) {
+        const auto* newline = static_cast<const unsigned char*>(
+            std::memchr(input.data() + offset, '\n', size - offset));
+        const size_t count = newline ? newline - input.data() - offset + 1
+                                     : size - offset;
+        Require(count <= kLineBytes - line_size, "projection line cap exceeded");
+        std::memcpy(line_buffer.data() + line_size, input.data() + offset, count);
+        line_size += count;
+        offset += count;
+        if (!newline) continue;
+        ++input_lines;
+        if (SerializationAck(std::string_view(
+                reinterpret_cast<const char*>(line_buffer.data()), line_size))) {
+          discarded_bytes += line_size;
+          ++discarded_lines;
+          discarded_hash.Add(line_buffer.data(), line_size);
+        } else {
+          ++retained_lines;
+          encode(line_buffer.data(), line_size);
+        }
+        line_size = 0;
       }
     }
+    Require(!options.project || line_size == 0,
+            "projection input ends in an incomplete line");
     size_t remaining = 1;
     while (remaining) {
       Require(Clock::now() < deadline, "frame finish deadline exhausted");
@@ -302,6 +395,8 @@ int Encode(const Options& options) {
     Pinned(destination.value, options.compressed, false);
     logical_sha = raw_hash.Finish();
     compressed_sha = compressed_hash.Finish();
+    input_sha = input_hash.Finish();
+    discarded_sha = discarded_hash.Finish();
   } catch (const std::exception& error) {
     failure = error.what();
   }
@@ -320,13 +415,22 @@ int Encode(const Options& options) {
       ",\"logical_limit\":" + std::to_string(options.logical) +
       ",\"compressed_limit\":" + std::to_string(options.compressed_limit) +
       ",\"controlled_workspace_bytes\":" +
-      std::to_string(kArenaBytes + 2*kBufferBytes) +
+      std::to_string(kArenaBytes + 2*kBufferBytes + kLineBytes) +
       ",\"address_space_limit_bytes\":" + std::to_string(kAddressLimit) +
       ",\"fifo_kernel_capacity_bytes\":" + std::to_string(pipe_bytes) +
       ",\"maxrss_kib\":" + std::to_string(usage.ru_maxrss) +
       ",\"elapsed_seconds\":" + std::to_string(elapsed) +
       ",\"zstd_version\":" + std::to_string(ZSTD_VERSION_NUMBER) +
       ",\"level\":1,\"window_log\":20,\"workers\":0,\"checksum\":true" +
+      ",\"projection\":" +
+      Quote(options.project ? "drop_serialized_ack_v1" : "none") +
+      ",\"input_bytes\":" + std::to_string(input_bytes) +
+      ",\"input_sha256\":" + Quote(input_sha) +
+      ",\"input_lines\":" + std::to_string(input_lines) +
+      ",\"retained_lines\":" + std::to_string(retained_lines) +
+      ",\"discarded_bytes\":" + std::to_string(discarded_bytes) +
+      ",\"discarded_lines\":" + std::to_string(discarded_lines) +
+      ",\"discarded_sha256\":" + Quote(discarded_sha) +
       ",\"input_eof\":" + (eof ? "true" : "false") +
       ",\"frame_completed\":" + (frame ? "true" : "false") +
       ",\"fsynced\":" + (synced ? "true" : "false") + "}\n";

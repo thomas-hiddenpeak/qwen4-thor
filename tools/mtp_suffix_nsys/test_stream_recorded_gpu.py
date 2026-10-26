@@ -118,7 +118,8 @@ class StreamedContracts(unittest.TestCase):
                     stream.write('serving on port 8764\n');stream.flush();return launcher
                 session.launch.side_effect=launch
                 session.await_report.side_effect=lambda **kw:calls.append('report')
-                def request(*_):
+                def request(*_, client_check=None):
+                    self.assertTrue(callable(client_check))
                     with (output/'server.log').open('a') as f:f.write(
                         '[exec-capture] event=begin pid=7 input_tokens=8170 error=0\n'
                         '[exec-capture] event=end pid=7 input_tokens=8170 error=0\n'
@@ -138,7 +139,7 @@ class StreamedContracts(unittest.TestCase):
                     (stage,'cleanup_owned',cleanup),(stage,'module',load),
                     (stage.MeasurementGuard,'arm',MagicMock()),(stage.MeasurementGuard,'disarm',MagicMock()),
                     (stage.old,'audit_execution',lambda *a:{'complete':True}),
-                    (stage.runner,'export_database',lambda *a:calls.append('export')),
+                    (stage.runner,'export_database',lambda *a,**kw:calls.append('export')),
                     (stage,'analyze_capture',lambda *a:calls.append('analysis'))]
                 for obj,key,replacement in patches:stack.enter_context(patch.object(obj,key,replacement))
                 snapshot=stack.enter_context(patch.object(stage,'snapshot_logs'))
