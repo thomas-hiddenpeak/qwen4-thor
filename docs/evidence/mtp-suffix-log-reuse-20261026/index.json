@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "goal_complete": false,
+  "gpu_runs": 0,
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-terminal-recovery-20261026/scope.json": {
+      "sha256": "dd944ae96821a9af63b12a25b80105a1a2ee36760e6c7e9c55b320955f8060de",
+      "bytes": 5818
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-terminal-recovery-20261026/analysis-start.json": {
+      "sha256": "6eea5379bc4d86c20a940592631e13eef67a372f22427ac51c8c11044d28e163",
+      "bytes": 440
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-terminal-recovery-20261026/recorded-gpu-audit.json": {
+      "sha256": "3d3dba31e61724edb3afed22b24557e0c751e5b458cbb8f338bbccc29ba9eaf1",
+      "bytes": 4229274
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-terminal-recovery-20261026/terminal-review.json": {
+      "sha256": "2207cf0cf7716029f72879935d3eba26962f7bdac797258afa806689a97848a4",
+      "bytes": 895
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-200k-terminal-recovery-20261026/archive-manifest.json": {
+      "sha256": "da7c44cea6a778517ee8937a842f1527fa5b07a185024a1a1d91eff1b0a04323",
+      "bytes": 891
+    }
+  }
+}
