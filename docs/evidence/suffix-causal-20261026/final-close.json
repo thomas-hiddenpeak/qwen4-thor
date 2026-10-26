@@ -1,0 +1,9 @@
+{
+  "status": "FINAL_IDENTITY_AND_DOCUMENT_CHECK_PASS",
+  "checked_unix": 1793035362.8445685,
+  "bound_input_files": 2280,
+  "candidate_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+  "release_sha256": "45cfe74a761f9b3a9ab1db613b42e8fde64192d869f17a0596ea5925b73e61ec",
+  "gpu_requests_added": 0,
+  "scope": "Post-documentation identity/link/JSON checks only; no inference or performance remeasurement. Earlier complete audits and archive copies retained."
+}

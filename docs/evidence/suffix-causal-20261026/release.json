@@ -1,0 +1,19 @@
+{
+  "version": "suffix-k3-lazy-20261026",
+  "binary_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+  "source_commit": "86f4cf2019768c6e4284f86f04b2a2e050723c17",
+  "source_note": "runtime unchanged from frozen B build; fixture-only host test repair recorded separately; tested-source snapshot retained",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/candidate/CMakeCache.txt",
+  "build_cache_sha256": "dbdb21db6c896d5416e2bf9696860c6e77468e438d7b18436071b084e376c654",
+  "acceptance": "ENGINEERING_ACCEPTED_BOUNDED_OPT_IN",
+  "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/decision.md",
+  "acceptance_snapshot_sha256": "b2677112c241b263b75930b21280d1ca5ac8bb3e6c6c90fa5352bd08dd7434db",
+  "acceptance_audit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/audit.json",
+  "acceptance_audit_sha256": "80c2c2a6af33b74a11be138fd78ba1c0a43280bd4ff826cc9c928492a95ae69a",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/previous/q4t.release.json",
+  "subset_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/artifact",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "scope": "single-stream greedy fixed k3 text suffix explicit --mtp-suffix; full head remains default; 65536 BF16 subset explicit; no persistent service",
+  "atomicity": "individual atomic replaces; not a cross-file power-loss transaction; durable recovery marker and identity-checked rollback"
+}

@@ -20,6 +20,9 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 - **MTP 推测解码**: 默认开启 T>1 batch verifier（k=3），`--no-mtp` 回退；
   默认使用完整草稿 head，`--mtp-subset-head DIR` 显式启用已验收的
   65536 行 BF16 独立草稿 head；当前合同、质量与性能边界见 STATUS
+- **历史 suffix 草稿**: `--mtp-suffix` 显式启用固定 k3 历史匹配，适用于
+  单流 greedy 文本，可与两种草稿 head 配合。重复场景取得净收益；
+  五档负点及统计限制见[有限工程验收](docs/MTP_SUFFIX_LAZY_ACCEPTANCE_2026-10-26.md)
 - **专家SSD卸载**: 默认全部专家驻留，非零`--moe-resident-slots`
   显式启用配置的device槽位与SSD后备读取。Thor主机内存和GPU共用
   DRAM，CPU缓存不构成容量卸载；中转、缓存与工作集均计入统一RAM。
@@ -92,6 +95,7 @@ python3 tools/evalscope/gpu_exclusive.py \
 ./build/q4t serve --host 127.0.0.1 --port 8000 \
   --max-seq 1 --max-prefill 8192 --max-len 208896
 # 普通 decode 回退：在上述 serve 命令末尾添加 --no-mtp
+# 显式启用历史 suffix：在上述 serve 命令末尾添加 --mtp-suffix
 
 # 显式使用已交付的 65536 行 BF16 独立草稿 head；仍为单流 MTP k=3
 ./build/q4t serve --host 127.0.0.1 --port 8000 \
@@ -115,6 +119,7 @@ python3 tools/evalscope/gpu_exclusive.py \
 | `--max-tokens` | 请求省略输出上限时使用 `256` |
 | `--mtp` / `--no-mtp` / `--mtp-k` | MTP 默认开，k 默认 `3`；serve 接受 k=1..16，验收仅覆盖 k=3 |
 | `--mtp-subset-head DIR` | 默认不启用，草稿使用完整 head；指定产物目录启用固定 65536 行 BF16 子集，要求 MTP 开启且 k=3 |
+| `--mtp-suffix` | 默认关闭；要求文本、greedy、MTP k=3、max-seq=1、有效max-len≤262144，可配合完整或子集 head |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
 | `--mem-fraction` | `0.90`，启动内存预算比例 |
 | `--moe-resident-slots` | `0`，所有专家驻留；非零启用按需驻留 |
@@ -144,6 +149,25 @@ SHA2 校验加速无需启动参数：支持时自动使用 ARM SHA2 指令，�
 软件实现；源权重、tokenizer 和派生产物的完整 SHA-256 校验保留。
 它减少子集加载时的校验耗时，不省略校验，也不改变 head 的默认选择。
 实测启动成本见[SHA2 验收](docs/SHA2_STARTUP_2026-10-23.md)。
+
+### 固定 k3 历史 suffix 草稿
+
+在上面的完整 head 或子集 head 服务命令末尾添加 `--mtp-suffix`，即可
+尝试从本请求已提交历史中取三个草稿 token。选定匹配至少32 token，
+须通过数字格式过滤且首候选与已计算的d0一致；否则继续使用神经草稿。
+候选使用完整词表的全局ID，不要求都属于65536行子集；仍经过目标模型
+四行验证及接受前缀状态更新。索引不跨请求保存。
+
+移除 `--mtp-suffix` 后重启即关闭该功能，不改变 head 选择。它不能与
+`--no-mtp`、非3的k、非1的max-seq、`--allow-media` 或超过262144的容量
+同用，不支持的组合启动失败。输出或上下文不足时沿用普通decode尾部。
+`generate` 不接受该开关，其验收范围不随HTTP扩展。
+
+索引动态内存上限2MiB，按需token属性缓存上限256KiB，另计对象、
+tokenizer临时分配和allocator成本。受测重复代码/文本的配对净收益为
+完整head约14.10%/14.59%、子集约6.76%/6.53%；非重复场景不保证提速，
+部分保护点仍偏慢，统计总体非劣未建立。使用范围、原值、程序回退包
+与健康检查见[交付记录](docs/MTP_SUFFIX_DELIVERED_2026-10-27.md)。
 
 ### 其他入口与验收范围
 

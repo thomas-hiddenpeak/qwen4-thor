@@ -1,0 +1,920 @@
+{
+  "schema": 1,
+  "decided_unix": 1793034520.4713342,
+  "task_type": "PERFORMANCE_OPTIMIZATION",
+  "candidate_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+  "candidate_source_commit": "86f4cf2019768c6e4284f86f04b2a2e050723c17",
+  "evidence_validity": "VALID",
+  "measurement_completeness": "COMPLETE",
+  "statistics": "DESCRIPTIVE_ONLY; population equivalence/noninferiority and a maximum possible loss are not established",
+  "engineering_decision": "ENGINEERING_ACCEPTED_BOUNDED_OPT_IN",
+  "deployment": "AUTHORIZED_CONDITIONAL_ON_SEALED_ROLLBACK_PACKAGE_AND_BOUNDED_HEALTH",
+  "audit_sha256": "80c2c2a6af33b74a11be138fd78ba1c0a43280bd4ff826cc9c928492a95ae69a",
+  "analysis_sha256": "2b249a96401a88ecfe89f57d58cc7a284eef70bc6e645e834bf1f12f368ae71e",
+  "resources_sha256": "32eafd7403635fc30584db1f3748e2a2ab3342bc2ec169e4169ab6be79108cd2",
+  "plan_sha256": "542e05eec31938600c60568fc20bb83af4cebb91a5bf5972e2ad4136b2a59b55",
+  "authority": [
+    "User approved the causal A / unique B / finite final review plan by requesting execution",
+    "User explicitly approved one bounded continuation, with unchanged generation total and deadline",
+    "AGENTS 2026-10-20 authorizes conditional delivery, rollback package, health, documentation, commit and push"
+  ],
+  "scope": "Thor, frozen checkpoint, HTTP single-stream greedy text, k3, suffix explicitly enabled; full head default; subset separately explicit; no new default suffix policy",
+  "rationale": [
+    "All four repeat goals pass in both balanced startup blocks and each paired GM exceeds the frozen 5% goal; head modes evaluated separately.",
+    "Complete five-tier and ordinary-decode measurements, exact quality/output/work/lifecycle checks, affected CPU reference checks and unchanged-dependency state evidence are present.",
+    "A identical-neural-path and pretreatment controls do not support assigning the old pre-index differences to suffix; zero-hit Q/R have identical output/work. This is not a proof of no causal effect.",
+    "B removes a directly measured 248320-token unconditional startup decode pass without changing the min32 selection rule. B has no zero-hit classification allocation/Decode work and bounded measured index cost.",
+    "No confirmed attributable GPU-work regression or unresolved critical contract failure was identified. All negative points below remain disclosed and are not offset by repeat gains or relabeled statistically equal.",
+    "The explicit feature switch, preserved previous binary/metadata, and identity-checked rollback bound operational exposure. This decision does not grant arbitrary-input equality, a noise tolerance, or universal noninferiority."
+  ],
+  "protections": [
+    {
+      "head": "full",
+      "case": "context-1024",
+      "block": 1,
+      "on_service": "01-full-on-b1",
+      "off_service": "02-full-off-b1",
+      "on": {
+        "ttft": 0.9164199279621243,
+        "latency": 8.083951387088746,
+        "decode_tps": 35.51954280636375,
+        "total_tps": 31.667681773652113,
+        "post_ttft_seconds": 7.17914646002464
+      },
+      "off": {
+        "ttft": 0.9135383029934019,
+        "latency": 8.089675023918971,
+        "decode_tps": 35.53444003601849,
+        "total_tps": 31.645276138173354,
+        "post_ttft_seconds": 7.1761367209255695
+      },
+      "ttft_delta_ms": 2.8816249687224627,
+      "ttft_slowdown_percent": 0.3154355935903519,
+      "decode_gain_percent": -0.04192335559427551,
+      "decode_time_slowdown_percent": 0.04194093864313686,
+      "total_throughput_gain_percent": 0.07080246473731844
+    },
+    {
+      "head": "full",
+      "case": "context-1024",
+      "block": 2,
+      "on_service": "06-full-on-b2",
+      "off_service": "05-full-off-b2",
+      "on": {
+        "ttft": 0.9134981790557504,
+        "latency": 8.1011143529322,
+        "decode_tps": 35.50578065826766,
+        "total_tps": 31.600590838140775,
+        "post_ttft_seconds": 7.1819291189312935
+      },
+      "off": {
+        "ttft": 0.9124635851476341,
+        "latency": 8.096587036037818,
+        "decode_tps": 35.494935706930676,
+        "total_tps": 31.6182607388208,
+        "post_ttft_seconds": 7.1841234508901834
+      },
+      "ttft_delta_ms": 1.0345939081162214,
+      "ttft_slowdown_percent": 0.11338467912107575,
+      "decode_gain_percent": 0.030553517342668535,
+      "decode_time_slowdown_percent": -0.030544185019787395,
+      "total_throughput_gain_percent": -0.0558851128023341
+    },
+    {
+      "head": "full",
+      "case": "context-4096",
+      "block": 1,
+      "on_service": "01-full-on-b1",
+      "off_service": "02-full-off-b1",
+      "on": {
+        "ttft": 2.92372018401511,
+        "latency": 9.88307792507112,
+        "decode_tps": 36.6591287757628,
+        "total_tps": 25.902861632871097,
+        "post_ttft_seconds": 6.9559754559304565
+      },
+      "off": {
+        "ttft": 2.925074953120202,
+        "latency": 9.866345671005547,
+        "decode_tps": 36.711727672319775,
+        "total_tps": 25.946790081794212,
+        "post_ttft_seconds": 6.946009250124916
+      },
+      "ttft_delta_ms": -1.354769105091691,
+      "ttft_slowdown_percent": -0.04631570564188614,
+      "decode_gain_percent": -0.1432754596200403,
+      "decode_time_slowdown_percent": 0.14348103272912027,
+      "total_throughput_gain_percent": -0.16930205541663135
+    },
+    {
+      "head": "full",
+      "case": "context-4096",
+      "block": 2,
+      "on_service": "06-full-on-b2",
+      "off_service": "05-full-off-b2",
+      "on": {
+        "ttft": 2.928012954071164,
+        "latency": 9.887137667043135,
+        "decode_tps": 36.642539186670135,
+        "total_tps": 25.892225699792426,
+        "post_ttft_seconds": 6.95912471297197
+      },
+      "off": {
+        "ttft": 2.9271181309595704,
+        "latency": 9.89224271895364,
+        "decode_tps": 36.61563609463799,
+        "total_tps": 25.878863597786715,
+        "post_ttft_seconds": 6.964237882988527
+      },
+      "ttft_delta_ms": 0.8948231115937233,
+      "ttft_slowdown_percent": 0.03057010587066422,
+      "decode_gain_percent": 0.07347432654893904,
+      "decode_time_slowdown_percent": -0.07342038141814333,
+      "total_throughput_gain_percent": 0.051633264170281024
+    },
+    {
+      "head": "full",
+      "case": "context-8192",
+      "block": 1,
+      "on_service": "01-full-on-b1",
+      "off_service": "02-full-off-b1",
+      "on": {
+        "ttft": 5.617165178060532,
+        "latency": 12.987441047094762,
+        "decode_tps": 34.598433563574886,
+        "total_tps": 19.711350301548908,
+        "post_ttft_seconds": 7.370275869034231
+      },
+      "off": {
+        "ttft": 5.619977841852233,
+        "latency": 12.992291998816654,
+        "decode_tps": 34.58886783319028,
+        "total_tps": 19.703990644862095,
+        "post_ttft_seconds": 7.372314156964421
+      },
+      "ttft_delta_ms": -2.8126637917011976,
+      "ttft_slowdown_percent": -0.05004759575305551,
+      "decode_gain_percent": 0.027655517465152712,
+      "decode_time_slowdown_percent": -0.027647871303271288,
+      "total_throughput_gain_percent": 0.03735109714302354
+    },
+    {
+      "head": "full",
+      "case": "context-8192",
+      "block": 2,
+      "on_service": "06-full-on-b2",
+      "off_service": "05-full-off-b2",
+      "on": {
+        "ttft": 5.641171595081687,
+        "latency": 13.021668567089364,
+        "decode_tps": 34.556449494808106,
+        "total_tps": 19.65953892015098,
+        "post_ttft_seconds": 7.3792303239461035
+      },
+      "off": {
+        "ttft": 5.649072586093098,
+        "latency": 13.03088571317494,
+        "decode_tps": 34.53617260166038,
+        "total_tps": 19.645633123861256,
+        "post_ttft_seconds": 7.3835628209635615
+      },
+      "ttft_delta_ms": -7.900991011410952,
+      "ttft_slowdown_percent": -0.13986350663756086,
+      "decode_gain_percent": 0.05871204485106141,
+      "decode_time_slowdown_percent": -0.05867759403572759,
+      "total_throughput_gain_percent": 0.07078314148518672
+    },
+    {
+      "head": "full",
+      "case": "context-45056",
+      "block": 1,
+      "on_service": "01-full-on-b1",
+      "off_service": "02-full-off-b1",
+      "on": {
+        "ttft": 31.86556056002155,
+        "latency": 38.95336936903186,
+        "decode_tps": 35.96780687087895,
+        "total_tps": 6.571960375872424,
+        "post_ttft_seconds": 7.089673299109563
+      },
+      "off": {
+        "ttft": 31.887365514878184,
+        "latency": 38.99028940196149,
+        "decode_tps": 35.931414243441864,
+        "total_tps": 6.56573736503534,
+        "post_ttft_seconds": 7.096853974973783
+      },
+      "ttft_delta_ms": -21.80495485663414,
+      "ttft_slowdown_percent": -0.06838117387421017,
+      "decode_gain_percent": 0.10128359321044389,
+      "decode_time_slowdown_percent": -0.10118111334319613,
+      "total_throughput_gain_percent": 0.0947800755818129
+    },
+    {
+      "head": "full",
+      "case": "context-45056",
+      "block": 2,
+      "on_service": "06-full-on-b2",
+      "off_service": "05-full-off-b2",
+      "on": {
+        "ttft": 31.89285227796063,
+        "latency": 38.99097361299209,
+        "decode_tps": 35.90190283950525,
+        "total_tps": 6.565622149909558,
+        "post_ttft_seconds": 7.102687596809119
+      },
+      "off": {
+        "ttft": 31.89704134920612,
+        "latency": 39.008150681853294,
+        "decode_tps": 35.91495368297588,
+        "total_tps": 6.562731006858317,
+        "post_ttft_seconds": 7.100106608821079
+      },
+      "ttft_delta_ms": -4.189071245491505,
+      "ttft_slowdown_percent": -0.01313310284684066,
+      "decode_gain_percent": -0.03633818822608159,
+      "decode_time_slowdown_percent": 0.03635139766540174,
+      "total_throughput_gain_percent": 0.04405396241624615
+    },
+    {
+      "head": "full",
+      "case": "context-204800",
+      "block": 1,
+      "on_service": "01-full-on-b1",
+      "off_service": "02-full-off-b1",
+      "on": {
+        "ttft": 167.11837942688726,
+        "latency": 174.81950060394593,
+        "decode_tps": 33.11206175532399,
+        "total_tps": 1.4643675283112079,
+        "post_ttft_seconds": 7.701121177058667
+      },
+      "off": {
+        "ttft": 167.1646628601011,
+        "latency": 174.87967257294804,
+        "decode_tps": 33.048685189155194,
+        "total_tps": 1.4638636739968394,
+        "post_ttft_seconds": 7.715889408020303
+      },
+      "ttft_delta_ms": -46.283433213829994,
+      "ttft_slowdown_percent": -0.02768733081618402,
+      "decode_gain_percent": 0.19176728455627678,
+      "decode_time_slowdown_percent": -0.19140024151051982,
+      "total_throughput_gain_percent": 0.034419483406722406
+    },
+    {
+      "head": "full",
+      "case": "context-204800",
+      "block": 2,
+      "on_service": "06-full-on-b2",
+      "off_service": "05-full-off-b2",
+      "on": {
+        "ttft": 167.22574220201932,
+        "latency": 174.93160541402176,
+        "decode_tps": 33.05115800913693,
+        "total_tps": 1.4634290892952622,
+        "post_ttft_seconds": 7.715312120970339
+      },
+      "off": {
+        "ttft": 167.2088599607814,
+        "latency": 174.92032761778682,
+        "decode_tps": 33.06763528578733,
+        "total_tps": 1.4635234422804075,
+        "post_ttft_seconds": 7.711467657005414
+      },
+      "ttft_delta_ms": 16.8822412379086,
+      "ttft_slowdown_percent": 0.010096499217726596,
+      "decode_gain_percent": -0.04982901410397478,
+      "decode_time_slowdown_percent": 0.04985385578881729,
+      "total_throughput_gain_percent": -0.006446974638030234
+    },
+    {
+      "head": "full",
+      "case": "repeat-code",
+      "block": 1,
+      "on_service": "01-full-on-b1",
+      "off_service": "02-full-off-b1",
+      "on": {
+        "ttft": 0.8327268068678677,
+        "latency": 6.162312668981031,
+        "decode_tps": 47.84836576833798,
+        "total_tps": 41.542844992045964,
+        "post_ttft_seconds": 5.329335618996993
+      },
+      "off": {
+        "ttft": 0.8324487421195954,
+        "latency": 6.929828904103488,
+        "decode_tps": 41.83866034073265,
+        "total_tps": 36.94174900168314,
+        "post_ttft_seconds": 6.09484141995199
+      },
+      "ttft_delta_ms": 0.27806474827229977,
+      "ttft_slowdown_percent": 0.03340322763467629,
+      "decode_gain_percent": 14.364000612501648,
+      "decode_time_slowdown_percent": -12.559896939222215,
+      "total_throughput_gain_percent": 12.455003118973028
+    },
+    {
+      "head": "full",
+      "case": "repeat-code",
+      "block": 2,
+      "on_service": "06-full-on-b2",
+      "off_service": "05-full-off-b2",
+      "on": {
+        "ttft": 0.8397409429308027,
+        "latency": 6.198784017935395,
+        "decode_tps": 47.583121917672116,
+        "total_tps": 41.29842228077256,
+        "post_ttft_seconds": 5.3590430750045925
+      },
+      "off": {
+        "ttft": 0.8350442650262266,
+        "latency": 6.931642257142812,
+        "decode_tps": 41.79919731167682,
+        "total_tps": 36.93208485134977,
+        "post_ttft_seconds": 6.100595619063824
+      },
+      "ttft_delta_ms": 4.696677904576063,
+      "ttft_slowdown_percent": 0.5624465793353517,
+      "decode_gain_percent": 13.837405926404056,
+      "decode_time_slowdown_percent": -12.155412198473625,
+      "total_throughput_gain_percent": 11.822612904191931
+    },
+    {
+      "head": "full",
+      "case": "repeat-text",
+      "block": 1,
+      "on_service": "01-full-on-b1",
+      "off_service": "02-full-off-b1",
+      "on": {
+        "ttft": 0.6587930971290916,
+        "latency": 5.901608642889187,
+        "decode_tps": 48.63075090886058,
+        "total_tps": 43.37800343783434,
+        "post_ttft_seconds": 5.243595774983987
+      },
+      "off": {
+        "ttft": 0.6600113739259541,
+        "latency": 6.673572255065665,
+        "decode_tps": 42.42235475235598,
+        "total_tps": 38.36026496988622,
+        "post_ttft_seconds": 6.01098174508661
+      },
+      "ttft_delta_ms": -1.218276796862483,
+      "ttft_slowdown_percent": -0.1845842124834629,
+      "decode_gain_percent": 14.63472782863333,
+      "decode_time_slowdown_percent": -12.766399943401696,
+      "total_throughput_gain_percent": 13.080562587060275
+    },
+    {
+      "head": "full",
+      "case": "repeat-text",
+      "block": 2,
+      "on_service": "06-full-on-b2",
+      "off_service": "05-full-off-b2",
+      "on": {
+        "ttft": 0.6561124760191888,
+        "latency": 5.90713977906853,
+        "decode_tps": 48.5619261305151,
+        "total_tps": 43.33738654824374,
+        "post_ttft_seconds": 5.251027303049341
+      },
+      "off": {
+        "ttft": 0.6564095029607415,
+        "latency": 6.673441683175042,
+        "decode_tps": 42.39696603128059,
+        "total_tps": 38.36101552298306,
+        "post_ttft_seconds": 6.014581321971491
+      },
+      "ttft_delta_ms": -0.2970269415527582,
+      "ttft_slowdown_percent": -0.045250250066919406,
+      "decode_gain_percent": 14.54104073080602,
+      "decode_time_slowdown_percent": -12.695048550309874,
+      "total_throughput_gain_percent": 12.972469465202806
+    },
+    {
+      "head": "subset",
+      "case": "context-1024",
+      "block": 1,
+      "on_service": "04-subset-on-b1",
+      "off_service": "03-subset-off-b1",
+      "on": {
+        "ttft": 0.890645019011572,
+        "latency": 7.504341421183199,
+        "decode_tps": 38.548928713819336,
+        "total_tps": 34.11358647373974,
+        "post_ttft_seconds": 6.6149698190856725
+      },
+      "off": {
+        "ttft": 0.8847265860531479,
+        "latency": 7.468992901034653,
+        "decode_tps": 38.71729145232352,
+        "total_tps": 34.275035924125355,
+        "post_ttft_seconds": 6.586204520892352
+      },
+      "ttft_delta_ms": 5.918432958424091,
+      "ttft_slowdown_percent": 0.668956155689493,
+      "decode_gain_percent": -0.4348515409749343,
+      "decode_time_slowdown_percent": 0.4367507583779462,
+      "total_throughput_gain_percent": -0.4710409370336399
+    },
+    {
+      "head": "subset",
+      "case": "context-1024",
+      "block": 2,
+      "on_service": "07-subset-on-b2",
+      "off_service": "08-subset-off-b2",
+      "on": {
+        "ttft": 0.8821398990694433,
+        "latency": 7.477721756091341,
+        "decode_tps": 38.662244746233824,
+        "total_tps": 34.2350261684266,
+        "post_ttft_seconds": 6.595581857021898
+      },
+      "off": {
+        "ttft": 0.885424847016111,
+        "latency": 7.491923084948212,
+        "decode_tps": 38.70186830208376,
+        "total_tps": 34.17013190035568,
+        "post_ttft_seconds": 6.588829200947657
+      },
+      "ttft_delta_ms": -3.284947946667671,
+      "ttft_slowdown_percent": -0.3710024580559246,
+      "decode_gain_percent": -0.10238150659978018,
+      "decode_time_slowdown_percent": 0.10248643375472266,
+      "total_throughput_gain_percent": 0.18991518165678567
+    },
+    {
+      "head": "subset",
+      "case": "context-4096",
+      "block": 1,
+      "on_service": "04-subset-on-b1",
+      "off_service": "03-subset-off-b1",
+      "on": {
+        "ttft": 2.8191909037996083,
+        "latency": 8.997762182960287,
+        "decode_tps": 41.28913794997188,
+        "total_tps": 28.45151881039996,
+        "post_ttft_seconds": 6.175958439940587
+      },
+      "off": {
+        "ttft": 2.820219425018877,
+        "latency": 8.992247435962781,
+        "decode_tps": 41.33045205010965,
+        "total_tps": 28.468967499290194,
+        "post_ttft_seconds": 6.169784924946725
+      },
+      "ttft_delta_ms": -1.0285212192684412,
+      "ttft_slowdown_percent": -0.03646954595604157,
+      "decode_gain_percent": -0.09996043616381511,
+      "decode_time_slowdown_percent": 0.10006045703310207,
+      "total_throughput_gain_percent": -0.06129020622426262
+    },
+    {
+      "head": "subset",
+      "case": "context-4096",
+      "block": 2,
+      "on_service": "07-subset-on-b2",
+      "off_service": "08-subset-off-b2",
+      "on": {
+        "ttft": 2.825076462002471,
+        "latency": 8.991086550988257,
+        "decode_tps": 41.34946032906435,
+        "total_tps": 28.472643272671167,
+        "post_ttft_seconds": 6.166948684956878
+      },
+      "off": {
+        "ttft": 2.8240665348712355,
+        "latency": 9.00621099001728,
+        "decode_tps": 41.290598279610585,
+        "total_tps": 28.424828186210284,
+        "post_ttft_seconds": 6.175740014063194
+      },
+      "ttft_delta_ms": 1.0099271312355995,
+      "ttft_slowdown_percent": 0.03576144962469385,
+      "decode_gain_percent": 0.14255557416524844,
+      "decode_time_slowdown_percent": -0.1423526425383348,
+      "total_throughput_gain_percent": 0.1682159207705647
+    },
+    {
+      "head": "subset",
+      "case": "context-8192",
+      "block": 1,
+      "on_service": "04-subset-on-b1",
+      "off_service": "03-subset-off-b1",
+      "on": {
+        "ttft": 5.436434404924512,
+        "latency": 12.044313547899947,
+        "decode_tps": 38.59915863156057,
+        "total_tps": 21.254843539392606,
+        "post_ttft_seconds": 6.606361616170034
+      },
+      "off": {
+        "ttft": 5.431685135001317,
+        "latency": 12.032091872999445,
+        "decode_tps": 38.635295312089184,
+        "total_tps": 21.27643328376469,
+        "post_ttft_seconds": 6.600182499969378
+      },
+      "ttft_delta_ms": 4.749269923195243,
+      "ttft_slowdown_percent": 0.08743639966519723,
+      "decode_gain_percent": -0.09353281820860815,
+      "decode_time_slowdown_percent": 0.09362038399216566,
+      "total_throughput_gain_percent": -0.1014725733591737
+    },
+    {
+      "head": "subset",
+      "case": "context-8192",
+      "block": 2,
+      "on_service": "07-subset-on-b2",
+      "off_service": "08-subset-off-b2",
+      "on": {
+        "ttft": 5.454259148100391,
+        "latency": 12.04090302507393,
+        "decode_tps": 38.67149587072877,
+        "total_tps": 21.260863862694233,
+        "post_ttft_seconds": 6.594004039885476
+      },
+      "off": {
+        "ttft": 5.439795908052474,
+        "latency": 12.037601873045787,
+        "decode_tps": 38.6544292407194,
+        "total_tps": 21.266694371511573,
+        "post_ttft_seconds": 6.596915411995724
+      },
+      "ttft_delta_ms": 14.46324004791677,
+      "ttft_slowdown_percent": 0.26587835816609395,
+      "decode_gain_percent": 0.04415180962338283,
+      "decode_time_slowdown_percent": -0.04413232440352299,
+      "total_throughput_gain_percent": -0.027416149945480583
+    },
+    {
+      "head": "subset",
+      "case": "context-45056",
+      "block": 1,
+      "on_service": "04-subset-on-b1",
+      "off_service": "03-subset-off-b1",
+      "on": {
+        "ttft": 31.842638368951157,
+        "latency": 38.331026886822656,
+        "decode_tps": 39.31604380685532,
+        "total_tps": 6.678662712477631,
+        "post_ttft_seconds": 6.485901817912236
+      },
+      "off": {
+        "ttft": 31.773686061846092,
+        "latency": 38.248700577998534,
+        "decode_tps": 39.384072970194886,
+        "total_tps": 6.693037832172961,
+        "post_ttft_seconds": 6.474698546109721
+      },
+      "ttft_delta_ms": 68.95230710506439,
+      "ttft_slowdown_percent": 0.21701072696083124,
+      "decode_gain_percent": -0.17273267645794288,
+      "decode_time_slowdown_percent": 0.17303155850005858,
+      "total_throughput_gain_percent": -0.21477720664045963
+    },
+    {
+      "head": "subset",
+      "case": "context-45056",
+      "block": 2,
+      "on_service": "07-subset-on-b2",
+      "off_service": "08-subset-off-b2",
+      "on": {
+        "ttft": 31.769794465973973,
+        "latency": 38.22862352896482,
+        "decode_tps": 39.4808404918397,
+        "total_tps": 6.696552906385331,
+        "post_ttft_seconds": 6.458829062990844
+      },
+      "off": {
+        "ttft": 31.801946114050224,
+        "latency": 38.27208988717757,
+        "decode_tps": 39.40777513280763,
+        "total_tps": 6.6889475007678785,
+        "post_ttft_seconds": 6.470804280135781
+      },
+      "ttft_delta_ms": -32.15164807625115,
+      "ttft_slowdown_percent": -0.10109962440960629,
+      "decode_gain_percent": 0.18540848547230482,
+      "decode_time_slowdown_percent": -0.18506535859380557,
+      "total_throughput_gain_percent": 0.11370108102326526
+    },
+    {
+      "head": "subset",
+      "case": "context-204800",
+      "block": 1,
+      "on_service": "04-subset-on-b1",
+      "off_service": "03-subset-off-b1",
+      "on": {
+        "ttft": 166.99966200301424,
+        "latency": 174.47420581593178,
+        "decode_tps": 34.096222144015265,
+        "total_tps": 1.4672655983892369,
+        "post_ttft_seconds": 7.478834426961839
+      },
+      "off": {
+        "ttft": 166.8814187948592,
+        "latency": 174.3369148238562,
+        "decode_tps": 34.20295564617253,
+        "total_tps": 1.4684210757007674,
+        "post_ttft_seconds": 7.455496028997004
+      },
+      "ttft_delta_ms": 118.24320815503597,
+      "ttft_slowdown_percent": 0.07085462780034302,
+      "decode_gain_percent": -0.31205929470371485,
+      "decode_time_slowdown_percent": 0.313036153115287,
+      "total_throughput_gain_percent": -0.07868841782859848
+    },
+    {
+      "head": "subset",
+      "case": "context-204800",
+      "block": 2,
+      "on_service": "07-subset-on-b2",
+      "off_service": "08-subset-off-b2",
+      "on": {
+        "ttft": 166.96427980600856,
+        "latency": 174.41200827085413,
+        "decode_tps": 34.19595825118983,
+        "total_tps": 1.4677888440023197,
+        "post_ttft_seconds": 7.4570216201245785
+      },
+      "off": {
+        "ttft": 166.97419544612058,
+        "latency": 174.42188481707126,
+        "decode_tps": 34.219647651266655,
+        "total_tps": 1.4677057312417279,
+        "post_ttft_seconds": 7.45185931189917
+      },
+      "ttft_delta_ms": -9.915640112012625,
+      "ttft_slowdown_percent": -0.005938426644624961,
+      "decode_gain_percent": -0.06922748100227638,
+      "decode_time_slowdown_percent": 0.06927543864341246,
+      "total_throughput_gain_percent": 0.005662767326075624
+    },
+    {
+      "head": "subset",
+      "case": "repeat-code",
+      "block": 1,
+      "on_service": "04-subset-on-b1",
+      "off_service": "03-subset-off-b1",
+      "on": {
+        "ttft": 0.8100887089967728,
+        "latency": 5.862476243171841,
+        "decode_tps": 50.44206193678717,
+        "total_tps": 43.66755435438549,
+        "post_ttft_seconds": 5.055304843001068
+      },
+      "off": {
+        "ttft": 0.8130850228480995,
+        "latency": 6.214363159844652,
+        "decode_tps": 47.19176554922468,
+        "total_tps": 41.19488890739362,
+        "post_ttft_seconds": 5.403485057875514
+      },
+      "ttft_delta_ms": -2.996313851326704,
+      "ttft_slowdown_percent": -0.3685117505708213,
+      "decode_gain_percent": 6.887422730925752,
+      "decode_time_slowdown_percent": -6.4436231644053095,
+      "total_throughput_gain_percent": 6.002359789221523
+    },
+    {
+      "head": "subset",
+      "case": "repeat-code",
+      "block": 2,
+      "on_service": "07-subset-on-b2",
+      "off_service": "08-subset-off-b2",
+      "on": {
+        "ttft": 0.8142954930663109,
+        "latency": 5.873932908056304,
+        "decode_tps": 50.461892812222274,
+        "total_tps": 43.58238406994521,
+        "post_ttft_seconds": 5.053318173158914
+      },
+      "off": {
+        "ttft": 0.8098634488414973,
+        "latency": 6.196268396917731,
+        "decode_tps": 47.3270398363028,
+        "total_tps": 41.31518901397889,
+        "post_ttft_seconds": 5.388040343998
+      },
+      "ttft_delta_ms": 4.4320442248135805,
+      "ttft_slowdown_percent": 0.5472582113878133,
+      "decode_gain_percent": 6.623809532061298,
+      "decode_time_slowdown_percent": -6.212317456233407,
+      "total_throughput_gain_percent": 5.4875582323954175
+    },
+    {
+      "head": "subset",
+      "case": "repeat-text",
+      "block": 1,
+      "on_service": "04-subset-on-b1",
+      "off_service": "03-subset-off-b1",
+      "on": {
+        "ttft": 0.6358422529883683,
+        "latency": 5.8629595269449055,
+        "decode_tps": 48.80816744661692,
+        "total_tps": 43.66395483773662,
+        "post_ttft_seconds": 5.2245354279875755
+      },
+      "off": {
+        "ttft": 0.6402135661337525,
+        "latency": 6.212452237959951,
+        "decode_tps": 45.78712286643806,
+        "total_tps": 41.207560266743464,
+        "post_ttft_seconds": 5.569251440931112
+      },
+      "ttft_delta_ms": -4.3713131453841925,
+      "ttft_slowdown_percent": -0.6827898339897054,
+      "decode_gain_percent": 6.598022306383622,
+      "decode_time_slowdown_percent": -6.189629191636992,
+      "total_throughput_gain_percent": 5.9610288866715155
+    },
+    {
+      "head": "subset",
+      "case": "repeat-text",
+      "block": 2,
+      "on_service": "07-subset-on-b2",
+      "off_service": "08-subset-off-b2",
+      "on": {
+        "ttft": 0.6401741879526526,
+        "latency": 5.850161131005734,
+        "decode_tps": 48.93811461042001,
+        "total_tps": 43.759478460038515,
+        "post_ttft_seconds": 5.210662528173998
+      },
+      "off": {
+        "ttft": 0.6430595619603992,
+        "latency": 6.189360996009782,
+        "decode_tps": 45.97191597077004,
+        "total_tps": 41.36129725912588,
+        "post_ttft_seconds": 5.546864745905623
+      },
+      "ttft_delta_ms": -2.8853740077465773,
+      "ttft_slowdown_percent": -0.44869467440160626,
+      "decode_gain_percent": 6.452197122991232,
+      "decode_time_slowdown_percent": -6.061121608919528,
+      "total_throughput_gain_percent": 5.798128588395546
+    }
+  ],
+  "plain_protection": [
+    {
+      "case": "context-1024",
+      "parent": {
+        "ttft": 0.7608183189295232,
+        "latency": 14.50240045785904,
+        "decode_tps": 18.553645440219746,
+        "total_tps": 17.652250104655625,
+        "post_ttft_seconds": 13.743929774966091
+      },
+      "candidate": {
+        "ttft": 0.76157262083143,
+        "latency": 14.551337990909815,
+        "decode_tps": 18.499798116051288,
+        "total_tps": 17.59288390936439,
+        "post_ttft_seconds": 13.783934202976525
+      },
+      "ttft_delta_ms": 0.7543019019067287,
+      "ttft_slowdown_percent": 0.09914349893258567,
+      "decode_gain_percent": -0.2902250360553471
+    },
+    {
+      "case": "context-4096",
+      "parent": {
+        "ttft": 2.6076853938866407,
+        "latency": 16.90022177901119,
+        "decode_tps": 17.847195642686714,
+        "total_tps": 15.147730210140368,
+        "post_ttft_seconds": 14.287959021981806
+      },
+      "candidate": {
+        "ttft": 2.611682496033609,
+        "latency": 16.902919634012505,
+        "decode_tps": 17.84310186291281,
+        "total_tps": 15.145312498846057,
+        "post_ttft_seconds": 14.291237137978896
+      },
+      "ttft_delta_ms": 3.9971021469682455,
+      "ttft_slowdown_percent": 0.15328160967342797,
+      "decode_gain_percent": -0.02293794417825845
+    },
+    {
+      "case": "context-8192",
+      "parent": {
+        "ttft": 5.100639451993629,
+        "latency": 19.25951826502569,
+        "decode_tps": 18.012466058622415,
+        "total_tps": 13.2921289347555,
+        "post_ttft_seconds": 14.1568622069899
+      },
+      "candidate": {
+        "ttft": 5.1033629609737545,
+        "latency": 19.260512307984754,
+        "decode_tps": 18.01210072378294,
+        "total_tps": 13.291442922516193,
+        "post_ttft_seconds": 14.157149347011
+      },
+      "ttft_delta_ms": 2.723508980125189,
+      "ttft_slowdown_percent": 0.053395441998183024,
+      "decode_gain_percent": -0.002028233326223372
+    },
+    {
+      "case": "context-45056",
+      "parent": {
+        "ttft": 30.420988128054887,
+        "latency": 44.71500481618568,
+        "decode_tps": 17.844544001799015,
+        "total_tps": 5.725147543925447,
+        "post_ttft_seconds": 14.290082165971398
+      },
+      "candidate": {
+        "ttft": 30.409705037018284,
+        "latency": 44.71503650699742,
+        "decode_tps": 17.83552808936688,
+        "total_tps": 5.72514348635137,
+        "post_ttft_seconds": 14.297305844957009
+      },
+      "ttft_delta_ms": -11.283091036602855,
+      "ttft_slowdown_percent": -0.03708982426575691,
+      "decode_gain_percent": -0.05052475664958367
+    },
+    {
+      "case": "context-204800",
+      "parent": {
+        "ttft": 159.27502581314184,
+        "latency": 174.1932580380235,
+        "decode_tps": 17.088529833237978,
+        "total_tps": 1.4696320792399409,
+        "post_ttft_seconds": 14.922290126094595
+      },
+      "candidate": {
+        "ttft": 159.20712095382623,
+        "latency": 174.1589298339095,
+        "decode_tps": 17.023005543385743,
+        "total_tps": 1.469921756203601,
+        "post_ttft_seconds": 14.97972842399031
+      },
+      "ttft_delta_ms": -67.90485931560397,
+      "ttft_slowdown_percent": -0.0426337142115818,
+      "decode_gain_percent": -0.3834401817573996
+    }
+  ],
+  "repeat_goals": [
+    {
+      "head": "full",
+      "case": "repeat-code",
+      "paired_decode_ratios": [
+        1.1436400061250165,
+        1.1383740592640406
+      ],
+      "geometric_mean_ratio": 1.1410039947823527,
+      "passed": true
+    },
+    {
+      "head": "full",
+      "case": "repeat-text",
+      "paired_decode_ratios": [
+        1.1463472782863333,
+        1.1454104073080602
+      ],
+      "geometric_mean_ratio": 1.1458787470489342,
+      "passed": true
+    },
+    {
+      "head": "subset",
+      "case": "repeat-code",
+      "paired_decode_ratios": [
+        1.0688742273092575,
+        1.066238095320613
+      ],
+      "geometric_mean_ratio": 1.0675553476347326,
+      "passed": true
+    },
+    {
+      "head": "subset",
+      "case": "repeat-text",
+      "paired_decode_ratios": [
+        1.0659802230638362,
+        1.0645219712299123
+      ],
+      "geometric_mean_ratio": 1.0652508476166618,
+      "passed": true
+    }
+  ],
+  "residual_risks": [
+    "Subset 1K and 200K decode medians are below OFF in both blocks; subset 8K TTFT is above OFF in both blocks.",
+    "All five plain candidate decode medians are below the delivered parent, from -0.0020% to -0.3834%, in one sequential startup pair. A persistent binary/layout or scheduling effect is not excluded.",
+    "Only two startup pairs per MTP head and one plain pair; no loss margin was supplied, no confidence bound or true-loss ceiling is inferred. Reused acceptance fixtures are not a new holdout.",
+    "A removed startup work is outside client HTTP TTFT. It is not a demonstrated repair of the old 200K TTFT difference. Zero-hit index work remains.",
+    "Existing independent state oracle is limited to two GDN target layers and captured draft context plus synthetic termination, not arbitrary full-target/full-attention/QSA equality.",
+    "Shared-system DRAM/CPU/frequency samples cannot exclude sub-interval interference; existing swap and unavailable PSI are reported. No new B pure-GPU phase duration is claimed."
+  ],
+  "stop_rule": "No additional model sampling, parameter search or Nsight. Health failure restores the known previous pair and ends delivery; no automatic second continuation.",
+  "health_budget": {
+    "server_starts": 2,
+    "generation_requests": 3,
+    "seconds": 900,
+    "deadline_unix": 1793044396.5540426
+  },
+  "previous_binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313"
+}

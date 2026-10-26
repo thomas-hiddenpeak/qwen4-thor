@@ -1,0 +1,22 @@
+{
+  "status": "DEPLOYED_HEALTH_CHECKED",
+  "candidate_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+  "release_sha256": "45cfe74a761f9b3a9ab1db613b42e8fde64192d869f17a0596ea5925b73e61ec",
+  "health_plan_sha256": "d343efe864f9c4a07710a3153f449768769fe702559fa523cdb67bb0a0a0c881",
+  "package_seal_sha256": "4702bfe327786b6ba64ae71af7e406321154a1eceb0f68c2455fa46f8d8d7114",
+  "previous_binary_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+  "previous_release_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+  "health_generation_requests": 3,
+  "health_model_starts": 2,
+  "original_zero_load_failure_retained": true,
+  "original_health_span_seconds": 287.75240445137024,
+  "actual_health_stage_seconds": 114.06903669703752,
+  "monitor_samples": 115,
+  "nvml_queries": 108,
+  "checks_count": 2370,
+  "all_checks_passed": true,
+  "completed_unix": 1793034968.606879,
+  "scope": "Health is not a new performance sample; shared lock released, no persistent service. First preparation failed before model loading, then CPU repair and the original unused health budget completed within the initial 900-second deadline.",
+  "full_audit_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/audit-delivery-b.json",
+  "full_audit_sha256": "013bc2fc4e88f16f2b0343ec6ba3b3638db8aba400d8865edc2573372f271233"
+}

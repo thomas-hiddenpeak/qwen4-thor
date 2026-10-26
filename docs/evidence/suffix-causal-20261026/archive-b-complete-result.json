@@ -1,0 +1,9 @@
+{
+  "status": "VERIFIED_COPY",
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/archive-b-complete",
+  "files": 2284,
+  "bytes": 575137844,
+  "manifest_sha256": "ae2b1c55cf5dccadd25229e29ea8af3ba715ff5b7d76fe2f450cdff7d921caae",
+  "elapsed_seconds": 1.5684197219088674,
+  "scope": "Complete B initial failure + repair + approval + continuation raw evidence + analyses + decision + candidate + previous pair. A and earlier GPU state evidence retained in their independently sealed original archives; references are not new samples."
+}

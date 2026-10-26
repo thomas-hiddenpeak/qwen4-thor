@@ -1,0 +1,20 @@
+{
+  "status": "CPU_PREFLIGHT_REPAIRED",
+  "failure": "three-element budget tuple compared to two-element expected tuple",
+  "original_output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/deployment",
+  "model_starts": 0,
+  "generation_requests": 0,
+  "original_health_started_unix": 1793034647.0187325,
+  "unchanged_health_deadline_unix": 1793035547.0187325,
+  "remaining_health_seconds": 757.2492380142212,
+  "http_start_budget_remaining": 2,
+  "generation_request_budget_remaining": 3,
+  "positive_validator": 1,
+  "negative_budget_cases": 3,
+  "source_changes": [
+    "health tuple expected (3,2,2)",
+    "enforce remaining original 900-second health deadline"
+  ],
+  "inference_binary_unchanged": true,
+  "scope": "Zero-load preparation error; no repeated model sample and no extension of phase/task budget. Original failure, seal and rollback retained. B acceptance is not rerun."
+}

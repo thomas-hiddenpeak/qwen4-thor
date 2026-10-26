@@ -1,7 +1,10 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[因果消融与修复方案（未执行）](MTP_SUFFIX_CAUSAL_PLAN_2026-10-26.md)；
+最新专项：[固定k3 suffix正式交付](MTP_SUFFIX_DELIVERED_2026-10-27.md)；
+[按需分类B验收及保护原值](MTP_SUFFIX_LAZY_ACCEPTANCE_2026-10-26.md)；
+[因果A结果](MTP_SUFFIX_CAUSAL_RESULTS_2026-10-26.md)；
+[因果消融与修复方案（已执行）](MTP_SUFFIX_CAUSAL_PLAN_2026-10-26.md)；
 [200K/8K GPU对照与最终不交付决定](MTP_SUFFIX_FINAL_OBSERVATION_2026-10-26.md)；
 [超限材料核对与ON复用](MTP_SUFFIX_LOG_REUSE_2026-10-26.md)；
 [200K筛选采集与分析期限](MTP_SUFFIX_PROJECTED_200K_2026-10-26.md)；
@@ -41,6 +44,9 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [固定k3 suffix交付](MTP_SUFFIX_DELIVERED_2026-10-27.md) | 显式启用90f、回退包、2启动3HTTP健康 | 有限工程接受并交付，统计非劣未建立，full默认不变 |
+| [按需分类B验收](MTP_SUFFIX_LAZY_ACCEPTANCE_2026-10-26.md) | 226HTTP、两head重复收益与完整五档/普通decode | 四收益目标满足；保护原值及剩余风险公开，不扩样 |
+| [因果A结果](MTP_SUFFIX_CAUSAL_RESULTS_2026-10-26.md) | 60HTTP、同路径/处理前负控、唯一B选择 | 删除全词表启动Decode；旧200K因果未确认 |
 | [GPU对照有界停止](MTP_SUFFIX_GPU_PAIRS_2026-10-26.md) | 真实8K/200K四臂有限GPU比较 | CPU37通过；首8K日志超限ENV_ABORT，0有效capture，保护NO_GO保持 |
 | [实际8K参数机制](MTP_SUFFIX_MODEL_LEDGER_2026-10-26.md) | 独立CUPTI参数观察及单次真实HTTP | CPU28/固定控制/实际8K通过；6381实参0，7902非零活动全覆盖，非性能验收 |
 | [回调身份与固定机制对照](MTP_SUFFIX_CALLBACK_PAIRING_2026-10-26.md) | 共享回调ID/线程口径、原日志复用及条件Nsight | CPU23、原日志参数及单次Nsight局部机制有效；warning/全模型边界保留，0模型HTTP |

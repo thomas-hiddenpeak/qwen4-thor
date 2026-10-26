@@ -1,0 +1,63 @@
+{
+  "evidence_validity": "VALID",
+  "measurement_completeness": "COMPLETE:226 generation HTTP/11starts including reused11quality; allfive tiers and bothheads and plain",
+  "statistics": "DESCRIPTIVE_ONLY; population noninferiority not established",
+  "engineering": "PENDING_EXPLICIT_FINAL_REVIEW",
+  "checks_count": 4078,
+  "actual_generation_requests": 226,
+  "performance_requests": 198,
+  "quality_requests": 22,
+  "monitor_samples": 8735,
+  "continuation_lease_seconds": 8736.996542647015,
+  "initial_lease_seconds": 275.5962980380282,
+  "b_total_span_seconds": 10027.99279499054,
+  "nvml_queries": 7993,
+  "repeat_goals": [
+    {
+      "head": "full",
+      "case": "repeat-code",
+      "paired_decode_ratios": [
+        1.1436400061250165,
+        1.1383740592640406
+      ],
+      "geometric_mean_ratio": 1.1410039947823527,
+      "passed": true
+    },
+    {
+      "head": "full",
+      "case": "repeat-text",
+      "paired_decode_ratios": [
+        1.1463472782863333,
+        1.1454104073080602
+      ],
+      "geometric_mean_ratio": 1.1458787470489342,
+      "passed": true
+    },
+    {
+      "head": "subset",
+      "case": "repeat-code",
+      "paired_decode_ratios": [
+        1.0688742273092575,
+        1.066238095320613
+      ],
+      "geometric_mean_ratio": 1.0675553476347326,
+      "passed": true
+    },
+    {
+      "head": "subset",
+      "case": "repeat-text",
+      "paired_decode_ratios": [
+        1.0659802230638362,
+        1.0645219712299123
+      ],
+      "geometric_mean_ratio": 1.0652508476166618,
+      "passed": true
+    }
+  ],
+  "plan_sha256": "542e05eec31938600c60568fc20bb83af4cebb91a5bf5972e2ad4136b2a59b55",
+  "analysis_sha256": "2b249a96401a88ecfe89f57d58cc7a284eef70bc6e645e834bf1f12f368ae71e",
+  "resources_sha256": "32eafd7403635fc30584db1f3748e2a2ab3342bc2ec169e4169ab6be79108cd2",
+  "finished_unix": 1793034185.6275864,
+  "full_audit_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/audit-b.json",
+  "full_audit_sha256": "80c2c2a6af33b74a11be138fd78ba1c0a43280bd4ff826cc9c928492a95ae69a"
+}

@@ -1,0 +1,12 @@
+{
+  "status": "VERIFIED_COPY",
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/archive-delivery-complete",
+  "files": 458,
+  "bytes": 365232998,
+  "manifest_sha256": "42db0ddb73fb76926d4f1ef00646721ccfdd74e82b8ddc997972ed51ff5f9f3a",
+  "elapsed_seconds": 0.7808802828658372,
+  "previous_preparation_package": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package",
+    "seal_sha256": "3cf75cb131986f39b23c2a33f90638930a3aa8df12024504eb4e29ddf03744d2"
+  }
+}
