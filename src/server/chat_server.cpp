@@ -86,6 +86,9 @@ ChatServer::~ChatServer() {
   }
   ReleaseSuffixTokenClasses(&suffix_token_classes_,
                              &suffix_token_class_count_);
+  if (suffix_causal_.Enabled())
+    std::fprintf(stderr, "[suffix-causal-plan] consumed=%zu expected=%zu\n",
+                 suffix_causal_.Consumed(), suffix_causal_.Size());
 }
 
 namespace {
@@ -118,6 +121,13 @@ Status ChatServer::Start(const ServerOptions& opts) {
   allow_media_ = opts.allow_media;
   mtp_k_ = opts.mtp_k;
   mtp_suffix_ = opts.mtp_suffix;
+  if (const char* causal = std::getenv("Q4T_SUFFIX_CAUSAL_PLAN")) {
+    if (!capabilities.mtp || opts.mtp_k != 3 || opts.max_seq != 1 ||
+        opts.allow_media || opts.host != "127.0.0.1")
+      return Status::Fail("suffix causal diagnostic requires local text B1 k3");
+    const Status loaded = suffix_causal_.Load(causal, mtp_suffix_);
+    if (!loaded.ok()) return loaded;
+  }
   PhaseTimer total("startup_total");
   {
     PhaseTimer pt("tokenizer");

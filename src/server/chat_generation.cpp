@@ -75,6 +75,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   using Wait = RequestDiagnostics::Wait;
   metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
   const auto t_arrive = std::chrono::steady_clock::now();
+  SuffixCausalRequest causal(suffix_causal_.Enabled());
+  if (causal.enabled)
+    causal.arrive_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                          t_arrive.time_since_epoch()).count();
   // Any return before generation starts (validation / alloc / encode / prefill
   // failure) counts as a pre-generation error; cleared once a token is produced.
   struct ErrGuard {
@@ -152,6 +156,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
   diagnostic.Bind(request_id);
+  if (causal.enabled) causal.request = request_id;
   struct Registration {
     RequestRegistry& registry;
     std::shared_ptr<RequestControl> control;
@@ -607,6 +612,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
 
   diagnostic.Stage("decode");
+  if (causal.enabled) {
+    causal.target_done_ns = SuffixCausalRequest::Now();
+    causal.input = T;
+  }
   // 3. Decode loop (greedy).
   const std::string id = request_id;
   const std::string model_field = model_name_;
@@ -743,6 +752,24 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // Fallback: if the scheduler is unavailable or the pool is full, decode
   // plainly (the main seq is still usable).
   ActiveRequest mtp_ar;
+  bool query_suffix = mtp_suffix_;
+  bool apply_suffix = true;
+  if (causal.enabled) {
+    causal.prefill_done_ns = SuffixCausalRequest::Now();
+    const Status selected = suffix_causal_.AfterPrefill(
+        T, causal.prefill_done_ns, &causal.choice, &causal.ordinal);
+    causal.selected_ns = SuffixCausalRequest::Now();
+    if (!selected.ok() || !use_mtp) {
+      std::fprintf(stderr, "[suffix-causal-error] request=%s selection=%s\n",
+                   request_id.c_str(), selected.message().c_str());
+      model::ModelEndSequence(&seq);
+      cleanup();
+      err_guard.ok = false;
+      return;
+    }
+    query_suffix = causal.choice.query;
+    apply_suffix = causal.choice.apply;
+  }
   mtp::SuffixDrafter suffix;
   std::array<uint64_t, 4> suffix_accepted{};
   std::array<uint64_t, 4> neural_accepted{};
@@ -761,7 +788,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       use_mtp = false;
     }
   }
-  if (use_mtp && mtp_suffix_) {
+  if (use_mtp && query_suffix) {
     const Status suffix_status =
         suffix.Init(seq.history, model_.Get().cfg.vocab, max_len_,
                     {suffix_token_classes_.get(), suffix_token_class_count_});
@@ -796,8 +823,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       mtp_ar.mtp_suffix_ready = false;
       if (suffix.Active()) {
         const auto proposal = suffix.ProposeAfter(mtp_b, mtp_d0);
-        mtp_ar.mtp_suffix_ready = proposal.ready;
+        mtp_ar.mtp_suffix_ready = proposal.ready && apply_suffix;
         mtp_ar.mtp_suffix_tokens = proposal.tokens;
+        if (causal.enabled) causal.ready += proposal.ready;
       }
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
@@ -822,6 +850,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         break;
       }
       ++accepted_histogram[mtp_ar.mtp_accepted_count - 1];
+      if (causal.enabled) {
+        if (!causal.first_round_ns)
+          causal.first_round_ns = SuffixCausalRequest::Now();
+        ++causal.verify;
+        causal.neural += mtp_ar.mtp_suffix_ready ? 0 : 2;
+        causal.restore += mtp_ar.mtp_accepted_count < 4;
+        if (!is_stop_token(mtp_ar.mtp_next_b)) {
+          ++causal.extend;
+          causal.extend_rows += mtp_ar.mtp_accepted_count;
+        }
+      }
       if (mtp_suffix_) {
         auto& histogram = mtp_ar.mtp_suffix_ready ? suffix_accepted
                                                 : neural_accepted;
@@ -841,6 +880,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             if (tok_->Decode(one, true, &piece).ok())
               wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
           }
+          causal.FirstContent(wrote, !piece.empty());
           if (!wrote) {  // client disconnected: stop, free the slot
             done = true;
             finish_reason = "stop";
@@ -979,6 +1019,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           if (tok_->Decode(one, true, &piece).ok())
             wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
         }
+        causal.FirstContent(wrote, !piece.empty());
         if (!wrote) {  // client disconnected: stop, free the slot
           finish_reason = "stop";
           break;
@@ -1037,6 +1078,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         }
         next_token = argmax(h_logits.data());
       }
+      if (causal.enabled) ++causal.tail;
     }
     if (use_sched) {
       {
@@ -1050,6 +1092,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
   trace_output_tokens = generated.size();
+  if (causal.enabled) {
+    causal.generation_done_ns = SuffixCausalRequest::Now();
+    causal.stats = suffix.Counters();
+  }
   if (generation_failed) seq.Fail();
   model::ModelEndSequence(&seq);
   LogMemorySnapshot("request_end", id);

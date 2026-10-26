@@ -31,6 +31,7 @@
 #include "q4t/model/model_owner.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
+#include "q4t/server/suffix_causal.h"
 #include "q4t/status.h"
 #include "q4t/runtime/memory_budget.h"
 #ifdef Q4T_STARTUP_RESERVATION
@@ -296,6 +297,7 @@ class ChatServer {
   mtp::MtpModel mtp_;
   bool mtp_loaded_ = false;
   bool mtp_suffix_ = false;
+  SuffixCausalPlan suffix_causal_;
   // Immutable global-ID properties, built only for explicit suffix mode.
   // Run drains request threads before destruction, so borrowed request spans
   // remain valid until every request-local suffix index has been reset.
