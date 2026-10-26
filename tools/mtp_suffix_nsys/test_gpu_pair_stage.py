@@ -113,6 +113,71 @@ class PairStageContracts(unittest.TestCase):
                 else:
                     with self.assertRaises(RuntimeError): stage.require_live(identity,99)
 
+        # Exercise the cleanup identity gate independently of startup/reporting.
+        for mode in ('normal','expired_measurement','tight_budget','wrong_owner',
+                     'wrong_session','changed_target','shutdown_failed','already_attempted','already_exited'):
+            with self.subTest(cleanup=mode):
+                output=self.base/mode;output.mkdir()
+                identity=dict(pid=7,start_ticks=19,wrapper_pid=8)
+                stage.save(output/'target-exit.json',dict(pid=7,wrapper_pid=8,returncode=0))
+                session=MagicMock();session.name='q4t-suffix-1-2-'+'a'*16+'-owned'
+                session.owner=dict(pid=1,start_ticks=2);session.output=output
+                session.deadline=50;session._closed=False
+                session.check=MagicMock(side_effect=RuntimeError('failed measurement check'))
+                measurement_check=session.check
+                session.can_shutdown=mode!='already_attempted'
+                session.shutdown_attempted=mode=='already_attempted'
+                session.shutdown_succeeded=False
+                session.reap_adopted.return_value=dict(complete=True,remaining=[],not_children=[])
+                if mode=='wrong_owner':session._owner_current.side_effect=RuntimeError('owner changed')
+                if mode=='wrong_session':session.name='q4t-suffix-3-2-'+'a'*16+'-owned'
+                def shutdown(timeout):
+                    session.check()
+                    self.assertLessEqual(timeout,5 if mode=='tight_budget' else 15)
+                    session.shutdown_attempted=True
+                    if mode=='shutdown_failed':raise RuntimeError('shutdown failed')
+                    session.shutdown_succeeded=True
+                    return dict(returncode=0)
+                session.shutdown.side_effect=shutdown
+                session.close.side_effect=lambda:setattr(session,'_closed',True)
+                launcher=MagicMock(returncode=0);launcher.poll.return_value=0
+                state={'exited':mode=='already_exited'}
+                def send(fd,signum):
+                    self.assertEqual(fd,99);self.assertEqual(signum,stage.signal.SIGTERM)
+                    state['exited']=True
+                rebound=dict(identity,start_ticks=20) if mode=='changed_target' else identity
+                with patch.object(stage.time,'monotonic',return_value=100), \
+                        patch.object(stage.runner,'bind_model_target',return_value=rebound) as bind, \
+                        patch.object(stage,'require_live') as live, \
+                        patch.object(stage.runner,'pidfd_exited',side_effect=lambda *_:state['exited']), \
+                        patch.object(stage.signal,'pidfd_send_signal',side_effect=send) as signal_target, \
+                        patch.object(stage.os,'close') as close:
+                    target,errors=stage.cleanup_owned(plan(self.base),output,session,launcher,
+                        identity,99,125 if mode=='tight_budget' else 160)
+                measurement_check.assert_not_called();close.assert_called_once_with(99)
+                session.close.assert_called_once()
+                if mode in ('wrong_owner','wrong_session'):
+                    session.shutdown.assert_not_called();bind.assert_not_called()
+                    signal_target.assert_not_called();self.assertIsNone(target)
+                    session.reap_adopted.assert_not_called()
+                elif mode=='changed_target':
+                    signal_target.assert_not_called();live.assert_not_called()
+                    self.assertIsNone(target)
+                elif mode=='already_exited':
+                    signal_target.assert_not_called();bind.assert_not_called()
+                    self.assertEqual(target['returncode'],0)
+                else:
+                    signal_target.assert_called_once_with(99,stage.signal.SIGTERM)
+                    live.assert_called_once_with(identity,99)
+                    self.assertEqual(target['returncode'],0)
+                if mode=='already_attempted':session.shutdown.assert_not_called()
+                elif mode not in ('wrong_owner','wrong_session'):session.shutdown.assert_called_once()
+                self.assertEqual(bool(errors),mode in ('wrong_owner','wrong_session',
+                    'changed_target','shutdown_failed','already_attempted'))
+                budget=json.loads((output/'cleanup-budget.json').read_text())
+                self.assertFalse(budget['measurement_check_used'])
+                self.assertEqual(budget['original_measurement_deadline'],50)
+
     def test_snapshot_adapter_is_isolated_and_keeps_fixed_upper_bound(self):
         original=stage.module('nvlog_snapshot')
         (self.base/'nvlog.log').write_text('I01:00:00.000 x pid=7 tid= 7 normal\n')
@@ -149,6 +214,37 @@ class PairStageContracts(unittest.TestCase):
         child.terminate.assert_called_once();child.wait.assert_called_once_with(timeout=5)
         self.assertTrue(json.loads((self.base/'analysis-exit.json').read_text())['forced'])
 
+        for mode in ('file_limit','alarm'):
+            with self.subTest(first_failure=mode):
+                output=self.base/mode;output.mkdir()
+                guard=stage.MeasurementGuard(output,110)
+                with patch.object(stage.time,'monotonic',return_value=100), \
+                        patch.object(stage,'check_files',side_effect=RuntimeError('log limit')):
+                    with self.assertRaises((RuntimeError,TimeoutError)):
+                        guard.check() if mode=='file_limit' else guard.expired(None,None)
+                    original=copy.deepcopy(guard.failure)
+                    guard.latch(RuntimeError('later cleanup failure'))
+                    with self.assertRaises(RuntimeError):guard.check()
+                self.assertEqual(guard.failure,original)
+                self.assertTrue(original['environment_abort'])
+                self.assertFalse(original['repaired_by_cleanup'])
+                self.assertEqual(json.loads((output/'measurement-failure.json').read_text()),original)
+        guard=stage.MeasurementGuard(self.base,110)
+        with patch.object(stage.time,'monotonic',return_value=100), \
+                patch.object(stage.signal,'getitimer',return_value=(0.0,0.0)), \
+                patch.object(stage.signal,'getsignal',return_value='old-handler'), \
+                patch.object(stage.signal,'signal') as handler, \
+                patch.object(stage.signal,'setitimer') as timer:
+            guard.arm();guard.disarm();guard.disarm()
+        self.assertEqual(timer.call_args_list[0].args,(stage.signal.ITIMER_REAL,10))
+        self.assertEqual(timer.call_args_list[1].args,(stage.signal.ITIMER_REAL,0))
+        self.assertEqual(timer.call_count,2)
+        self.assertEqual(handler.call_args.args,(stage.signal.SIGALRM,'old-handler'))
+        with patch.object(stage.signal,'getitimer',return_value=(1.0,0.0)), \
+                patch.object(stage.signal,'setitimer') as timer:
+            with self.assertRaises(RuntimeError):guard.arm()
+            timer.assert_not_called()
+
     def test_analysis_preserves_strict_failure_and_successful_local_receipt(self):
         strict=dict(trace_integrity='FAIL',diagnostics={'warnings':['original']})
         stage.save(self.base/'strict-audit.json',strict)
@@ -169,6 +265,7 @@ class PairStageContracts(unittest.TestCase):
         launcher=MagicMock(pid=9,returncode=0);launcher.poll.return_value=0
         calls=[]
         session=MagicMock(name='session');session.name='q4t-suffix-1-owned'
+        session.report_ready_succeeded=True
         session.start.side_effect=lambda:calls.append('start')
         def launch(_argv,stream,envvars):
             calls.append('launch')
@@ -184,10 +281,20 @@ class PairStageContracts(unittest.TestCase):
                     '[exec-capture] event=end pid=7 input_tokens=8170 error=0\n'
                     '[q4t][request] id=r event=end released=1 outcome=success reason=completed\n')
             return [dict(outputs=['e'*64],responses=[dict(actual_output=256,finish=['length'])])]
-        def stop(_plan,_output,_launcher):
-            calls.extend(['report','shutdown','target-exit'])
+        def report(**kwargs):
+            calls.append('report')
+            receipt=kwargs['target_receipt']
+            self.assertEqual(receipt['source'],'model-capture-end')
+            self.assertEqual(receipt['expected_input_tokens'],8170)
+            self.assertLessEqual(kwargs['timeout'],45)
+            kwargs['check']()
+        session.await_report.side_effect=report
+        def cleanup(_plan,_output,_session,_launcher,_identity,_fd,deadline):
+            calls.extend(['shutdown','target-exit','reap'])
+            self.assertEqual((_identity,_fd),(identity,99))
+            self.assertLessEqual(deadline-stage.time.monotonic(),60)
             stage.save(output/'profile-shutdown.json',dict(forced_target_kill=False))
-            return dict(pid=7,returncode=0)
+            return dict(pid=7,returncode=0),[]
         def load(name):
             if name!='pair_work_contract':raise AssertionError(name)
             def work(*_args):calls.append('work');return dict(status='VALID',errors=[])
@@ -201,8 +308,9 @@ class PairStageContracts(unittest.TestCase):
                 patch.object(stage.old.http,'capacity_evidence',return_value={'matches_requested':True}), \
                 patch.object(stage.old.admission,'run_cases',side_effect=request), \
                 patch.object(stage,'loaded_libraries',return_value={}), \
-                patch.object(stage.runner,'stop_profile_target',side_effect=stop), \
-                patch.object(stage.runner,'finish_interactive',side_effect=lambda *_:calls.append('reap')), \
+                patch.object(stage,'cleanup_owned',side_effect=cleanup), \
+                patch.object(stage.MeasurementGuard,'arm'), \
+                patch.object(stage.MeasurementGuard,'disarm'), \
                 patch.object(stage.runner,'pidfd_exited',return_value=True), \
                 patch.object(stage.os,'close'), \
                 patch.object(stage.old,'audit_execution',return_value=dict(complete=True,errors=[])), \
@@ -218,21 +326,62 @@ class PairStageContracts(unittest.TestCase):
         self.assertFalse(result['full_trace_integrity'])
 
     def test_start_failure_keeps_cleanup_errors_and_never_exports(self):
-        value=plan(self.base);Path(value['output']).mkdir()
-        session=MagicMock();session.name='q4t-suffix-1-owned'
-        session.start.side_effect=RuntimeError('start failed')
-        def finish(_session,errors):errors.append('owned cleanup failed')
-        with patch.object(stage.legacy,'require_guard'), \
-                patch.object(stage.sync,'Session',return_value=session), \
-                patch.object(stage.sync,'make_name',return_value='q4t-suffix-1-owned'), \
-                patch.object(stage.old.http,'event'), \
-                patch.object(stage.runner,'finish_interactive',side_effect=finish), \
-                patch.object(stage.runner,'export_database') as export:
-            with self.assertRaises(stage.legacy.EnvironmentAbort):
-                stage.custom_step(value,'nsys8-off',self.base/'plan.json')
-        export.assert_not_called();session.launch.assert_not_called()
-        row=json.loads((Path(value['output'])/'nsys8-off/exit.json').read_text())
-        self.assertFalse(row['http_output_checks_passed']);self.assertTrue(row['cleanup_errors'])
+        for mode in ('start','log_limit','deadline','cleanup_failure'):
+            with self.subTest(mode=mode):
+                base=self.base/mode;value=plan(base)
+                Path(value['output']).mkdir(parents=True)
+                output=Path(value['output'])/'nsys8-off'
+                session=MagicMock();session.name='q4t-suffix-1-2-'+'a'*16+'-owned'
+                session.owner=dict(pid=1,start_ticks=2)
+                session.output=output;session._closed=False;session.launch_process=None
+                session.can_shutdown=True;session.shutdown_attempted=False
+                session.shutdown_succeeded=False
+                session.reap_adopted.return_value=dict(complete=True,remaining=[],not_children=[])
+                def factory(*_args,**kwargs):
+                    session.deadline=kwargs['deadline'];session.check=kwargs['check']
+                    return session
+                def start():
+                    if mode=='log_limit':
+                        with (output/'nvlog.log').open('wb') as stream:
+                            stream.truncate(stage.LOG_LIMIT+1)
+                        session.check()
+                    if mode=='deadline':raise TimeoutError('measurement timeout')
+                    raise RuntimeError('start failed')
+                session.start.side_effect=start
+                def shutdown(timeout):
+                    self.assertLessEqual(timeout,15)
+                    session.check()  # The log cap/expired measurement does not run here.
+                    session.shutdown_attempted=True
+                    if mode=='cleanup_failure':raise RuntimeError('owned shutdown failed')
+                    session.shutdown_succeeded=True
+                    return dict(returncode=0)
+                session.shutdown.side_effect=shutdown
+                session.close.side_effect=lambda:setattr(session,'_closed',True)
+                expected=RuntimeError if mode=='start' else stage.legacy.EnvironmentAbort
+                with patch.object(stage.legacy,'require_guard'), \
+                        patch.object(stage.sync,'Session',side_effect=factory), \
+                        patch.object(stage.sync,'make_name',return_value=session.name), \
+                        patch.object(stage.old.http,'event'), \
+                        patch.object(stage.MeasurementGuard,'arm'), \
+                        patch.object(stage.MeasurementGuard,'disarm'), \
+                        patch.object(stage.runner,'export_database') as export, \
+                        patch.object(stage,'analyze_capture') as analysis, \
+                        patch.object(stage.runner,'stop_profile_target') as inherited:
+                    with self.assertRaises(expected):
+                        stage.custom_step(value,'nsys8-off',base/'plan.json')
+                export.assert_not_called();analysis.assert_not_called();inherited.assert_not_called()
+                session.launch.assert_not_called();session.await_report.assert_not_called()
+                session.shutdown.assert_called_once();session.close.assert_called_once()
+                row=json.loads((output/'exit.json').read_text())
+                self.assertFalse(row['http_output_checks_passed'])
+                self.assertFalse(row['trace_exports_complete'])
+                self.assertFalse(row['measurement_failure']['repaired_by_cleanup'])
+                self.assertEqual(bool(row['owned_cleanup_errors']),mode=='cleanup_failure')
+                self.assertEqual(row['environment_abort'],mode!='start')
+                self.assertEqual(bool(row['cleanup_errors']),mode!='start')
+                budget=json.loads((output/'cleanup-budget.json').read_text())
+                self.assertFalse(budget['measurement_check_used'])
+                self.assertLessEqual(budget['deadline_monotonic']-budget['started_monotonic'],60)
 
     def test_install_reuses_monitor_barriers_and_replaces_only_stage_adapters(self):
         work=SimpleNamespace(audit_server=object())

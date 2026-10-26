@@ -1,0 +1,59 @@
+{
+  "valid": true,
+  "failure": null,
+  "gpu_runs": 0,
+  "trace_qualification": false,
+  "performance_acceptance": false,
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/run/nsys8-off/nvlog.log",
+  "encode_finished_seconds": 1.2724502799101174,
+  "receipt": {
+    "schema": 1,
+    "status": "VALID",
+    "error": "",
+    "pid": 3511567,
+    "logical_bytes": 746229179,
+    "logical_sha256": "3ced6b9e8df8a9117eae3480eb09f3607e0b967c1eb38bc88749dd5e7a3661c3",
+    "compressed_bytes": 30205327,
+    "compressed_sha256": "9955982a2aed8cde98d60a26ae7d079654ba260f60f9ca0bc0d95a46c1b3cfbd",
+    "output_device": 66305,
+    "output_inode": 5125399,
+    "logical_limit": 8589934592,
+    "compressed_limit": 268435456,
+    "controlled_workspace_bytes": 12845056,
+    "address_space_limit_bytes": 67108864,
+    "fifo_kernel_capacity_bytes": 65536,
+    "maxrss_kib": 21376,
+    "elapsed_seconds": 1.266515,
+    "zstd_version": 10505,
+    "level": 1,
+    "window_log": 20,
+    "workers": 0,
+    "checksum": true,
+    "input_eof": true,
+    "frame_completed": true,
+    "fsynced": true
+  },
+  "raw_source": {
+    "sha256": "3ced6b9e8df8a9117eae3480eb09f3607e0b967c1eb38bc88749dd5e7a3661c3",
+    "bytes": 746229179,
+    "lines": 2066081,
+    "all_lines_terminated": true
+  },
+  "terminal_qualification_errors": [
+    "NVLOG contains unknown actual-target error/fatal records or unbound backend failure"
+  ],
+  "classifications": [
+    "AUXILIARY_ACTIVITY_CONTEXT_DISABLE_REJECTED",
+    "AUXILIARY_ACTIVITY_CONTEXT_DISABLE_REJECTED",
+    "AUXILIARY_ACTIVITY_CONTEXT_DISABLE_REJECTED",
+    "AUXILIARY_ACTIVITY_CONTEXT_DISABLE_REJECTED",
+    "POST_REPORT_DESTRUCTOR_BALANCED_COUNTERS",
+    "POST_REPORT_DESTRUCTOR_BALANCED_COUNTERS"
+  ],
+  "terminal_evidence_sha256": "37a2eccb217d7cfaf587a8220fe24591b97a4ca1fc6468664a0d800d8152990b",
+  "compression_ratio": 24.70521769223025,
+  "scope": "Lossless fixed-codec CPU replay only; actual NVLOG FIFO compatibility and GPU validity unproved.",
+  "worker_pid": 3511567,
+  "worker_returncode": 0,
+  "elapsed_seconds": 61.56558588705957
+}

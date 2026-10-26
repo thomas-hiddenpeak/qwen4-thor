@@ -1,4 +1,6 @@
 """Sixteen offline contracts; no capture, model, HTTP, export, or sensors."""
+import hashlib
+import io
 import json
 from pathlib import Path
 import sqlite3
@@ -118,6 +120,8 @@ class RecordedGpuContracts(unittest.TestCase):
                 terminal_log().replace('timestamp 1100', 'timestamp 900'),
                 terminal_log().replace('Trace[0xabcd]: Event ignored', 'Trace[0xffff]: Event ignored'),
                 terminal_log(filters=False)]
+        logs.append(terminal_log() + 'I01:00:01.000| consumer | nsys pid=700 tid= 703 | '
+                    'Trace.cpp:2 [ReadStorageImpl]: { Text="CUDA profiling finished" }\n')
         for index, log in enumerate(logs):
             with self.subTest(index=index):
                 self.assertFalse(self.analyze(self.capture(log=log))['qualification_passed'])
@@ -168,6 +172,39 @@ class RecordedGpuContracts(unittest.TestCase):
                     known.replace('CUPTI Error 27:', 'CUPTI Error 99:')):
             with self.subTest(log=log):
                 self.assertFalse(self.analyze(self.capture(log=log+terminal_log()))['qualification_passed'])
+        auxiliary = ''.join('E01:00:01.000| Cupti_Public | target pid=42 tid= 42 | :1918 []: '
+            f'Error: Activity kind {kind} cannot be disabled at context level.\n'
+            for kind in (36, 35, 34, 33))
+        report = ('I01:00:02.000| qdstrm_import | nsys pid=700 tid= 701 | '
+                  'QdstrmImporter.cpp:591 [SaveReport]: Report file saved: /owned/trace.1.nsys-rep\n')
+        def storage(allocated=35, returned=35):
+            return ('E01:00:03.000| Injection | target pid=42 tid= 42 | MemoryStorage.cpp:65 '
+                    f'[~MemoryStorage]: MemoryStorage 0xabcd was not deleted before the destructor. '
+                    f'AllocatedCount: {allocated}, ReturnedCount: {returned}\n')
+        six = terminal_log() + auxiliary + report + storage() + storage(1020242, 1020242)
+        result = self.analyze(self.capture(log=six))
+        self.assertFalse(result['qualification_passed'])
+        proof = result['terminal_evidence']
+        self.assertEqual(len(proof['backend']['unknown_error_records']), 6)
+        classified = proof['forensic_error_classifications']
+        self.assertEqual([r['activity_kind'] for r in classified[:4]], [36, 35, 34, 33])
+        self.assertTrue(all(r['classification'] == 'POST_REPORT_DESTRUCTOR_BALANCED_COUNTERS'
+                            for r in classified[4:]))
+        self.assertTrue(all(r['resolution'] == 'UNRESOLVED' and not r['qualification_allowed']
+                            for r in classified))
+        self.assertTrue(all(not r['loss_free_proven'] and not r['report_identity_verified']
+                            for r in classified[4:]))
+        for label, text, expected in [
+            ('before report', storage()+report, 'MEMORY_STORAGE_DESTRUCTOR_UNRESOLVED'),
+            ('no report', storage(), 'MEMORY_STORAGE_DESTRUCTOR_UNRESOLVED'),
+            ('unequal', report+storage(35, 34), 'MEMORY_STORAGE_DESTRUCTOR_UNRESOLVED'),
+            ('ambiguous report', report+report+storage(), 'MEMORY_STORAGE_DESTRUCTOR_UNRESOLVED'),
+            ('other kind', auxiliary.replace('kind 36', 'kind 37'), 'UNKNOWN_TARGET_ERROR'),
+            ('fatal', auxiliary.replace('E01:', 'F01:'), 'UNKNOWN_TARGET_ERROR')]:
+            with self.subTest(error_case=label):
+                evidence = m.terminal_evidence((terminal_log()+text).encode(), PID)
+                self.assertEqual(evidence['forensic_error_classifications'][0]['classification'], expected)
+                self.assertTrue(evidence['qualification_errors'])
 
     def test_11_recorded_nvtx_and_correlation_failures_rejected(self):
         changes = [lambda db: db.execute('UPDATE NVTX_EVENTS SET end=NULL'),
@@ -201,6 +238,44 @@ class RecordedGpuContracts(unittest.TestCase):
         output = self.capture()
         with patch.object(m, 'MAX_SECONDS', -1):
             self.assertFalse(self.analyze(output)['qualification_passed'])
+        data = terminal_log().encode()
+        class OnePassLines:
+            def __init__(self):
+                self.used = False
+            def __iter__(self):
+                if self.used:
+                    raise AssertionError('terminal parser reread the source')
+                self.used = True
+                yield from io.BytesIO(data)
+            def read(self, *args):
+                raise AssertionError('terminal parser attempted a whole-source read')
+        streamed = m.terminal_evidence_lines(OnePassLines(), PID)
+        self.assertEqual(streamed, m.terminal_evidence(data, PID))
+        self.assertEqual(streamed['raw_source']['sha256'], hashlib.sha256(data).hexdigest())
+        self.assertEqual(streamed['raw_source']['bytes'], len(data))
+        first = streamed['producer_finish']['CUDAFinish'][0]
+        self.assertEqual(first['byte_offset'], 0)
+        self.assertEqual(first['raw_sha256'], hashlib.sha256(next(iter(io.BytesIO(data)))).hexdigest())
+        second_stop = b'I01:00:00.001| consumer | nsys pid=700 tid= 701 | Trace.cpp:1 [Stop]: Trace[0xffff]: Stop(1001)\n'
+        marker = b'I01:00:00.002| consumer | nsys pid=700 tid= 702 | Trace.cpp:2 [ReadStorageImpl]: { Text="CUDA profiling finished" }\n'
+        cases = [
+            ('line', 'MAX_LINE', 8, data),
+            ('logical bytes', 'MAX_STREAM_LOG', 20, data),
+            ('evidence count', 'MAX_TERMINAL_EVIDENCE', 2, data),
+            ('evidence bytes', 'MAX_TERMINAL_EVIDENCE_BYTES', 32, data),
+            ('sessions', 'MAX_TERMINAL_SESSIONS', 1, data+second_stop),
+            ('threads', 'MAX_TERMINAL_THREADS', 1, marker+marker.replace(b'tid= 702', b'tid= 703'))]
+        for label, attribute, value, content in cases:
+            with self.subTest(bound=label), patch.object(m, attribute, value):
+                with self.assertRaises(ValueError):
+                    m.terminal_evidence_lines(io.BytesIO(content), PID)
+        for bad in ([data], ['text'], [b''], [b'partial', b'next\n'], [b'\xff\n']):
+            with self.subTest(iterator=repr(bad)[:100]):
+                with self.assertRaises((ValueError, UnicodeError)):
+                    m.terminal_evidence_lines(iter(bad), PID)
+        partial = m.terminal_evidence_lines(io.BytesIO(data.rstrip(b'\n')), PID)
+        self.assertFalse(partial['raw_source']['all_lines_terminated'])
+        self.assertTrue(partial['qualification_errors'])
 
     def test_15_new_api_error_and_full_scan_count_mismatch_rejected(self):
         output = self.capture(lambda db: db.execute('UPDATE CUPTI_ACTIVITY_KIND_RUNTIME SET returnValue=1 WHERE correlationId=2'))

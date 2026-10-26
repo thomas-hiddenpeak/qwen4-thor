@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "before_source_snapshots": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-logstream-20261026/before-source",
+  "allowed_changed_before_inputs": {
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/gpu_pair_stage.py": "a15c94bab33ebf55f595ba13fd72a0496c6c2e5a729e443e5d8ecd49abe13a5a",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/recorded_gpu.py": "2c0a2dffb567d88df45b88e4fe52ba1b07a8efba9def7c262408cbdc6074b4e9"
+  },
+  "must_remain_unchanged": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/scope.json": "e1b10eea282aa942b9adcfc423f3f2b4b3e31cc5a1ec952cc419caf0de1439db",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/frozen-plan.json": "ec39fba4e8300241fe42c06bcc55dc65725ab42d2253889ee679b6e2fb6cc7c6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/terminal-review.json": "eefc95476a493c1a977cbd9f4386dcd29773ef39251faf6a695579a9beb391f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/nsys8-off-nvlog-volume.json": "ef7b5cd6c8d841d2f17201a5534c37af74eeb5cbfde01a199c18ba4c0b7984b4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/final-raw-seal.json": "876e44a7e57fb0ced443364c55757ef730d2eb7ce9cc73606a6b04c68478290e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/run/nsys8-off/nvlog.log": "3ced6b9e8df8a9117eae3480eb09f3607e0b967c1eb38bc88749dd5e7a3661c3",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/interactive.py": "a137050303cd4da71f524ae180003fd040e438958d84f85f489fc58482162eeb",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/synchronous.py": "4627177ba87690d0f84142ed2aab3e773ffb76b885dfc81786fa2001ecc59e7a"
+  },
+  "note": "The scope pins the entry identities. The two explicitly authorized tooling repairs transition from independently copied before sources to the CPU-proof after sources; this does not permit runtime or evidence changes."
+}

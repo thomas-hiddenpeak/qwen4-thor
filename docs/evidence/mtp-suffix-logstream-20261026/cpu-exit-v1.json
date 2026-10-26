@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-logstream-20261026/cpu_suite.py",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-logstream-20261026/cpu-methods-v1.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-logstream-20261026/cpu-result-v1.json"
+  ],
+  "returncode": 0,
+  "failure": null,
+  "elapsed_seconds": 2.378410106059164,
+  "sources_changed": [],
+  "source_read_errors": [],
+  "cleanup_errors": [],
+  "temporary_remaining": [],
+  "child_pid": 3510494,
+  "source_files": 434,
+  "log_sha256": "0e497eacebea578be09cb1eb3d3b95fb51305be4591982ce7c7b93873d9f5224",
+  "outcome": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-logstream-20261026/cpu-result-v1.json",
+  "outcome_sha256": "7eca91111eb762c7f3bf5114b19c662c9708adf586cb37ccfa47bb27a8a8aa94"
+}

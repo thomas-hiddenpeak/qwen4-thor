@@ -1,0 +1,22 @@
+{
+  "evidence_integrity": "PASS",
+  "evidence_validity": "VALID_CPU_TOOL_REPAIR_ONLY",
+  "measurement_complete": true,
+  "statistics": "NOT_APPLICABLE_CPU_TOOL_REPAIR",
+  "engineering_decision": "CPU_REPAIR_ACCEPTED_GPU_INTEGRATION_NOT_QUALIFIED",
+  "performance_acceptance": false,
+  "gpu_runs": 0,
+  "model_loads": 0,
+  "http_requests": 0,
+  "archive_files": 801,
+  "archive_bytes": 47668236,
+  "archive_manifest_sha256": "7d1172a82fcad805d568d26cba60055aa9063a4df801fc96de91caff0cf09e7b",
+  "build_seconds": 1.6965163690038025,
+  "cpu_seconds": 2.378410106059164,
+  "replay_seconds": 61.56558588705957,
+  "context_seconds": 2.349981359904632,
+  "scope": "CPU cleanup/codec/parser repair only. No actual NVLOG FIFO qualification, no trace promotion or performance acceptance. Original runtime NO_GO remains.",
+  "errors": [],
+  "checks": 1596,
+  "elapsed_seconds": 0.8143899149727076
+}

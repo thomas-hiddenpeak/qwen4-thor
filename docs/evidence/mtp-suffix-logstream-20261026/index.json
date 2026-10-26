@@ -1,0 +1,15 @@
+{
+  "files": {
+    "scope.json": "e4598380c40669996f719d857c20f1ab6f89c0d9facd4d9fda6894b66bc07c5a",
+    "resume.json": "551712964d6eb8f18d44e1b01e8d1a53eeb8bafd5dcc9236c7bcf5422f46bd5f",
+    "terminal-review.json": "cc0f4ca2fb772f587e87e4bcd6fa13d7afdd1699bfe8072f2876c009dd5f3703",
+    "roundtrip-result.json": "40128125630f01ba3290368fa42637befd703c28b6c26c5f509c5cc06f3876f6",
+    "cpu-result-v1.json": "7eca91111eb762c7f3bf5114b19c662c9708adf586cb37ccfa47bb27a8a8aa94",
+    "cpu-exit-v1.json": "749d33057c5d62deb713811129bfda59e1e557d5baa0ae366a1a0d52757dc134",
+    "error-contract.md": "0bd4bfb9a27d8cd769c5a5a76e93641683a353cc41e6d9f87c2f91d9b6c1361a",
+    "source-transition-contract.json": "f44ece3fbccd5162fbea6cb033a554b7f39f68fd8f7772529ea0997c31650f5a"
+  },
+  "local_evidence": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-logstream-20261026",
+  "archive_manifest_sha256": "7d1172a82fcad805d568d26cba60055aa9063a4df801fc96de91caff0cf09e7b",
+  "performance_acceptance": false
+}

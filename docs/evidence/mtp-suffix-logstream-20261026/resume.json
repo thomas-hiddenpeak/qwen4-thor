@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "authorization": "2026-10-26 user: resume goal, bounded CPU then GPU pairs; reuse unchanged benefits",
+  "scope_sha256": "e4598380c40669996f719d857c20f1ab6f89c0d9facd4d9fda6894b66bc07c5a",
+  "original_created_unix": 1792961546.6914203,
+  "conservative_previous_active_seconds": 541.3085796833038,
+  "pause_accounted_from_unix": 1792962088.0,
+  "resumed_unix": 1793000910.5482318,
+  "active_wall_limit_seconds": 3600,
+  "remaining_active_seconds": 3058.691420316696,
+  "builds_used": 0,
+  "cpu_suites_used": 0,
+  "context_scans_used": 0,
+  "roundtrips_used": 0,
+  "gpu_budget_current_phase": 0,
+  "rule": "Exclude explicit pause only; original limits and used attempts preserved. No automatic sample expansion.",
+  "resumed_deadline_unix": 1793003969.2396522
+}

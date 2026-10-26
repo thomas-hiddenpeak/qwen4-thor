@@ -5,8 +5,9 @@ This module never collects, exports, invokes CUDA, or fills missing parameters.
 The caller separately proves HTTP/output/work, normal exits, lease and monitors.
 """
 import argparse
-from collections import Counter, defaultdict
+from collections import Counter
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -21,6 +22,11 @@ import analyze_gpu as strict
 MAX_LOG = 256 * 1024 * 1024
 MAX_SQLITE = 8 * 1024 ** 3
 MAX_LINE = 1024 * 1024
+MAX_STREAM_LOG = 8 * 1024 ** 3
+MAX_TERMINAL_THREADS = 128
+MAX_TERMINAL_SESSIONS = 128
+MAX_TERMINAL_EVIDENCE = 4096
+MAX_TERMINAL_EVIDENCE_BYTES = 16 * 1024 * 1024
 MAX_SECONDS = 120
 TARGET_WARNINGS = {'Not all CUDA events might have been collected.',
                    'Not all NVTX events might have been collected.'}
@@ -92,26 +98,71 @@ def _check_time(deadline):
         raise TimeoutError('fixed 120-second analysis budget exhausted')
 
 
-def terminal_evidence(data, target_pid):
+def terminal_evidence_lines(lines, target_pid):
     """Bind service events to the consumer's exact source-file PID batch.
 
     A marker's filter must occur before the next ReadStorage event on that
     consumer thread. Its batch summary supplies the source PID; its Trace ID
     and stop timestamp must match the recorded session Stop. No lookahead size
-    or global cross-process event count is used to invent ownership.
+    or global cross-process event count is used to invent ownership. ``lines``
+    yields physical binary lines, including their terminators. The caller must
+    use a bounded readline/decompressor: this function cannot undo an oversized
+    allocation already made by an upstream iterator. It never materializes the
+    input, and bounds retained evidence independently of the logical byte limit.
+
+    Public CUPTI 13.4 documents kinds 33..35 as OpenACC and 36 as CUDA_EVENT,
+    and unsupported context-disable kinds as an API error. It does not promise
+    the surrounding collector is unaffected. MemoryStorage counters have no
+    public loss-free contract. Both forensic classifications remain UNRESOLVED
+    and are rejected by qualify(); they are not new exception allowances.
     """
     require(type(target_pid) is int and 0 < target_pid <= strict.LOW, 'invalid target PID')
     producers = {key: [] for key in ('CUDAFinish', 'NVTXFinish', 'ReportCUDADone')}
-    stops, pending, batches = defaultdict(list), {}, defaultdict(list)
+    stops, pending, batches = {}, {}, {}
     filtered, unresolved, losses, target_errors = [], [], [], []
     backend_enable, backend_fallback = [], []
+    report_saves = []
+    evidence_count = evidence_bytes = total_bytes = line_count = 0
+    source_hash = hashlib.sha256()
+    unterminated = False
+    deadline = time.monotonic() + MAX_SECONDS
     wanted = {'CUDA profiling finished': 'CUDAFinish', 'NVTX profiling finished': 'NVTXFinish'}
-    for number, raw in enumerate(data.splitlines(), 1):
+    for number, raw in enumerate(lines, 1):
+        if number % 1024 == 1:
+            _check_time(deadline)
+        require(type(raw) is bytes and raw, 'NVLOG iterator must yield nonempty binary lines')
+        require(not unterminated, 'NVLOG iterator continued after an unterminated line')
         require(len(raw) <= MAX_LINE, 'NVLOG line exceeds bound')
-        line = raw.decode('utf-8', errors='strict')
-        row = dict(line=number, raw=line)
+        terminated = raw.endswith(b'\n')
+        require(b'\n' not in (raw[:-1] if terminated else raw),
+                'NVLOG iterator yielded more than one physical line')
+        unterminated = not terminated
+        offset = total_bytes
+        total_bytes += len(raw)
+        line_count = number
+        require(total_bytes <= MAX_STREAM_LOG, 'NVLOG logical bytes exceed bound')
+        source_hash.update(raw)
+        content = raw[:-1] if terminated else raw
+        if terminated and content.endswith(b'\r'):
+            content = content[:-1]
+        line = content.decode('utf-8', errors='strict')
+        cached_row = None
+
+        def evidence():
+            nonlocal cached_row, evidence_count, evidence_bytes
+            if cached_row is None:
+                require(evidence_count < MAX_TERMINAL_EVIDENCE,
+                        'NVLOG cumulative evidence count exceeds bound')
+                require(evidence_bytes + len(raw) <= MAX_TERMINAL_EVIDENCE_BYTES,
+                        'NVLOG cumulative evidence bytes exceed bound')
+                evidence_count += 1
+                evidence_bytes += len(raw)
+                cached_row = dict(line=number, raw=line, byte_offset=offset,
+                                  raw_bytes=len(raw), raw_sha256=hashlib.sha256(raw).hexdigest())
+            return cached_row
+
         if LOSS.search(line):
-            losses.append(row)
+            losses.append(evidence())
         match = HEADER.search(line)
         if not match:
             continue
@@ -120,57 +171,76 @@ def terminal_evidence(data, target_pid):
         trace = TRACE.search(line)
         if process == target_pid:
             if re.match(r'^[EF]\d\d:', line):
-                target_errors.append(row)
+                target_errors.append(evidence())
             if '[ResourceCallbackHandler]: Enabling HES trace via CUPTI' in line:
-                backend_enable.append(row)
+                backend_enable.append(evidence())
             if line.endswith('[ResourceCallbackHandler]: ' + FALLBACK):
-                backend_fallback.append(row)
+                backend_fallback.append(evidence())
             for key in ('CUDAFinish', 'NVTXFinish'):
                 if 'Sending service event: ' + key + '.' in line:
-                    producers[key].append(row)
+                    producers[key].append(evidence())
             if 'ReportCUDADone: DONE.' in line:
-                producers['ReportCUDADone'].append(row)
+                producers['ReportCUDADone'].append(evidence())
+        if re.match(r'^I\d\d:\d\d:\d\d\.\d+\|\s*qdstrm_import\s*\|', line) and \
+                '[SaveReport]: Report file saved: ' in line:
+            report_saves.append(evidence())
         stop = re.search(r'\[Stop\]: Trace\[[^\]]+\]: Stop\((\d+)\)', line)
         if stop and trace:
-            stops[(process, trace[1], int(stop[1]))].append(row)
+            key = (process, trace[1], int(stop[1]))
+            require(key in stops or len(stops) < MAX_TERMINAL_SESSIONS,
+                    'NVLOG retained session count exceeds bound')
+            stops.setdefault(key, []).append(evidence())
         if '[ReadStorageImpl]: {' in line:
             previous = pending.pop(thread, None)
             if previous:
-                batches[thread].append(previous)
+                batches.setdefault(thread, []).append(previous)
             marker = next((name for name in wanted if 'Text="' + name + '"' in line), None)
             if marker:
-                pending[thread] = dict(marker=marker, consumer_read=row, filters=[])
+                require(thread in pending or thread in batches or
+                        len(set(pending) | set(batches)) < MAX_TERMINAL_THREADS,
+                        'NVLOG retained consumer thread count exceeds bound')
+                pending[thread] = dict(marker=marker, consumer_read=evidence(), filters=[])
         if thread in pending and 'Event ignored: start timestamp ' in line:
             fields = re.search(r'start timestamp (\d+) > session stop timestamp (\d+)', line)
             if fields and trace:
-                pending[thread]['filters'].append(dict(consumer_filter=row, trace_id=trace[1],
+                pending[thread]['filters'].append(dict(consumer_filter=evidence(), trace_id=trace[1],
                     consumer_pid=process, converted_start_ns=int(fields[1]),
                     session_stop_ns=int(fields[2]), after_stop_ns=int(fields[1])-int(fields[2])))
         batch = re.search(r'Events diagnostic:.*from file pid (\d+), uid (\d+)\.', line)
         if batch and trace:
             previous = pending.pop(thread, None)
             if previous:
-                batches[thread].append(previous)
+                batches.setdefault(thread, []).append(previous)
             items = batches.pop(thread, [])
             if int(batch[1]) == target_pid:
                 for item in items:
                     if len(item['filters']) != 1:
-                        unresolved.append(dict(**item, consumer_batch=row,
+                        unresolved.append(dict(**item, consumer_batch=evidence(),
                             reason='target terminal marker has no unique late filter'))
                         continue
                     fact = item['filters'][0]
-                    stop_rows = stops[(process, trace[1], fact['session_stop_ns'])]
+                    stop_rows = stops.get((process, trace[1], fact['session_stop_ns']), [])
                     if not (fact['trace_id'] == trace[1] and fact['after_stop_ns'] > 0 and
                             len(stop_rows) == 1 and
                             stop_rows[0]['line'] < item['consumer_read']['line']):
-                        unresolved.append(dict(**item, consumer_batch=row,
+                        unresolved.append(dict(**item, consumer_batch=evidence(),
                             reason='terminal filter does not bind one preceding same-session Stop'))
                         continue
                     filtered.append(dict(marker=item['marker'], source_pid=target_pid,
                         source_uid=int(batch[2]), consumer_read=item['consumer_read'],
-                        consumer_batch=row, session_stop=stop_rows[0], **fact))
-    require(not losses, 'NVLOG contains explicit loss/decode failure')
+                        consumer_batch=evidence(), session_stop=stop_rows[0], **fact))
+    _check_time(deadline)
+    # An unclosed batch is never treated as proof about the requested source PID.
+    unclosed = [item for items in batches.values() for item in items] + list(pending.values())
+    for item in unclosed:
+        unresolved.append(dict(**item, reason='terminal marker lacks a closing source-PID batch'))
+    qualification_errors = []
+    if losses:
+        qualification_errors.append('NVLOG contains explicit loss/decode failure')
+    if unterminated:
+        qualification_errors.append('NVLOG final observation has an incomplete line')
     classified_errors, unknown_errors = [], []
+    forensic_errors = []
     fallback_bound = bool(backend_fallback and backend_enable and
                          any(e['line'] < f['line'] for e in backend_enable for f in backend_fallback))
     for row in target_errors:
@@ -182,9 +252,37 @@ def terminal_evidence(data, target_pid):
                     if payload[1] == 'CheckForHesUsage' else
                     any(row['line'] < f['line'] for f in backend_fallback)))
         (classified_errors if ordered else unknown_errors).append(row)
-    require(not unknown_errors, 'NVLOG contains unknown actual-target error/fatal records or unbound backend failure')
+        if not ordered:
+            classification = dict(record=row, classification='UNKNOWN_TARGET_ERROR',
+                                  resolution='UNRESOLVED', qualification_allowed=False)
+            if channel and payload:
+                auxiliary = re.fullmatch(r'Error: Activity kind (33|34|35|36) cannot be disabled at context level\.', payload[2])
+                storage = re.fullmatch(r'MemoryStorage (0x[0-9a-fA-F]+) was not deleted before the destructor\. '
+                                       r'AllocatedCount: (\d+), ReturnedCount: (\d+)', payload[2])
+                if channel[1].strip() == 'Cupti_Public' and payload[1] == '' and auxiliary:
+                    kind = int(auxiliary[1])
+                    classification.update(classification='AUXILIARY_ACTIVITY_CONTEXT_DISABLE_REJECTED',
+                        activity_kind=kind, activity_name={33:'OPENACC_DATA', 34:'OPENACC_LAUNCH',
+                            35:'OPENACC_OTHER', 36:'CUDA_EVENT'}[kind], actual_api_return_code=None,
+                        scope='Control diagnostic only; no guarantee that other activity collection is unaffected.')
+                if channel[1].strip() == 'Injection' and payload[1] == '~MemoryStorage' and storage:
+                    before = [r for r in report_saves if r['line'] < row['line']]
+                    allocated, returned = int(storage[2]), int(storage[3])
+                    balanced = allocated == returned
+                    classification.update(classification=('POST_REPORT_DESTRUCTOR_BALANCED_COUNTERS'
+                        if len(before) == 1 and balanced else 'MEMORY_STORAGE_DESTRUCTOR_UNRESOLVED'),
+                        storage_address=storage[1], allocated_count=allocated, returned_count=returned,
+                        counters_equal=balanced, preceding_report_save_count=len(before),
+                        preceding_report_save_marker=(dict(line=before[0]['line'],
+                            raw_sha256=before[0]['raw_sha256']) if len(before) == 1 else None),
+                        report_identity_verified=False, loss_free_proven=False,
+                        scope='Line ordering after an observed SaveReport marker only; no report/session ownership or event-loss guarantee.')
+            forensic_errors.append(classification)
+    if unknown_errors:
+        qualification_errors.append('NVLOG contains unknown actual-target error/fatal records or unbound backend failure')
     for key, values in producers.items():
-        require(values, 'actual-target producer terminal absent: ' + key)
+        if not values:
+            qualification_errors.append('actual-target producer terminal absent: ' + key)
     by_marker = {name: [r for r in filtered if r['marker'] == name] for name in wanted}
     complete = not unresolved and all(len(values) == 1 for values in by_marker.values())
     if complete:
@@ -196,12 +294,27 @@ def terminal_evidence(data, target_pid):
     return dict(target_pid=target_pid, producer_finish=producers, consumer_filters=filtered,
                 unresolved_terminal_markers=unresolved,
                 late_filter_pair_observed=complete, explicit_loss=losses, target_errors=target_errors,
+                qualification_errors=qualification_errors, forensic_error_classifications=forensic_errors,
+                observed_report_save_markers=report_saves,
+                raw_source=dict(sha256=source_hash.hexdigest(), bytes=total_bytes, lines=line_count,
+                                all_lines_terminated=not unterminated),
+                parser_bounds=dict(logical_bytes=MAX_STREAM_LOG, line_bytes=MAX_LINE,
+                    retained_threads=MAX_TERMINAL_THREADS, retained_sessions=MAX_TERMINAL_SESSIONS,
+                    cumulative_evidence=MAX_TERMINAL_EVIDENCE,
+                    cumulative_evidence_bytes=MAX_TERMINAL_EVIDENCE_BYTES),
+                evidence_usage=dict(records=evidence_count, raw_bytes=evidence_bytes),
                 backend=dict(classification='KNOWN_BACKEND_FALLBACK' if fallback_bound else 'UNOBSERVED',
                              observed_backend='SOFTWARE_FALLBACK' if fallback_bound else 'UNOBSERVED',
                              enable=backend_enable, fallback=backend_fallback,
                              classified_error_records=classified_errors, unknown_error_records=unknown_errors),
                 warning_emitter_branch_observed=False, warning_unique_cause_proven=False,
                 scope='Exact target source-file batch and same-session service-marker filtering only.')
+
+
+def terminal_evidence(data, target_pid):
+    """Compatibility wrapper; streaming callers use terminal_evidence_lines."""
+    require(type(data) is bytes, 'NVLOG compatibility input must be bytes')
+    return terminal_evidence_lines(io.BytesIO(data), target_pid)
 
 
 def _nvlog(path, receipt_path, target_pid):
@@ -282,6 +395,8 @@ def all_missing_memory(database, target_pid, audit_result, scratch_dir, deadline
 
 
 def qualify(audit_result, missing, terminal, target_pid):
+    require(terminal.get('qualification_errors') == [],
+            'NVLOG terminal evidence is unresolved: ' + '; '.join(terminal.get('qualification_errors', ['missing status'])))
     require('analysis_error' not in audit_result, 'strict analyzer could not parse the trace')
     require(audit_result.get('source_unchanged_after_read') is True and
             audit_result.get('source', {}).get('target_pid') == target_pid,

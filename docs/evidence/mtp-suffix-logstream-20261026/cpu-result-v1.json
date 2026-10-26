@@ -1,0 +1,12 @@
+{
+  "tests": 44,
+  "test_modules": {
+    "test_recorded_gpu.py": 16,
+    "test_gpu_pair_stage.py": 12,
+    "test_nvlog_stream.py": 16
+  },
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "elapsed_seconds": 2.162972459103912
+}

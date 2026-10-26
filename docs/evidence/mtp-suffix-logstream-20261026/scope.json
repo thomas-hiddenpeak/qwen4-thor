@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "classification": "BOUNDED_LOG_STREAM_AND_CLEANUP_DEFECT_REPAIR",
+  "source_commit": "81cd7890b85e756342ce165f1c2849871dd98e55",
+  "created_unix": 1792961546.6914203,
+  "work_wall_seconds": 3600,
+  "model_loads": 0,
+  "http_requests": 0,
+  "gpu_captures": 0,
+  "build_attempts": 2,
+  "build_total_seconds": 180,
+  "build_second_rule": "Only a specific failed native build contract repair, no configuration scans",
+  "cpu_max_methods": 52,
+  "cpu_suites": 2,
+  "cpu_total_seconds": 180,
+  "cpu_repeat_rule": "Only a specific recorded failed contract repair; no passed-suite reruns",
+  "real_nvlog_context_passes": 1,
+  "real_nvlog_context_seconds": 30,
+  "real_nvlog_stream_roundtrips": 1,
+  "real_nvlog_stream_seconds": 120,
+  "terminal_audit_seconds": 180,
+  "runtime_changes": 0,
+  "compression": {
+    "level": 1,
+    "window_log": 20,
+    "workers": 0,
+    "checksum": true,
+    "dictionary": false,
+    "controlled_workspace_bytes": 16777216,
+    "worker_address_space_limit_bytes": 67108864,
+    "logical_limit_bytes": 8589934592,
+    "compressed_limit_bytes": 268435456,
+    "line_limit_bytes": 1048576
+  },
+  "cleanup": {
+    "total_seconds": 60,
+    "measurement_failure_latched": true,
+    "shutdown_once": true,
+    "owned_identity_required": true,
+    "no_export_after_failure": true
+  },
+  "six_errors_policy": "Preserve all raw errors. Classify control/destructor timing only; no loss-free inference, no trace/performance promotion. Eligibility needs independent exact per-capture recorded work plus explicit bounded policy review before any new GPU phase.",
+  "stop_conditions": [
+    "Any build/CPU/replay limit or unresolved required identity stops affected readiness; no new GPU/model/HTTP in this phase",
+    "Roundtrip logical SHA/bytes/frame checksum must match original frozen file; failure not repaired by level/window/cap scans",
+    "Pure CPU fixture cannot establish actual NVLOG FIFO compatibility; do not claim collector GPU qualification",
+    "No default/runtime/head change; earlier five-tier NO_GO and unchanged two-head benefit evidence remain"
+  ],
+  "frozen_inputs": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/scope.json": "e1b10eea282aa942b9adcfc423f3f2b4b3e31cc5a1ec952cc419caf0de1439db",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/frozen-plan.json": "ec39fba4e8300241fe42c06bcc55dc65725ab42d2253889ee679b6e2fb6cc7c6",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/terminal-review.json": "eefc95476a493c1a977cbd9f4386dcd29773ef39251faf6a695579a9beb391f8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/nsys8-off-nvlog-volume.json": "ef7b5cd6c8d841d2f17201a5534c37af74eeb5cbfde01a199c18ba4c0b7984b4",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/final-raw-seal.json": "876e44a7e57fb0ced443364c55757ef730d2eb7ce9cc73606a6b04c68478290e",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-gpu-pairs-20261026/run/nsys8-off/nvlog.log": "3ced6b9e8df8a9117eae3480eb09f3607e0b967c1eb38bc88749dd5e7a3661c3",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/gpu_pair_stage.py": "a15c94bab33ebf55f595ba13fd72a0496c6c2e5a729e443e5d8ecd49abe13a5a",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/recorded_gpu.py": "2c0a2dffb567d88df45b88e4fe52ba1b07a8efba9def7c262408cbdc6074b4e9",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/interactive.py": "a137050303cd4da71f524ae180003fd040e438958d84f85f489fc58482162eeb",
+    "/home/rm01/models/dev/qwen4-thor/tools/mtp_suffix_nsys/synchronous.py": "4627177ba87690d0f84142ed2aab3e773ffb76b885dfc81786fa2001ecc59e7a"
+  }
+}

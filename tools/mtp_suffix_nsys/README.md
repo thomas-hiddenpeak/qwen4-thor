@@ -129,3 +129,9 @@ M4/N48/K2560、32MiB的参数诊断候选，分别运行CUPTI-only与条件Nsigh
 本轮CPU55通过，但独立探针漏链生产HcInjectGev，构建额度后停止，
 0GPU/模型/HTTP，尚无可运行probe或真实新采集资格。后续最小依赖修正
 及完整边界见[固定参数诊断](../../docs/MTP_SUFFIX_MEMSET_PARAMETER_2026-10-26.md)。
+
+`nvlog_stream.cpp` / `nvlog_stream.py` 提供固定参数、有限内存的无损FIFO日志流；
+`recorded_gpu.terminal_evidence_lines` 逐行解析并保留完整逻辑SHA。44项CPU和
+一次真实旧日志往返通过；尚未证明实际NVLOG FIFO兼容性，6E仍拒资格。
+`gpu_pair_stage` 清理使用独立60秒预算，原测量失败不能被清理成功擦除。
+见[CPU修复结果](../../docs/MTP_SUFFIX_LOGSTREAM_2026-10-26.md)。
