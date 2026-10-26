@@ -1,0 +1,29 @@
+{
+  "status": "SELECTED_AFTER_VALID_A",
+  "unix": 1793022499.049093,
+  "candidate": "lazy full-vocabulary token classification after complete-three/d0/min32",
+  "evidence_validity": "VALID",
+  "measurement_completeness": "A 60/60 generation HTTP, 6/6 starts",
+  "statistics": "inconclusive population causality/noninferiority; no loss margin from negative controls",
+  "engineering": "one bounded candidate; no runtime acceptance or deployment yet",
+  "rationale": [
+    "S1-only startup contrasts positive for both long-context pairs, but comparable/bigger pretreatment and identical-path variation prevents root-cause attribution.",
+    "Unconditional248320 Decode calls and248320-byte table cost19.325..19.407ms per S1 startup; deleting this specific work has independently checkable value.",
+    "Query lifecycle0.154..0.968ms; no candidate hits or work/output changes. Keep min32 and all target/draft operations unchanged."
+  ],
+  "root_cause_claim": false,
+  "task_deadline_unix": 1793044396.5540426,
+  "bounds": {
+    "candidates": 1,
+    "build_attempts": 2,
+    "build_seconds": 1200,
+    "http_requests": 226,
+    "starts": 10,
+    "gpu_stage_seconds": 14400,
+    "affected_contract_seconds": 1200,
+    "retries": 0,
+    "nsight": 0
+  },
+  "material": "reuse frozen previously-seen acceptance fixtures separately from A diagnostic contrasts; no novel-holdout or population generalization claim",
+  "acceptance": "same-head2balanced startup blocks; each code/text paired ratio>1 and paired GM>=1.05; review each five-tier TTFT/decode/plain/quality/lifecycle/RAM protection, reject confirmed regression; no automatic per-negative-point gate or invented tolerance"
+}

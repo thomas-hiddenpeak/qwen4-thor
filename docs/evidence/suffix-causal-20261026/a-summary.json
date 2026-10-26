@@ -1,0 +1,4360 @@
+{
+  "plan_sha256": "5b15ed11c79e250320344885affe7709eb900d5b1e80a69f95472dee8e722e20",
+  "statistical_scope": "descriptive; two startup pairs, four within-service quartets/context. No request-bootstrap or noninferiority claim; negative-control variation is not a loss margin.",
+  "work_scope": "successful B1/k3 call and terminal-contract source/log derivation, not independent GPU activity",
+  "timing_scope": "host spans include CPU, GPU and waits; target_to_arrival includes parsing/tokenization, not isolated prefill",
+  "startup": [
+    {
+      "context": "context-8192",
+      "S0": "01-startup-S0",
+      "S1": "02-startup-S1",
+      "contrast": {
+        "ttft": {
+          "a": 5.671270546969026,
+          "b": 5.6443911120295525,
+          "difference": -0.026879434939473867,
+          "relative_percent": -0.47395790267560356
+        },
+        "latency": {
+          "a": 12.279057645006105,
+          "b": 12.243073221063241,
+          "difference": -0.03598442394286394,
+          "relative_percent": -0.2930552570334921
+        },
+        "decode_tps": {
+          "a": 38.5908317287872,
+          "b": 38.64408010364697,
+          "difference": 0.053248374859769854,
+          "relative_percent": 0.13798193113325752
+        },
+        "total_tps": {
+          "a": 20.848505431043012,
+          "b": 20.909782648328214,
+          "difference": 0.06127721728520186,
+          "relative_percent": 0.2939165950666345
+        },
+        "post_ttft_seconds": {
+          "a": 6.607787098037079,
+          "b": 6.598682109033689,
+          "difference": -0.009104989003390074,
+          "relative_percent": -0.13779180334206886
+        },
+        "target_to_arrival_ms": {
+          "a": 5220.948343,
+          "b": 5199.514234,
+          "difference": -21.434108999999808,
+          "relative_percent": -0.41054053003105606
+        },
+        "draft_init_ms": {
+          "a": 329.75774,
+          "b": 327.21015,
+          "difference": -2.547590000000014,
+          "relative_percent": -0.7725641254091586
+        },
+        "select_ms": {
+          "a": 0.001176,
+          "b": 0.000982,
+          "difference": -0.00019399999999999995,
+          "relative_percent": -16.496598639455772
+        },
+        "first_round_ms": {
+          "a": 118.449604,
+          "b": 115.45866,
+          "difference": -2.990943999999999,
+          "relative_percent": -2.525077247197882
+        },
+        "first_content_ms": {
+          "a": 5669.204806,
+          "b": 5642.240052,
+          "difference": -26.96475399999963,
+          "relative_percent": -0.47563555953140657
+        },
+        "generation_after_content_ms": {
+          "a": 6607.569674,
+          "b": 6598.572565,
+          "difference": -8.99710899999991,
+          "relative_percent": -0.1361636644620301
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        }
+      }
+    },
+    {
+      "context": "context-8192",
+      "S0": "04-startup-S0",
+      "S1": "03-startup-S1",
+      "contrast": {
+        "ttft": {
+          "a": 5.635509422980249,
+          "b": 5.655085550853983,
+          "difference": 0.01957612787373364,
+          "relative_percent": 0.3473710432264854
+        },
+        "latency": {
+          "a": 12.233347147004679,
+          "b": 12.254104246851057,
+          "difference": 0.02075709984637797,
+          "relative_percent": 0.16967637390605805
+        },
+        "decode_tps": {
+          "a": 38.649025736337705,
+          "b": 38.6421090388305,
+          "difference": -0.006916697507207914,
+          "relative_percent": -0.017896175583809182
+        },
+        "total_tps": {
+          "a": 20.92640688796944,
+          "b": 20.89095986479668,
+          "difference": -0.0354470231727575,
+          "relative_percent": -0.16938896085947341
+        },
+        "post_ttft_seconds": {
+          "a": 6.59783772402443,
+          "b": 6.599018695997074,
+          "difference": 0.001180971972644329,
+          "relative_percent": 0.017899378888097672
+        },
+        "target_to_arrival_ms": {
+          "a": 5185.195406,
+          "b": 5197.917646,
+          "difference": 12.722240000000056,
+          "relative_percent": 0.24535700207708455
+        },
+        "draft_init_ms": {
+          "a": 331.300306,
+          "b": 337.739524,
+          "difference": 6.439218000000039,
+          "relative_percent": 1.9436196959021323
+        },
+        "select_ms": {
+          "a": 0.001537,
+          "b": 0.000926,
+          "difference": -0.000611,
+          "relative_percent": -39.75276512687053
+        },
+        "first_round_ms": {
+          "a": 116.792121,
+          "b": 117.221431,
+          "difference": 0.42931000000000097,
+          "relative_percent": 0.36758472774032214
+        },
+        "first_content_ms": {
+          "a": 5633.340564,
+          "b": 5652.919999,
+          "difference": 19.57943499999965,
+          "relative_percent": 0.34756348879600996
+        },
+        "generation_after_content_ms": {
+          "a": 6597.731197,
+          "b": 6598.87753,
+          "difference": 1.1463329999996859,
+          "relative_percent": 0.017374654495183606
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        }
+      }
+    },
+    {
+      "context": "context-45056",
+      "S0": "01-startup-S0",
+      "S1": "02-startup-S1",
+      "contrast": {
+        "ttft": {
+          "a": 31.790600248146802,
+          "b": 31.858672821894288,
+          "difference": 0.06807257374748588,
+          "relative_percent": 0.21412799134377103
+        },
+        "latency": {
+          "a": 38.25352310203016,
+          "b": 38.329251376912,
+          "difference": 0.07572827488183975,
+          "relative_percent": 0.1979641840565982
+        },
+        "decode_tps": {
+          "a": 39.45583225502668,
+          "b": 39.40914986686257,
+          "difference": -0.046682388164107635,
+          "relative_percent": -0.11831555817242156
+        },
+        "total_tps": {
+          "a": 6.692194057974592,
+          "b": 6.678972085382396,
+          "difference": -0.013221972592195819,
+          "relative_percent": -0.19757306016014997
+        },
+        "post_ttft_seconds": {
+          "a": 6.462922853883356,
+          "b": 6.47057855501771,
+          "difference": 0.007655701134353876,
+          "relative_percent": 0.11845570970654418
+        },
+        "target_to_arrival_ms": {
+          "a": 30402.840551,
+          "b": 30467.810324,
+          "difference": 64.96977299999708,
+          "relative_percent": 0.21369639093757886
+        },
+        "draft_init_ms": {
+          "a": 1293.715687,
+          "b": 1296.373437,
+          "difference": 2.657750000000078,
+          "relative_percent": 0.20543540027431195
+        },
+        "select_ms": {
+          "a": 0.001444,
+          "b": 0.001148,
+          "difference": -0.00029600000000000004,
+          "relative_percent": -20.49861495844876
+        },
+        "first_round_ms": {
+          "a": 91.586718,
+          "b": 92.097365,
+          "difference": 0.5106469999999916,
+          "relative_percent": 0.5575557364114747
+        },
+        "first_content_ms": {
+          "a": 31788.182502,
+          "b": 31856.330792,
+          "difference": 68.148290000001,
+          "relative_percent": 0.21438246743334943
+        },
+        "generation_after_content_ms": {
+          "a": 6462.901419,
+          "b": 6470.448955,
+          "difference": 7.547536000000036,
+          "relative_percent": 0.11678247138060538
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 6.5e-05,
+          "difference": -9.000000000000002e-06,
+          "relative_percent": -12.16216216216216
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 6.5e-05,
+          "difference": -9.000000000000002e-06,
+          "relative_percent": -12.16216216216216
+        }
+      }
+    },
+    {
+      "context": "context-45056",
+      "S0": "04-startup-S0",
+      "S1": "03-startup-S1",
+      "contrast": {
+        "ttft": {
+          "a": 31.784833919024095,
+          "b": 31.806899450952187,
+          "difference": 0.02206553192809224,
+          "relative_percent": 0.06942157377416436
+        },
+        "latency": {
+          "a": 38.255152092082426,
+          "b": 38.27090972708538,
+          "difference": 0.015757635002955794,
+          "relative_percent": 0.04119088316529851
+        },
+        "decode_tps": {
+          "a": 39.41073579067425,
+          "b": 39.44919471145123,
+          "difference": 0.03845892077697499,
+          "relative_percent": 0.09758488392921372
+        },
+        "total_tps": {
+          "a": 6.691909089363775,
+          "b": 6.689153767850512,
+          "difference": -0.002755321513262743,
+          "relative_percent": -0.041173923262671774
+        },
+        "post_ttft_seconds": {
+          "a": 6.470318173058331,
+          "b": 6.464010276133195,
+          "difference": -0.006307896925136447,
+          "relative_percent": -0.09748974867112015
+        },
+        "target_to_arrival_ms": {
+          "a": 30400.923558,
+          "b": 30416.560522,
+          "difference": 15.636964000001171,
+          "relative_percent": 0.051435818948619705
+        },
+        "draft_init_ms": {
+          "a": 1289.610182,
+          "b": 1295.111959,
+          "difference": 5.501777000000175,
+          "relative_percent": 0.4266232600201425
+        },
+        "select_ms": {
+          "a": 0.001102,
+          "b": 0.001685,
+          "difference": 0.0005830000000000002,
+          "relative_percent": 52.90381125226862
+        },
+        "first_round_ms": {
+          "a": 91.882424,
+          "b": 92.827696,
+          "difference": 0.9452720000000028,
+          "relative_percent": 1.0287843516187722
+        },
+        "first_content_ms": {
+          "a": 31782.457302,
+          "b": 31804.547288,
+          "difference": 22.089986000002682,
+          "relative_percent": 0.06950370699818631
+        },
+        "generation_after_content_ms": {
+          "a": 6470.216599,
+          "b": 6463.940628,
+          "difference": -6.275971000000027,
+          "relative_percent": -0.09699785013332907
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        }
+      }
+    },
+    {
+      "context": "context-204800",
+      "S0": "01-startup-S0",
+      "S1": "02-startup-S1",
+      "contrast": {
+        "ttft": {
+          "a": 166.92838747100905,
+          "b": 167.1728096420411,
+          "difference": 0.2444221710320562,
+          "relative_percent": 0.1464233703656337
+        },
+        "latency": {
+          "a": 174.38093493995257,
+          "b": 174.63199754199013,
+          "difference": 0.2510626020375639,
+          "relative_percent": 0.14397365292484476
+        },
+        "decode_tps": {
+          "a": 34.21648786037843,
+          "b": 34.186027141338336,
+          "difference": -0.030460719040092954,
+          "relative_percent": -0.08902351160173794
+        },
+        "total_tps": {
+          "a": 1.468050392596832,
+          "b": 1.4659398254804077,
+          "difference": -0.0021105671164243223,
+          "relative_percent": -0.14376666680296912
+        },
+        "post_ttft_seconds": {
+          "a": 7.452547468943521,
+          "b": 7.459187899949029,
+          "difference": 0.006640431005507708,
+          "relative_percent": 0.08910283407357333
+        },
+        "target_to_arrival_ms": {
+          "a": 159198.672146,
+          "b": 159437.031836,
+          "difference": 238.35969000001205,
+          "relative_percent": 0.1497246721890999
+        },
+        "draft_init_ms": {
+          "a": 7616.578484,
+          "b": 7622.751603,
+          "difference": 6.173119000000042,
+          "relative_percent": 0.08104845256919901
+        },
+        "select_ms": {
+          "a": 0.001296,
+          "b": 0.001629,
+          "difference": 0.00033299999999999996,
+          "relative_percent": 25.694444444444443
+        },
+        "first_round_ms": {
+          "a": 109.909005,
+          "b": 109.848278,
+          "difference": -0.060726999999999975,
+          "relative_percent": -0.055252069655253866
+        },
+        "first_content_ms": {
+          "a": 166925.208468,
+          "b": 167169.686523,
+          "difference": 244.47805500001414,
+          "relative_percent": 0.14645963736918954
+        },
+        "generation_after_content_ms": {
+          "a": 7452.55231,
+          "b": 7459.143326,
+          "difference": 6.591016000000309,
+          "relative_percent": 0.08843971468883716
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        }
+      }
+    },
+    {
+      "context": "context-204800",
+      "S0": "04-startup-S0",
+      "S1": "03-startup-S1",
+      "contrast": {
+        "ttft": {
+          "a": 166.94240358797833,
+          "b": 167.04884195514023,
+          "difference": 0.1064383671618998,
+          "relative_percent": 0.06375753845295762
+        },
+        "latency": {
+          "a": 174.39367116312496,
+          "b": 174.47975924704224,
+          "difference": 0.08608808391727507,
+          "relative_percent": 0.04936422482715308
+        },
+        "decode_tps": {
+          "a": 34.22236517858265,
+          "b": 34.31608642420115,
+          "difference": 0.0937212456185037,
+          "relative_percent": 0.2738596386586245
+        },
+        "total_tps": {
+          "a": 1.467943178743808,
+          "b": 1.4672188975085354,
+          "difference": -0.0007242812352725725,
+          "relative_percent": -0.049339868583497815
+        },
+        "post_ttft_seconds": {
+          "a": 7.45126757514663,
+          "b": 7.430917291902006,
+          "difference": -0.020350283244624734,
+          "relative_percent": -0.2731116959549529
+        },
+        "target_to_arrival_ms": {
+          "a": 159219.303263,
+          "b": 159318.296605,
+          "difference": 98.99334200000158,
+          "relative_percent": 0.06217420876191149
+        },
+        "draft_init_ms": {
+          "a": 7611.641522,
+          "b": 7618.17831,
+          "difference": 6.536788000000342,
+          "relative_percent": 0.08587882102837341
+        },
+        "select_ms": {
+          "a": 0.001269,
+          "b": 0.000704,
+          "difference": -0.000565,
+          "relative_percent": -44.52324665090622
+        },
+        "first_round_ms": {
+          "a": 108.337015,
+          "b": 109.065559,
+          "difference": 0.7285439999999994,
+          "relative_percent": 0.6724792998958007
+        },
+        "first_content_ms": {
+          "a": 166939.329808,
+          "b": 167045.599334,
+          "difference": 106.26952599998913,
+          "relative_percent": 0.06365757315678344
+        },
+        "generation_after_content_ms": {
+          "a": 7451.159122,
+          "b": 7430.794544,
+          "difference": -20.36457799999971,
+          "relative_percent": -0.27330751721396096
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 6.5e-05,
+          "b": 6.5e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        },
+        "index_lifecycle_ms": {
+          "a": 6.5e-05,
+          "b": 6.5e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        }
+      }
+    }
+  ],
+  "mixed": [
+    {
+      "context": "context-8192",
+      "quartet": 0,
+      "service": "05-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 5.431932635139674,
+          "b": 5.436224929988384,
+          "difference": 0.0042922948487102985,
+          "relative_percent": 0.0790196627429296
+        },
+        "latency": {
+          "a": 12.037975573213771,
+          "b": 12.033510298933834,
+          "difference": -0.004465274279937148,
+          "relative_percent": -0.037093232601936865
+        },
+        "decode_tps": {
+          "a": 38.60102067007482,
+          "b": 38.652261610560096,
+          "difference": 0.05124094048527894,
+          "relative_percent": 0.13274504040512447
+        },
+        "total_tps": {
+          "a": 21.266034180168703,
+          "b": 21.27392536678857,
+          "difference": 0.007891186619868762,
+          "relative_percent": 0.03710699678658447
+        },
+        "post_ttft_seconds": {
+          "a": 6.606042938074097,
+          "b": 6.59728536894545,
+          "difference": -0.008757569128647447,
+          "relative_percent": -0.1325690615507913
+        },
+        "target_to_arrival_ms": {
+          "a": 5095.797556,
+          "b": 5096.58463,
+          "difference": 0.7870739999998477,
+          "relative_percent": 0.01544555079651122
+        },
+        "draft_init_ms": {
+          "a": 233.864797,
+          "b": 237.312291,
+          "difference": 3.4474939999999776,
+          "relative_percent": 1.4741397782924937
+        },
+        "select_ms": {
+          "a": 0.001268,
+          "b": 0.001074,
+          "difference": -0.00019399999999999995,
+          "relative_percent": -15.299684542586744
+        },
+        "first_round_ms": {
+          "a": 99.994108,
+          "b": 100.10944,
+          "difference": 0.11533200000000932,
+          "relative_percent": 0.11533879576186568
+        },
+        "first_content_ms": {
+          "a": 5429.719497,
+          "b": 5434.057548,
+          "difference": 4.338050999999723,
+          "relative_percent": 0.0798945691834918
+        },
+        "generation_after_content_ms": {
+          "a": 6605.949087,
+          "b": 6597.166448,
+          "difference": -8.782639000000017,
+          "relative_percent": -0.1329504494257061
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 5.434078782564029,
+          "b": 5.696461165091023,
+          "difference": 0.26238238252699375,
+          "relative_percent": 4.828461143568297
+        },
+        "latency": {
+          "a": 12.035742936073802,
+          "b": 12.29376780288294,
+          "difference": 0.25802486680913717,
+          "relative_percent": 2.1438216832945
+        },
+        "decode_tps": {
+          "a": 38.62664114031746,
+          "b": 38.652137000766594,
+          "difference": 0.025495860449133545,
+          "relative_percent": 0.0660058956628351
+        },
+        "total_tps": {
+          "a": 21.26997977347864,
+          "b": 20.823559067055662,
+          "difference": -0.4464207064229768,
+          "relative_percent": -2.098829952718695
+        },
+        "post_ttft_seconds": {
+          "a": 6.601664153509773,
+          "b": 6.597306637791917,
+          "difference": -0.004357515717856586,
+          "relative_percent": -0.0660063222928442
+        },
+        "target_to_arrival_ms": {
+          "a": 5096.191093,
+          "b": 5242.443998,
+          "difference": 146.25290499999937,
+          "relative_percent": 2.8698473493446564
+        },
+        "draft_init_ms": {
+          "a": 235.588544,
+          "b": 326.169628,
+          "difference": 90.58108399999998,
+          "relative_percent": 38.44884919361782
+        },
+        "select_ms": {
+          "a": 0.0011710000000000002,
+          "b": 0.000917,
+          "difference": -0.0002540000000000002,
+          "relative_percent": -21.69086251067465
+        },
+        "first_round_ms": {
+          "a": 100.051774,
+          "b": 125.214673,
+          "difference": 25.16289900000001,
+          "relative_percent": 25.149877902214925
+        },
+        "first_content_ms": {
+          "a": 5431.888522499999,
+          "b": 5693.880659,
+          "difference": 261.9921365000009,
+          "relative_percent": 4.823223735442572
+        },
+        "generation_after_content_ms": {
+          "a": 6601.5577675,
+          "b": 6597.22949,
+          "difference": -4.328277500000695,
+          "relative_percent": -0.06556448723828989
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.197166,
+          "difference": 0.197166,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.026218,
+          "difference": 0.026218,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.061047,
+          "difference": 0.061047,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 0.020555,
+          "difference": 0.020481,
+          "relative_percent": 27677.02702702703
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 0.304986,
+          "difference": 0.30491199999999996,
+          "relative_percent": 412043.24324324325
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 5.696461165091023,
+          "b": 5.4409461070317775,
+          "difference": -0.25551505805924535,
+          "relative_percent": -4.485505134750845
+        },
+        "latency": {
+          "a": 12.29376780288294,
+          "b": 12.043200677027926,
+          "difference": -0.25056712585501373,
+          "relative_percent": -2.0381638068376007
+        },
+        "decode_tps": {
+          "a": 38.652137000766594,
+          "b": 38.623169903027346,
+          "difference": -0.02896709773924755,
+          "relative_percent": -0.07494306909517912
+        },
+        "total_tps": {
+          "a": 20.823559067055662,
+          "b": 21.25680762658991,
+          "difference": 0.433248559534249,
+          "relative_percent": 2.080569215565453
+        },
+        "post_ttft_seconds": {
+          "a": 6.597306637791917,
+          "b": 6.602254569996148,
+          "difference": 0.00494793220423162,
+          "relative_percent": 0.07499927585430388
+        },
+        "target_to_arrival_ms": {
+          "a": 5242.443998,
+          "b": 5101.535276,
+          "difference": -140.90872200000013,
+          "relative_percent": -2.6878441057979208
+        },
+        "draft_init_ms": {
+          "a": 326.169628,
+          "b": 236.203669,
+          "difference": -89.965959,
+          "relative_percent": -27.58256786557699
+        },
+        "select_ms": {
+          "a": 0.000917,
+          "b": 0.001436,
+          "difference": 0.000519,
+          "relative_percent": 56.597600872410034
+        },
+        "first_round_ms": {
+          "a": 125.214673,
+          "b": 100.888666,
+          "difference": -24.326007000000004,
+          "relative_percent": -19.427441223282194
+        },
+        "first_content_ms": {
+          "a": 5693.880659,
+          "b": 5438.679751,
+          "difference": -255.2009080000007,
+          "relative_percent": -4.482020668919695
+        },
+        "generation_after_content_ms": {
+          "a": 6597.22949,
+          "b": 6602.232968,
+          "difference": 5.003478000000541,
+          "relative_percent": 0.07584210929125756
+        },
+        "init_ms": {
+          "a": 0.197166,
+          "b": 0.110688,
+          "difference": -0.08647800000000001,
+          "relative_percent": -43.860503332217526
+        },
+        "query_ms": {
+          "a": 0.026218,
+          "b": 0.027884,
+          "difference": 0.0016659999999999973,
+          "relative_percent": 6.354412998703163
+        },
+        "append_ms": {
+          "a": 0.061047,
+          "b": 0.072728,
+          "difference": 0.011681000000000004,
+          "relative_percent": 19.134437400691272
+        },
+        "release_ms": {
+          "a": 0.020555,
+          "b": 0.001269,
+          "difference": -0.019286,
+          "relative_percent": -93.82631963026029
+        },
+        "index_lifecycle_ms": {
+          "a": 0.304986,
+          "b": 0.212569,
+          "difference": -0.09241699999999997,
+          "relative_percent": -30.30204665132169
+        }
+      }
+    },
+    {
+      "context": "context-8192",
+      "quartet": 1,
+      "service": "05-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 5.429064702009782,
+          "b": 5.42945667100139,
+          "difference": 0.0003919689916074276,
+          "relative_percent": 0.007219825386539647
+        },
+        "latency": {
+          "a": 12.004740737145767,
+          "b": 12.001539626158774,
+          "difference": -0.003201110986992717,
+          "relative_percent": -0.026665390424363
+        },
+        "decode_tps": {
+          "a": 38.77928271366346,
+          "b": 38.80048406873669,
+          "difference": 0.021201355073223738,
+          "relative_percent": 0.054671859791133315
+        },
+        "total_tps": {
+          "a": 21.324908684439134,
+          "b": 21.330596571294716,
+          "difference": 0.005687886855582747,
+          "relative_percent": 0.02667250275136812
+        },
+        "post_ttft_seconds": {
+          "a": 6.575676035135984,
+          "b": 6.572082955157384,
+          "difference": -0.0035930799786001444,
+          "relative_percent": -0.054641986001147114
+        },
+        "target_to_arrival_ms": {
+          "a": 5090.516798,
+          "b": 5091.248838,
+          "difference": 0.7320400000007794,
+          "relative_percent": 0.014380465266095044
+        },
+        "draft_init_ms": {
+          "a": 235.574849,
+          "b": 235.366252,
+          "difference": -0.20859699999999748,
+          "relative_percent": -0.0885480775581482
+        },
+        "select_ms": {
+          "a": 0.001028,
+          "b": 0.001222,
+          "difference": 0.00019399999999999995,
+          "relative_percent": 18.8715953307393
+        },
+        "first_round_ms": {
+          "a": 100.610002,
+          "b": 100.479067,
+          "difference": -0.1309349999999938,
+          "relative_percent": -0.13014113646473424
+        },
+        "first_content_ms": {
+          "a": 5426.760289,
+          "b": 5427.145668,
+          "difference": 0.3853790000002846,
+          "relative_percent": 0.007101456107827531
+        },
+        "generation_after_content_ms": {
+          "a": 6575.554718,
+          "b": 6572.012647,
+          "difference": -3.5420710000007603,
+          "relative_percent": -0.053867257621698084
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 8.3e-05,
+          "b": 7.4e-05,
+          "difference": -9.000000000000002e-06,
+          "relative_percent": -10.843373493975905
+        },
+        "index_lifecycle_ms": {
+          "a": 8.3e-05,
+          "b": 7.4e-05,
+          "difference": -9.000000000000002e-06,
+          "relative_percent": -10.843373493975905
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 5.429260686505586,
+          "b": 5.436553502222523,
+          "difference": 0.007292815716937184,
+          "relative_percent": 0.13432428719186706
+        },
+        "latency": {
+          "a": 12.00314018165227,
+          "b": 12.020747588016093,
+          "difference": 0.01760740636382252,
+          "relative_percent": 0.14669000026124035
+        },
+        "decode_tps": {
+          "a": 38.78988339120008,
+          "b": 38.72911349168799,
+          "difference": -0.06076989951208844,
+          "relative_percent": -0.15666430058378644
+        },
+        "total_tps": {
+          "a": 21.327752627866925,
+          "b": 21.296512394554846,
+          "difference": -0.03124023331207937,
+          "relative_percent": -0.14647691136130403
+        },
+        "post_ttft_seconds": {
+          "a": 6.573879495146684,
+          "b": 6.58419408579357,
+          "difference": 0.010314590646885335,
+          "relative_percent": 0.1569026425644049
+        },
+        "target_to_arrival_ms": {
+          "a": 5090.882818,
+          "b": 5096.452644,
+          "difference": 5.569825999999921,
+          "relative_percent": 0.10940786105519962
+        },
+        "draft_init_ms": {
+          "a": 235.4705505,
+          "b": 237.490761,
+          "difference": 2.0202104999999904,
+          "relative_percent": 0.8579461404877531
+        },
+        "select_ms": {
+          "a": 0.0011250000000000001,
+          "b": 0.001231,
+          "difference": 0.00010599999999999997,
+          "relative_percent": 9.42222222222222
+        },
+        "first_round_ms": {
+          "a": 100.5445345,
+          "b": 100.351228,
+          "difference": -0.1933064999999914,
+          "relative_percent": -0.19225958025593792
+        },
+        "first_content_ms": {
+          "a": 5426.9529784999995,
+          "b": 5434.338468,
+          "difference": 7.3854895000004035,
+          "relative_percent": 0.13608906377593488
+        },
+        "generation_after_content_ms": {
+          "a": 6573.7836824999995,
+          "b": 6584.073629,
+          "difference": 10.289946500000951,
+          "relative_percent": 0.1565300441417561
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.113634,
+          "difference": 0.113634,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.030053,
+          "difference": 0.030053,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.051306,
+          "difference": 0.051306,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.85e-05,
+          "b": 0.001259,
+          "difference": 0.0011805,
+          "relative_percent": 1503.8216560509554
+        },
+        "index_lifecycle_ms": {
+          "a": 7.85e-05,
+          "b": 0.196252,
+          "difference": 0.1961735,
+          "relative_percent": 249902.54777070068
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 5.436553502222523,
+          "b": 5.432173567125574,
+          "difference": -0.004379935096949339,
+          "relative_percent": -0.08056455427429832
+        },
+        "latency": {
+          "a": 12.020747588016093,
+          "b": 12.0153996439185,
+          "difference": -0.005347944097593427,
+          "relative_percent": -0.044489280374915285
+        },
+        "decode_tps": {
+          "a": 38.72911349168799,
+          "b": 38.73480828782739,
+          "difference": 0.005694796139401603,
+          "relative_percent": 0.014704173749358063
+        },
+        "total_tps": {
+          "a": 21.296512394554846,
+          "b": 21.305991276750614,
+          "difference": 0.009478882195768534,
+          "relative_percent": 0.04450908214526095
+        },
+        "post_ttft_seconds": {
+          "a": 6.58419408579357,
+          "b": 6.583226076792926,
+          "difference": -0.0009680090006440878,
+          "relative_percent": -0.014702011939971005
+        },
+        "target_to_arrival_ms": {
+          "a": 5096.452644,
+          "b": 5090.930599,
+          "difference": -5.522044999999707,
+          "relative_percent": -0.1083507566091213
+        },
+        "draft_init_ms": {
+          "a": 237.490761,
+          "b": 239.150864,
+          "difference": 1.6601030000000208,
+          "relative_percent": 0.6990179293753673
+        },
+        "select_ms": {
+          "a": 0.001231,
+          "b": 0.001065,
+          "difference": -0.00016600000000000013,
+          "relative_percent": -13.484971567831039
+        },
+        "first_round_ms": {
+          "a": 100.351228,
+          "b": 99.834135,
+          "difference": -0.5170930000000027,
+          "relative_percent": -0.5152831811883751
+        },
+        "first_content_ms": {
+          "a": 5434.338468,
+          "b": 5429.955572,
+          "difference": -4.382896000000073,
+          "relative_percent": -0.08065187742369861
+        },
+        "generation_after_content_ms": {
+          "a": 6584.073629,
+          "b": 6583.078295,
+          "difference": -0.9953340000001845,
+          "relative_percent": -0.01511729752863289
+        },
+        "init_ms": {
+          "a": 0.113634,
+          "b": 0.096059,
+          "difference": -0.017574999999999993,
+          "relative_percent": -15.466321699491347
+        },
+        "query_ms": {
+          "a": 0.030053,
+          "b": 0.021077,
+          "difference": -0.008976000000000001,
+          "relative_percent": -29.867234552290956
+        },
+        "append_ms": {
+          "a": 0.051306,
+          "b": 0.035848,
+          "difference": -0.015458,
+          "relative_percent": -30.12902974310997
+        },
+        "release_ms": {
+          "a": 0.001259,
+          "b": 0.001065,
+          "difference": -0.00019399999999999995,
+          "relative_percent": -15.409054805401112
+        },
+        "index_lifecycle_ms": {
+          "a": 0.196252,
+          "b": 0.154049,
+          "difference": -0.04220300000000002,
+          "relative_percent": -21.504494221714943
+        }
+      }
+    },
+    {
+      "context": "context-8192",
+      "quartet": 2,
+      "service": "06-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 5.430172850145027,
+          "b": 5.430768752936274,
+          "difference": 0.0005959027912467718,
+          "relative_percent": 0.01097391938877923
+        },
+        "latency": {
+          "a": 12.030151324113831,
+          "b": 12.02529102913104,
+          "difference": -0.004860294982790947,
+          "relative_percent": -0.040400946354257616
+        },
+        "decode_tps": {
+          "a": 38.636489650042655,
+          "b": 38.66845683735297,
+          "difference": 0.03196718731031467,
+          "relative_percent": 0.08273833259662133
+        },
+        "total_tps": {
+          "a": 21.279865323627387,
+          "b": 21.288466065382107,
+          "difference": 0.008600741754719365,
+          "relative_percent": 0.040417275315984824
+        },
+        "post_ttft_seconds": {
+          "a": 6.599978473968804,
+          "b": 6.594522276194766,
+          "difference": -0.005456197774037719,
+          "relative_percent": -0.08266993287262547
+        },
+        "target_to_arrival_ms": {
+          "a": 5089.104727,
+          "b": 5089.23031,
+          "difference": 0.125583000000006,
+          "relative_percent": 0.0024676835462589253
+        },
+        "draft_init_ms": {
+          "a": 238.383333,
+          "b": 239.602838,
+          "difference": 1.219504999999998,
+          "relative_percent": 0.5115730972685029
+        },
+        "select_ms": {
+          "a": 0.001426,
+          "b": 0.000852,
+          "difference": -0.000574,
+          "relative_percent": -40.25245441795231
+        },
+        "first_round_ms": {
+          "a": 100.437607,
+          "b": 99.710987,
+          "difference": -0.7266199999999969,
+          "relative_percent": -0.7234541141546647
+        },
+        "first_content_ms": {
+          "a": 5427.992122,
+          "b": 5428.600024,
+          "difference": 0.6079020000006494,
+          "relative_percent": 0.011199389872662557
+        },
+        "generation_after_content_ms": {
+          "a": 6599.849722,
+          "b": 6594.413674,
+          "difference": -5.436047999999573,
+          "relative_percent": -0.08236623906570095
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 8.3e-05,
+          "difference": 9.000000000000002e-06,
+          "relative_percent": 12.162162162162172
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 8.3e-05,
+          "difference": 9.000000000000002e-06,
+          "relative_percent": 12.162162162162172
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 5.43047080154065,
+          "b": 5.426071233814582,
+          "difference": -0.004399567726068199,
+          "relative_percent": -0.08101632228314504
+        },
+        "latency": {
+          "a": 12.027721176622435,
+          "b": 12.028382238931954,
+          "difference": 0.0006610623095184565,
+          "relative_percent": 0.005496155920226009
+        },
+        "decode_tps": {
+          "a": 38.65247324369781,
+          "b": 38.62283976055544,
+          "difference": -0.029633483142369244,
+          "relative_percent": -0.07666646052773007
+        },
+        "total_tps": {
+          "a": 21.284165694504747,
+          "b": 21.282995079039924,
+          "difference": -0.0011706154648223333,
+          "relative_percent": -0.005499935875452611
+        },
+        "post_ttft_seconds": {
+          "a": 6.597250375081785,
+          "b": 6.602311005117372,
+          "difference": 0.005060630035586655,
+          "relative_percent": 0.07670817003855301
+        },
+        "target_to_arrival_ms": {
+          "a": 5089.1675185,
+          "b": 5087.468563,
+          "difference": -1.698955500000011,
+          "relative_percent": -0.033383760582139654
+        },
+        "draft_init_ms": {
+          "a": 238.9930855,
+          "b": 236.076527,
+          "difference": -2.916558500000008,
+          "relative_percent": -1.220352669993885
+        },
+        "select_ms": {
+          "a": 0.001139,
+          "b": 0.001481,
+          "difference": 0.00034199999999999986,
+          "relative_percent": 30.026338893766447
+        },
+        "first_round_ms": {
+          "a": 100.074297,
+          "b": 100.279625,
+          "difference": 0.2053279999999944,
+          "relative_percent": 0.20517556071364407
+        },
+        "first_content_ms": {
+          "a": 5428.2960729999995,
+          "b": 5423.884984,
+          "difference": -4.411088999999265,
+          "relative_percent": -0.08126102446658345
+        },
+        "generation_after_content_ms": {
+          "a": 6597.131698,
+          "b": 6602.127199,
+          "difference": 4.995500999999422,
+          "relative_percent": 0.07572231734458423
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.096575,
+          "difference": 0.096575,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.023536,
+          "difference": 0.023536,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.045397,
+          "difference": 0.045397,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.85e-05,
+          "b": 0.001814,
+          "difference": 0.0017355,
+          "relative_percent": 2210.8280254777073
+        },
+        "index_lifecycle_ms": {
+          "a": 7.85e-05,
+          "b": 0.167322,
+          "difference": 0.1672435,
+          "relative_percent": 213049.04458598726
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 5.426071233814582,
+          "b": 5.421705079032108,
+          "difference": -0.004366154782474041,
+          "relative_percent": -0.08046622674735548
+        },
+        "latency": {
+          "a": 12.028382238931954,
+          "b": 12.013306066859514,
+          "difference": -0.015076172072440386,
+          "relative_percent": -0.12533831876113677
+        },
+        "decode_tps": {
+          "a": 38.62283976055544,
+          "b": 38.68559405687694,
+          "difference": 0.06275429632149354,
+          "relative_percent": 0.16247975734187126
+        },
+        "total_tps": {
+          "a": 21.282995079039924,
+          "b": 21.30970430414771,
+          "difference": 0.02670922510778695,
+          "relative_percent": 0.12549561285239985
+        },
+        "post_ttft_seconds": {
+          "a": 6.602311005117372,
+          "b": 6.591600987827405,
+          "difference": -0.010710017289966345,
+          "relative_percent": -0.1622161888718221
+        },
+        "target_to_arrival_ms": {
+          "a": 5087.468563,
+          "b": 5084.025191,
+          "difference": -3.443372000000636,
+          "relative_percent": -0.06768340594855982
+        },
+        "draft_init_ms": {
+          "a": 236.076527,
+          "b": 234.312544,
+          "difference": -1.763982999999996,
+          "relative_percent": -0.7472081288284915
+        },
+        "select_ms": {
+          "a": 0.001481,
+          "b": 0.001028,
+          "difference": -0.00045299999999999984,
+          "relative_percent": -30.587440918298437
+        },
+        "first_round_ms": {
+          "a": 100.279625,
+          "b": 101.101308,
+          "difference": 0.8216830000000073,
+          "relative_percent": 0.8193917757470803
+        },
+        "first_content_ms": {
+          "a": 5423.884984,
+          "b": 5419.490312,
+          "difference": -4.394672000000355,
+          "relative_percent": -0.08102443198858555
+        },
+        "generation_after_content_ms": {
+          "a": 6602.127199,
+          "b": 6591.489273,
+          "difference": -10.637925999999425,
+          "relative_percent": -0.1611287647049653
+        },
+        "init_ms": {
+          "a": 0.096575,
+          "b": 0.11013,
+          "difference": 0.013555000000000011,
+          "relative_percent": 14.035723530934519
+        },
+        "query_ms": {
+          "a": 0.023536,
+          "b": 0.015601,
+          "difference": -0.007935000000000001,
+          "relative_percent": -33.71430999320191
+        },
+        "append_ms": {
+          "a": 0.045397,
+          "b": 0.032315,
+          "difference": -0.013081999999999996,
+          "relative_percent": -28.816882172830795
+        },
+        "release_ms": {
+          "a": 0.001814,
+          "b": 0.000981,
+          "difference": -0.000833,
+          "relative_percent": -45.920617420066144
+        },
+        "index_lifecycle_ms": {
+          "a": 0.167322,
+          "b": 0.159027,
+          "difference": -0.008294999999999997,
+          "relative_percent": -4.957507082152968
+        }
+      }
+    },
+    {
+      "context": "context-8192",
+      "quartet": 3,
+      "service": "06-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 5.426428109873086,
+          "b": 5.419064342044294,
+          "difference": -0.007363767828792334,
+          "relative_percent": -0.13570193283117815
+        },
+        "latency": {
+          "a": 12.03186185983941,
+          "b": 11.99949392490089,
+          "difference": -0.03236793493852019,
+          "relative_percent": -0.2690185053284222
+        },
+        "decode_tps": {
+          "a": 38.60458066077796,
+          "b": 38.751269470967166,
+          "difference": 0.14668881018920388,
+          "relative_percent": 0.3799777323789
+        },
+        "total_tps": {
+          "a": 21.276840025440322,
+          "b": 21.334233060342537,
+          "difference": 0.05739303490221559,
+          "relative_percent": 0.2697441670548528
+        },
+        "post_ttft_seconds": {
+          "a": 6.605433749966323,
+          "b": 6.5804295828565955,
+          "difference": -0.02500416710972786,
+          "relative_percent": -0.37853936707571423
+        },
+        "target_to_arrival_ms": {
+          "a": 5086.006132,
+          "b": 5085.107499,
+          "difference": -0.8986330000007001,
+          "relative_percent": -0.017668736070663993
+        },
+        "draft_init_ms": {
+          "a": 238.36181,
+          "b": 231.664131,
+          "difference": -6.697678999999994,
+          "relative_percent": -2.8098792335903067
+        },
+        "select_ms": {
+          "a": 0.001379,
+          "b": 0.00126,
+          "difference": -0.00011899999999999997,
+          "relative_percent": -8.629441624365475
+        },
+        "first_round_ms": {
+          "a": 99.820049,
+          "b": 100.023787,
+          "difference": 0.2037380000000013,
+          "relative_percent": 0.20410528950953744
+        },
+        "first_content_ms": {
+          "a": 5424.249241,
+          "b": 5416.851954,
+          "difference": -7.397287000000688,
+          "relative_percent": -0.13637439341995794
+        },
+        "generation_after_content_ms": {
+          "a": 6605.277259,
+          "b": 6580.243081,
+          "difference": -25.034178000000793,
+          "relative_percent": -0.3790026825276849
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.5e-05,
+          "b": 7.4e-05,
+          "difference": -9.999999999999972e-07,
+          "relative_percent": -1.3333333333333308
+        },
+        "index_lifecycle_ms": {
+          "a": 7.5e-05,
+          "b": 7.4e-05,
+          "difference": -9.999999999999972e-07,
+          "relative_percent": -1.3333333333333308
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 5.42274622595869,
+          "b": 5.434168176958337,
+          "difference": 0.011421950999647379,
+          "relative_percent": 0.210630380322252
+        },
+        "latency": {
+          "a": 12.01567789237015,
+          "b": 12.026218288810924,
+          "difference": 0.010540396440774202,
+          "relative_percent": 0.08772202896241144
+        },
+        "decode_tps": {
+          "a": 38.677925065872564,
+          "b": 38.68295836245342,
+          "difference": 0.005033296580855051,
+          "relative_percent": 0.013013357289159977
+        },
+        "total_tps": {
+          "a": 21.30553654289143,
+          "b": 21.28682465693974,
+          "difference": -0.018711885951692153,
+          "relative_percent": -0.0878264009640084
+        },
+        "post_ttft_seconds": {
+          "a": 6.5929316664114594,
+          "b": 6.592050111852586,
+          "difference": -0.0008815545588731766,
+          "relative_percent": -0.013371207278911612
+        },
+        "target_to_arrival_ms": {
+          "a": 5085.5568155,
+          "b": 5093.875612,
+          "difference": 8.318796499999735,
+          "relative_percent": 0.16357690616384257
+        },
+        "draft_init_ms": {
+          "a": 235.0129705,
+          "b": 237.879628,
+          "difference": 2.8666575000000023,
+          "relative_percent": 1.21978693086644
+        },
+        "select_ms": {
+          "a": 0.0013195,
+          "b": 0.001223,
+          "difference": -9.650000000000001e-05,
+          "relative_percent": -7.313376278893524
+        },
+        "first_round_ms": {
+          "a": 99.921918,
+          "b": 100.146799,
+          "difference": 0.22488099999999633,
+          "relative_percent": 0.22505672879498118
+        },
+        "first_content_ms": {
+          "a": 5420.5505975,
+          "b": 5431.950067,
+          "difference": 11.399469500000123,
+          "relative_percent": 0.2103009518121146
+        },
+        "generation_after_content_ms": {
+          "a": 6592.76017,
+          "b": 6591.93062,
+          "difference": -0.8295499999994718,
+          "relative_percent": -0.012582741956457255
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.105751,
+          "difference": 0.105751,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.023276,
+          "difference": 0.023276,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.035487,
+          "difference": 0.035487,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.45e-05,
+          "b": 0.000833,
+          "difference": 0.0007585,
+          "relative_percent": 1018.1208053691275
+        },
+        "index_lifecycle_ms": {
+          "a": 7.45e-05,
+          "b": 0.165347,
+          "difference": 0.1652725,
+          "relative_percent": 221842.2818791946
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 5.434168176958337,
+          "b": 5.44050984387286,
+          "difference": 0.006341666914522648,
+          "relative_percent": 0.116699864781733
+        },
+        "latency": {
+          "a": 12.026218288810924,
+          "b": 12.047363770892844,
+          "difference": 0.02114548208191991,
+          "relative_percent": 0.17582819115793402
+        },
+        "decode_tps": {
+          "a": 38.68295836245342,
+          "b": 38.59628240865582,
+          "difference": -0.08667595379760229,
+          "relative_percent": -0.22406754153977415
+        },
+        "total_tps": {
+          "a": 21.28682465693974,
+          "b": 21.249462112077286,
+          "difference": -0.03736254486245372,
+          "relative_percent": -0.17551957825834297
+        },
+        "post_ttft_seconds": {
+          "a": 6.592050111852586,
+          "b": 6.6068539270199835,
+          "difference": 0.01480381516739726,
+          "relative_percent": 0.2245707316572032
+        },
+        "target_to_arrival_ms": {
+          "a": 5093.875612,
+          "b": 5101.816392,
+          "difference": 7.940779999999904,
+          "relative_percent": 0.155888769276058
+        },
+        "draft_init_ms": {
+          "a": 237.879628,
+          "b": 236.050335,
+          "difference": -1.829293000000007,
+          "relative_percent": -0.768999436975748
+        },
+        "select_ms": {
+          "a": 0.001223,
+          "b": 0.00101,
+          "difference": -0.00021299999999999986,
+          "relative_percent": -17.416189697465235
+        },
+        "first_round_ms": {
+          "a": 100.146799,
+          "b": 100.423487,
+          "difference": 0.27668799999999294,
+          "relative_percent": 0.27628242017001536
+        },
+        "first_content_ms": {
+          "a": 5431.950067,
+          "b": 5438.344262,
+          "difference": 6.394194999999854,
+          "relative_percent": 0.11771453936673115
+        },
+        "generation_after_content_ms": {
+          "a": 6591.93062,
+          "b": 6606.74162,
+          "difference": 14.810999999999694,
+          "relative_percent": 0.22468379680853356
+        },
+        "init_ms": {
+          "a": 0.105751,
+          "b": 0.109112,
+          "difference": 0.003361000000000003,
+          "relative_percent": 3.17822053692165
+        },
+        "query_ms": {
+          "a": 0.023276,
+          "b": 0.019263,
+          "difference": -0.004013000000000003,
+          "relative_percent": -17.24093486853412
+        },
+        "append_ms": {
+          "a": 0.035487,
+          "b": 0.044312,
+          "difference": 0.008825,
+          "relative_percent": 24.86826161693014
+        },
+        "release_ms": {
+          "a": 0.000833,
+          "b": 0.001213,
+          "difference": 0.00038000000000000013,
+          "relative_percent": 45.61824729891959
+        },
+        "index_lifecycle_ms": {
+          "a": 0.165347,
+          "b": 0.1739,
+          "difference": 0.008553000000000005,
+          "relative_percent": 5.172757897028668
+        }
+      }
+    },
+    {
+      "context": "context-45056",
+      "quartet": 0,
+      "service": "05-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 31.855251585133374,
+          "b": 31.864968186011538,
+          "difference": 0.009716600878164172,
+          "relative_percent": 0.03050235171491167
+        },
+        "latency": {
+          "a": 38.31313071609475,
+          "b": 38.32625190005638,
+          "difference": 0.013121183961629868,
+          "relative_percent": 0.03424722468874375
+        },
+        "decode_tps": {
+          "a": 39.48664798903391,
+          "b": 39.465841663276386,
+          "difference": -0.020806325757526167,
+          "relative_percent": -0.05269205368686469
+        },
+        "total_tps": {
+          "a": 6.6817823345472105,
+          "b": 6.679494792957394,
+          "difference": -0.0022875415898164775,
+          "relative_percent": -0.03423549998012865
+        },
+        "post_ttft_seconds": {
+          "a": 6.4578791309613734,
+          "b": 6.461283714044839,
+          "difference": 0.0034045830834656954,
+          "relative_percent": 0.05271983284951265
+        },
+        "target_to_arrival_ms": {
+          "a": 30468.712082,
+          "b": 30478.828658,
+          "difference": 10.11657600000035,
+          "relative_percent": 0.0332031625517093
+        },
+        "draft_init_ms": {
+          "a": 1291.964207,
+          "b": 1291.932309,
+          "difference": -0.03189799999995557,
+          "relative_percent": -0.0024689538477229434
+        },
+        "select_ms": {
+          "a": 0.001713,
+          "b": 0.001009,
+          "difference": -0.000704,
+          "relative_percent": -41.09748978400467
+        },
+        "first_round_ms": {
+          "a": 92.144258,
+          "b": 91.781289,
+          "difference": -0.36296899999999255,
+          "relative_percent": -0.39391385624918396
+        },
+        "first_content_ms": {
+          "a": 31852.893594,
+          "b": 31862.600285,
+          "difference": 9.70669099999941,
+          "relative_percent": 0.030473498338090543
+        },
+        "generation_after_content_ms": {
+          "a": 6457.081216,
+          "b": 6461.177988,
+          "difference": 4.096772000000783,
+          "relative_percent": 0.06344618974047922
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 31.860109885572456,
+          "b": 31.848121030954644,
+          "difference": -0.01198885461781174,
+          "relative_percent": -0.037629671275052345
+        },
+        "latency": {
+          "a": 38.31969130807556,
+          "b": 38.30555318691768,
+          "difference": -0.014138121157884598,
+          "relative_percent": -0.03689518541321046
+        },
+        "decode_tps": {
+          "a": 39.47624482615515,
+          "b": 39.48938120310308,
+          "difference": 0.013136376947926465,
+          "relative_percent": 0.03327666297991971
+        },
+        "total_tps": {
+          "a": 6.680638563752302,
+          "b": 6.683104111584284,
+          "difference": 0.0024655478319823843,
+          "relative_percent": 0.03690587072560092
+        },
+        "post_ttft_seconds": {
+          "a": 6.459581422503106,
+          "b": 6.457432155963033,
+          "difference": -0.0021492665400728583,
+          "relative_percent": -0.03327253578050415
+        },
+        "target_to_arrival_ms": {
+          "a": 30473.77037,
+          "b": 30461.288256,
+          "difference": -12.482113999998546,
+          "relative_percent": -0.040960189200234254
+        },
+        "draft_init_ms": {
+          "a": 1291.948258,
+          "b": 1292.209731,
+          "difference": 0.2614730000000236,
+          "relative_percent": 0.020238658814775157
+        },
+        "select_ms": {
+          "a": 0.0013609999999999998,
+          "b": 0.0015,
+          "difference": 0.00013900000000000023,
+          "relative_percent": 10.213078618662763
+        },
+        "first_round_ms": {
+          "a": 91.9627735,
+          "b": 92.293466,
+          "difference": 0.33069249999999784,
+          "relative_percent": 0.35959387414516986
+        },
+        "first_content_ms": {
+          "a": 31857.7469395,
+          "b": 31845.833102,
+          "difference": -11.913837500000227,
+          "relative_percent": -0.03739698705820249
+        },
+        "generation_after_content_ms": {
+          "a": 6459.129602,
+          "b": 6457.364719,
+          "difference": -1.764882999999827,
+          "relative_percent": -0.027323851799676557
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.471677,
+          "difference": 0.471677,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.03336,
+          "difference": 0.03336,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.05662,
+          "difference": 0.05662,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 0.005481,
+          "difference": 0.0054069999999999995,
+          "relative_percent": 7306.756756756757
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 0.567138,
+          "difference": 0.567064,
+          "relative_percent": 766302.7027027027
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 31.848121030954644,
+          "b": 31.827553883893415,
+          "difference": -0.020567147061228752,
+          "relative_percent": -0.06457883980420798
+        },
+        "latency": {
+          "a": 38.30555318691768,
+          "b": 38.29161153896712,
+          "difference": -0.013941647950559855,
+          "relative_percent": -0.03639589247681485
+        },
+        "decode_tps": {
+          "a": 39.48938120310308,
+          "b": 39.44890556473425,
+          "difference": -0.04047563836883228,
+          "relative_percent": -0.10249752499451592
+        },
+        "total_tps": {
+          "a": 6.683104111584284,
+          "b": 6.685537372577905,
+          "difference": 0.002433260993620401,
+          "relative_percent": 0.03640914390967698
+        },
+        "post_ttft_seconds": {
+          "a": 6.457432155963033,
+          "b": 6.464057655073702,
+          "difference": 0.006625499110668898,
+          "relative_percent": 0.10260269021256097
+        },
+        "target_to_arrival_ms": {
+          "a": 30461.288256,
+          "b": 30442.721484,
+          "difference": -18.56677199999831,
+          "relative_percent": -0.06095202489126983
+        },
+        "draft_init_ms": {
+          "a": 1292.209731,
+          "b": 1289.343201,
+          "difference": -2.8665300000000116,
+          "relative_percent": -0.22183163701929853
+        },
+        "select_ms": {
+          "a": 0.0015,
+          "b": 0.001139,
+          "difference": -0.000361,
+          "relative_percent": -24.06666666666667
+        },
+        "first_round_ms": {
+          "a": 92.293466,
+          "b": 92.955557,
+          "difference": 0.6620910000000038,
+          "relative_percent": 0.7173758107643424
+        },
+        "first_content_ms": {
+          "a": 31845.833102,
+          "b": 31825.069187,
+          "difference": -20.763914999999542,
+          "relative_percent": -0.0652013559623188
+        },
+        "generation_after_content_ms": {
+          "a": 6457.364719,
+          "b": 6464.024709,
+          "difference": 6.659990000000107,
+          "relative_percent": 0.10313789432403464
+        },
+        "init_ms": {
+          "a": 0.471677,
+          "b": 0.331886,
+          "difference": -0.139791,
+          "relative_percent": -29.637018552950433
+        },
+        "query_ms": {
+          "a": 0.03336,
+          "b": 0.034797,
+          "difference": 0.0014370000000000008,
+          "relative_percent": 4.307553956834531
+        },
+        "append_ms": {
+          "a": 0.05662,
+          "b": 0.05283,
+          "difference": -0.0037899999999999948,
+          "relative_percent": -6.693747792299531
+        },
+        "release_ms": {
+          "a": 0.005481,
+          "b": 0.00962,
+          "difference": 0.004139,
+          "relative_percent": 75.51541689472725
+        },
+        "index_lifecycle_ms": {
+          "a": 0.567138,
+          "b": 0.429133,
+          "difference": -0.13800500000000004,
+          "relative_percent": -24.333583713311402
+        }
+      }
+    },
+    {
+      "context": "context-45056",
+      "quartet": 1,
+      "service": "05-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 31.849385190056637,
+          "b": 31.821818534052,
+          "difference": -0.02756665600463748,
+          "relative_percent": -0.08655318098022002
+        },
+        "latency": {
+          "a": 38.31695821182802,
+          "b": 38.2782672510948,
+          "difference": -0.03869096073321998,
+          "relative_percent": -0.10097607570863643
+        },
+        "decode_tps": {
+          "a": 39.42746361604414,
+          "b": 39.495396180703445,
+          "difference": 0.06793256465930142,
+          "relative_percent": 0.1722975774471447
+        },
+        "total_tps": {
+          "a": 6.6811148887328855,
+          "b": 6.687868035423628,
+          "difference": 0.006753146690742895,
+          "relative_percent": 0.10107814044826302
+        },
+        "post_ttft_seconds": {
+          "a": 6.467573021771386,
+          "b": 6.456448717042804,
+          "difference": -0.011124304728582501,
+          "relative_percent": -0.17200122350586877
+        },
+        "target_to_arrival_ms": {
+          "a": 30460.962177,
+          "b": 30442.924421,
+          "difference": -18.037756000001536,
+          "relative_percent": -0.05921597582896343
+        },
+        "draft_init_ms": {
+          "a": 1293.989429,
+          "b": 1284.578876,
+          "difference": -9.410552999999936,
+          "relative_percent": -0.727251149746444
+        },
+        "select_ms": {
+          "a": 0.001157,
+          "b": 0.000861,
+          "difference": -0.00029600000000000004,
+          "relative_percent": -25.583405358686264
+        },
+        "first_round_ms": {
+          "a": 91.988789,
+          "b": 91.887583,
+          "difference": -0.10120599999999058,
+          "relative_percent": -0.11001992862411658
+        },
+        "first_content_ms": {
+          "a": 31847.005433,
+          "b": 31819.443974,
+          "difference": -27.56145899999683,
+          "relative_percent": -0.08654332997801717
+        },
+        "generation_after_content_ms": {
+          "a": 6467.494124,
+          "b": 6456.408762,
+          "difference": -11.085361999999805,
+          "relative_percent": -0.1714011916742808
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 8.3e-05,
+          "b": 6.5e-05,
+          "difference": -1.8000000000000004e-05,
+          "relative_percent": -21.68674698795181
+        },
+        "index_lifecycle_ms": {
+          "a": 8.3e-05,
+          "b": 6.5e-05,
+          "difference": -1.8000000000000004e-05,
+          "relative_percent": -21.68674698795181
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 31.835601862054318,
+          "b": 31.809473213972524,
+          "difference": -0.02612864808179438,
+          "relative_percent": -0.08207367397987664
+        },
+        "latency": {
+          "a": 38.29761273146141,
+          "b": 38.265045795124024,
+          "difference": -0.03256693633738905,
+          "relative_percent": -0.08503646576026869
+        },
+        "decode_tps": {
+          "a": 39.461429898373794,
+          "b": 39.500756407654684,
+          "difference": 0.03932650928089032,
+          "relative_percent": 0.09965809496048639
+        },
+        "total_tps": {
+          "a": 6.684491462078257,
+          "b": 6.690178848096953,
+          "difference": 0.005687386018696117,
+          "relative_percent": 0.08508330141434595
+        },
+        "post_ttft_seconds": {
+          "a": 6.462010869407095,
+          "b": 6.4555725811515,
+          "difference": -0.006438288255594671,
+          "relative_percent": -0.09963289114964802
+        },
+        "target_to_arrival_ms": {
+          "a": 30451.943299,
+          "b": 30426.009015,
+          "difference": -25.934283999999025,
+          "relative_percent": -0.08516462724679208
+        },
+        "draft_init_ms": {
+          "a": 1289.2841525,
+          "b": 1288.916035,
+          "difference": -0.3681174999999257,
+          "relative_percent": -0.028552084448263404
+        },
+        "select_ms": {
+          "a": 0.001009,
+          "b": 0.000871,
+          "difference": -0.00013799999999999988,
+          "relative_percent": -13.67690782953418
+        },
+        "first_round_ms": {
+          "a": 91.938186,
+          "b": 92.144958,
+          "difference": 0.20677200000000084,
+          "relative_percent": 0.22490328447419827
+        },
+        "first_content_ms": {
+          "a": 31833.2247035,
+          "b": 31807.109795,
+          "difference": -26.11490849999973,
+          "relative_percent": -0.08203664172649061
+        },
+        "generation_after_content_ms": {
+          "a": 6461.951443,
+          "b": 6455.539515,
+          "difference": -6.411927999999534,
+          "relative_percent": -0.09922587714498166
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.321282,
+          "difference": 0.321282,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.036848,
+          "difference": 0.036848,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.06143,
+          "difference": 0.06143,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 0.009389,
+          "difference": 0.009315,
+          "relative_percent": 12587.837837837838
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 0.428949,
+          "difference": 0.428875,
+          "relative_percent": 579560.8108108109
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 31.809473213972524,
+          "b": 31.863232178147882,
+          "difference": 0.053758964175358415,
+          "relative_percent": 0.16900300050157746
+        },
+        "latency": {
+          "a": 38.265045795124024,
+          "b": 38.31938403612003,
+          "difference": 0.05433824099600315,
+          "relative_percent": 0.14200490256026654
+        },
+        "decode_tps": {
+          "a": 39.500756407654684,
+          "b": 39.49721221088108,
+          "difference": -0.003544196773603403,
+          "relative_percent": -0.008972478240731885
+        },
+        "total_tps": {
+          "a": 6.690178848096953,
+          "b": 6.680691938020017,
+          "difference": -0.009486910076936361,
+          "relative_percent": -0.14180353458913553
+        },
+        "post_ttft_seconds": {
+          "a": 6.4555725811515,
+          "b": 6.456151857972145,
+          "difference": 0.0005792768206447363,
+          "relative_percent": 0.008973283366620066
+        },
+        "target_to_arrival_ms": {
+          "a": 30426.009015,
+          "b": 30477.741808,
+          "difference": 51.73279299999922,
+          "relative_percent": 0.1700281919146729
+        },
+        "draft_init_ms": {
+          "a": 1288.916035,
+          "b": 1290.699179,
+          "difference": 1.783143999999993,
+          "relative_percent": 0.13834446554930047
+        },
+        "select_ms": {
+          "a": 0.000871,
+          "b": 0.001139,
+          "difference": 0.000268,
+          "relative_percent": 30.76923076923077
+        },
+        "first_round_ms": {
+          "a": 92.144958,
+          "b": 92.388895,
+          "difference": 0.2439370000000025,
+          "relative_percent": 0.26473179357247023
+        },
+        "first_content_ms": {
+          "a": 31807.109795,
+          "b": 31860.873095,
+          "difference": 53.76329999999871,
+          "relative_percent": 0.16902918984627036
+        },
+        "generation_after_content_ms": {
+          "a": 6455.539515,
+          "b": 6456.058227,
+          "difference": 0.5187120000000505,
+          "relative_percent": 0.008035145610918448
+        },
+        "init_ms": {
+          "a": 0.321282,
+          "b": 0.324763,
+          "difference": 0.003481000000000012,
+          "relative_percent": 1.0834718409372446
+        },
+        "query_ms": {
+          "a": 0.036848,
+          "b": 0.037991,
+          "difference": 0.0011429999999999982,
+          "relative_percent": 3.1019322622666046
+        },
+        "append_ms": {
+          "a": 0.06143,
+          "b": 0.049626,
+          "difference": -0.011803999999999995,
+          "relative_percent": -19.215367084486402
+        },
+        "release_ms": {
+          "a": 0.009389,
+          "b": 0.009223,
+          "difference": -0.00016599999999999948,
+          "relative_percent": -1.7680264138885904
+        },
+        "index_lifecycle_ms": {
+          "a": 0.428949,
+          "b": 0.421603,
+          "difference": -0.007346000000000019,
+          "relative_percent": -1.7125579031539884
+        }
+      }
+    },
+    {
+      "context": "context-45056",
+      "quartet": 2,
+      "service": "06-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 31.810766994021833,
+          "b": 31.812145255040377,
+          "difference": 0.0013782610185444355,
+          "relative_percent": 0.004332687164709803
+        },
+        "latency": {
+          "a": 38.27656726306304,
+          "b": 38.284480615053326,
+          "difference": 0.007913351990282536,
+          "relative_percent": 0.020674142317655964
+        },
+        "decode_tps": {
+          "a": 39.43827359174103,
+          "b": 39.398452925574276,
+          "difference": -0.03982066616675439,
+          "relative_percent": -0.10096959765271141
+        },
+        "total_tps": {
+          "a": 6.688165065602433,
+          "b": 6.686782630644901,
+          "difference": -0.0013824349575326522,
+          "relative_percent": -0.02066986899953438
+        },
+        "post_ttft_seconds": {
+          "a": 6.46580026904121,
+          "b": 6.4723353600129485,
+          "difference": 0.0065350909717381,
+          "relative_percent": 0.10107164929031853
+        },
+        "target_to_arrival_ms": {
+          "a": 30426.181263,
+          "b": 30431.189939,
+          "difference": 5.008676000001287,
+          "relative_percent": 0.016461730628325455
+        },
+        "draft_init_ms": {
+          "a": 1289.723316,
+          "b": 1284.980563,
+          "difference": -4.742752999999993,
+          "relative_percent": -0.3677341443054094
+        },
+        "select_ms": {
+          "a": 0.001139,
+          "b": 0.001222,
+          "difference": 8.299999999999996e-05,
+          "relative_percent": 7.287093942054423
+        },
+        "first_round_ms": {
+          "a": 92.428523,
+          "b": 93.495296,
+          "difference": 1.0667729999999978,
+          "relative_percent": 1.1541599555799475
+        },
+        "first_content_ms": {
+          "a": 31808.385621,
+          "b": 31809.728715,
+          "difference": 1.3430939999998373,
+          "relative_percent": 0.004222452582158809
+        },
+        "generation_after_content_ms": {
+          "a": 6465.775519,
+          "b": 6472.325323,
+          "difference": 6.549804000000222,
+          "relative_percent": 0.10129958859155241
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 6.4e-05,
+          "b": 6.5e-05,
+          "difference": 9.999999999999972e-07,
+          "relative_percent": 1.5625
+        },
+        "index_lifecycle_ms": {
+          "a": 6.4e-05,
+          "b": 6.5e-05,
+          "difference": 9.999999999999972e-07,
+          "relative_percent": 1.5625
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 31.811456124531105,
+          "b": 31.813446043990552,
+          "difference": 0.0019899194594472647,
+          "relative_percent": 0.006255354837136906
+        },
+        "latency": {
+          "a": 38.280523939058185,
+          "b": 38.26397562306374,
+          "difference": -0.01654831599444151,
+          "relative_percent": -0.04322907393009556
+        },
+        "decode_tps": {
+          "a": 39.41836325865765,
+          "b": 39.53163796462093,
+          "difference": 0.11327470596327771,
+          "relative_percent": 0.28736532062476616
+        },
+        "total_tps": {
+          "a": 6.687473848123667,
+          "b": 6.69036595992642,
+          "difference": 0.00289211180275295,
+          "relative_percent": 0.043246700748800215
+        },
+        "post_ttft_seconds": {
+          "a": 6.4690678145270795,
+          "b": 6.450529579073191,
+          "difference": -0.018538235453888774,
+          "relative_percent": -0.2865673383769307
+        },
+        "target_to_arrival_ms": {
+          "a": 30428.685600999997,
+          "b": 30436.00511,
+          "difference": 7.319509000000835,
+          "relative_percent": 0.0240546341566672
+        },
+        "draft_init_ms": {
+          "a": 1287.3519395,
+          "b": 1282.812041,
+          "difference": -4.539898500000163,
+          "relative_percent": -0.3526540303938508
+        },
+        "select_ms": {
+          "a": 0.0011805000000000001,
+          "b": 0.001602,
+          "difference": 0.0004214999999999998,
+          "relative_percent": 35.70520965692501
+        },
+        "first_round_ms": {
+          "a": 92.96190949999999,
+          "b": 92.097889,
+          "difference": -0.8640204999999952,
+          "relative_percent": -0.9294349746548525
+        },
+        "first_content_ms": {
+          "a": 31809.057168,
+          "b": 31810.963772,
+          "difference": 1.9066039999997884,
+          "relative_percent": 0.005993902899814607
+        },
+        "generation_after_content_ms": {
+          "a": 6469.050421,
+          "b": 6450.584597,
+          "difference": -18.465823999999884,
+          "relative_percent": -0.2854487567457431
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.342595,
+          "difference": 0.342595,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.025058,
+          "difference": 0.025058,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.032805,
+          "difference": 0.032805,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 6.45e-05,
+          "b": 0.006834,
+          "difference": 0.0067694999999999995,
+          "relative_percent": 10495.348837209303
+        },
+        "index_lifecycle_ms": {
+          "a": 6.45e-05,
+          "b": 0.407292,
+          "difference": 0.40722749999999996,
+          "relative_percent": 631360.4651162791
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 31.813446043990552,
+          "b": 31.814946634927765,
+          "difference": 0.0015005909372121096,
+          "relative_percent": 0.0047168449942125434
+        },
+        "latency": {
+          "a": 38.26397562306374,
+          "b": 38.266585137927905,
+          "difference": 0.0026095148641616106,
+          "relative_percent": 0.006819769304344803
+        },
+        "decode_tps": {
+          "a": 39.53163796462093,
+          "b": 39.52484316680482,
+          "difference": -0.006794797816105813,
+          "relative_percent": -0.017188252665334414
+        },
+        "total_tps": {
+          "a": 6.69036595992642,
+          "b": 6.689909723516608,
+          "difference": -0.000456236409812405,
+          "relative_percent": -0.006819304243521618
+        },
+        "post_ttft_seconds": {
+          "a": 6.450529579073191,
+          "b": 6.45163850300014,
+          "difference": 0.001108923926949501,
+          "relative_percent": 0.017191207533517883
+        },
+        "target_to_arrival_ms": {
+          "a": 30436.00511,
+          "b": 30434.644776,
+          "difference": -1.3603339999972377,
+          "relative_percent": -0.004469489327130205
+        },
+        "draft_init_ms": {
+          "a": 1282.812041,
+          "b": 1285.790695,
+          "difference": 2.978654000000006,
+          "relative_percent": 0.23219722802712006
+        },
+        "select_ms": {
+          "a": 0.001602,
+          "b": 0.000935,
+          "difference": -0.000667,
+          "relative_percent": -41.6354556803995
+        },
+        "first_round_ms": {
+          "a": 92.097889,
+          "b": 91.974076,
+          "difference": -0.1238129999999984,
+          "relative_percent": -0.1344363061350884
+        },
+        "first_content_ms": {
+          "a": 31810.963772,
+          "b": 31812.459706,
+          "difference": 1.4959340000023076,
+          "relative_percent": 0.004702573649528752
+        },
+        "generation_after_content_ms": {
+          "a": 6450.584597,
+          "b": 6451.713605,
+          "difference": 1.1290079999998852,
+          "relative_percent": 0.01750241366533789
+        },
+        "init_ms": {
+          "a": 0.342595,
+          "b": 0.308179,
+          "difference": -0.034416,
+          "relative_percent": -10.045680760081144
+        },
+        "query_ms": {
+          "a": 0.025058,
+          "b": 0.026896,
+          "difference": 0.0018379999999999994,
+          "relative_percent": 7.3349828398116435
+        },
+        "append_ms": {
+          "a": 0.032805,
+          "b": 0.034372,
+          "difference": 0.001566999999999999,
+          "relative_percent": 4.776710867245848
+        },
+        "release_ms": {
+          "a": 0.006834,
+          "b": 0.00612,
+          "difference": -0.0007140000000000002,
+          "relative_percent": -10.447761194029859
+        },
+        "index_lifecycle_ms": {
+          "a": 0.407292,
+          "b": 0.375567,
+          "difference": -0.031725,
+          "relative_percent": -7.789251937185115
+        }
+      }
+    },
+    {
+      "context": "context-45056",
+      "quartet": 3,
+      "service": "06-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 31.813221777090803,
+          "b": 31.80557692889124,
+          "difference": -0.007644848199561238,
+          "relative_percent": -0.024030411798992013
+        },
+        "latency": {
+          "a": 38.277471537003294,
+          "b": 38.27271676482633,
+          "difference": -0.004754772176966071,
+          "relative_percent": -0.012421855430988504
+        },
+        "decode_tps": {
+          "a": 39.447733220545,
+          "b": 39.43010457004127,
+          "difference": -0.017628650503723975,
+          "relative_percent": -0.04468862736717316
+        },
+        "total_tps": {
+          "a": 6.688007063176096,
+          "b": 6.688837940955135,
+          "difference": 0.0008308777790384525,
+          "relative_percent": 0.01242339864759856
+        },
+        "post_ttft_seconds": {
+          "a": 6.464249759912491,
+          "b": 6.467139835935086,
+          "difference": 0.002890076022595167,
+          "relative_percent": 0.04470860702996404
+        },
+        "target_to_arrival_ms": {
+          "a": 30433.178198,
+          "b": 30423.547848,
+          "difference": -9.63035000000309,
+          "relative_percent": -0.03164424674066968
+        },
+        "draft_init_ms": {
+          "a": 1285.991117,
+          "b": 1287.571468,
+          "difference": 1.5803510000000642,
+          "relative_percent": 0.12288972910534657
+        },
+        "select_ms": {
+          "a": 0.001148,
+          "b": 0.00162,
+          "difference": 0.000472,
+          "relative_percent": 41.11498257839721
+        },
+        "first_round_ms": {
+          "a": 91.65871,
+          "b": 92.082473,
+          "difference": 0.4237629999999939,
+          "relative_percent": 0.4623270390778922
+        },
+        "first_content_ms": {
+          "a": 31810.905563,
+          "b": 31803.258844,
+          "difference": -7.646719000000303,
+          "relative_percent": -0.02403804250356023
+        },
+        "generation_after_content_ms": {
+          "a": 6464.188871,
+          "b": 6466.899473,
+          "difference": 2.710602000000108,
+          "relative_percent": 0.041932592844884375
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 6.5e-05,
+          "b": 7.4e-05,
+          "difference": 9.000000000000002e-06,
+          "relative_percent": 13.846153846153841
+        },
+        "index_lifecycle_ms": {
+          "a": 6.5e-05,
+          "b": 7.4e-05,
+          "difference": 9.000000000000002e-06,
+          "relative_percent": 13.846153846153841
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 31.809399352991022,
+          "b": 31.813301070127636,
+          "difference": 0.0039017171366140246,
+          "relative_percent": 0.012265925216992102
+        },
+        "latency": {
+          "a": 38.27509415091481,
+          "b": 38.28415694204159,
+          "difference": 0.009062791126780212,
+          "relative_percent": 0.023678037449226252
+        },
+        "decode_tps": {
+          "a": 39.438918895293135,
+          "b": 39.407460936782684,
+          "difference": -0.03145795851045108,
+          "relative_percent": -0.07976374452344226
+        },
+        "total_tps": {
+          "a": 6.688422502065615,
+          "b": 6.686839163979987,
+          "difference": -0.00158333808562805,
+          "relative_percent": -0.023672817994657702
+        },
+        "post_ttft_seconds": {
+          "a": 6.465694797923788,
+          "b": 6.470855871913955,
+          "difference": 0.005161073990166187,
+          "relative_percent": 0.07982241895834186
+        },
+        "target_to_arrival_ms": {
+          "a": 30428.363022999998,
+          "b": 30432.337498,
+          "difference": 3.9744750000027125,
+          "relative_percent": 0.013061744389597507
+        },
+        "draft_init_ms": {
+          "a": 1286.7812925,
+          "b": 1284.54714,
+          "difference": -2.234152500000164,
+          "relative_percent": -0.17362332767983935
+        },
+        "select_ms": {
+          "a": 0.0013839999999999998,
+          "b": 0.001297,
+          "difference": -8.699999999999984e-05,
+          "relative_percent": -6.286127167630051
+        },
+        "first_round_ms": {
+          "a": 91.87059149999999,
+          "b": 94.0467,
+          "difference": 2.176108500000012,
+          "relative_percent": 2.3686671267377335
+        },
+        "first_content_ms": {
+          "a": 31807.082203500002,
+          "b": 31810.984949,
+          "difference": 3.9027454999995825,
+          "relative_percent": 0.012270051918084057
+        },
+        "generation_after_content_ms": {
+          "a": 6465.544172,
+          "b": 6470.738603,
+          "difference": 5.194430999999895,
+          "relative_percent": 0.08034019816143267
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.319142,
+          "difference": 0.319142,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.026785,
+          "difference": 0.026785,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.046301,
+          "difference": 0.046301,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 6.95e-05,
+          "b": 0.005824,
+          "difference": 0.0057545,
+          "relative_percent": 8279.856115107914
+        },
+        "index_lifecycle_ms": {
+          "a": 6.95e-05,
+          "b": 0.398052,
+          "difference": 0.3979825,
+          "relative_percent": 572636.690647482
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 31.813301070127636,
+          "b": 31.825141138164327,
+          "difference": 0.011840068036690354,
+          "relative_percent": 0.03721735135435722
+        },
+        "latency": {
+          "a": 38.28415694204159,
+          "b": 38.3052193201147,
+          "difference": 0.021062378073111176,
+          "relative_percent": 0.055015911947586815
+        },
+        "decode_tps": {
+          "a": 39.407460936782684,
+          "b": 39.35137707293063,
+          "difference": -0.05608386385205222,
+          "relative_percent": -0.14231788224575714
+        },
+        "total_tps": {
+          "a": 6.686839163979987,
+          "b": 6.683162361260002,
+          "difference": -0.0036768027199851616,
+          "relative_percent": -0.054985661084705484
+        },
+        "post_ttft_seconds": {
+          "a": 6.470855871913955,
+          "b": 6.480078181950375,
+          "difference": 0.009222310036420822,
+          "relative_percent": 0.14252071470868266
+        },
+        "target_to_arrival_ms": {
+          "a": 30432.337498,
+          "b": 30444.119949,
+          "difference": 11.782450999999128,
+          "relative_percent": 0.038716878060296445
+        },
+        "draft_init_ms": {
+          "a": 1284.54714,
+          "b": 1286.31564,
+          "difference": 1.768500000000131,
+          "relative_percent": 0.13767497859207278
+        },
+        "select_ms": {
+          "a": 0.001297,
+          "b": 0.001065,
+          "difference": -0.000232,
+          "relative_percent": -17.88743253662297
+        },
+        "first_round_ms": {
+          "a": 94.0467,
+          "b": 92.365797,
+          "difference": -1.6809030000000007,
+          "relative_percent": -1.787306731655658
+        },
+        "first_content_ms": {
+          "a": 31810.984949,
+          "b": 31822.856304,
+          "difference": 11.871354999999312,
+          "relative_percent": 0.03731841380905099
+        },
+        "generation_after_content_ms": {
+          "a": 6470.738603,
+          "b": 6480.018116,
+          "difference": 9.279513000000406,
+          "relative_percent": 0.14340732286262092
+        },
+        "init_ms": {
+          "a": 0.319142,
+          "b": 0.295298,
+          "difference": -0.023843999999999976,
+          "relative_percent": -7.471282375870292
+        },
+        "query_ms": {
+          "a": 0.026785,
+          "b": 0.024885,
+          "difference": -0.001899999999999999,
+          "relative_percent": -7.093522493933168
+        },
+        "append_ms": {
+          "a": 0.046301,
+          "b": 0.042392,
+          "difference": -0.003909000000000003,
+          "relative_percent": -8.44258223364507
+        },
+        "release_ms": {
+          "a": 0.005824,
+          "b": 0.006518,
+          "difference": 0.0006940000000000002,
+          "relative_percent": 11.916208791208804
+        },
+        "index_lifecycle_ms": {
+          "a": 0.398052,
+          "b": 0.369093,
+          "difference": -0.028959000000000013,
+          "relative_percent": -7.27518012721956
+        }
+      }
+    },
+    {
+      "context": "context-204800",
+      "quartet": 0,
+      "service": "05-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 167.19292486016639,
+          "b": 167.20572685194202,
+          "difference": 0.012801991775631905,
+          "relative_percent": 0.007657017655704479
+        },
+        "latency": {
+          "a": 174.6278786601033,
+          "b": 174.6379571009893,
+          "difference": 0.010078440885990858,
+          "relative_percent": 0.005771381387287278
+        },
+        "decode_tps": {
+          "a": 34.29745589033297,
+          "b": 34.310024239721024,
+          "difference": 0.0125683493880544,
+          "relative_percent": 0.0366451360947595
+        },
+        "total_tps": {
+          "a": 1.4659744020499719,
+          "b": 1.4658897999588991,
+          "difference": -8.460209107274963e-05,
+          "relative_percent": -0.005771048318059524
+        },
+        "post_ttft_seconds": {
+          "a": 7.43495379993692,
+          "b": 7.432230249047279,
+          "difference": -0.0027235508896410465,
+          "relative_percent": -0.03663171235394058
+        },
+        "target_to_arrival_ms": {
+          "a": 159472.657628,
+          "b": 159479.815111,
+          "difference": 7.157483000017237,
+          "relative_percent": 0.004488219552167827
+        },
+        "draft_init_ms": {
+          "a": 7608.772528,
+          "b": 7613.64544,
+          "difference": 4.872911999999815,
+          "relative_percent": 0.0640433392123052
+        },
+        "select_ms": {
+          "a": 0.001111,
+          "b": 0.001398,
+          "difference": 0.00028699999999999993,
+          "relative_percent": 25.832583258325826
+        },
+        "first_round_ms": {
+          "a": 108.439418,
+          "b": 109.176533,
+          "difference": 0.7371150000000029,
+          "relative_percent": 0.6797482074276662
+        },
+        "first_content_ms": {
+          "a": 167189.934427,
+          "b": 167202.707566,
+          "difference": 12.773138999997173,
+          "relative_percent": 0.007639897128841611
+        },
+        "generation_after_content_ms": {
+          "a": 7434.616214,
+          "b": 7431.927887,
+          "difference": -2.6883269999998447,
+          "relative_percent": -0.036159593482953944
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 167.1993258560542,
+          "b": 167.2148603189271,
+          "difference": 0.015534462872892618,
+          "relative_percent": 0.009290984155208015
+        },
+        "latency": {
+          "a": 174.6329178805463,
+          "b": 174.6701773321256,
+          "difference": 0.03725945157930255,
+          "relative_percent": 0.021335869566585508
+        },
+        "decode_tps": {
+          "a": 34.303740065027,
+          "b": 34.20377692170046,
+          "difference": -0.09996314332654066,
+          "relative_percent": -0.2914059607991626
+        },
+        "total_tps": {
+          "a": 1.4659321010044355,
+          "b": 1.4656193971408769,
+          "difference": -0.00031270386355863877,
+          "relative_percent": -0.021331401593860377
+        },
+        "post_ttft_seconds": {
+          "a": 7.4335920244921,
+          "b": 7.45531701319851,
+          "difference": 0.02172498870640993,
+          "relative_percent": 0.29225425117265225
+        },
+        "target_to_arrival_ms": {
+          "a": 159476.2363695,
+          "b": 159488.033279,
+          "difference": 11.796909500000766,
+          "relative_percent": 0.007397283613252981
+        },
+        "draft_init_ms": {
+          "a": 7611.208984000001,
+          "b": 7613.854971,
+          "difference": 2.645986999998968,
+          "relative_percent": 0.03476434565863329
+        },
+        "select_ms": {
+          "a": 0.0012545,
+          "b": 0.001222,
+          "difference": -3.249999999999998e-05,
+          "relative_percent": -2.590673575129532
+        },
+        "first_round_ms": {
+          "a": 108.8079755,
+          "b": 110.024078,
+          "difference": 1.2161025000000052,
+          "relative_percent": 1.1176593392273837
+        },
+        "first_content_ms": {
+          "a": 167196.3209965,
+          "b": 167211.970143,
+          "difference": 15.649146500014467,
+          "relative_percent": 0.009359743328518633
+        },
+        "generation_after_content_ms": {
+          "a": 7433.2720505,
+          "b": 7455.217642,
+          "difference": 21.945591499999864,
+          "relative_percent": 0.2952346066564804
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.863572,
+          "difference": 0.863572,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.037244,
+          "difference": 0.037244,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.048091,
+          "difference": 0.048091,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 0.019028,
+          "difference": 0.018954,
+          "relative_percent": 25613.513513513517
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 0.967935,
+          "difference": 0.967861,
+          "relative_percent": 1307920.2702702703
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 167.2148603189271,
+          "b": 167.26778023689985,
+          "difference": 0.05291991797275841,
+          "relative_percent": 0.031647855861516305
+        },
+        "latency": {
+          "a": 174.6701773321256,
+          "b": 174.70234911097214,
+          "difference": 0.032171778846532106,
+          "relative_percent": 0.018418587155477617
+        },
+        "decode_tps": {
+          "a": 34.20377692170046,
+          "b": 34.29923164600717,
+          "difference": 0.09545472430671254,
+          "relative_percent": 0.2790765608290169
+        },
+        "total_tps": {
+          "a": 1.4656193971408769,
+          "b": 1.4653495004660013,
+          "difference": -0.00026989667487553604,
+          "relative_percent": -0.018415195336662915
+        },
+        "post_ttft_seconds": {
+          "a": 7.45531701319851,
+          "b": 7.4345688740722835,
+          "difference": -0.020748139126226306,
+          "relative_percent": -0.2782998910642598
+        },
+        "target_to_arrival_ms": {
+          "a": 159488.033279,
+          "b": 159543.403164,
+          "difference": 55.36988499999279,
+          "relative_percent": 0.03471726615571491
+        },
+        "draft_init_ms": {
+          "a": 7613.854971,
+          "b": 7612.272933,
+          "difference": -1.5820379999995566,
+          "relative_percent": -0.02077840996479452
+        },
+        "select_ms": {
+          "a": 0.001222,
+          "b": 0.001065,
+          "difference": -0.00015700000000000002,
+          "relative_percent": -12.847790507364977
+        },
+        "first_round_ms": {
+          "a": 110.024078,
+          "b": 109.125581,
+          "difference": -0.8984970000000061,
+          "relative_percent": -0.8166367001957608
+        },
+        "first_content_ms": {
+          "a": 167211.970143,
+          "b": 167264.856372,
+          "difference": 52.88622899999609,
+          "relative_percent": 0.03162825541422887
+        },
+        "generation_after_content_ms": {
+          "a": 7455.217642,
+          "b": 7434.482273,
+          "difference": -20.73536899999999,
+          "relative_percent": -0.2781323094202426
+        },
+        "init_ms": {
+          "a": 0.863572,
+          "b": 0.773984,
+          "difference": -0.089588,
+          "relative_percent": -10.374120513402474
+        },
+        "query_ms": {
+          "a": 0.037244,
+          "b": 0.036445,
+          "difference": -0.0007990000000000011,
+          "relative_percent": -2.145311996563204
+        },
+        "append_ms": {
+          "a": 0.048091,
+          "b": 0.042501,
+          "difference": -0.005590000000000005,
+          "relative_percent": -11.62379655236948
+        },
+        "release_ms": {
+          "a": 0.019028,
+          "b": 0.018102,
+          "difference": -0.0009259999999999997,
+          "relative_percent": -4.8665125078831135
+        },
+        "index_lifecycle_ms": {
+          "a": 0.967935,
+          "b": 0.871032,
+          "difference": -0.09690299999999996,
+          "relative_percent": -10.011312743107748
+        }
+      }
+    },
+    {
+      "context": "context-204800",
+      "quartet": 1,
+      "service": "05-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 167.27192290616222,
+          "b": 167.21568395290524,
+          "difference": -0.056238953256979585,
+          "relative_percent": -0.03362127503522272
+        },
+        "latency": {
+          "a": 174.72285568411462,
+          "b": 174.67242098390125,
+          "difference": -0.05043470021337271,
+          "relative_percent": -0.02886554252784501
+        },
+        "decode_tps": {
+          "a": 34.22390291247223,
+          "b": 34.1972633525926,
+          "difference": -0.026639559879626518,
+          "relative_percent": -0.07783904701855748
+        },
+        "total_tps": {
+          "a": 1.4651775178333175,
+          "b": 1.4656005713895404,
+          "difference": 0.0004230535562228521,
+          "relative_percent": 0.02887387712913192
+        },
+        "post_ttft_seconds": {
+          "a": 7.450932777952403,
+          "b": 7.45673703099601,
+          "difference": 0.005804253043606877,
+          "relative_percent": 0.07789968338973718
+        },
+        "target_to_arrival_ms": {
+          "a": 159547.011304,
+          "b": 159490.698332,
+          "difference": -56.31297200001427,
+          "relative_percent": -0.03529553549124209
+        },
+        "draft_init_ms": {
+          "a": 7612.40056,
+          "b": 7613.035674,
+          "difference": 0.6351139999997031,
+          "relative_percent": 0.00834315003517272
+        },
+        "select_ms": {
+          "a": 0.001315,
+          "b": 0.001315,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        },
+        "first_round_ms": {
+          "a": 109.458818,
+          "b": 109.024282,
+          "difference": -0.43453599999999426,
+          "relative_percent": -0.3969858326078324
+        },
+        "first_content_ms": {
+          "a": 167268.944765,
+          "b": 167212.823158,
+          "difference": -56.12160699997912,
+          "relative_percent": -0.033551719405433555
+        },
+        "generation_after_content_ms": {
+          "a": 7450.663556,
+          "b": 7456.707301,
+          "difference": 6.043744999999944,
+          "relative_percent": 0.08111686904896942
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 7.4e-05,
+          "difference": 0.0,
+          "relative_percent": 0.0
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 167.24380342953373,
+          "b": 167.22392732696608,
+          "difference": -0.019876102567650378,
+          "relative_percent": -0.011884507623038942
+        },
+        "latency": {
+          "a": 174.69763833400793,
+          "b": 174.6681467439048,
+          "difference": -0.029491590103134513,
+          "relative_percent": -0.016881504744070686
+        },
+        "decode_tps": {
+          "a": 34.21058313253241,
+          "b": 34.25476678182913,
+          "difference": 0.04418364929671981,
+          "relative_percent": 0.1291519911413186
+        },
+        "total_tps": {
+          "a": 1.4653890446114288,
+          "b": 1.4656364355622462,
+          "difference": 0.00024739095081738327,
+          "relative_percent": 0.01688227107519147
+        },
+        "post_ttft_seconds": {
+          "a": 7.453834904474206,
+          "b": 7.444219416938722,
+          "difference": -0.009615487535484135,
+          "relative_percent": -0.12900054346135503
+        },
+        "target_to_arrival_ms": {
+          "a": 159518.854818,
+          "b": 159499.967714,
+          "difference": -18.887103999993997,
+          "relative_percent": -0.011840044878419498
+        },
+        "draft_init_ms": {
+          "a": 7612.718117,
+          "b": 7611.753487,
+          "difference": -0.9646300000003976,
+          "relative_percent": -0.012671295392463477
+        },
+        "select_ms": {
+          "a": 0.001315,
+          "b": 0.001129,
+          "difference": -0.00018599999999999997,
+          "relative_percent": -14.144486692015212
+        },
+        "first_round_ms": {
+          "a": 109.24154999999999,
+          "b": 109.314371,
+          "difference": 0.07282100000000469,
+          "relative_percent": 0.06666053346917611
+        },
+        "first_content_ms": {
+          "a": 167240.88396150002,
+          "b": 167221.087905,
+          "difference": -19.79605650002486,
+          "relative_percent": -0.011836852348001692
+        },
+        "generation_after_content_ms": {
+          "a": 7453.685428500001,
+          "b": 7444.114159,
+          "difference": -9.571269500001108,
+          "relative_percent": -0.1284098932241573
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.774926,
+          "difference": 0.774926,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.043186,
+          "difference": 0.043186,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.074285,
+          "difference": 0.074285,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 0.018667,
+          "difference": 0.018593,
+          "relative_percent": 25125.675675675677
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 0.911064,
+          "difference": 0.91099,
+          "relative_percent": 1231067.5675675676
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 167.22392732696608,
+          "b": 167.29069776809774,
+          "difference": 0.0667704411316663,
+          "relative_percent": 0.03992876031497783
+        },
+        "latency": {
+          "a": 174.6681467439048,
+          "b": 174.7292221491225,
+          "difference": 0.06107540521770716,
+          "relative_percent": 0.0349665387514797
+        },
+        "decode_tps": {
+          "a": 34.25476678182913,
+          "b": 34.280992699370586,
+          "difference": 0.02622591754145276,
+          "relative_percent": 0.07656136650553425
+        },
+        "total_tps": {
+          "a": 1.4656364355622462,
+          "b": 1.4651241323647455,
+          "difference": -0.0005123031975007297,
+          "relative_percent": -0.03495431643688596
+        },
+        "post_ttft_seconds": {
+          "a": 7.444219416938722,
+          "b": 7.438524381024763,
+          "difference": -0.0056950359139591455,
+          "relative_percent": -0.07650279492031897
+        },
+        "target_to_arrival_ms": {
+          "a": 159499.967714,
+          "b": 159563.735228,
+          "difference": 63.767514000006486,
+          "relative_percent": 0.03997964069457627
+        },
+        "draft_init_ms": {
+          "a": 7611.753487,
+          "b": 7613.048829,
+          "difference": 1.2953420000003462,
+          "relative_percent": 0.01701765568489222
+        },
+        "select_ms": {
+          "a": 0.001129,
+          "b": 0.00087,
+          "difference": -0.000259,
+          "relative_percent": -22.940655447298496
+        },
+        "first_round_ms": {
+          "a": 109.314371,
+          "b": 110.881662,
+          "difference": 1.5672910000000115,
+          "relative_percent": 1.4337465290817253
+        },
+        "first_content_ms": {
+          "a": 167221.087905,
+          "b": 167287.720302,
+          "difference": 66.6323970000085,
+          "relative_percent": 0.03984688643925427
+        },
+        "generation_after_content_ms": {
+          "a": 7444.114159,
+          "b": 7438.534816,
+          "difference": -5.579342999999426,
+          "relative_percent": -0.07494972377947162
+        },
+        "init_ms": {
+          "a": 0.774926,
+          "b": 0.783335,
+          "difference": 0.008409,
+          "relative_percent": 1.085135871038001
+        },
+        "query_ms": {
+          "a": 0.043186,
+          "b": 0.04387,
+          "difference": 0.0006839999999999971,
+          "relative_percent": 1.5838466169591836
+        },
+        "append_ms": {
+          "a": 0.074285,
+          "b": 0.045095,
+          "difference": -0.02919,
+          "relative_percent": -39.29460860200579
+        },
+        "release_ms": {
+          "a": 0.018667,
+          "b": 0.016537,
+          "difference": -0.00213,
+          "relative_percent": -11.41051052659774
+        },
+        "index_lifecycle_ms": {
+          "a": 0.911064,
+          "b": 0.888837,
+          "difference": -0.022226999999999997,
+          "relative_percent": -2.4396749295329423
+        }
+      }
+    },
+    {
+      "context": "context-204800",
+      "quartet": 2,
+      "service": "06-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 167.3902059479151,
+          "b": 167.03022452513687,
+          "difference": -0.359981422778219,
+          "relative_percent": -0.21505524814888766
+        },
+        "latency": {
+          "a": 174.8447880698368,
+          "b": 174.48184971697628,
+          "difference": -0.36293835286051035,
+          "relative_percent": -0.20757745018715745
+        },
+        "decode_tps": {
+          "a": 34.20714881523956,
+          "b": 34.220722786656154,
+          "difference": 0.01357397141659078,
+          "relative_percent": 0.03968168025316743
+        },
+        "total_tps": {
+          "a": 1.464155739648059,
+          "b": 1.4672013187346005,
+          "difference": 0.003045579086541572,
+          "relative_percent": 0.20800923044386188
+        },
+        "post_ttft_seconds": {
+          "a": 7.454582121921703,
+          "b": 7.451625191839412,
+          "difference": -0.0029569300822913647,
+          "relative_percent": -0.03966594014164215
+        },
+        "target_to_arrival_ms": {
+          "a": 159545.759274,
+          "b": 159323.557029,
+          "difference": -222.20224500002223,
+          "relative_percent": -0.13927179638689724
+        },
+        "draft_init_ms": {
+          "a": 7714.740112,
+          "b": 7593.86266,
+          "difference": -120.87745200000063,
+          "relative_percent": -1.5668376412574125
+        },
+        "select_ms": {
+          "a": 0.001426,
+          "b": 0.000917,
+          "difference": -0.000509,
+          "relative_percent": -35.69424964936887
+        },
+        "first_round_ms": {
+          "a": 126.778995,
+          "b": 108.795893,
+          "difference": -17.983101999999988,
+          "relative_percent": -14.184606842797564
+        },
+        "first_content_ms": {
+          "a": 167387.339123,
+          "b": 167026.291833,
+          "difference": -361.0472900000168,
+          "relative_percent": -0.21569569830769408
+        },
+        "generation_after_content_ms": {
+          "a": 7454.506907,
+          "b": 7451.477977,
+          "difference": -3.0289300000004005,
+          "relative_percent": -0.0406321979144697
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.4e-05,
+          "b": 6.5e-05,
+          "difference": -9.000000000000002e-06,
+          "relative_percent": -12.16216216216216
+        },
+        "index_lifecycle_ms": {
+          "a": 7.4e-05,
+          "b": 6.5e-05,
+          "difference": -9.000000000000002e-06,
+          "relative_percent": -12.16216216216216
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 167.21021523652598,
+          "b": 167.03429358103313,
+          "difference": -0.1759216554928571,
+          "relative_percent": -0.10520987323890951
+        },
+        "latency": {
+          "a": 174.66331889340654,
+          "b": 174.48270720103756,
+          "difference": -0.18061169236898422,
+          "relative_percent": -0.10340562260768849
+        },
+        "decode_tps": {
+          "a": 34.21393580094786,
+          "b": 34.235477916416826,
+          "difference": 0.021542115468967893,
+          "relative_percent": 0.06296298559247404
+        },
+        "total_tps": {
+          "a": 1.4656785291913297,
+          "b": 1.4671941082679265,
+          "difference": 0.0015155790765968291,
+          "relative_percent": 0.10340460383444494
+        },
+        "post_ttft_seconds": {
+          "a": 7.4531036568805575,
+          "b": 7.44841362000443,
+          "difference": -0.004690036876127124,
+          "relative_percent": -0.06292729971355548
+        },
+        "target_to_arrival_ms": {
+          "a": 159434.65815149999,
+          "b": 159320.386283,
+          "difference": -114.27186849998543,
+          "relative_percent": -0.07167316681634395
+        },
+        "draft_init_ms": {
+          "a": 7654.301386,
+          "b": 7600.017229,
+          "difference": -54.28415700000005,
+          "relative_percent": -0.709198060835281
+        },
+        "select_ms": {
+          "a": 0.0011715,
+          "b": 0.00162,
+          "difference": 0.0004484999999999999,
+          "relative_percent": 38.2842509603073
+        },
+        "first_round_ms": {
+          "a": 117.787444,
+          "b": 111.015179,
+          "difference": -6.77226499999999,
+          "relative_percent": -5.749564444237354
+        },
+        "first_content_ms": {
+          "a": 167206.815478,
+          "b": 167031.47649,
+          "difference": -175.33898800000316,
+          "relative_percent": -0.10486354129689568
+        },
+        "generation_after_content_ms": {
+          "a": 7452.992442,
+          "b": 7448.343256,
+          "difference": -4.649185999999645,
+          "relative_percent": -0.06238012497906675
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.7041,
+          "difference": 0.7041,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.026213,
+          "difference": 0.026213,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.036439,
+          "difference": 0.036439,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 6.95e-05,
+          "b": 0.012769,
+          "difference": 0.0126995,
+          "relative_percent": 18272.6618705036
+        },
+        "index_lifecycle_ms": {
+          "a": 6.95e-05,
+          "b": 0.779521,
+          "difference": 0.7794515000000001,
+          "relative_percent": 1121512.9496402878
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 167.03429358103313,
+          "b": 166.474965529982,
+          "difference": -0.5593280510511249,
+          "relative_percent": -0.3348582132804867
+        },
+        "latency": {
+          "a": 174.48270720103756,
+          "b": 173.94516674405895,
+          "difference": -0.5375404569786042,
+          "relative_percent": -0.30807663727916434
+        },
+        "decode_tps": {
+          "a": 34.235477916416826,
+          "b": 34.13562669764162,
+          "difference": -0.09985121877520697,
+          "relative_percent": -0.29166006976443226
+        },
+        "total_tps": {
+          "a": 1.4671941082679265,
+          "b": 1.4717281588897244,
+          "difference": 0.004534050621797903,
+          "relative_percent": 0.30902868245228365
+        },
+        "post_ttft_seconds": {
+          "a": 7.44841362000443,
+          "b": 7.470201214076951,
+          "difference": 0.021787594072520733,
+          "relative_percent": 0.29251321400849406
+        },
+        "target_to_arrival_ms": {
+          "a": 159320.386283,
+          "b": 158796.688178,
+          "difference": -523.6981049999886,
+          "relative_percent": -0.32870752903507716
+        },
+        "draft_init_ms": {
+          "a": 7600.017229,
+          "b": 7565.789724,
+          "difference": -34.22750499999984,
+          "relative_percent": -0.4503608869384501
+        },
+        "select_ms": {
+          "a": 0.00162,
+          "b": 0.001278,
+          "difference": -0.00034199999999999986,
+          "relative_percent": -21.111111111111104
+        },
+        "first_round_ms": {
+          "a": 111.015179,
+          "b": 109.559811,
+          "difference": -1.455368000000007,
+          "relative_percent": -1.3109630710949949
+        },
+        "first_content_ms": {
+          "a": 167031.47649,
+          "b": 166472.089697,
+          "difference": -559.3867930000124,
+          "relative_percent": -0.3348990290662379
+        },
+        "generation_after_content_ms": {
+          "a": 7448.343256,
+          "b": 7470.109183,
+          "difference": 21.765926999999465,
+          "relative_percent": 0.29222507948283294
+        },
+        "init_ms": {
+          "a": 0.7041,
+          "b": 0.740864,
+          "difference": 0.03676400000000002,
+          "relative_percent": 5.221417412299401
+        },
+        "query_ms": {
+          "a": 0.026213,
+          "b": 0.029495,
+          "difference": 0.003282,
+          "relative_percent": 12.520505092892842
+        },
+        "append_ms": {
+          "a": 0.036439,
+          "b": 0.037296,
+          "difference": 0.0008570000000000036,
+          "relative_percent": 2.3518757375339705
+        },
+        "release_ms": {
+          "a": 0.012769,
+          "b": 0.0125,
+          "difference": -0.00026900000000000014,
+          "relative_percent": -2.106664578275508
+        },
+        "index_lifecycle_ms": {
+          "a": 0.779521,
+          "b": 0.820155,
+          "difference": 0.04063399999999995,
+          "relative_percent": 5.2126883047409756
+        }
+      }
+    },
+    {
+      "context": "context-204800",
+      "quartet": 3,
+      "service": "06-mixed",
+      "negative_N2_minus_N1": {
+        "ttft": {
+          "a": 167.0672165749129,
+          "b": 167.08097882708535,
+          "difference": 0.013762252172455192,
+          "relative_percent": 0.008237553994483449
+        },
+        "latency": {
+          "a": 174.49543126602657,
+          "b": 174.51110062398948,
+          "difference": 0.01566935796290636,
+          "relative_percent": 0.00897980987193403
+        },
+        "decode_tps": {
+          "a": 34.328571615607,
+          "b": 34.319760425226065,
+          "difference": -0.008811190380932032,
+          "relative_percent": -0.02566722111131403
+        },
+        "total_tps": {
+          "a": 1.4670871216663308,
+          "b": 1.4669553918612357,
+          "difference": -0.00013172980509512655,
+          "relative_percent": -0.008979003574483002
+        },
+        "post_ttft_seconds": {
+          "a": 7.428214691113681,
+          "b": 7.430121796904132,
+          "difference": 0.001907105790451169,
+          "relative_percent": 0.025673810865112223
+        },
+        "target_to_arrival_ms": {
+          "a": 159359.309672,
+          "b": 159368.27974,
+          "difference": 8.97006799999508,
+          "relative_percent": 0.005628832114323856
+        },
+        "draft_init_ms": {
+          "a": 7596.586211,
+          "b": 7600.545483,
+          "difference": 3.9592720000000554,
+          "relative_percent": 0.05211909520972391
+        },
+        "select_ms": {
+          "a": 0.00126,
+          "b": 0.001222,
+          "difference": -3.8000000000000056e-05,
+          "relative_percent": -3.0158730158730163
+        },
+        "first_round_ms": {
+          "a": 108.403174,
+          "b": 108.51044,
+          "difference": 0.10726599999999564,
+          "relative_percent": 0.09895097721031032
+        },
+        "first_content_ms": {
+          "a": 167064.375456,
+          "b": 167077.41058,
+          "difference": 13.035123999987263,
+          "relative_percent": 0.007802455768568528
+        },
+        "generation_after_content_ms": {
+          "a": 7428.099247,
+          "b": 7430.005342,
+          "difference": 1.9060950000002777,
+          "relative_percent": 0.025660602216248662
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.0,
+          "difference": 0.0,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 6.5e-05,
+          "b": 9.3e-05,
+          "difference": 2.8000000000000003e-05,
+          "relative_percent": 43.07692307692308
+        },
+        "index_lifecycle_ms": {
+          "a": 6.5e-05,
+          "b": 9.3e-05,
+          "difference": 2.8000000000000003e-05,
+          "relative_percent": 43.07692307692308
+        }
+      },
+      "Q_minus_N": {
+        "ttft": {
+          "a": 167.07409770099912,
+          "b": 167.03309970418923,
+          "difference": -0.040997996809892356,
+          "relative_percent": -0.024538810847429815
+        },
+        "latency": {
+          "a": 174.50326594500802,
+          "b": 174.47500089206733,
+          "difference": -0.028265052940696478,
+          "relative_percent": -0.01619743492342618
+        },
+        "decode_tps": {
+          "a": 34.32416602041653,
+          "b": 34.2654374953758,
+          "difference": -0.058728525040727675,
+          "relative_percent": -0.17109964159301994
+        },
+        "total_tps": {
+          "a": 1.4670212567637833,
+          "b": 1.4672589121140924,
+          "difference": 0.00023765535030917384,
+          "relative_percent": 0.016199857310406074
+        },
+        "post_ttft_seconds": {
+          "a": 7.429168244008906,
+          "b": 7.441901187878102,
+          "difference": 0.012732943869195879,
+          "relative_percent": 0.17139124395875172
+        },
+        "target_to_arrival_ms": {
+          "a": 159363.79470600002,
+          "b": 159319.083066,
+          "difference": -44.71164000002318,
+          "relative_percent": -0.028056334930093296
+        },
+        "draft_init_ms": {
+          "a": 7598.565847,
+          "b": 7601.823346,
+          "difference": 3.25749900000028,
+          "relative_percent": 0.04286991868718282
+        },
+        "select_ms": {
+          "a": 0.001241,
+          "b": 0.001463,
+          "difference": 0.0002220000000000002,
+          "relative_percent": 17.888799355358607
+        },
+        "first_round_ms": {
+          "a": 108.456807,
+          "b": 109.139843,
+          "difference": 0.6830360000000013,
+          "relative_percent": 0.6297769765617467
+        },
+        "first_content_ms": {
+          "a": 167070.893018,
+          "b": 167030.100884,
+          "difference": -40.79213399998844,
+          "relative_percent": -0.024416062704346597
+        },
+        "generation_after_content_ms": {
+          "a": 7429.0522945,
+          "b": 7441.858522,
+          "difference": 12.806227500000205,
+          "relative_percent": 0.17238036552094105
+        },
+        "init_ms": {
+          "a": 0.0,
+          "b": 0.756739,
+          "difference": 0.756739,
+          "relative_percent": null
+        },
+        "query_ms": {
+          "a": 0.0,
+          "b": 0.030028,
+          "difference": 0.030028,
+          "relative_percent": null
+        },
+        "append_ms": {
+          "a": 0.0,
+          "b": 0.028992,
+          "difference": 0.028992,
+          "relative_percent": null
+        },
+        "release_ms": {
+          "a": 7.9e-05,
+          "b": 0.052157,
+          "difference": 0.052078,
+          "relative_percent": 65921.51898734178
+        },
+        "index_lifecycle_ms": {
+          "a": 7.9e-05,
+          "b": 0.867916,
+          "difference": 0.867837,
+          "relative_percent": 1098527.848101266
+        }
+      },
+      "R_minus_Q": {
+        "ttft": {
+          "a": 167.03309970418923,
+          "b": 167.06341305701062,
+          "difference": 0.0303133528213948,
+          "relative_percent": 0.018148111287574764
+        },
+        "latency": {
+          "a": 174.47500089206733,
+          "b": 174.4951828061603,
+          "difference": 0.020181914092972875,
+          "relative_percent": 0.011567223951725047
+        },
+        "decode_tps": {
+          "a": 34.2654374953758,
+          "b": 34.31215021552253,
+          "difference": 0.046712720146729225,
+          "relative_percent": 0.13632605786233487
+        },
+        "total_tps": {
+          "a": 1.4672589121140924,
+          "b": 1.4670892106195283,
+          "difference": -0.00016970149456407846,
+          "relative_percent": -0.011565886099784706
+        },
+        "post_ttft_seconds": {
+          "a": 7.441901187878102,
+          "b": 7.43176974914968,
+          "difference": -0.010131438728421926,
+          "relative_percent": -0.13614046293606297
+        },
+        "target_to_arrival_ms": {
+          "a": 159319.083066,
+          "b": 159349.901421,
+          "difference": 30.81835499999579,
+          "relative_percent": 0.019343793855020053
+        },
+        "draft_init_ms": {
+          "a": 7601.823346,
+          "b": 7601.304928,
+          "difference": -0.5184180000005654,
+          "relative_percent": -0.00681965334373702
+        },
+        "select_ms": {
+          "a": 0.001463,
+          "b": 0.001046,
+          "difference": -0.00041700000000000005,
+          "relative_percent": -28.50307587149693
+        },
+        "first_round_ms": {
+          "a": 109.139843,
+          "b": 109.248738,
+          "difference": 0.10889500000000396,
+          "relative_percent": 0.0997756612129308
+        },
+        "first_content_ms": {
+          "a": 167030.100884,
+          "b": 167060.510143,
+          "difference": 30.409258999978192,
+          "relative_percent": 0.018205855614672473
+        },
+        "generation_after_content_ms": {
+          "a": 7441.858522,
+          "b": 7431.66421,
+          "difference": -10.194312000000537,
+          "relative_percent": -0.13698610326793315
+        },
+        "init_ms": {
+          "a": 0.756739,
+          "b": 0.754354,
+          "difference": -0.0023850000000000815,
+          "relative_percent": -0.3151681094802905
+        },
+        "query_ms": {
+          "a": 0.030028,
+          "b": 0.024266,
+          "difference": -0.005762,
+          "relative_percent": -19.188757159984014
+        },
+        "append_ms": {
+          "a": 0.028992,
+          "b": 0.026699,
+          "difference": -0.002293,
+          "relative_percent": -7.909078366445921
+        },
+        "release_ms": {
+          "a": 0.052157,
+          "b": 0.053927,
+          "difference": 0.0017700000000000007,
+          "relative_percent": 3.393600092029825
+        },
+        "index_lifecycle_ms": {
+          "a": 0.867916,
+          "b": 0.859246,
+          "difference": -0.008670000000000067,
+          "relative_percent": -0.998944598325191
+        }
+      }
+    }
+  ],
+  "tables": [
+    {
+      "service": "01-startup-S0",
+      "table": []
+    },
+    {
+      "service": "02-startup-S1",
+      "table": [
+        {
+          "event": "init",
+          "bytes": "248320",
+          "cap_bytes": "262144",
+          "unknown": "243",
+          "init_ns": "19406898",
+          "line": 13
+        },
+        {
+          "event": "release",
+          "bytes": "248320",
+          "release_ns": "1741",
+          "line": 102
+        }
+      ]
+    },
+    {
+      "service": "03-startup-S1",
+      "table": [
+        {
+          "event": "init",
+          "bytes": "248320",
+          "cap_bytes": "262144",
+          "unknown": "243",
+          "init_ns": "19324569",
+          "line": 13
+        },
+        {
+          "event": "release",
+          "bytes": "248320",
+          "release_ns": "2203",
+          "line": 102
+        }
+      ]
+    },
+    {
+      "service": "04-startup-S0",
+      "table": []
+    },
+    {
+      "service": "05-mixed",
+      "table": [
+        {
+          "event": "init",
+          "bytes": "248320",
+          "cap_bytes": "262144",
+          "unknown": "243",
+          "init_ns": "19340045",
+          "line": 13
+        },
+        {
+          "event": "release",
+          "bytes": "248320",
+          "release_ns": "2203",
+          "line": 557
+        }
+      ]
+    },
+    {
+      "service": "06-mixed",
+      "table": [
+        {
+          "event": "init",
+          "bytes": "248320",
+          "cap_bytes": "262144",
+          "unknown": "243",
+          "init_ns": "19353684",
+          "line": 13
+        },
+        {
+          "event": "release",
+          "bytes": "248320",
+          "release_ns": "852",
+          "line": 557
+        }
+      ]
+    }
+  ],
+  "state": {
+    "status": "MEASURED_REQUIRES_REVIEW",
+    "started": 1793016884.9689336,
+    "completed": [
+      "01-startup-S0",
+      "02-startup-S1",
+      "03-startup-S1",
+      "04-startup-S0",
+      "05-mixed",
+      "06-mixed"
+    ],
+    "requests_completed": 60,
+    "loads_started": 6,
+    "contract_seconds": 0,
+    "plan_sha256": "5b15ed11c79e250320344885affe7709eb900d5b1e80a69f95472dee8e722e20",
+    "current": "06-mixed",
+    "finished": 1793021958.6409783,
+    "elapsed_seconds": 5073.672047246946,
+    "monitor_failures": []
+  },
+  "postflight": {
+    "status": "MEASURED_REQUIRES_REVIEW",
+    "state_sha256": "c14a0b23766421b95412e1cced2310112acfe570d56518e85782e8bf979aa687",
+    "monitor_failures": [],
+    "cleanup_errors": [],
+    "final_summary_sha256": "9bfd09767d63ff3ca2f32d748b1dbbb9becfeea69bef467ee30b1496f87bdfe2",
+    "final_monitor_barrier": {
+      "boundary_monotonic": 1212041.106018262,
+      "sample_started_monotonic": 1212041.108320519,
+      "flushed_monotonic": 1212041.129662297
+    },
+    "final_monitor_errors": [],
+    "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+  },
+  "lease": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      "-B",
+      "tools/mtp_suffix_causal/run_stage.py",
+      "--plan",
+      ".q4t-work/suffix-causal-20261026/diagnostic-a/frozen-plan.json"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-10-26T13:39:19.806490+00:00",
+      "monotonic": 1212042.323376392,
+      "pid": 3568603
+    }
+  },
+  "source_commit": "bac20f0",
+  "binary_sha256": "73908438bcf6a547145d465d538f8bbbcbac82c1e4d6050d89aee01980c216cd"
+}

@@ -1,0 +1,45 @@
+{
+  "valid": true,
+  "files_checked": 1160,
+  "sha_failures": [],
+  "http": 60,
+  "services": 6,
+  "monitor_samples": 5074,
+  "exit_pending": {
+    "active": 0,
+    "admitted": 5,
+    "resolved": 5,
+    "maximum_active": 1,
+    "last_resolutions": [],
+    "entries": []
+  },
+  "owned_servers": [
+    {
+      "pid": 3570827,
+      "exists": false
+    },
+    {
+      "pid": 3588182,
+      "exists": false
+    },
+    {
+      "pid": 3575248,
+      "exists": false
+    },
+    {
+      "pid": 3573181,
+      "exists": false
+    },
+    {
+      "pid": 3568673,
+      "exists": false
+    },
+    {
+      "pid": 3577317,
+      "exists": false
+    }
+  ],
+  "elapsed_seconds": 0.25608908385038376,
+  "statistics": "descriptive only",
+  "candidate_acceptance": false
+}
