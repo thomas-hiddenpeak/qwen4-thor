@@ -4,8 +4,8 @@
 // It is not a physical RAM limit or an OOM guarantee: file cache, allocator
 // retention, driver ownership and other processes require separate accounting.
 // Callers must reject an infeasible result; zero capacity is never a fallback.
-// MTP budget covers single-sequence text with k in [1,16] (T=k+1 verify
-// rows). It includes the supplied independent draft weights, loading host
+// MTP budget covers pooled text with k in [1,16], requiring all
+// max_seq*(k+1) verify rows to fit max_prefill. It includes the supplied independent draft weights, loading host
 // peak, scratch, checkpoints and the request's draft-extend allocations.
 // Other MTP configurations fail closed.
 //
@@ -89,7 +89,7 @@ struct MemoryBudget {
   size_t fixed = 0;      // weights + workspace + buffers + margin
   size_t state_pool =
       0;  // KV/indexer/SSM/conv/rope (scales with max_len x max_seq)
-  size_t per_request = 0;  // MTP prompt trunk, extend buffers and host scratch
+  size_t per_request = 0;  // Peak for all admitted MTP requests; extend serialized
   size_t available_for_state = 0;  // budget - fixed - max(request, loading)
   size_t main_workspace = 0;
   size_t mtp_workspace = 0;

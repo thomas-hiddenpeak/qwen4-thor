@@ -114,7 +114,7 @@ def audit_server(output, expected_requests):
          request_index_cap_bytes=2*1024*1024))
 
 
-def lifecycle_admission(plan, step, output):
+def lifecycle_admission(plan, step, output, expected_slots=1):
     """Three requests; cancel after 64 content chunks, then inspect real suffix use."""
     scenario = next(c for c in plan['development'] if c['id'] == 'old-repeat-code')
     prompt = json.loads(Path(scenario['path']).read_text().splitlines()[0])['prompt']
@@ -172,8 +172,8 @@ def lifecycle_admission(plan, step, output):
             if result['status'] != 200:
                 raise RuntimeError('health failed after lifecycle request')
             value = json.loads(result['body'])
-            if value['seq_slots_free'] == 1:
-                if not value['gpu_healthy'] or value['seq_slots_total'] != 1:
+            if value['seq_slots_free'] == expected_slots:
+                if not value['gpu_healthy'] or value['seq_slots_total'] != expected_slots:
                     raise RuntimeError('lifecycle GPU health or capacity failed')
                 return value
             time.sleep(.05)
@@ -212,7 +212,8 @@ def lifecycle_admission(plan, step, output):
                                   observed_nonempty_chunks_before_cancel=observed_before_cancel,
                                   final_nonempty_chunks=progress['nonempty_chunks'],
                                   actual_suffix_hit_required_after_server_shutdown=True),
-                scope='single slot; cancel after 64 nonempty content chunks and actual suffix use; fresh request recovery')
+                slots=expected_slots,
+                scope='cancel after 64 nonempty content chunks and actual suffix use; fresh request recovery; no overlapping generation in this lifecycle fixture')
 
 
 def validate_plan(plan):

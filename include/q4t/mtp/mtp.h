@@ -42,6 +42,7 @@
 #include "q4t/model/model.h"
 #include "q4t/model/moe.h"
 #include "q4t/mtp/moe_bf16.h"
+#include "q4t/mtp/suffix_drafter.h"
 #include "q4t/status.h"
 
 namespace q4t {
@@ -149,7 +150,7 @@ struct MtpModel {
   // sequences' tokens per step (T = B), so it needs its own ids/positions/
   // sample/multi buffers sized for B rows (B <= max_seq); the batched extend
   // packs the accepted prefixes of all sequences (T = sum(a_b+1) <= B*(k+1)),
-  // sized for the worst case. d_ms_g_pool = per-sequence rolling draft trunk
+  // sized for the worst case. d_ms_g_pool = packed rolling draft trunk
   // [max_seq, hc_dim] (the batched draft loop reads row b as sequence b's
   // hidden and overwrites it with the step's multi_hidden); d_ms_gather =
   // extend hidden gather [B*(k+1), hc_dim] (per-sequence verify-trunk rows
@@ -160,7 +161,7 @@ struct MtpModel {
   uint16_t* d_ms_sample = nullptr;  // [max_seq*hs] draft-loop sample_hidden
   uint16_t* d_ms_multi = nullptr;   // [max_seq*hc_dim] draft-loop multi_hidden
   uint16_t* d_ms_gather = nullptr;  // [B*(k+1)*hc_dim] extend hidden gather
-  uint16_t* d_ms_g_pool = nullptr;  // [max_seq*hc_dim] per-seq rolling trunk
+  uint16_t* d_ms_g_pool = nullptr;  // [max_seq*hc_dim] packed rolling trunk
   int* d_ms_ext_seq = nullptr;      // [max_seq*k_max] per-token d_seq_id:
                                     // draft loop (first B ints) + extend
   // Verify + extend buffers (MtpSpeculativeStepMulti), sized for the worst
@@ -326,7 +327,7 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 //
 //   1. 批量化 draft 循环: 每步 j 把 B 序列的 draft[j-1] 打包成一次
 //      MtpForward (d_seq_id, T=B, 每序列 1 token — Stage 1 的多序列路径),
-//      滚动 trunk 用 per-seq 池 d_g_pool [max_seq, hc_dim] (行 b = 序列 b)。
+//      滚动 trunk 使用 packed d_g_pool [max_seq, hc_dim] (行号非槽位号)。
 //      draft 循环从 B×k 次 forward 降到 k 次。
 //   2. 多序列验证: 每序列 (k+1) token 打包一次主模型 forward
 //      (ModelVerifyMulti, Stage 2a), 权重只读一次; per-seq per-token
@@ -360,6 +361,11 @@ Status MtpSpeculativeStep(const model::Model& main, const MtpModel& mtp,
 //              neural draft loop is skipped; target verify, checkpoint
 //              restore and accepted-prefix draft extend remain unchanged.
 //              IDs need not belong to an enabled subset head.
+//   batch_suffix: empty, or B request-local proposals in batch order. Ready
+//              rows obey the same k3/d0/global-ID contract. Only other rows
+//              enter a compact neural draft batch; all B rows still share
+//              one target verify and accepted-prefix extend. Mutually
+//              exclusive with the legacy single-row suffix_draft argument.
 //
 // 正确性: draft 循环与 extend 复用 Stage 1 已验证的多序列 MtpForward
 // (per-seq KV 隔离); 验证复用 Stage 2a 已 bit-exact 验证的 ModelVerifyMulti。
@@ -372,7 +378,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                int32_t* next_b, int32_t* next_d0,
                                uint16_t** next_g, cudaStream_t stream,
                                std::span<const int32_t> stop_tokens = {},
-                               std::span<const int32_t> suffix_draft = {});
+                               std::span<const int32_t> suffix_draft = {},
+                               std::span<const SuffixProposal> batch_suffix = {});
 
 }  // namespace mtp
 }  // namespace q4t

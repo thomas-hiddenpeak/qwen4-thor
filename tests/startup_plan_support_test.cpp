@@ -86,12 +86,17 @@ Q4T_TEST(startup_support_uses_effective_budget_capacity) {
   return true;
 }
 
-Q4T_TEST(startup_support_mtp_requires_single_sequence) {
+Q4T_TEST(startup_support_mtp_requires_packed_capacity) {
   CleanFp8Environment clean;
   q4t::model::ModelConfig cfg;
   q4t::server::ServerOptions opts;
-  cfg.max_seq = 2;
-  Q4T_CHECK(!Supported(cfg, opts));
+  for (int slots : {1, 2, 4, 16, 32}) {
+    cfg.max_seq = slots;
+    cfg.max_prefill = slots * 4;
+    Q4T_CHECK(Supported(cfg, opts));
+    --cfg.max_prefill;
+    Q4T_CHECK(!Supported(cfg, opts));
+  }
   opts.no_mtp = true;
   Q4T_CHECK(Supported(cfg, opts));
   return true;

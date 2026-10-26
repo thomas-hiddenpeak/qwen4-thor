@@ -744,14 +744,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // plainly (the main seq is still usable).
   ActiveRequest mtp_ar;
   mtp::SuffixDrafter suffix;
-  uint64_t prior_class_decodes = 0, prior_class_lookups = 0;
-  uint64_t prior_class_allocations = 0;
-  if (mtp_suffix_) {
-    const auto& before = suffix_token_cache_.Counters();
-    prior_class_decodes = before.decodes;
-    prior_class_lookups = before.lookups;
-    prior_class_allocations = before.allocations;
-  }
+  struct RequestClasses {
+    ChatServer* server;
+    uint64_t decodes = 0, lookups = 0, allocations = 0;
+    size_t bytes = 0;
+  } request_classes{this};
   std::array<uint64_t, 4> suffix_accepted{};
   std::array<uint64_t, 4> neural_accepted{};
   bool mtp_sched = false;
@@ -772,10 +769,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   if (use_mtp && mtp_suffix_) {
     const Status suffix_status = suffix.Init(
         seq.history, model_.Get().cfg.vocab, max_len_, {},
-        {this, [](void* context, std::span<const int32_t> ids, bool* numeric) {
-           auto* server = static_cast<ChatServer*>(context);
+        {&request_classes,
+         [](void* context, std::span<const int32_t> ids, bool* numeric) {
+           auto& local = *static_cast<RequestClasses*>(context);
+           auto* server = local.server;
            const std::lock_guard<std::mutex> lock(server->tok_mu_);
-           return server->suffix_token_cache_.Check(ids, numeric);
+           auto& cache = server->suffix_token_cache_;
+           const auto before = cache.Counters();
+           const Status status = cache.Check(ids, numeric);
+           const auto& after = cache.Counters();
+           local.decodes += after.decodes - before.decodes;
+           local.lookups += after.lookups - before.lookups;
+           local.allocations += after.allocations - before.allocations;
+           local.bytes = cache.MemoryBytes();
+           return status;
          }});
     if (!suffix_status.ok())
       std::fprintf(stderr, "[suffix] request=%s disabled=%s\n",
@@ -889,11 +896,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       mtp_d0 = mtp_ar.mtp_next_d0;
       // d_mtp_g was overwritten in place with the next step's trunk.
     }
+    flockfile(stderr);
     std::fprintf(stderr, "[mtp-accept] request=%s draft_counts=",
                  request_id.c_str());
     for (int i = 0; i <= mtp_k_; ++i)
       std::fprintf(stderr, "%s%d", i ? "," : "", accepted_histogram[i]);
     std::fprintf(stderr, "\n");
+    funlockfile(stderr);
   }
   if (mtp_sched) {
     {
@@ -911,7 +920,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     const size_t indexed = suffix.Size();
     suffix.Reset();
     const auto& stats = suffix.Counters();
-    const auto& classes = suffix_token_cache_.Counters();
+    flockfile(stderr);
     std::fprintf(
         stderr,
         "[suffix] request=%s queries=%llu hits=%llu "
@@ -946,11 +955,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         static_cast<unsigned long long>(stats.numeric_ns),
         static_cast<unsigned long long>(stats.short_rejected),
         static_cast<unsigned long long>(stats.classification_failures),
-        static_cast<unsigned long long>(classes.decodes - prior_class_decodes),
-        static_cast<unsigned long long>(classes.lookups - prior_class_lookups),
-        static_cast<unsigned long long>(classes.allocations -
-                                        prior_class_allocations),
-        suffix_token_cache_.MemoryBytes());
+        static_cast<unsigned long long>(request_classes.decodes),
+        static_cast<unsigned long long>(request_classes.lookups),
+        static_cast<unsigned long long>(request_classes.allocations),
+        request_classes.bytes);
     for (size_t i = 0; i < suffix_accepted.size(); ++i)
       std::fprintf(stderr, "%s%llu", i ? "," : "",
                    static_cast<unsigned long long>(suffix_accepted[i]));
@@ -959,6 +967,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       std::fprintf(stderr, "%s%llu", i ? "," : "",
                    static_cast<unsigned long long>(neural_accepted[i]));
     std::fprintf(stderr, "\n");
+    funlockfile(stderr);
   }
   if (!use_mtp) {
     // B2b continuous batching: this request's decode steps are driven by the

@@ -16,11 +16,11 @@ ServerCapabilities CapabilitiesFor(const ServerOptions& options) {
 
 Status ValidateServerOptions(const ServerOptions& options) {
   if (options.mtp_suffix &&
-      (options.no_mtp || options.mtp_k != 3 || options.max_seq != 1 ||
+      (options.no_mtp || options.mtp_k != 3 ||
        options.allow_media ||
        options.max_len > static_cast<int>(mtp::SuffixDrafter::kMaxCapacity)))
     return Status::Fail(
-        "mtp-suffix requires text MTP k=3, max-seq=1, max-len<=262144");
+        "mtp-suffix requires text MTP k=3, max-len<=262144");
   if (!options.mtp_subset_head.empty() &&
       (options.no_mtp || options.mtp_k != 3))
     return Status::Fail("mtp-subset-head requires MTP with fixed k=3");

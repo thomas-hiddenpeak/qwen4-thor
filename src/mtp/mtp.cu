@@ -1400,7 +1400,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                int32_t* next_b, int32_t* next_d0,
                                uint16_t** next_g, cudaStream_t stream,
                                std::span<const int32_t> stop_tokens,
-                               std::span<const int32_t> suffix_draft) {
+                               std::span<const int32_t> suffix_draft,
+                               std::span<const SuffixProposal> batch_suffix) {
   if (!seqs || !b_tok || !d0 || !g_in || !accepted_tokens || !accepted_count ||
       !next_b || !next_d0 || !next_g)
     return Status::Fail("MtpSpeculativeStepMulti: null arg");
@@ -1418,6 +1419,19 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
     return Status::Fail("MtpSpeculativeStepMulti: scratch not reserved for k");
   const int vocab = mtp.cfg.vocab;
   const int hc_dim = mtp.hc_dim();
+  if (!batch_suffix.empty()) {
+    if (!suffix_draft.empty() || k != 3 ||
+        batch_suffix.size() != static_cast<size_t>(B))
+      return Status::Fail("MtpSpeculativeStepMulti: invalid suffix batch");
+    for (int b = 0; b < B; ++b) {
+      const auto& proposal = batch_suffix[b];
+      if (proposal.ready &&
+          (proposal.tokens[0] != d0[b] ||
+           std::any_of(proposal.tokens.begin(), proposal.tokens.end(),
+                       [vocab](int32_t t) { return t < 0 || t >= vocab; })))
+        return Status::Fail("MtpSpeculativeStepMulti: invalid suffix row");
+    }
+  }
   if (!suffix_draft.empty()) {
     if (B != 1 || k != 3 || suffix_draft.size() != 3 ||
         suffix_draft[0] != d0[0] ||
@@ -1438,6 +1452,11 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
       return Status::Fail("MtpSpeculativeStepMulti: invalid pending token");
     if (seqs[b]->stage != model::ModelSequence::Stage::kDecode)
       return Status::Fail("MtpSpeculativeStepMulti: seq not in decode stage");
+    if (seqs[b]->seq_id < 0 || seqs[b]->seq_id >= mtp.max_seq)
+      return Status::Fail("MtpSpeculativeStepMulti: invalid sequence slot");
+    for (int prior = 0; prior < b; ++prior)
+      if (seqs[prior]->seq_id == seqs[b]->seq_id)
+        return Status::Fail("MtpSpeculativeStepMulti: duplicate sequence slot");
   }
 
   diagnostic::Batch execution("mtp.multi", seqs[0]->seq_id,
@@ -1523,94 +1542,96 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   const int k_stride = mtp.k_max;       // column stride of d_ms_drafts
   int32_t* d_drafts = mtp.d_ms_drafts;  // [max_seq, k_max]
   std::vector<int32_t> drafts_host(static_cast<size_t>(B) * k);
-  // Keep async upload sources alive through cleanup's stream completion.
-  std::vector<int> h_pos;
-  if (!suffix_draft.empty()) {
-    // IDs already belong to the full vocabulary. Do not pass these through
-    // DraftArgmax's subset mapping. Only speculative neural generation is
-    // skipped; verify, rollback and accepted-prefix draft extend still run.
-    std::copy(suffix_draft.begin(), suffix_draft.end(), drafts_host.begin());
-  } else {
-    // Token b belongs to pooled slice seq_of[b]. The accepted-prefix extend
-    // overwrites this scratch with its own per-token sequence IDs later.
-    if (cudaMemcpyAsync(mtp.d_ms_ext_seq, seq_of.data(), B * sizeof(int),
+  // Keep every async upload source alive through cleanup's completion.
+  // Packed row and pooled slot are different coordinates: MtpForward reads
+  // hidden_states[row], while KV/indexer and the draft matrix use seq_id.
+  std::vector<int> neural_rows, neural_slots, h_pos;
+  std::vector<int32_t> seeds, neural_drafts;
+  for (int b = 0; b < B; ++b) {
+    const auto proposal = !suffix_draft.empty()
+        ? suffix_draft
+        : (!batch_suffix.empty() && batch_suffix[b].ready
+               ? std::span<const int32_t>(batch_suffix[b].tokens)
+               : std::span<const int32_t>());
+    if (!proposal.empty()) {
+      // Global IDs bypass DraftArgmax's subset mapping entirely.
+      std::copy(proposal.begin(), proposal.end(), drafts_host.begin() + b * k);
+    } else {
+      neural_rows.push_back(b);
+      neural_slots.push_back(seq_of[b]);
+      seeds.push_back(d0[b]);
+    }
+  }
+  const int N = static_cast<int>(neural_rows.size());
+  if (N > 0) {
+    if (cudaMemcpyAsync(mtp.d_ms_ext_seq, neural_slots.data(), N * sizeof(int),
                         cudaMemcpyHostToDevice, stream) != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D draft seq"));
-    for (int b = 0; b < B; ++b) {
-      drafts_host[static_cast<size_t>(b) * k] = d0[b];
+    for (int row = 0; row < N; ++row) {
       if (ObserveExecution("mtp.api.seed_g_d2d", [&] {
             return cudaMemcpy(
-                d_g_pool + static_cast<size_t>(seq_of[b]) * hc_dim,
-                g_in[b], static_cast<size_t>(hc_dim) * 2,
+                d_g_pool + static_cast<size_t>(row) * hc_dim,
+                g_in[neural_rows[row]], static_cast<size_t>(hc_dim) * 2,
                 cudaMemcpyDeviceToDevice);
           }) != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2D g_in"));
     }
-    // Seed column 0 of the draft matrix: H2D d0 -> d_ids, then scatter to
-    // drafts[seq_of[b], 0] (the matrix is indexed by seq_id, not batch pos).
-    if (cudaMemcpyAsync(d_ids, d0, B * sizeof(int32_t), cudaMemcpyHostToDevice,
-                        stream) != cudaSuccess)
+    if (cudaMemcpyAsync(d_ids, seeds.data(), N * sizeof(int32_t),
+                        cudaMemcpyHostToDevice, stream) != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D draft seed"));
-    ScatterDraftKernel<<<B, 32, 0, stream>>>(d_ids, d_drafts, k_stride, 0,
-                                             mtp.d_ms_ext_seq, B);
+    ScatterDraftKernel<<<N, 32, 0, stream>>>(d_ids, d_drafts, k_stride, 0,
+                                             mtp.d_ms_ext_seq, N);
     if (cudaGetLastError() != cudaSuccess)
       return cleanup(
           Status::Fail("MtpSpeculativeStepMulti: scatter draft seed"));
-    h_pos.resize(static_cast<size_t>(B) * k);
+    h_pos.resize(static_cast<size_t>(N) * k);
     for (int j = 1; j < k; ++j)
-      for (int b = 0; b < B; ++b)
-        h_pos[static_cast<size_t>(j) * B + b] = P[b] + j - 1;
+      for (int row = 0; row < N; ++row)
+        h_pos[static_cast<size_t>(j) * N + row] =
+            P[neural_rows[row]] + j - 1;
     for (int j = 1; j < k; ++j) {
-      diagnostic::Scope token_scope("mtp.draft_token", P[0] + j - 1, B);
-      // Gather the previous column (device): d_ids[b] = drafts[seq_of[b], j-1].
-      GatherDraftKernel<<<B, 32, 0, stream>>>(d_drafts, k_stride, j - 1, d_ids,
-                                              mtp.d_ms_ext_seq, B);
+      diagnostic::Scope token_scope("mtp.draft_token",
+                                     P[neural_rows[0]] + j - 1, N);
+      GatherDraftKernel<<<N, 32, 0, stream>>>(d_drafts, k_stride, j - 1, d_ids,
+                                              mtp.d_ms_ext_seq, N);
       if (cudaGetLastError() != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: gather draft"));
-      if (cudaMemcpyAsync(d_pos, h_pos.data() + static_cast<size_t>(j) * B,
-                          B * sizeof(int), cudaMemcpyHostToDevice,
+      if (cudaMemcpyAsync(d_pos, h_pos.data() + static_cast<size_t>(j) * N,
+                          N * sizeof(int), cudaMemcpyHostToDevice,
                           stream) != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: H2D draft pos"));
-      // d_seq_id = seq_of (token b = sequence b -> pooled slice seq_of[b]),
-      // H2D'd into d_ms_ext_seq above (before the loop).
-      const auto pos_begin = h_pos.begin() + static_cast<size_t>(j) * B;
-      const int max_position = *std::max_element(pos_begin, pos_begin + B);
-      Status s =
-          MtpForward(mtp, d_ids, d_pos, d_g_pool, d_sample, d_multi, d_vlogits,
-                     B, stream, mtp.d_ms_ext_seq, true, max_position);
+      const auto pos_begin = h_pos.begin() + static_cast<size_t>(j) * N;
+      const int max_position = *std::max_element(pos_begin, pos_begin + N);
+      Status s = MtpForward(mtp, d_ids, d_pos, d_g_pool, d_sample, d_multi,
+                            d_vlogits, N, stream, mtp.d_ms_ext_seq, true,
+                            max_position);
       if (!s.ok()) return cleanup(s);
-      // Argmax over the B rows -> d_ext_ids (kept separate from d_ids so the
-      // gather input is not clobbered; d_ext_ids is reused by the extend
-      // phase).
-      s = DraftArgmax(mtp, d_vlogits, B, d_ext_ids, stream);
+      s = DraftArgmax(mtp, d_vlogits, N, d_ext_ids, stream);
       if (!s.ok()) return cleanup(s);
-      // Scatter the new column back (device): drafts[seq_of[b], j] = argmax.
-      ScatterDraftKernel<<<B, 32, 0, stream>>>(d_ext_ids, d_drafts, k_stride, j,
-                                               mtp.d_ms_ext_seq, B);
+      ScatterDraftKernel<<<N, 32, 0, stream>>>(d_ext_ids, d_drafts, k_stride, j,
+                                               mtp.d_ms_ext_seq, N);
       if (cudaGetLastError() != cudaSuccess)
         return cleanup(Status::Fail("MtpSpeculativeStepMulti: scatter draft"));
-      // Roll the per-seq trunk: d_g_pool[b] = d_multi[b].
-      for (int b = 0; b < B; ++b)
-        if (cudaMemcpyAsync(d_g_pool + static_cast<size_t>(seq_of[b]) * hc_dim,
-                            d_multi + static_cast<size_t>(b) * hc_dim,
-                            static_cast<size_t>(hc_dim) * 2,
-                            cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
-          return cleanup(Status::Fail("MtpSpeculativeStepMulti: roll g"));
+      // Trunks remain packed in neural-row order, never indexed by slot.
+      if (cudaMemcpyAsync(d_g_pool, d_multi, size_t(N) * hc_dim * 2,
+                          cudaMemcpyDeviceToDevice, stream) != cudaSuccess)
+        return cleanup(Status::Fail("MtpSpeculativeStepMulti: roll g"));
     }
-    // Extract the [B, k] draft sub-matrix to host. The matrix is indexed by
-    // seq_id (seq_of[b]), so gather the rows
-    // into d_ext_ids (device, sized max_seq*k_max >= B*k), then one D2H.
-    GatherDraftMatrixKernel<<<B, 32, 0, stream>>>(
-        d_drafts, k_stride, k, d_ext_ids, mtp.d_ms_ext_seq, B);
+    GatherDraftMatrixKernel<<<N, 32, 0, stream>>>(
+        d_drafts, k_stride, k, d_ext_ids, mtp.d_ms_ext_seq, N);
     if (cudaGetLastError() != cudaSuccess)
       return cleanup(
           Status::Fail("MtpSpeculativeStepMulti: gather draft matrix"));
+    neural_drafts.resize(static_cast<size_t>(N) * k);
     if (ObserveExecution("mtp.api.draft_matrix_d2h", [&] {
-          return cudaMemcpy(drafts_host.data(), d_ext_ids,
-                            static_cast<size_t>(B) * k * sizeof(int32_t),
+          return cudaMemcpy(neural_drafts.data(), d_ext_ids,
+                            neural_drafts.size() * sizeof(int32_t),
                             cudaMemcpyDeviceToHost);
         }) != cudaSuccess)
       return cleanup(Status::Fail("MtpSpeculativeStepMulti: D2H draft matrix"));
+    for (int row = 0; row < N; ++row)
+      std::copy_n(neural_drafts.begin() + row * k, k,
+                  drafts_host.begin() + neural_rows[row] * k);
   }
   if (timing) cudaEventRecord(ev_d1, stream);
   t_draft1 = std::chrono::steady_clock::now();

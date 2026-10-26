@@ -175,15 +175,16 @@ Q4T_TEST(serve_startup_plan_modes_are_explicit_and_transactional) {
   return true;
 }
 
-Q4T_TEST(serve_suffix_requires_single_text_fixed_k3) {
+Q4T_TEST(serve_suffix_requires_text_fixed_k3) {
   auto options = Defaults();
   Q4T_CHECK(Parse({"--mtp-suffix", "--max-len", "262144"}, &options));
   Q4T_CHECK(options.mtp_suffix && options.mtp_subset_head.empty());
   Q4T_CHECK(Parse({"--mtp-subset-head", "/explicit-artifact"}, &options));
+  for (const auto concurrency : {"1", "2", "4", "16", "32"})
+    Q4T_CHECK(Parse({"--max-seq", concurrency}, &options));
   for (const auto args : {
            std::initializer_list<std::string_view>{"--mtp-suffix", "--no-mtp"},
            {"--mtp-suffix", "--mtp-k", "2"},
-           {"--mtp-suffix", "--max-seq", "2"},
            {"--mtp-suffix", "--allow-media"},
            {"--mtp-suffix", "--max-len", "262145"}}) {
     auto rejected = Defaults();

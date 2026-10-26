@@ -305,7 +305,7 @@ Q4T_TEST(budget_mtp_requires_independent_weight_staging_and_workspace_inputs) {
 }
 
 Q4T_TEST(budget_mtp_scope_rejects_unsupported_configurations) {
-  for (int seq : {0, 2, 8}) {
+  for (int seq : {0, 2049, std::numeric_limits<int>::max()}) {
     auto request = MtpRequest();
     request.max_seq = seq;
     const auto budget =
@@ -470,5 +470,35 @@ Q4T_TEST(residency_capacity_file_errors_fail_before_loading) {
   }
   Q4T_CHECK(q4t::runtime::LoadResidencyConfig(file, 4, 8, 4, &config));
   Q4T_CHECK(config.total_slots == 16);
+  return true;
+}
+
+Q4T_TEST(budget_mtp_concurrent_held_trunks_and_pooled_scratch) {
+  auto one = MtpRequest(16384);
+  const auto baseline = ComputeMemoryBudget(MtpParams(), one, kWeights, kRoom);
+  for (int slots : {2, 4, 16, 32}) {
+    auto request = one;
+    request.max_seq = slots;
+    const auto budget = ComputeMemoryBudget(MtpParams(), request, kWeights, kRoom);
+    Q4T_CHECK(budget.feasible && budget.max_seq == slots && !budget.capped);
+    Q4T_CHECK(budget.mtp_scratch == 2191392u + 4285528u * slots);
+    Q4T_CHECK(budget.mtp_checkpoints == baseline.mtp_checkpoints * slots);
+    Q4T_CHECK(budget.state_pool == baseline.state_pool * slots);
+    // Simultaneous prompt trunks/g/host history; only one serialized extend.
+    const size_t held = size_t(16384) * (10240 * 2 + 8) + 10240 * 2;
+    Q4T_CHECK(budget.per_request == baseline.per_request + held * (slots - 1) +
+                  budget.mtp_forward_temp - baseline.mtp_forward_temp);
+    const auto exact = ComputeMemoryBudget(MtpParams(), request, kWeights,
+                                           budget.estimated_total);
+    Q4T_CHECK(exact.feasible && !exact.capped && exact.max_seq == slots);
+    const auto short_one = ComputeMemoryBudget(MtpParams(), request, kWeights,
+                                               budget.estimated_total - 1);
+    Q4T_CHECK(short_one.feasible && short_one.capped &&
+                  short_one.max_seq == slots - 1 &&
+                  short_one.estimated_total <= short_one.budget);
+  }
+  one.max_seq = 4;
+  one.max_prefill = 15;
+  Q4T_CHECK(!ComputeMemoryBudget(MtpParams(), one, kWeights, kRoom).feasible);
   return true;
 }

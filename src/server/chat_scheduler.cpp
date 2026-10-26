@@ -6,6 +6,7 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <map>
 #include <span>
 #include <string>
 #include <vector>
@@ -152,6 +153,9 @@ void ChatServer::RunOnePrefillChunk() {
 
 void ChatServer::SchedulerLoop() {
   const int vocab = model_.Get().cfg.vocab;
+  // One shutdown summary per observed (batch rows, suffix rows), not a log
+  // per token. Entries are bounded by the configured active-slot count.
+  std::map<std::pair<int, int>, uint64_t> mtp_batches;
   for (;;) {
     std::vector<ActiveRequest*> pending;
     std::vector<PrefillReq*> pf;
@@ -215,6 +219,10 @@ void ChatServer::SchedulerLoop() {
           p->cv.notify_one();
         }
         chunk_prefill_pending_.clear();
+        for (const auto& [shape, count] : mtp_batches)
+          std::fprintf(stderr, "[mtp-batches] rows=%d suffix=%d steps=%llu\n",
+                       shape.first, shape.second,
+                       static_cast<unsigned long long>(count));
         return;
       }
       // Collect pending prefills into one batch (up to max_seq sequences /
@@ -352,20 +360,24 @@ void ChatServer::SchedulerLoop() {
       std::vector<int32_t> b_tok(B), d0(B);
       std::vector<const uint16_t*> g_in(B);
       std::vector<uint16_t*> next_g(B);
+      std::vector<mtp::SuffixProposal> suffix;
+      if (mtp_suffix_) suffix.resize(B);
+      int suffix_rows = 0;
       for (int i = 0; i < B; ++i) {
         seqs[i] = mtp_reqs[i]->seq;
         b_tok[i] = mtp_reqs[i]->mtp_b;
         d0[i] = mtp_reqs[i]->mtp_d0;
         g_in[i] = mtp_reqs[i]->mtp_g;
         next_g[i] = mtp_reqs[i]->mtp_g;  // trunk rolled in place
+        if (mtp_suffix_) {
+          suffix[i].ready = mtp_reqs[i]->mtp_suffix_ready;
+          suffix[i].tokens = mtp_reqs[i]->mtp_suffix_tokens;
+          suffix_rows += suffix[i].ready;
+        }
       }
       std::vector<int32_t> accepted(static_cast<size_t>(B) * (mtp_k_ + 1));
       std::vector<int> acc_count(B, 0);
       std::vector<int32_t> next_b(B, 0), next_d0(B, 0);
-      const std::span<const int32_t> suffix =
-          B == 1 && mtp_reqs[0]->mtp_suffix_ready
-              ? std::span<const int32_t>(mtp_reqs[0]->mtp_suffix_tokens)
-              : std::span<const int32_t>();
       Status s;
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
@@ -376,7 +388,7 @@ void ChatServer::SchedulerLoop() {
                                          B, mtp_k_, accepted.data(),
                                          acc_count.data(), next_b.data(),
                                          next_d0.data(), next_g.data(),
-                                         nullptr, stop_token_ids_, suffix);
+                                         nullptr, stop_token_ids_, {}, suffix);
         if (!s.ok())
           for (auto* sequence : seqs) sequence->Fail();
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
@@ -384,6 +396,7 @@ void ChatServer::SchedulerLoop() {
       }
       {
         const std::lock_guard<std::mutex> lock(sched_mu_);
+        if (s.ok()) ++mtp_batches[{B, suffix_rows}];
         for (int i = 0; i < B; ++i) {
           ActiveRequest* r = mtp_reqs[i];
           r->pending = false;

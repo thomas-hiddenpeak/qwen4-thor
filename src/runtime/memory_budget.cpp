@@ -89,7 +89,7 @@ size_t MtpBufferBytes(const BudgetModelParams& p) {
 
 // MtpReserveScratch allocates both sets even for B=1. k+1 is the verify and
 // extend row capacity; the main recurrent checkpoints instead use k rows.
-size_t MtpScratchBytes(const BudgetModelParams& p, int k) {
+size_t MtpScratchBytes(const BudgetModelParams& p, int k, int seq) {
   const size_t rows = static_cast<size_t>(k) + 1u;
   const size_t hidden = Mul(p.hs, 2u);
   const size_t trunk = Mul(p.hc_dim(), 2u);
@@ -102,7 +102,7 @@ size_t MtpScratchBytes(const BudgetModelParams& p, int k) {
   const size_t multi =
       Add(Sum({8u, hidden, Mul(trunk, 2u)}),
           Mul(rows, Sum({Mul(trunk, 3u), Mul(logits, 2u), hidden, 20u})));
-  return Add(single, multi);
+  return Add(single, Mul(multi, seq));
 }
 
 size_t MtpCheckpointBytes(const BudgetModelParams& p, int k) {
@@ -111,7 +111,7 @@ size_t MtpCheckpointBytes(const BudgetModelParams& p, int k) {
              k);
 }
 
-size_t MtpForwardTempBytes(const BudgetModelParams& p, int k) {
+size_t MtpForwardTempBytes(const BudgetModelParams& p, int k, int seq) {
   // MoeBf16RoutedForward separately cudaMallocAsyncs token_list and counts.
   // Its workspace sizing reserves the same bytes but does not use them for
   // these allocations. Both the workspace and this extra allocation exist.
@@ -125,7 +125,7 @@ size_t MtpForwardTempBytes(const BudgetModelParams& p, int k) {
   // vhist copy is length-dependent and covered by PerRequestBytes' host
   // envelope, not by this subtotal. Sum across sequential subphases.
   const size_t decode_host = Mul(7u + k + 6u * rows + 2u, 4u);
-  return Sum({moe_device, moe_host, positions, decode_host});
+  return Sum({moe_device, moe_host, positions, Mul(decode_host, seq)});
 }
 
 size_t MtpLoadingHostBytes(const BudgetModelParams& p, const BudgetRequest& req,
@@ -214,7 +214,8 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
         p.ple_heads <= std::numeric_limits<int>::max() / p.ple_row_bytes));
   const bool supported_mtp =
       !p.has_mtp ||
-      (req.max_seq == 1 && req.mtp_k >= 1 && req.mtp_k <= 16 &&
+      (req.max_seq >= 1 && req.mtp_k >= 1 && req.mtp_k <= 16 &&
+       req.max_seq <= p.max_prefill / (req.mtp_k + 1) &&
        p.mtp_full_attn_layers == 1 && p.max_prefill >= 4 &&
        p.max_prefill <= 8192);
   const bool complete_mtp =
@@ -231,31 +232,49 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
       b.mtp_workspace = req.mtp_workspace_bytes;
       b.mtp_weights = req.mtp_weights_bytes;
       b.mtp_buffers = MtpBufferBytes(p);
-      b.mtp_scratch = MtpScratchBytes(p, req.mtp_k);
-      b.mtp_checkpoints = MtpCheckpointBytes(p, req.mtp_k);
-      b.mtp_forward_temp = MtpForwardTempBytes(p, req.mtp_k);
+      b.mtp_scratch = MtpScratchBytes(p, req.mtp_k, req.max_seq);
+      b.mtp_checkpoints = Mul(MtpCheckpointBytes(p, req.mtp_k), req.max_seq);
+      b.mtp_forward_temp = MtpForwardTempBytes(p, req.mtp_k, req.max_seq);
       b.loading_host_peak = MtpLoadingHostBytes(p, req, 0);
     }
     b.forward_buffers = ForwardBufferBytes(p);
     b.ple_working = PleWorkingBytes(p);
-    b.fixed =
+    const size_t common_fixed =
         Sum({weights_bytes, b.main_workspace, b.mtp_workspace, b.mtp_weights,
-             b.mtp_buffers, b.mtp_scratch, b.mtp_checkpoints, b.forward_buffers,
-             b.ple_working, kContextMarginBytes, req.extra_fixed_bytes});
-    const auto peak_extra = [&](int len) {
-      return std::max(PerRequestBytes(p, len, b.mtp_forward_temp),
-                      MtpLoadingHostBytes(p, req, len));
+             b.mtp_buffers, b.forward_buffers, b.ple_working,
+             kContextMarginBytes, req.extra_fixed_bytes});
+    const auto fixed_for = [&](int seq) {
+      return p.has_mtp
+          ? Sum({common_fixed, MtpScratchBytes(p, req.mtp_k, seq),
+                 Mul(MtpCheckpointBytes(p, req.mtp_k), seq)})
+          : common_fixed;
     };
-    const auto available_for = [&](int len) -> size_t {
-      const size_t fixed = Add(b.fixed, peak_extra(len));
+    const auto request_peak = [&](int len, int seq) {
+      if (!p.has_mtp) return size_t{0};
+      // Every admitted request can hold a prompt trunk and rolling g.
+      // Extend's chunk and temporary forward allocations run under model_mu_
+      // and therefore occur only once, even with multiple admitted requests.
+      const size_t held = Sum({Mul(len, Mul(p.hc_dim(), 2u)),
+                               Mul(p.hc_dim(), 2u), Mul(len, 8u)});
+      return Add(PerRequestBytes(p, len,
+                                  MtpForwardTempBytes(p, req.mtp_k, seq)),
+                 Mul(held, static_cast<size_t>(seq - 1)));
+    };
+    const auto peak_extra = [&](int len, int seq) {
+      return std::max(request_peak(len, seq), MtpLoadingHostBytes(p, req, len));
+    };
+    const auto available_for = [&](int len, int seq) -> size_t {
+      const size_t fixed = Add(fixed_for(seq), peak_extra(len, seq));
       return b.budget > fixed ? b.budget - fixed : 0;
     };
     const auto fits = [&](int len, int seq) {
-      return len > 0 && seq > 0 && b.fixed <= b.budget &&
+      const size_t fixed = fixed_for(seq);
+      return len > 0 && seq > 0 && fixed <= b.budget &&
              (!p.has_mtp || len >= req.mtp_k + 1) &&
-             peak_extra(len) <= b.budget - b.fixed &&
-             StatePoolBytes(p, len, seq) <= available_for(len);
+             peak_extra(len, seq) <= b.budget - fixed &&
+             StatePoolBytes(p, len, seq) <= available_for(len, seq);
     };
+    b.fixed = fixed_for(p.has_mtp ? req.max_seq : 1);
     constexpr int kHardMaxLen = 262144;
     const int requested_seq = req.max_seq > 0 ? req.max_seq : 8;
     int len = 0;
@@ -264,9 +283,15 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
       const int bound = std::min(req.max_len, kHardMaxLen);
       if (fits(bound, 1)) {
         len = bound;
-        const size_t per_seq = StatePoolBytes(p, len, 1);
-        seq = static_cast<int>(
-            std::min<size_t>(requested_seq, available_for(len) / per_seq));
+        // Scratch, checkpoints and held prompt trunks also scale with
+        // slots. A state-pool-only division would undercharge concurrency.
+        int lo = 1, hi = requested_seq;
+        seq = 1;
+        while (lo <= hi) {
+          const int mid = lo + (hi - lo) / 2;
+          if (fits(len, mid)) { seq = mid; lo = mid + 1; }
+          else { hi = mid - 1; }
+        }
       } else {
         // A pinned length may shrink to >=2048; shorter explicit requests
         // must fit in full. Zero means there was no supported solution.
@@ -302,9 +327,15 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
       b.max_seq = seq;
       b.capped = (req.max_len > 0 && len < req.max_len) || seq < requested_seq;
       b.state_pool = StatePoolBytes(p, len, seq);
-      b.per_request = PerRequestBytes(p, len, b.mtp_forward_temp);
+      b.fixed = fixed_for(seq);
+      b.per_request = request_peak(len, seq);
+      if (p.has_mtp) {
+        b.mtp_scratch = MtpScratchBytes(p, req.mtp_k, seq);
+        b.mtp_checkpoints = Mul(MtpCheckpointBytes(p, req.mtp_k), seq);
+        b.mtp_forward_temp = MtpForwardTempBytes(p, req.mtp_k, seq);
+      }
       b.loading_host_peak = MtpLoadingHostBytes(p, req, len);
-      b.available_for_state = available_for(len);
+      b.available_for_state = available_for(len, seq);
     }
     b.runtime_peak = Sum({b.fixed, b.state_pool, b.per_request});
     // All persistent allocations are charged even if some are created only
@@ -336,12 +367,12 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
      << " forward_buffers=" << b.forward_buffers
      << " ple_working=" << b.ple_working << " mtp=" << p.has_mtp << "\n"
      << "[q4t][budget]   per_request=" << b.per_request / 1e9
-     << " GB (MTP request allocations)  state_pool=" << b.state_pool / 1e9
+     << " GB (peak admitted MTP request allocations)  state_pool=" << b.state_pool / 1e9
      << " GB\n"
      << "[q4t][budget]   => max_len=" << b.max_len << " max_seq=" << b.max_seq
      << (b.capped ? "  (CAPPED to fit estimate)" : "") << "\n";
   if (p.has_mtp) {
-    os << "[q4t][budget]   MTP allocation scope: text max_seq=1, "
+    os << "[q4t][budget]   MTP allocation scope: text pooled sequences, "
           "k in [1,16]; allocation estimate, not a physical RAM guarantee\n"
        << "[q4t][budget]   mtp_weights=" << b.mtp_weights
        << " mtp_buffers=" << b.mtp_buffers << " mtp_scratch=" << b.mtp_scratch

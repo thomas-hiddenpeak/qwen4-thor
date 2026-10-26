@@ -117,7 +117,8 @@ struct Frame {
 
 class Fixture {
  public:
-  Fixture() : logits_(16u * 248320), trunk_(16u * 10240), g_(10240) {
+  explicit Fixture(int slots = 1)
+      : logits_(16u * 248320), trunk_(16u * 10240), g_(10240) {
     q4t::model::ModelConfig cfg;
     cfg.model_dir = kModelDir;
     cfg.index_path = kModelDir + "/model.safetensors.index.json";
@@ -126,13 +127,13 @@ class Fixture {
     cfg.max_prefill = 16;
     cfg.max_len = kCapacity;
     cfg.ple_capacity_tokens = 16;
-    cfg.max_seq = 1;
+    cfg.max_seq = slots;
     Check(owner_.Load(cfg, nullptr), "load controlled target");
     q4t::mtp::MtpConfig draft_cfg;
     draft_cfg.mtp_dir = kModelDir + "/mtp";
     draft_cfg.max_prefill = 16;
     draft_cfg.max_len = kCapacity;
-    draft_cfg.max_seq = 1;
+    draft_cfg.max_seq = slots;
     if (const char* subset = std::getenv("Q4T_TEST_SUBSET_HEAD"))
       draft_cfg.subset_head_dir = subset;
     Check(q4t::mtp::LoadMtp(draft_cfg, main().head.embed_tokens,
@@ -400,10 +401,31 @@ class Fixture {
                 two_next == std::array<int32_t, 2>{-1, -1} &&
                 two_seed == std::array<int32_t, 2>{-1, -1},
             "B=2 suffix clears both output rows");
+    const auto reject_batch = [&](std::span<const q4t::mtp::SuffixProposal> p) {
+      Require(!q4t::mtp::MtpSpeculativeStepMulti(
+                   main(), two_slots, two_seqs, two_bonus, two_d0, two_input_g,
+                   2, k, two_accepted.data(), two_count.data(), two_next.data(),
+                   two_seed.data(), two_output_g, nullptr, {}, {}, p).ok(),
+              "invalid batch suffix rejected before device access");
+      Require(two_count == std::array<int, 2>{0, 0} &&
+                  two_next == std::array<int32_t, 2>{-1, -1},
+              "invalid batch clears all outputs");
+    };
+    std::array<q4t::mtp::SuffixProposal, 2> batch{};
+    batch[0].ready = true;
+    batch[0].tokens = valid;
+    reject_batch(std::span(batch).first(1));  // incorrect row count
+    batch[0].tokens[0] = (d0_ + 1) % vocab();
+    reject_batch(batch);
+    batch[0].tokens = valid;
+    batch[0].tokens[2] = vocab();
+    reject_batch(batch);
+    batch[0].tokens = valid;
+    reject_batch(batch);  // duplicate slots, even if one proposal is inactive
     Exact(Snapshot().data, before.data, "invalid target untouched");
     ExactCache(CaptureCache(), cache, kCapacity);
     Exact(Read(g_.data(), main().hc_dim()), g, "invalid draft untouched");
-    std::printf("SUFFIX_INVALID cases=7 fail_closed=1\n");
+    std::printf("SUFFIX_INVALID cases=11 fail_closed=1\n");
   }
 
   std::array<int32_t, k> NaturalSuffix() {
@@ -544,5 +566,318 @@ Q4T_TEST(mtp_suffix_states) {
       "SUFFIX_CONTRACT accept=0,1,2,3 switches=3 terminal=1 "
       "slot_reuse=1 length_tail=1 full_target_layers=2 subset=%d\n",
       fixture.mtp().subset_head != nullptr);
+  return true;
+}
+
+namespace {
+// Capture every pooled slice explicitly: legacy ModelSnapshotState covers
+// slot zero only. These copies are test references, never production work.
+struct Regions {
+  std::vector<std::pair<uint8_t*, size_t>> regions;
+  std::vector<std::vector<uint8_t>> ReadAll() const {
+    std::vector<std::vector<uint8_t>> result;
+    for (const auto& [p, n] : regions) result.push_back(Read(p, n));
+    return result;
+  }
+  void Restore(const std::vector<std::vector<uint8_t>>& data) const {
+    for (size_t i = 0; i < regions.size(); ++i)
+      Write(regions[i].first, data[i]);
+  }
+  void Add(void* p, size_t n) {
+    if (p) regions.emplace_back(static_cast<uint8_t*>(p), n);
+  }
+};
+
+class MultiFixture {
+ public:
+  MultiFixture() : fixture_(8), logits_(16u * 248320), trunk_(16u * 10240),
+                   g_(4u * 10240), packed_(16u * 10240), multi_(16u * 10240),
+                   sample_(16u * 2560) {
+    for (auto& layer : main().layers) {
+      target_.Add(layer.ssm_state,
+                  4u * layer.linear.nv * layer.linear.kd * layer.linear.vd * 4);
+      target_.Add(layer.conv_state,
+                  4u * layer.linear.in_qkv() * (layer.linear.conv_k - 1) * 2);
+      target_.Add(layer.ple_conv_state,
+                  4u * layer.hc_dim * (layer.ple.conv_kernel - 1) *
+                      layer.ple.conv_dilation * 2);
+    }
+    cache_.Add(mtp().kv_cache, 4 * mtp().kv_bytes);
+    cache_.Add(mtp().idx_raw, 4 * mtp().idx_bytes);
+    cache_.Add(mtp().idx_comp, 4 * mtp().idx_bytes);
+    if (mtp().subset_ids) subset_ = Read(mtp().subset_ids, mtp().DraftVocab());
+    Start();
+  }
+
+  void Start() {
+    for (int slot = 0; slot < 4; ++slot) {
+      std::array<int32_t, 4> prompt{846 + slot, 25, 1203, 321 + slot};
+      Check(q4t::model::ModelBeginSequence(main(), &seqs_[slot], nullptr, slot),
+            "multi fresh target");
+      Check(q4t::model::ModelPrefill(main(), &seqs_[slot], prompt.data(), 4,
+                                     logits_.data(), nullptr, trunk_.data(),
+                                     nullptr, slot), "multi prefill");
+      const auto lg = Read(logits_.data(), 4u * vocab());
+      bonus_[slot] = Argmax(lg.data() + 3u * vocab(), vocab());
+      const std::array<int32_t, 4> shifted{
+          prompt[1], prompt[2], prompt[3], bonus_[slot]};
+      const std::array<int, 4> positions{0, 1, 2, 3};
+      Check(q4t::mtp::MtpResetState(mtp(), nullptr, slot), "multi draft reset");
+      Check(q4t::mtp::MtpDraftExtend(
+                mtp(), shifted.data(), trunk_.data(), positions.data(), 4,
+                &d0_[slot], G(slot), nullptr, slot), "multi initial extend");
+    }
+  }
+
+  // The reference creates compact neural rows on CPU, runs MtpForward
+  // directly, and never uses production gather/scatter/rolling code.
+  void Step(const std::vector<int>& slots, unsigned mask) {
+    const int B = static_cast<int>(slots.size());
+    const int hc = main().hc_dim();
+    const auto before_target = target_.ReadAll();
+    const auto before_cache = cache_.ReadAll();
+    const auto before_host = seqs_;
+    std::vector<q4t::mtp::SuffixProposal> suffix(B);
+    std::vector<int32_t> drafts(B * 3, vocab() - 1), bonus(B), seed(B);
+    std::vector<int> positions(B), neural;
+    std::vector<const ModelSequence*> seq(B);
+    std::vector<const uint16_t*> input(B);
+    std::vector<uint16_t*> output(B);
+    for (int row = 0; row < B; ++row) {
+      const int slot = slots[row];
+      seq[row] = &seqs_[slot];
+      positions[row] = seqs_[slot].position;
+      bonus[row] = bonus_[slot];
+      seed[row] = d0_[slot];
+      input[row] = output[row] = G(slot);
+      suffix[row].ready = (mask >> row) & 1;
+      if (!suffix[row].ready) neural.push_back(row);
+    }
+    // Construct simultaneous 0/1/2/3 accepts for suffix rows. Probe only
+    // supplies predictions; the state reference below uses accepted inputs.
+    for (int col = 0; col < 3; ++col) {
+      auto predictions = Probe(slots, bonus, drafts);
+      target_.Restore(before_target);
+      for (int row = 0; row < B; ++row) {
+        if (!suffix[row].ready) continue;
+        const int wanted = slots[row] % 4;
+        drafts[row * 3 + col] = col < wanted
+            ? predictions[row * 4 + col]
+            : (col == wanted ? (predictions[row * 4 + col] + 1) % vocab()
+                              : vocab() - 1);
+      }
+    }
+    for (int row = 0; row < B; ++row) {
+      if (!suffix[row].ready) continue;
+      std::copy_n(drafts.begin() + row * 3, 3, suffix[row].tokens.begin());
+      seed[row] = drafts[row * 3];  // controlled API input, as single fixture
+    }
+    const int N = static_cast<int>(neural.size());
+    std::vector<uint16_t> rolling;
+    std::vector<int32_t> ids;
+    std::vector<int> nslots, npos;
+    for (int row : neural) {
+      auto hidden = Read(G(slots[row]), hc);
+      rolling.insert(rolling.end(), hidden.begin(), hidden.end());
+      drafts[row * 3] = seed[row];
+      ids.push_back(seed[row]);
+      nslots.push_back(slots[row]);
+      npos.push_back(positions[row]);
+    }
+    for (int col = 1; col < 3 && N; ++col) {
+      auto result = Forward(ids, npos, nslots, rolling);
+      rolling = std::move(result.second);
+      for (int n = 0; n < N; ++n) {
+        ids[n] = DraftToken(result.first.data() + size_t(n) * mtp().DraftVocab());
+        drafts[neural[n] * 3 + col] = ids[n];
+        ++npos[n];
+      }
+    }
+    cache_.Restore(before_cache);
+    const auto predictions = Probe(slots, bonus, drafts);
+    const auto expected_verify = Read(logits_.data(), size_t(B * 4) * vocab());
+    target_.Restore(before_target);
+    std::vector<int32_t> accepted(B * 4), next(B), next_d0(B);
+    std::vector<int> count(B);
+    Check(q4t::mtp::MtpSpeculativeStepMulti(
+              main(), mtp(), seq.data(), bonus.data(), seed.data(), input.data(),
+              B, 3, accepted.data(), count.data(), next.data(), next_d0.data(),
+              output.data(), nullptr, {}, {}, suffix), "mixed actual step");
+    if (N) Exact(Read(mtp().d_ms_g_pool, size_t(N) * hc), rolling,
+                 "packed neural trunk independent reference");
+    Exact(Read(mtp().d_ms_vlogits, size_t(B * 4) * vocab()), expected_verify,
+          "mixed global IDs and neural candidates");
+    const auto actual_target = target_.ReadAll();
+    const auto actual_cache = cache_.ReadAll();
+    const auto actual_g = Read(g_.data(), 4u * hc);
+    const auto verify_trunk = Read(mtp().d_ms_vtrunk, size_t(B * 4) * hc);
+    std::vector<int32_t> extend_ids;
+    std::vector<int> extend_pos, extend_slots, last;
+    std::vector<uint16_t> extend_hidden;
+    target_.Restore(before_target);
+    std::vector<int32_t> reference_ids, reference_prior;
+    std::vector<int> reference_lengths, reference_slots, reference_positions;
+    const int hist_width = main().ple_hash.ngram_size - 1;
+    for (int row = 0; row < B; ++row) {
+      const int slot = slots[row];
+      int accept = 0;
+      while (accept < 3 && drafts[row * 3 + accept] ==
+                               predictions[row * 4 + accept]) ++accept;
+      Require(count[row] == accept + 1 && next[row] ==
+                  predictions[row * 4 + accept], "mixed independent acceptance");
+      if (suffix[row].ready)
+        Require(accept == slot % 4, "multi acceptance coverage");
+      Require(accepted[row * 4] == bonus[row], "multi pending commit");
+      Require(std::equal(drafts.begin() + row * 3,
+                          drafts.begin() + row * 3 + accept,
+                          accepted.begin() + row * 4 + 1), "multi accepted IDs");
+      Require(seqs_[slot].history == before_host[slot].history &&
+                  seqs_[slot].position == before_host[slot].position,
+              "multi leaves caller state unchanged");
+      // Keep the same dense M and packed prefix row offsets as verify.
+      // Only accepted inputs execute against the real sequence. Rejected
+      // tails belong to fresh, isolated padding slots (4..7), never to it.
+      reference_lengths.push_back(count[row]);
+      reference_slots.push_back(slot);
+      reference_positions.push_back(positions[row]);
+      reference_ids.insert(reference_ids.end(), accepted.begin() + row * 4,
+                           accepted.begin() + row * 4 + count[row]);
+      for (int h = positions[row] - hist_width; h < positions[row]; ++h)
+        reference_prior.push_back(h >= 0 ? seqs_[slot].history[h]
+                                         : main().cfg.eos_token_id);
+      if (count[row] < 4) {
+        reference_lengths.push_back(4 - count[row]);
+        reference_slots.push_back(4 + row);
+        reference_positions.push_back(0);
+        for (int j = count[row]; j < 4; ++j)
+          reference_ids.push_back(drafts[row * 3 + j - 1]);
+        reference_prior.insert(reference_prior.end(), hist_width,
+                                main().cfg.eos_token_id);
+      }
+      for (int j = 0; j < count[row]; ++j) {
+        extend_ids.push_back(j < accept ? drafts[row * 3 + j] : next[row]);
+        extend_pos.push_back(positions[row] + j);
+        extend_slots.push_back(slot);
+        const auto start = verify_trunk.begin() + size_t(row * 4 + j) * hc;
+        extend_hidden.insert(extend_hidden.end(), start, start + hc);
+      }
+      last.push_back(static_cast<int>(extend_ids.size()) - 1);
+    }
+    Check(q4t::model::ModelMixedBatch(main(), reference_ids.data(),
+              reference_lengths.data(), reference_slots.data(),
+              reference_positions.data(), reference_prior.data(),
+              static_cast<int>(reference_lengths.size()), logits_.data(),
+              nullptr), "independent accepted-only packed target");
+    const auto reference_target = target_.ReadAll();
+    for (size_t i = 0; i < actual_target.size(); ++i)
+      Exact(actual_target[i], reference_target[i], "all pooled target prefixes");
+    target_.Restore(actual_target);
+    // Discard ALL speculative writes, then extend only the accepted shifted
+    // inputs using the same total M. This reference does not call Multi.
+    cache_.Restore(before_cache);
+    const auto extended = Forward(extend_ids, extend_pos, extend_slots,
+                                   extend_hidden);
+    for (int row = 0; row < B; ++row) {
+      Require(next_d0[row] == DraftToken(extended.first.data() +
+                  size_t(last[row]) * mtp().DraftVocab()), "mixed next d0");
+      const auto start = extended.second.begin() + size_t(last[row]) * hc;
+      Exact(Read(G(slots[row]), hc), std::vector<uint16_t>(start, start + hc),
+            "mixed next g");
+      const int committed = positions[row] + count[row];
+      const auto reference_cache = cache_.ReadAll();
+      const size_t lengths[] = {
+          size_t(committed) * mtp().cfg.nkv * 2 * mtp().cfg.hd * 2,
+          size_t(committed) * mtp().cfg.idx_head_dim * 2,
+          size_t(committed / mtp().cfg.idx_compress) * mtp().cfg.idx_head_dim * 2};
+      for (int i = 0; i < 3; ++i) {
+        const size_t offset = size_t(slots[row]) * cache_.regions[i].second / 4;
+        Exact(std::vector<uint8_t>(actual_cache[i].begin() + offset,
+                                   actual_cache[i].begin() + offset + lengths[i]),
+              std::vector<uint8_t>(reference_cache[i].begin() + offset,
+                                   reference_cache[i].begin() + offset + lengths[i]),
+              "mixed committed draft cache");
+      }
+      seqs_[slots[row]].position += count[row];
+      seqs_[slots[row]].history.insert(seqs_[slots[row]].history.end(),
+          accepted.begin() + row * 4, accepted.begin() + row * 4 + count[row]);
+      bonus_[slots[row]] = next[row];
+      d0_[slots[row]] = next_d0[row];
+    }
+    cache_.Restore(actual_cache);
+    Write(g_.data(), actual_g);
+    std::printf("SUFFIX_MULTI B=%d neural=%d mask=%u target_exact=1 "
+                "draft_exact=1 packed_trunk_exact=1\n", B, N, mask);
+  }
+
+ private:
+  q4t::model::Model& main() { return fixture_.main(); }
+  q4t::mtp::MtpModel& mtp() { return fixture_.mtp(); }
+  int vocab() { return main().cfg.vocab; }
+  uint16_t* G(int slot) { return g_.data() + size_t(slot) * main().hc_dim(); }
+  int32_t DraftToken(const uint16_t* row) {
+    const int local = Argmax(row, mtp().DraftVocab());
+    return subset_.empty() ? local : subset_[local];
+  }
+  std::vector<int32_t> Probe(const std::vector<int>& slots,
+                             const std::vector<int32_t>& bonus,
+                             const std::vector<int32_t>& drafts) {
+    const int B = static_cast<int>(slots.size());
+    int max_pos = 0;
+    for (int slot : slots) max_pos = std::max(max_pos, seqs_[slot].position);
+    std::vector<int32_t> input, history(size_t(B) * max_pos, 0);
+    std::vector<int> positions;
+    for (int row = 0; row < B; ++row) {
+      positions.push_back(seqs_[slots[row]].position);
+      std::copy(seqs_[slots[row]].history.begin(), seqs_[slots[row]].history.end(),
+                 history.begin() + size_t(row) * max_pos);
+      input.push_back(bonus[row]);
+      input.insert(input.end(), drafts.begin() + row * 3,
+                    drafts.begin() + row * 3 + 3);
+    }
+    Check(q4t::model::ModelVerifyMulti(main(), input.data(), positions.data(),
+              slots.data(), history.data(), max_pos, B, 4, logits_.data(), nullptr),
+          "multi same-shape probe");
+    const auto lg = Read(logits_.data(), size_t(B * 4) * vocab());
+    std::vector<int32_t> result;
+    for (int row = 0; row < B * 4; ++row)
+      result.push_back(Argmax(lg.data() + size_t(row) * vocab(), vocab()));
+    return result;
+  }
+  std::pair<std::vector<uint16_t>, std::vector<uint16_t>> Forward(
+      const std::vector<int32_t>& ids, const std::vector<int>& positions,
+      const std::vector<int>& slots, const std::vector<uint16_t>& hidden) {
+    Write(mtp().d_ms_ext_ids, ids);
+    Write(mtp().d_ms_ext_pos, positions);
+    Write(mtp().d_ms_ext_seq, slots);
+    Write(packed_.data(), hidden);
+    Check(q4t::mtp::MtpForward(mtp(), mtp().d_ms_ext_ids, mtp().d_ms_ext_pos,
+              packed_.data(), sample_.data(), multi_.data(), logits_.data(),
+              static_cast<int>(ids.size()), nullptr, mtp().d_ms_ext_seq, true,
+              *std::max_element(positions.begin(), positions.end())),
+          "independent packed draft forward");
+    return {Read(logits_.data(), ids.size() * mtp().DraftVocab()),
+            Read(multi_.data(), ids.size() * main().hc_dim())};
+  }
+  Fixture fixture_;
+  Buffer logits_, trunk_, g_, packed_, multi_, sample_;
+  Regions target_, cache_;
+  std::array<ModelSequence, 4> seqs_;
+  std::array<int32_t, 4> bonus_{}, d0_{};
+  std::vector<int32_t> subset_;
+};
+}  // namespace
+
+Q4T_TEST(mtp_suffix_multi_states) {
+  q4t::test::GdnRegOff same_gdn_kernel;
+  Cuda(cudaSetDevice(0), "CUDA required; no skip");
+  MultiFixture f;
+  f.Step({3, 1, 0, 2}, 15);  // all-hit, accept 3/1/0/2
+  f.Step({3, 1, 0, 2}, 5);   // two neural rows, sparse pooled slots
+  f.Step({2, 0, 3, 1}, 0);   // all-neural, reordered slots
+  f.Step({1, 3, 2, 0}, 10);  // opposite mixed membership
+  f.Step({3, 1}, 1);        // contraction, one neural row in nonzero slot
+  f.Step({3}, 0);           // lone remaining nonzero slot
+  f.Start();               // all slots reused by new histories
+  f.Step({2, 3, 1, 0}, 6);
   return true;
 }

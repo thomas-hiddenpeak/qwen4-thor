@@ -144,8 +144,8 @@ Status CheckStartupPlanSupport(const model::ModelConfig& cfg,
       return Status::Fail("startup plan: FP8 projection shadows unsupported");
     }
   }
-  if (!opts.no_mtp && (cfg.max_seq != 1 || opts.mtp_k < 1 || opts.mtp_k > 16 ||
-                       cfg.max_prefill < std::max(4, opts.mtp_k + 1) ||
+  if (!opts.no_mtp && (opts.mtp_k < 1 || opts.mtp_k > 16 ||
+                       cfg.max_prefill < std::max(4, cfg.max_seq * (opts.mtp_k + 1)) ||
                        cfg.max_len < opts.mtp_k + 1)) {
     return Status::Fail("startup plan: unsupported MTP capacity");
   }

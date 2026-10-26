@@ -203,6 +203,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
                 cfg.moe_is, cfg.shared_is, cfg.topk, &full, cfg.lowrank));
       }
       if (capabilities.mtp) {
+        if (mtp_suffix_)
+          breq.extra_fixed_bytes +=
+              size_t(opts.max_seq) * mtp::SuffixDrafter::kMaxMemoryBytes +
+              SuffixTokenCache::kMaxBytes;
         mtp::MtpConfig mcfg;
         mcfg.mtp_dir = opts.model_dir + "/mtp";
         mcfg.max_prefill = cfg.max_prefill;
