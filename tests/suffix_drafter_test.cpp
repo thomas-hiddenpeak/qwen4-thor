@@ -614,7 +614,9 @@ Q4T_TEST(suffix_lazy_numeric_rejection_preserves_global_candidate) {
   Q4T_CHECK(!actual.ready && actual.reason == SuffixReason::kNumericRejected);
   Q4T_CHECK(actual.tokens == selected.tokens &&
             actual.match_end == selected.match_end);
-  Q4T_CHECK(actual.tokens[1] > 65535 && actual.tokens[2] > 65535);
+  // LongCopy deliberately mixes global IDs above 65535 with a small ID.
+  const std::array<int32_t, 3> expected{100001, 65536, 77};
+  Q4T_CHECK(actual.tokens == expected);
   Q4T_CHECK(drafter.Counters().numeric_rejected == 1);
   Q4T_CHECK(drafter.Counters().classified_tokens == 32);
   Q4T_CHECK(std::vector<int32_t>(drafter.History().begin(),

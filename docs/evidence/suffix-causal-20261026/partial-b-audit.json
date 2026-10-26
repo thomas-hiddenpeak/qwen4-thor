@@ -1,0 +1,317 @@
+{
+  "evidence_validity": "VALID_PARTIAL",
+  "measurement_completeness": "11/226 generation HTTP; 1/10 planned starts; no performance samples",
+  "statistics": "NO_B_PERFORMANCE_CONCLUSION",
+  "engineering": "NOT_DELIVERED; bounded continuation awaiting user exception",
+  "actual_completed_generation_requests": 11,
+  "whole_service_completed_count": 0,
+  "reason_for_distinction": "legacy stage counter increments only after an entire service, so state.requests_completed=0 does not invalidate the 11 completed requests",
+  "original_stage_status": "STOPPED",
+  "checks": [
+    {
+      "name": "original plan SHA",
+      "passed": true
+    },
+    {
+      "name": "raw seal telemetry-summary.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal state.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal unified-memory.jsonl",
+      "passed": true
+    },
+    {
+      "name": "raw seal plan.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal first-http-gate.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1-driver.log",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1-command.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/step.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/capacity.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/server-command.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/server.log",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/memory-phase.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality-results.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/events.jsonl",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/contract-0.log",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/server.pid",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/exit.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/contract-results.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/client-process.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-10.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/responses.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/requests.jsonl",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-9.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-7.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/request-boundaries.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-0.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-2.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-1.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-6.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-8.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/client.log",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-3.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/command.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-5.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/output-4.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/client-exit.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/20261026_221605/qwen3.8-flash-next/performance_summary.txt",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/20261026_221605/qwen3.8-flash-next/perf_report.html",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/20261026_221605/qwen3.8-flash-next/benchmark.log",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/20261026_221605/qwen3.8-flash-next/parallel_1_number_11/workload_throughput.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/20261026_221605/qwen3.8-flash-next/parallel_1_number_11/benchmark_data.db",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/20261026_221605/qwen3.8-flash-next/parallel_1_number_11/benchmark_args.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/20261026_221605/qwen3.8-flash-next/parallel_1_number_11/benchmark_percentile.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/20261026_221605/qwen3.8-flash-next/parallel_1_number_11/benchmark_summary.json",
+      "passed": true
+    },
+    {
+      "name": "raw seal 01-full-on-b1/quality/20261026_221605/qwen3.8-flash-next/parallel_1_number_11/workload_timeline.json",
+      "passed": true
+    },
+    {
+      "name": "eleven distinct exact quality requests",
+      "passed": true
+    },
+    {
+      "name": "quality 1024-10",
+      "passed": true
+    },
+    {
+      "name": "quality 1024-50",
+      "passed": true
+    },
+    {
+      "name": "quality 1024-90",
+      "passed": true
+    },
+    {
+      "name": "quality 4096-10",
+      "passed": true
+    },
+    {
+      "name": "quality 4096-50",
+      "passed": true
+    },
+    {
+      "name": "quality 4096-90",
+      "passed": true
+    },
+    {
+      "name": "quality 8192-10",
+      "passed": true
+    },
+    {
+      "name": "quality 8192-50",
+      "passed": true
+    },
+    {
+      "name": "quality 8192-90",
+      "passed": true
+    },
+    {
+      "name": "quality 45056-50",
+      "passed": true
+    },
+    {
+      "name": "quality 204800-50",
+      "passed": true
+    },
+    {
+      "name": "request release",
+      "passed": true
+    },
+    {
+      "name": "quality never allocates classifier",
+      "passed": true
+    },
+    {
+      "name": "startup ownership released",
+      "passed": true
+    },
+    {
+      "name": "clean shutdown",
+      "passed": true
+    },
+    {
+      "name": "all monitor data flushed",
+      "passed": true
+    },
+    {
+      "name": "contract failure accurately retained",
+      "passed": true
+    },
+    {
+      "name": "no performance requests claimed",
+      "passed": true
+    },
+    {
+      "name": "CPU repair passes all bounded suites",
+      "passed": true
+    },
+    {
+      "name": "runtime identity unchanged",
+      "passed": true
+    },
+    {
+      "name": "default unchanged",
+      "passed": true
+    }
+  ],
+  "checks_count": 68,
+  "monitor_samples": 275,
+  "first_http_gate": {
+    "passed": true,
+    "requests": 11,
+    "head": "full",
+    "suffix": true,
+    "unix": 1793024396.6123774
+  },
+  "cpu_repair": {
+    "results": [
+      {
+        "name": "affected-suffix-host",
+        "returncode": 0
+      },
+      {
+        "name": "exhaustive-cache-and-recorded-match-replay",
+        "returncode": 0
+      },
+      {
+        "name": "lazy-audit-contracts",
+        "returncode": 0
+      }
+    ],
+    "elapsed_seconds": 0.9102416639216244
+  },
+  "wall_seconds_consumed": 274.4873800089117,
+  "postshutdown_barrier_scope": "failed phase has no full-success final barrier; sampler flushed after clean server exit and its recorded error-free shutdown is retained",
+  "sha256s": {
+    "plan": "da8df4cba04cb309dd0d771c3a4d9503b6522148c41485a9f73c7f7c20599c7f",
+    "binary": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+    "server_log": "ea11830498f9615b10aa86e0b5459b6d282fdf7132017a5402095dae65ba6ffa"
+  }
+}
