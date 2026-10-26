@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "goal_complete": false,
+  "measurement_complete": false,
+  "files": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/scope.json": {
+      "sha256": "c5535a43b604358752e7668c88e98e81dbf8d18da90a6388384247304b7961fc",
+      "bytes": 3965
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/frozen-plan.json": {
+      "sha256": "85a1651f16c421c5b42a630db6a06060acfc07e3779d578ad64a0769763c86d4",
+      "bytes": 4907717
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/cpu-proof.json": {
+      "sha256": "4d8ecbf92add2e8c4514406408d435c40ee591c02776ca37b991cc3b0ca10202",
+      "bytes": 66968
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/gpu-start.json": {
+      "sha256": "7aff322a0d14423b5e85611ce64b380d9e6b15c322bbfffffad64162a5bca274",
+      "bytes": 418
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/gpu-exit.json": {
+      "sha256": "fb453f3bedafb7daaa344605d0bbf5bf48397088f52ed171836dd15be5973d5e",
+      "bytes": 208
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/pair-comparison.json": {
+      "sha256": "d53e78290bb469baf339c1f1311b1a945bd36ab8eb19ee4bb0d714c2cfc04411",
+      "bytes": 37132
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/terminal-review.json": {
+      "sha256": "301094ee73aec48facdf7e1844e201b6721118d11e8664b8b4e3e23229703fbc",
+      "bytes": 7672
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/archive-manifest.json": {
+      "sha256": "6a2f77683cf5ef34251a1048b156e658d4e3f7e2a1828366ce98b6d26362139d",
+      "bytes": 116413
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/run/nsys200-on/nvlog-stream/receipt.json": {
+      "sha256": "1c51192ec4f5f47a344b79d21532ee734047bafabd57f44c2e79aab776fe9e9c",
+      "bytes": 1005
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/run/nsys200-on/analysis-exit.json": {
+      "sha256": "acdafe159438d927f8164e6cb4ffe24584002acd0ca4610aba8aa67ba9589b0b",
+      "bytes": 140
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-projected-200k-20261026/run/nsys200-on/measurement-failure.json": {
+      "sha256": "f2771d1695e54497c550634d7e9cbe0cdee477580bd264300b9996fa9287576a",
+      "bytes": 215
+    }
+  }
+}

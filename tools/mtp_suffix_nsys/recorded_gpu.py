@@ -98,7 +98,7 @@ def _check_time(deadline):
         raise TimeoutError('fixed 120-second analysis budget exhausted')
 
 
-def terminal_evidence_lines(lines, target_pid):
+def terminal_evidence_lines(lines, target_pid, *, max_seconds=MAX_SECONDS):
     """Bind service events to the consumer's exact source-file PID batch.
 
     A marker's filter must occur before the next ReadStorage event on that
@@ -117,6 +117,8 @@ def terminal_evidence_lines(lines, target_pid):
     and are rejected by qualify(); they are not new exception allowances.
     """
     require(type(target_pid) is int and 0 < target_pid <= strict.LOW, 'invalid target PID')
+    require(type(max_seconds) is int and 0 < max_seconds <= 600,
+            'invalid terminal analysis deadline')
     producers = {key: [] for key in ('CUDAFinish', 'NVTXFinish', 'ReportCUDADone')}
     stops, pending, batches = {}, {}, {}
     filtered, unresolved, losses, target_errors = [], [], [], []
@@ -125,7 +127,7 @@ def terminal_evidence_lines(lines, target_pid):
     evidence_count = evidence_bytes = total_bytes = line_count = 0
     source_hash = hashlib.sha256()
     unterminated = False
-    deadline = time.monotonic() + MAX_SECONDS
+    deadline = time.monotonic() + max_seconds
     wanted = {'CUDA profiling finished': 'CUDAFinish', 'NVTX profiling finished': 'NVTXFinish'}
     for number, raw in enumerate(lines, 1):
         if number % 1024 == 1:

@@ -1,4 +1,4 @@
-"""Four bounded real-HTTP captures; recorded GPU comparison, not acceptance."""
+"""Fixed real-HTTP matrices; recorded GPU comparison, not acceptance."""
 import argparse
 import hashlib
 import importlib.util
@@ -56,6 +56,16 @@ def collection_contract(plan):
 
 
 def validate(plan):
+    pending = plan.get('capture_matrix') == 'pending200_projection_v1'
+    if plan.get('capture_matrix') not in (None, 'pending200_projection_v1'):
+        raise ValueError('unknown fixed capture matrix')
+    if pending:
+        proofs = plan.get('projection_qualification', {})
+        if (set(proofs) != {'cpu_review', 'full_replay', 'prefix_screen', 'reused_eight_k'} or
+                any(not Path(p).is_absolute() or p not in plan['files'] for p in proofs.values())):
+            raise ValueError('projection and reused 8K proof bindings required')
+        if plan.get('nvlog_stream', {}).get('projection') != 'drop_serialized_ack_v1':
+            raise ValueError('pending 200K matrix requires proved projection')
     if 'nvlog_stream' in plan:
         stream = plan['nvlog_stream']
         if (stream.get('mode') != 'forensic_six_errors_v1' or
@@ -63,12 +73,15 @@ def validate(plan):
                 not Path(stream['binary']).is_absolute() or
                 plan['files'].get(stream['binary']) != stream['binary_sha256']):
             raise ValueError('frozen stream identity/policy changed')
+        if not pending and stream.get('projection', 'none') != 'none':
+            raise ValueError('projection requires its fixed pending-200K matrix')
+    budget = ((4, 2, 2400, 0, 0, 600, LOG_LIMIT, SQLITE_LIMIT) if pending else
+              (6, 4, 4200, 0, 0, 120, LOG_LIMIT, SQLITE_LIMIT))
     if tuple(plan.get(k) for k in ('http_requests', 'http_loads',
             'stage_timeout_seconds', 'direct_contract_timeout_seconds',
             'fixture_runs', 'analysis_per_capture_seconds',
-            'source_log_limit_bytes', 'sqlite_limit_bytes')) != (
-            6, 4, 4200, 0, 0, 120, LOG_LIMIT, SQLITE_LIMIT):
-        raise ValueError('fixed four-capture budget changed')
+            'source_log_limit_bytes', 'sqlite_limit_bytes')) != budget:
+        raise ValueError('fixed capture budget changed')
     if any(plan[k] != 0 for k in ('retries', 'warmups', 'observation_build_limit',
                                   'runtime_optimization_candidates')):
         raise ValueError('extra work is outside this stage')
@@ -93,9 +106,10 @@ def validate(plan):
     if not isinstance(plan.get('nvlog_config'), str) or '{log}' not in plan['nvlog_config']:
         raise ValueError('fixed per-capture NVLOG configuration required')
     steps = plan['steps']
-    if len(steps) != 4:
-        raise ValueError('exactly four model captures required')
-    for step, (name, suffix, tokens, requests) in zip(steps, runner.MODEL_STEPS):
+    expected_steps = runner.MODEL_STEPS[2:] if pending else runner.MODEL_STEPS
+    if len(steps) != len(expected_steps):
+        raise ValueError('fixed model capture count changed')
+    for step, (name, suffix, tokens, requests) in zip(steps, expected_steps):
         if tuple(step.get(k) for k in ('name', 'head', 'suffix', 'measurement_role',
                 'execution_diagnostic', 'profile_input_tokens', 'kind',
                 'http_requests', 'http_loads', 'timeout')) != (
@@ -236,6 +250,9 @@ def analyze_capture(plan, output, identity, deadline, check):
         command = [sys.executable, '-B', str(HERE / 'stream_recorded_gpu.py'),
             '--output', str(output), '--target-pid', str(identity['pid']),
             '--wrapper-pid', str(identity['wrapper_pid'])]
+        if plan['nvlog_stream'].get('projection', 'none') != 'none':
+            command += ['--projection', plan['nvlog_stream']['projection'],
+                        '--analysis-seconds', str(plan['analysis_per_capture_seconds'])]
     save(output / 'analysis-command.json', command)
     child, failure, forced = None, None, False
     cleanup_errors = []
@@ -247,7 +264,7 @@ def analyze_capture(plan, output, identity, deadline, check):
             while child.poll() is None:
                 check()
                 if time.monotonic() >= limit:
-                    raise TimeoutError('bounded capture analysis exceeded 120 seconds')
+                    raise TimeoutError('bounded capture analysis deadline exceeded')
                 time.sleep(.05)
             if child.returncode:
                 raise RuntimeError('recorded GPU analysis rejected capture')
@@ -611,7 +628,8 @@ def custom_step(plan, name, plan_path):
                     if streamed:
                         codec = module('nvlog_stream')
                         collector = codec.Collector(plan['nvlog_stream']['binary'],
-                            output/'nvlog-stream', timeout_seconds=840).start()
+                            output/'nvlog-stream', timeout_seconds=840,
+                            projection=plan['nvlog_stream'].get('projection', 'none')).start()
                         measurement.extra_check = collector.check
                     old.http.event(output, 'server_before_start')
                     session.start()
