@@ -1,0 +1,13 @@
+{
+  "user_message": "推进到可以确认通过或不通过的状态",
+  "recorded_utc": "2026-10-27T07:27:12.544994+00:00",
+  "scope": "New bounded stage to complete only the original unexecuted protection measurements; previous closed stage and its deadline remain historical.",
+  "additional_http_requests": 93,
+  "additional_http_service_starts": 5,
+  "additional_gpu_fixture_attempts": 0,
+  "maximum_wall_seconds": 10800,
+  "repeated_gain_resampling": 0,
+  "inference_changes": 0,
+  "original_gain_thresholds_unchanged": true,
+  "previous_decision": "/home/rm01/models/dev/qwen4-thor/docs/evidence/suffix-agent-20261027/final-decision.json"
+}

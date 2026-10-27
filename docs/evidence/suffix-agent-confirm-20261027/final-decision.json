@@ -1,0 +1,196 @@
+{
+  "status": "CONFIRMED_FAIL_COMPLETE_MEASUREMENT",
+  "created_unix": 1793090626.5239403,
+  "task": "Long/short agent fixed-k3 suffix candidate confirmation",
+  "candidate_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+  "parent_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+  "release_metadata_sha256": "45cfe74a761f9b3a9ab1db613b42e8fde64192d869f17a0596ea5925b73e61ec",
+  "implementation_commit": "1fefbc1f7f0de0b6948bc82b6fde66e1f08cd2b3",
+  "pre_confirmation_commit": "93461d136e87275e9050098f6ff8526b1432e122",
+  "evidence_validity": {
+    "status": "VALID_FOR_TESTED_SCOPE",
+    "new_stage_lease": "COMPLETED",
+    "new_stage_http_requests": 93,
+    "new_stage_http_service_starts": 5,
+    "elapsed_seconds": 4251.514279806986,
+    "wall_limit_seconds": 10800,
+    "env_abort": false,
+    "frozen_files_checked": 506,
+    "sealed_raw_files_checked": 500,
+    "monitor_samples": 4252,
+    "all_samples_flushed": true,
+    "exit_pending_remaining": 0,
+    "legacy_parent_batch_observations": "UNAVAILABLE; exact 90f compatibility audit, never invented"
+  },
+  "measurement_completeness": {
+    "status": "COMPLETE_FROZEN_MATRIX",
+    "new_requests": 93,
+    "reused_requests": 227,
+    "total_requests": 320,
+    "total_http_service_starts": 15,
+    "original_gpu_fixture_attempts": 4,
+    "new_gpu_fixture_attempts": 0,
+    "single_stream_comparison_groups": 19,
+    "single_stream_request_pairs": 57,
+    "all_single_stream_outputs_identical": true,
+    "reused_direct_and_quality_contracts": "Unchanged inference and dependencies; 22 exact HTTP quality checks, attention layout, both-head streamed init and independent accepted-prefix state references, 16/32 short-request bursts, cancellation/reuse/tail tests.",
+    "unexecuted_required_measurements": []
+  },
+  "statistics": {
+    "status": "DESCRIPTIVE_PAIRED_ESTIMATES_ONLY",
+    "population_noninferiority_established": false,
+    "causal_regression_established": false,
+    "limits": [
+      "Full-head delivered parent was measured approximately 8.28 hours before candidate; natural cache and time drift remain possible.",
+      "One service pair per mode for single-stream protection is not a variance or noninferiority study.",
+      "Prior mixed/nonrepeat free-output differences remain unexplained; repeated long outputs and the new single-stream pairs match.",
+      "One-second whole-host RAM samples do not bound unsampled peaks or prove zero paging."
+    ]
+  },
+  "functional_contract": {
+    "decision": "PASS_IN_TESTED_SCOPE",
+    "scope": [
+      "One 208896-token main slot plus three 65536-token subagent slots.",
+      "4096-token streamed MTP prefill and exact same-chunk state reference.",
+      "Four active slots with 16/32 short-request bursts completed.",
+      "Both-head state/lifecycle and unchanged quality contracts."
+    ],
+    "not_claimed": [
+      "32 simultaneous long-context requests complete within the default deadline.",
+      "Identical arbitrary free generation for all inputs and all schedules."
+    ],
+    "production_deployment_approved": false
+  },
+  "optimization": {
+    "decision": "FAIL",
+    "frozen_targets": {
+      "each_head_each_long_repeated_scenario_e2e_percent": 1.0,
+      "each_head_each_long_repeated_scenario_decode_percent": 3.0
+    },
+    "reused_gains": [
+      {
+        "head": "full",
+        "scenario": "repeat-code",
+        "blocks": 2,
+        "e2e_percent": 1.9793207185561323,
+        "decode_percent": 5.441224468320494,
+        "threshold_met": true,
+        "output_same": true
+      },
+      {
+        "head": "full",
+        "scenario": "repeat-text",
+        "blocks": 2,
+        "e2e_percent": 1.8336589497848665,
+        "decode_percent": 5.220349985313333,
+        "threshold_met": true,
+        "output_same": true
+      },
+      {
+        "head": "subset",
+        "scenario": "repeat-code",
+        "blocks": 2,
+        "e2e_percent": 1.1175522806194715,
+        "decode_percent": 2.9916797903354997,
+        "threshold_met": false,
+        "output_same": true
+      },
+      {
+        "head": "subset",
+        "scenario": "repeat-text",
+        "blocks": 2,
+        "e2e_percent": 1.0534362172362588,
+        "decode_percent": 2.847144099685517,
+        "threshold_met": false,
+        "output_same": true
+      }
+    ],
+    "reason": "Both subset repeated decode gains miss 3%; full-head success cannot substitute. No gain resampling or threshold change."
+  },
+  "protection": {
+    "decision": "MEASURED_NEGATIVE_POINTS_PRESENT; NOT_ALL_METRICS_PRESERVED",
+    "negative_groups": [
+      {
+        "head": "full",
+        "scenario": "context-4096",
+        "metrics": [
+          "ttft"
+        ]
+      },
+      {
+        "head": "full",
+        "scenario": "context-204800",
+        "metrics": [
+          "decode"
+        ]
+      },
+      {
+        "head": "full",
+        "scenario": "repeat-text",
+        "metrics": [
+          "e2e",
+          "decode"
+        ]
+      },
+      {
+        "head": "subset",
+        "scenario": "context-8192",
+        "metrics": [
+          "e2e",
+          "ttft"
+        ]
+      },
+      {
+        "head": "subset",
+        "scenario": "context-204800",
+        "metrics": [
+          "decode"
+        ]
+      },
+      {
+        "head": "subset",
+        "scenario": "repeat-code",
+        "metrics": [
+          "decode"
+        ]
+      },
+      {
+        "head": "plain",
+        "scenario": "context-45056",
+        "metrics": [
+          "decode"
+        ]
+      },
+      {
+        "head": "plain",
+        "scenario": "context-204800",
+        "metrics": [
+          "decode"
+        ]
+      }
+    ],
+    "comparison_file": "protection-comparisons.json",
+    "comparison_sha256": "c57259552577fe54c42bf38ec7a4b59e96850ca79d455ba84d8bd6f98d35b49d",
+    "interpretation": "Observed negative point estimates are retained and not offset by other gains; they do not by themselves prove a reproducible causal defect."
+  },
+  "engineering_decision": {
+    "decision": "FAIL_RELEASE_CANDIDATE",
+    "decisive_reason": "The frozen per-head gain condition is unsatisfied. The now complete protection matrix also does not support an all-metrics-preserved claim.",
+    "basis": "Complete bounded evidence; not a timeout, pending permission, or incomplete matrix.",
+    "keep_delivered_default": true,
+    "default_replaced": false,
+    "release_metadata_changed": false,
+    "deployment_health_requests": 0,
+    "followup_sampling_authorized_by_this_stage": false,
+    "next_action": "Archive the complete confirmation, preserve research branch and original evidence, commit and push. No automatic repeated sampling."
+  },
+  "links": {
+    "plan": "../../MTP_SUFFIX_AGENT_CONFIRM_PLAN_2026-10-27.md",
+    "final_audit": "final-audit.json",
+    "monitor": "monitor-resolution-summary.json",
+    "resources": "resources.json",
+    "prior_decision": "../suffix-agent-20261027/final-decision.json",
+    "prior_gains": "../suffix-agent-20261027/long-matrix-and-partial-protection.json"
+  },
+  "audit_sha256": "92c4ecd9a0b939b1a7617e22830d31bd9883c4c65298e3c53aba0167e4a55fda"
+}

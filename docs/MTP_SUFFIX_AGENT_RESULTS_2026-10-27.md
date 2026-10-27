@@ -1,5 +1,8 @@
 # 长短agent并发suffix阶段结果
 
+后续用户授权的93请求已全部补齐，累计320；当前完整判定见
+[补齐确认结果](MTP_SUFFIX_AGENT_CONFIRM_RESULT_2026-10-27.md)。本文保留前轮预算截止时的归档状态。
+
 本轮以**NO_GO归档结束，候选不交付**。两head重复场景均观察到净收益，
 但subset decode未达事前3%目标；单流保护未测齐。默认程序仍90f24f49，
 sidecar45cfe74a，既有单流suffix交付不受本次拒绝影响。

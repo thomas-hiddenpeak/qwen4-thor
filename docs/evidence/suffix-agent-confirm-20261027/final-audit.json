@@ -1,0 +1,114 @@
+{
+  "status": "PASS",
+  "scope": "Evidence identity, full matrix and lifecycle closure; not performance acceptance",
+  "program_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+  "parent_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+  "plan_sha256": "dd86d6fc2c287e2dcb45648ab7c43d4e181ac9855dc8de33ccbf99626f514f23",
+  "frozen_files_checked": 506,
+  "sealed_raw_files_checked": 500,
+  "services": [
+    {
+      "name": "13-full-candidate",
+      "requests": 21,
+      "audit_sha256": "802d7d2ad131af5f077abc1f80877a6aad9635c887309ad02a3ecf50f9874297"
+    },
+    {
+      "name": "14-subset-candidate",
+      "requests": 21,
+      "audit_sha256": "da04977dcc0b2b8a0a2dc099c97d7bd955a14837a0483a1ca29d36657927d38e"
+    },
+    {
+      "name": "15-subset-parent",
+      "requests": 21,
+      "audit_sha256": "271a742881c16ae5c031f32084ebed81a9e5e94e9effb88e7da283b949ad7a53"
+    },
+    {
+      "name": "16-plain-parent",
+      "requests": 15,
+      "audit_sha256": "acb8be220ba8af6ba5a6a4ede1f4d7d948945db70398ad52ea41ed831c98386d"
+    },
+    {
+      "name": "17-plain-candidate",
+      "requests": 15,
+      "audit_sha256": "1f8ed4339d6892c1da5f44262b084890ba1dabdf255534c3cb9942accd1fc9a0"
+    }
+  ],
+  "http_requests": 93,
+  "reused_requests": 227,
+  "cumulative_requests": 320,
+  "elapsed_seconds": 4251.514279806986,
+  "deadline_unix": 1793096832.5452254,
+  "samples": 4252,
+  "unflushed": 0,
+  "pending_at_exit": 0,
+  "env_abort": false,
+  "final_monitor_barrier": {
+    "boundary_monotonic": 1280387.258951942,
+    "sample_started_monotonic": 1280387.437331296,
+    "flushed_monotonic": 1280387.458730766
+  },
+  "comparison_groups": 19,
+  "all_protection_outputs_same": true,
+  "groups_with_negative_observations": [
+    {
+      "head": "full",
+      "scenario": "context-4096",
+      "metrics": [
+        "ttft"
+      ]
+    },
+    {
+      "head": "full",
+      "scenario": "context-204800",
+      "metrics": [
+        "decode"
+      ]
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-text",
+      "metrics": [
+        "e2e",
+        "decode"
+      ]
+    },
+    {
+      "head": "subset",
+      "scenario": "context-8192",
+      "metrics": [
+        "e2e",
+        "ttft"
+      ]
+    },
+    {
+      "head": "subset",
+      "scenario": "context-204800",
+      "metrics": [
+        "decode"
+      ]
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-code",
+      "metrics": [
+        "decode"
+      ]
+    },
+    {
+      "head": "plain",
+      "scenario": "context-45056",
+      "metrics": [
+        "decode"
+      ]
+    },
+    {
+      "head": "plain",
+      "scenario": "context-204800",
+      "metrics": [
+        "decode"
+      ]
+    }
+  ],
+  "report_sha256": "c57259552577fe54c42bf38ec7a4b59e96850ca79d455ba84d8bd6f98d35b49d",
+  "default_replaced": false
+}

@@ -1,0 +1,35 @@
+{
+  "samples": 4252,
+  "unflushed": 0,
+  "pending_admitted": 2,
+  "pending_resolved": 2,
+  "pending_at_exit": 0,
+  "original_permission_error_causes_proven": false,
+  "resolutions": [
+    {
+      "observation": "EXIT_CONFIRMED_AFTER_PENDING_IO",
+      "pid": 3800034,
+      "start_ticks": 127777122,
+      "original_errno": 13,
+      "final_errno": 3,
+      "cause_of_permission_error_proven": false
+    },
+    {
+      "observation": "EXIT_CONFIRMED_AFTER_PENDING_IO",
+      "pid": 3800143,
+      "start_ticks": 127779421,
+      "original_errno": 13,
+      "final_errno": 3,
+      "cause_of_permission_error_proven": false
+    }
+  ],
+  "whole_host_swap_used_bytes": {
+    "first": 2144444416,
+    "last": 2147475456,
+    "minimum": 2134392832,
+    "maximum": 2147479552
+  },
+  "sampled_q4t_VmSwap_max_bytes": 0,
+  "detail_file": ".q4t-work/suffix-agent-confirm-20261027/review/memory-context.json",
+  "detail_sha256": "5d5a099e2d82e187dd1610917ad561e02b7681213ff39d79a927791031f2abf7"
+}
