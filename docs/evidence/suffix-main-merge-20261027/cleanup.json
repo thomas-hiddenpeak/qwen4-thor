@@ -1,0 +1,14 @@
+{
+  "status": "COMPLETE",
+  "old_tip": "36266bb422c8e6fc61358fa82e0068684fbbe617",
+  "retained_anchor": {
+    "ref": "main",
+    "commit": "36266bb422c8e6fc61358fa82e0068684fbbe617"
+  },
+  "local_deleted": true,
+  "remote_deleted": true,
+  "remote_expected_tip": "36266bb422c8e6fc61358fa82e0068684fbbe617",
+  "local_result": "Deleted branch codex/suffix-k3 (was 36266bb).",
+  "worktrees_and_evidence_untouched": true,
+  "finished_unix": 1793096976.8424184
+}

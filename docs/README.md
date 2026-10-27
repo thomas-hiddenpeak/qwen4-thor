@@ -1,7 +1,8 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[长短agent已交付与使用/回退](MTP_SUFFIX_AGENT_DELIVERED_2026-10-27.md)；
+最新专项：[suffix与长短agent主线合入/分支收尾](MTP_SUFFIX_MAIN_MERGE_2026-10-27.md)；
+[长短agent已交付与使用/回退](MTP_SUFFIX_AGENT_DELIVERED_2026-10-27.md)；
 [用户本项接受与健康预算](MTP_SUFFIX_AGENT_ACCEPTANCE_2026-10-27.md)；
 [长短agent完整补测与原门槛判定](MTP_SUFFIX_AGENT_CONFIRM_RESULT_2026-10-27.md)；
 [补齐事前方案](MTP_SUFFIX_AGENT_CONFIRM_PLAN_2026-10-27.md)；
@@ -50,6 +51,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [suffix阶段主线合入](MTP_SUFFIX_MAIN_MERGE_2026-10-27.md) | 58提交快进合入、160源码核验、旧tip/main保留锚点及分支清理 | main已推送，已交付程序与验收范围不变，工作区和证据保留 |
 | [长短agent交付](MTP_SUFFIX_AGENT_DELIVERED_2026-10-27.md) | f2a6程序/发布元数据、1长＋3短用法、回退包与健康 | 用户接受实测收益/负点，2实际启动3HTTP通过；原优化FAIL保留，无常驻服务 |
 | [长短agent本项接受](MTP_SUFFIX_AGENT_ACCEPTANCE_2026-10-27.md) | 用户原话、范围、原值、健康预算及失败出口 | 特定身份工程接受，不扩展通用容差或追认3%优化目标 |
 | [长短agent完整判定](MTP_SUFFIX_AGENT_CONFIRM_RESULT_2026-10-27.md) | 补93HTTP累计320，19组保护输出全一致，4252监控全flush | 保留原门槛下优化/交付拒绝；其后用户接受及部署见新交付记录 |

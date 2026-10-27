@@ -1,0 +1,46 @@
+{
+  "status": "PASS_READY_FOR_FAST_FORWARD",
+  "authorization_quote": "开始并入主线",
+  "main_before": "a75643c9fed8c965ca279b69a12d72bc88e55107",
+  "accepted_branch_tip": "36266bb422c8e6fc61358fa82e0068684fbbe617",
+  "accepted_branch": "codex/suffix-k3",
+  "commits_to_preserve": 58,
+  "changed_files": 500,
+  "runtime_files_checked": 160,
+  "binary_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+  "release_sha256": "26325699af40325e384c4aae4d615679f2d7e2aa69f9eecbc5743e68db6032cf",
+  "package_checks": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2",
+      "files": 202,
+      "manifest_sha256": "93a5b05a9fd263507e67f613f9ace4f3c64c1f35fc308cede62aea5dbd64d8d5"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/archive",
+      "files": 118,
+      "manifest_sha256": "20dcc722670915bb81397169e91508b972cf733bc623a2a8dc076dc23f5dda4e"
+    }
+  ],
+  "acceptance_audit_sha256": "1fe8405af0676aafba69aca68cde883fcc6fd4aa4cfbd50e6abc1d1cf14afb9d",
+  "new_builds": 0,
+  "new_gpu_requests": 0,
+  "evidence_reuse": "320 acceptance HTTP plus 3 deployment health; original optimization FAIL and user acceptance unchanged",
+  "cleanup_scope": {
+    "local": [
+      "codex/suffix-k3"
+    ],
+    "remote": [
+      "refs/heads/codex/suffix-k3"
+    ],
+    "expected_tip": "36266bb422c8e6fc61358fa82e0068684fbbe617",
+    "conditions": [
+      "remote main contains old tip",
+      "no unique commits",
+      "no open PR",
+      "clean current worktree switched to main"
+    ],
+    "preserve_worktrees_and_evidence": true
+  },
+  "open_prs": [],
+  "created_unix": 1793096891.4243538
+}

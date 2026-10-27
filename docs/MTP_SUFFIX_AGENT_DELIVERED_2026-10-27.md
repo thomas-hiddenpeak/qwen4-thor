@@ -1,5 +1,8 @@
 # 长短 agent suffix 已交付
 
+后续已按用户新授权[并入main并整理重复分支](MTP_SUFFIX_MAIN_MERGE_2026-10-27.md)。
+程序、发布元数据和本次验收范围保持；以下保留交付时记录。
+
 2026-10-27，**DEPLOYED_HEALTH_CHECKED**。用户在收益和负点披露后明确
 接受，按[本项接受决定](MTP_SUFFIX_AGENT_ACCEPTANCE_2026-10-27.md)交付。
 `build/q4t` 已替换为

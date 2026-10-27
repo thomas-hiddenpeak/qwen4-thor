@@ -1,0 +1,18 @@
+{
+  "status": "MAIN_INTEGRATED_SOURCE_UNCHANGED",
+  "main_integration_anchor": "36266bb422c8e6fc61358fa82e0068684fbbe617",
+  "runtime_files_checked": 160,
+  "binary_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+  "release_sha256": "26325699af40325e384c4aae4d615679f2d7e2aa69f9eecbc5743e68db6032cf",
+  "local_branch": "main",
+  "worktree_preserved": "/home/rm01/models/dev/qwen4-thor",
+  "main_ci_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/40488752080",
+  "main_ci_result": "success",
+  "new_local_builds": 0,
+  "new_model_requests": 0,
+  "previous_acceptance_reused": true,
+  "original_optimization_result": "FAIL_GAIN_TARGET_MISSED",
+  "engineering_acceptance": "ENGINEERING_ACCEPTED_USER_OVERRIDE",
+  "closure_changes": "Documentation and evidence only; final documentation commit is recorded separately after push.",
+  "created_unix": 1793097082.63852
+}

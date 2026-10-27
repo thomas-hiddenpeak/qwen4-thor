@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "push",
+    "--force-with-lease=refs/heads/codex/suffix-k3:36266bb422c8e6fc61358fa82e0068684fbbe617",
+    "origin",
+    ":refs/heads/codex/suffix-k3"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "To https://github.com/thomas-hiddenpeak/qwen4-thor.git\n - [deleted]         codex/suffix-k3\n"
+}

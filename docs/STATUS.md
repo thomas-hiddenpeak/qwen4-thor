@@ -2,6 +2,15 @@
 
 更新：2026-10-27。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+suffix阶段已并入主线（2026-10-27）：按用户明确授权，远端main从a75643c
+快进到已交付锚点36266bb，58个提交完整保留，无冲突或新推理改动。
+160项运行时Git/工作区/编译输入/发布源码一致，程序f2a6de36、sidecar26325699
+保持；复用320验收＋3健康，无新增本机GPU测量。主线公共host合同通过。
+确认独有提交0、无活动PR、远端预期tip一致后，删除本地/远端重复入口
+codex/suffix-k3；全部worktree、原证据和回退路径保留，当前分支main。
+原性能目标未达标与用户接受分开记录，范围不扩大。见
+[主线合入与分支收尾](MTP_SUFFIX_MAIN_MERGE_2026-10-27.md)。
+
 长短agent已交付（2026-10-27，ENGINEERING_ACCEPTED_USER_OVERRIDE）：
 用户在完整收益、负点和统计限制披露后明确“我觉得可以接受”。据此接受
 同一f2a6de36身份并替换build/q4t，发布sidecar为26325699。完整head/MTP k3
