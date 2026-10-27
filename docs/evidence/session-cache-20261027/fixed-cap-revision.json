@@ -1,0 +1,60 @@
+{
+  "reason": "OFF baseline natural EOS invalidated equal-2048-output assumption",
+  "original_second": [
+    {
+      "response_id": "chatcmpl-auto-10",
+      "input_tokens": 133842,
+      "output_tokens": 2048,
+      "finish": [
+        "length"
+      ],
+      "success": 1,
+      "latency": 429.2527105039917,
+      "ttft": 273.91951511614025,
+      "output_sha256": "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+    },
+    {
+      "response_id": "chatcmpl-auto-9",
+      "input_tokens": 35533,
+      "output_tokens": 1876,
+      "finish": [
+        "stop"
+      ],
+      "success": 1,
+      "latency": 417.9640176149551,
+      "ttft": 273.9211064639967,
+      "output_sha256": "e21bef33ac21c8a44dfc1202a6580883fe453aa60d6149ec63267628ccbd3631"
+    },
+    {
+      "response_id": "chatcmpl-auto-8",
+      "input_tokens": 51930,
+      "output_tokens": 1703,
+      "finish": [
+        "stop"
+      ],
+      "success": 1,
+      "latency": 405.0578503499273,
+      "ttft": 273.61946279299445,
+      "output_sha256": "518b1492824ce58a5731410cbc7a7e2d94b4c0ab3ceffc99c1caa81b6c1f313e"
+    },
+    {
+      "response_id": "chatcmpl-auto-11",
+      "input_tokens": 62773,
+      "output_tokens": 2045,
+      "finish": [
+        "stop"
+      ],
+      "success": 1,
+      "latency": 429.03154925396666,
+      "ttft": 273.87160874786787,
+      "output_sha256": "381aabf0c63dab16a151d1a54e656f530fb923542743d4d396ca401438e1b68a"
+    }
+  ],
+  "reused_requests": 8,
+  "retested_requests": 4,
+  "candidate_sha256": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+  "original_archive": ".q4t-work/session-cache-20261027/phase-c/archive/audit.json",
+  "revision_plan_sha256": "4bed6a1cfa9a09b3907bf537b91993f93258e14b987d38f96c86a02da8312688",
+  "total_caps_unchanged": true,
+  "further_corrections_allowed": 0
+}
