@@ -261,6 +261,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_metrics.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_generation.cpp
+  src/server/session_cache.cpp
+  src/server/session_state.cpp
   src/server/http_request.cpp
   src/server/chat_contract.cpp
                              src/server/chat_template.cpp)
@@ -566,3 +568,9 @@ add_executable(q4t_sha256_contract EXCLUDE_FROM_ALL
 target_include_directories(q4t_sha256_contract PRIVATE include)
 target_compile_definitions(q4t_sha256_contract PRIVATE Q4T_SHA256_TESTING=1)
 target_compile_options(q4t_sha256_contract PRIVATE -Wall -Wextra)
+
+add_executable(q4t_session_storage_contract EXCLUDE_FROM_ALL
+  tools/session_cache/storage_contract.cpp src/server/session_cache.cpp
+  src/trace/sha256.cpp)
+target_include_directories(q4t_session_storage_contract PRIVATE include)
+target_compile_options(q4t_session_storage_contract PRIVATE -Wall -Wextra)

@@ -1,0 +1,24 @@
+{
+  "identity_unchanged": true,
+  "bound_files": 263,
+  "actual_generation_requests": 17,
+  "successful_requests": 16,
+  "cancelled_requests": 1,
+  "released": 17,
+  "quality_passed": 11,
+  "cpu_storage_checks": 49,
+  "status": "HARNESS_RELEASE_MARKER_FAILURE",
+  "inference_sha256": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+  "gpu_seconds": 433.88619369105436,
+  "starts": 1,
+  "postflight": {
+    "status": "STOPPED",
+    "state_sha256": "37d67924a7eb7c80390fa4d35477525d6eab286ec9ca064811a6b4ac3ff866b0",
+    "monitor_failures": [],
+    "cleanup_errors": [],
+    "final_summary_sha256": "27eb7b3177452785b2889db5de6039dd201b2a5fc7b9a1648171d4b350161e35",
+    "final_monitor_barrier": {},
+    "final_monitor_errors": [],
+    "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+  }
+}

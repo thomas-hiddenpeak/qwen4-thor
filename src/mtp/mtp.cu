@@ -1452,12 +1452,16 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                uint16_t** next_g, cudaStream_t stream,
                                std::span<const int32_t> stop_tokens,
                                std::span<const int32_t> suffix_draft,
-                               std::span<const SuffixProposal> batch_suffix) {
+                               std::span<const SuffixProposal> batch_suffix,
+                               std::span<const uint8_t> complete_terminal) {
   if (!seqs || !b_tok || !d0 || !g_in || !accepted_tokens || !accepted_count ||
       !next_b || !next_d0 || !next_g)
     return Status::Fail("MtpSpeculativeStepMulti: null arg");
   if (B <= 0 || B > mtp.max_seq)
     return Status::Fail("MtpSpeculativeStepMulti: B out of range");
+  if (!complete_terminal.empty() &&
+      complete_terminal.size() != static_cast<size_t>(B))
+    return Status::Fail("MtpSpeculativeStepMulti: terminal flags size");
   const auto invalidate_outputs = [&] {
     for (int b = 0; b < B; ++b) {
       accepted_count[b] = 0;
@@ -1811,7 +1815,11 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
   int T_ext = 0;
   for (int b = 0; b < B; ++b) {
     corr[b] = m_argmax[static_cast<size_t>(b) * (k + 1) + a[b]];
-    terminal[b] = is_stop(corr[b]);
+    // Cacheable sessions require the shifted draft prefix even at EOS. The
+    // target acceptance/output contract is unchanged; only this row's final
+    // draft extend, normally elided at termination, is materialized.
+    terminal[b] = is_stop(corr[b]) &&
+                  (complete_terminal.empty() || !complete_terminal[b]);
     if (!terminal[b]) T_ext += a[b] + 1;
   }
   std::vector<int32_t> ext_ids(T_ext);

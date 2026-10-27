@@ -18,6 +18,7 @@
 #include "q4t/server/mtp_policy.h"
 #include "q4t/server/scheduler_submission.h"
 #include "q4t/server/request_diagnostics.h"
+#include "q4t/server/session_state.h"
 
 namespace q4t::server {
 namespace {
@@ -109,6 +110,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   if (!s.ok()) {
     SendError(fd, 400, s.message());
     return;
+  }
+
+  SessionLease session;
+  session.key = req.GetString("session_id");
+  if (!session.key.empty()) {
+    if (!session_cache_.Enabled()) {
+      SendError(fd, 400, "session cache is not enabled");
+      return;
+    }
+    if (!session_cache_.Acquire(session.key)) {
+      SendError(fd, 409, "session is busy or lease capacity exhausted");
+      return;
+    }
+    session.cache = &session_cache_;
   }
 
   const io::Json* external_id = req.Find("request_id");
@@ -257,12 +272,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // request buffer.
   uint16_t* d_trunk_full = nullptr;
   uint16_t* d_vfeats = nullptr;
+  uint16_t* d_session_trunk = nullptr;
   uint16_t* d_mtp_g = nullptr;  // MTP rolling draft trunk [hc*hs] (Stage 2c:
                                 // per-request, so concurrent MTP requests don't
                                 // share the legacy d_g_/d_g_next_ double buffer)
   trace::RequestOutcome trace_outcome = trace::RequestOutcome::kFailed;
   uint64_t trace_output_tokens = 0;
   auto cleanup = [&]() {
+    if (d_session_trunk) {
+      cudaFree(d_session_trunk);
+      d_session_trunk = nullptr;
+    }
     if (router_trace_) router_trace_->EndRequest(
         control->Cancelled() ? trace::RequestOutcome::kCancelled : trace_outcome,
         trace_output_tokens);
@@ -490,6 +510,25 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const bool scheduled_chunk_prefill =
       scheduler_active_ && !mtp_loaded_ && chunked && vptr == nullptr;
   bool prefill_cancelled = false;
+  if (session.cache && cudaMalloc(&d_session_trunk,
+                          static_cast<size_t>(trunk_hc_dim) * 2) != cudaSuccess) {
+    cleanup();
+    SendError(fd, 500, "session trunk allocation failed");
+    return;
+  }
+  int restored_prefix = 0;
+  bool session_gpu_error = false;
+  const auto session_copy = [&](void* host, void* state, size_t bytes,
+                                 bool restore) -> Status {
+    const auto error = restore
+        ? cudaMemcpy(state, host, bytes, cudaMemcpyHostToDevice)
+        : cudaMemcpy(host, state, bytes, cudaMemcpyDeviceToHost);
+    if (error == cudaSuccess) return Status();
+    session_gpu_error = true;
+    gpu_healthy_.store(false, std::memory_order_relaxed);
+    return Status::Fail(std::string("session CUDA copy: ") +
+                        cudaGetErrorString(error));
+  };
   if (stream_mtp) {
     q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
     q4t::diagnostic::Scope execution_prefill("handler_stream_mtp_prefill", 0,
@@ -499,6 +538,51 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             ? Status::Fail("GPU unhealthy; restart server")
             : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
     if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
+    if (s.ok() && session.cache) {
+      const auto begin = std::chrono::steady_clock::now();
+      const int prefix = session_cache_.Match(session.key, ids);
+      Status restored;
+      if (prefix > 0) {
+        std::vector<SessionRange> ranges;
+        restored = SessionStateRanges(model_.Get(), mtp_, seq_id, prefix,
+                                        d_mtp_g, d_session_trunk, &ranges);
+        int32_t cached_pending = -1;
+        if (restored.ok())
+          restored = session_cache_.Restore(session.key, ranges, session_copy,
+                                               cancelled, &stream_d0,
+                                               &cached_pending);
+        if (restored.ok() && cached_pending != ids[prefix]) {
+          // The draft is shifted by one token. A tool/message boundary may
+          // replace its final predicted token; target state remains valid.
+          const int position = prefix - 1;
+          restored = mtp::MtpDraftExtend(mtp_, &ids[prefix], d_session_trunk,
+                                          &position, 1, nullptr, nullptr,
+                                          nullptr, seq_id, false);
+          restored = FinishHostReadback(cudaSuccess, &gpu_healthy_, {},
+                                          restored, nullptr);
+          if (!restored.ok()) session_gpu_error = true;
+        }
+        if (restored.ok()) {
+          seq.history.assign(ids.begin(), ids.begin() + prefix);
+          seq.position = prefix;
+          model_.Get().rope_delta[seq_id] = 0;
+          restored_prefix = prefix;
+        } else if (session_gpu_error) {
+          s = restored;
+        } else {
+          // An incomplete read may have written part of the destination.
+          // Reset both models before a miss is allowed to fall back.
+          s = model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
+          if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
+        }
+      }
+      std::fprintf(stderr,
+                   "[session-cache] request=%s event=restore prefix=%d "
+                   "ms=%.3f error=%s\n", request_id.c_str(), restored_prefix,
+                   std::chrono::duration<double, std::milli>(
+                       std::chrono::steady_clock::now() - begin).count(),
+                   restored.ok() ? "none" : restored.message().c_str());
+    }
     std::vector<int32_t> shifted;
     std::vector<int> positions;
     int chunks = 0;
@@ -538,6 +622,16 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       // The target chunk was committed above. Drain a failed draft submission
       // before releasing this request's storage or giving scratch to a peer.
       s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr);
+      if (s.ok() && last && d_session_trunk) {
+        const auto error = cudaMemcpy(
+            d_session_trunk,
+            d_trunk_full + static_cast<size_t>(count - 1) * trunk_hc_dim,
+            static_cast<size_t>(trunk_hc_dim) * 2, cudaMemcpyDeviceToDevice);
+        if (error != cudaSuccess) {
+          gpu_healthy_.store(false, std::memory_order_relaxed);
+          s = Status::Fail("session prefill final trunk copy failed");
+        }
+      }
       ++chunks;
     }
     if (s.ok() && !prefill_cancelled) {
@@ -868,6 +962,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                 static_cast<int>(active_.size()) < max_seq_;
     if (mtp_sched) {
       mtp_ar.is_mtp = true;
+      mtp_ar.complete_terminal_draft = session.cache != nullptr;
+      mtp_ar.session_last_trunk = d_session_trunk;
       mtp_ar.seq = &seq;
       mtp_ar.mtp_g = d_mtp_g;
 
@@ -1025,6 +1121,43 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // scheduler so it re-evaluates (fixes a lost-wakeup deadlock where the
     // departing request's notify was consumed before the scheduler slept).
     sched_cv_.notify_one();
+  }
+  // No scheduler owns this row now. Capture the complete target/shifted-draft
+  // boundary before any ordinary-decode tail; publication waits for successful
+  // HTTP completion. At most three emitted tail tokens will be recomputed.
+  if (session.cache && mtp_sched && !generation_failed && !cancelled() &&
+      seq.stage == model::ModelSequence::Stage::kDecode && !seq.HasPending() &&
+      seq.position >= SessionCache::kMinPrefix &&
+      seq.position < request_capacity) {
+    const auto begin = std::chrono::steady_clock::now();
+    auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+    std::vector<SessionRange> ranges;
+    Status saved = SessionStateRanges(model_.Get(), mtp_, seq_id, seq.position,
+                                        d_mtp_g, d_session_trunk, &ranges);
+    const bool has_step = mtp_ar.mtp_accepted_count > 0;
+    const int32_t pending = has_step ? mtp_ar.mtp_next_b : mtp_b;
+    const int32_t last_d0 = has_step ? mtp_ar.mtp_next_d0 : mtp_d0;
+    if (saved.ok() && pending >= 0 && last_d0 >= 0 &&
+        model_.Get().rope_delta[seq_id] == 0) {
+      std::vector<int32_t> prefix(seq.history);
+      prefix.push_back(pending);
+      saved = session_cache_.Save(session.key, prefix, ranges, session_copy,
+                                    cancelled, last_d0);
+    } else if (saved.ok()) {
+      saved = Status::Fail("incomplete session boundary");
+    }
+    if (session_gpu_error) {
+      generation_failed = true;
+      use_mtp = true;  // Do not enter a plain tail after a device failure.
+      seq.Fail();
+    }
+    std::fprintf(stderr,
+                 "[session-cache] request=%s event=save prefix=%d "
+                 "ms=%.3f disk_bytes=%zu error=%s\n", request_id.c_str(),
+                 seq.position, std::chrono::duration<double, std::milli>(
+                     std::chrono::steady_clock::now() - begin).count(),
+                 session_cache_.Bytes(),
+                 saved.ok() ? "none" : saved.message().c_str());
   }
   if (mtp_suffix_) {
     const size_t indexed = suffix.Size();
@@ -1362,6 +1495,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
   diagnostic.Stage("response");
+  const std::string cached_usage = session.cache
+      ? ",\"prompt_tokens_details\":{\"cached_tokens\":" +
+            std::to_string(restored_prefix) + "}"
+      : "";
   // 4. Finalize.
   if (stream) {
     write_stream(SseChunk(id, model_field, "", "", finish_reason, 0));
@@ -1373,7 +1510,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           JsonEscape(model_field) + "\",\"choices\":[],\"usage\":{" +
           "\"prompt_tokens\":" + std::to_string(T) +
           ",\"completion_tokens\":" + std::to_string(generated.size()) +
-          ",\"total_tokens\":" + std::to_string(T + generated.size()) +
+          ",\"total_tokens\":" + std::to_string(T + generated.size()) + cached_usage +
           "}}\r\n\r\n";
       write_stream(usage_chunk);
     }
@@ -1398,7 +1535,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           "\"usage\":{\"prompt_tokens\":" +
           std::to_string(T) +
           ",\"completion_tokens\":" + std::to_string(generated.size()) +
-          ",\"total_tokens\":" + std::to_string(T + generated.size()) + "}";
+          ",\"total_tokens\":" + std::to_string(T + generated.size()) +
+          cached_usage + "}";
       resp += "}";
       SendSimple(fd, 200, "OK", resp, "application/json");
     } else {
@@ -1414,6 +1552,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   trace_outcome = client_disconnected ? trace::RequestOutcome::kCancelled
                                       : trace::RequestOutcome::kSuccess;
   if (!client_disconnected) {
+    session.success = true;
     diagnostic.Outcome("success", "completed");
     metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
   }

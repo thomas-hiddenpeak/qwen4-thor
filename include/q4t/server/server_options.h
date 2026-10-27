@@ -37,6 +37,7 @@ struct ServerOptions {
   // E2E accepted 2026-10-14); --no-mtp opts back to plain greedy decode.
   bool no_mtp = false;
   bool mtp_suffix = false;  // Explicit request-local text, fixed-k3 suffix.
+  std::string session_cache_dir;  // Explicit bounded same-process SSD cache.
   std::string mtp_subset_head;  // Explicit experimental BF16 artifact.
   // MTP speculative steps k (draft tokens per step); only meaningful when
   // MTP is enabled. Serve default 3 (measured optimum, see docs/LOG.md).

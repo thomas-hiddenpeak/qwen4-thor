@@ -387,7 +387,8 @@ Status MtpSpeculativeStepMulti(const model::Model& main, const MtpModel& mtp,
                                uint16_t** next_g, cudaStream_t stream,
                                std::span<const int32_t> stop_tokens = {},
                                std::span<const int32_t> suffix_draft = {},
-                               std::span<const SuffixProposal> batch_suffix = {});
+                               std::span<const SuffixProposal> batch_suffix = {},
+                               std::span<const uint8_t> complete_terminal = {});
 
 }  // namespace mtp
 }  // namespace q4t

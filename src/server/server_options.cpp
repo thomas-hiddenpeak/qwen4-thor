@@ -15,6 +15,12 @@ ServerCapabilities CapabilitiesFor(const ServerOptions& options) {
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
+  if (!options.session_cache_dir.empty() &&
+      (options.no_mtp || options.mtp_k != 3 || options.allow_media ||
+       options.seq_capacities.empty() || options.moe_resident_slots != 0 ||
+       !options.moe_trace_dir.empty()))
+    return Status::Fail(
+        "session-cache requires text k=3, explicit slots, no trace/offload");
   if (options.mtp_suffix &&
       (options.no_mtp || options.mtp_k != 3 ||
        options.allow_media ||
@@ -121,7 +127,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
         key != "--startup-plan" && key != "--mtp-subset-head" &&
-        key != "--seq-capacities")
+        key != "--seq-capacities" && key != "--session-cache-dir")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
@@ -141,6 +147,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         parsed.seq_capacities.push_back(capacity);
         start = end + 1;
       }
+    } else if (key == "--session-cache-dir") {
+      parsed.session_cache_dir = value;
     } else if (key == "--mtp-subset-head") {
       parsed.mtp_subset_head = value;
     } else if (key == "--host") {

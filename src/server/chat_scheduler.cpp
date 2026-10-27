@@ -361,6 +361,8 @@ void ChatServer::SchedulerLoop() {
       std::vector<const uint16_t*> g_in(B);
       std::vector<uint16_t*> next_g(B);
       std::vector<mtp::SuffixProposal> suffix;
+      std::vector<uint8_t> complete_terminal;
+      if (session_cache_.Enabled()) complete_terminal.resize(B);
       if (mtp_suffix_) suffix.resize(B);
       int suffix_rows = 0;
       for (int i = 0; i < B; ++i) {
@@ -369,6 +371,8 @@ void ChatServer::SchedulerLoop() {
         d0[i] = mtp_reqs[i]->mtp_d0;
         g_in[i] = mtp_reqs[i]->mtp_g;
         next_g[i] = mtp_reqs[i]->mtp_g;  // trunk rolled in place
+        if (!complete_terminal.empty())
+          complete_terminal[i] = mtp_reqs[i]->complete_terminal_draft;
         if (mtp_suffix_) {
           suffix[i].ready = mtp_reqs[i]->mtp_suffix_ready;
           suffix[i].tokens = mtp_reqs[i]->mtp_suffix_tokens;
@@ -388,7 +392,26 @@ void ChatServer::SchedulerLoop() {
                                          B, mtp_k_, accepted.data(),
                                          acc_count.data(), next_b.data(),
                                          next_d0.data(), next_g.data(),
-                                         nullptr, stop_token_ids_, {}, suffix);
+                                         nullptr, stop_token_ids_, {}, suffix,
+                                         complete_terminal);
+        if (s.ok()) {
+          for (int i = 0; i < B; ++i) {
+            if (!mtp_reqs[i]->session_last_trunk) continue;
+            const auto error = cudaMemcpy(
+                mtp_reqs[i]->session_last_trunk,
+                mtp_.d_ms_vtrunk +
+                    (static_cast<size_t>(i) * (mtp_k_ + 1) + acc_count[i] - 1) *
+                        model_.Get().hc_dim(),
+                static_cast<size_t>(model_.Get().hc_dim()) * 2,
+                cudaMemcpyDeviceToDevice);
+            if (error != cudaSuccess) {
+              s = Status::Fail(std::string("session final trunk: ") +
+                               cudaGetErrorString(error));
+              gpu_healthy_.store(false, std::memory_order_relaxed);
+              break;
+            }
+          }
+        }
         if (!s.ok())
           for (auto* sequence : seqs) sequence->Fail();
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)

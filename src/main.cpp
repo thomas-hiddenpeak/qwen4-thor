@@ -56,6 +56,7 @@ void PrintUsage(const char* prog) {
       "            (q4t serve [--host IPv4] [--port N] [--model-dir DIR] "
       "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] "
       "[--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] "
+      "[--session-cache-dir DIR] "
       "[--mtp-subset-head DIR] "
       "[--allow-media] "
       "[--startup-plan auto|off|required]\n"

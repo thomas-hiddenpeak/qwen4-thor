@@ -1,0 +1,5 @@
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+PASS full_state=1 reused_source_slot=0 restored_slot=2 prefix=8193 continuation=17 terminal_extend=1 disk_bytes=48771072 head=full

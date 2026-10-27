@@ -1,0 +1,11 @@
+test_bad_attribution (test_runtime_audit.RuntimeAudit.test_bad_attribution) ... ok
+test_completed_zero_hit_lazy_service (test_runtime_audit.RuntimeAudit.test_completed_zero_hit_lazy_service) ... ok
+test_eager_or_missing_table (test_runtime_audit.RuntimeAudit.test_eager_or_missing_table) ... ok
+test_io_failure (test_runtime_audit.RuntimeAudit.test_io_failure) ... ok
+test_missing_release (test_runtime_audit.RuntimeAudit.test_missing_release) ... ok
+test_original_full_partial_step (test_runtime_audit.RuntimeAudit.test_original_full_partial_step) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.005s
+
+OK

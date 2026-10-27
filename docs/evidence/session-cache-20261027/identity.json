@@ -1,0 +1,47 @@
+{
+  "candidate": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+  "baseline": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+  "sources": {
+    "correctness-gate.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/correctness-gate.json",
+      "sha256": "c10a7728e4ac049eb7653630809afd972e9a56d0dd08abb2d09514842a24a9ce"
+    },
+    "first-audit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/phase-a/archive/audit.json",
+      "sha256": "45360a590e95d6ee1ef3acd1d157d02c0f21e7befe78e243bc7875d9e011ab23"
+    },
+    "subset-audit.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/phase-a-remaining/cpu-audit/session-audit.json",
+      "sha256": "ed094fc9a39434480daf0fa03a1e32df8205e5b66c26d06d51f75b3ce0600396"
+    },
+    "gpu-state-postflight.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/phase-b/postflight.json",
+      "sha256": "621c1f1655aee64ab5b44adbfe4c1833caffb4389071a1a4c2be7600b1c4dd83"
+    },
+    "gpu-state-stage.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/phase-b/run/state.json",
+      "sha256": "106ce76f9a9c33acc45d6dd3796de88ebff4316726d7aba672ed96547b62187f"
+    },
+    "cpu-storage.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/phase-a/run/full-http/cpu-contract.log",
+      "sha256": "19855a7035e84cef160f46f75581a47cbdeb856c1cbd1aaf482ff1a379c957a1"
+    },
+    "cpu-release-audit.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/evidence/release-cpu-fix.log",
+      "sha256": "6ead954c70d52ec1a262132fc6ae66e3af1255ca06dd40394da1ad3f07d9b19c"
+    },
+    "cpu-runtime-audit.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/evidence/runtime-audit-cpu-fix.log",
+      "sha256": "14782b44c50b559b9c2fa01a1c0417ae3ea381c316e65b335a15b68dd2b65677"
+    },
+    "full-state.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/phase-b/run/full-state-driver.log",
+      "sha256": "58364fb04120691d14129ff5bb31093cc45ad4666577aa8b5b101e82fcced3f7"
+    },
+    "subset-state.log": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/phase-b/run/subset-state-driver.log",
+      "sha256": "d192de09d5aae0b1726c93b5b27d02289fe9922de197c56d9bf198406ff3eb87"
+    }
+  },
+  "status": "IMPLEMENTED_CORRECTNESS_REFERENCES_PASS_PERFORMANCE_PENDING"
+}

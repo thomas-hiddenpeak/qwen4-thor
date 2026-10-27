@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "candidate_sha256": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+  "direct_contracts": [
+    "full-state",
+    "subset-state"
+  ],
+  "direct_scope": "4 real target layers including all persistent state kinds; real draft",
+  "http_quality": {
+    "full": 11,
+    "subset": 11
+  },
+  "http_requests_used": 35,
+  "http_starts_used": 2,
+  "gpu_fixtures_used": 2,
+  "tool_fixes_used": 2,
+  "remaining_fix_allowance": 0,
+  "full_cancel_recovery_pending": true,
+  "unaffected_reuse": "Accepted 0/1/2/3 and mixed suffix/neural independent-prefix evidence; default branch numerical operations unchanged.",
+  "postflight_sha256": "621c1f1655aee64ab5b44adbfe4c1833caffb4389071a1a4c2be7600b1c4dd83"
+}

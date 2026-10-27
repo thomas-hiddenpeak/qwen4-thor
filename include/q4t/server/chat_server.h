@@ -27,6 +27,7 @@
 
 #include "q4t/trace/router_collector.h"
 #include "q4t/server/suffix_token_cache.h"
+#include "q4t/server/session_cache.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/server_options.h"
 #include "q4t/model/model_owner.h"
@@ -166,6 +167,8 @@ class ChatServer {
     // step's trunk into it. `mtp_accepted` holds up to mtp_k+1 accepted tokens
     // (the bonus + accepted drafts) for this step.
     bool is_mtp = false;
+    bool complete_terminal_draft = false;
+    uint16_t* session_last_trunk = nullptr;
     int32_t mtp_b = 0;         // bonus token t_P (step input)
     int32_t mtp_d0 = 0;        // first draft token (step input)
     bool mtp_suffix_ready = false;
@@ -301,6 +304,7 @@ class ChatServer {
   // Lazy immutable global-ID properties; no request history is cached.
   // Calls are serialized with tok_mu_; Run drains requests before destruction.
   SuffixTokenCache suffix_token_cache_;
+  SessionCache session_cache_;
   // Tiered residency observability (max_seq=1 contract: the delta between
   // consecutive request completions is that request's own load activity).
   bool residency_enabled_ = false;

@@ -1,0 +1,9 @@
+test_missing_and_unreleased (test_release_audit.ReleaseAudit.test_missing_and_unreleased) ... ok
+test_no_standalone_event (test_release_audit.ReleaseAudit.test_no_standalone_event) ... ok
+test_production_log (test_release_audit.ReleaseAudit.test_production_log) ... ok
+test_success_and_cancel (test_release_audit.ReleaseAudit.test_success_and_cancel) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK
