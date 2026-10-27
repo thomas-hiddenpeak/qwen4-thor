@@ -1,7 +1,9 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[固定k3 suffix正式交付](MTP_SUFFIX_DELIVERED_2026-10-27.md)；
+最新专项：[长短agent并发候选NO_GO归档](MTP_SUFFIX_AGENT_RESULTS_2026-10-27.md)；
+[长短agent事前方案](MTP_SUFFIX_AGENT_PLAN_2026-10-27.md)；
+[固定k3 suffix正式交付](MTP_SUFFIX_DELIVERED_2026-10-27.md)；
 [按需分类B验收及保护原值](MTP_SUFFIX_LAZY_ACCEPTANCE_2026-10-26.md)；
 [因果A结果](MTP_SUFFIX_CAUSAL_RESULTS_2026-10-26.md)；
 [因果消融与修复方案（已执行）](MTP_SUFFIX_CAUSAL_PLAN_2026-10-26.md)；
@@ -44,6 +46,8 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [长短agent并发结果](MTP_SUFFIX_AGENT_RESULTS_2026-10-27.md) | 227HTTP、两head长短重复对照、容量/分块prefill/32短请求准入 | subset未达3%decode目标；单流保护缺93请求、期限届满，NO_GO归档，90f保持 |
+| [长短agent事前方案](MTP_SUFFIX_AGENT_PLAN_2026-10-27.md) | 208896+3×65536、prefill4096、两head有界矩阵 | 冻结记录；阶段已结束，不自动重启或扩样 |
 | [固定k3 suffix交付](MTP_SUFFIX_DELIVERED_2026-10-27.md) | 显式启用90f、回退包、2启动3HTTP健康 | 有限工程接受并交付，统计非劣未建立，full默认不变 |
 | [按需分类B验收](MTP_SUFFIX_LAZY_ACCEPTANCE_2026-10-26.md) | 226HTTP、两head重复收益与完整五档/普通decode | 四收益目标满足；保护原值及剩余风险公开，不扩样 |
 | [因果A结果](MTP_SUFFIX_CAUSAL_RESULTS_2026-10-26.md) | 60HTTP、同路径/处理前负控、唯一B选择 | 删除全词表启动Decode；旧200K因果未确认 |

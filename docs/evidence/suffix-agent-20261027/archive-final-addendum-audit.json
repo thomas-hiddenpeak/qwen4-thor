@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-20261027/archive-final-addendum",
+  "files": 30,
+  "bytes": 560917,
+  "manifest_sha256": "83669a64d2050625134534241da4c161ecbd5f14319379764dc678418f632987",
+  "depends_on_archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-20261027/archive-before-compat",
+  "prior_archive_manifest_sha256": "13b80b55154f02f365683a83f49b5e3fb86e48ae85ef543d98f5f6f18b24c186",
+  "default_replaced": false,
+  "new_gpu_requests": 0,
+  "note": "All addendum files re-read and checked after copy; keep prior archive and this addendum together."
+}

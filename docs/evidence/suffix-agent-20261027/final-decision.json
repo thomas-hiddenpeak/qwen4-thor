@@ -1,0 +1,150 @@
+{
+  "status": "CLOSED_NO_GO",
+  "created_unix": 1793075372.81381,
+  "scope": "Heterogeneous long-agent fixed-k3 suffix candidate f2a6; excludes the already delivered single-stream 90f feature.",
+  "source_commit": "1fefbc1f7f0de0b6948bc82b6fde66e1f08cd2b3",
+  "candidate_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+  "delivered_program_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+  "release_metadata_sha256": "45cfe74a761f9b3a9ab1db613b42e8fde64192d869f17a0596ea5925b73e61ec",
+  "evidence_validity": {
+    "status": "VALID_FOR_COMPLETED_SCOPE",
+    "archive_audit": "final-audit.json",
+    "http_requests": 227,
+    "http_service_starts": 10,
+    "gpu_fixture_attempts": 4,
+    "env_abort": false,
+    "original_failure": "The delivered parent completed 21 HTTP requests and exited 0; the original strict auditor then required an unavailable new batch ledger. Original STOPPED/COMMAND_FAILED records are retained.",
+    "compatibility_repair": "SHA-scoped legacy adapter passed 9 CPU tests and read-only review of the 21 original requests; legacy independent batch observation remains unavailable."
+  },
+  "measurement_completeness": {
+    "status": "INCOMPLETE_SINGLE_STREAM_PROTECTIONS",
+    "long_matrix": "All two-head, two-block OFF/ON comparisons complete: 128 requests",
+    "quality": "22 exact HTTP checks passed",
+    "queue": "16 full-head and 32 subset-head short requests completed; not a 32-long-request latency test",
+    "lifecycle": "Both heads cancel/recovery and output-tail checks completed",
+    "single_stream_completed": "Only the 21 full-head delivered-parent requests completed; no complete parent/candidate protection pair",
+    "unexecuted": [
+      {
+        "name": "13-full-candidate",
+        "head": "full",
+        "requests": 21,
+        "starts": 1,
+        "status": "NOT_RUN_DEADLINE_EXPIRED"
+      },
+      {
+        "name": "14-subset-candidate",
+        "head": "subset",
+        "requests": 21,
+        "starts": 1,
+        "status": "NOT_RUN_DEADLINE_EXPIRED"
+      },
+      {
+        "name": "15-subset-parent",
+        "head": "subset",
+        "requests": 21,
+        "starts": 1,
+        "status": "NOT_RUN_DEADLINE_EXPIRED"
+      },
+      {
+        "name": "16-plain-parent",
+        "head": "plain",
+        "requests": 15,
+        "starts": 1,
+        "status": "NOT_RUN_DEADLINE_EXPIRED"
+      },
+      {
+        "name": "17-plain-candidate",
+        "head": "plain",
+        "requests": 15,
+        "starts": 1,
+        "status": "NOT_RUN_DEADLINE_EXPIRED"
+      }
+    ],
+    "unexecuted_requests": 93,
+    "unexecuted_starts": 5,
+    "deadline_unix": 1793072029.164911,
+    "deadline_extended": false
+  },
+  "statistics": {
+    "status": "DESCRIPTIVE_ONLY",
+    "repeat_outputs_identical": true,
+    "minimum_target": {
+      "per_head_per_repeated_scenario_e2e_percent": 1.0,
+      "per_head_per_repeated_scenario_decode_percent": 3.0
+    },
+    "repeated_gains": [
+      {
+        "head": "full",
+        "scenario": "repeat-code",
+        "blocks": 2,
+        "e2e_percent": 1.9793207185561323,
+        "decode_percent": 5.441224468320494,
+        "threshold_met": true,
+        "output_same": true
+      },
+      {
+        "head": "full",
+        "scenario": "repeat-text",
+        "blocks": 2,
+        "e2e_percent": 1.8336589497848665,
+        "decode_percent": 5.220349985313333,
+        "threshold_met": true,
+        "output_same": true
+      },
+      {
+        "head": "subset",
+        "scenario": "repeat-code",
+        "blocks": 2,
+        "e2e_percent": 1.1175522806194715,
+        "decode_percent": 2.9916797903354997,
+        "threshold_met": false,
+        "output_same": true
+      },
+      {
+        "head": "subset",
+        "scenario": "repeat-text",
+        "blocks": 2,
+        "e2e_percent": 1.0534362172362588,
+        "decode_percent": 2.847144099685517,
+        "threshold_met": false,
+        "output_same": true
+      }
+    ],
+    "conclusion": "Full-head point estimates meet the frozen target; both subset decode point estimates miss it. No population noninferiority, universal output equivalence, or complete protection claim.",
+    "output_difference_evidence": "agent-output-differences.json",
+    "output_difference_note": "Observed zero-hit free-generation differences remain unexplained; repeated material output equality is validated separately."
+  },
+  "business_result": {
+    "status": "VALIDATED_IN_TESTED_SCOPE_NOT_DEPLOYED",
+    "capacity": "One 208896-token slot plus three 65536-token slots; input+output admission without silent downsizing",
+    "prefill": "4096-token streamed MTP trunk; same-chunk independent state reference passed",
+    "queue": "Four execution slots with 32 short requests admitted and completed",
+    "limits": [
+      "No arbitrary 32 long-context request latency guarantee.",
+      "Local numerical state/layout contracts do not prove identical free generation for every input."
+    ]
+  },
+  "optimization_result": "NO_GO_GAIN_TARGET_MISSED",
+  "engineering_decision": {
+    "status": "NOT_ACCEPTED_KEEP_DELIVERED_DEFAULT",
+    "reasons": [
+      "Both subset repeated decode gains are below the predeclared 3% target.",
+      "Required single-stream and plain-decode protections remain unmeasured at the original deadline."
+    ],
+    "candidate_deployed": false,
+    "default_replaced": false,
+    "release_metadata_changed": false,
+    "health_requests": 0,
+    "health_rationale": "No deployment or replacement occurred.",
+    "retries_or_expanded_sampling": 0,
+    "closure": "Archive candidate and failures; preserve branch and evidence paths; commit and push documentation. No automatic continuation of this expired plan."
+  },
+  "authorization_resolution": "authorization-resolution.json",
+  "audit_sha256": "2bcaeb95904a5325df99ecd5cd299f3ccb26164299b583e09151490a4c6a054e",
+  "archive_manifest_sha256": "13b80b55154f02f365683a83f49b5e3fb86e48ae85ef543d98f5f6f18b24c186",
+  "closure_cpu_notes": [
+    "Initial standalone audit omitted root CMakeLists.txt from the 160-file count; corrected before proof creation.",
+    "Standalone pair recomputation normalized Python output tuples to the saved JSON arrays; all numerical values then matched exactly.",
+    "Both preliminary audit logs are retained; neither attempt ran inference or modified raw evidence."
+  ]
+}

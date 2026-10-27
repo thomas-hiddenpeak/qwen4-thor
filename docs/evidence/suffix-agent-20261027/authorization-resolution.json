@@ -1,0 +1,15 @@
+{
+  "recorded_unix": 1793075372.8134503,
+  "user_message": "继续",
+  "interpretation": "Approval of the pending single legacy-audit compatibility exception for the original remaining 93 requests and 5 service starts. No change to gains, inputs, order, program or absolute deadline.",
+  "exception_authorized": true,
+  "deadline_extension_authorized": false,
+  "first_prelaunch_check_local": "2026-10-27T12:24:24.149522+08:00",
+  "original_deadline_unix": 1793072029.164911,
+  "original_deadline_local": "2026-10-27T11:33:49.164911+08:00",
+  "action": "NOT_STARTED_DEADLINE_EXPIRED; close under the frozen negative-result/archive exit",
+  "prepared_plan_sha256": "8aede9ac6220a7ca5dda26d1eba0468ce1d0f8a65028595323b7f503d7f10fa6",
+  "gpu_requests_after_resumption": 0,
+  "gpu_service_starts_after_resumption": 0,
+  "historical_prepared_plan_remains_unmodified": true
+}
