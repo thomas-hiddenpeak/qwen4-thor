@@ -16,6 +16,24 @@ def fields(line):
     return dict(re.findall(r'(\w+)=(\S+)', line))
 
 
+def add_sample(summary, row):
+    existing.add_sample(summary, row)
+    for proc in row.get('processes', {}).values():
+        argv = proc.get('identity', {}).get('argv', [])
+        if argv and Path(argv[0]).name == 'q4t':
+            swap = existing.memory(proc.get('status', '')).get('VmSwap', 0)
+            summary['q4t_swap_bytes'] = max(summary.get('q4t_swap_bytes', 0), swap)
+    for name in ['gpu-gpc-0.cur_freq','gpu-nvd-0.cur_freq','bwmgr.cur_freq',
+                 'thermal_zone0.temp','thermal_zone1.temp']:
+        source = row.get('source_values', {}).get(name)
+        if source and source['status'] == 'OK':
+            value = int(source['raw'])
+            item = summary.setdefault('source_ranges', {}).setdefault(name,
+                dict(min=value, max=value))
+            item['min'] = min(item['min'], value)
+            item['max'] = max(item['max'], value)
+
+
 def summarize(root):
     state = json.loads((root / 'state.json').read_text())
     if state['status'] == 'RUNNING':
@@ -72,10 +90,10 @@ def summarize(root):
     with (root / 'unified-memory.jsonl').open() as stream:
         for line in stream:
             sample = json.loads(line)
-            existing.add_sample(overall, sample)
+            add_sample(overall, sample)
             for start, end, result in windows:
                 if start <= sample['monotonic'] <= end:
-                    existing.add_sample(result, sample)
+                    add_sample(result, sample)
     return dict(source=str(root), state=state, memory=overall, services=services,
         limits=['One-second physical-RAM observations cannot bound unsampled peaks.',
                 'RSS, CUDA allocations and file cache are not added to physical RAM.',

@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 
 from run_stage import ROOT, save
+from oracle import short_answer
 
 
 def sha(path):
@@ -21,6 +22,7 @@ def main():
         raise RuntimeError('C transaction gate has not passed')
     source = base / 'phase-c-subset/plan.json'
     plan = copy.deepcopy(json.loads(source.read_text()))
+    plan['short_expected'] = short_answer(plan)
     target = base / 'phase-d'
     target.mkdir()
     fixtures = target / 'fixtures'
@@ -77,7 +79,12 @@ def main():
     additions = [first_path, source, gate, Path(plan['parent']),
         ROOT / 'tools/session_cache/prepare_protection.py',
         ROOT / 'tools/session_cache/run_protection.py',
-        ROOT / 'tools/session_cache/analyze_performance.py']
+        ROOT / 'tools/session_cache/analyze_performance.py',
+        ROOT / 'tools/session_cache/analyze_protection.py',
+        ROOT / 'tools/session_cache/analyze_resources.py',
+        ROOT / 'tools/session_cache/audit_evidence.py',
+        ROOT / 'tools/mtp_suffix_agent/analyze.py',
+        ROOT / 'tools/mtp_suffix_agent/resources.py']
     additions += [Path(c['path']) for c in plan['protection'] if 'path' in c]
     for item in additions:
         plan['files'][str(item)] = sha(item)

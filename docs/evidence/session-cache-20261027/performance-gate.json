@@ -1,0 +1,226 @@
+{
+  "passed": true,
+  "complete": true,
+  "candidate_sha256": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+  "plan_sha256": "a1d31636c57d26a9a9c5bd22ea070ac7eb1638cf8ce776f7e3dcc5bb706219f7",
+  "pairs": [
+    {
+      "head": "full",
+      "scenario": "repeat-code",
+      "passed": true,
+      "off_seconds": 873.7884332947433,
+      "on_seconds": 631.6600392078981,
+      "latency_reduction": 0.27710185310403546,
+      "total_output_tokens": 10240,
+      "off_tokens_per_second": 11.71908394505593,
+      "on_tokens_per_second": 16.211251882960592,
+      "resume_ttft": [
+        {
+          "slot": 0,
+          "off": 274.1598928151652,
+          "on": 14.137376408092678,
+          "reduction": 0.9484338271987001
+        },
+        {
+          "slot": 1,
+          "off": 273.8497959729284,
+          "on": 13.831530580064282,
+          "reduction": 0.9494922735621406
+        },
+        {
+          "slot": 2,
+          "off": 274.15101352799684,
+          "on": 14.12858312483877,
+          "reduction": 0.9484642316545879
+        },
+        {
+          "slot": 3,
+          "off": 274.15907433303073,
+          "on": 14.14079430885613,
+          "reduction": 0.9484212063990309
+        }
+      ],
+      "round_makespan": {
+        "False": {
+          "first": 417.76247881609015,
+          "interference": 162.71279015485197,
+          "second": 293.3131643238012
+        },
+        "True": {
+          "first": 426.90157370385714,
+          "interference": 162.3226611041464,
+          "second": 42.43580439989455
+        }
+      },
+      "reused_first_interference": true
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-text",
+      "passed": true,
+      "off_seconds": 871.5187447660137,
+      "on_seconds": 629.2314908511471,
+      "latency_reduction": 0.2780057863011497,
+      "total_output_tokens": 10240,
+      "off_tokens_per_second": 11.749603851319625,
+      "on_tokens_per_second": 16.27381996751082,
+      "resume_ttft": [
+        {
+          "slot": 0,
+          "off": 272.3341696790885,
+          "on": 12.646671923110262,
+          "reduction": 0.9535619348170199
+        },
+        {
+          "slot": 1,
+          "off": 272.33207870298065,
+          "on": 12.650381751125678,
+          "reduction": 0.9535479558215291
+        },
+        {
+          "slot": 2,
+          "off": 272.0379067850299,
+          "on": 12.671536952955648,
+          "reduction": 0.9534199586274241
+        },
+        {
+          "slot": 3,
+          "off": 272.23111524502747,
+          "on": 12.368221727199852,
+          "reduction": 0.9545672003140877
+        }
+      ],
+      "round_makespan": {
+        "False": {
+          "first": 417.68349679512903,
+          "interference": 162.1096799718216,
+          "second": 291.72556799906306
+        },
+        "True": {
+          "first": 426.46086014201865,
+          "interference": 161.7369416509755,
+          "second": 41.03368905815296
+        }
+      },
+      "reused_first_interference": false
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-code",
+      "passed": true,
+      "off_seconds": 871.532821503235,
+      "on_seconds": 630.0879667547997,
+      "latency_reduction": 0.2770347240990729,
+      "total_output_tokens": 10240,
+      "off_tokens_per_second": 11.749414075235709,
+      "on_tokens_per_second": 16.251699032977918,
+      "resume_ttft": [
+        {
+          "slot": 0,
+          "off": 273.4510204901453,
+          "on": 13.695430130930617,
+          "reduction": 0.9499163319764455
+        },
+        {
+          "slot": 1,
+          "off": 273.16300726286136,
+          "on": 13.972653907956555,
+          "reduction": 0.9488486598241656
+        },
+        {
+          "slot": 2,
+          "off": 273.2121423431672,
+          "on": 13.903868013061583,
+          "reduction": 0.9491096263371864
+        },
+        {
+          "slot": 3,
+          "off": 273.4318824468646,
+          "on": 13.97015115013346,
+          "reduction": 0.9489081118664051
+        }
+      ],
+      "round_makespan": {
+        "True": {
+          "first": 426.4884627079591,
+          "interference": 161.8319650029298,
+          "second": 41.7675390439108
+        },
+        "False": {
+          "first": 417.08345468807966,
+          "interference": 162.04115754109807,
+          "second": 292.4082092740573
+        }
+      },
+      "reused_first_interference": false
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-text",
+      "passed": true,
+      "off_seconds": 878.3167781650554,
+      "on_seconds": 636.4207535937894,
+      "latency_reduction": 0.2754086345437071,
+      "total_output_tokens": 10240,
+      "off_tokens_per_second": 11.65866376979955,
+      "on_tokens_per_second": 16.089984404461962,
+      "resume_ttft": [
+        {
+          "slot": 0,
+          "off": 271.9518984397873,
+          "on": 12.658125827088952,
+          "reduction": 0.9534545414107798
+        },
+        {
+          "slot": 1,
+          "off": 272.0174336479977,
+          "on": 12.378039566101506,
+          "reduction": 0.9544954181792655
+        },
+        {
+          "slot": 2,
+          "off": 271.7876839521341,
+          "on": 12.658561651827767,
+          "reduction": 0.9534248150329832
+        },
+        {
+          "slot": 3,
+          "off": 271.9451794959605,
+          "on": 12.658866466023028,
+          "reduction": 0.9534506679269487
+        }
+      ],
+      "round_makespan": {
+        "True": {
+          "first": 432.61468992591836,
+          "interference": 162.18521478190087,
+          "second": 41.62084888597019
+        },
+        "False": {
+          "first": 423.80022711795755,
+          "interference": 162.47003451897763,
+          "second": 292.04651652812026
+        }
+      },
+      "reused_first_interference": false
+    }
+  ],
+  "current_http_validated": 90,
+  "source_stages": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/phase-c-fixed-cap/run",
+      "raw_status": "STOPPED",
+      "original_failure": "RuntimeError('01-full-on failed with 1')",
+      "reviewed_new_http": 42,
+      "adjudication": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/recovery-adjudication.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/phase-c-subset/run",
+      "raw_status": "MEASURED_REQUIRES_REVIEW",
+      "new_http": 48
+    }
+  ],
+  "statistical_scope": "One descriptive pair per head/scenario, no CI or population noninferiority claim. Full code OFF second is from a fresh service; its first/interference are reused with provenance. Original full ON runner failure was an incorrect answer oracle, adjudicated from frozen prompt identity without replay. Its original stage has no explicit final post-shutdown monitor barrier.",
+  "protection_pending": true,
+  "release_authorized_by_this_gate": false
+}
