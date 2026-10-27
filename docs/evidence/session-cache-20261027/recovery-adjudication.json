@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "inference_repeated": false,
+  "validated_http_requests": 26,
+  "actual_prompt_sha256": "f17889bf3cec9aead6db4da85c4d517a4d795407932c30b9f273363dec239dd0",
+  "expected_from_frozen_prompt_oracle": "710130",
+  "actual": "710130",
+  "incorrect_length_tie_oracle": "710003",
+  "original_exit": {
+    "server": 0,
+    "http_output_checks_passed": false,
+    "failure": "RuntimeError('same-session recovery quality')"
+  },
+  "original_postflight_status": "STOPPED",
+  "monitor_scope": "All collected samples joined/flushed without errors; original failed stage has no explicit final post-shutdown barrier. Do not relabel that stage COMPLETED.",
+  "archive_audit_sha256": "91f08f97f3562e8545e99c4784c5fd5c65a6bbc9159010d45e2b1f58dd4ac946",
+  "raw_sha256": {
+    "server.log": "da123591701fb2473a9172f5b216585b2e1b156ebc21aa7a02263c923b11e6dd",
+    "exit.json": "a3b24ccb6ca22cbd8e9c8adfa6923a7643281a392ec1441b336deee229718a3c",
+    "after-cancel-request.json": "796cc3e81d88b32005fddab4d14983f1962ab2235e2203cb9728ca39b964ad72",
+    "after-cancel-response.json": "dcb32841921b0063d9b4897554553f274f803dbd293b8a3efd7fa21b5ce6ad09",
+    "cancel-request.json": "d5d81b229afeded355dfe939cfe4afc9c29d47038521429c1180848cb273661a",
+    "cancel-response.json": "3b875190e5bb0936db1cdc7d20978614db2a166a51d69ec5a9d4a00d649de68e"
+  },
+  "request_budget_change": 0,
+  "start_budget_change": 0
+}

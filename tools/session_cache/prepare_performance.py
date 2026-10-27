@@ -6,6 +6,7 @@ from pathlib import Path
 import sys
 
 from run_stage import ROOT, save
+from oracle import short_answer
 
 
 def sha(path):
@@ -84,8 +85,7 @@ def main():
         acceptance=dict(transaction_latency_reduction_min=.10,resume_ttft_reduction_min=.50,
                         scenarios=['repeat-code','repeat-text'],heads=['full','subset']),
         material='Old accepted repetition material; new tool turns and 60K final child frozen before current performance; 9K development material separate.')
-    shortest=min(plan['quality'].values(),key=lambda x:x['length'])
-    plan['short_expected']=shortest['expected']
+    plan['short_expected']=short_answer(plan)
     path=target/'plan.json'
     for number,(head,enabled) in enumerate([('full',False),('full',True),('subset',True),('subset',False)]):
         name=f'{number:02d}-{head}-'+('on' if enabled else 'off')

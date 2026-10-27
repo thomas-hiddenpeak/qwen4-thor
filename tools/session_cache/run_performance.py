@@ -14,6 +14,7 @@ import urllib.request
 
 from run_stage import ROOT, multi, reuse, legacy, http, save, request
 from audit import audit_server
+from oracle import short_answer
 
 
 def validate(plan):
@@ -145,7 +146,7 @@ def cancellation_recovery(plan, out, check):
     else:
         raise TimeoutError('cancel release')
     result=request(plan,out,'after-cancel',plan['short_prompt'],16,key)
-    if result['text'].strip() != plan['short_expected']:
+    if result['text'].strip() != short_answer(plan):
         raise RuntimeError('same-session recovery quality')
 
 

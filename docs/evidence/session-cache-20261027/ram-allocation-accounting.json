@@ -1,0 +1,17 @@
+{
+  "scope": "explicit 208896+3x65536, maximum constants used for conservative accounting",
+  "shared_staging_bytes": 8388608,
+  "eight_prefix_vectors_max_bytes": 8388640,
+  "one_serialized_save_prefix_copy_max_bytes": 1048580,
+  "four_active_last_target_trunks_bytes": 81920,
+  "range_and_digest_vector_payload_bound_bytes": 306816,
+  "sum_named_payload_bytes": 18214564,
+  "startup_budget_reserved_bytes": 33554432,
+  "known_limits": [
+    "Named payload bound excludes allocator bookkeeping/fragmentation, strings and std::function objects.",
+    "CUDA pageable-copy internals are not isolated by allocator counters; whole-host physical RAM/RSS telemetry remains authoritative for observation.",
+    "Original target/draft KV and recurrent state remain in fixed slot allocations; SSD entries do not add another RAM state image.",
+    "Save prefix copying and I/O are serialized under the model/cache mutexes, so this temporary is not multiplied by active slots."
+  ],
+  "test_or_inference_run": false
+}

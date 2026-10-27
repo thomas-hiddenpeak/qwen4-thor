@@ -39,6 +39,10 @@ def summarize(root):
         sessions = [fields(l) for l in raw
                     if l.startswith('[session-cache] request=')]
         service = dict(memory={}, cases={}, session_events=sessions,
+            startup_wall_seconds=next(e['monotonic_seconds'] for e in events
+                if e['event']=='server_ready')-start,
+            shutdown_wall_seconds=max(ends)-next(e['monotonic_seconds'] for e in events
+                if e['event']=='server_before_shutdown'),
             disk_peak_bytes=max((int(s.get('disk_bytes', 0)) for s in sessions), default=0),
             successful_restores=sum(s['event']=='restore' and int(s['prefix'])>0
                                     and s['error']=='none' for s in sessions),
@@ -78,6 +82,8 @@ def summarize(root):
                 'Snapshot disk bytes are SSD, not additional resident RAM.',
                 'Save wall time includes waiting for model mutex; restore wall time '
                 'starts under that mutex. End-to-end TTFT includes both waits.',
+                'External startup/shutdown windows include direct-I/O preflight '
+                'and cache teardown; ready polling has one-second granularity.',
                 'GPU memcpy/internal pageable staging is included in host RAM '
                 'observations; no isolated GPU section timing was collected.'])
 

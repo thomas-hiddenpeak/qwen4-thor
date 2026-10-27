@@ -19,7 +19,7 @@ def main():
     gate = base / 'performance-gate.json'
     if not json.loads(gate.read_text())['passed']:
         raise RuntimeError('C transaction gate has not passed')
-    source = base / 'phase-c-fixed-cap/plan.json'
+    source = base / 'phase-c-subset/plan.json'
     plan = copy.deepcopy(json.loads(source.read_text()))
     target = base / 'phase-d'
     target.mkdir()
