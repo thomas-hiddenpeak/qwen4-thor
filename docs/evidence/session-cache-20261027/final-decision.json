@@ -1,0 +1,158 @@
+{
+  "passed": true,
+  "candidate_sha256": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+  "previous_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+  "evidence_validity": "VALID_WITH_DISCLOSED_HARNESS_FAILURES_AND_EXIT_OBSERVATION_LIMITS",
+  "measurement_completeness": "COMPLETE_BOUNDED_MATRIX_WITH_DOCUMENTED_REUSE_AND_CAP_REVISION",
+  "statistical_conclusion": "DESCRIPTIVE_TARGETS_MET; POPULATION_NONINFERIORITY_NOT_ESTABLISHED",
+  "engineering_decision": "ACCEPT_BOUNDED_LONG_SESSION_CACHE",
+  "accepted_scope": {
+    "server": "Same-process text greedy MTP k=3, fixed explicit slot capacities; full or unchanged 65536 BF16 head",
+    "configuration": {
+      "max_seq": 4,
+      "max_prefill": 4096,
+      "max_len": 208896,
+      "seq_capacities": [
+        208896,
+        65536,
+        65536,
+        65536
+      ],
+      "suffix": true
+    },
+    "workflow": "One approximately 128K main session plus three approximately 32K/48K/60K child sessions; complete request, unrelated requests occupy all slots, restore with incremental content",
+    "client": "Stable unique 64-lowercase-hex session_id and exact token prefix in full prompt; measured HTTP uses pre-rendered prompt, no specific agent SDK integration claim",
+    "limits": [
+      "Only selected long sessions; short opted-in request performance not measured.",
+      "No cross-process/restart persistence, arbitrary-token preemption, media, router trace or expert SSD-offload combination.",
+      "200K is ordinary-request protection, not measured cached-resume benefit.",
+      "No claim of arbitrary output equivalence with fresh prefill or general agent workflow speedup."
+    ]
+  },
+  "performance_targets": {
+    "transaction_latency_reduction_minimum": 0.1,
+    "resumed_ttft_reduction_minimum": 0.5,
+    "all_four_pairs_met": true
+  },
+  "protection_review": {
+    "outputs_identical_pairs": 45,
+    "work_counts_identical_pairs": 10,
+    "negative_observations": [
+      {
+        "head": "full",
+        "scenario": "context-1024",
+        "e2e_percent": 0.03472743413892587,
+        "decode_percent": -0.1402530300951388,
+        "ttft_percent": -1.3281299048399586
+      },
+      {
+        "head": "full",
+        "scenario": "context-45056",
+        "e2e_percent": 0.04148937650998441,
+        "decode_percent": 0.3934951563745015,
+        "ttft_percent": 0.025199824118349312
+      },
+      {
+        "head": "full",
+        "scenario": "context-204800",
+        "e2e_percent": -0.027208087513752588,
+        "decode_percent": 0.08508363032264654,
+        "ttft_percent": 0.03054633120347372
+      },
+      {
+        "head": "subset",
+        "scenario": "context-8192",
+        "e2e_percent": -0.10296209784186328,
+        "decode_percent": -0.21781421432935932,
+        "ttft_percent": -0.027144955237290436
+      },
+      {
+        "head": "subset",
+        "scenario": "context-45056",
+        "e2e_percent": -0.008438477806715916,
+        "decode_percent": -0.27119714477433776,
+        "ttft_percent": -0.03722032795770991
+      },
+      {
+        "head": "subset",
+        "scenario": "context-204800",
+        "e2e_percent": -0.024359661287842727,
+        "decode_percent": -0.11265646441973587,
+        "ttft_percent": 0.021816113618267075
+      },
+      {
+        "head": "plain",
+        "scenario": "context-4096",
+        "e2e_percent": -0.1377952025230278,
+        "decode_percent": -0.1775951165173706,
+        "ttft_percent": -0.08231942397851633
+      },
+      {
+        "head": "plain",
+        "scenario": "context-8192",
+        "e2e_percent": 0.03689965255171401,
+        "decode_percent": -0.023677870541860546,
+        "ttft_percent": -0.19687981773564012
+      },
+      {
+        "head": "plain",
+        "scenario": "context-45056",
+        "e2e_percent": 0.07999515063017437,
+        "decode_percent": -0.27218955302460435,
+        "ttft_percent": -0.23970196145244316
+      }
+    ],
+    "causal_regression": "NOT_CONFIRMED; NOT_RULED_OUT",
+    "universal_tolerance": null,
+    "reason": "All applicable five-tier and plain controls completed. No key correctness failure or extra target/draft work was found. Small signed observations remain; one startup per identity/mode cannot establish causal attribution or population noninferiority. Acceptance is limited to explicitly selected long sessions, with initial save/restore costs included in each measured net gain."
+  },
+  "correctness": {
+    "exact_http_quality": 22,
+    "cross_turn_memory_heads": 2,
+    "direct_state_reference_heads": 2,
+    "cpu_storage_checks": 49,
+    "fixture_oracle_cpu_checks": 14
+  },
+  "resources": {
+    "entries": 8,
+    "ssd_budget_bytes": 25769803776,
+    "ram_reserved_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "ssd_observed_peak_bytes": 18450968576,
+    "q4t_swap_observed_bytes": 0,
+    "whole_host_existing_swap_bytes": 2147479552
+  },
+  "evidence_inputs": {
+    "final-audit.json": "460d5ca0ceb2fb3f969861c613a6694ffcd45ee57a4394fee00506fe1c070c89",
+    "performance-gate.json": "c61c7081c5875d2f0a910f203cbe8eca6d3bf697e2e14d995de4ce8ad9b45287",
+    "protection-comparisons.json": "838bf7ab43eed3d2e163e154445f63d9cf710d40f1cd80349ffae2a88c4c3356",
+    "protection-work-review.json": "0d9fa9aafb0346b9c742aac1fb7e6997538b3397c32fa3ba07b5e1dba014c217",
+    "resources-d.json": "af964309d07d251c16448585692c29f0be78b01bb25eb903541caf8933ac467b",
+    "resources-c-full.json": "64b92f1af034efc401c9b0a516e076f5cf97c062b27912124ea80393aef0e4ff",
+    "resources-c-subset.json": "c37914779fc00584622f4fc13299bdffdcfb503139bdb719175a2b38b273864f",
+    "ram-allocation-accounting.json": "43fb11c1ece74dad84be5b047bdc7a9ee32bb9c6cfb3329cd36582ae515e92ce",
+    "recovery-adjudication.json": "16dbfc7e7c26a6ce76c4182efa96d46fcf8adbcda46adb230c98aa3f9ba439b4"
+  },
+  "retained_failures": [
+    "A release-marker assertion",
+    "A subset eager-cache audit",
+    "Original C natural EOS/equal-work assumption",
+    "Full C wrong prompt oracle"
+  ],
+  "remaining_risks": [
+    "Original stopped phases retain their missing final monitor barrier.",
+    "The CPU full ON adjudication adds a derived audit file; original raw file hashes and failed exit/state are unchanged.",
+    "Four-layer direct state reference does not prove arbitrary fresh-prefill bitwise output equivalence. Actual HTTP uses all 48 target layers."
+  ],
+  "deployment_authorization": "User requested continued implementation/verification; AGENTS 2026-10-20 explicitly authorizes bounded delivery, rollback package, program/metadata replacement, health, documents, commit and push once accepted.",
+  "deployment_status": "ACCEPTED_PENDING_INSTALL_HEALTH",
+  "planned_health": {
+    "requests": 2,
+    "starts": 1,
+    "projected_total_http": 233,
+    "projected_total_starts": 14
+  },
+  "deadline_unix": 1793123236.5689044,
+  "decided_unix": 1793118641.173071,
+  "automatic_resampling": false
+}

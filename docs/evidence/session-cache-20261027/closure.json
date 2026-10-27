@@ -1,0 +1,45 @@
+{
+  "status": "DELIVERED",
+  "passed": true,
+  "binary_sha256": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+  "sidecar_sha256": "5027b9d4229e97edf35fa482e0351581434b8e270cebd8b91b055a671ec0082e",
+  "runtime_files_verified": 164,
+  "cumulative_http": 233,
+  "successful_http": 230,
+  "cancelled_http": 3,
+  "service_starts": 14,
+  "gpu_fixtures": 2,
+  "deadline_unix": 1793123236.5689044,
+  "health_finished_unix": 1793118982.2236729,
+  "wall_to_finalization_seconds": 17345.65476846695,
+  "health": {
+    "requests": 2,
+    "starts": 1,
+    "cached_tokens": 9227,
+    "monitor_samples": 53,
+    "unflushed": 0,
+    "pending": 0
+  },
+  "pre_health_archive": {
+    "passed": true,
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/evidence-archive-v1",
+    "files": 2484,
+    "bytes": 1237862388,
+    "manifest_sha256": "bccac6abe5d4902815e177cfd658098a9a4045666e243835fd857ef083837da4",
+    "original_full_c_raw_hashes_verified": 604,
+    "elapsed_seconds": 7.728715181350708,
+    "new_inference_requests": 0
+  },
+  "health_archive": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/delivery-evidence-v1",
+    "files": 28,
+    "bytes": 3197789,
+    "manifest_sha256": "d83326246f7e548cbc52bf504fb0a0743ca3c2001d52aa23ea7813a323eb0a65"
+  },
+  "package_seal_sha256": "8d27634d5911b63137c161545a2c86f26e4a872aa18d06290f3ac40a32ae401d",
+  "decision_sha256": "1940490414bc565d9a23004699a583d7b5432a1d52e4b3b4877ac85331c7caea",
+  "recovery_marker_present": false,
+  "persistent_owned_service": false,
+  "statistical_noninferiority": "NOT_ESTABLISHED",
+  "note": "The final-decision and packaged acceptance are pre-install snapshots. This closure and deployment/finalized.json record the completed installation; no extra inference beyond the reserved health."
+}

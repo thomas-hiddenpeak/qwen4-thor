@@ -1,0 +1,281 @@
+{
+  "passed": true,
+  "requests": 2,
+  "cached_tokens": 9227,
+  "first": {
+    "text": "def greet(name):\n    return \"",
+    "messages": [
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "content": ""
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "def"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": " greet"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "(name"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "):"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "\n"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "   "
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": " return"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": " \""
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": ""
+            },
+            "finish_reason": "length"
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-0",
+        "object": "chat.completion.chunk",
+        "created": 1793118951,
+        "model": "qwen3.8-flash-next",
+        "choices": [],
+        "usage": {
+          "prompt_tokens": 9223,
+          "completion_tokens": 8,
+          "total_tokens": 9231,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 9223,
+      "completion_tokens": 8,
+      "total_tokens": 9231,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "done": true,
+    "ttft": 7.062103800941259,
+    "latency": 7.643543232930824,
+    "disconnected": false
+  },
+  "second": {
+    "text": "43",
+    "messages": [
+      {
+        "id": "chatcmpl-auto-1",
+        "object": "chat.completion.chunk",
+        "created": 1793118952,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "content": ""
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-1",
+        "object": "chat.completion.chunk",
+        "created": 1793118952,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "4"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-1",
+        "object": "chat.completion.chunk",
+        "created": 1793118952,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": "3"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-1",
+        "object": "chat.completion.chunk",
+        "created": 1793118953,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "content": ""
+            },
+            "finish_reason": "stop"
+          }
+        ]
+      },
+      {
+        "id": "chatcmpl-auto-1",
+        "object": "chat.completion.chunk",
+        "created": 1793118952,
+        "model": "qwen3.8-flash-next",
+        "choices": [],
+        "usage": {
+          "prompt_tokens": 9262,
+          "completion_tokens": 3,
+          "total_tokens": 9265,
+          "prompt_tokens_details": {
+            "cached_tokens": 9227
+          }
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 9262,
+      "completion_tokens": 3,
+      "total_tokens": 9265,
+      "prompt_tokens_details": {
+        "cached_tokens": 9227
+      }
+    },
+    "done": true,
+    "ttft": 0.7174769621342421,
+    "latency": 1.1175073720514774,
+    "disconnected": false
+  }
+}

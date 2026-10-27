@@ -1,0 +1,167 @@
+{
+  "schema": 1,
+  "sampler_status": "STOPPED",
+  "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+  "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/phase-d/run/unified-memory.jsonl",
+  "started_monotonic": 1302229.255675271,
+  "started_unix_seconds": 1793112146.7388017,
+  "finished_monotonic": 1308473.990577369,
+  "finished_unix_seconds": 1793118391.4737313,
+  "sampler_elapsed_seconds": 6244.734902098076,
+  "sample_attempts": 6245,
+  "flushed_samples": 6245,
+  "unflushed_attempts": 0,
+  "final_successful_cycle_duration_seconds": 0.02190205710940063,
+  "final_successful_write_flush_seconds": 0.0002819180954247713,
+  "successful_cycle_duration_total_seconds": 143.88084961730056,
+  "successful_write_flush_total_seconds": 2.2557517818640918,
+  "final_failed_attempt_elapsed_seconds": null,
+  "final_attempt_read_counts": {
+    "source_file_read_attempts": 53,
+    "ownership_file_read_attempts": 854,
+    "ownership_readlink_attempts": 427,
+    "owned_file_read_attempts": 6,
+    "directory_scan_attempts": 1,
+    "pidfd_open_attempts": 1,
+    "pidfd_binding_polls": 1,
+    "pidfd_wait_attempts": 0,
+    "pending_poll_attempts": 1
+  },
+  "total_read_counts": {
+    "source_file_read_attempts": 330985,
+    "ownership_file_read_attempts": 5429294,
+    "ownership_readlink_attempts": 2714567,
+    "owned_file_read_attempts": 277327,
+    "directory_scan_attempts": 12486,
+    "pidfd_open_attempts": 24684,
+    "pidfd_binding_polls": 24684,
+    "pidfd_wait_attempts": 0,
+    "pending_poll_attempts": 3
+  },
+  "setup_file_read_attempts": 1,
+  "total_file_read_attempts": 6037607,
+  "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+  "sampler_failure": null,
+  "failures_at_exit": [],
+  "sampler_failure_context": null,
+  "sampler_failure_traceback": null,
+  "sampler_failure_task_state": null,
+  "exit_confirmation_policy": {
+    "per_task_ms": 50,
+    "per_sample_ms": 100,
+    "io_retries": 0,
+    "zero_fill": false,
+    "pending_capacity": 16,
+    "pending_seconds": 5,
+    "pending_poll_timeout_ms": 0,
+    "pending_requires_pf_exiting": true
+  },
+  "exit_pending": {
+    "active": 0,
+    "admitted": 3,
+    "resolved": 3,
+    "maximum_active": 1,
+    "last_resolutions": [
+      {
+        "observation": "EXIT_CONFIRMED_AFTER_PENDING_IO",
+        "pid": 3906056,
+        "start_ticks": 130758361,
+        "original_task_state": {
+          "read_started_ns": 1308472972858434,
+          "error_observed_ns": 1308472972908989,
+          "initial_identity": {
+            "state": "R",
+            "ppid": 3906054,
+            "start_ticks": 130758361
+          },
+          "partial_read": {
+            "observation": "OK",
+            "start_ticks": 130758361,
+            "stat": "3906056 (q4t) R 3906054 3906054 3906054 0 -1 4194316 870563 0 67 0 12830 10996 0 0 20 0 1 0 130758361 0 0 18446744073709551615 0 0 0 0 0 0 0 0 16386 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+            "pidfd_binding": {
+              "started_ns": 1308472972873008,
+              "finished_ns": 1308472972873915,
+              "timeout_ms": 0,
+              "events": [],
+              "ready": false
+            },
+            "status": "Name:\tq4t\nState:\tR (running)\nTgid:\t3906056\nNgid:\t0\nPid:\t3906056\nPPid:\t3906054\nTracerPid:\t0\nUid:\t2002\t2002\t2002\t2002\nGid:\t2002\t2002\t2002\t2002\nFDSize:\t0\nGroups:\t4 24 27 29 30 44 46 100 108 111 122 983 984 993 2002 2003 \nNStgid:\t3906056\nNSpid:\t3906056\nNSpgid:\t3906054\nNSsid:\t3906054\nKthread:\t0\nThreads:\t1\nSigQ:\t0/501100\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000100004002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tunknown\nCpus_allowed:\t3fff\nCpus_allowed_list:\t0-13\nMems_allowed:\t0001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t4156\nnonvoluntary_ctxt_switches:\t224\n",
+            "schedstat": "8225428881 31762844 4380\n"
+          },
+          "original_error": {
+            "pid": 3906056,
+            "expected_start_ticks": 130758361,
+            "relative_file": "io",
+            "operation": "open",
+            "directory_fd": 6,
+            "errno": 13,
+            "error_monotonic_ns": 1308472972908989,
+            "error": "PermissionError(13, 'Permission denied')"
+          },
+          "live_pidfd_bound": true,
+          "pidfd_binding": {
+            "started_ns": 1308472972873008,
+            "finished_ns": 1308472972873915,
+            "timeout_ms": 0,
+            "events": [],
+            "ready": false
+          },
+          "pidfd_binding_error": null,
+          "rechecks": [
+            {
+              "started_ns": 1308472972957287,
+              "stat": "3906056 (q4t) R 3906054 3906054 3906054 0 -1 4194316 870563 0 67 0 12830 10996 0 0 20 0 1 0 130758361 0 0 18446744073709551615 0 0 0 0 0 0 0 0 16386 0 0 0 17 2 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+              "identity": {
+                "state": "R",
+                "ppid": 3906054,
+                "start_ticks": 130758361
+              },
+              "finished_ns": 1308472972976046
+            }
+          ],
+          "decision": "SAME_IDENTITY_PF_EXITING_PENDING",
+          "pending_id": "3906056:130758361",
+          "not_terminal": true,
+          "io_missing": true,
+          "cause_of_permission_error_proven": false
+        },
+        "pending_id": "3906056:130758361",
+        "deadline_ns": 1308477972908989,
+        "poll": {
+          "started_ns": 1308473950459012,
+          "finished_ns": 1308473950468818,
+          "timeout_ms": 0,
+          "events": [
+            [
+              8,
+              1
+            ]
+          ],
+          "ready": true
+        },
+        "final_recheck": {
+          "started_ns": 1308473950481744,
+          "error": "ProcessLookupError(3, 'No such process')",
+          "errno": 3,
+          "context": {
+            "pid": 3906056,
+            "expected_start_ticks": 130758361,
+            "relative_file": "stat",
+            "operation": "open",
+            "directory_fd": 7,
+            "errno": 3,
+            "error_monotonic_ns": 1308473950509133
+          },
+          "finished_ns": 1308473950550531
+        },
+        "confirmed_ns": 1308473950553262,
+        "elapsed_since_error_seconds": 0.977644273,
+        "io_missing": true,
+        "cause_of_permission_error_proven": false
+      }
+    ],
+    "entries": []
+  },
+  "last_flushed_heartbeat": 1308473.972263439,
+  "source_count": 53
+}

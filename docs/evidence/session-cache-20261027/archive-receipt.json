@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/evidence-archive-v1",
+  "files": 2484,
+  "bytes": 1237862388,
+  "manifest_sha256": "bccac6abe5d4902815e177cfd658098a9a4045666e243835fd857ef083837da4",
+  "original_full_c_raw_hashes_verified": 604,
+  "elapsed_seconds": 7.728715181350708,
+  "new_inference_requests": 0
+}

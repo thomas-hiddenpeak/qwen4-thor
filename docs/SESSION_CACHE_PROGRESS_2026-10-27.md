@@ -1,15 +1,14 @@
-# 完整会话缓存候选：验证进展
+# 完整会话缓存：阶段过程记录
 
-当前候选09fe25ba，默认f2a6保持。范围和上限见[冻结合同](SESSION_CACHE_PLAN_2026-10-27.md)。
-本页记录中间证据，不是发布决定。当前剩余性能清单位于
-`.q4t-work/session-cache-20261027/phase-d/plan.json`，SHA
-`6d84cd0d89fe18379a513a6b1bb98eb99f57a6d6c2376884cb2f8f702bf312bd`。
-已执行完整head清单4bed6a1c的原始状态保留，见下文复核。
+2026-10-28已交付09fe25ba/sidecar5027b9d4，最终决定、健康和限制见
+[验收与交付](SESSION_CACHE_RESULT_2026-10-27.md)。本页以下保留中间阶段事实；
+其中“待测/未决定/默认f2a6”是当时状态，不是当前发布状态，不能触发重复验证。
+范围、预算及测量前提修订见[冻结合同](SESSION_CACHE_PLAN_2026-10-27.md)。
 
 ## 实现与使用合同
 
 缓存默认关闭，启动显式指定私有SSD目录`--session-cache-dir DIR`，请求
-带随机64位小写hex `session_id`。同会话顺序复用ID，不同agent用不同ID，
+带随机64字符小写hex `session_id`。同会话顺序复用ID，不同agent用不同ID，
 仍发送完整prompt/messages。恢复不依赖原槽位；不同历史安全miss并完整
 prefill。同ID并发409；进程结束/重启无缓存；超过TTL或淘汰会miss。
 支持完成请求后等待工具，不支持取消中的半个请求快照或跨进程持久会话。

@@ -24,6 +24,10 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
   greedy 文本，可与两种草稿 head 配合；支持单流及已验收的1长＋3短agent
   配置。重复场景净收益、保护负点与本次用户接受范围见
   [长短agent接受决定](docs/MTP_SUFFIX_AGENT_ACCEPTANCE_2026-10-27.md)
+- **完整会话缓存**: 显式`--session-cache-dir DIR`加请求`session_id`，保存
+  完整目标/草稿状态到有界SSD缓存；工具等待期间释放执行槽，槽位被其他
+  请求使用后可恢复原前缀。同进程长会话范围与成本见
+  [会话缓存交付](docs/SESSION_CACHE_RESULT_2026-10-27.md)
 - **专家SSD卸载**: 默认全部专家驻留，非零`--moe-resident-slots`
   显式启用配置的device槽位与SSD后备读取。Thor主机内存和GPU共用
   DRAM，CPU缓存不构成容量卸载；中转、缓存与工作集均计入统一RAM。
@@ -128,6 +132,7 @@ python3 tools/evalscope/gpu_exclusive.py \
 | `--mtp` / `--no-mtp` / `--mtp-k` | MTP 默认开，k 默认 `3`；serve 接受 k=1..16，验收仅覆盖 k=3 |
 | `--mtp-subset-head DIR` | 默认不启用，草稿使用完整 head；指定产物目录启用固定 65536 行 BF16 子集，要求 MTP 开启且 k=3 |
 | `--mtp-suffix` | 默认关闭；要求文本、greedy、MTP k=3、有效max-len≤262144，可配合完整或子集 head；交付覆盖单流及上述4槽布局 |
+| `--session-cache-dir DIR` | 默认关闭；另须请求传session_id才缓存；同进程文本k3、显式槽位，8项/24GiB SSD/30分钟TTL；不组合媒体、trace或专家offload |
 | `--request-deadline-ms` | `1200000`（20分钟）；含等待槽位和生成，显式范围1000～10800000；客户端超时需匹配 |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
 | `--mem-fraction` | `0.90`，启动内存预算比例 |
@@ -186,6 +191,52 @@ E2E吞吐收益为完整head约1.98%/1.83%、子集约1.12%/1.05%；decode收益
 上限16MiB、全局body预算48MiB，超限仍会拒绝。长prefill会影响其他请求
 TTFT，客户端须为排队留足超时。使用、回退及健康检查见
 [长短agent交付记录](docs/MTP_SUFFIX_AGENT_DELIVERED_2026-10-27.md)。
+
+### 完整会话缓存
+
+为需要跨工具等待复用的长会话显式启用缓存：
+
+```bash
+install -d -m 700 .q4t-work/agent-session-cache
+./build/q4t serve --host 127.0.0.1 --port 8000 \
+  --max-seq 4 --max-prefill 4096 --max-len 208896 \
+  --seq-capacities 208896,65536,65536,65536 \
+  --mtp-suffix --session-cache-dir .q4t-work/agent-session-cache
+# 子集head另加：
+# --mtp-subset-head .q4t-work/session-cache-20261027/delivery-package/artifact
+```
+
+主agent和每个子代理分别生成并保存一个`secrets.token_hex(32)`作为
+`session_id`（64个小写十六进制字符）。每次HTTP请求在顶层传这个字段，
+同一会话串行复用，不同会话使用不同ID。仍提交完整`prompt`或`messages`，
+不是只发新增工具结果。普通短请求可省略ID；只开启启动参数不会自动缓存
+未传ID的请求。正常响应结束保存完整前缀并释放执行槽，其他请求使用原槽
+后，下一轮可以恢复到任意容量足够的槽。长于65536的请求仍只能使用长槽。
+
+要稳定命中，客户端需保留原始模板文本及生成历史。本轮收益使用预渲染
+`prompt`测量；`messages`恢复前也逐token检查，但模板会trim文本、重建
+thinking和工具调用。带thinking的整段输出直接放回`content`可能被重复
+包裹，结构化接入需正确保留`reasoning_content`、`content`和`tool_calls`。
+历史被改写、压缩或模板选项改变时可能未命中并重新prefill。当前没有针对
+某个agent SDK的即插即用适配验收。
+
+检查响应的`usage.prompt_tokens_details.cached_tokens`；流式请求需同时传
+`"stream_options":{"include_usage":true}`。大于0表示实际恢复的目标前缀
+token数，0表示本次重新计算。缓存保存最后一个完整MTP边界，最多4个旧
+尾部输出token仍会重算。跨轮状态正确性以独立接受前缀参考和实际HTTP为准，
+不承诺任意输入与fresh prefill位级相同。
+
+首版同进程内最多8份快照、SSD总预算24GiB、30分钟TTL；淘汰/过期/进程
+退出后正常重新prefill。目录需本用户私有0700、非tmpfs且支持O_DIRECT和
+O_TMPFILE，匿名文件不会显示为普通缓存文件。新增RAM预算预留32MiB，
+并不释放已分配GPU槽位内存。保存/恢复会占模型锁并影响其他请求等待。
+要求纯文本greedy、MTP k=3和显式槽位容量；不组合媒体、router trace或
+SSD专家卸载。移除`--session-cache-dir`并重启即可关闭，客户端同时停止传ID。
+
+受测1长＋3短两轮事务（含首次保存、其他请求占槽、恢复）的净耗时降低
+27.5%～27.8%，恢复TTFT降低约95%；首轮写盘增加约8.8～9.4秒。数据是两种
+head各一个代码/文本描述性配对，不保证任意agent工作流收益。完整结果、
+保护负点、统计限制和回退见[会话缓存验收](docs/SESSION_CACHE_RESULT_2026-10-27.md)。
 
 ### 其他入口与验收范围
 

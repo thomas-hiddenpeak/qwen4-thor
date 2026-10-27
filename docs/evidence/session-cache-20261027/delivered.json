@@ -1,0 +1,10 @@
+{
+  "status": "DELIVERED",
+  "binary_sha256": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+  "sidecar_sha256": "5027b9d4229e97edf35fa482e0351581434b8e270cebd8b91b055a671ec0082e",
+  "health_requests": 2,
+  "health_starts": 1,
+  "subset_health": "Reuse D same binary/artifact recall",
+  "persistent_service": false,
+  "finished": 1793118982.2236729
+}

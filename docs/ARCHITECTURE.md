@@ -109,7 +109,20 @@ shadow和MTP多槽等组合的支持范围由代码中的能力门确定。
 ModelSequence维护position/history/stage及请求生命周期；模型的KV、
 SSM、conv、PLE等状态按槽位管理。Paged KV使用页表间接寻址，page size
 为16；具备页表和prefill/decode分开调用，不等于已经实现跨设备传输、
-动态共享页池或完整会话迁移。
+动态共享页池或跨设备会话迁移。
+
+同进程完整会话前缀缓存已单独实现：`SessionStateRanges`枚举目标SSM/
+卷积/PLE、有效KV/索引/RoPE及draft KV/索引/g/d0/pending/最后目标trunk；
+`SessionCache`在私有SSD目录用匿名O_DIRECT文件保存，固定8项/24GiB，
+单8MiB host staging并额外预留32MiB RAM预算。客户端显式session_id，仍传
+完整历史并逐token校验；恢复使用目的槽页表，重建suffix索引，必要时修复
+shifted draft最后一行。取消/失败不发布新快照，完整性失败reset后fresh
+prefill；GPU错误fail closed。仅最后完整MTP边界，最多4个尾部输出重算。
+
+缓存释放的是执行槽，预分配的GPU槽内存仍保留；不跨进程/重启，不支持
+任意token中途抢占。受测配置、SDK序列化限制和收益/成本见
+[会话缓存合同](SESSION_CACHE_PLAN_2026-10-27.md)与
+[验收交付](SESSION_CACHE_RESULT_2026-10-27.md)。
 
 多设备PD部署、独立prefill/decode池与跨设备状态交接仍是设计目标。
 历史“PD-ready”“零风险”等措辞不能作为已交付或无状态污染的承诺。

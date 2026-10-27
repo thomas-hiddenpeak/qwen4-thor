@@ -1,0 +1,427 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "parent": "00-full-parent",
+      "candidate": "01-full-candidate",
+      "case": "context-1024",
+      "fields": {
+        "acceptance": {
+          "parent": [
+            24,
+            18,
+            21,
+            159
+          ],
+          "candidate": [
+            24,
+            18,
+            21,
+            159
+          ]
+        },
+        "verify_token_rows": {
+          "parent": 888,
+          "candidate": 888
+        },
+        "neural_draft_token_rows": {
+          "parent": 444,
+          "candidate": 444
+        },
+        "accepted_extend_token_rows": {
+          "parent": 759,
+          "candidate": 759
+        },
+        "suffix_hits": {
+          "parent": 0,
+          "candidate": 0
+        },
+        "suffix_queries": {
+          "parent": 222,
+          "candidate": 222
+        }
+      },
+      "same": true
+    },
+    {
+      "parent": "00-full-parent",
+      "candidate": "01-full-candidate",
+      "case": "context-204800",
+      "fields": {
+        "acceptance": {
+          "parent": [
+            12,
+            15,
+            9,
+            174
+          ],
+          "candidate": [
+            12,
+            15,
+            9,
+            174
+          ]
+        },
+        "verify_token_rows": {
+          "parent": 840,
+          "candidate": 840
+        },
+        "neural_draft_token_rows": {
+          "parent": 420,
+          "candidate": 420
+        },
+        "accepted_extend_token_rows": {
+          "parent": 765,
+          "candidate": 765
+        },
+        "suffix_hits": {
+          "parent": 0,
+          "candidate": 0
+        },
+        "suffix_queries": {
+          "parent": 210,
+          "candidate": 210
+        }
+      },
+      "same": true
+    },
+    {
+      "parent": "00-full-parent",
+      "candidate": "01-full-candidate",
+      "case": "context-4096",
+      "fields": {
+        "acceptance": {
+          "parent": [
+            15,
+            9,
+            0,
+            183
+          ],
+          "candidate": [
+            15,
+            9,
+            0,
+            183
+          ]
+        },
+        "verify_token_rows": {
+          "parent": 828,
+          "candidate": 828
+        },
+        "neural_draft_token_rows": {
+          "parent": 414,
+          "candidate": 414
+        },
+        "accepted_extend_token_rows": {
+          "parent": 765,
+          "candidate": 765
+        },
+        "suffix_hits": {
+          "parent": 0,
+          "candidate": 0
+        },
+        "suffix_queries": {
+          "parent": 207,
+          "candidate": 207
+        }
+      },
+      "same": true
+    },
+    {
+      "parent": "00-full-parent",
+      "candidate": "01-full-candidate",
+      "case": "context-45056",
+      "fields": {
+        "acceptance": {
+          "parent": [
+            18,
+            9,
+            15,
+            171
+          ],
+          "candidate": [
+            18,
+            9,
+            15,
+            171
+          ]
+        },
+        "verify_token_rows": {
+          "parent": 852,
+          "candidate": 852
+        },
+        "neural_draft_token_rows": {
+          "parent": 426,
+          "candidate": 426
+        },
+        "accepted_extend_token_rows": {
+          "parent": 765,
+          "candidate": 765
+        },
+        "suffix_hits": {
+          "parent": 0,
+          "candidate": 0
+        },
+        "suffix_queries": {
+          "parent": 213,
+          "candidate": 213
+        }
+      },
+      "same": true
+    },
+    {
+      "parent": "00-full-parent",
+      "candidate": "01-full-candidate",
+      "case": "context-8192",
+      "fields": {
+        "acceptance": {
+          "parent": [
+            18,
+            33,
+            15,
+            159
+          ],
+          "candidate": [
+            18,
+            33,
+            15,
+            159
+          ]
+        },
+        "verify_token_rows": {
+          "parent": 900,
+          "candidate": 900
+        },
+        "neural_draft_token_rows": {
+          "parent": 450,
+          "candidate": 450
+        },
+        "accepted_extend_token_rows": {
+          "parent": 765,
+          "candidate": 765
+        },
+        "suffix_hits": {
+          "parent": 0,
+          "candidate": 0
+        },
+        "suffix_queries": {
+          "parent": 225,
+          "candidate": 225
+        }
+      },
+      "same": true
+    },
+    {
+      "parent": "03-subset-parent",
+      "candidate": "02-subset-candidate",
+      "case": "context-1024",
+      "fields": {
+        "acceptance": {
+          "parent": [
+            30,
+            27,
+            21,
+            153
+          ],
+          "candidate": [
+            30,
+            27,
+            21,
+            153
+          ]
+        },
+        "verify_token_rows": {
+          "parent": 924,
+          "candidate": 924
+        },
+        "neural_draft_token_rows": {
+          "parent": 462,
+          "candidate": 462
+        },
+        "accepted_extend_token_rows": {
+          "parent": 759,
+          "candidate": 759
+        },
+        "suffix_hits": {
+          "parent": 0,
+          "candidate": 0
+        },
+        "suffix_queries": {
+          "parent": 231,
+          "candidate": 231
+        }
+      },
+      "same": true
+    },
+    {
+      "parent": "03-subset-parent",
+      "candidate": "02-subset-candidate",
+      "case": "context-204800",
+      "fields": {
+        "acceptance": {
+          "parent": [
+            24,
+            21,
+            15,
+            162
+          ],
+          "candidate": [
+            24,
+            21,
+            15,
+            162
+          ]
+        },
+        "verify_token_rows": {
+          "parent": 888,
+          "candidate": 888
+        },
+        "neural_draft_token_rows": {
+          "parent": 444,
+          "candidate": 444
+        },
+        "accepted_extend_token_rows": {
+          "parent": 759,
+          "candidate": 759
+        },
+        "suffix_hits": {
+          "parent": 0,
+          "candidate": 0
+        },
+        "suffix_queries": {
+          "parent": 222,
+          "candidate": 222
+        }
+      },
+      "same": true
+    },
+    {
+      "parent": "03-subset-parent",
+      "candidate": "02-subset-candidate",
+      "case": "context-4096",
+      "fields": {
+        "acceptance": {
+          "parent": [
+            15,
+            9,
+            0,
+            183
+          ],
+          "candidate": [
+            15,
+            9,
+            0,
+            183
+          ]
+        },
+        "verify_token_rows": {
+          "parent": 828,
+          "candidate": 828
+        },
+        "neural_draft_token_rows": {
+          "parent": 414,
+          "candidate": 414
+        },
+        "accepted_extend_token_rows": {
+          "parent": 765,
+          "candidate": 765
+        },
+        "suffix_hits": {
+          "parent": 0,
+          "candidate": 0
+        },
+        "suffix_queries": {
+          "parent": 207,
+          "candidate": 207
+        }
+      },
+      "same": true
+    },
+    {
+      "parent": "03-subset-parent",
+      "candidate": "02-subset-candidate",
+      "case": "context-45056",
+      "fields": {
+        "acceptance": {
+          "parent": [
+            21,
+            15,
+            18,
+            165
+          ],
+          "candidate": [
+            21,
+            15,
+            18,
+            165
+          ]
+        },
+        "verify_token_rows": {
+          "parent": 876,
+          "candidate": 876
+        },
+        "neural_draft_token_rows": {
+          "parent": 438,
+          "candidate": 438
+        },
+        "accepted_extend_token_rows": {
+          "parent": 765,
+          "candidate": 765
+        },
+        "suffix_hits": {
+          "parent": 0,
+          "candidate": 0
+        },
+        "suffix_queries": {
+          "parent": 219,
+          "candidate": 219
+        }
+      },
+      "same": true
+    },
+    {
+      "parent": "03-subset-parent",
+      "candidate": "02-subset-candidate",
+      "case": "context-8192",
+      "fields": {
+        "acceptance": {
+          "parent": [
+            21,
+            24,
+            21,
+            156
+          ],
+          "candidate": [
+            21,
+            24,
+            21,
+            156
+          ]
+        },
+        "verify_token_rows": {
+          "parent": 888,
+          "candidate": 888
+        },
+        "neural_draft_token_rows": {
+          "parent": 444,
+          "candidate": 444
+        },
+        "accepted_extend_token_rows": {
+          "parent": 756,
+          "candidate": 756
+        },
+        "suffix_hits": {
+          "parent": 0,
+          "candidate": 0
+        },
+        "suffix_queries": {
+          "parent": 222,
+          "candidate": 222
+        }
+      },
+      "same": true
+    }
+  ],
+  "source_sha256": "af964309d07d251c16448585692c29f0be78b01bb25eb903541caf8933ac467b",
+  "scope": "No-session-id protection requests; equal work is not proof of equal execution time or zero CPU overhead. No new GPU timing capture."
+}

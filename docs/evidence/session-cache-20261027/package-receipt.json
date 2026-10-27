@@ -1,0 +1,12 @@
+{
+  "seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/delivery-package/sealed-files.json",
+    "sha256": "8d27634d5911b63137c161545a2c86f26e4a872aa18d06290f3ac40a32ae401d",
+    "bytes": 24342
+  },
+  "runtime_files": 164,
+  "requests": 2,
+  "starts": 1,
+  "deadline": 1793123236.5689044,
+  "no_inference": true
+}
