@@ -118,6 +118,15 @@ kernel分派、状态与输出合同保持不变的局部可回退改动，可�
 决定、回退和部署健康检查见
 [本项交付](METADATA_BATCH_DEPLOYMENT_2026-10-20.md)。
 
+### 长短agent suffix的本项接受决定（2026-10-27）
+
+完成320条适用HTTP及直接合同后，披露两head收益、全部保护负点和统计
+限制，用户明确接受f2a6de36。原子集decode≥3%目标仍记FAIL，工程发布
+单独记ENGINEERING_ACCEPTED_USER_OVERRIDE，不套用简化改动路线，也不
+建立通用损失容差。2启动/3请求健康通过并交付，详见
+[本项接受](MTP_SUFFIX_AGENT_ACCEPTANCE_2026-10-27.md)和
+[交付记录](MTP_SUFFIX_AGENT_DELIVERED_2026-10-27.md)。
+
 ### Bug修复
 
 1. 明确缺陷合同、最小复现和预期值，选择相应单测、边界数值、

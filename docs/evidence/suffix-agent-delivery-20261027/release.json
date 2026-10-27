@@ -1,0 +1,46 @@
+{
+  "version": "suffix-agent-k3-20261027",
+  "binary_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+  "source_commit": "c1ad1481dd4b97962f394c3b2437c13c5cb041ae",
+  "implementation_commit": "1fefbc1f7f0de0b6948bc82b6fde66e1f08cd2b3",
+  "source_note": "Build used working changes on c1ad148; 160 runtime compiler inputs are bound below. Later test/tool/document commits are not a rebuild.",
+  "tested_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/candidate/runtime-source.json",
+  "tested_source_manifest_sha256": "8e573b387264d5da09049252934273f6c07af065d48fc34b301ba4f02bdef10e",
+  "build_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/candidate/build-2-source.json",
+  "build_source_manifest_sha256": "4e854a129bcea7b8aa99855642aeaf461e26e3707381abb3c4080129b02e404d",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/candidate/CMakeCache.txt",
+  "build_cache_sha256": "bddfa6a8e65ead27e0361531ecd3cbd989d8e52a230a22f66bada2ae9b77b8d3",
+  "acceptance": "ENGINEERING_ACCEPTED_USER_OVERRIDE",
+  "original_optimization_result": "FAIL_GAIN_TARGET_MISSED",
+  "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/acceptance.md",
+  "acceptance_snapshot_sha256": "19118fdd27c78412651cdb50ad14a0d9fbdcff3a94785dffe9ce6d1da86100b8",
+  "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/decision.json",
+  "acceptance_decision_sha256": "05a11fe807110b16d562441e8182ad224a7c5a32e4a01074f3cb30c56e6ebde3",
+  "acceptance_audit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/evidence/suffix-agent-confirm-20261027/final-audit.json",
+  "acceptance_audit_sha256": "92c4ecd9a0b939b1a7617e22830d31bd9883c4c65298e3c53aba0167e4a55fda",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/previous/q4t.release.json",
+  "subset_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/artifact",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "defaults": {
+    "head": "full",
+    "mtp": true,
+    "mtp_k": 3,
+    "suffix": false,
+    "max_seq": 1
+  },
+  "agent_configuration": {
+    "max_seq": 4,
+    "max_prefill": 4096,
+    "max_len": 208896,
+    "seq_capacities": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "admitted_requests": 32
+  },
+  "scope": "single-stream and explicit 208896+3x65536 slots, greedy text k3; suffix opt-in; subset explicit; no persistent service",
+  "atomicity": "Individual atomic replaces, not a cross-file power-loss transaction; durable recovery marker and identity-checked rollback"
+}

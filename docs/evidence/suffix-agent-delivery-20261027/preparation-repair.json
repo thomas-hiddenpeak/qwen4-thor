@@ -1,0 +1,61 @@
+{
+  "status": "PASS_ZERO_MODEL_PREPARATION_FIX",
+  "reason": "missing port field",
+  "original_failure": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/deployment",
+  "actual_model_starts": 0,
+  "actual_requests": 0,
+  "original_load_attempt_counter": 1,
+  "remaining_model_starts": 2,
+  "remaining_http_requests": 3,
+  "deadline_unix": 1793093418.6144438,
+  "deadline_extended": false,
+  "checks": [
+    "valid_repaired_plan",
+    "reject_missing_port",
+    "actual_default_command_reaches_spawn",
+    "actual_agent_command_reaches_spawn"
+  ],
+  "commands": [
+    [
+      "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "serve",
+      "--model-dir",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8764",
+      "--max-seq",
+      "1",
+      "--max-prefill",
+      "8192",
+      "--max-len",
+      "208896",
+      "--max-tokens",
+      "256"
+    ],
+    [
+      "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "serve",
+      "--model-dir",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8764",
+      "--max-seq",
+      "4",
+      "--max-prefill",
+      "4096",
+      "--max-len",
+      "208896",
+      "--max-tokens",
+      "256",
+      "--seq-capacities",
+      "208896,65536,65536,65536",
+      "--mtp-subset-head",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/artifact",
+      "--mtp-suffix"
+    ]
+  ]
+}

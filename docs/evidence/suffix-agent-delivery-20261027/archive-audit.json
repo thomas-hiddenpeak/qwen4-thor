@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/archive",
+  "files": 118,
+  "bytes": 7592743,
+  "manifest_sha256": "20dcc722670915bb81397169e91508b972cf733bc623a2a8dc076dc23f5dda4e",
+  "program_packages": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package",
+      "files": 201,
+      "bytes": 347404624,
+      "manifest_sha256": "731d50143fb9ed3bde19a75d0d7a1b4d410f48b7e81759ce9a22794f7b3c2094"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2",
+      "files": 202,
+      "bytes": 347447609,
+      "manifest_sha256": "93a5b05a9fd263507e67f613f9ace4f3c64c1f35fc308cede62aea5dbd64d8d5"
+    }
+  ],
+  "scope": "Deployment raw logs, zero-launch failure, CPU repair, health, decisions and final documents; packages separately sealed; existing 320-request archives retained.",
+  "created_unix": 1793093196.777518
+}

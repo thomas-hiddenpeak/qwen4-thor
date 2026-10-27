@@ -1,0 +1,148 @@
+{
+  "status": "DEPLOYED_HEALTH_CHECKED",
+  "engineering_decision": "ENGINEERING_ACCEPTED_USER_OVERRIDE",
+  "original_optimization_result": "FAIL_GAIN_TARGET_MISSED",
+  "evidence_validity": "VALID_IN_TESTED_SCOPE",
+  "measurement_completeness": "320_ACCEPTANCE_PLUS_3_HEALTH_COMPLETE",
+  "statistics": "NONINFERIORITY_NOT_ESTABLISHED",
+  "candidate": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+    "bytes": 4602416
+  },
+  "release": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "26325699af40325e384c4aae4d615679f2d7e2aa69f9eecbc5743e68db6032cf",
+    "bytes": 3038
+  },
+  "runtime_files_checked": 160,
+  "frozen_files_checked": 923,
+  "package_seals": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package/sealed-files.json",
+      "sha256": "731d50143fb9ed3bde19a75d0d7a1b4d410f48b7e81759ce9a22794f7b3c2094",
+      "bytes": 23207
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/sealed-files.json",
+      "sha256": "93a5b05a9fd263507e67f613f9ace4f3c64c1f35fc308cede62aea5dbd64d8d5",
+      "bytes": 23304
+    }
+  },
+  "services": [
+    {
+      "name": "default-full",
+      "requests": 1,
+      "suffix_hits": [],
+      "capacity": {
+        "requested_max_len": "208896",
+        "requested_max_seq": "1",
+        "requested_max_prefill": "8192",
+        "effective_max_len": "208896",
+        "effective_max_seq": "1",
+        "effective_max_prefill": "8192",
+        "budget_enabled": "1",
+        "budget_feasible": "true"
+      },
+      "batches": [
+        {
+          "rows": 1,
+          "suffix": 0,
+          "steps": 63
+        }
+      ],
+      "outputs": [
+        "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+      ],
+      "audit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/deployment-v2/run/default-full/agent-audit.json",
+        "sha256": "0f62001b6f20e27e09df8cd0c554b07deb54dec02390c2b26ca011ed56a0b97f",
+        "bytes": 743
+      }
+    },
+    {
+      "name": "agent-subset-suffix",
+      "requests": 2,
+      "suffix_hits": [
+        54,
+        54
+      ],
+      "capacity": {
+        "requested_max_len": "208896",
+        "requested_max_seq": "4",
+        "requested_max_prefill": "4096",
+        "effective_max_len": "208896",
+        "effective_max_seq": "4",
+        "effective_max_prefill": "4096",
+        "budget_enabled": "1",
+        "budget_feasible": "true"
+      },
+      "batches": [
+        {
+          "rows": 1,
+          "suffix": 0,
+          "steps": 1
+        },
+        {
+          "rows": 1,
+          "suffix": 1,
+          "steps": 1
+        },
+        {
+          "rows": 2,
+          "suffix": 0,
+          "steps": 7
+        },
+        {
+          "rows": 2,
+          "suffix": 1,
+          "steps": 3
+        },
+        {
+          "rows": 2,
+          "suffix": 2,
+          "steps": 52
+        }
+      ],
+      "outputs": [
+        "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021"
+      ],
+      "audit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/deployment-v2/run/agent-subset-suffix/agent-audit.json",
+        "sha256": "6be7553d144b843764db7b7e249529feebe361821e27e4951dee73bdd0a6cc95",
+        "bytes": 3990
+      }
+    }
+  ],
+  "health_requests": 3,
+  "actual_model_starts": 2,
+  "health_service_attempts_including_zero_launch_failure": 3,
+  "health_elapsed_seconds": 109.52920508384705,
+  "including_preparation_failure_seconds": 266.85073375701904,
+  "deadline_unix": 1793093418.6144438,
+  "deadline_extended": false,
+  "monitor_samples": 110,
+  "unflushed": 0,
+  "pending_at_exit": 0,
+  "nvml_queries": 103,
+  "env_abort": false,
+  "persistent_service": false,
+  "preparation_failure_retained": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/deployment",
+  "preparation_repair": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/preparation-repair.json",
+    "sha256": "eeb872da28b14b5e51cf448b32e025423c97f2be4f3f78bec05b2e9b2975d1d0",
+    "bytes": 1580
+  },
+  "guard": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/deployment-v2/lease/exit.json",
+    "sha256": "110ab1e4ec0cf9bfdf51277443a41994246a8f7117d62c280a07ffd8537b21ff",
+    "bytes": 608
+  },
+  "postflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/deployment-v2/postflight.json",
+    "sha256": "fa4fa2174b201b4af8e84501e10b229d85f944ddc8e6d41770e6c3570f99b535",
+    "bytes": 560
+  },
+  "finished_unix": 1793092854.7906237
+}

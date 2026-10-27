@@ -1,0 +1,23 @@
+{
+  "engineering_decision": "ENGINEERING_ACCEPTED_USER_OVERRIDE",
+  "authorization_quote": "\u6211\u89c9\u5f97\u53ef\u4ee5\u63a5\u53d7",
+  "authorization_context": "After disclosure of both-head gains, all single-stream negative points and statistical limitations; prior direct delivery authorization remains in force.",
+  "candidate_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+  "previous_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+  "evidence_validity": "VALID_IN_TESTED_SCOPE",
+  "measurement_completeness": "COMPLETE_320_REQUIRED_HTTP",
+  "statistics": "DESCRIPTIVE_ONLY_NONINFERIORITY_NOT_ESTABLISHED",
+  "original_optimization_result": "FAIL_GAIN_TARGET_MISSED",
+  "original_decision": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-confirm-20261027/review/final-decision.json",
+    "sha256": "173d22d53d87abb8b039d51ec94519c6178ea626699a7ca8589a0e9b954da872",
+    "bytes": 7121
+  },
+  "accepted_scope": "single-stream and explicit 208896+3x65536 slots, greedy text k3; suffix opt-in; subset explicit; no persistent service",
+  "confirmation_audit": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-confirm-20261027/review/final-audit.json",
+    "sha256": "92c4ecd9a0b939b1a7617e22830d31bd9883c4c65298e3c53aba0167e4a55fda",
+    "bytes": 2843
+  },
+  "created_unix": 1793092518.6131217
+}

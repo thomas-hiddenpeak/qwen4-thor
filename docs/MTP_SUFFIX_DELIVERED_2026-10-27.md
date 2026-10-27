@@ -1,5 +1,9 @@
 # 固定 k3 suffix 的交付与阶段收尾
 
+本文为90f单流版本的历史交付记录。当前程序及新增四槽范围见
+[长短agent交付](MTP_SUFFIX_AGENT_DELIVERED_2026-10-27.md)；历史收益不直接
+替代新身份或新并发范围的收益证据。
+
 2026-10-27，**已交付，ENGINEERING_ACCEPTED_BOUNDED_OPT_IN**。
 当前 `build/q4t` 为 `90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4`，
 发布元数据 `45cfe74a761f9b3a9ab1db613b42e8fde64192d869f17a0596ea5925b73e61ec`，运行时源码

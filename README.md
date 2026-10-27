@@ -21,8 +21,9 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
   默认使用完整草稿 head，`--mtp-subset-head DIR` 显式启用已验收的
   65536 行 BF16 独立草稿 head；当前合同、质量与性能边界见 STATUS
 - **历史 suffix 草稿**: `--mtp-suffix` 显式启用固定 k3 历史匹配，适用于
-  单流 greedy 文本，可与两种草稿 head 配合。重复场景取得净收益；
-  五档负点及统计限制见[有限工程验收](docs/MTP_SUFFIX_LAZY_ACCEPTANCE_2026-10-26.md)
+  greedy 文本，可与两种草稿 head 配合；支持单流及已验收的1长＋3短agent
+  配置。重复场景净收益、保护负点与本次用户接受范围见
+  [长短agent接受决定](docs/MTP_SUFFIX_AGENT_ACCEPTANCE_2026-10-27.md)
 - **专家SSD卸载**: 默认全部专家驻留，非零`--moe-resident-slots`
   显式启用配置的device槽位与SSD后备读取。Thor主机内存和GPU共用
   DRAM，CPU缓存不构成容量卸载；中转、缓存与工作集均计入统一RAM。
@@ -101,6 +102,12 @@ python3 tools/evalscope/gpu_exclusive.py \
 ./build/q4t serve --host 127.0.0.1 --port 8000 \
   --max-seq 1 --max-prefill 8192 --max-len 208896 \
   --mtp-subset-head .q4t-work/sha2-startup-20261023/delivery-package/artifact
+
+# agent：1个长槽＋3个短槽；完整head，显式开启suffix
+./build/q4t serve --host 127.0.0.1 --port 8000 \
+  --max-seq 4 --max-prefill 4096 --max-len 208896 \
+  --seq-capacities 208896,65536,65536,65536 --mtp-suffix
+# 子集head：在该命令末尾添加上面的 --mtp-subset-head DIR
 ```
 
 以上命令从仓库根运行。子集示例使用本机保留的交付产物；该目录包含
@@ -114,12 +121,14 @@ python3 tools/evalscope/gpu_exclusive.py \
 |---|---|
 | `--host` / `--port` | `127.0.0.1` / `8000`；host 接受数字 IPv4 |
 | `--max-seq` | `1` |
+| `--seq-capacities` | 默认等长槽；显式逗号列表为每槽输入＋输出容量，须与max-seq/max-len匹配，预算不足时拒绝；推荐agent布局见上例 |
 | `--max-prefill` | `0` 表示使用模型默认 `2048`；可显式设至 `8192` |
 | `--max-len` | `0`，默认预算开启时自动推导有效长度 |
 | `--max-tokens` | 请求省略输出上限时使用 `256` |
 | `--mtp` / `--no-mtp` / `--mtp-k` | MTP 默认开，k 默认 `3`；serve 接受 k=1..16，验收仅覆盖 k=3 |
 | `--mtp-subset-head DIR` | 默认不启用，草稿使用完整 head；指定产物目录启用固定 65536 行 BF16 子集，要求 MTP 开启且 k=3 |
-| `--mtp-suffix` | 默认关闭；要求文本、greedy、MTP k=3、max-seq=1、有效max-len≤262144，可配合完整或子集 head |
+| `--mtp-suffix` | 默认关闭；要求文本、greedy、MTP k=3、有效max-len≤262144，可配合完整或子集 head；交付覆盖单流及上述4槽布局 |
+| `--request-deadline-ms` | `1200000`（20分钟）；含等待槽位和生成，显式范围1000～10800000；客户端超时需匹配 |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
 | `--mem-fraction` | `0.90`，启动内存预算比例 |
 | `--moe-resident-slots` | `0`，所有专家驻留；非零启用按需驻留 |
@@ -159,15 +168,24 @@ SHA2 校验加速无需启动参数：支持时自动使用 ARM SHA2 指令，�
 四行验证及接受前缀状态更新。索引不跨请求保存。
 
 移除 `--mtp-suffix` 后重启即关闭该功能，不改变 head 选择。它不能与
-`--no-mtp`、非3的k、非1的max-seq、`--allow-media` 或超过262144的容量
+`--no-mtp`、非3的k、`--allow-media` 或超过262144的容量
 同用，不支持的组合启动失败。输出或上下文不足时沿用普通decode尾部。
 `generate` 不接受该开关，其验收范围不随HTTP扩展。
 
-索引动态内存上限2MiB，按需token属性缓存上限256KiB，另计对象、
-tokenizer临时分配和allocator成本。受测重复代码/文本的配对净收益为
-完整head约14.10%/14.59%、子集约6.76%/6.53%；非重复场景不保证提速，
-部分保护点仍偏慢，统计总体非劣未建立。使用范围、原值、程序回退包
-与健康检查见[交付记录](docs/MTP_SUFFIX_DELIVERED_2026-10-27.md)。
+每请求索引动态内存上限2MiB，共享按需token属性缓存上限256KiB，另计
+对象、tokenizer临时分配和allocator成本。1长＋3短重复代码/文本的
+E2E吞吐收益为完整head约1.98%/1.83%、子集约1.12%/1.05%；decode收益
+分别约5.44%/5.22%、2.99%/2.85%。子集未达原3%decode目标，用户接受
+本次实测收益与小幅保护负点；统计总体非劣未建立。旧单流短重复收益
+属于旧程序身份的证据，不替代这些并发长输入测量。
+
+上述4槽配置按输入加最大输出选择最小可用合适槽：最多一个活动请求
+超过65536 token预算，其余三个最多65536（输出也占容量）。prefill暂存
+以4096 token分块消费。执行槽仍为4个，解析/排队/生成请求总数上限32；
+16/32突发只验证了短请求，不保证32个长请求的完成时限。单请求body
+上限16MiB、全局body预算48MiB，超限仍会拒绝。长prefill会影响其他请求
+TTFT，客户端须为排队留足超时。使用、回退及健康检查见
+[长短agent交付记录](docs/MTP_SUFFIX_AGENT_DELIVERED_2026-10-27.md)。
 
 ### 其他入口与验收范围
 
@@ -182,8 +200,9 @@ tokenizer临时分配和allocator成本。受测重复代码/文本的配对净�
 **目前不接受 `--no-mtp`**；不能将 serve 的参数或验收直接套用到它。
 
 冻结验收范围为本机 Thor、既定 checkpoint、纯文本 greedy、单流 k=3、
-`--max-seq 1 --max-prefill 8192 --max-len 208896`。其他 CLI、媒体、并发
-或 k 值不随此矩阵取得验收。T>1 与普通 decode 的舍入路径不同，遵守
+`--max-seq 1 --max-prefill 8192 --max-len 208896`，以及上述显式1长＋3短
+agent配置。其他 CLI、媒体、并发布局或 k 值不随此矩阵取得验收。
+T>1 与普通 decode 的舍入路径不同，遵守
 [EVALUATION](docs/EVALUATION.md) 的 N=4 ULP 近 tie 合同；不承诺跨路径
 逐位一致。默认监听 127.0.0.1。
 
