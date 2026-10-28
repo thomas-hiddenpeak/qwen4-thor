@@ -17,7 +17,11 @@ ROOT = driver.ROOT
 BASE = ROOT/'.q4t-work/mtp-prefill-release-20261029'
 OLD = ROOT/'.q4t-work/mtp-prefill-scoring-20261029'
 SEED = ROOT/'.q4t-work/prefix-seed-20261028'
-sha, save = driver.legacy.sha, driver.save
+save = driver.save
+
+
+def sha(path):
+    return driver.legacy.sha(Path(path))
 
 
 def main():

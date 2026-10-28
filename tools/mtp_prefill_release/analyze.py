@@ -15,7 +15,11 @@ spec.loader.exec_module(driver)
 ROOT = driver.ROOT
 BASE = ROOT/'.q4t-work/mtp-prefill-release-20261029'
 read = lambda path: json.loads(Path(path).read_text())
-sha, save = driver.legacy.sha, driver.save
+save = driver.save
+
+
+def sha(path):
+    return driver.legacy.sha(Path(path))
 compare = driver.module('release_compare', 'tools/mtp_suffix_agent/analyze.py').compare
 
 
