@@ -2,6 +2,13 @@
 
 更新：2026-10-28。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
+跨会话prefix共享候选已构建（2026-10-28，尚未验收）：沿用codex/session-cache，
+父程序09fe25ba保持交付；候选3b354cf8零警告构建，正在真实HTTP首测。
+冻结同scope精确最长前缀、可配置最多4检查点、
+独立8项/8GiB SSD/32MiB RAM预算；先HTTP再直接合同及两head净收益/五档
+保护，总200HTTP/14启动/4GPUfixture/6小时。见
+[PREFIX_CACHE_PLAN_2026-10-28.md](PREFIX_CACHE_PLAN_2026-10-28.md)。
+
 完整会话缓存已交付（2026-10-28，ACCEPT_BOUNDED_LONG_SESSION_CACHE）：
 默认程序09fe25ba、sidecar5027b9d4，完整head/MTP k3保持默认；suffix、
 子集及会话缓存均显式选择。`--session-cache-dir DIR`加请求session_id支持

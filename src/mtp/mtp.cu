@@ -844,12 +844,13 @@ Status Top2GapBf16Rows(const uint16_t* logits, int rows, int vocab, float* out,
 Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
                       int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
-                      int seq_id, bool finalize) {
+                      int seq_id, bool finalize, bool capture_g) {
   if (T <= 0) return Status::Fail("MtpDraftExtend: T must be > 0");
   if (seq_id < 0 || seq_id >= m.max_seq)
     return Status::Fail("MtpDraftExtend: seq_id out of range");
   if (!shifted_ids || !positions || !main_trunk ||
-      (finalize && (!out_d0 || !out_g)) || (!finalize && T > m.cfg.max_prefill))
+      (finalize && (!out_d0 || !out_g)) || (capture_g && !out_g) ||
+      (!finalize && T > m.cfg.max_prefill))
     return Status::Fail("MtpDraftExtend: invalid chunk arguments");
   for (int t = 0; t < T; ++t)
     if (positions[t] < 0 || positions[t] >= m.cfg.Capacity(seq_id))
@@ -1040,7 +1041,7 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
 
   Status s = MtpForward(m, d_ids, d_pos, main_trunk, d_sample, d_multi,
                         d_logits, T, stream, d_seqid, finalize);
-  if (!s.ok() || !finalize) return cleanup(s);
+  if (!s.ok() || (!finalize && !capture_g)) return cleanup(s);
 
   // out_g = last row's multi_hidden (draft trunk g_{last}).
   if (ObserveExecution("mtp.api.prompt_out_g_d2d", [&] {
@@ -1049,6 +1050,10 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                           cudaMemcpyDeviceToDevice);
       }) != cudaSuccess)
     return cleanup(Status::Fail("MtpDraftExtend: D2D out_g"));
+
+  // A resumable prefill checkpoint needs g but never consumes d0 before the
+  // remaining prompt is extended. Do not run the head for intermediate rows.
+  if (!finalize) return cleanup(Status());
 
   // out_d0 = argmax of the last row's logits (first draft token), on the GPU
   // (1 kernel + 4-byte D2H). d_ids is reused as the 1-int output (the input

@@ -39,9 +39,15 @@ class SessionCache {
   ~SessionCache();
   SessionCache(const SessionCache&) = delete;
   SessionCache& operator=(const SessionCache&) = delete;
-  Status Open(const std::string& directory);
+  Status Open(const std::string& directory, int min_prefix = kMinPrefix,
+              size_t disk_budget = kDiskBudget);
   bool Enabled() const { return directory_fd_ >= 0; }
   bool Acquire(const std::string& key);
+  // Shared snapshots use scope + ':' + SHA256(prefix) as the key. A selected
+  // entry is leased until Release, including the interval before Restore.
+  bool AcquireNew(const std::string& key);
+  int MatchShared(const std::string& scope, std::span<const int32_t> prompt,
+                  std::string* key);
   void Release(const std::string& key, bool success);
   int Match(const std::string& key, std::span<const int32_t> prompt);
   Status Restore(const std::string& key, std::span<const SessionRange> ranges,
@@ -73,6 +79,8 @@ class SessionCache {
   int directory_fd_ = -1;
   void* staging_ = nullptr;
   size_t bytes_ = 0;
+  int min_prefix_ = kMinPrefix;
+  size_t disk_budget_ = kDiskBudget;
   Entries entries_;
   std::set<std::string> busy_;
 };

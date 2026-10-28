@@ -127,6 +127,16 @@ Status ChatServer::Start(const ServerOptions& opts) {
                  SessionCache::kDiskBudget, SessionCache::kRamBudget,
                  SessionCache::kStagingBytes);
   }
+  if (!opts.prefix_cache_dir.empty()) {
+    const Status cache_status = prefix_cache_.Open(
+        opts.prefix_cache_dir, 1024, size_t{8} << 30);
+    if (!cache_status.ok()) return cache_status;
+    prefix_cache_checkpoints_ = opts.prefix_cache_checkpoints;
+    std::fprintf(stderr,
+                 "[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 "
+                 "ram_budget=%zu staging_bytes=%zu ttl_seconds=1800\n",
+                 SessionCache::kRamBudget, SessionCache::kStagingBytes);
+  }
   PhaseTimer total("startup_total");
   {
     PhaseTimer pt("tokenizer");
@@ -213,6 +223,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
                 cfg.moe_is, cfg.shared_is, cfg.topk, &full, cfg.lowrank));
       }
       if (capabilities.mtp) {
+        if (prefix_cache_.Enabled())
+          breq.extra_fixed_bytes += SessionCache::kRamBudget;
         if (session_cache_.Enabled())
           breq.extra_fixed_bytes += SessionCache::kRamBudget;
         if (mtp_suffix_)

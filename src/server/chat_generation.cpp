@@ -112,6 +112,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
 
+  const std::string prefix_scope = req.GetString("prefix_cache_scope");
+  if (!prefix_scope.empty() && !prefix_cache_.Enabled()) {
+    SendError(fd, 400, "prefix cache is not enabled");
+    return;
+  }
+  std::vector<std::unique_ptr<SessionLease>> shared_writes;
   SessionLease session;
   session.key = req.GetString("session_id");
   if (!session.key.empty()) {
@@ -510,7 +516,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const bool scheduled_chunk_prefill =
       scheduler_active_ && !mtp_loaded_ && chunked && vptr == nullptr;
   bool prefill_cancelled = false;
-  if (session.cache && cudaMalloc(&d_session_trunk,
+  if ((session.cache || !prefix_scope.empty()) &&
+      cudaMalloc(&d_session_trunk,
                           static_cast<size_t>(trunk_hc_dim) * 2) != cudaSuccess) {
     cleanup();
     SendError(fd, 500, "session trunk allocation failed");
@@ -538,9 +545,22 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
             ? Status::Fail("GPU unhealthy; restart server")
             : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
     if (s.ok()) s = mtp::MtpResetState(mtp_, nullptr, seq_id);
-    if (s.ok() && session.cache) {
+    if (s.ok() && (session.cache || !prefix_scope.empty())) {
       const auto begin = std::chrono::steady_clock::now();
-      const int prefix = session_cache_.Match(session.key, ids);
+      int prefix = session.cache ? session_cache_.Match(session.key, ids) : 0;
+      SessionCache* selected_cache = &session_cache_;
+      std::string selected_key = session.key;
+      SessionLease shared_read;
+      if (!prefix_scope.empty()) {
+        const int shared = prefix_cache_.MatchShared(prefix_scope, ids,
+                                                       &shared_read.key);
+        if (shared > 0) shared_read.cache = &prefix_cache_;
+        if (shared > prefix) {
+          prefix = shared;
+          selected_cache = &prefix_cache_;
+          selected_key = shared_read.key;
+        }
+      }
       Status restored;
       if (prefix > 0) {
         std::vector<SessionRange> ranges;
@@ -548,7 +568,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                         d_mtp_g, d_session_trunk, &ranges);
         int32_t cached_pending = -1;
         if (restored.ok())
-          restored = session_cache_.Restore(session.key, ranges, session_copy,
+          restored = selected_cache->Restore(selected_key, ranges, session_copy,
                                                cancelled, &stream_d0,
                                                &cached_pending);
         if (restored.ok() && cached_pending != ids[prefix]) {
@@ -578,10 +598,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
       std::fprintf(stderr,
                    "[session-cache] request=%s event=restore prefix=%d "
-                   "ms=%.3f error=%s\n", request_id.c_str(), restored_prefix,
+                   "ms=%.3f error=%s source=%s\n", request_id.c_str(), restored_prefix,
                    std::chrono::duration<double, std::milli>(
                        std::chrono::steady_clock::now() - begin).count(),
-                   restored.ok() ? "none" : restored.message().c_str());
+                   restored.ok() ? "none" : restored.message().c_str(),
+                   selected_cache == &prefix_cache_ ? "shared" : "session");
     }
     std::vector<int32_t> shifted;
     std::vector<int> positions;
@@ -592,8 +613,30 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         break;
       }
       const int base = seq.position;
-      const int count = std::min(chunk, T - base);
-      const bool last = base + count == T;
+      int count = std::min(chunk, T - base);
+      if (!prefix_scope.empty()) {
+        for (const int point : prefix_cache_checkpoints_)
+          if (point > base) count = std::min(count, point - base);
+      }
+      const int boundary = base + count;
+      const bool last = boundary == T;
+      SessionLease* shared_write = nullptr;
+      if (!last && !prefix_scope.empty() &&
+          std::binary_search(prefix_cache_checkpoints_.begin(),
+                             prefix_cache_checkpoints_.end(), boundary)) {
+        const auto digest = trace::Sha256({
+            reinterpret_cast<const uint8_t*>(ids.data()),
+            static_cast<size_t>(boundary) * sizeof(int32_t)});
+        const std::string snapshot_key = prefix_scope + ':' +
+                                        trace::HexDigest(digest);
+        if (prefix_cache_.AcquireNew(snapshot_key)) {
+          auto lease = std::make_unique<SessionLease>();
+          lease->cache = &prefix_cache_;
+          lease->key = snapshot_key;
+          shared_write = lease.get();
+          shared_writes.push_back(std::move(lease));
+        }
+      }
       if (router_trace_)
         router_trace_->BeginForward(trace::RouteStage::kPrefill, base, count);
       s = model::ModelPrefillTextChunk(
@@ -618,11 +661,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
       s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full,
                               positions.data(), count, &stream_d0, d_mtp_g,
-                              nullptr, seq_id, last);
+                              nullptr, seq_id, last, shared_write != nullptr);
       // The target chunk was committed above. Drain a failed draft submission
       // before releasing this request's storage or giving scratch to a peer.
       s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr);
-      if (s.ok() && last && d_session_trunk) {
+      if (s.ok() && (last || shared_write) && d_session_trunk) {
         const auto error = cudaMemcpy(
             d_session_trunk,
             d_trunk_full + static_cast<size_t>(count - 1) * trunk_hc_dim,
@@ -631,6 +674,24 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           gpu_healthy_.store(false, std::memory_order_relaxed);
           s = Status::Fail("session prefill final trunk copy failed");
         }
+      }
+      if (s.ok() && shared_write) {
+        const auto save_begin = std::chrono::steady_clock::now();
+        std::vector<SessionRange> ranges;
+        Status saved = SessionStateRanges(model_.Get(), mtp_, seq_id, boundary,
+                                            d_mtp_g, d_session_trunk, &ranges);
+        if (saved.ok())
+          saved = prefix_cache_.Save(shared_write->key,
+              {ids.data(), static_cast<size_t>(boundary + 1)}, ranges,
+              session_copy, cancelled, -1);
+        if (session_gpu_error) s = saved;
+        std::fprintf(stderr,
+                     "[prefix-cache] request=%s event=save prefix=%d "
+                     "bytes=%zu ms=%.3f error=%s\n", request_id.c_str(),
+                     boundary, prefix_cache_.Bytes(),
+                     std::chrono::duration<double, std::milli>(
+                         std::chrono::steady_clock::now() - save_begin).count(),
+                     saved.ok() ? "none" : saved.message().c_str());
       }
       ++chunks;
     }
@@ -1495,7 +1556,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     return;
   }
   diagnostic.Stage("response");
-  const std::string cached_usage = session.cache
+  const std::string cached_usage = (session.cache || !prefix_scope.empty())
       ? ",\"prompt_tokens_details\":{\"cached_tokens\":" +
             std::to_string(restored_prefix) + "}"
       : "";
@@ -1553,6 +1614,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                       : trace::RequestOutcome::kSuccess;
   if (!client_disconnected) {
     session.success = true;
+    for (auto& lease : shared_writes) lease->success = true;
     diagnostic.Outcome("success", "completed");
     metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
   }

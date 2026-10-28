@@ -29,8 +29,12 @@ SessionCache::~SessionCache() {
   std::free(staging_);
 }
 
-Status SessionCache::Open(const std::string& directory) {
+Status SessionCache::Open(const std::string& directory, int min_prefix,
+                           size_t disk_budget) {
   if (Enabled()) return Status::Fail("session cache already open");
+  if (min_prefix < 1 || min_prefix > kMaxPrefix || !disk_budget ||
+      disk_budget > kDiskBudget)
+    return Status::Fail("session cache limits");
   int fd = open(directory.c_str(), O_DIRECTORY | O_RDONLY | O_CLOEXEC |
                                     O_NOFOLLOW);
   if (fd < 0) return IoError("directory");
@@ -66,12 +70,57 @@ Status SessionCache::Open(const std::string& directory) {
   }
   staging_ = buffer;
   directory_fd_ = fd;
+  min_prefix_ = min_prefix;
+  disk_budget_ = disk_budget;
   return Status();
 }
 
 bool SessionCache::Acquire(const std::string& key) {
   const std::lock_guard lock(mutex_);
   return Enabled() && busy_.size() < 32 && busy_.insert(key).second;
+}
+bool SessionCache::AcquireNew(const std::string& key) {
+  const std::lock_guard lock(mutex_);
+  if (!Enabled() || busy_.size() >= 32 || busy_.contains(key)) return false;
+  const auto old = entries_.find(key);
+  if (old != entries_.end()) {
+    if (std::chrono::steady_clock::now() - old->second->used <=
+        std::chrono::minutes(30)) return false;
+    Erase(old);
+  }
+  return busy_.insert(key).second;
+}
+
+int SessionCache::MatchShared(const std::string& scope,
+                               std::span<const int32_t> prompt,
+                               std::string* key) {
+  const std::lock_guard lock(mutex_);
+  key->clear();
+  if (!Enabled() || busy_.size() >= 32) return 0;
+  auto best = entries_.end();
+  const auto now = std::chrono::steady_clock::now();
+  const std::string group = scope + ':';
+  for (auto it = entries_.begin(); it != entries_.end();) {
+    if (busy_.contains(it->first)) { ++it; continue; }
+    const auto& e = *it->second;
+    if (now - e.used > std::chrono::minutes(30)) {
+      auto expired = it++;
+      Erase(expired);
+      continue;
+    }
+    if (it->first.starts_with(group) && e.published &&
+        e.prefix.size() <= prompt.size() &&
+        (best == entries_.end() ||
+         e.prefix.size() > best->second->prefix.size()) &&
+        std::equal(e.prefix.begin(), e.prefix.end() - 1, prompt.begin()))
+      best = it;
+    ++it;
+  }
+  if (best == entries_.end()) return 0;
+  best->second->used = now;
+  *key = best->first;
+  busy_.insert(*key);
+  return static_cast<int>(best->second->prefix.size()) - 1;
 }
 void SessionCache::Erase(Entries::iterator it) {
   bytes_ -= it->second->bytes;
@@ -181,20 +230,20 @@ Status SessionCache::Save(const std::string& key,
                            const Copy& copy, const Cancel& cancel,
                            int32_t d0) {
   const std::lock_guard lock(mutex_);
-  if (!busy_.contains(key) || prefix.size() <= kMinPrefix ||
+  if (!busy_.contains(key) || prefix.size() <= size_t(min_prefix_) ||
       prefix.size() > kMaxPrefix + 1 || ranges.empty())
     return Status::Fail("session cache save admission");
   size_t bytes = 0;
   for (const auto& range : ranges) {
-    if (!range.data || !range.bytes || range.bytes > kDiskBudget ||
-        Aligned(range.bytes) > kDiskBudget - bytes)
+    if (!range.data || !range.bytes || range.bytes > disk_budget_ ||
+        Aligned(range.bytes) > disk_budget_ - bytes)
       return Status::Fail("session cache save range/budget");
     bytes += Aligned(range.bytes);
   }
   // The old prefix is no longer needed by this request after restoration.
   // Losing a cache entry on a failed replacement is a miss, never stale reuse.
   if (auto old = entries_.find(key); old != entries_.end()) Erase(old);
-  while (entries_.size() >= kMaxEntries || bytes > kDiskBudget - bytes_) {
+  while (entries_.size() >= kMaxEntries || bytes > disk_budget_ - bytes_) {
     auto victim = entries_.end();
     for (auto it = entries_.begin(); it != entries_.end(); ++it) {
       if (busy_.contains(it->first)) continue;

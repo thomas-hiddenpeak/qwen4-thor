@@ -32,7 +32,7 @@ std::vector<uint8_t> Read(void* p, size_t bytes) {
 }
 struct Piece { void* ptr; std::vector<uint8_t> bytes; };
 using Image = std::vector<Piece>;
-void Put(const Image& image) {
+[[maybe_unused]] void Put(const Image& image) {
   for (const auto& part : image)
     Cuda(cudaMemcpy(part.ptr, part.bytes.data(), part.bytes.size(),
                     cudaMemcpyHostToDevice));
@@ -201,6 +201,7 @@ struct Fixture {
 };
 }  // namespace
 
+#ifndef Q4T_SESSION_REFERENCE_ONLY
 int main(int argc, char** argv) {
   try {
     Require(argc == 3 || argc == 4, "model cache-dir [subset]");
@@ -286,3 +287,5 @@ int main(int argc, char** argv) {
     return 1;
   }
 }
+
+#endif  // Q4T_SESSION_REFERENCE_ONLY

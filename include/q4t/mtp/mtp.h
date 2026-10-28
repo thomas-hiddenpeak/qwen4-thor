@@ -295,7 +295,8 @@ size_t MtpWorkspaceBytes(const MtpConfig& cfg, int T,
 Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
                       const uint16_t* main_trunk, const int* positions, int T,
                       int32_t* out_d0, uint16_t* out_g, cudaStream_t stream,
-                      int seq_id = 0, bool finalize = true);
+                      int seq_id = 0, bool finalize = true,
+                      bool capture_g = false);
 
 // 推测解码一步 (scheme A, 见本文件顶部 + reference/.../nvidia/mtp.py)。
 //

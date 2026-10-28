@@ -15,12 +15,22 @@ ServerCapabilities CapabilitiesFor(const ServerOptions& options) {
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
-  if (!options.session_cache_dir.empty() &&
+  if ((!options.session_cache_dir.empty() ||
+       !options.prefix_cache_dir.empty()) &&
       (options.no_mtp || options.mtp_k != 3 || options.allow_media ||
        options.seq_capacities.empty() || options.moe_resident_slots != 0 ||
        !options.moe_trace_dir.empty()))
     return Status::Fail(
-        "session-cache requires text k=3, explicit slots, no trace/offload");
+        "state caches require text k=3, explicit slots, no trace/offload");
+  if (options.prefix_cache_checkpoints.empty() ||
+      options.prefix_cache_checkpoints.size() > 4)
+    return Status::Fail("prefix-cache requires 1 to 4 checkpoints");
+  int previous = 0;
+  for (const int point : options.prefix_cache_checkpoints) {
+    if (point < 1024 || point > 131072 || point <= previous)
+      return Status::Fail("prefix checkpoints must increase within 1024..131072");
+    previous = point;
+  }
   if (options.mtp_suffix &&
       (options.no_mtp || options.mtp_k != 3 ||
        options.allow_media ||
@@ -127,13 +137,16 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--mem-fraction" && key != "--moe-trace-dir" &&
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
         key != "--startup-plan" && key != "--mtp-subset-head" &&
-        key != "--seq-capacities" && key != "--session-cache-dir")
+        key != "--seq-capacities" && key != "--session-cache-dir" &&
+        key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
     const auto value = args[i];
-    if (key == "--seq-capacities") {
-      parsed.seq_capacities.clear();
+    if (key == "--seq-capacities" || key == "--prefix-cache-checkpoints") {
+      auto& values = key == "--seq-capacities" ? parsed.seq_capacities
+                                               : parsed.prefix_cache_checkpoints;
+      values.clear();
       size_t start = 0;
       while (start < value.size()) {
         const size_t comma = value.find(',', start);
@@ -142,11 +155,13 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         const auto result =
             std::from_chars(value.data() + start, value.data() + end, capacity);
         if (result.ec != std::errc() || result.ptr != value.data() + end ||
-            parsed.seq_capacities.size() >= 64 || end + 1 == value.size())
-          return Status::Fail("invalid seq-capacities list");
-        parsed.seq_capacities.push_back(capacity);
+            values.size() >= 64 || end + 1 == value.size())
+          return Status::Fail("invalid capacity/checkpoint list");
+        values.push_back(capacity);
         start = end + 1;
       }
+    } else if (key == "--prefix-cache-dir") {
+      parsed.prefix_cache_dir = value;
     } else if (key == "--session-cache-dir") {
       parsed.session_cache_dir = value;
     } else if (key == "--mtp-subset-head") {

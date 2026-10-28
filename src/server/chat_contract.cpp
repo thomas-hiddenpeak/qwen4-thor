@@ -60,14 +60,16 @@ Status ValidateChatContract(const io::Json& req,
       "reasoning_effort", "add_vision_id", "temperature", "top_p", "n",
       "frequency_penalty", "presence_penalty", "repetition_penalty", "seed",
       "stop", "logprobs", "top_logprobs", "logit_bias", "response_format",
-      "user", "session_id"});
+      "user", "session_id", "prefix_cache_scope"});
   if (!status) return status;
-  if (const auto* value = req.Find("session_id")) {
+  for (const auto* field : {"session_id", "prefix_cache_scope"}) {
+    const auto* value = req.Find(field);
+    if (!value) continue;
     if (!value->IsString() || value->str.size() != 64)
-      return Status::Fail("session_id must be a random 64-hex capability");
+      return Status::Fail(std::string(field) + " must be a 64-hex capability");
     for (const char c : value->str)
       if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')))
-        return Status::Fail("session_id must be lowercase hex");
+        return Status::Fail(std::string(field) + " must be lowercase hex");
   }
   if (const auto* value = req.Find("stream"); value && !value->IsBool())
     return Status::Fail("stream must be boolean");

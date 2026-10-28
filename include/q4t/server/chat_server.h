@@ -305,6 +305,8 @@ class ChatServer {
   // Calls are serialized with tok_mu_; Run drains requests before destruction.
   SuffixTokenCache suffix_token_cache_;
   SessionCache session_cache_;
+  SessionCache prefix_cache_;
+  std::vector<int> prefix_cache_checkpoints_;
   // Tiered residency observability (max_seq=1 contract: the delta between
   // consecutive request completions is that request's own load activity).
   bool residency_enabled_ = false;
