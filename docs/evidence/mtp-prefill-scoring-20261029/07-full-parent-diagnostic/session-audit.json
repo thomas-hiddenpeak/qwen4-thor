@@ -1,0 +1,89 @@
+{
+  "passed": true,
+  "requests": 1,
+  "lifecycle": [
+    {
+      "instance": "0",
+      "id": "chatcmpl-auto-0",
+      "event": "end",
+      "stage": "response",
+      "seq": "0",
+      "released": "1",
+      "outcome": "success",
+      "reason": "completed",
+      "elapsed_ms": "270778.835",
+      "slot_wait_ms": "0.004",
+      "model_lock_ms": "0.000",
+      "tokenizer_lock_ms": "0.024",
+      "scheduler_completion_ms": "7882.819",
+      "stream_write_ms": "1.948",
+      "scheduler_waits": "70"
+    }
+  ],
+  "suffix": [
+    {
+      "request": "chatcmpl-auto-0",
+      "queries": "70",
+      "hits": "0",
+      "candidates": "57",
+      "compared": "303",
+      "matched": "87",
+      "no_match": "53",
+      "incomplete": "0",
+      "d0_mismatch": "6",
+      "invalid": "0",
+      "exhausted": "0",
+      "indexed": "205036",
+      "peak_bytes": "1884160",
+      "object_bytes": "272",
+      "init_ns": "1196415",
+      "append_ns": "45496",
+      "query_ns": "33880",
+      "release_ns": "1491",
+      "numeric_checks": "0",
+      "classified_tokens": "0",
+      "numeric_rejected": "0",
+      "numeric_ns": "0",
+      "short_rejected": "11",
+      "classify_failed": "0",
+      "cache_decodes": "0",
+      "cache_lookups": "0",
+      "cache_allocations": "0",
+      "cache_bytes": "0",
+      "accepted": "0,0,0,0",
+      "neural_accepted": "4,5,3,58"
+    }
+  ],
+  "tables": [
+    {
+      "event": "configure",
+      "bytes": "0",
+      "vocab": "248320",
+      "cap_bytes": "262144",
+      "object_bytes": "88",
+      "lazy": "1"
+    },
+    {
+      "event": "release",
+      "bytes": "0",
+      "peak_bytes": "0",
+      "checks": "0",
+      "lookups": "0",
+      "decodes": "0",
+      "unknown": "0",
+      "allocations": "0",
+      "allocation_ns": "0",
+      "release_ns": "0"
+    }
+  ],
+  "batches": [
+    {
+      "rows": 1,
+      "suffix": 0,
+      "steps": 70
+    }
+  ],
+  "sessions": [],
+  "rejected": [],
+  "original_log_unchanged": true
+}

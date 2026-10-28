@@ -1,0 +1,25 @@
+{
+  "status": "MEASURED_REQUIRES_REVIEW",
+  "started": 1793220406.9239402,
+  "completed": [
+    "00-full-candidate-normal",
+    "01-full-parent-normal",
+    "02-subset-parent-normal",
+    "03-subset-candidate-normal",
+    "04-benefit-gate",
+    "05-full-state",
+    "06-subset-state",
+    "07-full-parent-diagnostic",
+    "08-full-candidate-diagnostic",
+    "09-subset-candidate-diagnostic",
+    "10-subset-parent-diagnostic"
+  ],
+  "requests_completed": 16,
+  "loads_started": 8,
+  "contract_seconds": 33.06754671689123,
+  "plan_sha256": "64ab3b3d93abeb0d4c4644d25123ab9945e47d834d1ad955ff7e915e5a46d407",
+  "current": "10-subset-parent-diagnostic",
+  "finished": 1793222867.271623,
+  "elapsed_seconds": 2460.347685322864,
+  "monitor_failures": []
+}

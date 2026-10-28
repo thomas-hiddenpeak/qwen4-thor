@@ -1,0 +1,257 @@
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=4
+[session-cache] enabled=1 entries=8 disk_bytes=25769803776 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[q4t][startup] tokenizer 380 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=4 max_prefill=4096 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=100.60 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=1241120768 mtp_workspace=1751549952 forward_buffers=209797124 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=2.49 GB (peak admitted MTP request allocations)  state_pool=14.03 GB
+[q4t][budget]   => max_len=208896 max_seq=4
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5550108160 mtp_buffers=522240 mtp_scratch=19333504 mtp_checkpoints=1387708416 mtp_forward_temp=8409664
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=117983138580 runtime_peak=117114135892 estimated_total=117983138580
+[q4t][startup] budget 416 ms
+[suffix-classes] event=configure bytes=0 vocab=248320 cap_bytes=262144 object_bytes=88 lazy=1
+[q4t] suffix enabled: k=3 match=3..64 candidates=4 capacity=208896 global_ids=1 numeric_gate=1 min_admitted_match=32 lazy_classes=1
+[q4t][capacity] requested_max_len=208896 requested_max_seq=4 requested_max_prefill=4096 effective_max_len=208896 effective_max_seq=4 effective_max_prefill=4096 budget_enabled=1 budget_feasible=true
+[q4t][slots] capacities=208896,65536,65536,65536 stream_mtp_prefill=1 text_admission=32
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1621,"device_bytes":102049847380,"allocated":1621,"consumed":0,"freed":0,"unhanded_remaining":1621,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"9296ffe7a6ea71a6e86e24a98958ebdfc57a6bf7ad37fe48540c16c8debfbfd4"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2345 ms
+[q4t][startup] model_load 24857 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] BF16 subset head rows=65536 bytes=335806464
+[q4t] MTP loaded (k=3 max_seq=4)
+[q4t][startup] mtp_load 8912 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=4
+[q4t] continuous-batching scheduler started (max_seq=4)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1621,"device_bytes":102049847380,"allocated":1621,"consumed":1621,"freed":0,"unhanded_remaining":0,"handed_live":1621,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"9296ffe7a6ea71a6e86e24a98958ebdfc57a6bf7ad37fe48540c16c8debfbfd4"}
+[q4t][startup] startup_total 36912 ms
+[q4t] serving on port 8762 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=registered stage=validation seq=-1 elapsed_ms=3.130
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=encode seq=-1 elapsed_ms=3.190
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=slot_admission seq=-1 elapsed_ms=131.671
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=admitted stage=slot_admission seq=0 elapsed_ms=131.690
+[q4t][slot-admission] request=chatcmpl-auto-0 slot=0 capacity=208896 required=205037
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=encode seq=0 elapsed_ms=131.694
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=prefill seq=0 elapsed_ms=132.814
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=0 tokens=4096 wall_ms=2756.434297 cpu_ms=694.365925 stream_ms=2761.175293 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=0 tokens=4096 wall_ms=220.006959 cpu_ms=117.357405 stream_ms=220.022400 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.643533 cpu_ms=1.177934 stream_ms=86.067780 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=4095 tokens=4096 wall_ms=0.045898 cpu_ms=0.044482 stream_ms=36.877537 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=4096 tokens=4096 wall_ms=2768.123940 cpu_ms=533.282301 stream_ms=2775.195557 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=4096 tokens=4096 wall_ms=230.852810 cpu_ms=38.505761 stream_ms=230.866974 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.190543 cpu_ms=0.432806 stream_ms=172.040894 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=8191 tokens=4096 wall_ms=0.015167 cpu_ms=0.014769 stream_ms=109.117821 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=8192 tokens=4096 wall_ms=2825.515075 cpu_ms=531.433106 stream_ms=2832.664307 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=8192 tokens=4096 wall_ms=296.789209 cpu_ms=29.053261 stream_ms=296.806061 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=9.665628 cpu_ms=0.495185 stream_ms=247.631546 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=12287 tokens=4096 wall_ms=0.032889 cpu_ms=0.032435 stream_ms=183.776154 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=12288 tokens=4096 wall_ms=2839.652559 cpu_ms=525.942226 stream_ms=2846.958252 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=12288 tokens=4096 wall_ms=368.968965 cpu_ms=19.359577 stream_ms=368.984406 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.643024 cpu_ms=1.027111 stream_ms=320.112427 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=16383 tokens=4096 wall_ms=0.034296 cpu_ms=0.033685 stream_ms=255.342468 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=16384 tokens=4096 wall_ms=2880.625884 cpu_ms=529.806458 stream_ms=2887.916260 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=16384 tokens=4096 wall_ms=442.133331 cpu_ms=25.408526 stream_ms=442.148865 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.166655 cpu_ms=0.457555 stream_ms=393.628326 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=20479 tokens=4096 wall_ms=0.036528 cpu_ms=0.035778 stream_ms=329.184570 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=20480 tokens=4096 wall_ms=2883.935115 cpu_ms=524.303223 stream_ms=2891.143311 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=20480 tokens=4096 wall_ms=515.327232 cpu_ms=23.880271 stream_ms=515.344299 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.023397 cpu_ms=0.472481 stream_ms=465.359497 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=24575 tokens=4096 wall_ms=0.033278 cpu_ms=0.032797 stream_ms=400.730133 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=24576 tokens=4096 wall_ms=2946.378389 cpu_ms=541.358184 stream_ms=2953.409180 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=24576 tokens=4096 wall_ms=587.880545 cpu_ms=20.148243 stream_ms=587.894836 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.008415 cpu_ms=0.481130 stream_ms=539.484741 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=28671 tokens=4096 wall_ms=0.038759 cpu_ms=0.037917 stream_ms=474.577576 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=28672 tokens=4096 wall_ms=2937.675691 cpu_ms=546.562460 stream_ms=2944.940674 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=28672 tokens=4096 wall_ms=660.948355 cpu_ms=17.418279 stream_ms=660.963806 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.068256 cpu_ms=0.465750 stream_ms=611.215881 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=32767 tokens=4096 wall_ms=0.040556 cpu_ms=0.040185 stream_ms=546.120789 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=32768 tokens=4096 wall_ms=2962.698924 cpu_ms=534.669375 stream_ms=2969.825439 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=32768 tokens=4096 wall_ms=732.372930 cpu_ms=20.386270 stream_ms=732.388245 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.968433 cpu_ms=0.478602 stream_ms=684.913269 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=36863 tokens=4096 wall_ms=0.046426 cpu_ms=0.046102 stream_ms=619.992371 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=36864 tokens=4096 wall_ms=2961.693952 cpu_ms=525.697396 stream_ms=2968.609131 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=36864 tokens=4096 wall_ms=803.991754 cpu_ms=16.380658 stream_ms=804.007812 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=9.921832 cpu_ms=0.482435 stream_ms=756.723267 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=40959 tokens=4096 wall_ms=0.046083 cpu_ms=0.045481 stream_ms=691.550415 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=40960 tokens=4096 wall_ms=3002.885168 cpu_ms=532.076492 stream_ms=3010.140869 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=40960 tokens=4096 wall_ms=878.463150 cpu_ms=16.068204 stream_ms=878.480530 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.116600 cpu_ms=0.473583 stream_ms=830.760254 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=45055 tokens=4096 wall_ms=0.051194 cpu_ms=0.050916 stream_ms=765.415222 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=45056 tokens=4096 wall_ms=3007.076299 cpu_ms=528.682829 stream_ms=3014.178223 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=45056 tokens=4096 wall_ms=950.958222 cpu_ms=17.526504 stream_ms=950.973206 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=9.912674 cpu_ms=0.489343 stream_ms=902.745728 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=49151 tokens=4096 wall_ms=0.048944 cpu_ms=0.048463 stream_ms=836.942871 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=49152 tokens=4096 wall_ms=3045.313954 cpu_ms=527.098293 stream_ms=3052.516602 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=49152 tokens=4096 wall_ms=1023.464831 cpu_ms=15.612050 stream_ms=1023.479614 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.975303 cpu_ms=0.458693 stream_ms=976.621155 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=53247 tokens=4096 wall_ms=0.056908 cpu_ms=0.056519 stream_ms=910.797485 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=53248 tokens=4096 wall_ms=3051.618876 cpu_ms=527.393488 stream_ms=3058.849854 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=53248 tokens=4096 wall_ms=1095.321308 cpu_ms=15.363207 stream_ms=1095.345459 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=9.594277 cpu_ms=0.488231 stream_ms=1048.228760 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=57343 tokens=4096 wall_ms=0.056666 cpu_ms=0.055990 stream_ms=982.339783 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=57344 tokens=4096 wall_ms=3087.931747 cpu_ms=528.248619 stream_ms=3095.068848 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=57344 tokens=4096 wall_ms=1169.457602 cpu_ms=14.984239 stream_ms=1169.467773 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.887311 cpu_ms=0.492823 stream_ms=1122.321167 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=61439 tokens=4096 wall_ms=0.060167 cpu_ms=0.059620 stream_ms=1056.175049 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=61440 tokens=4096 wall_ms=3103.142963 cpu_ms=533.504864 stream_ms=3110.233643 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=61440 tokens=4096 wall_ms=1242.003848 cpu_ms=16.866753 stream_ms=1242.020508 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=9.762435 cpu_ms=0.568408 stream_ms=1194.289551 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=65535 tokens=4096 wall_ms=0.062676 cpu_ms=0.061491 stream_ms=1127.742310 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=65536 tokens=4096 wall_ms=3130.251791 cpu_ms=523.167588 stream_ms=3137.523926 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=65536 tokens=4096 wall_ms=1314.794028 cpu_ms=14.996482 stream_ms=1314.820190 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=9.831785 cpu_ms=0.498584 stream_ms=1267.644043 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=69631 tokens=4096 wall_ms=0.062037 cpu_ms=0.061565 stream_ms=1201.575562 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=69632 tokens=4096 wall_ms=3133.433096 cpu_ms=523.527732 stream_ms=3140.697266 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=69632 tokens=4096 wall_ms=1386.328428 cpu_ms=15.761688 stream_ms=1386.344971 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.098341 cpu_ms=0.503175 stream_ms=1339.272827 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=73727 tokens=4096 wall_ms=0.065695 cpu_ms=0.065074 stream_ms=1273.146118 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=73728 tokens=4096 wall_ms=3171.576021 cpu_ms=528.080202 stream_ms=3178.779785 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=73728 tokens=4096 wall_ms=1460.263086 cpu_ms=15.185482 stream_ms=1460.278198 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.039099 cpu_ms=0.478213 stream_ms=1413.736084 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=77823 tokens=4096 wall_ms=0.070287 cpu_ms=0.069861 stream_ms=1346.946045 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=77824 tokens=4096 wall_ms=3177.202113 cpu_ms=533.150527 stream_ms=3184.489258 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=77824 tokens=4096 wall_ms=1531.882151 cpu_ms=16.278188 stream_ms=1531.896118 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.293173 cpu_ms=0.506443 stream_ms=1485.254150 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=81919 tokens=4096 wall_ms=0.070259 cpu_ms=0.069426 stream_ms=1418.562134 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=81920 tokens=4096 wall_ms=3219.464848 cpu_ms=529.610911 stream_ms=3226.652832 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=81920 tokens=4096 wall_ms=1605.297885 cpu_ms=15.818789 stream_ms=1605.315186 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.982654 cpu_ms=0.498593 stream_ms=1559.296753 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=86015 tokens=4096 wall_ms=0.071639 cpu_ms=0.071333 stream_ms=1492.366821 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=86016 tokens=4096 wall_ms=3217.991347 cpu_ms=525.218773 stream_ms=3225.306885 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=86016 tokens=4096 wall_ms=1676.932787 cpu_ms=14.860832 stream_ms=1676.947632 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.064867 cpu_ms=0.495944 stream_ms=1630.858032 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=90111 tokens=4096 wall_ms=0.075648 cpu_ms=0.075287 stream_ms=1563.920044 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=90112 tokens=4096 wall_ms=3259.267040 cpu_ms=532.259165 stream_ms=3266.558350 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=90112 tokens=4096 wall_ms=1751.102054 cpu_ms=14.645752 stream_ms=1751.119019 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.998979 cpu_ms=0.494777 stream_ms=1704.852051 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=94207 tokens=4096 wall_ms=0.076176 cpu_ms=0.075750 stream_ms=1637.796875 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=94208 tokens=4096 wall_ms=3272.728649 cpu_ms=538.758249 stream_ms=3279.853760 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=94208 tokens=4096 wall_ms=1824.140070 cpu_ms=15.841383 stream_ms=1824.166138 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.118441 cpu_ms=0.515945 stream_ms=1776.768066 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=98303 tokens=4096 wall_ms=0.074843 cpu_ms=0.074417 stream_ms=1709.339355 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=98304 tokens=4096 wall_ms=3303.598945 cpu_ms=531.308609 stream_ms=3310.726562 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=98304 tokens=4096 wall_ms=1896.845774 cpu_ms=14.407345 stream_ms=1896.862305 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.011950 cpu_ms=0.512889 stream_ms=1850.235596 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=102399 tokens=4096 wall_ms=0.082649 cpu_ms=0.082213 stream_ms=1783.149414 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=102400 tokens=4096 wall_ms=3311.637689 cpu_ms=534.773519 stream_ms=3318.618896 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=102400 tokens=4096 wall_ms=1969.301344 cpu_ms=15.396334 stream_ms=1969.318848 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.125848 cpu_ms=0.608110 stream_ms=1922.281860 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=106495 tokens=4096 wall_ms=0.085083 cpu_ms=0.084343 stream_ms=1854.700073 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=106496 tokens=4096 wall_ms=3348.549318 cpu_ms=535.897034 stream_ms=3355.580566 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=106496 tokens=4096 wall_ms=2043.575709 cpu_ms=14.524828 stream_ms=2043.593872 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.251728 cpu_ms=0.606954 stream_ms=1996.240601 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=110591 tokens=4096 wall_ms=0.088852 cpu_ms=0.087862 stream_ms=1928.552368 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=110592 tokens=4096 wall_ms=3352.826816 cpu_ms=535.702028 stream_ms=3359.830078 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=110592 tokens=4096 wall_ms=2114.686021 cpu_ms=14.347325 stream_ms=2114.706055 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.283450 cpu_ms=0.562769 stream_ms=2067.896240 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=114687 tokens=4096 wall_ms=0.087139 cpu_ms=0.086186 stream_ms=2000.131470 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=114688 tokens=4096 wall_ms=3389.199297 cpu_ms=530.885742 stream_ms=3396.234131 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=114688 tokens=4096 wall_ms=2188.902534 cpu_ms=15.227412 stream_ms=2188.922607 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.255572 cpu_ms=0.675445 stream_ms=2142.016357 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=118783 tokens=4096 wall_ms=0.104871 cpu_ms=0.104056 stream_ms=2073.973389 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=118784 tokens=4096 wall_ms=3395.927683 cpu_ms=543.812556 stream_ms=3402.884033 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=118784 tokens=4096 wall_ms=2260.330637 cpu_ms=15.860722 stream_ms=2260.351562 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.212977 cpu_ms=0.658010 stream_ms=2213.596680 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=122879 tokens=4096 wall_ms=0.092592 cpu_ms=0.091092 stream_ms=2145.537109 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=122880 tokens=4096 wall_ms=3431.358187 cpu_ms=537.357446 stream_ms=3438.602051 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=122880 tokens=4096 wall_ms=2333.431908 cpu_ms=14.273534 stream_ms=2333.451904 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.349924 cpu_ms=0.590824 stream_ms=2287.244873 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=126975 tokens=4096 wall_ms=0.096926 cpu_ms=0.096315 stream_ms=2219.343994 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=126976 tokens=4096 wall_ms=3445.389655 cpu_ms=546.302313 stream_ms=3452.395508 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=126976 tokens=4096 wall_ms=2405.777730 cpu_ms=14.613633 stream_ms=2405.797119 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=9.957942 cpu_ms=0.649778 stream_ms=2359.128662 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=131071 tokens=4096 wall_ms=0.099945 cpu_ms=0.098935 stream_ms=2290.933105 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=131072 tokens=4096 wall_ms=3467.035904 cpu_ms=531.941714 stream_ms=3474.190430 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=131072 tokens=4096 wall_ms=2478.400928 cpu_ms=14.862158 stream_ms=2478.422119 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.071775 cpu_ms=0.659786 stream_ms=2432.332520 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=135167 tokens=4096 wall_ms=0.114259 cpu_ms=0.107741 stream_ms=2364.740967 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=135168 tokens=4096 wall_ms=3473.741472 cpu_ms=519.014601 stream_ms=3480.992676 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=135168 tokens=4096 wall_ms=2550.438170 cpu_ms=15.266054 stream_ms=2550.458008 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.374146 cpu_ms=0.598935 stream_ms=2504.141357 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=139263 tokens=4096 wall_ms=0.115065 cpu_ms=0.108686 stream_ms=2436.362793 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=139264 tokens=4096 wall_ms=3512.817441 cpu_ms=519.073443 stream_ms=3519.989990 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=139264 tokens=4096 wall_ms=2624.298799 cpu_ms=13.779579 stream_ms=2624.315674 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.342672 cpu_ms=0.534510 stream_ms=2578.229980 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=143359 tokens=4096 wall_ms=0.104704 cpu_ms=0.104398 stream_ms=2510.173584 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=143360 tokens=4096 wall_ms=3512.226942 cpu_ms=514.650781 stream_ms=3519.393066 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=143360 tokens=4096 wall_ms=2696.309739 cpu_ms=14.730896 stream_ms=2696.327881 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.222812 cpu_ms=0.546259 stream_ms=2649.942627 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=147455 tokens=4096 wall_ms=0.101232 cpu_ms=0.100676 stream_ms=2581.701904 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=147456 tokens=4096 wall_ms=3551.645062 cpu_ms=515.204515 stream_ms=3558.968262 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=147456 tokens=4096 wall_ms=2769.649986 cpu_ms=13.611770 stream_ms=2769.667725 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.089878 cpu_ms=0.585324 stream_ms=2723.614258 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=151551 tokens=4096 wall_ms=0.107713 cpu_ms=0.106685 stream_ms=2655.552490 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=151552 tokens=4096 wall_ms=3555.684144 cpu_ms=514.493348 stream_ms=3563.166992 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=151552 tokens=4096 wall_ms=2841.780238 cpu_ms=14.373068 stream_ms=2841.799316 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.378570 cpu_ms=0.551675 stream_ms=2795.381348 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=155647 tokens=4096 wall_ms=0.105065 cpu_ms=0.104630 stream_ms=2727.092529 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=155648 tokens=4096 wall_ms=3594.826483 cpu_ms=525.622523 stream_ms=3602.178955 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=155648 tokens=4096 wall_ms=2915.246628 cpu_ms=14.423521 stream_ms=2915.263916 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.392812 cpu_ms=0.523981 stream_ms=2869.211670 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=159743 tokens=4096 wall_ms=0.110750 cpu_ms=0.110352 stream_ms=2800.953125 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=159744 tokens=4096 wall_ms=3601.637390 cpu_ms=529.429494 stream_ms=3608.779053 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=159744 tokens=4096 wall_ms=2987.324072 cpu_ms=14.431335 stream_ms=2987.343018 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.352200 cpu_ms=0.514408 stream_ms=2940.642090 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=163839 tokens=4096 wall_ms=0.113139 cpu_ms=0.109648 stream_ms=2872.478760 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=163840 tokens=4096 wall_ms=3632.573474 cpu_ms=522.023816 stream_ms=3639.947510 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=163840 tokens=4096 wall_ms=3060.350919 cpu_ms=14.076490 stream_ms=3060.368408 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.431422 cpu_ms=0.585056 stream_ms=3014.537354 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=167935 tokens=4096 wall_ms=0.118167 cpu_ms=0.117584 stream_ms=2946.345459 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=167936 tokens=4096 wall_ms=3637.878351 cpu_ms=523.398548 stream_ms=3645.304199 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=167936 tokens=4096 wall_ms=3132.433466 cpu_ms=13.237632 stream_ms=3132.450439 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.239219 cpu_ms=0.510472 stream_ms=3085.800049 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=172031 tokens=4096 wall_ms=0.110009 cpu_ms=0.109621 stream_ms=3017.922119 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=172032 tokens=4096 wall_ms=3674.324618 cpu_ms=520.081533 stream_ms=3681.348633 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=172032 tokens=4096 wall_ms=3205.928442 cpu_ms=13.222907 stream_ms=3205.947021 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.440461 cpu_ms=0.563751 stream_ms=3160.032959 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=176127 tokens=4096 wall_ms=0.128231 cpu_ms=0.121436 stream_ms=3091.734131 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=176128 tokens=4096 wall_ms=3677.709144 cpu_ms=522.530616 stream_ms=3684.956787 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=176128 tokens=4096 wall_ms=3277.035538 cpu_ms=14.266338 stream_ms=3277.053955 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=9.863628 cpu_ms=0.621028 stream_ms=3231.643311 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=180223 tokens=4096 wall_ms=0.133945 cpu_ms=0.126306 stream_ms=3163.297607 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=180224 tokens=4096 wall_ms=3719.628171 cpu_ms=525.944666 stream_ms=3726.942627 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=180224 tokens=4096 wall_ms=3353.798734 cpu_ms=14.707314 stream_ms=3353.825928 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.540386 cpu_ms=0.890472 stream_ms=3305.853516 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=184319 tokens=4096 wall_ms=0.131287 cpu_ms=0.130722 stream_ms=3237.143799 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=184320 tokens=4096 wall_ms=3720.653971 cpu_ms=531.276301 stream_ms=3727.841064 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=184320 tokens=4096 wall_ms=3423.508650 cpu_ms=13.892111 stream_ms=3423.530029 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.051034 cpu_ms=0.573658 stream_ms=3377.071777 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=188415 tokens=4096 wall_ms=0.124806 cpu_ms=0.124361 stream_ms=3308.669922 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=188416 tokens=4096 wall_ms=3761.910836 cpu_ms=531.794155 stream_ms=3768.986816 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=188416 tokens=4096 wall_ms=3496.773802 cpu_ms=13.525023 stream_ms=3496.793701 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.368174 cpu_ms=0.672853 stream_ms=3450.834473 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=192511 tokens=4096 wall_ms=0.135287 cpu_ms=0.134555 stream_ms=3382.510742 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=192512 tokens=4096 wall_ms=3765.080240 cpu_ms=531.235495 stream_ms=3772.107178 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=192512 tokens=4096 wall_ms=3569.745564 cpu_ms=14.314735 stream_ms=3569.762451 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=11.116071 cpu_ms=0.667527 stream_ms=3522.701904 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=196607 tokens=4096 wall_ms=0.142129 cpu_ms=0.141537 stream_ms=3454.100830 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=196608 tokens=4096 wall_ms=3806.644202 cpu_ms=529.044283 stream_ms=3814.059326 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=196608 tokens=4096 wall_ms=3641.915264 cpu_ms=14.867436 stream_ms=3641.934326 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4096 wall_ms=10.195080 cpu_ms=0.576565 stream_ms=3596.352295 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=200703 tokens=4096 wall_ms=0.129518 cpu_ms=0.129009 stream_ms=3527.956299 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=target position=200704 tokens=4077 wall_ms=3819.381155 cpu_ms=543.656265 stream_ms=3819.391357 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft position=200704 tokens=4077 wall_ms=3718.340795 cpu_ms=25.353176 stream_ms=3718.363281 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_attention position=-1 tokens=4077 wall_ms=9.804738 cpu_ms=0.749062 stream_ms=3649.740479 ok=1
+[prefill-score-timing] request=chatcmpl-auto-0 label=draft_index_score position=204780 tokens=4077 wall_ms=0.145019 cpu_ms=0.140796 stream_ms=3581.781738 ok=1
+[mtp-prefill] request=chatcmpl-auto-0 streamed=1 chunks=50 trunk_bytes=83886080 ready=1
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=decode seq=0 elapsed_ms=262383.301
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[mtp-accept] request=chatcmpl-auto-0 draft_counts=8,7,5,54
+[suffix] request=chatcmpl-auto-0 queries=74 hits=0 candidates=68 compared=338 matched=90 no_match=56 incomplete=0 d0_mismatch=6 invalid=0 exhausted=0 indexed=205034 peak_bytes=1884160 object_bytes=272 init_ns=1178442 append_ns=42492 query_ns=31266 release_ns=2490 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=12 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=8,7,5,54
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][mem] phase=request_end id=chatcmpl-auto-0 dev_used_gb=122.939 dev_total_gb=131.921 rss_mb=991.4 mem_free_gb=8.141 mem_avail_gb=13.529 cached_gb=5.340
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=response seq=0 elapsed_ms=270025.032
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=270025.110 slot_wait_ms=0.004 model_lock_ms=0.000 tokenizer_lock_ms=0.023 scheduler_completion_ms=7636.079 stream_write_ms=2.099 scheduler_waits=76
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=74
+[q4t] shutdown complete (0 in-flight remaining)
+[suffix-classes] event=release bytes=0 peak_bytes=0 checks=0 lookups=0 decodes=0 unknown=0 allocations=0 allocation_ns=0 release_ns=0
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1621,"device_bytes":102049847380,"allocated":1621,"consumed":1621,"freed":1621,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"9296ffe7a6ea71a6e86e24a98958ebdfc57a6bf7ad37fe48540c16c8debfbfd4"}

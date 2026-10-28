@@ -1,0 +1,22 @@
+[q4t] BF16 subset head rows=65536 bytes=335806464
+SCORING_LEGACY slot=3 base=0 rows=17 differing_output_bytes=0 state_exact=1
+PASS scoring_reference slot=3 base=0 rows=17 exact=1
+SCORING_LEGACY slot=2 base=8190 rows=17 differing_output_bytes=12659 state_exact=1
+PASS scoring_reference slot=2 base=8190 rows=17 exact=1
+SCORING_LEGACY slot=1 base=8192 rows=17 differing_output_bytes=8351 state_exact=1
+PASS scoring_reference slot=1 base=8192 rows=17 exact=1
+SCORING_LEGACY slot=0 base=12288 rows=4096 differing_output_bytes=1891911 state_exact=1
+PASS scoring_reference slot=0 base=12288 rows=4096 exact=1
+CASE prefix=1024 changed_pending=0
+CASE prefix=1024 changed_pending=1
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+SHAPE_OBSERVATION prefix=1024 field=13 differing_bytes=350 first_byte=2095112
+SHAPE_OBSERVATION prefix=1024 field=14 differing_bytes=52 first_byte=261900
+SHAPE_OBSERVATION prefix=1024 field=15 differing_bytes=26 first_byte=65280
+SHAPE_OBSERVATION prefix=1024 field=16 differing_bytes=4785 first_byte=0
+SHAPE_OBSERVATION prefix=1024 total_differing_bytes=5213
+CASE prefix=8193 changed_pending=0
+CASE prefix=8193 changed_pending=1
+SHAPE_OBSERVATION prefix=8193 total_differing_bytes=0
+PASS prefix_state=1 boundaries=1024,8193 forks=4 independent_logits=1 full_state=1 head=subset

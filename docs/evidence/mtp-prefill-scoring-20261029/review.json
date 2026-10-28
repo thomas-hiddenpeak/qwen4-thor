@@ -1,0 +1,1003 @@
+{
+  "decision": "RESEARCH_GO_REQUIRES_RELEASE_VALIDATION",
+  "evidence_validity": "VALID_WITH_SAMPLING_LIMITS",
+  "measurement_completeness": "FROZEN_16_HTTP_8_SERVICES_2_CONTRACTS_COMPLETE_NOT_RELEASE_MATRIX",
+  "statistics": "DESCRIPTIVE_SINGLE_PAIR_NO_NONINFERIORITY_CLAIM",
+  "automatic_release": false,
+  "default_binary_unchanged": true,
+  "state": {
+    "status": "MEASURED_REQUIRES_REVIEW",
+    "started": 1793220406.9239402,
+    "completed": [
+      "00-full-candidate-normal",
+      "01-full-parent-normal",
+      "02-subset-parent-normal",
+      "03-subset-candidate-normal",
+      "04-benefit-gate",
+      "05-full-state",
+      "06-subset-state",
+      "07-full-parent-diagnostic",
+      "08-full-candidate-diagnostic",
+      "09-subset-candidate-diagnostic",
+      "10-subset-parent-diagnostic"
+    ],
+    "requests_completed": 16,
+    "loads_started": 8,
+    "contract_seconds": 33.06754671689123,
+    "plan_sha256": "64ab3b3d93abeb0d4c4644d25123ab9945e47d834d1ad955ff7e915e5a46d407",
+    "current": "10-subset-parent-diagnostic",
+    "finished": 1793222867.271623,
+    "elapsed_seconds": 2460.347685322864,
+    "monitor_failures": []
+  },
+  "plan_sha256": "64ab3b3d93abeb0d4c4644d25123ab9945e47d834d1ad955ff7e915e5a46d407",
+  "candidate_sha256": "c0ed0800bb36f8c8b7dcf9155ae463dd146d73b217294839f0776bef138f6d2d",
+  "parent_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "source_commit": "c9d4475d1169fa653a092f22f970253fd4bcf043",
+  "frozen_files_verified": 763,
+  "run_seal_files_verified": 327,
+  "postflight": {
+    "status": "MEASURED_REQUIRES_REVIEW",
+    "state_sha256": "3e03fd39d8b4b67012c13bd8b3e86bc85ffda11ebe08723ef79bec2767354dd7",
+    "monitor_failures": [],
+    "cleanup_errors": [],
+    "final_summary_sha256": "2453e107591e2802cfee6921f45c701d1fadc33e0aac8237e07e46d844ee7726",
+    "final_monitor_barrier": {
+      "boundary_monotonic": 1412949.186346332,
+      "sample_started_monotonic": 1412949.722253376,
+      "flushed_monotonic": 1412949.74355747
+    },
+    "final_monitor_errors": [],
+    "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+  },
+  "telemetry": {
+    "schema": 1,
+    "sampler_status": "STOPPED",
+    "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+    "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-scoring-20261029/run/unified-memory.jsonl",
+    "started_monotonic": 1410489.441345436,
+    "started_unix_seconds": 1793220406.924472,
+    "finished_monotonic": 1412949.788061594,
+    "finished_unix_seconds": 1793222867.2712152,
+    "sampler_elapsed_seconds": 2460.346716157859,
+    "sample_attempts": 2461,
+    "flushed_samples": 2461,
+    "unflushed_attempts": 0,
+    "final_successful_cycle_duration_seconds": 0.021304093999788165,
+    "final_successful_write_flush_seconds": 0.00023901788517832756,
+    "successful_cycle_duration_total_seconds": 56.997108628973365,
+    "successful_write_flush_total_seconds": 0.8509500636719167,
+    "final_failed_attempt_elapsed_seconds": null,
+    "final_attempt_read_counts": {
+      "source_file_read_attempts": 53,
+      "ownership_file_read_attempts": 856,
+      "ownership_readlink_attempts": 428,
+      "owned_file_read_attempts": 5,
+      "directory_scan_attempts": 1,
+      "pidfd_open_attempts": 1,
+      "pidfd_binding_polls": 1,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "total_read_counts": {
+      "source_file_read_attempts": 130433,
+      "ownership_file_read_attempts": 2168162,
+      "ownership_readlink_attempts": 1084038,
+      "owned_file_read_attempts": 91851,
+      "directory_scan_attempts": 4124,
+      "pidfd_open_attempts": 9466,
+      "pidfd_binding_polls": 9466,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 1
+    },
+    "setup_file_read_attempts": 1,
+    "total_file_read_attempts": 2390447,
+    "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+    "sampler_failure": null,
+    "failures_at_exit": [],
+    "sampler_failure_context": null,
+    "sampler_failure_traceback": null,
+    "sampler_failure_task_state": null,
+    "exit_confirmation_policy": {
+      "per_task_ms": 50,
+      "per_sample_ms": 100,
+      "io_retries": 0,
+      "zero_fill": false,
+      "pending_capacity": 16,
+      "pending_seconds": 5,
+      "pending_poll_timeout_ms": 0,
+      "pending_requires_pf_exiting": true
+    },
+    "exit_pending": {
+      "active": 0,
+      "admitted": 1,
+      "resolved": 1,
+      "maximum_active": 1,
+      "last_resolutions": [],
+      "entries": []
+    },
+    "last_flushed_heartbeat": 1412949.74355747,
+    "source_count": 53
+  },
+  "guard_events": 2260,
+  "resources": {
+    "phase": {
+      "samples": 2461,
+      "minimum_available_bytes": 9727111168,
+      "maximum_total_minus_available_bytes": 122193526784
+    },
+    "00-full-candidate-normal": {
+      "samples": 306,
+      "minimum_available_bytes": 11049897984,
+      "maximum_total_minus_available_bytes": 120870739968,
+      "maximum_VmRSS_bytes": 4128948224,
+      "maximum_VmSwap_bytes": 0
+    },
+    "01-full-parent-normal": {
+      "samples": 380,
+      "minimum_available_bytes": 10929631232,
+      "maximum_total_minus_available_bytes": 120991006720,
+      "maximum_VmRSS_bytes": 4133388288,
+      "maximum_VmSwap_bytes": 0
+    },
+    "02-subset-parent-normal": {
+      "samples": 380,
+      "minimum_available_bytes": 10343301120,
+      "maximum_total_minus_available_bytes": 121577336832,
+      "maximum_VmRSS_bytes": 4129505280,
+      "maximum_VmSwap_bytes": 0
+    },
+    "03-subset-candidate-normal": {
+      "samples": 288,
+      "minimum_available_bytes": 10680745984,
+      "maximum_total_minus_available_bytes": 121239891968,
+      "maximum_VmRSS_bytes": 4126228480,
+      "maximum_VmSwap_bytes": 0
+    },
+    "07-full-parent-diagnostic": {
+      "samples": 310,
+      "minimum_available_bytes": 10669518848,
+      "maximum_total_minus_available_bytes": 121251119104,
+      "maximum_VmRSS_bytes": 4122710016,
+      "maximum_VmSwap_bytes": 0
+    },
+    "08-full-candidate-diagnostic": {
+      "samples": 220,
+      "minimum_available_bytes": 11214716928,
+      "maximum_total_minus_available_bytes": 120705921024,
+      "maximum_VmRSS_bytes": 4129509376,
+      "maximum_VmSwap_bytes": 0
+    },
+    "09-subset-candidate-diagnostic": {
+      "samples": 225,
+      "minimum_available_bytes": 10821959680,
+      "maximum_total_minus_available_bytes": 121098678272,
+      "maximum_VmRSS_bytes": 4132454400,
+      "maximum_VmSwap_bytes": 0
+    },
+    "10-subset-parent-diagnostic": {
+      "samples": 314,
+      "minimum_available_bytes": 9727111168,
+      "maximum_total_minus_available_bytes": 122193526784,
+      "maximum_VmRSS_bytes": 4127825920,
+      "maximum_VmSwap_bytes": 0
+    }
+  },
+  "source_status_counts": {
+    "OK": 130433
+  },
+  "unavailable_sources": [
+    {
+      "label": "pressure_cpu",
+      "path": "/proc/pressure/cpu",
+      "reason": "missing_or_not_readable_at_discovery",
+      "status": "UNAVAILABLE"
+    },
+    {
+      "label": "pressure_io",
+      "path": "/proc/pressure/io",
+      "reason": "missing_or_not_readable_at_discovery",
+      "status": "UNAVAILABLE"
+    },
+    {
+      "label": "pressure_memory",
+      "path": "/proc/pressure/memory",
+      "reason": "missing_or_not_readable_at_discovery",
+      "status": "UNAVAILABLE"
+    }
+  ],
+  "requests": [
+    {
+      "success": 1,
+      "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+      "response_id": "chatcmpl-auto-0",
+      "input_tokens": 8170,
+      "output_tokens": 256,
+      "latency": 13.91579662100412,
+      "ttft": 6.393962925998494,
+      "start": 1410547.392732707,
+      "end": 1410561.308529328,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1410547.392732707,
+        "end_monotonic_seconds": 1410561.308529328,
+        "start_utc_estimate": "2026-10-28T20:47:44.875858+00:00",
+        "end_utc_estimate": "2026-10-28T20:47:58.791655+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 0.0,
+        "within_client_boundaries": true
+      },
+      "step": "00-full-candidate-normal",
+      "head": "full",
+      "arm": "candidate",
+      "mode": "normal",
+      "tier": "context-8192",
+      "post_ttft_seconds": 7.5218336950056255,
+      "post_ttft_tokens_per_second": 33.9013078910952,
+      "e2e_tokens_per_second": 18.396359689074547
+    },
+    {
+      "success": 1,
+      "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+      "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+      "response_id": "chatcmpl-auto-1",
+      "input_tokens": 45044,
+      "output_tokens": 256,
+      "latency": 40.360496713081375,
+      "ttft": 33.243403553031385,
+      "start": 1410567.200769075,
+      "end": 1410607.561265788,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1410567.200769075,
+        "end_monotonic_seconds": 1410607.561265788,
+        "start_utc_estimate": "2026-10-28T20:48:04.683895+00:00",
+        "end_utc_estimate": "2026-10-28T20:48:45.044391+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "step": "00-full-candidate-normal",
+      "head": "full",
+      "arm": "candidate",
+      "mode": "normal",
+      "tier": "context-45056",
+      "post_ttft_seconds": 7.11709316004999,
+      "post_ttft_tokens_per_second": 35.82923452953774,
+      "e2e_tokens_per_second": 6.342835714334185
+    },
+    {
+      "success": 1,
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "response_id": "chatcmpl-auto-2",
+      "input_tokens": 204781,
+      "output_tokens": 256,
+      "latency": 181.2057005178649,
+      "ttft": 173.45344700105488,
+      "start": 1410612.955976726,
+      "end": 1410794.161677244,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1410612.955976726,
+        "end_monotonic_seconds": 1410794.161677244,
+        "start_utc_estimate": "2026-10-28T20:48:50.439102+00:00",
+        "end_utc_estimate": "2026-10-28T20:51:51.644803+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "step": "00-full-candidate-normal",
+      "head": "full",
+      "arm": "candidate",
+      "mode": "normal",
+      "tier": "context-204800",
+      "post_ttft_seconds": 7.752253516810015,
+      "post_ttft_tokens_per_second": 32.8936611073228,
+      "e2e_tokens_per_second": 1.4127590868740976
+    },
+    {
+      "success": 1,
+      "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+      "response_id": "chatcmpl-auto-0",
+      "input_tokens": 8170,
+      "output_tokens": 256,
+      "latency": 13.604806446004659,
+      "ttft": 6.191741344053298,
+      "start": 1410835.173579514,
+      "end": 1410848.77838596,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1410835.173579514,
+        "end_monotonic_seconds": 1410848.77838596,
+        "start_utc_estimate": "2026-10-28T20:52:32.656705+00:00",
+        "end_utc_estimate": "2026-10-28T20:52:46.261512+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 0.0,
+        "within_client_boundaries": true
+      },
+      "step": "01-full-parent-normal",
+      "head": "full",
+      "arm": "parent",
+      "mode": "normal",
+      "tier": "context-8192",
+      "post_ttft_seconds": 7.413065101951361,
+      "post_ttft_tokens_per_second": 34.39872663911662,
+      "e2e_tokens_per_second": 18.816879241613897
+    },
+    {
+      "success": 1,
+      "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+      "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+      "response_id": "chatcmpl-auto-1",
+      "input_tokens": 45044,
+      "output_tokens": 256,
+      "latency": 44.56622884911485,
+      "ttft": 37.47063382109627,
+      "start": 1410854.228410784,
+      "end": 1410898.794639633,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1410854.228410784,
+        "end_monotonic_seconds": 1410898.794639633,
+        "start_utc_estimate": "2026-10-28T20:52:51.711536+00:00",
+        "end_utc_estimate": "2026-10-28T20:53:36.277765+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": -2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "step": "01-full-parent-normal",
+      "head": "full",
+      "arm": "parent",
+      "mode": "normal",
+      "tier": "context-45056",
+      "post_ttft_seconds": 7.095595028018579,
+      "post_ttft_tokens_per_second": 35.937789430354215,
+      "e2e_tokens_per_second": 5.744259871453865
+    },
+    {
+      "success": 1,
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "response_id": "chatcmpl-auto-2",
+      "input_tokens": 204781,
+      "output_tokens": 256,
+      "latency": 270.1970310539473,
+      "ttft": 262.4513030119706,
+      "start": 1410904.264576764,
+      "end": 1411174.461607818,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1410904.264576764,
+        "end_monotonic_seconds": 1411174.461607818,
+        "start_utc_estimate": "2026-10-28T20:53:41.747702+00:00",
+        "end_utc_estimate": "2026-10-28T20:58:11.944734+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": -2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "step": "01-full-parent-normal",
+      "head": "full",
+      "arm": "parent",
+      "mode": "normal",
+      "tier": "context-204800",
+      "post_ttft_seconds": 7.74572804197669,
+      "post_ttft_tokens_per_second": 32.92137273837523,
+      "e2e_tokens_per_second": 0.9474567466616141
+    },
+    {
+      "success": 1,
+      "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+      "response_id": "chatcmpl-auto-0",
+      "input_tokens": 8170,
+      "output_tokens": 256,
+      "latency": 12.698979048989713,
+      "ttft": 6.089445431949571,
+      "start": 1411216.896657464,
+      "end": 1411229.595636513,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1411216.896657464,
+        "end_monotonic_seconds": 1411229.595636513,
+        "start_utc_estimate": "2026-10-28T20:58:54.379783+00:00",
+        "end_utc_estimate": "2026-10-28T20:59:07.078762+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 0.0,
+        "within_client_boundaries": true
+      },
+      "step": "02-subset-parent-normal",
+      "head": "subset",
+      "arm": "parent",
+      "mode": "normal",
+      "tier": "context-8192",
+      "post_ttft_seconds": 6.609533617040142,
+      "post_ttft_tokens_per_second": 38.580634394926214,
+      "e2e_tokens_per_second": 20.159100901923804
+    },
+    {
+      "success": 1,
+      "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+      "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+      "response_id": "chatcmpl-auto-1",
+      "input_tokens": 45044,
+      "output_tokens": 256,
+      "latency": 43.90488729416393,
+      "ttft": 37.43351656408049,
+      "start": 1411234.976405402,
+      "end": 1411278.881292696,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1411234.976405402,
+        "end_monotonic_seconds": 1411278.881292696,
+        "start_utc_estimate": "2026-10-28T20:59:12.459531+00:00",
+        "end_utc_estimate": "2026-10-28T20:59:56.364418+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 0.0,
+        "within_client_boundaries": true
+      },
+      "step": "02-subset-parent-normal",
+      "head": "subset",
+      "arm": "parent",
+      "mode": "normal",
+      "tier": "context-45056",
+      "post_ttft_seconds": 6.471370730083436,
+      "post_ttft_tokens_per_second": 39.404325704071084,
+      "e2e_tokens_per_second": 5.830785950657226
+    },
+    {
+      "success": 1,
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "response_id": "chatcmpl-auto-2",
+      "input_tokens": 204781,
+      "output_tokens": 256,
+      "latency": 270.0684898311738,
+      "ttft": 262.56488036504015,
+      "start": 1411284.318315188,
+      "end": 1411554.386805019,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1411284.318315188,
+        "end_monotonic_seconds": 1411554.386805019,
+        "start_utc_estimate": "2026-10-28T21:00:01.801441+00:00",
+        "end_utc_estimate": "2026-10-28T21:04:31.869931+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": -2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "step": "02-subset-parent-normal",
+      "head": "subset",
+      "arm": "parent",
+      "mode": "normal",
+      "tier": "context-204800",
+      "post_ttft_seconds": 7.503609466133639,
+      "post_ttft_tokens_per_second": 33.983644957923566,
+      "e2e_tokens_per_second": 0.9479076961552666
+    },
+    {
+      "success": 1,
+      "output_sha256": "66bb6d8c428668a991608e634c39eabebd85918b0cdd400c7b22919214ad436e",
+      "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+      "response_id": "chatcmpl-auto-0",
+      "input_tokens": 8170,
+      "output_tokens": 256,
+      "latency": 12.658911628182977,
+      "ttft": 6.039631663123146,
+      "start": 1411597.810704419,
+      "end": 1411610.469616047,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1411597.810704419,
+        "end_monotonic_seconds": 1411610.469616047,
+        "start_utc_estimate": "2026-10-28T21:05:15.293830+00:00",
+        "end_utc_estimate": "2026-10-28T21:05:27.952742+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": -2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "step": "03-subset-candidate-normal",
+      "head": "subset",
+      "arm": "candidate",
+      "mode": "normal",
+      "tier": "context-8192",
+      "post_ttft_seconds": 6.619279965059832,
+      "post_ttft_tokens_per_second": 38.52382756825954,
+      "e2e_tokens_per_second": 20.222907586309258
+    },
+    {
+      "success": 1,
+      "output_sha256": "df4490d74c56007365b9e0eb67a5967a1abe4ebbc1e3bf1c4cd956aad4c6486a",
+      "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+      "response_id": "chatcmpl-auto-1",
+      "input_tokens": 45044,
+      "output_tokens": 256,
+      "latency": 39.68030110304244,
+      "ttft": 33.18396673887037,
+      "start": 1411615.89138385,
+      "end": 1411655.571684953,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1411615.89138385,
+        "end_monotonic_seconds": 1411655.571684953,
+        "start_utc_estimate": "2026-10-28T21:05:33.374510+00:00",
+        "end_utc_estimate": "2026-10-28T21:06:13.054811+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": -2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "step": "03-subset-candidate-normal",
+      "head": "subset",
+      "arm": "candidate",
+      "mode": "normal",
+      "tier": "context-45056",
+      "post_ttft_seconds": 6.496334364172071,
+      "post_ttft_tokens_per_second": 39.25290567036548,
+      "e2e_tokens_per_second": 6.451563946937175
+    },
+    {
+      "success": 1,
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "response_id": "chatcmpl-auto-2",
+      "input_tokens": 204781,
+      "output_tokens": 256,
+      "latency": 181.30603525601327,
+      "ttft": 173.80549210379831,
+      "start": 1411661.004558365,
+      "end": 1411842.310593621,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1411661.004558365,
+        "end_monotonic_seconds": 1411842.310593621,
+        "start_utc_estimate": "2026-10-28T21:06:18.487684+00:00",
+        "end_utc_estimate": "2026-10-28T21:09:19.793719+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 0.0,
+        "within_client_boundaries": true
+      },
+      "step": "03-subset-candidate-normal",
+      "head": "subset",
+      "arm": "candidate",
+      "mode": "normal",
+      "tier": "context-204800",
+      "post_ttft_seconds": 7.500543152214959,
+      "post_ttft_tokens_per_second": 33.99753788826571,
+      "e2e_tokens_per_second": 1.411977266164996
+    },
+    {
+      "success": 1,
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "response_id": "chatcmpl-auto-0",
+      "input_tokens": 204781,
+      "output_tokens": 256,
+      "latency": 270.7818068729248,
+      "ttft": 263.031455431832,
+      "start": 1411914.936042322,
+      "end": 1412185.717849195,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1411914.936042322,
+        "end_monotonic_seconds": 1412185.717849195,
+        "start_utc_estimate": "2026-10-28T21:10:32.419168+00:00",
+        "end_utc_estimate": "2026-10-28T21:15:03.200975+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "step": "07-full-parent-diagnostic",
+      "head": "full",
+      "arm": "parent",
+      "mode": "diagnostic",
+      "tier": "context-204800",
+      "post_ttft_seconds": 7.750351441092789,
+      "post_ttft_tokens_per_second": 32.90173380370547,
+      "e2e_tokens_per_second": 0.9454106350658125
+    },
+    {
+      "success": 1,
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "response_id": "chatcmpl-auto-0",
+      "input_tokens": 204781,
+      "output_tokens": 256,
+      "latency": 181.91446642996743,
+      "ttft": 174.1605875880923,
+      "start": 1412224.830708301,
+      "end": 1412406.745174731,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1412224.830708301,
+        "end_monotonic_seconds": 1412406.745174731,
+        "start_utc_estimate": "2026-10-28T21:15:42.313834+00:00",
+        "end_utc_estimate": "2026-10-28T21:18:44.228300+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 0.0,
+        "within_client_boundaries": true
+      },
+      "step": "08-full-candidate-diagnostic",
+      "head": "full",
+      "arm": "candidate",
+      "mode": "diagnostic",
+      "tier": "context-204800",
+      "post_ttft_seconds": 7.753878841875121,
+      "post_ttft_tokens_per_second": 32.886766120572155,
+      "e2e_tokens_per_second": 1.407254766616121
+    },
+    {
+      "success": 1,
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "response_id": "chatcmpl-auto-0",
+      "input_tokens": 204781,
+      "output_tokens": 256,
+      "latency": 181.59352318104357,
+      "ttft": 174.0957022518851,
+      "start": 1412450.606006579,
+      "end": 1412632.19952976,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1412450.606006579,
+        "end_monotonic_seconds": 1412632.19952976,
+        "start_utc_estimate": "2026-10-28T21:19:28.089132+00:00",
+        "end_utc_estimate": "2026-10-28T21:22:29.682655+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": 2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "step": "09-subset-candidate-diagnostic",
+      "head": "subset",
+      "arm": "candidate",
+      "mode": "diagnostic",
+      "tier": "context-204800",
+      "post_ttft_seconds": 7.497820929158479,
+      "post_ttft_tokens_per_second": 34.00988132542931,
+      "e2e_tokens_per_second": 1.4097419088277465
+    },
+    {
+      "success": 1,
+      "output_sha256": "deffc238dd45199fab2769c7543813147228e6eee7a28be2acd1aae388ea35fe",
+      "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+      "response_id": "chatcmpl-auto-0",
+      "input_tokens": 204781,
+      "output_tokens": 256,
+      "latency": 270.02786215697415,
+      "ttft": 262.5063095728401,
+      "start": 1412676.812302669,
+      "end": 1412946.840164826,
+      "finish": [
+        "length"
+      ],
+      "requested_max_tokens": 256,
+      "stream": true,
+      "timing": {
+        "start_monotonic_seconds": 1412676.812302669,
+        "end_monotonic_seconds": 1412946.840164826,
+        "start_utc_estimate": "2026-10-28T21:23:14.295428+00:00",
+        "end_utc_estimate": "2026-10-28T21:27:44.323291+00:00",
+        "source": "evalscope result.start_time/completed_time (perf_counter)",
+        "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+        "clock_offset_change_seconds": -2.384185791015625e-07,
+        "within_client_boundaries": true
+      },
+      "step": "10-subset-parent-diagnostic",
+      "head": "subset",
+      "arm": "parent",
+      "mode": "diagnostic",
+      "tier": "context-204800",
+      "post_ttft_seconds": 7.521552584134042,
+      "post_ttft_tokens_per_second": 33.90257492022283,
+      "e2e_tokens_per_second": 0.9480503158269667
+    }
+  ],
+  "comparisons": [
+    {
+      "head": "full",
+      "tier": "context-8192",
+      "ttft_reduction": -0.03265988850445356,
+      "e2e_reduction": -0.02285884596989529,
+      "decode_rate_change": -0.014460382596132915,
+      "acceptance_equal": true
+    },
+    {
+      "head": "full",
+      "tier": "context-45056",
+      "ttft_reduction": 0.1128144852912768,
+      "e2e_reduction": 0.0943703841371134,
+      "decode_rate_change": -0.0030206337823545093,
+      "acceptance_equal": true
+    },
+    {
+      "head": "full",
+      "tier": "context-204800",
+      "ttft_reduction": 0.33910235914072206,
+      "e2e_reduction": 0.3293571738703319,
+      "decode_rate_change": -0.000841751991104922,
+      "acceptance_equal": true
+    },
+    {
+      "head": "subset",
+      "tier": "context-8192",
+      "ttft_reduction": 0.008180345711789494,
+      "e2e_reduction": 0.0031551686676672963,
+      "decode_rate_change": -0.0014724181589440555,
+      "acceptance_equal": true
+    },
+    {
+      "head": "subset",
+      "tier": "context-45056",
+      "ttft_reduction": 0.11352259192468706,
+      "e2e_reduction": 0.09622131957238944,
+      "decode_rate_change": -0.0038427261728263273,
+      "acceptance_equal": true
+    },
+    {
+      "head": "subset",
+      "tier": "context-204800",
+      "ttft_reduction": 0.33804744997823377,
+      "e2e_reduction": 0.32866646023994883,
+      "decode_rate_change": 0.00040881224952027395,
+      "acceptance_equal": true
+    }
+  ],
+  "timing": {
+    "07-full-parent-diagnostic": {
+      "target": {
+        "wall_seconds": 165.48189270300003,
+        "cpu_seconds": 26.357197192999998,
+        "stream_seconds": 165.83119579899994
+      },
+      "draft": {
+        "wall_seconds": 96.85350751100002,
+        "cpu_seconds": 1.0013529,
+        "stream_seconds": 96.85435750799999
+      },
+      "draft_attention": {
+        "wall_seconds": 0.550742207,
+        "cpu_seconds": 0.027861377,
+        "stream_seconds": 94.270782967
+      },
+      "draft_index_score": {
+        "wall_seconds": 0.004123936999999999,
+        "cpu_seconds": 0.004086808,
+        "stream_seconds": 90.92726398
+      }
+    },
+    "08-full-candidate-diagnostic": {
+      "target": {
+        "wall_seconds": 165.368001895,
+        "cpu_seconds": 26.339541673000003,
+        "stream_seconds": 165.71900244100001
+      },
+      "draft": {
+        "wall_seconds": 8.106103840999998,
+        "cpu_seconds": 0.9708023960000002,
+        "stream_seconds": 8.106901457
+      },
+      "draft_attention": {
+        "wall_seconds": 0.5445230560000001,
+        "cpu_seconds": 0.031548651000000004,
+        "stream_seconds": 5.543867795000001
+      },
+      "draft_index_score": {
+        "wall_seconds": 0.008265311,
+        "cpu_seconds": 0.008250088,
+        "stream_seconds": 2.204137888
+      }
+    },
+    "09-subset-candidate-diagnostic": {
+      "target": {
+        "wall_seconds": 165.385869853,
+        "cpu_seconds": 26.268896886999997,
+        "stream_seconds": 165.73807837000004
+      },
+      "draft": {
+        "wall_seconds": 8.030155432,
+        "cpu_seconds": 0.93819925,
+        "stream_seconds": 8.030883036
+      },
+      "draft_attention": {
+        "wall_seconds": 0.5469468,
+        "cpu_seconds": 0.033372277000000006,
+        "stream_seconds": 5.54620989
+      },
+      "draft_index_score": {
+        "wall_seconds": 0.008417808999999998,
+        "cpu_seconds": 0.008376647000000001,
+        "stream_seconds": 2.197860165
+      }
+    },
+    "10-subset-parent-diagnostic": {
+      "target": {
+        "wall_seconds": 165.10650432800003,
+        "cpu_seconds": 26.644653729999995,
+        "stream_seconds": 165.456104251
+      },
+      "draft": {
+        "wall_seconds": 96.72581293100001,
+        "cpu_seconds": 0.9333004799999999,
+        "stream_seconds": 96.726713714
+      },
+      "draft_attention": {
+        "wall_seconds": 0.5357001240000001,
+        "cpu_seconds": 0.028723845000000005,
+        "stream_seconds": 94.25653108500002
+      },
+      "draft_index_score": {
+        "wall_seconds": 0.004181401,
+        "cpu_seconds": 0.004119088000000002,
+        "stream_seconds": 90.927175228
+      }
+    }
+  },
+  "acceptance": {
+    "00-full-candidate-normal": {
+      "chatcmpl-auto-0": "6,11,5,53",
+      "chatcmpl-auto-1": "6,3,5,57",
+      "chatcmpl-auto-2": "4,5,3,58"
+    },
+    "01-full-parent-normal": {
+      "chatcmpl-auto-0": "6,11,5,53",
+      "chatcmpl-auto-1": "6,3,5,57",
+      "chatcmpl-auto-2": "4,5,3,58"
+    },
+    "02-subset-parent-normal": {
+      "chatcmpl-auto-0": "7,8,7,52",
+      "chatcmpl-auto-1": "7,5,6,55",
+      "chatcmpl-auto-2": "8,7,5,54"
+    },
+    "03-subset-candidate-normal": {
+      "chatcmpl-auto-0": "7,8,7,52",
+      "chatcmpl-auto-1": "7,5,6,55",
+      "chatcmpl-auto-2": "8,7,5,54"
+    },
+    "07-full-parent-diagnostic": {
+      "chatcmpl-auto-0": "4,5,3,58"
+    },
+    "08-full-candidate-diagnostic": {
+      "chatcmpl-auto-0": "4,5,3,58"
+    },
+    "09-subset-candidate-diagnostic": {
+      "chatcmpl-auto-0": "8,7,5,54"
+    },
+    "10-subset-parent-diagnostic": {
+      "chatcmpl-auto-0": "8,7,5,54"
+    }
+  },
+  "contracts": {
+    "05-full-state": [
+      "SCORING_LEGACY slot=3 base=0 rows=17 differing_output_bytes=0 state_exact=1",
+      "PASS scoring_reference slot=3 base=0 rows=17 exact=1",
+      "SCORING_LEGACY slot=2 base=8190 rows=17 differing_output_bytes=12659 state_exact=1",
+      "PASS scoring_reference slot=2 base=8190 rows=17 exact=1",
+      "SCORING_LEGACY slot=1 base=8192 rows=17 differing_output_bytes=8351 state_exact=1",
+      "PASS scoring_reference slot=1 base=8192 rows=17 exact=1",
+      "SCORING_LEGACY slot=0 base=12288 rows=4096 differing_output_bytes=1891911 state_exact=1",
+      "PASS scoring_reference slot=0 base=12288 rows=4096 exact=1",
+      "CASE prefix=1024 changed_pending=0",
+      "CASE prefix=1024 changed_pending=1",
+      "[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501",
+      "[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501",
+      "SHAPE_OBSERVATION prefix=1024 field=13 differing_bytes=350 first_byte=2095112",
+      "SHAPE_OBSERVATION prefix=1024 field=14 differing_bytes=52 first_byte=261900",
+      "SHAPE_OBSERVATION prefix=1024 field=15 differing_bytes=26 first_byte=65280",
+      "SHAPE_OBSERVATION prefix=1024 field=16 differing_bytes=4785 first_byte=0",
+      "SHAPE_OBSERVATION prefix=1024 total_differing_bytes=5213",
+      "CASE prefix=8193 changed_pending=0",
+      "CASE prefix=8193 changed_pending=1",
+      "SHAPE_OBSERVATION prefix=8193 total_differing_bytes=0",
+      "PASS prefix_state=1 boundaries=1024,8193 forks=4 independent_logits=1 full_state=1 head=full"
+    ],
+    "06-subset-state": [
+      "[q4t] BF16 subset head rows=65536 bytes=335806464",
+      "SCORING_LEGACY slot=3 base=0 rows=17 differing_output_bytes=0 state_exact=1",
+      "PASS scoring_reference slot=3 base=0 rows=17 exact=1",
+      "SCORING_LEGACY slot=2 base=8190 rows=17 differing_output_bytes=12659 state_exact=1",
+      "PASS scoring_reference slot=2 base=8190 rows=17 exact=1",
+      "SCORING_LEGACY slot=1 base=8192 rows=17 differing_output_bytes=8351 state_exact=1",
+      "PASS scoring_reference slot=1 base=8192 rows=17 exact=1",
+      "SCORING_LEGACY slot=0 base=12288 rows=4096 differing_output_bytes=1891911 state_exact=1",
+      "PASS scoring_reference slot=0 base=12288 rows=4096 exact=1",
+      "CASE prefix=1024 changed_pending=0",
+      "CASE prefix=1024 changed_pending=1",
+      "[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501",
+      "[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501",
+      "SHAPE_OBSERVATION prefix=1024 field=13 differing_bytes=350 first_byte=2095112",
+      "SHAPE_OBSERVATION prefix=1024 field=14 differing_bytes=52 first_byte=261900",
+      "SHAPE_OBSERVATION prefix=1024 field=15 differing_bytes=26 first_byte=65280",
+      "SHAPE_OBSERVATION prefix=1024 field=16 differing_bytes=4785 first_byte=0",
+      "SHAPE_OBSERVATION prefix=1024 total_differing_bytes=5213",
+      "CASE prefix=8193 changed_pending=0",
+      "CASE prefix=8193 changed_pending=1",
+      "SHAPE_OBSERVATION prefix=8193 total_differing_bytes=0",
+      "PASS prefix_state=1 boundaries=1024,8193 forks=4 independent_logits=1 full_state=1 head=subset"
+    ]
+  },
+  "scope_notes": [
+    "CUDA stream elapsed includes submission gaps; it is not pure kernel active time.",
+    "Nested timing intervals overlap and must not be added.",
+    "Host wall minus thread CPU is not a direct GPU wait measurement.",
+    "Resource GB uses decimal bytes; RSS and CUDA allocations share physical RAM and must not be added.",
+    "Four configured slots, serial HTTP; direct fixture uses four representative target layers and real draft.",
+    "No new plain-decode/five-tier/full quality/cache-hit HTTP/repeated-agent net-benefit claims.",
+    "Old SIMT versus GEMM rounding differs; fixed outputs and independent state references passed."
+  ]
+}
