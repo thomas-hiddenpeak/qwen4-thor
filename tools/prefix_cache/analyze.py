@@ -1,6 +1,7 @@
 """Offline phase gates and descriptive paired results; never runs inference."""
 import argparse
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 
@@ -13,13 +14,13 @@ def save(path,value):path.write_text(json.dumps(value,indent=2,ensure_ascii=Fals
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('phase',choices=['a','b','c','d']);args=p.parse_args()
-    phase=BASE/('phase-'+args.phase);plan=read(phase/'plan.json')
+    p=argparse.ArgumentParser();p.add_argument('phase',choices=['a','b','c','d']);p.add_argument('--directory',type=Path);args=p.parse_args()
+    phase=args.directory or BASE/('phase-'+args.phase);plan=read(phase/'plan.json')
     state=read(phase/'run/state.json');post=read(phase/'postflight.json');guard=read(phase/'lease/exit.json')
     if state['status']!='MEASURED_REQUIRES_REVIEW' or post['status']!=state['status']:
         raise RuntimeError('stage not complete/valid')
     if guard.get('status')!='COMPLETED':raise RuntimeError('outer lease not complete: '+repr(guard))
-    gate=dict(passed=True,candidate_sha256=plan['candidate_sha256'],phase=args.phase,
+    gate=dict(passed=True,candidate_sha256=plan['candidate_sha256'],phase=args.phase,source=str(phase),
         requests=plan['http_requests'],starts=plan['http_loads'],direct_contracts=2 if args.phase=='b' else 0,
         state_sha256=sha(phase/'run/state.json'),postflight_sha256=sha(phase/'postflight.json'),
         guard_sha256=sha(phase/'lease/exit.json'),statistics='DESCRIPTIVE_ONLY',results=[])
@@ -55,13 +56,10 @@ def main():
         for head in ['full','subset','plain']:
             for off,on in zip(arms[head,False],arms[head,True]):
                 same=[a['output_sha256']==b['output_sha256'] for a,b in zip(off['rows'],on['rows'])]
-                mean=lambda xs:sum(xs)/len(xs)
-                def stats(case):
-                    return {k:mean([r[k] for r in case['rows']]) for k in ['latency','ttft']}
-                a,b=stats(off),stats(on)
-                gate['results'].append(dict(head=head,tier=off['id'],parent=a,candidate=b,
-                    latency_change=b['latency']/a['latency']-1,ttft_change=b['ttft']/a['ttft']-1,
-                    output_equal=same))
+                spec=importlib.util.spec_from_file_location('prefix_compare',ROOT/'tools/mtp_suffix_agent/analyze.py')
+                compare=importlib.util.module_from_spec(spec);spec.loader.exec_module(compare)
+                gate['results'].append(dict(head=head,tier=off['id'],output_equal=same,
+                                           **compare.compare(off,on)))
         gate['passed']=all(all(r['output_equal']) for r in gate['results'])
         gate['protection_note']='Output gate only. Timing requires engineering review, no automatic tolerance/noninferiority.'
     save(BASE/('gate-'+args.phase+'.json'),gate)

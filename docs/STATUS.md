@@ -3,7 +3,9 @@
 更新：2026-10-28。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
 跨会话prefix共享候选已构建（2026-10-28，尚未验收）：沿用codex/session-cache，
-父程序09fe25ba保持交付；候选3b354cf8零警告构建，正在真实HTTP首测。
+父程序09fe25ba保持交付；候选3b354cf8零警告构建，A40HTTP及87项CPU通过，
+两head独立完整状态分叉参考通过，正在C64请求净收益对照。原1K整块参考
+与单行pending修补存在形状差异，原失败保留；同形状primitive参考逐位通过。
 冻结同scope精确最长前缀、可配置最多4检查点、
 独立8项/8GiB SSD/32MiB RAM预算；先HTTP再直接合同及两head净收益/五档
 保护，总200HTTP/14启动/4GPUfixture/6小时。见

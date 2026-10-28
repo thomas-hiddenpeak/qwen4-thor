@@ -27,6 +27,36 @@ void Prefix(Fixture& f, int slot, const std::vector<int32_t>& ids, int stop,
                              10240*2, cudaMemcpyDeviceToDevice));
   }
 }
+// Reference replaces the shifted pending row through the primitive forward,
+// using independently computed target trunk and no cache/restore/extend helper.
+void ReferencePending(Fixture& f, int slot, int position, int32_t token) {
+  Buffer id(2), pos(2), seq(2), sample(f.draft.cfg.hs), multi(10240);
+  Cuda(cudaMemcpy(id.p, &token, 4, cudaMemcpyHostToDevice));
+  Cuda(cudaMemcpy(pos.p, &position, 4, cudaMemcpyHostToDevice));
+  Cuda(cudaMemcpy(seq.p, &slot, 4, cudaMemcpyHostToDevice));
+  Check(mtp::MtpForward(f.draft, reinterpret_cast<int32_t*>(id.p),
+      reinterpret_cast<int*>(pos.p), f.H(slot), sample.p, multi.p, nullptr, 1,
+      nullptr, reinterpret_cast<int*>(seq.p), false));
+  Cuda(cudaStreamSynchronize(nullptr));
+}
+
+void ObserveShape(const Image& a, const Image& b, int prefix) {
+  size_t total = 0;
+  for (size_t i = 0; i < a.size(); ++i) {
+    size_t differences = 0, first = a[i].bytes.size();
+    for (size_t j = 0; j < a[i].bytes.size(); ++j)
+      if (a[i].bytes[j] != b[i].bytes[j]) {
+        ++differences;
+        first = std::min(first, j);
+      }
+    if (differences)
+      std::printf("SHAPE_OBSERVATION prefix=%d field=%zu differing_bytes=%zu "
+                  "first_byte=%zu\n", prefix, i, differences, first);
+    total += differences;
+  }
+  std::printf("SHAPE_OBSERVATION prefix=%d total_differing_bytes=%zu\n",
+              prefix, total);
+}
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -62,10 +92,22 @@ int main(int argc, char** argv) {
       for (const bool changed : {false, true}) {
         auto branch = ids;
         if (changed) branch[p] = 248000;
+        std::printf("CASE prefix=%d changed_pending=%d\n", p, changed);
+        std::fflush(stdout);
         Prefix(f, 1, branch, p, true);
         f.Prefill(1, branch);
+        const auto fresh_shape = f.Capture(1, branch.size());
+        if (changed) {
+          // Preserve the originally committed draft prefix and apply the
+          // branch token with the same one-row shape as the serving contract.
+          // Full-chunk fresh prefill remains a separate numerical observation.
+          Prefix(f, 1, ids, p, true);
+          ReferencePending(f, 1, p - 1, branch[p]);
+          f.Prefill(1, branch);
+        }
         const auto expected_logits = Read(f.logits.p, 248320u*2);
         const auto expected = f.Capture(1, branch.size());
+        if (changed) ObserveShape(fresh_shape, expected, p);
         f.Begin(2); f.Prefill(2, std::vector<int32_t>(259, 888));
         f.Begin(2);
         std::string selected;
