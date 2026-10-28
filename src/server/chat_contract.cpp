@@ -60,7 +60,7 @@ Status ValidateChatContract(const io::Json& req,
       "reasoning_effort", "add_vision_id", "temperature", "top_p", "n",
       "frequency_penalty", "presence_penalty", "repetition_penalty", "seed",
       "stop", "logprobs", "top_logprobs", "logit_bias", "response_format",
-      "user", "session_id", "prefix_cache_scope"});
+      "user", "session_id", "prefix_cache_scope", "prefix_cache_write_tokens"});
   if (!status) return status;
   for (const auto* field : {"session_id", "prefix_cache_scope"}) {
     const auto* value = req.Find(field);
@@ -70,6 +70,15 @@ Status ValidateChatContract(const io::Json& req,
     for (const char c : value->str)
       if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')))
         return Status::Fail(std::string(field) + " must be lowercase hex");
+  }
+  if (const auto* value = req.Find("prefix_cache_write_tokens")) {
+    const double n = value->AsDouble(-1);
+    if (!value->IsNumber() || !std::isfinite(n) || std::trunc(n) != n ||
+        (n != 0 && (n < 1024 || n > 131072)))
+      return Status::Fail(
+          "prefix_cache_write_tokens must be 0 or an integer in [1024,131072]");
+    if (n > 0 && !req.Has("prefix_cache_scope"))
+      return Status::Fail("prefix_cache_write_tokens requires prefix_cache_scope");
   }
   if (const auto* value = req.Find("stream"); value && !value->IsBool())
     return Status::Fail("stream must be boolean");

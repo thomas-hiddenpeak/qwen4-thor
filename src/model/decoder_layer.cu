@@ -444,7 +444,8 @@ Status LoadDecoderLayer(const io::WeightLoader& loader, int layer_id, int hs,
           runtime::SequenceCapacity(seq_capacities, slot, max_len);
       for (int pos = 0; pos < max_len; ++pos)
         page_table[static_cast<size_t>(slot) * max_len + pos] =
-            pos < capacity ? page_base + pos / kKvPageSize : -1;
+            pos < capacity ? static_cast<int>(page_base + pos / kKvPageSize)
+                           : -1;
     }
     if (cudaMemcpy(out->page_table, page_table.data(),
                    page_table.size() * 4, cudaMemcpyHostToDevice) !=

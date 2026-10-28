@@ -584,3 +584,10 @@ add_executable(q4t_prefix_state_contract EXCLUDE_FROM_ALL
   tools/prefix_cache/state_contract.cpp)
 target_link_libraries(q4t_prefix_state_contract PRIVATE q4t_server)
 target_compile_options(q4t_prefix_state_contract PRIVATE -Wall -Wextra)
+
+add_executable(q4t_prefix_seed_contract EXCLUDE_FROM_ALL
+  tests/test_main.cpp tests/server_chat_contract_test.cpp
+  tools/prefix_seed/policy_contract.cpp src/server/chat_contract.cpp
+  src/io/json.cpp)
+target_include_directories(q4t_prefix_seed_contract PRIVATE include)
+target_compile_options(q4t_prefix_seed_contract PRIVATE -Wall -Wextra)

@@ -14,6 +14,7 @@
 #include "q4t/diagnostic/execution_observer.h"
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/prefix_cache_policy.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/mtp_policy.h"
 #include "q4t/server/scheduler_submission.h"
@@ -113,6 +114,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
 
   const std::string prefix_scope = req.GetString("prefix_cache_scope");
+  const int prefix_write_tokens =
+      static_cast<int>(req.GetInt("prefix_cache_write_tokens", 0));
   if (!prefix_scope.empty() && !prefix_cache_.Enabled()) {
     SendError(fd, 400, "prefix cache is not enabled");
     return;
@@ -234,6 +237,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       return;
     }
     ids.assign(prompt_u32.begin(), prompt_u32.end());
+    s = ValidatePrefixSeedBoundary(prefix_write_tokens,
+                                     prefix_cache_checkpoints_, ids.size());
+    if (!s.ok()) {
+      SendError(fd, 400, s.message());
+      return;
+    }
   }
 
   // B1 multi-request scheduling: each request runs on its own thread. All
@@ -614,16 +623,13 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
       const int base = seq.position;
       int count = std::min(chunk, T - base);
-      if (!prefix_scope.empty()) {
-        for (const int point : prefix_cache_checkpoints_)
-          if (point > base) count = std::min(count, point - base);
-      }
+      if (prefix_write_tokens > base)
+        count = std::min(count, prefix_write_tokens - base);
       const int boundary = base + count;
       const bool last = boundary == T;
       SessionLease* shared_write = nullptr;
-      if (!last && !prefix_scope.empty() &&
-          std::binary_search(prefix_cache_checkpoints_.begin(),
-                             prefix_cache_checkpoints_.end(), boundary)) {
+      if (!last && prefix_write_tokens > 0 &&
+          boundary == prefix_write_tokens) {
         const auto digest = trace::Sha256({
             reinterpret_cast<const uint8_t*>(ids.data()),
             static_cast<size_t>(boundary) * sizeof(int32_t)});

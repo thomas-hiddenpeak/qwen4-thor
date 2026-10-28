@@ -480,7 +480,9 @@ Status LoadMtp(const MtpConfig& cfg, const uint16_t* main_embed,
       const int capacity =
           runtime::SequenceCapacity(cfg.seq_capacities, s, cfg.max_len);
       for (int p = 0; p < cfg.max_len; ++p)
-        pt[p] = p < capacity ? page_base + p / model::kKvPageSize : -1;
+        pt[p] = p < capacity
+                    ? static_cast<int>(page_base + p / model::kKvPageSize)
+                    : -1;
       if (cudaMemcpy(out->page_table + static_cast<size_t>(s) * cfg.max_len,
                      pt.data(), static_cast<size_t>(cfg.max_len) * sizeof(int),
                      cudaMemcpyHostToDevice) != cudaSuccess)
