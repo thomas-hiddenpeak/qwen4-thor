@@ -25,7 +25,8 @@ def rejected_probes(plan,out):
         ({'prefix_cache_scope':capability('bad'),'prefix_cache_write_tokens':8192},'requires an uncached prompt token')]
     results=[]
     for i,(extra,expected) in enumerate(probes):
-        body=dict(model='qwen3.8-flash-next',prompt='x',max_tokens=1,request_id='seed-reject-'+str(i),**extra)
+        body=dict(model='qwen3.8-flash-next',prompt='x',max_tokens=1,request_id='seed-reject-'+str(i),
+            cancel_token=capability('seed-reject-cancel-'+str(i)),**extra)
         req=urllib.request.Request(f"http://127.0.0.1:{plan['port']}/v1/chat/completions",
             data=json.dumps(body).encode(),headers={'Content-Type':'application/json'})
         try:
@@ -34,6 +35,7 @@ def rejected_probes(plan,out):
         except urllib.error.HTTPError as error:
             text=error.read().decode()
             results.append(dict(request=body,status=error.code,response=text,expected=expected))
+            save(out/'rejected-probes.json',results)
             if error.code!=400 or expected not in text:raise RuntimeError('wrong seed rejection')
     save(out/'rejected-probes.json',results)
 
@@ -140,13 +142,16 @@ def custom_step(plan,name):
             if 'capacities=208896,65536,65536,65536' not in (out/'server.log').read_text(): raise RuntimeError('slot capacities')
             http.event(out,'server_ready',pid=server.pid)
             if plan['stage']=='PREFIX_A':
-                result=multi.case(plan,step,plan['quality_case'],out,env,check)
-                save(out/'first-http-gate.json',dict(passed=True,result=result,candidate_sha256=plan['candidate_sha256']))
-                if step['head']=='full':
-                    with (out/'cpu-contract.log').open('x') as cpu:
-                        code=subprocess.run([plan['storage_contract']],stdout=cpu,stderr=subprocess.STDOUT,timeout=90).returncode
-                    if code: raise RuntimeError('CPU storage contract')
-                lifecycle(plan,out,check)
+                if step.get('probe_only'):
+                    rejected_probes(plan,out)
+                else:
+                    result=multi.case(plan,step,plan['quality_case'],out,env,check)
+                    save(out/'first-http-gate.json',dict(passed=True,result=result,candidate_sha256=plan['candidate_sha256']))
+                    if step['head']=='full':
+                        with (out/'cpu-contract.log').open('x') as cpu:
+                            code=subprocess.run([plan['storage_contract']],stdout=cpu,stderr=subprocess.STDOUT,timeout=90).returncode
+                        if code: raise RuntimeError('CPU storage contract')
+                    lifecycle(plan,out,check)
             elif plan['stage']=='PREFIX_C': performance(plan,step,out,env,check)
             elif plan['stage']=='PREFIX_D':
                 results=[multi.case(plan,step,c,out,env,check) for c in plan['protection']]
@@ -178,12 +183,25 @@ def audit(out,count):
     if rejected and sorted(r['id'] for r in rejected)!=['seed-reject-2','seed-reject-3','unregistered','unregistered']:raise RuntimeError('unrelated rejected request')
     instances={r['instance'] for r in rejected}
     filtered='\n'.join(l for l in lines if not (l.startswith('[q4t][request] ') and fields(l)['instance'] in instances))
-    result=old.session_audit.__globals__['runtime'](filtered,count)
+    if count:
+        result=old.session_audit.__globals__['runtime'](filtered,count)
+    else:
+        if not read_probe_only(out) or 'event=admitted ' in raw:
+            raise RuntimeError('unplanned zero-generation service')
+        tables=[fields(l) for l in lines if l.startswith('[suffix-classes] ')]
+        if ([r['event'] for r in tables]!=['configure','release'] or
+                any(int(tables[-1][k]) for k in ['decodes','checks','allocations'])):
+            raise RuntimeError('probe-only service ran inference classification')
+        result=dict(passed=True,requests=0)
     result['rejected']=rejected;result['original_log_unchanged']=True
     save(out/'session-audit.json',result)
     writes=[fields(l) for l in lines if l.startswith('[prefix-cache] request=')]
     if any(int(r['bytes'])>8*1024**3 or r['error']!='none' for r in writes):raise RuntimeError('seed IO/budget')
     save(out/'prefix-audit.json',dict(passed=True,saves=writes))
+
+
+def read_probe_only(out):
+    return json.loads((out/'step.json').read_text()).get('probe_only',False)
 
 
 if __name__=='__main__':
