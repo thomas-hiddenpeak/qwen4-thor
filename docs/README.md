@@ -1,6 +1,7 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
+阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
 最新专项：[会话缓存与prefix主线合入、接受及收尾](SESSION_PREFIX_MAIN_MERGE_2026-10-29.md)；
 [显式公共种子验收及交付](PREFIX_SEED_RESULT_2026-10-28.md)；
@@ -60,6 +61,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [五个参考项目阶段收尾](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md) | 固定源码、已吸收能力、未移植项与需求触发条件 | 本轮完成；新证据成立后另立任务 |
 | [显式公共种子交付](PREFIX_SEED_RESULT_2026-10-28.md) | 可配置公共边界、每请求单种子、子代理默认只读，1长＋3短两head收益 | 279HTTP/19服务/2fixture；6f37/5fdc交付，8K与32K冻结目标全部达成，统计非劣未建立 |
 | [跨会话prefix共享结果](PREFIX_CACHE_RESULT_2026-10-28.md) | 完整状态共享、可配置检查点、两head净收益与写入成本 | 104HTTP/6服务/3fixture；功能合同通过，目标未全满足，NO_GO保持09fe |
 | [完整会话缓存交付](SESSION_CACHE_RESULT_2026-10-27.md) | 同进程完整目标/draft状态SSD快照、跨槽恢复、两head净收益和五档原值 | 233HTTP/14服务/2状态fixture；09fe/5027交付，显式启用，总体非劣未建立 |

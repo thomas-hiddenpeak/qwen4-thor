@@ -1,8 +1,10 @@
 # 已归档研究与恢复入口
 
-主线只维护日常验证工具与接受规则。以下完整研究保存在远端annotated
-标签中；引用使用固定commit，不依赖已经删除的分支。归档不改变原有
-NO_GO、未决或局部通过的范围，不自动启动下一阶段。
+以下早期完整研究保存在远端annotated标签中；引用使用固定commit，
+不依赖已经删除的分支。其后参考项目的适用特性已分阶段进入主线，
+截至2026-10-29的[成果与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)
+是当前入口；旧计划的“未实施”只描述归档时点。归档不改变原有NO_GO、
+未决或局部通过的范围，不自动启动下一阶段。
 
 | 标签 | commit | 内容 |
 |---|---|---|
@@ -18,7 +20,7 @@ NO_GO、未决或局部通过的范围，不自动启动下一阶段。
 - [HC up复审及NO_GO](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/9a5bc0cfc92e92a8db953092691072fed5e2ede3/docs/HC_UP_REVIEW_2026-10-16.md)
 - [TTFT因果调查与未完成项](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/9a5bc0cfc92e92a8db953092691072fed5e2ede3/docs/HC_UP_TTFT_CAUSE_2026-10-16.md)
 - [GDN Record/Fold NO_GO](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/9a5bc0cfc92e92a8db953092691072fed5e2ede3/docs/GDN_RECORD_FOLD_2026-10-16.md)
-- [外部参考综合计划（未实施）](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/9a5bc0cfc92e92a8db953092691072fed5e2ede3/docs/REFERENCE_INTEGRATION_PLAN_2026-10-16.md)
+- [外部参考综合计划（2026-10-16原版，现状见阶段收尾）](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/9a5bc0cfc92e92a8db953092691072fed5e2ede3/docs/REFERENCE_INTEGRATION_PLAN_2026-10-16.md)
 - [研究分支评估](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/9a5bc0cfc92e92a8db953092691072fed5e2ede3/docs/RESEARCH_RETENTION_2026-10-17.md)
 - [两份未提交源码/补丁归档](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/9a5bc0cfc92e92a8db953092691072fed5e2ede3/docs/evidence/research-retention-20261017/manifest.json)
 - [研究标签与清理结果](https://github.com/thomas-hiddenpeak/qwen4-thor/blob/9a5bc0cfc92e92a8db953092691072fed5e2ede3/docs/evidence/research-retention-20261017/cleanup-result.json)

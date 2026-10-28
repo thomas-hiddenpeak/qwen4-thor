@@ -1,7 +1,13 @@
 # REFERENCE.md — 参考项目说明
 
-当前工具收敛见[交付记录](MAIN_CONVERGENCE_2026-10-17.md)；近期研究及未实施计划见
-[只读归档](ARCHIVED_RESEARCH.md)，不作为自动执行队列。
+KVMem、NInfer、ActKV、Strata、Megatron Inference 的本轮源码研究与适用
+特性吸收已于2026-10-29收尾。固定版本、实际采用的能力、未移植算法与
+重新启动条件见[阶段收尾](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
+完整会话缓存和显式公共前缀已交付，不能再按旧计划重做 D1；其余候选
+由真实业务或性能证据触发，不因参考项目仍有功能未采用而自动排期。
+
+早期工具收敛见[交付记录](MAIN_CONVERGENCE_2026-10-17.md)；历史研究与
+原计划见[只读归档](ARCHIVED_RESEARCH.md)，不作为自动执行队列。
 
 > `reference/` 目录存放外部参考项目源码 (只读, 不参与构建,
 > 不修改)。本文说明每个项目取什么、怎么用。

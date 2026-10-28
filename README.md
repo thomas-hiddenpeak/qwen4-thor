@@ -352,6 +352,16 @@ parts 数组; 图像用 `image_url` (base64 data URL), 视频用 `video_frames`
 | [vllm](https://github.com/vllm-project/vllm) | qwen4_exp 完整实现, MTP/QSA 权威参考 |
 | [thor-probe](https://github.com/thomas-hiddenpeak/thor-probe) | 硬件探测方法 |
 | [thor-bench](https://github.com/thomas-hiddenpeak/thor-bench) | 硬件性能基线 |
+| [KVMem](https://github.com/kvmem/kvmem) | 会话身份、完整状态保存/恢复、存储租约与失败处理；借鉴到 SSD 会话缓存 |
+| [NInfer](https://github.com/Neroued/ninfer) | MTP 执行组织、精确元数据与 scratch 复用、独立草稿 head；本项目采用显式 65536 行 BF16 子集 |
+| [Strata](https://github.com/Niko1221/Strata) | suffix proposal（本项目固定 k3）、混合模型会话边界与槽位管理思路 |
+| [Megatron-LM / Inference](https://github.com/NVIDIA/Megatron-LM) | MoE 固定 IDs/当前分数诊断、上传源所有权、数值负控与调度生命周期 |
+| [ActKV 社区实现](https://github.com/melis2023/kvmem-actkv)、[actkv-open（非官方）](https://github.com/Maurya30/actkv-open) | LRFU、置信度预算与 KV 淘汰/搬移的源码研究；评分及近似淘汰未移植 |
+
+本轮五个参考项目的学习已收尾；研究不等于整套移植或运行时依赖。
+实际审阅版本、已吸收能力、验收边界与暂缓项重启条件见
+[阶段收尾](docs/REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)，其他参考见
+[参考项目说明](docs/REFERENCE.md)。
 
 ## 许可证
 
