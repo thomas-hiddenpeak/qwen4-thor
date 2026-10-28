@@ -12,7 +12,7 @@ def main():
     plan = json.loads((BASE / 'phase-d/plan.json').read_text())
     if not gate['passed'] or len(gate['results']) != 15:
         raise ValueError('Complete five-tier output gate required')
-    services, arms = [], {}
+    services, arms, work = [], {}, {}
     for step in plan['steps']:
         folder = BASE / 'phase-d/run' / step['name']
         raw = (folder / 'server.log').read_text().splitlines()
@@ -26,6 +26,10 @@ def main():
                              snapshot_restored_tokens=0))
         arms[step['head'], step['binary'] == plan['candidate']] = {
             c['id']: c for c in json.loads((folder / 'results.json').read_text())}
+        work[step['head'], step['binary'] == plan['candidate']] = {
+            row['request']: row['draft_counts']
+            for row in (dict(re.findall(r'(\w+)=(\S+)', line))
+                        for line in raw if line.startswith('[mtp-accept] '))}
     pairs = []
     for head in ['full', 'subset', 'plain']:
         for tier in plan['protection']:
@@ -41,7 +45,9 @@ def main():
                 pairs.append(dict(head=head, tier=tier['id'], index=index,
                     input_tokens=a['input_tokens'], output_tokens=a['output_tokens'],
                     ttft_off=a['ttft'], ttft_on=b['ttft'],
-                    latency_off=a['latency'], latency_on=b['latency']))
+                    latency_off=a['latency'], latency_on=b['latency'],
+                    mtp_acceptance_off=work[head, False].get(a['response_id']),
+                    mtp_acceptance_on=work[head, True].get(b['response_id'])))
     if not all(r['output_same'] for r in gate['results']):
         raise ValueError('Prompt/output set integrity')
     negatives = [dict(head=r['head'], tier=r['tier'],
@@ -51,6 +57,8 @@ def main():
                  if r['e2e_percent'] < 0 or r['decode_percent'] < 0
                  or r['ttft_percent'] > 0]
     result = dict(integrity_passed=True, paired_requests=len(pairs),
+        mtp_acceptance_histograms_equal=all(
+            p['mtp_acceptance_off'] == p['mtp_acceptance_on'] for p in pairs),
         services=services, pairs=pairs, negative_observations=negatives,
         all_tier_metrics=gate['results'],
         timing_acceptance='REQUIRES_ENGINEERING_REVIEW',
