@@ -1,0 +1,14 @@
+{
+  "status": "COMPLETE",
+  "old_tip": "1a5cf4131e96876a9b021a352c3dc855a74c8abc",
+  "retained_anchor": {
+    "ref": "main",
+    "commit": "1a5cf4131e96876a9b021a352c3dc855a74c8abc"
+  },
+  "local_deleted": true,
+  "remote_deleted": true,
+  "remote_expected_tip": "1a5cf4131e96876a9b021a352c3dc855a74c8abc",
+  "local_result": "Deleted branch codex/session-cache (was 1a5cf41).",
+  "worktrees_and_evidence_untouched": true,
+  "finished_unix": 1793216757.3979368
+}

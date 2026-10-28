@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "push",
+    "--force-with-lease=refs/heads/codex/session-cache:1a5cf4131e96876a9b021a352c3dc855a74c8abc",
+    "origin",
+    ":refs/heads/codex/session-cache"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "To https://github.com/thomas-hiddenpeak/qwen4-thor.git\n - [deleted]         codex/session-cache\n"
+}

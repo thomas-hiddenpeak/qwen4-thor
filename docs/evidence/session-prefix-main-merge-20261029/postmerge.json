@@ -1,0 +1,20 @@
+{
+  "status": "PASS_MAIN_IDENTITY_AND_PRESERVATION",
+  "created": 1793216869.9241855,
+  "main_tip": "1a5cf4131e96876a9b021a352c3dc855a74c8abc",
+  "runtime_files_checked": 165,
+  "binary_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "sidecar_sha256": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2",
+  "preserved_result_and_evidence_files": 83,
+  "archive_files": 7037,
+  "archive_bytes": 3291292448,
+  "all_worktree_paths_preserved": true,
+  "worktree_count": 21,
+  "local_and_remote_redundant_branch_removed": true,
+  "new_builds": 0,
+  "new_http_requests": 0,
+  "new_model_loads": 0,
+  "bundle_sha256": "4f37ee37f02186eb1e0375b47ab60169ced04420da096c6a8dd4d6445a27c869",
+  "bundle_prerequisite": "cb4b085ec5429613dd7c693632fbfbbfcec5e44e",
+  "user_acceptance": "Specific observed negative timing and RSS measurements accepted for these delivered cache features. Original values and statistical limitations retained."
+}

@@ -1,0 +1,14 @@
+{
+  "status": "SAFE_TO_REMOVE_REFERENCES_ONLY",
+  "old_tip": "1a5cf4131e96876a9b021a352c3dc855a74c8abc",
+  "retained_anchor": "refs/heads/main",
+  "remote_main": "1a5cf4131e96876a9b021a352c3dc855a74c8abc",
+  "unique_commits": 0,
+  "open_prs": [],
+  "working_tree_clean": true,
+  "worktrees_preserved": true,
+  "raw_evidence_preserved": true,
+  "bundle": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-prefix-main-merge-20261029/premerge.bundle",
+  "bundle_sha256": "4f37ee37f02186eb1e0375b47ab60169ced04420da096c6a8dd4d6445a27c869",
+  "created_unix": 1793216753.8690188
+}
