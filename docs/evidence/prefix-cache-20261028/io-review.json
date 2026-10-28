@@ -1,0 +1,299 @@
+{
+  "cases": [
+    {
+      "head": "full",
+      "shared": false,
+      "scenario": "repeat-code-8192",
+      "checkpoint_saves": 0,
+      "checkpoint_bytes_written": 0,
+      "checkpoint_bytes_not_reused_in_this_transaction": 0,
+      "checkpoint_save_wall_ms": 0,
+      "shared_restores": 0,
+      "parent_session_save_ms": 4059.243,
+      "parent_snapshot_prefix": [
+        131323
+      ],
+      "parent_ttft": 139.47963761608116,
+      "parent_latency": 149.6068365019746,
+      "transaction_seconds": 292.0863641190808
+    },
+    {
+      "head": "full",
+      "shared": false,
+      "scenario": "repeat-text-8192",
+      "checkpoint_saves": 0,
+      "checkpoint_bytes_written": 0,
+      "checkpoint_bytes_not_reused_in_this_transaction": 0,
+      "checkpoint_save_wall_ms": 0,
+      "shared_restores": 0,
+      "parent_session_save_ms": 4046.425,
+      "parent_snapshot_prefix": [
+        131306
+      ],
+      "parent_ttft": 138.79043042194098,
+      "parent_latency": 148.9028481359128,
+      "transaction_seconds": 291.310924265068
+    },
+    {
+      "head": "full",
+      "shared": false,
+      "scenario": "repeat-code-32768",
+      "checkpoint_saves": 0,
+      "checkpoint_bytes_written": 0,
+      "checkpoint_bytes_not_reused_in_this_transaction": 0,
+      "checkpoint_save_wall_ms": 0,
+      "shared_restores": 0,
+      "parent_session_save_ms": 4067.645,
+      "parent_snapshot_prefix": [
+        131319
+      ],
+      "parent_ttft": 138.84413744695485,
+      "parent_latency": 148.99947158014402,
+      "transaction_seconds": 291.5819377510343
+    },
+    {
+      "head": "full",
+      "shared": false,
+      "scenario": "repeat-text-32768",
+      "checkpoint_saves": 0,
+      "checkpoint_bytes_written": 0,
+      "checkpoint_bytes_not_reused_in_this_transaction": 0,
+      "checkpoint_save_wall_ms": 0,
+      "shared_restores": 0,
+      "parent_session_save_ms": 10314.722,
+      "parent_snapshot_prefix": [
+        131323
+      ],
+      "parent_ttft": 138.8611383838579,
+      "parent_latency": 155.24890398886055,
+      "transaction_seconds": 306.2417879658751
+    },
+    {
+      "head": "full",
+      "shared": true,
+      "scenario": "repeat-code-8192",
+      "checkpoint_saves": 6,
+      "checkpoint_bytes_written": 7001120768,
+      "checkpoint_bytes_not_reused_in_this_transaction": 6633156608,
+      "checkpoint_save_wall_ms": 16485.156,
+      "shared_restores": 3,
+      "parent_session_save_ms": 18218.158,
+      "parent_snapshot_prefix": [
+        131323
+      ],
+      "parent_ttft": 147.25929980399087,
+      "parent_latency": 171.6342853999231,
+      "transaction_seconds": 326.3759776940569
+    },
+    {
+      "head": "full",
+      "shared": true,
+      "scenario": "repeat-text-8192",
+      "checkpoint_saves": 6,
+      "checkpoint_bytes_written": 7001120768,
+      "checkpoint_bytes_not_reused_in_this_transaction": 6633156608,
+      "checkpoint_save_wall_ms": 20303.913,
+      "shared_restores": 3,
+      "parent_session_save_ms": 20886.099,
+      "parent_snapshot_prefix": [
+        131306
+      ],
+      "parent_ttft": 153.14992984593846,
+      "parent_latency": 180.19844162790105,
+      "transaction_seconds": 330.7941269350704
+    },
+    {
+      "head": "full",
+      "shared": true,
+      "scenario": "repeat-code-32768",
+      "checkpoint_saves": 3,
+      "checkpoint_bytes_written": 3626700800,
+      "checkpoint_bytes_not_reused_in_this_transaction": 2501894144,
+      "checkpoint_save_wall_ms": 17373.905,
+      "shared_restores": 3,
+      "parent_session_save_ms": 20574.975,
+      "parent_snapshot_prefix": [
+        131319
+      ],
+      "parent_ttft": 156.17914979695342,
+      "parent_latency": 182.9288938678801,
+      "transaction_seconds": 273.1675390568562
+    },
+    {
+      "head": "full",
+      "shared": true,
+      "scenario": "repeat-text-32768",
+      "checkpoint_saves": 3,
+      "checkpoint_bytes_written": 3626700800,
+      "checkpoint_bytes_not_reused_in_this_transaction": 2501894144,
+      "checkpoint_save_wall_ms": 13119.347,
+      "shared_restores": 3,
+      "parent_session_save_ms": 20523.472,
+      "parent_snapshot_prefix": [
+        131323
+      ],
+      "parent_ttft": 151.8834487758577,
+      "parent_latency": 178.5632735718973,
+      "transaction_seconds": 270.546911357902
+    },
+    {
+      "head": "subset",
+      "shared": true,
+      "scenario": "repeat-code-8192",
+      "checkpoint_saves": 6,
+      "checkpoint_bytes_written": 7001120768,
+      "checkpoint_bytes_not_reused_in_this_transaction": 6633156608,
+      "checkpoint_save_wall_ms": 14852.938,
+      "shared_restores": 3,
+      "parent_session_save_ms": 18953.818,
+      "parent_snapshot_prefix": [
+        131323
+      ],
+      "parent_ttft": 146.81238146312535,
+      "parent_latency": 171.634740968002,
+      "transaction_seconds": 314.3446769339498
+    },
+    {
+      "head": "subset",
+      "shared": true,
+      "scenario": "repeat-text-8192",
+      "checkpoint_saves": 6,
+      "checkpoint_bytes_written": 7001120768,
+      "checkpoint_bytes_not_reused_in_this_transaction": 6633156608,
+      "checkpoint_save_wall_ms": 13990.71,
+      "shared_restores": 3,
+      "parent_session_save_ms": 17715.233,
+      "parent_snapshot_prefix": [
+        131306
+      ],
+      "parent_ttft": 148.27426043199375,
+      "parent_latency": 172.13764164596796,
+      "transaction_seconds": 320.5227341398131
+    },
+    {
+      "head": "subset",
+      "shared": true,
+      "scenario": "repeat-code-32768",
+      "checkpoint_saves": 3,
+      "checkpoint_bytes_written": 3626700800,
+      "checkpoint_bytes_not_reused_in_this_transaction": 2501894144,
+      "checkpoint_save_wall_ms": 9897.605,
+      "shared_restores": 3,
+      "parent_session_save_ms": 16565.773,
+      "parent_snapshot_prefix": [
+        131319
+      ],
+      "parent_ttft": 148.61389683606103,
+      "parent_latency": 171.0441431030631,
+      "transaction_seconds": 256.06011861213483
+    },
+    {
+      "head": "subset",
+      "shared": true,
+      "scenario": "repeat-text-32768",
+      "checkpoint_saves": 3,
+      "checkpoint_bytes_written": 3626700800,
+      "checkpoint_bytes_not_reused_in_this_transaction": 2501894144,
+      "checkpoint_save_wall_ms": 8586.451000000001,
+      "shared_restores": 3,
+      "parent_session_save_ms": 16692.493,
+      "parent_snapshot_prefix": [
+        131323
+      ],
+      "parent_ttft": 147.30664841784164,
+      "parent_latency": 170.1436380238738,
+      "transaction_seconds": 248.9188959740568
+    },
+    {
+      "head": "subset",
+      "shared": false,
+      "scenario": "repeat-code-8192",
+      "checkpoint_saves": 0,
+      "checkpoint_bytes_written": 0,
+      "checkpoint_bytes_not_reused_in_this_transaction": 0,
+      "checkpoint_save_wall_ms": 0,
+      "shared_restores": 0,
+      "parent_session_save_ms": 22251.52,
+      "parent_snapshot_prefix": [
+        131323
+      ],
+      "parent_ttft": 139.45190985593945,
+      "parent_latency": 167.46875709993765,
+      "transaction_seconds": 333.2915177959949
+    },
+    {
+      "head": "subset",
+      "shared": false,
+      "scenario": "repeat-text-8192",
+      "checkpoint_saves": 0,
+      "checkpoint_bytes_written": 0,
+      "checkpoint_bytes_not_reused_in_this_transaction": 0,
+      "checkpoint_save_wall_ms": 0,
+      "shared_restores": 0,
+      "parent_session_save_ms": 16036.83,
+      "parent_snapshot_prefix": [
+        131306
+      ],
+      "parent_ttft": 138.76457438897341,
+      "parent_latency": 160.8676468061749,
+      "transaction_seconds": 317.93002046714537
+    },
+    {
+      "head": "subset",
+      "shared": false,
+      "scenario": "repeat-code-32768",
+      "checkpoint_saves": 0,
+      "checkpoint_bytes_written": 0,
+      "checkpoint_bytes_not_reused_in_this_transaction": 0,
+      "checkpoint_save_wall_ms": 0,
+      "shared_restores": 0,
+      "parent_session_save_ms": 18817.845,
+      "parent_snapshot_prefix": [
+        131319
+      ],
+      "parent_ttft": 138.75559425284155,
+      "parent_latency": 163.33538975496776,
+      "transaction_seconds": 320.26714429399
+    },
+    {
+      "head": "subset",
+      "shared": false,
+      "scenario": "repeat-text-32768",
+      "checkpoint_saves": 0,
+      "checkpoint_bytes_written": 0,
+      "checkpoint_bytes_not_reused_in_this_transaction": 0,
+      "checkpoint_save_wall_ms": 0,
+      "shared_restores": 0,
+      "parent_session_save_ms": 19001.401,
+      "parent_snapshot_prefix": [
+        131323
+      ],
+      "parent_ttft": 138.82310193497688,
+      "parent_latency": 163.87955848593265,
+      "transaction_seconds": 319.5852781618014
+    }
+  ],
+  "heads": {
+    "full": {
+      "entry_bytes": {
+        "8192": 367964160,
+        "32768": 1124806656,
+        "65536": 2133929984
+      }
+    },
+    "subset": {
+      "entry_bytes": {
+        "8192": 367964160,
+        "32768": 1124806656,
+        "65536": 2133929984
+      }
+    }
+  },
+  "method": "Entry sizes inferred from the first three successful saves into each empty pool; unchanged production range layout makes sizes depend only on P.",
+  "conclusions_limited": [
+    "Unused means not restored in this frozen transaction, not proof of no possible future reuse.",
+    "Prefix save wall time is under model lock. Session save wall time can include lock wait; do not sum overlapping waits as device execution.",
+    "Increased existing same-byte snapshot save time is observed, but SSD cache/GC/thermal or host-IO causation is not proven.",
+    "Request latency includes final snapshot save and HTTP terminal; it is not pure GPU decode time."
+  ]
+}

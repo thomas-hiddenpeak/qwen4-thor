@@ -1,0 +1,54 @@
+{
+  "candidate": "3b354cf85cd4eb83133a4fe84e0bd4781356af74986829615eaf6b621f054881",
+  "parent": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+  "deadline": 1793182147.3965225,
+  "runtime_commit": "d52fa6b1c6c87447ece6204f405b09abdcb214d5",
+  "files": 313,
+  "formal_requests": 194,
+  "formal_starts": 12,
+  "direct_contracts": 2,
+  "remaining_http": 6,
+  "remaining_starts": 2,
+  "scenarios": [
+    {
+      "id": "repeat-code-8192",
+      "lcp": 8268,
+      "inputs": [
+        131071,
+        33274,
+        49150,
+        59986
+      ]
+    },
+    {
+      "id": "repeat-text-8192",
+      "lcp": 8268,
+      "inputs": [
+        131054,
+        33278,
+        49133,
+        59990
+      ]
+    },
+    {
+      "id": "repeat-code-32768",
+      "lcp": 32855,
+      "inputs": [
+        131067,
+        33603,
+        49133,
+        59982
+      ]
+    },
+    {
+      "id": "repeat-text-32768",
+      "lcp": 32855,
+      "inputs": [
+        131071,
+        33334,
+        49144,
+        59986
+      ]
+    }
+  ]
+}

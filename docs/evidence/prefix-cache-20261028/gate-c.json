@@ -1,0 +1,361 @@
+{
+  "passed": false,
+  "candidate_sha256": "3b354cf85cd4eb83133a4fe84e0bd4781356af74986829615eaf6b621f054881",
+  "phase": "c",
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-cache-20261028/phase-c",
+  "requests": 64,
+  "starts": 4,
+  "direct_contracts": 0,
+  "state_sha256": "7cb8ab27bcc6e767463c71d8cc7c87eac2621071295aa79bce20569a3442a20c",
+  "postflight_sha256": "9f02ba33e49e61885c4e7559efd95917f8ac45f3a50724550e6314f45308f5fa",
+  "guard_sha256": "482b767f33de6c0a58ea2b8a633ec311fbe3240015fe66c40341bbf495cbd3dd",
+  "statistics": "DESCRIPTIVE_ONLY",
+  "results": [
+    {
+      "head": "full",
+      "scenario": "repeat-code-8192",
+      "off_seconds": 292.0863641190808,
+      "on_seconds": 326.3759776940569,
+      "reduction": -0.11739546171007342,
+      "target": 0.03,
+      "target_met": false,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          3,
+          2,
+          1
+        ],
+        "on": [
+          0,
+          3,
+          2,
+          1
+        ]
+      },
+      "off_child_ttft": [
+        118.60410476615652,
+        118.72423751908354,
+        118.62099157087505
+      ],
+      "on_child_ttft": [
+        111.23511391482316,
+        111.34070427995175,
+        111.19949970999733
+      ],
+      "throughput_gain": -0.10506169546313548
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-text-8192",
+      "off_seconds": 291.310924265068,
+      "on_seconds": 330.7941269350704,
+      "reduction": -0.1355362926042416,
+      "target": 0.03,
+      "target_met": false,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "on": [
+          0,
+          2,
+          3,
+          1
+        ]
+      },
+      "off_child_ttft": [
+        118.5152810770087,
+        118.7328661121428,
+        118.73160015698522
+      ],
+      "on_child_ttft": [
+        109.09408474201337,
+        109.00519052706659,
+        108.90027458989061
+      ],
+      "throughput_gain": -0.11935883818684678
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-code-32768",
+      "off_seconds": 291.5819377510343,
+      "on_seconds": 273.1675390568562,
+      "reduction": 0.06315342725344364,
+      "target": 0.1,
+      "target_met": false,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          2,
+          3,
+          1
+        ],
+        "on": [
+          0,
+          1,
+          3,
+          2
+        ]
+      },
+      "off_child_ttft": [
+        118.94520751107484,
+        118.94540456589311,
+        118.73873033793643
+      ],
+      "on_child_ttft": [
+        46.12183090811595,
+        46.335582515923306,
+        46.339346369029954
+      ],
+      "throughput_gain": 0.06741064021646204
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-text-32768",
+      "off_seconds": 306.2417879658751,
+      "on_seconds": 270.546911357902,
+      "reduction": 0.1165578246034491,
+      "target": 0.1,
+      "target_met": true,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "on": [
+          0,
+          2,
+          3,
+          1
+        ]
+      },
+      "off_child_ttft": [
+        118.57685114606284,
+        118.79405345302075,
+        118.55811805697158
+      ],
+      "on_child_ttft": [
+        45.97031114180572,
+        45.96716870297678,
+        45.89200540701859
+      ],
+      "throughput_gain": 0.13193599745351725
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-code-8192",
+      "off_seconds": 333.2915177959949,
+      "on_seconds": 314.3446769339498,
+      "reduction": 0.056847653931721975,
+      "target": 0.03,
+      "target_met": true,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          1,
+          3,
+          2
+        ],
+        "on": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "off_child_ttft": [
+        118.33746241522022,
+        118.53398371185176,
+        118.55245214793831
+      ],
+      "on_child_ttft": [
+        109.99502449599095,
+        110.19901366508566,
+        110.19837074098177
+      ],
+      "throughput_gain": 0.060274094814801726
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-text-8192",
+      "off_seconds": 317.93002046714537,
+      "on_seconds": 320.5227341398131,
+      "reduction": -0.00815498224690514,
+      "target": 0.03,
+      "target_met": false,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          2,
+          1,
+          3
+        ],
+        "on": [
+          0,
+          3,
+          2,
+          1
+        ]
+      },
+      "off_child_ttft": [
+        118.52841052901931,
+        118.34165463107638,
+        118.52809528098442
+      ],
+      "on_child_ttft": [
+        107.407487149816,
+        107.46103971195407,
+        107.27957262215205
+      ],
+      "throughput_gain": -0.008089016461268583
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-code-32768",
+      "off_seconds": 320.26714429399,
+      "on_seconds": 256.06011861213483,
+      "reduction": 0.20047958969814328,
+      "target": 0.1,
+      "target_met": true,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          2,
+          1,
+          3
+        ],
+        "on": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "off_child_ttft": [
+        118.82418735302053,
+        118.61643932387233,
+        118.82449294091202
+      ],
+      "on_child_ttft": [
+        45.936247440986335,
+        46.12943907594308,
+        45.98529422818683
+      ],
+      "throughput_gain": 0.25074980840383154
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-text-32768",
+      "off_seconds": 319.5852781618014,
+      "on_seconds": 248.9188959740568,
+      "reduction": 0.2211190158514349,
+      "target": 0.1,
+      "target_met": true,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          3,
+          1,
+          2
+        ],
+        "on": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "off_child_ttft": [
+        118.49067458789796,
+        118.36377030285075,
+        118.56967504299246
+      ],
+      "on_child_ttft": [
+        45.751390093006194,
+        45.95709714014083,
+        45.95687746303156
+      ],
+      "throughput_gain": 0.28389320108148675
+    }
+  ],
+  "correctness_passed": true,
+  "performance_targets_passed": false
+}

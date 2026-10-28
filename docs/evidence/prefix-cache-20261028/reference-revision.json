@@ -1,0 +1,14 @@
+{
+  "original_plan_sha256": "7c9f6f89dc02a8ce6a6f7357c4169603cc98c495a84c0a66eadf8263e08a44a0",
+  "original_failure": "state field 13 draft KV differs after 1K continuation; initial prefix equality passed",
+  "hypothesis": "changed-pending full-chunk reference and one-row repair use different GEMM shapes",
+  "repair": "independent primitive MtpForward pending replacement with original committed draft prefix; keep full-chunk fresh-shape observation separate",
+  "changed_inference_binary": false,
+  "http_reused": 40,
+  "gpu_fixtures_used_before": 1,
+  "gpu_fixtures_after_maximum": 3,
+  "original_http_cap": 200,
+  "original_gpu_cap": 4,
+  "original_deadline_unchanged": true,
+  "fixture_fix_allowance_used": 1
+}

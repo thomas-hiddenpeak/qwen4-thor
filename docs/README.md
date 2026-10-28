@@ -1,7 +1,9 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
-最新专项：[完整会话缓存验收、交付与回退](SESSION_CACHE_RESULT_2026-10-27.md)；
+最新专项：[跨会话prefix共享结果及NO_GO](PREFIX_CACHE_RESULT_2026-10-28.md)；
+[可配置检查点与事前状态合同](PREFIX_CACHE_PLAN_2026-10-28.md)；
+[完整会话缓存验收、交付与回退](SESSION_CACHE_RESULT_2026-10-27.md)；
 [完整状态合同与有界方案](SESSION_CACHE_PLAN_2026-10-27.md)；
 [会话缓存阶段过程](SESSION_CACHE_PROGRESS_2026-10-27.md)；
 [suffix与长短agent主线合入/分支收尾](MTP_SUFFIX_MAIN_MERGE_2026-10-27.md)；
@@ -54,6 +56,7 @@
 
 | 文档 | 职责 | 更新时机 |
 |---|---|---|
+| [跨会话prefix共享结果](PREFIX_CACHE_RESULT_2026-10-28.md) | 完整状态共享、可配置检查点、两head净收益与写入成本 | 104HTTP/6服务/3fixture；功能合同通过，目标未全满足，NO_GO保持09fe |
 | [完整会话缓存交付](SESSION_CACHE_RESULT_2026-10-27.md) | 同进程完整目标/draft状态SSD快照、跨槽恢复、两head净收益和五档原值 | 233HTTP/14服务/2状态fixture；09fe/5027交付，显式启用，总体非劣未建立 |
 | [suffix阶段主线合入](MTP_SUFFIX_MAIN_MERGE_2026-10-27.md) | 58提交快进合入、160源码核验、旧tip/main保留锚点及分支清理 | main已推送，已交付程序与验收范围不变，工作区和证据保留 |
 | [长短agent交付](MTP_SUFFIX_AGENT_DELIVERED_2026-10-27.md) | f2a6程序/发布元数据、1长＋3短用法、回退包与健康 | 用户接受实测收益/负点，2实际启动3HTTP通过；原优化FAIL保留，无常驻服务 |

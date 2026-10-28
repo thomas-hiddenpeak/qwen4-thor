@@ -1,0 +1,19 @@
+{
+  "review": "Static ownership/state audit, no inference claim",
+  "checked": [
+    "Prefix scope is a fixed-length capability; shared lookup selects published exact token prefixes only.",
+    "Shared entries are immutable; MatchShared acquires a lease through Restore. model_mu serializes transfers and destination scratch.",
+    "Snapshot metadata excludes pending from target matching. Changed pending is repaired in draft row P-1; at least one remaining prompt token establishes g/d0 before decode.",
+    "All target recurrent, attention/index/RoPE and draft effective ranges use the existing unchanged SessionStateRanges helper and destination slot offsets.",
+    "Cold same-scope concurrent requests can miss but cannot consume unpublished data. Success publishes; failure/cancel releases unpublished entries.",
+    "The shared 8 GiB byte bound includes an in-progress save under the same storage mutex. Eight entries and 32 leases bound metadata; at most four checkpoints per request.",
+    "Restoration read failure resets both models before fresh prefill; CUDA errors mark GPU unhealthy. Snapshot failure remains optional cache miss.",
+    "Ordinary requests without scope skip shared matching/checkpoint capture. Defaults and the installed 09fe program are unchanged.",
+    "Shared snapshots copy into independent slot state; this is compute reuse, not physical GPU KV page sharing or freeing reserved slot memory."
+  ],
+  "limits": [
+    "Different fresh-prefill shapes can differ numerically; exact primary reference uses independently recomputed committed prefix and primitive one-row branch update.",
+    "No cross-process, model/head migration or arbitrary-token preemption.",
+    "RAM accounting must include driver staging and file/system caches; configured budget is not an isolated measured allocation delta."
+  ]
+}

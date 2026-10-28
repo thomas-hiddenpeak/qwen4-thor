@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-cache-20261028/evidence-archive-v1",
+  "files": 1482,
+  "bytes": 734330939,
+  "manifest_sha256": "7bcad571b63774644819adb8f07155eafbe62eab8aa9c6bb90fca0dde520019a",
+  "new_inference_requests": 0
+}

@@ -1,0 +1,210 @@
+{
+  "candidate_sha256": "3b354cf85cd4eb83133a4fe84e0bd4781356af74986829615eaf6b621f054881",
+  "passed": false,
+  "engineering_decision": "NO_GO_AUTOMATIC_MULTI_CHECKPOINT_WRITE_POLICY",
+  "evidence_validity": "VALID_WITH_RETAINED_ORIGINAL_B_FAILURE_LIMITATION",
+  "measurement_completeness": {
+    "A": "40 HTTP + 87 CPU checks complete",
+    "B": "Both heads complete after one shape-reference correction; original failure retained",
+    "C": "64 HTTP / both-head OFF-ON complete",
+    "D": "NOT_RUN: C necessary performance target failed",
+    "health": "NOT_RUN: no deployment"
+  },
+  "statistical_conclusion": "DESCRIPTIVE_ONLY; population noninferiority and attributable regression NOT_ESTABLISHED. Save-path time drift confounds treatment differences.",
+  "correctness": "PASS_IN_TESTED_CONTRACT_SCOPE; no arbitrary fresh-prefill bitwise equality claim",
+  "performance_targets_passed": false,
+  "failed_targets": [
+    {
+      "head": "full",
+      "scenario": "repeat-code-8192",
+      "off_seconds": 292.0863641190808,
+      "on_seconds": 326.3759776940569,
+      "reduction": -0.11739546171007342,
+      "target": 0.03,
+      "target_met": false,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          3,
+          2,
+          1
+        ],
+        "on": [
+          0,
+          3,
+          2,
+          1
+        ]
+      },
+      "off_child_ttft": [
+        118.60410476615652,
+        118.72423751908354,
+        118.62099157087505
+      ],
+      "on_child_ttft": [
+        111.23511391482316,
+        111.34070427995175,
+        111.19949970999733
+      ],
+      "throughput_gain": -0.10506169546313548
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-text-8192",
+      "off_seconds": 291.310924265068,
+      "on_seconds": 330.7941269350704,
+      "reduction": -0.1355362926042416,
+      "target": 0.03,
+      "target_met": false,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "on": [
+          0,
+          2,
+          3,
+          1
+        ]
+      },
+      "off_child_ttft": [
+        118.5152810770087,
+        118.7328661121428,
+        118.73160015698522
+      ],
+      "on_child_ttft": [
+        109.09408474201337,
+        109.00519052706659,
+        108.90027458989061
+      ],
+      "throughput_gain": -0.11935883818684678
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-code-32768",
+      "off_seconds": 291.5819377510343,
+      "on_seconds": 273.1675390568562,
+      "reduction": 0.06315342725344364,
+      "target": 0.1,
+      "target_met": false,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          2,
+          3,
+          1
+        ],
+        "on": [
+          0,
+          1,
+          3,
+          2
+        ]
+      },
+      "off_child_ttft": [
+        118.94520751107484,
+        118.94540456589311,
+        118.73873033793643
+      ],
+      "on_child_ttft": [
+        46.12183090811595,
+        46.335582515923306,
+        46.339346369029954
+      ],
+      "throughput_gain": 0.06741064021646204
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-text-8192",
+      "off_seconds": 317.93002046714537,
+      "on_seconds": 320.5227341398131,
+      "reduction": -0.00815498224690514,
+      "target": 0.03,
+      "target_met": false,
+      "output_hash_equal": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "equal_output_256": true,
+      "input_identity_equal": true,
+      "cache_contract": true,
+      "slot_assignments": {
+        "off": [
+          0,
+          2,
+          1,
+          3
+        ],
+        "on": [
+          0,
+          3,
+          2,
+          1
+        ]
+      },
+      "off_child_ttft": [
+        118.52841052901931,
+        118.34165463107638,
+        118.52809528098442
+      ],
+      "on_child_ttft": [
+        107.407487149816,
+        107.46103971195407,
+        107.27957262215205
+      ],
+      "throughput_gain": -0.008089016461268583
+    }
+  ],
+  "requests": 104,
+  "successful_http": 102,
+  "expected_cancellations": 2,
+  "http_starts": 6,
+  "gpu_fixtures": 3,
+  "measurement_wall_seconds": 6206.989884853363,
+  "deadline": 1793182147.3965225,
+  "measurement_finished": 1793166774.08583,
+  "sampler_observations_flushed": 5939,
+  "original_failed_fixture_final_barrier": false,
+  "completed_stages_final_barriers": true,
+  "installed_identity_unchanged": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "5027b9d4229e97edf35fa482e0351581434b8e270cebd8b91b055a671ec0082e"
+  },
+  "owned_model_processes_after_stage": [],
+  "next_design_not_implemented": "Explicit common-boundary seeding; read-only children; avoid private/intermediate speculative snapshots. Requires a new bounded plan, not automatic resampling.",
+  "default_replaced": false,
+  "automatic_resampling": false,
+  "recorded_unix": 1793166875.3652966
+}

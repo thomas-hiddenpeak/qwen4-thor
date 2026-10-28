@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "candidate_sha256": "3b354cf85cd4eb83133a4fe84e0bd4781356af74986829615eaf6b621f054881",
+  "phase": "b",
+  "source": ".q4t-work/prefix-cache-20261028/phase-b-reference",
+  "requests": 0,
+  "starts": 0,
+  "direct_contracts": 2,
+  "state_sha256": "a105d2e1b51dae8aa6338db4d5e91ea2427d8ce1bf9d245fb631fd0bbe472ab7",
+  "postflight_sha256": "f6d5af32a2a2666025decf82ed8c3bffd9d791f3e1d4dca1ce1b3a31569c2e75",
+  "guard_sha256": "e5a103c9a4789c7d84b583f5eb1c8d59b41807c524f490d08ce2b1619a0b2dc6",
+  "statistics": "DESCRIPTIVE_ONLY",
+  "results": [
+    {
+      "head": "full",
+      "passed": true,
+      "log_sha256": "dfa83b4d3b0768d3c561183560a342d04eaca2f410f1b07a74f7206f8ccf8f4b"
+    },
+    {
+      "head": "subset",
+      "passed": true,
+      "log_sha256": "75513e5d2c374f6632b1fbfbaccc216a8126d486523343c2d6e0d870412caff9"
+    }
+  ]
+}

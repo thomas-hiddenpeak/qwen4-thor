@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "candidate_sha256": "3b354cf85cd4eb83133a4fe84e0bd4781356af74986829615eaf6b621f054881",
+  "phase": "a",
+  "requests": 40,
+  "starts": 2,
+  "direct_contracts": 0,
+  "state_sha256": "0df0a3956bc81ab41eea17ffe24e15fbb57b0d5c42a9b8917614501a3870a79f",
+  "postflight_sha256": "bc9943e7aafb947fd4033b12f1f091f1d8ae5a21e454a0d9537af9e8520e7f56",
+  "guard_sha256": "b5b4f64d8ab33b4018aac5e9de9b0fcc7091038379a39bd14a9d41013d694fce",
+  "statistics": "DESCRIPTIVE_ONLY",
+  "results": [
+    {
+      "head": "full",
+      "lifecycle": {
+        "passed": true,
+        "requests": 9,
+        "shared_tokens": 8192,
+        "session_tokens": 9261,
+        "isolated_miss": true,
+        "cancel_unpublished": true
+      },
+      "http_quality": true
+    },
+    {
+      "head": "subset",
+      "lifecycle": {
+        "passed": true,
+        "requests": 9,
+        "shared_tokens": 8192,
+        "session_tokens": 9261,
+        "isolated_miss": true,
+        "cancel_unpublished": true
+      },
+      "http_quality": true
+    }
+  ]
+}

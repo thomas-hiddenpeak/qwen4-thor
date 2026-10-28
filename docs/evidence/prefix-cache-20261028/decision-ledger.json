@@ -1,0 +1,17 @@
+{
+  "route": "engineering",
+  "task_classification": "performance_optimization_and_functionality",
+  "validity": "valid",
+  "contracts": "pass",
+  "measurement": "incomplete",
+  "regression": "not_established",
+  "statistics": "inconclusive",
+  "engineering_decision": "rejected",
+  "candidate_sha256": "3b354cf85cd4eb83133a4fe84e0bd4781356af74986829615eaf6b621f054881",
+  "plan_reference": "docs/PREFIX_CACHE_PLAN_2026-10-28.md",
+  "evidence_reference": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-cache-20261028/final-audit.json",
+  "route_reference": "docs/PERFORMANCE_DECISION_PROTOCOL.md",
+  "decision_reference": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-cache-20261028/final-decision.json",
+  "request_budget": 200,
+  "requests_used": 104
+}

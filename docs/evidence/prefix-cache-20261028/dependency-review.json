@@ -1,0 +1,42 @@
+{
+  "runtime_reuse": [
+    {
+      "path": "src/mtp/suffix_drafter.cpp",
+      "parent": "6f10725ca130f1a561412b7db1705b7d31b5ecd625d1373bd40dd03fa7d55997",
+      "candidate": "6f10725ca130f1a561412b7db1705b7d31b5ecd625d1373bd40dd03fa7d55997",
+      "identical": true
+    },
+    {
+      "path": "src/mtp/subset_head.cpp",
+      "parent": "f356b8edf2d00022d208a4ecafb9f08eb5c56059c20c11f5da7c4e8edec7c922",
+      "candidate": "f356b8edf2d00022d208a4ecafb9f08eb5c56059c20c11f5da7c4e8edec7c922",
+      "identical": true
+    },
+    {
+      "path": "src/server/chat_scheduler.cpp",
+      "parent": "6631ea24b96f88a9bfc2a234973c22deb8ae3e7f0423f7c5d8933e921707e5cc",
+      "candidate": "6631ea24b96f88a9bfc2a234973c22deb8ae3e7f0423f7c5d8933e921707e5cc",
+      "identical": true
+    },
+    {
+      "path": "src/server/session_state.cpp",
+      "parent": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
+      "candidate": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
+      "identical": true
+    },
+    {
+      "path": "src/model/model.cu",
+      "parent": "d1a2a8ba1846dca63f3ed55e845dcb8070f9f18caa32f4410e9abb91b60aa7f9",
+      "candidate": "d1a2a8ba1846dca63f3ed55e845dcb8070f9f18caa32f4410e9abb91b60aa7f9",
+      "identical": true
+    },
+    {
+      "path": "include/q4t/runtime/sequence_capacity.h",
+      "parent": "41037dac4eaaf3e44d09148be1b89cea8a7eeb1ed63852e894ecd8e1edd6cfa6",
+      "candidate": "41037dac4eaaf3e44d09148be1b89cea8a7eeb1ed63852e894ecd8e1edd6cfa6",
+      "identical": true
+    }
+  ],
+  "scope": "Unchanged suffix/global IDs, independent accepted-prefix checks, sequence layout and full-state enumeration. MtpDraftExtend adds optional capture_g=false preserving ordinary numerical path; shared prefill-boundary capture/selection needs new tests. Existing same-session I/O tests rerun because storage limits were generalized.",
+  "not_claimed": "No automatic cross-session correctness, timing or fresh-prefill bitwise equivalence from reused evidence."
+}

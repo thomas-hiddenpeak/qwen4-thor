@@ -1,0 +1,330 @@
+[
+  {
+    "head": "full",
+    "scenario": "repeat-code-32768",
+    "equal": {
+      "acceptance": true,
+      "verify_sequence_steps": true,
+      "verify_token_rows": true,
+      "suffix_hits": true,
+      "suffix_queries": true,
+      "suffix_acceptance": true,
+      "neural_acceptance": true,
+      "neural_draft_token_rows": true,
+      "accepted_extend_token_rows": true
+    },
+    "work": {
+      "acceptance": [
+        0,
+        0,
+        0,
+        252
+      ],
+      "verify_sequence_steps": 252,
+      "verify_token_rows": 1008,
+      "suffix_hits": 216,
+      "suffix_queries": 252,
+      "suffix_acceptance": [
+        0,
+        0,
+        0,
+        216
+      ],
+      "neural_acceptance": [
+        0,
+        0,
+        0,
+        36
+      ],
+      "neural_draft_token_rows": 72,
+      "accepted_extend_token_rows": 1008
+    }
+  },
+  {
+    "head": "full",
+    "scenario": "repeat-code-8192",
+    "equal": {
+      "acceptance": true,
+      "verify_sequence_steps": true,
+      "verify_token_rows": true,
+      "suffix_hits": true,
+      "suffix_queries": true,
+      "suffix_acceptance": true,
+      "neural_acceptance": true,
+      "neural_draft_token_rows": true,
+      "accepted_extend_token_rows": true
+    },
+    "work": {
+      "acceptance": [
+        0,
+        0,
+        0,
+        252
+      ],
+      "verify_sequence_steps": 252,
+      "verify_token_rows": 1008,
+      "suffix_hits": 216,
+      "suffix_queries": 252,
+      "suffix_acceptance": [
+        0,
+        0,
+        0,
+        216
+      ],
+      "neural_acceptance": [
+        0,
+        0,
+        0,
+        36
+      ],
+      "neural_draft_token_rows": 72,
+      "accepted_extend_token_rows": 1008
+    }
+  },
+  {
+    "head": "full",
+    "scenario": "repeat-text-32768",
+    "equal": {
+      "acceptance": true,
+      "verify_sequence_steps": true,
+      "verify_token_rows": true,
+      "suffix_hits": true,
+      "suffix_queries": true,
+      "suffix_acceptance": true,
+      "neural_acceptance": true,
+      "neural_draft_token_rows": true,
+      "accepted_extend_token_rows": true
+    },
+    "work": {
+      "acceptance": [
+        0,
+        0,
+        0,
+        252
+      ],
+      "verify_sequence_steps": 252,
+      "verify_token_rows": 1008,
+      "suffix_hits": 216,
+      "suffix_queries": 252,
+      "suffix_acceptance": [
+        0,
+        0,
+        0,
+        216
+      ],
+      "neural_acceptance": [
+        0,
+        0,
+        0,
+        36
+      ],
+      "neural_draft_token_rows": 72,
+      "accepted_extend_token_rows": 1008
+    }
+  },
+  {
+    "head": "full",
+    "scenario": "repeat-text-8192",
+    "equal": {
+      "acceptance": true,
+      "verify_sequence_steps": true,
+      "verify_token_rows": true,
+      "suffix_hits": true,
+      "suffix_queries": true,
+      "suffix_acceptance": true,
+      "neural_acceptance": true,
+      "neural_draft_token_rows": true,
+      "accepted_extend_token_rows": true
+    },
+    "work": {
+      "acceptance": [
+        0,
+        0,
+        0,
+        252
+      ],
+      "verify_sequence_steps": 252,
+      "verify_token_rows": 1008,
+      "suffix_hits": 216,
+      "suffix_queries": 252,
+      "suffix_acceptance": [
+        0,
+        0,
+        0,
+        216
+      ],
+      "neural_acceptance": [
+        0,
+        0,
+        0,
+        36
+      ],
+      "neural_draft_token_rows": 72,
+      "accepted_extend_token_rows": 1008
+    }
+  },
+  {
+    "head": "subset",
+    "scenario": "repeat-code-32768",
+    "equal": {
+      "acceptance": true,
+      "verify_sequence_steps": true,
+      "verify_token_rows": true,
+      "suffix_hits": true,
+      "suffix_queries": true,
+      "suffix_acceptance": true,
+      "neural_acceptance": true,
+      "neural_draft_token_rows": true,
+      "accepted_extend_token_rows": true
+    },
+    "work": {
+      "acceptance": [
+        0,
+        0,
+        0,
+        252
+      ],
+      "verify_sequence_steps": 252,
+      "verify_token_rows": 1008,
+      "suffix_hits": 216,
+      "suffix_queries": 252,
+      "suffix_acceptance": [
+        0,
+        0,
+        0,
+        216
+      ],
+      "neural_acceptance": [
+        0,
+        0,
+        0,
+        36
+      ],
+      "neural_draft_token_rows": 72,
+      "accepted_extend_token_rows": 1008
+    }
+  },
+  {
+    "head": "subset",
+    "scenario": "repeat-code-8192",
+    "equal": {
+      "acceptance": true,
+      "verify_sequence_steps": true,
+      "verify_token_rows": true,
+      "suffix_hits": true,
+      "suffix_queries": true,
+      "suffix_acceptance": true,
+      "neural_acceptance": true,
+      "neural_draft_token_rows": true,
+      "accepted_extend_token_rows": true
+    },
+    "work": {
+      "acceptance": [
+        0,
+        0,
+        0,
+        252
+      ],
+      "verify_sequence_steps": 252,
+      "verify_token_rows": 1008,
+      "suffix_hits": 216,
+      "suffix_queries": 252,
+      "suffix_acceptance": [
+        0,
+        0,
+        0,
+        216
+      ],
+      "neural_acceptance": [
+        0,
+        0,
+        0,
+        36
+      ],
+      "neural_draft_token_rows": 72,
+      "accepted_extend_token_rows": 1008
+    }
+  },
+  {
+    "head": "subset",
+    "scenario": "repeat-text-32768",
+    "equal": {
+      "acceptance": true,
+      "verify_sequence_steps": true,
+      "verify_token_rows": true,
+      "suffix_hits": true,
+      "suffix_queries": true,
+      "suffix_acceptance": true,
+      "neural_acceptance": true,
+      "neural_draft_token_rows": true,
+      "accepted_extend_token_rows": true
+    },
+    "work": {
+      "acceptance": [
+        16,
+        0,
+        0,
+        248
+      ],
+      "verify_sequence_steps": 264,
+      "verify_token_rows": 1056,
+      "suffix_hits": 216,
+      "suffix_queries": 264,
+      "suffix_acceptance": [
+        0,
+        0,
+        0,
+        216
+      ],
+      "neural_acceptance": [
+        16,
+        0,
+        0,
+        32
+      ],
+      "neural_draft_token_rows": 96,
+      "accepted_extend_token_rows": 1008
+    }
+  },
+  {
+    "head": "subset",
+    "scenario": "repeat-text-8192",
+    "equal": {
+      "acceptance": true,
+      "verify_sequence_steps": true,
+      "verify_token_rows": true,
+      "suffix_hits": true,
+      "suffix_queries": true,
+      "suffix_acceptance": true,
+      "neural_acceptance": true,
+      "neural_draft_token_rows": true,
+      "accepted_extend_token_rows": true
+    },
+    "work": {
+      "acceptance": [
+        16,
+        0,
+        0,
+        248
+      ],
+      "verify_sequence_steps": 264,
+      "verify_token_rows": 1056,
+      "suffix_hits": 216,
+      "suffix_queries": 264,
+      "suffix_acceptance": [
+        0,
+        0,
+        0,
+        216
+      ],
+      "neural_acceptance": [
+        16,
+        0,
+        0,
+        32
+      ],
+      "neural_draft_token_rows": 96,
+      "accepted_extend_token_rows": 1008
+    }
+  }
+]

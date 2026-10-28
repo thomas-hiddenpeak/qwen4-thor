@@ -1,0 +1,10 @@
+{
+  "candidate_sha256": "3b354cf85cd4eb83133a4fe84e0bd4781356af74986829615eaf6b621f054881",
+  "statistics": "inconclusive",
+  "remaining_request_budget": 96,
+  "automatic_resampling": false,
+  "deployment_authorized": false,
+  "evidence_validation": "external audit required",
+  "status": "REJECTED",
+  "next_action": "Keep the baseline; do not resample to reverse this decision."
+}
