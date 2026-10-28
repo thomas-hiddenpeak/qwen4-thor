@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "example_sha256": "d27f74f6d06cda4bdd2ae70dca805e6a0a410c167d1bb8ae3bf1686a91801bc9",
+  "real_http_requests": 0,
+  "new_model_loads": 0,
+  "materials_input_tokens": {
+    "8192": [
+      98304,
+      33798,
+      49161,
+      60003
+    ],
+    "32768": [
+      98304,
+      33798,
+      49161,
+      60003
+    ]
+  },
+  "checks": [
+    {
+      "passed": true,
+      "real_http_requests": 0,
+      "model_loads": 0,
+      "mocked_requests": 5,
+      "concurrent_children": 3,
+      "source_eof_before_children": true,
+      "children_completed_before_resume": true,
+      "preserved_raw_text": true,
+      "rejected_stream_shapes": 4,
+      "accidental_replay_blocked": true,
+      "private_output_permissions": true
+    },
+    {
+      "passed": true,
+      "real_http_requests": 0,
+      "http_409_recorded_without_success": true,
+      "length_terminal_preserves_text": true
+    }
+  ],
+  "note": "CPU tokenizer preparation and mocked client protocol checks only; existing runtime acceptance reused. No claim of a new Thor E2E run."
+}

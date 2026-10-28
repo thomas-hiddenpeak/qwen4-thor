@@ -1,6 +1,7 @@
 # docs/ — 开发记录文档体系
 
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
+实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
 最新专项：[会话缓存与prefix主线合入、接受及收尾](SESSION_PREFIX_MAIN_MERGE_2026-10-29.md)；
 [显式公共种子验收及交付](PREFIX_SEED_RESULT_2026-10-28.md)；
 [显式种子冻结方案](PREFIX_SEED_PLAN_2026-10-28.md)；

@@ -133,6 +133,8 @@ python3 tools/evalscope/gpu_exclusive.py \
 | `--mtp-subset-head DIR` | 默认不启用，草稿使用完整 head；指定产物目录启用固定 65536 行 BF16 子集，要求 MTP 开启且 k=3 |
 | `--mtp-suffix` | 默认关闭；要求文本、greedy、MTP k=3、有效max-len≤262144，可配合完整或子集 head；交付覆盖单流及上述4槽布局 |
 | `--session-cache-dir DIR` | 默认关闭；另须请求传session_id才缓存；同进程文本k3、显式槽位，8项/24GiB SSD/30分钟TTL；不组合媒体、trace或专家offload |
+| `--prefix-cache-dir DIR` | 默认关闭；另须请求传prefix_cache_scope；同进程公共池8项/8GiB SSD/30分钟TTL，请求默认只读 |
+| `--prefix-cache-checkpoints N,...` | 默认8192,32768,65536；1～4个严格递增的1024～131072边界，请求用prefix_cache_write_tokens选择最多一个写点 |
 | `--request-deadline-ms` | `1200000`（20分钟）；含等待槽位和生成，显式范围1000～10800000；客户端超时需匹配 |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
 | `--mem-fraction` | `0.90`，启动内存预算比例 |
@@ -239,6 +241,11 @@ head各一个代码/文本描述性配对，不保证任意agent工作流收益�
 保护负点、统计限制和回退见[会话缓存验收](docs/SESSION_CACHE_RESULT_2026-10-27.md)。
 
 ### 跨会话公共prefix共享
+
+要同时启用suffix、完整会话缓存和公共prefix共享，按1长主agent＋3子代理
+实际接入，见[完整启动与客户端示例](docs/AGENT_CACHE_INTEGRATION.md)。
+其中包含可运行的5请求Python流程：主保存→三子并发只读→主等待后恢复，
+以及token容量检查、ID生命周期、流式usage/EOF、取消和messages适配说明。
 
 主agent和子代理需要复用完全相同的系统提示、工具定义或共同历史时，
 可在完整会话缓存上显式打开共享池：
