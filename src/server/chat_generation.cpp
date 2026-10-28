@@ -12,6 +12,7 @@
 #include <vector>
 #include <cuda_runtime.h>
 #include "q4t/diagnostic/execution_observer.h"
+#include "q4t/diagnostic/prefill_timing.h"
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/prefix_cache_policy.h"
@@ -645,6 +646,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
       if (router_trace_)
         router_trace_->BeginForward(trace::RouteStage::kPrefill, base, count);
+      diagnostic::PrefillTimingSpan target_timing("target", base, count);
       s = model::ModelPrefillTextChunk(
           model_.Get(), &seq, ids.data(), T, count,
           last ? d_prefill_logits_ : nullptr, nullptr, d_trunk_full,
@@ -655,8 +657,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                      static_cast<size_t>(vocab) * 2,
                                      cudaMemcpyDeviceToHost, nullptr);
       model::ModelSequence* sequence = &seq;
+      target_timing.End();
       s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
                              router_trace_.get());
+      diagnostic::FlushPrefillTiming(request_id.c_str());
       if (!s.ok()) break;
       shifted.resize(count);
       positions.resize(count);
@@ -665,12 +669,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         shifted[i] =
             base + i + 1 < T ? ids[base + i + 1] : argmax(h_logits.data());
       }
+      diagnostic::PrefillTimingSpan draft_timing("draft", base, count);
       s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full,
                               positions.data(), count, &stream_d0, d_mtp_g,
                               nullptr, seq_id, last, shared_write != nullptr);
       // The target chunk was committed above. Drain a failed draft submission
       // before releasing this request's storage or giving scratch to a peer.
+      draft_timing.End();
       s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr);
+      diagnostic::FlushPrefillTiming(request_id.c_str());
       if (s.ok() && (last || shared_write) && d_session_trunk) {
         const auto error = cudaMemcpy(
             d_session_trunk,

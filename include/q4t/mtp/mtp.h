@@ -251,11 +251,14 @@ Status MtpReserveScratch(MtpModel& m, int k_max);
 // MRoPE bound. -1 preserves the attention position readback fallback.
 // When enabled, logits are packed [T, m.DraftVocab()] local rows.
 // Callers selecting tokens must remap through subset_ids.
+// prefill_seq_id: known uniform slot for T > 4 prompt rows; -1 preserves the
+// general mixed-slot scoring path. The caller owns this uniformity contract.
 Status MtpForward(const MtpModel& m, const int32_t* input_ids, const int* positions,
                   const uint16_t* hidden_states, uint16_t* sample_hidden,
                   uint16_t* multi_hidden, uint16_t* logits, int T,
                   cudaStream_t stream, const int* d_seq_id = nullptr,
-                  bool compute_logits = true, int max_position = -1);
+                  bool compute_logits = true, int max_position = -1,
+                  int prefill_seq_id = -1);
 
 // Device bytes for the MtpForward `workspace` (the GEMM scratch plus the
 // forward intermediates for `T` tokens, the full-attention scratch, and the

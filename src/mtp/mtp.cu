@@ -28,6 +28,7 @@
 #include "q4t/mtp/subset_head.h"
 #include <filesystem>
 #include "q4t/mtp/position_copy.h"
+#include "q4t/diagnostic/prefill_timing.h"
 
 #include <algorithm>
 
@@ -951,7 +952,7 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
       s = MtpForward(m, d_ids, d_pos,
                      main_trunk + static_cast<size_t>(base) * hc_dim, d_sample,
                      d_multi, last ? d_logits : nullptr, c, stream, d_seqid,
-                     last);
+                     last, -1, m.max_seq > 1 && c > 4 ? seq_id : -1);
       if (!s.ok()) return cleanup(s);
     }
     // out_g = last row's multi_hidden (draft trunk g_{last}).
@@ -1042,7 +1043,8 @@ Status MtpDraftExtend(const MtpModel& m, const int32_t* shifted_ids,
   }
 
   Status s = MtpForward(m, d_ids, d_pos, main_trunk, d_sample, d_multi,
-                        d_logits, T, stream, d_seqid, finalize);
+                        d_logits, T, stream, d_seqid, finalize, -1,
+                        m.max_seq > 1 && T > 4 ? seq_id : -1);
   if (!s.ok() || (!finalize && !capture_g)) return cleanup(s);
 
   // out_g = last row's multi_hidden (draft trunk g_{last}).
@@ -1966,11 +1968,25 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
                   const int* positions, const uint16_t* hidden_states,
                   uint16_t* sample_hidden, uint16_t* multi_hidden,
                   uint16_t* logits, int T, cudaStream_t stream,
-                  const int* d_seq_id, bool compute_logits, int max_position) {
+                  const int* d_seq_id, bool compute_logits, int max_position,
+                  int prefill_seq_id) {
   diagnostic::Scope forward_scope("mtp.forward", max_position, T);
   const int hs = m.cfg.hs, hc = m.cfg.hc, hc_dim = hc * hs;
   if (T <= 0) return Status();
   const auto& cfg = m.cfg;
+  if (prefill_seq_id < -1 || prefill_seq_id >= m.max_seq ||
+      (prefill_seq_id >= 0 && (!d_seq_id || T <= 4)))
+    return Status::Fail("MtpForward: invalid uniform prefill slot");
+  const uint16_t* score_keys = nullptr;
+  if (prefill_seq_id >= 0) {
+    static const bool legacy_prefill = [] {
+      const char* value = std::getenv("Q4T_MTP_PREFILL_LEGACY_SCORING");
+      return value && std::strcmp(value, "1") == 0;
+    }();
+    if (!legacy_prefill)
+      score_keys = m.idx_comp + runtime::SequenceOffset(
+          cfg.seq_capacities, prefill_seq_id, cfg.max_len) * cfg.idx_head_dim;
+  }
   if (m.ws_bytes < MtpWorkspaceBytes(cfg, T, m.full_attn)) {
     return Status::Fail("MtpForward: workspace too small");
   }
@@ -2058,11 +2074,13 @@ Status MtpForward(const MtpModel& m, const int32_t* input_ids,
   // 4c. full attention. d_seq_id selects the per-token draft KV/indexer/rope
   // slice (multi-seq draft, Phase 2); null = single-seq (bit-identical).
   s = ObserveExecution("mtp.attention", [&] {
+    diagnostic::PrefillTimingSpan timing("draft_attention", max_position, T,
+                                         stream, prefill_seq_id >= 0);
     return model::FullAttentionForward(m.full_attn, d_mixed_attn, d_attn_out,
                                        d_positions, m.d_rope_pos, m.kv_cache,
                                        m.page_table, m.idx_raw, m.idx_comp, T,
                                        d_attn_ws, attn_ws, stream, d_seq_id,
-                                       max_position);
+                                       max_position, -1, score_keys);
   });
   if (!s.ok()) return s;
   // 4d. attn_hc.combine: trunk_a = attn_out + trunk (learned injection).

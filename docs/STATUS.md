@@ -4,6 +4,12 @@
 
 ## 当前推进目标
 
+多槽草稿prefill评分有界修复已启动准备（2026-10-29）：单请求已知槽位仅对
+索引评分采用既有GEMM，状态仍按pooled寻址；显式记录FP32/BF16舍入区别。
+冻结90分钟/16HTTP/8服务/2GPU合同，两head200K TTFT各下降至少20%；失败即停，
+不扩样。当前尚未测试，默认6f37保持，不构成正式交付。见
+[本轮方案](MTP_PREFILL_SCORING_PLAN_2026-10-29.md)。
+
 五个参考项目学习阶段已收尾（2026-10-29）：KVMem、NInfer、ActKV、
 Strata、Megatron Inference 的关键代码研究、适用能力与暂缓项已统一
 归档，README补齐实际参考项目。B1a/B1b、固定IDs诊断及相关可靠性、
