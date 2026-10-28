@@ -1,6 +1,7 @@
 """CPU-only final budget, identity and monitor audit, retaining failed A."""
 import hashlib
 import json
+from datetime import datetime
 from pathlib import Path
 import re
 import time
@@ -45,6 +46,7 @@ def main():
             raise ValueError('Cannot finalize a live phase')
         post = read(directory / 'postflight.json')
         guard = read(directory / 'lease/exit.json')
+        guard_finished = datetime.fromisoformat(guard['finished']['utc']).timestamp()
         summary = read(directory / 'run/telemetry-summary.json')
         original = name == 'phase-a'
         if (state.get('monitor_failures') or post.get('monitor_failures')
@@ -70,7 +72,7 @@ def main():
                 (state['plan_sha256'], sha(directory / 'plan.json'))]:
             if expected != actual:
                 failures.append(name + ': seal identity')
-        if state['finished'] > identity['deadline']:
+        if max(state['finished'], guard_finished) > identity['deadline']:
             failures.append(name + ': deadline exceeded')
         bindings = {path: str(resolve(path, digest))
                     for path, digest in plan['files'].items()}
@@ -119,6 +121,7 @@ def main():
         samples += summary['flushed_samples']
         phases.append(dict(name=name, status=state['status'],
             started=state['started'], finished=state['finished'],
+            guard_finished=guard_finished,
             generated_http=phase_generated, rejected_http=phase_rejected,
             expected_cancellations=phase_cancelled, starts=phase_starts,
             direct_gpu_fixtures=direct, elapsed_seconds=state['elapsed_seconds'],
@@ -137,12 +140,13 @@ def main():
         sampler_flushed=samples, deadline=identity['deadline'],
         deadline_remaining_seconds=identity['deadline'] - time.time(),
         first_measurement_started=min(p['started'] for p in phases),
-        last_measurement_finished=max(p['finished'] for p in phases),
-        measurement_wall_seconds=max(p['finished'] for p in phases)
+        last_measurement_finished=max(p['guard_finished'] for p in phases),
+        measurement_wall_seconds=max(p['guard_finished'] for p in phases)
                                  - min(p['started'] for p in phases),
         note='Evidence audit only; does not imply performance acceptance. '
-             'Includes health if run. Wall span includes fixed IO preparation '
-             'and gaps; summed phase elapsed values exclude IO preparation.',
+             'Includes health if run. Wall span ends at the outer guard and '
+             'includes fixed IO preparation, release and gaps; summed phase '
+             'elapsed values exclude IO preparation.',
         statistical_noninferiority='NOT_ESTABLISHED')
     (BASE / 'final-audit.json').write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({k: v for k, v in result.items() if k != 'phases'}, indent=2))
