@@ -238,6 +238,65 @@ SSD专家卸载。移除`--session-cache-dir`并重启即可关闭，客户端�
 head各一个代码/文本描述性配对，不保证任意agent工作流收益。完整结果、
 保护负点、统计限制和回退见[会话缓存验收](docs/SESSION_CACHE_RESULT_2026-10-27.md)。
 
+### 跨会话公共prefix共享
+
+主agent和子代理需要复用完全相同的系统提示、工具定义或共同历史时，
+可在完整会话缓存上显式打开共享池：
+
+```bash
+install -d -m 700 .q4t-work/agent-session-cache .q4t-work/agent-prefix-cache
+./build/q4t serve --host 127.0.0.1 --port 8000 \
+  --max-seq 4 --max-prefill 4096 --max-len 208896 \
+  --seq-capacities 208896,65536,65536,65536 \
+  --mtp-suffix --session-cache-dir .q4t-work/agent-session-cache \
+  --prefix-cache-dir .q4t-work/agent-prefix-cache \
+  --prefix-cache-checkpoints 8192,32768,65536
+# 子集head另加：
+# --mtp-subset-head .q4t-work/prefix-seed-20261028/delivery-package/artifact
+```
+
+为同一可信共享组生成并保存`secrets.token_hex(32)`作为
+`prefix_cache_scope`；不同组使用不同scope，各会话的`session_id`仍分别
+生成。客户端仍发送完整历史，各agent专属角色提示放在公共token前缀之后。
+这个scope是共享缓存的能力凭据，应像私有session ID一样保护。
+
+源请求在顶层明确指定一个种子边界，例如：
+
+```json
+{
+  "prefix_cache_scope": "同组共享的64个小写十六进制字符",
+  "prefix_cache_write_tokens": 8192
+}
+```
+
+子请求使用同一个scope，省略`prefix_cache_write_tokens`或设为0，只读复用。
+示例scope需替换为实际生成的值；上述字段加入正常chat请求体即可。
+源请求成功结束后才发布种子，提前到达的子请求可能未命中而正常prefill。
+没有指定正边界的请求不会自动写公共缓存，已有相同种子不重复覆盖。
+私有会话恢复优先；已跨过所选边界时跳过补种子，不为了保存重新计算。
+
+公共长度可以配置，不锁死业务场景。`--prefix-cache-checkpoints`允许1～4个
+1024～131072之间的边界；请求的正边界必须在此列表中，且小于实际输入
+长度，否则400。业务输入长度仍由槽位/上下文容量约束，不必等于边界。
+当前收益验收点是8K和32K，其他配置不自动取得相同收益保证。命中取最长
+精确token前缀；相同可见文字在模板或token发生变化后可能miss。
+通过`usage.prompt_tokens_details.cached_tokens`检查实际恢复长度，流式需
+`"stream_options":{"include_usage":true}`。
+
+公共池默认8项、8GiB SSD、32MiB RAM预算（含8MiB staging）、30分钟TTL；
+与私有池分别有界，同进程有效，重启/过期/淘汰后正常prefill。目录要求与
+私有池一致。恢复复制完整状态到独立槽，不释放预分配槽内存，也不是GPU
+KV页物理共享。保存/恢复占模型锁，未测混合负载的等待时间不作保证。
+移除`--prefix-cache-dir`及`--prefix-cache-checkpoints`并重启，同时停传两个
+prefix请求字段，即可关闭公共缓存；私有会话缓存可继续使用。
+
+受测1长主agent＋3子代理、两种head的事务净耗时：共享8K缩短3.85%～6.90%，
+共享32K缩短21.72%～23.19%，包含第一次种子保存。8K种子约368MB、保存
+0.358～0.384秒；32K约1.125GB、保存1.103～3.706秒。五档保护仍有小幅负向
+观察，总体统计非劣未建立；完整数值、RAM成本、接受边界及回退见
+[显式种子验收](docs/PREFIX_SEED_RESULT_2026-10-28.md)。不自动打开缓存，
+也不承诺任意agent SDK接入、任意前缀长度或32个长请求的延迟收益。
+
 ### 其他入口与验收范围
 
 启动计划在`auto`下仅对明确不支持的模式在计划开始前选择旧路径；

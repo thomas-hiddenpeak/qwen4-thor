@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/evidence-archive-v1",
+  "files": 3071,
+  "bytes": 1319099121,
+  "manifest_sha256": "ad672c6921fe88b0dc69954ad880bea49a976dc593f435a484ad9bdbea71d732",
+  "new_inference_requests": 0
+}

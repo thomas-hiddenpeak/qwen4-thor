@@ -1,0 +1,17 @@
+{
+  "route": "engineering",
+  "validity": "valid",
+  "contracts": "pass",
+  "measurement": "complete",
+  "regression": "not_established",
+  "statistics": "inconclusive",
+  "engineering_decision": "accepted",
+  "candidate_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "plan_reference": "docs/PREFIX_SEED_PLAN_2026-10-28.md",
+  "evidence_reference": ".q4t-work/prefix-seed-20261028/final-audit-prehealth.json",
+  "route_reference": "docs/PERFORMANCE_DECISION_PROTOCOL.md",
+  "request_budget": 300,
+  "requests_used": 275,
+  "decision_reference": ".q4t-work/prefix-seed-20261028/final-decision.json",
+  "task_classification": "performance_optimization"
+}

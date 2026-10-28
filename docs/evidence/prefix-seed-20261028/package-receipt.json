@@ -1,0 +1,10 @@
+{
+  "seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/delivery-package/sealed-files.json",
+    "sha256": "4a1a35b089184e538ac62a4f75765434424351bf100c8924b959bea27fd7194a",
+    "bytes": 20908
+  },
+  "runtime_files": 165,
+  "requests": 4,
+  "starts": 2
+}

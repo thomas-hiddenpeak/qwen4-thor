@@ -15,6 +15,23 @@ spec.loader.exec_module(existing)
 
 def main():
     phase = BASE / ('phase-' + sys.argv[1])
+    plan = json.loads((phase / 'plan.json').read_text())
+    binaries = {s['binary'] for s in plan['steps'] if 'binary' in s}
+    original_add_sample = existing.add_sample
+
+    def add_sample(summary, row):
+        # The frozen baseline is named "parent". Attribute only exact binary
+        # paths from this SHA-bound plan, without rewriting raw observations.
+        processes = {}
+        for pid, proc in row.get('processes', {}).items():
+            identity = proc.get('identity', {})
+            argv = identity.get('argv', [])
+            if argv and argv[0] in binaries:
+                proc = dict(proc, identity=dict(identity, argv=['q4t', *argv[1:]]))
+            processes[pid] = proc
+        original_add_sample(summary, dict(row, processes=processes))
+
+    existing.add_sample = add_sample
     result = existing.summarize(phase / 'run')
     for name, service in result['services'].items():
         raw = (phase / 'run' / name / 'server.log').read_text().splitlines()
@@ -37,6 +54,8 @@ def main():
     if preparation.exists():
         result['io_preparation'] = json.loads(preparation.read_text())
     result['limits'] += [
+        'Process RAM attribution includes exact server binary paths from the '
+        'SHA-bound plan, including the baseline named parent. Raw samples unchanged.',
         'Pool byte fields are cumulative resident SSD bytes, not per-save bytes.',
         'Sum of separate pool maxima is a bound, not a simultaneous observation.',
         'Prefix save wall time starts under model mutex and is in HTTP latency.',

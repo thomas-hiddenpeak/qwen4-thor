@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "candidate_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "engineering_decision": "ACCEPT_BOUNDED_EXPLICIT_PREFIX_SEED",
+  "task_classification": "performance_optimization",
+  "created": 1793215758.6978745,
+  "accepted_scope": {
+    "hardware": "local Thor",
+    "decoding": "text greedy MTP k3",
+    "heads": [
+      "full",
+      "65536-row BF16 subset"
+    ],
+    "slots": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "max_prefill": 4096,
+    "shared_boundaries_tested": [
+      8192,
+      32768
+    ],
+    "request_policy": "one explicit seed per successful source request; children readonly by default",
+    "prefix_cache_default": false,
+    "same_process_only": true
+  },
+  "validity": "valid_with_original_A_limitations_retained",
+  "measurement": "complete_A_B_C_D",
+  "statistics": "inconclusive_population_noninferiority_not_established",
+  "regression": "not_established",
+  "targets": "All eight C geometric-mean time targets met, all individual blocks positive.",
+  "protection": "45 exact paired outputs and token counts; identical MTP acceptance histograms; zero snapshots in D. Negative timing and RSS observations remain disclosed. No confirmed attributable regression identified.",
+  "rationale": "Frozen performance engineering route: first HTTP, affected contracts, both-head paired gains, full applicable five-tier protections and bounded resources complete. Accept this identity and tested scope without a universal tolerance or statistical noninferiority claim; no additional sampling.",
+  "limitations": [
+    "Two paired C blocks; one startup per identity/mode in D.",
+    "Worst observed E2E -0.186791%, decode -0.331886%, TTFT +0.192041%; not proven noise.",
+    "Plain sampled RSS peak increased by 851460096 bytes; isolated allocation cause not established.",
+    "Original A STOPPED fixture has three unavailable negative bodies and no final monitor barrier; valid generation evidence reused and corrected negative cases passed.",
+    "No arbitrary-input fresh-prefill bitwise equivalence, SSD steady-state or mixed-workflow latency guarantee."
+  ],
+  "audit_reference": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/final-audit-prehealth.json",
+  "report_reference": "docs/PREFIX_SEED_RESULT_2026-10-28.md",
+  "deployment": "conditional_on_preallocated_4_HTTP_2_start_health"
+}

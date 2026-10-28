@@ -1,0 +1,265 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/deployment/run",
+  "state": {
+    "status": "MEASURED_REQUIRES_REVIEW",
+    "started": 1793215872.4739637,
+    "completed": [
+      "installed-full",
+      "installed-subset"
+    ],
+    "requests_completed": 4,
+    "loads_started": 2,
+    "contract_seconds": 0,
+    "plan_sha256": "c3e348af4b783c90d31b42345801c4a2e594d8c471691fb2c156041631997853",
+    "current": "installed-subset",
+    "finished": 1793215969.541589,
+    "elapsed_seconds": 97.0676271498669,
+    "monitor_failures": []
+  },
+  "memory": {
+    "samples": 98,
+    "physical_used_including_reclaimable_bytes": 131245441024,
+    "total_minus_available_bytes": 120793935872,
+    "cached_bytes": 14809055232,
+    "buffers_bytes": 279375872,
+    "kernel_reclaimable_bytes": 104292622336,
+    "swap_used_bytes": 2147479552,
+    "minimum_MemFree_bytes": 675196928,
+    "minimum_MemAvailable_bytes": 11126702080,
+    "MemTotal_bytes": 131920637952,
+    "source_ranges": {
+      "gpu-gpc-0.cur_freq": {
+        "min": 1575000000,
+        "max": 1575000000
+      },
+      "gpu-nvd-0.cur_freq": {
+        "min": 1692000000,
+        "max": 1692000000
+      },
+      "bwmgr.cur_freq": {
+        "min": 4266000000,
+        "max": 4266000000
+      },
+      "thermal_zone0.temp": {
+        "min": 41312,
+        "max": 55375
+      },
+      "thermal_zone1.temp": {
+        "min": 41312,
+        "max": 55375
+      }
+    },
+    "q4t_rss_bytes": 4142026752,
+    "q4t_swap_bytes": 0
+  },
+  "services": {
+    "installed-full": {
+      "memory": {
+        "samples": 47,
+        "physical_used_including_reclaimable_bytes": 131148349440,
+        "total_minus_available_bytes": 120549195776,
+        "cached_bytes": 14809055232,
+        "buffers_bytes": 279375872,
+        "kernel_reclaimable_bytes": 101294080000,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 772288512,
+        "minimum_MemAvailable_bytes": 11371442176,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4141305856,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 41750,
+            "max": 53687
+          },
+          "thermal_zone1.temp": {
+            "min": 41343,
+            "max": 53687
+          }
+        }
+      },
+      "cases": {},
+      "session_events": [
+        {
+          "request": "chatcmpl-auto-0",
+          "event": "restore",
+          "prefix": "0",
+          "ms": "0.004",
+          "error": "none",
+          "source": "session"
+        },
+        {
+          "request": "chatcmpl-auto-0",
+          "event": "save",
+          "prefix": "9220",
+          "ms": "416.451",
+          "disk_bytes": "399724544",
+          "error": "none"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "event": "restore",
+          "prefix": "8192",
+          "ms": "368.983",
+          "error": "none",
+          "source": "shared"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "event": "save",
+          "prefix": "9261",
+          "ms": "402.641",
+          "disk_bytes": "800673792",
+          "error": "none"
+        }
+      ],
+      "startup_wall_seconds": 36.01011808775365,
+      "shutdown_wall_seconds": 0.6216949080117047,
+      "disk_peak_bytes": 800673792,
+      "successful_restores": 1,
+      "save_wall_ms": 819.0920000000001,
+      "restore_wall_ms": 368.987,
+      "streamed_prefill": [
+        {
+          "request": "chatcmpl-auto-0",
+          "streamed": "1",
+          "chunks": "3",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        }
+      ],
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      }
+    },
+    "installed-subset": {
+      "memory": {
+        "samples": 49,
+        "physical_used_including_reclaimable_bytes": 131245441024,
+        "total_minus_available_bytes": 120793935872,
+        "cached_bytes": 14087794688,
+        "buffers_bytes": 248913920,
+        "kernel_reclaimable_bytes": 104220647424,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 675196928,
+        "minimum_MemAvailable_bytes": 11126702080,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4142026752,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 43031,
+            "max": 55375
+          },
+          "thermal_zone1.temp": {
+            "min": 43031,
+            "max": 55375
+          }
+        }
+      },
+      "cases": {},
+      "session_events": [
+        {
+          "request": "chatcmpl-auto-0",
+          "event": "restore",
+          "prefix": "0",
+          "ms": "0.004",
+          "error": "none",
+          "source": "session"
+        },
+        {
+          "request": "chatcmpl-auto-0",
+          "event": "save",
+          "prefix": "9220",
+          "ms": "424.890",
+          "disk_bytes": "399724544",
+          "error": "none"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "event": "restore",
+          "prefix": "8192",
+          "ms": "371.433",
+          "error": "none",
+          "source": "shared"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "event": "save",
+          "prefix": "9261",
+          "ms": "399.944",
+          "disk_bytes": "800673792",
+          "error": "none"
+        }
+      ],
+      "startup_wall_seconds": 38.010973662137985,
+      "shutdown_wall_seconds": 0.6141390819102526,
+      "disk_peak_bytes": 800673792,
+      "successful_restores": 1,
+      "save_wall_ms": 824.8340000000001,
+      "restore_wall_ms": 371.437,
+      "streamed_prefill": [
+        {
+          "request": "chatcmpl-auto-0",
+          "streamed": "1",
+          "chunks": "3",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        }
+      ],
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      }
+    }
+  },
+  "limits": [
+    "One-second physical-RAM observations cannot bound unsampled peaks.",
+    "RSS, CUDA allocations and file cache are not added to physical RAM.",
+    "Snapshot disk bytes are SSD, not additional resident RAM.",
+    "Save wall time includes waiting for model mutex; restore wall time starts under that mutex. End-to-end TTFT includes both waits.",
+    "External startup/shutdown windows include direct-I/O preflight and cache teardown; ready polling has one-second granularity.",
+    "GPU memcpy/internal pageable staging is included in host RAM observations; no isolated GPU section timing was collected."
+  ]
+}

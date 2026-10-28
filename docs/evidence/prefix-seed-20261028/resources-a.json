@@ -1,0 +1,405 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/phase-a/run",
+  "state": {
+    "status": "STOPPED",
+    "started": 1793196734.2347207,
+    "completed": [],
+    "requests_completed": 0,
+    "loads_started": 1,
+    "contract_seconds": 0,
+    "plan_sha256": "8e081ae564db82143da4bf30bffd11f6e43ed51117564bc92dcca3245f0e309e",
+    "current": "00-full-on",
+    "error": "RuntimeError('00-full-on failed with 1')",
+    "finished": 1793197173.330352,
+    "elapsed_seconds": 439.09563392191194,
+    "monitor_failures": []
+  },
+  "memory": {
+    "samples": 440,
+    "physical_used_including_reclaimable_bytes": 131278733312,
+    "total_minus_available_bytes": 120601739264,
+    "cached_bytes": 13856215040,
+    "buffers_bytes": 565497856,
+    "kernel_reclaimable_bytes": 105867284480,
+    "swap_used_bytes": 2147479552,
+    "minimum_MemFree_bytes": 641904640,
+    "minimum_MemAvailable_bytes": 11318898688,
+    "MemTotal_bytes": 131920637952,
+    "source_ranges": {
+      "gpu-gpc-0.cur_freq": {
+        "min": 1575000000,
+        "max": 1575000000
+      },
+      "gpu-nvd-0.cur_freq": {
+        "min": 1692000000,
+        "max": 1692000000
+      },
+      "bwmgr.cur_freq": {
+        "min": 4266000000,
+        "max": 4266000000
+      },
+      "thermal_zone0.temp": {
+        "min": 39406,
+        "max": 68406
+      },
+      "thermal_zone1.temp": {
+        "min": 38906,
+        "max": 68406
+      }
+    },
+    "q4t_rss_bytes": 4124475392,
+    "q4t_swap_bytes": 0
+  },
+  "services": {
+    "00-full-on": {
+      "memory": {
+        "samples": 438,
+        "physical_used_including_reclaimable_bytes": 131278733312,
+        "total_minus_available_bytes": 120601739264,
+        "cached_bytes": 13856215040,
+        "buffers_bytes": 565497856,
+        "kernel_reclaimable_bytes": 105125433344,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 641904640,
+        "minimum_MemAvailable_bytes": 11318898688,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4124475392,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 39406,
+            "max": 68406
+          },
+          "thermal_zone1.temp": {
+            "min": 38906,
+            "max": 68406
+          }
+        }
+      },
+      "cases": {},
+      "session_events": [
+        {
+          "request": "chatcmpl-auto-11",
+          "event": "restore",
+          "prefix": "0",
+          "ms": "0.002",
+          "error": "none",
+          "source": "session"
+        },
+        {
+          "request": "chatcmpl-auto-12",
+          "event": "restore",
+          "prefix": "0",
+          "ms": "0.002",
+          "error": "none",
+          "source": "session"
+        },
+        {
+          "request": "chatcmpl-auto-13",
+          "event": "restore",
+          "prefix": "0",
+          "ms": "0.003",
+          "error": "none",
+          "source": "session"
+        },
+        {
+          "request": "chatcmpl-auto-15",
+          "event": "restore",
+          "prefix": "8192",
+          "ms": "372.581",
+          "error": "none",
+          "source": "shared"
+        },
+        {
+          "request": "chatcmpl-auto-15",
+          "event": "save",
+          "prefix": "9261",
+          "ms": "425.137",
+          "disk_bytes": "400949248",
+          "error": "none"
+        },
+        {
+          "request": "chatcmpl-auto-17",
+          "event": "restore",
+          "prefix": "0",
+          "ms": "0.004",
+          "error": "none",
+          "source": "session"
+        },
+        {
+          "request": "chatcmpl-auto-18",
+          "event": "restore",
+          "prefix": "0",
+          "ms": "0.004",
+          "error": "none",
+          "source": "session"
+        },
+        {
+          "request": "chatcmpl-auto-19",
+          "event": "restore",
+          "prefix": "9261",
+          "ms": "403.343",
+          "error": "none",
+          "source": "session"
+        },
+        {
+          "request": "chatcmpl-auto-19",
+          "event": "save",
+          "prefix": "9284",
+          "ms": "399.896",
+          "disk_bytes": "401694720",
+          "error": "none"
+        },
+        {
+          "request": "chatcmpl-auto-20",
+          "event": "restore",
+          "prefix": "8192",
+          "ms": "368.616",
+          "error": "none",
+          "source": "shared"
+        },
+        {
+          "request": "chatcmpl-auto-21",
+          "event": "restore",
+          "prefix": "0",
+          "ms": "0.003",
+          "error": "none",
+          "source": "session"
+        },
+        {
+          "request": "chatcmpl-auto-22",
+          "event": "restore",
+          "prefix": "0",
+          "ms": "0.003",
+          "error": "none",
+          "source": "session"
+        }
+      ],
+      "startup_wall_seconds": 41.01291636005044,
+      "shutdown_wall_seconds": 0.6643485215026885,
+      "disk_peak_bytes": 401694720,
+      "successful_restores": 3,
+      "save_wall_ms": 825.033,
+      "restore_wall_ms": 1144.561,
+      "streamed_prefill": [
+        {
+          "request": "chatcmpl-auto-0",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20971520",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20971520",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-2",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20971520",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-3",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-4",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-5",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-6",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-7",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-8",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-9",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-10",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-11",
+          "streamed": "1",
+          "chunks": "3",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-12",
+          "streamed": "1",
+          "chunks": "3",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-13",
+          "streamed": "1",
+          "chunks": "3",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-14",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20971520",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-15",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-16",
+          "streamed": "1",
+          "chunks": "3",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-17",
+          "streamed": "1",
+          "chunks": "3",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-18",
+          "streamed": "1",
+          "chunks": "3",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-19",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-20",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-21",
+          "streamed": "1",
+          "chunks": "3",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-22",
+          "streamed": "1",
+          "chunks": "3",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        }
+      ],
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": false,
+        "failure": "RuntimeError('wrong seed rejection')"
+      },
+      "prefix_events": [
+        {
+          "request": "chatcmpl-auto-13",
+          "event": "save",
+          "prefix": "8192",
+          "bytes": "367964160",
+          "ms": "377.471",
+          "error": "none"
+        },
+        {
+          "request": "chatcmpl-auto-21",
+          "event": "save",
+          "prefix": "8192",
+          "bytes": "735928320",
+          "ms": "369.877",
+          "error": "none"
+        }
+      ],
+      "prefix_disk_peak_bytes": 735928320,
+      "prefix_save_wall_ms": 747.348,
+      "prefix_save_failures": [],
+      "restores_by_source": {
+        "session": 1,
+        "shared": 2
+      },
+      "combined_disk_upper_bound_bytes": 1137623040
+    }
+  },
+  "limits": [
+    "One-second physical-RAM observations cannot bound unsampled peaks.",
+    "RSS, CUDA allocations and file cache are not added to physical RAM.",
+    "Snapshot disk bytes are SSD, not additional resident RAM.",
+    "Save wall time includes waiting for model mutex; restore wall time starts under that mutex. End-to-end TTFT includes both waits.",
+    "External startup/shutdown windows include direct-I/O preflight and cache teardown; ready polling has one-second granularity.",
+    "GPU memcpy/internal pageable staging is included in host RAM observations; no isolated GPU section timing was collected.",
+    "Pool byte fields are cumulative resident SSD bytes, not per-save bytes.",
+    "Sum of separate pool maxima is a bound, not a simultaneous observation.",
+    "Prefix save wall time starts under model mutex and is in HTTP latency.",
+    "No isolated GPU-duration or allocation-delta measurement.",
+    "Fixed IO preparation precedes the stage sampler: no sampled RAM peak for it. Source allocates an 8 MiB mmap plus a temporary 8 MiB payload, in addition to Python and filesystem memory."
+  ]
+}

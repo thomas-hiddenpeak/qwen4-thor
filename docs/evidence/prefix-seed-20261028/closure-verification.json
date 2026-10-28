@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "finished": 1793216332.6148148,
+  "binary_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "sidecar_sha256": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2",
+  "package_seal_sha256": "4a1a35b089184e538ac62a4f75765434424351bf100c8924b959bea27fd7194a",
+  "owned_model_processes": [],
+  "recovery_marker": false,
+  "health_q4t_swap_bytes": 0,
+  "shared_work_counts_unchanged": true,
+  "final_audit_sha256": "c636861709a1567d726b14585ccfe55077fb8c8ec491e9e84a319f34aa4e4d97",
+  "health_receipt_sha256": "1aba8503978233663e6c045b2e39440310771f2ef2a1c0dd317b8e38d9535dbb"
+}

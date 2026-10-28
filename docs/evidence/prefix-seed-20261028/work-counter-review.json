@@ -1,0 +1,231 @@
+{
+  "passed": true,
+  "paired_transactions": 16,
+  "pairs": [
+    {
+      "off": "00-full-off",
+      "on": "01-full-on",
+      "case": "repeat-code-32768",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "00-full-off",
+      "on": "01-full-on",
+      "case": "repeat-code-8192",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "00-full-off",
+      "on": "01-full-on",
+      "case": "repeat-text-32768",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "00-full-off",
+      "on": "01-full-on",
+      "case": "repeat-text-8192",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "05-full-off",
+      "on": "04-full-on",
+      "case": "repeat-code-32768",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "05-full-off",
+      "on": "04-full-on",
+      "case": "repeat-code-8192",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "05-full-off",
+      "on": "04-full-on",
+      "case": "repeat-text-32768",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "05-full-off",
+      "on": "04-full-on",
+      "case": "repeat-text-8192",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "03-subset-off",
+      "on": "02-subset-on",
+      "case": "repeat-code-32768",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "03-subset-off",
+      "on": "02-subset-on",
+      "case": "repeat-code-8192",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "03-subset-off",
+      "on": "02-subset-on",
+      "case": "repeat-text-32768",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "03-subset-off",
+      "on": "02-subset-on",
+      "case": "repeat-text-8192",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "06-subset-off",
+      "on": "07-subset-on",
+      "case": "repeat-code-32768",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "06-subset-off",
+      "on": "07-subset-on",
+      "case": "repeat-code-8192",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "06-subset-off",
+      "on": "07-subset-on",
+      "case": "repeat-text-32768",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    },
+    {
+      "off": "06-subset-off",
+      "on": "07-subset-on",
+      "case": "repeat-text-8192",
+      "fields": [
+        "suffix_hits",
+        "suffix_queries",
+        "verify_token_rows",
+        "neural_draft_token_rows",
+        "accepted_extend_token_rows",
+        "acceptance",
+        "suffix_acceptance"
+      ]
+    }
+  ],
+  "note": "Work counts are not GPU execution timings."
+}

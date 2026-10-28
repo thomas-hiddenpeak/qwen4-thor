@@ -1,0 +1,68 @@
+{
+  "previous_source": "7a7ca60",
+  "rows": [
+    {
+      "path": "src/server/session_cache.cpp",
+      "old_sha256": "ef4f9f261dc3647122c8e5ecb9f2e08995beb7619c3fe46a4678f1f7d2c66a8e",
+      "new_sha256": "ef4f9f261dc3647122c8e5ecb9f2e08995beb7619c3fe46a4678f1f7d2c66a8e",
+      "identical": true
+    },
+    {
+      "path": "src/server/session_state.cpp",
+      "old_sha256": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
+      "new_sha256": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
+      "identical": true
+    },
+    {
+      "path": "src/server/chat_scheduler.cpp",
+      "old_sha256": "6631ea24b96f88a9bfc2a234973c22deb8ae3e7f0423f7c5d8933e921707e5cc",
+      "new_sha256": "6631ea24b96f88a9bfc2a234973c22deb8ae3e7f0423f7c5d8933e921707e5cc",
+      "identical": true
+    },
+    {
+      "path": "src/mtp/suffix_drafter.cpp",
+      "old_sha256": "6f10725ca130f1a561412b7db1705b7d31b5ecd625d1373bd40dd03fa7d55997",
+      "new_sha256": "6f10725ca130f1a561412b7db1705b7d31b5ecd625d1373bd40dd03fa7d55997",
+      "identical": true
+    },
+    {
+      "path": "src/mtp/subset_head.cpp",
+      "old_sha256": "f356b8edf2d00022d208a4ecafb9f08eb5c56059c20c11f5da7c4e8edec7c922",
+      "new_sha256": "f356b8edf2d00022d208a4ecafb9f08eb5c56059c20c11f5da7c4e8edec7c922",
+      "identical": true
+    },
+    {
+      "path": "src/model/model.cu",
+      "old_sha256": "d1a2a8ba1846dca63f3ed55e845dcb8070f9f18caa32f4410e9abb91b60aa7f9",
+      "new_sha256": "d1a2a8ba1846dca63f3ed55e845dcb8070f9f18caa32f4410e9abb91b60aa7f9",
+      "identical": true
+    },
+    {
+      "path": "src/model/decoder_layer.cu",
+      "old_sha256": "0448dff934dc4c78411161d0912ff3de403daa396ca39b6b067544ce10066e8a",
+      "new_sha256": "ca7d591c7f37f6a6ac21d2d044c87960b4d7328431b58a835bb8e96058618638",
+      "identical": false
+    },
+    {
+      "path": "src/mtp/mtp.cu",
+      "old_sha256": "e35aa7fd46bbcc3103a36c5fb351c406fc00d6fc57b797162cd26dc258fcee5e",
+      "new_sha256": "3aa88120392bc73122a96c8211b27c22b187b0929e424a7d97308f6346dac211",
+      "identical": false
+    },
+    {
+      "path": "tools/prefix_cache/state_contract.cpp",
+      "old_sha256": "fe028040772ebba8921e5f7b07d861c552e4bd6290f3df0b0c1c6f05977c266b",
+      "new_sha256": "fe028040772ebba8921e5f7b07d861c552e4bd6290f3df0b0c1c6f05977c266b",
+      "identical": true
+    },
+    {
+      "path": "tools/session_cache/state_contract.cpp",
+      "old_sha256": "5375d39bec6d0e51640ef219a895212dc2e42e506ce4ef4f95b4ad2040ffc142",
+      "new_sha256": "5375d39bec6d0e51640ef219a895212dc2e42e506ce4ef4f95b4ad2040ffc142",
+      "identical": true
+    }
+  ],
+  "numerical_retest": "Target/draft host page-table initialization casts changed. Re-run both-head independent full-state fixtures in B; do not claim entire dependencies unchanged.",
+  "reused": "Unchanged storage/lease/TTL/SHA corruption, suffix acceptance algorithm, subset/global token mapping and scheduler capacity evidence retained. New seed policy needs new HTTP and CPU checks.",
+  "limits": "No arbitrary fresh-prefill bitwise equivalence, no population noninferiority, no previous prefix performance acceptance."
+}

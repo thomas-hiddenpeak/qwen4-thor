@@ -1,0 +1,10 @@
+{
+  "candidate_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "statistics": "inconclusive",
+  "remaining_request_budget": 25,
+  "automatic_resampling": false,
+  "deployment_authorized": false,
+  "evidence_validation": "external audit required",
+  "status": "ENGINEERING_ACCEPTED",
+  "next_action": "Reuse this identity-specific decision; follow its deployment scope without asking the same acceptance again."
+}

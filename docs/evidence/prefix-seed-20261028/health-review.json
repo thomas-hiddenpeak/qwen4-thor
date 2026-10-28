@@ -1,0 +1,10 @@
+{
+  "status": "PREINSTALL_INVOCATION_FAILED",
+  "reason": "Relative guard argv does not match absolute ancestor path required by existing require_guard.",
+  "models_loaded": 0,
+  "http_requests": 0,
+  "service_starts": 0,
+  "program_replaced": false,
+  "fixture_changed": false,
+  "finished": 1793215871.870544
+}

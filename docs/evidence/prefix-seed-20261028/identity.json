@@ -1,0 +1,19 @@
+{
+  "candidate": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "parent": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+  "source_commit": "dc52dff1690e99e7e18b29d7c771c0330fbf9d32",
+  "deadline": 1793218319.7965596,
+  "formal_generated_http": 264,
+  "formal_rejected_http": 8,
+  "formal_services": 16,
+  "direct_fixtures": 2,
+  "health_max_http": 4,
+  "health_max_services": 2,
+  "total_http_limit": 300,
+  "total_service_limit": 20,
+  "cpu_seed_contract_sha256": "aa47c919d36d4ff5b9d2968d6d5c0acefbbbb0997defa9827a590c1644998778",
+  "gpu_contract_sha256": "4822ac4018a0db9897f970525f34f05232a839b5ee5b0b2eaf96e6592cf7ddd1",
+  "source_bindings": 329,
+  "io_precondition_bytes": 68719476736,
+  "previous_inputs": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-cache-20261028/identity.json"
+}

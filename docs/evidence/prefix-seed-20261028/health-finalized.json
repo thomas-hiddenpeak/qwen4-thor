@@ -1,0 +1,9 @@
+{
+  "status": "DELIVERED",
+  "binary_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "sidecar_sha256": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2",
+  "health_requests": 4,
+  "health_starts": 2,
+  "persistent_service": false,
+  "finished": 1793216229.7262988
+}

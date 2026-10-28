@@ -1,0 +1,3631 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/phase-d/run",
+  "state": {
+    "status": "MEASURED_REQUIRES_REVIEW",
+    "started": 1793208956.5851858,
+    "completed": [
+      "00-full-off",
+      "01-full-on",
+      "02-subset-on",
+      "03-subset-off",
+      "04-plain-off",
+      "05-plain-on"
+    ],
+    "requests_completed": 90,
+    "loads_started": 6,
+    "contract_seconds": 0,
+    "plan_sha256": "3118ac350249d4eb32e0a1d54822510901747bc6c3c3b222eaec207df05de402",
+    "current": "05-plain-on",
+    "finished": 1793215118.3212066,
+    "elapsed_seconds": 6161.736022692872,
+    "monitor_failures": []
+  },
+  "memory": {
+    "samples": 6162,
+    "physical_used_including_reclaimable_bytes": 131231498240,
+    "total_minus_available_bytes": 121162481664,
+    "cached_bytes": 16706080768,
+    "buffers_bytes": 374083584,
+    "kernel_reclaimable_bytes": 106071502848,
+    "swap_used_bytes": 2147479552,
+    "minimum_MemFree_bytes": 689139712,
+    "minimum_MemAvailable_bytes": 10758156288,
+    "MemTotal_bytes": 131920637952,
+    "source_ranges": {
+      "gpu-gpc-0.cur_freq": {
+        "min": 1575000000,
+        "max": 1575000000
+      },
+      "gpu-nvd-0.cur_freq": {
+        "min": 1692000000,
+        "max": 1692000000
+      },
+      "bwmgr.cur_freq": {
+        "min": 4266000000,
+        "max": 4266000000
+      },
+      "thermal_zone0.temp": {
+        "min": 49250,
+        "max": 78000
+      },
+      "thermal_zone1.temp": {
+        "min": 49031,
+        "max": 78000
+      }
+    },
+    "q4t_rss_bytes": 4130807808,
+    "q4t_swap_bytes": 0
+  },
+  "services": {
+    "00-full-off": {
+      "memory": {
+        "samples": 1098,
+        "physical_used_including_reclaimable_bytes": 131212304384,
+        "total_minus_available_bytes": 120771305472,
+        "cached_bytes": 14407610368,
+        "buffers_bytes": 211791872,
+        "kernel_reclaimable_bytes": 104855965696,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 708333568,
+        "minimum_MemAvailable_bytes": 11149332480,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4127227904,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 49250,
+            "max": 73093
+          },
+          "thermal_zone1.temp": {
+            "min": 49031,
+            "max": 73093
+          }
+        }
+      },
+      "cases": {
+        "context-1024": {
+          "requests": 3,
+          "acceptance": [
+            24,
+            18,
+            21,
+            159
+          ],
+          "verify_sequence_steps": 222,
+          "verify_token_rows": 888,
+          "suffix_hits": 0,
+          "suffix_queries": 222,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            24,
+            18,
+            21,
+            159
+          ],
+          "neural_draft_token_rows": 444,
+          "accepted_extend_rows_upper_bound": 759,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 759,
+          "init_ns": 397219,
+          "append_ns": 136206,
+          "query_ns": 86139,
+          "release_ns": 46537,
+          "numeric_ns": 0,
+          "indexed": 3753,
+          "candidates": 99,
+          "compared": 513,
+          "d0_mismatch": 21,
+          "short_rejected": 27,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 25,
+            "physical_used_including_reclaimable_bytes": 119292870656,
+            "total_minus_available_bytes": 118214946816,
+            "cached_bytes": 1176035328,
+            "buffers_bytes": 121491456,
+            "kernel_reclaimable_bytes": 1380814848,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 12627767296,
+            "minimum_MemAvailable_bytes": 13705691136,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1015410688,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 51000,
+                "max": 59750
+              },
+              "thermal_zone1.temp": {
+                "min": 51000,
+                "max": 59750
+              }
+            }
+          }
+        },
+        "context-204800": {
+          "requests": 3,
+          "acceptance": [
+            12,
+            15,
+            9,
+            174
+          ],
+          "verify_sequence_steps": 210,
+          "verify_token_rows": 840,
+          "suffix_hits": 0,
+          "suffix_queries": 210,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            12,
+            15,
+            9,
+            174
+          ],
+          "neural_draft_token_rows": 420,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 2634286,
+          "append_ns": 126058,
+          "query_ns": 79119,
+          "release_ns": 3602,
+          "numeric_ns": 0,
+          "indexed": 615108,
+          "candidates": 171,
+          "compared": 909,
+          "d0_mismatch": 18,
+          "short_rejected": 33,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5653296,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 809,
+            "physical_used_including_reclaimable_bytes": 121069441024,
+            "total_minus_available_bytes": 120024064000,
+            "cached_bytes": 1583980544,
+            "buffers_bytes": 161820672,
+            "kernel_reclaimable_bytes": 3119403008,
+            "swap_used_bytes": 2147475456,
+            "minimum_MemFree_bytes": 10851196928,
+            "minimum_MemAvailable_bytes": 11896573952,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1044144128,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 58218,
+                "max": 73093
+              },
+              "thermal_zone1.temp": {
+                "min": 58375,
+                "max": 73093
+              }
+            }
+          }
+        },
+        "context-4096": {
+          "requests": 3,
+          "acceptance": [
+            15,
+            9,
+            0,
+            183
+          ],
+          "verify_sequence_steps": 207,
+          "verify_token_rows": 828,
+          "suffix_hits": 0,
+          "suffix_queries": 207,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            15,
+            9,
+            0,
+            183
+          ],
+          "neural_draft_token_rows": 414,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 234781,
+          "append_ns": 120134,
+          "query_ns": 73778,
+          "release_ns": 4557,
+          "numeric_ns": 0,
+          "indexed": 12996,
+          "candidates": 138,
+          "compared": 618,
+          "d0_mismatch": 60,
+          "short_rejected": 24,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 30,
+            "physical_used_including_reclaimable_bytes": 120700477440,
+            "total_minus_available_bytes": 118198202368,
+            "cached_bytes": 1210171392,
+            "buffers_bytes": 122195968,
+            "kernel_reclaimable_bytes": 3115167744,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 11220160512,
+            "minimum_MemAvailable_bytes": 13722435584,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1025454080,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 57093,
+                "max": 64656
+              },
+              "thermal_zone1.temp": {
+                "min": 57093,
+                "max": 64656
+              }
+            }
+          }
+        },
+        "context-45056": {
+          "requests": 3,
+          "acceptance": [
+            18,
+            9,
+            15,
+            171
+          ],
+          "verify_sequence_steps": 213,
+          "verify_token_rows": 852,
+          "suffix_hits": 0,
+          "suffix_queries": 213,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            18,
+            9,
+            15,
+            171
+          ],
+          "neural_draft_token_rows": 426,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 1111959,
+          "append_ns": 179075,
+          "query_ns": 98893,
+          "release_ns": 4824,
+          "numeric_ns": 0,
+          "indexed": 135897,
+          "candidates": 114,
+          "compared": 669,
+          "d0_mismatch": 6,
+          "short_rejected": 36,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 134,
+            "physical_used_including_reclaimable_bytes": 120860991488,
+            "total_minus_available_bytes": 120005697536,
+            "cached_bytes": 1388158976,
+            "buffers_bytes": 146071552,
+            "kernel_reclaimable_bytes": 3119403008,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 11059646464,
+            "minimum_MemAvailable_bytes": 11914940416,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1032503296,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 60062,
+                "max": 71156
+              },
+              "thermal_zone1.temp": {
+                "min": 60156,
+                "max": 71156
+              }
+            }
+          }
+        },
+        "context-8192": {
+          "requests": 3,
+          "acceptance": [
+            18,
+            33,
+            15,
+            159
+          ],
+          "verify_sequence_steps": 225,
+          "verify_token_rows": 900,
+          "suffix_hits": 0,
+          "suffix_queries": 225,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            18,
+            33,
+            15,
+            159
+          ],
+          "neural_draft_token_rows": 450,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 1341419,
+          "append_ns": 213745,
+          "query_ns": 88990,
+          "release_ns": 820013,
+          "numeric_ns": 0,
+          "indexed": 25275,
+          "candidates": 54,
+          "compared": 231,
+          "d0_mismatch": 15,
+          "short_rejected": 3,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 39,
+            "physical_used_including_reclaimable_bytes": 120814096384,
+            "total_minus_available_bytes": 120039501824,
+            "cached_bytes": 1337008128,
+            "buffers_bytes": 143454208,
+            "kernel_reclaimable_bytes": 3148746752,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 11106541568,
+            "minimum_MemAvailable_bytes": 11881136128,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1027379200,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 59625,
+                "max": 68843
+              },
+              "thermal_zone1.temp": {
+                "min": 59625,
+                "max": 68843
+              }
+            }
+          }
+        }
+      },
+      "session_events": [],
+      "startup_wall_seconds": 32.01087178313173,
+      "shutdown_wall_seconds": 0.6642772173509002,
+      "disk_peak_bytes": 0,
+      "successful_restores": 0,
+      "save_wall_ms": 0,
+      "restore_wall_ms": 0,
+      "streamed_prefill": [
+        {
+          "request": "chatcmpl-auto-0",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-2",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-3",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-4",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-5",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-6",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-7",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-8",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-9",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-10",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-11",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-12",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-13",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-14",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        }
+      ],
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "prefix_events": [],
+      "prefix_disk_peak_bytes": 0,
+      "prefix_save_wall_ms": 0,
+      "prefix_save_failures": [],
+      "restores_by_source": {
+        "session": 0,
+        "shared": 0
+      },
+      "combined_disk_upper_bound_bytes": 0
+    },
+    "01-full-on": {
+      "memory": {
+        "samples": 1097,
+        "physical_used_including_reclaimable_bytes": 131219091456,
+        "total_minus_available_bytes": 120365604864,
+        "cached_bytes": 13345652736,
+        "buffers_bytes": 373948416,
+        "kernel_reclaimable_bytes": 105845243904,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 701546496,
+        "minimum_MemAvailable_bytes": 11555033088,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4130390016,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 53718,
+            "max": 74406
+          },
+          "thermal_zone1.temp": {
+            "min": 53437,
+            "max": 74406
+          }
+        }
+      },
+      "cases": {
+        "context-1024": {
+          "requests": 3,
+          "acceptance": [
+            24,
+            18,
+            21,
+            159
+          ],
+          "verify_sequence_steps": 222,
+          "verify_token_rows": 888,
+          "suffix_hits": 0,
+          "suffix_queries": 222,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            24,
+            18,
+            21,
+            159
+          ],
+          "neural_draft_token_rows": 444,
+          "accepted_extend_rows_upper_bound": 759,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 759,
+          "init_ns": 283641,
+          "append_ns": 164621,
+          "query_ns": 109391,
+          "release_ns": 17037,
+          "numeric_ns": 0,
+          "indexed": 3753,
+          "candidates": 99,
+          "compared": 513,
+          "d0_mismatch": 21,
+          "short_rejected": 27,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 24,
+            "physical_used_including_reclaimable_bytes": 121465135104,
+            "total_minus_available_bytes": 119319916544,
+            "cached_bytes": 1308045312,
+            "buffers_bytes": 134684672,
+            "kernel_reclaimable_bytes": 2355507200,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 10455502848,
+            "minimum_MemAvailable_bytes": 12600721408,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1018294272,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 58312,
+                "max": 63812
+              },
+              "thermal_zone1.temp": {
+                "min": 58312,
+                "max": 63812
+              }
+            }
+          }
+        },
+        "context-204800": {
+          "requests": 3,
+          "acceptance": [
+            12,
+            15,
+            9,
+            174
+          ],
+          "verify_sequence_steps": 210,
+          "verify_token_rows": 840,
+          "suffix_hits": 0,
+          "suffix_queries": 210,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            12,
+            15,
+            9,
+            174
+          ],
+          "neural_draft_token_rows": 420,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 2911467,
+          "append_ns": 113346,
+          "query_ns": 81777,
+          "release_ns": 5056,
+          "numeric_ns": 0,
+          "indexed": 615108,
+          "candidates": 171,
+          "compared": 909,
+          "d0_mismatch": 18,
+          "short_rejected": 33,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5653296,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 810,
+            "physical_used_including_reclaimable_bytes": 121511981056,
+            "total_minus_available_bytes": 120135778304,
+            "cached_bytes": 1490890752,
+            "buffers_bytes": 373899264,
+            "kernel_reclaimable_bytes": 3349966848,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 10408656896,
+            "minimum_MemAvailable_bytes": 11784859648,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1047638016,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 58718,
+                "max": 72687
+              },
+              "thermal_zone1.temp": {
+                "min": 58718,
+                "max": 73031
+              }
+            }
+          }
+        },
+        "context-4096": {
+          "requests": 3,
+          "acceptance": [
+            15,
+            9,
+            0,
+            183
+          ],
+          "verify_sequence_steps": 207,
+          "verify_token_rows": 828,
+          "suffix_hits": 0,
+          "suffix_queries": 207,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            15,
+            9,
+            0,
+            183
+          ],
+          "neural_draft_token_rows": 414,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 260601,
+          "append_ns": 158297,
+          "query_ns": 93349,
+          "release_ns": 37631,
+          "numeric_ns": 0,
+          "indexed": 12996,
+          "candidates": 138,
+          "compared": 618,
+          "d0_mismatch": 60,
+          "short_rejected": 24,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 30,
+            "physical_used_including_reclaimable_bytes": 120918994944,
+            "total_minus_available_bytes": 120219906048,
+            "cached_bytes": 1311510528,
+            "buffers_bytes": 135397376,
+            "kernel_reclaimable_bytes": 3114676224,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 11001643008,
+            "minimum_MemAvailable_bytes": 11700731904,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1028763648,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 61093,
+                "max": 69937
+              },
+              "thermal_zone1.temp": {
+                "min": 61093,
+                "max": 69937
+              }
+            }
+          }
+        },
+        "context-45056": {
+          "requests": 3,
+          "acceptance": [
+            18,
+            9,
+            15,
+            171
+          ],
+          "verify_sequence_steps": 213,
+          "verify_token_rows": 852,
+          "suffix_hits": 0,
+          "suffix_queries": 213,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            18,
+            9,
+            15,
+            171
+          ],
+          "neural_draft_token_rows": 426,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 1190399,
+          "append_ns": 213719,
+          "query_ns": 108606,
+          "release_ns": 5102,
+          "numeric_ns": 0,
+          "indexed": 135897,
+          "candidates": 114,
+          "compared": 669,
+          "d0_mismatch": 6,
+          "short_rejected": 36,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 134,
+            "physical_used_including_reclaimable_bytes": 120823869440,
+            "total_minus_available_bytes": 120005103616,
+            "cached_bytes": 1341915136,
+            "buffers_bytes": 138698752,
+            "kernel_reclaimable_bytes": 3118870528,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 11096768512,
+            "minimum_MemAvailable_bytes": 11915534336,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1036414976,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 61531,
+                "max": 74406
+              },
+              "thermal_zone1.temp": {
+                "min": 61468,
+                "max": 74406
+              }
+            }
+          }
+        },
+        "context-8192": {
+          "requests": 3,
+          "acceptance": [
+            18,
+            33,
+            15,
+            159
+          ],
+          "verify_sequence_steps": 225,
+          "verify_token_rows": 900,
+          "suffix_hits": 0,
+          "suffix_queries": 225,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            18,
+            33,
+            15,
+            159
+          ],
+          "neural_draft_token_rows": 450,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 660162,
+          "append_ns": 142667,
+          "query_ns": 63569,
+          "release_ns": 7240,
+          "numeric_ns": 0,
+          "indexed": 25275,
+          "candidates": 54,
+          "compared": 231,
+          "d0_mismatch": 15,
+          "short_rejected": 3,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 40,
+            "physical_used_including_reclaimable_bytes": 120859398144,
+            "total_minus_available_bytes": 120152707072,
+            "cached_bytes": 1317920768,
+            "buffers_bytes": 136208384,
+            "kernel_reclaimable_bytes": 3114676224,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 11061239808,
+            "minimum_MemAvailable_bytes": 11767930880,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1029709824,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 62437,
+                "max": 71250
+              },
+              "thermal_zone1.temp": {
+                "min": 62468,
+                "max": 71250
+              }
+            }
+          }
+        }
+      },
+      "session_events": [],
+      "startup_wall_seconds": 32.01361785363406,
+      "shutdown_wall_seconds": 0.6146725588478148,
+      "disk_peak_bytes": 0,
+      "successful_restores": 0,
+      "save_wall_ms": 0,
+      "restore_wall_ms": 0,
+      "streamed_prefill": [
+        {
+          "request": "chatcmpl-auto-0",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-2",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-3",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-4",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-5",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-6",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-7",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-8",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-9",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-10",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-11",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-12",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-13",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-14",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        }
+      ],
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "prefix_events": [],
+      "prefix_disk_peak_bytes": 0,
+      "prefix_save_wall_ms": 0,
+      "prefix_save_failures": [],
+      "restores_by_source": {
+        "session": 0,
+        "shared": 0
+      },
+      "combined_disk_upper_bound_bytes": 0
+    },
+    "02-subset-on": {
+      "memory": {
+        "samples": 1093,
+        "physical_used_including_reclaimable_bytes": 131231498240,
+        "total_minus_available_bytes": 121162481664,
+        "cached_bytes": 13092085760,
+        "buffers_bytes": 374083584,
+        "kernel_reclaimable_bytes": 106071502848,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 689139712,
+        "minimum_MemAvailable_bytes": 10758156288,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4130807808,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 53375,
+            "max": 74531
+          },
+          "thermal_zone1.temp": {
+            "min": 53062,
+            "max": 74531
+          }
+        }
+      },
+      "cases": {
+        "context-1024": {
+          "requests": 3,
+          "acceptance": [
+            30,
+            27,
+            21,
+            153
+          ],
+          "verify_sequence_steps": 231,
+          "verify_token_rows": 924,
+          "suffix_hits": 0,
+          "suffix_queries": 231,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            30,
+            27,
+            21,
+            153
+          ],
+          "neural_draft_token_rows": 462,
+          "accepted_extend_rows_upper_bound": 759,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 759,
+          "init_ns": 254715,
+          "append_ns": 221387,
+          "query_ns": 97967,
+          "release_ns": 38084,
+          "numeric_ns": 0,
+          "indexed": 3753,
+          "candidates": 96,
+          "compared": 477,
+          "d0_mismatch": 21,
+          "short_rejected": 27,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 22,
+            "physical_used_including_reclaimable_bytes": 126079614976,
+            "total_minus_available_bytes": 120030810112,
+            "cached_bytes": 5298208768,
+            "buffers_bytes": 330629120,
+            "kernel_reclaimable_bytes": 2045583360,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 5841022976,
+            "minimum_MemAvailable_bytes": 11889827840,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1019412480,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 58062,
+                "max": 64031
+              },
+              "thermal_zone1.temp": {
+                "min": 58062,
+                "max": 63812
+              }
+            }
+          }
+        },
+        "context-204800": {
+          "requests": 3,
+          "acceptance": [
+            24,
+            21,
+            15,
+            162
+          ],
+          "verify_sequence_steps": 222,
+          "verify_token_rows": 888,
+          "suffix_hits": 0,
+          "suffix_queries": 222,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            24,
+            21,
+            15,
+            162
+          ],
+          "neural_draft_token_rows": 444,
+          "accepted_extend_rows_upper_bound": 759,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 759,
+          "init_ns": 2425368,
+          "append_ns": 101898,
+          "query_ns": 80480,
+          "release_ns": 4019,
+          "numeric_ns": 0,
+          "indexed": 615102,
+          "candidates": 204,
+          "compared": 1014,
+          "d0_mismatch": 18,
+          "short_rejected": 36,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5653296,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 810,
+            "physical_used_including_reclaimable_bytes": 124440649728,
+            "total_minus_available_bytes": 118970335232,
+            "cached_bytes": 5469937664,
+            "buffers_bytes": 350195712,
+            "kernel_reclaimable_bytes": 1993752576,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 7479988224,
+            "minimum_MemAvailable_bytes": 12950302720,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1047937024,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 58937,
+                "max": 73031
+              },
+              "thermal_zone1.temp": {
+                "min": 58937,
+                "max": 73031
+              }
+            }
+          }
+        },
+        "context-4096": {
+          "requests": 3,
+          "acceptance": [
+            15,
+            9,
+            0,
+            183
+          ],
+          "verify_sequence_steps": 207,
+          "verify_token_rows": 828,
+          "suffix_hits": 0,
+          "suffix_queries": 207,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            15,
+            9,
+            0,
+            183
+          ],
+          "neural_draft_token_rows": 414,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 246270,
+          "append_ns": 140849,
+          "query_ns": 87590,
+          "release_ns": 3963,
+          "numeric_ns": 0,
+          "indexed": 12996,
+          "candidates": 138,
+          "compared": 618,
+          "d0_mismatch": 60,
+          "short_rejected": 24,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 27,
+            "physical_used_including_reclaimable_bytes": 125156462592,
+            "total_minus_available_bytes": 119768875008,
+            "cached_bytes": 5341302784,
+            "buffers_bytes": 332427264,
+            "kernel_reclaimable_bytes": 1993154560,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 6764175360,
+            "minimum_MemAvailable_bytes": 12151762944,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1029906432,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 60875,
+                "max": 68250
+              },
+              "thermal_zone1.temp": {
+                "min": 60875,
+                "max": 68250
+              }
+            }
+          }
+        },
+        "context-45056": {
+          "requests": 3,
+          "acceptance": [
+            21,
+            15,
+            18,
+            165
+          ],
+          "verify_sequence_steps": 219,
+          "verify_token_rows": 876,
+          "suffix_hits": 0,
+          "suffix_queries": 219,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            21,
+            15,
+            18,
+            165
+          ],
+          "neural_draft_token_rows": 438,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 1159913,
+          "append_ns": 77982,
+          "query_ns": 53298,
+          "release_ns": 5491,
+          "numeric_ns": 0,
+          "indexed": 135897,
+          "candidates": 135,
+          "compared": 753,
+          "d0_mismatch": 12,
+          "short_rejected": 33,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 132,
+            "physical_used_including_reclaimable_bytes": 124605960192,
+            "total_minus_available_bytes": 118951149568,
+            "cached_bytes": 5362487296,
+            "buffers_bytes": 336027648,
+            "kernel_reclaimable_bytes": 1993109504,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 7314677760,
+            "minimum_MemAvailable_bytes": 12969488384,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1036853248,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 61843,
+                "max": 74531
+              },
+              "thermal_zone1.temp": {
+                "min": 61843,
+                "max": 74531
+              }
+            }
+          }
+        },
+        "context-8192": {
+          "requests": 3,
+          "acceptance": [
+            21,
+            24,
+            21,
+            156
+          ],
+          "verify_sequence_steps": 222,
+          "verify_token_rows": 888,
+          "suffix_hits": 0,
+          "suffix_queries": 222,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            21,
+            24,
+            21,
+            156
+          ],
+          "neural_draft_token_rows": 444,
+          "accepted_extend_rows_upper_bound": 756,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 756,
+          "init_ns": 1350810,
+          "append_ns": 91895,
+          "query_ns": 50262,
+          "release_ns": 838994,
+          "numeric_ns": 0,
+          "indexed": 25266,
+          "candidates": 30,
+          "compared": 135,
+          "d0_mismatch": 9,
+          "short_rejected": 3,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 38,
+            "physical_used_including_reclaimable_bytes": 124930514944,
+            "total_minus_available_bytes": 119370113024,
+            "cached_bytes": 5345730560,
+            "buffers_bytes": 333463552,
+            "kernel_reclaimable_bytes": 1993117696,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 6990123008,
+            "minimum_MemAvailable_bytes": 12550524928,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1031872512,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 58468,
+                "max": 70812
+              },
+              "thermal_zone1.temp": {
+                "min": 58468,
+                "max": 70812
+              }
+            }
+          }
+        }
+      },
+      "session_events": [],
+      "startup_wall_seconds": 37.01149170193821,
+      "shutdown_wall_seconds": 0.6641775374300778,
+      "disk_peak_bytes": 0,
+      "successful_restores": 0,
+      "save_wall_ms": 0,
+      "restore_wall_ms": 0,
+      "streamed_prefill": [
+        {
+          "request": "chatcmpl-auto-0",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-2",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-3",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-4",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-5",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-6",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-7",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-8",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-9",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-10",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-11",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-12",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-13",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-14",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        }
+      ],
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "prefix_events": [],
+      "prefix_disk_peak_bytes": 0,
+      "prefix_save_wall_ms": 0,
+      "prefix_save_failures": [],
+      "restores_by_source": {
+        "session": 0,
+        "shared": 0
+      },
+      "combined_disk_upper_bound_bytes": 0
+    },
+    "03-subset-off": {
+      "memory": {
+        "samples": 1094,
+        "physical_used_including_reclaimable_bytes": 131223654400,
+        "total_minus_available_bytes": 120699752448,
+        "cached_bytes": 13427068928,
+        "buffers_bytes": 350429184,
+        "kernel_reclaimable_bytes": 105055232000,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 696983552,
+        "minimum_MemAvailable_bytes": 11220885504,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4126461952,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 53218,
+            "max": 73281
+          },
+          "thermal_zone1.temp": {
+            "min": 53062,
+            "max": 73281
+          }
+        }
+      },
+      "cases": {
+        "context-1024": {
+          "requests": 3,
+          "acceptance": [
+            30,
+            27,
+            21,
+            153
+          ],
+          "verify_sequence_steps": 231,
+          "verify_token_rows": 924,
+          "suffix_hits": 0,
+          "suffix_queries": 231,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            30,
+            27,
+            21,
+            153
+          ],
+          "neural_draft_token_rows": 462,
+          "accepted_extend_rows_upper_bound": 759,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 759,
+          "init_ns": 324659,
+          "append_ns": 179339,
+          "query_ns": 104086,
+          "release_ns": 41444,
+          "numeric_ns": 0,
+          "indexed": 3753,
+          "candidates": 96,
+          "compared": 477,
+          "d0_mismatch": 21,
+          "short_rejected": 27,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 23,
+            "physical_used_including_reclaimable_bytes": 125276229632,
+            "total_minus_available_bytes": 119762599936,
+            "cached_bytes": 5271445504,
+            "buffers_bytes": 249155584,
+            "kernel_reclaimable_bytes": 1758175232,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 6644408320,
+            "minimum_MemAvailable_bytes": 12158038016,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1014956032,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 58093,
+                "max": 63906
+              },
+              "thermal_zone1.temp": {
+                "min": 58093,
+                "max": 63906
+              }
+            }
+          }
+        },
+        "context-204800": {
+          "requests": 3,
+          "acceptance": [
+            24,
+            21,
+            15,
+            162
+          ],
+          "verify_sequence_steps": 222,
+          "verify_token_rows": 888,
+          "suffix_hits": 0,
+          "suffix_queries": 222,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            24,
+            21,
+            15,
+            162
+          ],
+          "neural_draft_token_rows": 444,
+          "accepted_extend_rows_upper_bound": 759,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 759,
+          "init_ns": 2561867,
+          "append_ns": 183265,
+          "query_ns": 111532,
+          "release_ns": 3546,
+          "numeric_ns": 0,
+          "indexed": 615102,
+          "candidates": 204,
+          "compared": 1014,
+          "d0_mismatch": 18,
+          "short_rejected": 36,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 5653296,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 810,
+            "physical_used_including_reclaimable_bytes": 124096905216,
+            "total_minus_available_bytes": 118964551680,
+            "cached_bytes": 5500485632,
+            "buffers_bytes": 273506304,
+            "kernel_reclaimable_bytes": 1749782528,
+            "swap_used_bytes": 2145619968,
+            "minimum_MemFree_bytes": 7823732736,
+            "minimum_MemAvailable_bytes": 12956086272,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1043161088,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 58875,
+                "max": 73281
+              },
+              "thermal_zone1.temp": {
+                "min": 58656,
+                "max": 73281
+              }
+            }
+          }
+        },
+        "context-4096": {
+          "requests": 3,
+          "acceptance": [
+            15,
+            9,
+            0,
+            183
+          ],
+          "verify_sequence_steps": 207,
+          "verify_token_rows": 828,
+          "suffix_hits": 0,
+          "suffix_queries": 207,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            15,
+            9,
+            0,
+            183
+          ],
+          "neural_draft_token_rows": 414,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 252105,
+          "append_ns": 148038,
+          "query_ns": 96559,
+          "release_ns": 3842,
+          "numeric_ns": 0,
+          "indexed": 12996,
+          "candidates": 138,
+          "compared": 618,
+          "d0_mismatch": 60,
+          "short_rejected": 24,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 27,
+            "physical_used_including_reclaimable_bytes": 125017239552,
+            "total_minus_available_bytes": 119684726784,
+            "cached_bytes": 5305257984,
+            "buffers_bytes": 249851904,
+            "kernel_reclaimable_bytes": 1716236288,
+            "swap_used_bytes": 2147475456,
+            "minimum_MemFree_bytes": 6903398400,
+            "minimum_MemAvailable_bytes": 12235911168,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1025167360,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 60781,
+                "max": 69218
+              },
+              "thermal_zone1.temp": {
+                "min": 60781,
+                "max": 69218
+              }
+            }
+          }
+        },
+        "context-45056": {
+          "requests": 3,
+          "acceptance": [
+            21,
+            15,
+            18,
+            165
+          ],
+          "verify_sequence_steps": 219,
+          "verify_token_rows": 876,
+          "suffix_hits": 0,
+          "suffix_queries": 219,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            21,
+            15,
+            18,
+            165
+          ],
+          "neural_draft_token_rows": 438,
+          "accepted_extend_rows_upper_bound": 765,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 765,
+          "init_ns": 1049710,
+          "append_ns": 154308,
+          "query_ns": 95050,
+          "release_ns": 4128,
+          "numeric_ns": 0,
+          "indexed": 135897,
+          "candidates": 135,
+          "compared": 753,
+          "d0_mismatch": 12,
+          "short_rejected": 33,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 132,
+            "physical_used_including_reclaimable_bytes": 124066607104,
+            "total_minus_available_bytes": 118959652864,
+            "cached_bytes": 5389324288,
+            "buffers_bytes": 253919232,
+            "kernel_reclaimable_bytes": 1716228096,
+            "swap_used_bytes": 2145619968,
+            "minimum_MemFree_bytes": 7854030848,
+            "minimum_MemAvailable_bytes": 12960985088,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1032015872,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 58218,
+                "max": 72843
+              },
+              "thermal_zone1.temp": {
+                "min": 58593,
+                "max": 72843
+              }
+            }
+          }
+        },
+        "context-8192": {
+          "requests": 3,
+          "acceptance": [
+            21,
+            24,
+            21,
+            156
+          ],
+          "verify_sequence_steps": 222,
+          "verify_token_rows": 888,
+          "suffix_hits": 0,
+          "suffix_queries": 222,
+          "hit_fraction": 0.0,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            21,
+            24,
+            21,
+            156
+          ],
+          "neural_draft_token_rows": 444,
+          "accepted_extend_rows_upper_bound": 756,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 756,
+          "init_ns": 1307963,
+          "append_ns": 190775,
+          "query_ns": 81444,
+          "release_ns": 745061,
+          "numeric_ns": 0,
+          "indexed": 25266,
+          "candidates": 30,
+          "compared": 135,
+          "d0_mismatch": 9,
+          "short_rejected": 3,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 3932976,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 37,
+            "physical_used_including_reclaimable_bytes": 124564049920,
+            "total_minus_available_bytes": 119223615488,
+            "cached_bytes": 5327839232,
+            "buffers_bytes": 250707968,
+            "kernel_reclaimable_bytes": 1716240384,
+            "swap_used_bytes": 2145619968,
+            "minimum_MemFree_bytes": 7356588032,
+            "minimum_MemAvailable_bytes": 12697022464,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1026887680,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 62250,
+                "max": 69062
+              },
+              "thermal_zone1.temp": {
+                "min": 62250,
+                "max": 69062
+              }
+            }
+          }
+        }
+      },
+      "session_events": [],
+      "startup_wall_seconds": 37.01158730406314,
+      "shutdown_wall_seconds": 0.664211856899783,
+      "disk_peak_bytes": 0,
+      "successful_restores": 0,
+      "save_wall_ms": 0,
+      "restore_wall_ms": 0,
+      "streamed_prefill": [
+        {
+          "request": "chatcmpl-auto-0",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-1",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-2",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "20439040",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-3",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-4",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-5",
+          "streamed": "1",
+          "chunks": "1",
+          "trunk_bytes": "83496960",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-6",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-7",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-8",
+          "streamed": "1",
+          "chunks": "2",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-9",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-10",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-11",
+          "streamed": "1",
+          "chunks": "11",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-12",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-13",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        },
+        {
+          "request": "chatcmpl-auto-14",
+          "streamed": "1",
+          "chunks": "50",
+          "trunk_bytes": "83886080",
+          "ready": "1"
+        }
+      ],
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "prefix_events": [],
+      "prefix_disk_peak_bytes": 0,
+      "prefix_save_wall_ms": 0,
+      "prefix_save_failures": [],
+      "restores_by_source": {
+        "session": 0,
+        "shared": 0
+      },
+      "combined_disk_upper_bound_bytes": 0
+    },
+    "04-plain-off": {
+      "memory": {
+        "samples": 887,
+        "physical_used_including_reclaimable_bytes": 131199057920,
+        "total_minus_available_bytes": 109436407808,
+        "cached_bytes": 16428761088,
+        "buffers_bytes": 274022400,
+        "kernel_reclaimable_bytes": 104777609216,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 721580032,
+        "minimum_MemAvailable_bytes": 22484230144,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 1043951616,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 53625,
+            "max": 78000
+          },
+          "thermal_zone1.temp": {
+            "min": 53500,
+            "max": 78000
+          }
+        }
+      },
+      "cases": {
+        "context-1024": {
+          "requests": 3,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 43,
+            "physical_used_including_reclaimable_bytes": 116726022144,
+            "total_minus_available_bytes": 108374282240,
+            "cached_bytes": 1360318464,
+            "buffers_bytes": 250445824,
+            "kernel_reclaimable_bytes": 8326172672,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 15194615808,
+            "minimum_MemAvailable_bytes": 23546355712,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1021698048,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 56843,
+                "max": 62937
+              },
+              "thermal_zone1.temp": {
+                "min": 56843,
+                "max": 63687
+              }
+            }
+          }
+        },
+        "context-204800": {
+          "requests": 3,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 540,
+            "physical_used_including_reclaimable_bytes": 116777017344,
+            "total_minus_available_bytes": 108567183360,
+            "cached_bytes": 1506037760,
+            "buffers_bytes": 267624448,
+            "kernel_reclaimable_bytes": 8322351104,
+            "swap_used_bytes": 2147217408,
+            "minimum_MemFree_bytes": 15143620608,
+            "minimum_MemAvailable_bytes": 23353454592,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1043951616,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 65156,
+                "max": 78000
+              },
+              "thermal_zone1.temp": {
+                "min": 62968,
+                "max": 78000
+              }
+            }
+          }
+        },
+        "context-4096": {
+          "requests": 3,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 50,
+            "physical_used_including_reclaimable_bytes": 116693655552,
+            "total_minus_available_bytes": 108564353024,
+            "cached_bytes": 1373347840,
+            "buffers_bytes": 254169088,
+            "kernel_reclaimable_bytes": 8321978368,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 15226982400,
+            "minimum_MemAvailable_bytes": 23356284928,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1026363392,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 59031,
+                "max": 67281
+              },
+              "thermal_zone1.temp": {
+                "min": 59062,
+                "max": 67281
+              }
+            }
+          }
+        },
+        "context-45056": {
+          "requests": 3,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 137,
+            "physical_used_including_reclaimable_bytes": 116733280256,
+            "total_minus_available_bytes": 108644249600,
+            "cached_bytes": 1398620160,
+            "buffers_bytes": 257425408,
+            "kernel_reclaimable_bytes": 8288432128,
+            "swap_used_bytes": 2147217408,
+            "minimum_MemFree_bytes": 15187357696,
+            "minimum_MemAvailable_bytes": 23276388352,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1030782976,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 61750,
+                "max": 73187
+              },
+              "thermal_zone1.temp": {
+                "min": 61750,
+                "max": 73187
+              }
+            }
+          }
+        },
+        "context-8192": {
+          "requests": 3,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 58,
+            "physical_used_including_reclaimable_bytes": 116717756416,
+            "total_minus_available_bytes": 108647075840,
+            "cached_bytes": 1380593664,
+            "buffers_bytes": 255209472,
+            "kernel_reclaimable_bytes": 8288428032,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 15202881536,
+            "minimum_MemAvailable_bytes": 23273562112,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1028378624,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 60000,
+                "max": 69218
+              },
+              "thermal_zone1.temp": {
+                "min": 60000,
+                "max": 69218
+              }
+            }
+          }
+        }
+      },
+      "session_events": [],
+      "startup_wall_seconds": 29.01067472435534,
+      "shutdown_wall_seconds": 0.4660638668574393,
+      "disk_peak_bytes": 0,
+      "successful_restores": 0,
+      "save_wall_ms": 0,
+      "restore_wall_ms": 0,
+      "streamed_prefill": [],
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "prefix_events": [],
+      "prefix_disk_peak_bytes": 0,
+      "prefix_save_wall_ms": 0,
+      "prefix_save_failures": [],
+      "restores_by_source": {
+        "session": 0,
+        "shared": 0
+      },
+      "combined_disk_upper_bound_bytes": 0
+    },
+    "05-plain-on": {
+      "memory": {
+        "samples": 889,
+        "physical_used_including_reclaimable_bytes": 131096756224,
+        "total_minus_available_bytes": 109908373504,
+        "cached_bytes": 16706080768,
+        "buffers_bytes": 267784192,
+        "kernel_reclaimable_bytes": 101556707328,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 823881728,
+        "minimum_MemAvailable_bytes": 22012264448,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 1895411712,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 58656,
+            "max": 77937
+          },
+          "thermal_zone1.temp": {
+            "min": 57906,
+            "max": 77937
+          }
+        }
+      },
+      "cases": {
+        "context-1024": {
+          "requests": 3,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 43,
+            "physical_used_including_reclaimable_bytes": 116136169472,
+            "total_minus_available_bytes": 109215506432,
+            "cached_bytes": 1496330240,
+            "buffers_bytes": 244809728,
+            "kernel_reclaimable_bytes": 7017959424,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 15784468480,
+            "minimum_MemAvailable_bytes": 22705131520,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1026428928,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 60937,
+                "max": 68062
+              },
+              "thermal_zone1.temp": {
+                "min": 60937,
+                "max": 68062
+              }
+            }
+          }
+        },
+        "context-204800": {
+          "requests": 3,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 540,
+            "physical_used_including_reclaimable_bytes": 115443707904,
+            "total_minus_available_bytes": 108705583104,
+            "cached_bytes": 1599303680,
+            "buffers_bytes": 258326528,
+            "kernel_reclaimable_bytes": 6947667968,
+            "swap_used_bytes": 2147475456,
+            "minimum_MemFree_bytes": 16476930048,
+            "minimum_MemAvailable_bytes": 23215054848,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1052082176,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 65718,
+                "max": 77937
+              },
+              "thermal_zone1.temp": {
+                "min": 65718,
+                "max": 77937
+              }
+            }
+          }
+        },
+        "context-4096": {
+          "requests": 3,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 51,
+            "physical_used_including_reclaimable_bytes": 115497177088,
+            "total_minus_available_bytes": 108811689984,
+            "cached_bytes": 1505611776,
+            "buffers_bytes": 245751808,
+            "kernel_reclaimable_bytes": 6946656256,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 16423460864,
+            "minimum_MemAvailable_bytes": 23108947968,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1031143424,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 62468,
+                "max": 70843
+              },
+              "thermal_zone1.temp": {
+                "min": 62468,
+                "max": 70843
+              }
+            }
+          }
+        },
+        "context-45056": {
+          "requests": 3,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 138,
+            "physical_used_including_reclaimable_bytes": 115514208256,
+            "total_minus_available_bytes": 108808867840,
+            "cached_bytes": 1533124608,
+            "buffers_bytes": 249675776,
+            "kernel_reclaimable_bytes": 6946656256,
+            "swap_used_bytes": 2147475456,
+            "minimum_MemFree_bytes": 16406429696,
+            "minimum_MemAvailable_bytes": 23111770112,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1042354176,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 63656,
+                "max": 75500
+              },
+              "thermal_zone1.temp": {
+                "min": 63656,
+                "max": 75500
+              }
+            }
+          }
+        },
+        "context-8192": {
+          "requests": 3,
+          "acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "verify_sequence_steps": 0,
+          "verify_token_rows": 0,
+          "suffix_hits": 0,
+          "suffix_queries": 0,
+          "hit_fraction": null,
+          "suffix_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_acceptance": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "neural_draft_token_rows": 0,
+          "accepted_extend_rows_upper_bound": 0,
+          "finish_reasons": [
+            [
+              "length"
+            ],
+            [
+              "length"
+            ],
+            [
+              "length"
+            ]
+          ],
+          "accepted_extend_token_rows": 0,
+          "init_ns": 0,
+          "append_ns": 0,
+          "query_ns": 0,
+          "release_ns": 0,
+          "numeric_ns": 0,
+          "indexed": 0,
+          "candidates": 0,
+          "compared": 0,
+          "d0_mismatch": 0,
+          "short_rejected": 0,
+          "numeric_rejected": 0,
+          "cache_decodes": 0,
+          "sum_request_index_peak_bytes": 0,
+          "shared_class_cache_peak_bytes": 0,
+          "index_peak_note": "sum of per-request peaks; not a simultaneous sample",
+          "timing_note": "CPU wall clocks include classification and lock waits; numeric_ns is included in query_ns; no independent GPU timings",
+          "memory": {
+            "samples": 59,
+            "physical_used_including_reclaimable_bytes": 115465879552,
+            "total_minus_available_bytes": 108770136064,
+            "cached_bytes": 1513177088,
+            "buffers_bytes": 246734848,
+            "kernel_reclaimable_bytes": 6980210688,
+            "swap_used_bytes": 2147479552,
+            "minimum_MemFree_bytes": 16454758400,
+            "minimum_MemAvailable_bytes": 23150501888,
+            "MemTotal_bytes": 131920637952,
+            "q4t_rss_bytes": 1033113600,
+            "q4t_swap_bytes": 0,
+            "source_ranges": {
+              "gpu-gpc-0.cur_freq": {
+                "min": 1575000000,
+                "max": 1575000000
+              },
+              "gpu-nvd-0.cur_freq": {
+                "min": 1692000000,
+                "max": 1692000000
+              },
+              "bwmgr.cur_freq": {
+                "min": 4266000000,
+                "max": 4266000000
+              },
+              "thermal_zone0.temp": {
+                "min": 62218,
+                "max": 73343
+              },
+              "thermal_zone1.temp": {
+                "min": 62218,
+                "max": 73343
+              }
+            }
+          }
+        }
+      },
+      "session_events": [],
+      "startup_wall_seconds": 30.009281383361667,
+      "shutdown_wall_seconds": 0.3657250441610813,
+      "disk_peak_bytes": 0,
+      "successful_restores": 0,
+      "save_wall_ms": 0,
+      "restore_wall_ms": 0,
+      "streamed_prefill": [],
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      },
+      "prefix_events": [],
+      "prefix_disk_peak_bytes": 0,
+      "prefix_save_wall_ms": 0,
+      "prefix_save_failures": [],
+      "restores_by_source": {
+        "session": 0,
+        "shared": 0
+      },
+      "combined_disk_upper_bound_bytes": 0
+    }
+  },
+  "limits": [
+    "One-second physical-RAM observations cannot bound unsampled peaks.",
+    "RSS, CUDA allocations and file cache are not added to physical RAM.",
+    "Snapshot disk bytes are SSD, not additional resident RAM.",
+    "Save wall time includes waiting for model mutex; restore wall time starts under that mutex. End-to-end TTFT includes both waits.",
+    "External startup/shutdown windows include direct-I/O preflight and cache teardown; ready polling has one-second granularity.",
+    "GPU memcpy/internal pageable staging is included in host RAM observations; no isolated GPU section timing was collected.",
+    "Process RAM attribution includes exact server binary paths from the SHA-bound plan, including the baseline named parent. Raw samples unchanged.",
+    "Pool byte fields are cumulative resident SSD bytes, not per-save bytes.",
+    "Sum of separate pool maxima is a bound, not a simultaneous observation.",
+    "Prefix save wall time starts under model mutex and is in HTTP latency.",
+    "No isolated GPU-duration or allocation-delta measurement.",
+    "Fixed IO preparation precedes the stage sampler: no sampled RAM peak for it. Source allocates an 8 MiB mmap plus a temporary 8 MiB payload, in addition to Python and filesystem memory."
+  ]
+}

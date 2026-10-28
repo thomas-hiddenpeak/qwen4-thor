@@ -1,0 +1,79 @@
+{
+  "passed": true,
+  "phase": "a",
+  "candidate_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "generated_requests": 46,
+  "rejected_http_attempts": 11,
+  "expected_cancellations": 2,
+  "services": 3,
+  "cpu_policy_tests": 7,
+  "cpu_fixture_tests": 2,
+  "original_generation_reuse": {
+    "passed": true,
+    "scope": "23 completed generation requests and 7 CPU tests only; original stage remains STOPPED",
+    "original_stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/phase-a",
+    "generated_requests": 23,
+    "rejected_attempts": 3,
+    "rejected_bodies_missing": true,
+    "cpu_tests": 7,
+    "readonly_and_seed_contract": true,
+    "shared_tokens": 8192,
+    "session_tokens": 9261,
+    "sampler_flushed": 440,
+    "final_barrier": false,
+    "retained_limitation": "Original failed stage has no final post-shutdown monitor barrier; all sampled observations flushed and no monitor errors.",
+    "seed_writes": [
+      {
+        "request": "chatcmpl-auto-13",
+        "event": "save",
+        "prefix": "8192",
+        "bytes": "367964160",
+        "ms": "377.471",
+        "error": "none"
+      },
+      {
+        "request": "chatcmpl-auto-21",
+        "event": "save",
+        "prefix": "8192",
+        "bytes": "735928320",
+        "ms": "369.877",
+        "error": "none"
+      }
+    ]
+  },
+  "subset_lifecycle": {
+    "passed": true,
+    "requests": 12,
+    "rejected_http": 4,
+    "shared_tokens": 8192,
+    "session_tokens": 9261,
+    "readonly_zero_writes": true,
+    "seed_saves": [
+      {
+        "request": "chatcmpl-auto-13",
+        "event": "save",
+        "prefix": "8192",
+        "bytes": "367964160",
+        "ms": "381.492",
+        "error": "none"
+      },
+      {
+        "request": "chatcmpl-auto-21",
+        "event": "save",
+        "prefix": "8192",
+        "bytes": "735928320",
+        "ms": "360.960",
+        "error": "none"
+      }
+    ],
+    "duplicate_no_write": true,
+    "cancel_unpublished": true
+  },
+  "original_stage_status": "STOPPED_RETAINED",
+  "remaining_stage": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/phase-a-remaining",
+  "state_sha256": "02f65dee4796d33e219eb94864c468c743851e80fba275180f931824f808b64e",
+  "postflight_sha256": "ac6dce7e338beee416af1d3793d84e43971342640975e79478eb8e27b6273c2a",
+  "guard_sha256": "046d34d972401eb8ad21c674ca329b1a3aaa2935e52fc6d15f27cd8ac3e50efc",
+  "original_rejected_response_bodies_missing": true,
+  "statistics": "NOT_A_PERFORMANCE_ACCEPTANCE"
+}

@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "phase": "b",
+  "candidate_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "requests": 0,
+  "rejected_http": 0,
+  "starts": 0,
+  "results": [
+    {
+      "head": "full",
+      "log_sha256": "dfa83b4d3b0768d3c561183560a342d04eaca2f410f1b07a74f7206f8ccf8f4b"
+    },
+    {
+      "head": "subset",
+      "log_sha256": "75513e5d2c374f6632b1fbfbaccc216a8126d486523343c2d6e0d870412caff9"
+    }
+  ],
+  "statistics": "DESCRIPTIVE_ONLY",
+  "state_sha256": "f0954f43b3bc6ab9e16ffd4b0c04c1676ab0e28706694c7cb0f777ef6689f554",
+  "postflight_sha256": "24b5a46a2e06752c45d3bf769a526cd9411aafe65c7d52aa16ae2df4523b5a04",
+  "guard_sha256": "d9e48a60ae0bcbfd1a31077e3190f094632dc5d60a311a98002761bdd890993d"
+}
