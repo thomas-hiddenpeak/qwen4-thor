@@ -1,12 +1,16 @@
 """Offline frozen targets and integrity; no retries or inferred loss tolerance."""
 import argparse
+import importlib.util
 import json
 import math
 from pathlib import Path
 import re
 import statistics
 
-import run_stage as driver
+spec = importlib.util.spec_from_file_location('release_analyze_driver',
+    Path(__file__).with_name('run_stage.py'))
+driver = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(driver)
 
 ROOT = driver.ROOT
 BASE = ROOT/'.q4t-work/mtp-prefill-release-20261029'

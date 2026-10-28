@@ -1,5 +1,6 @@
 """Freeze one existing binary, inherited materials, and a 5.5-hour budget."""
 import copy
+import importlib.util
 import json
 from pathlib import Path
 import shutil
@@ -7,7 +8,10 @@ import subprocess
 import sys
 import time
 
-import run_stage as driver
+spec = importlib.util.spec_from_file_location('release_prepare_driver',
+    Path(__file__).with_name('run_stage.py'))
+driver = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(driver)
 
 ROOT = driver.ROOT
 BASE = ROOT/'.q4t-work/mtp-prefill-release-20261029'
