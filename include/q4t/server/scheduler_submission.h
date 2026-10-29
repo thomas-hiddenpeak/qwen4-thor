@@ -2,8 +2,27 @@
 
 #include <condition_variable>
 #include <mutex>
+#include <vector>
 
 namespace q4t::server {
+
+// Only the scheduler calls this at a selection boundary with its queue lock
+// held and no borrowed execution still in flight. Completed results may be
+// consumed outside the lock: retire their membership without rewriting them.
+template <typename Request, typename Cancelled, typename Complete>
+void RetireCancelledSchedulerRequests(std::vector<Request*>& active,
+                                      Cancelled cancelled, Complete complete) {
+  for (auto it = active.begin(); it != active.end();) {
+    Request* request = *it;
+    if (!cancelled(request)) {
+      ++it;
+      continue;
+    }
+    request->retired = true;
+    if (request->pending) complete(request);
+    it = active.erase(it);
+  }
+}
 
 // stopping, the queue and completion state share mutex. enqueue publishes the
 // borrowed request only while that lock is held. Once accepted, only completed

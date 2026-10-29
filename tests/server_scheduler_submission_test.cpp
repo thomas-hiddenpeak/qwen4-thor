@@ -7,6 +7,13 @@
 
 namespace {
 
+struct CancellationRow {
+  bool pending = false;
+  bool retired = false;
+  bool cancelled = false;
+  int result = 42;
+};
+
 // All state is protected by mutex. The CV handshakes force each ordering;
 // these tests do not rely on sleeps or the relative speed of either thread.
 struct Submission {
@@ -26,6 +33,26 @@ struct Submission {
 };
 
 }  // namespace
+
+Q4T_TEST(scheduler_cancel_retires_waiters_preserves_completed_results) {
+  CancellationRow queued{true, false, true, 42};
+  CancellationRow completed{false, false, true, 17};
+  CancellationRow healthy{true, false, false, 21};
+  std::vector<CancellationRow*> active{&queued, &completed, &healthy};
+  int completed_count = 0;
+  q4t::server::RetireCancelledSchedulerRequests(
+      active, [](auto* row) { return row->cancelled; }, [&](auto* row) {
+        row->pending = false;
+        row->result = -1;
+        ++completed_count;
+      });
+  Q4T_CHECK(active.size() == 1 && active[0] == &healthy);
+  Q4T_CHECK(queued.retired && !queued.pending && queued.result == -1);
+  Q4T_CHECK(completed.retired && completed.result == 17);
+  Q4T_CHECK(!healthy.retired && healthy.pending && healthy.result == 21);
+  Q4T_CHECK(completed_count == 1);
+  return true;
+}
 
 Q4T_TEST(scheduler_submission_rejects_after_stop) {
   Submission state;

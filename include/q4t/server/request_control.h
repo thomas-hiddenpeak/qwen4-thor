@@ -20,6 +20,7 @@ class RequestControl {
                  std::chrono::steady_clock::time_point deadline)
       : id_(std::move(id)), key_(std::move(key)), deadline_(deadline) {}
   const std::string& id() const { return id_; }
+  std::chrono::steady_clock::time_point deadline() const { return deadline_; }
   bool MatchesKey(const std::string& key) const {
     if (key.empty() || key.size() != key_.size()) return false;
     unsigned char diff = 0;

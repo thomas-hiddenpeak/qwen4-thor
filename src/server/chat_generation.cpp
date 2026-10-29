@@ -187,6 +187,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   } registration{requests_, control, diagnostic};
   const auto cancelled = [&] { return RequestCancelled(control.get(), fd); };
+  const auto send_cancel_error = [&](const char* message) {
+    SendError(fd, 409, message,
+              {std::chrono::steady_clock::now() +
+               std::chrono::milliseconds(250)});
+  };
   bool abort_counted = false;
   const auto count_abort = [&] {
     if (!abort_counted) {
@@ -263,7 +268,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   }
   if (seq_id == -2) {
     count_abort();
-    SendError(fd, 409, "request cancelled before admission");
+    send_cancel_error("request cancelled before admission");
     return;
   }
   if (seq_id < 0) {
@@ -320,7 +325,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   if (cancelled()) {
     count_abort();
     cleanup();
-    SendError(fd, 409, "request cancelled before encoding");
+    send_cancel_error("request cancelled before encoding");
     return;
   }
 
@@ -872,7 +877,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     count_abort();
     model::ModelEndSequence(&seq);
     cleanup();
-    SendError(fd, 409, "request cancelled during prefill");
+    send_cancel_error("request cancelled during prefill");
     return;
   }
   if (!s.ok()) {
@@ -891,7 +896,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   const auto write_stream = [&](const std::string& data) {
     if (client_disconnected) return false;
     RequestDiagnostics::Scope wait(diagnostic, Wait::kWrite);
-    if (!cancelled() && WriteAll(fd, data)) return true;
+    if (!cancelled() && WriteAll(fd, data, {.control = control.get()}))
+      return true;
     client_disconnected = true;
     control->Cancel(RequestControl::State::kDisconnect);
     count_abort();
@@ -1050,6 +1056,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       mtp_ar.complete_terminal_draft = session.cache != nullptr;
       mtp_ar.session_last_trunk = d_session_trunk;
       mtp_ar.seq = &seq;
+      mtp_ar.control = control.get();
+      mtp_ar.fd = fd;
       mtp_ar.mtp_g = d_mtp_g;
 
       active_.push_back(&mtp_ar);
@@ -1114,9 +1122,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         mtp_ar.mtp_accepted_count = 0;
         mtp_ar.mtp_next_b = -1;
         mtp_ar.mtp_next_d0 = -1;
-        mtp_ar.pending = !scheduler_stop_;
-        mtp_ar.done = scheduler_stop_;
-        if (scheduler_stop_) seq.Fail();
+        mtp_ar.pending = !scheduler_stop_ && !mtp_ar.retired;
+        mtp_ar.done = !mtp_ar.pending;
+        if (mtp_ar.done) seq.Fail();
       }
       sched_cv_.notify_one();
       // Block until the scheduler's batched step yields this step's output.
@@ -1146,11 +1154,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
           std::string piece;
           bool wrote = true;
+          bool decoded = false;
           {
             auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-            if (tok_->Decode(one, true, &piece).ok())
-              wrote = write_content(utf8.Append(piece));
+            decoded = tok_->Decode(one, true, &piece).ok();
           }
+          if (decoded) wrote = write_content(utf8.Append(piece));
           if (!wrote) {  // client disconnected: stop, free the slot
             done = true;
             finish_reason = "stop";
@@ -1325,6 +1334,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                   static_cast<int>(active_.size()) < max_seq_;
       if (use_sched) {
         ar.seq = &seq;
+        ar.control = control.get();
+        ar.fd = fd;
         active_.push_back(&ar);
       }
     }
@@ -1342,11 +1353,12 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
         std::string piece;
         bool wrote = true;
+        bool decoded = false;
         {
           auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-          if (tok_->Decode(one, true, &piece).ok())
-            wrote = write_content(utf8.Append(piece));
+          decoded = tok_->Decode(one, true, &piece).ok();
         }
+        if (decoded) wrote = write_content(utf8.Append(piece));
         if (!wrote) {  // client disconnected: stop, free the slot
           finish_reason = "stop";
           break;
@@ -1365,9 +1377,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         {
           const std::lock_guard<std::mutex> lock(sched_mu_);
           ar.next_token = -1;
-          ar.pending = !scheduler_stop_;
-          ar.done = scheduler_stop_;
-          if (scheduler_stop_) seq.Fail();
+          ar.pending = !scheduler_stop_ && !ar.retired;
+          ar.done = !ar.pending;
+          if (ar.done) seq.Fail();
         }
         sched_cv_.notify_one();
         // Block until the scheduler's packed forward yields this step's token.
@@ -1559,12 +1571,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // complete. Cancellation remains possible until the response is sent.
   if (cancelled()) {
     count_abort();
+    const detail::WriteOptions terminal{
+        std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
     if (stream) {
       WriteAll(fd,
-               "data: {\"error\":{\"message\":\"request cancelled\"}}\r\n\r\n");
-      WriteAll(fd, "data: [DONE]\r\n\r\n");
+               "data: {\"error\":{\"message\":\"request cancelled\"}}\r\n\r\n",
+               terminal);
+      WriteAll(fd, "data: [DONE]\r\n\r\n", terminal);
     } else {
-      SendError(fd, 409, "request cancelled");
+      SendError(fd, 409, "request cancelled", terminal);
     }
     cleanup();
     return;
@@ -1574,17 +1589,19 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     std::fprintf(stderr, "[q4t] generation failed id=%s\n", id.c_str());
     // The HTTP status is already committed for streaming requests. Publish
     // an error terminal, never a normal stop/usage or a successful request.
+    const detail::WriteOptions terminal{
+        std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
     if (stream) {
       WriteAll(fd,
                "data: {\"error\":{\"message\":\"generation failed\","
                "\"type\":\"server_error\",\"code\":\"generation_failed\"}}"
-               "\r\n\r\n");
-      WriteAll(fd, "data: [DONE]\r\n\r\n");
+               "\r\n\r\n", terminal);
+      WriteAll(fd, "data: [DONE]\r\n\r\n", terminal);
     } else {
       SendSimple(fd, 500, "Internal Server Error",
                  "{\"error\":{\"message\":\"generation failed\","
                  "\"type\":\"server_error\",\"code\":\"generation_failed\"}}",
-                 "application/json");
+                 "application/json", terminal);
     }
     cleanup();
     return;
@@ -1635,7 +1652,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           ",\"total_tokens\":" + std::to_string(T + generated.size()) +
           cached_usage + "}";
       resp += "}";
-      if (!SendSimple(fd, 200, "OK", resp, "application/json")) {
+      if (!SendSimple(fd, 200, "OK", resp, "application/json",
+                      {.control = control.get()})) {
         client_disconnected = true;
         control->Cancel(RequestControl::State::kDisconnect);
         count_abort();

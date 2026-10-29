@@ -1,7 +1,9 @@
 #include "q4t/server/http_response.h"
 
 #include <sys/socket.h>
+#include <poll.h>
 
+#include <algorithm>
 #include <cerrno>
 #include <cstdio>
 #include <ctime>
@@ -93,13 +95,34 @@ std::string JsonEscape(const std::string& s) {
   return out;
 }
 
-bool WriteAll(int fd, const char* data, size_t len) {
+bool WriteAll(int fd, const char* data, size_t len,
+              const WriteOptions& options) {
+  using Clock = std::chrono::steady_clock;
+  const auto deadline = options.control
+      ? std::min(options.deadline, options.control->deadline())
+      : options.deadline;
   size_t off = 0;
   while (off < len) {
+    if (options.control && options.control->Cancelled()) return false;
+    if (Clock::now() >= deadline) return false;
     // A disconnected client must fail this request, not terminate the server.
-    const ssize_t n = ::send(fd, data + off, len - off, MSG_NOSIGNAL);
+    // Per-call nonblocking leaves the request reader's fd mode unchanged.
+    const ssize_t n = ::send(fd, data + off, len - off,
+                             MSG_NOSIGNAL | MSG_DONTWAIT);
     if (n <= 0) {
       if (n < 0 && errno == EINTR) continue;
+      if (n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+        const auto remaining = std::chrono::duration_cast<
+            std::chrono::milliseconds>(deadline - Clock::now()).count();
+        if (remaining < 0) return false;
+        pollfd peer{fd, POLLOUT, 0};
+        const int ready = ::poll(
+            &peer, 1, static_cast<int>(std::min<int64_t>(remaining + 1, 25)));
+        if (ready < 0 && errno != EINTR) return false;
+        if (ready > 0 && (peer.revents & (POLLERR | POLLHUP | POLLNVAL)))
+          return false;
+        continue;
+      }
       return false;
     }
     off += static_cast<size_t>(n);
@@ -107,26 +130,27 @@ bool WriteAll(int fd, const char* data, size_t len) {
   return true;
 }
 
-bool WriteAll(int fd, const std::string& s) {
-  return WriteAll(fd, s.data(), s.size());
+bool WriteAll(int fd, const std::string& s, const WriteOptions& options) {
+  return WriteAll(fd, s.data(), s.size(), options);
 }
 
 
 bool SendSimple(int fd, int code, const char* status, const std::string& body,
-                const std::string& content_type) {
+                const std::string& content_type, const WriteOptions& options) {
   std::string resp = "HTTP/1.1 " + std::to_string(code) + " " + status +
                      "\r\nContent-Type: " + content_type +
                      "\r\nContent-Length: " + std::to_string(body.size()) +
                      "\r\nConnection: close\r\n\r\n" +
                      body;
-  return WriteAll(fd, resp);
+  return WriteAll(fd, resp, options);
 }
 
-void SendError(int fd, int code, const std::string& message) {
+void SendError(int fd, int code, const std::string& message,
+               const WriteOptions& options) {
   const std::string body =
       "{\"error\":{\"message\":\"" + JsonEscape(message) +
       "\",\"type\":\"invalid_request_error\",\"code\":null}}";
-  SendSimple(fd, code, "Bad Request", body, "application/json");
+  SendSimple(fd, code, "Bad Request", body, "application/json", options);
 }
 
 // OpenAI SSE data chunk for a streaming completion.

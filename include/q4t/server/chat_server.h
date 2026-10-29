@@ -150,6 +150,9 @@ class ChatServer {
   // forward has produced this request's result. `next_token` carries the
   // plain-decode argmax back; `mtp_*` carry the MTP step output.
   struct ActiveRequest {
+    RequestControl* control = nullptr;
+    int fd = -1;
+    bool retired = false;  // sched_mu_; cancelled row cannot submit again
     int32_t token = 0;     // the token to feed (this request's next input)
     // Borrowed while the request thread waits on cv. The scheduler uses
     // this single state for submission and completion, including plain decode.

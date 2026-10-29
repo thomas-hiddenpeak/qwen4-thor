@@ -1,6 +1,7 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
 #include "q4t/diagnostic/execution_observer.h"
+#include "q4t/server/scheduler_submission.h"
 
 #include <algorithm>
 #include <chrono>
@@ -161,8 +162,21 @@ void ChatServer::SchedulerLoop() {
     std::vector<PrefillReq*> pf;
     {
       std::unique_lock<std::mutex> lock(sched_mu_);
-      sched_cv_.wait(lock, [this] {
+      const auto ready = [this] {
         if (scheduler_stop_) return true;
+        RetireCancelledSchedulerRequests(
+            active_, [](ActiveRequest* r) {
+              return RequestCancelled(r->control, r->fd);
+            }, [](ActiveRequest* r) {
+              r->seq->Fail();
+              r->pending = false;
+              r->done = true;
+              r->next_token = -1;
+              r->mtp_accepted_count = 0;
+              r->mtp_next_b = -1;
+              r->mtp_next_d0 = -1;
+              r->cv.notify_one();
+            });
         // Batched prefill runs opportunistically (prefills arrive as encoding
         // completes, not in lockstep), so ANY pending prefill wakes the loop.
         if (!prefill_pending_.empty() || !chunk_prefill_pending_.empty())
@@ -187,7 +201,13 @@ void ChatServer::SchedulerLoop() {
         }
         if (active_plain > 0 && pending_plain == active_plain) return true;
         return active_mtp > 0 && pending_mtp == active_mtp;
-      });
+      };
+      while (!ready()) {
+        // A deadline or disconnect need not have a notifying API call.
+        // Timeout only rechecks cancellation; it never runs a partial batch.
+        if (active_.empty()) sched_cv_.wait(lock);
+        else sched_cv_.wait_for(lock, std::chrono::milliseconds(25));
+      }
       if (scheduler_stop_) {
         // Drain: wake any request that is still waiting so it can exit.
         for (ActiveRequest* r : active_) {

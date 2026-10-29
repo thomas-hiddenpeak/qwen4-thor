@@ -94,10 +94,8 @@ Status ChatServer::Run() {
     }
     int nodelay = 1;
     ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
-    // Read/write timeouts: a slow or stalled client (slowloris) must not pin a
-    // request thread + seq slot indefinitely. Each blocking recv/send fails
-    // after 30 s of no progress (well above a legitimate inter-write gap), so
-    // ReadRequest / WriteAll return and the slot frees.
+    // Reader/writer use absolute deadlines. Keep the socket timeouts as a
+    // fallback for other direct operations, not as the logical write budget.
     struct timeval tv {
       30, 0
     };
@@ -216,6 +214,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
       return;
     }
     seq_cv_.notify_all();
+    sched_cv_.notify_one();
     SendSimple(fd, 202, "Accepted", "{\"cancel_requested\":true}",
                "application/json");
     return;

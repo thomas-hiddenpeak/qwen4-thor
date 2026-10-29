@@ -4,6 +4,10 @@
 #include <unistd.h>
 
 #include <array>
+#include <atomic>
+#include <chrono>
+#include <csignal>
+#include <pthread.h>
 #include <string>
 #include <thread>
 #include <utility>
@@ -120,5 +124,70 @@ Q4T_TEST(server_http_response_partial_writes) {
   shutdown(sockets.fd[0], SHUT_WR);
   reader.join();
   Q4T_CHECK(sent && received == input);
+  return true;
+}
+
+Q4T_TEST(server_http_write_deadline_despite_progress_and_interrupts) {
+  using namespace std::chrono_literals;
+  using Clock = std::chrono::steady_clock;
+  SocketPair sockets;
+  Q4T_CHECK(sockets.fd[0] >= 0);
+  int buffer = 1024;
+  setsockopt(sockets.fd[0], SOL_SOCKET, SO_SNDBUF, &buffer, sizeof(buffer));
+  struct sigaction previous{}, action{};
+  action.sa_handler = +[](int) {};
+  sigemptyset(&action.sa_mask);
+  Q4T_CHECK(sigaction(SIGUSR2, &action, &previous) == 0);
+  const auto writer = pthread_self();
+  std::atomic<size_t> received{0};
+  std::jthread reader([&](std::stop_token stop) {
+    std::array<char, 1024> bytes;
+    while (!stop.stop_requested()) {
+      const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(),
+                           MSG_DONTWAIT);
+      if (n > 0) received.fetch_add(static_cast<size_t>(n));
+      pthread_kill(writer, SIGUSR2);  // Interrupt blocked poll; no SA_RESTART.
+      std::this_thread::sleep_for(5ms);
+    }
+  });
+  const std::string input(1024 * 1024, 'x');
+  const auto start = Clock::now();
+  const q4t::server::detail::WriteOptions options{start + 100ms};
+  const bool sent = q4t::server::detail::WriteAll(
+      sockets.fd[0], input, options);
+  const auto elapsed = Clock::now() - start;
+  reader.request_stop();
+  reader.join();
+  sigaction(SIGUSR2, &previous, nullptr);
+  Q4T_CHECK(!sent);
+  Q4T_CHECK(received.load() > 0 && received.load() < input.size());
+  Q4T_CHECK(elapsed >= 100ms && elapsed < 2s);
+  // Reusing the same terminal budget cannot buy a second wait.
+  Q4T_CHECK(!q4t::server::detail::WriteAll(sockets.fd[0], "end", options));
+  return true;
+}
+
+Q4T_TEST(server_http_write_cancel_and_request_deadline) {
+  using namespace std::chrono_literals;
+  using Clock = std::chrono::steady_clock;
+  SocketPair sockets;
+  Q4T_CHECK(sockets.fd[0] >= 0);
+  int buffer = 1024;
+  setsockopt(sockets.fd[0], SOL_SOCKET, SO_SNDBUF, &buffer, sizeof(buffer));
+  q4t::server::RequestControl control("writer", "key", Clock::now() + 10s);
+  std::jthread cancel([&] {
+    std::this_thread::sleep_for(30ms);
+    control.Cancel();
+  });
+  const auto start = Clock::now();
+  Q4T_CHECK(!q4t::server::detail::WriteAll(
+      sockets.fd[0], std::string(1024 * 1024, 'x'), {.control = &control}));
+  Q4T_CHECK(Clock::now() - start < 2s);
+  Q4T_CHECK(!control.Finish());
+  cancel.join();
+  q4t::server::RequestControl expired("deadline", "key", Clock::now() - 1ms);
+  Q4T_CHECK(!q4t::server::detail::WriteAll(
+      sockets.fd[0], "unsent", {.control = &expired}));
+  Q4T_CHECK(std::string(expired.Reason()) == "deadline_exceeded");
   return true;
 }
