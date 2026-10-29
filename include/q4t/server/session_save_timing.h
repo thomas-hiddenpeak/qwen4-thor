@@ -27,8 +27,26 @@ class SessionSaveTiming {
     kWrite,
     kPublish,
     kCleanup,
+    kPipelineSetup,
+    kPipelineWait,
     kCount
   };
+  // Called only after joining the writer. Its wall time overlaps the main
+  // thread, so Report excludes it from the critical-path wall sum.
+  void MergeWriter(const SessionSaveTiming& writer, double thread_cpu,
+                   double overlap) {
+    pipeline = true;
+    valid = valid && writer.valid;
+    wall_[kWrite] = writer.wall_[kWrite];
+    cpu_[kWrite] = writer.cpu_[kWrite];
+    calls_[kWrite] = writer.calls_[kWrite];
+    max_write_ms = writer.max_write_ms;
+    slow_writes = writer.slow_writes;
+    data_bytes = writer.data_bytes;
+    disk_bytes = writer.disk_bytes;
+    writer_cpu_ms = thread_cpu;
+    overlap_ms = overlap;
+  }
   static bool Enabled() {
     static const bool enabled = [] {
       const char* value = std::getenv("Q4T_SESSION_SAVE_TIMING");
@@ -87,22 +105,27 @@ class SessionSaveTiming {
   };
   void Report(bool success) {
     if (!Enabled()) return;
-    const double wall = Wall() - start_wall_, cpu = Cpu() - start_cpu_;
+    const double wall = Wall() - start_wall_;
+    const double main_cpu = Cpu() - start_cpu_;
+    const double cpu = main_cpu + writer_cpu_ms;
     constexpr const char* names[] = {"model_lock", "ranges",  "cache_lock",
                                      "metadata",   "open",    "preallocate",
                                      "copy_api",   "padding", "sha256",
-                                     "pwrite",     "publish", "cleanup"};
+                                     "pwrite",     "publish", "cleanup",
+                                     "pipeline_setup", "pipeline_wait"};
     double measured_wall = 0, measured_cpu = 0;
     flockfile(stderr);
     std::fprintf(
         stderr,
         "[session-save-timing] request=%s pool=%s success=%d valid=%d "
         "wall_ms=%.3f cpu_ms=%.3f data_bytes=%zu disk_bytes=%zu "
-        "preallocated=%d fallback=%d max_write_ms=%.3f slow_writes=%zu",
+        "preallocated=%d fallback=%d max_write_ms=%.3f slow_writes=%zu "
+        "pipeline=%d main_cpu_ms=%.3f writer_cpu_ms=%.3f overlap_ms=%.3f",
         request_, pool_, success, valid, wall, cpu, data_bytes, disk_bytes,
-        preallocated, fallback, max_write_ms, slow_writes);
+        preallocated, fallback, max_write_ms, slow_writes, pipeline,
+        main_cpu, writer_cpu_ms, overlap_ms);
     for (int i = 0; i < kCount; ++i) {
-      measured_wall += wall_[i];
+      if (!pipeline || i != kWrite) measured_wall += wall_[i];
       measured_cpu += cpu_[i];
       std::fprintf(stderr, " %s_ms=%.3f %s_cpu_ms=%.3f %s_calls=%zu", names[i],
                    wall_[i], names[i], cpu_[i], names[i], calls_[i]);
@@ -114,6 +137,9 @@ class SessionSaveTiming {
   bool valid = true, preallocated = false, fallback = false;
   size_t data_bytes = 0, disk_bytes = 0, slow_writes = 0;
   double max_write_ms = 0;
+  bool pipeline = false;
+  double writer_cpu_ms = 0;
+  double overlap_ms = 0;
 
  private:
   const char* request_;

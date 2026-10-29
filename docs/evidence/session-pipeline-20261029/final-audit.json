@@ -1,0 +1,230 @@
+{
+  "passed": true,
+  "sealed_files": 632,
+  "sealed_file_errors": [],
+  "identity": {
+    "q4t": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+    "q4t.release.json": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2"
+  },
+  "own_pids": [
+    147233,
+    147237,
+    148133,
+    150611,
+    156515,
+    159103
+  ],
+  "alive": [],
+  "monitor_samples": 2369,
+  "exit_pending": {
+    "active": 0,
+    "admitted": 2,
+    "resolved": 2
+  },
+  "precondition_released": true,
+  "services": [
+    {
+      "service": "00-full-pipeline-0",
+      "head": "full",
+      "pipeline": 0,
+      "main_save_median_seconds": 6.281077000000001,
+      "restore_seconds": [
+        20.605411441996694,
+        16.186944937100634
+      ],
+      "restore_sum": 36.79235637909733,
+      "write_bytes": 26521759744,
+      "ttft_off": 103.41203501215205,
+      "ttft_on": 102.7204617918469,
+      "e2e_tps_off": 4.2495614699470226,
+      "e2e_tps_on": 4.456478461767921,
+      "private_snapshot_disk_bytes": [
+        4159963136
+      ],
+      "private_snapshot_pwrite_calls": [
+        598
+      ],
+      "main_segments": [
+        {
+          "request": "chatcmpl-auto-0",
+          "wall_ms": "4088.716",
+          "copy_api_ms": "71.282",
+          "sha256_ms": "3256.264",
+          "pwrite_ms": "756.911",
+          "pwrite_cpu_ms": "155.294",
+          "pipeline_setup_ms": "0.000",
+          "pipeline_wait_ms": "0.000",
+          "overlap_ms": "0.000",
+          "cpu_ms": "3415.315",
+          "residual_ms": "3.937"
+        },
+        {
+          "request": "chatcmpl-auto-4",
+          "wall_ms": "8473.339",
+          "copy_api_ms": "39.155",
+          "sha256_ms": "3255.676",
+          "pwrite_ms": "5175.594",
+          "pwrite_cpu_ms": "166.803",
+          "pipeline_setup_ms": "0.000",
+          "pipeline_wait_ms": "0.000",
+          "overlap_ms": "0.000",
+          "cpu_ms": "3427.964",
+          "residual_ms": "2.580"
+        }
+      ]
+    },
+    {
+      "service": "01-full-pipeline-1",
+      "head": "full",
+      "pipeline": 1,
+      "main_save_median_seconds": 9.712588,
+      "restore_seconds": [
+        18.465576380025595,
+        25.711412463104352
+      ],
+      "restore_sum": 44.17698884312995,
+      "write_bytes": 26521759744,
+      "ttft_off": 102.51561747700907,
+      "ttft_on": 103.09066692995839,
+      "e2e_tps_off": 4.009113179564838,
+      "e2e_tps_on": 4.351857882191016,
+      "private_snapshot_disk_bytes": [
+        4159963136
+      ],
+      "private_snapshot_pwrite_calls": [
+        598
+      ],
+      "main_segments": [
+        {
+          "request": "chatcmpl-auto-0",
+          "wall_ms": "9076.095",
+          "copy_api_ms": "90.163",
+          "sha256_ms": "3254.706",
+          "pwrite_ms": "7301.643",
+          "pwrite_cpu_ms": "210.129",
+          "pipeline_setup_ms": "0.155",
+          "pipeline_wait_ms": "5727.169",
+          "overlap_ms": "1576.928",
+          "cpu_ms": "3479.507",
+          "residual_ms": "3.581"
+        },
+        {
+          "request": "chatcmpl-auto-4",
+          "wall_ms": "10348.973",
+          "copy_api_ms": "59.273",
+          "sha256_ms": "3253.971",
+          "pwrite_ms": "8839.196",
+          "pwrite_cpu_ms": "210.109",
+          "pipeline_setup_ms": "0.079",
+          "pipeline_wait_ms": "7032.021",
+          "overlap_ms": "1809.997",
+          "cpu_ms": "3477.936",
+          "residual_ms": "3.278"
+        }
+      ]
+    },
+    {
+      "service": "02-subset-pipeline-1",
+      "head": "subset",
+      "pipeline": 1,
+      "main_save_median_seconds": 14.154966,
+      "restore_seconds": [
+        19.184980711899698,
+        19.810874389950186
+      ],
+      "restore_sum": 38.995855101849884,
+      "write_bytes": 26521759744,
+      "ttft_off": 103.08740136399865,
+      "ttft_on": 102.68644314492121,
+      "e2e_tps_off": 3.8743127496362972,
+      "e2e_tps_on": 4.215822025136783,
+      "private_snapshot_disk_bytes": [
+        4159963136
+      ],
+      "private_snapshot_pwrite_calls": [
+        598
+      ],
+      "main_segments": [
+        {
+          "request": "chatcmpl-auto-0",
+          "wall_ms": "12939.166",
+          "copy_api_ms": "81.259",
+          "sha256_ms": "3253.647",
+          "pwrite_ms": "11886.202",
+          "pwrite_cpu_ms": "186.487",
+          "pipeline_setup_ms": "0.056",
+          "pipeline_wait_ms": "9599.593",
+          "overlap_ms": "2289.291",
+          "cpu_ms": "3454.286",
+          "residual_ms": "4.288"
+        },
+        {
+          "request": "chatcmpl-auto-4",
+          "wall_ms": "15370.656",
+          "copy_api_ms": "58.312",
+          "sha256_ms": "3253.955",
+          "pwrite_ms": "14094.048",
+          "pwrite_cpu_ms": "181.319",
+          "pipeline_setup_ms": "0.089",
+          "pipeline_wait_ms": "12054.527",
+          "overlap_ms": "2042.655",
+          "cpu_ms": "3449.004",
+          "residual_ms": "3.434"
+        }
+      ]
+    },
+    {
+      "service": "03-subset-pipeline-0",
+      "head": "subset",
+      "pipeline": 0,
+      "main_save_median_seconds": 14.984216,
+      "restore_seconds": [
+        19.351678872015327,
+        19.990335294045508
+      ],
+      "restore_sum": 39.342014166060835,
+      "write_bytes": 26521759744,
+      "ttft_off": 102.54156525200233,
+      "ttft_on": 103.17128677316941,
+      "e2e_tps_off": 3.880226725531178,
+      "e2e_tps_on": 4.188392417440304,
+      "private_snapshot_disk_bytes": [
+        4159963136
+      ],
+      "private_snapshot_pwrite_calls": [
+        598
+      ],
+      "main_segments": [
+        {
+          "request": "chatcmpl-auto-0",
+          "wall_ms": "16409.159",
+          "copy_api_ms": "62.747",
+          "sha256_ms": "3275.951",
+          "pwrite_ms": "13067.466",
+          "pwrite_cpu_ms": "196.446",
+          "pipeline_setup_ms": "0.000",
+          "pipeline_wait_ms": "0.000",
+          "overlap_ms": "0.000",
+          "cpu_ms": "3459.615",
+          "residual_ms": "2.693"
+        },
+        {
+          "request": "chatcmpl-auto-4",
+          "wall_ms": "13559.171",
+          "copy_api_ms": "40.947",
+          "sha256_ms": "3254.421",
+          "pwrite_ms": "10261.015",
+          "pwrite_cpu_ms": "183.886",
+          "pipeline_setup_ms": "0.000",
+          "pipeline_wait_ms": "0.000",
+          "overlap_ms": "0.000",
+          "cpu_ms": "3446.948",
+          "residual_ms": "2.452"
+        }
+      ]
+    }
+  ],
+  "elapsed_including_preparation_seconds": 3745.1310040950775,
+  "logical_write_upper_bound": 175074951168,
+  "note": "Original preflight ENV_ABORT kept separately; actual execution guard and final sampling barrier passed. No new inference."
+}

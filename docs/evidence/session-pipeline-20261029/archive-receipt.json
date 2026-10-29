@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "files": 1397,
+  "bytes": 512310668,
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-pipeline-20261029-archive",
+  "manifest_sha256": "1c4f56d38f15fa148f8984628964ee52d45dc82341d01d00f6450be0f2848fab"
+}

@@ -1,0 +1,11 @@
+{
+  "original_status": "ENV_ABORT",
+  "cause": "Launcher used evalscope venv missing pynvml",
+  "model_loads": 0,
+  "http": 0,
+  "precondition_bytes": 0,
+  "repair": "Use previously validated system python3 for guard and phase driver",
+  "scope": "One entry correction before any measurement; candidate/request/start/deadline budgets unchanged",
+  "original_lease": ".q4t-work/session-pipeline-20261029/lease",
+  "new_lease": ".q4t-work/session-pipeline-20261029/lease-execution"
+}

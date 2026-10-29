@@ -3,7 +3,9 @@
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
-最新专项：[栈错误修复、完整失败记录及子集部分观测](SESSION_PWRITE_STACK_RESULT_2026-10-29.md)；
+最新专项：[快照双缓冲完整验证NO_GO与微优化收尾](SESSION_PIPELINE_RESULT_2026-10-29.md)；
+[双缓冲单候选冻结预算](SESSION_PIPELINE_PLAN_2026-10-29.md)；
+[栈错误修复、完整失败记录及子集部分观测](SESSION_PWRITE_STACK_RESULT_2026-10-29.md)；
 [pwrite采集修复、有效分层窗口与ENV_ABORT](SESSION_PWRITE_REPAIR_RESULT_2026-10-29.md)；
 [pwrite采集能力有界停止及可用原始证据](SESSION_PWRITE_TRACE_RESULT_2026-10-29.md)；
 [pwrite内部等待分层复核与60分钟观测提案](SESSION_PWRITE_WAIT_REVIEW_2026-10-29.md)；

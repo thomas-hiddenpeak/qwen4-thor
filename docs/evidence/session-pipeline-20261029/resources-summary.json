@@ -1,0 +1,258 @@
+{
+  "memory": {
+    "samples": 2369,
+    "physical_used_including_reclaimable_bytes": 131245924352,
+    "total_minus_available_bytes": 122196430848,
+    "cached_bytes": 13242322944,
+    "buffers_bytes": 459964416,
+    "kernel_reclaimable_bytes": 105928241152,
+    "swap_used_bytes": 2147479552,
+    "minimum_MemFree_bytes": 674713600,
+    "minimum_MemAvailable_bytes": 9724207104,
+    "MemTotal_bytes": 131920637952,
+    "source_ranges": {
+      "gpu-gpc-0.cur_freq": {
+        "min": 1575000000,
+        "max": 1575000000
+      },
+      "gpu-nvd-0.cur_freq": {
+        "min": 1692000000,
+        "max": 1692000000
+      },
+      "bwmgr.cur_freq": {
+        "min": 4266000000,
+        "max": 4266000000
+      },
+      "thermal_zone0.temp": {
+        "min": 39343,
+        "max": 75250
+      },
+      "thermal_zone1.temp": {
+        "min": 39250,
+        "max": 75250
+      }
+    },
+    "q4t_rss_bytes": 4134928384,
+    "q4t_swap_bytes": 0
+  },
+  "services": {
+    "00-full-pipeline-0": {
+      "memory": {
+        "samples": 565,
+        "physical_used_including_reclaimable_bytes": 131235082240,
+        "total_minus_available_bytes": 122196430848,
+        "cached_bytes": 13242322944,
+        "buffers_bytes": 459964416,
+        "kernel_reclaimable_bytes": 104903503872,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 685555712,
+        "minimum_MemAvailable_bytes": 9724207104,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4128067584,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 40031,
+            "max": 74000
+          },
+          "thermal_zone1.temp": {
+            "min": 39250,
+            "max": 74000
+          }
+        }
+      },
+      "startup_wall_seconds": 34.01108484715223,
+      "shutdown_wall_seconds": 0.7142554316669703,
+      "disk_peak_bytes": 17833869312,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      }
+    },
+    "01-full-pipeline-1": {
+      "memory": {
+        "samples": 588,
+        "physical_used_including_reclaimable_bytes": 131163963392,
+        "total_minus_available_bytes": 122102423552,
+        "cached_bytes": 12691308544,
+        "buffers_bytes": 265883648,
+        "kernel_reclaimable_bytes": 105928241152,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 756674560,
+        "minimum_MemAvailable_bytes": 9818214400,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4127752192,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 50343,
+            "max": 74468
+          },
+          "thermal_zone1.temp": {
+            "min": 50343,
+            "max": 74468
+          }
+        }
+      },
+      "startup_wall_seconds": 30.00961190625094,
+      "shutdown_wall_seconds": 0.6643693852238357,
+      "disk_peak_bytes": 17833869312,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      }
+    },
+    "02-subset-pipeline-1": {
+      "memory": {
+        "samples": 604,
+        "physical_used_including_reclaimable_bytes": 131202916352,
+        "total_minus_available_bytes": 121955893248,
+        "cached_bytes": 12285165568,
+        "buffers_bytes": 191979520,
+        "kernel_reclaimable_bytes": 105835044864,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 717721600,
+        "minimum_MemAvailable_bytes": 9964744704,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4131274752,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 51281,
+            "max": 73687
+          },
+          "thermal_zone1.temp": {
+            "min": 51187,
+            "max": 73687
+          }
+        }
+      },
+      "startup_wall_seconds": 35.01021269150078,
+      "shutdown_wall_seconds": 0.6642069220542908,
+      "disk_peak_bytes": 17833869312,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      }
+    },
+    "03-subset-pipeline-0": {
+      "memory": {
+        "samples": 608,
+        "physical_used_including_reclaimable_bytes": 131245924352,
+        "total_minus_available_bytes": 121686609920,
+        "cached_bytes": 12652945408,
+        "buffers_bytes": 152162304,
+        "kernel_reclaimable_bytes": 105023750144,
+        "swap_used_bytes": 2147479552,
+        "minimum_MemFree_bytes": 674713600,
+        "minimum_MemAvailable_bytes": 10234028032,
+        "MemTotal_bytes": 131920637952,
+        "q4t_rss_bytes": 4134928384,
+        "q4t_swap_bytes": 0,
+        "source_ranges": {
+          "gpu-gpc-0.cur_freq": {
+            "min": 1575000000,
+            "max": 1575000000
+          },
+          "gpu-nvd-0.cur_freq": {
+            "min": 1692000000,
+            "max": 1692000000
+          },
+          "bwmgr.cur_freq": {
+            "min": 4266000000,
+            "max": 4266000000
+          },
+          "thermal_zone0.temp": {
+            "min": 51562,
+            "max": 75250
+          },
+          "thermal_zone1.temp": {
+            "min": 51343,
+            "max": 75250
+          }
+        }
+      },
+      "startup_wall_seconds": 36.00938282115385,
+      "shutdown_wall_seconds": 0.7189478599466383,
+      "disk_peak_bytes": 17833869312,
+      "exit": {
+        "server": 0,
+        "http_output_checks_passed": true,
+        "failure": null
+      }
+    }
+  },
+  "sampling": {
+    "sample_attempts": 2369,
+    "flushed_samples": 2369,
+    "sampler_failure": null,
+    "unflushed_attempts": 0,
+    "failures_at_exit": []
+  },
+  "exit_pending": {
+    "active": 0,
+    "admitted": 2,
+    "resolved": 2
+  },
+  "postflight": {
+    "status": "MEASURED_REQUIRES_REVIEW",
+    "state_sha256": "48ae1a1dbc784368d844e36a671bc7477b41c9064d91dffa7ff52e9b19ddcd5f",
+    "monitor_failures": [],
+    "cleanup_errors": [],
+    "final_summary_sha256": "a9b9f22c5a42d55f47d7a16a7b4a8d8d2fa12f4562e0b7a5c9fa7ea49bda1798",
+    "final_monitor_barrier": {
+      "boundary_monotonic": 1463316.504743477,
+      "sample_started_monotonic": 1463316.910598159,
+      "flushed_monotonic": 1463316.932322448
+    },
+    "final_monitor_errors": [],
+    "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+  },
+  "limits": [
+    "One-second physical-RAM observations cannot bound unsampled peaks.",
+    "RSS, CUDA allocations and file cache are not added to physical RAM.",
+    "Snapshot disk bytes are SSD, not additional resident RAM.",
+    "Save wall time includes waiting for model mutex; restore wall time starts under that mutex. End-to-end TTFT includes both waits.",
+    "External startup/shutdown windows include direct-I/O preflight and cache teardown; ready polling has one-second granularity.",
+    "GPU memcpy/internal pageable staging is included in host RAM observations; no isolated GPU section timing was collected."
+  ]
+}

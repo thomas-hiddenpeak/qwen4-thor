@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "existing_checks": 68,
+  "new_pipeline_checks": 44,
+  "checks": 112,
+  "log_sha256": "3af1b83dc44bd7cf8b545ee0605fffe177050e69fea2ed915713a4badffc80fd",
+  "archive_log": "raw/run/04-cpu-contract/contract.log",
+  "write_upper_bound": 268435456
+}

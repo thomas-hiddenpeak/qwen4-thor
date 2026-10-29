@@ -75,6 +75,9 @@ class SessionCache {
   };
   using Entries = std::map<std::string, std::unique_ptr<Entry>>;
   void Erase(Entries::iterator it);
+  Status SavePipelined(Entry* entry, std::span<const SessionRange> ranges,
+                       const Copy& copy, const Cancel& cancel,
+                       SessionSaveTiming* timing);
   Status Transfer(Entry* entry, std::span<const SessionRange> ranges,
                    const Copy& copy, const Cancel& cancel, bool restore,
                    SessionSaveTiming* timing = nullptr);

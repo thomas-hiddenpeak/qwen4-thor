@@ -8,9 +8,11 @@
 
 #include <algorithm>
 #include <cerrno>
+#include <condition_variable>
 #include <cstdlib>
 #include <cstring>
 #include <memory>
+#include <thread>
 
 namespace q4t::server {
 namespace {
@@ -20,6 +22,90 @@ Status IoError(const char* action) {
   return Status::Fail(std::string("session cache ") + action + ": " +
                        std::strerror(errno));
 }
+
+// One writer and one outstanding block. The producer owns the other buffer.
+// Destruction drains the write before the caller can free either buffer or fd.
+class SnapshotWriter {
+ public:
+  SnapshotWriter(int fd, SessionSaveTiming* timing)
+      : fd_(fd), timing_(timing), thread_([this] { Run(); }) {}
+  ~SnapshotWriter() { Finish(); }
+  Status Wait(double prepare_begin = 0, double prepare_end = 0) {
+    SessionSaveTiming::Scope span(timing_, SessionSaveTiming::kPipelineWait);
+    std::unique_lock lock(mutex_);
+    cv_.wait(lock, [this] { return !busy_; });
+    overlap_ms_ += std::max(0.0, std::min(prepare_end, write_end_) -
+                                   std::max(prepare_begin, write_begin_));
+    return status_;
+  }
+  void Submit(void* data, size_t bytes, size_t disk_bytes, size_t offset) {
+    const std::lock_guard lock(mutex_);
+    data_ = data;
+    bytes_ = bytes;
+    disk_bytes_ = disk_bytes;
+    offset_ = offset;
+    busy_ = true;
+    cv_.notify_one();
+  }
+  void Finish() {
+    if (!thread_.joinable()) return;
+    SessionSaveTiming::Scope span(timing_, SessionSaveTiming::kPipelineWait);
+    {
+      const std::lock_guard lock(mutex_);
+      stop_ = true;
+    }
+    cv_.notify_one();
+    thread_.join();
+    if (timing_)
+      timing_->MergeWriter(writer_timing_, writer_cpu_ms_, overlap_ms_);
+  }
+
+ private:
+  void Run() {
+    const double begin_cpu =
+        SessionSaveTiming::Enabled() ? writer_timing_.Cpu() : 0;
+    std::unique_lock lock(mutex_);
+    for (;;) {
+      cv_.wait(lock, [this] { return busy_ || stop_; });
+      if (!busy_) break;
+      lock.unlock();
+      ssize_t wrote;
+      if (SessionSaveTiming::Enabled()) write_begin_ = SessionSaveTiming::Wall();
+      {
+        SessionSaveTiming::Scope span(&writer_timing_,
+                                       SessionSaveTiming::kWrite);
+        do {
+          wrote = pwrite(fd_, data_, disk_bytes_, offset_);
+        } while (wrote < 0 && errno == EINTR);
+      }
+      if (SessionSaveTiming::Enabled()) write_end_ = SessionSaveTiming::Wall();
+      const Status result = wrote == static_cast<ssize_t>(disk_bytes_)
+                                ? Status() : IoError("write/short write");
+      if (result.ok()) {
+        writer_timing_.data_bytes += bytes_;
+        writer_timing_.disk_bytes += disk_bytes_;
+      }
+      lock.lock();
+      status_ = result;
+      busy_ = false;
+      cv_.notify_one();
+    }
+    if (SessionSaveTiming::Enabled())
+      writer_cpu_ms_ = writer_timing_.Cpu() - begin_cpu;
+  }
+  int fd_;
+  SessionSaveTiming* timing_;
+  std::mutex mutex_;
+  std::condition_variable cv_;
+  bool busy_ = false, stop_ = false;
+  void* data_ = nullptr;
+  size_t bytes_ = 0, disk_bytes_ = 0, offset_ = 0;
+  Status status_;
+  SessionSaveTiming writer_timing_{"writer", "private"};
+  double writer_cpu_ms_ = 0;
+  double write_begin_ = 0, write_end_ = 0, overlap_ms_ = 0;
+  std::thread thread_;
+};
 }  // namespace
 
 SessionCache::Entry::~Entry() { if (fd >= 0) close(fd); }
@@ -161,6 +247,9 @@ Status SessionCache::Transfer(Entry* entry,
                               std::span<const SessionRange> ranges,
                               const Copy& copy, const Cancel& cancel,
                               bool restore, SessionSaveTiming* timing) {
+  const char* pipeline = std::getenv("Q4T_SESSION_PIPELINE");
+  if (!restore && pipeline && std::strcmp(pipeline, "1") == 0)
+    return SavePipelined(entry, ranges, copy, cancel, timing);
   size_t offset = 0;
   size_t block = 0;
   for (const auto& range : ranges) {
@@ -218,6 +307,70 @@ Status SessionCache::Transfer(Entry* entry,
       ++block;
     }
   }
+  if (offset != entry->bytes || block != entry->digests.size())
+    return Status::Fail("session cache layout mismatch");
+  return Status();
+}
+
+Status SessionCache::SavePipelined(Entry* entry,
+                                  std::span<const SessionRange> ranges,
+                                  const Copy& copy, const Cancel& cancel,
+                                  SessionSaveTiming* timing) {
+  std::unique_ptr<void, decltype(&std::free)> extra(nullptr, &std::free);
+  std::unique_ptr<SnapshotWriter> writer;
+  {
+    SessionSaveTiming::Scope span(timing, SessionSaveTiming::kPipelineSetup);
+    void* buffer = nullptr;
+    if (posix_memalign(&buffer, kAlignment, kStagingBytes))
+      return Status::Fail("session cache pipeline allocation");
+    extra.reset(buffer);
+    try {
+      writer = std::make_unique<SnapshotWriter>(entry->fd, timing);
+    } catch (const std::system_error&) {
+      return Status::Fail("session cache writer creation");
+    }
+  }
+  void* current = staging_;
+  void* other = extra.get();
+  size_t offset = 0, block = 0;
+  for (const auto& range : ranges) {
+    for (size_t start = 0; start < range.bytes;) {
+      if (cancel()) return Status::Fail("session cache cancelled");
+      const size_t size = std::min(kStagingBytes, range.bytes - start);
+      const size_t disk_size = Aligned(size);
+      auto* state = static_cast<uint8_t*>(range.data) + start;
+      Status status;
+      const double prepare_begin =
+          SessionSaveTiming::Enabled() ? SessionSaveTiming::Wall() : 0;
+      {
+        SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCopy);
+        status = copy(current, state, size, false);
+      }
+      if (!status.ok()) return status;
+      {
+        SessionSaveTiming::Scope span(timing, SessionSaveTiming::kPadding);
+        std::memset(static_cast<uint8_t*>(current) + size, 0, disk_size - size);
+      }
+      {
+        SessionSaveTiming::Scope span(timing, SessionSaveTiming::kHash);
+        entry->digests.push_back(
+            trace::Sha256({static_cast<uint8_t*>(current), disk_size}));
+      }
+      const double prepare_end =
+          SessionSaveTiming::Enabled() ? SessionSaveTiming::Wall() : 0;
+      status = writer->Wait(prepare_begin, prepare_end);
+      if (!status.ok()) return status;
+      if (cancel()) return Status::Fail("session cache cancelled");
+      writer->Submit(current, size, disk_size, offset);
+      std::swap(current, other);
+      start += size;
+      offset += disk_size;
+      ++block;
+    }
+  }
+  const Status status = writer->Wait();
+  writer->Finish();
+  if (!status.ok()) return status;
   if (offset != entry->bytes || block != entry->digests.size())
     return Status::Fail("session cache layout mismatch");
   return Status();
