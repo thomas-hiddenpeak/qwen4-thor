@@ -323,9 +323,10 @@ class ChatServer {
   SessionCache session_cache_;
   SessionCache prefix_cache_;
   std::vector<int> prefix_cache_checkpoints_;
-  // Tiered residency observability (max_seq=1 contract: the delta between
-  // consecutive request completions is that request's own load activity).
+  // Global intervals sampled at request completion under model_mu_. With
+  // concurrent slots an interval can include work from several requests.
   bool residency_enabled_ = false;
+  uint64_t residency_interval_ = 0;
   quant::MoEResidency::Stats residency_stats_prev_{};
   model::ResidencyTimingSnapshot residency_timing_prev_{};
   // Default per-request deadline (ms); see ServerOptions::request_deadline_ms.

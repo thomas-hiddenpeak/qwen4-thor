@@ -1482,19 +1482,32 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   model::ModelEndSequence(&seq);
   LogMemorySnapshot("request_end", id);
   if (residency_enabled_) {
-    // Per-request residency load activity (cumulative counters; max_seq=1
-    // makes the delta exact). Evidences on-demand load volume for acceptance.
-    const auto now = model::SumResidencyStats(model_.Get());
-    const auto& prev = residency_stats_prev_;
+    quant::MoEResidency::Stats now, prev;
+    model::ResidencyTimingSnapshot tim_now, tp;
+    uint64_t interval;
+    {
+      auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      now = model::SumResidencyStats(model_.Get());
+      tim_now = model::SumResidencyTiming(model_.Get());
+      prev = residency_stats_prev_;
+      tp = residency_timing_prev_;
+      residency_stats_prev_ = now;
+      residency_timing_prev_ = tim_now;
+      interval = ++residency_interval_;
+    }
+    // Formatting and IO do not hold model_mu_. Interval IDs retain snapshot
+    // order even if concurrent handlers print in a different order.
     std::fprintf(stderr,
-                 "[q4t][residency] id=%s finish=%s in=%d out=%zu "
+                 "[q4t][residency] id=%s scope=global_interval interval=%llu "
+                 "finish=%s in=%d out=%zu "
                  "loads=%llu load_mb=%.1f misses=%llu hits=%llu "
                  "evictions=%llu dmiss=%llu dlook=%llu pmiss=%llu "
                  "plook=%llu l2h=%llu l2m=%llu l2ev=%llu nvme_mb=%.1f "
                  "mh=%llu mw=%llu msk=%llu ld2h=%llu ld2m=%llu "
                  "ld2ev=%llu lp2h=%llu lp2m=%llu lp2ev=%llu "
                  "pmr=%llu pme=%llu\n",
-                 id.c_str(), finish_reason.c_str(), T, generated.size(),
+                 id.c_str(), static_cast<unsigned long long>(interval),
+                 finish_reason.c_str(), T, generated.size(),
                  static_cast<unsigned long long>(now.loads - prev.loads),
                  (now.load_bytes - prev.load_bytes) / 1e6,
                  static_cast<unsigned long long>(now.misses - prev.misses),
@@ -1537,17 +1550,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                      now.pread_merge_runs - prev.pread_merge_runs),
                  static_cast<unsigned long long>(
                      now.pread_merge_experts - prev.pread_merge_experts));
-    residency_stats_prev_ = now;
-    // Optional per-miss pipeline timing (Q4T_RESIDENCY_TIMING=1). Per-request
-    // deltas of count/ns; max is cumulative (upper bound). Diagnostic only.
-    const auto tim_now = model::SumResidencyTiming(model_.Get());
+    // Optional global interval timing; max remains cumulative (upper bound).
     if (tim_now.enabled) {
-      const auto& tp = residency_timing_prev_;
       auto avg_us = [](uint64_t ns, uint64_t cnt) {
         return cnt ? (static_cast<double>(ns) / cnt) / 1e3 : 0.0;
       };
       std::fprintf(stderr,
-                   "[q4t][residency][timing] id=%s "
+                   "[q4t][residency][timing] id=%s scope=global_interval "
+                   "interval=%llu "
                    "stage_n=%llu stage_avg_us=%.1f stage_max_us=%.1f "
                    "pread_n=%llu pread_avg_us=%.1f pread_max_us=%.1f "
                    "swz_n=%llu swz_avg_us=%.1f swz_max_us=%.1f "
@@ -1557,7 +1567,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                    "dphase1_n=%llu dphase1_avg_us=%.1f dphase1_max_us=%.1f "
                    "d2h_n=%llu d2h_avg_us=%.1f d2h_max_us=%.1f "
                    "pmrun_n=%llu pmrun_avg_us=%.1f pmrun_max_us=%.1f\n",
-                   id.c_str(),
+                   id.c_str(), static_cast<unsigned long long>(interval),
                    static_cast<unsigned long long>(
                        tim_now.stage_count - tp.stage_count),
                    avg_us(tim_now.stage_ns - tp.stage_ns,
@@ -1603,7 +1613,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                    avg_us(tim_now.pread_merge_ns - tp.pread_merge_ns,
                           tim_now.pread_merge_count - tp.pread_merge_count),
                    tim_now.pread_merge_max_ns / 1e3);
-      residency_timing_prev_ = tim_now;
     }
   }
 
