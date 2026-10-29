@@ -1631,10 +1631,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     const detail::WriteOptions terminal{
         std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
     if (stream) {
-      WriteAll(fd,
-               "data: {\"error\":{\"message\":\"request cancelled\"}}\r\n\r\n",
-               terminal);
-      WriteAll(fd, "data: [DONE]\r\n\r\n", terminal);
+      constexpr char cancelled_event[] =
+          "data: {\"error\":{\"message\":\"request cancelled\"}}\r\n\r\n"
+          "data: [DONE]\r\n\r\n";
+      *response_state = detail::ResponseState::kTerminal;
+      WriteAll(fd, cancelled_event, sizeof(cancelled_event) - 1, terminal);
     } else {
       SendError(fd, 409, "request cancelled", terminal);
     }
@@ -1649,11 +1650,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     const detail::WriteOptions terminal{
         std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
     if (stream) {
-      WriteAll(fd,
-               "data: {\"error\":{\"message\":\"generation failed\","
-               "\"type\":\"server_error\",\"code\":\"generation_failed\"}}"
-               "\r\n\r\n", terminal);
-      WriteAll(fd, "data: [DONE]\r\n\r\n", terminal);
+      constexpr char failed_event[] =
+          "data: {\"error\":{\"message\":\"generation failed\","
+          "\"type\":\"server_error\",\"code\":\"generation_failed\"}}"
+          "\r\n\r\n"
+          "data: [DONE]\r\n\r\n";
+      *response_state = detail::ResponseState::kTerminal;
+      WriteAll(fd, failed_event, sizeof(failed_event) - 1, terminal);
     } else {
       SendSimple(fd, 500, "Internal Server Error",
                  "{\"error\":{\"message\":\"generation failed\","
@@ -1672,9 +1675,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   // 4. Finalize.
   if (stream) {
     write_content(utf8.Finish());
-    write_stream(SseChunk(id, model_field, "", "", finish_reason, 0));
+    // Allocate all terminal frames before publishing the first terminal.
+    // Once publication starts, an exception can only close the connection;
+    // appending a second terminal would turn a truncated stream into a lie.
+    const auto finish_chunk =
+        SseChunk(id, model_field, "", "", finish_reason, 0);
+    std::string tail;
     if (include_usage && !client_disconnected) {
-      const std::string usage_chunk =
+      tail =
           "data: {\"id\":\"" + id +
           "\",\"object\":\"chat.completion.chunk\",\"created\":" +
           std::to_string(created) + ",\"model\":\"" +
@@ -1683,9 +1691,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           ",\"completion_tokens\":" + std::to_string(generated.size()) +
           ",\"total_tokens\":" + std::to_string(T + generated.size()) + cached_usage +
           "}}\r\n\r\n";
-      write_stream(usage_chunk);
     }
-    write_stream("data: [DONE]\r\n\r\n");
+    tail += "data: [DONE]\r\n\r\n";
+    *response_state = detail::ResponseState::kTerminal;
+    write_stream(finish_chunk);
+    detail::ServeFaultPoint("handler.after_finish");
+    write_stream(tail);
   } else {
     std::vector<std::uint32_t> gen_u32(generated.begin(), generated.end());
     std::string text;

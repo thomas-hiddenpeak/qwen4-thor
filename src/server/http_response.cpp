@@ -15,7 +15,8 @@ constexpr std::string_view kReplacement = "\xef\xbf\xbd";
 }
 
 void SendExceptionResponse(int fd, ResponseState state) noexcept {
-  if (state == ResponseState::kComplete) return;
+  if (state == ResponseState::kTerminal || state == ResponseState::kComplete)
+    return;
   constexpr char http[] =
       "HTTP/1.1 500 Internal Server Error\r\n"
       "Content-Type: application/json\r\nConnection: close\r\n\r\n"

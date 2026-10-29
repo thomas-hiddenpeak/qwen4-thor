@@ -108,6 +108,7 @@ Q4T_TEST(server_http_response_send_status) {
 Q4T_TEST(server_http_exception_terminal_states) {
   using q4t::server::detail::ResponseState;
   for (const auto state : {ResponseState::kUnsent, ResponseState::kStreaming,
+                           ResponseState::kTerminal,
                            ResponseState::kComplete}) {
     SocketPair sockets;
     q4t::server::detail::SendExceptionResponse(sockets.fd[0], state);
@@ -116,7 +117,7 @@ Q4T_TEST(server_http_exception_terminal_states) {
     const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(), 0);
     Q4T_CHECK(n >= 0);
     const std::string output(bytes.data(), static_cast<size_t>(n));
-    if (state == ResponseState::kComplete) {
+    if (state == ResponseState::kTerminal || state == ResponseState::kComplete) {
       Q4T_CHECK(output.empty());
       continue;
     }
@@ -132,6 +133,34 @@ Q4T_TEST(server_http_exception_terminal_states) {
     q4t::io::Json parsed;
     Q4T_CHECK(q4t::io::ParseJson(json, &parsed, true).ok());
     Q4T_CHECK(parsed.Has("error"));
+  }
+  return true;
+}
+
+Q4T_TEST(server_http_exception_cannot_append_after_terminal) {
+  using q4t::server::detail::ResponseState;
+  const auto finish = q4t::server::detail::SseChunk(
+      "id", "model", "", "", "stop", 0);
+  for (const auto state : {ResponseState::kStreaming, ResponseState::kTerminal}) {
+    SocketPair sockets;
+    Q4T_CHECK(q4t::server::detail::WriteAll(sockets.fd[0], finish));
+    q4t::server::detail::SendExceptionResponse(sockets.fd[0], state);
+    shutdown(sockets.fd[0], SHUT_WR);
+    std::string received;
+    std::array<char, 1024> buffer;
+    for (;;) {
+      const auto n = recv(sockets.fd[1], buffer.data(), buffer.size(), 0);
+      if (n <= 0) break;
+      received.append(buffer.data(), static_cast<size_t>(n));
+    }
+    if (state == ResponseState::kStreaming) {
+      // The previous state assignment produces a contradictory error after
+      // an already published normal terminal: preserve this counterexample.
+      Q4T_CHECK(received.find("\"error\"") != std::string::npos);
+    } else {
+      Q4T_CHECK(received == finish);
+      Q4T_CHECK(received.find("[DONE]") == std::string::npos);
+    }
   }
   return true;
 }

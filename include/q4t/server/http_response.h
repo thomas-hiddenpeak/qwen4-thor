@@ -10,7 +10,7 @@
 
 namespace q4t::server::detail {
 
-enum class ResponseState { kUnsent, kStreaming, kComplete };
+enum class ResponseState { kUnsent, kStreaming, kTerminal, kComplete };
 // Allocation-free best effort after an exception; never adds a second terminal.
 void SendExceptionResponse(int fd, ResponseState state) noexcept;
 
