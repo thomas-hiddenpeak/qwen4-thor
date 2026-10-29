@@ -2,7 +2,7 @@
 import json
 import unittest
 
-from serve_reliability import decoded
+from serve_reliability import decoded, fields
 
 
 def event(value):
@@ -14,6 +14,15 @@ def response(wire):
 
 
 class WireTests(unittest.TestCase):
+    def test_request_intervals_exclude_startup_policy_banners(self):
+        raw = ('[q4t][residency] chunk_order=0 policy=original\n'
+               '[q4t][residency] partition=0 policy=original\n'
+               '[q4t][residency] id=req scope=global_interval interval=1 loads=2\n')
+        rows = fields(raw, '[q4t][residency] id=')
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['id'], 'req')
+        self.assertEqual(rows[0]['interval'], '1')
+
     def test_complete_unicode_and_usage(self):
         wire = event(dict(choices=[dict(delta=dict(content='你好🚀'),
                                        finish_reason=None)]))

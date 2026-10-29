@@ -469,7 +469,7 @@ class Runner:
             rows = list(pool.map(one, range(4)))
         self.free()
         raw = (folder/'server.log').read_text()
-        counts = fields(raw, '[q4t][residency] ')
+        counts = fields(raw, '[q4t][residency] id=')
         timing = fields(raw, '[q4t][residency][timing] ')
         if (len(counts) != 4 or len(timing) != (4 if step['timing'] else 0)
                 or sorted(int(r['interval']) for r in counts) != [1, 2, 3, 4]
