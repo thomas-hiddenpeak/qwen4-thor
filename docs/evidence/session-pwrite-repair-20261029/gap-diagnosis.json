@@ -1,0 +1,319 @@
+{
+  "recorded_at": 1793258943.68066,
+  "conclusion": "FORMATTED_TRACEPOINT_GLOBAL_BPF_RECURSION_GUARD_CONFIRMED_IN_NEW_FIXTURES",
+  "captures": [
+    {
+      "path": ".q4t-work/session-pwrite-trace-20261029/fixture-02",
+      "events_sha256": "aa1a559abeeb3cc9e4d9442f49c08a9a7dab5b0cfaea6f8dd3f88abcea5f0a36",
+      "raw_complete": 265,
+      "formatted_complete": 259,
+      "raw_cq": 265,
+      "formatted_cq": 259,
+      "historical_windows": [
+        {
+          "cid": 49286,
+          "events": [
+            {
+              "type": 20,
+              "ts_ns": 1444475947773489,
+              "cpu": 4
+            },
+            {
+              "type": 30,
+              "ts_ns": 1444475947773638,
+              "cpu": 4
+            },
+            {
+              "type": 22,
+              "ts_ns": 1444475947774573,
+              "cpu": 4
+            },
+            {
+              "type": 21,
+              "ts_ns": 1444475947787202,
+              "cpu": 4
+            },
+            {
+              "type": 12,
+              "ts_ns": 1444475947787573,
+              "cpu": 4
+            },
+            {
+              "type": 11,
+              "ts_ns": 1444475947789656,
+              "cpu": 4
+            }
+          ]
+        },
+        {
+          "cid": 49289,
+          "events": [
+            {
+              "type": 20,
+              "ts_ns": 1444475947827193,
+              "cpu": 4
+            },
+            {
+              "type": 30,
+              "ts_ns": 1444475947827388,
+              "cpu": 4
+            },
+            {
+              "type": 22,
+              "ts_ns": 1444475947828341,
+              "cpu": 4
+            },
+            {
+              "type": 21,
+              "ts_ns": 1444475947840138,
+              "cpu": 4
+            },
+            {
+              "type": 12,
+              "ts_ns": 1444475947840517,
+              "cpu": 4
+            },
+            {
+              "type": 11,
+              "ts_ns": 1444475947842647,
+              "cpu": 4
+            }
+          ]
+        },
+        {
+          "cid": 24720,
+          "events": [
+            {
+              "type": 33,
+              "ts_ns": 1444475949823038,
+              "cpu": 4
+            },
+            {
+              "type": 36,
+              "ts_ns": 1444475949823650,
+              "cpu": 4
+            },
+            {
+              "type": 22,
+              "ts_ns": 1444475949824714,
+              "cpu": 4
+            },
+            {
+              "type": 21,
+              "ts_ns": 1444475949837158,
+              "cpu": 4
+            },
+            {
+              "type": 12,
+              "ts_ns": 1444475949837695,
+              "cpu": 4
+            },
+            {
+              "type": 37,
+              "ts_ns": 1444475949839325,
+              "cpu": 4
+            }
+          ]
+        },
+        {
+          "cid": 57474,
+          "events": [
+            {
+              "type": 20,
+              "ts_ns": 1444475961092063,
+              "cpu": 4
+            },
+            {
+              "type": 30,
+              "ts_ns": 1444475961092286,
+              "cpu": 4
+            },
+            {
+              "type": 22,
+              "ts_ns": 1444475961093304,
+              "cpu": 4
+            },
+            {
+              "type": 21,
+              "ts_ns": 1444475961106238,
+              "cpu": 4
+            },
+            {
+              "type": 12,
+              "ts_ns": 1444475961106803,
+              "cpu": 4
+            },
+            {
+              "type": 11,
+              "ts_ns": 1444475961108822,
+              "cpu": 4
+            }
+          ]
+        },
+        {
+          "cid": 57476,
+          "events": [
+            {
+              "type": 20,
+              "ts_ns": 1444475961127877,
+              "cpu": 4
+            },
+            {
+              "type": 30,
+              "ts_ns": 1444475961128146,
+              "cpu": 4
+            },
+            {
+              "type": 22,
+              "ts_ns": 1444475961129118,
+              "cpu": 4
+            },
+            {
+              "type": 21,
+              "ts_ns": 1444475961141507,
+              "cpu": 4
+            },
+            {
+              "type": 12,
+              "ts_ns": 1444475961141905,
+              "cpu": 4
+            },
+            {
+              "type": 11,
+              "ts_ns": 1444475961143109,
+              "cpu": 4
+            }
+          ]
+        },
+        {
+          "cid": 28806,
+          "events": [
+            {
+              "type": 20,
+              "ts_ns": 1444475961163886,
+              "cpu": 4
+            },
+            {
+              "type": 30,
+              "ts_ns": 1444475961164053,
+              "cpu": 4
+            },
+            {
+              "type": 22,
+              "ts_ns": 1444475961164942,
+              "cpu": 4
+            },
+            {
+              "type": 21,
+              "ts_ns": 1444475961177303,
+              "cpu": 4
+            },
+            {
+              "type": 12,
+              "ts_ns": 1444475961177664,
+              "cpu": 4
+            },
+            {
+              "type": 11,
+              "ts_ns": 1444475961178775,
+              "cpu": 4
+            }
+          ]
+        }
+      ],
+      "scope": "Historical cause consistent with confirmed mechanism; old kernel miss counter was not captured."
+    },
+    {
+      "path": ".q4t-work/session-pwrite-repair-20261029/fixture-01",
+      "events_sha256": "f58d5669b1f12de5228b3fb725413d9c0757ded0f0e66e20a3d27bb2afb2b022",
+      "raw_complete": 270,
+      "formatted_complete": 246,
+      "raw_cq": 270,
+      "formatted_cq": 246,
+      "kernel_misses": {
+        "syscall_enter": 0,
+        "syscall_exit": 0,
+        "switched": 0,
+        "woke": 0,
+        "inserted": 0,
+        "issued": 0,
+        "completed": 0,
+        "requeued": 0,
+        "merged": 0,
+        "nvme_setup": 0,
+        "nvme_complete": 0,
+        "nvme_cq": 0,
+        "normal_30": 0,
+        "normal_31": 24,
+        "normal_32": 24,
+        "normal_33": 0,
+        "normal_34": 0,
+        "normal_35": 0,
+        "normal_36": 0,
+        "normal_37": 0,
+        "normal_38": 0,
+        "normal_39": 0,
+        "normal_40": 0,
+        "normal_41": 0
+      },
+      "raw_completion_interrupted_normal": {
+        "0": 247,
+        "30": 22,
+        "36": 1
+      },
+      "completion_gap_equals_recursion_misses": true,
+      "cq_gap_equals_recursion_misses": true
+    },
+    {
+      "path": ".q4t-work/session-pwrite-repair-20261029/fixture-02",
+      "events_sha256": "1f0f32c2517ae1f2b69d470e659e4ee71bdfe10ff262a41f53183fe1736d9b02",
+      "raw_complete": 137,
+      "formatted_complete": 130,
+      "raw_cq": 137,
+      "formatted_cq": 130,
+      "kernel_misses": {
+        "syscall_enter": 0,
+        "syscall_exit": 0,
+        "switched": 0,
+        "woke": 1,
+        "inserted": 0,
+        "issued": 0,
+        "completed": 0,
+        "requeued": 0,
+        "merged": 0,
+        "nvme_setup": 0,
+        "nvme_complete": 0,
+        "nvme_cq": 0,
+        "normal_30": 0,
+        "normal_31": 7,
+        "normal_32": 7,
+        "normal_33": 0,
+        "normal_34": 0,
+        "normal_35": 0,
+        "normal_36": 0,
+        "normal_37": 0,
+        "normal_38": 0,
+        "normal_39": 0,
+        "normal_40": 0,
+        "normal_41": 0
+      },
+      "raw_completion_interrupted_normal": {
+        "0": 130,
+        "30": 6,
+        "36": 1
+      },
+      "completion_gap_equals_recursion_misses": true,
+      "cq_gap_equals_recursion_misses": true
+    }
+  ],
+  "kernel_sources": [
+    "https://raw.githubusercontent.com/torvalds/linux/v6.8/kernel/trace/bpf_trace.c",
+    "https://raw.githubusercontent.com/torvalds/linux/v6.8/kernel/events/core.c"
+  ],
+  "fixed_contract": "Primary request lifecycle/bytes mandatory; secondary recursion gaps reported; foreign wake misses scoped by complete owned intervals.",
+  "limits": [
+    "No pure-NAND interpretation",
+    "Not claiming historical recursion counters were measured",
+    "Unknown merge survivor rejected"
+  ]
+}

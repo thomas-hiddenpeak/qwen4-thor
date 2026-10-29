@@ -25,9 +25,12 @@ for i, point in enumerate(points, 30):
     source.append(f'''SEC("tracepoint/{point}")
 int normal_{i}(void* c) {{
   if (!enabled()) return 0;
-  struct event* e = start({i}, 0); if (!e) return 0;
-  read_kernel(e->data, {size}, (char*)c + 8);
-  submit(e, 0); return 0;
+  u32 z = 0; u32* running = lookup(&normal_running, &z);
+  if (running) *running = {i};
+  struct event* e = start({i}, 0);
+  if (!e) {{ if (running) *running = 0; return 0; }}
+  read_checked(e->data, {size}, (char*)c + 8);
+  submit(e, 0); if (running) *running = 0; return 0;
 }}
 ''')
 (out/'trace_formats.h').write_text('\n'.join(source))

@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "recorded_at": 1793258750.4045794,
+  "fixtures": 2,
+  "cpu_write_bytes": 50872320,
+  "tests_passed": 28,
+  "contract_group_runs": 2,
+  "first_failure": "JSON int/string key comparison only; corrected",
+  "secondary_misses": [
+    {
+      "21": 24,
+      "22": 24
+    },
+    {
+      "21": 7,
+      "22": 7
+    }
+  ],
+  "primary_calls": [
+    8,
+    6
+  ],
+  "primary_bytes": [
+    33824768,
+    17047552
+  ],
+  "wakeup_scope_correction": "second fixture: 1 global miss, all 7 owned sleeps/wakes/switch-ins closed",
+  "source_files": {
+    "tools/session_pwrite_trace/capability.bpf.c": "f2e79f9f0092fe707f5bc8c548eeb252b62ca71a41a6d8a39d95bec003a0f995",
+    "tools/session_pwrite_trace/test_lifecycle.py": "d017ea8195ab93fe371a3506d78ee58c54961b72d44de2ad133118793845105c",
+    "tools/session_pwrite_trace/capability.py": "bbe2399b401e9ee11de3c39e6fffa041f984062701429a774de94b18714a525a",
+    "tools/session_pwrite_trace/collect.py": "d330a31783814f076703ee3e35cd4e7cb8b1518517916c76bcb60fa42e97ff98",
+    "tools/session_pwrite_trace/lifecycle.py": "fcaba8a0ac88d04dd25479a43bf5eddf4263cb84e9c3b9fca878d3f52005395b",
+    "tools/session_pwrite_trace/audit_fixture.py": "de2f1c711630981a9c7c7c871ef6502f6e94fc8985241ae77bfb68d37ef599c9",
+    "tools/session_pwrite_trace/review_capture.py": "8d4e13d7ae164c19895d40858e65ab788c42568852ca6576ae4b8aa79f2cefef",
+    "tools/session_pwrite_trace/trace.bpf.c": "c3c6741c97b2134de1517f639c285b5e8fd4c9fcb0ada4bbdf673af832868586",
+    "tools/session_pwrite_trace/target.py": "0a100d9f87aa2ba2f0063dd981f8f5e33a7e6dc23d3d9f185f29109885d39786",
+    "tools/session_pwrite_trace/run_http.py": "300b58d45579c66f8712a16c5e7ea1b4417edf5a5a1fccd1b1759d3623dbf9ec",
+    "tools/session_pwrite_trace/build_formats.py": "a101d7d5ba29237587497961166901d1a2eb074c7b17c5d446bc3b4f0e5b699e",
+    "tools/session_pwrite_trace/fixture.py": "bc54bada49a98586f746e2c7ccdb7f100b9ab1214f990335667ae1fc6f44a4c9",
+    "tools/session_pwrite_trace/README.md": "45e60a5ad6e49430601a978dbe153a623e3fe546d9a6b3ef3ae1aa08e0379240"
+  },
+  "trace_object_sha256": "2d77d5e8f30f3c60fa994eef25bfc09c9bee4f3e5f419e0889ec7678a7266088",
+  "limits": [
+    "unknown merge survivor refused",
+    "global wakeup misses retained, owned sleep pairing mandatory",
+    "secondary gaps explained by kernel recursion misses; raw main chain mandatory",
+    "CPU fixture does not establish model slow-write attribution or observer performance"
+  ]
+}

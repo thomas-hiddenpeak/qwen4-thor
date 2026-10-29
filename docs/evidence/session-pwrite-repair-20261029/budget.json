@@ -1,0 +1,16 @@
+{
+  "start_unix": 1793256667.0,
+  "tool_deadline_unix": 1793259667.0,
+  "acquisition_deadline_unix": 1793261767.0,
+  "deadline_unix": 1793262067.0,
+  "cpu_storage_fixtures": 2,
+  "cpu_write_bytes": 67108864,
+  "cpu_contract_runs": 2,
+  "http_requests": 20,
+  "services": 2,
+  "gpu_fixtures": 0,
+  "logical_write_bytes": 137438953472,
+  "trace_bytes": 2147483648,
+  "trace_events": 10000000,
+  "trace_ram_bytes": 268435456
+}

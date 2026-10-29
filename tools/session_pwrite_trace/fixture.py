@@ -17,6 +17,11 @@ def main():
     out.mkdir()
     budget = json.loads((out.parent/'budget.json').read_text())
     deadline = budget['tool_deadline_unix']
+    prior = sum(json.loads(p.read_text())['writes'] for p in out.parent.glob('fixture-*/fixture.json'))
+    small = len(sys.argv) > 2 and sys.argv[2] == '--small'
+    expected = 17047552 if small else 33824768
+    if prior+expected > budget['cpu_write_bytes']:
+        raise RuntimeError('CPU storage write budget')
     result = dict(writes=0, calls=[], files=[], status='FAILED')
     proc = None
     try:
@@ -40,9 +45,10 @@ def main():
                     fd = os.open(out, os.O_TMPFILE | os.O_DIRECT | os.O_RDWR, 0o600)
                     try:
                         inode = os.fstat(fd).st_ino
-                        for size,offset in [(4096,0),(131072,4096),
-                                           (len(buf),135168),
-                                           (len(buf),135168+len(buf))]:
+                        chunks = [(4096,0),(131072,4096),(len(buf),135168)]
+                        if not small: chunks.append((len(buf),135168+len(buf)))
+                        for size,offset in chunks:
+                            if time.time() >= deadline: raise TimeoutError('fixture deadline')
                             view = memoryview(buf)[:size]
                             begin = time.monotonic_ns()
                             try: n = os.pwrite(fd, view, offset)

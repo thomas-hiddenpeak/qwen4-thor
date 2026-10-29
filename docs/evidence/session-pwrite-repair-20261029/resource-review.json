@@ -1,0 +1,11 @@
+{
+  "samples": 731,
+  "min_mem_available": 10153533440,
+  "collector_peak_sampled_rss": 102100992,
+  "collector_peak_hwm": 102100992,
+  "collector_swap": 0,
+  "model_swap": 0,
+  "map_memlock_bytes": 21703536,
+  "conservative_collector_ram_bound": 127998832,
+  "final_collector_io_and_stacks_lost": true
+}

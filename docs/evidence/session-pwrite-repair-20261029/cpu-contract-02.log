@@ -1,0 +1,33 @@
+test_bad_completion_sizes (test_lifecycle.LifecycleTest.test_bad_completion_sizes) ... ok
+test_cid_reuse_after_completion (test_lifecycle.LifecycleTest.test_cid_reuse_after_completion) ... ok
+test_cid_reuse_while_live_rejected (test_lifecycle.LifecycleTest.test_cid_reuse_while_live_rejected) ... ok
+test_cloexec_is_not_close (test_lifecycle.LifecycleTest.test_cloexec_is_not_close) ... ok
+test_close_range (test_lifecycle.LifecycleTest.test_close_range) ... ok
+test_completion_before_issue (test_lifecycle.LifecycleTest.test_completion_before_issue) ... ok
+test_completion_error (test_lifecycle.LifecycleTest.test_completion_error) ... ok
+test_corrupt_cid_fails (test_lifecycle.LifecycleTest.test_corrupt_cid_fails) ... ok
+test_deleted_completion_fails (test_lifecycle.LifecycleTest.test_deleted_completion_fails) ... ok
+test_dup_replaces_destination (test_lifecycle.LifecycleTest.test_dup_replaces_destination) ... ok
+test_dup_survives_original_close (test_lifecycle.LifecycleTest.test_dup_survives_original_close) ... ok
+test_duplicate_issue_and_completion (test_lifecycle.LifecycleTest.test_duplicate_issue_and_completion) ... ok
+test_failed_close_does_not_guess (test_lifecycle.LifecycleTest.test_failed_close_does_not_guess) ... ok
+test_fd_and_inode_reuse_get_distinct_generation (test_lifecycle.LifecycleTest.test_fd_and_inode_reuse_get_distinct_generation) ... ok
+test_interleaved_ring_order_uses_request_generation (test_lifecycle.LifecycleTest.test_interleaved_ring_order_uses_request_generation) ... ok
+test_merge_refuses_guessed_survivor (test_lifecycle.LifecycleTest.test_merge_refuses_guessed_survivor) ... ok
+test_missed_close_rejected (test_lifecycle.LifecycleTest.test_missed_close_rejected) ... ok
+test_new_raw_fixture (test_lifecycle.LifecycleTest.test_new_raw_fixture) ... ok
+test_original_capture_salvage_is_unchanged (test_lifecycle.LifecycleTest.test_original_capture_salvage_is_unchanged) ... ok
+test_partial_completion (test_lifecycle.LifecycleTest.test_partial_completion) ... ok
+test_partial_then_requeue (test_lifecycle.LifecycleTest.test_partial_then_requeue) ... ok
+test_process_isolation (test_lifecycle.LifecycleTest.test_process_isolation) ... ok
+test_requeue_then_complete (test_lifecycle.LifecycleTest.test_requeue_then_complete) ... ok
+test_reversed_time (test_lifecycle.LifecycleTest.test_reversed_time) ... ok
+test_same_raw_request_address_reused (test_lifecycle.LifecycleTest.test_same_raw_request_address_reused) ... ok
+test_truncated_record (test_lifecycle.LifecycleTest.test_truncated_record) ... ok
+test_union_against_independent_discrete_reference (test_lifecycle.LifecycleTest.test_union_against_independent_discrete_reference) ... ok
+test_unknown_fd_rejected (test_lifecycle.LifecycleTest.test_unknown_fd_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 0.222s
+
+OK

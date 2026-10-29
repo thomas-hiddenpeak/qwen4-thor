@@ -1,0 +1,28 @@
+{
+  "recorded_at": 1793261783.7339501,
+  "evidence_validity": "PARTIAL_VALID_FULLHEAD_COMPLETE_IO_WINDOWS",
+  "measurement_completeness": "10/20 successful HTTP; 2/4 restores; 11 admitted, 1 cancelled; 2 model starts",
+  "statistical_conclusion": "No performance acceptance or hardware-internal causal claim",
+  "engineering_decision": "STOP_ENV_ABORT_NOT_DELIVERED",
+  "stack_helper_errno": "UNKNOWN: failure event in unpersisted tail",
+  "persisted_events": 1794997,
+  "emitted_at_failure": 1817733,
+  "unpersisted_events_lower_bound": 22736,
+  "budget_deviations": [
+    "tool gate metadata sealed 0.800317 seconds after 50-minute tool deadline; ownership CPU check had completed before deadline",
+    "Five targeted CPU failure checks added after actual HTTP failure beyond initial two CPU groups; no further GPU or direct-I/O fixture; overall deadline unchanged"
+  ],
+  "owned_pids": {
+    "120867": false,
+    "120881": false,
+    "120877": false,
+    "120813": false,
+    "120817": false,
+    "120812": false
+  },
+  "identities": {
+    "build/q4t": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+    "build/q4t.release.json": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2",
+    ".q4t-work/session-preallocate-20261029/frozen/q4t": "46958b6c538d4410bea204bce1437c433b7a1ec87ea02855fb9417bece1ae9a6"
+  }
+}

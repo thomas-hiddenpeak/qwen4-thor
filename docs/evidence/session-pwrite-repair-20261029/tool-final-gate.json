@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "recorded_at": 1793259667.8003168,
+  "within_tool_deadline": false,
+  "http_plan_sha256": "19833a787bdbf08253b4c964720a84f176ffb63bad09df26ce7d60f20a4054de",
+  "model_loads": 0,
+  "http_requests": 0,
+  "deadline_unchanged": 1793260850.4065561
+}

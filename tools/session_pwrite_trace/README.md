@@ -1,68 +1,36 @@
 # Bounded pwrite tracing research tools
 
-Status: **TOOL_UNAVAILABLE_INCOMPLETE_CORRELATION**, 2026-10-29. These tools
-are a preserved research attempt, not an accepted GPU/HTTP collector. See
-`docs/SESSION_PWRITE_TRACE_RESULT_2026-10-29.md` for the budget and evidence.
-Do not rerun either storage fixture under the exhausted original budget.
+Current status: **ENV_ABORT / PARTIAL_DIAGNOSTIC_EVIDENCE**, 2026-10-29.
+See [result](../../docs/SESSION_PWRITE_REPAIR_RESULT_2026-10-29.md) and
+[plan](../../docs/SESSION_PWRITE_REPAIR_PLAN_2026-10-29.md). Budgets are exhausted;
+these tools must not automatically launch another fixture or HTTP phase.
+No inference runtime or default executable changed.
 
-The two actual CPU fixtures used 50,872,320 direct-I/O write bytes. Initial
-compile and verifier failures are preserved separately and wrote no fixture
-data. Neither the inference executable nor the delivered program changed.
+The 28 CPU correlation contracts and two direct-I/O fixtures passed. Missing
+formatted NVMe events match kernel recursion_misses (24 and 7); raw lifecycle
+records close the owned write bytes. lifecycle.py models file/FD, request and
+CID generations, partial completion, requeue and interleaving. Missing wakeup
+remains unknown; absent insert events do not prove zero block queue time.
+Background FLUSH may have zero bytes; WRITE may not. Interval unions overlap.
 
-## Scope and provenance
+run_http.py holds the shared GPU lease through the existing phase driver.
+owned_collector.py adopts the privilege-dropped collector after its sudo
+launcher exits; target.py binds the exact model PID before exec. The full
+head completed 10 HTTP and two restores. The subset first request was cancelled
+when stack helper failed; the phase remains ENV_ABORT. The actual captured
+sources are separately frozen in the stage archive. No net benefit is claimed.
 
-- `capability.bpf.c` / `capability.py`: initial attachment and stack probe.
-- `trace.bpf.c` / `build_formats.py` / `collect.py`: 24-probe prototype and
-  bounded ring-buffer reader, using libbpf through ctypes.
-- `fixture.py`: second and final O_TMPFILE/O_DIRECT fixture, including two
-  file lifetimes, fd/inode reuse and exact readback.
-- `audit_fixture.py`: original count/byte audit. Its result is immutable;
-  it is a necessary subset of the intended gate, not a complete contract.
-- `review_capture.py`: offline salvage of the frozen second capture. It
-  links setup command IDs to all 265 raw completions without replacing the
-  failed gate or treating missing secondary records as lost device I/O.
+The error path originally lost its unflushed tail and stack map. finalize.py
+now drains and persists tail/maps after detach, keeps FAILED, and avoids
+re-appending accepted bytes after sync failure. Five targeted CPU checks pass,
+including replay of the actual persisted HTTP prefix. This post-failure repair
+has NOT had another live GPU/BPF validation; the helper errno itself is unknown.
+Do not treat the collector as fully accepted or infer SSD-internal timings.
 
-The BPF source uses aarch64 pwrite64 number 68 and literal request/queue/disk
-offsets for **6.8.12-1021-tegra**, device **259:0**. Offsets were extracted
-from matching installed headers; source, object, bytes and compiler log are
-in the stage archive. No kernel module was loaded. Tracepoint layouts and
-the generated `trace_formats.h` are also bound in that archive. These
-assumptions are not automatically validated by the prototype loader.
-
-## Known incomplete contracts
-
-FD/inode generations are provided by the fixture, not reconstructed from
-open/close events. No complete parser tests cover merge, requeue, partial
-completion, adversarial ordering, request/CID reuse and dropped events.
-The fixture observed 265 raw NVMe completions but only 259 formatted
-completions; zero ring-buffer loss does not prove all probes ran. All raw
-NVMe events are inside a captured syscall, so post-syscall filtering alone
-does not explain the six missing secondary records.
-
-The collector retains tracked block requests across thread boundaries,
-but formatted events use a global owned-pwrite-active filter. Filesystem
-events can include other tasks, and missing insert events are not proof of
-zero queue time. Request interval sums cannot be used as syscall wall time.
-Ring order and event timestamp order differ in three places in this capture;
-`start()` reserves a ring slot before recording its timestamp.
-
-Only buffer/map limits were implemented; peak unified RAM and tracing
-overhead were not measured. Flushing while the sampled active count is zero
-is not a validated exclusion of all overlapping I/O. The prototype lacks
-the complete phase driver, per-device background-I/O attribution, diskstats
-and SMART boundaries required by the HTTP plan. No automatic model launch
-is provided. The actual fixture completed with all links released and all
-emitted records flushed; this does not validate every failure path.
-
-## Offline replay only
-
-From the repository root, with the existing preserved capture:
-
-```bash
-python3 -B tools/session_pwrite_trace/review_capture.py \
-  .q4t-work/session-pwrite-trace-20261029/fixture-02
-```
-
-This reads existing files and prints JSON. It does not attach probes,
-load a model or execute a storage fixture. Raw addresses/kallsyms remain
-in the local full archive; the versioned summary contains symbolized stacks.
+trace.bpf.c uses aarch64 pwrite64 number 68 and kernel structure offsets for
+6.8.12-1021-tegra, device 259:0. The exact kernel, formats, object, source and
+libbpf metadata are bound in the archive; portability is not established.
+Original capability/audit/review tools and their failed results are retained.
+Raw events are 128-byte records. Failure is not equivalent to every completed
+file window being invalid: use independent identity/offset/byte/call closure,
+while retaining global failed status and missing-tail limits.

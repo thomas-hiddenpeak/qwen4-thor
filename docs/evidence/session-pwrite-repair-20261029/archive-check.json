@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "checked_at": 1793261964.6171637,
+  "file_count": 327,
+  "total_bytes": 344301597,
+  "manifest_sha256": "c434f6685fa64907d5443c77b364b728e7bbc5413becb4c8524c09814c507cb2",
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-pwrite-repair-20261029-archive"
+}

@@ -1,0 +1,10 @@
+test_drain_failure_still_preserves_existing_tail (test_failure_paths.FailurePathTest.test_drain_failure_still_preserves_existing_tail) ... ok
+test_failed_capture_keeps_tail_maps_and_failure (test_failure_paths.FailurePathTest.test_failed_capture_keeps_tail_maps_and_failure) ... ok
+test_failed_http_prefix_keeps_unknown_wakeup_and_closed_io (test_failure_paths.FailurePathTest.test_failed_http_prefix_keeps_unknown_wakeup_and_closed_io) ... ok
+test_sync_failure_does_not_duplicate_written_bytes (test_failure_paths.FailurePathTest.test_sync_failure_does_not_duplicate_written_bytes) ... ok
+test_zero_byte_flush_is_valid_but_zero_write_is_not (test_failure_paths.FailurePathTest.test_zero_byte_flush_is_valid_but_zero_write_is_not) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.836s
+
+OK
