@@ -1,0 +1,19 @@
+{
+  "status": "MEASURED_REQUIRES_REVIEW",
+  "started": 1793244954.101822,
+  "completed": [
+    "00-full-preallocate-0",
+    "01-full-preallocate-1",
+    "02-subset-preallocate-1",
+    "03-subset-preallocate-0",
+    "04-cpu-contract"
+  ],
+  "requests_completed": 40,
+  "loads_started": 4,
+  "contract_seconds": 0.21905366308055818,
+  "plan_sha256": "c4cb842fa36bbc2ee1ec3c4a9edc65b8e3c908abe6b2fd0dae61eacecee72f68",
+  "current": "04-cpu-contract",
+  "finished": 1793247370.4230206,
+  "elapsed_seconds": 2416.3212010939606,
+  "monitor_failures": []
+}

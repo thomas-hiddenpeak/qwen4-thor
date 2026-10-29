@@ -690,13 +690,19 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       }
       if (s.ok() && shared_write) {
         const auto save_begin = std::chrono::steady_clock::now();
+        SessionSaveTiming timing(request_id.c_str(), "shared");
         std::vector<SessionRange> ranges;
-        Status saved = SessionStateRanges(model_.Get(), mtp_, seq_id, boundary,
-                                            d_mtp_g, d_session_trunk, &ranges);
+        Status saved;
+        {
+          SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
+          saved = SessionStateRanges(model_.Get(), mtp_, seq_id, boundary,
+                                      d_mtp_g, d_session_trunk, &ranges);
+        }
         if (saved.ok())
           saved = prefix_cache_.Save(shared_write->key,
               {ids.data(), static_cast<size_t>(boundary + 1)}, ranges,
-              session_copy, cancelled, -1);
+              session_copy, cancelled, -1, &timing);
+        timing.Report(saved.ok());
         if (session_gpu_error) s = saved;
         std::fprintf(stderr,
                      "[prefix-cache] request=%s event=save prefix=%d "
@@ -1204,10 +1210,19 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       seq.position >= SessionCache::kMinPrefix &&
       seq.position < request_capacity) {
     const auto begin = std::chrono::steady_clock::now();
-    auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+    SessionSaveTiming timing(request_id.c_str(), "private");
+    std::unique_lock<std::mutex> lock;
+    {
+      SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kModelLock);
+      lock = diagnostic.Lock(model_mu_, Wait::kModel);
+    }
     std::vector<SessionRange> ranges;
-    Status saved = SessionStateRanges(model_.Get(), mtp_, seq_id, seq.position,
-                                        d_mtp_g, d_session_trunk, &ranges);
+    Status saved;
+    {
+      SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kRanges);
+      saved = SessionStateRanges(model_.Get(), mtp_, seq_id, seq.position,
+                                  d_mtp_g, d_session_trunk, &ranges);
+    }
     const bool has_step = mtp_ar.mtp_accepted_count > 0;
     const int32_t pending = has_step ? mtp_ar.mtp_next_b : mtp_b;
     const int32_t last_d0 = has_step ? mtp_ar.mtp_next_d0 : mtp_d0;
@@ -1216,10 +1231,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       std::vector<int32_t> prefix(seq.history);
       prefix.push_back(pending);
       saved = session_cache_.Save(session.key, prefix, ranges, session_copy,
-                                    cancelled, last_d0);
+                                    cancelled, last_d0, &timing);
     } else if (saved.ok()) {
       saved = Status::Fail("incomplete session boundary");
     }
+    timing.Report(saved.ok());
     if (session_gpu_error) {
       generation_failed = true;
       use_mtp = true;  // Do not enter a plain tail after a device failure.

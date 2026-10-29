@@ -1,0 +1,240 @@
+[
+  {
+    "shared": false,
+    "rows": [
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 131071,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-0",
+        "start": 1435077.480888117,
+        "end": 1435192.453486055,
+        "latency": 114.97259793779813,
+        "ttft": 103.44916133000515,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1435077.480888117,
+          "end_monotonic_seconds": 1435192.453486055,
+          "start_utc_estimate": "2026-10-29T03:36:34.964014+00:00",
+          "end_utc_estimate": "2026-10-29T03:38:29.936612+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "09e0c21345b4310788db11768628fb88f928e18d5f70a46d00754649a3abbad5",
+        "cached_tokens": 0,
+        "cache_source": "session"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 33274,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-1",
+        "start": 1435198.828248502,
+        "end": 1435320.475640507,
+        "latency": 121.64739200496115,
+        "ttft": 103.63882834091783,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1435198.828248502,
+          "end_monotonic_seconds": 1435320.475640507,
+          "start_utc_estimate": "2026-10-29T03:38:36.311374+00:00",
+          "end_utc_estimate": "2026-10-29T03:40:37.958766+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "17ecfab700085351eeb4622bceb220a7f9cbe8465db0cbac5b894a041c7c73f5",
+        "cached_tokens": 0,
+        "cache_source": "session"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 49150,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-2",
+        "start": 1435198.828224779,
+        "end": 1435320.608610553,
+        "latency": 121.78038577386178,
+        "ttft": 103.86474696081132,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1435198.828224779,
+          "end_monotonic_seconds": 1435320.608610553,
+          "start_utc_estimate": "2026-10-29T03:38:36.311351+00:00",
+          "end_utc_estimate": "2026-10-29T03:40:38.091737+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -4.76837158203125e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "3db13459e5c341b3c762ad3a832c384b0128858e1e2d0e688ae754bb49a722e9",
+        "cached_tokens": 0,
+        "cache_source": "session"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 59986,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-3",
+        "start": 1435198.828554204,
+        "end": 1435320.608888857,
+        "latency": 121.7803346531,
+        "ttft": 103.8646741269622,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1435198.828554204,
+          "end_monotonic_seconds": 1435320.608888857,
+          "start_utc_estimate": "2026-10-29T03:38:36.311680+00:00",
+          "end_utc_estimate": "2026-10-29T03:40:38.092015+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "5a4a1322bb78d837bb57828ef1b604d025ba1e7b5a19adeb08a2413e2cb8750e",
+        "cached_tokens": 0,
+        "cache_source": "session"
+      }
+    ],
+    "makespan": 243.12800073996186,
+    "output_tokens": 1024
+  },
+  {
+    "shared": true,
+    "rows": [
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 131071,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-4",
+        "start": 1435326.189948978,
+        "end": 1435440.348435812,
+        "latency": 114.15848683402874,
+        "ttft": 102.78461763099767,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1435326.189948978,
+          "end_monotonic_seconds": 1435440.348435812,
+          "start_utc_estimate": "2026-10-29T03:40:43.673074+00:00",
+          "end_utc_estimate": "2026-10-29T03:42:37.831561+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 2.384185791015625e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "09e0c21345b4310788db11768628fb88f928e18d5f70a46d00754649a3abbad5",
+        "cached_tokens": 0,
+        "cache_source": "session"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 33274,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-7",
+        "start": 1435446.203361043,
+        "end": 1435552.768066172,
+        "latency": 106.56470512901433,
+        "ttft": 88.66209945897572,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1435446.203361043,
+          "end_monotonic_seconds": 1435552.768066172,
+          "start_utc_estimate": "2026-10-29T03:42:43.686487+00:00",
+          "end_utc_estimate": "2026-10-29T03:44:30.251192+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "17ecfab700085351eeb4622bceb220a7f9cbe8465db0cbac5b894a041c7c73f5",
+        "cached_tokens": 8192,
+        "cache_source": "shared"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 49150,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-6",
+        "start": 1435446.180580429,
+        "end": 1435552.767079156,
+        "latency": 106.58649872685783,
+        "ttft": 88.68505860888399,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1435446.180580429,
+          "end_monotonic_seconds": 1435552.767079156,
+          "start_utc_estimate": "2026-10-29T03:42:43.663706+00:00",
+          "end_utc_estimate": "2026-10-29T03:44:30.250205+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "3db13459e5c341b3c762ad3a832c384b0128858e1e2d0e688ae754bb49a722e9",
+        "cached_tokens": 8192,
+        "cache_source": "shared"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 59986,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-5",
+        "start": 1435446.058847065,
+        "end": 1435552.635073923,
+        "latency": 106.5762268579565,
+        "ttft": 88.58664444601163,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1435446.058847065,
+          "end_monotonic_seconds": 1435552.635073923,
+          "start_utc_estimate": "2026-10-29T03:42:43.541973+00:00",
+          "end_utc_estimate": "2026-10-29T03:44:30.118200+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 2.384185791015625e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "5a4a1322bb78d837bb57828ef1b604d025ba1e7b5a19adeb08a2413e2cb8750e",
+        "cached_tokens": 8192,
+        "cache_source": "shared"
+      }
+    ],
+    "makespan": 226.57811719411984,
+    "output_tokens": 1024
+  }
+]

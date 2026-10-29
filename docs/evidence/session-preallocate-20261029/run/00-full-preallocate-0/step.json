@@ -1,0 +1,23 @@
+{
+  "name": "00-full-preallocate-0",
+  "head": "full",
+  "preallocate": 0,
+  "shared_order": [
+    false,
+    true
+  ],
+  "suffix": true,
+  "kind": "block",
+  "http_loads": 1,
+  "http_requests": 10,
+  "timeout": 900,
+  "command": [
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/.venv/bin/python",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/session_preallocate/run_stage.py",
+    "--plan",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-preallocate-20261029/plan.json",
+    "--custom-step",
+    "00-full-preallocate-0"
+  ]
+}

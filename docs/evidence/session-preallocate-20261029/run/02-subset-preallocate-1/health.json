@@ -1,0 +1,7 @@
+{
+  "status": "ok",
+  "gpu_healthy": true,
+  "requests_running": 1,
+  "seq_slots_free": 4,
+  "seq_slots_total": 4
+}

@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "q4t/status.h"
+#include "q4t/server/session_save_timing.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
@@ -55,7 +56,8 @@ class SessionCache {
                   int32_t* pending = nullptr);
   Status Save(const std::string& key, std::span<const int32_t> prefix,
                std::span<const SessionRange> ranges, const Copy& copy,
-               const Cancel& cancel, int32_t d0);
+               const Cancel& cancel, int32_t d0,
+               SessionSaveTiming* timing = nullptr);
   size_t Bytes() const;
 
  private:
@@ -74,7 +76,8 @@ class SessionCache {
   using Entries = std::map<std::string, std::unique_ptr<Entry>>;
   void Erase(Entries::iterator it);
   Status Transfer(Entry* entry, std::span<const SessionRange> ranges,
-                   const Copy& copy, const Cancel& cancel, bool restore);
+                   const Copy& copy, const Cancel& cancel, bool restore,
+                   SessionSaveTiming* timing = nullptr);
   mutable std::mutex mutex_;
   int directory_fd_ = -1;
   void* staging_ = nullptr;

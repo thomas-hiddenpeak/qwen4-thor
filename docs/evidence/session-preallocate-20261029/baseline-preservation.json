@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "files": {
+    "build/q4t": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+    "build/q4t.release.json": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2"
+  },
+  "owned_models": [],
+  "io_preparation_released": true,
+  "lease_available": true
+}

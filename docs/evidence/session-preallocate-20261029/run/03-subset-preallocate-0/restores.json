@@ -1,0 +1,56 @@
+[
+  {
+    "text": "44",
+    "output_sha256": "71ee45a3c0db9a9865f7313dd3372cf60dca6479d46261f3542eb9346e4a04d6",
+    "input_tokens": 131348,
+    "output_tokens": 3,
+    "success": 1,
+    "response_id": "chatcmpl-auto-8",
+    "start": 1437402.220124179,
+    "end": 1437422.750271966,
+    "latency": 20.530147786950693,
+    "ttft": 4.518976930063218,
+    "finish": [
+      "stop"
+    ],
+    "timing": {
+      "start_monotonic_seconds": 1437402.220124179,
+      "end_monotonic_seconds": 1437422.750271966,
+      "start_utc_estimate": "2026-10-29T04:15:19.703250+00:00",
+      "end_utc_estimate": "2026-10-29T04:15:40.233398+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 0.0,
+      "within_client_boundaries": true
+    },
+    "prompt_sha256": "9f797261f0ee630affaced9e8e224fc37b3796ab181c7fb3ed83aff6af766e06",
+    "cached_tokens": 131323
+  },
+  {
+    "text": "44",
+    "output_sha256": "71ee45a3c0db9a9865f7313dd3372cf60dca6479d46261f3542eb9346e4a04d6",
+    "input_tokens": 131348,
+    "output_tokens": 3,
+    "success": 1,
+    "response_id": "chatcmpl-auto-9",
+    "start": 1437428.243967408,
+    "end": 1437450.04532383,
+    "latency": 21.801356422016397,
+    "ttft": 4.4464051749091595,
+    "finish": [
+      "stop"
+    ],
+    "timing": {
+      "start_monotonic_seconds": 1437428.243967408,
+      "end_monotonic_seconds": 1437450.04532383,
+      "start_utc_estimate": "2026-10-29T04:15:45.727093+00:00",
+      "end_utc_estimate": "2026-10-29T04:16:07.528450+00:00",
+      "source": "evalscope result.start_time/completed_time (perf_counter)",
+      "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+      "clock_offset_change_seconds": 0.0,
+      "within_client_boundaries": true
+    },
+    "prompt_sha256": "9f797261f0ee630affaced9e8e224fc37b3796ab181c7fb3ed83aff6af766e06",
+    "cached_tokens": 131323
+  }
+]

@@ -1,0 +1,21 @@
+[  3%] Built target q4t_runtime
+[  7%] Built target q4t_io
+[ 11%] Built target q4t_trace
+[ 19%] Built target q4t_ple
+[ 23%] Built target q4t_text
+[ 34%] Built target q4t_quant
+[ 73%] Built target q4t_model
+[ 76%] Built target q4t_startup_plan
+[ 76%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_server.cpp.o
+[ 76%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_http.cpp.o
+[ 76%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_input.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_metrics.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_scheduler.cpp.o
+[ 80%] Building CXX object CMakeFiles/q4t_server.dir/src/server/chat_generation.cpp.o
+[ 84%] Building CXX object CMakeFiles/q4t_server.dir/src/server/session_cache.cpp.o
+[ 84%] Building CXX object CMakeFiles/q4t_server.dir/src/server/session_state.cpp.o
+[ 88%] Linking CXX static library libq4t_server.a
+[ 96%] Built target q4t_server
+[ 96%] Building CXX object CMakeFiles/q4t.dir/src/main.cpp.o
+[100%] Linking CXX executable q4t
+[100%] Built target q4t

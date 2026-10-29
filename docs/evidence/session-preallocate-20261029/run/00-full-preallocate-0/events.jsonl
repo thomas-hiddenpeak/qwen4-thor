@@ -1,0 +1,5 @@
+{"event": "server_before_start", "monotonic_seconds": 1435036.9804022792, "unix_seconds": 1793244954.463528, "utc": "2026-10-29T03:35:54.463528+00:00", "clock_pair_uncertainty_seconds": 4.119938239455223e-07}
+{"event": "server_started", "monotonic_seconds": 1435036.9807464036, "unix_seconds": 1793244954.4638717, "utc": "2026-10-29T03:35:54.463872+00:00", "clock_pair_uncertainty_seconds": 4.0745362639427185e-07, "pid": 78174}
+{"event": "server_ready", "monotonic_seconds": 1435071.9916674378, "unix_seconds": 1793244989.4747932, "utc": "2026-10-29T03:36:29.474793+00:00", "clock_pair_uncertainty_seconds": 5.279434844851494e-07, "pid": 78174}
+{"event": "server_before_shutdown", "monotonic_seconds": 1435604.4131158781, "unix_seconds": 1793245521.8962417, "utc": "2026-10-29T03:45:21.896242+00:00", "clock_pair_uncertainty_seconds": 3.7497375160455704e-07, "pid": 78174}
+{"event": "server_after_shutdown", "monotonic_seconds": 1435605.0774733755, "unix_seconds": 1793245522.5605993, "utc": "2026-10-29T03:45:22.560599+00:00", "clock_pair_uncertainty_seconds": 6.065238267183304e-07, "pid": 78174, "server_returncode": 0}

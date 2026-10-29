@@ -1,0 +1,97 @@
+{
+  "path": ".q4t-work/session-preallocate-20261029/io-preparation.data",
+  "device": 66305,
+  "inode": 5657540,
+  "started": 1793244614.1709359,
+  "finished": 1793244954.0965123,
+  "bytes": 68719476736,
+  "target": 68719476736,
+  "staging_bytes": 8388608,
+  "buffer_sha256": "634d3bd6e8323fc8a2e2336ea20984ef8db32a08ed3361d72fbcf00749aa1009",
+  "segments": [
+    {
+      "bytes": 4294967296,
+      "segment_seconds": 7.897709054173902,
+      "elapsed_seconds": 7.897709054173902
+    },
+    {
+      "bytes": 8589934592,
+      "segment_seconds": 13.01010859082453,
+      "elapsed_seconds": 20.90781764499843
+    },
+    {
+      "bytes": 12884901888,
+      "segment_seconds": 20.646328973118216,
+      "elapsed_seconds": 41.55414661811665
+    },
+    {
+      "bytes": 17179869184,
+      "segment_seconds": 21.650760435964912,
+      "elapsed_seconds": 63.20490705408156
+    },
+    {
+      "bytes": 21474836480,
+      "segment_seconds": 23.674801856977865,
+      "elapsed_seconds": 86.87970891105942
+    },
+    {
+      "bytes": 25769803776,
+      "segment_seconds": 44.41921766707674,
+      "elapsed_seconds": 131.29892657813616
+    },
+    {
+      "bytes": 30064771072,
+      "segment_seconds": 23.288487078854814,
+      "elapsed_seconds": 154.58741365699098
+    },
+    {
+      "bytes": 34359738368,
+      "segment_seconds": 20.398820587201044,
+      "elapsed_seconds": 174.98623424419202
+    },
+    {
+      "bytes": 38654705664,
+      "segment_seconds": 16.76042086700909,
+      "elapsed_seconds": 191.7466551112011
+    },
+    {
+      "bytes": 42949672960,
+      "segment_seconds": 15.204947751015425,
+      "elapsed_seconds": 206.95160286221653
+    },
+    {
+      "bytes": 47244640256,
+      "segment_seconds": 26.59838742692955,
+      "elapsed_seconds": 233.54999028914608
+    },
+    {
+      "bytes": 51539607552,
+      "segment_seconds": 16.71971652493812,
+      "elapsed_seconds": 250.2697068140842
+    },
+    {
+      "bytes": 55834574848,
+      "segment_seconds": 26.614085000008345,
+      "elapsed_seconds": 276.88379181409255
+    },
+    {
+      "bytes": 60129542144,
+      "segment_seconds": 18.110893537057564,
+      "elapsed_seconds": 294.9946853511501
+    },
+    {
+      "bytes": 64424509440,
+      "segment_seconds": 23.851524010999128,
+      "elapsed_seconds": 318.84620936214924
+    },
+    {
+      "bytes": 68719476736,
+      "segment_seconds": 21.044570402940735,
+      "elapsed_seconds": 339.89077976509
+    }
+  ],
+  "failure": null,
+  "counts_in_transaction": false,
+  "counts_in_stage_wall": true,
+  "steady_state_guaranteed": false
+}

@@ -1,0 +1,12 @@
+{
+  "started_utc": "2026-10-29T03:17:57Z",
+  "deadline_utc": "2026-10-29T04:17:57Z",
+  "http_requests": 40,
+  "service_starts": 4,
+  "gpu_contracts": 0,
+  "candidates": 1,
+  "wall_seconds": 3600,
+  "total_logical_write_limit": 206158430208,
+  "cpu_write_limit": 2147483648,
+  "reason": "user-authorized fixed plan; includes preparation, build, execution; no retries"
+}

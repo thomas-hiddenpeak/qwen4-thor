@@ -158,9 +158,9 @@ int SessionCache::Match(const std::string& key,
 }
 
 Status SessionCache::Transfer(Entry* entry,
-                               std::span<const SessionRange> ranges,
-                               const Copy& copy, const Cancel& cancel,
-                               bool restore) {
+                              std::span<const SessionRange> ranges,
+                              const Copy& copy, const Cancel& cancel,
+                              bool restore, SessionSaveTiming* timing) {
   size_t offset = 0;
   size_t block = 0;
   for (const auto& range : ranges) {
@@ -171,8 +171,9 @@ Status SessionCache::Transfer(Entry* entry,
       auto* state = static_cast<uint8_t*>(range.data) + start;
       if (restore) {
         ssize_t got;
-        do { got = pread(entry->fd, staging_, disk_size, offset); }
-        while (got < 0 && errno == EINTR);
+        do {
+          got = pread(entry->fd, staging_, disk_size, offset);
+        } while (got < 0 && errno == EINTR);
         if (got != static_cast<ssize_t>(disk_size))
           return IoError("read/short read");
         if (block >= entry->digests.size() ||
@@ -182,16 +183,35 @@ Status SessionCache::Transfer(Entry* entry,
         const Status s = copy(staging_, state, size, true);
         if (!s.ok()) return s;
       } else {
-        const Status s = copy(staging_, state, size, false);
+        Status s;
+        {
+          SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCopy);
+          s = copy(staging_, state, size, false);
+        }
         if (!s.ok()) return s;
-        std::memset(static_cast<uint8_t*>(staging_) + size, 0, disk_size - size);
-        entry->digests.push_back(
-            trace::Sha256({static_cast<uint8_t*>(staging_), disk_size}));
+        {
+          SessionSaveTiming::Scope span(timing, SessionSaveTiming::kPadding);
+          std::memset(static_cast<uint8_t*>(staging_) + size, 0,
+                      disk_size - size);
+        }
+        {
+          SessionSaveTiming::Scope span(timing, SessionSaveTiming::kHash);
+          entry->digests.push_back(
+              trace::Sha256({static_cast<uint8_t*>(staging_), disk_size}));
+        }
         ssize_t wrote;
-        do { wrote = pwrite(entry->fd, staging_, disk_size, offset); }
-        while (wrote < 0 && errno == EINTR);
+        {
+          SessionSaveTiming::Scope span(timing, SessionSaveTiming::kWrite);
+          do {
+            wrote = pwrite(entry->fd, staging_, disk_size, offset);
+          } while (wrote < 0 && errno == EINTR);
+        }
         if (wrote != static_cast<ssize_t>(disk_size))
           return IoError("write/short write");
+        if (timing) {
+          timing->data_bytes += size;
+          timing->disk_bytes += disk_size;
+        }
       }
       start += size;
       offset += disk_size;
@@ -204,9 +224,9 @@ Status SessionCache::Transfer(Entry* entry,
 }
 
 Status SessionCache::Restore(const std::string& key,
-                              std::span<const SessionRange> ranges,
-                              const Copy& copy, const Cancel& cancel,
-                              int32_t* d0, int32_t* pending) {
+                             std::span<const SessionRange> ranges,
+                             const Copy& copy, const Cancel& cancel,
+                             int32_t* d0, int32_t* pending) {
   const std::lock_guard lock(mutex_);
   auto it = entries_.find(key);
   if (!busy_.contains(key) || it == entries_.end() || !it->second->published)
@@ -225,45 +245,90 @@ Status SessionCache::Restore(const std::string& key,
 }
 
 Status SessionCache::Save(const std::string& key,
-                           std::span<const int32_t> prefix,
-                           std::span<const SessionRange> ranges,
-                           const Copy& copy, const Cancel& cancel,
-                           int32_t d0) {
-  const std::lock_guard lock(mutex_);
-  if (!busy_.contains(key) || prefix.size() <= size_t(min_prefix_) ||
-      prefix.size() > kMaxPrefix + 1 || ranges.empty())
-    return Status::Fail("session cache save admission");
-  size_t bytes = 0;
-  for (const auto& range : ranges) {
-    if (!range.data || !range.bytes || range.bytes > disk_budget_ ||
-        Aligned(range.bytes) > disk_budget_ - bytes)
-      return Status::Fail("session cache save range/budget");
-    bytes += Aligned(range.bytes);
+                          std::span<const int32_t> prefix,
+                          std::span<const SessionRange> ranges,
+                          const Copy& copy, const Cancel& cancel, int32_t d0,
+                          SessionSaveTiming* timing) {
+  std::unique_lock<std::mutex> lock;
+  {
+    SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCacheLock);
+    lock = std::unique_lock<std::mutex>(mutex_);
   }
-  // The old prefix is no longer needed by this request after restoration.
-  // Losing a cache entry on a failed replacement is a miss, never stale reuse.
-  if (auto old = entries_.find(key); old != entries_.end()) Erase(old);
-  while (entries_.size() >= kMaxEntries || bytes > disk_budget_ - bytes_) {
-    auto victim = entries_.end();
-    for (auto it = entries_.begin(); it != entries_.end(); ++it) {
-      if (busy_.contains(it->first)) continue;
-      if (victim == entries_.end() || it->second->used < victim->second->used)
-        victim = it;
+  size_t bytes = 0;
+  {
+    SessionSaveTiming::Scope span(timing, SessionSaveTiming::kMetadata);
+    if (!busy_.contains(key) || prefix.size() <= size_t(min_prefix_) ||
+        prefix.size() > kMaxPrefix + 1 || ranges.empty())
+      return Status::Fail("session cache save admission");
+    for (const auto& range : ranges) {
+      if (!range.data || !range.bytes || range.bytes > disk_budget_ ||
+          Aligned(range.bytes) > disk_budget_ - bytes)
+        return Status::Fail("session cache save range/budget");
+      bytes += Aligned(range.bytes);
     }
-    if (victim == entries_.end()) return Status::Fail("session cache full");
-    Erase(victim);
+    // The old prefix is no longer needed by this request after restoration.
+    // Losing a cache entry on a failed replacement is a miss, never stale
+    // reuse.
+    if (auto old = entries_.find(key); old != entries_.end()) Erase(old);
+    while (entries_.size() >= kMaxEntries || bytes > disk_budget_ - bytes_) {
+      auto victim = entries_.end();
+      for (auto it = entries_.begin(); it != entries_.end(); ++it) {
+        if (busy_.contains(it->first)) continue;
+        if (victim == entries_.end() || it->second->used < victim->second->used)
+          victim = it;
+      }
+      if (victim == entries_.end()) return Status::Fail("session cache full");
+      Erase(victim);
+    }
   }
   auto entry = std::make_unique<Entry>();
-  entry->fd = openat(directory_fd_, ".",
-                      O_TMPFILE | O_DIRECT | O_RDWR | O_CLOEXEC, 0600);
+  {
+    SessionSaveTiming::Scope span(timing, SessionSaveTiming::kOpen);
+    entry->fd = openat(directory_fd_, ".",
+                       O_TMPFILE | O_DIRECT | O_RDWR | O_CLOEXEC, 0600);
+  }
   if (entry->fd < 0) return IoError("snapshot file");
-  entry->bytes = bytes;
-  entry->d0 = d0;
-  entry->prefix.assign(prefix.begin(), prefix.end());
-  entry->used = std::chrono::steady_clock::now();
-  for (const auto& range : ranges) entry->sizes.push_back(range.bytes);
-  const Status s = Transfer(entry.get(), ranges, copy, cancel, false);
-  if (!s.ok()) return s;
+  // One bounded candidate; diagnostic control uses the identical executable.
+  // Keep size unchanged until successful writes, and never publish failures.
+  const char* preallocate = std::getenv("Q4T_SESSION_PREALLOCATE");
+  if (!preallocate || std::strcmp(preallocate, "0") != 0) {
+    int result;
+    {
+      SessionSaveTiming::Scope span(timing, SessionSaveTiming::kPreallocate);
+      do {
+        result = fallocate(entry->fd, FALLOC_FL_KEEP_SIZE, 0, bytes);
+      } while (result < 0 && errno == EINTR);
+    }
+    if (result < 0 && errno != EOPNOTSUPP && errno != ENOSYS) {
+      const Status error = IoError("preallocate");
+      SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCleanup);
+      entry.reset();
+      return error;
+    }
+    if (timing) {
+      timing->preallocated = result == 0;
+      timing->fallback = result < 0;
+    }
+    if (result < 0)
+      std::fprintf(
+          stderr, "[session-cache-preallocate] fallback=unsupported errno=%d\n",
+          errno);
+  }
+  {
+    SessionSaveTiming::Scope span(timing, SessionSaveTiming::kMetadata);
+    entry->bytes = bytes;
+    entry->d0 = d0;
+    entry->prefix.assign(prefix.begin(), prefix.end());
+    entry->used = std::chrono::steady_clock::now();
+    for (const auto& range : ranges) entry->sizes.push_back(range.bytes);
+  }
+  const Status s = Transfer(entry.get(), ranges, copy, cancel, false, timing);
+  if (!s.ok()) {
+    SessionSaveTiming::Scope span(timing, SessionSaveTiming::kCleanup);
+    entry.reset();
+    return s;
+  }
+  SessionSaveTiming::Scope span(timing, SessionSaveTiming::kPublish);
   bytes_ += bytes;
   entries_.emplace(key, std::move(entry));
   return Status();
