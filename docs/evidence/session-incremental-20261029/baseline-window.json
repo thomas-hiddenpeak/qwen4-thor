@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "start": 1465992.221286908,
+  "end": 1466602.0908285938,
+  "samples": 610,
+  "max_gap_seconds": 1.0017683589830995,
+  "after_exit_samples": 5,
+  "conflicts": [],
+  "baseline_q4t_swap_bytes": 0,
+  "excluded_service_admitted": 5,
+  "excluded_service_write_bytes": 9284046848,
+  "budget_deviation": {
+    "original_http": 48,
+    "revised_http": 53,
+    "original_starts": 4,
+    "revised_starts": 5,
+    "original_cpu_programs": 1,
+    "revised_cpu_programs": 2,
+    "deadline_unchanged": true,
+    "candidate_unchanged": true,
+    "acceptance_unchanged": true
+  },
+  "original_archive": {
+    "passed": true,
+    "files": 1030,
+    "bytes": 422800988,
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-incremental-20261029-archive",
+    "manifest_sha256": "3deee32711c272749d28a74b384147bc070e60beddbece00940f94646b3ac91c"
+  }
+}

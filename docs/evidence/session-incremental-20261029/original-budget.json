@@ -1,0 +1,11 @@
+{
+  "start_unix": 1793274488.0,
+  "deadline_unix": 1793281688.0,
+  "seconds": 7200,
+  "http": 48,
+  "starts": 4,
+  "candidates": 1,
+  "cpu_programs": 1,
+  "cpu_write_limit": 536870912,
+  "write_limit": 240518168576
+}

@@ -1,0 +1,14 @@
+{
+  "status": "ENV_ABORT",
+  "state_sha256": "5396851007f75b5a98b5ec31bfb1571d35d3c2b486eaadd494801cd145e4ae7d",
+  "monitor_failures": [
+    "ENV_ABORT telemetry stopped with unresolved exit identities"
+  ],
+  "cleanup_errors": [],
+  "final_summary_sha256": "72ba114e99aa8b22ff6979fe9a80e57d137a0de703d2a23e51fe60e0b883b28e",
+  "final_monitor_barrier": {},
+  "final_monitor_errors": [
+    "final sampler summary is incomplete/failed"
+  ],
+  "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+}

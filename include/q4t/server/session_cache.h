@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "q4t/status.h"
+#include "q4t/server/session_save_timing.h"
 #include "q4t/trace/sha256.h"
 
 namespace q4t::server {
@@ -40,7 +41,7 @@ class SessionCache {
   SessionCache(const SessionCache&) = delete;
   SessionCache& operator=(const SessionCache&) = delete;
   Status Open(const std::string& directory, int min_prefix = kMinPrefix,
-              size_t disk_budget = kDiskBudget);
+              size_t disk_budget = kDiskBudget, bool incremental = false);
   bool Enabled() const { return directory_fd_ >= 0; }
   bool Acquire(const std::string& key);
   // Shared snapshots use scope + ':' + SHA256(prefix) as the key. A selected
@@ -55,7 +56,8 @@ class SessionCache {
                   int32_t* pending = nullptr);
   Status Save(const std::string& key, std::span<const int32_t> prefix,
                std::span<const SessionRange> ranges, const Copy& copy,
-               const Cancel& cancel, int32_t d0);
+               const Cancel& cancel, int32_t d0,
+               SessionSaveTiming* timing = nullptr);
   size_t Bytes() const;
 
  private:
@@ -63,7 +65,13 @@ class SessionCache {
   struct Entry {
     int fd = -1;
     size_t bytes = 0;
+    size_t disk_charge = 0;
     bool published = false;
+    bool restored = false;
+    // Incremental files reserve sparse 8 MiB address slots. Only written
+    // extents consume disk space; slots never alias or move between ranges.
+    size_t next_offset = 0;
+    std::vector<size_t> offsets;
     int32_t d0 = -1;
     std::vector<int32_t> prefix;  // Includes shifted draft's pending token.
     std::vector<size_t> sizes;
@@ -73,14 +81,19 @@ class SessionCache {
   };
   using Entries = std::map<std::string, std::unique_ptr<Entry>>;
   void Erase(Entries::iterator it);
+  Status SaveIncremental(Entry* entry, std::span<const SessionRange> ranges,
+                         const Copy& copy, const Cancel& cancel,
+                         SessionSaveTiming* timing);
   Status Transfer(Entry* entry, std::span<const SessionRange> ranges,
-                   const Copy& copy, const Cancel& cancel, bool restore);
+                   const Copy& copy, const Cancel& cancel, bool restore,
+                   SessionSaveTiming* timing = nullptr);
   mutable std::mutex mutex_;
   int directory_fd_ = -1;
   void* staging_ = nullptr;
   size_t bytes_ = 0;
   int min_prefix_ = kMinPrefix;
   size_t disk_budget_ = kDiskBudget;
+  bool incremental_ = false;
   Entries entries_;
   std::set<std::string> busy_;
 };
