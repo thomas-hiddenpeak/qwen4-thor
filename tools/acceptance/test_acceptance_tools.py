@@ -61,6 +61,17 @@ class ComparisonTest(unittest.TestCase):
     def test_complete_pass(self):
         self.compare(0)
 
+    def test_residency_global_interval_preserves_legacy_logs(self):
+        common = (' finish=stop in=1024 out=8 loads=42 load_mb=1.2'
+                  ' misses=42 hits=9 evictions=3\n')
+        (self.work/'e2e-cand/server.log').write_text(
+            '[q4t][residency] id=old'+common+
+            '[q4t][residency] id=new scope=global_interval interval=2'+common)
+        output = self.compare(0).stdout
+        self.assertIn('old scope=legacy interval=unknown', output)
+        self.assertIn('new scope=global_interval interval=2', output)
+        self.assertEqual(output.count('loads=42 load_mb=1.2'), 2)
+
     def test_failed_server_exit_rejects_successful_rows(self):
         self.mutate('e2e-cand/exit.json', lambda d: d.update(server=-9))
         self.compare(1)

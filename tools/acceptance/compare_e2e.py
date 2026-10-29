@@ -122,7 +122,9 @@ def residency_lines(tag):
     out = []
     for line in log.read_text(errors='replace').splitlines():
         m = re.match(
-            r'\[q4t\]\[residency\] id=(\S+) finish=(\S+) in=(\d+) out=(\d+)'
+            r'\[q4t\]\[residency\] id=(\S+)'
+            r'(?: scope=global_interval interval=\d+)?'
+            r' finish=(\S+) in=(\d+) out=(\d+)'
             r' loads=(\d+) load_mb=([\d.]+) misses=(\d+) hits=(\d+)'
             r' evictions=(\d+)(?: dmiss=(\d+) dlook=(\d+) pmiss=(\d+)'
             r' plook=(\d+))?(?: l2h=(\d+) l2m=(\d+) l2ev=(\d+)'
@@ -136,6 +138,8 @@ def residency_lines(tag):
                  'l2h', 'l2m', 'l2ev', 'nvme_mb', 'mh', 'mw', 'msk',
                  'ld2h', 'ld2m', 'ld2ev', 'lp2h', 'lp2m', 'lp2ev'],
                 m.groups())))
+            metadata = dict(re.findall(r'(scope|interval)=(\S+)', line))
+            out[-1].update(metadata)
     return out
 
 
@@ -234,7 +238,9 @@ def main():
                       f" ld2h={ld2h} ld2m={ld2m} ld2ev={r['ld2ev']}"
                       f" ld2hit%={dh:.1f} lp2h={lp2h} lp2m={lp2m}"
                       f" lp2ev={r['lp2ev']} lp2hit%={ph:.1f}")
-        print(f"  {r['id']} in={r['in']} out={r['out']} loads={r['loads']} "
+        print(f"  {r['id']} scope={r.get('scope', 'legacy')} "
+              f"interval={r.get('interval', 'unknown')} "
+              f"in={r['in']} out={r['out']} loads={r['loads']} "
               f"load_mb={r['load_mb']} misses={r['misses']} "
               f"evictions={r['evictions']}{extra}")
     print(f"baseline residency lines: {len(res_b)} (expected 0 for C=0)")
