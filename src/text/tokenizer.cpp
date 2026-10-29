@@ -415,11 +415,20 @@ struct CandidateLater {
 
 // Run ranked BPE merges on a single pre-tokenized piece (already a valid
 // UTF-8 byte string of GPT-2 byte tokens).
+bool EncodingCancelled(const EncodeOptions& options, std::string* err) {
+  if (!options.cancelled || !options.cancelled()) return false;
+  *err = "encoding cancelled";
+  return true;
+}
+
 bool EncodeBpePiece(const TokenizerData& data, std::string_view piece,
-                    std::vector<std::uint32_t>* output, std::string* err) {
+                    std::vector<std::uint32_t>* output, std::string* err,
+                    const EncodeOptions& options) {
+  if (EncodingCancelled(options, err)) return false;
   if (piece.empty()) return true;
   std::vector<BpeNode> nodes(piece.size());
   for (std::size_t i = 0; i < piece.size(); ++i) {
+    if ((i & 1023) == 0 && EncodingCancelled(options, err)) return false;
     nodes[i].token_id =
         data.byte_token_ids[static_cast<std::uint8_t>(piece[i])];
     nodes[i].previous =
@@ -444,8 +453,13 @@ bool EncodeBpePiece(const TokenizerData& data, std::string_view piece,
                                    nodes[right].generation});
     }
   };
-  for (std::size_t i = 0; i + 1 < nodes.size(); ++i) add_candidate(i);
+  for (std::size_t i = 0; i + 1 < nodes.size(); ++i) {
+    if ((i & 1023) == 0 && EncodingCancelled(options, err)) return false;
+    add_candidate(i);
+  }
+  std::size_t work = 0;
   while (!candidates.empty()) {
+    if ((work++ & 1023) == 0 && EncodingCancelled(options, err)) return false;
     const BpeCandidate c = candidates.top();
     candidates.pop();
     BpeNode& left = nodes[c.left];
@@ -471,6 +485,7 @@ bool EncodeBpePiece(const TokenizerData& data, std::string_view piece,
   }
   std::size_t current = 0;
   while (current != std::numeric_limits<std::size_t>::max()) {
+    if ((work++ & 1023) == 0 && EncodingCancelled(options, err)) return false;
     if (output->size() >= data.limits.max_tokens) {
       *err = "encoded output exceeds max_tokens";
       return false;
@@ -485,7 +500,8 @@ bool EncodeBpePiece(const TokenizerData& data, std::string_view piece,
 // BPE-encode every piece into `output`.
 bool EncodeNormalSegment(const TokenizerData& data, std::string_view segment,
                          std::vector<std::uint32_t>* output,
-                         std::string* err) {
+                         std::string* err, const EncodeOptions& options) {
+  if (EncodingCancelled(options, err)) return false;
   if (segment.empty()) return true;
   if (!ValidateUtf8(segment)) {
     *err = "input is not valid UTF-8";
@@ -508,6 +524,7 @@ bool EncodeNormalSegment(const TokenizerData& data, std::string_view segment,
                        static_cast<std::int32_t>(segment.size())));
   icu::UnicodeString normalized;
   normalizer->normalize(unicode, normalized, status);
+  if (EncodingCancelled(options, err)) return false;
   if (U_FAILURE(status)) {
     *err = std::string("ICU NFC normalization failed: ") +
            u_errorName(status);
@@ -533,11 +550,12 @@ bool EncodeNormalSegment(const TokenizerData& data, std::string_view segment,
       *err = "normalized piece exceeds max_input_bytes";
       return false;
     }
-    return EncodeBpePiece(data, piece, output, err);
+    return EncodeBpePiece(data, piece, output, err, options);
   };
   UErrorCode mstatus = U_ZERO_ERROR;
   bool found = uregex_find(data.regex, -1, &mstatus);
   while (found && !U_FAILURE(mstatus)) {
+    if (EncodingCancelled(options, err)) return false;
     const std::int32_t start = uregex_start(data.regex, 0, &mstatus);
     const std::int32_t end = uregex_end(data.regex, 0, &mstatus);
     if (U_FAILURE(mstatus) || start < previous_end || end <= start) {
@@ -571,7 +589,9 @@ bool EncodeNormalSegment(const TokenizerData& data, std::string_view segment,
 // its added-token id (248045) rather than being BPE-encoded into byte tokens.
 // The earliest occurrence wins; at the same position the longest content wins.
 bool EncodeImpl(const TokenizerData& data, std::string_view text,
-                std::vector<std::uint32_t>* output, std::string* err) {
+                std::vector<std::uint32_t>* output, std::string* err,
+                const EncodeOptions& options) {
+  if (EncodingCancelled(options, err)) return false;
   if (text.size() > data.limits.max_input_bytes) {
     *err = "input exceeds max_input_bytes";
     return false;
@@ -579,12 +599,27 @@ bool EncodeImpl(const TokenizerData& data, std::string_view text,
   output->clear();
   output->reserve(std::min(text.size(), data.limits.max_tokens));
   std::size_t cursor = 0;
+  // Each marker advances its own search frontier. A missing marker stays
+  // missing instead of rescanning the remaining input after every match.
+  std::vector<std::size_t> next(data.added_tokens.size(), 0);
   while (cursor < text.size()) {
+    if (EncodingCancelled(options, err)) return false;
     std::size_t match_position = std::string_view::npos;
     const AddedToken* matched = nullptr;
-    for (const AddedToken& token : data.added_tokens) {
+    for (std::size_t i = 0; i < data.added_tokens.size(); ++i) {
+      const AddedToken& token = data.added_tokens[i];
       if (token.content.empty()) continue;
-      const std::size_t position = text.find(token.content, cursor);
+      if (cursor == 0 || next[i] < cursor) {
+        if (EncodingCancelled(options, err)) return false;
+        next[i] = text.find(token.content, cursor);
+        if (options.stats) {
+          ++options.stats->special_searches;
+          options.stats->special_search_bytes += next[i] == std::string_view::npos
+              ? text.size() - cursor
+              : next[i] - cursor + token.content.size();
+        }
+      }
+      const std::size_t position = next[i];
       if (position != std::string_view::npos &&
           (match_position == std::string_view::npos ||
            position < match_position ||
@@ -595,12 +630,12 @@ bool EncodeImpl(const TokenizerData& data, std::string_view text,
       }
     }
     if (matched == nullptr) {
-      return EncodeNormalSegment(data, text.substr(cursor), output, err);
+      return EncodeNormalSegment(data, text.substr(cursor), output, err, options);
     }
     if (match_position > cursor &&
         !EncodeNormalSegment(data,
                              text.substr(cursor, match_position - cursor),
-                             output, err)) {
+                             output, err, options)) {
       return false;
     }
     if (output->size() >= data.limits.max_tokens) {
@@ -667,9 +702,13 @@ Status Tokenizer::Load(const std::string& path, const TokenizerLimits& limits,
 }
 
 Status Tokenizer::Encode(std::string_view text,
-                         std::vector<std::uint32_t>* out) const {
+                         std::vector<std::uint32_t>* out,
+                         const EncodeOptions& options) const {
+  if (options.stats) *options.stats = {};
   std::string err;
-  if (!EncodeImpl(impl_->data, text, out, &err)) {
+  if (!EncodeImpl(impl_->data, text, out, &err, options) ||
+      EncodingCancelled(options, &err)) {
+    if (err == "encoding cancelled") out->clear();
     return Status::Fail(err);
   }
   return Status();

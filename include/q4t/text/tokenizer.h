@@ -14,6 +14,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -35,10 +36,23 @@ struct TokenizerLimits {
   std::size_t max_tokens = 4'000'000;
 };
 
+// Optional per-call work accounting; these are searched spans, not CPU cycles.
+struct EncodeStats {
+  std::size_t special_searches = 0;
+  std::size_t special_search_bytes = 0;
+};
+
+struct EncodeOptions {
+  // Cooperative checkpoints surround normalization/matching and bound BPE
+  // loop work. An individual ICU call or string search is not preempted.
+  std::function<bool()> cancelled = {};
+  EncodeStats* stats = nullptr;
+};
+
 // GPT-2 style Byte-Level BPE tokenizer loaded from tokenizer.json.
 //
-// A loaded Tokenizer is immutable and safe to share across threads:
-// Encode/Decode take const this and do not mutate shared state.
+// Decode reads immutable tables. Encode reuses the ICU regex handle and must
+// be serialized by the caller; const this does not make that handle immutable.
 class Tokenizer {
  public:
   // Pinned invariants of the target model's tokenizer.json. The loader fails
@@ -64,7 +78,9 @@ class Tokenizer {
   // Encode text into token ids. Added/special tokens are matched as whole
   // strings before the byte-level BPE path, mirroring the reference
   // `tokenizers` behavior.
-  Status Encode(std::string_view text, std::vector<std::uint32_t>* out) const;
+  // Cancellation clears partial output. Options and statistics are call-local.
+  Status Encode(std::string_view text, std::vector<std::uint32_t>* out,
+                 const EncodeOptions& options = {}) const;
   // Decode token ids into text. skip_special_tokens drops added tokens whose
   // `special` flag is true (base tokens are never special).
   Status Decode(const std::vector<std::uint32_t>& ids,

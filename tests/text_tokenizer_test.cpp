@@ -122,6 +122,51 @@ Q4T_TEST(tokenizer_load_real) {
   return true;
 }
 
+Q4T_TEST(tokenizer_special_search_work_is_bounded) {
+  std::unique_ptr<Tokenizer> tok;
+  Q4T_CHECK(Tokenizer::Load(kRealTokenizer, TokenizerLimits{}, &tok).ok());
+  size_t previous_bytes = 0;
+  for (size_t count : {2000, 4000, 8000}) {
+    std::string input;
+    for (size_t i = 0; i < count; ++i) input += "<|im_start|>";
+    std::vector<uint32_t> ids;
+    q4t::text::EncodeStats stats;
+    Q4T_CHECK(tok->Encode(input, &ids, {.stats = &stats}).ok());
+    Q4T_CHECK(ids == std::vector<uint32_t>(count, 248045));
+    Q4T_CHECK(stats.special_searches <= count + tok->AddedTokenCount());
+    Q4T_CHECK(stats.special_search_bytes <=
+              input.size() * (tok->AddedTokenCount() + 1));
+    if (previous_bytes) Q4T_CHECK(stats.special_search_bytes <= previous_bytes * 2);
+    previous_bytes = stats.special_search_bytes;
+  }
+  return true;
+}
+
+Q4T_TEST(tokenizer_cancel_clears_partial_ids_and_reuses_regex) {
+  std::unique_ptr<Tokenizer> tok;
+  Q4T_CHECK(Tokenizer::Load(kRealTokenizer, TokenizerLimits{}, &tok).ok());
+  std::vector<uint32_t> ids{123};
+  Q4T_CHECK(!tok->Encode("", &ids, {.cancelled = [] { return true; }}).ok());
+  Q4T_CHECK(ids.empty());
+  std::string special;
+  for (int i = 0; i < 1000; ++i) special += "<|im_start|>";
+  q4t::text::EncodeStats stats;
+  auto cancelled = [&] {
+    return stats.special_searches > tok->AddedTokenCount() + 3;
+  };
+  Q4T_CHECK(!tok->Encode(special, &ids,
+                         {.cancelled = cancelled, .stats = &stats}).ok());
+  Q4T_CHECK(ids.empty());
+  int checkpoints = 0;
+  // Enter normal tokenization after a special token has already been emitted.
+  Q4T_CHECK(!tok->Encode("<|im_start|>" + std::string(128 * 1024, 'x'), &ids,
+                         {.cancelled = [&] { return ++checkpoints > 64; }}).ok());
+  Q4T_CHECK(ids.empty() && checkpoints > 64);
+  Q4T_CHECK(tok->Encode("Hello, world!", &ids).ok());
+  Q4T_CHECK(ids == std::vector<uint32_t>({9419, 11, 1814, 0}));
+  return true;
+}
+
 Q4T_TEST(tokenizer_golden_encode) {
   if (!FileExists(kRealTokenizer)) {
     Q4T_SKIP("(skipped: real tokenizer.json not present)");

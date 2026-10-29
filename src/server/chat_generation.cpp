@@ -194,6 +194,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   };
   bool abort_counted = false;
   const auto count_abort = [&] {
+    err_guard.ok = true;  // A cancellation is not also a validation error.
     if (!abort_counted) {
       metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
       abort_counted = true;
@@ -229,9 +230,14 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     diagnostic.Stage("encode");
     {
       auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-      s = tok_->Encode(prompt, &prompt_u32);
+      s = tok_->Encode(prompt, &prompt_u32, {.cancelled = cancelled});
     }
     if (!s.ok()) {
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("request cancelled during encoding");
+        return;
+      }
       SendError(fd, 400, "encode failed: " + s.message());
       return;
     }
@@ -334,9 +340,15 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   if (!explicit_slots) {
     {
       auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-      s = tok_->Encode(prompt, &prompt_u32);
+      s = tok_->Encode(prompt, &prompt_u32, {.cancelled = cancelled});
     }
     if (!s.ok()) {
+      if (cancelled()) {
+        count_abort();
+        cleanup();
+        send_cancel_error("request cancelled during encoding");
+        return;
+      }
       SendError(fd, 400, "encode failed: " + s.message());
       cleanup();
       return;
