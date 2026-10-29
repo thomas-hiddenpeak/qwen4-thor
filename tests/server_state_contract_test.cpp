@@ -1,5 +1,6 @@
 #include "q4t/model/sequence.h"
 #include "q4t/server/request_control.h"
+#include "q4t/server/lifetime.h"
 #include "q4t/test.h"
 
 #include <array>
@@ -16,6 +17,38 @@ using q4t::server::RequestRegistry;
 using Stage = ModelSequence::Stage;
 const auto kNoDeadline = std::chrono::steady_clock::time_point::max();
 }  // namespace
+
+Q4T_TEST(server_exception_drains_before_ownership_release) {
+  ModelSequence seq;
+  Q4T_CHECK(seq.Begin(0).ok());
+  const int32_t token = 42;
+  Q4T_CHECK(seq.Submit({&token, 1}, Stage::kDecode, 8).ok());
+  bool drained = false, released_after_drain = false;
+  RequestControl request("failure", "key", kNoDeadline);
+  try {
+    q4t::server::ScopeExit owner([&] {
+      released_after_drain = drained && !seq.HasPending();
+    });
+    q4t::server::OnException failure([&] {
+      request.Cancel(RequestControl::State::kFailure);
+      drained = true;  // Host stand-in for the required completion boundary.
+      seq.FailAfterDrain();
+    });
+    throw std::bad_alloc();
+  } catch (const std::bad_alloc&) {
+  }
+  Q4T_CHECK(released_after_drain && request.Failed() && !request.Finish());
+  Q4T_CHECK(seq.history.empty() && seq.position == 0);
+  Q4T_CHECK(seq.stage == Stage::kFailed && seq.End().ok());
+  int calls = 0;
+  {
+    q4t::server::ScopeExit once([&] { ++calls; });
+    once.Run();
+    once.Run();
+  }
+  Q4T_CHECK(calls == 1);
+  return true;
+}
 
 Q4T_TEST(server_state_nonmonotonic_slots_and_survivors) {
   std::array<ModelSequence, 4> slots;

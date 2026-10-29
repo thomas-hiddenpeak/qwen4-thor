@@ -14,12 +14,13 @@ namespace q4t::server {
 class RequestControl {
  public:
   enum class State {
-    kActive, kDisconnect, kExplicit, kDeadline, kShutdown, kFinished
+    kActive, kDisconnect, kExplicit, kDeadline, kShutdown, kFailure, kFinished
   };
   RequestControl(std::string id, std::string key,
                  std::chrono::steady_clock::time_point deadline)
       : id_(std::move(id)), key_(std::move(key)), deadline_(deadline) {}
   const std::string& id() const { return id_; }
+  bool Failed() const { return state_.load() == State::kFailure; }
   std::chrono::steady_clock::time_point deadline() const { return deadline_; }
   bool MatchesKey(const std::string& key) const {
     if (key.empty() || key.size() != key_.size()) return false;
@@ -45,6 +46,7 @@ class RequestControl {
       case State::kExplicit: return "explicit_cancel";
       case State::kDeadline: return "deadline_exceeded";
       case State::kShutdown: return "server_shutdown";
+      case State::kFailure: return "request_failed";
       default: return "not_cancelled";
     }
   }

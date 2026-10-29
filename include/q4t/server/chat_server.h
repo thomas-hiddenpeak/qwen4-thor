@@ -20,6 +20,7 @@
 #include <cstdint>
 #include <memory>
 #include <mutex>
+#include <span>
 #include <string>
 #include <thread>
 #include <unordered_set>
@@ -29,6 +30,7 @@
 #include "q4t/server/suffix_token_cache.h"
 #include "q4t/server/session_cache.h"
 #include "q4t/server/http_request.h"
+#include "q4t/server/http_response.h"
 #include "q4t/server/server_options.h"
 #include "q4t/model/model_owner.h"
 #include "q4t/mtp/mtp.h"
@@ -107,18 +109,22 @@ class ChatServer {
   void RequestStop();
 
  private:
+  friend struct ServeContractAccess;
 #ifdef Q4T_STARTUP_RESERVATION
   // Destroy last: model, MTP, scheduler and request buffers release their
   // handed allocations before the reservation reclaims unhanded blocks.
   runtime::StartupReservation startup_reservation_;
 #endif
   void HandleClient(int fd);
+  void FinishConnection(int fd) noexcept;
   void Dispatch(int fd, const std::string& method, const std::string& path,
                 const std::string& body);
   void HandleHealth(int fd);
   void HandleModels(int fd);
   void HandleMetrics(int fd);
   void HandleChat(int fd, const std::string& body);
+  void HandleChatImpl(int fd, const std::string& body,
+                      detail::ResponseState* response_state);
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.
@@ -226,6 +232,10 @@ class ChatServer {
     std::condition_variable cv;
   };
   void RunOnePrefillChunk();
+  void ReleaseActiveRequest(ActiveRequest* request) noexcept;
+  void AbortBackendExecution() noexcept;  // model_mu_ held; drain before unlock
+  void AbortScheduler(std::span<PrefillReq* const> selected = {},
+                        ChunkPrefillReq* chunk = nullptr) noexcept;
   void SchedulerLoop();
   void StopScheduler();  // signal + join the scheduler thread (destructor)
   std::mutex sched_mu_;  // guards active_ + the pending/done handshake
@@ -268,6 +278,7 @@ class ChatServer {
   // forward), so once one is observed the server reports unhealthy (healthz
   // 503) and refuses new requests (503) instead of silently failing them all.
   std::atomic<bool> gpu_healthy_{true};
+  std::atomic<bool> serving_failed_{false};
   ServeMetrics metrics_;  // /metrics observability
 
   // Multimodal pipeline: run the image/video processor + vision tower over the

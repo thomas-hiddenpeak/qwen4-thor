@@ -3,6 +3,8 @@
 #include "q4t/server/chat_server.h"
 #include "q4t/io/json.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/lifetime.h"
+#include "q4t/server/serve_fault.h"
 
 namespace q4t::server::detail {
 bool RequestCancelled(RequestControl* control, int fd);

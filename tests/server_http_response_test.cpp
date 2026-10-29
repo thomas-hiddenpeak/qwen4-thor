@@ -105,6 +105,37 @@ Q4T_TEST(server_http_response_send_status) {
   return true;
 }
 
+Q4T_TEST(server_http_exception_terminal_states) {
+  using q4t::server::detail::ResponseState;
+  for (const auto state : {ResponseState::kUnsent, ResponseState::kStreaming,
+                           ResponseState::kComplete}) {
+    SocketPair sockets;
+    q4t::server::detail::SendExceptionResponse(sockets.fd[0], state);
+    shutdown(sockets.fd[0], SHUT_WR);
+    std::array<char, 2048> bytes{};
+    const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(), 0);
+    Q4T_CHECK(n >= 0);
+    const std::string output(bytes.data(), static_cast<size_t>(n));
+    if (state == ResponseState::kComplete) {
+      Q4T_CHECK(output.empty());
+      continue;
+    }
+    std::string json;
+    if (state == ResponseState::kUnsent) {
+      Q4T_CHECK(output.starts_with("HTTP/1.1 500 "));
+      json = output.substr(output.find("\r\n\r\n") + 4);
+    } else {
+      Q4T_CHECK(output.starts_with("data: "));
+      Q4T_CHECK(output.ends_with("data: [DONE]\r\n\r\n"));
+      json = output.substr(6, output.find("\r\n\r\n") - 6);
+    }
+    q4t::io::Json parsed;
+    Q4T_CHECK(q4t::io::ParseJson(json, &parsed, true).ok());
+    Q4T_CHECK(parsed.Has("error"));
+  }
+  return true;
+}
+
 Q4T_TEST(server_http_response_partial_writes) {
   SocketPair sockets;
   Q4T_CHECK(sockets.fd[0] >= 0);

@@ -13,6 +13,23 @@ namespace {
 constexpr std::string_view kReplacement = "\xef\xbf\xbd";
 }
 
+void SendExceptionResponse(int fd, ResponseState state) noexcept {
+  if (state == ResponseState::kComplete) return;
+  constexpr char http[] =
+      "HTTP/1.1 500 Internal Server Error\r\n"
+      "Content-Type: application/json\r\nConnection: close\r\n\r\n"
+      "{\"error\":{\"message\":\"request failed\",\"type\":\"server_error\"}}";
+  constexpr char sse[] =
+      "data: {\"error\":{\"message\":\"request failed\","
+      "\"type\":\"server_error\"}}\r\n\r\ndata: [DONE]\r\n\r\n";
+  const WriteOptions terminal{
+      std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
+  if (state == ResponseState::kStreaming)
+    WriteAll(fd, sse, sizeof(sse) - 1, terminal);
+  else
+    WriteAll(fd, http, sizeof(http) - 1, terminal);
+}
+
 std::string Utf8Stream::Append(std::string_view bytes) {
   std::string input = std::move(pending_);
   pending_.clear();

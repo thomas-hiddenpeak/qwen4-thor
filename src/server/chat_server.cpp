@@ -562,7 +562,21 @@ Status ChatServer::Start(const ServerOptions& opts) {
     d_sched_logits_ = nullptr;
   } else {
     h_sched_tokens_.assign(static_cast<size_t>(max_seq_), 0);
-    scheduler_thread_ = std::thread([this] { SchedulerLoop(); });
+    try {
+      scheduler_thread_ = std::thread([this] {
+        try {
+          SchedulerLoop();
+        } catch (const std::exception& error) {
+          std::fprintf(stderr, "[q4t] scheduler exception: %s\n", error.what());
+          AbortScheduler();
+        } catch (...) {
+          std::fprintf(stderr, "[q4t] unknown scheduler exception\n");
+          AbortScheduler();
+        }
+      });
+    } catch (...) {
+      return Status::Fail("thread failed");
+    }
     scheduler_active_ = true;
     std::fprintf(stderr, "[q4t] continuous-batching scheduler started "
                          "(max_seq=%d)\n",
@@ -585,14 +599,6 @@ Status ChatServer::Start(const ServerOptions& opts) {
   }
 #endif
   return Status();
-}
-
-void ChatServer::RequestStop() {
-  stop_requested_.store(true, std::memory_order_relaxed);
-  // shutdown(2) is async-signal-safe and wakes the blocked accept(2).
-  static_assert(std::atomic<int>::is_always_lock_free);
-  const int fd = listen_fd_.load(std::memory_order_relaxed);
-  if (fd >= 0) ::shutdown(fd, SHUT_RDWR);
 }
 
 void ChatServer::StopScheduler() {

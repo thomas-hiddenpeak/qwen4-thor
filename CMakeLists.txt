@@ -268,6 +268,10 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_contract.cpp
                              src/server/chat_template.cpp)
 target_include_directories(q4t_server PUBLIC include)
+option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
+if(Q4T_SERVE_FAULT_INJECTION)
+  target_compile_definitions(q4t_server PRIVATE Q4T_SERVE_FAULT_INJECTION=1)
+endif()
 target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io q4t_runtime
                                         CUDA::cudart)
 
@@ -499,6 +503,18 @@ if(Q4T_BUILD_TESTS)
   if(Q4T_HAS_ICU)
     target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp)
     target_link_libraries(q4t_host_tests PRIVATE q4t_text)
+    add_executable(q4t_http_lifecycle_tests
+      tools/serve_reliability/http_lifecycle_test.cpp tests/test_main.cpp
+      src/server/chat_http.cpp src/server/http_request.cpp
+      src/server/http_response.cpp src/trace/router_trace.cpp)
+    target_include_directories(q4t_http_lifecycle_tests PRIVATE
+      include ${CUDAToolkit_INCLUDE_DIRS})
+    target_compile_definitions(q4t_http_lifecycle_tests PRIVATE
+      Q4T_SERVE_FAULT_INJECTION=1)
+    target_link_libraries(q4t_http_lifecycle_tests PRIVATE
+      q4t_io q4t_text Threads::Threads)
+    add_test(NAME q4t_http_lifecycle COMMAND q4t_http_lifecycle_tests)
+    set_tests_properties(q4t_http_lifecycle PROPERTIES TIMEOUT 30)
   endif()
   add_test(NAME q4t_host_contracts COMMAND q4t_host_tests --required-list
     ${CMAKE_CURRENT_SOURCE_DIR}/tools/release/required_host_tests.txt)

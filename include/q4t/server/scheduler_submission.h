@@ -38,7 +38,15 @@ bool SubmitSchedulerRequestAndWait(
   if (stopping) return false;
   enqueue();
   scheduler_cv.notify_one();
-  completion_cv.wait(lock, completed);
+  try {
+    completion_cv.wait(lock, completed);
+  } catch (...) {
+    // Accepted work still borrows the caller's stack/buffers. Even an
+    // exceptional waiter must retain them until the normal completion edge.
+    scheduler_cv.notify_one();
+    completion_cv.wait(lock, completed);
+    throw;
+  }
   return true;
 }
 

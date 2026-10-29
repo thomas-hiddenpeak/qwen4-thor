@@ -10,6 +10,10 @@
 
 namespace q4t::server::detail {
 
+enum class ResponseState { kUnsent, kStreaming, kComplete };
+// Allocation-free best effort after an exception; never adds a second terminal.
+void SendExceptionResponse(int fd, ResponseState state) noexcept;
+
 // Emits complete UTF-8 scalars, replacing each malformed maximal subpart with
 // U+FFFD. At most three bytes survive Append; Finish resolves an incomplete
 // final scalar. One instance belongs to one response, across token boundaries.

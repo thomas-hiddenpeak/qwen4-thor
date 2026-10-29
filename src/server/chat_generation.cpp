@@ -73,6 +73,20 @@ using detail::SseChunk;
 using detail::PrepareChatInput;
 
 void ChatServer::HandleChat(int fd, const std::string& body) {
+  detail::ResponseState response = detail::ResponseState::kUnsent;
+  try {
+    HandleChatImpl(fd, body, &response);
+  } catch (const std::exception& error) {
+    std::fprintf(stderr, "[q4t] request exception: %s\n", error.what());
+    detail::SendExceptionResponse(fd, response);
+  } catch (...) {
+    std::fprintf(stderr, "[q4t] unknown request exception\n");
+    detail::SendExceptionResponse(fd, response);
+  }
+}
+
+void ChatServer::HandleChatImpl(int fd, const std::string& body,
+                               detail::ResponseState* response_state) {
   RequestDiagnostics diagnostic;
   using Wait = RequestDiagnostics::Wait;
   metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
@@ -82,8 +96,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   struct ErrGuard {
     std::atomic<uint64_t>& err;
     bool ok = false;
+    bool aborted = false;
+    int exceptions = std::uncaught_exceptions();
     ~ErrGuard() {
-      if (!ok) err.fetch_add(1, std::memory_order_relaxed);
+      if (!aborted && (!ok || std::uncaught_exceptions() > exceptions))
+        err.fetch_add(1, std::memory_order_relaxed);
     }
   } err_guard{metrics_.requests_error};
   if (!gpu_healthy_.load(std::memory_order_relaxed)) {
@@ -170,22 +187,28 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     deadline = t_arrive +
                std::chrono::milliseconds(static_cast<int64_t>(value));
   }
+  detail::ServeFaultPoint("handler.before_register");
   auto control = requests_.Register(request_id, key, deadline);
   if (!control) {
     SendError(fd, 409, "request_id already active");
     return;
   }
-  diagnostic.Bind(request_id);
   struct Registration {
     RequestRegistry& registry;
     std::shared_ptr<RequestControl> control;
     RequestDiagnostics& diagnostic;
     ~Registration() {
       if (control->Cancelled())
-        diagnostic.Outcome("cancelled", control->Reason());
+        diagnostic.Outcome(control->Failed() ? "error" : "cancelled",
+                            control->Reason());
       registry.Remove(control);
     }
   } registration{requests_, control, diagnostic};
+  OnException request_failure([&] {
+    control->Cancel(RequestControl::State::kFailure);
+  });
+  diagnostic.Bind(request_id);
+  detail::ServeFaultPoint("handler.after_register");
   const auto cancelled = [&] { return RequestCancelled(control.get(), fd); };
   const auto send_cancel_error = [&](const char* message) {
     SendError(fd, 409, message,
@@ -195,6 +218,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   bool abort_counted = false;
   const auto count_abort = [&] {
     err_guard.ok = true;  // A cancellation is not also a validation error.
+    err_guard.aborted = true;
     if (!abort_counted) {
       metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
       abort_counted = true;
@@ -304,7 +328,10 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
                                 // share the legacy d_g_/d_g_next_ double buffer)
   trace::RequestOutcome trace_outcome = trace::RequestOutcome::kFailed;
   uint64_t trace_output_tokens = 0;
+  bool cleaned = false;
   auto cleanup = [&]() {
+    if (cleaned) return;
+    cleaned = true;
     if (d_session_trunk) {
       cudaFree(d_session_trunk);
       d_session_trunk = nullptr;
@@ -327,6 +354,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     FreeSeqId(seq_id);
     diagnostic.Released();
   };
+  ScopeExit buffer_cleanup(cleanup);
+  detail::ServeFaultPoint("handler.after_slot");
 
   if (cancelled()) {
     count_abort();
@@ -372,6 +401,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // pipeline runs on the default stream and self-synchronizes internally.
     {
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      OnException backend_failure([&] { AbortBackendExecution(); });
       if (!gpu_healthy_.load(std::memory_order_relaxed)) {
         SendError(fd, 503, "GPU unhealthy; restart server");
         cleanup();
@@ -529,6 +559,17 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // per-sequence recurrent state is isolated by seq_id. All GPU work uses the
   // default stream, so the forward is ordered with the D2H below.
   model::ModelSequence seq;
+  ScopeExit sequence_cleanup([&] {
+    if (std::uncaught_exceptions()) {
+      if (seq.HasPending()) {
+        const std::lock_guard<std::mutex> lock(model_mu_);
+        AbortBackendExecution();
+        seq.FailAfterDrain();
+      }
+      seq.Fail();
+    }
+    model::ModelEndSequence(&seq);
+  });
   const model::VisionFeatures* vptr =
       (vfeats.num_tokens > 0) ? &vfeats : nullptr;
   // Batched prefill (plain path): non-vision, non-chunked, non-MTP requests
@@ -567,6 +608,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     q4t::diagnostic::Scope execution_prefill("handler_stream_mtp_prefill", 0,
                                              T);
     auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+    OnException backend_failure([&] { AbortBackendExecution(); });
     s = !gpu_healthy_.load(std::memory_order_relaxed)
             ? Status::Fail("GPU unhealthy; restart server")
             : model::ModelBeginSequence(model_.Get(), &seq, nullptr, seq_id);
@@ -783,6 +825,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
     q4t::diagnostic::Scope execution_prefill("handler_prefill", 0, T);
     auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+    OnException backend_failure([&] { AbortBackendExecution(); });
     {
       q4t::diagnostic::Scope execution_begin("target_begin_sequence", 0, T);
       s = !gpu_healthy_.load(std::memory_order_relaxed)
@@ -919,6 +962,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   bool first_content_sent = false;
   const auto write_content = [&](const std::string& piece) {
     if (piece.empty()) return true;
+    detail::ServeFaultPoint("handler.before_content");
     if (!write_stream(SseChunk(id, model_field, "", piece, "", 0))) return false;
     if (!first_content_sent) {
       first_content_sent = true;
@@ -930,6 +974,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 
   // Streaming header (flushed immediately).
   if (stream) {
+    *response_state = detail::ResponseState::kStreaming;
     const std::string head =
         "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
         "Cache-Control: no-cache\r\nConnection: close\r\n\r\n";
@@ -994,6 +1039,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
       q4t::diagnostic::Scope execution_init("handler_mtp_init", 0, T);
       auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+      OnException backend_failure([&] { AbortBackendExecution(); });
       {
         q4t::diagnostic::Scope execution_reset("prompt_draft_reset", 0, T);
         s = !gpu_healthy_.load(std::memory_order_relaxed)
@@ -1059,6 +1105,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   std::array<uint64_t, 4> suffix_accepted{};
   std::array<uint64_t, 4> neural_accepted{};
   bool mtp_sched = false;
+  ScopeExit mtp_registration([&] {
+    if (mtp_sched) ReleaseActiveRequest(&mtp_ar);
+  });
   if (use_mtp) {
     const std::lock_guard<std::mutex> lock(sched_mu_);
     mtp_sched = scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
@@ -1073,6 +1122,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       mtp_ar.mtp_g = d_mtp_g;
 
       active_.push_back(&mtp_ar);
+      detail::ServeFaultPoint("handler.after_active");
     } else {
       use_mtp = false;
     }
@@ -1216,18 +1266,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     std::fprintf(stderr, "\n");
     funlockfile(stderr);
   }
-  if (mtp_sched) {
-    {
-      const std::lock_guard<std::mutex> lock(sched_mu_);
-      active_.erase(std::remove(active_.begin(), active_.end(), &mtp_ar),
-                    active_.end());
-    }
-    // Lockstep predicate depends on active_ size: removing a request can
-    // flip "pending_mtp == active_mtp" from false to true. Notify the
-    // scheduler so it re-evaluates (fixes a lost-wakeup deadlock where the
-    // departing request's notify was consumed before the scheduler slept).
-    sched_cv_.notify_one();
-  }
+  mtp_registration.Run();
   // No scheduler owns this row now. Capture the complete target/shifted-draft
   // boundary before any ordinary-decode tail; publication waits for successful
   // HTTP completion. At most three emitted tail tokens will be recomputed.
@@ -1242,6 +1281,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       SessionSaveTiming::Scope span(&timing, SessionSaveTiming::kModelLock);
       lock = diagnostic.Lock(model_mu_, Wait::kModel);
     }
+    OnException backend_failure([&] { AbortBackendExecution(); });
     std::vector<SessionRange> ranges;
     Status saved;
     {
@@ -1340,6 +1380,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     // ModelDecodeStepSeq (the B1 single-sequence path).
     bool use_sched = false;
     ActiveRequest ar;
+    ScopeExit active_registration([&] {
+      if (use_sched) ReleaseActiveRequest(&ar);
+    });
     {
       const std::lock_guard<std::mutex> lock(sched_mu_);
       use_sched = scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
@@ -1349,6 +1392,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         ar.control = control.get();
         ar.fd = fd;
         active_.push_back(&ar);
+        detail::ServeFaultPoint("handler.after_active");
       }
     }
     for (int step = static_cast<int>(generated.size());
@@ -1409,6 +1453,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       } else {
         // Fallback: single-sequence decode (B1 path).
         auto lock = diagnostic.Lock(model_mu_, Wait::kModel);
+        OnException backend_failure([&] { AbortBackendExecution(); });
         if (router_trace_) router_trace_->BeginForward(
             trace::RouteStage::kDecode, seq.position, 1);
         s = !gpu_healthy_.load(std::memory_order_relaxed)
@@ -1430,16 +1475,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         next_token = argmax(h_logits.data());
       }
     }
-    if (use_sched) {
-      {
-        const std::lock_guard<std::mutex> lock(sched_mu_);
-        active_.erase(std::remove(active_.begin(), active_.end(), &ar),
-                      active_.end());
-      }
-      // Lockstep depends on active_ size: a departing request can flip
-      // "all active pending" to true, so wake the scheduler to re-evaluate.
-      sched_cv_.notify_one();
-    }
+    active_registration.Run();
   }
   trace_output_tokens = generated.size();
   if (generation_failed) seq.Fail();
@@ -1623,6 +1659,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       ? ",\"prompt_tokens_details\":{\"cached_tokens\":" +
             std::to_string(restored_prefix) + "}"
       : "";
+  detail::ServeFaultPoint("handler.before_response");
   // 4. Finalize.
   if (stream) {
     write_content(utf8.Finish());
@@ -1678,6 +1715,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
 
+  if (!client_disconnected) *response_state = detail::ResponseState::kComplete;
   const bool response_success = !client_disconnected &&
                                 !control->Cancelled() && control->Finish();
   trace_outcome = response_success ? trace::RequestOutcome::kSuccess

@@ -75,6 +75,73 @@ void ChatServer::FreeSeqId(int seq_id) {
   seq_cv_.notify_all();  // waiters may need different slot capacities
 }
 
+void ChatServer::ReleaseActiveRequest(ActiveRequest* request) noexcept {
+  if (std::uncaught_exceptions())
+    request->control->Cancel(RequestControl::State::kFailure);
+  std::unique_lock<std::mutex> lock(sched_mu_);
+  sched_cv_.notify_one();
+  request->cv.wait(lock, [&] { return !request->pending; });
+  active_.erase(std::remove(active_.begin(), active_.end(), request),
+                 active_.end());
+  request->retired = true;
+  lock.unlock();
+  sched_cv_.notify_one();
+}
+
+void ChatServer::AbortBackendExecution() noexcept {
+  gpu_healthy_.store(false, std::memory_order_relaxed);
+  serving_failed_.store(true);
+  RequestStop();
+  const auto drained = cudaStreamSynchronize(nullptr);
+  if (drained != cudaSuccess) {
+    // No proof that DMA/kernel references are gone: do not unwind/reuse the
+    // remaining request or model storage. Process teardown owns reclamation.
+    std::fprintf(stderr, "[q4t] exception drain failed: %s; exiting\n",
+                 cudaGetErrorString(drained));
+    std::_Exit(1);
+  }
+}
+
+void ChatServer::AbortScheduler(std::span<PrefillReq* const> selected,
+                               ChunkPrefillReq* chunk) noexcept {
+  serving_failed_.store(true);
+  gpu_healthy_.store(false, std::memory_order_relaxed);
+  RequestStop();
+  const std::lock_guard<std::mutex> lock(sched_mu_);
+  scheduler_stop_ = true;
+  for (auto* r : active_) {
+    if (r->pending) {
+      r->seq->FailAfterDrain();
+      r->pending = false;
+      r->done = true;
+      r->next_token = -1;
+      r->mtp_accepted_count = 0;
+      r->mtp_next_b = r->mtp_next_d0 = -1;
+    }
+    r->cv.notify_one();
+  }
+  const auto fail_prefill = [](PrefillReq* p) {
+    p->seq->FailAfterDrain();
+    p->pending = false;
+    p->done = true;
+    p->ok = false;
+    p->cv.notify_one();
+  };
+  for (auto* p : selected) fail_prefill(p);
+  for (auto* p : prefill_pending_) fail_prefill(p);
+  prefill_pending_.clear();
+  const auto fail_chunk = [](ChunkPrefillReq* p) {
+    p->seq->FailAfterDrain();
+    p->ok = false;
+    p->done = true;
+    p->cv.notify_one();
+  };
+  if (chunk) fail_chunk(chunk);
+  for (auto* p : chunk_prefill_pending_) fail_chunk(p);
+  chunk_prefill_pending_.clear();
+  sched_cv_.notify_all();
+}
+
 // B2b continuous batching: the central scheduler loop.
 //
 // Each ACTIVE plain-decode request registers its current decode token (its
@@ -90,6 +157,7 @@ void ChatServer::FreeSeqId(int seq_id) {
 // MTP requests use the separate batched speculative path below, including B=1.
 void ChatServer::RunOnePrefillChunk() {
   ChunkPrefillReq* req = nullptr;
+  OnException failed_chunk([&] { AbortScheduler({}, req); });
   {
     const std::lock_guard<std::mutex> lock(sched_mu_);
     if (scheduler_stop_ || chunk_prefill_pending_.empty()) return;
@@ -100,6 +168,7 @@ void ChatServer::RunOnePrefillChunk() {
   bool last = false;
   {
     const std::lock_guard<std::mutex> lock(model_mu_);
+    OnException backend_failure([&] { AbortBackendExecution(); });
     if (!gpu_healthy_.load(std::memory_order_relaxed)) {
       s = Status::Fail("chunk prefill: GPU unhealthy");
     } else if (RequestCancelled(req->control, req->fd)) {
@@ -149,6 +218,7 @@ void ChatServer::RunOnePrefillChunk() {
       req->done = true;
       req->cv.notify_one();
     }
+    req = nullptr;  // Completion/requeue transferred ownership; no stale borrow.
   }
 }
 
@@ -160,6 +230,7 @@ void ChatServer::SchedulerLoop() {
   for (;;) {
     std::vector<ActiveRequest*> pending;
     std::vector<PrefillReq*> pf;
+    OnException failed_batch([&] { AbortScheduler(pf); });
     {
       std::unique_lock<std::mutex> lock(sched_mu_);
       const auto ready = [this] {
@@ -268,6 +339,7 @@ void ChatServer::SchedulerLoop() {
       for (ActiveRequest* r : active_)
         if (r->pending) pending.push_back(r);
     }
+    detail::ServeFaultPoint("scheduler.after_select");
 
     // Batched prefill: pack pf into ONE ModelPrefillBatch (the dense weights
     // are read once for the whole batch instead of per request), then hand each
@@ -284,6 +356,7 @@ void ChatServer::SchedulerLoop() {
       for (auto* request : pf) sequences.push_back(request->seq);
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
+        OnException backend_failure([&] { AbortBackendExecution(); });
         cudaError_t copy_error = cudaSuccess;
         // Health may change while this group waits for model_mu_.
         if (!gpu_healthy_.load(std::memory_order_relaxed))
@@ -356,6 +429,7 @@ void ChatServer::SchedulerLoop() {
           pf[i]->ok = sp.ok();
           pf[i]->cv.notify_one();
         }
+        pf.clear();  // Handlers may destroy these requests once the lock opens.
       }
     }
     if (pending.empty()) {
@@ -405,6 +479,7 @@ void ChatServer::SchedulerLoop() {
       Status s;
       {
         const std::lock_guard<std::mutex> lock(model_mu_);
+        OnException backend_failure([&] { AbortBackendExecution(); });
         s = !gpu_healthy_.load(std::memory_order_relaxed)
                 ? Status::Fail("GPU unhealthy; restart server")
                 : mtp::MtpSpeculativeStepMulti(model_.Get(), mtp_, seqs.data(),
@@ -493,6 +568,7 @@ void ChatServer::SchedulerLoop() {
     for (auto* request : plain_reqs) sequences.push_back(request->seq);
     {
       const std::lock_guard<std::mutex> lock(model_mu_);
+      OnException backend_failure([&] { AbortBackendExecution(); });
       if (!gpu_healthy_.load(std::memory_order_relaxed))
         s = Status::Fail("GPU unhealthy; restart server");
       for (int i = 0; i < B && s.ok(); ++i)
@@ -518,6 +594,7 @@ void ChatServer::SchedulerLoop() {
               cudaMemcpyDeviceToHost, nullptr);
       }
       // Includes launch/argmax failures: scratch cannot escape before drain.
+      detail::ServeFaultPoint("scheduler.after_submit");
       s = FinishHostReadback(copy_error, &gpu_healthy_, sequences, s, router_trace_.get());
     }
     if (kProfileDecode) cudaProfilerStop();

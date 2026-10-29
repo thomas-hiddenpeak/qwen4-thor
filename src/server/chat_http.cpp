@@ -52,93 +52,125 @@ bool ValidRequestKey(const std::string& key) {
 
 }
 
-Status ChatServer::Run() {
-  int listen_fd = ::socket(AF_INET, SOCK_STREAM, 0);
-  if (listen_fd < 0) {
-    return Status::Fail(std::string("socket: ") + std::strerror(errno));
+void ChatServer::FinishConnection(int fd) noexcept {
+  {
+    const std::lock_guard<std::mutex> lock(connections_mu_);
+    connections_.erase(fd);
+    ::close(fd);
   }
+  // The last access to server-owned state publishes all handler cleanup.
+  active_conns_.fetch_sub(1, std::memory_order_release);
+}
+
+void ChatServer::RequestStop() {
+  // SC store/load closes the stop-before-listener-publication handshake.
+  // Both threads cannot miss the other's publication. Still signal-safe.
+  static_assert(std::atomic<bool>::is_always_lock_free);
+  static_assert(std::atomic<int>::is_always_lock_free);
+  stop_requested_.store(true);
+  const int fd = listen_fd_.load();
+  if (fd >= 0) ::shutdown(fd, SHUT_RDWR);
+}
+
+Status ChatServer::Run() {
+  if (stop_requested_.load()) return Status();
+  const int listen_fd = ::socket(AF_INET, SOCK_STREAM, 0);
+  if (listen_fd < 0) return Status::Fail("socket failed");
+  ScopeExit close_listener([&] {
+    listen_fd_.store(-1);
+    ::close(listen_fd);
+  });
   int one = 1;
   ::setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
   sockaddr_in addr{};
   addr.sin_family = AF_INET;
-  if (::inet_pton(AF_INET, host_.c_str(), &addr.sin_addr) != 1) {
-    ::close(listen_fd);
-    return Status::Fail("invalid listen address");
-  }
+  if (::inet_pton(AF_INET, host_.c_str(), &addr.sin_addr) != 1)
+    return Status::Fail("bad address");
   addr.sin_port = htons(static_cast<uint16_t>(port_));
-  if (::bind(listen_fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) <
-      0) {
-    const std::string err = std::strerror(errno);
-    ::close(listen_fd);
-    return Status::Fail("bind: " + err);
-  }
-  if (::listen(listen_fd, 128) < 0) {
-    const std::string err = std::strerror(errno);
-    ::close(listen_fd);
-    return Status::Fail("listen: " + err);
-  }
-  listen_fd_ = listen_fd;  // RequestStop() shutdown(2)s this to break accept
+  if (::bind(listen_fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0)
+    return Status::Fail("bind failed");
+  if (::listen(listen_fd, 128) < 0) return Status::Fail("listen failed");
+  detail::ServeFaultPoint("connection.before_publish");
+  listen_fd_.store(listen_fd);
+  if (stop_requested_.load()) ::shutdown(listen_fd, SHUT_RDWR);
   std::fprintf(stderr, "[q4t] serving on port %d (host %s, model %s)\n",
                port_, host_.c_str(), model_name_.c_str());
-  Status run_status;
-  while (true) {
-    sockaddr_in client{};
-    socklen_t clen = sizeof(client);
-    const int fd =
-        ::accept(listen_fd, reinterpret_cast<sockaddr*>(&client), &clen);
-    if (fd < 0) {
-      if (stop_requested_.load()) break;  // RequestStop() shutdown() the socket
-      if (errno == EINTR) continue;
-      run_status = Status::Fail(std::string("accept: ") + std::strerror(errno));
-      break;  // Fatal accept errors must drain existing handlers too.
-    }
-    int nodelay = 1;
-    ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
-    // Reader/writer use absolute deadlines. Keep the socket timeouts as a
-    // fallback for other direct operations, not as the logical write budget.
-    struct timeval tv {
-      30, 0
-    };
-    ::setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
-    ::setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
-    // B1: handle each client on its own thread so multiple requests are
-    // processed concurrently. The model forwards are serialized behind
-    // model_mu_ (see HandleChat); CPU post-processing (D2H/argmax/tokenize/SSE)
-    // overlaps across requests. Run() blocks in the accept loop for the
-    // server's lifetime, so the ChatServer object outlives the detached
-    // request threads.
-    // Bound in-flight request threads: shed load (503) beyond conn_cap_ so a
-    // connection flood cannot exhaust host memory with blocked threads (the
-    // AllocSeqId queue absorbs bursts up to this cap).
-    if (active_conns_.fetch_add(1, std::memory_order_relaxed) >= conn_cap_) {
-      active_conns_.fetch_sub(1, std::memory_order_relaxed);
-      SendSimple(fd, 503, "Service Unavailable",
-                 "{\"error\":{\"message\":\"server overloaded, retry\"}}",
-                 "application/json");
-      ::close(fd);
-      continue;
-    }
-    {
-      const std::lock_guard<std::mutex> lock(connections_mu_);
-      connections_.insert(fd);
-    }
-    std::thread([this, fd]() {
-      HandleClient(fd);
+  try {
+    while (!stop_requested_.load()) {
+      sockaddr_in client{};
+      socklen_t clen = sizeof(client);
+      const int fd =
+          ::accept(listen_fd, reinterpret_cast<sockaddr*>(&client), &clen);
+      if (fd < 0) {
+        if (stop_requested_.load()) break;
+        if (errno == EINTR) continue;
+        std::fprintf(stderr, "[q4t] accept failed: %s\n", std::strerror(errno));
+        serving_failed_.store(true);
+        break;
+      }
+      bool counted = false, registered = false;
+      ScopeExit rollback_connection([&] {
+        if (registered) {
+          FinishConnection(fd);
+        } else {
+          ::close(fd);
+          if (counted) active_conns_.fetch_sub(1, std::memory_order_release);
+        }
+      });
+      int nodelay = 1;
+      ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
+      const timeval timeout{30, 0};
+      ::setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+      ::setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
+      counted = true;
+      if (active_conns_.fetch_add(1, std::memory_order_relaxed) >= conn_cap_) {
+        SendSimple(fd, 503, "Service Unavailable",
+                   "{\"error\":{\"message\":\"server overloaded, retry\"}}",
+                   "application/json",
+                   {std::chrono::steady_clock::now() +
+                    std::chrono::milliseconds(250)});
+        continue;
+      }
       {
         const std::lock_guard<std::mutex> lock(connections_mu_);
-        connections_.erase(fd);
-        ::close(fd);
+        connections_.insert(fd);
+        registered = true;
       }
-      // Publish all handler cleanup before Run observes zero and destroys
-      // server-owned state. This decrement is the thread's last access.
-      active_conns_.fetch_sub(1, std::memory_order_release);
-    }).detach();
+      detail::ServeFaultPoint("connection.before_thread");
+      std::thread handler([this, fd]() {
+        ScopeExit connection_cleanup([&] { FinishConnection(fd); });
+        try {
+          HandleClient(fd);
+        } catch (const std::exception& error) {
+          std::fprintf(stderr, "[q4t] HTTP handler exception: %s\n", error.what());
+          detail::SendExceptionResponse(fd, detail::ResponseState::kUnsent);
+        } catch (...) {
+          std::fprintf(stderr, "[q4t] unknown HTTP handler exception\n");
+          detail::SendExceptionResponse(fd, detail::ResponseState::kUnsent);
+        }
+      });
+      rollback_connection.Release();  // The constructed thread now owns fd.
+      try {
+        handler.detach();
+      } catch (...) {
+        // Never destroy a still-joinable std::thread during unwinding.
+        RequestStop();
+        {
+          const std::lock_guard<std::mutex> lock(connections_mu_);
+          if (connections_.contains(fd)) ::shutdown(fd, SHUT_RDWR);
+        }
+        handler.join();
+        throw;
+      }
+    }
+  } catch (const std::exception& error) {
+    std::fprintf(stderr, "[q4t] accept/thread exception: %s\n", error.what());
+    serving_failed_.store(true);
+  } catch (...) {
+    std::fprintf(stderr, "[q4t] unknown accept/thread exception\n");
+    serving_failed_.store(true);
   }
-  // Graceful shutdown (RequestStop broke the accept loop): stop the scheduler
-  // (in-flight decodes get next_token=-1 so their request threads exit),
-  // release queued seq waiters, then wait for in-flight request threads to
-  // drain before returning — they are detached and cannot be joined, so the
-  // destructor's frees must not race a live request thread.
+  RequestStop();
   std::fprintf(stderr, "[q4t] shutting down: draining in-flight requests...\n");
   requests_.CancelAll();
   {
@@ -151,15 +183,11 @@ Status ChatServer::Run() {
     seq_stopping_ = true;
   }
   seq_cv_.notify_all();
-  // All socket reads/writes were interrupted above. Never destroy model or
-  // scheduler state while a detached request thread still owns it.
   while (active_conns_.load(std::memory_order_acquire) > 0)
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  listen_fd_.store(-1, std::memory_order_relaxed);
-  ::close(listen_fd);
-  std::fprintf(stderr, "[q4t] shutdown complete (%d in-flight remaining)\n",
-               active_conns_.load(std::memory_order_relaxed));
-  return run_status;
+  close_listener.Run();
+  std::fprintf(stderr, "[q4t] shutdown complete (0 in-flight remaining)\n");
+  return serving_failed_.load() ? Status::Fail("serve failed") : Status();
 }
 
 void ChatServer::HandleClient(int fd) {

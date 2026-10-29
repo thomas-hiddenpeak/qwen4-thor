@@ -58,6 +58,14 @@ struct ModelSequence {
   // Failure is visible immediately, but ownership lasts until completion.
   void Fail() { stage = Stage::kFailed; }
 
+  // Exception-only cleanup after the owner has proved device completion.
+  // No commit, allocation or status formatting while unwinding.
+  void FailAfterDrain() noexcept {
+    stage = Stage::kFailed;
+    submitted_.clear();
+    pending_ = false;
+  }
+
   Status End() {
     if (pending_) {
       Fail();

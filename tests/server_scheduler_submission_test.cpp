@@ -73,6 +73,47 @@ Q4T_TEST(scheduler_submission_rejects_after_stop) {
   return true;
 }
 
+Q4T_TEST(scheduler_exception_waits_for_borrowed_completion) {
+  Submission state;
+  bool caught = false, threw = false;
+  std::thread requester([&] {
+    int buffer = 7;
+    try {
+      q4t::server::SubmitSchedulerRequestAndWait(
+          state.mutex, state.stopping, state.scheduler_cv, state.completion_cv,
+          [&] {
+            state.borrowed = &buffer;
+            state.queued = true;
+          },
+          [&] {
+            if (!threw) {
+              threw = true;
+              throw std::bad_alloc();
+            }
+            return state.done;
+          });
+    } catch (const std::bad_alloc&) {
+      caught = true;
+    }
+    const std::lock_guard<std::mutex> lock(state.mutex);
+    state.delivered = buffer;
+    state.borrowed = nullptr;
+    state.returned = true;
+  });
+  bool retained = false;
+  {
+    std::unique_lock<std::mutex> lock(state.mutex);
+    state.scheduler_cv.wait(lock, [&] { return state.queued; });
+    retained = threw && !state.returned && state.borrowed;
+    if (retained) *state.borrowed = 42;
+    state.done = true;
+    state.completion_cv.notify_one();
+  }
+  requester.join();
+  Q4T_CHECK(retained && caught && state.delivered == 42);
+  return true;
+}
+
 Q4T_TEST(scheduler_submission_drains_before_shutdown) {
   Submission state;
   std::thread requester([&] {

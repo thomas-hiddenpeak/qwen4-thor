@@ -26,15 +26,17 @@
 #include "q4t/model/model.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/chat_server.h"
+#include "q4t/server/lifetime.h"
 #include "q4t/text/tokenizer.h"
 
 namespace {
 
 // Graceful-shutdown plumbing: SIGINT/SIGTERM -> RequestStop() (async-signal-
 // safe: atomic store + shutdown(2)), so serve drains in-flight requests.
-q4t::server::ChatServer* g_server = nullptr;
+std::atomic<q4t::server::ChatServer*> g_server{nullptr};
 void HandleServeSignal(int) {
-  if (g_server) g_server->RequestStop();
+  static_assert(decltype(g_server)::is_always_lock_free);
+  if (auto* server = g_server.load()) server->RequestStop();
 }
 
 void PrintVersion() {
@@ -821,7 +823,16 @@ int RunServe(int argc, char** argv) {
   }
 
   q4t::server::ChatServer server;
-  q4t::Status s = server.Start(opts);
+  q4t::Status s;
+  try {
+    s = server.Start(opts);
+  } catch (const std::exception& error) {
+    std::fprintf(stderr, "serve start exception: %s\n", error.what());
+    return 1;
+  } catch (...) {
+    std::fprintf(stderr, "unknown serve start exception\n");
+    return 1;
+  }
   if (!s.ok()) {
     std::fprintf(stderr, "serve start failed: %s\n", s.message().c_str());
     return 1;
@@ -829,9 +840,18 @@ int RunServe(int argc, char** argv) {
   // Graceful shutdown on SIGINT/SIGTERM: RequestStop() breaks the accept loop
   // so Run() drains in-flight requests and returns cleanly.
   g_server = &server;
+  q4t::server::ScopeExit unregister_signal([&] { g_server.store(nullptr); });
   std::signal(SIGINT, HandleServeSignal);
   std::signal(SIGTERM, HandleServeSignal);
-  s = server.Run();
+  try {
+    s = server.Run();
+  } catch (const std::exception& error) {
+    std::fprintf(stderr, "serve run exception: %s\n", error.what());
+    return 1;
+  } catch (...) {
+    std::fprintf(stderr, "unknown serve run exception\n");
+    return 1;
+  }
   if (!s.ok()) {
     std::fprintf(stderr, "serve stopped: %s\n", s.message().c_str());
     return 1;
