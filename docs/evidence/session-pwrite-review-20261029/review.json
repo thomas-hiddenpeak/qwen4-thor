@@ -1,0 +1,1094 @@
+{
+  "source_commit": "73d979273dcb07e1e796930c4c419755cb39a1f2",
+  "prior_decision": "NO_GO",
+  "candidate_sha256": "46958b6c538d4410bea204bce1437c433b7a1ec87ea02855fb9417bece1ae9a6",
+  "archive_manifest_sha256": "7f2c81f7ed0c714e1c3e5f8e573f944635fde64414530219cfcc299bffc95e46",
+  "archived_input_bindings": {
+    "plan.json": {
+      "sha256": "c4cb842fa36bbc2ee1ec3c4a9edc65b8e3c908abe6b2fd0dae61eacecee72f68",
+      "bytes": 172954
+    },
+    "decision.json": {
+      "sha256": "d8d6833a35a081b790b78481eab7d96f8913108ed433889ec1c9f7f060901258",
+      "bytes": 81372
+    },
+    "run/00-full-preallocate-0/events.jsonl": {
+      "sha256": "a84d9ef70f59195b3034b761228f9a75e300707569f81794f11244ac6ed676b0",
+      "bytes": 1124
+    },
+    "run/00-full-preallocate-0/timing-audit.json": {
+      "sha256": "4eb1edd909dcde7f647cc46e99d77e70c573fe069b677c5463cce4471af64473",
+      "bytes": 16939
+    },
+    "run/00-full-preallocate-0/results.json": {
+      "sha256": "9b804d20f0feb2a160d08523d12b6b0a155938af716cd46162974b468d2d4ddf",
+      "bytes": 17471
+    },
+    "run/01-full-preallocate-1/events.jsonl": {
+      "sha256": "08c91ea8cbb83b64dcbce4f1e25f6ab5aa9ffde97e8e306212673ed2ba432e20",
+      "bytes": 1119
+    },
+    "run/01-full-preallocate-1/timing-audit.json": {
+      "sha256": "e0b97fdff8858301646a5c950cb9661e2bad029212f6ec43c512e891599a7c58",
+      "bytes": 16958
+    },
+    "run/01-full-preallocate-1/results.json": {
+      "sha256": "1482d74abd69ed7155a8402f6e8ae61f800e50ea1c7640dd1a88cebd9d424586",
+      "bytes": 17468
+    },
+    "run/02-subset-preallocate-1/events.jsonl": {
+      "sha256": "7b1c4e9b6fcc389da72416403a296267a3159a68eaf0dc3aafd39e408aef839e",
+      "bytes": 1119
+    },
+    "run/02-subset-preallocate-1/timing-audit.json": {
+      "sha256": "ddcacaec65254d86463d29421b7d51bb9f5b4d84ccca4dcb328adc1237cdb24c",
+      "bytes": 16964
+    },
+    "run/02-subset-preallocate-1/results.json": {
+      "sha256": "4c97157d7299cdd9837eeaf7bb2aa71ea06580cd6fe202bc4bc1c846b98e7555",
+      "bytes": 17521
+    },
+    "run/03-subset-preallocate-0/events.jsonl": {
+      "sha256": "b3e8dd60952eb5eb0f4b157ff193ddc64d027ebe5b62bb6488dc912bc1b5837c",
+      "bytes": 1115
+    },
+    "run/03-subset-preallocate-0/timing-audit.json": {
+      "sha256": "d747b3e7b768766d624f67d4faf5998a69cf0d0e954732e9685cc3aa291c550f",
+      "bytes": 16957
+    },
+    "run/03-subset-preallocate-0/results.json": {
+      "sha256": "82249e92746445ad4cfa684a7b4854cfa7910134c40cb6ab74739c054e74915c",
+      "bytes": 17493
+    },
+    "run/unified-memory.jsonl": {
+      "sha256": "f059b0fcb09a77583a7e5d26e3a590facbbe40caf0535e040caa646a4bdad092",
+      "bytes": 117943857
+    },
+    "io-preparation.jsonl": {
+      "sha256": "d023bf353a9f80a9e042abc07672e156a2e66b83f899072ca462d1b575c11cc1",
+      "bytes": 1597
+    }
+  },
+  "source_files": {
+    "src/server/session_cache.cpp": "9a6232c3854cec866a408634802f746a934afb143a400cf50fe760eec58f5d8d",
+    "src/server/chat_generation.cpp": "8ee6c0f4ea7e0b4b673a98b137a897bfb3ed8d75a7657a00a6306a8c8e826e26",
+    "include/q4t/server/session_save_timing.h": "453e4141c00ccd43c187d2488aadcd25d15a5d69598ad252863e6bf94fad7170",
+    "tools/prefix_seed/precondition.py": "42d63107cb7c1f940adb4f436afca4374e2bb043a1b47d8e9c4646aeae937999"
+  },
+  "main_saves": [
+    {
+      "service": "00-full-preallocate-0",
+      "head": "full",
+      "preallocate": 0,
+      "shared": false,
+      "request": "chatcmpl-auto-0",
+      "pid": "78174",
+      "http_end": 1435192.453486055,
+      "timing": {
+        "request": "chatcmpl-auto-0",
+        "pool": "private",
+        "success": "1",
+        "valid": "1",
+        "wall_ms": "5326.013",
+        "cpu_ms": "3394.916",
+        "data_bytes": "4159903940",
+        "disk_bytes": "4159963136",
+        "preallocated": "0",
+        "fallback": "0",
+        "max_write_ms": "41.241",
+        "slow_writes": "0",
+        "model_lock_ms": "0.001",
+        "model_lock_cpu_ms": "0.001",
+        "model_lock_calls": "1",
+        "ranges_ms": "0.007",
+        "ranges_cpu_ms": "0.007",
+        "ranges_calls": "1",
+        "cache_lock_ms": "0.003",
+        "cache_lock_cpu_ms": "0.002",
+        "cache_lock_calls": "1",
+        "metadata_ms": "0.019",
+        "metadata_cpu_ms": "0.019",
+        "metadata_calls": "2",
+        "open_ms": "0.049",
+        "open_cpu_ms": "0.049",
+        "open_calls": "1",
+        "preallocate_ms": "0.000",
+        "preallocate_cpu_ms": "0.000",
+        "preallocate_calls": "0",
+        "copy_api_ms": "50.169",
+        "copy_api_cpu_ms": "8.627",
+        "copy_api_calls": "598",
+        "padding_ms": "0.242",
+        "padding_cpu_ms": "0.245",
+        "padding_calls": "598",
+        "sha256_ms": "3253.581",
+        "sha256_cpu_ms": "3251.123",
+        "sha256_calls": "598",
+        "pwrite_ms": "2019.298",
+        "pwrite_cpu_ms": "133.539",
+        "pwrite_calls": "598",
+        "publish_ms": "0.002",
+        "publish_cpu_ms": "0.000",
+        "publish_calls": "1",
+        "cleanup_ms": "0.000",
+        "cleanup_cpu_ms": "0.000",
+        "cleanup_calls": "0",
+        "residual_ms": "2.642",
+        "residual_cpu_ms": "1.305"
+      },
+      "child_start_gap": 6.37473872420378,
+      "pwrite_mean_ms": 3.376752508361204,
+      "pwrite_non_cpu_seconds": 1.885759,
+      "slow_write_time_upper_bound_ms": 0.0,
+      "at_most_50ms_time_lower_bound_ms": 2019.298,
+      "at_most_50ms_time_lower_bound_fraction": 1.0,
+      "envelope": {
+        "start": 1435186.640377902,
+        "end": 1435192.640919753,
+        "io_deltas": {
+          "rchar": 2048,
+          "wchar": 4159965478,
+          "syscr": 2,
+          "syscw": 642,
+          "read_bytes": 548864,
+          "write_bytes": 4159971328,
+          "cancelled_write_bytes": 0
+        },
+        "seconds": 6.000541850924492,
+        "max_collection_seconds": 0.023318712133914232,
+        "vm_deltas": {
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgscan_direct": 0,
+          "allocstall_normal": 0
+        },
+        "dirty_pages_range": [
+          0,
+          96
+        ],
+        "writeback_pages_range": [
+          0,
+          5
+        ]
+      },
+      "inferred_writer": {
+        "tid": "78978",
+        "start_ticks": 143507748,
+        "cpu_seconds": 3.298271607,
+        "observed_until": 1435191.640828558,
+        "runqueue_seconds": 5.4733e-05,
+        "sampled_states": {
+          "R": 3,
+          "D": 2
+        }
+      }
+    },
+    {
+      "service": "00-full-preallocate-0",
+      "head": "full",
+      "preallocate": 0,
+      "shared": true,
+      "request": "chatcmpl-auto-4",
+      "pid": "78174",
+      "http_end": 1435440.348435812,
+      "timing": {
+        "request": "chatcmpl-auto-4",
+        "pool": "private",
+        "success": "1",
+        "valid": "1",
+        "wall_ms": "5230.860",
+        "cpu_ms": "3394.348",
+        "data_bytes": "4159903940",
+        "disk_bytes": "4159963136",
+        "preallocated": "0",
+        "fallback": "0",
+        "max_write_ms": "40.781",
+        "slow_writes": "0",
+        "model_lock_ms": "0.001",
+        "model_lock_cpu_ms": "0.001",
+        "model_lock_calls": "1",
+        "ranges_ms": "0.006",
+        "ranges_cpu_ms": "0.006",
+        "ranges_calls": "1",
+        "cache_lock_ms": "0.002",
+        "cache_lock_cpu_ms": "0.001",
+        "cache_lock_calls": "1",
+        "metadata_ms": "0.027",
+        "metadata_cpu_ms": "0.027",
+        "metadata_calls": "2",
+        "open_ms": "0.047",
+        "open_cpu_ms": "0.047",
+        "open_calls": "1",
+        "preallocate_ms": "0.000",
+        "preallocate_cpu_ms": "0.000",
+        "preallocate_calls": "0",
+        "copy_api_ms": "38.776",
+        "copy_api_cpu_ms": "6.409",
+        "copy_api_calls": "598",
+        "padding_ms": "0.223",
+        "padding_cpu_ms": "0.024",
+        "padding_calls": "598",
+        "sha256_ms": "3273.256",
+        "sha256_cpu_ms": "3252.557",
+        "sha256_calls": "598",
+        "pwrite_ms": "1916.124",
+        "pwrite_cpu_ms": "134.593",
+        "pwrite_calls": "598",
+        "publish_ms": "0.004",
+        "publish_cpu_ms": "0.000",
+        "publish_calls": "1",
+        "cleanup_ms": "0.000",
+        "cleanup_cpu_ms": "0.000",
+        "cleanup_calls": "0",
+        "residual_ms": "2.395",
+        "residual_cpu_ms": "0.682"
+      },
+      "child_start_gap": 5.710411253152415,
+      "pwrite_mean_ms": 3.2042207357859533,
+      "pwrite_non_cpu_seconds": 1.781531,
+      "slow_write_time_upper_bound_ms": 0.0,
+      "at_most_50ms_time_lower_bound_ms": 1916.124,
+      "at_most_50ms_time_lower_bound_fraction": 1.0,
+      "envelope": {
+        "start": 1435434.667302823,
+        "end": 1435440.667950829,
+        "io_deltas": {
+          "rchar": 2048,
+          "wchar": 4159965280,
+          "syscr": 2,
+          "syscw": 640,
+          "read_bytes": 180224,
+          "write_bytes": 4159975424,
+          "cancelled_write_bytes": 0
+        },
+        "seconds": 6.000648006098345,
+        "max_collection_seconds": 0.02295633591711521,
+        "vm_deltas": {
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgscan_direct": 0,
+          "allocstall_normal": 0
+        },
+        "dirty_pages_range": [
+          8,
+          86
+        ],
+        "writeback_pages_range": [
+          0,
+          5
+        ]
+      },
+      "inferred_writer": {
+        "tid": "79759",
+        "start_ticks": 143532619,
+        "cpu_seconds": 3.311816231,
+        "observed_until": 1435439.667838248,
+        "runqueue_seconds": 0.000214517,
+        "sampled_states": {
+          "D": 3,
+          "R": 2
+        }
+      }
+    },
+    {
+      "service": "01-full-preallocate-1",
+      "head": "full",
+      "preallocate": 1,
+      "shared": true,
+      "request": "chatcmpl-auto-0",
+      "pid": "80678",
+      "http_end": 1435763.598679034,
+      "timing": {
+        "request": "chatcmpl-auto-0",
+        "pool": "private",
+        "success": "1",
+        "valid": "1",
+        "wall_ms": "13215.391",
+        "cpu_ms": "3420.810",
+        "data_bytes": "4159903940",
+        "disk_bytes": "4159963136",
+        "preallocated": "1",
+        "fallback": "0",
+        "max_write_ms": "61.802",
+        "slow_writes": "8",
+        "model_lock_ms": "0.001",
+        "model_lock_cpu_ms": "0.001",
+        "model_lock_calls": "1",
+        "ranges_ms": "0.008",
+        "ranges_cpu_ms": "0.008",
+        "ranges_calls": "1",
+        "cache_lock_ms": "0.001",
+        "cache_lock_cpu_ms": "0.001",
+        "cache_lock_calls": "1",
+        "metadata_ms": "0.027",
+        "metadata_cpu_ms": "0.027",
+        "metadata_calls": "2",
+        "open_ms": "0.047",
+        "open_cpu_ms": "0.048",
+        "open_calls": "1",
+        "preallocate_ms": "3.991",
+        "preallocate_cpu_ms": "1.631",
+        "preallocate_calls": "1",
+        "copy_api_ms": "56.258",
+        "copy_api_cpu_ms": "13.694",
+        "copy_api_calls": "598",
+        "padding_ms": "0.251",
+        "padding_cpu_ms": "0.253",
+        "padding_calls": "598",
+        "sha256_ms": "3256.031",
+        "sha256_cpu_ms": "3251.437",
+        "sha256_calls": "598",
+        "pwrite_ms": "9896.328",
+        "pwrite_cpu_ms": "152.529",
+        "pwrite_calls": "598",
+        "publish_ms": "0.003",
+        "publish_cpu_ms": "0.000",
+        "publish_calls": "1",
+        "cleanup_ms": "0.000",
+        "cleanup_cpu_ms": "0.000",
+        "cleanup_calls": "0",
+        "residual_ms": "2.445",
+        "residual_cpu_ms": "1.183"
+      },
+      "child_start_gap": 5.768427713075653,
+      "pwrite_mean_ms": 16.54904347826087,
+      "pwrite_non_cpu_seconds": 9.743799,
+      "slow_write_time_upper_bound_ms": 494.416,
+      "at_most_50ms_time_lower_bound_ms": 9401.912,
+      "at_most_50ms_time_lower_bound_fraction": 0.9500404594512227,
+      "envelope": {
+        "start": 1435749.707669519,
+        "end": 1435763.708981354,
+        "io_deltas": {
+          "rchar": 2048,
+          "wchar": 4159965483,
+          "syscr": 2,
+          "syscw": 642,
+          "read_bytes": 77824,
+          "write_bytes": 4159971328,
+          "cancelled_write_bytes": 0
+        },
+        "seconds": 14.001311835134402,
+        "max_collection_seconds": 0.023689272115007043,
+        "vm_deltas": {
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgscan_direct": 0,
+          "allocstall_normal": 0
+        },
+        "dirty_pages_range": [
+          0,
+          158
+        ],
+        "writeback_pages_range": [
+          0,
+          56
+        ]
+      },
+      "inferred_writer": {
+        "tid": "81602",
+        "start_ticks": 143564109,
+        "cpu_seconds": 3.303522515,
+        "observed_until": 1435762.708888954,
+        "runqueue_seconds": 0.002621542,
+        "sampled_states": {
+          "R": 3,
+          "D": 10
+        }
+      }
+    },
+    {
+      "service": "01-full-preallocate-1",
+      "head": "full",
+      "preallocate": 1,
+      "shared": false,
+      "request": "chatcmpl-auto-4",
+      "pid": "80678",
+      "http_end": 1436014.047141209,
+      "timing": {
+        "request": "chatcmpl-auto-4",
+        "pool": "private",
+        "success": "1",
+        "valid": "1",
+        "wall_ms": "14621.433",
+        "cpu_ms": "3415.078",
+        "data_bytes": "4159903940",
+        "disk_bytes": "4159963136",
+        "preallocated": "1",
+        "fallback": "0",
+        "max_write_ms": "57.418",
+        "slow_writes": "6",
+        "model_lock_ms": "0.001",
+        "model_lock_cpu_ms": "0.001",
+        "model_lock_calls": "1",
+        "ranges_ms": "0.007",
+        "ranges_cpu_ms": "0.007",
+        "ranges_calls": "1",
+        "cache_lock_ms": "0.002",
+        "cache_lock_cpu_ms": "0.001",
+        "cache_lock_calls": "1",
+        "metadata_ms": "0.029",
+        "metadata_cpu_ms": "0.029",
+        "metadata_calls": "2",
+        "open_ms": "0.052",
+        "open_cpu_ms": "0.052",
+        "open_calls": "1",
+        "preallocate_ms": "5.899",
+        "preallocate_cpu_ms": "1.721",
+        "preallocate_calls": "1",
+        "copy_api_ms": "38.916",
+        "copy_api_cpu_ms": "7.635",
+        "copy_api_calls": "598",
+        "padding_ms": "0.251",
+        "padding_cpu_ms": "0.254",
+        "padding_calls": "598",
+        "sha256_ms": "3254.699",
+        "sha256_cpu_ms": "3251.338",
+        "sha256_calls": "598",
+        "pwrite_ms": "11319.246",
+        "pwrite_cpu_ms": "152.950",
+        "pwrite_calls": "598",
+        "publish_ms": "0.004",
+        "publish_cpu_ms": "0.000",
+        "publish_calls": "1",
+        "cleanup_ms": "0.000",
+        "cleanup_cpu_ms": "0.000",
+        "cleanup_calls": "0",
+        "residual_ms": "2.328",
+        "residual_cpu_ms": "1.090"
+      },
+      "child_start_gap": 5.771346278954297,
+      "pwrite_mean_ms": 18.928505016722408,
+      "pwrite_non_cpu_seconds": 11.166295999999999,
+      "slow_write_time_upper_bound_ms": 344.508,
+      "at_most_50ms_time_lower_bound_ms": 10974.738,
+      "at_most_50ms_time_lower_bound_fraction": 0.9695644038481008,
+      "envelope": {
+        "start": 1435998.73612163,
+        "end": 1436014.737576025,
+        "io_deltas": {
+          "rchar": 2048,
+          "wchar": 4159965284,
+          "syscr": 2,
+          "syscw": 640,
+          "read_bytes": 188416,
+          "write_bytes": 4159975424,
+          "cancelled_write_bytes": 0
+        },
+        "seconds": 16.001454395009205,
+        "max_collection_seconds": 0.023510179948061705,
+        "vm_deltas": {
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgscan_direct": 0,
+          "allocstall_normal": 0
+        },
+        "dirty_pages_range": [
+          0,
+          363
+        ],
+        "writeback_pages_range": [
+          0,
+          110
+        ]
+      },
+      "inferred_writer": {
+        "tid": "82482",
+        "start_ticks": 143589089,
+        "cpu_seconds": 3.394339047,
+        "observed_until": 1436013.737487906,
+        "runqueue_seconds": 0.000445669,
+        "sampled_states": {
+          "R": 4,
+          "D": 11
+        }
+      }
+    },
+    {
+      "service": "02-subset-preallocate-1",
+      "head": "subset",
+      "preallocate": 1,
+      "shared": false,
+      "request": "chatcmpl-auto-0",
+      "pid": "83490",
+      "http_end": 1436374.2065877,
+      "timing": {
+        "request": "chatcmpl-auto-0",
+        "pool": "private",
+        "success": "1",
+        "valid": "1",
+        "wall_ms": "13224.192",
+        "cpu_ms": "3391.770",
+        "data_bytes": "4159903940",
+        "disk_bytes": "4159963136",
+        "preallocated": "1",
+        "fallback": "0",
+        "max_write_ms": "61.263",
+        "slow_writes": "4",
+        "model_lock_ms": "0.001",
+        "model_lock_cpu_ms": "0.001",
+        "model_lock_calls": "1",
+        "ranges_ms": "0.010",
+        "ranges_cpu_ms": "0.010",
+        "ranges_calls": "1",
+        "cache_lock_ms": "0.002",
+        "cache_lock_cpu_ms": "0.001",
+        "cache_lock_calls": "1",
+        "metadata_ms": "0.030",
+        "metadata_cpu_ms": "0.031",
+        "metadata_calls": "2",
+        "open_ms": "0.046",
+        "open_cpu_ms": "0.046",
+        "open_calls": "1",
+        "preallocate_ms": "3.929",
+        "preallocate_cpu_ms": "1.715",
+        "preallocate_calls": "1",
+        "copy_api_ms": "51.013",
+        "copy_api_cpu_ms": "6.533",
+        "copy_api_calls": "598",
+        "padding_ms": "0.245",
+        "padding_cpu_ms": "0.250",
+        "padding_calls": "598",
+        "sha256_ms": "3255.592",
+        "sha256_cpu_ms": "3250.930",
+        "sha256_calls": "598",
+        "pwrite_ms": "9910.611",
+        "pwrite_cpu_ms": "130.903",
+        "pwrite_calls": "598",
+        "publish_ms": "0.003",
+        "publish_cpu_ms": "0.000",
+        "publish_calls": "1",
+        "cleanup_ms": "0.000",
+        "cleanup_cpu_ms": "0.000",
+        "cleanup_calls": "0",
+        "residual_ms": "2.708",
+        "residual_cpu_ms": "1.350"
+      },
+      "child_start_gap": 5.788707324070856,
+      "pwrite_mean_ms": 16.572928093645487,
+      "pwrite_non_cpu_seconds": 9.779708000000001,
+      "slow_write_time_upper_bound_ms": 245.052,
+      "at_most_50ms_time_lower_bound_ms": 9665.559000000001,
+      "at_most_50ms_time_lower_bound_fraction": 0.9752737747450687,
+      "envelope": {
+        "start": 1436360.774515287,
+        "end": 1436374.775776865,
+        "io_deltas": {
+          "rchar": 2048,
+          "wchar": 4159965481,
+          "syscr": 2,
+          "syscw": 642,
+          "read_bytes": 155648,
+          "write_bytes": 4159971328,
+          "cancelled_write_bytes": 0
+        },
+        "seconds": 14.001261577941477,
+        "max_collection_seconds": 0.024180033011361957,
+        "vm_deltas": {
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgscan_direct": 0,
+          "allocstall_normal": 0
+        },
+        "dirty_pages_range": [
+          13,
+          117
+        ],
+        "writeback_pages_range": [
+          0,
+          70
+        ]
+      },
+      "inferred_writer": {
+        "tid": "84289",
+        "start_ticks": 143625218,
+        "cpu_seconds": 3.356965465,
+        "observed_until": 1436373.775687996,
+        "runqueue_seconds": 0.002135332,
+        "sampled_states": {
+          "R": 3,
+          "D": 10
+        }
+      }
+    },
+    {
+      "service": "02-subset-preallocate-1",
+      "head": "subset",
+      "preallocate": 1,
+      "shared": true,
+      "request": "chatcmpl-auto-4",
+      "pid": "83490",
+      "http_end": 1436645.725942072,
+      "timing": {
+        "request": "chatcmpl-auto-4",
+        "pool": "private",
+        "success": "1",
+        "valid": "1",
+        "wall_ms": "15971.652",
+        "cpu_ms": "3389.443",
+        "data_bytes": "4159903940",
+        "disk_bytes": "4159963136",
+        "preallocated": "1",
+        "fallback": "0",
+        "max_write_ms": "56.681",
+        "slow_writes": "4",
+        "model_lock_ms": "0.001",
+        "model_lock_cpu_ms": "0.001",
+        "model_lock_calls": "1",
+        "ranges_ms": "0.007",
+        "ranges_cpu_ms": "0.007",
+        "ranges_calls": "1",
+        "cache_lock_ms": "0.003",
+        "cache_lock_cpu_ms": "0.001",
+        "cache_lock_calls": "1",
+        "metadata_ms": "0.032",
+        "metadata_cpu_ms": "0.032",
+        "metadata_calls": "2",
+        "open_ms": "0.051",
+        "open_cpu_ms": "0.051",
+        "open_calls": "1",
+        "preallocate_ms": "4.239",
+        "preallocate_cpu_ms": "1.639",
+        "preallocate_calls": "1",
+        "copy_api_ms": "38.893",
+        "copy_api_cpu_ms": "6.088",
+        "copy_api_calls": "598",
+        "padding_ms": "0.266",
+        "padding_cpu_ms": "0.269",
+        "padding_calls": "598",
+        "sha256_ms": "3255.503",
+        "sha256_cpu_ms": "3250.849",
+        "sha256_calls": "598",
+        "pwrite_ms": "12670.185",
+        "pwrite_cpu_ms": "129.291",
+        "pwrite_calls": "598",
+        "publish_ms": "0.003",
+        "publish_cpu_ms": "0.000",
+        "publish_calls": "1",
+        "cleanup_ms": "0.000",
+        "cleanup_cpu_ms": "0.000",
+        "cleanup_calls": "0",
+        "residual_ms": "2.469",
+        "residual_cpu_ms": "1.214"
+      },
+      "child_start_gap": 5.700411061057821,
+      "pwrite_mean_ms": 21.18760033444816,
+      "pwrite_non_cpu_seconds": 12.540894,
+      "slow_write_time_upper_bound_ms": 226.724,
+      "at_most_50ms_time_lower_bound_ms": 12443.461,
+      "at_most_50ms_time_lower_bound_fraction": 0.9821057072173769,
+      "envelope": {
+        "start": 1436628.812424426,
+        "end": 1436645.814032997,
+        "io_deltas": {
+          "rchar": 2048,
+          "wchar": 4159965281,
+          "syscr": 2,
+          "syscw": 640,
+          "read_bytes": 163840,
+          "write_bytes": 4159975424,
+          "cancelled_write_bytes": 0
+        },
+        "seconds": 17.00160857103765,
+        "max_collection_seconds": 0.02350835083052516,
+        "vm_deltas": {
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgscan_direct": 0,
+          "allocstall_normal": 0
+        },
+        "dirty_pages_range": [
+          13,
+          107
+        ],
+        "writeback_pages_range": [
+          0,
+          54
+        ]
+      },
+      "inferred_writer": {
+        "tid": "87555",
+        "start_ticks": 143652111,
+        "cpu_seconds": 3.259573866,
+        "observed_until": 1436644.813927011,
+        "runqueue_seconds": 0.001959349,
+        "sampled_states": {
+          "R": 2,
+          "D": 14
+        }
+      }
+    },
+    {
+      "service": "03-subset-preallocate-0",
+      "head": "subset",
+      "preallocate": 0,
+      "shared": true,
+      "request": "chatcmpl-auto-0",
+      "pid": "88993",
+      "http_end": 1436998.421869225,
+      "timing": {
+        "request": "chatcmpl-auto-0",
+        "pool": "private",
+        "success": "1",
+        "valid": "1",
+        "wall_ms": "14998.597",
+        "cpu_ms": "3450.339",
+        "data_bytes": "4159903940",
+        "disk_bytes": "4159963136",
+        "preallocated": "0",
+        "fallback": "0",
+        "max_write_ms": "61.100",
+        "slow_writes": "8",
+        "model_lock_ms": "0.001",
+        "model_lock_cpu_ms": "0.001",
+        "model_lock_calls": "1",
+        "ranges_ms": "0.007",
+        "ranges_cpu_ms": "0.007",
+        "ranges_calls": "1",
+        "cache_lock_ms": "0.003",
+        "cache_lock_cpu_ms": "0.001",
+        "cache_lock_calls": "1",
+        "metadata_ms": "0.033",
+        "metadata_cpu_ms": "0.025",
+        "metadata_calls": "2",
+        "open_ms": "0.052",
+        "open_cpu_ms": "0.052",
+        "open_calls": "1",
+        "preallocate_ms": "0.000",
+        "preallocate_cpu_ms": "0.000",
+        "preallocate_calls": "0",
+        "copy_api_ms": "63.401",
+        "copy_api_cpu_ms": "9.081",
+        "copy_api_calls": "598",
+        "padding_ms": "0.261",
+        "padding_cpu_ms": "0.265",
+        "padding_calls": "598",
+        "sha256_ms": "3254.901",
+        "sha256_cpu_ms": "3251.034",
+        "sha256_calls": "598",
+        "pwrite_ms": "11677.445",
+        "pwrite_cpu_ms": "188.638",
+        "pwrite_calls": "598",
+        "publish_ms": "0.003",
+        "publish_cpu_ms": "0.000",
+        "publish_calls": "1",
+        "cleanup_ms": "0.000",
+        "cleanup_cpu_ms": "0.000",
+        "cleanup_calls": "0",
+        "residual_ms": "2.490",
+        "residual_cpu_ms": "1.234"
+      },
+      "child_start_gap": 5.821533429902047,
+      "pwrite_mean_ms": 19.5275,
+      "pwrite_non_cpu_seconds": 11.488807,
+      "slow_write_time_upper_bound_ms": 488.8,
+      "at_most_50ms_time_lower_bound_ms": 11188.645,
+      "at_most_50ms_time_lower_bound_fraction": 0.9581415283908423,
+      "envelope": {
+        "start": 1436982.848402779,
+        "end": 1436998.849810105,
+        "io_deltas": {
+          "rchar": 2048,
+          "wchar": 4159965482,
+          "syscr": 2,
+          "syscw": 642,
+          "read_bytes": 192512,
+          "write_bytes": 4159971328,
+          "cancelled_write_bytes": 0
+        },
+        "seconds": 16.001407325966284,
+        "max_collection_seconds": 0.025538098998367786,
+        "vm_deltas": {
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgscan_direct": 0,
+          "allocstall_normal": 0
+        },
+        "dirty_pages_range": [
+          5,
+          555
+        ],
+        "writeback_pages_range": [
+          0,
+          4
+        ]
+      },
+      "inferred_writer": {
+        "tid": "89803",
+        "start_ticks": 143687439,
+        "cpu_seconds": 3.380412159,
+        "observed_until": 1436997.84972753,
+        "runqueue_seconds": 0.000982953,
+        "sampled_states": {
+          "D": 13,
+          "R": 2
+        }
+      }
+    },
+    {
+      "service": "03-subset-preallocate-0",
+      "head": "subset",
+      "preallocate": 0,
+      "shared": false,
+      "request": "chatcmpl-auto-4",
+      "pid": "88993",
+      "http_end": 1437257.915320976,
+      "timing": {
+        "request": "chatcmpl-auto-4",
+        "pool": "private",
+        "success": "1",
+        "valid": "1",
+        "wall_ms": "16401.449",
+        "cpu_ms": "3451.730",
+        "data_bytes": "4159903940",
+        "disk_bytes": "4159963136",
+        "preallocated": "0",
+        "fallback": "0",
+        "max_write_ms": "122.754",
+        "slow_writes": "64",
+        "model_lock_ms": "0.001",
+        "model_lock_cpu_ms": "0.001",
+        "model_lock_calls": "1",
+        "ranges_ms": "0.008",
+        "ranges_cpu_ms": "0.008",
+        "ranges_calls": "1",
+        "cache_lock_ms": "0.002",
+        "cache_lock_cpu_ms": "0.001",
+        "cache_lock_calls": "1",
+        "metadata_ms": "0.023",
+        "metadata_cpu_ms": "0.023",
+        "metadata_calls": "2",
+        "open_ms": "0.046",
+        "open_cpu_ms": "0.046",
+        "open_calls": "1",
+        "preallocate_ms": "0.000",
+        "preallocate_cpu_ms": "0.000",
+        "preallocate_calls": "0",
+        "copy_api_ms": "39.563",
+        "copy_api_cpu_ms": "9.203",
+        "copy_api_calls": "598",
+        "padding_ms": "0.258",
+        "padding_cpu_ms": "0.261",
+        "padding_calls": "598",
+        "sha256_ms": "3260.666",
+        "sha256_cpu_ms": "3251.457",
+        "sha256_calls": "598",
+        "pwrite_ms": "13098.341",
+        "pwrite_cpu_ms": "189.506",
+        "pwrite_calls": "598",
+        "publish_ms": "0.004",
+        "publish_cpu_ms": "0.000",
+        "publish_calls": "1",
+        "cleanup_ms": "0.000",
+        "cleanup_cpu_ms": "0.000",
+        "cleanup_calls": "0",
+        "residual_ms": "2.537",
+        "residual_cpu_ms": "1.223"
+      },
+      "child_start_gap": 5.713247918058187,
+      "pwrite_mean_ms": 21.903580267558528,
+      "pwrite_non_cpu_seconds": 12.908835000000002,
+      "slow_write_time_upper_bound_ms": 7856.256,
+      "at_most_50ms_time_lower_bound_ms": 5242.085,
+      "at_most_50ms_time_lower_bound_fraction": 0.4002098433687137,
+      "envelope": {
+        "start": 1437240.8845493,
+        "end": 1437258.886220245,
+        "io_deltas": {
+          "rchar": 2048,
+          "wchar": 4159965285,
+          "syscr": 2,
+          "syscw": 640,
+          "read_bytes": 188416,
+          "write_bytes": 4159975424,
+          "cancelled_write_bytes": 0
+        },
+        "seconds": 18.0016709449701,
+        "max_collection_seconds": 0.024662346113473177,
+        "vm_deltas": {
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgscan_direct": 0,
+          "allocstall_normal": 0
+        },
+        "dirty_pages_range": [
+          2,
+          201
+        ],
+        "writeback_pages_range": [
+          0,
+          4
+        ]
+      },
+      "inferred_writer": {
+        "tid": "90611",
+        "start_ticks": 143713330,
+        "cpu_seconds": 3.452250742,
+        "observed_until": 1437257.886115742,
+        "runqueue_seconds": 0.007043146,
+        "sampled_states": {
+          "R": 6,
+          "D": 10,
+          "S": 1
+        }
+      }
+    }
+  ],
+  "preparation": [
+    {
+      "bytes": 4294967296,
+      "segment_seconds": 7.897709054173902,
+      "elapsed_seconds": 7.897709054173902
+    },
+    {
+      "bytes": 8589934592,
+      "segment_seconds": 13.01010859082453,
+      "elapsed_seconds": 20.90781764499843
+    },
+    {
+      "bytes": 12884901888,
+      "segment_seconds": 20.646328973118216,
+      "elapsed_seconds": 41.55414661811665
+    },
+    {
+      "bytes": 17179869184,
+      "segment_seconds": 21.650760435964912,
+      "elapsed_seconds": 63.20490705408156
+    },
+    {
+      "bytes": 21474836480,
+      "segment_seconds": 23.674801856977865,
+      "elapsed_seconds": 86.87970891105942
+    },
+    {
+      "bytes": 25769803776,
+      "segment_seconds": 44.41921766707674,
+      "elapsed_seconds": 131.29892657813616
+    },
+    {
+      "bytes": 30064771072,
+      "segment_seconds": 23.288487078854814,
+      "elapsed_seconds": 154.58741365699098
+    },
+    {
+      "bytes": 34359738368,
+      "segment_seconds": 20.398820587201044,
+      "elapsed_seconds": 174.98623424419202
+    },
+    {
+      "bytes": 38654705664,
+      "segment_seconds": 16.76042086700909,
+      "elapsed_seconds": 191.7466551112011
+    },
+    {
+      "bytes": 42949672960,
+      "segment_seconds": 15.204947751015425,
+      "elapsed_seconds": 206.95160286221653
+    },
+    {
+      "bytes": 47244640256,
+      "segment_seconds": 26.59838742692955,
+      "elapsed_seconds": 233.54999028914608
+    },
+    {
+      "bytes": 51539607552,
+      "segment_seconds": 16.71971652493812,
+      "elapsed_seconds": 250.2697068140842
+    },
+    {
+      "bytes": 55834574848,
+      "segment_seconds": 26.614085000008345,
+      "elapsed_seconds": 276.88379181409255
+    },
+    {
+      "bytes": 60129542144,
+      "segment_seconds": 18.110893537057564,
+      "elapsed_seconds": 294.9946853511501
+    },
+    {
+      "bytes": 64424509440,
+      "segment_seconds": 23.851524010999128,
+      "elapsed_seconds": 318.84620936214924
+    },
+    {
+      "bytes": 68719476736,
+      "segment_seconds": 21.044570402940735,
+      "elapsed_seconds": 339.89077976509
+    }
+  ],
+  "observed_telemetry_fields": [
+    "bwmgr.cur_freq",
+    "bwmgr.governor",
+    "bwmgr.max_freq",
+    "bwmgr.min_freq",
+    "cpu.policy0.scaling_cur_freq",
+    "cpu.policy0.scaling_governor",
+    "cpu.policy0.scaling_max_freq",
+    "cpu.policy0.scaling_min_freq",
+    "cpu.policy10.scaling_cur_freq",
+    "cpu.policy10.scaling_governor",
+    "cpu.policy10.scaling_max_freq",
+    "cpu.policy10.scaling_min_freq",
+    "cpu.policy12.scaling_cur_freq",
+    "cpu.policy12.scaling_governor",
+    "cpu.policy12.scaling_max_freq",
+    "cpu.policy12.scaling_min_freq",
+    "cpu.policy2.scaling_cur_freq",
+    "cpu.policy2.scaling_governor",
+    "cpu.policy2.scaling_max_freq",
+    "cpu.policy2.scaling_min_freq",
+    "cpu.policy4.scaling_cur_freq",
+    "cpu.policy4.scaling_governor",
+    "cpu.policy4.scaling_max_freq",
+    "cpu.policy4.scaling_min_freq",
+    "cpu.policy6.scaling_cur_freq",
+    "cpu.policy6.scaling_governor",
+    "cpu.policy6.scaling_max_freq",
+    "cpu.policy6.scaling_min_freq",
+    "cpu.policy8.scaling_cur_freq",
+    "cpu.policy8.scaling_governor",
+    "cpu.policy8.scaling_max_freq",
+    "cpu.policy8.scaling_min_freq",
+    "cpu_stat",
+    "gpu-gpc-0.cur_freq",
+    "gpu-gpc-0.governor",
+    "gpu-gpc-0.max_freq",
+    "gpu-gpc-0.min_freq",
+    "gpu-nvd-0.cur_freq",
+    "gpu-nvd-0.governor",
+    "gpu-nvd-0.max_freq",
+    "gpu-nvd-0.min_freq",
+    "meminfo",
+    "thermal_zone0.temp",
+    "thermal_zone0.type",
+    "thermal_zone1.temp",
+    "thermal_zone1.type",
+    "thermal_zone2.temp",
+    "thermal_zone2.type",
+    "thermal_zone3.temp",
+    "thermal_zone3.type",
+    "thermal_zone4.temp",
+    "thermal_zone4.type",
+    "vmstat"
+  ],
+  "observed_thread_fields": [
+    "observation",
+    "schedstat",
+    "start_ticks",
+    "stat",
+    "stat_after",
+    "status"
+  ],
+  "limits": [
+    "No new model, HTTP, benchmark, device tracing or SSD workload.",
+    "Save has no TID/timestamps; envelope includes tail and logs.",
+    "Writer is inferred by CPU; last live sample can precede exit.",
+    "Runqueue delay is CPU scheduling, not block-device queue wait.",
+    "D-state samples do not identify a syscall or measure its duration.",
+    "Non-CPU syscall time includes blocking and runnable delay.",
+    "50ms bounds use rounded aggregate timings, not a per-call trace.",
+    "Process IO accounting is not physical NAND traffic.",
+    "No historical diskstats, request lifetimes, NVMe health or stacks.",
+    "Current host inventory cannot fill historical missing observations."
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "observed_at": "2026-10-29T04:46:14.682497+00:00",
+  "main_timings_independently_checked": 8,
+  "raw_log_sha256": {
+    ".q4t-work/session-preallocate-20261029/run/00-full-preallocate-0/server.log": "514085f652a76767330fcc2305ca00300524643a2c06f8cc43351ebc6f7517c7",
+    ".q4t-work/session-preallocate-20261029/run/01-full-preallocate-1/server.log": "ab13399faa20137611802f12876e9cbbcb5513c1b0ffd3f040b207ca18200725",
+    ".q4t-work/session-preallocate-20261029/run/02-subset-preallocate-1/server.log": "a3f757b2b61cc05a84781e5702ddf7a81ed664819fd8f5adffa99478e2e572f3",
+    ".q4t-work/session-preallocate-20261029/run/03-subset-preallocate-0/server.log": "eb9aaa309383ace20e488048ebcadb639d8988ff4426ebfd76a39d9b2063281a"
+  },
+  "review_sha256": "91aa71acb8acd05279ef25a906d10ae4dda0be3950d007fa944cb6ee5784d991",
+  "inventory_sha256": "43456f5b82cd6989557aac2f492732046d75a34a3bc1d21d4ddfa5f08dadf6e1",
+  "default_identities": {
+    "build/q4t": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+    "build/q4t.release.json": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2"
+  },
+  "candidate_identity": "46958b6c538d4410bea204bce1437c433b7a1ec87ea02855fb9417bece1ae9a6",
+  "runtime_diff_empty": true,
+  "current_mount_checks": {
+    "model": {
+      "path": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "mount": "SOURCE         TARGET FSTYPE OPTIONS\n/dev/nvme0n1p1 /      ext4   rw,relatime\n"
+    },
+    "private": {
+      "path": ".q4t-work/session-preallocate-20261029/run/00-full-preallocate-0/session",
+      "mount": "SOURCE         TARGET FSTYPE OPTIONS\n/dev/nvme0n1p1 /      ext4   rw,relatime\n"
+    },
+    "public": {
+      "path": ".q4t-work/session-preallocate-20261029/run/00-full-preallocate-0/prefix",
+      "mount": "SOURCE         TARGET FSTYPE OPTIONS\n/dev/nvme0n1p1 /      ext4   rw,relatime\n"
+    }
+  },
+  "new_model_loads": 0,
+  "new_http_requests": 0,
+  "new_storage_workload": 0,
+  "trace_enabled_by_this_review": false,
+  "archive_manifest_sha256": "7f2c81f7ed0c714e1c3e5f8e573f944635fde64414530219cfcc299bffc95e46",
+  "engineering_decision": "OFFLINE_REVIEW_COMPLETE_NEXT_TRACE_PROPOSED_NOT_EXECUTED",
+  "limitations": [
+    "Current metadata is not historical metadata.",
+    "No live BPF attachment or tool contract has been verified."
+  ]
+}

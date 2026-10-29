@@ -1,0 +1,288 @@
+{
+  "observed_at": "2026-10-29T04:36:36.885802+00:00",
+  "scope": "Read-only post-run inventory; not measurements from the original save intervals. No tracing enabled, no model requests or storage writes/workload.",
+  "commands": {
+    "uname": {
+      "argv": [
+        "uname",
+        "-a"
+      ],
+      "started": "2026-10-29T04:36:36.748933+00:00",
+      "returncode": 0,
+      "stdout": "Linux localhost.localdomain 6.8.12-1021-tegra #1 SMP PREEMPT Thu Aug  6 21:56:04 PDT 2026 aarch64 aarch64 aarch64 GNU/Linux\n",
+      "stderr": ""
+    },
+    "mount": {
+      "argv": [
+        "findmnt",
+        "-T",
+        ".q4t-work",
+        "-o",
+        "SOURCE,TARGET,FSTYPE,OPTIONS"
+      ],
+      "started": "2026-10-29T04:36:36.750794+00:00",
+      "returncode": 0,
+      "stdout": "SOURCE         TARGET FSTYPE OPTIONS\n/dev/nvme0n1p1 /      ext4   rw,relatime\n",
+      "stderr": ""
+    },
+    "devices": {
+      "argv": [
+        "lsblk",
+        "-o",
+        "NAME,MAJ:MIN,TYPE,SIZE,FSTYPE,MOUNTPOINTS,MODEL"
+      ],
+      "started": "2026-10-29T04:36:36.752512+00:00",
+      "returncode": 0,
+      "stdout": "NAME         MAJ:MIN TYPE   SIZE FSTYPE MOUNTPOINTS MODEL\nloop0          7:0   loop    16M vfat               \nnvme0n1      259:0   disk 953.9G                    WD PC SN5000S SDEPNSJ-1T00\n\u251c\u2500nvme0n1p1  259:1   part 951.2G ext4   /           \n\u251c\u2500nvme0n1p2  259:2   part   100M                    \n\u251c\u2500nvme0n1p3  259:3   part   768K                    \n\u251c\u2500nvme0n1p4  259:4   part   512M vfat   /boot/efi   \n\u251c\u2500nvme0n1p5  259:5   part 384.8M                    \n\u251c\u2500nvme0n1p6  259:6   part   100M                    \n\u251c\u2500nvme0n1p7  259:7   part   768K                    \n\u251c\u2500nvme0n1p8  259:8   part   512M                    \n\u251c\u2500nvme0n1p9  259:9   part 384.8M                    \n\u251c\u2500nvme0n1p10 259:10  part   400M                    \n\u2514\u2500nvme0n1p11 259:11  part   335M                    \n",
+      "stderr": ""
+    },
+    "disk_space": {
+      "argv": [
+        "df",
+        "-B1",
+        ".q4t-work"
+      ],
+      "started": "2026-10-29T04:36:36.756361+00:00",
+      "returncode": 0,
+      "stdout": "Filesystem         1B-blocks         Used    Available Use% Mounted on\n/dev/nvme0n1p1 1004976848896 792714354688 161178611712  84% /\n",
+      "stderr": ""
+    },
+    "smart": {
+      "argv": [
+        "sudo",
+        "-n",
+        "nvme",
+        "smart-log",
+        "/dev/nvme0",
+        "-o",
+        "json"
+      ],
+      "started": "2026-10-29T04:36:36.758273+00:00",
+      "returncode": 0,
+      "stdout": "{\n  \"critical_warning\":0,\n  \"temperature\":312,\n  \"avail_spare\":100,\n  \"spare_thresh\":10,\n  \"percent_used\":1,\n  \"endurance_grp_critical_warning_summary\":0,\n  \"data_units_read\":1205147647,\n  \"data_units_written\":24201924,\n  \"host_read_commands\":5392042083,\n  \"host_write_commands\":280305220,\n  \"controller_busy_time\":2971,\n  \"power_cycles\":60,\n  \"power_on_hours\":9801,\n  \"unsafe_shutdowns\":52,\n  \"media_errors\":0,\n  \"num_err_log_entries\":0,\n  \"warning_temp_time\":0,\n  \"critical_comp_time\":0,\n  \"temperature_sensor_1\":323,\n  \"temperature_sensor_2\":312,\n  \"thm_temp1_trans_count\":0,\n  \"thm_temp2_trans_count\":0,\n  \"thm_temp1_total_time\":0,\n  \"thm_temp2_total_time\":0\n}\n",
+      "stderr": ""
+    },
+    "errors": {
+      "argv": [
+        "sudo",
+        "-n",
+        "nvme",
+        "error-log",
+        "/dev/nvme0",
+        "--log-entries=8",
+        "-o",
+        "json"
+      ],
+      "started": "2026-10-29T04:36:36.790854+00:00",
+      "returncode": 0,
+      "stdout": "{\n  \"errors\":[\n    {\n      \"error_count\":0,\n      \"sqid\":0,\n      \"cmdid\":0,\n      \"status_field\":0,\n      \"phase_tag\":0,\n      \"parm_error_location\":0,\n      \"lba\":0,\n      \"nsid\":0,\n      \"vs\":0,\n      \"trtype\":0,\n      \"cs\":0,\n      \"trtype_spec_info\":0\n    },\n    {\n      \"error_count\":0,\n      \"sqid\":0,\n      \"cmdid\":0,\n      \"status_field\":0,\n      \"phase_tag\":0,\n      \"parm_error_location\":0,\n      \"lba\":0,\n      \"nsid\":0,\n      \"vs\":0,\n      \"trtype\":0,\n      \"cs\":0,\n      \"trtype_spec_info\":0\n    },\n    {\n      \"error_count\":0,\n      \"sqid\":0,\n      \"cmdid\":0,\n      \"status_field\":0,\n      \"phase_tag\":0,\n      \"parm_error_location\":0,\n      \"lba\":0,\n      \"nsid\":0,\n      \"vs\":0,\n      \"trtype\":0,\n      \"cs\":0,\n      \"trtype_spec_info\":0\n    },\n    {\n      \"error_count\":0,\n      \"sqid\":0,\n      \"cmdid\":0,\n      \"status_field\":0,\n      \"phase_tag\":0,\n      \"parm_error_location\":0,\n      \"lba\":0,\n      \"nsid\":0,\n      \"vs\":0,\n      \"trtype\":0,\n      \"cs\":0,\n      \"trtype_spec_info\":0\n    },\n    {\n      \"error_count\":0,\n      \"sqid\":0,\n      \"cmdid\":0,\n      \"status_field\":0,\n      \"phase_tag\":0,\n      \"parm_error_location\":0,\n      \"lba\":0,\n      \"nsid\":0,\n      \"vs\":0,\n      \"trtype\":0,\n      \"cs\":0,\n      \"trtype_spec_info\":0\n    },\n    {\n      \"error_count\":0,\n      \"sqid\":0,\n      \"cmdid\":0,\n      \"status_field\":0,\n      \"phase_tag\":0,\n      \"parm_error_location\":0,\n      \"lba\":0,\n      \"nsid\":0,\n      \"vs\":0,\n      \"trtype\":0,\n      \"cs\":0,\n      \"trtype_spec_info\":0\n    },\n    {\n      \"error_count\":0,\n      \"sqid\":0,\n      \"cmdid\":0,\n      \"status_field\":0,\n      \"phase_tag\":0,\n      \"parm_error_location\":0,\n      \"lba\":0,\n      \"nsid\":0,\n      \"vs\":0,\n      \"trtype\":0,\n      \"cs\":0,\n      \"trtype_spec_info\":0\n    },\n    {\n      \"error_count\":0,\n      \"sqid\":0,\n      \"cmdid\":0,\n      \"status_field\":0,\n      \"phase_tag\":0,\n      \"parm_error_location\":0,\n      \"lba\":0,\n      \"nsid\":0,\n      \"vs\":0,\n      \"trtype\":0,\n      \"cs\":0,\n      \"trtype_spec_info\":0\n    }\n  ]\n}\n",
+      "stderr": ""
+    }
+  },
+  "kernel": {
+    "files": {
+      "/proc/fs/ext4/nvme0n1p1/options": {
+        "status": "OK",
+        "raw": "rw\nbsddf\nnogrpid\nblock_validity\ndioread_nolock\nnodiscard\ndelalloc\nnowarn_on_error\njournal_checksum\nbarrier\nauto_da_alloc\nuser_xattr\nacl\nnoquota\nresuid=0\nresgid=0\nerrors=continue\ncommit=5\nmin_batch_time=0\nmax_batch_time=15000\nstripe=0\ndata=ordered\ninode_readahead_blks=32\ninit_itable=10\nmax_dir_size_kb=0\n"
+      },
+      "/proc/fs/jbd2/nvme0n1p1-8/info": {
+        "status": "OK",
+        "raw": "2571328 transactions (2557833 requested), each up to 16384 blocks\naverage: \n  0ms waiting for transaction\n  0ms request delay\n  548ms running transaction\n  0ms transaction was being locked\n  0ms flushing data (in ordered mode)\n  0ms logging transaction\n  274us average transaction commit time\n  14 handles per transaction\n  10 blocks per transaction\n  12 logged blocks per transaction\n"
+      },
+      "/sys/kernel/tracing/available_tracers": {
+        "status": "OK",
+        "raw": "nop\n"
+      },
+      "/sys/kernel/tracing/current_tracer": {
+        "status": "OK",
+        "raw": "nop\n"
+      },
+      "/sys/kernel/tracing/tracing_on": {
+        "status": "OK",
+        "raw": "1\n"
+      },
+      "/sys/kernel/tracing/trace_clock": {
+        "status": "OK",
+        "raw": "[local] global counter uptime perf mono mono_raw boot tai\n"
+      },
+      "/sys/block/nvme0n1/queue/scheduler": {
+        "status": "OK",
+        "raw": "[none] mq-deadline kyber bfq \n"
+      },
+      "/sys/block/nvme0n1/queue/nr_requests": {
+        "status": "OK",
+        "raw": "1023\n"
+      },
+      "/sys/block/nvme0n1/queue/max_sectors_kb": {
+        "status": "OK",
+        "raw": "128\n"
+      },
+      "/sys/block/nvme0n1/queue/max_hw_sectors_kb": {
+        "status": "OK",
+        "raw": "128\n"
+      },
+      "/sys/block/nvme0n1/queue/max_segments": {
+        "status": "OK",
+        "raw": "33\n"
+      },
+      "/sys/block/nvme0n1/queue/max_segment_size": {
+        "status": "OK",
+        "raw": "4294967295\n"
+      },
+      "/sys/block/nvme0n1/queue/logical_block_size": {
+        "status": "OK",
+        "raw": "512\n"
+      },
+      "/sys/block/nvme0n1/queue/physical_block_size": {
+        "status": "OK",
+        "raw": "512\n"
+      },
+      "/sys/block/nvme0n1/queue/write_cache": {
+        "status": "OK",
+        "raw": "write back\n"
+      },
+      "/sys/block/nvme0n1/queue/fua": {
+        "status": "OK",
+        "raw": "1\n"
+      },
+      "/sys/block/nvme0n1/queue/wbt_lat_usec": {
+        "status": "UNAVAILABLE",
+        "error": "[Errno 2] No such file or directory: '/sys/block/nvme0n1/queue/wbt_lat_usec'"
+      },
+      "/sys/block/nvme0n1/queue/nomerges": {
+        "status": "OK",
+        "raw": "0\n"
+      },
+      "/sys/block/nvme0n1/queue/discard_max_bytes": {
+        "status": "OK",
+        "raw": "2199023255040\n"
+      },
+      "/sys/class/nvme/nvme0/model": {
+        "status": "OK",
+        "raw": "WD PC SN5000S SDEPNSJ-1T00              \n"
+      },
+      "/sys/class/nvme/nvme0/firmware_rev": {
+        "status": "OK",
+        "raw": "34430000\n"
+      },
+      "/sys/class/nvme/nvme0/state": {
+        "status": "OK",
+        "raw": "live\n"
+      },
+      "/sys/kernel/tracing/events/raw_syscalls/sys_enter/format": {
+        "status": "OK",
+        "raw": "name: sys_enter\nID: 24\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:long id;\toffset:8;\tsize:8;\tsigned:1;\n\tfield:unsigned long args[6];\toffset:16;\tsize:48;\tsigned:0;\n\nprint fmt: \"NR %ld (%lx, %lx, %lx, %lx, %lx, %lx)\", REC->id, REC->args[0], REC->args[1], REC->args[2], REC->args[3], REC->args[4], REC->args[5]\n"
+      },
+      "/sys/kernel/tracing/events/raw_syscalls/sys_exit/format": {
+        "status": "OK",
+        "raw": "name: sys_exit\nID: 23\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:long id;\toffset:8;\tsize:8;\tsigned:1;\n\tfield:long ret;\toffset:16;\tsize:8;\tsigned:1;\n\nprint fmt: \"NR %ld = %ld\", REC->id, REC->ret\n"
+      },
+      "/sys/kernel/tracing/events/block/block_rq_insert/format": {
+        "status": "OK",
+        "raw": "name: block_rq_insert\nID: 752\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:sector_t sector;\toffset:16;\tsize:8;\tsigned:0;\n\tfield:unsigned int nr_sector;\toffset:24;\tsize:4;\tsigned:0;\n\tfield:unsigned int bytes;\toffset:28;\tsize:4;\tsigned:0;\n\tfield:char rwbs[8];\toffset:32;\tsize:8;\tsigned:0;\n\tfield:char comm[16];\toffset:40;\tsize:16;\tsigned:0;\n\tfield:__data_loc char[] cmd;\toffset:56;\tsize:4;\tsigned:0;\n\nprint fmt: \"%d,%d %s %u (%s) %llu + %u [%s]\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->rwbs, REC->bytes, __get_str(cmd), (unsigned long long)REC->sector, REC->nr_sector, REC->comm\n"
+      },
+      "/sys/kernel/tracing/events/block/block_rq_issue/format": {
+        "status": "OK",
+        "raw": "name: block_rq_issue\nID: 751\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:sector_t sector;\toffset:16;\tsize:8;\tsigned:0;\n\tfield:unsigned int nr_sector;\toffset:24;\tsize:4;\tsigned:0;\n\tfield:unsigned int bytes;\toffset:28;\tsize:4;\tsigned:0;\n\tfield:char rwbs[8];\toffset:32;\tsize:8;\tsigned:0;\n\tfield:char comm[16];\toffset:40;\tsize:16;\tsigned:0;\n\tfield:__data_loc char[] cmd;\toffset:56;\tsize:4;\tsigned:0;\n\nprint fmt: \"%d,%d %s %u (%s) %llu + %u [%s]\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->rwbs, REC->bytes, __get_str(cmd), (unsigned long long)REC->sector, REC->nr_sector, REC->comm\n"
+      },
+      "/sys/kernel/tracing/events/block/block_rq_requeue/format": {
+        "status": "OK",
+        "raw": "name: block_rq_requeue\nID: 755\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:sector_t sector;\toffset:16;\tsize:8;\tsigned:0;\n\tfield:unsigned int nr_sector;\toffset:24;\tsize:4;\tsigned:0;\n\tfield:char rwbs[8];\toffset:28;\tsize:8;\tsigned:0;\n\tfield:__data_loc char[] cmd;\toffset:36;\tsize:4;\tsigned:0;\n\nprint fmt: \"%d,%d %s (%s) %llu + %u [%d]\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->rwbs, __get_str(cmd), (unsigned long long)REC->sector, REC->nr_sector, 0\n"
+      },
+      "/sys/kernel/tracing/events/block/block_rq_complete/format": {
+        "status": "OK",
+        "raw": "name: block_rq_complete\nID: 754\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:sector_t sector;\toffset:16;\tsize:8;\tsigned:0;\n\tfield:unsigned int nr_sector;\toffset:24;\tsize:4;\tsigned:0;\n\tfield:int error;\toffset:28;\tsize:4;\tsigned:1;\n\tfield:char rwbs[8];\toffset:32;\tsize:8;\tsigned:0;\n\tfield:__data_loc char[] cmd;\toffset:40;\tsize:4;\tsigned:0;\n\nprint fmt: \"%d,%d %s (%s) %llu + %u [%d]\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->rwbs, __get_str(cmd), (unsigned long long)REC->sector, REC->nr_sector, REC->error\n"
+      },
+      "/sys/kernel/tracing/events/block/block_bio_queue/format": {
+        "status": "OK",
+        "raw": "name: block_bio_queue\nID: 743\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:sector_t sector;\toffset:16;\tsize:8;\tsigned:0;\n\tfield:unsigned int nr_sector;\toffset:24;\tsize:4;\tsigned:0;\n\tfield:char rwbs[8];\toffset:28;\tsize:8;\tsigned:0;\n\tfield:char comm[16];\toffset:36;\tsize:16;\tsigned:0;\n\nprint fmt: \"%d,%d %s %llu + %u [%s]\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->rwbs, (unsigned long long)REC->sector, REC->nr_sector, REC->comm\n"
+      },
+      "/sys/kernel/tracing/events/block/block_bio_complete/format": {
+        "status": "OK",
+        "raw": "name: block_bio_complete\nID: 747\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:sector_t sector;\toffset:16;\tsize:8;\tsigned:0;\n\tfield:unsigned nr_sector;\toffset:24;\tsize:4;\tsigned:0;\n\tfield:int error;\toffset:28;\tsize:4;\tsigned:1;\n\tfield:char rwbs[8];\toffset:32;\tsize:8;\tsigned:0;\n\nprint fmt: \"%d,%d %s %llu + %u [%d]\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->rwbs, (unsigned long long)REC->sector, REC->nr_sector, REC->error\n"
+      },
+      "/sys/kernel/tracing/events/nvme/nvme_setup_cmd/format": {
+        "status": "OK",
+        "raw": "name: nvme_setup_cmd\nID: 1421\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:char disk[32];\toffset:8;\tsize:32;\tsigned:0;\n\tfield:int ctrl_id;\toffset:40;\tsize:4;\tsigned:1;\n\tfield:int qid;\toffset:44;\tsize:4;\tsigned:1;\n\tfield:u8 opcode;\toffset:48;\tsize:1;\tsigned:0;\n\tfield:u8 flags;\toffset:49;\tsize:1;\tsigned:0;\n\tfield:u8 fctype;\toffset:50;\tsize:1;\tsigned:0;\n\tfield:u16 cid;\toffset:52;\tsize:2;\tsigned:0;\n\tfield:u32 nsid;\toffset:56;\tsize:4;\tsigned:0;\n\tfield:bool metadata;\toffset:60;\tsize:1;\tsigned:0;\n\tfield:u8 cdw10[24];\toffset:61;\tsize:24;\tsigned:0;\n\nprint fmt: \"nvme%d: %sqid=%d, cmdid=%u, nsid=%u, flags=0x%x, meta=0x%x, cmd=(%s %s)\", REC->ctrl_id, nvme_trace_disk_name(p, REC->disk), REC->qid, REC->cid, REC->nsid, REC->flags, REC->metadata, ((REC->opcode) == nvme_fabrics_command ? __print_symbolic(REC->fctype, { nvme_fabrics_type_property_set, \"nvme_fabrics_type_property_set\" }, { nvme_fabrics_type_connect, \"nvme_fabrics_type_connect\" }, { nvme_fabrics_type_property_get, \"nvme_fabrics_type_property_get\" }, { nvme_fabrics_type_auth_send, \"nvme_fabrics_type_auth_send\" }, { nvme_fabrics_type_auth_receive, \"nvme_fabrics_type_auth_receive\" }) : ((REC->qid) ? __print_symbolic(REC->opcode, { nvme_cmd_flush, \"nvme_cmd_flush\" }, { nvme_cmd_write, \"nvme_cmd_write\" }, { nvme_cmd_read, \"nvme_cmd_read\" }, { nvme_cmd_write_uncor, \"nvme_cmd_write_uncor\" }, { nvme_cmd_compare, \"nvme_cmd_compare\" }, { nvme_cmd_write_zeroes, \"nvme_cmd_write_zeroes\" }, { nvme_cmd_dsm, \"nvme_cmd_dsm\" }, { nvme_cmd_verify, \"nvme_cmd_verify\" }, { nvme_cmd_resv_register, \"nvme_cmd_resv_register\" }, { nvme_cmd_resv_report, \"nvme_cmd_resv_report\" }, { nvme_cmd_resv_acquire, \"nvme_cmd_resv_acquire\" }, { nvme_cmd_resv_release, \"nvme_cmd_resv_release\" }, { nvme_cmd_zone_mgmt_send, \"nvme_cmd_zone_mgmt_send\" }, { nvme_cmd_zone_mgmt_recv, \"nvme_cmd_zone_mgmt_recv\" }, { nvme_cmd_zone_append, \"nvme_cmd_zone_append\" }) : __print_symbolic(REC->opcode, { nvme_admin_delete_sq, \"nvme_admin_delete_sq\" }, { nvme_admin_create_sq, \"nvme_admin_create_sq\" }, { nvme_admin_get_log_page, \"nvme_admin_get_log_page\" }, { nvme_admin_delete_cq, \"nvme_admin_delete_cq\" }, { nvme_admin_create_cq, \"nvme_admin_create_cq\" }, { nvme_admin_identify, \"nvme_admin_identify\" }, { nvme_admin_abort_cmd, \"nvme_admin_abort_cmd\" }, { nvme_admin_set_features, \"nvme_admin_set_features\" }, { nvme_admin_get_features, \"nvme_admin_get_features\" }, { nvme_admin_async_event, \"nvme_admin_async_event\" }, { nvme_admin_ns_mgmt, \"nvme_admin_ns_mgmt\" }, { nvme_admin_activate_fw, \"nvme_admin_activate_fw\" }, { nvme_admin_download_fw, \"nvme_admin_download_fw\" }, { nvme_admin_dev_self_test, \"nvme_admin_dev_self_test\" }, { nvme_admin_ns_attach, \"nvme_admin_ns_attach\" }, { nvme_admin_keep_alive, \"nvme_admin_keep_alive\" }, { nvme_admin_directive_send, \"nvme_admin_directive_send\" }, { nvme_admin_directive_recv, \"nvme_admin_directive_recv\" }, { nvme_admin_virtual_mgmt, \"nvme_admin_virtual_mgmt\" }, { nvme_admin_nvme_mi_send, \"nvme_admin_nvme_mi_send\" }, { nvme_admin_nvme_mi_recv, \"nvme_admin_nvme_mi_recv\" }, { nvme_admin_dbbuf, \"nvme_admin_dbbuf\" }, { nvme_admin_format_nvm, \"nvme_admin_format_nvm\" }, { nvme_admin_security_send, \"nvme_admin_security_send\" }, { nvme_admin_security_recv, \"nvme_admin_security_recv\" }, { nvme_admin_sanitize_nvm, \"nvme_admin_sanitize_nvm\" }, { nvme_admin_get_lba_status, \"nvme_admin_get_lba_status\" }))), ((REC->opcode) == nvme_fabrics_command ? nvme_trace_parse_fabrics_cmd(p, REC->fctype, REC->cdw10) : ((REC->qid) ? nvme_trace_parse_nvm_cmd(p, REC->opcode, REC->cdw10) : nvme_trace_parse_admin_cmd(p, REC->opcode, REC->cdw10)))\n"
+      },
+      "/sys/kernel/tracing/events/nvme/nvme_complete_rq/format": {
+        "status": "OK",
+        "raw": "name: nvme_complete_rq\nID: 1420\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:char disk[32];\toffset:8;\tsize:32;\tsigned:0;\n\tfield:int ctrl_id;\toffset:40;\tsize:4;\tsigned:1;\n\tfield:int qid;\toffset:44;\tsize:4;\tsigned:1;\n\tfield:int cid;\toffset:48;\tsize:4;\tsigned:1;\n\tfield:u64 result;\toffset:56;\tsize:8;\tsigned:0;\n\tfield:u8 retries;\toffset:64;\tsize:1;\tsigned:0;\n\tfield:u8 flags;\toffset:65;\tsize:1;\tsigned:0;\n\tfield:u16 status;\toffset:66;\tsize:2;\tsigned:0;\n\nprint fmt: \"nvme%d: %sqid=%d, cmdid=%u, res=%#llx, retries=%u, flags=0x%x, status=%#x\", REC->ctrl_id, nvme_trace_disk_name(p, REC->disk), REC->qid, REC->cid, REC->result, REC->retries, REC->flags, REC->status\n"
+      },
+      "/sys/kernel/tracing/events/nvme/nvme_sq/format": {
+        "status": "OK",
+        "raw": "name: nvme_sq\nID: 1418\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:int ctrl_id;\toffset:8;\tsize:4;\tsigned:1;\n\tfield:char disk[32];\toffset:12;\tsize:32;\tsigned:0;\n\tfield:int qid;\toffset:44;\tsize:4;\tsigned:1;\n\tfield:u16 sq_head;\toffset:48;\tsize:2;\tsigned:0;\n\tfield:u16 sq_tail;\toffset:50;\tsize:2;\tsigned:0;\n\nprint fmt: \"nvme%d: %sqid=%d, head=%u, tail=%u\", REC->ctrl_id, nvme_trace_disk_name(p, REC->disk), REC->qid, REC->sq_head, REC->sq_tail\n"
+      },
+      "/sys/kernel/tracing/events/ext4/ext4_ext_map_blocks_enter/format": {
+        "status": "OK",
+        "raw": "name: ext4_ext_map_blocks_enter\nID: 453\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:ino_t ino;\toffset:16;\tsize:8;\tsigned:0;\n\tfield:ext4_lblk_t lblk;\toffset:24;\tsize:4;\tsigned:0;\n\tfield:unsigned int len;\toffset:28;\tsize:4;\tsigned:0;\n\tfield:unsigned int flags;\toffset:32;\tsize:4;\tsigned:0;\n\nprint fmt: \"dev %d,%d ino %lu lblk %u len %u flags %s\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), (unsigned long) REC->ino, REC->lblk, REC->len, __print_flags(REC->flags, \"|\", { 0x0001, \"CREATE\" }, { 0x0002, \"UNWRIT\" }, { 0x0004, \"DELALLOC\" }, { 0x0008, \"PRE_IO\" }, { 0x0010, \"CONVERT\" }, { 0x0020, \"METADATA_NOFAIL\" }, { 0x0040, \"NO_NORMALIZE\" }, { 0x0100, \"CONVERT_UNWRITTEN\" }, { 0x0200, \"ZERO\" }, { 0x0400, \"IO_SUBMIT\" }, { 0x40000000, \"EX_NOCACHE\" })\n"
+      },
+      "/sys/kernel/tracing/events/ext4/ext4_ext_map_blocks_exit/format": {
+        "status": "OK",
+        "raw": "name: ext4_ext_map_blocks_exit\nID: 451\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:ino_t ino;\toffset:16;\tsize:8;\tsigned:0;\n\tfield:unsigned int flags;\toffset:24;\tsize:4;\tsigned:0;\n\tfield:ext4_fsblk_t pblk;\toffset:32;\tsize:8;\tsigned:0;\n\tfield:ext4_lblk_t lblk;\toffset:40;\tsize:4;\tsigned:0;\n\tfield:unsigned int len;\toffset:44;\tsize:4;\tsigned:0;\n\tfield:unsigned int mflags;\toffset:48;\tsize:4;\tsigned:0;\n\tfield:int ret;\toffset:52;\tsize:4;\tsigned:1;\n\nprint fmt: \"dev %d,%d ino %lu flags %s lblk %u pblk %llu len %u mflags %s ret %d\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), (unsigned long) REC->ino, __print_flags(REC->flags, \"|\", { 0x0001, \"CREATE\" }, { 0x0002, \"UNWRIT\" }, { 0x0004, \"DELALLOC\" }, { 0x0008, \"PRE_IO\" }, { 0x0010, \"CONVERT\" }, { 0x0020, \"METADATA_NOFAIL\" }, { 0x0040, \"NO_NORMALIZE\" }, { 0x0100, \"CONVERT_UNWRITTEN\" }, { 0x0200, \"ZERO\" }, { 0x0400, \"IO_SUBMIT\" }, { 0x40000000, \"EX_NOCACHE\" }), REC->lblk, REC->pblk, REC->len, __print_flags(REC->mflags, \"\", { ((((1UL))) << (5)), \"N\" }, { ((((1UL))) << (4)), \"M\" }, { ((((1UL))) << (11)), \"U\" }, { ((((1UL))) << (9)), \"B\" }), REC->ret\n"
+      },
+      "/sys/kernel/tracing/events/ext4/ext4_ext_convert_to_initialized_enter/format": {
+        "status": "OK",
+        "raw": "name: ext4_ext_convert_to_initialized_enter\nID: 455\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:ino_t ino;\toffset:16;\tsize:8;\tsigned:0;\n\tfield:ext4_lblk_t m_lblk;\toffset:24;\tsize:4;\tsigned:0;\n\tfield:unsigned m_len;\toffset:28;\tsize:4;\tsigned:0;\n\tfield:ext4_lblk_t u_lblk;\toffset:32;\tsize:4;\tsigned:0;\n\tfield:unsigned u_len;\toffset:36;\tsize:4;\tsigned:0;\n\tfield:ext4_fsblk_t u_pblk;\toffset:40;\tsize:8;\tsigned:0;\n\nprint fmt: \"dev %d,%d ino %lu m_lblk %u m_len %u u_lblk %u u_len %u u_pblk %llu\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), (unsigned long) REC->ino, REC->m_lblk, REC->m_len, REC->u_lblk, REC->u_len, REC->u_pblk\n"
+      },
+      "/sys/kernel/tracing/events/ext4/ext4_journal_start_inode/format": {
+        "status": "OK",
+        "raw": "name: ext4_journal_start_inode\nID: 446\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:unsigned long ino;\toffset:8;\tsize:8;\tsigned:0;\n\tfield:dev_t dev;\toffset:16;\tsize:4;\tsigned:0;\n\tfield:unsigned long ip;\toffset:24;\tsize:8;\tsigned:0;\n\tfield:int blocks;\toffset:32;\tsize:4;\tsigned:1;\n\tfield:int rsv_blocks;\toffset:36;\tsize:4;\tsigned:1;\n\tfield:int revoke_creds;\toffset:40;\tsize:4;\tsigned:1;\n\tfield:int type;\toffset:44;\tsize:4;\tsigned:1;\n\nprint fmt: \"dev %d,%d blocks %d, rsv_blocks %d, revoke_creds %d, type %d, ino %lu, caller %pS\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->blocks, REC->rsv_blocks, REC->revoke_creds, REC->type, REC->ino, (void *)REC->ip\n"
+      },
+      "/sys/kernel/tracing/events/ext4/ext4_mark_inode_dirty/format": {
+        "status": "OK",
+        "raw": "name: ext4_mark_inode_dirty\nID: 504\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:ino_t ino;\toffset:16;\tsize:8;\tsigned:0;\n\tfield:unsigned long ip;\toffset:24;\tsize:8;\tsigned:0;\n\nprint fmt: \"dev %d,%d ino %lu caller %pS\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), (unsigned long) REC->ino, (void *)REC->ip\n"
+      },
+      "/sys/kernel/tracing/events/jbd2/jbd2_handle_start/format": {
+        "status": "OK",
+        "raw": "name: jbd2_handle_start\nID: 530\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:tid_t tid;\toffset:12;\tsize:4;\tsigned:0;\n\tfield:unsigned int type;\toffset:16;\tsize:4;\tsigned:0;\n\tfield:unsigned int line_no;\toffset:20;\tsize:4;\tsigned:0;\n\tfield:int requested_blocks;\toffset:24;\tsize:4;\tsigned:1;\n\nprint fmt: \"dev %d,%d tid %u type %u line_no %u requested_blocks %d\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->tid, REC->type, REC->line_no, REC->requested_blocks\n"
+      },
+      "/sys/kernel/tracing/events/jbd2/jbd2_handle_stats/format": {
+        "status": "OK",
+        "raw": "name: jbd2_handle_stats\nID: 527\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:tid_t tid;\toffset:12;\tsize:4;\tsigned:0;\n\tfield:unsigned int type;\toffset:16;\tsize:4;\tsigned:0;\n\tfield:unsigned int line_no;\toffset:20;\tsize:4;\tsigned:0;\n\tfield:int interval;\toffset:24;\tsize:4;\tsigned:1;\n\tfield:int sync;\toffset:28;\tsize:4;\tsigned:1;\n\tfield:int requested_blocks;\toffset:32;\tsize:4;\tsigned:1;\n\tfield:int dirtied_blocks;\toffset:36;\tsize:4;\tsigned:1;\n\nprint fmt: \"dev %d,%d tid %u type %u line_no %u interval %d sync %d requested_blocks %d dirtied_blocks %d\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->tid, REC->type, REC->line_no, REC->interval, REC->sync, REC->requested_blocks, REC->dirtied_blocks\n"
+      },
+      "/sys/kernel/tracing/events/jbd2/jbd2_start_commit/format": {
+        "status": "OK",
+        "raw": "name: jbd2_start_commit\nID: 537\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:char sync_commit;\toffset:12;\tsize:1;\tsigned:0;\n\tfield:tid_t transaction;\toffset:16;\tsize:4;\tsigned:0;\n\nprint fmt: \"dev %d,%d transaction %u sync %d\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->transaction, REC->sync_commit\n"
+      },
+      "/sys/kernel/tracing/events/jbd2/jbd2_end_commit/format": {
+        "status": "OK",
+        "raw": "name: jbd2_end_commit\nID: 532\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:dev_t dev;\toffset:8;\tsize:4;\tsigned:0;\n\tfield:char sync_commit;\toffset:12;\tsize:1;\tsigned:0;\n\tfield:tid_t transaction;\toffset:16;\tsize:4;\tsigned:0;\n\tfield:tid_t head;\toffset:20;\tsize:4;\tsigned:0;\n\nprint fmt: \"dev %d,%d transaction %u sync %d head %u\", ((unsigned int) ((REC->dev) >> 20)), ((unsigned int) ((REC->dev) & ((1U << 20) - 1))), REC->transaction, REC->sync_commit, REC->head\n"
+      },
+      "/sys/kernel/tracing/events/sched/sched_switch/format": {
+        "status": "OK",
+        "raw": "name: sched_switch\nID: 113\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:char prev_comm[16];\toffset:8;\tsize:16;\tsigned:0;\n\tfield:pid_t prev_pid;\toffset:24;\tsize:4;\tsigned:1;\n\tfield:int prev_prio;\toffset:28;\tsize:4;\tsigned:1;\n\tfield:long prev_state;\toffset:32;\tsize:8;\tsigned:1;\n\tfield:char next_comm[16];\toffset:40;\tsize:16;\tsigned:0;\n\tfield:pid_t next_pid;\toffset:56;\tsize:4;\tsigned:1;\n\tfield:int next_prio;\toffset:60;\tsize:4;\tsigned:1;\n\nprint fmt: \"prev_comm=%s prev_pid=%d prev_prio=%d prev_state=%s%s ==> next_comm=%s next_pid=%d next_prio=%d\", REC->prev_comm, REC->prev_pid, REC->prev_prio, (REC->prev_state & ((((0x00000000 | 0x00000001 | 0x00000002 | 0x00000004 | 0x00000008 | 0x00000010 | 0x00000020 | 0x00000040) + 1) << 1) - 1)) ? __print_flags(REC->prev_state & ((((0x00000000 | 0x00000001 | 0x00000002 | 0x00000004 | 0x00000008 | 0x00000010 | 0x00000020 | 0x00000040) + 1) << 1) - 1), \"|\", { 0x00000001, \"S\" }, { 0x00000002, \"D\" }, { 0x00000004, \"T\" }, { 0x00000008, \"t\" }, { 0x00000010, \"X\" }, { 0x00000020, \"Z\" }, { 0x00000040, \"P\" }, { 0x00000080, \"I\" }) : \"R\", REC->prev_state & (((0x00000000 | 0x00000001 | 0x00000002 | 0x00000004 | 0x00000008 | 0x00000010 | 0x00000020 | 0x00000040) + 1) << 1) ? \"+\" : \"\", REC->next_comm, REC->next_pid, REC->next_prio\n"
+      },
+      "/sys/kernel/tracing/events/sched/sched_wakeup/format": {
+        "status": "OK",
+        "raw": "name: sched_wakeup\nID: 115\nformat:\n\tfield:unsigned short common_type;\toffset:0;\tsize:2;\tsigned:0;\n\tfield:unsigned char common_flags;\toffset:2;\tsize:1;\tsigned:0;\n\tfield:unsigned char common_preempt_count;\toffset:3;\tsize:1;\tsigned:0;\n\tfield:int common_pid;\toffset:4;\tsize:4;\tsigned:1;\n\n\tfield:char comm[16];\toffset:8;\tsize:16;\tsigned:0;\n\tfield:pid_t pid;\toffset:24;\tsize:4;\tsigned:1;\n\tfield:int prio;\toffset:28;\tsize:4;\tsigned:1;\n\tfield:int target_cpu;\toffset:32;\tsize:4;\tsigned:1;\n\nprint fmt: \"comm=%s pid=%d prio=%d target_cpu=%03d\", REC->comm, REC->pid, REC->prio, REC->target_cpu\n"
+      }
+    },
+    "kernel_config": [
+      "CONFIG_BPF=y",
+      "CONFIG_BPF_SYSCALL=y",
+      "# CONFIG_PSI is not set",
+      "CONFIG_BLK_CGROUP=y",
+      "CONFIG_TRACEPOINTS=y",
+      "CONFIG_STACKTRACE_SUPPORT=y",
+      "# CONFIG_KPROBES is not set",
+      "# CONFIG_BLK_WBT is not set",
+      "CONFIG_STACKTRACE=y",
+      "CONFIG_FTRACE=y",
+      "# CONFIG_FUNCTION_TRACER is not set",
+      "# CONFIG_FTRACE_SYSCALLS is not set",
+      "# CONFIG_BLK_DEV_IO_TRACE is not set",
+      "CONFIG_UPROBE_EVENTS=y",
+      "CONFIG_BPF_EVENTS=y"
+    ],
+    "exists": {
+      "/sys/kernel/btf/vmlinux": false,
+      "/sys/kernel/tracing/kprobe_events": false,
+      "/sys/kernel/tracing/uprobe_events": true,
+      "/sys/kernel/tracing/available_filter_functions": false,
+      "/sys/kernel/tracing/events/syscalls/sys_enter_pwrite64": false,
+      "/usr/include/bpf/libbpf.h": false,
+      "/usr/include/bpf/bpf_helpers.h": false
+    }
+  }
+}

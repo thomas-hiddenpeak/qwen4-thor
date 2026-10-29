@@ -1,0 +1,17 @@
+{
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-pwrite-review-20261029",
+  "files": {
+    "review.json": {
+      "sha256": "91aa71acb8acd05279ef25a906d10ae4dda0be3950d007fa944cb6ee5784d991",
+      "bytes": 33270
+    },
+    "host-inventory.json": {
+      "sha256": "43456f5b82cd6989557aac2f492732046d75a34a3bc1d21d4ddfa5f08dadf6e1",
+      "bytes": 35494
+    },
+    "validation.json": {
+      "sha256": "aa203a6dc1fc45cace81dc863391c92d2fff121676ff823ecd95b2dec6f21812",
+      "bytes": 2374
+    }
+  }
+}
