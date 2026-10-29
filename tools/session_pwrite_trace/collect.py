@@ -1,5 +1,6 @@
 """Own BPF links, bound buffers and drop root before ongoing observation."""
 import ctypes as C
+import errno
 import json
 import os
 from pathlib import Path
@@ -59,7 +60,7 @@ def main():
         emitted += 1
         return 0
     result = dict(started=time.time(), status='FAILED', events=0)
-    count_fd = stack_fd = None
+    count_fd = stack_fd = diag_fd = extra_fd = None
     z = C.c_uint(0)
     counts = (C.c_ulonglong*7)()
     flushes, diskstats = [], []
@@ -82,6 +83,8 @@ def main():
         target_fd = map_fd(find_map(obj, b'target'))
         count_fd = map_fd(find_map(obj, b'counters'))
         stack_fd = map_fd(find_map(obj, b'stacks'))
+        diag_fd = map_fd(find_map(obj, b'stack_errors'))
+        extra_fd = map_fd(find_map(obj, b'extra_stacks'))
         ring = ring_new(map_fd(find_map(obj, b'events')), receive, None, None)
         if not ring: raise RuntimeError('ring buffer')
         next_map = api('bpf_object__next_map', [ptr, ptr], ptr)
@@ -138,6 +141,8 @@ def main():
                 if map_lookup(count_fd, C.byref(z), C.byref(counts)):
                     raise RuntimeError('counter read')
                 if counts[0]: idle = time.monotonic()
+                if (out/'inject-failure').exists():
+                    raise RuntimeError('injected userspace failure with pending='+str(len(pending)))
                 if any(counts[2:6]):
                     raise RuntimeError('lost/map/stack error '+str(list(counts)))
                 if emitted > 10000000: raise RuntimeError('event budget')
@@ -161,8 +166,11 @@ def main():
         result['error'] = repr(exc)
     finally:
         def detach():
+            failures = []
             for link in reversed(links):
-                if destroy(link): raise RuntimeError('link detach')
+                rc = destroy(link)
+                if rc: failures.append(rc)
+            if failures: raise RuntimeError('link detach '+str(failures))
 
         def drain():
             if ring:
@@ -174,12 +182,26 @@ def main():
             if count_fd is None: return dict(events=emitted)
             if map_lookup(count_fd, C.byref(z), C.byref(counts)):
                 raise RuntimeError('final counter read')
+            diagnostic = (C.c_ulonglong*6)()
+            if map_lookup(diag_fd, C.byref(z), C.byref(diagnostic)):
+                raise RuntimeError('stack diagnostic read')
+            names = ['attempts', 'first_errno', 'last_errno', 'recovered',
+                     'fallback_count', 'fallback_error']
+            diag = dict(zip(names, diagnostic))
+            diag['first_errno_name'] = errno.errorcode.get(diag['first_errno'])
+            (out/'stack-errors.json').write_text(json.dumps(diag,indent=2)+'\n')
             stack_rows = {}
             addresses = (C.c_ulonglong*32)()
             for i in range(4096):
                 key = C.c_uint(i)
                 if map_lookup(stack_fd, C.byref(key), C.byref(addresses)) == 0:
                     stack_rows[str(i)] = [v for v in addresses if v]
+            for i in range(min(diag['fallback_count'], 2048)):
+                key = C.c_uint(i)
+                if map_lookup(extra_fd, C.byref(key), C.byref(addresses)):
+                    raise RuntimeError('fallback stack read')
+                if any(addresses):
+                    stack_rows[str(4096+i)] = [v for v in addresses if v]
             (out/'stacks.json').write_text(json.dumps(stack_rows)+'\n')
             program_rows = []
             for name, fd in programs:
@@ -193,7 +215,7 @@ def main():
             (out/'collector-io.json').write_text(json.dumps(
                 dict(flushes=flushes, samples=diskstats),indent=2)+'\n')
             return dict(counters=list(counts), events=emitted,
-                        stack_ids=len(stack_rows))
+                        stack_ids=len(stack_rows), stack_diagnostic=diag)
 
         try:
             finalize(out, pending, result, detach, drain, snapshot, sync)

@@ -12,6 +12,20 @@ static u64 (*now)(void) = (void*)5;
 static u32 (*cpu)(void) = (void*)8;
 static u64 (*task)(void) = (void*)14;
 static long (*stackid)(void*, void*, u64) = (void*)27;
+static long (*get_stack)(void*, void*, u32, u64) = (void*)67;
+#ifndef STACK_ENTRIES
+#define STACK_ENTRIES 4096
+#endif
+#ifndef STACK_RECOVER
+#define STACK_RECOVER 1
+#endif
+struct stack_diagnostic { u64 attempts, first_errno, last_errno, recovered;
+                          u64 fallback_count, fallback_error; };
+struct { U(type, 2); U(max_entries, 1); T(key, u32);
+         T(value, struct stack_diagnostic); } stack_errors SEC(".maps");
+struct stack_value { u64 addresses[32]; };
+struct { U(type, 2); U(max_entries, 2048); T(key, u32);
+         T(value, struct stack_value); } extra_stacks SEC(".maps");
 static long (*read_kernel)(void*, u32, const void*) = (void*)113;
 static void* (*reserve)(void*, u64, u64) = (void*)131;
 static void (*submit)(void*, u64) = (void*)132;
@@ -21,7 +35,7 @@ struct stats { u64 active, emitted, lost, map_fail, stack_fail, read_fail, forei
 struct { U(type, 2); U(max_entries, 1); T(key, u32); T(value, struct stats); }
     counters SEC(".maps");
 struct { U(type, 27); U(max_entries, 16777216); } events SEC(".maps");
-struct { U(type, 7); U(max_entries, 4096); U(key_size, 4);
+struct { U(type, 7); U(max_entries, STACK_ENTRIES); U(key_size, 4);
          U(value_size, 256); } stacks SEC(".maps");
 struct { U(type, 6); U(max_entries, 1); T(key, u32); T(value, u32); }
     normal_running SEC(".maps");
@@ -112,6 +126,32 @@ int syscall_exit(struct exiting* c) {
   }
   return 0;
 }
+static long capture_stack(void* context) {
+  long id = stackid(context, &stacks, 0);
+  if (id >= 0) return id;
+  u32 zero = 0;
+  struct stack_diagnostic* diag = lookup(&stack_errors, &zero);
+  if (!diag) return id;
+  __sync_fetch_and_add(&diag->attempts, 1);
+  __sync_val_compare_and_swap(&diag->first_errno, 0, -id);
+  diag->last_errno = -id;
+  // Never overwrite a stack ID already referenced by an earlier event.
+  if (STACK_RECOVER && id == -17) {
+    u64 index = __sync_fetch_and_add(&diag->fallback_count, 1);
+    if (index >= 2048) { diag->fallback_error = 28; return -28; }
+    u32 key = index;
+    struct stack_value* value = lookup(&extra_stacks, &key);
+    if (!value) { diag->fallback_error = 2; return -2; }
+    long bytes = get_stack(context, value, sizeof(*value), 0);
+    if (bytes <= 0) {
+      diag->fallback_error = bytes < 0 ? -bytes : 14;
+      return bytes < 0 ? bytes : -14;
+    }
+    __sync_fetch_and_add(&diag->recovered, 1);
+    return 4096 + index;
+  }
+  return id;
+}
 struct sched { u64 common; char comm[16]; u32 prev, prio; s64 state;
                char nextcomm[16]; u32 next, nextprio; };
 SEC("tracepoint/sched/sched_switch")
@@ -119,7 +159,7 @@ int switched(struct sched* c) {
   u32 prev = c->prev, next = c->next;
   struct call* a = lookup(&active, &prev);
   if (a) {
-    long id = c->state ? stackid(c, &stacks, 0) : -1;
+    long id = c->state ? capture_stack(c) : -1;
     if (c->state && id < 0) { struct stats* s = stats();
       if (s) __sync_fetch_and_add(&s->stack_fail, 1); }
     struct event* e = start(3, a->generation);
@@ -145,8 +185,11 @@ static int rq_event(struct raw* c, u32 type) {
   u32 major = 0, minor = 0, bytes = 0, flags = 0, tag = 0;
   struct request* r = lookup(&requests, &rq);
   if (!r && !enabled()) return 0;
-  read_checked(&q, 8, (void*)(rq + 0));
-  read_checked(&disk, 8, (void*)(q + 104));
+  if (read_checked(&q, 8, (void*)(rq + 0))) return 0;
+  if (read_checked(&disk, 8, (void*)(q + 104))) return 0;
+  // Admin queues have no namespace gendisk; not a failed memory read.
+  // They are outside the device 259:0 data-I/O attribution scope.
+  if (!disk) return 0;
   read_checked(&major, 4, (void*)(disk + 0));
   read_checked(&minor, 4, (void*)(disk + 4));
   if (major != 259 || minor != 0) return 0;
@@ -170,7 +213,9 @@ static int rq_event(struct raw* c, u32 type) {
     u32 tid = task(); struct call* a = lookup(&active, &tid);
     if (owned() && a) { v.owner = task(); v.call = a->generation; v.fd = a->fd; }
     if (update(&requests, &rq, &v, 0)) { struct stats* s = stats();
-      if (s) __sync_fetch_and_add(&s->map_fail, 1); return 0; }
+      if (s) __sync_fetch_and_add(&s->map_fail, 1);
+      return 0;
+    }
     r = lookup(&requests, &rq); if (!r) return 0;
   }
   if (type == 11) r->remaining = bytes;

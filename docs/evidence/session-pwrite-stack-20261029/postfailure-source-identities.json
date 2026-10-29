@@ -1,0 +1,27 @@
+{
+  "recorded_at": 1793266909.5665286,
+  "current_tools": {
+    "tools/session_pwrite_trace/capability.bpf.c": "f2e79f9f0092fe707f5bc8c548eeb252b62ca71a41a6d8a39d95bec003a0f995",
+    "tools/session_pwrite_trace/test_lifecycle.py": "d017ea8195ab93fe371a3506d78ee58c54961b72d44de2ad133118793845105c",
+    "tools/session_pwrite_trace/test_stack_contract.py": "813e11ae74f2f0a2a67883bd3d3cd5b355819ea4f6f36a5a34accbedc67356a4",
+    "tools/session_pwrite_trace/capability.py": "bbe2399b401e9ee11de3c39e6fffa041f984062701429a774de94b18714a525a",
+    "tools/session_pwrite_trace/collect.py": "31e359aab17c987d3af645dc5090b1d978ebc030dd70b41dd5e88947071c5b42",
+    "tools/session_pwrite_trace/lifecycle.py": "cadb09b5c5ad0b27cd9ba8c6a6127a8d8d53e93eb5def2e83733bd86dacdd34b",
+    "tools/session_pwrite_trace/test_admin_scope.c": "05371f631fa911f3dce7dc44971ea9e4de2d601500e6e71187846f10216a2d95",
+    "tools/session_pwrite_trace/stack_probe.bpf.c": "a8dd686a873eec49b34e9ab065de1183c480744e1b216f038f94b000a65e8ac1",
+    "tools/session_pwrite_trace/audit_fixture.py": "de2f1c711630981a9c7c7c871ef6502f6e94fc8985241ae77bfb68d37ef599c9",
+    "tools/session_pwrite_trace/review_capture.py": "8d4e13d7ae164c19895d40858e65ab788c42568852ca6576ae4b8aa79f2cefef",
+    "tools/session_pwrite_trace/trace.bpf.c": "f86cec013340c4c3bb0998e83389677023128d66afced806b398b9f8b584181e",
+    "tools/session_pwrite_trace/target.py": "0a100d9f87aa2ba2f0063dd981f8f5e33a7e6dc23d3d9f185f29109885d39786",
+    "tools/session_pwrite_trace/test_failure_paths.py": "d318e037678dfeb9915e644d03d0c76b5ce9e2b731662bc05e5b6dddcc255324",
+    "tools/session_pwrite_trace/run_http.py": "fcebb04496ff081de431c06b683ccf1ad2bd7d97081273c55e2bd345b03a73cf",
+    "tools/session_pwrite_trace/build_formats.py": "73524777e8ee2d5a4cc9bfbcde0e43aa00ca7078c93fafcf16ab7baadaf074d1",
+    "tools/session_pwrite_trace/fixture.py": "bc54bada49a98586f746e2c7ccdb7f100b9ab1214f990335667ae1fc6f44a4c9",
+    "tools/session_pwrite_trace/README.md": "a265346432e341652f189ef7ad7192b15369cc0459ee8db417742f65f1f94f2c",
+    "tools/session_pwrite_trace/stack_probe.py": "cd296782ae497d06efcb625d087532b63df867e8d379fc3a5165cc4f0d143ca9",
+    "tools/session_pwrite_trace/owned_collector.py": "7ba5f34247448d76e8fa3f04ed0ece96c111c9343dff3c6a9b50826a88ca1b51",
+    "tools/session_pwrite_trace/finalize.py": "a7e18ccc2b7fb7e226bb6d69023da1a79d068dffe0f93033b3436381e95ecc93"
+  },
+  "actual_http_tools": "../frozen-tools",
+  "no_live_retest": true
+}

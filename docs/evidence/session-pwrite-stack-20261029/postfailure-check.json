@@ -1,0 +1,12 @@
+{
+  "recorded_at": 1793265927.7385032,
+  "within_tool_deadline": true,
+  "host_probe_contract_passed": true,
+  "bpf_build_zero_warnings": true,
+  "new_bpf_attachments": 0,
+  "new_storage_fixtures": 0,
+  "new_model_starts": 0,
+  "live_validation": "NOT_RERUN",
+  "supersedes_invalid": "check-first-invalid.json",
+  "reason": "actual HTTP admin queue null gendisk corrected; namespace and genuine read errors remain checked"
+}

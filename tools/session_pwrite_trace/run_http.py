@@ -21,8 +21,10 @@ reuse, legacy, save = pre.reuse, pre.legacy, pre.save
 
 
 def validate(plan):
-    if (plan['http_requests'], plan['http_loads'], len(plan['steps'])) != (20, 2, 2):
+    if (plan['http_requests'], plan['http_loads'], len(plan['steps'])) not in ((20, 2, 2), (10, 1, 1)):
         raise ValueError('fixed HTTP scope')
+    if plan['http_requests'] == 10 and any(s['head'] != 'subset' for s in plan['steps']):
+        raise ValueError('subset-only supplemental scope')
     if time.time() >= plan['task_deadline_unix']:
         raise TimeoutError('absolute deadline')
     for path in plan['required_gates']:
@@ -210,4 +212,5 @@ if __name__ == '__main__':
             startup.extend(probes)
         save(args.plan.parent/'http-trace-gate.json', dict(passed=True,
              calls=len(result['calls']), logical_write_bytes=total,
-             initialization_probes=startup, http_requests=20, restores=4))
+             initialization_probes=startup, http_requests=plan['http_requests'],
+             restores=2*len(plan['steps'])))

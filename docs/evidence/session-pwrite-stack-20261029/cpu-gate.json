@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "recorded_at": 1793265032.6643288,
+  "within_tool_deadline": true,
+  "real_helper_errno": 17,
+  "errno_name": "EEXIST",
+  "controlled_collision_map_entries": 1,
+  "production_map_entries": 4096,
+  "original_incident_errno": "UNKNOWN_MISSING_TAIL",
+  "raw_failed_events_preserved": 1250,
+  "injected_failed_events_preserved": 142,
+  "injected_failed_stacks_preserved": 17,
+  "cpu_contract_checks": 3,
+  "storage_fixtures": 2,
+  "storage_write_bytes": 34095104,
+  "probe_sessions": 3,
+  "reused_full_http_requests": 10,
+  "reused_full_restores": 2,
+  "unchanged_runtime_identities": true,
+  "changed_tools": [
+    "/home/rm01/models/dev/qwen4-thor/tools/session_pwrite_trace/collect.py",
+    "/home/rm01/models/dev/qwen4-thor/tools/session_pwrite_trace/lifecycle.py",
+    "/home/rm01/models/dev/qwen4-thor/tools/session_pwrite_trace/trace.bpf.c",
+    "/home/rm01/models/dev/qwen4-thor/tools/session_pwrite_trace/run_http.py",
+    "/home/rm01/models/dev/qwen4-thor/tools/session_pwrite_trace/README.md"
+  ]
+}

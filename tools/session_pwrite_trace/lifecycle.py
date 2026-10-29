@@ -333,6 +333,17 @@ def audit(directory):
     misses = {p['name']: p['recursion_misses'] for p in programs}
     require(not any(n for k, n in misses.items() if k not in ('normal_31', 'normal_32', 'woke')),
             'essential probe recursion miss')
+    stacks = json.loads((directory/'stacks.json').read_text())
+    for call in result['calls']:
+        for item in call['stack_ids']:
+            if item['state']:
+                require(item['id'] >= 0 and stacks.get(str(item['id'])),
+                        'missing or negative blocking stack')
+    if (directory/'stack-errors.json').exists():
+        diagnostic = json.loads((directory/'stack-errors.json').read_text())
+        require(diagnostic['attempts'] == diagnostic['recovered'] and
+                diagnostic['fallback_error'] == 0, 'unrecovered stack error')
+        result['stack_diagnostic'] = diagnostic
     result['recursion_misses'] = misses
     result['owned_sleep_wakeup_closed'] = not any(c['missing_wake_intervals'] for c in result['calls'])
     result['global_wakeup_misses_are_not_assigned_to_owned_calls'] = misses['woke']

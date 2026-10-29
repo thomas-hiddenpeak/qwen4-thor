@@ -1,0 +1,21 @@
+{
+  "samples": 560,
+  "min_mem_available": 10237341696,
+  "peaks": {
+    "133740": {
+      "rss": 104370176,
+      "hwm": 120119296,
+      "swap": 0,
+      "write_bytes": 155152384
+    },
+    "133749": {
+      "rss": 4127137792,
+      "hwm": 4127137792,
+      "swap": 0,
+      "write_bytes": 16699506688
+    }
+  },
+  "map_memlock_bytes": 22228640,
+  "conservative_collector_ram_bound": 146542240,
+  "raw_trace_bytes": 149900416
+}

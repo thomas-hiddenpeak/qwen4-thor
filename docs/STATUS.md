@@ -4,6 +4,17 @@
 
 ## 当前推进目标
 
+栈采集修复阶段有界停止（2026-10-29，ENV_ABORT）：一桶实机复现
+EEXIST，原事故errno因旧尾部丢失仍未知；修复为不覆盖ID的有界追加栈。
+失败夹具1250事件、注入异常142事件/17栈全保留；3CPU合同通过。唯一
+subset服务8准入/5客户端完成/0恢复，遇后台udisksd管理队列空gendisk
+被误读而中止；1171097事件/30栈在真实异常中全保留，无再次丢尾。
+管理队列raw/formatted过滤已补、实际探针CPU分支与零警告构建通过，未
+再attach或HTTP。完整head旧10HTTP/2恢复及未变合同复用，默认6f37/5fdc
+和原NO_GO不变。有效subset慢写8.329/16.520秒，issue→CQ8.248/16.453秒，
+DIO等待栈7.731/16.009秒；不认定SSD内部原因。见
+[结果、具体修复及仍缺观测](SESSION_PWRITE_STACK_RESULT_2026-10-29.md)。
+
 pwrite采集修复有界阶段已停止（2026-10-29，ENV_ABORT）：次级NVMe缺口
 由新CPU夹具24/7缺失与内核recursion_misses逐项对应；28关联合同通过。
 完整head10HTTP/2恢复通过，慢pwrite16.697/13.582秒中issue→CQ并集

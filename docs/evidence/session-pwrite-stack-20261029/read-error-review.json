@@ -1,0 +1,111 @@
+{
+  "admin_counts": {
+    "30": 4,
+    "32": 4,
+    "31": 4
+  },
+  "events": [
+    {
+      "kind": 30,
+      "ts": 1455673028216940,
+      "pid": 10506,
+      "qid": 0,
+      "disk": "",
+      "opcode": 6
+    },
+    {
+      "kind": 32,
+      "ts": 1455673029733676,
+      "pid": 0,
+      "qid": 0,
+      "disk": "",
+      "opcode": null
+    },
+    {
+      "kind": 31,
+      "ts": 1455673029748462,
+      "pid": 0,
+      "qid": 0,
+      "disk": "",
+      "opcode": null
+    },
+    {
+      "kind": 30,
+      "ts": 1455673029760842,
+      "pid": 10506,
+      "qid": 0,
+      "disk": "",
+      "opcode": 2
+    },
+    {
+      "kind": 32,
+      "ts": 1455673030449173,
+      "pid": 0,
+      "qid": 0,
+      "disk": "",
+      "opcode": null
+    },
+    {
+      "kind": 31,
+      "ts": 1455673030456090,
+      "pid": 0,
+      "qid": 0,
+      "disk": "",
+      "opcode": null
+    },
+    {
+      "kind": 30,
+      "ts": 1455673030467294,
+      "pid": 10506,
+      "qid": 0,
+      "disk": "",
+      "opcode": 2
+    },
+    {
+      "kind": 32,
+      "ts": 1455673035480061,
+      "pid": 0,
+      "qid": 0,
+      "disk": "",
+      "opcode": null
+    },
+    {
+      "kind": 31,
+      "ts": 1455673035486894,
+      "pid": 0,
+      "qid": 0,
+      "disk": "",
+      "opcode": null
+    },
+    {
+      "kind": 30,
+      "ts": 1455673035497885,
+      "pid": 10506,
+      "qid": 0,
+      "disk": "",
+      "opcode": 2
+    },
+    {
+      "kind": 32,
+      "ts": 1455673035970003,
+      "pid": 0,
+      "qid": 0,
+      "disk": "",
+      "opcode": null
+    },
+    {
+      "kind": 31,
+      "ts": 1455673035976883,
+      "pid": 0,
+      "qid": 0,
+      "disk": "",
+      "opcode": null
+    }
+  ],
+  "read_fail": 40,
+  "owned_pids_present": {
+    "133726": false,
+    "133740": false,
+    "133749": false
+  }
+}

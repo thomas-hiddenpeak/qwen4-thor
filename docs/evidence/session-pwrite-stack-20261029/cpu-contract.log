@@ -1,0 +1,8 @@
+test_real_eexist_failure_keeps_errno_events_and_original_stack (test_stack_contract.StackContract.test_real_eexist_failure_keeps_errno_events_and_original_stack) ... ok
+test_recovered_collision_closes_real_io (test_stack_contract.StackContract.test_recovered_collision_closes_real_io) ... ok
+test_repeated_collision_ids_survive_abnormal_exit (test_stack_contract.StackContract.test_repeated_collision_ids_survive_abnormal_exit) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.008s
+
+OK

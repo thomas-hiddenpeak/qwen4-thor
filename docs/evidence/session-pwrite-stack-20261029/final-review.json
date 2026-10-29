@@ -1,0 +1,25 @@
+{
+  "recorded_at": 1793266405.3096497,
+  "passed": true,
+  "identities": 736,
+  "frozen_tools_used": true,
+  "default_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "release_metadata_sha256": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2",
+  "own_processes": {
+    "133722": false,
+    "133726": false,
+    "133740": false,
+    "133749": false
+  },
+  "http_admitted": 8,
+  "http_completed_with_client_evidence": 5,
+  "restores": 0,
+  "stage_status": "ENV_ABORT",
+  "guard_status": "COMMAND_FAILED",
+  "new_model_starts": 1,
+  "new_storage_write_bytes": 34095104,
+  "raw_emitted_received_persisted": 1171097,
+  "stack_ids_preserved": 30,
+  "stack_errno_in_http": 0,
+  "read_errors_in_http": 40
+}

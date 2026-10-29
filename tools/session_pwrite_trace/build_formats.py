@@ -22,10 +22,17 @@ for i, point in enumerate(points, 30):
     assert size <= 96
     records[str(i)] = dict(point=point, bytes=size, format=text,
         sha256=hashlib.sha256(text.encode()).hexdigest())
+    admin_filter = ''
+    if i in (30, 31, 32):
+        disk_offset = 12 if i == 32 else 8
+        admin_filter = f'''  u64 disk_name = 0;
+  if (read_checked(&disk_name, 8, (char*)c + {disk_offset})) return 0;
+  if (!disk_name) return 0;
+'''
     source.append(f'''SEC("tracepoint/{point}")
 int normal_{i}(void* c) {{
   if (!enabled()) return 0;
-  u32 z = 0; u32* running = lookup(&normal_running, &z);
+{admin_filter}  u32 z = 0; u32* running = lookup(&normal_running, &z);
   if (running) *running = {i};
   struct event* e = start({i}, 0);
   if (!e) {{ if (running) *running = 0; return 0; }}

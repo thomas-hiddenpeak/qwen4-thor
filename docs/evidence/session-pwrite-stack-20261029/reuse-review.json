@@ -1,0 +1,18 @@
+{
+  "unchanged_parser_objects": [
+    "ContractError",
+    "require",
+    "signed",
+    "union_ns",
+    "Files",
+    "Request",
+    "records",
+    "Audit"
+  ],
+  "changed_wrapper": [
+    "audit"
+  ],
+  "previous_28_contracts_reused": true,
+  "finalize_unchanged": true,
+  "previous_five_failure_tests_reused": true
+}

@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "referenced_stack_ids": 30,
+  "stored_stack_ids": 30,
+  "state_counts": {
+    "2": 2889,
+    "256": 111,
+    "0": 1
+  },
+  "missing_stack_ids": {}
+}

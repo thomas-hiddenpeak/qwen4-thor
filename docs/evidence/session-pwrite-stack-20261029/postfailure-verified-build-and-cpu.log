@@ -1,0 +1,4 @@
+["cc", "-std=gnu11", "-O2", "-Wall", "-Wextra", "-Werror", "-I", ".q4t-work/session-pwrite-stack-20261029/postfailure", "tools/session_pwrite_trace/test_admin_scope.c", "-o", ".q4t-work/session-pwrite-stack-20261029/postfailure/test_admin_scope"]
+["clang-18", "-O2", "-g", "-target", "bpf", "-Wall", "-Wextra", "-Werror", "-I", ".q4t-work/session-pwrite-stack-20261029/postfailure", "-c", "tools/session_pwrite_trace/trace.bpf.c", "-o", ".q4t-work/session-pwrite-stack-20261029/postfailure/trace.bpf.o"]
+[".q4t-work/session-pwrite-stack-20261029/postfailure/test_admin_scope"]
+PASS: null-gendisk raw/formatted excluded; namespace tracked; bad read fatal

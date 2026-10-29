@@ -1,0 +1,10 @@
+{
+  "recorded_at": 1793266909.566678,
+  "total_deadline": 1793268028,
+  "within_budget": true,
+  "evidence_validity": "HANDLED_FAILURE_RECORDS_COMPLETE; CLOSED_HTTP_WINDOWS_PARTIALLY_VALID",
+  "measurement_completeness": "SUBSET 5/10 HTTP; 0/2 restores; FULL prior 10/10 and 2/2 reused",
+  "statistics": "NO PERFORMANCE ACCEPTANCE CLAIM",
+  "engineering": "STOP_ENV_ABORT; POST_FAILURE_ADMIN_FILTER_CPU_VALIDATED_NOT_LIVE",
+  "budget_expansion": false
+}

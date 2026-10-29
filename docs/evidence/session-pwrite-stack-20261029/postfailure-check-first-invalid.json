@@ -1,0 +1,14 @@
+{
+  "recorded_at": 1793265899.5927641,
+  "within_tool_deadline": true,
+  "reason": "actual HTTP read failure: admin queue has no namespace gendisk",
+  "host_probe_contract_passed": false,
+  "bpf_build_zero_warnings": true,
+  "new_bpf_attachments": 0,
+  "new_storage_fixtures": 0,
+  "new_model_starts": 0,
+  "live_validation": "NOT_RERUN",
+  "fallback_snapshot_fix": "dump allocated indices, preserving later successful entries after any failed fallback",
+  "valid": false,
+  "reason_invalid": "shell continued after host compiler rejected pre-existing misleading indentation; no test executable ran"
+}

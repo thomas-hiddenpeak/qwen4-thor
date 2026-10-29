@@ -1,0 +1,15 @@
+{
+  "started": 1793264428,
+  "tool_deadline_unix": 1793266228,
+  "http_deadline_unix": 1793267428,
+  "deadline_unix": 1793268028,
+  "cpu_write_bytes": 67108864,
+  "cpu_storage_fixtures": 2,
+  "stack_probe_sessions": 3,
+  "http_requests": 10,
+  "http_loads": 1,
+  "restores": 2,
+  "trace_bytes": 2147483648,
+  "trace_events": 10000000,
+  "collector_ram_bytes": 268435456
+}
