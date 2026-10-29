@@ -12,8 +12,8 @@ import time
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT/'.q4t-work/serve-reliability-20261030'
-PACKAGE = BASE/'delivery-package'
-OUT = BASE/'deployment'
+PACKAGE = BASE/'delivery-package-v2'
+OUT = BASE/'deployment-v2'
 MARKER = ROOT/'build/serve-reliability-recovery.json'
 
 
@@ -37,20 +37,17 @@ def guarded():
 
 
 def prepare():
-    plan, decision = h.read(BASE/'http-plan.json'), h.read(BASE/'decision.json')
+    plan, decision = h.read(BASE/'repair-plan.json'), h.read(BASE/'final-decision.json')
     h.require(decision['passed'] and decision['engineering_decision'] ==
               'ACCEPT_BOUNDED_SERVE_RELIABILITY', 'accepted reliability audit')
-    h.require(h.read(BASE/'lease/exit.json')['status'] == 'COMMAND_FAILED' and
-              h.read(BASE/'remaining-lease/exit.json')['status'] == 'COMPLETED' and
-              decision['retained_parser_failure']['passed'], 'measurement guards/audit')
+    h.require(h.read(BASE/'terminal-lease/exit.json')['status'] == 'COMPLETED',
+              'terminal repair guard')
+    h.verify_seal(BASE/'delivery-package')
     h.require(time.time() < plan['deadline_unix']-600, 'health deadline reserve')
     for path, digest in plan['files'].items():
-        checked = decision['frozen_tool_relocation'].get(path, path)
-        h.require(h.sha(checked) == digest, 'frozen identity changed: '+path)
+        h.require(h.sha(path) == digest, 'final identity changed: '+path)
     for path, digest in decision['evidence'].items():
         h.require(h.sha(path) == digest, 'accepted evidence changed: '+path)
-    for path, digest in h.read(BASE/'http-remaining-plan.json')['files'].items():
-        h.require(h.sha(path) == digest, 'repaired tool/runtime identity changed: '+path)
     baseline = h.read(BASE/'baseline/identity.json')
     old = h.verify_pair(ROOT/'build/q4t', ROOT/'build/q4t.release.json',
                         baseline['binary_sha256'])
@@ -62,12 +59,12 @@ def prepare():
     copies = [('baseline/q4t', 'previous/q4t'),
               ('baseline/q4t.release.json', 'previous/q4t.release.json'),
               ('baseline/CMakeCache.txt', 'previous/CMakeCache.txt'),
-              ('frozen/candidate', 'candidate/q4t'),
-              ('frozen/CMakeCache.txt', 'candidate/CMakeCache.txt'),
-              ('frozen/runtime-source.json', 'candidate/runtime-source.json'),
-              ('decision.json', 'decision.json'),
+              ('terminal-repair/frozen/candidate', 'candidate/q4t'),
+              ('terminal-repair/frozen/CMakeCache.txt', 'candidate/CMakeCache.txt'),
+              ('terminal-repair/frozen/runtime-source.json', 'candidate/runtime-source.json'),
+              ('final-decision.json', 'decision.json'),
               ('dependency-review.json', 'evidence/dependency-review.json'),
-              ('http-plan.json', 'evidence/http-plan.json')]
+              ('repair-plan.json', 'evidence/http-plan.json')]
     for source, destination in copies:
         h.copy_checked(h.identity(BASE/source), PACKAGE/destination)
     h.copy_checked(h.identity(ROOT/'docs/SERVE_RELIABILITY_PLAN_2026-10-30.md'),
@@ -83,7 +80,7 @@ def prepare():
         h.require(h.sha(PACKAGE/'artifact'/name) ==
                   plan['files'][str(Path(plan['artifact'])/name)], 'head identity')
     # A separate receipt-backed copy preserves every raw accepted record.
-    archive = BASE/'evidence-archive'
+    archive = BASE/'evidence-archive-v2'
     archive.mkdir()
     for path, digest in decision['evidence'].items():
         relative = Path(path).relative_to(BASE)
@@ -93,8 +90,8 @@ def prepare():
         h.require(h.sha(target) == digest, 'raw archive copy')
     receipt = dict(passed=True, files=len(decision['evidence']),
                    seal=h.seal(archive), original=decision['evidence'])
-    h.save(BASE/'archive-receipt.json', receipt)
-    h.copy_checked(h.identity(BASE/'archive-receipt.json'), PACKAGE/'evidence/archive-receipt.json')
+    h.save(BASE/'archive-receipt-v2.json', receipt)
+    h.copy_checked(h.identity(BASE/'archive-receipt-v2.json'), PACKAGE/'evidence/archive-receipt.json')
     metadata = copy.deepcopy(old)
     metadata.update(version='serve-reliability-20261030',
         binary_sha256=h.sha(PACKAGE/'candidate/q4t'), source_commit=plan['source_commit'],
@@ -127,16 +124,22 @@ def prepare():
                   decision['candidate_sha256'])
     h.verify_pair(PACKAGE/'previous/q4t', PACKAGE/'previous/q4t.release.json',
                   decision['parent_sha256'], PACKAGE/'previous/CMakeCache.txt')
-    for name in ['deliver.py', 'health.py', 'analyze_http.py']:
+    for name in ['deliver.py', 'health.py', 'analyze_http.py', 'final_audit.py',
+                 'terminal_repair.py', 'resume_stats.py']:
         h.copy_checked(h.identity(Path(__file__).with_name(name)), PACKAGE/name)
     h.copy_checked(h.identity(ROOT/'tools/evalscope/serve_reliability.py'), PACKAGE/'http-runner.py')
+    tool_paths = [Path(__file__), Path(health.__file__), Path(h.__file__),
+                  Path(h.build.__file__), ROOT/'tools/evalscope/serve_reliability.py',
+                  ROOT/'tools/evalscope/gpu_exclusive.py',
+                  ROOT/'tools/evalscope/nvml_process_query.py']
+    h.save(PACKAGE/'runtime-tool-inputs.json', {str(p):h.sha(p) for p in tool_paths})
     health_plan = dict(candidate=str(ROOT/'build/q4t'), artifact=str(PACKAGE/'artifact'),
         output=str(OUT/'run'), model=plan['model'], port=plan['port'],
         cache_prompt=plan['cache_prompt'], deadline_unix=plan['deadline_unix'])
     OUT.mkdir()
     h.save(OUT/'health-plan.json', health_plan)
     h.save(PACKAGE/'health-plan.json', health_plan)
-    h.save(BASE/'package-receipt.json', dict(seal=h.seal(PACKAGE),
+    h.save(BASE/'package-receipt-v2.json', dict(seal=h.seal(PACKAGE),
                                            runtime_files=len(runtime)))
 
 
@@ -161,6 +164,8 @@ def restore():
 def deploy():
     guarded()
     h.verify_seal(PACKAGE)
+    for path, digest in h.read(PACKAGE/'runtime-tool-inputs.json').items():
+        h.require(h.sha(path)==digest, 'deployment tool identity')
     plan = h.read(OUT/'health-plan.json')
     h.require(plan == h.read(PACKAGE/'health-plan.json') and not MARKER.exists(),
               'health plan/recovery identity')
@@ -206,6 +211,8 @@ def finalize():
     plan = h.read(OUT/'health-plan.json')
     h.require(state['finished'] < plan['deadline_unix'], 'absolute deadline')
     h.verify_seal(PACKAGE)
+    for path, digest in h.read(PACKAGE/'runtime-tool-inputs.json').items():
+        h.require(h.sha(path)==digest, 'finalization tool identity')
     h.verify_pair(ROOT/'build/q4t', ROOT/'build/q4t.release.json',
                   h.sha(PACKAGE/'candidate/q4t'))
     h.require(h.read(MARKER)['package']==str(PACKAGE), 'owned marker')

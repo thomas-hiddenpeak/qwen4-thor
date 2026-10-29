@@ -338,6 +338,16 @@ parts 数组; 图像用 `image_url` (base64 data URL), 视频用 `video_frames`
 (base64 帧数组)，仅在 `--allow-media` 下可接入。另有 `GET /healthz`、
 `GET /v1/models`、`GET /metrics` 与 `POST /v1/requests/cancel`。
 
+流式响应的每个SSE事件均为完整UTF-8。成功须有正常finish、按请求选项
+返回的usage、`[DONE]`和完整EOF；HTTP 200或单独finish不能替代完整响应。
+每次逻辑发送最多等待30秒，取消终态共用250毫秒预算；请求deadline是
+合作式取消，在途GPU工作完成后才释放资源。已知发送失败不发布新缓存。
+
+指标口径：`q4t_ttft_seconds`仅计流式首个非空内容完成本地发送；原首目标
+token就绪时点保留为`q4t_target_ready_seconds`，完整本地响应为
+`q4t_response_seconds`。这些指标不代表客户端已消费。可靠性结果、
+旧指标迁移和回退见[Serve交付记录](docs/SERVE_RELIABILITY_2026-10-30.md)。
+
 **长上下文注意**: `--max-len` 按需最小 (如 44K 用 49152), 单请求场景
 显式 `--max-seq 1`; 未 pin `--max-len` 时按 `--mem-fraction` 自动推导
 (auto-length)。预算器可对部分超预算配置执行 CAPPED 回退；这不覆盖
