@@ -897,6 +897,18 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     count_abort();
     return false;
   };
+  detail::Utf8Stream utf8;
+  bool first_content_sent = false;
+  const auto write_content = [&](const std::string& piece) {
+    if (piece.empty()) return true;
+    if (!write_stream(SseChunk(id, model_field, "", piece, "", 0))) return false;
+    if (!first_content_sent) {
+      first_content_sent = true;
+      metrics_.ttft_seconds.Observe(std::chrono::duration<double>(
+          std::chrono::steady_clock::now() - t_arrive).count());
+    }
+    return true;
+  };
 
   // Streaming header (flushed immediately).
   if (stream) {
@@ -920,7 +932,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   // Every prefill path reads its selected final row under model_mu_ and
   // checks stream completion before publishing h_logits to this thread.
   next_token = argmax(h_logits.data());
-  metrics_.ttft_seconds.Observe(
+  metrics_.target_ready_seconds.Observe(
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
           .count());
   err_guard.ok = true;  // generation has started; not a pre-generation error
@@ -1137,7 +1149,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           {
             auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
             if (tok_->Decode(one, true, &piece).ok())
-              wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
+              wrote = write_content(utf8.Append(piece));
           }
           if (!wrote) {  // client disconnected: stop, free the slot
             done = true;
@@ -1333,7 +1345,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
         {
           auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
           if (tok_->Decode(one, true, &piece).ok())
-            wrote = write_stream(SseChunk(id, model_field, "", piece, "", 0));
+            wrote = write_content(utf8.Append(piece));
         }
         if (!wrote) {  // client disconnected: stop, free the slot
           finish_reason = "stop";
@@ -1544,8 +1556,8 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           .count());
 
   // The handler has left every scheduler list and all submitted work is
-  // complete. Linearize terminal completion before publishing success.
-  if (cancelled() || !control->Finish()) {
+  // complete. Cancellation remains possible until the response is sent.
+  if (cancelled()) {
     count_abort();
     if (stream) {
       WriteAll(fd,
@@ -1584,6 +1596,7 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       : "";
   // 4. Finalize.
   if (stream) {
+    write_content(utf8.Finish());
     write_stream(SseChunk(id, model_field, "", "", finish_reason, 0));
     if (include_usage && !client_disconnected) {
       const std::string usage_chunk =
@@ -1607,10 +1620,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
       decoded = tok_->Decode(gen_u32, true, &text).ok();
     }
     if (decoded) {
+      text = detail::NormalizeUtf8(text);
       std::string resp =
           "{\"id\":\"" + id + "\",\"object\":\"chat.completion\","
           "\"created\":" +
-          std::to_string(created) + ",\"model\":\"" + model_field +
+          std::to_string(created) + ",\"model\":\"" + JsonEscape(model_field) +
           "\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\","
           "\"content\":\"" +
           JsonEscape(text) +
@@ -1621,7 +1635,11 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
           ",\"total_tokens\":" + std::to_string(T + generated.size()) +
           cached_usage + "}";
       resp += "}";
-      SendSimple(fd, 200, "OK", resp, "application/json");
+      if (!SendSimple(fd, 200, "OK", resp, "application/json")) {
+        client_disconnected = true;
+        control->Cancel(RequestControl::State::kDisconnect);
+        count_abort();
+      }
     } else {
       err_guard.ok = false;
       SendError(fd, 500, "decode failed");
@@ -1630,15 +1648,20 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
     }
   }
 
-  if (client_disconnected)
-    diagnostic.Outcome("cancelled", "client_disconnected");
-  trace_outcome = client_disconnected ? trace::RequestOutcome::kCancelled
-                                      : trace::RequestOutcome::kSuccess;
-  if (!client_disconnected) {
+  const bool response_success = !client_disconnected &&
+                                !control->Cancelled() && control->Finish();
+  trace_outcome = response_success ? trace::RequestOutcome::kSuccess
+                                  : trace::RequestOutcome::kCancelled;
+  if (response_success) {
+    metrics_.response_seconds.Observe(std::chrono::duration<double>(
+        std::chrono::steady_clock::now() - t_arrive).count());
     session.success = true;
     for (auto& lease : shared_writes) lease->success = true;
     diagnostic.Outcome("success", "completed");
     metrics_.requests_success.fetch_add(1, std::memory_order_relaxed);
+  } else {
+    count_abort();
+    diagnostic.Outcome("cancelled", control->Reason());
   }
   cleanup();
 }

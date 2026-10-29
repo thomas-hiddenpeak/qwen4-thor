@@ -75,7 +75,9 @@ struct ServeMetrics {
   std::atomic<uint64_t> requests_aborted{0};  // client disconnect mid-stream
   std::atomic<uint64_t> prompt_tokens_total{0};
   std::atomic<uint64_t> generation_tokens_total{0};
-  MetricHistogram ttft_seconds;   // arrival -> first token
+  MetricHistogram ttft_seconds;   // streaming: arrival -> first content sent
+  MetricHistogram target_ready_seconds;  // arrival -> first target token ready
+  MetricHistogram response_seconds;  // arrival -> full local response write
   MetricHistogram e2e_seconds;    // arrival -> last token
   MetricHistogram queue_seconds;  // arrival -> seq slot acquired
 };

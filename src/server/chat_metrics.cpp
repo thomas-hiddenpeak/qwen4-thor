@@ -89,7 +89,13 @@ void ChatServer::HandleMetrics(int fd) {
   gauge("q4t_gpu_healthy", "1 if no sticky CUDA error observed, else 0.",
         gpu_healthy_.load() ? 1 : 0);
 
-  histogram("q4t_ttft_seconds", "Time to first token.", metrics_.ttft_seconds);
+  histogram("q4t_ttft_seconds",
+            "Streaming arrival to first nonempty UTF-8 content sent locally.",
+            metrics_.ttft_seconds);
+  histogram("q4t_target_ready_seconds", "Arrival to first target token ready.",
+            metrics_.target_ready_seconds);
+  histogram("q4t_response_seconds", "Arrival to complete local response write.",
+            metrics_.response_seconds);
   histogram("q4t_e2e_seconds", "End-to-end request latency.",
             metrics_.e2e_seconds);
   histogram("q4t_queue_seconds", "Seq-slot queue wait.",

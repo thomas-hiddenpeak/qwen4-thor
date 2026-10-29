@@ -7,6 +7,8 @@
 //      contraction inputs.
 //   2. Load + round-trip against the real model's tokenizer.json.
 #include "q4t/text/tokenizer.h"
+#include "q4t/server/http_response.h"
+#include "q4t/io/json.h"
 #include "q4t/test.h"
 
 #include <cstdio>
@@ -72,6 +74,38 @@ const GoldenCase kGoldenCases[] = {
 };
 
 }  // namespace
+
+Q4T_TEST(tokenizer_streaming_utf8_response) {
+  std::unique_ptr<Tokenizer> tok;
+  Q4T_CHECK(Tokenizer::Load(kRealTokenizer, TokenizerLimits{}, &tok).ok());
+  const std::string input = "emoji test 🚀🎉 done 中文";
+  std::vector<uint32_t> ids;
+  Q4T_CHECK(tok->Encode(input, &ids).ok());
+  q4t::server::detail::Utf8Stream utf8;
+  std::string output;
+  int old_invalid_events = 0;
+  for (auto id : ids) {
+    std::string raw;
+    Q4T_CHECK(tok->Decode({id}, true, &raw).ok());
+    const auto event = [&](const std::string& piece) {
+      return q4t::server::detail::SseChunk(
+          "unicode", "model", "", piece, "", 0);
+    };
+    q4t::io::Json parsed;
+    const auto old = event(raw);
+    if (!q4t::io::ParseJson(old.substr(6, old.size() - 10), &parsed).ok())
+      ++old_invalid_events;
+    const auto piece = utf8.Append(raw);
+    const auto wire = event(piece);
+    Q4T_CHECK(q4t::io::ParseJson(
+        wire.substr(6, wire.size() - 10), &parsed).ok());
+    output += piece;
+  }
+  output += utf8.Finish();
+  Q4T_CHECK(old_invalid_events > 0);
+  Q4T_CHECK(output == input);
+  return true;
+}
 
 Q4T_TEST(tokenizer_load_real) {
   if (!FileExists(kRealTokenizer)) {

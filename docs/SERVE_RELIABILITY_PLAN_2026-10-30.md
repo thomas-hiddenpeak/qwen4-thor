@@ -83,3 +83,11 @@ GPU 验证完整驱动经 `tools/evalscope/gpu_exclusive.py` 共享独占锁；
 本目标结束后，按真实 agent 输入的缓存 miss、保存/恢复等待和 PLE
 等待选择单一后续任务。PLE 提前读取、缓存异步化、网络框架、动态
 页池和调度重构均不混入本轮；增量保存剩余 SHA 成本按新基线判断。
+
+## 指标兼容说明
+
+阶段1将`q4t_ttft_seconds`明确为仅流式、首个非空完整UTF-8内容完成
+本地发送；无可见内容的正常EOS不产生样本，非流式不混入。历史
+target-prefill结束时点保留为`q4t_target_ready_seconds`，不能把新旧
+TTFT曲线跳变解释为推理回归。`q4t_response_seconds`覆盖两种响应
+的完整本地发送；均不承诺客户端应用已消费。外部evalscope计时不变。
