@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "files": 1505,
+  "bytes": 519592046,
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-incremental-20261029/continuation-archive",
+  "manifest_sha256": "05a5d7ba391fa14366d93a380cb94483b8db4a1effdb7f3c6958678135724f11"
+}

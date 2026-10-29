@@ -1,0 +1,15 @@
+{
+  "staging_bytes": 8388608,
+  "maximum_entry_prefix_bytes": 1048580,
+  "maximum_entry_manifest_bytes": 335872,
+  "entries": 8,
+  "conservative_private_pool_bytes": 22962216,
+  "pool_budget_bytes": 33554432,
+  "additional_to_old_format": "8192 offsets and reserved digest capacity per entry; no additional device buffer or whole-state host copy.",
+  "scope": "Source allocation bound, not a substitute for unified RAM telemetry. 1 MiB bookkeeping allowance; one temporary replacement manifest and two additional max prefixes included.",
+  "sources": [
+    "include/q4t/server/session_cache.h",
+    "src/server/session_cache.cpp",
+    "src/server/chat_generation.cpp"
+  ]
+}

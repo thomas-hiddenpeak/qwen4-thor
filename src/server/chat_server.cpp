@@ -119,7 +119,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
   mtp_k_ = opts.mtp_k;
   mtp_suffix_ = opts.mtp_suffix;
   if (!opts.session_cache_dir.empty()) {
-    const Status cache_status = session_cache_.Open(opts.session_cache_dir);
+    const char* incremental = std::getenv("Q4T_SESSION_INCREMENTAL");
+    const Status cache_status = session_cache_.Open(
+        opts.session_cache_dir, SessionCache::kMinPrefix,
+        SessionCache::kDiskBudget,
+        incremental && std::strcmp(incremental, "1") == 0);
     if (!cache_status.ok()) return cache_status;
     std::fprintf(stderr,
                  "[session-cache] enabled=1 entries=8 disk_bytes=%zu "

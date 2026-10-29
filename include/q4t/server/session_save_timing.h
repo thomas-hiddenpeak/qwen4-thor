@@ -120,10 +120,13 @@ class SessionSaveTiming {
         "[session-save-timing] request=%s pool=%s success=%d valid=%d "
         "wall_ms=%.3f cpu_ms=%.3f data_bytes=%zu disk_bytes=%zu "
         "preallocated=%d fallback=%d max_write_ms=%.3f slow_writes=%zu "
-        "pipeline=%d main_cpu_ms=%.3f writer_cpu_ms=%.3f overlap_ms=%.3f",
+        "pipeline=%d main_cpu_ms=%.3f writer_cpu_ms=%.3f overlap_ms=%.3f "
+        "incremental=%d reused_bytes=%zu reused_blocks=%zu "
+        "scanned_bytes=%zu file_span=%zu allocated_bytes=%zu",
         request_, pool_, success, valid, wall, cpu, data_bytes, disk_bytes,
         preallocated, fallback, max_write_ms, slow_writes, pipeline,
-        main_cpu, writer_cpu_ms, overlap_ms);
+        main_cpu, writer_cpu_ms, overlap_ms, incremental, reused_bytes,
+        reused_blocks, scanned_bytes, file_span, allocated_bytes);
     for (int i = 0; i < kCount; ++i) {
       if (!pipeline || i != kWrite) measured_wall += wall_[i];
       measured_cpu += cpu_[i];
@@ -138,6 +141,9 @@ class SessionSaveTiming {
   size_t data_bytes = 0, disk_bytes = 0, slow_writes = 0;
   double max_write_ms = 0;
   bool pipeline = false;
+  bool incremental = false;
+  size_t reused_bytes = 0, reused_blocks = 0, scanned_bytes = 0;
+  size_t file_span = 0, allocated_bytes = 0;
   double writer_cpu_ms = 0;
   double overlap_ms = 0;
 

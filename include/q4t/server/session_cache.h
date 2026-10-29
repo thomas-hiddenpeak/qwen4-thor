@@ -41,7 +41,7 @@ class SessionCache {
   SessionCache(const SessionCache&) = delete;
   SessionCache& operator=(const SessionCache&) = delete;
   Status Open(const std::string& directory, int min_prefix = kMinPrefix,
-              size_t disk_budget = kDiskBudget);
+              size_t disk_budget = kDiskBudget, bool incremental = false);
   bool Enabled() const { return directory_fd_ >= 0; }
   bool Acquire(const std::string& key);
   // Shared snapshots use scope + ':' + SHA256(prefix) as the key. A selected
@@ -65,7 +65,13 @@ class SessionCache {
   struct Entry {
     int fd = -1;
     size_t bytes = 0;
+    size_t disk_charge = 0;
     bool published = false;
+    bool restored = false;
+    // Incremental files reserve sparse 8 MiB address slots. Only written
+    // extents consume disk space; slots never alias or move between ranges.
+    size_t next_offset = 0;
+    std::vector<size_t> offsets;
     int32_t d0 = -1;
     std::vector<int32_t> prefix;  // Includes shifted draft's pending token.
     std::vector<size_t> sizes;
@@ -75,6 +81,9 @@ class SessionCache {
   };
   using Entries = std::map<std::string, std::unique_ptr<Entry>>;
   void Erase(Entries::iterator it);
+  Status SaveIncremental(Entry* entry, std::span<const SessionRange> ranges,
+                         const Copy& copy, const Cancel& cancel,
+                         SessionSaveTiming* timing);
   Status SavePipelined(Entry* entry, std::span<const SessionRange> ranges,
                        const Copy& copy, const Cancel& cancel,
                        SessionSaveTiming* timing);
@@ -87,6 +96,7 @@ class SessionCache {
   size_t bytes_ = 0;
   int min_prefix_ = kMinPrefix;
   size_t disk_budget_ = kDiskBudget;
+  bool incremental_ = false;
   Entries entries_;
   std::set<std::string> busy_;
 };
