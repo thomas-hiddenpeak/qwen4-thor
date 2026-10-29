@@ -1,0 +1,18 @@
+libbpf: prog 'switched': BPF program load failed: Permission denied
+libbpf: prog 'switched': -- BEGIN PROG LOAD LOG --
+btf_vmlinux is malformed
+0: R1=ctx() R10=fp0
+; int switched(struct sched* c) {
+0: (bf) r6 = r1                       ; R1=ctx() R6_w=ctx()
+; if (lookup(&active, &c->prev) && c->state) {
+1: (bf) r2 = r6                       ; R2_w=ctx() R6_w=ctx()
+2: (07) r2 += 24                      ; R2_w=ctx(off=24)
+; if (lookup(&active, &c->prev) && c->state) {
+3: (18) r1 = 0xffff00137e361c00       ; R1_w=map_ptr(map=active,ks=4,vs=8)
+5: (85) call bpf_map_lookup_elem#1
+R2 type=ctx expected=fp, pkt, pkt_meta, map_key, map_value, mem, ringbuf_mem, buf, trusted_ptr_
+processed 5 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+-- END PROG LOAD LOG --
+libbpf: prog 'switched': failed to load: -13
+libbpf: failed to load object '.q4t-work/session-pwrite-trace-20261029/capability.bpf.o'
+{"started": 1793253944.775152, "status": "TOOL_UNAVAILABLE", "fixture_writes": 0, "model_loads": 0, "http_requests": 0, "error": "RuntimeError('load BPF object: -13')", "finished": 1793253944.776086, "detached_links": 0}

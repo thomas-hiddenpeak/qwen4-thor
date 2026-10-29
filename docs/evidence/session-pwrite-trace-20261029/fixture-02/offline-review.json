@@ -1,0 +1,129 @@
+{
+  "events_sha256": "aa1a559abeeb3cc9e4d9442f49c08a9a7dab5b0cfaea6f8dd3f88abcea5f0a36",
+  "scope": "OFFLINE_FIXTURE_ONLY_NOT_GENERAL_PARSER_ACCEPTANCE",
+  "setup_pairs": 265,
+  "exact_cid_pairs": 265,
+  "setup_event_gaps": {
+    "1": 256,
+    "6": 9
+  },
+  "setup_max_timestamp_gap_ns": 17462,
+  "raw_complete_with_setup_identity": 265,
+  "normal_completions_matched": 259,
+  "missing_secondary_complete": [
+    {
+      "ctrl": 0,
+      "queue": 5,
+      "cid": 49286,
+      "call": 1444475947477336,
+      "cpu": 4,
+      "timestamp_ns": 1444475947787202
+    },
+    {
+      "ctrl": 0,
+      "queue": 5,
+      "cid": 49289,
+      "call": 1444475947477336,
+      "cpu": 4,
+      "timestamp_ns": 1444475947840138
+    },
+    {
+      "ctrl": 0,
+      "queue": 5,
+      "cid": 24720,
+      "call": 1444475949115769,
+      "cpu": 4,
+      "timestamp_ns": 1444475949837158
+    },
+    {
+      "ctrl": 0,
+      "queue": 5,
+      "cid": 57474,
+      "call": 1444475960625930,
+      "cpu": 4,
+      "timestamp_ns": 1444475961106238
+    },
+    {
+      "ctrl": 0,
+      "queue": 5,
+      "cid": 57476,
+      "call": 1444475960625930,
+      "cpu": 4,
+      "timestamp_ns": 1444475961141507
+    },
+    {
+      "ctrl": 0,
+      "queue": 5,
+      "cid": 28806,
+      "call": 1444475960625930,
+      "cpu": 4,
+      "timestamp_ns": 1444475961177303
+    }
+  ],
+  "nvme_raw_events_outside_syscall": 0,
+  "captured_lifetimes": 265,
+  "issue_before_complete": true,
+  "inserted_requests": 2,
+  "read_requests": 1,
+  "timestamp_inversions_in_ring_order": 3,
+  "symbolized_stacks": {
+    "2245": [
+      "__schedule",
+      "__schedule",
+      "schedule",
+      "io_schedule",
+      "bit_wait_io",
+      "__wait_on_bit",
+      "out_of_line_wait_on_bit",
+      "__wait_on_buffer",
+      "ext4_wait_block_bitmap",
+      "ext4_mb_init_cache",
+      "ext4_mb_load_buddy_gfp",
+      "ext4_mb_regular_allocator",
+      "ext4_mb_new_blocks",
+      "ext4_ext_map_blocks",
+      "ext4_map_blocks",
+      "ext4_iomap_begin",
+      "iomap_iter",
+      "__iomap_dio_rw",
+      "iomap_dio_rw",
+      "ext4_file_write_iter",
+      "vfs_write",
+      "ksys_pwrite64",
+      "__arm64_sys_pwrite64",
+      "invoke_syscall",
+      "el0_svc_common.constprop.0",
+      "do_el0_svc",
+      "el0_svc",
+      "el0t_64_sync_handler",
+      "el0t_64_sync"
+    ],
+    "2675": [
+      "__schedule",
+      "__schedule",
+      "schedule",
+      "schedule_timeout",
+      "io_schedule_timeout",
+      "blk_io_schedule",
+      "__iomap_dio_rw",
+      "iomap_dio_rw",
+      "ext4_file_write_iter",
+      "vfs_write",
+      "ksys_pwrite64",
+      "__arm64_sys_pwrite64",
+      "invoke_syscall",
+      "el0_svc_common.constprop.0",
+      "do_el0_svc",
+      "el0_svc",
+      "el0t_64_sync_handler",
+      "el0t_64_sync"
+    ]
+  },
+  "limits": [
+    "All 265 raw completions survive; six secondary gaps are not evidence of lost device completions.",
+    "Their precise cause remains unproven; pwrite-exit filtering alone does not explain the observed timestamps.",
+    "FD and inode were reused. File generations come from fixture records, not a validated generic lifecycle parser.",
+    "Merge, requeue, partial completion and adversarial loss/reuse parser contracts were not completed in the tool budget.",
+    "No model run, performance claim or promotion of the original failed capability decision follows from this salvage review."
+  ]
+}

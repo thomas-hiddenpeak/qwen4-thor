@@ -1,0 +1,6 @@
+make: Entering directory '/usr/src/linux-headers-6.8.12-1021-tegra-ubuntu24.04_aarch64/3rdparty/canonical/linux-noble'
+warning: the compiler differs from the one used to build the kernel
+  The kernel was built by: gcc (Ubuntu 13.2.0-23ubuntu4) 13.2.0
+  You are using:           gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+  CC [M]  /home/rm01/models/dev/qwen4-thor/.q4t-work/session-pwrite-trace-20261029/offsets/offsets.o
+make: Leaving directory '/usr/src/linux-headers-6.8.12-1021-tegra-ubuntu24.04_aarch64/3rdparty/canonical/linux-noble'

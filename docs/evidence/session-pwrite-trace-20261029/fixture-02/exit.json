@@ -1,0 +1,15 @@
+{
+  "started": 1793254393.3178656,
+  "status": "COLLECTED_REQUIRES_AUDIT",
+  "events": 2343,
+  "counters": [
+    0,
+    2343,
+    0,
+    0,
+    0
+  ],
+  "stack_ids": 2,
+  "finished": 1793254394.7954164,
+  "detached_links": 24
+}

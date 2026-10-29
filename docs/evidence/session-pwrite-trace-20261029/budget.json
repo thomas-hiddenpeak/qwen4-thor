@@ -1,0 +1,15 @@
+{
+  "start_unix": 1793253612.0,
+  "tool_deadline_unix": 1793254812.0,
+  "acquisition_deadline_unix": 1793256912.0,
+  "deadline_unix": 1793257212.0,
+  "maximum_services": 2,
+  "maximum_http": 20,
+  "cpu_fixtures": 2,
+  "cpu_write_bytes": 67108864,
+  "logical_write_bytes": 137438953472,
+  "trace_bytes": 2147483648,
+  "trace_events": 10000000,
+  "trace_ram_bytes": 268435456,
+  "source_commit": "0f4dd57cd1da8323fa6d06f817f3749e4c79c9e7"
+}

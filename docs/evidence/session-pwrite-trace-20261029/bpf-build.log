@@ -1,0 +1,4 @@
+error: symbol 'license' is already defined
+error: license changed binding to STB_GLOBAL
+error: symbol 'license' is already defined
+3 errors generated.
