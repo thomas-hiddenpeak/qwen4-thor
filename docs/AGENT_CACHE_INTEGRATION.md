@@ -1,6 +1,6 @@
 # Agent接入：1长主agent＋3子代理、suffix与两级缓存
 
-本例对应2026-10-29已合入main的交付程序6f3722b2。服务具备4个执行槽，
+本例对应2026-10-29交付程序21eb5204，包含显式私有会话增量保存。服务具备4个执行槽，
 主agent可使用长槽，三个子代理通常使用短槽；主agent结束一次HTTP请求，
 等待工具或子代理期间不占执行槽。服务进程保持运行，下一次请求携带完整
 历史和原session_id恢复状态。槽位可以被别的请求使用，客户端不绑定槽号。
@@ -14,7 +14,7 @@
 cd /home/rm01/models/dev/qwen4-thor
 install -d -m 700 .q4t-work/agent-session-cache .q4t-work/agent-prefix-cache
 
-./build/q4t serve \
+Q4T_SESSION_INCREMENTAL=1 ./build/q4t serve \
   --model-dir /home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream \
   --host 127.0.0.1 --port 8000 \
   --max-seq 4 --max-prefill 4096 --max-len 208896 \
@@ -31,6 +31,16 @@ install -d -m 700 .q4t-work/agent-session-cache .q4t-work/agent-prefix-cache
 ```text
 --mtp-subset-head .q4t-work/prefix-seed-20261028/delivery-package/artifact
 ```
+
+本例显式开启`Q4T_SESSION_INCREMENTAL=1`；程序默认关闭增量。它仅减少
+私有会话恢复后再次保存的重复写入，公共prefix池保持原格式。首次保存仍
+全量，每轮仍完整校验；没有新增客户端字段，继续使用原session_id和完整
+连续历史。需要回到原保存方式，去掉该环境变量或设为0并重启。
+
+两head受测生命周期吞吐分别+5.01%/+9.43%，首次事务仍有−1.97%、−1.83%
+和−0.62%的观察值，不保证只保存一次有收益。完整数据和回退见
+[增量保存交付](SESSION_INCREMENTAL_DELIVERED_2026-10-29.md)。日常无需开启
+`Q4T_SESSION_SAVE_TIMING`；诊断时才显式设为1。
 
 两种head使用相同客户端参数；切换head需要重启，进程内缓存随之失效。
 服务就绪后可检查`curl --fail http://127.0.0.1:8000/healthz`，确认GPU健康、

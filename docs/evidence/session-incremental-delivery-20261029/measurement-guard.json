@@ -1,0 +1,22 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "python3",
+    "-B",
+    "tools/session_incremental/run_stage.py",
+    "--plan",
+    ".q4t-work/session-incremental-delivery-20261029/plan.json"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-29T14:54:48.386135+00:00",
+    "monotonic": 1475770.903017997,
+    "pid": 192967
+  }
+}

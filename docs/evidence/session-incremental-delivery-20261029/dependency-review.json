@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "installed_binary": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "installed_manifest_sha256": "8373e5821e2394b17427c0fc078f3d89d7f9383cceb1782ea75674aa5d96a078",
+  "unchanged_files": 161,
+  "changed": {
+    "src/server/chat_generation.cpp": {
+      "installed": "c9ebd78ffbcccf516ec8ba36e715ed29588293b4b2051086e99298331b06de2b",
+      "candidate": "b23f1eeb4132e59aea60b3062beddb778795608728c7a4cc57447194602902ed"
+    },
+    "src/server/session_cache.cpp": {
+      "installed": "ef4f9f261dc3647122c8e5ecb9f2e08995beb7619c3fe46a4678f1f7d2c66a8e",
+      "candidate": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6"
+    },
+    "src/server/chat_server.cpp": {
+      "installed": "3a5c3c19d2f2073d0603a6a12a0eb8140d9270e7edaa857777d2af1999314482",
+      "candidate": "1f757381bfe6e5a259145b9c5c6ae6d5d6a6ba77d9b1bb6e25afc9772580fdd0"
+    },
+    "include/q4t/server/session_cache.h": {
+      "installed": "0c515230f31c28ad4167f0fee2fad78646e88da99141adbbe75691c3ae608e1f",
+      "candidate": "127b61a11a7e3e7078d0c5403f2ce2eb7114e57828594e8fe76c62ea93e14e6d"
+    }
+  },
+  "added": [
+    "include/q4t/server/session_save_timing.h"
+  ],
+  "algorithm_unchanged_from_research": true,
+  "reused": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/final-decision.json": {
+      "sha256": "378d7d98f39e66ced80a73ade501afcb3e9d4d52e1031ea1a7636bc7766b641c",
+      "passed": true
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/final-audit.json": {
+      "sha256": "c636861709a1567d726b14585ccfe55077fb8c8ec491e9e84a319f34aa4e4d97",
+      "passed": true
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/gate-a.json": {
+      "sha256": "589a686aba03b0bebb3bed9a7f883f4448965a04f6bcd00f76c615b9ddfef112",
+      "passed": true
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/gate-b.json": {
+      "sha256": "d362169bf8d0516b1cf09ea2379e853e2be5e64d676954888105e741d52a4b47",
+      "passed": true
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/gate-c.json": {
+      "sha256": "3e637bfed309d3555725d12825b650adf79e6883cd66534d3892d691349dc1a6",
+      "passed": true
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/gate-d.json": {
+      "sha256": "e9c3a34db2a7633ea1a31e139ef8d3ba2e607612e8b443da8e9ceb81826eda5f",
+      "passed": true
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/protection-review.json": {
+      "sha256": "6c72225f2506d61a235164948f3700a840326fb24105bd799391ed33235cf0c6",
+      "passed": null
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/dependency-review.json": {
+      "sha256": "7c857745f91e5abb318ce7ba8d4ab058db7c8a4d5305b4157a2e89fb7119d4a1",
+      "passed": null
+    }
+  },
+  "exclusion": "Research scoring, preallocation, writer thread and prefill timing are absent.",
+  "scope": "Uncached numerical/five-tier/suffix reuse; new storage tests mandatory.",
+  "ram_bound_bytes": 22962216,
+  "private_ram_budget_bytes": 33554432,
+  "private_disk_budget_bytes": 25769803776
+}

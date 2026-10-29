@@ -1,0 +1,15 @@
+{
+  "start_unix": 1793282554.844801,
+  "deadline_unix": 1793287954.844801,
+  "seconds": 5400,
+  "http": 54,
+  "starts": 6,
+  "measurement_http": 48,
+  "measurement_starts": 4,
+  "health_http": 6,
+  "health_starts": 2,
+  "candidates": 1,
+  "cpu_programs": 1,
+  "cpu_write_limit": 536870912,
+  "write_limit": 240518168576
+}

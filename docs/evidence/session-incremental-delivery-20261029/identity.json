@@ -1,0 +1,20 @@
+{
+  "candidate_sha256": "21eb5204e094cf8f86b02780b168ac62cd354c47ad9ae3348759e05860594097",
+  "plan_sha256": "499cd8620c5be980f13d1b990d1b66a6c5a704d2f1cedac82290b11bccace55c",
+  "files": 695,
+  "budget": {
+    "start_unix": 1793282554.844801,
+    "deadline_unix": 1793287954.844801,
+    "seconds": 5400,
+    "http": 54,
+    "starts": 6,
+    "measurement_http": 48,
+    "measurement_starts": 4,
+    "health_http": 6,
+    "health_starts": 2,
+    "candidates": 1,
+    "cpu_programs": 1,
+    "cpu_write_limit": 536870912,
+    "write_limit": 240518168576
+  }
+}

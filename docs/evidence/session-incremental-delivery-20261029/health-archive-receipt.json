@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-incremental-delivery-20261029-health-archive",
+  "files": 240,
+  "bytes": 353167805,
+  "manifest_sha256": "02b0756ce882150202e65cc359b61f9c95a9bf41cf538ec12c161bafca28c40d"
+}

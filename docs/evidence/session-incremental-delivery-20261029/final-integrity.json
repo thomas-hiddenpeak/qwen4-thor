@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "input_files": 882,
+  "http": 54,
+  "starts": 6,
+  "cpu_contracts": 1,
+  "cpu_checks": 192,
+  "monitoring": [
+    {
+      "sample_attempts": 2799,
+      "flushed_samples": 2799,
+      "unflushed_attempts": 0,
+      "exit_pending": {
+        "active": 0,
+        "admitted": 2,
+        "resolved": 2,
+        "maximum_active": 1,
+        "last_resolutions": [],
+        "entries": []
+      }
+    },
+    {
+      "sample_attempts": 103,
+      "flushed_samples": 103,
+      "unflushed_attempts": 0,
+      "exit_pending": {
+        "active": 0,
+        "admitted": 1,
+        "resolved": 1,
+        "maximum_active": 1,
+        "last_resolutions": [],
+        "entries": []
+      }
+    }
+  ],
+  "all_six_servers_exit_zero": true,
+  "incremental_default": false,
+  "installed_binary_sha256": "21eb5204e094cf8f86b02780b168ac62cd354c47ad9ae3348759e05860594097",
+  "installed_metadata_sha256": "9698b4300edba168cbdb60040239741275ec079b372113610bb714396a9c8a57",
+  "health_logical_write_upper_bytes": 4739710976,
+  "application_write_upper_bytes": 181095596032,
+  "write_limit_bytes": 240518168576,
+  "elapsed_to_health_exit_seconds": 3401.686371088028,
+  "elapsed_to_finalize_seconds": 3453.537189245224,
+  "task_deadline_unix": 1793287954.844801,
+  "measurement_archive_verified": true,
+  "package_seal_verified": true,
+  "recovery_marker_cleared": true,
+  "new_gpu_fixtures": 0,
+  "statistical_noninferiority": false
+}
