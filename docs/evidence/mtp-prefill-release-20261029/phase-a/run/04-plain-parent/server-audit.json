@@ -1,0 +1,27 @@
+{
+  "admitted_requests": 15,
+  "finalization": {
+    "schema": 1,
+    "event": "finalized",
+    "status": "PASS",
+    "count": 1553,
+    "device_bytes": 92289165492,
+    "allocated": 1553,
+    "consumed": 1553,
+    "freed": 1553,
+    "unhanded_remaining": 0,
+    "handed_live": 0,
+    "release_unknown": 0,
+    "error": "none",
+    "backend_rc": 0,
+    "error_index": 0,
+    "prepared": true,
+    "startup_complete": true,
+    "finalized": true,
+    "active": false,
+    "strategy": "stable_descending_bytes",
+    "plan_sha256": "093f7b6e9b5ea5ba1ab68b2cd129f818f0d2ff83316f9ae087a9321971f69766"
+  },
+  "suffix": [],
+  "mtp_records": []
+}

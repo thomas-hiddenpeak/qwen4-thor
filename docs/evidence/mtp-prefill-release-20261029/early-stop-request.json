@@ -1,0 +1,19 @@
+{
+  "reason": "NO_GO_FIRST_SHARED_BLOCK_NONPOSITIVE",
+  "phase": "C",
+  "head": "full",
+  "scenario": "repeat-code-8192",
+  "off_seconds": 256.10575325693935,
+  "on_seconds": 259.125418931013,
+  "time_reduction": -0.01179069831767543,
+  "complete_outputs_equal": true,
+  "detected_at": 1793236446.4149435,
+  "rule": "First block any net gain <= 0 stops; do not start a second block.",
+  "action": "Stop current owned stage when an already completed pair proves failure; remaining first-block measurements are incomplete.",
+  "driver_pid": 47340,
+  "driver_starttime": "142396456",
+  "source_hashes": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-release-20261029/phase-c/run/00-full-off/results.json": "7c28057c2f1b7598b702de113a12024b71522e8f1c268b0d733ef69aa65cd4e8",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-release-20261029/phase-c/run/01-full-on/results.json": "0386f3daeedbedd31756f9047d6394b55a3a318d79d41c5f752ef94787383824"
+  }
+}

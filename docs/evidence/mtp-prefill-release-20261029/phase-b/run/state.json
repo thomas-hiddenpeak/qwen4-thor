@@ -1,0 +1,16 @@
+{
+  "status": "MEASURED_REQUIRES_REVIEW",
+  "started": 1793230426.8671215,
+  "completed": [
+    "00-full-on",
+    "01-subset-on"
+  ],
+  "requests_completed": 24,
+  "loads_started": 2,
+  "contract_seconds": 0,
+  "plan_sha256": "3d512d6ec9aeea8abf75af6ad4f8141c50ec14e824e503a7289ca1c99ba14bb6",
+  "current": "01-subset-on",
+  "finished": 1793230616.9216437,
+  "elapsed_seconds": 190.0545248989947,
+  "monitor_failures": []
+}

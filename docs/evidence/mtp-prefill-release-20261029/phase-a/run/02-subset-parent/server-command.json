@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-release-20261029/frozen/parent",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8762",
+    "--max-seq",
+    "4",
+    "--max-prefill",
+    "4096",
+    "--max-len",
+    "208896",
+    "--seq-capacities",
+    "208896,65536,65536,65536",
+    "--mtp-suffix",
+    "--session-cache-dir",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-release-20261029/phase-a/run/02-subset-parent/session",
+    "--prefix-cache-dir",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-release-20261029/phase-a/run/02-subset-parent/prefix",
+    "--mtp-subset-head",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/artifact"
+  ],
+  "environment": {}
+}

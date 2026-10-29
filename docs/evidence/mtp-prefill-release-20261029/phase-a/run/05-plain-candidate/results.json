@@ -1,0 +1,462 @@
+[
+  {
+    "id": "context-1024",
+    "rows": [
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+        "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+        "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+        "response_id": "chatcmpl-auto-0",
+        "input_tokens": 998,
+        "output_tokens": 256,
+        "latency": 14.611636221874505,
+        "ttft": 0.8663183178287,
+        "start": 1419562.694380436,
+        "end": 1419577.306016658,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419562.694380436,
+          "end_monotonic_seconds": 1419577.306016658,
+          "start_utc_estimate": "2026-10-28T23:18:00.177506+00:00",
+          "end_utc_estimate": "2026-10-28T23:18:14.789142+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 2.384185791015625e-07,
+          "within_client_boundaries": true
+        }
+      },
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+        "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+        "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+        "response_id": "chatcmpl-auto-1",
+        "input_tokens": 998,
+        "output_tokens": 256,
+        "latency": 14.491639361018315,
+        "ttft": 0.7450541290454566,
+        "start": 1419577.306392916,
+        "end": 1419591.798032277,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419577.306392916,
+          "end_monotonic_seconds": 1419591.798032277,
+          "start_utc_estimate": "2026-10-28T23:18:14.789518+00:00",
+          "end_utc_estimate": "2026-10-28T23:18:29.281158+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 2.384185791015625e-07,
+          "within_client_boundaries": true
+        }
+      },
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to write at least 600 words and cover: demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me first identify the unique activities from the observations:\n\n1. Planetarium operator - darkens dome, aligns star projector, visitors compare projected horizon with marked reference circle (Obs 1, 4, 5, 14, 22, 31)\n2. Tea workshop - heats identical cups, compares prepared infusions, participants describe aroma separately from bitterness and mouthfeel (Obs 2, 21, 26, 30)\n3. Public aquarium - dims room, observes nocturnal animals, guide explains shelter placement changes visible behavior (Obs 3, 10, 23)\n4. Bicycle class - demonstrates braking on quiet paved courtyard, riders explain how wet surfaces alter stopping distance (Obs 6, 15, 28, 29)\n5. Costume studio - pins paper pattern onto inexpensive cotton, fitting reveals which seams need more room before cutting final cloth (Obs 7, ",
+        "output_sha256": "2984ef17cfbb4565fc0e87811e0939a76832212c37158d69d19bc26862b5e76d",
+        "prompt_sha256": "3ee7fb9f73c997bb75272e5f1f4c31265e77b31600add08a2f3258c182a4f17f",
+        "response_id": "chatcmpl-auto-2",
+        "input_tokens": 998,
+        "output_tokens": 256,
+        "latency": 14.487546873977408,
+        "ttft": 0.7452037339098752,
+        "start": 1419591.798401961,
+        "end": 1419606.285948835,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419591.798401961,
+          "end_monotonic_seconds": 1419606.285948835,
+          "start_utc_estimate": "2026-10-28T23:18:29.281528+00:00",
+          "end_utc_estimate": "2026-10-28T23:18:43.769074+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 2.384185791015625e-07,
+          "within_client_boundaries": true
+        }
+      }
+    ],
+    "makespan_seconds": 43.591568398987874,
+    "total_output_tokens": 768,
+    "throughput": 17.61808597870573
+  },
+  {
+    "id": "context-4096",
+    "rows": [
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring activity types:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet paved courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern onto cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery instructor: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all the required aspects.\n</think>\n\n# Review of Public Learning Program Field Notes",
+        "output_sha256": "d9bd07efbfb5755319acefbd0a6458b76194dc38d0d907998da4d10a01674111",
+        "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+        "response_id": "chatcmpl-auto-3",
+        "input_tokens": 4077,
+        "output_tokens": 256,
+        "latency": 16.89290192304179,
+        "ttft": 2.6011717079672962,
+        "start": 1419611.677750831,
+        "end": 1419628.570652754,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419611.677750831,
+          "end_monotonic_seconds": 1419628.570652754,
+          "start_utc_estimate": "2026-10-28T23:18:49.160877+00:00",
+          "end_utc_estimate": "2026-10-28T23:19:06.053778+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        }
+      },
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring activity types:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet paved courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern onto cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery instructor: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all the required aspects.\n</think>\n\n# Review of Public Learning Program Field Notes",
+        "output_sha256": "d9bd07efbfb5755319acefbd0a6458b76194dc38d0d907998da4d10a01674111",
+        "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+        "response_id": "chatcmpl-auto-4",
+        "input_tokens": 4077,
+        "output_tokens": 256,
+        "latency": 16.887797066010535,
+        "ttft": 2.5928372549824417,
+        "start": 1419628.571091986,
+        "end": 1419645.458889052,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419628.571091986,
+          "end_monotonic_seconds": 1419645.458889052,
+          "start_utc_estimate": "2026-10-28T23:19:06.054218+00:00",
+          "end_utc_estimate": "2026-10-28T23:19:22.942015+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        }
+      },
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities based on numbered observations from a public learning program. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring activity types:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma separately from bitterness and mouthfeel\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet paved courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern onto cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery instructor: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all the required aspects.\n</think>\n\n# Review of Public Learning Program Field Notes",
+        "output_sha256": "d9bd07efbfb5755319acefbd0a6458b76194dc38d0d907998da4d10a01674111",
+        "prompt_sha256": "10ba2a5cd88b4b1f78ad89722ec48172ef228e705b371a9568b4b1bda8387fb2",
+        "response_id": "chatcmpl-auto-5",
+        "input_tokens": 4077,
+        "output_tokens": 256,
+        "latency": 16.887343524955213,
+        "ttft": 2.592992986785248,
+        "start": 1419645.459286329,
+        "end": 1419662.346629854,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419645.459286329,
+          "end_monotonic_seconds": 1419662.346629854,
+          "start_utc_estimate": "2026-10-28T23:19:22.942412+00:00",
+          "end_utc_estimate": "2026-10-28T23:19:39.829756+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        }
+      }
+    ],
+    "makespan_seconds": 50.668879023054615,
+    "total_output_tokens": 768,
+    "throughput": 15.157232897348209
+  },
+  {
+    "id": "context-8192",
+    "rows": [
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all four required topics.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed",
+        "output_sha256": "55857a1e7bf564c11f7b165905f2d4c286d90931ed0be6a10050285d4a397246",
+        "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+        "response_id": "chatcmpl-auto-6",
+        "input_tokens": 8170,
+        "output_tokens": 256,
+        "latency": 19.497724515851587,
+        "ttft": 5.3627858138643205,
+        "start": 1419667.751919449,
+        "end": 1419687.249643965,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419667.751919449,
+          "end_monotonic_seconds": 1419687.249643965,
+          "start_utc_estimate": "2026-10-28T23:19:45.235045+00:00",
+          "end_utc_estimate": "2026-10-28T23:20:04.732770+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        }
+      },
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all four required topics.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed",
+        "output_sha256": "55857a1e7bf564c11f7b165905f2d4c286d90931ed0be6a10050285d4a397246",
+        "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+        "response_id": "chatcmpl-auto-7",
+        "input_tokens": 8170,
+        "output_tokens": 256,
+        "latency": 19.508090161019936,
+        "ttft": 5.3648908799514174,
+        "start": 1419687.250132178,
+        "end": 1419706.758222339,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419687.250132178,
+          "end_monotonic_seconds": 1419706.758222339,
+          "start_utc_estimate": "2026-10-28T23:20:04.733258+00:00",
+          "end_utc_estimate": "2026-10-28T23:20:24.241348+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        }
+      },
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of the learning activities described in the field notes observations. I need to cover:\n1. Demonstrations\n2. Comparisons\n3. Participant safety\n4. Ways to distinguish observations from explanations\n\nThe observations describe several recurring learning activities:\n- Planetarium: darkening dome, aligning star projector, comparing projected horizon with reference circle\n- Tea workshop: heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n- Public aquarium: dimming room, observing nocturnal animals, guide explaining shelter placement effects\n- Bicycle class: braking demonstration on quiet courtyard, riders explaining wet surface effects on stopping distance\n- Costume studio: pinning paper pattern on cotton, fitting reveals seam adjustments before cutting final cloth\n- Pottery: placing fired tiles beside unfired samples, students explaining glaze thickness effects on color\n- Climbing center: closing route while anchors examined, next group practices knot inspection\n- Tidal station: measuring water height against fixed stone marker, shaded diagram separating wave motion from rising tide\n\nLet me write a detailed review of at least 600 words covering all four required topics.\n</think>\n\n# Review of Public Learning Program Field Notes: A Detailed",
+        "output_sha256": "55857a1e7bf564c11f7b165905f2d4c286d90931ed0be6a10050285d4a397246",
+        "prompt_sha256": "87123c57eb2a547045c6030fc4530940b92acb393f919c0b7a39ffcc2c0e8511",
+        "response_id": "chatcmpl-auto-8",
+        "input_tokens": 8170,
+        "output_tokens": 256,
+        "latency": 19.497479212936014,
+        "ttft": 5.363285442814231,
+        "start": 1419706.758683524,
+        "end": 1419726.256162737,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419706.758683524,
+          "end_monotonic_seconds": 1419726.256162737,
+          "start_utc_estimate": "2026-10-28T23:20:24.241809+00:00",
+          "end_utc_estimate": "2026-10-28T23:20:43.739288+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        }
+      }
+    ],
+    "makespan_seconds": 58.50424328795634,
+    "total_output_tokens": 768,
+    "throughput": 13.127252945054332
+  },
+  {
+    "id": "context-45056",
+    "rows": [
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+        "output_sha256": "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432",
+        "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+        "response_id": "chatcmpl-auto-9",
+        "input_tokens": 45044,
+        "output_tokens": 256,
+        "latency": 45.8848280350212,
+        "ttft": 31.596603020094335,
+        "start": 1419731.661829738,
+        "end": 1419777.546657773,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419731.661829738,
+          "end_monotonic_seconds": 1419777.546657773,
+          "start_utc_estimate": "2026-10-28T23:20:49.144955+00:00",
+          "end_utc_estimate": "2026-10-28T23:21:35.029783+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        }
+      },
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+        "output_sha256": "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432",
+        "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+        "response_id": "chatcmpl-auto-10",
+        "input_tokens": 45044,
+        "output_tokens": 256,
+        "latency": 45.85914108995348,
+        "ttft": 31.559031009906903,
+        "start": 1419777.547732217,
+        "end": 1419823.406873307,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419777.547732217,
+          "end_monotonic_seconds": 1419823.406873307,
+          "start_utc_estimate": "2026-10-28T23:21:35.030858+00:00",
+          "end_utc_estimate": "2026-10-28T23:22:20.889999+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        }
+      },
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activities:\n1. Planetarium - darkening dome, aligning star projector, comparing projected horizon with reference circle\n2. Tea workshop - heating identical cups, comparing infusions, describing aroma/bitterness/mouthfeel separately\n3. Public aquarium - dimming room, observing nocturnal animals, guide explains shelter placement effects\n4. Bicycle class - braking demonstration on quiet paved courtyard, riders explain wet surface effects on stopping distance\n5. Costume studio - pinning paper pattern onto inexpensive cotton, fitting reveals seam adjustments before cutting final cloth\n6. Pottery instructor - placing fired tiles beside unfired samples, students explain glaze thickness effects on reflected color\n7. Climbing center - closing route while wall anchors examined, next group practices knot inspection beside training mat\n8. Tidal station - measuring water height against fixed stone marker, shaded diagram separates wave motion from gradual rising tide\n\nNow I need to write a review of at least 600 words covering:\n",
+        "output_sha256": "4b157e7a54a3f67194ec5197d2ceb3bb19c4697b6045c240461818bd3961d432",
+        "prompt_sha256": "9fdb912f3223f40dd954dc22f4f2240893e4a079d77b14aebb7dbde7b90b60b7",
+        "response_id": "chatcmpl-auto-11",
+        "input_tokens": 45044,
+        "output_tokens": 256,
+        "latency": 45.81915728910826,
+        "ttft": 31.526421301998198,
+        "start": 1419823.407882999,
+        "end": 1419869.227040288,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419823.407882999,
+          "end_monotonic_seconds": 1419869.227040288,
+          "start_utc_estimate": "2026-10-28T23:22:20.891009+00:00",
+          "end_utc_estimate": "2026-10-28T23:23:06.710166+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        }
+      }
+    ],
+    "makespan_seconds": 137.56521055009216,
+    "total_output_tokens": 768,
+    "throughput": 5.582806851593813
+  },
+  {
+    "id": "context-204800",
+    "rows": [
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activity types from the observations:\n\n1. **Planetarium** - Operator darkens dome before aligning star projector. Visitors compare projected horizon with marked reference circle.\n2. **Tea workshop** - Heats identical cups before comparing prepared infusions. Participants describe aroma separately from bitterness and mouthfeel.\n3. **Public aquarium** - Dims room before observing nocturnal animals. Guide explains how shelter placement changes visible behavior.\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard. Riders explain how wet surfaces alter stopping distance.\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton first. Fitting reveals which seams need more room before cutting final cloth.\n6. **Pottery instructor** - Places fired tiles beside unfired samples. Students explain how glaze thickness changes reflected color.\n7. **Climbing center** - Closes route while wall anchors examined. Next group practices knot inspection beside training mat.",
+        "output_sha256": "783dee5e87c6537b88caa01a9828b6b1c9decf25baaa88a86da10f33b633aaf0",
+        "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+        "response_id": "chatcmpl-auto-12",
+        "input_tokens": 204781,
+        "output_tokens": 256,
+        "latency": 180.21497306786478,
+        "ttft": 165.1675090289209,
+        "start": 1419874.659236923,
+        "end": 1420054.874209991,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1419874.659236923,
+          "end_monotonic_seconds": 1420054.874209991,
+          "start_utc_estimate": "2026-10-28T23:23:12.142363+00:00",
+          "end_utc_estimate": "2026-10-28T23:26:12.357336+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        }
+      },
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activity types from the observations:\n\n1. **Planetarium** - Operator darkens dome before aligning star projector. Visitors compare projected horizon with marked reference circle.\n2. **Tea workshop** - Heats identical cups before comparing prepared infusions. Participants describe aroma separately from bitterness and mouthfeel.\n3. **Public aquarium** - Dims room before observing nocturnal animals. Guide explains how shelter placement changes visible behavior.\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard. Riders explain how wet surfaces alter stopping distance.\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton first. Fitting reveals which seams need more room before cutting final cloth.\n6. **Pottery instructor** - Places fired tiles beside unfired samples. Students explain how glaze thickness changes reflected color.\n7. **Climbing center** - Closes route while wall anchors examined. Next group practices knot inspection beside training mat.",
+        "output_sha256": "783dee5e87c6537b88caa01a9828b6b1c9decf25baaa88a86da10f33b633aaf0",
+        "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+        "response_id": "chatcmpl-auto-13",
+        "input_tokens": 204781,
+        "output_tokens": 256,
+        "latency": 180.2375345560722,
+        "ttft": 165.26532989693806,
+        "start": 1420054.877518154,
+        "end": 1420235.11505271,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1420054.877518154,
+          "end_monotonic_seconds": 1420235.11505271,
+          "start_utc_estimate": "2026-10-28T23:26:12.360644+00:00",
+          "end_utc_estimate": "2026-10-28T23:29:12.598178+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        }
+      },
+      {
+        "success": 1,
+        "text": "\n\n<think>\nThe user wants me to write a detailed review of learning activities described in numbered observations. Let me analyze the observations to identify the distinct learning activities, then write a review covering demonstrations, comparisons, participant safety, and ways to distinguish observations from explanations.\n\nLet me identify the distinct activity types from the observations:\n\n1. **Planetarium** - Operator darkens dome before aligning star projector. Visitors compare projected horizon with marked reference circle.\n2. **Tea workshop** - Heats identical cups before comparing prepared infusions. Participants describe aroma separately from bitterness and mouthfeel.\n3. **Public aquarium** - Dims room before observing nocturnal animals. Guide explains how shelter placement changes visible behavior.\n4. **Bicycle class** - Demonstrates braking on quiet paved courtyard. Riders explain how wet surfaces alter stopping distance.\n5. **Costume studio** - Pins paper pattern onto inexpensive cotton first. Fitting reveals which seams need more room before cutting final cloth.\n6. **Pottery instructor** - Places fired tiles beside unfired samples. Students explain how glaze thickness changes reflected color.\n7. **Climbing center** - Closes route while wall anchors examined. Next group practices knot inspection beside training mat.",
+        "output_sha256": "783dee5e87c6537b88caa01a9828b6b1c9decf25baaa88a86da10f33b633aaf0",
+        "prompt_sha256": "6bebfddfdde3af3416629c1e969df18abde763df6be927afb96cdd93bc59e16e",
+        "response_id": "chatcmpl-auto-14",
+        "input_tokens": 204781,
+        "output_tokens": 256,
+        "latency": 180.13644883711822,
+        "ttft": 165.17458209418692,
+        "start": 1420235.118367154,
+        "end": 1420415.254815991,
+        "finish": [
+          "length"
+        ],
+        "requested_max_tokens": 256,
+        "stream": true,
+        "timing": {
+          "start_monotonic_seconds": 1420235.118367154,
+          "end_monotonic_seconds": 1420415.254815991,
+          "start_utc_estimate": "2026-10-28T23:29:12.601493+00:00",
+          "end_utc_estimate": "2026-10-28T23:32:12.737942+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        }
+      }
+    ],
+    "makespan_seconds": 540.5955790679436,
+    "total_output_tokens": 768,
+    "throughput": 1.4206553470602383
+  }
+]

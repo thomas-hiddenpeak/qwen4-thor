@@ -3,7 +3,8 @@
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
-最新专项：[评分候选正式发布验收方案](MTP_PREFILL_RELEASE_PLAN_2026-10-29.md)；
+最新专项：[评分正式验收NO_GO及停止证据](MTP_PREFILL_RELEASE_RESULT_2026-10-29.md)；
+[评分候选正式发布验收方案](MTP_PREFILL_RELEASE_PLAN_2026-10-29.md)；
 [多槽草稿prefill评分有界候选结果](MTP_PREFILL_SCORING_RESULT_2026-10-29.md)；
 [评分修复冻结方案](MTP_PREFILL_SCORING_PLAN_2026-10-29.md)；
 [会话缓存与prefix主线合入、接受及收尾](SESSION_PREFIX_MAIN_MERGE_2026-10-29.md)；

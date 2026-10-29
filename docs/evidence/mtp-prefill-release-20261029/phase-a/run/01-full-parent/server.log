@@ -1,0 +1,266 @@
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=4
+[session-cache] enabled=1 entries=8 disk_bytes=25769803776 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[q4t][startup] tokenizer 430 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=4 max_prefill=4096 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=95.97 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=1241120768 mtp_workspace=1751549952 forward_buffers=209797124 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=2.49 GB (peak admitted MTP request allocations)  state_pool=14.03 GB
+[q4t][budget]   => max_len=208896 max_seq=4
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=19333504 mtp_checkpoints=1387708416 mtp_forward_temp=8409664
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=113352364820 runtime_peak=112483362132 estimated_total=113352364820
+[q4t][startup] budget 436 ms
+[suffix-classes] event=configure bytes=0 vocab=248320 cap_bytes=262144 object_bytes=88 lazy=1
+[q4t] suffix enabled: k=3 match=3..64 candidates=4 capacity=208896 global_ids=1 numeric_gate=1 min_admitted_match=32 lazy_classes=1
+[q4t][capacity] requested_max_len=208896 requested_max_seq=4 requested_max_prefill=4096 effective_max_len=208896 effective_max_seq=4 effective_max_prefill=4096 budget_enabled=1 budget_feasible=true
+[q4t][slots] capacities=208896,65536,65536,65536 stream_mtp_prefill=1 text_admission=32
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1619,"device_bytes":101714040916,"allocated":1619,"consumed":0,"freed":0,"unhanded_remaining":1619,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"a46382d4a43bb9c22696cea918c5d50f14d112e0820c9fe95564fb2a84aa7887"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2351 ms
+[q4t][startup] model_load 30487 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=4)
+[q4t][startup] mtp_load 3509 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=4
+[q4t] continuous-batching scheduler started (max_seq=4)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1619,"device_bytes":101714040916,"allocated":1619,"consumed":1619,"freed":0,"unhanded_remaining":0,"handed_live":1619,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"a46382d4a43bb9c22696cea918c5d50f14d112e0820c9fe95564fb2a84aa7887"}
+[q4t][startup] startup_total 37214 ms
+[q4t] serving on port 8762 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.001
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=registered stage=validation seq=-1 elapsed_ms=0.061
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=encode seq=-1 elapsed_ms=0.065
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=slot_admission seq=-1 elapsed_ms=2.589
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=admitted stage=slot_admission seq=1 elapsed_ms=2.604
+[q4t][slot-admission] request=chatcmpl-auto-0 slot=1 capacity=65536 required=1254
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=encode seq=1 elapsed_ms=2.607
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=prefill seq=1 elapsed_ms=3.152
+[mtp-prefill] request=chatcmpl-auto-0 streamed=1 chunks=1 trunk_bytes=20439040 ready=1
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=decode seq=1 elapsed_ms=958.415
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[mtp-accept] request=chatcmpl-auto-0 draft_counts=8,6,7,53
+[suffix] request=chatcmpl-auto-0 queries=74 hits=0 candidates=33 compared=171 matched=72 no_match=58 incomplete=0 d0_mismatch=7 invalid=0 exhausted=0 indexed=1251 peak_bytes=1310720 object_bytes=272 init_ns=173768 append_ns=58603 query_ns=35203 release_ns=2806 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=9 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=8,6,7,53
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][mem] phase=request_end id=chatcmpl-auto-0 dev_used_gb=119.490 dev_total_gb=131.921 rss_mb=969.1 mem_free_gb=11.120 mem_avail_gb=13.337 cached_gb=1.531
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=response seq=1 elapsed_ms=8247.759
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=8247.813 slot_wait_ms=0.006 model_lock_ms=0.000 tokenizer_lock_ms=0.021 scheduler_completion_ms=7282.418 stream_write_ms=2.584 scheduler_waits=76
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=registered stage=validation seq=-1 elapsed_ms=0.059
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=encode seq=-1 elapsed_ms=0.065
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=slot_admission seq=-1 elapsed_ms=1.230
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=admitted stage=slot_admission seq=1 elapsed_ms=1.238
+[q4t][slot-admission] request=chatcmpl-auto-1 slot=1 capacity=65536 required=1254
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=encode seq=1 elapsed_ms=1.241
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=prefill seq=1 elapsed_ms=1.669
+[mtp-prefill] request=chatcmpl-auto-1 streamed=1 chunks=1 trunk_bytes=20439040 ready=1
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=decode seq=1 elapsed_ms=794.086
+[mtp-accept] request=chatcmpl-auto-1 draft_counts=8,6,7,53
+[suffix] request=chatcmpl-auto-1 queries=74 hits=0 candidates=33 compared=171 matched=72 no_match=58 incomplete=0 d0_mismatch=7 invalid=0 exhausted=0 indexed=1251 peak_bytes=1310720 object_bytes=272 init_ns=55851 append_ns=38306 query_ns=27558 release_ns=17436 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=9 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=8,6,7,53
+[q4t][mem] phase=request_end id=chatcmpl-auto-1 dev_used_gb=119.342 dev_total_gb=131.921 rss_mb=970.5 mem_free_gb=11.267 mem_avail_gb=13.491 cached_gb=1.537
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=response seq=1 elapsed_ms=8063.625
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=8063.697 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.024 scheduler_completion_ms=7266.633 stream_write_ms=1.608 scheduler_waits=76
+[q4t][request] instance=2 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=registered stage=validation seq=-1 elapsed_ms=0.069
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=encode seq=-1 elapsed_ms=0.073
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=slot_admission seq=-1 elapsed_ms=1.234
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=admitted stage=slot_admission seq=1 elapsed_ms=1.242
+[q4t][slot-admission] request=chatcmpl-auto-2 slot=1 capacity=65536 required=1254
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=encode seq=1 elapsed_ms=1.256
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=prefill seq=1 elapsed_ms=1.676
+[mtp-prefill] request=chatcmpl-auto-2 streamed=1 chunks=1 trunk_bytes=20439040 ready=1
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=decode seq=1 elapsed_ms=795.609
+[mtp-accept] request=chatcmpl-auto-2 draft_counts=8,6,7,53
+[suffix] request=chatcmpl-auto-2 queries=74 hits=0 candidates=33 compared=171 matched=72 no_match=58 incomplete=0 d0_mismatch=7 invalid=0 exhausted=0 indexed=1251 peak_bytes=1310720 object_bytes=272 init_ns=56628 append_ns=40428 query_ns=27602 release_ns=17898 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=9 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=8,6,7,53
+[q4t][mem] phase=request_end id=chatcmpl-auto-2 dev_used_gb=119.292 dev_total_gb=131.921 rss_mb=970.5 mem_free_gb=11.318 mem_avail_gb=13.551 cached_gb=1.547
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=response seq=1 elapsed_ms=8073.023
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=8073.100 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.026 scheduler_completion_ms=7273.584 stream_write_ms=1.682 scheduler_waits=76
+[q4t][request] instance=3 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=registered stage=validation seq=-1 elapsed_ms=0.118
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=encode seq=-1 elapsed_ms=0.124
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=slot_admission seq=-1 elapsed_ms=3.222
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=admitted stage=slot_admission seq=1 elapsed_ms=3.232
+[q4t][slot-admission] request=chatcmpl-auto-3 slot=1 capacity=65536 required=4333
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=encode seq=1 elapsed_ms=3.235
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=prefill seq=1 elapsed_ms=4.373
+[mtp-prefill] request=chatcmpl-auto-3 streamed=1 chunks=1 trunk_bytes=83496960 ready=1
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=decode seq=1 elapsed_ms=2884.588
+[mtp-accept] request=chatcmpl-auto-3 draft_counts=5,3,0,61
+[suffix] request=chatcmpl-auto-3 queries=69 hits=0 candidates=46 compared=206 matched=105 no_match=41 incomplete=0 d0_mismatch=20 invalid=0 exhausted=0 indexed=4332 peak_bytes=1310720 object_bytes=272 init_ns=91379 append_ns=37671 query_ns=25904 release_ns=1852 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=8 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=5,3,0,61
+[q4t][mem] phase=request_end id=chatcmpl-auto-3 dev_used_gb=119.368 dev_total_gb=131.921 rss_mb=979.5 mem_free_gb=10.218 mem_avail_gb=13.464 cached_gb=1.548
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=response seq=1 elapsed_ms=9984.560
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=9984.637 slot_wait_ms=0.003 model_lock_ms=0.000 tokenizer_lock_ms=0.022 scheduler_completion_ms=7095.633 stream_write_ms=1.857 scheduler_waits=69
+[q4t][request] instance=4 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=4 id=chatcmpl-auto-4 event=registered stage=validation seq=-1 elapsed_ms=0.111
+[q4t][request] instance=4 id=chatcmpl-auto-4 event=stage stage=encode seq=-1 elapsed_ms=0.116
+[q4t][request] instance=4 id=chatcmpl-auto-4 event=stage stage=slot_admission seq=-1 elapsed_ms=3.213
+[q4t][request] instance=4 id=chatcmpl-auto-4 event=admitted stage=slot_admission seq=1 elapsed_ms=3.222
+[q4t][slot-admission] request=chatcmpl-auto-4 slot=1 capacity=65536 required=4333
+[q4t][request] instance=4 id=chatcmpl-auto-4 event=stage stage=encode seq=1 elapsed_ms=3.237
+[q4t][request] instance=4 id=chatcmpl-auto-4 event=stage stage=prefill seq=1 elapsed_ms=4.382
+[mtp-prefill] request=chatcmpl-auto-4 streamed=1 chunks=1 trunk_bytes=83496960 ready=1
+[q4t][request] instance=4 id=chatcmpl-auto-4 event=stage stage=decode seq=1 elapsed_ms=2811.363
+[mtp-accept] request=chatcmpl-auto-4 draft_counts=5,3,0,61
+[suffix] request=chatcmpl-auto-4 queries=69 hits=0 candidates=46 compared=206 matched=105 no_match=41 incomplete=0 d0_mismatch=20 invalid=0 exhausted=0 indexed=4332 peak_bytes=1310720 object_bytes=272 init_ns=80471 append_ns=50254 query_ns=31740 release_ns=1250 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=8 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=5,3,0,61
+[q4t][mem] phase=request_end id=chatcmpl-auto-4 dev_used_gb=119.282 dev_total_gb=131.921 rss_mb=980.7 mem_free_gb=10.305 mem_avail_gb=13.551 cached_gb=1.548
+[q4t][request] instance=4 id=chatcmpl-auto-4 event=stage stage=response seq=1 elapsed_ms=9868.920
+[q4t][request] instance=4 id=chatcmpl-auto-4 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=9868.993 slot_wait_ms=0.003 model_lock_ms=0.000 tokenizer_lock_ms=0.022 scheduler_completion_ms=7052.842 stream_write_ms=2.132 scheduler_waits=69
+[q4t][request] instance=5 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=5 id=chatcmpl-auto-5 event=registered stage=validation seq=-1 elapsed_ms=0.112
+[q4t][request] instance=5 id=chatcmpl-auto-5 event=stage stage=encode seq=-1 elapsed_ms=0.118
+[q4t][request] instance=5 id=chatcmpl-auto-5 event=stage stage=slot_admission seq=-1 elapsed_ms=3.223
+[q4t][request] instance=5 id=chatcmpl-auto-5 event=admitted stage=slot_admission seq=1 elapsed_ms=3.233
+[q4t][slot-admission] request=chatcmpl-auto-5 slot=1 capacity=65536 required=4333
+[q4t][request] instance=5 id=chatcmpl-auto-5 event=stage stage=encode seq=1 elapsed_ms=3.236
+[q4t][request] instance=5 id=chatcmpl-auto-5 event=stage stage=prefill seq=1 elapsed_ms=4.956
+[mtp-prefill] request=chatcmpl-auto-5 streamed=1 chunks=1 trunk_bytes=83496960 ready=1
+[q4t][request] instance=5 id=chatcmpl-auto-5 event=stage stage=decode seq=1 elapsed_ms=2821.602
+[mtp-accept] request=chatcmpl-auto-5 draft_counts=5,3,0,61
+[suffix] request=chatcmpl-auto-5 queries=69 hits=0 candidates=46 compared=206 matched=105 no_match=41 incomplete=0 d0_mismatch=20 invalid=0 exhausted=0 indexed=4332 peak_bytes=1310720 object_bytes=272 init_ns=81954 append_ns=38746 query_ns=27411 release_ns=1074 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=8 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=5,3,0,61
+[q4t][mem] phase=request_end id=chatcmpl-auto-5 dev_used_gb=119.284 dev_total_gb=131.921 rss_mb=980.7 mem_free_gb=10.302 mem_avail_gb=13.549 cached_gb=1.548
+[q4t][request] instance=5 id=chatcmpl-auto-5 event=stage stage=response seq=1 elapsed_ms=9864.637
+[q4t][request] instance=5 id=chatcmpl-auto-5 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=9864.716 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.025 scheduler_completion_ms=7040.169 stream_write_ms=1.564 scheduler_waits=69
+[q4t][request] instance=6 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=6 id=chatcmpl-auto-6 event=registered stage=validation seq=-1 elapsed_ms=0.180
+[q4t][request] instance=6 id=chatcmpl-auto-6 event=stage stage=encode seq=-1 elapsed_ms=0.186
+[q4t][request] instance=6 id=chatcmpl-auto-6 event=stage stage=slot_admission seq=-1 elapsed_ms=5.730
+[q4t][request] instance=6 id=chatcmpl-auto-6 event=admitted stage=slot_admission seq=1 elapsed_ms=5.742
+[q4t][slot-admission] request=chatcmpl-auto-6 slot=1 capacity=65536 required=8426
+[q4t][request] instance=6 id=chatcmpl-auto-6 event=stage stage=encode seq=1 elapsed_ms=5.755
+[q4t][request] instance=6 id=chatcmpl-auto-6 event=stage stage=prefill seq=1 elapsed_ms=6.836
+[mtp-prefill] request=chatcmpl-auto-6 streamed=1 chunks=2 trunk_bytes=83886080 ready=1
+[q4t][request] instance=6 id=chatcmpl-auto-6 event=stage stage=decode seq=1 elapsed_ms=5821.400
+[mtp-accept] request=chatcmpl-auto-6 draft_counts=6,11,5,53
+[suffix] request=chatcmpl-auto-6 queries=75 hits=0 candidates=18 compared=77 matched=23 no_match=69 incomplete=0 d0_mismatch=5 invalid=0 exhausted=0 indexed=8425 peak_bytes=1310720 object_bytes=272 init_ns=360599 append_ns=31907 query_ns=15540 release_ns=227618 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=1 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=6,11,5,53
+[q4t][mem] phase=request_end id=chatcmpl-auto-6 dev_used_gb=119.363 dev_total_gb=131.921 rss_mb=981.3 mem_free_gb=10.223 mem_avail_gb=13.473 cached_gb=1.550
+[q4t][request] instance=6 id=chatcmpl-auto-6 event=stage stage=response seq=1 elapsed_ms=13290.636
+[q4t][request] instance=6 id=chatcmpl-auto-6 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=13290.697 slot_wait_ms=0.004 model_lock_ms=0.000 tokenizer_lock_ms=0.024 scheduler_completion_ms=7466.257 stream_write_ms=1.326 scheduler_waits=75
+[q4t][request] instance=7 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=7 id=chatcmpl-auto-7 event=registered stage=validation seq=-1 elapsed_ms=0.178
+[q4t][request] instance=7 id=chatcmpl-auto-7 event=stage stage=encode seq=-1 elapsed_ms=0.184
+[q4t][request] instance=7 id=chatcmpl-auto-7 event=stage stage=slot_admission seq=-1 elapsed_ms=5.930
+[q4t][request] instance=7 id=chatcmpl-auto-7 event=admitted stage=slot_admission seq=1 elapsed_ms=5.939
+[q4t][slot-admission] request=chatcmpl-auto-7 slot=1 capacity=65536 required=8426
+[q4t][request] instance=7 id=chatcmpl-auto-7 event=stage stage=encode seq=1 elapsed_ms=5.942
+[q4t][request] instance=7 id=chatcmpl-auto-7 event=stage stage=prefill seq=1 elapsed_ms=6.903
+[mtp-prefill] request=chatcmpl-auto-7 streamed=1 chunks=2 trunk_bytes=83886080 ready=1
+[q4t][request] instance=7 id=chatcmpl-auto-7 event=stage stage=decode seq=1 elapsed_ms=5799.954
+[mtp-accept] request=chatcmpl-auto-7 draft_counts=6,11,5,53
+[suffix] request=chatcmpl-auto-7 queries=75 hits=0 candidates=18 compared=77 matched=23 no_match=69 incomplete=0 d0_mismatch=5 invalid=0 exhausted=0 indexed=8425 peak_bytes=1310720 object_bytes=272 init_ns=418868 append_ns=56065 query_ns=34212 release_ns=321785 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=1 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=6,11,5,53
+[q4t][mem] phase=request_end id=chatcmpl-auto-7 dev_used_gb=119.306 dev_total_gb=131.921 rss_mb=981.3 mem_free_gb=10.280 mem_avail_gb=13.533 cached_gb=1.554
+[q4t][request] instance=7 id=chatcmpl-auto-7 event=stage stage=response seq=1 elapsed_ms=13285.930
+[q4t][request] instance=7 id=chatcmpl-auto-7 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=13285.991 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.026 scheduler_completion_ms=7481.796 stream_write_ms=1.898 scheduler_waits=75
+[q4t][request] instance=8 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=8 id=chatcmpl-auto-8 event=registered stage=validation seq=-1 elapsed_ms=0.176
+[q4t][request] instance=8 id=chatcmpl-auto-8 event=stage stage=encode seq=-1 elapsed_ms=0.182
+[q4t][request] instance=8 id=chatcmpl-auto-8 event=stage stage=slot_admission seq=-1 elapsed_ms=5.930
+[q4t][request] instance=8 id=chatcmpl-auto-8 event=admitted stage=slot_admission seq=1 elapsed_ms=5.939
+[q4t][slot-admission] request=chatcmpl-auto-8 slot=1 capacity=65536 required=8426
+[q4t][request] instance=8 id=chatcmpl-auto-8 event=stage stage=encode seq=1 elapsed_ms=5.942
+[q4t][request] instance=8 id=chatcmpl-auto-8 event=stage stage=prefill seq=1 elapsed_ms=6.923
+[mtp-prefill] request=chatcmpl-auto-8 streamed=1 chunks=2 trunk_bytes=83886080 ready=1
+[q4t][request] instance=8 id=chatcmpl-auto-8 event=stage stage=decode seq=1 elapsed_ms=5803.581
+[mtp-accept] request=chatcmpl-auto-8 draft_counts=6,11,5,53
+[suffix] request=chatcmpl-auto-8 queries=75 hits=0 candidates=18 compared=77 matched=23 no_match=69 incomplete=0 d0_mismatch=5 invalid=0 exhausted=0 indexed=8425 peak_bytes=1310720 object_bytes=272 init_ns=412219 append_ns=36656 query_ns=20158 release_ns=324840 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=1 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=6,11,5,53
+[q4t][mem] phase=request_end id=chatcmpl-auto-8 dev_used_gb=119.284 dev_total_gb=131.921 rss_mb=981.3 mem_free_gb=10.302 mem_avail_gb=13.556 cached_gb=1.554
+[q4t][request] instance=8 id=chatcmpl-auto-8 event=stage stage=response seq=1 elapsed_ms=13277.922
+[q4t][request] instance=8 id=chatcmpl-auto-8 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=13278.006 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.025 scheduler_completion_ms=7471.203 stream_write_ms=1.240 scheduler_waits=75
+[q4t][request] instance=9 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.001
+[q4t][request] instance=9 id=chatcmpl-auto-9 event=registered stage=validation seq=-1 elapsed_ms=0.749
+[q4t][request] instance=9 id=chatcmpl-auto-9 event=stage stage=encode seq=-1 elapsed_ms=0.827
+[q4t][request] instance=9 id=chatcmpl-auto-9 event=stage stage=slot_admission seq=-1 elapsed_ms=29.688
+[q4t][request] instance=9 id=chatcmpl-auto-9 event=admitted stage=slot_admission seq=1 elapsed_ms=29.701
+[q4t][slot-admission] request=chatcmpl-auto-9 slot=1 capacity=65536 required=45300
+[q4t][request] instance=9 id=chatcmpl-auto-9 event=stage stage=encode seq=1 elapsed_ms=29.704
+[q4t][request] instance=9 id=chatcmpl-auto-9 event=stage stage=prefill seq=1 elapsed_ms=30.804
+[mtp-prefill] request=chatcmpl-auto-9 streamed=1 chunks=11 trunk_bytes=83886080 ready=1
+[q4t][request] instance=9 id=chatcmpl-auto-9 event=stage stage=decode seq=1 elapsed_ms=37275.796
+[mtp-accept] request=chatcmpl-auto-9 draft_counts=6,3,5,57
+[suffix] request=chatcmpl-auto-9 queries=71 hits=0 candidates=38 compared=223 matched=77 no_match=57 incomplete=0 d0_mismatch=2 invalid=0 exhausted=0 indexed=45299 peak_bytes=1310720 object_bytes=272 init_ns=527302 append_ns=47333 query_ns=34323 release_ns=2139 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=12 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=6,3,5,57
+[q4t][mem] phase=request_end id=chatcmpl-auto-9 dev_used_gb=119.299 dev_total_gb=131.921 rss_mb=986.0 mem_free_gb=10.283 mem_avail_gb=13.546 cached_gb=1.558
+[q4t][request] instance=9 id=chatcmpl-auto-9 event=stage stage=response seq=1 elapsed_ms=44482.435
+[q4t][request] instance=9 id=chatcmpl-auto-9 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=44482.503 slot_wait_ms=0.003 model_lock_ms=0.000 tokenizer_lock_ms=0.024 scheduler_completion_ms=7201.613 stream_write_ms=1.759 scheduler_waits=71
+[q4t][request] instance=10 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=10 id=chatcmpl-auto-10 event=registered stage=validation seq=-1 elapsed_ms=0.730
+[q4t][request] instance=10 id=chatcmpl-auto-10 event=stage stage=encode seq=-1 elapsed_ms=0.742
+[q4t][request] instance=10 id=chatcmpl-auto-10 event=stage stage=slot_admission seq=-1 elapsed_ms=28.185
+[q4t][request] instance=10 id=chatcmpl-auto-10 event=admitted stage=slot_admission seq=1 elapsed_ms=28.197
+[q4t][slot-admission] request=chatcmpl-auto-10 slot=1 capacity=65536 required=45300
+[q4t][request] instance=10 id=chatcmpl-auto-10 event=stage stage=encode seq=1 elapsed_ms=28.200
+[q4t][request] instance=10 id=chatcmpl-auto-10 event=stage stage=prefill seq=1 elapsed_ms=29.184
+[mtp-prefill] request=chatcmpl-auto-10 streamed=1 chunks=11 trunk_bytes=83886080 ready=1
+[q4t][request] instance=10 id=chatcmpl-auto-10 event=stage stage=decode seq=1 elapsed_ms=37225.933
+[mtp-accept] request=chatcmpl-auto-10 draft_counts=6,3,5,57
+[suffix] request=chatcmpl-auto-10 queries=71 hits=0 candidates=38 compared=223 matched=77 no_match=57 incomplete=0 d0_mismatch=2 invalid=0 exhausted=0 indexed=45299 peak_bytes=1310720 object_bytes=272 init_ns=273554 append_ns=26050 query_ns=16810 release_ns=1241 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=12 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=6,3,5,57
+[q4t][mem] phase=request_end id=chatcmpl-auto-10 dev_used_gb=119.353 dev_total_gb=131.921 rss_mb=987.7 mem_free_gb=10.229 mem_avail_gb=13.499 cached_gb=1.564
+[q4t][request] instance=10 id=chatcmpl-auto-10 event=stage stage=response seq=1 elapsed_ms=44485.450
+[q4t][request] instance=10 id=chatcmpl-auto-10 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=44485.522 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.023 scheduler_completion_ms=7256.868 stream_write_ms=1.298 scheduler_waits=71
+[q4t][request] instance=11 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=11 id=chatcmpl-auto-11 event=registered stage=validation seq=-1 elapsed_ms=0.747
+[q4t][request] instance=11 id=chatcmpl-auto-11 event=stage stage=encode seq=-1 elapsed_ms=0.760
+[q4t][request] instance=11 id=chatcmpl-auto-11 event=stage stage=slot_admission seq=-1 elapsed_ms=28.408
+[q4t][request] instance=11 id=chatcmpl-auto-11 event=admitted stage=slot_admission seq=1 elapsed_ms=28.422
+[q4t][slot-admission] request=chatcmpl-auto-11 slot=1 capacity=65536 required=45300
+[q4t][request] instance=11 id=chatcmpl-auto-11 event=stage stage=encode seq=1 elapsed_ms=28.426
+[q4t][request] instance=11 id=chatcmpl-auto-11 event=stage stage=prefill seq=1 elapsed_ms=29.464
+[mtp-prefill] request=chatcmpl-auto-11 streamed=1 chunks=11 trunk_bytes=83886080 ready=1
+[q4t][request] instance=11 id=chatcmpl-auto-11 event=stage stage=decode seq=1 elapsed_ms=37271.401
+[mtp-accept] request=chatcmpl-auto-11 draft_counts=6,3,5,57
+[suffix] request=chatcmpl-auto-11 queries=71 hits=0 candidates=38 compared=223 matched=77 no_match=57 incomplete=0 d0_mismatch=2 invalid=0 exhausted=0 indexed=45299 peak_bytes=1310720 object_bytes=272 init_ns=333248 append_ns=34711 query_ns=22922 release_ns=1157 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=12 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=6,3,5,57
+[q4t][mem] phase=request_end id=chatcmpl-auto-11 dev_used_gb=119.348 dev_total_gb=131.921 rss_mb=988.3 mem_free_gb=10.234 mem_avail_gb=13.526 cached_gb=1.585
+[q4t][request] instance=11 id=chatcmpl-auto-11 event=stage stage=response seq=1 elapsed_ms=44473.878
+[q4t][request] instance=11 id=chatcmpl-auto-11 event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=44473.941 slot_wait_ms=0.003 model_lock_ms=0.000 tokenizer_lock_ms=0.022 scheduler_completion_ms=7198.275 stream_write_ms=1.799 scheduler_waits=71
+[q4t][request] instance=12 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=12 id=chatcmpl-auto-12 event=registered stage=validation seq=-1 elapsed_ms=3.164
+[q4t][request] instance=12 id=chatcmpl-auto-12 event=stage stage=encode seq=-1 elapsed_ms=3.475
+[q4t][request] instance=12 id=chatcmpl-auto-12 event=stage stage=slot_admission seq=-1 elapsed_ms=125.779
+[q4t][request] instance=12 id=chatcmpl-auto-12 event=admitted stage=slot_admission seq=0 elapsed_ms=125.794
+[q4t][slot-admission] request=chatcmpl-auto-12 slot=0 capacity=208896 required=205037
+[q4t][request] instance=12 id=chatcmpl-auto-12 event=stage stage=encode seq=0 elapsed_ms=125.798
+[q4t][request] instance=12 id=chatcmpl-auto-12 event=stage stage=prefill seq=0 elapsed_ms=126.986
+[mtp-prefill] request=chatcmpl-auto-12 streamed=1 chunks=50 trunk_bytes=83886080 ready=1
+[q4t][request] instance=12 id=chatcmpl-auto-12 event=stage stage=decode seq=0 elapsed_ms=261757.210
+[mtp-accept] request=chatcmpl-auto-12 draft_counts=4,5,3,58
+[suffix] request=chatcmpl-auto-12 queries=70 hits=0 candidates=57 compared=303 matched=87 no_match=53 incomplete=0 d0_mismatch=6 invalid=0 exhausted=0 indexed=205036 peak_bytes=1884160 object_bytes=272 init_ns=931904 append_ns=31731 query_ns=22497 release_ns=1102 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=11 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=4,5,3,58
+[q4t][mem] phase=request_end id=chatcmpl-auto-12 dev_used_gb=119.433 dev_total_gb=131.921 rss_mb=1008.4 mem_free_gb=10.149 mem_avail_gb=13.483 cached_gb=1.623
+[q4t][request] instance=12 id=chatcmpl-auto-12 event=stage stage=response seq=0 elapsed_ms=269634.099
+[q4t][request] instance=12 id=chatcmpl-auto-12 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=269634.177 slot_wait_ms=0.003 model_lock_ms=0.000 tokenizer_lock_ms=0.022 scheduler_completion_ms=7873.398 stream_write_ms=1.407 scheduler_waits=70
+[q4t][request] instance=13 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=13 id=chatcmpl-auto-13 event=registered stage=validation seq=-1 elapsed_ms=3.123
+[q4t][request] instance=13 id=chatcmpl-auto-13 event=stage stage=encode seq=-1 elapsed_ms=3.181
+[q4t][request] instance=13 id=chatcmpl-auto-13 event=stage stage=slot_admission seq=-1 elapsed_ms=125.500
+[q4t][request] instance=13 id=chatcmpl-auto-13 event=admitted stage=slot_admission seq=0 elapsed_ms=125.516
+[q4t][slot-admission] request=chatcmpl-auto-13 slot=0 capacity=208896 required=205037
+[q4t][request] instance=13 id=chatcmpl-auto-13 event=stage stage=encode seq=0 elapsed_ms=125.520
+[q4t][request] instance=13 id=chatcmpl-auto-13 event=stage stage=prefill seq=0 elapsed_ms=126.624
+[mtp-prefill] request=chatcmpl-auto-13 streamed=1 chunks=50 trunk_bytes=83886080 ready=1
+[q4t][request] instance=13 id=chatcmpl-auto-13 event=stage stage=decode seq=0 elapsed_ms=261783.945
+[mtp-accept] request=chatcmpl-auto-13 draft_counts=4,5,3,58
+[suffix] request=chatcmpl-auto-13 queries=70 hits=0 candidates=57 compared=303 matched=87 no_match=53 incomplete=0 d0_mismatch=6 invalid=0 exhausted=0 indexed=205036 peak_bytes=1884160 object_bytes=272 init_ns=720470 append_ns=34116 query_ns=23229 release_ns=1343 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=11 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=4,5,3,58
+[q4t][mem] phase=request_end id=chatcmpl-auto-13 dev_used_gb=119.442 dev_total_gb=131.921 rss_mb=1010.3 mem_free_gb=10.140 mem_avail_gb=13.495 cached_gb=1.639
+[q4t][request] instance=13 id=chatcmpl-auto-13 event=stage stage=response seq=0 elapsed_ms=269647.384
+[q4t][request] instance=13 id=chatcmpl-auto-13 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=269647.455 slot_wait_ms=0.003 model_lock_ms=0.000 tokenizer_lock_ms=0.025 scheduler_completion_ms=7858.458 stream_write_ms=2.039 scheduler_waits=70
+[q4t][request] instance=14 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=14 id=chatcmpl-auto-14 event=registered stage=validation seq=-1 elapsed_ms=3.359
+[q4t][request] instance=14 id=chatcmpl-auto-14 event=stage stage=encode seq=-1 elapsed_ms=3.405
+[q4t][request] instance=14 id=chatcmpl-auto-14 event=stage stage=slot_admission seq=-1 elapsed_ms=125.182
+[q4t][request] instance=14 id=chatcmpl-auto-14 event=admitted stage=slot_admission seq=0 elapsed_ms=125.194
+[q4t][slot-admission] request=chatcmpl-auto-14 slot=0 capacity=208896 required=205037
+[q4t][request] instance=14 id=chatcmpl-auto-14 event=stage stage=encode seq=0 elapsed_ms=125.198
+[q4t][request] instance=14 id=chatcmpl-auto-14 event=stage stage=prefill seq=0 elapsed_ms=126.271
+[mtp-prefill] request=chatcmpl-auto-14 streamed=1 chunks=50 trunk_bytes=83886080 ready=1
+[q4t][request] instance=14 id=chatcmpl-auto-14 event=stage stage=decode seq=0 elapsed_ms=261772.167
+[mtp-accept] request=chatcmpl-auto-14 draft_counts=4,5,3,58
+[suffix] request=chatcmpl-auto-14 queries=70 hits=0 candidates=57 compared=303 matched=87 no_match=53 incomplete=0 d0_mismatch=6 invalid=0 exhausted=0 indexed=205036 peak_bytes=1884160 object_bytes=272 init_ns=743525 append_ns=44200 query_ns=27893 release_ns=1528 numeric_checks=0 classified_tokens=0 numeric_rejected=0 numeric_ns=0 short_rejected=11 classify_failed=0 cache_decodes=0 cache_lookups=0 cache_allocations=0 cache_bytes=0 accepted=0,0,0,0 neural_accepted=4,5,3,58
+[q4t][mem] phase=request_end id=chatcmpl-auto-14 dev_used_gb=119.468 dev_total_gb=131.921 rss_mb=1010.3 mem_free_gb=10.114 mem_avail_gb=13.489 cached_gb=1.655
+[q4t][request] instance=14 id=chatcmpl-auto-14 event=stage stage=response seq=0 elapsed_ms=269633.009
+[q4t][request] instance=14 id=chatcmpl-auto-14 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=269633.075 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.023 scheduler_completion_ms=7854.824 stream_write_ms=2.311 scheduler_waits=70
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=1077
+[q4t] shutdown complete (0 in-flight remaining)
+[suffix-classes] event=release bytes=0 peak_bytes=0 checks=0 lookups=0 decodes=0 unknown=0 allocations=0 allocation_ns=0 release_ns=0
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1619,"device_bytes":101714040916,"allocated":1619,"consumed":1619,"freed":1619,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"a46382d4a43bb9c22696cea918c5d50f14d112e0820c9fe95564fb2a84aa7887"}

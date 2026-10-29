@@ -1,0 +1,113 @@
+{
+  "passed": false,
+  "errors": [
+    "c: incomplete stage/guard/monitor barrier",
+    "c: admitted/end ledger",
+    "c: HTTP output incomplete",
+    "c: fixed request/start count not completed",
+    "complete matrix count differs from (296, 20)"
+  ],
+  "candidate_sha256": "c0ed0800bb36f8c8b7dcf9155ae463dd146d73b217294839f0776bef138f6d2d",
+  "phases": [
+    {
+      "phase": "a",
+      "status": "MEASURED_REQUIRES_REVIEW",
+      "requests": 112,
+      "starts": 6,
+      "expected_cancellations": 0,
+      "started": 1793224249.7242005,
+      "finished": 1793230335.4400196,
+      "guard_finished": 1793230336.258408,
+      "elapsed_seconds": 6085.715821666177,
+      "flushed_samples": 6086,
+      "final_barrier": {
+        "boundary_monotonic": 1420417.405565141,
+        "sample_started_monotonic": 1420417.910522636,
+        "flushed_monotonic": 1420417.931294916
+      },
+      "plan_sha256": "baf17a607c4ade51220ad59021770dce0dfb02ce8abb288324e22022c7afa321",
+      "bound_files": 791
+    },
+    {
+      "phase": "b",
+      "status": "MEASURED_REQUIRES_REVIEW",
+      "requests": 24,
+      "starts": 2,
+      "expected_cancellations": 2,
+      "started": 1793230426.8671215,
+      "finished": 1793230616.9216437,
+      "guard_finished": 1793230617.843361,
+      "elapsed_seconds": 190.0545248989947,
+      "flushed_samples": 191,
+      "final_barrier": {
+        "boundary_monotonic": 1420698.436286463,
+        "sample_started_monotonic": 1420699.406690949,
+        "flushed_monotonic": 1420699.426414972
+      },
+      "plan_sha256": "3d512d6ec9aeea8abf75af6ad4f8141c50ec14e824e503a7289ca1c99ba14bb6",
+      "bound_files": 791
+    },
+    {
+      "phase": "s",
+      "status": "MEASURED_REQUIRES_REVIEW",
+      "requests": 32,
+      "starts": 4,
+      "expected_cancellations": 0,
+      "started": 1793230635.5720074,
+      "finished": 1793233810.9830797,
+      "guard_finished": 1793233811.838715,
+      "elapsed_seconds": 3175.411074314965,
+      "flushed_samples": 3176,
+      "final_barrier": {
+        "boundary_monotonic": 1423892.997967035,
+        "sample_started_monotonic": 1423893.459732694,
+        "flushed_monotonic": 1423893.480587613
+      },
+      "plan_sha256": "c71e2b9cea336d774ce32bc62f1383d576fe47440a080444a4dee952057ca5a5",
+      "bound_files": 791
+    },
+    {
+      "phase": "c",
+      "status": "STOPPED",
+      "requests": 33,
+      "starts": 3,
+      "expected_cancellations": 0,
+      "started": 1793234243.3037379,
+      "finished": 1793236446.4386005,
+      "guard_finished": 1793236447.137916,
+      "elapsed_seconds": 2203.1348654290196,
+      "flushed_samples": 2203,
+      "final_barrier": {},
+      "plan_sha256": "5e6ebd1f83e581c3a208631c24d714aad915326efb0daf78a2f9f03de28e8de1",
+      "bound_files": 791
+    }
+  ],
+  "cumulative_http": 201,
+  "cumulative_starts": 15,
+  "new_gpu_fixtures": 0,
+  "reused_gpu_fixtures": 2,
+  "expected_cancellations": 2,
+  "flushed_samples": 11656,
+  "deadline": 1793244031.7697556,
+  "deadline_remaining_seconds": 7513.069606304169,
+  "statistical_noninferiority": "NOT_ESTABLISHED",
+  "performance_decision_separate": true,
+  "retained_preparation_failures": [
+    {
+      "error": "AttributeError: legacy.sha expected Path, received manifest string",
+      "model_starts": 0,
+      "http_requests": 0,
+      "deadline_created": false,
+      "preserved_directory": "preparation-incomplete-01"
+    },
+    {
+      "phase": "before_plan_generation",
+      "error": "ImportError: local run_stage circular import through session_cache.audit",
+      "model_starts": 0,
+      "http_requests": 0,
+      "deadline_created": false,
+      "fix": "explicit importlib file alias; no runtime change"
+    }
+  ],
+  "measurement_wall_seconds": 12197.413715600967
+}

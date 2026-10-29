@@ -1,0 +1,44 @@
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=4
+[session-cache] enabled=1 entries=8 disk_bytes=25769803776 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[q4t][startup] tokenizer 423 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=4 max_prefill=4096 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=100.60 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=1241120768 mtp_workspace=1751549952 forward_buffers=209797124 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=2.49 GB (peak admitted MTP request allocations)  state_pool=14.03 GB
+[q4t][budget]   => max_len=208896 max_seq=4
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5550108160 mtp_buffers=522240 mtp_scratch=19333504 mtp_checkpoints=1387708416 mtp_forward_temp=8409664
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=117983138580 runtime_peak=117114135892 estimated_total=117983138580
+[q4t][startup] budget 472 ms
+[suffix-classes] event=configure bytes=0 vocab=248320 cap_bytes=262144 object_bytes=88 lazy=1
+[q4t] suffix enabled: k=3 match=3..64 candidates=4 capacity=208896 global_ids=1 numeric_gate=1 min_admitted_match=32 lazy_classes=1
+[q4t][capacity] requested_max_len=208896 requested_max_seq=4 requested_max_prefill=4096 effective_max_len=208896 effective_max_seq=4 effective_max_prefill=4096 budget_enabled=1 budget_feasible=true
+[q4t][slots] capacities=208896,65536,65536,65536 stream_mtp_prefill=1 text_admission=32
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1621,"device_bytes":102049847380,"allocated":1621,"consumed":0,"freed":0,"unhanded_remaining":1621,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"9296ffe7a6ea71a6e86e24a98958ebdfc57a6bf7ad37fe48540c16c8debfbfd4"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2373 ms
+[q4t][startup] model_load 25779 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] BF16 subset head rows=65536 bytes=335806464
+[q4t] MTP loaded (k=3 max_seq=4)
+[q4t][startup] mtp_load 10159 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=4
+[q4t] continuous-batching scheduler started (max_seq=4)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1621,"device_bytes":102049847380,"allocated":1621,"consumed":1621,"freed":0,"unhanded_remaining":0,"handed_live":1621,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"9296ffe7a6ea71a6e86e24a98958ebdfc57a6bf7ad37fe48540c16c8debfbfd4"}
+[q4t][startup] startup_total 39226 ms
+[q4t] serving on port 8762 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.001
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=registered stage=validation seq=-1 elapsed_ms=1.703
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=encode seq=-1 elapsed_ms=1.728
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=slot_admission seq=-1 elapsed_ms=68.908
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=admitted stage=slot_admission seq=0 elapsed_ms=68.920
+[q4t][slot-admission] request=chatcmpl-auto-0 slot=0 capacity=208896 required=131327
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=encode seq=0 elapsed_ms=68.924
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=prefill seq=0 elapsed_ms=69.997
+[session-cache] request=chatcmpl-auto-0 event=restore prefix=0 ms=0.004 error=none source=session
+[prefix-cache] request=chatcmpl-auto-0 event=save prefix=8192 bytes=367964160 ms=374.981 error=none
+[q4t] shutting down: draining in-flight requests...

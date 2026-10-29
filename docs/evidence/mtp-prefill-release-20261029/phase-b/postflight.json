@@ -1,0 +1,14 @@
+{
+  "status": "MEASURED_REQUIRES_REVIEW",
+  "state_sha256": "9f4ef0bce840dd7102cebddb15713bb8dbb414cdff3bcbe764b0adf206700534",
+  "monitor_failures": [],
+  "cleanup_errors": [],
+  "final_summary_sha256": "7de9d4c74c8daaaa1f55be62834036be32a26fe6e8f65cb179097ebece68764c",
+  "final_monitor_barrier": {
+    "boundary_monotonic": 1420698.436286463,
+    "sample_started_monotonic": 1420699.406690949,
+    "flushed_monotonic": 1420699.426414972
+  },
+  "final_monitor_errors": [],
+  "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+}

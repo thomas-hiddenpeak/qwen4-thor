@@ -1,0 +1,7 @@
+{
+  "error": "AttributeError: legacy.sha expected Path, received manifest string",
+  "model_starts": 0,
+  "http_requests": 0,
+  "deadline_created": false,
+  "preserved_directory": "preparation-incomplete-01"
+}

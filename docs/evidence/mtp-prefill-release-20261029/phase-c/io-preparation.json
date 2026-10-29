@@ -1,0 +1,97 @@
+{
+  "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-release-20261029/phase-c/io-preparation.data",
+  "device": 66305,
+  "inode": 5654370,
+  "started": 1793233882.3875682,
+  "finished": 1793234243.2982786,
+  "bytes": 68719476736,
+  "target": 68719476736,
+  "staging_bytes": 8388608,
+  "buffer_sha256": "634d3bd6e8323fc8a2e2336ea20984ef8db32a08ed3361d72fbcf00749aa1009",
+  "segments": [
+    {
+      "bytes": 4294967296,
+      "segment_seconds": 14.906152846990153,
+      "elapsed_seconds": 14.906152846990153
+    },
+    {
+      "bytes": 8589934592,
+      "segment_seconds": 20.34092112397775,
+      "elapsed_seconds": 35.247073970967904
+    },
+    {
+      "bytes": 12884901888,
+      "segment_seconds": 28.848731325007975,
+      "elapsed_seconds": 64.09580529597588
+    },
+    {
+      "bytes": 17179869184,
+      "segment_seconds": 26.030507291899994,
+      "elapsed_seconds": 90.12631258787587
+    },
+    {
+      "bytes": 21474836480,
+      "segment_seconds": 30.455018512904644,
+      "elapsed_seconds": 120.58133110078052
+    },
+    {
+      "bytes": 25769803776,
+      "segment_seconds": 25.12722622905858,
+      "elapsed_seconds": 145.7085573298391
+    },
+    {
+      "bytes": 30064771072,
+      "segment_seconds": 17.168628589017317,
+      "elapsed_seconds": 162.8771859188564
+    },
+    {
+      "bytes": 34359738368,
+      "segment_seconds": 27.388012022012845,
+      "elapsed_seconds": 190.26519794086926
+    },
+    {
+      "bytes": 38654705664,
+      "segment_seconds": 16.251042802119628,
+      "elapsed_seconds": 206.51624074298888
+    },
+    {
+      "bytes": 42949672960,
+      "segment_seconds": 19.982967406976968,
+      "elapsed_seconds": 226.49920814996585
+    },
+    {
+      "bytes": 47244640256,
+      "segment_seconds": 21.63269882602617,
+      "elapsed_seconds": 248.13190697599202
+    },
+    {
+      "bytes": 51539607552,
+      "segment_seconds": 24.49434178392403,
+      "elapsed_seconds": 272.62624875991605
+    },
+    {
+      "bytes": 55834574848,
+      "segment_seconds": 20.59306692890823,
+      "elapsed_seconds": 293.2193156888243
+    },
+    {
+      "bytes": 60129542144,
+      "segment_seconds": 22.620905311079696,
+      "elapsed_seconds": 315.840220999904
+    },
+    {
+      "bytes": 64424509440,
+      "segment_seconds": 25.227552752010524,
+      "elapsed_seconds": 341.0677737519145
+    },
+    {
+      "bytes": 68719476736,
+      "segment_seconds": 19.81416142801754,
+      "elapsed_seconds": 360.88193517993204
+    }
+  ],
+  "failure": null,
+  "counts_in_transaction": false,
+  "counts_in_stage_wall": true,
+  "steady_state_guaranteed": false
+}

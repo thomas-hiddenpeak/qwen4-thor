@@ -1,0 +1,815 @@
+{
+  "passed": false,
+  "candidate_sha256": "c0ed0800bb36f8c8b7dcf9155ae463dd146d73b217294839f0776bef138f6d2d",
+  "engineering_decision": "NO_GO_FIRST_SHARED_BLOCK_NONPOSITIVE",
+  "accepted_scope": [],
+  "reason": "Completed full-head 8K repeat-code public-prefix pair has nonpositive net gain; frozen first-block stopping rule applies.",
+  "evidence_validity": "A/B/S valid; completed C full pairs validated individually; interrupted C tail incomplete, no final sampler barrier.",
+  "measurement_completeness": "A112/6 B24/2 S32/4 complete; C32 complete plus 1 interrupted request across 3 starts; remaining C and H unexecuted.",
+  "statistical_conclusion": "Descriptive results; no population regression or statistical noninferiority established.",
+  "budget": {
+    "http_admitted": 201,
+    "http_successful": 198,
+    "http_cancelled": 2,
+    "http_interrupted_without_end": 1,
+    "server_starts": 15,
+    "new_gpu_fixtures": 0,
+    "reused_gpu_fixtures": 2
+  },
+  "default_binary_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "default_sidecar_sha256": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2",
+  "default_replaced": false,
+  "no_resampling": true,
+  "completed_c_results": [
+    {
+      "head": "full",
+      "scenario": "repeat-code-8192",
+      "block": 0,
+      "off_seconds": 256.10575325693935,
+      "on_seconds": 259.125418931013,
+      "time_reduction": -0.01179069831767543,
+      "complete_outputs_equal": true,
+      "cache_contract": true,
+      "details": [
+        {
+          "service": "00-full-off",
+          "parent_ttft": 102.96474256692454,
+          "parent_latency": 117.7467748420313,
+          "child_start_gap": 5.867706777062267,
+          "child_group_seconds": 132.49127163784578,
+          "child_ttft": [
+            103.83157005300745,
+            103.80413264106028,
+            103.61714411596768
+          ],
+          "cache_events": [
+            {
+              "request": "chatcmpl-auto-0",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.002",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-0",
+              "event": "save",
+              "prefix": "131323",
+              "ms": "8633.636",
+              "disk_bytes": "4159963136",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-1",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.002",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-2",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.006",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-3",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.005",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-1",
+              "event": "save",
+              "prefix": "60238",
+              "ms": "2969.644",
+              "disk_bytes": "6130786304",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-2",
+              "event": "save",
+              "prefix": "33526",
+              "ms": "5468.798",
+              "disk_bytes": "7278981120",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-3",
+              "event": "save",
+              "prefix": "49402",
+              "ms": "12479.417",
+              "disk_bytes": "8916082688",
+              "error": "none",
+              "pool": "session"
+            }
+          ],
+          "parent_session_save_seconds": 8.633636000000001,
+          "seed_save_seconds": 0
+        },
+        {
+          "service": "01-full-on",
+          "parent_ttft": 103.11581636592746,
+          "parent_latency": 129.09024121495895,
+          "child_start_gap": 5.795781339053065,
+          "child_group_seconds": 124.23939637700096,
+          "child_ttft": [
+            88.53390260785818,
+            88.74365106597543,
+            88.7566325769294
+          ],
+          "cache_events": [
+            {
+              "request": "chatcmpl-auto-0",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.002",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-0",
+              "event": "save",
+              "prefix": "8192",
+              "bytes": "367964160",
+              "ms": "383.729",
+              "error": "none",
+              "pool": "shared"
+            },
+            {
+              "request": "chatcmpl-auto-0",
+              "event": "save",
+              "prefix": "131323",
+              "ms": "19816.510",
+              "disk_bytes": "4159963136",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-1",
+              "event": "restore",
+              "prefix": "8192",
+              "ms": "379.025",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-2",
+              "event": "restore",
+              "prefix": "8192",
+              "ms": "370.284",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-3",
+              "event": "restore",
+              "prefix": "8192",
+              "ms": "370.343",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-1",
+              "event": "save",
+              "prefix": "33526",
+              "ms": "2231.303",
+              "disk_bytes": "5308157952",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-2",
+              "event": "save",
+              "prefix": "60238",
+              "ms": "9315.867",
+              "disk_bytes": "7278981120",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-3",
+              "event": "save",
+              "prefix": "49402",
+              "ms": "20047.226",
+              "disk_bytes": "8916082688",
+              "error": "none",
+              "pool": "session"
+            }
+          ],
+          "parent_session_save_seconds": 19.816509999999997,
+          "seed_save_seconds": 0.383729
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-text-8192",
+      "block": 0,
+      "off_seconds": 261.7580587458797,
+      "on_seconds": 249.66160110593773,
+      "time_reduction": 0.04621235998577389,
+      "complete_outputs_equal": true,
+      "cache_contract": true,
+      "details": [
+        {
+          "service": "00-full-off",
+          "parent_ttft": 102.62160126003437,
+          "parent_latency": 125.45589174283668,
+          "child_start_gap": 5.7006647111848,
+          "child_group_seconds": 130.6015022918582,
+          "child_ttft": [
+            103.43293230584823,
+            103.64474915596657,
+            103.64900099905208
+          ],
+          "cache_events": [
+            {
+              "request": "chatcmpl-auto-4",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.004",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-4",
+              "event": "save",
+              "prefix": "131306",
+              "ms": "16767.027",
+              "disk_bytes": "13075513344",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-5",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.002",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-6",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.004",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-7",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.007",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-5",
+              "event": "save",
+              "prefix": "33530",
+              "ms": "1138.401",
+              "disk_bytes": "14223814656",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-7",
+              "event": "save",
+              "prefix": "49385",
+              "ms": "3930.037",
+              "disk_bytes": "15860436992",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-6",
+              "event": "save",
+              "prefix": "60242",
+              "ms": "12579.760",
+              "disk_bytes": "17831419904",
+              "error": "none",
+              "pool": "session"
+            }
+          ],
+          "parent_session_save_seconds": 16.767027,
+          "seed_save_seconds": 0
+        },
+        {
+          "service": "01-full-on",
+          "parent_ttft": 102.81560295401141,
+          "parent_latency": 125.31334871915169,
+          "child_start_gap": 5.7839032739866525,
+          "child_group_seconds": 118.56434911279939,
+          "child_ttft": [
+            88.63483462505974,
+            88.49134170589969,
+            88.70854019885883
+          ],
+          "cache_events": [
+            {
+              "request": "chatcmpl-auto-4",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.008",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-4",
+              "event": "save",
+              "prefix": "8192",
+              "bytes": "735928320",
+              "ms": "366.520",
+              "error": "none",
+              "pool": "shared"
+            },
+            {
+              "request": "chatcmpl-auto-4",
+              "event": "save",
+              "prefix": "131306",
+              "ms": "16351.131",
+              "disk_bytes": "13075513344",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-5",
+              "event": "restore",
+              "prefix": "8192",
+              "ms": "367.987",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-6",
+              "event": "restore",
+              "prefix": "8192",
+              "ms": "384.901",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-7",
+              "event": "restore",
+              "prefix": "8192",
+              "ms": "371.341",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-5",
+              "event": "save",
+              "prefix": "49385",
+              "ms": "1606.896",
+              "disk_bytes": "14712135680",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-6",
+              "event": "save",
+              "prefix": "60242",
+              "ms": "6161.598",
+              "disk_bytes": "16683118592",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-7",
+              "event": "save",
+              "prefix": "33530",
+              "ms": "14951.308",
+              "disk_bytes": "17831419904",
+              "error": "none",
+              "pool": "session"
+            }
+          ],
+          "parent_session_save_seconds": 16.351131,
+          "seed_save_seconds": 0.36651999999999996
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-code-32768",
+      "block": 0,
+      "off_seconds": 271.37580790696666,
+      "on_seconds": 200.08741536410525,
+      "time_reduction": 0.2626925115126716,
+      "complete_outputs_equal": true,
+      "cache_contract": true,
+      "details": [
+        {
+          "service": "00-full-off",
+          "parent_ttft": 102.58088167593814,
+          "parent_latency": 129.01288015884347,
+          "child_start_gap": 5.767280946020037,
+          "child_group_seconds": 136.59564680210315,
+          "child_ttft": [
+            103.64247021311894,
+            103.86010330915451,
+            103.85901337605901
+          ],
+          "cache_events": [
+            {
+              "request": "chatcmpl-auto-8",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.003",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-8",
+              "event": "save",
+              "prefix": "131319",
+              "ms": "20333.748",
+              "disk_bytes": "17831313408",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-9",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.003",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-10",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.006",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-11",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.006",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-9",
+              "event": "save",
+              "prefix": "33855",
+              "ms": "2447.585",
+              "disk_bytes": "17018814464",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-11",
+              "event": "save",
+              "prefix": "60234",
+              "ms": "12612.016",
+              "disk_bytes": "17841336320",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-10",
+              "event": "save",
+              "prefix": "49385",
+              "ms": "17081.563",
+              "disk_bytes": "17840857088",
+              "error": "none",
+              "pool": "session"
+            }
+          ],
+          "parent_session_save_seconds": 20.333748,
+          "seed_save_seconds": 0
+        },
+        {
+          "service": "01-full-on",
+          "parent_ttft": 103.55878124921583,
+          "parent_latency": 126.32806829106994,
+          "child_start_gap": 5.716376511147246,
+          "child_group_seconds": 68.04297056188807,
+          "child_ttft": [
+            37.97410732205026,
+            37.97809366299771,
+            37.77353758085519
+          ],
+          "cache_events": [
+            {
+              "request": "chatcmpl-auto-8",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.007",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-8",
+              "event": "save",
+              "prefix": "32768",
+              "bytes": "1860734976",
+              "ms": "1108.846",
+              "error": "none",
+              "pool": "shared"
+            },
+            {
+              "request": "chatcmpl-auto-8",
+              "event": "save",
+              "prefix": "131319",
+              "ms": "16619.707",
+              "disk_bytes": "17831313408",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-9",
+              "event": "restore",
+              "prefix": "32768",
+              "ms": "1102.052",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-10",
+              "event": "restore",
+              "prefix": "32768",
+              "ms": "1132.821",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-11",
+              "event": "restore",
+              "prefix": "32768",
+              "ms": "1125.402",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-9",
+              "event": "save",
+              "prefix": "60234",
+              "ms": "2879.433",
+              "disk_bytes": "18653835264",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-10",
+              "event": "save",
+              "prefix": "49385",
+              "ms": "9550.582",
+              "disk_bytes": "18319634432",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-11",
+              "event": "save",
+              "prefix": "33855",
+              "ms": "13965.150",
+              "disk_bytes": "17840857088",
+              "error": "none",
+              "pool": "session"
+            }
+          ],
+          "parent_session_save_seconds": 16.619707,
+          "seed_save_seconds": 1.108846
+        }
+      ]
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-text-32768",
+      "block": 0,
+      "off_seconds": 265.6686944300309,
+      "on_seconds": 206.22686044382863,
+      "time_reduction": 0.22374421688535617,
+      "complete_outputs_equal": true,
+      "cache_contract": true,
+      "details": [
+        {
+          "service": "00-full-off",
+          "parent_ttft": 102.5658801200334,
+          "parent_latency": 123.31855557695962,
+          "child_start_gap": 5.753088220022619,
+          "child_group_seconds": 136.59705063304864,
+          "child_ttft": [
+            103.53127262089401,
+            103.53310750820674,
+            103.663349079201
+          ],
+          "cache_events": [
+            {
+              "request": "chatcmpl-auto-12",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.003",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-12",
+              "event": "save",
+              "prefix": "131323",
+              "ms": "14671.148",
+              "disk_bytes": "17841389568",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-13",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.004",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-14",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.006",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-15",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.005",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-13",
+              "event": "save",
+              "prefix": "33586",
+              "ms": "3822.602",
+              "disk_bytes": "17843146752",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-14",
+              "event": "save",
+              "prefix": "60238",
+              "ms": "11376.762",
+              "disk_bytes": "18177347584",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-15",
+              "event": "save",
+              "prefix": "49396",
+              "ms": "15694.729",
+              "disk_bytes": "17843306496",
+              "error": "none",
+              "pool": "session"
+            }
+          ],
+          "parent_session_save_seconds": 14.671147999999999,
+          "seed_save_seconds": 0
+        },
+        {
+          "service": "01-full-on",
+          "parent_ttft": 104.54494928685017,
+          "parent_latency": 128.7462129618507,
+          "child_start_gap": 5.783857828006148,
+          "child_group_seconds": 71.69678965397179,
+          "child_ttft": [
+            37.56642295513302,
+            37.77773272502236,
+            37.77308710082434
+          ],
+          "cache_events": [
+            {
+              "request": "chatcmpl-auto-12",
+              "event": "restore",
+              "prefix": "0",
+              "ms": "0.005",
+              "error": "none",
+              "source": "session",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-12",
+              "event": "save",
+              "prefix": "32768",
+              "bytes": "2985541632",
+              "ms": "2119.549",
+              "error": "none",
+              "pool": "shared"
+            },
+            {
+              "request": "chatcmpl-auto-12",
+              "event": "save",
+              "prefix": "131323",
+              "ms": "18039.344",
+              "disk_bytes": "17841389568",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-13",
+              "event": "restore",
+              "prefix": "32768",
+              "ms": "1103.288",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-14",
+              "event": "restore",
+              "prefix": "32768",
+              "ms": "1120.955",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-15",
+              "event": "restore",
+              "prefix": "32768",
+              "ms": "1109.745",
+              "error": "none",
+              "source": "shared",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-13",
+              "event": "save",
+              "prefix": "33586",
+              "ms": "3856.979",
+              "disk_bytes": "17354825728",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-14",
+              "event": "save",
+              "prefix": "49396",
+              "ms": "10902.507",
+              "disk_bytes": "17020784640",
+              "error": "none",
+              "pool": "session"
+            },
+            {
+              "request": "chatcmpl-auto-15",
+              "event": "save",
+              "prefix": "60238",
+              "ms": "16870.252",
+              "disk_bytes": "17843306496",
+              "error": "none",
+              "pool": "session"
+            }
+          ],
+          "parent_session_save_seconds": 18.039344,
+          "seed_save_seconds": 2.119549
+        }
+      ]
+    }
+  ],
+  "runtime_source_commit": "c9d4475d1169fa653a092f22f970253fd4bcf043",
+  "created_at": 1793236912.5935702
+}

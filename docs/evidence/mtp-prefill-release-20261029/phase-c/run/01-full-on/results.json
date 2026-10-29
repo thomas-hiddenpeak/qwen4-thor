@@ -1,0 +1,522 @@
+[
+  {
+    "id": "repeat-code-8192",
+    "block": 0,
+    "rows": [
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 131071,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-0",
+        "start": 1425474.292118828,
+        "end": 1425603.382360043,
+        "latency": 129.09024121495895,
+        "ttft": 103.11581636592746,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1425474.292118828,
+          "end_monotonic_seconds": 1425603.382360043,
+          "start_utc_estimate": "2026-10-29T00:56:31.775244+00:00",
+          "end_utc_estimate": "2026-10-29T00:58:40.865486+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "09e0c21345b4310788db11768628fb88f928e18d5f70a46d00754649a3abbad5",
+        "cached_tokens": 0,
+        "cache_source": "session"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 33274,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-1",
+        "start": 1425609.178141382,
+        "end": 1425733.283479985,
+        "latency": 124.1053386030253,
+        "ttft": 88.53390260785818,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1425609.178141382,
+          "end_monotonic_seconds": 1425733.283479985,
+          "start_utc_estimate": "2026-10-29T00:58:46.661267+00:00",
+          "end_utc_estimate": "2026-10-29T01:00:50.766606+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "17ecfab700085351eeb4622bceb220a7f9cbe8465db0cbac5b894a041c7c73f5",
+        "cached_tokens": 8192,
+        "cache_source": "shared"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 49150,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-3",
+        "start": 1425609.194228102,
+        "end": 1425733.417537759,
+        "latency": 124.22330965707079,
+        "ttft": 88.74365106597543,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1425609.194228102,
+          "end_monotonic_seconds": 1425733.417537759,
+          "start_utc_estimate": "2026-10-29T00:58:46.677354+00:00",
+          "end_utc_estimate": "2026-10-29T01:00:50.900663+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "3db13459e5c341b3c762ad3a832c384b0128858e1e2d0e688ae754bb49a722e9",
+        "cached_tokens": 8192,
+        "cache_source": "shared"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 59986,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-2",
+        "start": 1425609.181201165,
+        "end": 1425733.417230861,
+        "latency": 124.23602969595231,
+        "ttft": 88.7566325769294,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1425609.181201165,
+          "end_monotonic_seconds": 1425733.417230861,
+          "start_utc_estimate": "2026-10-29T00:58:46.664327+00:00",
+          "end_utc_estimate": "2026-10-29T01:00:50.900357+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -4.76837158203125e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "5a4a1322bb78d837bb57828ef1b604d025ba1e7b5a19adeb08a2413e2cb8750e",
+        "cached_tokens": 8192,
+        "cache_source": "shared"
+      }
+    ],
+    "seed_writes": [
+      {
+        "request": "chatcmpl-auto-0",
+        "event": "save",
+        "prefix": "8192",
+        "bytes": "367964160",
+        "ms": "383.729",
+        "error": "none"
+      }
+    ],
+    "makespan": 259.125418931013,
+    "output_tokens": 1024
+  },
+  {
+    "id": "repeat-text-8192",
+    "block": 0,
+    "rows": [
+      {
+        "text": "At the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students",
+        "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+        "input_tokens": 131054,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-4",
+        "start": 1425739.081665044,
+        "end": 1425864.395013763,
+        "latency": 125.31334871915169,
+        "ttft": 102.81560295401141,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1425739.081665044,
+          "end_monotonic_seconds": 1425864.395013763,
+          "start_utc_estimate": "2026-10-29T01:00:56.564791+00:00",
+          "end_utc_estimate": "2026-10-29T01:03:01.878139+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "136dca878c3ae45b822616aca9b09fd8193f912b225b85284c456ed8b8520c67",
+        "cached_tokens": 0,
+        "cache_source": "session"
+      },
+      {
+        "text": "At the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students",
+        "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+        "input_tokens": 33278,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-7",
+        "start": 1425870.252298693,
+        "end": 1425988.74326615,
+        "latency": 118.49096745694987,
+        "ttft": 88.63483462505974,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1425870.252298693,
+          "end_monotonic_seconds": 1425988.74326615,
+          "start_utc_estimate": "2026-10-29T01:03:07.735424+00:00",
+          "end_utc_estimate": "2026-10-29T01:05:06.226392+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "396086eef4a50b494fe6c0f0384071f0f3f82973f5bbfb1f309315d1b0508868",
+        "cached_tokens": 8192,
+        "cache_source": "shared"
+      },
+      {
+        "text": "At the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students",
+        "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+        "input_tokens": 49133,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-5",
+        "start": 1425870.179017157,
+        "end": 1425988.606577097,
+        "latency": 118.42755993991159,
+        "ttft": 88.49134170589969,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1425870.179017157,
+          "end_monotonic_seconds": 1425988.606577097,
+          "start_utc_estimate": "2026-10-29T01:03:07.662143+00:00",
+          "end_utc_estimate": "2026-10-29T01:05:06.089703+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "ed6c1d1799ad06d3afcdcc1d841de7e21ba293a655e4b86115daa7c814a96b47",
+        "cached_tokens": 8192,
+        "cache_source": "shared"
+      },
+      {
+        "text": "At the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students",
+        "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+        "input_tokens": 59990,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-6",
+        "start": 1425870.178917037,
+        "end": 1425988.7431979,
+        "latency": 118.56428086291999,
+        "ttft": 88.70854019885883,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1425870.178917037,
+          "end_monotonic_seconds": 1425988.7431979,
+          "start_utc_estimate": "2026-10-29T01:03:07.662043+00:00",
+          "end_utc_estimate": "2026-10-29T01:05:06.226324+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -4.76837158203125e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "82a62dbc016e4070e588d4d46d055cc23753d1c05017a85e5c4ec45b8038539f",
+        "cached_tokens": 8192,
+        "cache_source": "shared"
+      }
+    ],
+    "seed_writes": [
+      {
+        "request": "chatcmpl-auto-4",
+        "event": "save",
+        "prefix": "8192",
+        "bytes": "735928320",
+        "ms": "366.520",
+        "error": "none"
+      }
+    ],
+    "makespan": 249.66160110593773,
+    "output_tokens": 1024
+  },
+  {
+    "id": "repeat-code-32768",
+    "block": 0,
+    "rows": [
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 131067,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-8",
+        "start": 1425994.308099395,
+        "end": 1426120.636167686,
+        "latency": 126.32806829106994,
+        "ttft": 103.55878124921583,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1425994.308099395,
+          "end_monotonic_seconds": 1426120.636167686,
+          "start_utc_estimate": "2026-10-29T01:05:11.791225+00:00",
+          "end_utc_estimate": "2026-10-29T01:07:18.119293+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "691567d8e4d16309742671bd8080465baaf7e34ec4eca9c3d806d091e9484ba5",
+        "cached_tokens": 0,
+        "cache_source": "session"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 33603,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-11",
+        "start": 1426126.371333998,
+        "end": 1426194.393369111,
+        "latency": 68.02203511307016,
+        "ttft": 37.97410732205026,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1426126.371333998,
+          "end_monotonic_seconds": 1426194.393369111,
+          "start_utc_estimate": "2026-10-29T01:07:23.854460+00:00",
+          "end_utc_estimate": "2026-10-29T01:08:31.876495+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 2.384185791015625e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "95dc78d9b92dd777ce58b4b9f47c6925f2e1b7ddc38ff983ad61c8ff5ef7fd8b",
+        "cached_tokens": 32768,
+        "cache_source": "shared"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 49133,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-10",
+        "start": 1426126.367539889,
+        "end": 1426194.395514759,
+        "latency": 68.02797487005591,
+        "ttft": 37.97809366299771,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1426126.367539889,
+          "end_monotonic_seconds": 1426194.395514759,
+          "start_utc_estimate": "2026-10-29T01:07:23.850666+00:00",
+          "end_utc_estimate": "2026-10-29T01:08:31.878640+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -2.384185791015625e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "546085df814319f00ff882b35222ac56c0f9811e761576bfecfd9f1a803f440d",
+        "cached_tokens": 32768,
+        "cache_source": "shared"
+      },
+      {
+        "text": "def pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n            pending = []\n            load = 0\n        pending.append(order[\"reference\"])\n        load += units\n    if pending:\n        boxes.append({\"orders\": pending, \"units\": load, \"label_version\": 4})\n    return {\"boxes\": boxes, \"reserve_units\": 2, \"handling_seconds\": 180}\ndef pack_courier_boxes(orders, capacity=12):\n    boxes = []\n    pending = []\n    load = 0\n    for order in sorted(orders, key=lambda item: item[\"destination\"]):\n        units = max(1, min(6, int(order[\"units\"])))\n        if pending and load + units > capacity:\n            boxes.append({\"orders",
+        "output_sha256": "b06d3f4bc20df7b2d176e9d70f738cfe57e368f3b6cb4f86fd2bc515341cf021",
+        "input_tokens": 59982,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-9",
+        "start": 1426126.352544197,
+        "end": 1426194.261215479,
+        "latency": 67.90867128199898,
+        "ttft": 37.77353758085519,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1426126.352544197,
+          "end_monotonic_seconds": 1426194.261215479,
+          "start_utc_estimate": "2026-10-29T01:07:23.835670+00:00",
+          "end_utc_estimate": "2026-10-29T01:08:31.744341+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -4.76837158203125e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "6c1a3bd782e4f70934669987d04020469837c0d3a37f8add16747886c64a15a5",
+        "cached_tokens": 32768,
+        "cache_source": "shared"
+      }
+    ],
+    "seed_writes": [
+      {
+        "request": "chatcmpl-auto-8",
+        "event": "save",
+        "prefix": "32768",
+        "bytes": "1860734976",
+        "ms": "1108.846",
+        "error": "none"
+      }
+    ],
+    "makespan": 200.08741536410525,
+    "output_tokens": 1024
+  },
+  {
+    "id": "repeat-text-32768",
+    "block": 0,
+    "rows": [
+      {
+        "text": "At the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students",
+        "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+        "input_tokens": 131071,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-12",
+        "start": 1426199.977562111,
+        "end": 1426328.723775073,
+        "latency": 128.7462129618507,
+        "ttft": 104.54494928685017,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1426199.977562111,
+          "end_monotonic_seconds": 1426328.723775073,
+          "start_utc_estimate": "2026-10-29T01:08:37.460688+00:00",
+          "end_utc_estimate": "2026-10-29T01:10:46.206901+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "d6bce8bca2a98658e44f52cf855d7876eb9ce2c75e9d947fe4e0b2f04b343379",
+        "cached_tokens": 0,
+        "cache_source": "session"
+      },
+      {
+        "text": "At the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students",
+        "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+        "input_tokens": 33334,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-13",
+        "start": 1426334.507632901,
+        "end": 1426406.070827481,
+        "latency": 71.56319458014332,
+        "ttft": 37.56642295513302,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1426334.507632901,
+          "end_monotonic_seconds": 1426406.070827481,
+          "start_utc_estimate": "2026-10-29T01:10:51.990758+00:00",
+          "end_utc_estimate": "2026-10-29T01:12:03.553953+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "834ab6db18c6e8d093e9482970d1131490fdb79004418eea97c601f27243507e",
+        "cached_tokens": 32768,
+        "cache_source": "shared"
+      },
+      {
+        "text": "At the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students",
+        "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+        "input_tokens": 49144,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-14",
+        "start": 1426334.512479859,
+        "end": 1426406.204394351,
+        "latency": 71.69191449205391,
+        "ttft": 37.77773272502236,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1426334.512479859,
+          "end_monotonic_seconds": 1426406.204394351,
+          "start_utc_estimate": "2026-10-29T01:10:51.995605+00:00",
+          "end_utc_estimate": "2026-10-29T01:12:03.687520+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": 0.0,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "36f1a53a087c8d71be0a3dc939ad3a82b79b5870d602ba3f688e02e80af6b454",
+        "cached_tokens": 32768,
+        "cache_source": "shared"
+      },
+      {
+        "text": "At the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students sketch the surfaces and predict which tray will dry first. After lunch they compare the sketches with fresh observations and discuss whether sunlight, airflow, or the shape of the tray could explain the difference. Their notebooks keep the original predictions beside the revised explanations so that changing an idea remains a visible part of the investigation.\nAt the hilltop weather classroom, the teacher sets two shallow trays beside the window before the students arrive. One tray holds dark soil and the other holds pale sand, with the same amount of water in each. The students",
+        "output_sha256": "783e8f23ded8a0284ff600668fb3c934d8156ea308adf4a5da410c53595fdb21",
+        "input_tokens": 59986,
+        "output_tokens": 256,
+        "success": 1,
+        "response_id": "chatcmpl-auto-15",
+        "start": 1426334.517297845,
+        "end": 1426406.204422555,
+        "latency": 71.68712470983155,
+        "ttft": 37.77308710082434,
+        "finish": [
+          "length"
+        ],
+        "timing": {
+          "start_monotonic_seconds": 1426334.517297845,
+          "end_monotonic_seconds": 1426406.204422555,
+          "start_utc_estimate": "2026-10-29T01:10:52.000424+00:00",
+          "end_utc_estimate": "2026-10-29T01:12:03.687549+00:00",
+          "source": "evalscope result.start_time/completed_time (perf_counter)",
+          "utc_method": "monotonic HTTP timestamps mapped using pre-client wall/monotonic anchor; not independent wall-clock samples",
+          "clock_offset_change_seconds": -4.76837158203125e-07,
+          "within_client_boundaries": true
+        },
+        "prompt_sha256": "d823c00bbcc4e412c0aa71cc56f6f89b835b70fec062f9d5e63387d46e814226",
+        "cached_tokens": 32768,
+        "cache_source": "shared"
+      }
+    ],
+    "seed_writes": [
+      {
+        "request": "chatcmpl-auto-12",
+        "event": "save",
+        "prefix": "32768",
+        "bytes": "2985541632",
+        "ms": "2119.549",
+        "error": "none"
+      }
+    ],
+    "makespan": 206.22686044382863,
+    "output_tokens": 1024
+  }
+]

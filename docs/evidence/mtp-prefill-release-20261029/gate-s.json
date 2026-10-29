@@ -1,0 +1,327 @@
+{
+  "phase": "S",
+  "passed": true,
+  "candidate_sha256": "c0ed0800bb36f8c8b7dcf9155ae463dd146d73b217294839f0776bef138f6d2d",
+  "requests": 32,
+  "starts": 4,
+  "elapsed_seconds": 3175.411074314965,
+  "statistics": "DESCRIPTIVE_NOT_NONINFERIORITY",
+  "state_sha256": "c161e568a4c84ac8b788d50ffa74f6eb2f4b49a46ff2ecc53689022a077f5355",
+  "postflight_sha256": "93baa309a0732500c15281ca835d8b99c686353f70092a72726f9f536d2b6bcc",
+  "guard_sha256": "c90391621eba7b994a2de6571f8a76e4d65e7a0106b28fbe9c2bfff8d1938e34",
+  "telemetry": {
+    "schema": 1,
+    "sampler_status": "STOPPED",
+    "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+    "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-release-20261029/phase-s/run/unified-memory.jsonl",
+    "started_monotonic": 1420718.089369979,
+    "started_unix_seconds": 1793230635.5724964,
+    "finished_monotonic": 1423893.499397675,
+    "finished_unix_seconds": 1793233810.98255,
+    "sampler_elapsed_seconds": 3175.4100276960526,
+    "sample_attempts": 3176,
+    "flushed_samples": 3176,
+    "unflushed_attempts": 0,
+    "final_successful_cycle_duration_seconds": 0.02085491898469627,
+    "final_successful_write_flush_seconds": 0.00019351113587617874,
+    "successful_cycle_duration_total_seconds": 74.44236000091769,
+    "successful_write_flush_total_seconds": 1.2109093971084803,
+    "final_failed_attempt_elapsed_seconds": null,
+    "final_attempt_read_counts": {
+      "source_file_read_attempts": 53,
+      "ownership_file_read_attempts": 856,
+      "ownership_readlink_attempts": 428,
+      "owned_file_read_attempts": 5,
+      "directory_scan_attempts": 1,
+      "pidfd_open_attempts": 1,
+      "pidfd_binding_polls": 1,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "total_read_counts": {
+      "source_file_read_attempts": 168328,
+      "ownership_file_read_attempts": 2775151,
+      "ownership_readlink_attempts": 1387517,
+      "owned_file_read_attempts": 177125,
+      "directory_scan_attempts": 6348,
+      "pidfd_open_attempts": 12557,
+      "pidfd_binding_polls": 12557,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "setup_file_read_attempts": 1,
+    "total_file_read_attempts": 3120605,
+    "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+    "sampler_failure": null,
+    "failures_at_exit": [],
+    "sampler_failure_context": null,
+    "sampler_failure_traceback": null,
+    "sampler_failure_task_state": null,
+    "exit_confirmation_policy": {
+      "per_task_ms": 50,
+      "per_sample_ms": 100,
+      "io_retries": 0,
+      "zero_fill": false,
+      "pending_capacity": 16,
+      "pending_seconds": 5,
+      "pending_poll_timeout_ms": 0,
+      "pending_requires_pf_exiting": true
+    },
+    "exit_pending": {
+      "active": 0,
+      "admitted": 0,
+      "resolved": 0,
+      "maximum_active": 0,
+      "last_resolutions": [],
+      "entries": []
+    },
+    "last_flushed_heartbeat": 1423893.480587613,
+    "source_count": 53
+  },
+  "results": [
+    {
+      "head": "full",
+      "scenario": "repeat-code",
+      "target_met": true,
+      "off": {
+        "e2e": 21.74391774062086,
+        "decode": 12.515678491382804,
+        "ttft_mean": 213.15133832691936,
+        "ttft_max": 213.23123094183393,
+        "makespan": 376.749033808941,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 22.249989837374027,
+        "decode": 13.187557912590693,
+        "ttft_mean": 212.92484775773482,
+        "ttft_max": 213.00521235610358,
+        "makespan": 368.17994344606996,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "e2e_percent": 2.3274191099782904,
+      "decode_percent": 5.368302019506865,
+      "ttft_percent": -0.10625810326236884,
+      "output_same": true
+    },
+    {
+      "head": "full",
+      "scenario": "repeat-text",
+      "target_met": true,
+      "off": {
+        "e2e": 21.74210671532126,
+        "decode": 12.458431587177115,
+        "ttft_mean": 212.45333302626386,
+        "ttft_max": 212.53201951109804,
+        "makespan": 376.78041540598497,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 22.220848872309265,
+        "decode": 13.108688782562565,
+        "ttft_mean": 212.46784471225692,
+        "ttft_max": 212.54613904398866,
+        "makespan": 368.6627836350817,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "e2e_percent": 2.2019124607214113,
+      "decode_percent": 5.219414585498305,
+      "ttft_percent": 0.006830528750167986,
+      "output_same": true
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-code",
+      "target_met": true,
+      "off": {
+        "e2e": 21.947159108966133,
+        "decode": 12.769062427336573,
+        "ttft_mean": 212.83500064187683,
+        "ttft_max": 212.91194038488902,
+        "makespan": 373.2601545068901,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 22.221115630316515,
+        "decode": 13.16211565381676,
+        "ttft_mean": 213.1110241340357,
+        "ttft_max": 213.1883131461218,
+        "makespan": 368.6583579459693,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "3d0ab2d22ef9be07497aea06cf93f6e41abed844b680f99aa91842f6f7a904e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "61b95914182a65c18931f1df11996632e7043dbf694e58d7a8804b1909bf8e2d",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "8f62631a70f48769fd9fdf422b1cdff081e3f79bb9e214333be2b2e3c27d50e1",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ],
+          [
+            "c879a97738a78e3a998be6e8fec9f632fccc413e356513953c55504a28f583cc",
+            "db93de4a3385ab33c8fa99fff40871c7f7d0c4702a74fb04a2e0b82e6d34176b"
+          ]
+        ]
+      },
+      "e2e_percent": 1.2482550474537835,
+      "decode_percent": 3.0781682579820613,
+      "ttft_percent": 0.1296889568569215,
+      "output_same": true
+    },
+    {
+      "head": "subset",
+      "scenario": "repeat-text",
+      "target_met": true,
+      "off": {
+        "e2e": 21.571096396389635,
+        "decode": 12.202539777858046,
+        "ttft_mean": 211.99077542877058,
+        "ttft_max": 212.06638275901787,
+        "makespan": 379.76743738306686,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "on": {
+        "e2e": 21.816143200496903,
+        "decode": 12.55725102972929,
+        "ttft_mean": 212.46801339986268,
+        "ttft_max": 212.54323722212575,
+        "makespan": 375.5017522901762,
+        "total_output": 8192,
+        "outputs": [
+          [
+            "5c08051a9863de4c9e2e01a837949523354bcc8ffb3be85e13ac1a1ea23c8b60",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "999a5fa1c1e865a3bcb70ea8a309e61161a7f0fcc75f84b839785107a22b5dc0",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "b9cf1a31c02949342eac1d8600e52f37c9c74cf6fe261ebb0d5a34b95dae3f8c",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ],
+          [
+            "f37f68fa0b74b784c830d06768e4d384662228fcff644de6369d6d8de6385753",
+            "d5b163dc9349e428998434c951ca75750846c1efb14bb7009122ea107a7efe1c"
+          ]
+        ]
+      },
+      "e2e_percent": 1.1359960551114323,
+      "decode_percent": 2.9068641309810017,
+      "ttft_percent": 0.22512204605453778,
+      "output_same": true
+    }
+  ]
+}

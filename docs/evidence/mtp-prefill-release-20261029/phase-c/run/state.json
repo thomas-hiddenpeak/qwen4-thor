@@ -1,0 +1,17 @@
+{
+  "status": "STOPPED",
+  "started": 1793234243.3037379,
+  "completed": [
+    "00-full-off",
+    "01-full-on"
+  ],
+  "requests_completed": 32,
+  "loads_started": 3,
+  "contract_seconds": 0,
+  "plan_sha256": "5e6ebd1f83e581c3a208631c24d714aad915326efb0daf78a2f9f03de28e8de1",
+  "current": "02-subset-on",
+  "error": "KeyboardInterrupt()",
+  "finished": 1793236446.4386005,
+  "elapsed_seconds": 2203.1348654290196,
+  "monitor_failures": []
+}

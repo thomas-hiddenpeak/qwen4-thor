@@ -1,0 +1,10 @@
+{
+  "status": "STOPPED",
+  "state_sha256": "2b938ea801520d3b5350715b166c9ac067a99dda460e21677a199e36c648c3eb",
+  "monitor_failures": [],
+  "cleanup_errors": [],
+  "final_summary_sha256": "85f6242cc2b8f598ea82e36b5f3b6498e564b1fe5a049a789ee3d838fb8fc584",
+  "final_monitor_barrier": {},
+  "final_monitor_errors": [],
+  "note": "Final sampler join reviewed; original raw state/seal remain unchanged."
+}

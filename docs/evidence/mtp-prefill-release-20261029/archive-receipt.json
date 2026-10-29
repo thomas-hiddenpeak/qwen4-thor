@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-release-20261029-archive",
+  "files": 2137,
+  "bytes": 1012971288,
+  "manifest_sha256": "7b37aaa4ca7caba1c8aaa3cfe565323787bac2b87df7870153519ed000967ed5",
+  "elapsed_seconds": 5.531153917312622,
+  "new_gpu_http_requests": 0
+}

@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "saves": [
+    {
+      "request": "chatcmpl-auto-0",
+      "event": "save",
+      "prefix": "8192",
+      "bytes": "367964160",
+      "ms": "383.729",
+      "error": "none"
+    },
+    {
+      "request": "chatcmpl-auto-4",
+      "event": "save",
+      "prefix": "8192",
+      "bytes": "735928320",
+      "ms": "366.520",
+      "error": "none"
+    },
+    {
+      "request": "chatcmpl-auto-8",
+      "event": "save",
+      "prefix": "32768",
+      "bytes": "1860734976",
+      "ms": "1108.846",
+      "error": "none"
+    },
+    {
+      "request": "chatcmpl-auto-12",
+      "event": "save",
+      "prefix": "32768",
+      "bytes": "2985541632",
+      "ms": "2119.549",
+      "error": "none"
+    }
+  ]
+}

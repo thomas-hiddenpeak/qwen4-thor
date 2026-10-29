@@ -327,6 +327,11 @@ T>1 与普通 decode 的舍入路径不同，遵守
 bench 不作为性能验收依据。归并方案、共用正确性修复与回退点见
 [MTP 归并边界](docs/MTP_MERGE_BOUNDARY_2026-10-15.md)。
 
+2026-10-29 草稿 prefill 评分候选的正式验收已按冻结条件结束（NO_GO）：
+200K 提速和两 head suffix 重复收益通过，full 8K 公共共享净收益未通过。
+已安装程序仍为 6f37，agent 接入参数保持；详见
+[结果、负向观察及停止证据](docs/MTP_PREFILL_RELEASE_RESULT_2026-10-29.md)。
+
 `POST /v1/chat/completions` 使用 OpenAI 风格请求体，content 可为字符串或
 parts 数组; 图像用 `image_url` (base64 data URL), 视频用 `video_frames`
 (base64 帧数组)，仅在 `--allow-media` 下可接入。另有 `GET /healthz`、

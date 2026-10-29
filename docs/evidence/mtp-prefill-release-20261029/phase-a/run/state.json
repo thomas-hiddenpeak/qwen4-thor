@@ -1,0 +1,20 @@
+{
+  "status": "MEASURED_REQUIRES_REVIEW",
+  "started": 1793224249.7242005,
+  "completed": [
+    "00-full-candidate",
+    "01-full-parent",
+    "02-subset-parent",
+    "03-subset-candidate",
+    "04-plain-parent",
+    "05-plain-candidate"
+  ],
+  "requests_completed": 112,
+  "loads_started": 6,
+  "contract_seconds": 0,
+  "plan_sha256": "baf17a607c4ade51220ad59021770dce0dfb02ce8abb288324e22022c7afa321",
+  "current": "05-plain-candidate",
+  "finished": 1793230335.4400196,
+  "elapsed_seconds": 6085.715821666177,
+  "monitor_failures": []
+}

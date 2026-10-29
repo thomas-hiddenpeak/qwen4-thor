@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "requests": 12,
+  "shared_tokens": 8192,
+  "session_tokens": 9261,
+  "seed_writes": [
+    {
+      "request": "chatcmpl-auto-2",
+      "event": "save",
+      "prefix": "8192",
+      "bytes": "367964160",
+      "ms": "380.042",
+      "error": "none"
+    },
+    {
+      "request": "chatcmpl-auto-10",
+      "event": "save",
+      "prefix": "8192",
+      "bytes": "735928320",
+      "ms": "369.483",
+      "error": "none"
+    }
+  ],
+  "cancel_unpublished": true,
+  "readonly_zero_writes": true
+}

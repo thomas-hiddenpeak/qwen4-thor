@@ -1,0 +1,141 @@
+{
+  "phase": "B",
+  "passed": true,
+  "candidate_sha256": "c0ed0800bb36f8c8b7dcf9155ae463dd146d73b217294839f0776bef138f6d2d",
+  "requests": 24,
+  "starts": 2,
+  "elapsed_seconds": 190.0545248989947,
+  "statistics": "DESCRIPTIVE_NOT_NONINFERIORITY",
+  "state_sha256": "9f4ef0bce840dd7102cebddb15713bb8dbb414cdff3bcbe764b0adf206700534",
+  "postflight_sha256": "fc94a10696534c2dac11b9e81aaaf6177e00a7a064da61289003cc9914d88e18",
+  "guard_sha256": "cd48843bcd83d5c55db9c7a1cd76c7c82591115df8bdb94b2ce8ed4d2f342a4c",
+  "telemetry": {
+    "schema": 1,
+    "sampler_status": "STOPPED",
+    "scope": "Sampler accounting only; not the inference stage outcome. Summary is written before the sampler thread returns.",
+    "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-release-20261029/phase-b/run/unified-memory.jsonl",
+    "started_monotonic": 1420509.384548436,
+    "started_unix_seconds": 1793230426.867675,
+    "finished_monotonic": 1420699.438172058,
+    "finished_unix_seconds": 1793230616.9213226,
+    "sampler_elapsed_seconds": 190.0536236220505,
+    "sample_attempts": 191,
+    "flushed_samples": 191,
+    "unflushed_attempts": 0,
+    "final_successful_cycle_duration_seconds": 0.019724022829905152,
+    "final_successful_write_flush_seconds": 0.00019296398386359215,
+    "successful_cycle_duration_total_seconds": 4.403707410907373,
+    "successful_write_flush_total_seconds": 0.06534455460496247,
+    "final_failed_attempt_elapsed_seconds": null,
+    "final_attempt_read_counts": {
+      "source_file_read_attempts": 53,
+      "ownership_file_read_attempts": 862,
+      "ownership_readlink_attempts": 431,
+      "owned_file_read_attempts": 5,
+      "directory_scan_attempts": 1,
+      "pidfd_open_attempts": 1,
+      "pidfd_binding_polls": 1,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "total_read_counts": {
+      "source_file_read_attempts": 10123,
+      "ownership_file_read_attempts": 165813,
+      "ownership_readlink_attempts": 82905,
+      "owned_file_read_attempts": 8695,
+      "directory_scan_attempts": 378,
+      "pidfd_open_attempts": 567,
+      "pidfd_binding_polls": 567,
+      "pidfd_wait_attempts": 0,
+      "pending_poll_attempts": 0
+    },
+    "setup_file_read_attempts": 1,
+    "total_file_read_attempts": 184632,
+    "file_count_scope": "Content read attempts including failed reads and ownership scan; readlink/directory scans separate.",
+    "sampler_failure": null,
+    "failures_at_exit": [],
+    "sampler_failure_context": null,
+    "sampler_failure_traceback": null,
+    "sampler_failure_task_state": null,
+    "exit_confirmation_policy": {
+      "per_task_ms": 50,
+      "per_sample_ms": 100,
+      "io_retries": 0,
+      "zero_fill": false,
+      "pending_capacity": 16,
+      "pending_seconds": 5,
+      "pending_poll_timeout_ms": 0,
+      "pending_requires_pf_exiting": true
+    },
+    "exit_pending": {
+      "active": 0,
+      "admitted": 0,
+      "resolved": 0,
+      "maximum_active": 0,
+      "last_resolutions": [],
+      "entries": []
+    },
+    "last_flushed_heartbeat": 1420699.426414972,
+    "source_count": 53
+  },
+  "results": [
+    {
+      "head": "full",
+      "record": {
+        "passed": true,
+        "requests": 12,
+        "shared_tokens": 8192,
+        "session_tokens": 9261,
+        "seed_writes": [
+          {
+            "request": "chatcmpl-auto-2",
+            "event": "save",
+            "prefix": "8192",
+            "bytes": "367964160",
+            "ms": "375.910",
+            "error": "none"
+          },
+          {
+            "request": "chatcmpl-auto-10",
+            "event": "save",
+            "prefix": "8192",
+            "bytes": "735928320",
+            "ms": "367.527",
+            "error": "none"
+          }
+        ],
+        "cancel_unpublished": true,
+        "readonly_zero_writes": true
+      }
+    },
+    {
+      "head": "subset",
+      "record": {
+        "passed": true,
+        "requests": 12,
+        "shared_tokens": 8192,
+        "session_tokens": 9261,
+        "seed_writes": [
+          {
+            "request": "chatcmpl-auto-2",
+            "event": "save",
+            "prefix": "8192",
+            "bytes": "367964160",
+            "ms": "380.042",
+            "error": "none"
+          },
+          {
+            "request": "chatcmpl-auto-10",
+            "event": "save",
+            "prefix": "8192",
+            "bytes": "735928320",
+            "ms": "369.483",
+            "error": "none"
+          }
+        ],
+        "cancel_unpublished": true,
+        "readonly_zero_writes": true
+      }
+    }
+  ]
+}

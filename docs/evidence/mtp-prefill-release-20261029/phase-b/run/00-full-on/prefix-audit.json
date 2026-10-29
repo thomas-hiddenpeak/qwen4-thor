@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "saves": [
+    {
+      "request": "chatcmpl-auto-2",
+      "event": "save",
+      "prefix": "8192",
+      "bytes": "367964160",
+      "ms": "375.910",
+      "error": "none"
+    },
+    {
+      "request": "chatcmpl-auto-10",
+      "event": "save",
+      "prefix": "8192",
+      "bytes": "735928320",
+      "ms": "367.527",
+      "error": "none"
+    }
+  ]
+}

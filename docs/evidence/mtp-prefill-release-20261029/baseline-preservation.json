@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "installed_binary_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+  "installed_sidecar_sha256": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2",
+  "baseline_cache_original": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/delivery-package/candidate/CMakeCache.txt",
+  "baseline_cache_preserved": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-release-20261029/frozen/parent-CMakeCache.txt",
+  "baseline_cache_sha256": "a699581310e57b72656ce76dc96f0f62eb3f80523509a4f85af3f62bc1214edc",
+  "default_replaced": false,
+  "deployment_health_requests": 0,
+  "owned_processes_remaining": [],
+  "io_preparation_released": {
+    "passed": true,
+    "bytes": 68719476736,
+    "seconds": 0.058868110878393054
+  },
+  "checked_at": 1793236912.5932086
+}
