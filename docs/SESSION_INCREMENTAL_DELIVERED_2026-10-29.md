@@ -145,6 +145,6 @@ python3 -B tools/evalscope/gpu_exclusive.py \
 - [随Git保留的证据](evidence/session-incremental-delivery-20261029/README.md)
   包含决定、全部负值、资源、预算、身份、健康与回退回执；大日志不作丢弃门禁。
 
-主线只合入本发布分支的最小改动；原codex/mtp-prefill-scoring在4076810有
-独有研究提交及证据依赖，继续保留。发布入口合入后的包含关系与清理记录
-见证据目录branch-closeout.json；不把研究NO_GO当作可删除证据的理由。
+已在dcc9909快进合入并推送main，只纳入本发布分支的最小改动；原codex/mtp-prefill-scoring在4076810有
+独有研究提交及证据依赖，继续保留。本发布分支本地和远端已清理（旧tip完整包含于main），包含关系与清理记录
+见[分支回执](evidence/session-incremental-delivery-20261029/branch-closeout.json)；不把研究NO_GO当作可删除证据的理由。

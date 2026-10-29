@@ -1,0 +1,23 @@
+{
+  "old_main": "dab83210b77a27b5b8fd2199391f7f230a81367a",
+  "merge_anchor": "dcc990979777d556a6b500e574910ba6815512cb",
+  "cleanup_scope": [
+    "codex/session-incremental-delivery"
+  ],
+  "deleted_branch_tip": "dcc990979777d556a6b500e574910ba6815512cb",
+  "open_prs": [],
+  "remote_refs_before": {
+    "refs/heads/codex/mtp-prefill-scoring": "4076810748024f610bcfc1780d47715f84becabe",
+    "refs/heads/codex/session-incremental-delivery": "dcc990979777d556a6b500e574910ba6815512cb",
+    "refs/heads/main": "dcc990979777d556a6b500e574910ba6815512cb"
+  },
+  "research_retained": {
+    "branch": "codex/mtp-prefill-scoring",
+    "tip": "4076810748024f610bcfc1780d47715f84becabe",
+    "unique_commits": 18
+  },
+  "raw_workspaces_and_evidence_preserved": true,
+  "checked_at": 1793286601.7311049,
+  "remote_deleted": true,
+  "local_deleted": true
+}
