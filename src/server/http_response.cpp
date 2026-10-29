@@ -1,4 +1,5 @@
 #include "q4t/server/http_response.h"
+#include "q4t/server/serve_fault.h"
 
 #include <sys/socket.h>
 #include <poll.h>
@@ -129,6 +130,7 @@ bool WriteAll(int fd, const char* data, size_t len,
     if (n <= 0) {
       if (n < 0 && errno == EINTR) continue;
       if (n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+        ServeFaultPoint("write.backpressure");
         const auto remaining = std::chrono::duration_cast<
             std::chrono::milliseconds>(deadline - Clock::now()).count();
         if (remaining < 0) return false;

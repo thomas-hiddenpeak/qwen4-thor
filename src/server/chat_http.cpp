@@ -119,6 +119,13 @@ Status ChatServer::Run() {
       });
       int nodelay = 1;
       ::setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &nodelay, sizeof(nodelay));
+#ifdef Q4T_SERVE_FAULT_INJECTION
+      if (std::getenv("Q4T_SERVE_TEST_SNDBUF")) {
+        const int small_buffer = 1024;
+        ::setsockopt(fd, SOL_SOCKET, SO_SNDBUF, &small_buffer,
+                     sizeof(small_buffer));
+      }
+#endif
       const timeval timeout{30, 0};
       ::setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
       ::setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));

@@ -12,6 +12,7 @@
 
 #include <chrono>
 #include <future>
+#include <filesystem>
 #include <stdexcept>
 
 namespace q4t::model {
@@ -147,5 +148,35 @@ Q4T_TEST(http_thread_creation_failure_rolls_back) {
   Q4T_CHECK(!run.get().ok() && ServeContractAccess::Empty(server));
   char data;
   Q4T_CHECK(recv(fd, &data, 1, 0) == 0);
+  return true;
+}
+
+Q4T_TEST(http_validation_gate_is_an_explicit_handshake) {
+  namespace fs = std::filesystem;
+  const auto directory = fs::absolute(".q4t-work/serve-gate-cpu-" +
+                                      std::to_string(getpid()));
+  Q4T_CHECK(fs::create_directory(directory));
+  const auto gate = (directory / "gate").string();
+  setenv("Q4T_SERVE_PAUSE", "handler.before_response", 1);
+  setenv("Q4T_SERVE_GATE", gate.c_str(), 1);
+  ScopeExit cleanup([&] {
+    unsetenv("Q4T_SERVE_PAUSE");
+    unsetenv("Q4T_SERVE_GATE");
+    fs::remove_all(directory);
+  });
+  auto paused = std::async(std::launch::async, [] {
+    q4t::server::detail::ServeFaultPoint("handler.before_response");
+  });
+  const auto deadline = std::chrono::steady_clock::now() + 3s;
+  while (!fs::exists(gate + ".entered") &&
+         std::chrono::steady_clock::now() < deadline)
+    std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(fs::exists(gate + ".entered"));
+  Q4T_CHECK(paused.wait_for(0ms) == std::future_status::timeout);
+  const int fd = ::open((gate + ".release").c_str(), O_CREAT | O_WRONLY, 0600);
+  Q4T_CHECK(fd >= 0);
+  close(fd);
+  Q4T_CHECK(paused.wait_for(3s) == std::future_status::ready);
+  paused.get();
   return true;
 }
