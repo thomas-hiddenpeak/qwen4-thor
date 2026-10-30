@@ -1,0 +1,23 @@
+{
+  "status": "CLEANED",
+  "deleted_local": "codex/audit-p2-fixes",
+  "deleted_remote": "refs/heads/codex/audit-p2-fixes",
+  "old_tip": "2b304961a743088ccdd0f2f95fc9748671c8e2d8",
+  "retained_main_anchor": "2b304961a743088ccdd0f2f95fc9748671c8e2d8",
+  "research_anchor": "4076810748024f610bcfc1780d47715f84becabe",
+  "remote_refs": {
+    "refs/heads/codex/mtp-prefill-scoring": "4076810748024f610bcfc1780d47715f84becabe",
+    "refs/heads/main": "2b304961a743088ccdd0f2f95fc9748671c8e2d8"
+  },
+  "all_worktree_paths_preserved": true,
+  "evidence_paths_preserved": true,
+  "preserved_worktrees": 21,
+  "protected_evidence_paths": 4123,
+  "premerge_bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/premerge.bundle",
+    "sha256": "34b8551dbd204b041c190a4db7e8f9bf004baeb6ab4b3370303e1fc57923343a",
+    "bytes": 696608
+  },
+  "bundle_parent_required": "c26e97a3549965a7a52b6928880153e7c64b030c",
+  "finished": 1793393394.1497586
+}

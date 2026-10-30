@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "default_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "b11ed66cd94f943957e83edbfa223cb3e65f758e409eb4d125b4911d1164e015",
+    "bytes": 4748168
+  },
+  "default_sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "982c888c2c9d6e63a608398472bc692f8340e117361011d123593fd7c6d45fab",
+    "bytes": 5323
+  },
+  "runtime_files": 169,
+  "all_evidence_paths_preserved": true,
+  "evidence_paths": 4123,
+  "premerge_bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/premerge.bundle",
+    "sha256": "34b8551dbd204b041c190a4db7e8f9bf004baeb6ab4b3370303e1fc57923343a",
+    "bytes": 696608
+  },
+  "current_branch": "main",
+  "remote_refs": {
+    "refs/heads/codex/mtp-prefill-scoring": "4076810748024f610bcfc1780d47715f84becabe",
+    "refs/heads/main": "2b304961a743088ccdd0f2f95fc9748671c8e2d8"
+  },
+  "recovery_markers": [],
+  "checked_at": 1793393437.6165128
+}

@@ -1,0 +1,62 @@
+{
+  "preflight.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/preflight.json",
+    "sha256": "ba96854bcecfa985e0aa2e5774c8258c9e04b7f49acf46c490a96ca6550faaf4",
+    "bytes": 10663
+  },
+  "rollback-check.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/rollback-check.json",
+    "sha256": "8e3ae44143b98113e27aebab7de20897019796b1c98533c47de606e466a0ca68",
+    "bytes": 104
+  },
+  "bundle-verify.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/bundle-verify.json",
+    "sha256": "bd94c0e9587358d9753c0eeb4b6972d55a8040c97f100e607a34861ba8876994",
+    "bytes": 717
+  },
+  "open-prs-before.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/open-prs-before.json",
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "bytes": 3
+  },
+  "open-prs-cleanup.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/open-prs-cleanup.json",
+    "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "bytes": 3
+  },
+  "merge-result.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/merge-result.json",
+    "sha256": "3a90f216a50555c2857e8d1f95c419edda6dc6a26d7695e233efab05c8aea73e",
+    "bytes": 2559
+  },
+  "main-ci.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/main-ci.json",
+    "sha256": "82d415aef348a50e2851e7f8877d24383fbba94c014f34389b0784ffd9d37834",
+    "bytes": 3362
+  },
+  "cleanup-preconditions.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/cleanup-preconditions.json",
+    "sha256": "282f9bcadb3c53dccfe96cdfe50558aef6850ecd27c1479bcd24258853e3c7d1",
+    "bytes": 791
+  },
+  "remote-delete.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/remote-delete.json",
+    "sha256": "f78aa3fa98d4da38ec1caa53a093c4ce50a2afa7a00dad5524309a87d5a06156",
+    "bytes": 378
+  },
+  "local-delete.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/local-delete.json",
+    "sha256": "59736e2ab9ecc768fd823325e2b5cb8e3928f5d5ad46fff68dfef22c2de31c83",
+    "bytes": 218
+  },
+  "cleanup-result.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/cleanup-result.json",
+    "sha256": "7ad66ac24f39ea7153f4774a943ed50310328163a1d51ed05847033ce32a0bc6",
+    "bytes": 974
+  },
+  "post-cleanup.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/post-cleanup.json",
+    "sha256": "5ad5fbb3a572319b317461412d79c8064d3c92ff41bbdcc255466eee92621085",
+    "bytes": 1001
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "returncode": 0,
+  "stdout": "The bundle contains this ref:\n2b304961a743088ccdd0f2f95fc9748671c8e2d8 refs/heads/codex/audit-p2-fixes\nThe bundle requires this ref:\nc26e97a3549965a7a52b6928880153e7c64b030c \nThe bundle uses this hash algorithm: sha1\n",
+  "stderr": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/premerge.bundle is okay\n",
+  "identity": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-main-merge-20261031/premerge.bundle",
+    "sha256": "34b8551dbd204b041c190a4db7e8f9bf004baeb6ab4b3370303e1fc57923343a",
+    "bytes": 696608
+  },
+  "parent_required": "c26e97a3549965a7a52b6928880153e7c64b030c",
+  "retained_ref": "refs/heads/codex/audit-p2-fixes"
+}

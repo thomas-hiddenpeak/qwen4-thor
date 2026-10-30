@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "branch",
+    "-d",
+    "codex/audit-p2-fixes"
+  ],
+  "returncode": 0,
+  "stdout": "Deleted branch codex/audit-p2-fixes (was 2b30496).\n",
+  "stderr": "",
+  "time": 1793393394.0717366
+}

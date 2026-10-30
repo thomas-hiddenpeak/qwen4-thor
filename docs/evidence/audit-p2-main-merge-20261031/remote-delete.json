@@ -1,0 +1,13 @@
+{
+  "command": [
+    "git",
+    "push",
+    "--force-with-lease=refs/heads/codex/audit-p2-fixes:2b304961a743088ccdd0f2f95fc9748671c8e2d8",
+    "origin",
+    ":refs/heads/codex/audit-p2-fixes"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "To https://github.com/thomas-hiddenpeak/qwen4-thor.git\n - [deleted]         codex/audit-p2-fixes\n",
+  "time": 1793393392.9908903
+}

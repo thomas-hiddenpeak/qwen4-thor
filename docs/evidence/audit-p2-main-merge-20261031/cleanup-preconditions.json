@@ -1,0 +1,22 @@
+{
+  "scope": [
+    "local codex/audit-p2-fixes",
+    "remote refs/heads/codex/audit-p2-fixes"
+  ],
+  "old_tip": "2b304961a743088ccdd0f2f95fc9748671c8e2d8",
+  "retained_main_anchor": "2b304961a743088ccdd0f2f95fc9748671c8e2d8",
+  "unique_commits": 0,
+  "open_head_prs": 0,
+  "open_base_prs": 0,
+  "clean_worktree": true,
+  "checked_out_elsewhere": false,
+  "remote_refs": {
+    "refs/heads/codex/audit-p2-fixes": "2b304961a743088ccdd0f2f95fc9748671c8e2d8",
+    "refs/heads/codex/mtp-prefill-scoring": "4076810748024f610bcfc1780d47715f84becabe",
+    "refs/heads/main": "2b304961a743088ccdd0f2f95fc9748671c8e2d8"
+  },
+  "research_anchor_preserved": "4076810748024f610bcfc1780d47715f84becabe",
+  "preserved_worktrees": 21,
+  "preserved_evidence_paths": 4123,
+  "checked_at": 1793393389.5077727
+}

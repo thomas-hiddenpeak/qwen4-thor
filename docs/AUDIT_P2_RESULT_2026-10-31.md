@@ -5,8 +5,9 @@
 工具源码76963ad。第三阶段只同步工具接受元数据，复用第二阶段
 相同程序字节的运行时验收，无新增模型HTTP。
 
-工作分支codex/audit-p2-fixes按阶段提交推送，未自动合入main；
-历史研究分支/工作区与其他任务内容保留，无常驻服务。
+已按用户指令合入并推送main，交付锚点2b30496完整包含8个阶段提交。
+codex/audit-p2-fixes本地/远端均已清理；历史研究分支、原工作区、
+验证证据及回退链保留，无常驻服务。详见文末主线合入记录。
 
 ## 逐项状态
 
@@ -93,3 +94,34 @@ audit_rollback_out=/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-rollback-
 每次使用新的输出目录，保留旧证据。若需进一步回到审计前037328bb/
 3200266e，在已恢复5e6249fc后使用stage1/delivery-package与另一个
 新lease目录；原冻结驱动不再要求作为当前回退入口。
+
+## 主线合入（2026-10-31）
+
+用户明确授权后，main由c26e97a快进至交付锚点
+`2b304961a743088ccdd0f2f95fc9748671c8e2d8`并推送，8个提交完整保留。
+没有冲突或合入引入的运行时变更。默认仍为b11ed66c/982c888c；
+sidecar保留实际运行时构建源码98c42bf和工具源码76963ad，未改写为
+文档提交身份，未重新构建、安装或启动模型。
+
+合入前逐哈希核对169项运行时文件（工作区、构建源码提交及交付
+提交）、336份修复原始证据及来源、77份原审计文件和12份封存包；
+默认程序/元数据与只读回退检查通过。复用原40HTTP/20模型启动、
+15真实GPU合同和本机公共CTest 22/22；本次新增模型/GPU/HTTP为0。
+main推送触发的[公共host自动检查](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41126013850)通过，
+仅补充主线自动验证记录，不替代Thor运行时接受。
+
+分支清理范围仅为本地及远端`codex/audit-p2-fixes`。删除前重新查询
+远端tip、打开PR的head/base及所有worktree：旧tip为上述2b30496，
+main完整包含、独有提交0，工作区干净，无活动PR或其他worktree占用。
+远端以完整旧tip的force-with-lease删除，本地用`git branch -d`删除；
+main保留完整历史。4076810研究分支及全部21个worktree均保留。
+`.q4t-work/audit-p2-20261031/`的4,123条原路径未删除或移动，三阶段
+回退包、失败现场、head与发布元数据引用继续有效。
+
+额外保存并通过`git bundle verify`的合入前备份：
+`.q4t-work/audit-p2-main-merge-20261031/premerge.bundle`。
+该增量bundle保留原修复分支tip和8提交，前提提交c26e97a及其历史
+仍完整保留在main；程序回退继续使用上文封条包，分支删除不影响它。
+
+合入、CI、清理前提、精确远端删除和保留检查收据见
+[合入证据](evidence/audit-p2-main-merge-20261031/README.md)。

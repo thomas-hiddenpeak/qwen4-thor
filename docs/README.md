@@ -3,7 +3,8 @@
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
-最新专项：[审计8项P2全部交付、证据与回退](AUDIT_P2_RESULT_2026-10-31.md)；
+最新专项：[审计8项P2主线合入与分支清理](AUDIT_P2_RESULT_2026-10-31.md#主线合入2026-10-31)；
+[全部交付、证据与回退](AUDIT_P2_RESULT_2026-10-31.md)；
 [权重/SSD驻留修复结果](AUDIT_P2_STAGE1_RESULT_2026-10-31.md)；
 [容量/监督修复结果](AUDIT_P2_STAGE2_RESULT_2026-10-31.md)；
 [三阶段修复范围与第一阶段合同](AUDIT_P2_FIX_PLAN_2026-10-31.md)；
