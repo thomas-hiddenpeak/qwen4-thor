@@ -197,8 +197,12 @@ def switch(root, target):
 
 
 def supervise(root):
-    lock = (root/'supervisor.lock').open('a')
-    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    with (root/'supervisor.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        _supervise_locked(root)
+
+
+def _supervise_locked(root):
     package_path = (root/'current').resolve(strict=True)
     verify(package_path)
     config = json.loads((root/'config.json').read_text())
@@ -241,7 +245,7 @@ def supervise(root):
         for name in commands:
             launch(name)
         unhealthy_since = None
-        last_completed = None
+        last_execution = None
         last_progress = time.monotonic()
         while not stopping.wait(1):
             now = time.monotonic()
@@ -259,11 +263,13 @@ def supervise(root):
                     done = sum(values.get('q4t_requests_'+x+'_total',0) for x in ['success','error','aborted'])
                     outstanding = values.get('q4t_requests_total',0)-done
                     # Rejected/queued-cancelled requests must not hide a
-                    # stalled single-sequence GPU. Only generated tokens
-                    # constitute execution progress in this profile.
-                    progress = values.get('q4t_generation_tokens_total',0)
-                    if progress != last_completed or outstanding <= 0:
-                        last_completed=progress; last_progress=now
+                    # stalled single-sequence GPU. Completed execution steps
+                    # advance during both prefill and unfinished responses.
+                    if 'q4t_execution_steps_total' not in values:
+                        raise RuntimeError('backend lacks q4t_execution_steps_total')
+                    progress = values['q4t_execution_steps_total']
+                    if progress != last_execution or outstanding <= 0:
+                        last_execution=progress; last_progress=now
                     if outstanding > 0 and now-last_progress > 1260:
                         children['backend'].kill()
                         bounded_log(root/'events.log',b'backend execution watchdog expired\n')
@@ -285,7 +291,7 @@ def supervise(root):
                     break
                 launch(name)
                 if name == 'backend':
-                    last_completed=None; last_progress=time.monotonic(); unhealthy_since=None
+                    last_execution=None; last_progress=time.monotonic(); unhealthy_since=None
     except BaseException as error:
         save(root/'failure.json',{'error':repr(error),'time':time.time()})
         raise
@@ -300,7 +306,6 @@ def supervise(root):
                 os.killpg(p.pid,signal.SIGKILL); p.wait()
         for reader in readers.values(): reader.join(timeout=5)
         bounded_log(root/'events.log',b'supervisor stopped\n')
-        fcntl.flock(lock,fcntl.LOCK_UN)
         (root/'supervisor.json').unlink(missing_ok=True)
 
 

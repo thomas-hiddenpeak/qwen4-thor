@@ -646,8 +646,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           restored = mtp::MtpDraftExtend(mtp_, &ids[prefix], d_session_trunk,
                                           &position, 1, nullptr, nullptr,
                                           nullptr, seq_id, false);
-          restored = FinishHostReadback(cudaSuccess, &gpu_healthy_, {},
-                                          restored, nullptr);
+          restored =
+              FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, restored,
+                                 nullptr, &metrics_.execution_steps_total);
           if (!restored.ok()) session_gpu_error = true;
         }
         if (restored.ok()) {
@@ -715,7 +716,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                      cudaMemcpyDeviceToHost, nullptr);
       model::ModelSequence* sequence = &seq;
       s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
-                             router_trace_.get());
+                             router_trace_.get(),
+                             &metrics_.execution_steps_total);
       if (!s.ok()) break;
       shifted.resize(count);
       positions.resize(count);
@@ -729,7 +731,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                               nullptr, seq_id, last, shared_write != nullptr);
       // The target chunk was committed above. Drain a failed draft submission
       // before releasing this request's storage or giving scratch to a peer.
-      s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr);
+      s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {}, s, nullptr,
+                             &metrics_.execution_steps_total);
       if (s.ok() && (last || shared_write) && d_session_trunk) {
         const auto error = cudaMemcpy(
             d_session_trunk,
@@ -886,7 +889,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               q4t::diagnostic::Scope execution_wait(
                   "prefill_chunk_readback_wait_commit", base, c);
               s = FinishHostReadback(cudaSuccess, &gpu_healthy_, {&sequence, 1},
-                                     s, router_trace_.get());
+                                     s, router_trace_.get(),
+                                     &metrics_.execution_steps_total);
             }
             // Diagnostic: memory trajectory across chunked prefill (the
             // 204800-tier OOM investigation). Never touches compute.
@@ -918,8 +922,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     {
       q4t::diagnostic::Scope execution_wait(
           "prefill_final_readback_wait_commit", prefill_base, prefill_tokens);
-      s = FinishHostReadback(copy_error, &gpu_healthy_, pending, s,
-                             router_trace_.get());
+      s = FinishHostReadback(
+          copy_error, &gpu_healthy_, pending, s, router_trace_.get(),
+          pending.empty() ? nullptr : &metrics_.execution_steps_total);
     }
     if (!s.ok()) seq.Fail();
   }
@@ -1068,6 +1073,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                                  T);
           s = mtp::MtpDraftExtend(mtp_, shifted.data(), d_trunk_full, pos.data(),
                                   T, &mtp_d0, d_mtp_g, nullptr, seq_id);
+          if (s.ok())
+            metrics_.execution_steps_total.fetch_add(1,
+                                                     std::memory_order_relaxed);
         }
         if (s.ok()) {
           q4t::diagnostic::Scope execution_reserve("prompt_verify_reserve", 0,
@@ -1475,7 +1483,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               h_logits.data(), d_prefill_logits_,
               static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost, nullptr);
         model::ModelSequence* sequence = &seq;
-        s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s, router_trace_.get());
+        s = FinishHostReadback(copy_error, &gpu_healthy_, {&sequence, 1}, s,
+                               router_trace_.get(),
+                               &metrics_.execution_steps_total);
         if (!s.ok()) {
           generation_failed = true;
           break;

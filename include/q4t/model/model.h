@@ -67,7 +67,7 @@ struct ModelConfig {
   // full_attention.cu) and ple_capacity_tokens, so the QSA sparse path
   // (active once context > indexer_budget) is reachable during decode.
   int max_len = 8192;
-  int max_prefill = 2048;  // sizes the forward workspace
+  int max_prefill = runtime::kDefaultMaxPrefill;  // Forward workspace rows.
   // Number of concurrent sequences the per-layer recurrent state (linear
   // SSM/conv, PLE conv) is pooled for. Each sequence owns an independent
   // state slice [seq_id, ...], enabling multi-request continuous batching

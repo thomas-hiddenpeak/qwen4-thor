@@ -21,10 +21,12 @@ using detail::FinishHostReadback;
 namespace detail {
 // A successful launch is not a completed result. Drain the existing stream
 // boundary even if a copy failed, and never publish stale host output.
-Status FinishHostReadback(
-    cudaError_t copy_error, std::atomic<bool>* gpu_healthy,
-    std::span<model::ModelSequence* const> sequences,
-    const Status& submitted, trace::RouterCollector* trace) {
+Status FinishHostReadback(cudaError_t copy_error,
+                          std::atomic<bool>* gpu_healthy,
+                          std::span<model::ModelSequence* const> sequences,
+                          const Status& submitted,
+                          trace::RouterCollector* trace,
+                          std::atomic<uint64_t>* execution_steps) {
   diagnostic::Scope observation("host_readback.wait_and_commit");
   const cudaError_t trace_error = trace ? trace->Readback(nullptr) : cudaSuccess;
   bool gpu_complete = false;
@@ -43,9 +45,10 @@ Status FinishHostReadback(
                         cudaGetErrorString(error));
   });
   if (trace) trace->Complete(submitted.ok(), gpu_complete, result.ok());
+  if (result.ok() && execution_steps)
+    execution_steps->fetch_add(1, std::memory_order_relaxed);
   return result;
 }
-
 }
 
 int ChatServer::AllocSeqId(RequestControl* control, int fd, size_t required) {
@@ -198,7 +201,9 @@ void ChatServer::RunOnePrefillChunk() {
       }
       // A host cursor is not device completion. Drain even a failed forward
       // before handing shared scratch to another request.
-      s = FinishHostReadback(copy_error, &gpu_healthy_, {&req->seq, 1}, s, router_trace_.get());
+      s = FinishHostReadback(copy_error, &gpu_healthy_, {&req->seq, 1}, s,
+                             router_trace_.get(),
+                             &metrics_.execution_steps_total);
       if (s.ok() && RequestCancelled(req->control, req->fd)) {
         req->cancelled = true;
       }
@@ -414,7 +419,9 @@ void ChatServer::SchedulerLoop() {
         // Even a failed forward may have queued GPU writes. Drain before
         // publishing completion so cancellation/cleanup cannot reuse buffers
         // still owned by that work. Device failure takes precedence over abort.
-        sp = FinishHostReadback(copy_error, &gpu_healthy_, sequences, sp, router_trace_.get());
+        sp = FinishHostReadback(copy_error, &gpu_healthy_, sequences, sp,
+                                router_trace_.get(),
+                                &metrics_.execution_steps_total);
       }
       {
         if (!sp.ok()) {
@@ -507,6 +514,9 @@ void ChatServer::SchedulerLoop() {
             }
           }
         }
+        if (s.ok())
+          metrics_.execution_steps_total.fetch_add(1,
+                                                   std::memory_order_relaxed);
         if (!s.ok())
           for (auto* sequence : seqs) sequence->Fail();
         if (!s.ok() && cudaPeekAtLastError() != cudaSuccess)
@@ -595,7 +605,9 @@ void ChatServer::SchedulerLoop() {
       }
       // Includes launch/argmax failures: scratch cannot escape before drain.
       detail::ServeFaultPoint("scheduler.after_submit");
-      s = FinishHostReadback(copy_error, &gpu_healthy_, sequences, s, router_trace_.get());
+      s = FinishHostReadback(copy_error, &gpu_healthy_, sequences, s,
+                             router_trace_.get(),
+                             &metrics_.execution_steps_total);
     }
     if (kProfileDecode) cudaProfilerStop();
 

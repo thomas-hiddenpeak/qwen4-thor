@@ -6,6 +6,9 @@
 
 namespace q4t::runtime {
 
+// Shared by ModelConfig and pre-load server option validation.
+inline constexpr int kDefaultMaxPrefill = 2048;
+
 // An empty list preserves the legacy uniform layout. Explicit capacities
 // are whole KV pages; the list is immutable for the model's lifetime.
 inline bool ValidSequenceCapacities(std::span<const int> capacities,

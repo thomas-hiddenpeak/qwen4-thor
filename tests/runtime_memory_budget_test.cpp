@@ -171,6 +171,33 @@ Q4T_TEST(budget_default_fraction_and_prefill_use_effective_parameters) {
   return true;
 }
 
+Q4T_TEST(budget_decode_rows_bound_explicit_and_automatic_sequences) {
+  for (int rows : {1, 2, 4, 8}) {
+    BudgetModelParams params;
+    params.max_prefill = rows;
+    for (int requested_prefill : {0, rows}) {
+      auto request = Request(8192, rows);
+      request.max_prefill = requested_prefill;
+      const auto exact = ComputeMemoryBudget(params, request, kWeights, kRoom);
+      Q4T_CHECK(exact.feasible && exact.max_seq == rows);
+      ++request.max_seq;
+      const auto over = ComputeMemoryBudget(params, request, kWeights, kRoom);
+      Q4T_CHECK(!over.feasible && over.max_seq == 0 && over.max_len == 0);
+      Q4T_CHECK(over.reason == "decode_batch_exceeds_forward_rows");
+      request.max_seq = 0;
+      for (int length : {0, 8192}) {
+        request.max_len = length;
+        const auto automatic =
+            ComputeMemoryBudget(params, request, kWeights, kRoom);
+        Q4T_CHECK(automatic.feasible && automatic.max_seq == rows);
+        Q4T_CHECK(automatic.requested_max_seq == 0);
+        Q4T_CHECK(automatic.max_prefill == rows);
+      }
+    }
+  }
+  return true;
+}
+
 Q4T_TEST(budget_text_baseline_tracks_resident_allocations) {
   const auto budget =
       ComputeMemoryBudget({}, Request(208896), 84000000000ULL, kRoom);

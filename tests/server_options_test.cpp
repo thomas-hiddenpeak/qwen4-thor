@@ -170,6 +170,36 @@ Q4T_TEST(serve_prefill_bound_precedes_workspace_sizing) {
   return true;
 }
 
+Q4T_TEST(serve_decode_batch_fits_effective_forward_rows) {
+  for (bool no_budget : {false, true}) {
+    for (auto mode : {StartupPlanMode::kAuto, StartupPlanMode::kOff,
+                      StartupPlanMode::kRequired}) {
+      auto options = Defaults();
+      options.no_mtp = true;
+      options.no_budget = no_budget;
+      options.startup_plan = mode;
+      options.max_prefill = 1;
+      options.max_seq = 2;
+      Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+      options.max_seq = 1;
+      Q4T_CHECK(q4t::server::ValidateServerOptions(options).ok());
+      options.max_prefill = 0;
+      options.max_seq = q4t::runtime::kDefaultMaxPrefill;
+      Q4T_CHECK(q4t::server::ValidateServerOptions(options).ok());
+      ++options.max_seq;
+      Q4T_CHECK(!q4t::server::ValidateServerOptions(options).ok());
+    }
+  }
+  auto options = Defaults();
+  Q4T_CHECK(
+      !Parse({"--no-mtp", "--max-seq", "2", "--max-prefill", "1"}, &options));
+  Q4T_CHECK(options.max_seq == 1 && options.max_prefill == 0 &&
+            !options.no_mtp);
+  Q4T_CHECK(
+      Parse({"--no-mtp", "--max-seq", "2", "--max-prefill", "2"}, &options));
+  return true;
+}
+
 Q4T_TEST(serve_trace_options_are_explicit_and_bounded) {
   auto options = Defaults();
   Q4T_CHECK(options.moe_trace_dir.empty());

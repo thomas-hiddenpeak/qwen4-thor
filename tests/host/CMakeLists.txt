@@ -112,3 +112,5 @@ q4t_add_python_contract(q4t_gpu_exclusive_contracts
   tools/evalscope/test_gpu_exclusive.py)
 q4t_add_python_contract(q4t_request_cancellation_contracts
   tools/evalscope/test_request_cancellation.py)
+q4t_add_python_contract(q4t_supervisor_contracts
+  tools/release/test_supervisor.py)

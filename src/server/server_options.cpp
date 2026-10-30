@@ -66,6 +66,11 @@ Status ValidateServerOptions(const ServerOptions& options) {
   if (options.max_seq < 1 ||
       options.max_seq > std::numeric_limits<int>::max() / 8)
     return Status::Fail("max-seq must be in [1,268435455]");
+  const int forward_rows = options.max_prefill > 0
+                               ? options.max_prefill
+                               : runtime::kDefaultMaxPrefill;
+  if (options.max_seq > forward_rows)
+    return Status::Fail("max-seq exceeds effective max-prefill forward rows");
   if (!std::isfinite(options.mem_fraction) || options.mem_fraction <= 0 ||
       options.mem_fraction > 1)
     return Status::Fail("mem-fraction must be finite and in (0,1]");

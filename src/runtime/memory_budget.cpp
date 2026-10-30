@@ -232,7 +232,8 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
   const bool complete_mtp =
       !p.has_mtp || (req.mtp_weights_bytes > 0 && req.mtp_load_host_bytes > 0 &&
                      req.mtp_workspace_bytes > 0);
-  if (valid && supported_mtp && complete_mtp) {
+  const bool supported_decode = req.max_seq <= p.max_prefill;
+  if (valid && supported_mtp && complete_mtp && supported_decode) {
     b.budget = static_cast<size_t>(static_cast<long double>(mem_total) * frac);
     b.weights = weights_bytes;
     b.main_workspace =
@@ -291,7 +292,7 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
     };
     const auto fits = [&](int len, int seq) {
       const size_t fixed = fixed_for(seq);
-      return len > 0 && seq > 0 && fixed <= b.budget &&
+      return len > 0 && seq > 0 && seq <= p.max_prefill && fixed <= b.budget &&
              (!p.has_mtp || len >= req.mtp_k + 1) &&
              peak_extra(len, seq) <= b.budget - fixed &&
              StatePoolBytes(p, len, seq, req.seq_capacities) <=
@@ -299,7 +300,8 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
     };
     b.fixed = fixed_for(p.has_mtp ? req.max_seq : 1);
     constexpr int kHardMaxLen = 262144;
-    const int requested_seq = req.max_seq > 0 ? req.max_seq : 8;
+    const int requested_seq =
+        req.max_seq > 0 ? req.max_seq : std::min(8, p.max_prefill);
     int len = 0;
     int seq = requested_seq;
     if (!req.seq_capacities.empty()) {
@@ -372,9 +374,10 @@ MemoryBudget ComputeMemoryBudget(const BudgetModelParams& params,
     b.reason = b.feasible ? (b.capped ? "capacity_reduced" : "estimate_fits")
                           : "no_supported_capacity_fits_estimate";
   } else {
-    b.reason = !valid           ? "invalid_budget_request"
-               : !supported_mtp ? "unsupported_mtp_configuration"
-                                : "missing_mtp_budget_inputs";
+    b.reason = !valid              ? "invalid_budget_request"
+               : !supported_mtp    ? "unsupported_mtp_configuration"
+               : !supported_decode ? "decode_batch_exceeds_forward_rows"
+                                   : "missing_mtp_budget_inputs";
   }
 
   std::ostringstream os;

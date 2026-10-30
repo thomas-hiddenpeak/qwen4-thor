@@ -71,6 +71,9 @@ void ChatServer::HandleMetrics(int fd) {
           metrics_.prompt_tokens_total.load());
   counter("q4t_generation_tokens_total", "Total tokens generated.",
           metrics_.generation_tokens_total.load());
+  counter("q4t_execution_steps_total",
+          "Completed prefill, draft and decode execution boundaries.",
+          metrics_.execution_steps_total.load());
 
   int free_slots = 0;
   {

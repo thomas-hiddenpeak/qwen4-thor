@@ -1,0 +1,48 @@
+[q4t][capabilities] requested=experimental mtp=0 media=0 max_seq=2
+[q4t][startup] tokenizer 310 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=65536 max_seq=2 max_prefill=4096 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=87.52 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=1241120768 mtp_workspace=0 forward_buffers=209797124 ple_working=76571648 mtp=0
+[q4t][budget]   per_request=0.00 GB (peak admitted MTP request allocations)  state_pool=4.27 GB
+[q4t][budget]   => max_len=65536 max_seq=2
+[q4t][startup] budget 411 ms
+[q4t][capacity] requested_max_len=65536 requested_max_seq=2 requested_max_prefill=4096 effective_max_len=65536 effective_max_seq=2 effective_max_prefill=4096 budget_enabled=1 budget_feasible=true
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1541,"device_bytes":83583072028,"allocated":1541,"consumed":0,"freed":0,"unhanded_remaining":1541,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"ca808093c5d321b804cc524bf37ca51c0bc43ca060e7b4f5734434491ac1d319"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2211 ms
+[q4t][startup] model_load 28914 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP disabled; plain decode
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=0 media_allowed=0 vision_loaded=0 max_seq=2
+[q4t] continuous-batching scheduler started (max_seq=2)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1541,"device_bytes":83583072028,"allocated":1541,"consumed":1541,"freed":0,"unhanded_remaining":0,"handed_live":1541,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"ca808093c5d321b804cc524bf37ca51c0bc43ca060e7b4f5734434491ac1d319"}
+[q4t][startup] startup_total 31848 ms
+[q4t] serving on port 8764 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=0 id=parent-plain-1024 event=registered stage=validation seq=-1 elapsed_ms=0.049
+[q4t][request] instance=0 id=parent-plain-1024 event=stage stage=slot_admission seq=-1 elapsed_ms=0.053
+[q4t][request] instance=0 id=parent-plain-1024 event=admitted stage=slot_admission seq=0 elapsed_ms=0.057
+[q4t][request] instance=0 id=parent-plain-1024 event=stage stage=encode seq=0 elapsed_ms=0.059
+[q4t][request] instance=0 id=parent-plain-1024 event=stage stage=prefill seq=0 elapsed_ms=3.166
+[q4t][request] instance=0 id=parent-plain-1024 event=stage stage=decode seq=0 elapsed_ms=907.630
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][mem] phase=request_end id=parent-plain-1024 dev_used_gb=104.798 dev_total_gb=131.921 rss_mb=969.9 mem_free_gb=14.799 mem_avail_gb=28.219 cached_gb=1.840
+[q4t][request] instance=0 id=parent-plain-1024 event=stage stage=response seq=0 elapsed_ms=1245.136
+[q4t][request] instance=0 id=parent-plain-1024 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=1245.177 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=1241.358 stream_write_ms=0.170 scheduler_waits=7
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=1 id=parent-plain-8192 event=registered stage=validation seq=-1 elapsed_ms=0.158
+[q4t][request] instance=1 id=parent-plain-8192 event=stage stage=slot_admission seq=-1 elapsed_ms=0.163
+[q4t][request] instance=1 id=parent-plain-8192 event=admitted stage=slot_admission seq=0 elapsed_ms=0.167
+[q4t][request] instance=1 id=parent-plain-8192 event=stage stage=encode seq=0 elapsed_ms=0.183
+[q4t][request] instance=1 id=parent-plain-8192 event=stage stage=prefill seq=0 elapsed_ms=18.462
+[q4t][request] instance=1 id=parent-plain-8192 event=stage stage=decode seq=0 elapsed_ms=5404.600
+[q4t][mem] phase=request_end id=parent-plain-8192 dev_used_gb=104.660 dev_total_gb=131.921 rss_mb=973.1 mem_free_gb=14.976 mem_avail_gb=28.378 cached_gb=1.860
+[q4t][request] instance=1 id=parent-plain-8192 event=stage stage=response seq=0 elapsed_ms=5737.304
+[q4t][request] instance=1 id=parent-plain-8192 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=5737.366 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=5718.261 stream_write_ms=0.202 scheduler_waits=7
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1541,"device_bytes":83583072028,"allocated":1541,"consumed":1541,"freed":1541,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"ca808093c5d321b804cc524bf37ca51c0bc43ca060e7b4f5734434491ac1d319"}
