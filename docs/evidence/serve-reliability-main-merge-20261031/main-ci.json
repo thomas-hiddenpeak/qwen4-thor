@@ -1,0 +1,100 @@
+{
+  "conclusion": "success",
+  "databaseId": 41096517969,
+  "headSha": "17ff101b7f1723a22f695e3a415d474d89dff7d7",
+  "jobs": [
+    {
+      "completedAt": "2026-10-30T17:11:49Z",
+      "conclusion": "success",
+      "databaseId": 124203579450,
+      "name": "host-contracts",
+      "startedAt": "2026-10-30T17:10:46Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-30T17:10:47Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-30T17:10:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T17:10:50Z",
+          "conclusion": "success",
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "number": 2,
+          "startedAt": "2026-10-30T17:10:47Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T17:11:01Z",
+          "conclusion": "success",
+          "name": "Install host compiler",
+          "number": 3,
+          "startedAt": "2026-10-30T17:10:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T17:11:01Z",
+          "conclusion": "success",
+          "name": "Configure without CUDA or model fixtures",
+          "number": 4,
+          "startedAt": "2026-10-30T17:11:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T17:11:18Z",
+          "conclusion": "success",
+          "name": "Build with warnings as errors",
+          "number": 5,
+          "startedAt": "2026-10-30T17:11:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T17:11:44Z",
+          "conclusion": "success",
+          "name": "Run all public host contracts",
+          "number": 6,
+          "startedAt": "2026-10-30T17:11:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T17:11:46Z",
+          "conclusion": "success",
+          "name": "Verify strict test-runner failures",
+          "number": 7,
+          "startedAt": "2026-10-30T17:11:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T17:11:46Z",
+          "conclusion": "success",
+          "name": "Check frozen host evidence audit",
+          "number": 8,
+          "startedAt": "2026-10-30T17:11:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T17:11:46Z",
+          "conclusion": "success",
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "number": 16,
+          "startedAt": "2026-10-30T17:11:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-30T17:11:46Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 17,
+          "startedAt": "2026-10-30T17:11:46Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41096517969/job/124203579450"
+    }
+  ],
+  "status": "completed",
+  "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41096517969"
+}

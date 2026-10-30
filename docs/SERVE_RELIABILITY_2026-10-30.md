@@ -103,3 +103,32 @@ python3 -B tools/evalscope/gpu_exclusive.py \
 后续接入已有agent示例，按真实缓存miss、保存/恢复等待、PLE等待
 或容量需求选择单一任务。缓存异步化须针对剩余SHA/复制/写盘占比，
 PLE预读须先定义跨层消费与取消回收；调度改造另立目标和验收。
+
+## 主线合入（2026-10-31）
+
+按用户本次授权，main已从`fecfc09160ce507bc3d3f52ba0f876557f7537fd`
+快进到交付锚点`17ff101b7f1723a22f695e3a415d474d89dff7d7`并推送。
+11个提交、45个差异文件完整保留，没有squash、rebase、冲突或新增
+运行时改动。上文“工作分支已阶段推送”为交付时状态，当前分支为main。
+
+169项运行时文件在实际构建来源38947a6、交付锚点、当前工作区和
+封存源码之间一致；387份原始证据、30份安装健康文件及两版发布/
+归档包均已核验。发布包共382文件，原始证据归档共730文件；初步
+24349da5包仍为superseded，统计脚本首次失败不改写为通过。
+原102HTTP/23启动及依赖未变的CPU合同直接复用，本次新增本机
+构建、模型加载、GPU/HTTP为0，不扩大质量、性能或容量接受范围。
+主线自动触发的公共host合同检查已[通过](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41096517969)，
+它只覆盖实际执行的无CUDA/无模型检查，不替代Thor验收。
+
+默认27a483a3及sidecar af6b3a44保持；发布来源仍是实际构建提交
+38947a6，不改写成合入或文档提交。21eb5204/9698b430回退对、全部
+原始证据、发布包与worktree路径继续保留。额外的11提交备份位于
+`.q4t-work/serve-reliability-main-merge-20261031/premerge.bundle`，
+bundle verify通过，所需父历史fecfc09保留在main。
+
+清理范围仅为本地和远端`codex/serve-reliability`，旧tip为上述17ff101。
+删除前确认main完整包含、独有提交0、head/base均无打开PR、工作区
+干净且已切换main、其他worktree未占用该分支。远端按精确旧tip执行
+force-with-lease删除，本地使用普通`git branch -d`，均已完成；
+4076810独有研究分支保留。核验与清理收据见
+[合入证据](evidence/serve-reliability-main-merge-20261031/)。

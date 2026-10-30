@@ -1,0 +1,9 @@
+{
+  "status": "COMPLETE",
+  "old_tip": "17ff101b7f1723a22f695e3a415d474d89dff7d7",
+  "retained_by": "main",
+  "remote_after": "17ff101b7f1723a22f695e3a415d474d89dff7d7\trefs/heads/main",
+  "local_branches": "codex/mtp-prefill-scoring 4076810 [origin/codex/mtp-prefill-scoring] Add bounded incremental session snapshots and validate repeated restore gains\n* main                      17ff101 [origin/main] Deliver verified serve reliability release and record final acceptance",
+  "evidence_directories_preserved": true,
+  "worktrees_preserved": true
+}

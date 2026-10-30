@@ -1,0 +1,13 @@
+{
+  "status": "MERGED_AND_PUSHED",
+  "old_main": "fecfc09160ce507bc3d3f52ba0f876557f7537fd",
+  "release_anchor": "17ff101b7f1723a22f695e3a415d474d89dff7d7",
+  "new_runtime_changes": 0,
+  "bundle_sha256": "8950ba55e1a2bd0b49ccf35c19676e5cb3972557ee9c43a94dec3faa9dc110f2",
+  "bundle_verified": true,
+  "preflight_sha256": "069e1e32ffa0cd034ae8ad67e33d3ce484f17c500e9db0a795c7cfde70a2d210",
+  "cleanup_result_sha256": "a2810be083143c2d915f126cae8afdc7ad162c546cb88857c21d86e083d4af68",
+  "public_host_ci_run": 41096517969,
+  "new_model_starts": 0,
+  "new_generation_http": 0
+}

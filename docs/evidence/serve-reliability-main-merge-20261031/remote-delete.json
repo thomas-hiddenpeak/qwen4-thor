@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "push",
+    "--force-with-lease=refs/heads/codex/serve-reliability:17ff101b7f1723a22f695e3a415d474d89dff7d7",
+    "origin",
+    ":refs/heads/codex/serve-reliability"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "To https://github.com/thomas-hiddenpeak/qwen4-thor.git\n - [deleted]         codex/serve-reliability\n"
+}
