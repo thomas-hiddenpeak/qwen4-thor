@@ -254,3 +254,5 @@
 - [固定 k3 suffix 同步收尾合同](MTP_SUFFIX_SYNCHRONOUS_2026-10-26.md)
 
 - [固定 k3 suffix 报告路径绑定修复](MTP_SUFFIX_REPORT_BINDING_2026-10-26.md)
+
+- [main复审四项遗留修复计划](MAIN_REAUDIT_FIX_PLAN_2026-10-31.md)
