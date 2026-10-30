@@ -1,0 +1,88 @@
+{
+  "status": "DELIVERED",
+  "binary_sha256": "037328bb5c8788920ef44d1dfac2df94f908760f5626a95f1a674568c0dac4f7",
+  "sidecar_sha256": "3200266ea8778507b9e9acdfc0cf0a8b2bb97ae02aa8262cd572fd0a9b060d06",
+  "source_commit": "9b9931193ff8a9abe9107a6d700dc2a8728a8464",
+  "phase_counts": [
+    {
+      "stage": "http",
+      "http": 1,
+      "starts": 1
+    },
+    {
+      "stage": "http-repair",
+      "http": 30,
+      "starts": 9
+    },
+    {
+      "stage": "deployment/run",
+      "http": 6,
+      "starts": 2
+    }
+  ],
+  "total_http": 37,
+  "total_starts": 12,
+  "outcomes": {
+    "error": 5,
+    "success": 28,
+    "cancelled": 4
+  },
+  "guards": {
+    "lease": "COMMAND_FAILED",
+    "repair-lease": "COMPLETED",
+    "deployment/lease": "COMPLETED"
+  },
+  "elapsed_through_guard_seconds": 975.4414985179901,
+  "elapsed_through_finalize_seconds": 983.2144618034363,
+  "deadline_unix": 1793389144.5978625,
+  "finished_unix": 1793384727.8123243,
+  "runtime_files": 169,
+  "unchanged_runtime_files": 165,
+  "new_original_evidence_files": 171,
+  "seals": {
+    "delivery-package": {
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/sealed-files.json",
+        "sha256": "27f4133305408ae031d8d000810541bebbfdee6e59d6b4aaadab29308e4b3f9a",
+        "bytes": 22195
+      },
+      "files": 194
+    },
+    "evidence-archive": {
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/evidence-archive/sealed-files.json",
+        "sha256": "a9243fa359370611d3eba1b2e27342a3bdf30aebfca0b83b1120426bd79d728d",
+        "bytes": 20920
+      },
+      "files": 171
+    },
+    "health-archive": {
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/health-archive/sealed-files.json",
+        "sha256": "f3bd783b70f3eb58124a8512a5db1a7cd24c2c5326e30218d38455da4053dcff",
+        "bytes": 2886
+      },
+      "files": 29
+    }
+  },
+  "health": [
+    {
+      "mode": "full",
+      "shared_cached_tokens": 8192,
+      "private_cached_tokens": 9230,
+      "shared_text": "831907",
+      "private_text": "44"
+    },
+    {
+      "mode": "subset",
+      "shared_cached_tokens": 8192,
+      "private_cached_tokens": 9230,
+      "shared_text": "831907",
+      "private_text": "44"
+    }
+  ],
+  "recovery_marker_cleared": true,
+  "final_gpu_contexts": [],
+  "performance_acceptance": false,
+  "prior_private_negative_withdrawn": true
+}

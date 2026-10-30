@@ -1,0 +1,11 @@
+{
+  "classification": "VALIDATION_PARSER_FAILURE",
+  "generation_http": 1,
+  "starts": 1,
+  "original_guard": "COMMAND_FAILED",
+  "original_exit_passed": false,
+  "protocol_500_verified": true,
+  "resources_released": true,
+  "same_service_recovery_not_run": true,
+  "retest": "Repeat only the first fault/recovery group; all other steps were unstarted."
+}

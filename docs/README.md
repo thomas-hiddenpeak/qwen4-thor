@@ -3,7 +3,8 @@
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
-最新专项：[Serve响应头与有效私有缓存负向验收收尾](SERVE_CLOSEOUT_2026-10-31.md)；
+最新专项：[Serve两项审计收尾结果与默认交付](SERVE_CLOSEOUT_RESULT_2026-10-31.md)；
+[Serve响应头与有效私有缓存负向验收冻结范围](SERVE_CLOSEOUT_2026-10-31.md)；
 [Serve可靠性主线合入与分支收尾](SERVE_RELIABILITY_2026-10-30.md#主线合入2026-10-31)；
 [Serve可靠性结果、指标与回退](SERVE_RELIABILITY_2026-10-30.md)；
 [Serve冻结范围与预算](SERVE_RELIABILITY_PLAN_2026-10-30.md)；

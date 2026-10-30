@@ -1,0 +1,12 @@
+{
+  "changed": [
+    "include/q4t/server/http_response.h",
+    "include/q4t/server/serve_fault.h",
+    "src/server/chat_generation.cpp",
+    "src/server/http_response.cpp"
+  ],
+  "unchanged": 165,
+  "reused_prior_http": 102,
+  "correction": "Prior short private probe is not a publication negative. Retain the original evidence; replace that inference.",
+  "reuse": "Model math, tokenizer, scheduling, cache layout/storage unchanged. New HTTP covers header progress and actual private publication."
+}
