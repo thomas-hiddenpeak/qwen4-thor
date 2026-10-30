@@ -1,0 +1,8 @@
+{"kind": "startup", "label": "full", "time": 1793392063.8469284, "http": 0, "starts": 1}
+{"kind": "generation", "label": "full-seed", "time": 1793392097.3354554, "http": 1, "starts": 1}
+{"kind": "generation", "label": "full-shared", "time": 1793392105.4582686, "http": 2, "starts": 1}
+{"kind": "generation", "label": "full-private", "time": 1793392107.0631628, "http": 3, "starts": 1}
+{"kind": "startup", "label": "subset", "time": 1793392108.8220258, "http": 3, "starts": 2}
+{"kind": "generation", "label": "subset-seed", "time": 1793392147.8496907, "http": 4, "starts": 2}
+{"kind": "generation", "label": "subset-shared", "time": 1793392157.1273444, "http": 5, "starts": 2}
+{"kind": "generation", "label": "subset-private", "time": 1793392158.7006226, "http": 6, "starts": 2}

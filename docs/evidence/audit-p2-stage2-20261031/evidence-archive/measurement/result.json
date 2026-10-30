@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "http": 12,
+  "starts": 6,
+  "completed": [
+    "parent-plain",
+    "parent-full",
+    "parent-subset",
+    "candidate-plain",
+    "candidate-full",
+    "candidate-subset"
+  ],
+  "finished": 1793392045.8061435
+}

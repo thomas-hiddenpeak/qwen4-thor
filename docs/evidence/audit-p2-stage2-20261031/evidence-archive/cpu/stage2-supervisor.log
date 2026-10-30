@@ -1,0 +1,91 @@
+EEEEE
+======================================================================
+ERROR: test_idle_time_does_not_charge_next_request (__main__.SupervisorProgressTest.test_idle_time_does_not_charge_next_request)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 109, in test_idle_time_does_not_charge_next_request
+    self.assertEqual(self.run_loop([
+                     ^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 90, in run_loop
+    release.supervise(root)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 202, in supervise
+    _supervise_locked(root)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 309, in _supervise_locked
+    fcntl.flock(lock,fcntl.LOCK_UN)
+                ^^^^
+NameError: name 'lock' is not defined
+
+======================================================================
+ERROR: test_long_request_advances_before_completion (__main__.SupervisorProgressTest.test_long_request_advances_before_completion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 94, in test_long_request_advances_before_completion
+    self.assertEqual(self.run_loop([
+                     ^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 90, in run_loop
+    release.supervise(root)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 202, in supervise
+    _supervise_locked(root)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 309, in _supervise_locked
+    fcntl.flock(lock,fcntl.LOCK_UN)
+                ^^^^
+NameError: name 'lock' is not defined
+
+======================================================================
+ERROR: test_missing_progress_metric_rejects_incompatible_backend (__main__.SupervisorProgressTest.test_missing_progress_metric_rejects_incompatible_backend)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 269, in _supervise_locked
+    raise RuntimeError('backend lacks q4t_execution_steps_total')
+RuntimeError: backend lacks q4t_execution_steps_total
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 115, in test_missing_progress_metric_rejects_incompatible_backend
+    self.run_loop([(0, 0, 1, 0)], missing=True)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 90, in run_loop
+    release.supervise(root)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 202, in supervise
+    _supervise_locked(root)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 309, in _supervise_locked
+    fcntl.flock(lock,fcntl.LOCK_UN)
+                ^^^^
+NameError: name 'lock' is not defined
+
+======================================================================
+ERROR: test_queued_cancellations_cannot_mask_stall (__main__.SupervisorProgressTest.test_queued_cancellations_cannot_mask_stall)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 104, in test_queued_cancellations_cannot_mask_stall
+    self.assertEqual(self.run_loop([
+                     ^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 90, in run_loop
+    release.supervise(root)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 202, in supervise
+    _supervise_locked(root)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 309, in _supervise_locked
+    fcntl.flock(lock,fcntl.LOCK_UN)
+                ^^^^
+NameError: name 'lock' is not defined
+
+======================================================================
+ERROR: test_stalled_execution_expires (__main__.SupervisorProgressTest.test_stalled_execution_expires)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 99, in test_stalled_execution_expires
+    self.assertEqual(self.run_loop([
+                     ^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 90, in run_loop
+    release.supervise(root)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 202, in supervise
+    _supervise_locked(root)
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/release.py", line 309, in _supervise_locked
+    fcntl.flock(lock,fcntl.LOCK_UN)
+                ^^^^
+NameError: name 'lock' is not defined
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.020s
+
+FAILED (errors=5)

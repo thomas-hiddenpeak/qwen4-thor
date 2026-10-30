@@ -1,0 +1,75 @@
+[
+  {
+    "argv": [
+      ".q4t-work/audit-p2-20261031/stage2/build/q4t",
+      "serve",
+      "--model-dir",
+      ".q4t-work/audit-p2-20261031/nonexistent-model",
+      "--no-mtp",
+      "--max-seq",
+      "2",
+      "--max-prefill",
+      "1",
+      "--startup-plan",
+      "auto"
+    ],
+    "returncode": 2,
+    "stdout": "",
+    "stderr": "serve options: max-seq exceeds effective max-prefill forward rows\n"
+  },
+  {
+    "argv": [
+      ".q4t-work/audit-p2-20261031/stage2/build/q4t",
+      "serve",
+      "--model-dir",
+      ".q4t-work/audit-p2-20261031/nonexistent-model",
+      "--no-mtp",
+      "--max-seq",
+      "2",
+      "--max-prefill",
+      "1",
+      "--startup-plan",
+      "off"
+    ],
+    "returncode": 2,
+    "stdout": "",
+    "stderr": "serve options: max-seq exceeds effective max-prefill forward rows\n"
+  },
+  {
+    "argv": [
+      ".q4t-work/audit-p2-20261031/stage2/build/q4t",
+      "serve",
+      "--model-dir",
+      ".q4t-work/audit-p2-20261031/nonexistent-model",
+      "--no-mtp",
+      "--max-seq",
+      "2",
+      "--max-prefill",
+      "1",
+      "--startup-plan",
+      "required"
+    ],
+    "returncode": 2,
+    "stdout": "",
+    "stderr": "serve options: max-seq exceeds effective max-prefill forward rows\n"
+  },
+  {
+    "argv": [
+      ".q4t-work/audit-p2-20261031/stage2/build/q4t",
+      "serve",
+      "--model-dir",
+      ".q4t-work/audit-p2-20261031/nonexistent-model",
+      "--no-mtp",
+      "--max-seq",
+      "2",
+      "--max-prefill",
+      "1",
+      "--startup-plan",
+      "off",
+      "--no-budget"
+    ],
+    "returncode": 2,
+    "stdout": "",
+    "stderr": "serve options: max-seq exceeds effective max-prefill forward rows\n"
+  }
+]

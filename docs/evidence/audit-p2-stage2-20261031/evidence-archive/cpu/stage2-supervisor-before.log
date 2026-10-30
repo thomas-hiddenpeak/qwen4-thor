@@ -1,0 +1,43 @@
+/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py:90: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/rm01/models/dev/qwen4-thor/build/supervisor-tests/tmpx0esiwq4/supervisor.lock' mode='a' encoding='UTF-8'>
+  release.supervise(root)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+./home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py:90: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/rm01/models/dev/qwen4-thor/build/supervisor-tests/tmp30bque9x/supervisor.lock' mode='a' encoding='UTF-8'>
+  release.supervise(root)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+F/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py:90: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/rm01/models/dev/qwen4-thor/build/supervisor-tests/tmp9s50ldxw/supervisor.lock' mode='a' encoding='UTF-8'>
+  release.supervise(root)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+F/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py:90: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/rm01/models/dev/qwen4-thor/build/supervisor-tests/tmpw5eq441p/supervisor.lock' mode='a' encoding='UTF-8'>
+  release.supervise(root)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+./home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py:90: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/rm01/models/dev/qwen4-thor/build/supervisor-tests/tmp7hh7pxi2/supervisor.lock' mode='a' encoding='UTF-8'>
+  release.supervise(root)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+.
+======================================================================
+FAIL: test_long_request_advances_before_completion (__main__.SupervisorProgressTest.test_long_request_advances_before_completion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 94, in test_long_request_advances_before_completion
+    self.assertEqual(self.run_loop([
+AssertionError: Lists differ: [('backend', 1800), ('backend', 2400)] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+('backend', 1800)
+
+- [('backend', 1800), ('backend', 2400)]
++ []
+
+======================================================================
+FAIL: test_missing_progress_metric_rejects_incompatible_backend (__main__.SupervisorProgressTest.test_missing_progress_metric_rejects_incompatible_backend)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py", line 114, in test_missing_progress_metric_rejects_incompatible_backend
+    with self.assertRaisesRegex(RuntimeError, 'q4t_execution_steps_total'):
+AssertionError: RuntimeError not raised
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.020s
+
+FAILED (failures=2)

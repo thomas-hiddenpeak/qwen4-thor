@@ -1,0 +1,10 @@
+{
+  "status": "DELIVERED",
+  "binary_sha256": "b11ed66cd94f943957e83edbfa223cb3e65f758e409eb4d125b4911d1164e015",
+  "sidecar_sha256": "6ed16aec51da7379a89468fe8927d9caa53bf37ccdad36835776b5c4cdbb19d1",
+  "total_http": 18,
+  "total_starts": 8,
+  "gpu_processes": 0,
+  "persistent_service": false,
+  "finished": 1793392174.548882
+}
