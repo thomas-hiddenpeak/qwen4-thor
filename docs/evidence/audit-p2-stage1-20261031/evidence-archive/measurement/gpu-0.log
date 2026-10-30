@@ -1,0 +1,7 @@
+[q4t] retaining residency payloads: drain failed
+[PASS] residency_synthetic_same_and_split_shards_match_all_bytes
+[PASS] residency_every_cuda_init_failure_rolls_back_and_retries
+[PASS] residency_mutex_and_worker_allocation_failures_roll_back
+[PASS] residency_later_thread_creation_exception_joins_prior_worker
+[PASS] residency_drain_failure_retains_payloads_until_completion
+5 tests, 5 passed, 0 failed, 0 skipped

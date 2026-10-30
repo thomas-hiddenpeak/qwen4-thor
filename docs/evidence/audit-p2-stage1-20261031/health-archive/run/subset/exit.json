@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "server_exit": 0,
+  "endings": [
+    {
+      "instance": "0",
+      "id": "subset-seed",
+      "event": "end",
+      "stage": "response",
+      "seq": "1",
+      "released": "1",
+      "outcome": "success",
+      "reason": "completed",
+      "elapsed_ms": "8126.009",
+      "slot_wait_ms": "0.001",
+      "model_lock_ms": "0.000",
+      "tokenizer_lock_ms": "0.002",
+      "scheduler_completion_ms": "430.732",
+      "stream_write_ms": "0.204",
+      "scheduler_waits": "5"
+    },
+    {
+      "instance": "1",
+      "id": "subset-shared",
+      "event": "end",
+      "stage": "response",
+      "seq": "1",
+      "released": "1",
+      "outcome": "success",
+      "reason": "completed",
+      "elapsed_ms": "1570.958",
+      "slot_wait_ms": "0.001",
+      "model_lock_ms": "0.000",
+      "tokenizer_lock_ms": "0.001",
+      "scheduler_completion_ms": "165.529",
+      "stream_write_ms": "0.107",
+      "scheduler_waits": "2"
+    },
+    {
+      "instance": "2",
+      "id": "subset-private",
+      "event": "end",
+      "stage": "response",
+      "seq": "1",
+      "released": "1",
+      "outcome": "success",
+      "reason": "completed",
+      "elapsed_ms": "1049.881",
+      "slot_wait_ms": "0.001",
+      "model_lock_ms": "0.000",
+      "tokenizer_lock_ms": "0.000",
+      "scheduler_completion_ms": "86.185",
+      "stream_write_ms": "0.130",
+      "scheduler_waits": "1"
+    }
+  ],
+  "reservation_final": [
+    {
+      "schema": 1,
+      "event": "finalized",
+      "status": "PASS",
+      "count": 1621,
+      "device_bytes": 102049847380,
+      "allocated": 1621,
+      "consumed": 1621,
+      "freed": 1621,
+      "unhanded_remaining": 0,
+      "handed_live": 0,
+      "release_unknown": 0,
+      "error": "none",
+      "backend_rc": 0,
+      "error_index": 0,
+      "prepared": true,
+      "startup_complete": true,
+      "finalized": true,
+      "active": false,
+      "strategy": "stable_descending_bytes",
+      "plan_sha256": "9296ffe7a6ea71a6e86e24a98958ebdfc57a6bf7ad37fe48540c16c8debfbfd4"
+    }
+  ]
+}

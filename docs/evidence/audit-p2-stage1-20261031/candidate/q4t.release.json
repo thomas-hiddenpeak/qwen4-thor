@@ -1,0 +1,137 @@
+{
+  "version": "audit-p2-stage1-20261031",
+  "binary_sha256": "5e6249fcd2eb9849ef047d7fff89489c3d0218ba2c40ace40f4b79b3affe8b05",
+  "source_commit": "7fa5534d756688e82893f4681b16250e88c1f15c",
+  "source_note": "Weight metadata, shard identity and partial-init ownership repair.",
+  "tested_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/candidate/runtime-source.json",
+  "tested_source_manifest_sha256": "053773173f91d7abe70f44abd007c2d856c1ec3b6c47c8d17e8b9c4c435ce541",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/candidate/CMakeCache.txt",
+  "build_cache_sha256": "387d0cdbac6bca2af84961d315c4bc00fe73d84c32d52ca97fc26eb6ffa58117",
+  "acceptance": "ACCEPT_BOUNDED_WEIGHT_RESIDENCY_REPAIR",
+  "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/acceptance-contract.md",
+  "acceptance_snapshot_sha256": "b9c3109f3d65213c2c67a9888be07aea57a18b4af757e25c31a0537dd220cb5f",
+  "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/decision.json",
+  "acceptance_decision_sha256": "748292747314cc72e502411cfbe63da4e98682059653fc4f49edaeb12d497c10",
+  "acceptance_audit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/evidence/archive-receipt.json",
+  "acceptance_audit_sha256": "469489e16c625a049d12af97901afff293395915e47e2fc6bf95bab24d1941a4",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/previous/q4t.release.json",
+  "subset_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/artifact",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "defaults": {
+    "head": "full",
+    "mtp": true,
+    "mtp_k": 3,
+    "suffix": false,
+    "max_seq": 1,
+    "session_cache": false,
+    "prefix_cache": false,
+    "session_incremental": false
+  },
+  "agent_configuration": {
+    "max_seq": 4,
+    "max_prefill": 4096,
+    "max_len": 208896,
+    "seq_capacities": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "admitted_requests": 32
+  },
+  "session_cache": {
+    "enabled_by": "--session-cache-dir DIR plus session_id",
+    "max_entries": 8,
+    "disk_budget_bytes": 25769803776,
+    "ram_budget_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "min_prefix": 8192,
+    "same_process_only": true
+  },
+  "prefix_cache": {
+    "enabled_by": "--prefix-cache-dir DIR plus prefix_cache_scope",
+    "checkpoints": [
+      8192,
+      32768,
+      65536
+    ],
+    "write_field": "prefix_cache_write_tokens",
+    "default_readonly": true,
+    "max_writes_per_request": 1,
+    "max_checkpoints": 4,
+    "checkpoint_range": [
+      1024,
+      131072
+    ],
+    "max_entries": 8,
+    "disk_budget_bytes": 8589934592,
+    "ram_budget_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "same_process_only": true
+  },
+  "scope": {
+    "hardware": "local Thor",
+    "decoding": "text greedy MTP k3",
+    "heads": [
+      "full",
+      "65536-row BF16 subset"
+    ],
+    "slots": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "max_prefill": 4096,
+    "shared_boundaries_tested": [
+      8192,
+      32768
+    ],
+    "request_policy": "one explicit seed per successful source request; children readonly by default",
+    "prefix_cache_default": false,
+    "same_process_only": true
+  },
+  "atomicity": "Individual atomic replaces, durable recovery marker, identity-checked rollback; not a two-file power-loss transaction",
+  "incremental": {
+    "enabled_by": "Q4T_SESSION_INCREMENTAL=1",
+    "default": false,
+    "private_only": true,
+    "block_bytes": 8388608,
+    "max_ranges": 1024,
+    "max_blocks": 8192,
+    "max_entries": 8,
+    "first_save": "full",
+    "restore_required_in_current_lease": true,
+    "checksums": "all valid bytes every save and restore",
+    "same_process_only": true,
+    "statistical_noninferiority": false
+  },
+  "serving": {
+    "utf8": "complete scalars per event; invalid terminal bytes replaced",
+    "send_success": "complete local write and request completion wins cancellation",
+    "ttft": "streaming first nonempty content local write",
+    "target_ready": "separate legacy first-target-ready metric",
+    "logical_write_deadline_seconds": 30,
+    "terminal_write_budget_ms": 250,
+    "batching": "existing all-active selection",
+    "fault_injection": false,
+    "performance_acceptance": false,
+    "header_state": "actual successful writes; partial headers close on exception",
+    "private_publication": "actual saved token prefix; matching positive and negative continuation"
+  },
+  "audit_p2": {
+    "fixed": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A7"
+    ],
+    "pending": [
+      "A5",
+      "A6",
+      "A8"
+    ]
+  }
+}

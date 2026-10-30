@@ -1,0 +1,59 @@
+{
+  "original_plan": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/plan.json",
+    "sha256": "4d25c612b4c3edf079306dd023f7fade30e825c5baa18940811770904d865002",
+    "bytes": 129876
+  },
+  "tool": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/verify/audit_p2/stage1_health_retry2.py",
+    "sha256": "e2d7930950e92b37d0be7e8d37eb1737101404b0c5f9519a30e2b9145211b317",
+    "bytes": 4427
+  },
+  "retained_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/deployment-env-abort-2/sealed-files.json",
+    "sha256": "e97841a2a7aa88c66724460cd0e87f013b4194a55e25dbc11c3f4079265c5e20",
+    "bytes": 915
+  },
+  "first_plan": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/health-retry-plan.json",
+    "sha256": "9f6fedb07db56308757fb03fb09a0ad5b88974b206023ae6683e9dbda6f44ab1",
+    "bytes": 2224
+  },
+  "first_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/deployment-env-abort/sealed-files.json",
+    "sha256": "80ea70de6cc6b0651c3ce8892a127d23ea3848f6d7d8e41cfc71282b57ac1734",
+    "bytes": 915
+  },
+  "shutdown": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/opencode-stop/stopped.json",
+    "sha256": "db8fafae6762f6d8efe6376e13e8a0378cacbfffcc099c6ac297c203fdf32ab3",
+    "bytes": 3721
+  },
+  "original_output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/deployment",
+  "retained_output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/deployment-env-abort-2",
+  "files": {
+    "health-plan.json": "288fc8f90ad91d5b30db174fc95daa6bb12e843a680070402b7ba0843062c0a5",
+    "deployment.json": "6d773e3605a015de17c21ce3646e95a63931691fea238be55df65e5ecddd0ae9",
+    "lease/nvml-queries.jsonl": "b01480e60089caf1791cadbd965a30070ab79b4068c7ef3cdc0224ac8eb44541",
+    "lease/events.jsonl": "ed9d3354eb7f2f1e5731b67df366a079f2b32d94065b134670c4eb87b05717f6",
+    "lease/exit.json": "4bce9b85e398c5b10df023bb83a610197465bf5e7c6591bd2c5eb2a1ba2797cc",
+    "run/ledger.jsonl": "1d26355cfd76fccfd1eb436067b077760b9de9c7d961e3d28b39670385699c70",
+    "run/full/server.log": "744484e1b5058f3a2cb4b2664e50a02700c4f094e384b9b3a58f07fab55eee3c",
+    "run/full/command.json": "19e1d7a02188328a1914778ef4c9134639aef5a156fb803befe49758c638191b",
+    "run/full/exit.json": "d4f51225ff3323b7817788d1c9aaec18a888cce4b38c8543a13e6b9840e66b09"
+  },
+  "recovery": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/monitor-recovery-2.json",
+    "sha256": "88e6fa9a0425729cd4d08806169b5c3e0eb5567ace4993ed9422d388e8663ee7",
+    "bytes": 2256
+  },
+  "deadline_unix": 1793395274.3031168,
+  "retained_http": 0,
+  "retained_starts": 2,
+  "retry_http": 6,
+  "retry_starts": 2,
+  "total_http": 22,
+  "total_starts": 12,
+  "runtime_and_measurement_reused": true,
+  "monitor_unchanged": true
+}

@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/frozen/q4t_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/frozen/required-residency.txt"
+  ],
+  "environment": {
+    "LD_PRELOAD": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/frozen/payload_fault.so"
+  }
+}

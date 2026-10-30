@@ -1,0 +1,32 @@
+[
+  {
+    "text": "710003",
+    "usage": {
+      "prompt_tokens": 1024,
+      "completion_tokens": 7,
+      "total_tokens": 1031
+    },
+    "finish": [
+      "stop"
+    ],
+    "errors": [],
+    "length": 1024,
+    "seconds": 1.2550714567769319,
+    "ttft": 0.9191019667778164
+  },
+  {
+    "text": "710765",
+    "usage": {
+      "prompt_tokens": 8192,
+      "completion_tokens": 7,
+      "total_tokens": 8199
+    },
+    "finish": [
+      "stop"
+    ],
+    "errors": [],
+    "length": 8192,
+    "seconds": 5.746526698116213,
+    "ttft": 5.412945074029267
+  }
+]

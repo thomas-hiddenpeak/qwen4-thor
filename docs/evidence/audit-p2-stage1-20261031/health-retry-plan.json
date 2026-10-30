@@ -1,0 +1,44 @@
+{
+  "original_plan": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/plan.json",
+    "sha256": "4d25c612b4c3edf079306dd023f7fade30e825c5baa18940811770904d865002",
+    "bytes": 129876
+  },
+  "tool": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/verify/audit_p2/stage1_health_retry.py",
+    "sha256": "7ffcd7ac79a6f96b3a8584de3a7a47a288b676bc79c553b686bdd01f339389c1",
+    "bytes": 5489
+  },
+  "retained_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/deployment-env-abort/sealed-files.json",
+    "sha256": "80ea70de6cc6b0651c3ce8892a127d23ea3848f6d7d8e41cfc71282b57ac1734",
+    "bytes": 915
+  },
+  "original_output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/deployment",
+  "retained_output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/deployment-env-abort",
+  "files": {
+    "health-plan.json": "288fc8f90ad91d5b30db174fc95daa6bb12e843a680070402b7ba0843062c0a5",
+    "deployment.json": "15c533326e3806f61cdaa08e8feef097ea63673c698b5ecd5eace3914be073b7",
+    "lease/nvml-queries.jsonl": "de3b709364f902797c59b9bbe4167b1c48bf616bea32b1c8c9702e560943715b",
+    "lease/events.jsonl": "0ac6f75735900d6687e2d24b10b21429757adb0356ecc02b621810203848f50a",
+    "lease/exit.json": "9fd143d86995435d6381f4aafb14c65f0188f6771a8a73427f170937239e0975",
+    "run/ledger.jsonl": "7be6bdcfe99e26ffcf99aad5037dd5dd24bf8c9f530ab05f550c6dc04a401b98",
+    "run/full/server.log": "68573e30aa1cc793b7dfa1f05c20764f46af7d646c6081daa3457c359683a775",
+    "run/full/command.json": "19e1d7a02188328a1914778ef4c9134639aef5a156fb803befe49758c638191b",
+    "run/full/exit.json": "d4f51225ff3323b7817788d1c9aaec18a888cce4b38c8543a13e6b9840e66b09"
+  },
+  "recovery": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/monitor-recovery.json",
+    "sha256": "d9cd87b042b4bd43d61926247722306b183e47c21a994780b539cf73786503d0",
+    "bytes": 2258
+  },
+  "deadline_unix": 1793395274.3031168,
+  "retained_http": 0,
+  "retained_starts": 1,
+  "retry_http": 6,
+  "retry_starts": 2,
+  "total_http": 22,
+  "total_starts": 11,
+  "runtime_and_measurement_reused": true,
+  "monitor_unchanged": true
+}

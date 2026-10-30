@@ -1,0 +1,92 @@
+Start testing: Oct 31 03:46 CST
+----------------------------------------------------------
+1/4 Testing: q4t_io_contracts
+1/4 Test: q4t_io_contracts
+Command: "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/io-host/q4t_io_contracts"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/io_host/../..
+"q4t_io_contracts" start time: Oct 31 03:46 CST
+Output:
+----------------------------------------------------------
+[PASS] io_contract_scatter_short_reads_and_eintr
+[PASS] io_contract_scatter_eof_and_error
+[PASS] io_contract_scatter_iovec_limit
+[PASS] io_contract_scatter_bounds
+[PASS] io_contract_metadata_survives_eviction
+[PASS] io_contract_active_read_survives_eviction
+[PASS] io_contract_concurrent_small_cache
+7 tests, 7 passed, 0 failed, 0 skipped
+<end of output>
+Test time =   0.03 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_io_contracts" end time: Oct 31 03:46 CST
+"q4t_io_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/4 Testing: q4t_weight_loader_contracts
+2/4 Test: q4t_weight_loader_contracts
+Command: "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/io-host/q4t_weight_loader_contracts"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/io_host/../..
+"q4t_weight_loader_contracts" start time: Oct 31 03:46 CST
+Output:
+----------------------------------------------------------
+[PASS] weight_loader_metadata_survives_eviction
+[PASS] weight_loader_read_survives_eviction
+[PASS] weight_loader_device_read_survives_eviction
+[PASS] weight_loader_device_enqueue_survives_eviction
+[PASS] weight_loader_missing_tensor_and_shard
+[PASS] weight_loader_concurrent_small_cache
+6 tests, 6 passed, 0 failed, 0 skipped
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_weight_loader_contracts" end time: Oct 31 03:46 CST
+"q4t_weight_loader_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/4 Testing: q4t_safetensors_validation
+3/4 Test: q4t_safetensors_validation
+Command: "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/io-host/q4t_safetensors_validation"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/io_host/../..
+"q4t_safetensors_validation" start time: Oct 31 03:46 CST
+Output:
+----------------------------------------------------------
+[PASS] safetensors_rejects_invalid_integer_shapes_and_extents
+[PASS] safetensors_rejects_overlap_and_duplicate_keys
+[PASS] safetensors_preserves_scalar_empty_and_exact_large_dimensions
+[PASS] safetensors_range_and_forged_tensor_reject_before_writing
+[PASS] safetensors_failed_open_releases_fd_and_mapping
+[PASS] safetensors_allocation_exception_releases_fd_and_mapping
+6 tests, 6 passed, 0 failed, 0 skipped
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_safetensors_validation" end time: Oct 31 03:46 CST
+"q4t_safetensors_validation" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/4 Testing: q4t_residency_host_contracts
+4/4 Test: q4t_residency_host_contracts
+Command: "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/io-host/q4t_residency_host_contracts"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/io_host/../..
+"q4t_residency_host_contracts" start time: Oct 31 03:46 CST
+Output:
+----------------------------------------------------------
+[q4t] retaining residency payloads: drain failed
+[PASS] residency_synthetic_same_and_split_shards_match_all_bytes
+[PASS] residency_every_cuda_init_failure_rolls_back_and_retries
+[PASS] residency_mutex_and_worker_allocation_failures_roll_back
+[PASS] residency_later_thread_creation_exception_joins_prior_worker
+[PASS] residency_drain_failure_retains_payloads_until_completion
+5 tests, 5 passed, 0 failed, 0 skipped
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_residency_host_contracts" end time: Oct 31 03:46 CST
+"q4t_residency_host_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 31 03:46 CST

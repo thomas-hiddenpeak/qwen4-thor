@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/verify/audit_p2/stage1.py", line 436, in <module>
+    globals()[action]()
+  File "/home/rm01/models/dev/qwen4-thor/tools/verify/audit_p2/stage1.py", line 174, in run
+    guarded(BASE / 'measurement')
+  File "/home/rm01/models/dev/qwen4-thor/tools/verify/audit_p2/stage1.py", line 40, in guarded
+    h.require_guard(output)
+  File "/home/rm01/models/dev/qwen4-thor/tools/verify/startup_delivery/deploy.py", line 488, in require_guard
+    raise RuntimeError('no matching deployment guard ancestor')
+RuntimeError: no matching deployment guard ancestor

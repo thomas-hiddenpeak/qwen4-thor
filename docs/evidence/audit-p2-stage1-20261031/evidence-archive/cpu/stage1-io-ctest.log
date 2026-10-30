@@ -1,0 +1,13 @@
+Test project /home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/io-host
+    Start 1: q4t_io_contracts
+1/4 Test #1: q4t_io_contracts .................   Passed    0.03 sec
+    Start 2: q4t_weight_loader_contracts
+2/4 Test #2: q4t_weight_loader_contracts ......   Passed    0.02 sec
+    Start 3: q4t_safetensors_validation
+3/4 Test #3: q4t_safetensors_validation .......   Passed    0.01 sec
+    Start 4: q4t_residency_host_contracts
+4/4 Test #4: q4t_residency_host_contracts .....   Passed    0.01 sec
+
+100% tests passed out of 4
+
+Total Test time (real) =   0.07 sec

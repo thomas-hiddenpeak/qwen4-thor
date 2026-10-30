@@ -1,0 +1,24 @@
+[
+  {
+    "pid": 715919,
+    "ppid": 2253,
+    "start_ticks": 20010479,
+    "exe": "/home/rm01/.nvm/versions/node/v24.18.0/bin/node",
+    "argv0": "/home/rm01/.nvm/versions/node/v24.18.0/bin/node",
+    "comm": "MainThread",
+    "rss": "2191820 kB",
+    "uid": "2002\t2002\t2002\t2002",
+    "cgroup": "0::/user.slice/user-2002.slice/user@2002.service/app.slice/codex-model-router.service"
+  },
+  {
+    "pid": 715920,
+    "ppid": 2253,
+    "start_ticks": 20010482,
+    "exe": "/home/rm01/.opencode/bin/opencode",
+    "argv0": "/home/rm01/.opencode/bin/opencode",
+    "comm": "opencode",
+    "rss": "8583996 kB",
+    "uid": "2002\t2002\t2002\t2002",
+    "cgroup": "0::/user.slice/user-2002.slice/user@2002.service/app.slice/opencode-serve.service"
+  }
+]

@@ -1,0 +1,14 @@
+{
+  "old_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/measurement",
+  "retained_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/measurement-preflight-failed",
+  "files": {
+    "lease/nvml-queries.jsonl": "a22b605b58cd02e2c23325329f5510001bb3494f2baacbf9ee4f362a146fd3a1",
+    "lease/events.jsonl": "98d19116632434f76cb9feb92a8c0c8815daf63b4149178c24252419ca7d2685",
+    "lease/exit.json": "eaadbf2f37683b3fab78638b2139493140ea6be43ac6e391f7e2cd4d844790fa"
+  },
+  "http": 0,
+  "model_starts": 0,
+  "gpu_contract_processes": 0,
+  "reason": "guard ancestor requires absolute argv path; corrected invocation without source or deadline change",
+  "time": 1793389940.484764
+}

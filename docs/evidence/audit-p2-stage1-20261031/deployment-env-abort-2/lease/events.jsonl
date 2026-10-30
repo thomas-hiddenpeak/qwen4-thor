@@ -1,0 +1,12 @@
+{"utc": "2026-10-30T20:05:39.990895+00:00", "monotonic": 1580822.507774014, "pid": 420770, "event": "lease_acquired"}
+{"utc": "2026-10-30T20:05:40.072493+00:00", "monotonic": 1580822.589381591, "pid": 420770, "event": "preflight", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-30T20:05:40.072840+00:00", "monotonic": 1580822.589719932, "pid": 420770, "event": "child_started", "child_pid": 420774}
+{"utc": "2026-10-30T20:05:40.154607+00:00", "monotonic": 1580822.671492647, "pid": 420770, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-30T20:05:41.240296+00:00", "monotonic": 1580823.757191032, "pid": 420770, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-30T20:05:42.330611+00:00", "monotonic": 1580824.847504055, "pid": 420770, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-30T20:05:43.458361+00:00", "monotonic": 1580825.975253948, "pid": 420770, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-30T20:05:46.266502+00:00", "monotonic": 1580828.78339338, "pid": 420770, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-30T20:05:48.591998+00:00", "monotonic": 1580831.108888415, "pid": 420770, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-30T20:05:51.918174+00:00", "monotonic": 1580834.435066262, "pid": 420770, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-30T20:05:56.334215+00:00", "monotonic": 1580838.851105646, "pid": 420770, "event": "monitor", "conflicts": [], "retired_owned_contexts": [], "unreadable_processes": 0}
+{"utc": "2026-10-30T20:06:03.512356+00:00", "monotonic": 1580846.029235101, "pid": 420770, "event": "lease_released", "status": "ENV_ABORT"}

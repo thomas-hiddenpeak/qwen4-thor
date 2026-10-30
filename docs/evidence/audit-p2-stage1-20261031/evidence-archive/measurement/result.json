@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "http": 16,
+  "starts": 8,
+  "gpu_processes": [
+    0,
+    0
+  ],
+  "completed": [
+    "parent-plain",
+    "parent-full",
+    "parent-subset",
+    "parent-ssd",
+    "candidate-plain",
+    "candidate-full",
+    "candidate-subset",
+    "candidate-ssd"
+  ],
+  "finished": 1793390344.783087
+}

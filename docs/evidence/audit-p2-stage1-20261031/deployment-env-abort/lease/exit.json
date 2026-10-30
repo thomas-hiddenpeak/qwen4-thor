@@ -1,0 +1,22 @@
+{
+  "status": "ENV_ABORT",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/verify/audit_p2/stage1.py",
+    "deploy"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "reason": "RuntimeError('NVML process query: CLEANUP_FAILED; details in /home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/deployment/lease/nvml-queries.jsonl')",
+  "finished": {
+    "utc": "2026-10-30T20:02:17.806004+00:00",
+    "monotonic": 1580620.322898829,
+    "pid": 418867
+  }
+}

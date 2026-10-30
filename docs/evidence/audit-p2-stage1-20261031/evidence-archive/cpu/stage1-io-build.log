@@ -1,0 +1,59 @@
+[  3%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[  6%] Building CXX object CMakeFiles/q4t_weight_loader_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/io_read_contract_test.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_safetensors_validation.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 15%] Building CXX object CMakeFiles/q4t_weight_loader_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/weight_loader_contract_test.cpp.o
+[ 18%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 21%] Building CXX object CMakeFiles/q4t_safetensors_validation.dir/home/rm01/models/dev/qwen4-thor/tests/safetensors_validation_test.cpp.o
+[ 25%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 28%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp.o
+[ 31%] Building CXX object CMakeFiles/q4t_safetensors_validation.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 34%] Building CXX object CMakeFiles/q4t_safetensors_validation.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+[ 37%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp.o
+[ 40%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/src/quant/moe_residency.cpp.o
+[ 43%] Building CXX object CMakeFiles/q4t_safetensors_validation.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[ 46%] Building CXX object CMakeFiles/q4t_weight_loader_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_weight_loader_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp: In function ‘cudaError_t __wrap_cudaFree(void*)’:
+/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp:282:38: error: pointer ‘p’ used after ‘void free(void*)’ [-Werror=use-after-free]
+  282 |   if (result == cudaSuccess) Released(p);
+      |                              ~~~~~~~~^~~
+In function ‘cudaError_t __real_cudaFree(void*)’,
+    inlined from ‘cudaError_t __wrap_cudaFree(void*)’ at /home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp:281:38:
+/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp:231:12: note: call to ‘void free(void*)’ here
+  231 |   std::free(p);
+      |   ~~~~~~~~~^~~
+/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp: In function ‘cudaError_t __wrap_cudaFreeHost(void*)’:
+/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp:282:38: error: pointer ‘p’ used after ‘void free(void*)’ [-Werror=use-after-free]
+  282 |   if (result == cudaSuccess) Released(p);
+      |                              ~~~~~~~~^~~
+/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp:231:12: note: call to ‘void free(void*)’ here
+  231 |   std::free(p);
+      |   ~~~~~~~~~^~~
+/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp: In function ‘cudaError_t __wrap_cudaEventDestroy(cudaEvent_t)’:
+/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp:282:38: error: pointer ‘p’ used after ‘void free(void*)’ [-Werror=use-after-free]
+  282 |   if (result == cudaSuccess) Released(p);
+      |                              ~~~~~~~~^~~
+/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp:231:12: note: call to ‘void free(void*)’ here
+  231 |   std::free(p);
+      |   ~~~~~~~~~^~~
+[ 53%] Building CXX object CMakeFiles/q4t_weight_loader_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[ 56%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 59%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+cc1plus: all warnings being treated as errors
+gmake[2]: *** [CMakeFiles/q4t_residency_host_contracts.dir/build.make:93: CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:195: CMakeFiles/q4t_residency_host_contracts.dir/all] Error 2
+gmake[1]: *** Waiting for unfinished jobs....
+[ 62%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[ 65%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 68%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+[ 71%] Linking CXX executable q4t_safetensors_validation
+[ 71%] Built target q4t_safetensors_validation
+[ 75%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[ 78%] Linking CXX executable q4t_weight_loader_contracts
+[ 78%] Built target q4t_weight_loader_contracts
+[ 81%] Linking CXX executable q4t_io_contracts
+[ 81%] Built target q4t_io_contracts
+[ 84%] Linking CXX executable q4t_residency_cuda_contracts
+[ 84%] Built target q4t_residency_cuda_contracts
+gmake: *** [Makefile:101: all] Error 2

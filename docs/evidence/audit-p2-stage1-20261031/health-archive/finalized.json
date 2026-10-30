@@ -1,0 +1,20 @@
+{
+  "status": "DELIVERED",
+  "binary_sha256": "5e6249fcd2eb9849ef047d7fff89489c3d0218ba2c40ace40f4b79b3affe8b05",
+  "sidecar_sha256": "cb90c388034bc33b80b378faac73216082074b15d993fa8f00d59fc26575c908",
+  "total_http": 22,
+  "total_starts": 12,
+  "gpu_processes": 2,
+  "retained_env_abort": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/deployment-env-abort-2/sealed-files.json",
+    "sha256": "e97841a2a7aa88c66724460cd0e87f013b4194a55e25dbc11c3f4079265c5e20",
+    "bytes": 915
+  },
+  "retry_plan": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/health-retry-plan-2.json",
+    "sha256": "8e5777bef3994cc2fd57db2a846d70c14a951942c83cdf0e3bf3ee96e7de9a87",
+    "bytes": 2928
+  },
+  "persistent_service": false,
+  "finished": 1793391389.0425878
+}

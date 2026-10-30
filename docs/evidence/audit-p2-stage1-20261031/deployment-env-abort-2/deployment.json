@@ -1,0 +1,7 @@
+{
+  "status": "FAILED",
+  "started": 1793390740.453407,
+  "error": "RuntimeError('installed health/lifecycle failure')",
+  "rollback": "RESTORED",
+  "finished": 1793390763.38742
+}

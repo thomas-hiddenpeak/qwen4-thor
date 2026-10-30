@@ -1,0 +1,13 @@
+[  3%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp.o
+[  6%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/src/quant/moe_residency.cpp.o
+[  9%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 12%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+[ 31%] Built target q4t_io_contracts
+[ 50%] Built target q4t_weight_loader_contracts
+[ 68%] Built target q4t_safetensors_validation
+[ 71%] Building CXX object CMakeFiles/q4t_residency_cuda_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/residency_host_contract_test.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_residency_host_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[ 78%] Linking CXX executable q4t_residency_cuda_contracts
+[ 93%] Built target q4t_residency_cuda_contracts
+[ 96%] Linking CXX executable q4t_residency_host_contracts
+[100%] Built target q4t_residency_host_contracts
