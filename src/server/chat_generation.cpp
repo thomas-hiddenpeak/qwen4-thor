@@ -974,11 +974,18 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
   // Streaming header (flushed immediately).
   if (stream) {
-    *response_state = detail::ResponseState::kStreaming;
-    const std::string head =
-        "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
-        "Cache-Control: no-cache\r\nConnection: close\r\n\r\n";
-    if (!write_stream(head) ||
+    bool header_sent;
+    {
+      RequestDiagnostics::Scope wait(diagnostic, Wait::kWrite);
+      header_sent = !cancelled() && detail::BeginStreamingResponse(
+          fd, response_state, {.control = control.get()});
+    }
+    if (!header_sent) {
+      client_disconnected = true;
+      control->Cancel(RequestControl::State::kDisconnect);
+      count_abort();
+    }
+    if (!header_sent ||
         !write_stream(SseChunk(id, model_field, "assistant", "", "", 0))) {
       err_guard.ok = true;  // Count this as an abort, not a prefill error.
       model::ModelEndSequence(&seq);
@@ -1298,6 +1305,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       prefix.push_back(pending);
       saved = session_cache_.Save(session.key, prefix, ranges, session_copy,
                                     cancelled, last_d0, &timing);
+      if (saved.ok()) detail::ServeSnapshotTokens(request_id.c_str(), prefix);
     } else if (saved.ok()) {
       saved = Status::Fail("incomplete session boundary");
     }
@@ -1671,7 +1679,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       ? ",\"prompt_tokens_details\":{\"cached_tokens\":" +
             std::to_string(restored_prefix) + "}"
       : "";
-  detail::ServeFaultPoint("handler.before_response");
+  detail::ServeRequestFaultPoint("handler.before_response", request_id.c_str());
   // 4. Finalize.
   if (stream) {
     write_content(utf8.Finish());

@@ -15,7 +15,8 @@ constexpr std::string_view kReplacement = "\xef\xbf\xbd";
 }
 
 void SendExceptionResponse(int fd, ResponseState state) noexcept {
-  if (state == ResponseState::kTerminal || state == ResponseState::kComplete)
+  if (state == ResponseState::kHeadersStarted ||
+      state == ResponseState::kTerminal || state == ResponseState::kComplete)
     return;
   constexpr char http[] =
       "HTTP/1.1 500 Internal Server Error\r\n"
@@ -114,8 +115,9 @@ std::string JsonEscape(const std::string& s) {
   return out;
 }
 
-bool WriteAll(int fd, const char* data, size_t len,
-              const WriteOptions& options) {
+namespace {
+bool WriteAllImpl(int fd, const char* data, size_t len,
+                  const WriteOptions& options, ResponseState* header_state) {
   using Clock = std::chrono::steady_clock;
   const auto deadline = options.control
       ? std::min(options.deadline, options.control->deadline())
@@ -126,7 +128,14 @@ bool WriteAll(int fd, const char* data, size_t len,
     if (Clock::now() >= deadline) return false;
     // A disconnected client must fail this request, not terminate the server.
     // Per-call nonblocking leaves the request reader's fd mode unchanged.
-    const ssize_t n = ::send(fd, data + off, len - off,
+    size_t remaining_bytes = len - off;
+#ifdef Q4T_SERVE_FAULT_INJECTION
+    const char* fault = std::getenv("Q4T_SERVE_FAULT");
+    if (header_state && fault &&
+        std::strcmp(fault, "handler.partial_header") == 0)
+      remaining_bytes = std::min(remaining_bytes, size_t{8});
+#endif
+    const ssize_t n = ::send(fd, data + off, remaining_bytes,
                              MSG_NOSIGNAL | MSG_DONTWAIT);
     if (n <= 0) {
       if (n < 0 && errno == EINTR) continue;
@@ -146,7 +155,30 @@ bool WriteAll(int fd, const char* data, size_t len,
       return false;
     }
     off += static_cast<size_t>(n);
+    if (header_state) {
+      *header_state = ResponseState::kHeadersStarted;
+      ServeFaultPoint("handler.partial_header");
+    }
   }
+  return true;
+}
+}  // namespace
+
+bool WriteAll(int fd, const char* data, size_t len,
+              const WriteOptions& options) {
+  return WriteAllImpl(fd, data, len, options, nullptr);
+}
+
+bool BeginStreamingResponse(int fd, ResponseState* state,
+                            const WriteOptions& options) {
+  constexpr char header[] =
+      "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n"
+      "Cache-Control: no-cache\r\nConnection: close\r\n\r\n";
+  ServeFaultPoint("handler.before_header");
+  if (!WriteAllImpl(fd, header, sizeof(header) - 1, options, state))
+    return false;
+  *state = ResponseState::kStreaming;
+  ServeFaultPoint("handler.after_header");
   return true;
 }
 

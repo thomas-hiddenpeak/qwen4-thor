@@ -107,7 +107,8 @@ Q4T_TEST(server_http_response_send_status) {
 
 Q4T_TEST(server_http_exception_terminal_states) {
   using q4t::server::detail::ResponseState;
-  for (const auto state : {ResponseState::kUnsent, ResponseState::kStreaming,
+  for (const auto state : {ResponseState::kUnsent, ResponseState::kHeadersStarted,
+                           ResponseState::kStreaming,
                            ResponseState::kTerminal,
                            ResponseState::kComplete}) {
     SocketPair sockets;
@@ -117,7 +118,8 @@ Q4T_TEST(server_http_exception_terminal_states) {
     const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(), 0);
     Q4T_CHECK(n >= 0);
     const std::string output(bytes.data(), static_cast<size_t>(n));
-    if (state == ResponseState::kTerminal || state == ResponseState::kComplete) {
+    if (state == ResponseState::kHeadersStarted ||
+        state == ResponseState::kTerminal || state == ResponseState::kComplete) {
       Q4T_CHECK(output.empty());
       continue;
     }
@@ -134,6 +136,27 @@ Q4T_TEST(server_http_exception_terminal_states) {
     Q4T_CHECK(q4t::io::ParseJson(json, &parsed, true).ok());
     Q4T_CHECK(parsed.Has("error"));
   }
+  return true;
+}
+
+Q4T_TEST(server_http_header_completion) {
+  using namespace q4t::server::detail;
+  SocketPair sockets;
+  ResponseState state = ResponseState::kUnsent;
+  Q4T_CHECK(!BeginStreamingResponse(sockets.fd[0], &state,
+      {std::chrono::steady_clock::now() - std::chrono::seconds(1)}));
+  Q4T_CHECK(state == ResponseState::kUnsent);
+  Q4T_CHECK(BeginStreamingResponse(sockets.fd[0], &state));
+  Q4T_CHECK(state == ResponseState::kStreaming);
+  SendExceptionResponse(sockets.fd[0], state);
+  shutdown(sockets.fd[0], SHUT_WR);
+  std::array<char, 1024> data{};
+  const auto n = recv(sockets.fd[1], data.data(), data.size(), 0);
+  Q4T_CHECK(n > 0);
+  const std::string output(data.data(), static_cast<size_t>(n));
+  Q4T_CHECK(output.starts_with("HTTP/1.1 200 OK\r\n"));
+  Q4T_CHECK(output.find("\r\n\r\ndata: {\"error\":") != std::string::npos);
+  Q4T_CHECK(output.ends_with("data: [DONE]\r\n\r\n"));
   return true;
 }
 

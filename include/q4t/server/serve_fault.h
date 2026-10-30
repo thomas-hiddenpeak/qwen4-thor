@@ -1,6 +1,9 @@
 // Faults exist only in the separately built validation executable.
 #pragma once
 
+#include <cstdint>
+#include <span>
+
 #ifdef Q4T_SERVE_FAULT_INJECTION
 #include <atomic>
 #include <cstdlib>
@@ -51,6 +54,32 @@ inline void ServeFaultPoint(const char* name) {
     throw std::bad_alloc();
 #else
   (void)name;
+#endif
+}
+
+inline void ServeRequestFaultPoint(const char* name, const char* request) {
+#ifdef Q4T_SERVE_FAULT_INJECTION
+  const char* selected = std::getenv("Q4T_SERVE_REQUEST");
+  if (!selected || std::strcmp(selected, request) == 0) ServeFaultPoint(name);
+#else
+  (void)name;
+  (void)request;
+#endif
+}
+
+inline void ServeSnapshotTokens(const char* request,
+                                std::span<const int32_t> tokens) {
+#ifdef Q4T_SERVE_FAULT_INJECTION
+  if (!std::getenv("Q4T_SERVE_PREFIX_IDS")) return;
+  flockfile(stderr);
+  std::fprintf(stderr, "[serve-test-prefix] request=%s tokens=[", request);
+  for (size_t i = 0; i < tokens.size(); ++i)
+    std::fprintf(stderr, "%s%d", i ? "," : "", tokens[i]);
+  std::fprintf(stderr, "]\n");
+  funlockfile(stderr);
+#else
+  (void)request;
+  (void)tokens;
 #endif
 }
 }  // namespace q4t::server::detail

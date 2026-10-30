@@ -10,7 +10,9 @@
 
 namespace q4t::server::detail {
 
-enum class ResponseState { kUnsent, kStreaming, kTerminal, kComplete };
+enum class ResponseState {
+  kUnsent, kHeadersStarted, kStreaming, kTerminal, kComplete
+};
 // Allocation-free best effort after an exception; never adds a second terminal.
 void SendExceptionResponse(int fd, ResponseState state) noexcept;
 
@@ -33,6 +35,10 @@ struct WriteOptions {
       std::chrono::steady_clock::now() + std::chrono::seconds(30);
   RequestControl* control = nullptr;
 };
+// Fixed, allocation-free header. State tracks successful socket writes;
+// incomplete headers cannot be followed by another HTTP or SSE response.
+bool BeginStreamingResponse(int fd, ResponseState* state,
+                            const WriteOptions& options = {});
 // One deadline covers the entire logical write, including partial progress.
 bool WriteAll(int fd, const char* data, size_t len,
               const WriteOptions& options = {});
