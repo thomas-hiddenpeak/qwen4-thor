@@ -46,6 +46,12 @@ def validate_pair(boundary, positive, negative):
         raise AssertionError('private publication positive/negative contrast')
 
 
+def public_save_seen(raw, request):
+    return any(r.get('request') == request and r.get('event') == 'save' and
+               r.get('prefix') == '8192' and r.get('error') == 'none'
+               for r in fields(raw, '[prefix-cache] '))
+
+
 def prepare():
     assert not (BASE / 'plan.json').exists()
     old = json.loads((PRIOR / 'http-plan.json').read_text())
@@ -198,9 +204,7 @@ class Closeout(Runner):
         self.free()
         assert self.endings(folder, label)['outcome'] == 'error'
         self.metric_success(folder, label, 0)
-        saves = fields((folder / 'server.log').read_text(), '[prefix-cache] ')
-        assert any(r['request'] == label and r['event'] == 'save' and
-                   r['prefix'] == '8192' and r['error'] == 'none' for r in saves)
+        assert public_save_seen((folder / 'server.log').read_text(), label)
         label = name+'-normal'
         body = self.body(label, self.plan['cache_prompt'], maximum=16, **extra)
         body['request_id'] = name+'-fault'  # Same ID, new cancellation credential.
@@ -321,9 +325,9 @@ def guarded():
     assert lease.get('state') == 'held' and lease['pid'] == os.getppid()
 
 
-def run():
+def run(plan_path):
     guarded()
-    plan = json.loads((BASE / 'plan.json').read_text())
+    plan = json.loads(Path(plan_path).read_text())
     for path, digest in plan['files'].items():
         assert sha(path) == digest, path
     Closeout(plan).run()
@@ -332,4 +336,6 @@ def run():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=['prepare', 'run'])
-    globals()[parser.parse_args().action]()
+    parser.add_argument('--plan', type=Path, default=BASE / 'plan.json')
+    args = parser.parse_args()
+    prepare() if args.action == 'prepare' else run(args.plan)

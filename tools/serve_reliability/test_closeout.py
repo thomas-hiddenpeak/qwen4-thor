@@ -1,9 +1,16 @@
 """Reject vacuous publication probes and insufficient positive controls."""
 import unittest
-from closeout import validate_pair, validate_probe
+from closeout import public_save_seen, validate_pair, validate_probe
 
 
 class ProbeTests(unittest.TestCase):
+    def test_public_startup_banner_is_not_a_request(self):
+        startup = '[prefix-cache] enabled=1 entries=8\n'
+        saved = '[prefix-cache] request=fault event=save prefix=8192 error=none\n'
+        self.assertFalse(public_save_seen(startup, 'fault'))
+        self.assertFalse(public_save_seen(startup+saved, 'other'))
+        self.assertTrue(public_save_seen(startup+saved, 'fault'))
+
     def test_short_and_mismatched_probes(self):
         saved = [10, 20, 30, 40]
         for invalid in [[10, 20, 30], [10, 21, 30, 40, 50]]:
