@@ -1,0 +1,15 @@
+test_cleanup_failure_retains_state_and_blocks_replacement (__main__.SupervisorCleanupTest.test_cleanup_failure_retains_state_and_blocks_replacement) ... ok
+test_partial_startup_failure_reaps_entire_started_group (__main__.SupervisorCleanupTest.test_partial_startup_failure_reaps_entire_started_group) ... ok
+test_restart_waits_for_old_group_to_be_empty (__main__.SupervisorCleanupTest.test_restart_waits_for_old_group_to_be_empty) ... ok
+test_stop_reaps_grandchild_after_leader_already_exited (__main__.SupervisorCleanupTest.test_stop_reaps_grandchild_after_leader_already_exited) ... ok
+test_stop_reaps_term_ignoring_grandchild (__main__.SupervisorCleanupTest.test_stop_reaps_term_ignoring_grandchild) ... ok
+test_idle_time_does_not_charge_next_request (__main__.SupervisorProgressTest.test_idle_time_does_not_charge_next_request) ... ok
+test_long_request_advances_before_completion (__main__.SupervisorProgressTest.test_long_request_advances_before_completion) ... ok
+test_missing_progress_metric_rejects_incompatible_backend (__main__.SupervisorProgressTest.test_missing_progress_metric_rejects_incompatible_backend) ... ok
+test_queued_cancellations_cannot_mask_stall (__main__.SupervisorProgressTest.test_queued_cancellations_cannot_mask_stall) ... ok
+test_stalled_execution_expires (__main__.SupervisorProgressTest.test_stalled_execution_expires) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.473s
+
+OK

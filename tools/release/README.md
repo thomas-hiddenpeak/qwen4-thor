@@ -105,7 +105,7 @@ q4t_tests与q4t_host_tests共享以下行为：
 `q4t_execution_steps_total`，缺失该指标的后端明确拒绝；下文生成
 token计数描述属于原冻结profile。802bd70复审确认的停止遗漏见
 [R4监督进程回收遗漏](../../docs/MAIN_REAUDIT_2026-10-31.md#r4--p2--监督器只等待主进程可能把遗留worker误报为已停止)。
-当前候选已修复：Linux subreaper接管并回收受管组孤儿，按pidfd及
+当前已交付修复：Linux subreaper接管并回收受管组孤儿，按pidfd及
 启动身份发送信号，TERM后最多30秒、KILL后最多5秒；整个组为空且
 日志线程结束后才记录stopped。重启同样等待旧组回收。解释器须支持
 pidfd；无法回收时保留supervisor.json和cleanup-failure.json，并拒绝

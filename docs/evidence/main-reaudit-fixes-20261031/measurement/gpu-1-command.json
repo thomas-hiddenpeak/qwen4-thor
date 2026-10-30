@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/frozen/q4t_tests",
+    "--required-list",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/frozen/required-residency.txt"
+  ],
+  "environment": {
+    "LD_PRELOAD": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/frozen/payload_fault.so"
+  }
+}

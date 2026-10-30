@@ -1,0 +1,12 @@
+test_foreign_recovery_marker_refused (__main__.RollbackTest.test_foreign_recovery_marker_refused) ... ok
+test_readonly_verifies_known_pairs_without_guard (__main__.RollbackTest.test_readonly_verifies_known_pairs_without_guard) ... ok
+test_restore_and_partial_pair_recovery_require_lease (__main__.RollbackTest.test_restore_and_partial_pair_recovery_require_lease) ... ok
+test_tampered_package_refused (__main__.RollbackTest.test_tampered_package_refused) ... ok
+test_unknown_installation_refused_before_any_write (__main__.RollbackTest.test_unknown_installation_refused_before_any_write) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.033s
+
+OK
+Sealed previous/candidate pairs and installed identities verified.
+Sealed previous/candidate pairs and installed identities verified.

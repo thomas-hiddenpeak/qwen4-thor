@@ -1,0 +1,40 @@
+[
+  {
+    "argv": [
+      "cmake",
+      "-S",
+      "/home/rm01/models/dev/qwen4-thor/tests/budget_host",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/budget-host",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=g++-14"
+    ],
+    "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/budget-0.log",
+    "returncode": 0,
+    "seconds": 0.25303125381469727
+  },
+  {
+    "argv": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/budget-host",
+      "--parallel",
+      "4"
+    ],
+    "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/budget-1.log",
+    "returncode": 0,
+    "seconds": 2.4077978134155273
+  },
+  {
+    "argv": [
+      "ctest",
+      "--test-dir",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/budget-host",
+      "--output-on-failure",
+      "--verbose"
+    ],
+    "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/budget-2.log",
+    "returncode": 0,
+    "seconds": 0.10584902763366699
+  }
+]

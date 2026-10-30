@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "server_exit": 0,
+  "endings": [
+    {
+      "instance": "0",
+      "id": "full-seed",
+      "event": "end",
+      "stage": "response",
+      "seq": "1",
+      "released": "1",
+      "outcome": "success",
+      "reason": "completed",
+      "elapsed_ms": "8183.532",
+      "slot_wait_ms": "0.001",
+      "model_lock_ms": "0.000",
+      "tokenizer_lock_ms": "0.002",
+      "scheduler_completion_ms": "477.700",
+      "stream_write_ms": "0.224",
+      "scheduler_waits": "5"
+    },
+    {
+      "instance": "1",
+      "id": "full-shared",
+      "event": "end",
+      "stage": "response",
+      "seq": "1",
+      "released": "1",
+      "outcome": "success",
+      "reason": "completed",
+      "elapsed_ms": "1608.747",
+      "slot_wait_ms": "0.002",
+      "model_lock_ms": "0.000",
+      "tokenizer_lock_ms": "0.001",
+      "scheduler_completion_ms": "184.332",
+      "stream_write_ms": "3.041",
+      "scheduler_waits": "2"
+    },
+    {
+      "instance": "2",
+      "id": "full-private",
+      "event": "end",
+      "stage": "response",
+      "seq": "1",
+      "released": "1",
+      "outcome": "success",
+      "reason": "completed",
+      "elapsed_ms": "1060.606",
+      "slot_wait_ms": "0.002",
+      "model_lock_ms": "0.000",
+      "tokenizer_lock_ms": "0.001",
+      "scheduler_completion_ms": "96.175",
+      "stream_write_ms": "0.106",
+      "scheduler_waits": "1"
+    }
+  ],
+  "reservation_final": [
+    {
+      "schema": 1,
+      "event": "finalized",
+      "status": "PASS",
+      "count": 1619,
+      "device_bytes": 101714040916,
+      "allocated": 1619,
+      "consumed": 1619,
+      "freed": 1619,
+      "unhanded_remaining": 0,
+      "handed_live": 0,
+      "release_unknown": 0,
+      "error": "none",
+      "backend_rc": 0,
+      "error_index": 0,
+      "prepared": true,
+      "startup_complete": true,
+      "finalized": true,
+      "active": false,
+      "strategy": "stable_descending_bytes",
+      "plan_sha256": "a46382d4a43bb9c22696cea918c5d50f14d112e0820c9fe95564fb2a84aa7887"
+    }
+  ]
+}

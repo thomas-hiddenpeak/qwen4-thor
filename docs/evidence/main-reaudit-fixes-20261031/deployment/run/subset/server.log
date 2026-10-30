@@ -1,0 +1,87 @@
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=4
+[session-cache] enabled=1 entries=8 disk_bytes=25769803776 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[prefix-cache] enabled=1 entries=8 disk_bytes=8589934592 ram_budget=33554432 staging_bytes=8388608 ttl_seconds=1800
+[q4t][startup] tokenizer 514 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=208896 max_seq=4 max_prefill=4096 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=100.59 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=1241120768 mtp_workspace=1751549952 forward_buffers=209797124 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=2.49 GB (peak admitted MTP request allocations)  state_pool=14.03 GB
+[q4t][budget]   => max_len=208896 max_seq=4
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5550108160 mtp_buffers=522240 mtp_scratch=19333504 mtp_checkpoints=1387708416 mtp_forward_temp=8409664
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=117974487828 runtime_peak=117105485140 estimated_total=117974487828
+[q4t][startup] budget 423 ms
+[q4t][capacity] requested_max_len=208896 requested_max_seq=4 requested_max_prefill=4096 effective_max_len=208896 effective_max_seq=4 effective_max_prefill=4096 budget_enabled=1 budget_feasible=true
+[q4t][slots] capacities=208896,65536,65536,65536 stream_mtp_prefill=1 text_admission=32
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1621,"device_bytes":102049847380,"allocated":1621,"consumed":0,"freed":0,"unhanded_remaining":1621,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"9296ffe7a6ea71a6e86e24a98958ebdfc57a6bf7ad37fe48540c16c8debfbfd4"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2796 ms
+[q4t][startup] model_load 27833 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] BF16 subset head rows=65536 bytes=335806464
+[q4t] MTP loaded (k=3 max_seq=4)
+[q4t][startup] mtp_load 8017 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=4
+[q4t] continuous-batching scheduler started (max_seq=4)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1621,"device_bytes":102049847380,"allocated":1621,"consumed":1621,"freed":0,"unhanded_remaining":0,"handed_live":1621,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"9296ffe7a6ea71a6e86e24a98958ebdfc57a6bf7ad37fe48540c16c8debfbfd4"}
+[q4t][startup] startup_total 39585 ms
+[q4t] serving on port 8764 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=0 id=subset-seed event=registered stage=validation seq=-1 elapsed_ms=0.167
+[q4t][request] instance=0 id=subset-seed event=stage stage=encode seq=-1 elapsed_ms=0.173
+[q4t][request] instance=0 id=subset-seed event=stage stage=slot_admission seq=-1 elapsed_ms=19.715
+[q4t][request] instance=0 id=subset-seed event=admitted stage=slot_admission seq=1 elapsed_ms=19.724
+[q4t][slot-admission] request=subset-seed slot=1 capacity=65536 required=9232
+[q4t][request] instance=0 id=subset-seed event=stage stage=encode seq=1 elapsed_ms=19.728
+[q4t][request] instance=0 id=subset-seed event=stage stage=prefill seq=1 elapsed_ms=20.802
+[session-cache] request=subset-seed event=restore prefix=0 ms=0.002 error=none source=session
+[prefix-cache] request=subset-seed event=save prefix=8192 bytes=367964160 ms=377.467 error=none
+[mtp-prefill] request=subset-seed streamed=1 chunks=3 trunk_bytes=83886080 ready=1
+[q4t][request] instance=0 id=subset-seed event=stage stage=decode seq=1 elapsed_ms=7186.530
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[mtp-accept] request=subset-seed draft_counts=0,0,2,2
+[session-cache] request=subset-seed event=save prefix=9230 ms=1680.468 disk_bytes=399994880 error=none
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][mem] phase=request_end id=subset-seed dev_used_gb=118.466 dev_total_gb=131.921 rss_mb=970.7 mem_free_gb=12.964 mem_avail_gb=17.382 cached_gb=5.041
+[q4t][request] instance=0 id=subset-seed event=stage stage=response seq=1 elapsed_ms=9299.488
+[q4t][request] instance=0 id=subset-seed event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=9299.572 slot_wait_ms=0.001 model_lock_ms=0.000 tokenizer_lock_ms=0.002 scheduler_completion_ms=431.689 stream_write_ms=0.204 scheduler_waits=5
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=1 id=subset-shared event=registered stage=validation seq=-1 elapsed_ms=0.178
+[q4t][request] instance=1 id=subset-shared event=stage stage=encode seq=-1 elapsed_ms=0.185
+[q4t][request] instance=1 id=subset-shared event=stage stage=slot_admission seq=-1 elapsed_ms=20.017
+[q4t][request] instance=1 id=subset-shared event=admitted stage=slot_admission seq=1 elapsed_ms=20.025
+[q4t][slot-admission] request=subset-shared slot=1 capacity=65536 required=9295
+[q4t][request] instance=1 id=subset-shared event=stage stage=encode seq=1 elapsed_ms=20.029
+[q4t][request] instance=1 id=subset-shared event=stage stage=prefill seq=1 elapsed_ms=21.053
+[session-cache] request=subset-shared event=restore prefix=8192 ms=368.441 error=none source=shared
+[mtp-prefill] request=subset-shared streamed=1 chunks=1 trunk_bytes=83886080 ready=1
+[q4t][request] instance=1 id=subset-shared event=stage stage=decode seq=1 elapsed_ms=1401.891
+[mtp-accept] request=subset-shared draft_counts=0,1,0,1
+[q4t][mem] phase=request_end id=subset-shared dev_used_gb=118.432 dev_total_gb=131.921 rss_mb=971.0 mem_free_gb=12.998 mem_avail_gb=17.416 cached_gb=5.041
+[q4t][request] instance=1 id=subset-shared event=stage stage=response seq=1 elapsed_ms=1568.524
+[q4t][request] instance=1 id=subset-shared event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=1568.597 slot_wait_ms=0.001 model_lock_ms=0.000 tokenizer_lock_ms=0.001 scheduler_completion_ms=165.365 stream_write_ms=0.108 scheduler_waits=2
+[q4t][request] instance=2 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=2 id=subset-private event=registered stage=validation seq=-1 elapsed_ms=0.182
+[q4t][request] instance=2 id=subset-private event=stage stage=encode seq=-1 elapsed_ms=0.188
+[q4t][request] instance=2 id=subset-private event=stage stage=slot_admission seq=-1 elapsed_ms=19.692
+[q4t][request] instance=2 id=subset-private event=admitted stage=slot_admission seq=1 elapsed_ms=19.702
+[q4t][slot-admission] request=subset-private slot=1 capacity=65536 required=9285
+[q4t][request] instance=2 id=subset-private event=stage stage=encode seq=1 elapsed_ms=19.705
+[q4t][request] instance=2 id=subset-private event=stage stage=prefill seq=1 elapsed_ms=20.721
+[session-cache] request=subset-private event=restore prefix=9230 ms=424.326 error=none source=session
+[mtp-prefill] request=subset-private streamed=1 chunks=1 trunk_bytes=83886080 ready=1
+[q4t][request] instance=2 id=subset-private event=stage stage=decode seq=1 elapsed_ms=617.741
+[mtp-accept] request=subset-private draft_counts=0,1,0,0
+[session-cache] request=subset-private event=save prefix=9255 ms=1011.260 disk_bytes=400793600 error=none
+[q4t][mem] phase=request_end id=subset-private dev_used_gb=118.432 dev_total_gb=131.921 rss_mb=971.8 mem_free_gb=12.998 mem_avail_gb=17.416 cached_gb=5.041
+[q4t][request] instance=2 id=subset-private event=stage stage=response seq=1 elapsed_ms=1715.412
+[q4t][request] instance=2 id=subset-private event=end stage=response seq=1 released=1 outcome=success reason=completed elapsed_ms=1715.529 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=85.794 stream_write_ms=0.121 scheduler_waits=1
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=7
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1621,"device_bytes":102049847380,"allocated":1621,"consumed":1621,"freed":1621,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"9296ffe7a6ea71a6e86e24a98958ebdfc57a6bf7ad37fe48540c16c8debfbfd4"}

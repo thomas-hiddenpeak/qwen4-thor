@@ -1,0 +1,20 @@
+{
+  "parent_commit": "ef88d970489c3ab21894572258922d535e51e6f4",
+  "candidate_commit": "55299a0a98a329f758a13db7bf2a51090f781818",
+  "baseline_binary": "b11ed66cd94f943957e83edbfa223cb3e65f758e409eb4d125b4911d1164e015",
+  "candidate_binary": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+  "changed_runtime": [
+    "src/io/weight_loader.cpp",
+    "src/quant/moe_residency.cpp",
+    "src/quant/moe_weights.cpp",
+    "include/q4t/io/weight_loader.h",
+    "include/q4t/quant/moe_residency.h",
+    "include/q4t/quant/moe_tensor_contract.h",
+    "include/q4t/runtime/residency_config.h"
+  ],
+  "unchanged_runtime": 163,
+  "default_unchanged": true,
+  "prior_audit": "docs/MAIN_REAUDIT_2026-10-31.md",
+  "prior_failure_evidence": "docs/evidence/main-reaudit-20261031/files.json",
+  "prior_failure_manifest_sha256": "1eb03a777b3d91d39ec16d9c0d47eff27f704032db29c04d657a4bd434e71186"
+}

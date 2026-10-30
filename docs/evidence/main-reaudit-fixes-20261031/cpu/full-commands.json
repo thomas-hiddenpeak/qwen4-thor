@@ -1,0 +1,30 @@
+[
+  {
+    "argv": [
+      "cmake",
+      "-S",
+      "/home/rm01/models/dev/qwen4-thor",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/build",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=g++-14",
+      "-DCMAKE_CUDA_HOST_COMPILER=g++-14",
+      "-DQ4T_CUDA_ARCHITECTURES=110a"
+    ],
+    "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/full-0.log",
+    "returncode": 0,
+    "seconds": 2.253976583480835
+  },
+  {
+    "argv": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/build",
+      "--parallel",
+      "6"
+    ],
+    "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/full-1.log",
+    "returncode": 0,
+    "seconds": 69.38651704788208
+  }
+]

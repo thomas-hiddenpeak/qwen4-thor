@@ -1,0 +1,14 @@
+[q4t] retaining residency payloads: drain failed
+[q4t] retaining residency payloads: drain failed
+[PASS] residency_synthetic_same_and_split_shards_match_all_bytes
+[PASS] residency_every_cuda_init_failure_rolls_back_and_retries
+[PASS] residency_mutex_and_worker_allocation_failures_roll_back
+[PASS] residency_later_thread_creation_exception_joins_prior_worker
+[PASS] residency_drain_failure_retains_payloads_until_completion
+[PASS] moe_malformed_tensors_rejected_before_any_payload_allocation
+[PASS] moe_full_resident_valid_payload_matches_oracle
+[PASS] residency_hot_duplicates_retry_capacity_and_protection
+[PASS] residency_worker_host_exception_notifies_releases_and_retries
+[PASS] residency_inline_exception_releases_claims_and_retries
+[PASS] residency_commit_exception_drains_or_retains_partial_dma
+11 tests, 11 passed, 0 failed, 0 skipped
