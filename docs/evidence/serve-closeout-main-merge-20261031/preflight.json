@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "base_main": "e06fa1dcce1c8f5174a0f2f8f5de01290da40d65",
+  "delivery_anchor": "a2cb7abe449ad3e90deb03203487b15b712b001d",
+  "runtime_source": "9b9931193ff8a9abe9107a6d700dc2a8728a8464",
+  "commits": [
+    "e77bcc363d7ff74b0ac6f0d6be41989a6a71623c",
+    "9b9931193ff8a9abe9107a6d700dc2a8728a8464",
+    "11eefe56824d60aa3b9722a413e253ec47538c0c",
+    "ff1561159f6db39d1be752f1809c3b7100bde0da",
+    "a2cb7abe449ad3e90deb03203487b15b712b001d"
+  ],
+  "runtime_files": 169,
+  "original_evidence_files": 171,
+  "health_files": 29,
+  "seals": {
+    "delivery-package": {
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/sealed-files.json",
+        "sha256": "27f4133305408ae031d8d000810541bebbfdee6e59d6b4aaadab29308e4b3f9a",
+        "bytes": 22195
+      },
+      "files": 194
+    },
+    "evidence-archive": {
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/evidence-archive/sealed-files.json",
+        "sha256": "a9243fa359370611d3eba1b2e27342a3bdf30aebfca0b83b1120426bd79d728d",
+        "bytes": 20920
+      },
+      "files": 171
+    },
+    "health-archive": {
+      "identity": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/health-archive/sealed-files.json",
+        "sha256": "f3bd783b70f3eb58124a8512a5db1a7cd24c2c5326e30218d38455da4053dcff",
+        "bytes": 2886
+      },
+      "files": 29
+    }
+  },
+  "binary_sha256": "037328bb5c8788920ef44d1dfac2df94f908760f5626a95f1a674568c0dac4f7",
+  "sidecar_sha256": "3200266ea8778507b9e9acdfc0cf0a8b2bb97ae02aa8262cd572fd0a9b060d06",
+  "reused_http": 37,
+  "reused_starts": 12,
+  "new_gpu_http": 0,
+  "worktrees": "worktree /home/rm01/models/dev/qwen4-thor\nHEAD a2cb7abe449ad3e90deb03203487b15b712b001d\nbranch refs/heads/codex/serve-closeout\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/gdn-record-fold-20261016/source\nHEAD dcb2a7d07c6aba1c319d2c689c5e752c5616997d\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/main-wrapup-20261007/source\nHEAD 7f6a69c0c8af3919ada8a3359575e049e485e878\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-admission-20261007/source\nHEAD 5a3065be2fd10407613095316838e558ad14d3e0\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-foundation-20261008/source\nHEAD 5aacc9f225056b47fca766dcf9d49a170e60978f\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-perf-20261009/source\nHEAD d802fce3ccc4ca8129f94a790c086516713da053\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/source\nHEAD b76ee2b8e0e3ca3a5884f1fbeba88b041ab056a1\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005-attempt2/source\nHEAD d8482e46d904b3d43cb0f59b9766e064898b25c0\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-causality-20261005/source\nHEAD c46721cfdbce3fd264d4c5187a9f78bbe0a08991\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-decode-log-20261005/source\nHEAD 5539184610ea674b377426896a2385bf2ffc053f\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-diagnostics-20261004/source\nHEAD f3e3d21a4bbb06a3fb0a86dc1b72361454e83e87\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-gpu-replay-20261006/source\nHEAD 39b879d86124b0340749a83236d94cc8b9e6afb7\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mechanism-20261006/source\nHEAD 16be72c9d08d61986bcc2ab233df55bb64c42439\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-recycle-20261006/source\nHEAD 7672b591644add0bbc05b8782da3127c80edc04d\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-mirror-retention-20261006/source\nHEAD 3a838473a7fa9ebefba9356266d4e1c8946cf7d9\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-request-policy-20261004/source\nHEAD ed75d60193439cbb9020977033304d773f9bb6b0\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/observer-source\nHEAD 69e2d0432b8f00317fbb07b1f286b25d2bd09d17\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/offload-supply-20261006/source\nHEAD 8ea3d329a236e35dd0aba35ad619912e3e76cc28\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/wt-c1\nHEAD 887a3fec1af02f95209dac198681f66bdd9b82aa\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/wt-cur-baseline-20261015\nHEAD 577dac0444a49b723282f2b90816807650273f2d\ndetached\n\nworktree /home/rm01/models/dev/qwen4-thor/.q4t-work/wt-oldbin\nHEAD c0f5fa3568f58eb58d5e3c5783dee4af3d5cc6d2\ndetached",
+  "research_anchor": "4076810748024f610bcfc1780d47715f84becabe"
+}

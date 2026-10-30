@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "git",
+    "branch",
+    "-d",
+    "codex/serve-closeout"
+  ],
+  "returncode": 0,
+  "stdout": "Deleted branch codex/serve-closeout (was a2cb7ab).\n",
+  "stderr": "",
+  "old_tip": "a2cb7abe449ad3e90deb03203487b15b712b001d",
+  "retained_anchor": "a2cb7abe449ad3e90deb03203487b15b712b001d"
+}

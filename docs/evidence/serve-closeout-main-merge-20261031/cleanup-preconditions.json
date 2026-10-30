@@ -1,0 +1,20 @@
+{
+  "scope": [
+    "local codex/serve-closeout",
+    "remote refs/heads/codex/serve-closeout"
+  ],
+  "old_tip": "a2cb7abe449ad3e90deb03203487b15b712b001d",
+  "retained_anchor": "a2cb7abe449ad3e90deb03203487b15b712b001d",
+  "unique_commits": 0,
+  "open_head_prs": 0,
+  "open_base_prs": 0,
+  "clean_worktree": true,
+  "checked_out_elsewhere": false,
+  "remote_refs": {
+    "refs/heads/codex/serve-closeout": "a2cb7abe449ad3e90deb03203487b15b712b001d",
+    "refs/heads/main": "a2cb7abe449ad3e90deb03203487b15b712b001d"
+  },
+  "research_anchor_preserved": "4076810748024f610bcfc1780d47715f84becabe",
+  "worktree_paths_preserved": true,
+  "evidence_paths_preserved": true
+}

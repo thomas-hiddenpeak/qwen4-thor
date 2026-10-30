@@ -3,7 +3,8 @@
 2026-10-31，`ACCEPT_BOUNDED_SERVE_CLOSEOUT`。响应头状态缺陷已修复，
 私有缓存失败发布的HTTP证据已补齐。默认程序与发布元数据已替换，
 两种head的实际4槽安装健康通过，恢复标记清除，未建立常驻服务。
-本轮在`codex/serve-closeout`提交推送，尚未合入main。
+本轮5个提交已快进合入并推送main，原工作分支已清理；详见下方
+[主线合入与收尾](#主线合入2026-10-31)。
 
 | 身份 | SHA256 / commit |
 |---|---|
@@ -110,3 +111,30 @@ python3 -B tools/evalscope/gpu_exclusive.py \
 仍保留合作式deadline、all-active慢同伴等待及本地完整发送不保证
 对端消费的边界。本轮两项审计反馈已闭合；下一步按已有示例接入
 真实agent，再按实际失败或等待来源选择单一任务。
+
+## 主线合入（2026-10-31）
+
+按用户本次授权，main从`e06fa1dcce1c8f5174a0f2f8f5de01290da40d65`
+快进到交付锚点`a2cb7abe449ad3e90deb03203487b15b712b001d`并推送。
+5个提交、20个差异文件完整保留，没有冲突或额外运行时改动。
+默认037328bb/sidecar3200266e保持，实际运行时来源仍为9b99311，
+不因合入或文档提交改写发布身份。
+
+169项运行时在实际源码提交、交付锚点、工作区和封存源码之间一致；
+171份原始证据及29份安装健康原文件与封存副本一致，194项发布包、
+171项测量归档和29项健康归档封条核验通过。复用已接受的37HTTP/
+12启动及适用CPU合同，本次不重建或新增本机模型加载、GPU/HTTP。
+原首次COMMAND_FAILED、旧私有短探针推断撤回及全部接受边界保持。
+
+主线交付锚点a2cb7ab的自动[公共host检查](https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41107567740)
+已通过；仅覆盖实际运行的无CUDA/无模型合同，不替代本机Thor验收。
+
+清理范围仅为本地和远端`codex/serve-closeout`，旧tip为上述a2cb7ab。
+已确认main完整包含、独有提交0、工作区干净、无其他worktree占用、
+无以它为head/base的打开PR；远端按精确旧tip使用force-with-lease
+删除，本地使用普通`git branch -d`。4076810独有研究分支、全部
+worktree及原始证据/回退路径继续保留。
+
+5提交额外备份位于`.q4t-work/serve-closeout-main-merge-20261031/premerge.bundle`，
+bundle verify通过，所需父历史e06fa1d保留在main。核验和清理收据见
+[合入证据](evidence/serve-closeout-main-merge-20261031/)。

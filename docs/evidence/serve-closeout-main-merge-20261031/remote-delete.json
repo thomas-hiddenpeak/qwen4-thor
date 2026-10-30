@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "git",
+    "push",
+    "--force-with-lease=refs/heads/codex/serve-closeout:a2cb7abe449ad3e90deb03203487b15b712b001d",
+    "origin",
+    ":refs/heads/codex/serve-closeout"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "To https://github.com/thomas-hiddenpeak/qwen4-thor.git\n - [deleted]         codex/serve-closeout\n",
+  "old_tip": "a2cb7abe449ad3e90deb03203487b15b712b001d",
+  "retained_anchor": "a2cb7abe449ad3e90deb03203487b15b712b001d"
+}
