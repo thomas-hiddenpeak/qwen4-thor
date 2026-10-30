@@ -1,0 +1,49 @@
+Test project /home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host
+      Start  1: q4t_public_host_contracts
+ 1/22 Test  #1: q4t_public_host_contracts ................   Passed    0.37 sec
+      Start  2: q4t_router_trace_wire_contracts
+ 2/22 Test  #2: q4t_router_trace_wire_contracts ..........   Passed    0.09 sec
+      Start  3: q4t_router_trace_source_contracts
+ 3/22 Test  #3: q4t_router_trace_source_contracts ........   Passed    0.06 sec
+      Start  4: q4t_router_cache_replay_contracts
+ 4/22 Test  #4: q4t_router_cache_replay_contracts ........   Passed    0.06 sec
+      Start  5: q4t_router_shadow_contracts
+ 5/22 Test  #5: q4t_router_shadow_contracts ..............   Passed   10.29 sec
+      Start  6: q4t_router_distribution_contracts
+ 6/22 Test  #6: q4t_router_distribution_contracts ........   Passed    0.33 sec
+      Start  7: q4t_router_hybrid_contracts
+ 7/22 Test  #7: q4t_router_hybrid_contracts ..............   Passed    0.08 sec
+      Start  8: q4t_offload_trace_contracts
+ 8/22 Test  #8: q4t_offload_trace_contracts ..............   Passed    0.10 sec
+      Start  9: q4t_offload_log_contracts
+ 9/22 Test  #9: q4t_offload_log_contracts ................   Passed    0.06 sec
+      Start 10: q4t_gpu_cache_schedule_contracts
+10/22 Test #10: q4t_gpu_cache_schedule_contracts .........   Passed    0.15 sec
+      Start 11: q4t_gpu_cache_replay_contracts
+11/22 Test #11: q4t_gpu_cache_replay_contracts ...........   Passed    0.09 sec
+      Start 12: q4t_gpu_cache_study_contracts
+12/22 Test #12: q4t_gpu_cache_study_contracts ............   Passed    7.57 sec
+      Start 13: q4t_decode_supply_bounds_contracts
+13/22 Test #13: q4t_decode_supply_bounds_contracts .......   Passed    0.07 sec
+      Start 14: q4t_analyze_decode_supply_contracts
+14/22 Test #14: q4t_analyze_decode_supply_contracts ......   Passed    1.96 sec
+      Start 15: q4t_mirror_retention_contracts
+15/22 Test #15: q4t_mirror_retention_contracts ...........   Passed    0.05 sec
+      Start 16: q4t_analyze_mirror_retention_contracts
+16/22 Test #16: q4t_analyze_mirror_retention_contracts ...   Passed    2.47 sec
+      Start 17: q4t_physical_ram_contracts
+17/22 Test #17: q4t_physical_ram_contracts ...............   Passed    0.12 sec
+      Start 18: q4t_response_identity_contracts
+18/22 Test #18: q4t_response_identity_contracts ..........   Passed    0.04 sec
+      Start 19: q4t_gpu_exclusive_contracts
+19/22 Test #19: q4t_gpu_exclusive_contracts ..............   Passed    1.24 sec
+      Start 20: q4t_request_cancellation_contracts
+20/22 Test #20: q4t_request_cancellation_contracts .......   Passed    0.07 sec
+      Start 21: q4t_supervisor_contracts
+21/22 Test #21: q4t_supervisor_contracts .................   Passed    0.10 sec
+      Start 22: q4t_audit_rollback_contracts
+22/22 Test #22: q4t_audit_rollback_contracts .............   Passed    0.11 sec
+
+100% tests passed out of 22
+
+Total Test time (real) =  25.50 sec

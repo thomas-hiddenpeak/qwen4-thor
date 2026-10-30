@@ -1,0 +1,22 @@
+{
+  "status": "ENV_ABORT",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-c",
+    "from pathlib import Path; Path('/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/forbidden-child').touch()"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": null,
+  "external_lease": false,
+  "reason": "RuntimeError('GPU guard requires callable pidfd_open, pidfd_send_signal; select a Python interpreter with pidfd support')",
+  "finished": {
+    "utc": "2026-10-30T20:30:21.222389+00:00",
+    "monotonic": 1582303.739265714,
+    "pid": 433926
+  }
+}

@@ -1,0 +1,27 @@
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++-14 - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Found Python3: /home/rm01/.local/bin/python3.13 (found version "3.13.14") found components: Interpreter
+-- Configuring incomplete, errors occurred!
+CMake Error at CMakeLists.txt:133 (message):
+  GPU guard requires working pidfd APIs; set Q4T_GPU_GUARD_PYTHON.  Traceback
+  (most recent call last):
+
+    File "<string>", line 1, in <module>
+      import sys; sys.path.insert(0, sys.argv[1]); import gpu_exclusive; gpu_exclusive.require_pidfd_support()
+                                                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+    File "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/gpu_exclusive.py", line 144, in require_pidfd_support
+      raise RuntimeError('GPU guard requires callable ' + ', '.join(missing) +
+                         '; select a Python interpreter with pidfd support')
+
+  RuntimeError: GPU guard requires callable pidfd_open, pidfd_send_signal;
+  select a Python interpreter with pidfd support
+
+
+

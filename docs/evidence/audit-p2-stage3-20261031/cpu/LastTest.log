@@ -1,0 +1,539 @@
+Start testing: Oct 31 04:30 CST
+----------------------------------------------------------
+1/22 Testing: q4t_public_host_contracts
+1/22 Test: q4t_public_host_contracts
+Command: "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/q4t_host_tests"
+Directory: /home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host
+"q4t_public_host_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+[PASS] suffix_pending_view_global_ids_and_query_immutability
+[PASS] suffix_longest_match_and_newest_tie_independent_scan
+[PASS] suffix_longest_candidate_does_not_search_around_d0_gate
+[PASS] suffix_requires_complete_three_and_allows_periodic_pending
+[PASS] suffix_match_range_and_candidate_count_are_bounded
+[PASS] suffix_hash_collision_requires_exact_token_comparison
+[PASS] suffix_appends_only_supplied_committed_prefix
+[PASS] suffix_capacity_exhaustion_is_transactional_neural_fallback
+[PASS] suffix_invalid_inputs_do_not_partially_index_or_allocate
+[PASS] suffix_reset_releases_storage_and_request_history
+[PASS] suffix_numeric_token_classification_byte_truth_table
+[PASS] suffix_numeric_admission_is_independent_of_token_partition
+[PASS] suffix_numeric_rejection_keeps_global_proposal_and_history
+[PASS] suffix_numeric_uses_full_longest_match_not_only_trigram
+[PASS] suffix_numeric_existing_gates_and_newest_tie_are_preserved
+[PASS] suffix_short_gate_applies_after_numeric_and_without_table
+[PASS] suffix_numeric_table_size_and_request_reset_contract
+[PASS] suffix_numeric_filter_preserves_fixed_maximum_match_range
+[PASS] suffix_long_copy_admission_boundary_and_global_continuation
+[PASS] suffix_short_fallback_commits_can_become_a_long_copy
+[PASS] suffix_numeric_and_d0_gates_precede_short_copy_gate
+[PASS] suffix_lazy_classifier_follows_full_d0_minimum_gates
+[PASS] suffix_lazy_numeric_rejection_preserves_global_candidate
+[PASS] suffix_lazy_failure_disables_without_committing_and_recovers_fresh
+[PASS] suffix_lazy_and_eager_are_exclusive_and_reset_drops_callback
+[PASS] suffix_lazy_ready_matches_eager_reference_across_boundaries
+[PASS] suffix_lazy_no_match_incomplete_and_invalid_skip_classifier
+[PASS] router_trace_hash_known_vectors
+[PASS] router_trace_chunked_prefill_and_decode
+[PASS] router_trace_commit_requires_all_evidence
+[PASS] router_trace_rejects_layer_and_id_corruption
+[PASS] router_trace_positions_and_request_identity
+[PASS] router_trace_failed_forward_is_diagnostic
+[PASS] router_trace_bounds_and_empty_run
+[PASS] router_trace_wire_roundtrip_and_truncation
+[PASS] router_trace_write_failure_cannot_finish
+[PASS] router_trace_undrained_work_prevents_reuse
+[PASS] router_trace_counters_and_flush_failure
+[PASS] serve_agent_slot_capacity_and_admission
+[PASS] serve_default_is_single_text_greedy
+[PASS] serve_capabilities_allow_explicit_combinations
+[PASS] serve_rejects_malformed_numeric_options
+[PASS] serve_mtp_k_is_explicit_and_bounded
+[PASS] serve_validates_before_load_and_preserves_failed_parse
+[PASS] serve_prefill_bound_precedes_workspace_sizing
+[PASS] serve_decode_batch_fits_effective_forward_rows
+[PASS] serve_trace_options_are_explicit_and_bounded
+[PASS] serve_startup_plan_modes_are_explicit_and_transactional
+[PASS] serve_suffix_requires_text_fixed_k3
+[PASS] mtp_step_preserves_context_tail
+[PASS] mtp_step_rejects_invalid_or_overflowing_ranges
+[PASS] mtp_generation_step_preserves_output_and_context_tail
+[PASS] mtp_generation_step_rejects_invalid_or_overflowing_ranges
+[PASS] mtp_sequential_step_compatibility_name
+[PASS] scheduler_cancel_retires_waiters_preserves_completed_results
+[PASS] scheduler_submission_rejects_after_stop
+[PASS] scheduler_exception_waits_for_borrowed_completion
+[PASS] scheduler_submission_drains_before_shutdown
+[PASS] scheduler_submission_keeps_borrowed_buffer_until_done
+[PASS] server_exception_drains_before_ownership_release
+[PASS] server_state_nonmonotonic_slots_and_survivors
+[PASS] server_state_cancel_does_not_release_pending_work
+[PASS] server_state_stale_cleanup_cannot_remove_reused_identity
+[PASS] server_state_cancel_and_finish_have_one_winner
+[PASS] server_state_deadline_and_shutdown_preserve_terminal_reason
+[PASS] request_diagnostics_terminal_and_reuse
+[PASS] request_diagnostics_wait_accounting
+[PASS] json_parse_object_scalars
+[PASS] json_parse_nested_arrays
+[PASS] json_parse_string_escapes
+[PASS] json_parse_errors
+[PASS] json_rejects_deep_input_before_recursing
+[PASS] json_resource_limits_and_duplicate_keys
+[PASS] json_strict_numbers_and_safe_integer_conversion
+[PASS] json_strict_unicode_and_controls
+[PASS] sequence_commit_requires_completion
+[PASS] sequence_rejects_reentry_and_early_recycle
+[PASS] sequence_failed_submission_still_drains
+[PASS] sequence_completion_failure_preserves_prefix
+[PASS] sequence_invalid_input_does_not_poison_prefix
+[PASS] sequence_chunk_and_decode_share_commit
+[PASS] sequence_batch_failure_is_atomic
+[PASS] sequence_rejects_duplicate_completion
+[PASS] http_valid_length_and_header_names
+[PASS] http_rejects_ambiguous_framing
+[PASS] http_request_line_and_header_budget
+[PASS] http_body_capacity_and_trailing_bytes
+[PASS] http_absolute_deadline_and_body_budget
+[PASS] server_utf8_stream_boundaries
+[PASS] server_utf8_malformed_subparts
+[PASS] server_http_response_send_status
+[PASS] server_http_exception_terminal_states
+[PASS] server_http_header_completion
+[PASS] server_http_exception_cannot_append_after_terminal
+[PASS] server_http_response_partial_writes
+[PASS] server_http_write_deadline_despite_progress_and_interrupts
+[PASS] server_http_write_cancel_and_request_deadline
+[PASS] chat_contract_greedy_neutral_options
+[PASS] chat_contract_rejects_unimplemented_constraints
+[PASS] chat_contract_rejects_wrong_types_and_ambiguous_input
+[PASS] chat_contract_template_options_are_explicit
+[PASS] chat_contract_media_rejected_before_decoding
+102 tests, 102 passed, 0 failed, 0 skipped
+<end of output>
+Test time =   0.37 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_public_host_contracts" end time: Oct 31 04:30 CST
+"q4t_public_host_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/22 Testing: q4t_router_trace_wire_contracts
+2/22 Test: q4t_router_trace_wire_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_wire.py" "--checker" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/q4t_router_trace_check" "--output" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/trace-wire-tests"
+Directory: /home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host
+"q4t_router_trace_wire_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+49 independent wire/CLI cases passed; evidence: /home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/trace-wire-tests/run-kssq0oih
+<end of output>
+Test time =   0.09 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_router_trace_wire_contracts" end time: Oct 31 04:30 CST
+"q4t_router_trace_wire_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/22 Testing: q4t_router_trace_source_contracts
+3/22 Test: q4t_router_trace_source_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_analyze.py" "--checker" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/q4t_router_trace_check" "--output" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/trace-analysis-tests"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_router_trace_source_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+15 capture analysis checks passed; evidence: /home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/trace-analysis-tests/run-mn8_cl71
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_router_trace_source_contracts" end time: Oct 31 04:30 CST
+"q4t_router_trace_source_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/22 Testing: q4t_router_cache_replay_contracts
+4/22 Test: q4t_router_cache_replay_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_replay.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_router_cache_replay_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.007s
+
+OK
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_router_cache_replay_contracts" end time: Oct 31 04:30 CST
+"q4t_router_cache_replay_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/22 Testing: q4t_router_shadow_contracts
+5/22 Test: q4t_router_shadow_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_shadow.py" "--checker" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/q4t_router_trace_check" "--output" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/shadow-contracts"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_router_shadow_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 10.234s
+
+OK
+<end of output>
+Test time =  10.29 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_router_shadow_contracts" end time: Oct 31 04:30 CST
+"q4t_router_shadow_contracts" time elapsed: 00:00:10
+----------------------------------------------------------
+
+6/22 Testing: q4t_router_distribution_contracts
+6/22 Test: q4t_router_distribution_contracts
+Command: "/home/rm01/models/dev/qwen4-thor/.q4t-work/venvs/public-host/bin/python3" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_distribution.py" "--checker" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/q4t_router_trace_check"
+Directory: /home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host
+"q4t_router_distribution_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.079s
+
+OK
+<end of output>
+Test time =   0.33 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_router_distribution_contracts" end time: Oct 31 04:30 CST
+"q4t_router_distribution_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/22 Testing: q4t_router_hybrid_contracts
+7/22 Test: q4t_router_hybrid_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_hybrid.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_router_hybrid_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.000s
+
+OK
+<end of output>
+Test time =   0.08 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_router_hybrid_contracts" end time: Oct 31 04:30 CST
+"q4t_router_hybrid_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/22 Testing: q4t_offload_trace_contracts
+8/22 Test: q4t_offload_trace_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_offload_trace.py" "--checker" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/q4t_router_trace_check" "--output" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/offload-trace-contracts"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_offload_trace_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+.................
+----------------------------------------------------------------------
+Ran 17 tests in 0.044s
+
+OK
+<end of output>
+Test time =   0.10 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_offload_trace_contracts" end time: Oct 31 04:30 CST
+"q4t_offload_trace_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+9/22 Testing: q4t_offload_log_contracts
+9/22 Test: q4t_offload_log_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_offload_log.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_offload_log_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+OK
+<end of output>
+Test time =   0.06 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_offload_log_contracts" end time: Oct 31 04:30 CST
+"q4t_offload_log_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+10/22 Testing: q4t_gpu_cache_schedule_contracts
+10/22 Test: q4t_gpu_cache_schedule_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_gpu_cache_schedule.py" "--helper" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/q4t_gpu_cache_schedule" "--sort-helper" "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/q4t_offload_sort"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_gpu_cache_schedule_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+...........
+----------------------------------------------------------------------
+Ran 11 tests in 0.093s
+
+OK
+<end of output>
+Test time =   0.15 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_gpu_cache_schedule_contracts" end time: Oct 31 04:30 CST
+"q4t_gpu_cache_schedule_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+11/22 Testing: q4t_gpu_cache_replay_contracts
+11/22 Test: q4t_gpu_cache_replay_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_gpu_cache_replay.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_gpu_cache_replay_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+...........................
+----------------------------------------------------------------------
+Ran 27 tests in 0.046s
+
+OK
+<end of output>
+Test time =   0.09 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_gpu_cache_replay_contracts" end time: Oct 31 04:30 CST
+"q4t_gpu_cache_replay_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+12/22 Testing: q4t_gpu_cache_study_contracts
+12/22 Test: q4t_gpu_cache_study_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_gpu_cache_study.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_gpu_cache_study_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+...................
+----------------------------------------------------------------------
+Ran 19 tests in 7.467s
+
+OK
+<end of output>
+Test time =   7.57 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_gpu_cache_study_contracts" end time: Oct 31 04:30 CST
+"q4t_gpu_cache_study_contracts" time elapsed: 00:00:07
+----------------------------------------------------------
+
+13/22 Testing: q4t_decode_supply_bounds_contracts
+13/22 Test: q4t_decode_supply_bounds_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_decode_supply_bounds.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_decode_supply_bounds_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+......................
+----------------------------------------------------------------------
+Ran 22 tests in 0.025s
+
+OK
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_decode_supply_bounds_contracts" end time: Oct 31 04:30 CST
+"q4t_decode_supply_bounds_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+14/22 Testing: q4t_analyze_decode_supply_contracts
+14/22 Test: q4t_analyze_decode_supply_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_analyze_decode_supply.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_analyze_decode_supply_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+...................
+----------------------------------------------------------------------
+Ran 19 tests in 1.874s
+
+OK
+<end of output>
+Test time =   1.96 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_analyze_decode_supply_contracts" end time: Oct 31 04:30 CST
+"q4t_analyze_decode_supply_contracts" time elapsed: 00:00:01
+----------------------------------------------------------
+
+15/22 Testing: q4t_mirror_retention_contracts
+15/22 Test: q4t_mirror_retention_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_mirror_retention.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_mirror_retention_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.004s
+
+OK
+<end of output>
+Test time =   0.05 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_mirror_retention_contracts" end time: Oct 31 04:30 CST
+"q4t_mirror_retention_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+16/22 Testing: q4t_analyze_mirror_retention_contracts
+16/22 Test: q4t_analyze_mirror_retention_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace/test_analyze_mirror_retention.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/trace
+"q4t_analyze_mirror_retention_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+....................
+----------------------------------------------------------------------
+Ran 20 tests in 2.372s
+
+OK
+<end of output>
+Test time =   2.47 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_analyze_mirror_retention_contracts" end time: Oct 31 04:30 CST
+"q4t_analyze_mirror_retention_contracts" time elapsed: 00:00:02
+----------------------------------------------------------
+
+17/22 Testing: q4t_physical_ram_contracts
+17/22 Test: q4t_physical_ram_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/test_physical_ram.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope
+"q4t_physical_ram_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.040s
+
+OK
+{"gate": "INDETERMINATE", "sample_count": 2, "stop_reason": "STOP_FILE", "summary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/public-host/q4t_physical_ram_contracts/tmpjtcrpjh0/out/summary.json"}
+<end of output>
+Test time =   0.12 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_physical_ram_contracts" end time: Oct 31 04:30 CST
+"q4t_physical_ram_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+18/22 Testing: q4t_response_identity_contracts
+18/22 Test: q4t_response_identity_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/test_response_identity.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope
+"q4t_response_identity_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.000s
+
+OK
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_response_identity_contracts" end time: Oct 31 04:30 CST
+"q4t_response_identity_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+19/22 Testing: q4t_gpu_exclusive_contracts
+19/22 Test: q4t_gpu_exclusive_contracts
+Command: "/usr/bin/python3" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/test_gpu_exclusive.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope
+"q4t_gpu_exclusive_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+..........................Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+KeyboardInterrupt
+....
+----------------------------------------------------------------------
+Ran 30 tests in 1.157s
+
+OK
+<end of output>
+Test time =   1.24 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_gpu_exclusive_contracts" end time: Oct 31 04:30 CST
+"q4t_gpu_exclusive_contracts" time elapsed: 00:00:01
+----------------------------------------------------------
+
+20/22 Testing: q4t_request_cancellation_contracts
+20/22 Test: q4t_request_cancellation_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/test_request_cancellation.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope
+"q4t_request_cancellation_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+.....................
+----------------------------------------------------------------------
+Ran 21 tests in 0.002s
+
+OK
+<end of output>
+Test time =   0.07 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_request_cancellation_contracts" end time: Oct 31 04:30 CST
+"q4t_request_cancellation_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+21/22 Testing: q4t_supervisor_contracts
+21/22 Test: q4t_supervisor_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/release/test_supervisor.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/release
+"q4t_supervisor_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.015s
+
+OK
+<end of output>
+Test time =   0.10 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_supervisor_contracts" end time: Oct 31 04:30 CST
+"q4t_supervisor_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+22/22 Testing: q4t_audit_rollback_contracts
+22/22 Test: q4t_audit_rollback_contracts
+Command: "/home/rm01/.local/bin/python3.13" "-B" "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/verify/audit_p2/test_rollback.py"
+Directory: /home/rm01/models/dev/qwen4-thor/tests/host/../../tools/verify/audit_p2
+"q4t_audit_rollback_contracts" start time: Oct 31 04:30 CST
+Output:
+----------------------------------------------------------
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.028s
+
+OK
+Sealed previous/candidate pairs and installed identities verified.
+Sealed previous/candidate pairs and installed identities verified.
+<end of output>
+Test time =   0.11 sec
+----------------------------------------------------------
+Test Passed.
+"q4t_audit_rollback_contracts" end time: Oct 31 04:30 CST
+"q4t_audit_rollback_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 31 04:30 CST

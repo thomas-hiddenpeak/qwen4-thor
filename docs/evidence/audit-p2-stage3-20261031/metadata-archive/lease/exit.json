@@ -1,0 +1,21 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/verify/audit_p2/stage3.py",
+    "install"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-10-30T20:34:49.137024+00:00",
+    "monotonic": 1582571.653909827,
+    "pid": 434549
+  }
+}

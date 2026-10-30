@@ -1,0 +1,75 @@
+{
+  "status": "ACCEPT_TOOL_REPAIR",
+  "fixed": [
+    "A1",
+    "A2",
+    "A3",
+    "A4",
+    "A5",
+    "A6",
+    "A7",
+    "A8"
+  ],
+  "binary_sha256": "b11ed66cd94f943957e83edbfa223cb3e65f758e409eb4d125b4911d1164e015",
+  "previous_sidecar": "6ed16aec51da7379a89468fe8927d9caa53bf37ccdad36835776b5c4cdbb19d1",
+  "runtime_source_commit": "98c42bfcc5e877414abc16707a133e0b9660b64c",
+  "history": {
+    "stage1/delivery-package": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/sealed-files.json",
+      "sha256": "deef6939a46ec5f4daaa17c77fb49e9f43c1d08efdca220933b6c98a6035e99b",
+      "bytes": 22292
+    },
+    "stage1/evidence-archive": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/evidence-archive/sealed-files.json",
+      "sha256": "5bc5cc16e75ff7b4beb8a71ffb9acf52eb8899a4d1a1c6db4eb5d689a7098566",
+      "bytes": 12850
+    },
+    "stage1/health-archive": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/health-archive/sealed-files.json",
+      "sha256": "f86e42af9e8cdae84485783b484da4d238cfc647de9f461b37bd29e7e44a7202",
+      "bytes": 2975
+    },
+    "stage2/delivery-package": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage2/delivery-package/sealed-files.json",
+      "sha256": "5b7fadca0da2de5f1ca7ca77c99a31fd48659a8a4c12a368e26f001a58758f7a",
+      "bytes": 22621
+    },
+    "stage2/evidence-archive": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage2/evidence-archive/sealed-files.json",
+      "sha256": "b7881b269a7d93d6218288f13257e9f564458c423e6786604e4bc6b67ebbe722",
+      "bytes": 11631
+    },
+    "stage2/health-archive": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage2/health-archive/sealed-files.json",
+      "sha256": "83129e7ab3ec718a3e377f02f4497b3748c6360dba9bc57d37c78ab155fce2f0",
+      "bytes": 2886
+    }
+  },
+  "tool_source_commit": "76963adfd8803c5583b7d2e21db4d555322c1df6",
+  "tools": {
+    "/home/rm01/models/dev/qwen4-thor/tools/verify/audit_p2/stage3.py": "dc4782876e455ea4f6e3166088964c2902b89ac6762cf74b46ecbde82b17f56c",
+    "/home/rm01/models/dev/qwen4-thor/tools/verify/startup_delivery/deploy.py": "479c2e5496f50f80d950e8be62b239053483e89af656339dc1aaccd2de2a3be8",
+    "/home/rm01/models/dev/qwen4-thor/tools/verify/startup_delivery/build.py": "a7d7a9e23070a47ce9e30559a56cb4d170f9804ef81e1eb6c3462b45d8b77be1",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py": "8843547e7955baa4756db3586959b93053957a151cea92a4f86de1ffbcff19c6",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_gpu_exclusive.py": "62adb39e12285940f4a5a46d781fde2748886f25a28c59ecb6013bc3ff9df829",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/nvml_process_query.py": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+    "/home/rm01/models/dev/qwen4-thor/tools/verify/audit_p2/rollback.py": "bde513adc817121a3433209a021c2a0cecaa8b0f65161faf1efe486c18f54452",
+    "/home/rm01/models/dev/qwen4-thor/tools/verify/audit_p2/test_rollback.py": "0b61c844c989cd13de8a17f00f5184ec592ac58bf6ecc8240e92bbfa6e491751",
+    "/home/rm01/models/dev/qwen4-thor/tools/release/release.py": "294ecc855cacde6ea494d8a3217f169163fb888a7794e0382a9d46324455b9b7",
+    "/home/rm01/models/dev/qwen4-thor/tools/release/test_supervisor.py": "c298ca3343a4bfbf059aee5d97658b74d1176cbec44d7cabdb562d6c070b7c4c",
+    "/home/rm01/models/dev/qwen4-thor/tests/host/CMakeLists.txt": "b731094ea4dacd2fc00009e6df7cbe606cd654426953e52c3c0d2c0ed117d2ff",
+    "/home/rm01/models/dev/qwen4-thor/docs/AUDIT_P2_STAGE3_PLAN_2026-10-31.md": "9f6998f75114334af82df7d0b28d5d119e7deabc7aa85e5b82c548ca8daf003f"
+  },
+  "cpu_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/cpu/sealed-files.json",
+    "sha256": "64b268c2d1a7435a46a73135dc23549abdb08b37440f1bb07f47b7965e9fdecd",
+    "bytes": 979
+  },
+  "public_ctest": 22,
+  "guard_contracts": 30,
+  "rollback_contracts": 5,
+  "new_model_starts": 0,
+  "new_generation_http": 0,
+  "performance_acceptance": false,
+  "expected_capability_env_abort": 1
+}

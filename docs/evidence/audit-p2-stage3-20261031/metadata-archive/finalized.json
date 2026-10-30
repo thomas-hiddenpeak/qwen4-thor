@@ -1,0 +1,13 @@
+{
+  "status": "DELIVERED_ALL_EIGHT",
+  "binary_sha256": "b11ed66cd94f943957e83edbfa223cb3e65f758e409eb4d125b4911d1164e015",
+  "sidecar_sha256": "982c888c2c9d6e63a608398472bc692f8340e117361011d123593fd7c6d45fab",
+  "runtime_source_commit": "98c42bfcc5e877414abc16707a133e0b9660b64c",
+  "tool_source_commit": "76963adfd8803c5583b7d2e21db4d555322c1df6",
+  "generation_http": 40,
+  "model_starts": 20,
+  "gpu_contracts": 15,
+  "retained_installation_env_abort": 2,
+  "persistent_service": false,
+  "finished": 1793392497.9670904
+}

@@ -1,0 +1,7 @@
+{
+  "seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/metadata-archive/sealed-files.json",
+    "sha256": "188c94d973f7ba1743bfdefc37a701cf2d78520a444ca808433800d84ae3e5ae",
+    "bytes": 456
+  }
+}

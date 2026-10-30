@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "cmake",
+    "-S",
+    "tests/host",
+    "-B",
+    ".q4t-work/audit-p2-20261031/stage3/unsupported-host",
+    "-DCMAKE_CXX_COMPILER=g++-14",
+    "-DQ4T_GPU_GUARD_PYTHON=/home/rm01/.local/bin/python3.13"
+  ],
+  "returncode": 1
+}

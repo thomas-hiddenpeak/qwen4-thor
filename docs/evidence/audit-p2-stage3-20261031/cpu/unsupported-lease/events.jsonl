@@ -1,0 +1,2 @@
+{"utc": "2026-10-30T20:30:21.222358+00:00", "monotonic": 1582303.739236502, "pid": 433926, "event": "lease_acquired"}
+{"utc": "2026-10-30T20:30:21.222511+00:00", "monotonic": 1582303.739387927, "pid": 433926, "event": "lease_released", "status": "ENV_ABORT"}
