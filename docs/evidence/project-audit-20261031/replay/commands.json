@@ -1,0 +1,105 @@
+[
+  {
+    "name": "io_probe-build",
+    "command": [
+      "g++-14",
+      "-O2",
+      "-std=c++23",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffunction-sections",
+      "-fdata-sections",
+      "-Iinclude",
+      "-I/usr/local/cuda/include",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/io_probe.cpp",
+      "src/io/safetensors.cpp",
+      "src/io/json.cpp",
+      "-Wl,--gc-sections",
+      "-pthread",
+      "-o",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/io_probe"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "io_probe",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/io_probe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/io-fixture"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "capacity_probe-build",
+    "command": [
+      "g++-14",
+      "-O2",
+      "-std=c++23",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffunction-sections",
+      "-fdata-sections",
+      "-Iinclude",
+      "-I/usr/local/cuda/include",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/capacity_probe.cpp",
+      "src/server/server_options.cpp",
+      "src/runtime/memory_budget.cpp",
+      "-Wl,--gc-sections",
+      "-pthread",
+      "-o",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/capacity_probe"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "capacity_probe",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/capacity_probe"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "residency_probe-build",
+    "command": [
+      "g++-14",
+      "-O2",
+      "-std=c++23",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffunction-sections",
+      "-fdata-sections",
+      "-Iinclude",
+      "-I/usr/local/cuda/include",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/residency_probe.cpp",
+      "src/quant/moe_residency.cpp",
+      "src/io/weight_loader.cpp",
+      "src/io/safetensors.cpp",
+      "src/io/json.cpp",
+      "-Wl,--gc-sections",
+      "-pthread",
+      "-o",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/residency_probe"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "residency_probe",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/residency_probe",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/residency-fixture"
+    ],
+    "exit": 0
+  },
+  {
+    "name": "watchdog_probe",
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/project-audit-replay-20261031/watchdog_probe.py"
+    ],
+    "exit": 0
+  }
+]

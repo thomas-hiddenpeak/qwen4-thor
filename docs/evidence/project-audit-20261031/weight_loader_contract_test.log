@@ -1,0 +1,7 @@
+[PASS] weight_loader_metadata_survives_eviction
+[PASS] weight_loader_read_survives_eviction
+[PASS] weight_loader_device_read_survives_eviction
+[PASS] weight_loader_device_enqueue_survives_eviction
+[PASS] weight_loader_missing_tensor_and_shard
+[PASS] weight_loader_concurrent_small_cache
+6 tests, 6 passed, 0 failed, 0 skipped

@@ -1,0 +1,2 @@
+PASS checks=49 direct_io=1 staging_bytes=8388608
+PASS shared_checks=38 disk_budget=32768

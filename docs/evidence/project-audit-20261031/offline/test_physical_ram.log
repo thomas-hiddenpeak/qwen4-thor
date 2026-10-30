@@ -1,0 +1,6 @@
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.043s
+
+OK
+{"gate": "INDETERMINATE", "sample_count": 2, "stop_reason": "STOP_FILE", "summary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-20261031/offline/tmp48n0rsvp/out/summary.json"}

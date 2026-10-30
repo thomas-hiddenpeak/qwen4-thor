@@ -1,0 +1,1 @@
+{"health_status": 200, "active_request_timeout_ms": 1800000, "producer_counter_updates": "only after generation ends", "supervisor_kills": [["backend", 1261]], "actual_processes_started": 0}

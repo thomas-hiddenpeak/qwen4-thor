@@ -1,0 +1,89 @@
+Test project /home/rm01/models/dev/qwen4-thor/.q4t-work/audit-20261031/host
+      Start  1: q4t_public_host_contracts
+ 1/20 Test  #1: q4t_public_host_contracts ................   Passed    0.37 sec
+      Start  2: q4t_router_trace_wire_contracts
+ 2/20 Test  #2: q4t_router_trace_wire_contracts ..........   Passed    0.10 sec
+      Start  3: q4t_router_trace_source_contracts
+ 3/20 Test  #3: q4t_router_trace_source_contracts ........   Passed    0.06 sec
+      Start  4: q4t_router_cache_replay_contracts
+ 4/20 Test  #4: q4t_router_cache_replay_contracts ........   Passed    0.06 sec
+      Start  5: q4t_router_shadow_contracts
+ 5/20 Test  #5: q4t_router_shadow_contracts ..............   Passed   10.30 sec
+      Start  6: q4t_router_distribution_contracts
+ 6/20 Test  #6: q4t_router_distribution_contracts ........   Passed    0.32 sec
+      Start  7: q4t_router_hybrid_contracts
+ 7/20 Test  #7: q4t_router_hybrid_contracts ..............   Passed    0.08 sec
+      Start  8: q4t_offload_trace_contracts
+ 8/20 Test  #8: q4t_offload_trace_contracts ..............   Passed    0.10 sec
+      Start  9: q4t_offload_log_contracts
+ 9/20 Test  #9: q4t_offload_log_contracts ................   Passed    0.05 sec
+      Start 10: q4t_gpu_cache_schedule_contracts
+10/20 Test #10: q4t_gpu_cache_schedule_contracts .........   Passed    0.14 sec
+      Start 11: q4t_gpu_cache_replay_contracts
+11/20 Test #11: q4t_gpu_cache_replay_contracts ...........   Passed    0.09 sec
+      Start 12: q4t_gpu_cache_study_contracts
+12/20 Test #12: q4t_gpu_cache_study_contracts ............   Passed    7.58 sec
+      Start 13: q4t_decode_supply_bounds_contracts
+13/20 Test #13: q4t_decode_supply_bounds_contracts .......   Passed    0.08 sec
+      Start 14: q4t_analyze_decode_supply_contracts
+14/20 Test #14: q4t_analyze_decode_supply_contracts ......   Passed    1.96 sec
+      Start 15: q4t_mirror_retention_contracts
+15/20 Test #15: q4t_mirror_retention_contracts ...........   Passed    0.06 sec
+      Start 16: q4t_analyze_mirror_retention_contracts
+16/20 Test #16: q4t_analyze_mirror_retention_contracts ...   Passed    2.48 sec
+      Start 17: q4t_physical_ram_contracts
+17/20 Test #17: q4t_physical_ram_contracts ...............   Passed    0.13 sec
+      Start 18: q4t_response_identity_contracts
+18/20 Test #18: q4t_response_identity_contracts ..........   Passed    0.04 sec
+      Start 19: q4t_gpu_exclusive_contracts
+19/20 Test #19: q4t_gpu_exclusive_contracts ..............***Failed   30.44 sec
+....................E/home/rm01/.local/share/uv/python/cpython-3.13.14-linux-aarch64-gnu/lib/python3.13/subprocess.py:1140: ResourceWarning: subprocess 395169 is still running
+  _warn("subprocess %s is still running" % self.pid,
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+...Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import time; time.sleep(30)
+                 ~~~~~~~~~~^^^^
+KeyboardInterrupt
+...
+======================================================================
+ERROR: test_real_detached_child_cleanup_preserves_unrelated_process (__main__.ExclusiveTests.test_real_detached_child_cleanup_preserves_unrelated_process)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/test_gpu_exclusive.py", line 330, in test_real_detached_child_cleanup_preserves_unrelated_process
+    guard.stop_owned(parent, .3, history)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py", line 222, in stop_owned
+    signal_identity(pid, identity, signal.SIGKILL if killed else signal.SIGTERM)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py", line 122, in signal_identity
+    fd = os.pidfd_open(pid)
+         ^^^^^^^^^^^^^
+AttributeError: module 'os' has no attribute 'pidfd_open'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tests/host/../../tools/evalscope/test_gpu_exclusive.py", line 338, in test_real_detached_child_cleanup_preserves_unrelated_process
+    guard.signal_identity(pid, identity, signal.SIGKILL)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py", line 122, in signal_identity
+    fd = os.pidfd_open(pid)
+         ^^^^^^^^^^^^^
+AttributeError: module 'os' has no attribute 'pidfd_open'
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.586s
+
+FAILED (errors=1)
+
+      Start 20: q4t_request_cancellation_contracts
+20/20 Test #20: q4t_request_cancellation_contracts .......   Passed    0.07 sec
+
+95% tests passed, 1 tests failed out of 20
+
+Total Test time (real) =  54.52 sec
+
+The following tests FAILED:
+	 19 - q4t_gpu_exclusive_contracts (Failed)
+Errors while running CTest

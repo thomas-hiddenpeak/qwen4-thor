@@ -1,0 +1,9 @@
+{
+  "binary": true,
+  "metadata_sha256": "3200266ea8778507b9e9acdfc0cf0a8b2bb97ae02aa8262cd572fd0a9b060d06",
+  "tested_source_manifest": true,
+  "build_cache": true,
+  "acceptance_snapshot": true,
+  "acceptance_decision": true,
+  "acceptance_audit": true
+}

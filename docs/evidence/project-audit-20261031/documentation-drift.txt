@@ -1,0 +1,92 @@
+docs/STATUS.md:930-955
+930: 筛选，未实现、未接受性能收益。L2零命中与98.67%软件加载次数占比
+931: 只能支持候选研究，不能证明SSD瓶颈或当前优先级；后续以本页顶部
+932: SSD前提对齐修正为准。见[机制筛选](OFFLOAD_NEXT_STRATEGY_2026-10-20.md)
+933: 与[历史阶段计划](OFFLOAD_FOUNDATION_PLAN_2026-10-20.md)。
+934: 
+935: ## 当前交付
+936: 
+937: **固定k3 suffix显式启用版已部署（2026-10-27）。** build/q4t为90f24f49，
+938: 实际构建源码86f4cf2，sidecar45cfe74a；full仍默认，suffix默认关闭。
+939: 2启动/3HTTP部署健康通过，f356前版程序/元数据/构建cache完整回退包保留，
+940: 无常驻服务。性能接受范围与统计限制见
+941: [正式交付](MTP_SUFFIX_DELIVERED_2026-10-27.md)。
+942: 
+943: 以下为历史交付，历史“当前默认”不覆盖本段身份。
+944: 
+945: **启动资源计划正式版已部署（2026-10-21）。** 当前默认build/q4t
+946: 为5a456351（源码3f2c704），发布元数据/真实构建缓存/接受快照一致。
+947: 默认MTP和普通decode部署健康各1条通过，19ea完整回退包已核验；
+948: 无常驻服务、无性能优化结论。见
+949: [交付、独立审计与回退](STARTUP_DELIVERY_2026-10-21.md#正式部署回退与最终封存)。
+950: 
+951: 以下为历史交付，当前默认以上述记录为准。
+952: 
+953: **SSD offload基础可靠性已部署（2026-10-20）。** 当时默认build/q4t
+954: 为19ea4e57（源码166a535），发布元数据与真实构建缓存匹配。旧3ae53f26
+955: 完整回退包已核验；无常驻服务、无性能优化结论。见
+
+docs/STATUS.md:1305-1325
+1305: 见[交付与证据](MAIN_CONVERGENCE_2026-10-17.md)。
+1306: 
+1307: 此前收敛时工作区切到main，原工作分支本地/远端引用已删除。最终PR头由
+1308: archive/main-convergence-delivery-20261017标签保护并从远端独立取回验证；
+1309: 完整研究与两个旧研究分支仍按[归档索引](ARCHIVED_RESEARCH.md)恢复。
+1310: 
+1311: ## 已接受生产基线
+1312: 
+1313: 当前build/q4t为固定k3 suffix有限工程接受交付版本
+1314: 90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4，
+1315: 实际编译源码86f4cf2；完整head默认，suffix与子集分别显式选择。
+1316: 发布sidecar/构建cache及2启动3HTTP健康已核对；f356为可核验前版回退点。
+1317: 见[正式交付与风险边界](MTP_SUFFIX_DELIVERED_2026-10-27.md)。
+1318: 5a456351、c8f4b241/3d5564e及以下B1a均为前代，不覆盖当前身份。
+1319: 
+1320: 以下B1a/B1b描述为前代部署记录，B1a现在作为回退版本保留。
+1321: 
+1322: B1b源码按PR #7合入；此前main为a893dc8，包含B1a合并c3f3c45。
+1323: 默认build/q4t及release元数据为已接受B1a binary
+1324: 44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03，
+1325: 对应真实构建缓存与回退见[B1a部署](MTP_POSITION_B1A_DEPLOY_2026-10-18.md)。
+
+tools/release/README.md:18-38
+18: ```
+19: 
+20: 公共入口与Thor共享host测试源码清单，执行JSON/HTTP/请求/序列状态
+21: 及新增MTP入口、策略、调度合同；精确项目以注册清单和运行记录为准。
+22: 另有16项测试框架反例，无CUDA、ICU、模型文件或私有证据依赖。
+23: 反例输出目录每次新建。公共CI不构建runner，不覆盖真实tokenizer、
+24: GPU完成/状态、HTTP推理或五档性能；下面的30项发布检查保持独立且必需。
+25: 
+26: Thor发布主机入口：
+27: 
+28: ```sh
+29: cmake -S . -B build -DQ4T_BUILD_TESTS=ON
+30: cmake --build build --target q4t_host_tests --parallel
+31: python3 tools/release/check_host_contracts.py \
+32:   --test-binary build/q4t_host_tests \
+33:   --output .q4t-work/host-gate-new
+34: ```
+35: 
+36: 此命令使用已跟踪的required_host_tests.txt，按精确名称要求30项JSON、
+37: HTTP、请求/序列合同与真实tokenizer检查。不能传自定义筛选缩减检查项，
+38: 缺少ICU/模型/注册项或任一SKIP都不能通过；输出目录必须新建。
+
+tools/release/README.md:65-81
+65: 
+66: 目前提供的是主机门禁及已有运行时验收工具的明确分工，没有一个能
+67: 自动证明全部商用条件的“总通过”按钮。阶段提交、主机通过或HTTP200
+68: 都不能替代未完成项；当前部署与候选结论以docs/STATUS.md为准。
+69: 
+70: ## MTP 主线候选的附加验收
+71: 
+72: sequential MTP的主线准入清单见
+73: [当前交付计划](../../docs/MTP_MAINLINE_READINESS_2026-10-09.md)，
+74: 位置、GPU完成与错误状态修复见
+75: [本轮修复合同](../../docs/MTP_COMPLETION_FIX_2026-10-09.md)。
+76: 已有[严格路径证据](../../docs/MTP_STRICT_RESULT_2026-10-09.md)
+77: 属于其原受测候选；新运行时改动须绑定自己的直接检查、HTTP与
+78: 最终普通/sequential五档成本，不只通过host门禁就宣称MTP准入。
+79: 
+80: MTP默认关闭；显式`serve --mtp`选择sequential，快速T4仍实验。
+81: 本节跟踪代码合入条件，不改变下述text-v1发布包的`--no-mtp`

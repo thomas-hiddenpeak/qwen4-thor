@@ -1,0 +1,8 @@
+[PASS] io_contract_scatter_short_reads_and_eintr
+[PASS] io_contract_scatter_eof_and_error
+[PASS] io_contract_scatter_iovec_limit
+[PASS] io_contract_scatter_bounds
+[PASS] io_contract_metadata_survives_eviction
+[PASS] io_contract_active_read_survives_eviction
+[PASS] io_contract_concurrent_small_cache
+7 tests, 7 passed, 0 failed, 0 skipped

@@ -1,0 +1,13 @@
+..F...
+======================================================================
+FAIL: test_native_cap_failure_interrupts_only_owned_waiting_client (__main__.CheckedClientContracts.test_native_cap_failure_interrupts_only_owned_waiting_client)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/evalscope/test_checked_client.py", line 71, in test_native_cap_failure_interrupts_only_owned_waiting_client
+    self.assertTrue(binary,'frozen native worker required')
+AssertionError: None is not true : frozen native worker required
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.009s
+
+FAILED (failures=1)

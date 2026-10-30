@@ -1,0 +1,15 @@
+[ 14%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 28%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/io_read_contract_test.cpp.o
+[ 42%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/weight_loader_contract_test.cpp.o
+[ 57%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 71%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+[ 85%] Building CXX object CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[100%] Linking CXX executable q4t_io_contracts
+/usr/bin/ld: CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/weight_loader_contract_test.cpp.o: in function `__wrap_pread':
+weight_loader_contract_test.cpp:(.text.__wrap_pread+0x0): multiple definition of `__wrap_pread'; CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/io_read_contract_test.cpp.o:io_read_contract_test.cpp:(.text.__wrap_pread+0x0): first defined here
+/usr/bin/ld: CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/weight_loader_contract_test.cpp.o: in function `__wrap_close':
+weight_loader_contract_test.cpp:(.text.__wrap_close+0x0): multiple definition of `__wrap_close'; CMakeFiles/q4t_io_contracts.dir/home/rm01/models/dev/qwen4-thor/tests/io_read_contract_test.cpp.o:io_read_contract_test.cpp:(.text.__wrap_close+0x0): first defined here
+collect2: error: ld returned 1 exit status
+gmake[2]: *** [CMakeFiles/q4t_io_contracts.dir/build.make:181: q4t_io_contracts] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:87: CMakeFiles/q4t_io_contracts.dir/all] Error 2
+gmake: *** [Makefile:101: all] Error 2

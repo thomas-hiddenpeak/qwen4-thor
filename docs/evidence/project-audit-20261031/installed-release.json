@@ -1,0 +1,123 @@
+{
+  "version": "serve-closeout-20261031",
+  "binary_sha256": "037328bb5c8788920ef44d1dfac2df94f908760f5626a95f1a674568c0dac4f7",
+  "source_commit": "9b9931193ff8a9abe9107a6d700dc2a8728a8464",
+  "source_note": "Header progress and private publication closeout. Fault hooks disabled.",
+  "tested_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/candidate/runtime-source.json",
+  "tested_source_manifest_sha256": "92f7ba0ff940261b4a1fbe139f91729c7cbff126e46222dfe85d08ed88851e8c",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/candidate/CMakeCache.txt",
+  "build_cache_sha256": "843fdbf8c15ae94534412400d6ebd3aae98b6c25c90b194d410cf472a0d3e560",
+  "acceptance": "ACCEPT_BOUNDED_SERVE_CLOSEOUT",
+  "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/acceptance-contract.md",
+  "acceptance_snapshot_sha256": "2adc35b479aa6d843c793b3ce31ae14305e139e6aae03bd555312dbd0a5580d5",
+  "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/decision.json",
+  "acceptance_decision_sha256": "a6c4a93d9292322f496312c0829e92acb973882b192224f536c169f2b53b736c",
+  "acceptance_audit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/evidence/archive-receipt.json",
+  "acceptance_audit_sha256": "3ba12ec3b643fb8dc9ae0afe1f4aed0095313817ba01ed04ed0208b28e421a25",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/previous/q4t.release.json",
+  "subset_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/artifact",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "defaults": {
+    "head": "full",
+    "mtp": true,
+    "mtp_k": 3,
+    "suffix": false,
+    "max_seq": 1,
+    "session_cache": false,
+    "prefix_cache": false,
+    "session_incremental": false
+  },
+  "agent_configuration": {
+    "max_seq": 4,
+    "max_prefill": 4096,
+    "max_len": 208896,
+    "seq_capacities": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "admitted_requests": 32
+  },
+  "session_cache": {
+    "enabled_by": "--session-cache-dir DIR plus session_id",
+    "max_entries": 8,
+    "disk_budget_bytes": 25769803776,
+    "ram_budget_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "min_prefix": 8192,
+    "same_process_only": true
+  },
+  "prefix_cache": {
+    "enabled_by": "--prefix-cache-dir DIR plus prefix_cache_scope",
+    "checkpoints": [
+      8192,
+      32768,
+      65536
+    ],
+    "write_field": "prefix_cache_write_tokens",
+    "default_readonly": true,
+    "max_writes_per_request": 1,
+    "max_checkpoints": 4,
+    "checkpoint_range": [
+      1024,
+      131072
+    ],
+    "max_entries": 8,
+    "disk_budget_bytes": 8589934592,
+    "ram_budget_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "same_process_only": true
+  },
+  "scope": {
+    "hardware": "local Thor",
+    "decoding": "text greedy MTP k3",
+    "heads": [
+      "full",
+      "65536-row BF16 subset"
+    ],
+    "slots": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "max_prefill": 4096,
+    "shared_boundaries_tested": [
+      8192,
+      32768
+    ],
+    "request_policy": "one explicit seed per successful source request; children readonly by default",
+    "prefix_cache_default": false,
+    "same_process_only": true
+  },
+  "atomicity": "Individual atomic replaces, durable recovery marker, identity-checked rollback; not a two-file power-loss transaction",
+  "incremental": {
+    "enabled_by": "Q4T_SESSION_INCREMENTAL=1",
+    "default": false,
+    "private_only": true,
+    "block_bytes": 8388608,
+    "max_ranges": 1024,
+    "max_blocks": 8192,
+    "max_entries": 8,
+    "first_save": "full",
+    "restore_required_in_current_lease": true,
+    "checksums": "all valid bytes every save and restore",
+    "same_process_only": true,
+    "statistical_noninferiority": false
+  },
+  "serving": {
+    "utf8": "complete scalars per event; invalid terminal bytes replaced",
+    "send_success": "complete local write and request completion wins cancellation",
+    "ttft": "streaming first nonempty content local write",
+    "target_ready": "separate legacy first-target-ready metric",
+    "logical_write_deadline_seconds": 30,
+    "terminal_write_budget_ms": 250,
+    "batching": "existing all-active selection",
+    "fault_injection": false,
+    "performance_acceptance": false,
+    "header_state": "actual successful writes; partial headers close on exception",
+    "private_publication": "actual saved token prefix; matching positive and negative continuation"
+  }
+}

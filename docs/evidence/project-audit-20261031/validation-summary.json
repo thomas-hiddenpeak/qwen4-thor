@@ -1,0 +1,131 @@
+{
+  "offline_initial": [
+    {
+      "file": "tools/evalscope/test_cache_preparation.py",
+      "exit": 0,
+      "seconds": 0.114,
+      "test_count": 6
+    },
+    {
+      "file": "tools/evalscope/test_resource_metrics.py",
+      "exit": 0,
+      "seconds": 0.615,
+      "test_count": 12
+    },
+    {
+      "file": "tools/evalscope/test_run_acceptance.py",
+      "exit": 0,
+      "seconds": 0.314,
+      "test_count": 20
+    },
+    {
+      "file": "tools/evalscope/test_checked_client.py",
+      "exit": 1,
+      "seconds": 0.164,
+      "test_count": 6
+    },
+    {
+      "file": "tools/evalscope/test_serve_reliability.py",
+      "exit": 0,
+      "seconds": 0.114,
+      "test_count": 4
+    },
+    {
+      "file": "tools/evalscope/test_response_identity.py",
+      "exit": 0,
+      "seconds": 0.064,
+      "test_count": 8
+    },
+    {
+      "file": "tools/evalscope/test_monitor_schedule.py",
+      "exit": 0,
+      "seconds": 0.114,
+      "test_count": 5
+    },
+    {
+      "file": "tools/evalscope/test_performance_decision.py",
+      "exit": 0,
+      "seconds": 0.064,
+      "test_count": 11
+    },
+    {
+      "file": "tools/evalscope/test_memory_accounting.py",
+      "exit": 0,
+      "seconds": 0.214,
+      "test_count": 10
+    },
+    {
+      "file": "tools/evalscope/test_nvml_memory.py",
+      "exit": 0,
+      "seconds": 0.114,
+      "test_count": 4
+    },
+    {
+      "file": "tools/evalscope/test_nvml_process_query.py",
+      "exit": 0,
+      "seconds": 0.614,
+      "test_count": 8
+    },
+    {
+      "file": "tools/evalscope/test_physical_ram.py",
+      "exit": 0,
+      "seconds": 0.164,
+      "test_count": 12
+    },
+    {
+      "file": "tools/release/test_host_gate_audit.py",
+      "exit": 0,
+      "seconds": 0.064,
+      "test_count": 4
+    },
+    {
+      "file": "tools/acceptance/test_acceptance_tools.py",
+      "exit": 0,
+      "seconds": 23.553,
+      "test_count": 31
+    },
+    {
+      "file": "tools/serve_reliability/test_closeout.py",
+      "exit": 0,
+      "seconds": 0.114,
+      "test_count": 4
+    }
+  ],
+  "offline_initial_declared_cases": 145,
+  "checked_client_targeted_rerun": {
+    "cases": 6,
+    "exit": 0,
+    "prerequisite": "Q4T_NVLOG_STREAM_BINARY built from frozen current nvlog_stream.cpp"
+  },
+  "gpu_guard_targeted_rerun": {
+    "cases": 27,
+    "exit": 0,
+    "interpreter": "/usr/bin/python3"
+  },
+  "public_ctest_initial": {
+    "groups": 20,
+    "passed": 19,
+    "failed": 1,
+    "failing_group": "q4t_gpu_exclusive_contracts",
+    "interpreter": "/home/rm01/.local/bin/python3.13"
+  },
+  "full_build_warning_lines": [],
+  "host_required_cases": 72,
+  "cpu_http_lifecycle_cases": 4,
+  "io_split_cases": [
+    7,
+    6
+  ],
+  "storage_checks": {
+    "private": 49,
+    "shared_private_repeated": 49,
+    "shared": 38,
+    "seed_cases": 7,
+    "incremental_base": 55,
+    "incremental": 137
+  },
+  "runtime_modified": false,
+  "new_gpu_runs": 0,
+  "new_model_http_requests": 0,
+  "bench_runs": 0
+}

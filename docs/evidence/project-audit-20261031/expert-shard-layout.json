@@ -1,0 +1,6 @@
+{
+  "expert_groups": 24576,
+  "multi_shard_expert_groups": 0,
+  "examples": {},
+  "scope": "read-only index; no weight payload read, GPU or model instance"
+}

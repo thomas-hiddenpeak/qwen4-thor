@@ -1,6 +1,11 @@
 # 发布合同与主机前置门禁
 
-首版受控部署范围：单Thor、文本、greedy、MTP关闭、默认loopback，
+当前默认、接受范围与回退以[STATUS](../../docs/STATUS.md)和
+[根README](../../README.md#使用)为准；serve默认完整head、MTP k=3，
+`--no-mtp`显式回退普通decode。下述text-v1包是2026-09-28冻结profile，
+不能将其参数与资格当作当前全部serve功能的发布声明。
+
+首版text-v1受控部署范围：单Thor、文本、greedy、MTP关闭、默认loopback，
 正式性能配置max_seq=1，五档上下文见docs/EVALUATION.md。媒体默认
 在解码前拒绝；`serve --allow-media`保留实验路径，不在首版验收范围。
 这不表示Runner商业发布、真实业务SLO、认证/TLS或全部数值合同已通过。
@@ -21,7 +26,7 @@ python3 tools/verify/test_gate/run.py --cxx g++-14 \
 及新增MTP入口、策略、调度合同；精确项目以注册清单和运行记录为准。
 另有16项测试框架反例，无CUDA、ICU、模型文件或私有证据依赖。
 反例输出目录每次新建。公共CI不构建runner，不覆盖真实tokenizer、
-GPU完成/状态、HTTP推理或五档性能；下面的30项发布检查保持独立且必需。
+GPU完成/状态、HTTP推理或五档性能；下面的发布检查保持独立且必需。
 
 Thor发布主机入口：
 
@@ -33,9 +38,10 @@ python3 tools/release/check_host_contracts.py \
   --output .q4t-work/host-gate-new
 ```
 
-此命令使用已跟踪的required_host_tests.txt，按精确名称要求30项JSON、
+此命令使用已跟踪的required_host_tests.txt，按精确名称要求JSON、
 HTTP、请求/序列合同与真实tokenizer检查。不能传自定义筛选缩减检查项，
 缺少ICU/模型/注册项或任一SKIP都不能通过；输出目录必须新建。
+2026-10-31当前清单为72项，后续精确项数以该清单为准。
 二进制/清单摘要、注册列表、原始日志和passed结果写入输出目录。
 它是发布的**主机前置条件**，不能代替下面的运行时/数值/性能验收。
 
@@ -67,22 +73,28 @@ q4t_tests与q4t_host_tests共享以下行为：
 自动证明全部商用条件的“总通过”按钮。阶段提交、主机通过或HTTP200
 都不能替代未完成项；当前部署与候选结论以docs/STATUS.md为准。
 
-## MTP 主线候选的附加验收
+## MTP当前默认与历史准入
 
-sequential MTP的主线准入清单见
-[当前交付计划](../../docs/MTP_MAINLINE_READINESS_2026-10-09.md)，
+2026-10-09 sequential MTP的历史主线准入清单见
+[当时交付计划](../../docs/MTP_MAINLINE_READINESS_2026-10-09.md)，
 位置、GPU完成与错误状态修复见
 [本轮修复合同](../../docs/MTP_COMPLETION_FIX_2026-10-09.md)。
 已有[严格路径证据](../../docs/MTP_STRICT_RESULT_2026-10-09.md)
 属于其原受测候选；新运行时改动须绑定自己的直接检查、HTTP与
-最终普通/sequential五档成本，不只通过host门禁就宣称MTP准入。
+当前适用路径的五档成本，不只通过host门禁就宣称MTP准入。
 
-MTP默认关闭；显式`serve --mtp`选择sequential，快速T4仍实验。
-本节跟踪代码合入条件，不改变下述text-v1发布包的`--no-mtp`
-配置，也不将旧部署资格扩展到MTP。模型/checkpoint与容量范围、
+当前serve默认开启T>1 batch verifier，k=3；完整head默认，子集head
+和suffix分别显式选择。当前接受证据见STATUS，旧sequential结果只对
+原候选有效。下述text-v1发布包仍固定`--no-mtp`，其旧部署资格不扩展
+到当前MTP。模型/checkpoint与容量范围、
 取消/失败恢复、任务质量不足、性能成本及未覆盖项须随交付列明。
 
 ## text-v1 受控发布包（2026-09-28）
+
+本节记录原冻结合同。当前serve允许显式deadline至10800000ms，文本
+准入也随配置变化；这些变化没有自动重验本profile。2026-10-31审计
+确认监督器的1260秒进度判断与当前指标更新时机不符，详见
+[A6长请求误杀](../../docs/PROJECT_AUDIT_2026-10-31.md#a6--p2--发布监督器误把结束时统计当作实时生成进度)。
 
 本版正文预算48MiB（声明长度预占，贯穿读取至响应结束），控制正文
 4KiB，文本解析/排队/生成合计8个（max_seq=1）。上传绝对30秒，

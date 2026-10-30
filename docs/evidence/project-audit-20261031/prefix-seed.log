@@ -1,0 +1,8 @@
+[PASS] chat_contract_greedy_neutral_options
+[PASS] chat_contract_rejects_unimplemented_constraints
+[PASS] chat_contract_rejects_wrong_types_and_ambiguous_input
+[PASS] chat_contract_template_options_are_explicit
+[PASS] chat_contract_media_rejected_before_decoding
+[PASS] prefix_seed_transport_contract
+[PASS] prefix_seed_tokenized_boundary_contract
+7 tests, 7 passed, 0 failed, 0 skipped

@@ -1,0 +1,16 @@
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] HTTP handler exception: std::bad_alloc
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] accept/thread exception: std::bad_alloc
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[PASS] http_stop_before_and_during_listener_publication
+[PASS] http_exception_keeps_server_and_releases_connections
+[PASS] http_thread_creation_failure_rolls_back
+[PASS] http_validation_gate_is_an_explicit_handshake
+4 tests, 4 passed, 0 failed, 0 skipped

@@ -1,0 +1,18 @@
+[  0%] Building CXX object CMakeFiles/q4t_session_storage_contract.dir/tools/session_cache/storage_contract.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_session_storage_contract.dir/src/server/session_cache.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_session_storage_contract.dir/src/trace/sha256.cpp.o
+[100%] Linking CXX executable q4t_session_storage_contract
+[100%] Built target q4t_session_storage_contract
+[  0%] Building CXX object CMakeFiles/q4t_prefix_storage_contract.dir/tools/prefix_cache/storage_contract.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_prefix_storage_contract.dir/src/server/session_cache.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_prefix_storage_contract.dir/src/server/server_options.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_prefix_storage_contract.dir/src/trace/sha256.cpp.o
+[100%] Linking CXX executable q4t_prefix_storage_contract
+[100%] Built target q4t_prefix_storage_contract
+[  0%] Building CXX object CMakeFiles/q4t_prefix_seed_contract.dir/tests/test_main.cpp.o
+[  0%] Building CXX object CMakeFiles/q4t_prefix_seed_contract.dir/tests/server_chat_contract_test.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_prefix_seed_contract.dir/tools/prefix_seed/policy_contract.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_prefix_seed_contract.dir/src/server/chat_contract.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_prefix_seed_contract.dir/src/io/json.cpp.o
+[100%] Linking CXX executable q4t_prefix_seed_contract
+[100%] Built target q4t_prefix_seed_contract

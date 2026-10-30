@@ -1,0 +1,196 @@
+test_capacity_unknown_duplicate_or_reduced_is_not_accepted (__main__.EvidenceHelpersTest.test_capacity_unknown_duplicate_or_reduced_is_not_accepted) ... ok
+test_http_timestamps_keep_clock_domain_and_unknown_boundary (__main__.EvidenceHelpersTest.test_http_timestamps_keep_clock_domain_and_unknown_boundary) ... ok
+test_bad_selection_and_requested_capacity_fail_before_server (__main__.RunnerContractTest.test_bad_selection_and_requested_capacity_fail_before_server) ... usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS]
+                         [--mtp-subset-head MTP_SUBSET_HEAD] [--mtp-suffix]
+                         [--mtp] [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --perf-lengths contains duplicate tiers
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS]
+                         [--mtp-subset-head MTP_SUBSET_HEAD] [--mtp-suffix]
+                         [--mtp] [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --perf-lengths requires comma-separated positive integers
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS]
+                         [--mtp-subset-head MTP_SUBSET_HEAD] [--mtp-suffix]
+                         [--mtp] [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --perf-lengths requires positive lengths
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS]
+                         [--mtp-subset-head MTP_SUBSET_HEAD] [--mtp-suffix]
+                         [--mtp] [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --perf-repeats must be positive
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS]
+                         [--mtp-subset-head MTP_SUBSET_HEAD] [--mtp-suffix]
+                         [--mtp] [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: input 45056 + output 256 exceeds requested max_len 45100
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS]
+                         [--mtp-subset-head MTP_SUBSET_HEAD] [--mtp-suffix]
+                         [--mtp] [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: performance tiers overlap
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS]
+                         [--mtp-subset-head MTP_SUBSET_HEAD] [--mtp-suffix]
+                         [--mtp] [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --host-cache-max-bytes must be positive and requires --systemd-unit
+ok
+test_cleanup_failure_preserves_exit_and_rejects_successful_requests (__main__.RunnerContractTest.test_cleanup_failure_preserves_exit_and_rejects_successful_requests) ... ok
+test_default_five_tiers_keep_batched_three (__main__.RunnerContractTest.test_default_five_tiers_keep_batched_three) ... ok
+test_failed_client_preserves_response_and_stops_bounded_series (__main__.RunnerContractTest.test_failed_client_preserves_response_and_stops_bounded_series) ... ok
+test_failed_http_preserves_raw_status (__main__.RunnerContractTest.test_failed_http_preserves_raw_status) ... ok
+test_fewer_than_three_repeats_remains_partial (__main__.RunnerContractTest.test_fewer_than_three_repeats_remains_partial) ... ok
+test_missing_database_preserves_empty_evidence_and_fails (__main__.RunnerContractTest.test_missing_database_preserves_empty_evidence_and_fails) ... ok
+test_missing_response_id_rejects_before_output_acceptance (__main__.RunnerContractTest.test_missing_response_id_rejects_before_output_acceptance) ... ok
+test_nonfinite_metrics_fail (__main__.RunnerContractTest.test_nonfinite_metrics_fail) ... ok
+test_partial_repeat_count_can_use_fixed_deterministic_reference (__main__.RunnerContractTest.test_partial_repeat_count_can_use_fixed_deterministic_reference) ... ok
+test_quality_keeps_single_batched_client (__main__.RunnerContractTest.test_quality_keeps_single_batched_client) ... ok
+test_reduced_effective_capacity_rejects_before_client (__main__.RunnerContractTest.test_reduced_effective_capacity_rejects_before_client) ... ok
+test_selected_tier_is_partial_with_per_request_evidence (__main__.RunnerContractTest.test_selected_tier_is_partial_with_per_request_evidence) ... ok
+test_six_tier_target_remains_257 (__main__.RunnerContractTest.test_six_tier_target_remains_257) ... ok
+test_suffix_is_explicit_and_keeps_subset_selection (__main__.RunnerContractTest.test_suffix_is_explicit_and_keeps_subset_selection) ... ok
+test_suffix_rejects_plain_and_other_k_before_launch (__main__.RunnerContractTest.test_suffix_rejects_plain_and_other_k_before_launch) ... usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS]
+                         [--mtp-subset-head MTP_SUBSET_HEAD] [--mtp-suffix]
+                         [--mtp] [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --mtp-suffix requires MTP with k=3
+usage: run_acceptance.py [-h] --mode {quality,performance,limits} --output
+                         OUTPUT [--binary BINARY] --model-dir MODEL_DIR
+                         [--port PORT] [--startup-timeout STARTUP_TIMEOUT]
+                         [--max-len MAX_LEN] [--extra-lengths EXTRA_LENGTHS]
+                         [--perf-lengths PERF_LENGTHS]
+                         [--perf-repeats PERF_REPEATS]
+                         [--systemd-unit SYSTEMD_UNIT]
+                         [--host-cache-max-bytes HOST_CACHE_MAX_BYTES]
+                         [--target-total TARGET_TOTAL] [--fixtures FIXTURES]
+                         [--allow-unqualified-binary] [--reference REFERENCE]
+                         [--moe-trace-dir MOE_TRACE_DIR]
+                         [--moe-trace-workload MOE_TRACE_WORKLOAD]
+                         [--moe-trace-max-mib MOE_TRACE_MAX_MIB]
+                         [--moe-resident-slots MOE_RESIDENT_SLOTS]
+                         [--moe-hot-list MOE_HOT_LIST]
+                         [--request-deadline-ms REQUEST_DEADLINE_MS]
+                         [--mtp-subset-head MTP_SUBSET_HEAD] [--mtp-suffix]
+                         [--mtp] [--mtp-default] [--mtp-k MTP_K]
+run_acceptance.py: error: --mtp-suffix requires MTP with k=3
+ok
+test_systemd_interface_and_close_preserve_exact_pid (__main__.RunnerContractTest.test_systemd_interface_and_close_preserve_exact_pid) ... ok
+test_wrong_output_count_fails (__main__.RunnerContractTest.test_wrong_output_count_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 0.200s
+
+OK

@@ -1,0 +1,77 @@
+[
+  {
+    "file": "tools/evalscope/test_cache_preparation.py",
+    "exit": 0,
+    "seconds": 0.114
+  },
+  {
+    "file": "tools/evalscope/test_resource_metrics.py",
+    "exit": 0,
+    "seconds": 0.615
+  },
+  {
+    "file": "tools/evalscope/test_run_acceptance.py",
+    "exit": 0,
+    "seconds": 0.314
+  },
+  {
+    "file": "tools/evalscope/test_checked_client.py",
+    "exit": 1,
+    "seconds": 0.164
+  },
+  {
+    "file": "tools/evalscope/test_serve_reliability.py",
+    "exit": 0,
+    "seconds": 0.114
+  },
+  {
+    "file": "tools/evalscope/test_response_identity.py",
+    "exit": 0,
+    "seconds": 0.064
+  },
+  {
+    "file": "tools/evalscope/test_monitor_schedule.py",
+    "exit": 0,
+    "seconds": 0.114
+  },
+  {
+    "file": "tools/evalscope/test_performance_decision.py",
+    "exit": 0,
+    "seconds": 0.064
+  },
+  {
+    "file": "tools/evalscope/test_memory_accounting.py",
+    "exit": 0,
+    "seconds": 0.214
+  },
+  {
+    "file": "tools/evalscope/test_nvml_memory.py",
+    "exit": 0,
+    "seconds": 0.114
+  },
+  {
+    "file": "tools/evalscope/test_nvml_process_query.py",
+    "exit": 0,
+    "seconds": 0.614
+  },
+  {
+    "file": "tools/evalscope/test_physical_ram.py",
+    "exit": 0,
+    "seconds": 0.164
+  },
+  {
+    "file": "tools/release/test_host_gate_audit.py",
+    "exit": 0,
+    "seconds": 0.064
+  },
+  {
+    "file": "tools/acceptance/test_acceptance_tools.py",
+    "exit": 0,
+    "seconds": 23.553
+  },
+  {
+    "file": "tools/serve_reliability/test_closeout.py",
+    "exit": 0,
+    "seconds": 0.114
+  }
+]

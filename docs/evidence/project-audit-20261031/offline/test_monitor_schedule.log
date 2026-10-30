@@ -1,0 +1,9 @@
+..../home/rm01/models/dev/qwen4-thor/tools/evalscope/test_monitor_schedule.py:102: ResourceWarning: unclosed file <_io.TextIOWrapper name='/home/rm01/models/dev/qwen4-thor/.q4t-work/monitor-schedule-tests/tmp70nqleyb/memory/memory.csv' mode='r' encoding='UTF-8'>
+  rows = list(csv.DictReader((output / 'memory.csv').open()))
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+.
+----------------------------------------------------------------------
+Ran 5 tests in 0.007s
+
+OK
+{"samples": 4, "stop_reason": "target_exited", "accounting_status": "INDETERMINATE"}
