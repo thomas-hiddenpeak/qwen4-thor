@@ -28,6 +28,11 @@ python3 tools/verify/test_gate/run.py --cxx g++-14 \
 反例输出目录每次新建。公共CI不构建runner，不覆盖真实tokenizer、
 GPU完成/状态、HTTP推理或五档性能；下面的发布检查保持独立且必需。
 
+GPU guard的后代清理测试要求解释器具备可用pidfd API；CMake会实际
+探测，默认Python不支持时尝试系统Python。可用
+`-DQ4T_GPU_GUARD_PYTHON=/usr/bin/python3`显式指定；不支持者配置失败，
+不会跳过测试。其他Python/numpy测试的解释器设置保持独立。
+
 Thor发布主机入口：
 
 ```sh
@@ -41,7 +46,7 @@ python3 tools/release/check_host_contracts.py \
 此命令使用已跟踪的required_host_tests.txt，按精确名称要求JSON、
 HTTP、请求/序列合同与真实tokenizer检查。不能传自定义筛选缩减检查项，
 缺少ICU/模型/注册项或任一SKIP都不能通过；输出目录必须新建。
-2026-10-31当前清单为72项，后续精确项数以该清单为准。
+2026-10-31当前清单为73项，后续精确项数以该清单为准。
 二进制/清单摘要、注册列表、原始日志和passed结果写入输出目录。
 它是发布的**主机前置条件**，不能代替下面的运行时/数值/性能验收。
 

@@ -135,6 +135,25 @@ def signal_identity(pid, identity, signum):
         os.close(fd)
 
 
+def require_pidfd_support():
+    """Prove this interpreter/kernel can safely signal owned processes."""
+    missing = [name for module, name in [(os, 'pidfd_open'),
+                                        (signal, 'pidfd_send_signal')]
+               if not callable(getattr(module, name, None))]
+    if missing:
+        raise RuntimeError('GPU guard requires callable ' + ', '.join(missing) +
+                           '; select a Python interpreter with pidfd support')
+    try:
+        fd = os.pidfd_open(os.getpid())
+        try:
+            signal.pidfd_send_signal(fd, 0)
+        finally:
+            os.close(fd)
+    except OSError as error:
+        raise RuntimeError('GPU guard pidfd capability probe failed: ' +
+                           str(error)) from error
+
+
 def inspect(owner_pgid=None, owned_history=None, compute_query=None):
     compute_query = compute_query or nvidia_pids
     compute = compute_query()  # Errors fail closed; never interpreted as idle.
@@ -309,6 +328,8 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
             lock.write(json.dumps(lease) + '\n')
             lock.flush()
             record('lease_acquired')
+            require_pidfd_support()
+            record('cleanup_capabilities', pidfd=True)
             snapshot = scan()
             record('preflight', **snapshot)
             if snapshot['conflicts']:

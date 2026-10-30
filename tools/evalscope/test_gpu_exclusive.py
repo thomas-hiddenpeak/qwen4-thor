@@ -1,5 +1,6 @@
 """CPU-only lease, fail-closed monitoring, and ownership contracts."""
 import fcntl
+import errno
 import json
 import signal
 import os
@@ -17,6 +18,73 @@ WORK = guard.ROOT / '.q4t-work/gpu-exclusive-tests'
 
 
 class ExclusiveTests(unittest.TestCase):
+    def test_missing_pidfd_api_aborts_without_child_or_monitor(self):
+        for module, name in [(guard.os, 'pidfd_open'),
+                             (guard.signal, 'pidfd_send_signal')]:
+            for external in (False, True):
+                with self.subTest(api=name, external=external):
+                    self.out = self.root / f'{name}-{external}'
+                    with self.lock.open('a+') as held:
+                        if external:
+                            fcntl.flock(held, fcntl.LOCK_EX)
+                        with patch.object(module, name, None, create=True), \
+                                patch.object(guard, 'inspect') as scan, \
+                                patch.object(guard.subprocess, 'Popen') as launch, \
+                                patch.object(guard, 'stop_owned') as cleanup:
+                            code = guard.run_guard(['must-not-run'], self.out,
+                                self.lock, lease_fd=held.fileno() if external
+                                else None)
+                            launch.assert_not_called()
+                            scan.assert_not_called()
+                            cleanup.assert_not_called()
+                        self.assertEqual(code, 75)
+                        self.assertEqual(self.outcome()['status'], 'ENV_ABORT')
+                        self.assertIsNone(self.outcome()['child_returncode'])
+                        self.assertIn(name, self.outcome()['reason'])
+                        with self.lock.open() as probe:
+                            if external:
+                                with self.assertRaises(BlockingIOError):
+                                    fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                            else:
+                                fcntl.flock(probe, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    def test_kernel_pidfd_failure_aborts_and_closes_probe(self):
+        for api in ['open', 'signal']:
+            with self.subTest(api=api):
+                self.out = self.root / api
+                module = guard.os if api == 'open' else guard.signal
+                name = 'pidfd_open' if api == 'open' else 'pidfd_send_signal'
+                with patch.object(module, name,
+                                  side_effect=OSError(errno.ENOSYS, 'no pidfd')), \
+                        patch.object(guard.os, 'close', wraps=os.close) as close, \
+                        patch.object(guard, 'inspect') as scan, \
+                        patch.object(guard.subprocess, 'Popen') as launch:
+                    code = guard.run_guard(['must-not-run'], self.out, self.lock)
+                    launch.assert_not_called()
+                    scan.assert_not_called()
+                    if api == 'signal':
+                        close.assert_called_once()
+                        with self.assertRaises(OSError):
+                            os.fstat(close.call_args.args[0])
+                    else:
+                        close.assert_not_called()
+                self.assertEqual(code, 75)
+                self.assertEqual(self.outcome()['status'], 'ENV_ABORT')
+                self.assertIsNone(self.outcome()['child_returncode'])
+                self.assertIn('pidfd', self.outcome()['reason'])
+
+    def test_successful_pidfd_probe_uses_signal_zero_and_closes(self):
+        with patch.object(guard.os, 'pidfd_open', wraps=os.pidfd_open) as opened, \
+                patch.object(guard.signal, 'pidfd_send_signal',
+                             wraps=signal.pidfd_send_signal) as sent, \
+                patch.object(guard.os, 'close', wraps=os.close) as closed:
+            guard.require_pidfd_support()
+        opened.assert_called_once_with(os.getpid())
+        sent.assert_called_once_with(closed.call_args.args[0], 0)
+        closed.assert_called_once()
+        with self.assertRaises(OSError):
+            os.fstat(closed.call_args.args[0])
+
     def test_default_backend_is_nvml(self):
         with patch.object(guard.nvml_process_query, 'query', return_value={
                 'status': 'OK', 'pids': [], 'request_id': 'test'}) as query, \

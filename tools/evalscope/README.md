@@ -250,6 +250,14 @@ ENV_ABORT并返回75，只清理自有进程组及经父子链/start_ticks核实
 exit.json/events.jsonl保留结果；成功仅表示命令成功且未检测到冲突。
 轮询不能排除短于采样间隔、图形或驱动未列出的负载，不承诺绝对独占。
 
+2026-10-31起，取得lease后先检查解释器的`os.pidfd_open`和
+`signal.pidfd_send_signal`，再对自身执行pidfd＋signal 0能力探测；
+API缺失或内核不支持时记录ENV_ABORT/75，尚未启动监控或子进程。
+能力不能仅由Python版本判断；本机系统`/usr/bin/python3`可用，
+当前UV Python 3.13缺少对应API。此时显式使用系统Python，不关闭
+清理保护或降级到裸PID信号。探测FD会关闭，借用lease的所有权保持。
+部署脚本还会核对guard祖先路径，其命令应使用guard的绝对路径。
+
 编排注意：当前进程规则保守匹配名称以q4t开头且包含test的可执行文件，
 包括q4t_host_tests，即便其当前只运行CPU检查。2026-10-20加载验收v1
 因本会话在lease外并行运行host清单而ENV_ABORT。此类检查应在GPU

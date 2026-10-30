@@ -51,8 +51,9 @@ def main():
     marker = ROOT / 'build/audit-p2-rollback-recovery.json'
     if marker.exists():
         h.require(h.read(marker)['package'] == str(package), 'foreign recovery')
-    h.save(marker, dict(package=str(package), output=str(output)))
-    h.fsync_directory(marker.parent)
+    else:
+        h.save(marker, dict(package=str(package), output=str(output)))
+        h.fsync_directory(marker.parent)
     for name, old, new, current in states:
         if current != old:
             h.replace_checked(package / 'previous' / name,

@@ -108,9 +108,40 @@ q4t_add_python_contract(q4t_physical_ram_contracts
   tools/evalscope/test_physical_ram.py)
 q4t_add_python_contract(q4t_response_identity_contracts
   tools/evalscope/test_response_identity.py)
-q4t_add_python_contract(q4t_gpu_exclusive_contracts
-  tools/evalscope/test_gpu_exclusive.py)
+# A build of Python can omit pidfd APIs despite a new version number. Probe the
+# guard's actual contract before assigning its real descendant-cleanup tests.
+set(Q4T_GPU_GUARD_PYTHON "" CACHE FILEPATH
+  "Python interpreter with working pidfd APIs for GPU guard contracts")
+if(Q4T_GPU_GUARD_PYTHON)
+  set(guard_candidates "${Q4T_GPU_GUARD_PYTHON}")
+else()
+  set(guard_candidates "${Python3_EXECUTABLE}" /usr/bin/python3 /bin/python3)
+endif()
+set(guard_probe "import sys; sys.path.insert(0, sys.argv[1]); import gpu_exclusive; gpu_exclusive.require_pidfd_support()")
+set(guard_python "")
+foreach(candidate IN LISTS guard_candidates)
+  execute_process(COMMAND "${candidate}" -B -c "${guard_probe}"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../../tools/evalscope"
+    RESULT_VARIABLE guard_result OUTPUT_QUIET ERROR_VARIABLE guard_error
+    TIMEOUT 10)
+  if(guard_result STREQUAL "0")
+    set(guard_python "${candidate}")
+    break()
+  endif()
+endforeach()
+if(NOT guard_python)
+  message(FATAL_ERROR
+    "GPU guard requires working pidfd APIs; set Q4T_GPU_GUARD_PYTHON. ${guard_error}")
+endif()
+message(STATUS "GPU guard Python: ${guard_python}")
+block()
+  set(Python3_EXECUTABLE "${guard_python}")
+  q4t_add_python_contract(q4t_gpu_exclusive_contracts
+    tools/evalscope/test_gpu_exclusive.py)
+endblock()
 q4t_add_python_contract(q4t_request_cancellation_contracts
   tools/evalscope/test_request_cancellation.py)
 q4t_add_python_contract(q4t_supervisor_contracts
   tools/release/test_supervisor.py)
+q4t_add_python_contract(q4t_audit_rollback_contracts
+  tools/verify/audit_p2/test_rollback.py)
