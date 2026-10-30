@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "anchor": "802bd70559b5e6d4f4d3b3ede5eaeac3bda90d09",
+  "runtime_files": 169,
+  "default": {
+    "build/q4t": "b11ed66cd94f943957e83edbfa223cb3e65f758e409eb4d125b4911d1164e015",
+    "build/q4t.release.json": "982c888c2c9d6e63a608398472bc692f8340e117361011d123593fd7c6d45fab"
+  },
+  "tool_commit": "76963adfd8803c5583b7d2e21db4d555322c1df6",
+  "tool_hashes_verified": 12,
+  "rollback_command": [
+    "/usr/bin/python3",
+    "-B",
+    "tools/verify/audit_p2/rollback.py",
+    "--package",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/delivery-package",
+    "--check"
+  ],
+  "rollback_returncode": 0,
+  "rollback_stdout": "Sealed previous/candidate pairs and installed identities verified.\n",
+  "recovery_markers": [],
+  "new_gpu": 0,
+  "new_model_http": 0,
+  "finished": 1793396378.5473602
+}

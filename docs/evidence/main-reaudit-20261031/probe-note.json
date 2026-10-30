@@ -1,0 +1,6 @@
+{
+  "scope": "Synthetic CPU test harness with 64-byte allocation guard padding; no production edits",
+  "base_test": "tests/residency_host_contract_test.cpp",
+  "observations": "PASS means defect reproduced, not acceptance",
+  "worker_abort": "run in a subprocess with core dumps disabled"
+}

@@ -1,0 +1,4 @@
+OBSERVED duplicate_hot: config_ok=1 init_hot_ok=1 slots=0,0 resolve_ok=0 reason=no residency slot available (needed set exceeds dynamic capacity)
+[PASS] audit_hot_duplicates_observation
+1 tests, 1 passed, 0 failed, 0 skipped
+[q4t][residency][diag] layer=0 C=2 protected=0 distinct=2 resident=1 misses_so_far=1 reserved=0 n=2 decode=0

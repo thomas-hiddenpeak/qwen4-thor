@@ -1,0 +1,52 @@
+[
+  {
+    "command": [
+      "cmake",
+      "-S",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=g++-14",
+      "-DAUDIT_SOURCE_ROOT=/home/rm01/models/dev/qwen4-thor"
+    ],
+    "returncode": 0,
+    "finished": 1793396045.308771
+  },
+  {
+    "command": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current",
+      "--parallel",
+      "4"
+    ],
+    "returncode": 0,
+    "finished": 1793396049.0958557
+  },
+  {
+    "command": [
+      "cmake",
+      "-S",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=g++-14",
+      "-DAUDIT_SOURCE_ROOT=/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent"
+    ],
+    "returncode": 0,
+    "finished": 1793396049.419966
+  },
+  {
+    "command": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent",
+      "--parallel",
+      "4"
+    ],
+    "returncode": 0,
+    "finished": 1793396053.2392626
+  }
+]

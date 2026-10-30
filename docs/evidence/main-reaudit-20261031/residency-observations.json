@@ -1,0 +1,98 @@
+[
+  {
+    "source": "current",
+    "probe": "audit_short_weight_observation",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current/residency_probe",
+      "audit_short_weight_observation"
+    ],
+    "returncode": 0,
+    "stdout": "OBSERVED short_weight: status_ok=1 first=17 tail=165 expected=17\n[PASS] audit_short_weight_observation\n1 tests, 1 passed, 0 failed, 0 skipped\n",
+    "stderr": "",
+    "finished": 1793396089.1613376
+  },
+  {
+    "source": "current",
+    "probe": "audit_oversized_scalar_observation",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current/residency_probe",
+      "audit_oversized_scalar_observation"
+    ],
+    "returncode": 0,
+    "stdout": "OBSERVED oversized_scalar: status_ok=1 bytes_past_pinned=4\n[PASS] audit_oversized_scalar_observation\n1 tests, 1 passed, 0 failed, 0 skipped\n",
+    "stderr": "",
+    "finished": 1793396089.1633937
+  },
+  {
+    "source": "current",
+    "probe": "audit_hot_duplicates_observation",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current/residency_probe",
+      "audit_hot_duplicates_observation"
+    ],
+    "returncode": 0,
+    "stdout": "OBSERVED duplicate_hot: config_ok=1 init_hot_ok=1 slots=0,0 resolve_ok=0 reason=no residency slot available (needed set exceeds dynamic capacity)\n[PASS] audit_hot_duplicates_observation\n1 tests, 1 passed, 0 failed, 0 skipped\n",
+    "stderr": "[q4t][residency][diag] layer=0 C=2 protected=0 distinct=2 resident=1 misses_so_far=1 reserved=0 n=2 decode=0\n",
+    "finished": 1793396089.1651864
+  },
+  {
+    "source": "current",
+    "probe": "audit_worker_exception_observation",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current/residency_probe",
+      "audit_worker_exception_observation"
+    ],
+    "returncode": -6,
+    "stdout": "",
+    "stderr": "AUDIT_INJECT: worker operator new bad_alloc\nterminate called after throwing an instance of 'std::bad_alloc'\n  what():  std::bad_alloc\n",
+    "finished": 1793396090.2867262
+  },
+  {
+    "source": "parent",
+    "probe": "audit_short_weight_observation",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent/residency_probe",
+      "audit_short_weight_observation"
+    ],
+    "returncode": 0,
+    "stdout": "OBSERVED short_weight: status_ok=1 first=17 tail=165 expected=17\n[PASS] audit_short_weight_observation\n1 tests, 1 passed, 0 failed, 0 skipped\n",
+    "stderr": "",
+    "finished": 1793396090.2886796
+  },
+  {
+    "source": "parent",
+    "probe": "audit_oversized_scalar_observation",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent/residency_probe",
+      "audit_oversized_scalar_observation"
+    ],
+    "returncode": 0,
+    "stdout": "OBSERVED oversized_scalar: status_ok=1 bytes_past_pinned=4\n[PASS] audit_oversized_scalar_observation\n1 tests, 1 passed, 0 failed, 0 skipped\n",
+    "stderr": "",
+    "finished": 1793396090.2904985
+  },
+  {
+    "source": "parent",
+    "probe": "audit_hot_duplicates_observation",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent/residency_probe",
+      "audit_hot_duplicates_observation"
+    ],
+    "returncode": 0,
+    "stdout": "OBSERVED duplicate_hot: config_ok=1 init_hot_ok=1 slots=0,0 resolve_ok=0 reason=no residency slot available (needed set exceeds dynamic capacity)\n[PASS] audit_hot_duplicates_observation\n1 tests, 1 passed, 0 failed, 0 skipped\n",
+    "stderr": "[q4t][residency][diag] layer=0 C=2 protected=0 distinct=2 resident=1 misses_so_far=1 reserved=0 n=2 decode=0\n",
+    "finished": 1793396090.2921777
+  },
+  {
+    "source": "parent",
+    "probe": "audit_worker_exception_observation",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent/residency_probe",
+      "audit_worker_exception_observation"
+    ],
+    "returncode": -6,
+    "stdout": "",
+    "stderr": "AUDIT_INJECT: worker operator new bad_alloc\nterminate called after throwing an instance of 'std::bad_alloc'\n  what():  std::bad_alloc\n",
+    "finished": 1793396091.3956716
+  }
+]

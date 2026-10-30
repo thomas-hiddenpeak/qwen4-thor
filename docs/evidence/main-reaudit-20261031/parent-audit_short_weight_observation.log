@@ -1,0 +1,3 @@
+OBSERVED short_weight: status_ok=1 first=17 tail=165 expected=17
+[PASS] audit_short_weight_observation
+1 tests, 1 passed, 0 failed, 0 skipped

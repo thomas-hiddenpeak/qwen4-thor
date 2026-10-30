@@ -1,0 +1,20 @@
+[
+  {
+    "source": "current",
+    "supervisor_returned": true,
+    "supervisor_marker_exists": false,
+    "leaders_reaped": true,
+    "surviving_owned_grandchild": 443375,
+    "elapsed_seconds": 5.0562664770986885,
+    "probe_cleanup_reaped_owned_descendant": true
+  },
+  {
+    "source": "parent",
+    "supervisor_returned": true,
+    "supervisor_marker_exists": false,
+    "leaders_reaped": true,
+    "surviving_owned_grandchild": 443461,
+    "elapsed_seconds": 5.05531887919642,
+    "probe_cleanup_reaped_owned_descendant": true
+  }
+]

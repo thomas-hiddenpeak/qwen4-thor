@@ -1,0 +1,8 @@
+[ 14%] Building CXX object CMakeFiles/residency_probe.dir/residency_probe.cpp.o
+[ 57%] Building CXX object CMakeFiles/residency_probe.dir/home/rm01/models/dev/qwen4-thor/src/quant/moe_residency.cpp.o
+[ 57%] Building CXX object CMakeFiles/residency_probe.dir/home/rm01/models/dev/qwen4-thor/tests/test_main.cpp.o
+[ 57%] Building CXX object CMakeFiles/residency_probe.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 71%] Building CXX object CMakeFiles/residency_probe.dir/home/rm01/models/dev/qwen4-thor/src/io/safetensors.cpp.o
+[ 85%] Building CXX object CMakeFiles/residency_probe.dir/home/rm01/models/dev/qwen4-thor/src/io/weight_loader.cpp.o
+[100%] Linking CXX executable residency_probe
+[100%] Built target residency_probe

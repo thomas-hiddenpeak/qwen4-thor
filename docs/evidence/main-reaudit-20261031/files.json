@@ -1,0 +1,187 @@
+{
+  "plan.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/plan.json",
+    "sha256": "de3fa19dcecea6da17a73f2da45f8364695f546e592a108e931de210c6e070f2",
+    "bytes": 18622
+  },
+  "result.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/result.json",
+    "sha256": "b786580b236956e331a9f531a0f90ff2b5eaae6fd947e94f517ed530a0f450a6",
+    "bytes": 1112
+  },
+  "source-identity.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/source-identity.json",
+    "sha256": "4be16fda16d48eb1c3cb9079f4060bc4b16bdb06feabed821559d3fc40a0d952",
+    "bytes": 3141
+  },
+  "delivery-recheck.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/delivery-recheck.json",
+    "sha256": "8ecdaa400587c2c3643ac56e7de843dc1be2d154eec43320ccbfbd117cc9537d",
+    "bytes": 843
+  },
+  "io-commands.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/io-commands.json",
+    "sha256": "0cd5cb8eb5eae8883af304739b9cd3487588b780d8ef54af6ddb778e8d94d6e5",
+    "bytes": 695
+  },
+  "io-configure.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/io-configure.log",
+    "sha256": "00686ecd7a5e28139d60320e256d22cd800ed1ba1c85084dcb35c4b17265eb04",
+    "bytes": 544
+  },
+  "io-build.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/io-build.log",
+    "sha256": "31b7d828a5854175cb8a710008070963ef95a643180e97c831a75c7449aa6116",
+    "bytes": 3043
+  },
+  "io-ctest.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/io-ctest.log",
+    "sha256": "7d5c26242686b174b08d733f4c1be2414c61c94fbce074a9d9ba4a5b718f7714",
+    "bytes": 3421
+  },
+  "prepare_probes.py": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/prepare_probes.py",
+    "sha256": "e9df68979ca37c4349e315df3f393c0d629fc593843db089a3904c8c00489dd0",
+    "bytes": 7824
+  },
+  "residency_probe.cpp": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/residency_probe.cpp",
+    "sha256": "47f9095f1c1ddf65fa977ac1520ea5bb8dfe5ce14400132cfbdfb72b86508bd8",
+    "bytes": 20101
+  },
+  "CMakeLists.txt": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/CMakeLists.txt",
+    "sha256": "41f7554b3a8a1e76398ca2b79dee87b217e61a95042100cacf80586443279900",
+    "bytes": 1256
+  },
+  "probe-note.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/probe-note.json",
+    "sha256": "4bbd5a0b2ffa537a91e550bfbbf78fd12146ae9e533e6964353356fa1c376e46",
+    "bytes": 292
+  },
+  "probe-build-commands.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/probe-build-commands.json",
+    "sha256": "cf7508fc367fd2ed3fd9702fe3fb5174ec483f83376319fd89eeb6a9901c9583",
+    "bytes": 1340
+  },
+  "residency-observations.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/residency-observations.json",
+    "sha256": "21981e9e9da02e976a849bb7958fe8af1e8bf59005674e6c275fe798e33b1416",
+    "bytes": 4235
+  },
+  "supervisor_probe.py": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor_probe.py",
+    "sha256": "9879dee9e86269222379b3460092a49783a2cbd2776b7e686f976a6f5b6adddb",
+    "bytes": 4713
+  },
+  "supervisor-observations.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-observations.json",
+    "sha256": "417995c269fde21ede1644f35b3ca4274b3f4d1b480a8eae1cc53816c66f65f3",
+    "bytes": 538
+  },
+  "parent-release.py": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent-release.py",
+    "sha256": "394196b876651cb8a0d8d671900903276ac9a9e0589a52336faff2eeb8afd39c",
+    "bytes": 15976
+  },
+  "current-configure.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current-configure.log",
+    "sha256": "b84af5d0947761adf18f169d7ba452081b52157ec783141d2a75c6e9d521e3a1",
+    "bytes": 544
+  },
+  "current-build.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current-build.log",
+    "sha256": "7128f267679f535596636b8e768da44f96a7373bc855dc0ce3091bbfef93f05c",
+    "bytes": 734
+  },
+  "current-audit_short_weight_observation.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current-audit_short_weight_observation.log",
+    "sha256": "b527e0b609e6e5e5c03b0ade7d0da45e590b458209ae3b1cb26165a65e0b2ac6",
+    "bytes": 142
+  },
+  "current-audit_oversized_scalar_observation.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current-audit_oversized_scalar_observation.log",
+    "sha256": "ba73bd60d3e150f58c38880c375bd1ccff7e7067dfe3aa21a4b6cd554831a86a",
+    "bytes": 140
+  },
+  "current-audit_hot_duplicates_observation.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current-audit_hot_duplicates_observation.log",
+    "sha256": "746bdd65cc66100b200e77033721f7c93244149ead301dec59cb5eaf2d96dae8",
+    "bytes": 334
+  },
+  "current-audit_worker_exception_observation.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/current-audit_worker_exception_observation.log",
+    "sha256": "8fd7e27cb3982f652bfc6c64c2bf9b27d4c8a9780bfc30060852e474eb5eb842",
+    "bytes": 134
+  },
+  "supervisor-current/events.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-current/events.log",
+    "sha256": "b9188aa51c085eea6c412c23074b162136187a912c2355a53a994092f64505a3",
+    "bytes": 136
+  },
+  "supervisor-current/children.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-current/children.json",
+    "sha256": "c3a2d6798b08af2540bed1b1e1edd9b217946db2c176ac637b6cbae7965c8941",
+    "bytes": 1290
+  },
+  "supervisor-current/owned-grandchild.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-current/owned-grandchild.json",
+    "sha256": "b46df15be003d56becd90106c8e8dcad45c46a32aaca4a31ee7e14c4b22e904c",
+    "bytes": 15
+  },
+  "supervisor-current/config.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-current/config.json",
+    "sha256": "b69109838d5cee6b55cf272b60a9ce2364ed9a90e9c6337451c3e7081ad55ff2",
+    "bytes": 111
+  },
+  "parent-configure.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent-configure.log",
+    "sha256": "c27ba3e6d1dfb565947484b45690390689eb62fd66dcc987839f22768812080d",
+    "bytes": 543
+  },
+  "parent-build.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent-build.log",
+    "sha256": "b645c0c0245a688e96d23e6fa45f3a845da0c674551637a579217572286611f2",
+    "bytes": 606
+  },
+  "parent-audit_short_weight_observation.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent-audit_short_weight_observation.log",
+    "sha256": "b527e0b609e6e5e5c03b0ade7d0da45e590b458209ae3b1cb26165a65e0b2ac6",
+    "bytes": 142
+  },
+  "parent-audit_oversized_scalar_observation.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent-audit_oversized_scalar_observation.log",
+    "sha256": "ba73bd60d3e150f58c38880c375bd1ccff7e7067dfe3aa21a4b6cd554831a86a",
+    "bytes": 140
+  },
+  "parent-audit_hot_duplicates_observation.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent-audit_hot_duplicates_observation.log",
+    "sha256": "746bdd65cc66100b200e77033721f7c93244149ead301dec59cb5eaf2d96dae8",
+    "bytes": 334
+  },
+  "parent-audit_worker_exception_observation.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/parent-audit_worker_exception_observation.log",
+    "sha256": "8fd7e27cb3982f652bfc6c64c2bf9b27d4c8a9780bfc30060852e474eb5eb842",
+    "bytes": 134
+  },
+  "supervisor-parent/events.log": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-parent/events.log",
+    "sha256": "d6375b21976ee78c0212ff6338d4bd500d94b7b004ac1b85791e8454d48a7f9a",
+    "bytes": 136
+  },
+  "supervisor-parent/children.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-parent/children.json",
+    "sha256": "05d64d88937b3030320fe23eb49976f6da86357195102b68762eb54b70bea71d",
+    "bytes": 1285
+  },
+  "supervisor-parent/owned-grandchild.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-parent/owned-grandchild.json",
+    "sha256": "56f29a29751cfd886142117cd92b05aaca1b92b536ac18335db7ecbb9cbbaf09",
+    "bytes": 15
+  },
+  "supervisor-parent/config.json": {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-parent/config.json",
+    "sha256": "b69109838d5cee6b55cf272b60a9ce2364ed9a90e9c6337451c3e7081ad55ff2",
+    "bytes": 111
+  }
+}

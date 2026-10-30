@@ -1,0 +1,38 @@
+{
+  "anchor": "802bd70559b5e6d4f4d3b3ede5eaeac3bda90d09",
+  "parent": "c26e97a3549965a7a52b6928880153e7c64b030c",
+  "findings": [
+    {
+      "id": "R1",
+      "priority": 2,
+      "classification": "pre-existing omission reproduced before and after repair"
+    },
+    {
+      "id": "R2",
+      "priority": 2,
+      "classification": "pre-existing omission reproduced before and after repair"
+    },
+    {
+      "id": "R3",
+      "priority": 2,
+      "classification": "pre-existing omission reproduced before and after repair"
+    },
+    {
+      "id": "R4",
+      "priority": 2,
+      "classification": "pre-existing omission reproduced before and after repair"
+    }
+  ],
+  "new_regression_confirmed": false,
+  "claim_scope": "reviewed A1-A8 changes and adjacent failure paths, not an exhaustive proof",
+  "new_cpu_io_ctest": 4,
+  "new_cpu_io_contracts": 24,
+  "production_probe_executions": 8,
+  "supervisor_fixture_executions": 2,
+  "observations_not_acceptance": true,
+  "new_gpu": 0,
+  "new_model_http": 0,
+  "production_code_changed": false,
+  "default_changed": false,
+  "completed": 1793396471.594638
+}

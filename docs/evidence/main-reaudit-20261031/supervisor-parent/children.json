@@ -1,0 +1,51 @@
+{
+  "backend": {
+    "pid": 443460,
+    "start": "158625288",
+    "command": [
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-parent/package/q4t",
+      "serve",
+      "--model-dir",
+      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "1",
+      "--max-seq",
+      "1",
+      "--max-prefill",
+      "8192",
+      "--max-len",
+      "208896",
+      "--max-tokens",
+      "256",
+      "--no-mtp"
+    ]
+  },
+  "data": {
+    "pid": 443463,
+    "start": "158625293",
+    "command": [
+      "synthetic-nginx",
+      "-p",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-parent/data/",
+      "-c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-parent/data/nginx.conf",
+      "-g",
+      "daemon off;"
+    ]
+  },
+  "control": {
+    "pid": 443465,
+    "start": "158625293",
+    "command": [
+      "synthetic-nginx",
+      "-p",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-parent/control/",
+      "-c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-20261031/supervisor-parent/control/nginx.conf",
+      "-g",
+      "daemon off;"
+    ]
+  }
+}

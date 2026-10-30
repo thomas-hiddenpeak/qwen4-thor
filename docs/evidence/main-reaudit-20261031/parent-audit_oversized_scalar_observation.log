@@ -1,0 +1,3 @@
+OBSERVED oversized_scalar: status_ok=1 bytes_past_pinned=4
+[PASS] audit_oversized_scalar_observation
+1 tests, 1 passed, 0 failed, 0 skipped
