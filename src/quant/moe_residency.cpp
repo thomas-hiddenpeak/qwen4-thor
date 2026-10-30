@@ -9,6 +9,7 @@
 #include <thread>
 
 #include "q4t/quant/swizzle.h"
+#include "q4t/quant/moe_tensor_contract.h"
 
 namespace q4t {
 namespace quant {
@@ -172,6 +173,10 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   if ((2 * moe_is) % 128 != 0 || (hs % 128) != 0) {
     return Status::Fail(
         "2*moe_is and hs must be multiples of 128 (per-expert SF blocks)");
+  }
+  for (int e = 0; e < E; ++e) {
+    const Status status = ValidateMoEExpert(loader, layer_id, e, hs, moe_is);
+    if (!status.ok()) return status;
   }
   // Init submits no DMA and starts only idle workers. Roll back every
   // acquired resource on a Status failure or a host/thread exception.
@@ -774,7 +779,7 @@ Status MoEResidency::ReadExpert(int expert, int buf, StatsDelta* delta,
         const std::string n = "model.language_model.layers." +
                               std::to_string(layer_id_) + ".mlp.experts." +
                               std::to_string(expert) + "." + sc4[i];
-        if (!(s = loader_->ReadTensor(n, &scal[i]))) {
+        if (!(s = loader_->ReadTensor(n, &scal[i], sizeof(float)))) {
           return s;
         }
       }
@@ -783,7 +788,7 @@ Status MoEResidency::ReadExpert(int expert, int buf, StatsDelta* delta,
     // Legacy per-tensor path (bit-identical bytes, arbitrary layout).
     std::string n;
     n = ExpertName(layer_id_, expert, "down_proj", "weight");
-    if (!(s = loader_->ReadTensor(n, w_dn))) {
+    if (!(s = loader_->ReadTensor(n, w_dn, w_bytes))) {
       return s;
     }
     const double nvme_bytes =
@@ -791,23 +796,23 @@ Status MoEResidency::ReadExpert(int expert, int buf, StatsDelta* delta,
     if (delta) delta->nvme_read_bytes += nvme_bytes;
     else stats_.nvme_read_bytes += nvme_bytes;
     n = ExpertName(layer_id_, expert, "gate_proj", "weight");
-    if (!(s = loader_->ReadTensor(n, w_ga))) {
+    if (!(s = loader_->ReadTensor(n, w_ga, w_bytes))) {
       return s;
     }
     n = ExpertName(layer_id_, expert, "up_proj", "weight");
-    if (!(s = loader_->ReadTensor(n, w_up))) {
+    if (!(s = loader_->ReadTensor(n, w_up, w_bytes))) {
       return s;
     }
     n = ExpertName(layer_id_, expert, "down_proj", "weight_scale");
-    if (!(s = loader_->ReadTensor(n, s_dn))) {
+    if (!(s = loader_->ReadTensor(n, s_dn, s_bytes))) {
       return s;
     }
     n = ExpertName(layer_id_, expert, "gate_proj", "weight_scale");
-    if (!(s = loader_->ReadTensor(n, s_ga))) {
+    if (!(s = loader_->ReadTensor(n, s_ga, s_bytes))) {
       return s;
     }
     n = ExpertName(layer_id_, expert, "up_proj", "weight_scale");
-    if (!(s = loader_->ReadTensor(n, s_up))) {
+    if (!(s = loader_->ReadTensor(n, s_up, s_bytes))) {
       return s;
     }
     const char* sc4[4] = {"gate_proj.weight_scale_2",
@@ -818,7 +823,7 @@ Status MoEResidency::ReadExpert(int expert, int buf, StatsDelta* delta,
       const std::string n = "model.language_model.layers." +
                             std::to_string(layer_id_) + ".mlp.experts." +
                             std::to_string(expert) + "." + sc4[i];
-      if (!(s = loader_->ReadTensor(n, &scal[i]))) {
+      if (!(s = loader_->ReadTensor(n, &scal[i], sizeof(float)))) {
         return s;
       }
     }
@@ -1001,15 +1006,33 @@ Status MoEResidency::ReadRun(const LoadPlan& plan, const int* entries, int k,
 // commits each entry. Per-entry failure semantics match the legacy
 // per-entry path: the first failure is recorded in plan.first_err, and
 // the remaining entries still run.
-Status MoEResidency::StageTask(LoadPlan& plan,
-                               const std::vector<int>& entries,
-                               StatsDelta* delta, cudaStream_t stream) const {
+void MoEResidency::StageTask(LoadPlan& plan, const std::vector<int>& entries,
+                             StatsDelta* delta,
+                             cudaStream_t stream) const noexcept try {
   const bool tim = timing_->enabled.load(std::memory_order_relaxed);
   const int k = static_cast<int>(entries.size());
   std::vector<int> bufs(k, -1);
   std::vector<char> hit(k, 0);
   std::vector<bool> read_ok(k, true);
   std::vector<std::chrono::steady_clock::time_point> t0(k);
+  std::vector<char> claimed(k, 0);
+  const auto release = [&](int j) {
+    if (!claimed[j]) return;
+    const int expert = plan.experts[entries[j]];
+    if (bufs[j] < 0)
+      ReleaseRingClaim(expert, -bufs[j] - 1);
+    else
+      ReleaseMissClaim(expert, bufs[j], hit[j]);
+    claimed[j] = 0;
+  };
+  const auto release_claims = [&](const MoEResidency*) {
+    // CommitExpert handles even exceptions after a partial DMA submission.
+    // Unknown completion keeps every outstanding source owned until Free.
+    if (!payload_poisoned_->load(std::memory_order_relaxed))
+      for (int j = 0; j < k; ++j) release(j);
+  };
+  std::unique_ptr<const MoEResidency, decltype(release_claims)> claims(
+      this, release_claims);
   // 1. Claim every entry (fault hook, victim selection, and in-flight
   //    waits keep the legacy per-entry semantics; claims are released by
   //    the commit or by the failure handling below).
@@ -1030,6 +1053,7 @@ Status MoEResidency::StageTask(LoadPlan& plan,
       }
       continue;
     }
+    claimed[j] = 1;
     plan.workers[i] = bufs[j];
   }
   // 2. Reads. Miss entries are partitioned into maximal consecutive-id
@@ -1058,7 +1082,7 @@ Status MoEResidency::StageTask(LoadPlan& plan,
       if (!s.ok()) {
         for (int t = j; t <= r1; ++t) {
           read_ok[t] = false;
-          ReleaseMissClaim(plan.experts[entries[t]], bufs[t], false);
+          release(t);
         }
         if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
           plan.first_err_msg = s.message();
@@ -1069,7 +1093,7 @@ Status MoEResidency::StageTask(LoadPlan& plan,
                             plan.decode_phase);
       if (!s.ok()) {
         read_ok[j] = false;
-        ReleaseMissClaim(plan.experts[entries[j]], bufs[j], false);
+        release(j);
         if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
           plan.first_err_msg = s.message();
         }
@@ -1092,17 +1116,19 @@ Status MoEResidency::StageTask(LoadPlan& plan,
           plan.first_err_msg = "commit completion unknown: " + cs.message();
         continue;
       }
-      if (bufs[t] < 0) {
-        ReleaseRingClaim(plan.experts[i], -bufs[t] - 1);
-      } else {
-        ReleaseMissClaim(plan.experts[i], bufs[t], hit[t]);
-      }
+      release(t);
       if (plan.first_err.exchange(1, std::memory_order_acq_rel) == 0) {
         plan.first_err_msg = "commit: " + cs.message();
       }
+    } else {
+      // The successful commit transferred ownership to its recorded event.
+      claimed[t] = 0;
     }
   }
-  return Status();
+} catch (...) {
+  // No string construction here: bad_alloc must not escape a std::thread.
+  // The caller observes this only after all completion notifications.
+  plan.host_exception.store(true, std::memory_order_relaxed);
 }
 Status MoEResidency::CommitExpert(int expert, int slot, int buf,
                                   cudaStream_t stream,
@@ -1332,36 +1358,46 @@ Status MoEResidency::CommitExpert(int expert, int slot, int buf,
     }
     return Status();
   };
-  Status result = commit();
-  if (result.ok()) return result;
-
-  // The source claim stays held throughout the drain. Other workers may
-  // still finish their independent transactions; none may reuse this source
-  // or mirror target before completion is established.
-  const auto drained = cudaStreamSynchronize(stream);
-  if (drained != cudaSuccess)
-    payload_poisoned_->store(true, std::memory_order_relaxed);
-  {
-    std::lock_guard<std::mutex> lock(*l2_mu_);
-    if (mirror_target >= 0) {
-      const int previous = mirror_expert_[mirror_target];
-      if (previous >= 0 && expert_mirror_[previous] == mirror_target)
-        expert_mirror_[previous] = -1;
-      mirror_expert_[mirror_target] = -1;
-      if (drained == cudaSuccess) {
-        ring_in_flight_[mirror_target] = false;
-        ring_claimed_[mirror_target] = false;
+  cudaError_t drained = cudaSuccess;
+  const auto rollback = [&](const MoEResidency*) {
+    // The source claim stays held throughout the drain. Other workers may
+    // still finish their independent transactions; none may reuse this source
+    // or mirror target before completion is established.
+    drained = cudaStreamSynchronize(stream);
+    if (drained != cudaSuccess)
+      payload_poisoned_->store(true, std::memory_order_relaxed);
+    {
+      std::lock_guard<std::mutex> lock(*l2_mu_);
+      if (mirror_target >= 0) {
+        const int previous = mirror_expert_[mirror_target];
+        if (previous >= 0 && expert_mirror_[previous] == mirror_target)
+          expert_mirror_[previous] = -1;
+        mirror_expert_[mirror_target] = -1;
+        if (drained == cudaSuccess) {
+          ring_in_flight_[mirror_target] = false;
+          ring_claimed_[mirror_target] = false;
+        }
       }
     }
+    // Never leave an old expert mapped to a partially overwritten slot.
+    const int previous = slot_expert_[slot];
+    if (previous >= 0) {
+      expert_slot_[previous] = -1;
+      slot_expert_[slot] = -1;
+      if (delta)
+        --delta->resident_delta;
+      else
+        --resident_count_;
+    }
+  };
+  std::unique_ptr<const MoEResidency, decltype(rollback)> pending(this,
+                                                                  rollback);
+  Status result = commit();
+  if (result.ok()) {
+    pending.release();
+    return result;
   }
-  // Never leave an old expert mapped to a partially overwritten slot.
-  const int previous = slot_expert_[slot];
-  if (previous >= 0) {
-    expert_slot_[previous] = -1;
-    slot_expert_[slot] = -1;
-    if (delta) --delta->resident_delta;
-    else --resident_count_;
-  }
+  pending.reset();
   if (drained != cudaSuccess)
     return Status::Fail("residency payload completion unknown; reload model");
   return result;
@@ -1373,13 +1409,16 @@ Status MoEResidency::InitHot(const std::vector<int>& hot_experts,
   if (payload_poisoned_->load(std::memory_order_relaxed))
     return Status::Fail("residency payload completion unknown; reload model");
   LoadPlan plan;
+  std::vector<bool> planned(E_, false);
   int slot = 0;
   for (int e : hot_experts) {
     if (e < 0 || e >= E_) continue;
-    if (expert_slot_[e] >= 0) continue;  // duplicate in the list
+    if (expert_slot_[e] >= 0 || planned[e]) continue;
+    while (slot < C_ && slot_expert_[slot] >= 0) ++slot;
     if (slot >= C_) break;
     plan.experts.push_back(e);
     plan.slots.push_back(slot);
+    planned[e] = true;
     ++slot;
   }
   // C1: LoadPhase1 stages and commits each chunk (commit_stream_ is the
@@ -1530,6 +1569,7 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   if (off == 0) plan.workers.assign(n, 0);
   const int cnt = std::min(load_threads_, n - off);
   plan.first_err.store(0, std::memory_order_relaxed);
+  plan.host_exception.store(false, std::memory_order_relaxed);
   // Item 3b: partition the chunk into dispatch tasks. With pread_merge_ on,
   // reorder the chunk's entries by expert id and group into maximal
   // consecutive-id file-contiguous runs (capped at pread_merge_cap_ so one
@@ -1578,6 +1618,8 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
       StageTask(plan, task, &delta, commit_stream_);
     }
     delta.MergeInto(stats_, resident_count_);
+    if (plan.host_exception.load(std::memory_order_relaxed))
+      return Status::Fail("residency inline stage host exception");
     if (plan.first_err.load(std::memory_order_relaxed) != 0) {
       if (tim) RecordPhase1Ns(NowNs(t_p1));
       return Status::Fail("residency inline stage failed: " +
@@ -1614,6 +1656,8 @@ Status MoEResidency::LoadPhase1(LoadPlan& plan) const {
   for (size_t t = 0; t < tasks.size(); ++t) {
     workers_[t]->delta_.MergeInto(stats_, resident_count_);
   }
+  if (plan.host_exception.load(std::memory_order_relaxed))
+    return Status::Fail("residency parallel stage host exception");
   if (plan.first_err.load(std::memory_order_relaxed) != 0) {
     if (tim) RecordPhase1Ns(NowNs(t_p1));
     return Status::Fail("residency parallel stage failed: " +

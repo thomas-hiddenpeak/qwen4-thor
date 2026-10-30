@@ -40,13 +40,15 @@ q4t_io_contract(q4t_safetensors_validation ../safetensors_validation_test.cpp)
 target_link_options(q4t_safetensors_validation PRIVATE
   -Wl,--wrap=mmap,--wrap=_Znwm)
 q4t_io_contract(q4t_residency_host_contracts
-  ../residency_host_contract_test.cpp ../../src/quant/moe_residency.cpp)
+  ../residency_host_contract_test.cpp ../../src/quant/moe_residency.cpp
+  ../../src/quant/moe_weights.cpp)
 function(q4t_residency_fault_wrappers name)
   # Static libstdc++ makes its pthread references visible to --wrap, so a
   # failure after an already running std::thread is tested deterministically.
   target_link_options(${name} PRIVATE -static-libstdc++
     -Wl,--wrap=pthread_create,--wrap=pthread_join
-    -Wl,--wrap=_ZnwmRKSt9nothrow_t
+    -Wl,--wrap=_ZnwmRKSt9nothrow_t,--wrap=_Znwm,--wrap=pread
+    -Wl,--wrap=cudaMemcpyAsync
     -Wl,--wrap=cudaMalloc,--wrap=cudaFree
     -Wl,--wrap=cudaHostAlloc,--wrap=cudaFreeHost
     -Wl,--wrap=cudaEventCreateWithFlags,--wrap=cudaEventDestroy
@@ -60,6 +62,7 @@ if(Q4T_BUILD_RESIDENCY_CUDA_CONTRACTS)
   find_library(Q4T_CUDART cudart HINTS /usr/local/cuda/lib64 REQUIRED)
   add_executable(q4t_residency_cuda_contracts ../test_main.cpp
     ../residency_host_contract_test.cpp ../../src/quant/moe_residency.cpp
+    ../../src/quant/moe_weights.cpp
     ../../src/io/json.cpp ../../src/io/safetensors.cpp
     ../../src/io/weight_loader.cpp)
   target_include_directories(q4t_residency_cuda_contracts PRIVATE

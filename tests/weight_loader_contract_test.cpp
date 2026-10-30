@@ -5,6 +5,7 @@
 
 #include <unistd.h>
 
+#include <algorithm>
 #include <array>
 #include <atomic>
 #include <barrier>
@@ -286,6 +287,24 @@ Q4T_TEST(weight_loader_missing_tensor_and_shard) {
     }
   }
   Q4T_CHECK(loader->ReadTensor("tensor-0", host.data()).ok());
+  Q4T_CHECK(BytesMatch(host, 0));
+  return true;
+}
+
+Q4T_TEST(weight_loader_exact_read_rejects_before_destination_write) {
+  Fixture fixture;
+  std::unique_ptr<WeightIndex> index;
+  std::unique_ptr<WeightLoader> loader;
+  Q4T_CHECK(OpenLoader(fixture, &index, &loader));
+  Bytes host;
+  host.fill(0xCC);
+  for (size_t size : {size_t{0}, kTensorBytes - 1, kTensorBytes + 1}) {
+    Q4T_CHECK(!loader->ReadTensor("tensor-0", host.data(), size));
+    Q4T_CHECK(std::all_of(host.begin(), host.end(),
+                          [](uint8_t byte) { return byte == 0xCC; }));
+  }
+  Q4T_CHECK(!loader->ReadTensor("tensor-0", nullptr, kTensorBytes));
+  Q4T_CHECK(loader->ReadTensor("tensor-0", host.data(), host.size()));
   Q4T_CHECK(BytesMatch(host, 0));
   return true;
 }

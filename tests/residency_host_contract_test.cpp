@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include <array>
+#include <atomic>
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
@@ -28,7 +29,11 @@ int creation_calls = 0, fail_creation = 0;
 int thread_calls = 0, fail_thread = 0, live_threads = 0;
 int host_calls = 0, fail_host = 0;
 bool fail_drain = false;
-int sync_calls = 0;
+std::atomic<int> sync_calls{0};
+std::atomic<int> new_fault{0}, read_fault{0}, copy_fault{0};
+std::atomic<int> copy_calls{0}, injected{0};
+pthread_t caller;
+bool inject_inline = false;
 std::array<void*, 64> resources{};
 
 size_t LiveResources() {
@@ -51,6 +56,7 @@ size_t ResourceSlot(void* p) {
 class Environment {
  public:
   Environment() {
+    caller = pthread_self();
     for (const auto& [key, value] : settings_) {
       const char* old = std::getenv(key.c_str());
       previous_.emplace_back(old ? old : "");
@@ -61,6 +67,8 @@ class Environment {
   ~Environment() {
     fail_creation = fail_thread = fail_host = 0;
     fail_drain = false;
+    new_fault = read_fault = copy_fault = 0;
+    inject_inline = false;
     for (size_t i = 0; i < settings_.size(); ++i) {
       const char* name = settings_[i].first.c_str();
       if (present_[i])
@@ -87,7 +95,7 @@ enum class Split { kNone, kWeights, kScales, kScalars };
 // The region-major layout also exercises adjacent-expert preadv merging.
 class Fixture {
  public:
-  explicit Fixture(Split split = Split::kNone) {
+  explicit Fixture(Split split = Split::kNone, int malformed = 0) {
     std::filesystem::create_directories(Q4T_IO_FIXTURE_ROOT);
     directory_ = std::string(Q4T_IO_FIXTURE_ROOT) + "/residency-XXXXXX";
     if (!mkdtemp(directory_.data())) throw std::runtime_error("mkdtemp");
@@ -107,7 +115,43 @@ class Fixture {
                 "model.language_model.layers.0.mlp."
                 "experts." +
                 std::to_string(e) + "." + projections[p] + "." + suffix;
-            const size_t bytes = region == 0 ? 4096 : region == 1 ? 512 : 4;
+            size_t bytes = region == 0 ? 4096 : region == 1 ? 512 : 4;
+            const int rows = p == 0 ? 128 : 64;
+            const int cols = p == 0 ? 64 : 128;
+            std::string dtype = region == 0   ? "U8"
+                                : region == 1 ? "F8_E4M3"
+                                              : "F32";
+            std::string shape =
+                region == 2
+                    ? "[]"
+                    : "[" + std::to_string(rows) + "," +
+                          std::to_string(cols / (region == 0 ? 2 : 16)) + "]";
+            // Each corrupted tensor is internally valid Safetensors; only
+            // its consumer contract is wrong. Target the last expert.
+            if (e == 1 && p == 0 && scalar == 0 && malformed > 0 &&
+                region == (malformed - 1) / 4) {
+              switch ((malformed - 1) % 4) {
+                case 0:  // Short tensor.
+                  bytes = region == 2 ? 0 : bytes / 2;
+                  shape = "[" + std::to_string(bytes) + "]";
+                  break;
+                case 1:  // Oversized tensor.
+                  bytes *= 2;
+                  shape = "[" + std::to_string(region == 2 ? 2 : bytes) + "]";
+                  break;
+                case 2:  // Same bytes, incompatible dtype.
+                  dtype = region == 2 ? "I32" : "I8";
+                  break;
+                case 3:  // Same bytes/dtype, incompatible rank/layout.
+                  shape =
+                      region == 2
+                          ? "[1,1]"
+                          : "[" +
+                                std::to_string(cols / (region == 0 ? 2 : 16)) +
+                                "," + std::to_string(rows) + "]";
+                  break;
+              }
+            }
             const bool other =
                 (split == Split::kWeights && region == 0 && p > 0) ||
                 (split == Split::kScales && region == 1 && p > 0) ||
@@ -117,17 +161,18 @@ class Fixture {
               index += ',';
             }
             first = false;
-            header += "\"" + name + "\":{\"dtype\":\"" +
-                      (region == 2 ? "F32" : "U8") + "\",\"shape\":[" +
-                      std::to_string(region == 2 ? 1 : bytes) +
-                      "],\"data_offsets\":[" + std::to_string(offset) + "," +
+            header += "\"" + name + "\":{\"dtype\":\"" + dtype +
+                      "\",\"shape\":" + shape + ",\"data_offsets\":[" +
+                      std::to_string(offset) + "," +
                       std::to_string(offset + bytes) + "]}";
             index += "\"" + name + "\":\"" + (other ? "b" : "a") + "\"";
             std::string value(
                 bytes, static_cast<char>(17 * (p + 1) + e + 64 * region));
             if (region == 2) {
               const float number = (p == 0 ? 2.0f : 4.0f) + scalar + e;
-              value.assign(reinterpret_cast<const char*>(&number), 4);
+              value.clear();
+              for (size_t i = 0; i < bytes / 4; ++i)
+                value.append(reinterpret_cast<const char*>(&number), 4);
             }
             data[0] += other ? std::string(bytes, '\x7f') : value;
             data[1] += value;
@@ -178,6 +223,19 @@ struct Owner {
   }
 };
 
+struct FullOwner {
+  q4t::quant::MoEWeightLayout layout;
+  ~FullOwner() {
+    const std::array<void*, 8> buffers = {
+        layout.gu_packed,   layout.gu_sf,         layout.dn_packed,
+        layout.dn_sf,       layout.gu_w_scale2,   layout.gu_input_scale,
+        layout.dn_w_scale2, layout.dn_input_scale};
+    for (void* p : buffers) {
+      if (p) cudaFree(p);
+    }
+  }
+};
+
 bool BytesEqual(const void* device, const void* expected, size_t size) {
 #ifdef Q4T_RESIDENCY_REAL_CUDA
   std::vector<unsigned char> actual(size);
@@ -190,8 +248,8 @@ bool BytesEqual(const void* device, const void* expected, size_t size) {
 #endif
 }
 
-bool PayloadMatches(const MoEResidency& residency, int e, int slot) {
-  const auto& layout = residency.Layout();
+bool PayloadMatches(const q4t::quant::MoEWeightLayout& layout, int e,
+                    int slot) {
   const std::vector<uint8_t> down(4096, 17 + e), gate(4096, 34 + e),
       up(4096, 51 + e), down_sf(512, 81 + e);
   std::vector<uint8_t> gate_up_sf(1024);
@@ -243,12 +301,13 @@ cudaError_t __real_cudaStreamSynchronize(cudaStream_t) { return cudaSuccess; }
 cudaError_t cudaEventQuery(cudaEvent_t) { return cudaSuccess; }
 cudaError_t cudaEventRecord(cudaEvent_t, cudaStream_t) { return cudaSuccess; }
 cudaError_t cudaEventSynchronize(cudaEvent_t) { return cudaSuccess; }
-cudaError_t cudaMemcpyAsync(void* d, const void* s, size_t n, cudaMemcpyKind,
-                            cudaStream_t) {
+cudaError_t __real_cudaMemcpyAsync(void* d, const void* s, size_t n,
+                                   cudaMemcpyKind, cudaStream_t) {
   std::memcpy(d, s, n);
   return cudaSuccess;
 }
 const char* cudaGetErrorString(cudaError_t) { return "CPU injected failure"; }
+cudaError_t cudaGetLastError() { return cudaSuccess; }
 #else
 cudaError_t __real_cudaMalloc(void**, size_t);
 cudaError_t __real_cudaHostAlloc(void**, size_t, unsigned);
@@ -257,7 +316,43 @@ cudaError_t __real_cudaFreeHost(void*);
 cudaError_t __real_cudaEventCreateWithFlags(cudaEvent_t*, unsigned);
 cudaError_t __real_cudaEventDestroy(cudaEvent_t);
 cudaError_t __real_cudaStreamSynchronize(cudaStream_t);
+cudaError_t __real_cudaMemcpyAsync(void*, const void*, size_t, cudaMemcpyKind,
+                                   cudaStream_t);
 #endif
+
+bool IsFaultThread() {
+  return inject_inline || !pthread_equal(caller, pthread_self());
+}
+void* __real__Znwm(size_t);
+void* __wrap__Znwm(size_t n) {
+  if (IsFaultThread() && new_fault.exchange(0)) {
+    ++injected;
+    throw std::bad_alloc();
+  }
+  return __real__Znwm(n);
+}
+ssize_t __real_pread(int, void*, size_t, off_t);
+ssize_t __wrap_pread(int fd, void* buffer, size_t n, off_t offset) {
+  if (IsFaultThread()) {
+    const int fault = read_fault.exchange(0);
+    if (fault) {
+      ++injected;
+      if (fault == 1) throw std::bad_alloc();
+      throw std::runtime_error("injected read exception after claim");
+    }
+  }
+  return __real_pread(fd, buffer, n, offset);
+}
+cudaError_t __wrap_cudaMemcpyAsync(void* d, const void* s, size_t n,
+                                   cudaMemcpyKind kind, cudaStream_t stream) {
+  const int call = ++copy_calls;
+  if (copy_fault.load() == call) {
+    copy_fault = 0;
+    new_fault = 1;  // Error-message allocation throws after earlier DMA.
+    return cudaErrorUnknown;
+  }
+  return __real_cudaMemcpyAsync(d, s, n, kind, stream);
+}
 
 cudaError_t __wrap_cudaMalloc(void** p, size_t n) {
   if (++creation_calls == fail_creation) return cudaErrorMemoryAllocation;
@@ -332,8 +427,8 @@ Q4T_TEST(residency_synthetic_same_and_split_shards_match_all_bytes) {
     int32_t needed[] = {0, 1}, slots[2];
     Q4T_CHECK(owner.residency.Resolve(needed, 2, slots, nullptr).ok());
     Q4T_CHECK(cudaStreamSynchronize(nullptr) == cudaSuccess);
-    Q4T_CHECK(PayloadMatches(owner.residency, 0, slots[0]));
-    Q4T_CHECK(PayloadMatches(owner.residency, 1, slots[1]));
+    Q4T_CHECK(PayloadMatches(owner.residency.Layout(), 0, slots[0]));
+    Q4T_CHECK(PayloadMatches(owner.residency.Layout(), 1, slots[1]));
     const auto& stats = owner.residency.GetStats();
     Q4T_CHECK(stats.pread_merge_runs == (split == Split::kNone ? 1 : 0));
     owner.residency.Free();
@@ -425,5 +520,156 @@ Q4T_TEST(residency_drain_failure_retains_payloads_until_completion) {
   Q4T_CHECK(owner.residency.InitHot({1}, nullptr).ok());
   owner.residency.Free();
   Q4T_CHECK(LiveResources() == 0 && live_threads == 0);
+  return true;
+}
+
+Q4T_TEST(moe_malformed_tensors_rejected_before_any_payload_allocation) {
+  Environment environment;
+  for (int malformed = 1; malformed <= 12; ++malformed) {
+    Fixture fixture(Split::kNone, malformed);
+    Owner owner;
+    FullOwner full;
+    creation_calls = copy_calls = 0;
+    const auto dynamic = owner.Init(fixture);
+    const auto resident = q4t::quant::LoadMoEWeights(
+        fixture.loader(), 0, 2, 128, 64, &full.layout, nullptr);
+    Q4T_CHECK(!dynamic && !resident);
+    Q4T_CHECK(dynamic.message().find("mismatch") != std::string::npos);
+    Q4T_CHECK(resident.message().find("mismatch") != std::string::npos);
+    Q4T_CHECK(creation_calls == 0 && copy_calls == 0);
+    Q4T_CHECK(LiveResources() == 0 && live_threads == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(moe_full_resident_valid_payload_matches_oracle) {
+  Environment environment;
+  {
+    Fixture fixture(Split::kScales);
+    FullOwner owner;
+    Q4T_CHECK(q4t::quant::LoadMoEWeights(fixture.loader(), 0, 2, 128, 64,
+                                         &owner.layout, nullptr));
+    Q4T_CHECK(cudaStreamSynchronize(nullptr) == cudaSuccess);
+    Q4T_CHECK(PayloadMatches(owner.layout, 0, 0));
+    Q4T_CHECK(PayloadMatches(owner.layout, 1, 1));
+  }
+  Q4T_CHECK(LiveResources() == 0 && live_threads == 0);
+  return true;
+}
+
+Q4T_TEST(residency_hot_duplicates_retry_capacity_and_protection) {
+  Environment environment;
+  Fixture fixture;
+  for (const char* inline_limit : {"0", "2"}) {
+    setenv("Q4T_MOE_INLINE_MISS_LIMIT", inline_limit, 1);
+    Owner owner;
+    Q4T_CHECK(owner.Init(fixture));
+    Q4T_CHECK(owner.residency.InitHot({-1, 0, 0, 1, 2, 1}, nullptr));
+    Q4T_CHECK(owner.residency.ResidentCount() == 2);
+    Q4T_CHECK(owner.residency.SlotExpert(0) == 0);
+    Q4T_CHECK(owner.residency.SlotExpert(1) == 1);
+    const auto loads = owner.residency.GetStats().loads;
+    Q4T_CHECK(owner.residency.InitHot({1, 0, 1}, nullptr));
+    Q4T_CHECK(owner.residency.GetStats().loads == loads);
+    owner.residency.SetHotProtected();
+    Q4T_CHECK(owner.residency.ProtectedCount() == 2);
+    int32_t needed[] = {0, 1}, slots[2];
+    Q4T_CHECK(owner.residency.Resolve(needed, 2, slots, nullptr));
+    Q4T_CHECK(slots[0] != slots[1]);
+    Q4T_CHECK(cudaStreamSynchronize(nullptr) == cudaSuccess);
+    Q4T_CHECK(PayloadMatches(owner.residency.Layout(), 0, slots[0]));
+    Q4T_CHECK(PayloadMatches(owner.residency.Layout(), 1, slots[1]));
+    owner.residency.Free();
+    Q4T_CHECK(owner.Init(fixture));
+    Q4T_CHECK(owner.residency.InitHot({1, 1}, nullptr));
+    Q4T_CHECK(owner.residency.InitHot({1, 0, 0}, nullptr));
+    Q4T_CHECK(owner.residency.SlotExpert(0) == 1);
+    Q4T_CHECK(owner.residency.SlotExpert(1) == 0);
+  }
+  Q4T_CHECK(LiveResources() == 0 && live_threads == 0);
+  return true;
+}
+
+Q4T_TEST(residency_worker_host_exception_notifies_releases_and_retries) {
+  Environment environment;
+  for (int fault : {0, 1, 2}) {
+    for (const char* merge : {"0", "1"}) {
+      Fixture fixture;
+      setenv("Q4T_MOE_PREAD_MERGE", merge, 1);
+      Owner owner;
+      Q4T_CHECK(owner.Init(fixture));
+      int32_t needed[] = {0, 1}, slots[2];
+      injected = 0;
+      if (fault == 0)
+        new_fault = 1;
+      else
+        read_fault = fault;
+      const auto failed = owner.residency.Resolve(needed, 2, slots, nullptr);
+      Q4T_CHECK(!failed && injected == 1);
+      Q4T_CHECK(failed.message().find("host exception") != std::string::npos);
+      Q4T_CHECK(owner.residency.Resolve(needed, 2, slots, nullptr));
+      Q4T_CHECK(cudaStreamSynchronize(nullptr) == cudaSuccess);
+      Q4T_CHECK(PayloadMatches(owner.residency.Layout(), 0, slots[0]));
+      Q4T_CHECK(PayloadMatches(owner.residency.Layout(), 1, slots[1]));
+      owner.residency.Free();
+      Q4T_CHECK(LiveResources() == 0 && live_threads == 0);
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(residency_inline_exception_releases_claims_and_retries) {
+  Environment environment;
+  setenv("Q4T_MOE_INLINE_MISS_LIMIT", "2", 1);
+  Fixture fixture;
+  Owner owner;
+  Q4T_CHECK(owner.Init(fixture));
+  int32_t needed[] = {0, 1}, slots[2];
+  inject_inline = true;
+  injected = 0;
+  read_fault = 1;
+  Q4T_CHECK(!owner.residency.Resolve(needed, 2, slots, nullptr));
+  Q4T_CHECK(injected == 1);
+  Q4T_CHECK(owner.residency.Resolve(needed, 2, slots, nullptr));
+  Q4T_CHECK(cudaStreamSynchronize(nullptr) == cudaSuccess);
+  Q4T_CHECK(PayloadMatches(owner.residency.Layout(), 0, slots[0]));
+  Q4T_CHECK(PayloadMatches(owner.residency.Layout(), 1, slots[1]));
+  return true;
+}
+
+Q4T_TEST(residency_commit_exception_drains_or_retains_partial_dma) {
+  Environment environment;
+  for (bool persistent : {false, true}) {
+    Fixture fixture;
+    Owner owner;
+    Q4T_CHECK(
+        owner.residency.Init(fixture.loader(), 0, 2, 128, 64, 1, nullptr));
+    Q4T_CHECK(owner.residency.InitHot({0}, nullptr));
+    Q4T_CHECK(cudaStreamSynchronize(nullptr) == cudaSuccess);
+    int32_t needed = 1, slot;
+    injected = copy_calls = sync_calls = 0;
+    copy_fault = 2;  // One mirror D2H is queued before error formatting OOM.
+    fail_drain = persistent;
+    const auto failed = owner.residency.Resolve(&needed, 1, &slot, nullptr);
+    Q4T_CHECK(!failed && injected == 1 && sync_calls >= 1);
+    Q4T_CHECK(owner.residency.SlotExpert(0) == -1);
+    if (persistent) {
+      const auto live = LiveResources();
+      Q4T_CHECK(!owner.residency.Resolve(&needed, 1, &slot, nullptr));
+      owner.residency.Free();
+      Q4T_CHECK(LiveResources() == live && live_threads == 0);
+      fail_drain = false;
+    } else {
+      Q4T_CHECK(owner.residency.Resolve(&needed, 1, &slot, nullptr));
+      Q4T_CHECK(cudaStreamSynchronize(nullptr) == cudaSuccess);
+      Q4T_CHECK(PayloadMatches(owner.residency.Layout(), 1, slot));
+      needed = 0;
+      Q4T_CHECK(owner.residency.Resolve(&needed, 1, &slot, nullptr));
+      Q4T_CHECK(cudaStreamSynchronize(nullptr) == cudaSuccess);
+      Q4T_CHECK(PayloadMatches(owner.residency.Layout(), 0, slot));
+    }
+    owner.residency.Free();
+    Q4T_CHECK(LiveResources() == 0 && live_threads == 0);
+  }
   return true;
 }

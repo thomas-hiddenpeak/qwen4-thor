@@ -20,7 +20,7 @@ struct ResidencyConfig {
 };
 
 // Missing or empty layers retain the global slot capacity with no hot fill.
-// Nonempty layers use min(list length, cap), preserving loader behavior.
+// Nonempty layers use min(distinct list length, cap). Keep first-seen order.
 inline Status ParseResidencyConfig(const std::string& text, int layers,
                                    int experts, int cap, ResidencyConfig* out) {
   if (!out || layers < 0 || experts <= 0 || cap < 0 || cap > experts) {
@@ -52,12 +52,14 @@ inline Status ParseResidencyConfig(const std::string& text, int layers,
       }
       seen[layer] = true;
       auto& hot = result.hot_lists[layer];
+      std::vector<bool> expert_seen(experts, false);
       for (const io::Json& expert : value.array) {
         const int64_t id = expert.AsInt(-1);
         if (!expert.IsNumber() || id < 0 || id >= experts) {
           return Status::Fail("invalid moe-hot-list expert: " + key);
         }
-        hot.push_back(static_cast<int>(id));
+        if (!expert_seen[id]) hot.push_back(static_cast<int>(id));
+        expert_seen[id] = true;
       }
       if (!hot.empty()) {
         result.layer_slots[layer] =
