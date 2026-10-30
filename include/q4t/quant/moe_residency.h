@@ -324,7 +324,9 @@ class MoEResidency {
   // Records one router D2H + stream-sync round trip (from MoEForward).
   void RecordD2HSync(uint64_t ns) const;
 
-  // Free all device buffers (idempotent).
+  // Release initialized or partial-init resources (idempotent). Init failures
+  // roll back automatically. An initialized owner retains DMA payloads when
+  // stream completion cannot be proved, as required by the safety contract.
   void Free();
 
  private:

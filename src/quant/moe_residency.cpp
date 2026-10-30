@@ -173,6 +173,15 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
     return Status::Fail(
         "2*moe_is and hs must be multiples of 128 (per-expert SF blocks)");
   }
+  // Init submits no DMA and starts only idle workers. Roll back every
+  // acquired resource on a Status failure or a host/thread exception.
+  const auto rollback = [](MoEResidency* owner) { owner->Free(); };
+  std::unique_ptr<MoEResidency, decltype(rollback)> pending(this, rollback);
+  stats_ = {};
+  tick_ = 0;
+  l2_recency_ = 0;
+  init_done_ = false;
+  hot_protected_ = false;
   loader_ = &loader;
   layer_id_ = layer_id;
   E_ = E;
@@ -288,7 +297,15 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
           ExpertName(layer_id, e, "gate_proj", "weight_scale"));
       const io::TensorInfo* up_s = loader_->FindTensor(
           ExpertName(layer_id, e, "up_proj", "weight_scale"));
+      const std::string* shard = loader_->ShardOf(dn_w_name);
+      const auto same_shard = [&](const io::TensorInfo* tensor) {
+        const std::string* source =
+            tensor ? loader_->ShardOf(tensor->name) : nullptr;
+        return shard && source && *shard == *source;
+      };
       d.fast = dn_w && ga_w && up_w && dn_s && ga_s && up_s &&
+               same_shard(dn_w) && same_shard(ga_w) && same_shard(up_w) &&
+               same_shard(dn_s) && same_shard(ga_s) && same_shard(up_s) &&
                dn_w->byte_size() == w_bytes &&
                ga_w->byte_size() == w_bytes &&
                up_w->byte_size() == w_bytes &&
@@ -304,17 +321,17 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
         d.w_end = up_w->data_end;
         d.s_off = dn_s->data_start;
         d.s_end = up_s->data_end;
-        const std::string* sh = loader_->ShardOf(dn_w_name);
-        if (sh) d.shard = *sh;
+        d.shard = *shard;
       }
       const io::TensorInfo* sc[6] = {nullptr};
-      bool ok = true;
+      bool ok = d.fast;
       for (int i = 0; i < 6; ++i) {
         const std::string n = "model.language_model.layers." +
                               std::to_string(layer_id) + ".mlp.experts." +
                               std::to_string(e) + "." + sc_names[i];
         sc[i] = loader_->FindTensor(n);
-        ok = ok && sc[i] != nullptr && sc[i]->byte_size() == sizeof(float);
+        ok = ok && sc[i] != nullptr && same_shard(sc[i]) &&
+             sc[i]->byte_size() == sizeof(float);
       }
       if (ok) {
         for (int i = 1; i < 6; ++i) {
@@ -356,18 +373,12 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
   if (cudaHostAlloc(reinterpret_cast<void**>(&l2_block_),
                     static_cast<size_t>(l2_slots_) * staging_bytes_,
                     cudaHostAllocDefault) != cudaSuccess) {
-    delete l2_mu_;
-    l2_mu_ = nullptr;
     return Status::Fail("residency L2 pinned alloc failed");
   }
   for (int b = 0; b < l2_slots_; ++b) {
     l2_buf_[b] = l2_block_ + static_cast<size_t>(b) * staging_bytes_;
     if (cudaEventCreateWithFlags(&l2_event_[b],
                                  cudaEventDisableTiming) != cudaSuccess) {
-      cudaFreeHost(l2_block_);
-      l2_block_ = nullptr;
-      delete l2_mu_;
-      l2_mu_ = nullptr;
       return Status::Fail("residency L2 event create failed");
     }
   }
@@ -382,12 +393,6 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
     if (cudaHostAlloc(reinterpret_cast<void**>(&mirror_block_),
                       static_cast<size_t>(mirror_k_) * mirror_bytes_,
                       cudaHostAllocDefault) != cudaSuccess) {
-      for (int b = 0; b < l2_slots_; ++b)
-        if (l2_event_[b]) cudaEventDestroy(l2_event_[b]);
-      cudaFreeHost(l2_block_);
-      l2_block_ = nullptr;
-      delete l2_mu_;
-      l2_mu_ = nullptr;
       return Status::Fail("residency mirror pinned alloc failed");
     }
     ring_event_.assign(mirror_k_, nullptr);
@@ -397,16 +402,6 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
           mirror_block_ + static_cast<size_t>(k) * mirror_bytes_;
       if (cudaEventCreateWithFlags(&ring_event_[k],
                                    cudaEventDisableTiming) != cudaSuccess) {
-        for (int j = 0; j < k; ++j)
-          if (ring_event_[j]) cudaEventDestroy(ring_event_[j]);
-        cudaFreeHost(mirror_block_);
-        mirror_block_ = nullptr;
-        for (int b = 0; b < l2_slots_; ++b)
-          if (l2_event_[b]) cudaEventDestroy(l2_event_[b]);
-        cudaFreeHost(l2_block_);
-        l2_block_ = nullptr;
-        delete l2_mu_;
-        l2_mu_ = nullptr;
         return Status::Fail("residency mirror event create failed");
       }
     }
@@ -415,20 +410,20 @@ Status MoEResidency::Init(const io::WeightLoader& loader, int layer_id,
     ring_in_flight_.assign(mirror_k_, false);
     ring_claimed_.assign(mirror_k_, false);
   }
-  // Persistent load workers are created last so no Init failure path
-  // leaks a running pool (Free only stops/joins when inited_).
+  // Register ownership before starting each worker. Reserving first also
+  // prevents a vector allocation from losing an already allocated worker.
   workers_.clear();
+  workers_.reserve(load_threads_);
   for (int t = 0; t < load_threads_; ++t) {
     LoadWorker* w = new (std::nothrow) LoadWorker();
     if (!w) {
-      for (auto* x : workers_) delete x;
-      workers_.clear();
       return Status::Fail("residency load worker alloc failed");
     }
     workers_.push_back(w);
     w->th = std::thread([this, w] { LoadWorkerLoop(w); });
   }
   inited_ = true;
+  pending.release();
   (void)stream;
   return Status();
 }
@@ -1703,7 +1698,6 @@ Status MoEResidency::Resolve(const int32_t* needed, int n, int32_t* slot_of,
 }
 
 void MoEResidency::Free() {
-  if (!inited_) return;
   for (auto* w : workers_) {
     {
       std::lock_guard<std::mutex> lk(w->mu);
@@ -1719,7 +1713,9 @@ void MoEResidency::Free() {
   // Joining host workers does not finish their DMA. A persistent device
   // error leaves all payload allocations intact rather than freeing memory
   // whose source/target lifetime is still owned by the stream.
-  if (cudaStreamSynchronize(commit_stream_) != cudaSuccess) {
+  // A partial Init has not submitted work. Do not make its cleanup depend
+  // on a CUDA stream/context which may itself have caused the Init failure.
+  if (inited_ && cudaStreamSynchronize(commit_stream_) != cudaSuccess) {
     payload_poisoned_->store(true, std::memory_order_relaxed);
     std::fprintf(stderr, "[q4t] retaining residency payloads: drain failed\n");
     return;
@@ -1743,10 +1739,10 @@ void MoEResidency::Free() {
   layout_.gu_input_scale = nullptr;
   layout_.dn_w_scale2 = nullptr;
   layout_.dn_input_scale = nullptr;
-  for (int b = 0; b < l2_slots_; ++b) {
-    if (l2_event_[b]) {
-      cudaEventDestroy(l2_event_[b]);
-      l2_event_[b] = nullptr;
+  for (auto& event : l2_event_) {
+    if (event) {
+      cudaEventDestroy(event);
+      event = nullptr;
     }
   }
   if (l2_block_) {
@@ -1758,10 +1754,10 @@ void MoEResidency::Free() {
     l2_mu_ = nullptr;
   }
   // C4: mirror ring.
-  for (int k = 0; k < mirror_k_; ++k) {
-    if (ring_event_[k]) {
-      cudaEventDestroy(ring_event_[k]);
-      ring_event_[k] = nullptr;
+  for (auto& event : ring_event_) {
+    if (event) {
+      cudaEventDestroy(event);
+      event = nullptr;
     }
   }
   if (mirror_block_) {
@@ -1782,6 +1778,8 @@ void MoEResidency::Free() {
   l2_in_flight_.clear();
   l2_claimed_.clear();
   l2_event_.clear();
+  l2_slots_ = 0;
+  read_desc_.clear();
   inited_ = false;
 }
 

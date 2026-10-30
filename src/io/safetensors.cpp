@@ -7,9 +7,12 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
+#include <algorithm>
 #include <cerrno>
+#include <charconv>
 #include <cstring>
 #include <limits>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -17,6 +20,39 @@
 
 namespace q4t {
 namespace io {
+
+namespace {
+
+bool UnsignedInteger(const Json& value, uint64_t* out) {
+  if (!value.IsNumber() || value.str.empty()) return false;
+  const char* end = value.str.data() + value.str.size();
+  const auto result = std::from_chars(value.str.data(), end, *out);
+  return result.ec == std::errc{} && result.ptr == end;
+}
+
+bool TensorBytes(const TensorInfo& tensor, uint64_t* bytes) {
+  const size_t element_bytes = DtypeSize(tensor.dtype);
+  if (element_bytes == 0) return false;
+  bool empty = false;
+  for (int64_t dimension : tensor.shape) {
+    if (dimension < 0) return false;
+    empty |= dimension == 0;
+  }
+  uint64_t count = empty ? 0 : 1;
+  if (!empty) {
+    for (int64_t dimension : tensor.shape) {
+      const auto size = static_cast<uint64_t>(dimension);
+      if (size > std::numeric_limits<uint64_t>::max() / count) return false;
+      count *= size;
+    }
+  }
+  if (count > std::numeric_limits<uint64_t>::max() / element_bytes)
+    return false;
+  *bytes = count * element_bytes;
+  return true;
+}
+
+}  // namespace
 
 size_t DtypeSize(Dtype dtype) {
   switch (dtype) {
@@ -69,7 +105,7 @@ uint64_t TensorInfo::byte_size() const {
 
 struct SafetensorsFile::Impl {
   int fd = -1;
-  void* map = nullptr;
+  void* map = MAP_FAILED;
   size_t map_len = 0;
   // When true, the destructor skips POSIX_FADV_DONTNEED so this file's
   // page-cache pages survive shard-LRU eviction (tiered MoE residency).
@@ -80,24 +116,20 @@ struct SafetensorsFile::Impl {
   // instead of a linear scan over ~1500 tensors/shard; the MoE load does
   // ~5120 lookups per layer, so this matters.
   std::unordered_map<std::string, size_t> name_index;
+
+  ~Impl() {
+    // Failed Open owns these resources too. Keep the same page-cache policy
+    // on success, but release fd/map on every early return or exception.
+    if (fd >= 0 && !keep_page_cache)
+      posix_fadvise(fd, 0, 0, POSIX_FADV_DONTNEED);
+    if (map != MAP_FAILED) munmap(map, map_len);
+    if (fd >= 0) close(fd);
+  }
 };
 
 SafetensorsFile::SafetensorsFile(Impl* impl) : impl_(impl) {}
 
 SafetensorsFile::~SafetensorsFile() {
-  if (!impl_) return;
-  // Evict this shard's clean file pages from the page cache BEFORE unmapping.
-  // On Jetson Thor's 122 GB unified memory, the ~84 GB of mmap'd weight
-  // shards would otherwise stay resident in the page cache (munmap only
-  // drops the mapping, not the clean file pages) and starve the CUDA driver
-  // of the memory it needs for runtime allocations. POSIX_FADV_DONTNEED
-  // actively reclaims them. (Qwen3x-Orin avoids this entirely by reading
-  // shards with ::read into pinned staging instead of mmap.)
-  if (impl_->fd >= 0 && !impl_->keep_page_cache) {
-    posix_fadvise(impl_->fd, 0, 0, POSIX_FADV_DONTNEED);
-  }
-  if (impl_->map) munmap(impl_->map, impl_->map_len);
-  if (impl_->fd >= 0) close(impl_->fd);
   delete impl_;
   impl_ = nullptr;
 }
@@ -107,33 +139,28 @@ void SafetensorsFile::SetKeepPageCache(bool keep) {
 }
 
 Status SafetensorsFile::Open(const std::string& path, SafetensorsFile** out) {
+  if (!out) return Status::Fail("missing safetensors output");
   *out = nullptr;
-  Impl* impl = new Impl();
+  auto impl = std::make_unique<Impl>();
 
   impl->fd = open(path.c_str(), O_RDONLY);
   if (impl->fd < 0) {
     std::string msg = "open(" + path + ") failed: ";
     msg += std::strerror(errno);
-    delete impl;
     return Status::Fail(msg);
   }
   struct stat st;
   if (fstat(impl->fd, &st) != 0) {
-    close(impl->fd);
-    delete impl;
     return Status::Fail("fstat failed");
   }
-  const size_t file_size = static_cast<size_t>(st.st_size);
-  if (file_size < 8) {
-    close(impl->fd);
-    delete impl;
+  if (st.st_size < 8 || static_cast<uint64_t>(st.st_size) >
+                            std::numeric_limits<size_t>::max()) {
     return Status::Fail("file too small for safetensors header");
   }
+  const size_t file_size = static_cast<size_t>(st.st_size);
 
   impl->map = mmap(nullptr, file_size, PROT_READ, MAP_PRIVATE, impl->fd, 0);
   if (impl->map == MAP_FAILED) {
-    close(impl->fd);
-    delete impl;
     return Status::Fail("mmap failed");
   }
   impl->map_len = file_size;
@@ -142,21 +169,21 @@ Status SafetensorsFile::Open(const std::string& path, SafetensorsFile** out) {
   // Header length: first 8 bytes, little-endian u64.
   uint64_t header_len = 0;
   std::memcpy(&header_len, base, 8);
-  if (8 + header_len > file_size) {
-    delete impl;
+  if (header_len > file_size - 8) {
     return Status::Fail("header length exceeds file size");
   }
   const std::string header(base + 8, header_len);
   impl->data_offset = 8 + header_len;
 
   Json root;
-  Status s = ParseJson(header, &root);
+  JsonParseLimits limits;
+  limits.reject_duplicate_keys = true;
+  // Keep integer spelling: a double would silently round offsets above 2^53.
+  Status s = ParseJson(header, &root, true, limits);
   if (!s.ok()) {
-    delete impl;
     return s;
   }
   if (!root.IsObject()) {
-    delete impl;
     return Status::Fail("safetensors header is not an object");
   }
 
@@ -164,33 +191,54 @@ Status SafetensorsFile::Open(const std::string& path, SafetensorsFile** out) {
     if (kv.first == "__metadata__") continue;
     const Json& v = kv.second;
     if (!v.IsObject()) {
-      delete impl;
       return Status::Fail("tensor entry is not an object: " + kv.first);
     }
     TensorInfo info;
     info.name = kv.first;
     const std::string dtype_str = v.GetString("dtype");
     if (!ParseDtype(dtype_str, &info.dtype)) {
-      delete impl;
       return Status::Fail("unknown dtype '" + dtype_str + "' for " +
                           kv.first);
     }
     const Json* shape = v.GetArray("shape");
     if (!shape) {
-      delete impl;
       return Status::Fail("missing shape for " + kv.first);
     }
     for (const Json& d : shape->array) {
-      info.shape.push_back(d.AsInt());
+      uint64_t dimension = 0;
+      if (!UnsignedInteger(d, &dimension) ||
+          dimension > static_cast<uint64_t>(
+                          std::numeric_limits<int64_t>::max())) {
+        return Status::Fail("invalid shape for " + kv.first);
+      }
+      info.shape.push_back(static_cast<int64_t>(dimension));
     }
     const Json* offsets = v.GetArray("data_offsets");
     if (!offsets || offsets->array.size() != 2) {
-      delete impl;
       return Status::Fail("missing data_offsets for " + kv.first);
     }
-    info.data_start = static_cast<uint64_t>(offsets->array[0].AsInt());
-    info.data_end = static_cast<uint64_t>(offsets->array[1].AsInt());
+    uint64_t bytes = 0;
+    if (!UnsignedInteger(offsets->array[0], &info.data_start) ||
+        !UnsignedInteger(offsets->array[1], &info.data_end) ||
+        !TensorBytes(info, &bytes) || info.data_end < info.data_start ||
+        info.data_end > file_size - impl->data_offset ||
+        info.data_end - info.data_start != bytes) {
+      return Status::Fail("invalid tensor extent for " + kv.first);
+    }
     impl->tensors.push_back(std::move(info));
+  }
+
+  std::vector<std::pair<uint64_t, uint64_t>> intervals;
+  for (const auto& tensor : impl->tensors) {
+    if (tensor.data_start != tensor.data_end)
+      intervals.emplace_back(tensor.data_start, tensor.data_end);
+  }
+  std::sort(intervals.begin(), intervals.end());
+  uint64_t previous_end = 0;
+  for (const auto& [start, end] : intervals) {
+    if (start < previous_end)
+      return Status::Fail("overlapping safetensors tensors");
+    previous_end = end;
   }
 
   impl->name_index.reserve(impl->tensors.size());
@@ -198,7 +246,8 @@ Status SafetensorsFile::Open(const std::string& path, SafetensorsFile** out) {
     impl->name_index.emplace(impl->tensors[i].name, i);
   }
 
-  *out = new SafetensorsFile(impl);
+  *out = new SafetensorsFile(impl.get());
+  impl.release();
   return Status();
 }
 
@@ -217,39 +266,23 @@ size_t SafetensorsFile::num_tensors() const { return impl_->tensors.size(); }
 uint64_t SafetensorsFile::file_size() const { return impl_->map_len; }
 
 Status SafetensorsFile::ReadTensor(const TensorInfo& t, void* dst) const {
-  const uint64_t bytes = t.byte_size();
-  if (impl_->data_offset + t.data_end > impl_->map_len) {
-    return Status::Fail("tensor " + t.name + " extends past file end");
+  uint64_t bytes = 0;
+  if (!TensorBytes(t, &bytes) || t.data_end < t.data_start ||
+      t.data_end - t.data_start != bytes) {
+    return Status::Fail("invalid tensor extent for " + t.name);
   }
-  // pread (not mmap+memcpy): one kernel call copies the whole range,
-  // thread-safely (no shared-fd lseek race under the parallel MoE load) and
-  // without the per-page user-space minor faults the mmap path incurred on
-  // first touch. Each layer's ~1.26 GB of expert weights is ~320K 4 KB pages;
-  // faulting them one-by-one cost ~350 ms/layer (matching the measured
-  // 363 ms/layer floor) even with the data already in the page cache.
-  // Reference: Qwen3x-Orin reads shards with ::read for the same reason.
-  const off_t base = static_cast<off_t>(impl_->data_offset + t.data_start);
-  size_t got = 0;
-  while (got < bytes) {
-    const ssize_t r = pread(impl_->fd, static_cast<char*>(dst) + got,
-                            bytes - got, base + static_cast<off_t>(got));
-    if (r < 0) {
-      if (errno == EINTR) continue;
-      return Status::Fail("pread failed for " + t.name);
-    }
-    if (r == 0) break;  // unexpected EOF
-    got += static_cast<size_t>(r);
-  }
-  if (got != bytes) return Status::Fail("short pread for " + t.name);
-  return Status();
+  return ReadRange(t.data_start, bytes, dst);
 }
 
 Status SafetensorsFile::ReadRange(uint64_t data_start, uint64_t length,
                                   void* dst) const {
-  if (impl_->data_offset + data_start + length > impl_->map_len) {
+  const uint64_t data_bytes = impl_->map_len - impl_->data_offset;
+  if (data_start > data_bytes || length > data_bytes - data_start) {
     return Status::Fail("read range extends past file end");
   }
-  // pread, same rationale as ReadTensor (thread-safe, no per-page faults).
+  if (length && !dst) return Status::Fail("missing read range buffer");
+  // File size is bounded by off_t; subtraction above bounds every position.
+  // pread is thread-safe and avoids mmap's per-page user-space minor faults.
   const off_t base = static_cast<off_t>(impl_->data_offset + data_start);
   size_t got = 0;
   while (got < length) {
@@ -277,13 +310,14 @@ Status SafetensorsFile::ReadRangev(uint64_t data_start, size_t count,
     if (lens[i] > std::numeric_limits<size_t>::max() - total) {
       return Status::Fail("read range size overflow");
     }
+    if (lens[i] && !dsts[i]) return Status::Fail("missing read range buffer");
     total += lens[i];
   }
-  if (total == 0) return Status();
   const uint64_t data_bytes = impl_->map_len - impl_->data_offset;
   if (data_start > data_bytes || total > data_bytes - data_start) {
     return Status::Fail("read range extends past file end");
   }
+  if (total == 0) return Status();
   // preadv: one syscall copies the contiguous file range into the
   // scattered destinations (kernel-side scatter, no user-space copy).
   // Omit empty entries so partial-read advancement always makes progress.

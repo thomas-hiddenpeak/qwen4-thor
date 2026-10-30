@@ -64,7 +64,9 @@ struct TensorInfo {
 // A read-only, mmap'd .safetensors file.
 class SafetensorsFile {
  public:
-  // Open and parse the header. Does not read tensor data.
+  // Open and validate integer shapes, disjoint extents and file bounds.
+  // Does not read tensor data. On failure *out is null and fd/map are released,
+  // including when host allocation throws. Zero-sized tensors are supported.
   static Status Open(const std::string& path, SafetensorsFile** out);
   ~SafetensorsFile();
   SafetensorsFile(const SafetensorsFile&) = delete;
