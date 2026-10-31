@@ -4,11 +4,23 @@
 
 ## 当前推进目标
 
+局域网测试服务已启动（2026-10-31 23:24 CST）：用户级临时systemd单元
+`q4t-lan.service`后台运行，监听`0.0.0.0:8000`，局域网地址
+`http://192.168.0.113:8000`，OpenAI兼容base URL加`/v1`，模型名
+`qwen3.8-flash-next`。使用已交付默认0c5ab1de/e6fdd13b，全专家
+驻留、完整head/MTP k3、单请求槽，max-prefill 8192、max-len 208896。
+服务全程持有GPU独占锁；后续GPU验证须先停止本单元。本机经LAN地址
+检查health/models及一次实际对话通过（OK、正常stop、22+2 tokens），
+尚未从另一台局域网设备验证连通。未设置重启系统后自动启动。
+停止：`systemctl --user stop q4t-lan.service`；本次启动参数、单元快照、
+健康响应和日志保存在`.q4t-work/lan-serve-20261031/`，持续日志为
+`server.log`。本次仅启动现有程序，原回退包与验收证据继续保留。
+
 main复审R1～R4已修复并交付（2026-10-31）：默认0c5ab1de、sidecar
 e6fdd13b，运行时/工具锚点55299a0。全驻留/按需专家dtype、shape和
 目标字节校验；热列表去重及重复InitHot；加载任务host异常、claim
 及部分DMA回收；监督器整组停止/subreaper/pidfd及失败启动门均完成。
-默认仍全专家驻留、完整head/MTP k3，无常驻服务。
+默认仍全专家驻留、完整head/MTP k3；本机服务状态见上。
 
 31项IO/专家CPU、29预算、109 Thor host（73发布要求）、10监督、
 5回退及公共CTest 22/22通过；四套构建零警告。真实GPU 21合同，
