@@ -1,0 +1,61 @@
+{
+  "status": "DEVELOPMENT_SYNTAX_ONLY_TESTS_DEFERRED",
+  "time": "2026-11-02T04:03:40.673750+08:00",
+  "parent_commit": "396a4015d1f92d486956d0dfc9abd28d3f977ac8",
+  "reason": "User requested other development and no testing while vLLM is working.",
+  "python_sources": [
+    {
+      "path": "tools/examples/chat_client.py",
+      "sha256": "ef8f487ae31c7c2dfafd37fda8499c993ec7d693c6fca8d4442fa2aa4a56fbb8",
+      "syntax_compiled": true,
+      "warnings": 0,
+      "test_definitions": 0,
+      "imported": false,
+      "executed": false
+    },
+    {
+      "path": "tools/examples/agent_tools_demo.py",
+      "sha256": "e6b1c8a510a168c6ec5a6091465a6667eac7dd89491aa08f07e6d52400db1c2e",
+      "syntax_compiled": true,
+      "warnings": 0,
+      "test_definitions": 0,
+      "imported": false,
+      "executed": false
+    },
+    {
+      "path": "tools/examples/test_chat_client.py",
+      "sha256": "e8acb86e02242bfcc8eed64dacf91ed4018548363d796051eef1e631d77111d2",
+      "syntax_compiled": true,
+      "warnings": 0,
+      "test_definitions": 19,
+      "imported": false,
+      "executed": false
+    }
+  ],
+  "test_registration": {
+    "path": "tests/host/CMakeLists.txt",
+    "sha256": "557b401baa8571991811968ac36522f5803cdc98a27b55b188bfbb386d2287b6",
+    "configured": false,
+    "executed": false
+  },
+  "tests_executed": 0,
+  "model_http_requests": 0,
+  "model_starts": 0,
+  "services_modified": false,
+  "deployed": false,
+  "runtime_changed_files": [],
+  "artifacts": {
+    "build/q4t": {
+      "sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+      "unchanged": true
+    },
+    "build/q4t.release.json": {
+      "sha256": "e6fdd13b7d140926ed4a0d42bcda37b6ec6689305960e3deab03b3f73dc294d6",
+      "unchanged": true
+    },
+    ".q4t-work/response-parsing-20261102/q4t-candidate": {
+      "sha256": "354b20ae391aae0cf40824df9ebff00cfd24680584465beeb24ecaba83a4f266",
+      "unchanged": true
+    }
+  }
+}

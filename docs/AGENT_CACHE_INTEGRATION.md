@@ -237,6 +237,9 @@ chat_template_kwargs。`prompt`和`messages`二选一；raw prompt不能同时�
 两种模式均需按模板合同构建下一轮完整messages。
 不要把包含`<think>`和工具文本的整段输出直接当最终content反复重包。
 本例以raw prompt保持已验收的历史组织方式，不声称某个agent SDK即插即用。
+另有[标准messages客户端与只读工具往返](AGENT_TOOL_CLIENT_2026-11-02.md)
+开发快照，消费上述候选的解析输出、保留推理与工具历史，并在完整响应
+结束后交由应用校验执行；因vLLM业务占用仅完成语法编译，尚未运行验收。
 
 已有客户端若过滤未知字段，需要确保它把session_id、prefix_cache_scope、
 prefix_cache_write_tokens和取消/截止字段透传到服务；以最终发出的HTTP

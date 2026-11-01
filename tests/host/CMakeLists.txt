@@ -108,6 +108,8 @@ q4t_add_python_contract(q4t_physical_ram_contracts
   tools/evalscope/test_physical_ram.py)
 q4t_add_python_contract(q4t_response_identity_contracts
   tools/evalscope/test_response_identity.py)
+q4t_add_python_contract(q4t_agent_tool_client_contracts
+  tools/examples/test_chat_client.py)
 # A build of Python can omit pidfd APIs despite a new version number. Probe the
 # guard's actual contract before assigning its real descendant-cleanup tests.
 set(Q4T_GPU_GUARD_PYTHON "" CACHE FILEPATH
