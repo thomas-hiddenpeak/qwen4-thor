@@ -267,6 +267,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/session_state.cpp
   src/server/http_request.cpp
   src/server/chat_contract.cpp
+  src/server/chat_tool_history.cpp
                              src/server/chat_template.cpp)
 target_include_directories(q4t_server PUBLIC include)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
@@ -387,6 +388,9 @@ if(Q4T_BUILD_TESTS)
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
     tests/server_chat_contract_test.cpp
+    src/server/chat_tool_history.cpp
+    src/server/chat_template.cpp
+    tests/server_chat_tool_history_test.cpp
     src/server/chat_response_parser.cpp
     tests/server_chat_response_parser_test.cpp
     src/server/chat_contract.cpp

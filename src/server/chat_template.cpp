@@ -1,4 +1,6 @@
 #include "q4t/server/chat_template.h"
+
+#include "q4t/server/chat_tool_history.h"
 #include "q4t/server/request_json.h"
 
 #include <charconv>
@@ -236,6 +238,9 @@ Status RenderChatPrompt(const io::Json& request,
       messages->array.size() != contents.size()) {
     return Status::Fail("messages must be a nonempty array");
   }
+  std::vector<size_t> tool_result_order;
+  auto history = PlanToolResultOrder(*messages, &tool_result_order);
+  if (!history) return history;
   const io::Json* options = request.Find("chat_template_kwargs");
   if (options && !options->IsObject()) {
     return Status::Fail("chat_template_kwargs must be an object");
@@ -331,7 +336,8 @@ Status RenderChatPrompt(const io::Json& request,
       if (i && ms[i - 1].GetString("role") != "tool") {
         *prompt += "<|im_start|>user";
       }
-      *prompt += "\n<tool_response>\n" + text[i] + "\n</tool_response>";
+      *prompt += "\n<tool_response>\n" + text[tool_result_order[i]] +
+                 "\n</tool_response>";
       if (i + 1 == ms.size() || ms[i + 1].GetString("role") != "tool") {
         *prompt += "<|im_end|>\n";
       }

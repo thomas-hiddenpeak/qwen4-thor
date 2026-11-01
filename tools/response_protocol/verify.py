@@ -63,6 +63,26 @@ def body(kind, stream=False, parsed=None):
     return request
 
 
+def tool_history_case(reversed_results=False):
+    request = body('tool', parsed=True)
+    request['max_tokens'] = 64
+    request['messages'] = [{'role': 'user', 'content':
+        '读取下面已经完成的两个lookup结果。只回复key=alpha对应code的六位数字。'
+        '不要再次调用工具，也不要回复beta对应的数字。'},
+        {'role': 'assistant', 'content': None, 'tool_calls': [
+            {'id': 'history-alpha', 'type': 'function', 'function': {
+                'name': 'lookup', 'arguments': '{"key":"alpha"}'}},
+            {'id': 'history-beta', 'type': 'function', 'function': {
+                'name': 'lookup', 'arguments': '{"key":"beta"}'}}]}]
+    results = [
+        {'role': 'tool', 'tool_call_id': 'history-alpha',
+         'content': '{"code":"831907"}'},
+        {'role': 'tool', 'tool_call_id': 'history-beta',
+         'content': '{"code":"442106"}'}]
+    request['messages'].extend(reversed(results) if reversed_results else results)
+    return request
+
+
 def decode(raw, streaming):
     if not streaming:
         result = json.loads(raw)
@@ -263,6 +283,13 @@ class Run:
             a = self.resume(folder, tool)
             b = self.resume(folder, tool, True)
             require(comparable(a) == comparable(b), 'resume wire mismatch')
+            ordered = self.chat(folder, 'history-ordered', tool_history_case())
+            reordered = self.chat(folder, 'history-reordered', tool_history_case(True))
+            require(comparable(ordered) == comparable(reordered),
+                    'tool history order changed the canonical response')
+            require(ordered['finish'] == 'stop' and
+                    ordered['message']['content'].strip() == '831907',
+                    'tool history association quality')
             raw = self.chat(folder, 'thinking-raw', body('thinking', parsed=False))
             thought = self.pair(folder, 'thinking')
             before, marker, after = raw['message']['content'].partition('</think>')

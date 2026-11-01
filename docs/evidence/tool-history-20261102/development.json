@@ -1,0 +1,53 @@
+{
+  "status": "DEVELOPMENT_BUILD_ONLY_TESTS_DEFERRED",
+  "time": "2026-11-02T04:34:59.729772+08:00",
+  "parent_commit": "0fa7a964e2497dde7c98ad0b4a6015f9c0c4a5c2",
+  "tests_executed": 0,
+  "model_http_requests": 0,
+  "model_starts": 0,
+  "services_modified": false,
+  "deployed": false,
+  "automatic_ci": "skip ci marker required",
+  "compiler_warnings": 0,
+  "runtime_changed": [
+    "src/server/chat_contract.cpp",
+    "src/server/chat_template.cpp"
+  ],
+  "runtime_added": [
+    "include/q4t/server/chat_tool_history.h",
+    "src/server/chat_tool_history.cpp"
+  ],
+  "runtime_source_count": 162,
+  "artifacts_sha256": {
+    "build/q4t": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+    "build/q4t.release.json": "e6fdd13b7d140926ed4a0d42bcda37b6ec6689305960e3deab03b3f73dc294d6",
+    "build/q4t_host_tests": "3f220ce89e83b3ea237cabe09599eef06d1451cf8f437a31813a48343db00002",
+    ".q4t-work/tool-history-20261102/q4t-candidate": "b4f04236561a98d67e1a6b7e8952946f57115cdce996cd4738165a9c5c6677bb",
+    ".q4t-work/tool-history-20261102/verify_chat_template": "f1aff9120be63d5f20f1f81bf1df247ac50c565c18eeb7bc232223c622b939f7",
+    ".q4t-work/response-parsing-20261102/q4t-candidate": "354b20ae391aae0cf40824df9ebff00cfd24680584465beeb24ecaba83a4f266"
+  },
+  "build_cache_sha256": "52e07d3ce862297a21979fcef81df00a3c838238eb2c5bf12e6fde92f25906b3",
+  "new_contract_definitions": [
+    "chat_tool_history_identified_order",
+    "chat_tool_history_missing_duplicate_orphan",
+    "chat_tool_history_identified_shapes",
+    "chat_tool_history_legacy_compatibility",
+    "chat_tool_history_batch_boundaries",
+    "chat_tool_history_bounds",
+    "chat_template_tool_result_order",
+    "chat_contract_tool_history_gate",
+    "chat_tool_history_media_order_guard"
+  ],
+  "required_host_list_count": 93,
+  "http_driver": {
+    "sha256": "cd7f10fbb7c80505faced47362b22198b3114d4689d7b5afc6d0012226120cac",
+    "syntax_compiled_only": true,
+    "executed": false,
+    "planned_generations": 23,
+    "maximum_generations": 24,
+    "planned_negative": 10,
+    "model_starts": 3,
+    "maximum_seconds": 1800
+  },
+  "frozen_template_fixture_sha256": "670afc63b321539c2f86aff7c15a1b351bd7bb35ca9e01373466c7ad2353f27c"
+}

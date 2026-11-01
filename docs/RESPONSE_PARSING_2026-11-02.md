@@ -96,6 +96,10 @@ response_stage=/home/rm01/models/dev/qwen4-thor/.q4t-work/response-protocol-http
 usage/finish、原始总时延及退出记录保存。首次具体失败即停止，不重试
 找有利结果；驱动与外层guard必须同时成功。业务占用时不得运行此命令。
 
+后续[工具历史关联开发](CHAT_TOOL_HISTORY_2026-11-02.md)在原24生成
+上限内增加顺序/乱序两次正例，当前驱动计划23生成；10负例、3启动、
+30分钟上限保持。原21是396a401阶段计划，不代表曾执行过。
+
 ## 结果
 
 03:12 CST设备复查发现实际vLLM业务：容器

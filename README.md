@@ -17,6 +17,8 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 候选接口与验收边界见[输出协议](docs/RESPONSE_PARSING_2026-11-02.md)。
 对应的[messages客户端与只读工具往返示例](docs/AGENT_TOOL_CLIENT_2026-11-02.md)
 也已提供开发快照，仅语法编译，尚未运行验证。
+[工具历史关联](docs/CHAT_TOOL_HISTORY_2026-11-02.md)已补齐带ID文本结果
+乱序归一与关联校验，仅编译完成，未测试或部署。
 
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
   MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 生成

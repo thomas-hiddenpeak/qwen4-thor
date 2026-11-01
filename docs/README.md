@@ -5,6 +5,7 @@
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
 待验收接入：[messages客户端、流式重组与只读工具往返](AGENT_TOOL_CLIENT_2026-11-02.md)；
 [服务端工具/推理输出协议](RESPONSE_PARSING_2026-11-02.md)。
+[带ID工具历史关联与后续开发准备](CHAT_TOOL_HISTORY_2026-11-02.md)。
 最新专项：[main复审四项修复交付、证据与回退](MAIN_REAUDIT_FIX_RESULT_2026-10-31.md)；
 [修复范围与冻结预算](MAIN_REAUDIT_FIX_PLAN_2026-10-31.md)；
 [main修复后复审：4项P2既有遗漏与回归检查](MAIN_REAUDIT_2026-10-31.md)；

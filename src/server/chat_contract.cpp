@@ -4,6 +4,8 @@
 #include <initializer_list>
 #include <string_view>
 
+#include "q4t/server/chat_tool_history.h"
+
 namespace q4t::server {
 namespace {
 
@@ -184,7 +186,7 @@ Status ValidateChatContract(const io::Json& req,
       }
     }
   }
-  return Status();
+  return PlanToolResultOrder(*messages);
 }
 
 }  // namespace q4t::server
