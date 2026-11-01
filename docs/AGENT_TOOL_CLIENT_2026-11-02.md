@@ -1,5 +1,10 @@
 # messages 工具客户端开发
 
+后续更新：当前代码已增加能力查询门、持久日志与只读恢复判定；
+客户端合同增至22项，全部未执行。当前demo需要提供capabilities接口
+的新候选；本页以下19项与354b20ae为初版开发记录，最新接入/验证
+命令以[聊天接入准备](CHAT_INTEGRATION_PREP_2026-11-02.md)为准。
+
 ## 范围与状态
 
 2026-11-02 用户要求 vLLM 工作期间安排其他开发、不测试。本阶段选择
@@ -31,6 +36,7 @@ Python 3.11或更新版本。面向本项目的单choice、greedy、解析messag
 | 接口 | 行为 |
 |---|---|
 | `make_request(messages, tools, ...)` | 深拷贝完整历史和工具定义；每次生成新的request_id/cancel_token；可显式复用session_id |
+| `ChatClient.capabilities(...)` | 显式GET并检查能力/模型，可固定协议与模板摘要；失败不自动降级或生成 |
 | `ChatClient(base_url).complete(body)` | 一次HTTP POST，支持origin或`/v1`地址；返回统一Completion；不自动重试或跟随重定向 |
 | `read_sse` / `read_json` | 可独立消费响应；保留content、reasoning_content、JSON字符串arguments及usage |
 | `prepare_tool_calls(completion, validators)` | 按名称白名单解码和校验整个调用批次；返回执行计划，不执行工具 |

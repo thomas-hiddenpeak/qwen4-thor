@@ -231,6 +231,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     HandleModels(fd);
     return;
   }
+  if (path == "/v1/capabilities" && method == "GET") {
+    HandleCapabilities(fd);
+    return;
+  }
   if (path == "/metrics" && method == "GET") {
     HandleMetrics(fd);
     return;

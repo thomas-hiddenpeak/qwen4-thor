@@ -4,6 +4,7 @@
 // three endpoints:
 //   GET  /healthz               -> 200 "ok"
 //   GET  /v1/models             -> 200 OpenAI model list
+//   GET  /v1/capabilities       -> protocol/template implementation identity
 //   POST /v1/chat/completions   -> 200 OpenAI chat completion (stream or not)
 //
 // The model is stateful (per-layer SSM/conv/KV caches persist across decode
@@ -122,6 +123,7 @@ class ChatServer {
                 const std::string& body);
   void HandleHealth(int fd);
   void HandleModels(int fd);
+  void HandleCapabilities(int fd);
   void HandleMetrics(int fd);
   void HandleChat(int fd, const std::string& body);
   void HandleChatImpl(int fd, const std::string& body,

@@ -12,6 +12,7 @@ import secrets
 
 from chat_client import (ChatClient, append_final, append_tool_results,
                          make_request, prepare_tool_calls, require)
+from tool_recovery import journal_lock, save_receipt
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -30,9 +31,7 @@ def new_file(path, binary=False):
 
 
 def save(path, value):
-    with new_file(path) as output:
-        json.dump(value, output, ensure_ascii=False, allow_nan=False, indent=2)
-        output.write("\n")
+    save_receipt(path, value)
 
 
 def validate_lookup(arguments):
@@ -52,22 +51,35 @@ def run(directory, base_url, *, model="qwen3.8-flash-next", stream=True,
             "use a new output directory inside .q4t-work")
     client = ChatClient(base_url)
     directory.mkdir(parents=True, exist_ok=False, mode=0o700)
+    with journal_lock(directory, create=True):
+        return _run_locked(directory, client, base_url, model, stream, thinking,
+                           session_cache, max_rounds, max_tool_calls)
+
+
+def _run_locked(directory, client, base_url, model, stream, thinking,
+                session_cache, max_rounds, max_tool_calls):
     session_id = secrets.token_hex(32) if session_cache else None
-    save(directory / "run-started.json", dict(base_url=base_url, model=model,
-        max_requests=max_rounds, max_tool_calls=max_tool_calls,
-        session_id=session_id, stream=stream, thinking=thinking))
     history = [{"role": "user", "content":
         "请先调用lookup工具，key必须是audit。拿到工具结果后，"
         "只回复其中code字段的六位数字。在工具返回之前不要猜测答案。"}]
+    save(directory / "run-started.json", dict(base_url=base_url, model=model,
+        max_requests=max_rounds, max_tool_calls=max_tool_calls,
+        session_id=session_id, stream=stream, thinking=thinking,
+        journal_version=1, initial_messages=history))
     calls = 0
     try:
+        save(directory / "capabilities.json", client.capabilities(model=model))
         for turn in range(max_rounds):
             label = f"round-{turn:02d}"
             request = make_request(history, [TOOL], model=model, stream=stream,
                 thinking=thinking, session_id=session_id)
             save(directory / (label + "-request.json"), request)
+            save(directory / (label + "-submitted.json"),
+                 dict(request_id=request["request_id"]))
             with new_file(directory / (label + "-wire.bin"), True) as wire:
                 completion = client.complete(request, sink=wire.write)
+                wire.flush()
+                os.fsync(wire.fileno())
             save(directory / (label + "-response.json"), asdict(completion))
             if completion.finish_reason == "stop":
                 history = append_final(history, completion)

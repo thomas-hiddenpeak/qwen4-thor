@@ -336,6 +336,47 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
+def validate_capabilities(value, model, *, protocol_sha256=None,
+                          template_sha256=None):
+    """Validate the features this client needs; this is not release approval."""
+    require(isinstance(value, dict) and
+            value.get("object") == "q4t.capabilities" and
+            type(value.get("schema_version")) is int and
+            value["schema_version"] == 1, "unsupported capability document")
+    require(value.get("model") == model, "capability model mismatch")
+    chat, tools, template = (value.get(key) for key in
+                             ("chat", "tools", "template"))
+    require(all(isinstance(item, dict) for item in (chat, tools, template)),
+            "missing capability sections")
+    for key in ("messages", "reasoning_content", "tool_calls", "stream",
+                "stream_include_usage"):
+        require(chat.get(key) is True, "required chat capability: " + key)
+    require(tools.get("type") == "function" and
+            tools.get("execution") == "client" and
+            tools.get("tool_choice") == ["auto"] and
+            isinstance(tools.get("parallel_tool_calls"), list) and
+            len(tools["parallel_tool_calls"]) == 1 and
+            tools["parallel_tool_calls"][0] is True,
+            "incompatible tool protocol")
+    require(isinstance(template.get("id"), str) and template["id"],
+            "missing template identity")
+    for section, keys in ((value, ("protocol_source_sha256",)), (template,
+            ("reference_sha256", "renderer_source_sha256",
+             "tool_history_source_sha256", "fixture_sha256"))):
+        for key in keys:
+            text = section.get(key)
+            require(isinstance(text, str) and len(text) == 64 and
+                    all(c in "0123456789abcdef" for c in text),
+                    "invalid capability identity: " + key)
+    require(protocol_sha256 is None or
+            value["protocol_source_sha256"] == protocol_sha256,
+            "protocol source identity mismatch")
+    require(template_sha256 is None or
+            template["reference_sha256"] == template_sha256,
+            "native template reference mismatch")
+    return deepcopy(value)
+
+
 class ChatClient:
     def __init__(self, base_url, *, api_key=None):
         url = urllib.parse.urlsplit(base_url)
@@ -355,12 +396,32 @@ class ChatClient:
             headers["Authorization"] = "Bearer " + self.api_key
         request = urllib.request.Request(self.base + path, data=data,
                                          headers=headers, method="POST")
+        return self._open(request, timeout)
+
+    def _open(self, request, timeout):
         try:
             return self.opener.open(request, timeout=timeout)
         except urllib.error.HTTPError as error:
             with error:
                 raw = error.read(65536).decode("utf-8", errors="replace")
             raise RemoteError(error.code, raw) from error
+
+    def capabilities(self, *, model="qwen3.8-flash-next", protocol_sha256=None,
+                     template_sha256=None):
+        """Explicit GET; 404/invalid metadata never silently assumes support."""
+        headers = {"Accept": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = "Bearer " + self.api_key
+        request = urllib.request.Request(self.base + "/capabilities",
+                                         headers=headers, method="GET")
+        with self._open(request, 10) as response:
+            require(response.status == 200 and
+                    response.headers.get_content_type() == "application/json",
+                    "unexpected capability response")
+            raw = response.read(65537)
+            require(len(raw) <= 65536, "oversized capability response")
+        return validate_capabilities(load_json(raw), model,
+            protocol_sha256=protocol_sha256, template_sha256=template_sha256)
 
     def complete(self, body, *, sink=None):
         require(body.get("parse_response") is True and "messages" in body,

@@ -1,5 +1,8 @@
 # Shared by the Thor release gate and the standalone public host build.
+include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_capabilities.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_capabilities_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/mtp/suffix_drafter.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/suffix_drafter_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/trace/sha256.cpp

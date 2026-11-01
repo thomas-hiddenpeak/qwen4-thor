@@ -7,10 +7,12 @@ import argparse
 import copy
 import hashlib
 import http.client
+import io
 import json
 import os
 from pathlib import Path
 import subprocess
+import secrets
 import sys
 import time
 
@@ -18,10 +20,13 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT / 'tools/verify/startup_delivery'))
 from deploy import require_guard
+sys.path.insert(0, str(ROOT / 'tools/examples'))
+from chat_client import read_json, read_sse, validate_capabilities
 
 
 def save(path, value):
-    with path.open('x') as stream:
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, 'w') as stream:
         json.dump(value, stream, ensure_ascii=False, indent=2)
         stream.write('\n')
 
@@ -176,6 +181,9 @@ class Run:
         else:
             self.requests += 1
         self.budget()
+        request = copy.deepcopy(request)
+        request['request_id'] = 'protocol-' + secrets.token_hex(16)
+        request['cancel_token'] = secrets.token_hex(32)
         save(folder / (name + '-request.json'), request)
         start = time.monotonic()
         status, raw = self.request('POST', '/v1/chat/completions', request)
@@ -186,6 +194,18 @@ class Run:
             return None
         require(status == 200, name + ': HTTP ' + str(status))
         parsed = decode(raw, request.get('stream', False))
+        if request.get('parse_response') is True:
+            # Reuse the same wire: exercise the integration client without an
+            # extra generation, network retry, or model-selected tool dispatch.
+            reader = read_sse if request.get('stream') else read_json
+            client_result = reader(io.BytesIO(raw.encode('utf-8')))
+            require(client_result.id == request['request_id'] and
+                    client_result.model == request['model'],
+                    'client response identity mismatch')
+            require(dict(message=client_result.message,
+                         finish=client_result.finish_reason,
+                         usage=client_result.usage) == parsed,
+                    'client/server protocol interpretation mismatch')
         save(folder / (name + '-parsed.json'), parsed)
         released_by = time.monotonic() + 3
         while True:
@@ -230,7 +250,7 @@ class Run:
         self.starts += 1
         self.budget()
         folder = self.out / name
-        folder.mkdir()
+        folder.mkdir(mode=0o700)
         command = [str(binary), 'serve', '--model-dir', str(self.args.model_dir),
             '--host', '127.0.0.1', '--port', str(self.args.port), '--max-seq', '1',
             '--max-prefill', '2048', '--max-len', '8192']
@@ -250,6 +270,17 @@ class Run:
                     require(server.poll() is None, name + ': startup failed')
                     require(time.monotonic() - start < 240, 'startup timeout')
                     time.sleep(1)
+                code, raw_caps = self.request('GET', '/v1/capabilities')
+                save(folder / 'capabilities.json', dict(status=code, raw=raw_caps))
+                if name.startswith('candidate-'):
+                    require(code == 200, 'candidate capability endpoint missing')
+                    caps = validate_capabilities(json.loads(raw_caps),
+                        'qwen3.8-flash-next', protocol_sha256=self.args.protocol_sha256)
+                    require(caps['runtime'] == dict(media_enabled=False,
+                                                   mtp_enabled=mtp),
+                            'capability runtime flags mismatch')
+                else:
+                    require(code == 404, 'frozen raw baseline unexpectedly changed')
                 action(folder)
         finally:
             if server is not None and server.poll() is None:
@@ -340,6 +371,7 @@ def main():
     parser.add_argument('--model-dir', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--port', type=int, default=18096)
+    parser.add_argument('--protocol-sha256', required=True)
     args = parser.parse_args()
     for key in ['candidate', 'baseline', 'model_dir']:
         setattr(args, key, getattr(args, key).resolve(strict=True))
@@ -347,7 +379,7 @@ def main():
     require(args.output.is_relative_to(ROOT / '.q4t-work'), 'output location')
     # Convention: --output STAGE/http with the outer guard writing STAGE/lease.
     require_guard(args.output.parent)
-    args.output.mkdir(parents=True, exist_ok=False)
+    args.output.mkdir(parents=True, exist_ok=False, mode=0o700)
     run = Run(args)
     status, error = 'FAIL', None
     try:

@@ -58,6 +58,19 @@ def completion(message=MESSAGE, finish="tool_calls", identifier="request-1"):
         whole(message, finish, identifier), ensure_ascii=False).encode()))
 
 
+def capabilities():
+    return dict(object="q4t.capabilities", schema_version=1,
+        model="qwen3.8-flash-next", protocol_source_sha256="a" * 64,
+        chat=dict(messages=True, reasoning_content=True, tool_calls=True,
+                  stream=True, stream_include_usage=True),
+        tools=dict(type="function", execution="client", tool_choice=["auto"],
+                   parallel_tool_calls=[True]),
+        template=dict(id="qwen4_exp-native-v1", reference_sha256="b" * 64,
+                      renderer_source_sha256="c" * 64,
+                      tool_history_source_sha256="d" * 64,
+                      fixture_sha256="e" * 64))
+
+
 class Response(io.BytesIO):
     def __init__(self, data, mime="text/event-stream", status=200):
         super().__init__(data)
@@ -294,6 +307,49 @@ class ClientContracts(unittest.TestCase):
         self.assertEqual(json.loads(sent.data), {key: request[key] for key in
                                               ("request_id", "cancel_token")})
 
+    def test_capability_identity_and_feature_gate(self):
+        caps = capabilities()
+        self.assertEqual(client.validate_capabilities(caps, caps["model"],
+            protocol_sha256="a" * 64, template_sha256="b" * 64), caps)
+        for section, key, value in (("chat", "tool_calls", False),
+                ("tools", "parallel_tool_calls", [1]),
+                ("template", "reference_sha256", "bad")):
+            changed = deepcopy(caps)
+            changed[section][key] = value
+            with self.assertRaises(client.ProtocolError):
+                client.validate_capabilities(changed, caps["model"])
+        with self.assertRaises(client.ProtocolError):
+            client.validate_capabilities(caps, caps["model"], protocol_sha256="f" * 64)
+        with self.assertRaises(client.ProtocolError):
+            client.validate_capabilities(caps, "another-model")
+
+    def test_capability_discovery_is_one_get(self):
+        api = client.ChatClient("http://localhost:18096")
+        api.opener = MagicMock()
+        api.opener.open.return_value = Response(json.dumps(capabilities()).encode(),
+                                                "application/json")
+        self.assertEqual(api.capabilities(), capabilities())
+        api.opener.open.assert_called_once()
+        request = api.opener.open.call_args.args[0]
+        self.assertEqual(request.method, "GET")
+        self.assertIsNone(request.data)
+        self.assertEqual(request.full_url, "http://localhost:18096/v1/capabilities")
+
+    def test_capability_failure_does_not_fallback_or_generate(self):
+        for response in (Response(b"x" * 65537, "application/json"),
+                         Response(b"{}", "text/html"),
+                         urllib.error.HTTPError("http://localhost", 404, "missing",
+                                               {}, io.BytesIO(b"missing"))):
+            api = client.ChatClient("http://localhost")
+            api.opener = MagicMock()
+            if isinstance(response, Exception):
+                api.opener.open.side_effect = response
+            else:
+                api.opener.open.return_value = response
+            with self.assertRaises((client.ProtocolError, client.RemoteError)):
+                api.capabilities()
+            api.opener.open.assert_called_once()
+
 
 class DemoContracts(unittest.TestCase):
     def setUp(self):
@@ -323,6 +379,7 @@ class DemoContracts(unittest.TestCase):
                               body["request_id"])
         api = MagicMock()
         api.complete.side_effect = complete
+        api.capabilities.return_value = capabilities()
         with patch.object(demo, "ChatClient", return_value=api):
             answer = demo.run(self.directory, "http://localhost:18096",
                               session_cache=True)
@@ -340,6 +397,7 @@ class DemoContracts(unittest.TestCase):
 
     def test_partial_stream_never_reaches_tool_plan(self):
         api = MagicMock()
+        api.capabilities.return_value = capabilities()
         def fail(body, sink):
             raw = stream(tool_deltas(), identifier=body["request_id"])
             return client.read_sse(io.BytesIO(raw[:-20]), sink=sink)
@@ -362,6 +420,7 @@ class DemoContracts(unittest.TestCase):
                                       ("budget", completion(), 1)):
             directory = self.directory / name
             api = MagicMock()
+            api.capabilities.return_value = capabilities()
             api.complete.return_value = result
             with patch.object(demo, "ChatClient", return_value=api):
                 with self.assertRaises(client.ProtocolError):

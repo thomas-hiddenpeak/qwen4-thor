@@ -4,6 +4,8 @@
 #include <ctime>
 #include <string>
 
+#include "q4t/server/chat_capabilities.h"
+
 namespace q4t::server {
 using detail::SendSimple;
 
@@ -131,6 +133,12 @@ void ChatServer::HandleModels(int fd) {
       "\",\"object\":\"model\",\"created\":" + std::to_string(std::time(nullptr)) +
       ",\"owned_by\":\"q4t\"}]}";
   SendSimple(fd, 200, "OK", body, "application/json");
+}
+
+void ChatServer::HandleCapabilities(int fd) {
+  SendSimple(fd, 200, "OK",
+             ChatCapabilitiesJson(model_name_, allow_media_, mtp_loaded_),
+             "application/json");
 }
 
 }  // namespace q4t::server

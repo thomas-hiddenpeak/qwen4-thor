@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "nice",
+    "-n",
+    "10",
+    "cmake",
+    "--build",
+    "build",
+    "--target",
+    "q4t_server",
+    "q4t_host_tests",
+    "--parallel",
+    "1"
+  ],
+  "tests_executed": 0
+}

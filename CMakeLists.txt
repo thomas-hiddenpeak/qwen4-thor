@@ -254,7 +254,9 @@ target_include_directories(q4t_runtime PUBLIC include)
 # ---------------------------------------------------------------------------
 # q4t_server — OpenAI-compatible HTTP server (POSIX sockets, no deps)
 # ---------------------------------------------------------------------------
+include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
+  src/server/chat_capabilities.cpp
   src/server/server_options.cpp
   src/server/chat_http.cpp
   src/server/http_response.cpp
@@ -270,6 +272,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_tool_history.cpp
                              src/server/chat_template.cpp)
 target_include_directories(q4t_server PUBLIC include)
+target_include_directories(q4t_server PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
 if(Q4T_SERVE_FAULT_INJECTION)
   target_compile_definitions(q4t_server PRIVATE Q4T_SERVE_FAULT_INJECTION=1)
@@ -388,6 +391,8 @@ if(Q4T_BUILD_TESTS)
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
     tests/server_chat_contract_test.cpp
+    src/server/chat_capabilities.cpp
+    tests/server_chat_capabilities_test.cpp
     src/server/chat_tool_history.cpp
     src/server/chat_template.cpp
     tests/server_chat_tool_history_test.cpp
@@ -455,6 +460,7 @@ if(Q4T_BUILD_TESTS)
 
   add_executable(q4t_tests ${Q4T_TEST_SOURCES})
   target_include_directories(q4t_tests PRIVATE include)
+  target_include_directories(q4t_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})
   add_test(NAME q4t_tests COMMAND q4t_tests)
 
@@ -506,6 +512,7 @@ if(Q4T_BUILD_TESTS)
   find_package(Threads REQUIRED)
   add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
   target_include_directories(q4t_host_tests PRIVATE include)
+  target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads)
   if(Q4T_HAS_ICU)
     target_sources(q4t_host_tests PRIVATE tests/text_tokenizer_test.cpp)
