@@ -14,6 +14,7 @@
 #include "q4t/diagnostic/execution_observer.h"
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/chat_response_parser.h"
 #include "q4t/server/prefix_cache_policy.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/mtp_policy.h"
@@ -245,6 +246,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::string prompt;
   std::vector<VisionItem> items;
   if (!PrepareChatInput(fd, req, &prompt, &items)) return;
+  ChatResponseParser response_parser;
+  s = response_parser.Init(req, prompt, request_id, !stream);
+  if (!s.ok()) {
+    SendError(fd, 400, s.message());
+    return;
+  }
 
   std::vector<std::uint32_t> prompt_u32;
   std::vector<int32_t> ids;
@@ -964,17 +971,26 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return false;
   };
   detail::Utf8Stream utf8;
-  bool first_content_sent = false;
-  const auto write_content = [&](const std::string& piece) {
-    if (piece.empty()) return true;
-    detail::ServeFaultPoint("handler.before_content");
-    if (!write_stream(SseChunk(id, model_field, "", piece, "", 0))) return false;
-    if (!first_content_sent) {
-      first_content_sent = true;
-      metrics_.ttft_seconds.Observe(std::chrono::duration<double>(
-          std::chrono::steady_clock::now() - t_arrive).count());
+  Status response_status;
+  bool first_delta_sent = false;
+  const auto write_deltas = [&](const std::vector<ResponseDelta>& deltas) {
+    for (const auto& delta : deltas) {
+      detail::ServeFaultPoint("handler.before_content");
+      if (!write_stream(detail::SseDeltaChunk(
+              id, model_field, delta.ToJson(), "", 0))) return false;
+      if (!first_delta_sent) {
+        first_delta_sent = true;
+        metrics_.ttft_seconds.Observe(std::chrono::duration<double>(
+            std::chrono::steady_clock::now() - t_arrive).count());
+      }
     }
     return true;
+  };
+  const auto write_content = [&](const std::string& piece) {
+    if (!response_status) return false;
+    std::vector<ResponseDelta> deltas;
+    response_status = response_parser.Append(piece, &deltas);
+    return response_status.ok() && write_deltas(deltas);
   };
 
   // Streaming header (flushed immediately).
@@ -1236,8 +1252,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
             decoded = tok_->Decode(one, true, &piece).ok();
           }
-          if (decoded) wrote = write_content(utf8.Append(piece));
-          if (!wrote) {  // client disconnected: stop, free the slot
+          if (decoded) {
+            wrote = write_content(utf8.Append(piece));
+          } else {
+            response_status = Status::Fail("token decode failed");
+            wrote = false;
+          }
+          if (!wrote) {  // Disconnect or parser/decode failure: free the slot.
             done = true;
             finish_reason = "stop";
             break;
@@ -1285,7 +1306,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   // No scheduler owns this row now. Capture the complete target/shifted-draft
   // boundary before any ordinary-decode tail; publication waits for successful
   // HTTP completion. At most three emitted tail tokens will be recomputed.
-  if (session.cache && mtp_sched && !generation_failed && !cancelled() &&
+  if (session.cache && mtp_sched && !generation_failed && response_status.ok() &&
+      !cancelled() &&
       seq.stage == model::ModelSequence::Stage::kDecode && !seq.HasPending() &&
       seq.position >= SessionCache::kMinPrefix &&
       seq.position < request_capacity) {
@@ -1430,8 +1452,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
           decoded = tok_->Decode(one, true, &piece).ok();
         }
-        if (decoded) wrote = write_content(utf8.Append(piece));
-        if (!wrote) {  // client disconnected: stop, free the slot
+        if (decoded) {
+          wrote = write_content(utf8.Append(piece));
+        } else {
+          response_status = Status::Fail("token decode failed");
+          wrote = false;
+        }
+        if (!wrote) {  // Disconnect or parser/decode failure: free the slot.
           finish_reason = "stop";
           break;
         }
@@ -1685,6 +1712,42 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
   diagnostic.Stage("response");
+  // Both transports use the same parser. Never publish a successful terminal
+  // (or a session snapshot) for malformed/truncated model tool output.
+  if (response_status.ok()) {
+    if (stream) {
+      write_content(utf8.Finish());
+    } else {
+      std::vector<std::uint32_t> gen_u32(generated.begin(), generated.end());
+      std::string text;
+      {
+        auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+        response_status = tok_->Decode(gen_u32, true, &text);
+      }
+      if (response_status.ok()) {
+        std::vector<ResponseDelta> ignored;
+        response_status = response_parser.Append(
+            detail::NormalizeUtf8(text), &ignored);
+      }
+    }
+  }
+  if (response_status.ok()) {
+    std::vector<ResponseDelta> deltas;
+    response_status = response_parser.Finish(finish_reason == "length", &deltas);
+    if (response_status.ok() && stream) write_deltas(deltas);
+  }
+  if (!response_status.ok()) {
+    err_guard.ok = false;
+    diagnostic.Outcome("error", "response_parse_failed");
+    const detail::WriteOptions terminal{
+        std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
+    detail::SendResponseParseError(fd, stream, response_state,
+                                   response_status.message(), terminal);
+    cleanup();
+    return;
+  }
+  if (finish_reason == "stop" && response_parser.HasToolCalls())
+    finish_reason = "tool_calls";
   const std::string cached_usage = (session.cache || !prefix_scope.empty())
       ? ",\"prompt_tokens_details\":{\"cached_tokens\":" +
             std::to_string(restored_prefix) + "}"
@@ -1692,7 +1755,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   detail::ServeRequestFaultPoint("handler.before_response", request_id.c_str());
   // 4. Finalize.
   if (stream) {
-    write_content(utf8.Finish());
     // Allocate all terminal frames before publishing the first terminal.
     // Once publication starts, an exception can only close the connection;
     // appending a second terminal would turn a truncated stream into a lie.
@@ -1716,40 +1778,24 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     detail::ServeFaultPoint("handler.after_finish");
     write_stream(tail);
   } else {
-    std::vector<std::uint32_t> gen_u32(generated.begin(), generated.end());
-    std::string text;
-    bool decoded = false;
-    {
-      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-      decoded = tok_->Decode(gen_u32, true, &text).ok();
-    }
-    if (decoded) {
-      text = detail::NormalizeUtf8(text);
-      std::string resp =
-          "{\"id\":\"" + id + "\",\"object\":\"chat.completion\","
-          "\"created\":" +
-          std::to_string(created) + ",\"model\":\"" + JsonEscape(model_field) +
-          "\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\","
-          "\"content\":\"" +
-          JsonEscape(text) +
-          "\"},\"finish_reason\":\"" + finish_reason + "\"}],"
-          "\"usage\":{\"prompt_tokens\":" +
-          std::to_string(T) +
-          ",\"completion_tokens\":" + std::to_string(generated.size()) +
-          ",\"total_tokens\":" + std::to_string(T + generated.size()) +
-          cached_usage + "}";
-      resp += "}";
-      if (!SendSimple(fd, 200, "OK", resp, "application/json",
-                      {.control = control.get()})) {
-        client_disconnected = true;
-        control->Cancel(RequestControl::State::kDisconnect);
-        count_abort();
-      }
-    } else {
-      err_guard.ok = false;
-      SendError(fd, 500, "decode failed");
-      cleanup();
-      return;
+    std::string resp =
+        "{\"id\":\"" + id + "\",\"object\":\"chat.completion\","
+        "\"created\":" +
+        std::to_string(created) + ",\"model\":\"" + JsonEscape(model_field) +
+        "\",\"choices\":[{\"index\":0,\"message\":" +
+        response_parser.MessageJson() +
+        ",\"finish_reason\":\"" + finish_reason + "\"}],"
+        "\"usage\":{\"prompt_tokens\":" +
+        std::to_string(T) +
+        ",\"completion_tokens\":" + std::to_string(generated.size()) +
+        ",\"total_tokens\":" + std::to_string(T + generated.size()) +
+        cached_usage + "}";
+    resp += "}";
+    if (!SendSimple(fd, 200, "OK", resp, "application/json",
+                    {.control = control.get()})) {
+      client_disconnected = true;
+      control->Cancel(RequestControl::State::kDisconnect);
+      count_abort();
     }
   }
 

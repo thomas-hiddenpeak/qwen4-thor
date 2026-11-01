@@ -48,6 +48,14 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const WriteOptions& options = {});
 void SendError(int fd, int code, const std::string& message,
                const WriteOptions& options = {});
+// A malformed model response is an error terminal, never stop/tool_calls.
+void SendResponseParseError(int fd, bool stream, ResponseState* state,
+                            const std::string& message,
+                            const WriteOptions& options = {});
+// delta_json is an object serialized by the response parser, never raw input.
+std::string SseDeltaChunk(const std::string& id, const std::string& model,
+                          const std::string& delta_json,
+                          const std::string& finish_reason, int index);
 std::string SseChunk(const std::string& id, const std::string& model,
                      const std::string& delta_role, const std::string& content,
                      const std::string& finish_reason, int index);

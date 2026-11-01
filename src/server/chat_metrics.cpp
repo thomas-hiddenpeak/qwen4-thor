@@ -93,7 +93,7 @@ void ChatServer::HandleMetrics(int fd) {
         gpu_healthy_.load() ? 1 : 0);
 
   histogram("q4t_ttft_seconds",
-            "Streaming arrival to first nonempty UTF-8 content sent locally.",
+            "Streaming arrival to first content/reasoning/tool delta sent locally.",
             metrics_.ttft_seconds);
   histogram("q4t_target_ready_seconds", "Arrival to first target token ready.",
             metrics_.target_ready_seconds);

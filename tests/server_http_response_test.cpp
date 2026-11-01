@@ -87,6 +87,46 @@ Q4T_TEST(server_utf8_malformed_subparts) {
   return true;
 }
 
+Q4T_TEST(server_http_parse_error_terminal) {
+  using namespace q4t::server::detail;
+  for (bool stream : {false, true}) {
+    SocketPair sockets;
+    ResponseState state = stream ? ResponseState::kStreaming :
+                                   ResponseState::kUnsent;
+    SendResponseParseError(sockets.fd[0], stream, &state, "invalid \"参数\"");
+    Q4T_CHECK(state == ResponseState::kTerminal);
+    SendResponseParseError(sockets.fd[0], stream, &state, "duplicate");
+    SendExceptionResponse(sockets.fd[0], state);  // Must not append another end.
+    shutdown(sockets.fd[0], SHUT_WR);
+    std::string output;
+    std::array<char, 2048> bytes{};
+    for (;;) {
+      const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(), 0);
+      Q4T_CHECK(n >= 0);
+      if (!n) break;
+      output.append(bytes.data(), static_cast<size_t>(n));
+    }
+    Q4T_CHECK(output.find("finish_reason") == output.npos);
+    Q4T_CHECK(output.find("\"usage\"") == output.npos);
+    std::string body;
+    if (stream) {
+      Q4T_CHECK(output.starts_with("data: "));
+      Q4T_CHECK(output.ends_with("data: [DONE]\r\n\r\n"));
+      const auto done = output.find("[DONE]");
+      Q4T_CHECK(output.find("[DONE]", done + 1) == output.npos);
+      body = output.substr(6, output.find("\r\n\r\n") - 6);
+    } else {
+      Q4T_CHECK(output.starts_with("HTTP/1.1 502 Bad Gateway\r\n"));
+      body = output.substr(output.find("\r\n\r\n") + 4);
+    }
+    q4t::io::Json value;
+    Q4T_CHECK(q4t::io::ParseJson(body, &value).ok());
+    Q4T_CHECK(value.Find("error")->GetString("code") == "response_parse_failed");
+    Q4T_CHECK(value.Find("error")->GetString("message") == "invalid \"参数\"");
+  }
+  return true;
+}
+
 Q4T_TEST(server_http_response_send_status) {
   SocketPair sockets;
   Q4T_CHECK(sockets.fd[0] >= 0);

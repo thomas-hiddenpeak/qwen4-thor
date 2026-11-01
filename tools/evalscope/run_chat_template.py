@@ -73,6 +73,9 @@ def main():
                        'stream_options': {'include_usage': True}}
             if form == 'messages':
                 request.update(case['request'])
+                # This gate compares template inputs with frozen raw prompts;
+                # structured output parsing has a separate protocol gate.
+                request['parse_response'] = False
             else:
                 request['prompt'] = case['expected']
             manifest.append({'case': case['id'], 'form': form,

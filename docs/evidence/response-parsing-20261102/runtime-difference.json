@@ -1,0 +1,15 @@
+{
+  "compared_with": "55299a0a98a329f758a13db7bf2a51090f781818",
+  "changed": [
+    "src/server/chat_contract.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_metrics.cpp",
+    "src/server/http_response.cpp",
+    "include/q4t/server/http_response.h"
+  ],
+  "added": [
+    "include/q4t/server/chat_response_parser.h",
+    "src/server/chat_response_parser.cpp"
+  ],
+  "unchanged": 165
+}

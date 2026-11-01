@@ -12,6 +12,10 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
+开发分支正在补齐工具/推理输出解析与流式协议，因设备vLLM实际业务
+占用暂不测试、未部署；已交付默认程序仍使用原始文本响应。
+候选接口与验收边界见[输出协议](docs/RESPONSE_PARSING_2026-11-02.md)。
+
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
   MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 生成
 - **多模态**: 27 层 ViT, 图像 + 视频输入 (OpenAI `image_url` / `video_frames`

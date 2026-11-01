@@ -60,7 +60,8 @@ Status ValidateChatContract(const io::Json& req,
       "reasoning_effort", "add_vision_id", "temperature", "top_p", "n",
       "frequency_penalty", "presence_penalty", "repetition_penalty", "seed",
       "stop", "logprobs", "top_logprobs", "logit_bias", "response_format",
-      "user", "session_id", "prefix_cache_scope", "prefix_cache_write_tokens"});
+      "user", "session_id", "prefix_cache_scope", "prefix_cache_write_tokens",
+      "parse_response", "tool_choice", "parallel_tool_calls"});
   if (!status) return status;
   for (const auto* field : {"session_id", "prefix_cache_scope"}) {
     const auto* value = req.Find(field);
@@ -92,6 +93,17 @@ Status ValidateChatContract(const io::Json& req,
   const auto* messages = req.Find("messages");
   if ((prompt != nullptr) == (messages != nullptr))
     return Status::Fail("provide exactly one of prompt or messages");
+  if (const auto* parsed = req.Find("parse_response"); parsed &&
+      (!parsed->IsBool() || (parsed->boolean && !messages)))
+    return Status::Fail("parse_response=true requires messages");
+  const bool parsed = messages && req.GetBool("parse_response", true);
+  if (const auto* choice = req.Find("tool_choice"); choice &&
+      (!parsed || !choice->IsString() || choice->str != "auto"))
+    return Status::Fail("only tool_choice=auto with parsed messages is supported");
+  if (const auto* parallel = req.Find("parallel_tool_calls"); parallel &&
+      (!parsed || !parallel->IsBool() || !parallel->boolean))
+    return Status::Fail("only parallel_tool_calls=true with parsed messages "
+                        "is supported");
   if (prompt && (!prompt->IsString() || prompt->str.empty()))
     return Status::Fail("prompt must be a nonempty string");
   if (const auto* model = req.Find("model");

@@ -205,16 +205,41 @@ void SendError(int fd, int code, const std::string& message,
   SendSimple(fd, code, "Bad Request", body, "application/json", options);
 }
 
+void SendResponseParseError(int fd, bool stream, ResponseState* state,
+                            const std::string& message,
+                            const WriteOptions& options) {
+  if (*state != (stream ? ResponseState::kStreaming : ResponseState::kUnsent))
+    return;
+  const std::string error =
+      "{\"error\":{\"message\":\"" + JsonEscape(message) +
+      "\",\"type\":\"server_error\",\"code\":\"response_parse_failed\"}}";
+  if (stream) {
+    const std::string tail = "data: " + error + "\r\n\r\ndata: [DONE]\r\n\r\n";
+    *state = ResponseState::kTerminal;
+    WriteAll(fd, tail, options);
+  } else {
+    *state = ResponseState::kTerminal;
+    SendSimple(fd, 502, "Bad Gateway", error, "application/json", options);
+  }
+}
+
 // OpenAI SSE data chunk for a streaming completion.
 std::string SseChunk(const std::string& id, const std::string& model,
                      const std::string& delta_role, const std::string& content,
                      const std::string& finish_reason, int index) {
-  std::string choice;
-  choice += "{\"index\":" + std::to_string(index) + ",\"delta\":{";
+  std::string delta = "{";
   if (!delta_role.empty()) {
-    choice += "\"role\":\"" + delta_role + "\",";
+    delta += "\"role\":\"" + JsonEscape(delta_role) + "\",";
   }
-  choice += "\"content\":\"" + JsonEscape(content) + "\"}";
+  delta += "\"content\":\"" + JsonEscape(content) + "\"}";
+  return SseDeltaChunk(id, model, delta, finish_reason, index);
+}
+
+std::string SseDeltaChunk(const std::string& id, const std::string& model,
+                          const std::string& delta_json,
+                          const std::string& finish_reason, int index) {
+  std::string choice = "{\"index\":" + std::to_string(index) +
+                       ",\"delta\":" + delta_json;
   if (!finish_reason.empty()) {
     choice += ",\"finish_reason\":\"" + finish_reason + "\"";
   } else {
@@ -222,7 +247,7 @@ std::string SseChunk(const std::string& id, const std::string& model,
   }
   choice += "}";
   std::string obj =
-      "{\"id\":\"" + id + "\",\"object\":\"chat.completion.chunk\","
+      "{\"id\":\"" + JsonEscape(id) + "\",\"object\":\"chat.completion.chunk\","
       "\"created\":" +
       std::to_string(std::time(nullptr)) + ",\"model\":\"" + JsonEscape(model) +
       "\",\"choices\":[" + choice + "]}";

@@ -86,3 +86,20 @@ Q4T_TEST(chat_contract_media_rejected_before_decoding) {
     {"type":"text","text":"hello"}]}]})"));
   return true;
 }
+
+Q4T_TEST(chat_contract_parsed_response_options) {
+  Q4T_CHECK(Accept(R"({"messages":[{"role":"user","content":"x"}],
+    "parse_response":true,"tool_choice":"auto","parallel_tool_calls":true})"));
+  Q4T_CHECK(Accept(R"({"messages":[{"role":"user","content":"x"}],
+    "parse_response":false})"));
+  Q4T_CHECK(Accept(R"({"prompt":"x","parse_response":false})"));
+  for (const char* bad : {
+      R"({"prompt":"x","parse_response":true})",
+      R"({"messages":[],"parse_response":"false"})",
+      R"({"messages":[],"parse_response":false,"tool_choice":"auto"})",
+      R"({"messages":[],"tool_choice":"none"})",
+      R"({"messages":[],"tool_choice":"required"})",
+      R"({"messages":[],"parallel_tool_calls":false})"})
+    Q4T_CHECK(!Accept(bad));
+  return true;
+}
