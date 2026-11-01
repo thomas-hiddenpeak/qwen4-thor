@@ -77,6 +77,21 @@ class RecoveryContracts(unittest.TestCase):
         self.assertEqual(result["requests"], 1)
         self.assertEqual(result["messages"], self.history)
 
+    def test_null_request_receipts_cannot_erase_submission(self):
+        self.submitted()
+        for name in ("capabilities.json", "round-00-request.json",
+                     "round-00-submitted.json"):
+            with self.subTest(receipt=name):
+                path = self.directory / name
+                original = path.read_bytes()
+                try:
+                    path.write_text("null\n")
+                    result = self.inspect()
+                    self.assertEqual(result["state"], "RECORDS_INVALID")
+                    self.assertIn("null receipt: " + name, result["error"])
+                finally:
+                    path.write_bytes(original)
+
     def test_length_never_commits_or_executes_calls(self):
         self.response(finish="length")
         result = self.inspect()
@@ -92,6 +107,22 @@ class RecoveryContracts(unittest.TestCase):
         self.assertEqual(result["attempted_tool_calls"], 1)
         self.assertEqual(result["remaining_tool_calls"], 7)
         self.assertEqual(result["messages"], self.history)
+
+    def test_null_tool_receipts_cannot_make_started_call_pending(self):
+        _, plan = self.planned()
+        self.save("round-00-tool-000-started.json", plan[0])
+        for name in ("round-00-response.json", "round-00-plan.json",
+                     "round-00-tool-000-started.json"):
+            with self.subTest(receipt=name):
+                path = self.directory / name
+                original = path.read_bytes()
+                try:
+                    path.write_text("null\n")
+                    result = self.inspect()
+                    self.assertEqual(result["state"], "RECORDS_INVALID")
+                    self.assertIn("null receipt: " + name, result["error"])
+                finally:
+                    path.write_bytes(original)
 
     def test_durable_results_reconstruct_missing_history(self):
         response, plan = self.planned()

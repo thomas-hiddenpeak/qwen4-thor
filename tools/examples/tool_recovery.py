@@ -82,7 +82,12 @@ def _inspect(directory):
             return None
         seen.add(name)
         data = files[name].read_bytes()
-        return data if raw else load_json(data)
+        if raw:
+            return data
+        value = load_json(data)
+        # None means absent, never a present but invalid JSON receipt.
+        require(value is not None, "null receipt: " + name)
+        return value
 
     start = read("run-started.json", True)
     require(isinstance(start, dict) and

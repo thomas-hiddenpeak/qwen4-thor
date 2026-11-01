@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import re
+import signal
 import subprocess
 import sys
 import time
@@ -22,6 +23,21 @@ LIMITS = dict(generations=24, planned_generations=23, negatives=10, starts=3,
 def require(condition, message):
     if not condition:
         raise RuntimeError(message)
+
+
+def install_interrupt_handlers():
+    interrupted = False
+
+    def interrupt(signum, _frame):
+        nonlocal interrupted
+        if interrupted:
+            return  # Repeated signals must not interrupt bounded cleanup.
+        interrupted = True
+        raise KeyboardInterrupt('acceptance interrupted by ' +
+                                signal.Signals(signum).name)
+
+    for signum in (signal.SIGINT, signal.SIGTERM):
+        signal.signal(signum, interrupt)
 
 
 def digest(path):
@@ -204,6 +220,8 @@ def execute(plan, output):
             status = 'PASS'
         require(status == 'PASS', 'stage did not pass: ' + status)
     except BaseException as exception:
+        if status != 'ENV_ABORT':
+            status = 'FAIL'
         error = repr(exception)
         raise
     finally:
@@ -222,6 +240,7 @@ def execute(plan, output):
 
 
 def main():
+    install_interrupt_handlers()
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
     f = sub.add_parser('freeze', help='read-only identities; no tests/probes')

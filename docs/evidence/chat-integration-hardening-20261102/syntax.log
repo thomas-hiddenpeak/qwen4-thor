@@ -1,0 +1,4 @@
+tools/examples/tool_recovery.py: syntax compiled only; not imported or executed
+tools/examples/test_tool_recovery.py: syntax compiled only; not imported or executed
+tools/response_protocol/acceptance.py: syntax compiled only; not imported or executed
+tools/response_protocol/test_acceptance.py: syntax compiled only; not imported or executed

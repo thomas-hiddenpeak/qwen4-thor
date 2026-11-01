@@ -5,12 +5,57 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, call, patch
 
 import acceptance
 
 
 class AcceptanceContracts(unittest.TestCase):
+    def test_interruption_drains_owned_guard_and_retains_failure(self):
+        root = Path(os.environ.get("Q4T_TEST_OUTPUT_DIR",
+                                   acceptance.ROOT / "build/acceptance-contracts"))
+        root.mkdir(parents=True, exist_ok=True)
+        for signum in (acceptance.signal.SIGTERM, acceptance.signal.SIGINT):
+            with self.subTest(signal=signum), \
+                 tempfile.TemporaryDirectory(dir=root) as temporary:
+                output = Path(temporary) / "interrupted"
+                plan = dict(artifacts={"python": dict(path="/fixture/python")})
+                handlers = {}
+                guard = Mock()
+                guard.poll.return_value = None
+
+                def wait_for_guard(timeout):
+                    # First delivery unwinds execute; a repeated delivery during
+                    # its cleanup must not abandon the same guard's bounded wait.
+                    handlers[signum](signum, None)
+                    return -int(signum)
+
+                guard.wait.side_effect = wait_for_guard
+                with patch.object(acceptance.signal, "signal",
+                                  side_effect=handlers.__setitem__), \
+                     patch.object(acceptance, "validate_plan"), \
+                     patch.object(acceptance.subprocess, "Popen",
+                                  return_value=guard) as launch:
+                    acceptance.install_interrupt_handlers()
+                    self.assertEqual(set(handlers),
+                        {acceptance.signal.SIGINT, acceptance.signal.SIGTERM})
+                    with self.assertRaises(KeyboardInterrupt):
+                        acceptance.execute(plan, output)
+                launch.assert_called_once()
+                guard.terminate.assert_called_once_with()
+                self.assertEqual(guard.wait.call_args_list, [
+                    call(timeout=acceptance.LIMITS['stage_seconds'] + 120),
+                    call(timeout=90)])
+                result = json.loads((output / "result.json").read_text())
+                self.assertEqual(result["status"], "FAIL")
+                self.assertIn(acceptance.signal.Signals(signum).name,
+                              result["error"])
+                self.assertFalse(result["deployed"])
+                saved_plan = json.loads((output / "plan.json").read_text())
+                self.assertEqual(saved_plan, plan)
+                self.assertTrue((output / "guard-command.json").is_file())
+                self.assertTrue((output / "guard.log").is_file())
+
     def test_worker_success_does_not_override_guard_failure(self):
         worker = dict(status="CHECKS_PASSED_PENDING_GUARD_EXIT")
         guard = dict(status="COMPLETED", child_returncode=0, finished="stamp")
