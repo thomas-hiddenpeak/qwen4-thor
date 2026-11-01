@@ -382,11 +382,12 @@ class DemoContracts(unittest.TestCase):
         api.capabilities.return_value = capabilities()
         with patch.object(demo, "ChatClient", return_value=api):
             answer = demo.run(self.directory, "http://localhost:18096",
-                              session_cache=True)
+                              session_cache=True, max_tokens=256)
             with self.assertRaises(FileExistsError):
                 demo.run(self.directory, "http://localhost:18096")
         self.assertEqual(answer, "831907")
         self.assertEqual(len(requests), 2)
+        self.assertEqual([r["max_tokens"] for r in requests], [256, 256])
         self.assertEqual(requests[0]["session_id"], requests[1]["session_id"])
         self.assertNotEqual(requests[0]["cancel_token"], requests[1]["cancel_token"])
         self.assertEqual(requests[1]["messages"][-2], MESSAGE)

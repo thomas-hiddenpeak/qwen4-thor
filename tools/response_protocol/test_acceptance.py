@@ -69,6 +69,8 @@ class AcceptanceContracts(unittest.TestCase):
                            dict(guard, child_returncode=1)):
             self.assertEqual(acceptance.combined_status(worker, incomplete, 0), "FAIL")
         self.assertEqual(acceptance.combined_status({}, guard, 0), "FAIL")
+        self.assertEqual(acceptance.combined_status(
+            dict(status="ENV_ABORT"), guard, 1), "ENV_ABORT")
         self.assertEqual(acceptance.combined_status(worker, guard, 1), "FAIL")
 
     def test_identity_changes_stop_before_launch(self):
@@ -116,12 +118,17 @@ class AcceptanceContracts(unittest.TestCase):
             model_dir="/fixture/model", port=18096, protocol_sha256="a" * 64)
         steps = acceptance.commands(plan, Path("/fixture/output"))
         self.assertEqual([s[0] for s in steps],
-                         ["host", "client", "recovery", "orchestration", "template", "http"])
+            ["host", "client", "recovery", "orchestration", "template",
+             "faults", "http"])
         http = steps[-1][2]
         self.assertEqual(http.count("--candidate"), 1)
         self.assertEqual(http[http.index("--protocol-sha256") + 1], "a" * 64)
         self.assertTrue(all(0 < seconds <= 1860 for _, seconds, _ in steps))
         self.assertEqual(acceptance.LIMITS["planned_generations"], 23)
+        faults = steps[-2]
+        self.assertEqual(faults[1], 210)
+        self.assertEqual(faults[2][-2:], ["--output", "/fixture/output/faults"])
+        self.assertNotIn("--candidate", faults[2])
 
 
 if __name__ == "__main__":

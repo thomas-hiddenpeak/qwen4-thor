@@ -17,6 +17,9 @@ import time
 
 ROOT = Path(__file__).resolve().parents[2]
 LIMITS = dict(generations=24, planned_generations=23, negatives=10, starts=3,
+              capability_gets=6, agent_runs=3, agent_rounds=2,
+              agent_tool_calls=1, agent_max_tokens=256,
+              fault_cases=8, fault_process_starts=12, fault_seconds=180,
               http_seconds=1800, stage_seconds=2400)
 
 
@@ -132,6 +135,9 @@ def commands(plan, output):
         ('orchestration', 100, python + [str(ROOT / 'tools/response_protocol/test_acceptance.py')]),
         ('template', 60, [a['template_checker'], str(ROOT /
             'tools/evalscope/fixtures/chat_template_cases.jsonl')]),
+        ('faults', LIMITS['fault_seconds'] + 30, python + [str(ROOT /
+            'tools/response_protocol/verify_failures.py'),
+            '--output', str(output / 'faults')]),
         ('http', 1860, python + [str(ROOT / 'tools/response_protocol/verify.py'),
             '--candidate', a['candidate'], '--baseline', a['baseline'],
             '--model-dir', plan['model_dir'], '--output', str(output / 'http'),
@@ -162,11 +168,21 @@ def worker(plan, output):
             save(output / (name + '-command.json'), record)
             started = time.monotonic()
             try:
+                if name == 'faults':
+                    # Missing cleanup evidence (including a driver timeout)
+                    # must not look like an ordinary functional failure.
+                    status = 'ENV_ABORT'
                 with (output / (name + '.log')).open('x') as log:
                     result = subprocess.run(command, cwd=ROOT, env=env,
                         stdout=log, stderr=subprocess.STDOUT,
                         timeout=record['timeout'])
                 record['returncode'] = result.returncode
+                if name == 'faults':
+                    receipt = json.loads((output / 'faults/result.json').read_text())
+                    if receipt.get('status') in ('PASS', 'FAIL'):
+                        status = 'FAIL'
+                    require(receipt.get('status') == 'PASS',
+                            'fault scenarios did not pass')
                 require(result.returncode == 0, 'step failed: ' + name)
             finally:
                 record['elapsed_seconds'] = time.monotonic() - started
@@ -182,7 +198,8 @@ def worker(plan, output):
 
 
 def combined_status(worker_result, guard, returncode):
-    if guard.get('status') in ('ENV_ABORT', 'LEASE_BUSY', 'RECOVERY_REQUIRED') or \
+    if worker_result.get('status') == 'ENV_ABORT' or \
+            guard.get('status') in ('ENV_ABORT', 'LEASE_BUSY', 'RECOVERY_REQUIRED') or \
             guard.get('cleanup_error'):
         return 'ENV_ABORT'
     if (returncode == 0 and guard.get('status') == 'COMPLETED' and

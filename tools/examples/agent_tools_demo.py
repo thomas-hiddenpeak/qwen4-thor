@@ -41,11 +41,14 @@ def validate_lookup(arguments):
 
 
 def run(directory, base_url, *, model="qwen3.8-flash-next", stream=True,
-        thinking=False, session_cache=False, max_rounds=4, max_tool_calls=8):
+        thinking=False, session_cache=False, max_rounds=4, max_tool_calls=8,
+        max_tokens=512):
     require(type(max_rounds) is int and 1 <= max_rounds <= 8,
             "max_rounds must be between 1 and 8")
     require(type(max_tool_calls) is int and 1 <= max_tool_calls <= 32,
             "max_tool_calls must be between 1 and 32")
+    require(type(max_tokens) is int and 1 <= max_tokens <= 512,
+            "max_tokens must be between 1 and 512")
     directory = Path(directory).resolve()
     require(directory.is_relative_to(ROOT / ".q4t-work"),
             "use a new output directory inside .q4t-work")
@@ -53,11 +56,11 @@ def run(directory, base_url, *, model="qwen3.8-flash-next", stream=True,
     directory.mkdir(parents=True, exist_ok=False, mode=0o700)
     with journal_lock(directory, create=True):
         return _run_locked(directory, client, base_url, model, stream, thinking,
-                           session_cache, max_rounds, max_tool_calls)
+                           session_cache, max_rounds, max_tool_calls, max_tokens)
 
 
 def _run_locked(directory, client, base_url, model, stream, thinking,
-                session_cache, max_rounds, max_tool_calls):
+                session_cache, max_rounds, max_tool_calls, max_tokens):
     session_id = secrets.token_hex(32) if session_cache else None
     history = [{"role": "user", "content":
         "请先调用lookup工具，key必须是audit。拿到工具结果后，"
@@ -65,14 +68,14 @@ def _run_locked(directory, client, base_url, model, stream, thinking,
     save(directory / "run-started.json", dict(base_url=base_url, model=model,
         max_requests=max_rounds, max_tool_calls=max_tool_calls,
         session_id=session_id, stream=stream, thinking=thinking,
-        journal_version=1, initial_messages=history))
+        journal_version=1, initial_messages=history, max_tokens=max_tokens))
     calls = 0
     try:
         save(directory / "capabilities.json", client.capabilities(model=model))
         for turn in range(max_rounds):
             label = f"round-{turn:02d}"
             request = make_request(history, [TOOL], model=model, stream=stream,
-                thinking=thinking, session_id=session_id)
+                thinking=thinking, session_id=session_id, max_tokens=max_tokens)
             save(directory / (label + "-request.json"), request)
             save(directory / (label + "-submitted.json"),
                  dict(request_id=request["request_id"]))
@@ -132,11 +135,12 @@ def main():
     parser.add_argument("--session-cache", action="store_true")
     parser.add_argument("--max-rounds", type=int, default=4)
     parser.add_argument("--max-tool-calls", type=int, default=8)
+    parser.add_argument("--max-tokens", type=int, default=512)
     args = parser.parse_args()
     print(run(args.directory, args.base_url, model=args.model,
               stream=not args.no_stream, thinking=args.thinking,
               session_cache=args.session_cache, max_rounds=args.max_rounds,
-              max_tool_calls=args.max_tool_calls))
+              max_tool_calls=args.max_tool_calls, max_tokens=args.max_tokens))
 
 
 if __name__ == "__main__":

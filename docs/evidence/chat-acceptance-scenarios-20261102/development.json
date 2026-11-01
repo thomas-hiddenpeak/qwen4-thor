@@ -1,0 +1,63 @@
+{
+  "status": "DEVELOPMENT_SYNTAX_ONLY_TESTS_DEFERRED",
+  "time": "2026-11-02T06:09:34.318305+08:00",
+  "parent_commit": "d0f06b12924599ab242f7d39ffda4373a0e1e65d",
+  "tests_executed": 0,
+  "model_http_requests": 0,
+  "capability_http_requests": 0,
+  "model_starts": 0,
+  "services_modified": false,
+  "deployed": false,
+  "engine_rebuilt": false,
+  "real_signals_sent": 0,
+  "fault_processes_launched": 0,
+  "acceptance_entrypoints_executed": false,
+  "recovery_entrypoint_executed": false,
+  "automatic_ci": "skip ci marker required",
+  "python_syntax_compiled_only": 7,
+  "python_contract_definitions": {
+    "tools/examples/test_chat_client.py": 22,
+    "tools/examples/test_tool_recovery.py": 13,
+    "tools/response_protocol/test_acceptance.py": 4
+  },
+  "runtime_source_count": 164,
+  "runtime_changes": [],
+  "changed_tool_sources": [
+    "tools/examples/agent_tools_demo.py",
+    "tools/examples/test_chat_client.py",
+    "tools/response_protocol/acceptance.py",
+    "tools/response_protocol/fault_fixture.py",
+    "tools/response_protocol/test_acceptance.py",
+    "tools/response_protocol/verify.py",
+    "tools/response_protocol/verify_failures.py"
+  ],
+  "changed_artifacts": [],
+  "artifacts_sha256": {
+    "build/q4t": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+    "build/q4t.release.json": "e6fdd13b7d140926ed4a0d42bcda37b6ec6689305960e3deab03b3f73dc294d6",
+    ".q4t-work/chat-integration-prep-20261102/q4t-candidate": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+    ".q4t-work/chat-integration-prep-20261102/q4t_host_tests": "9e66abd4c49aa4c6997fddc7f4915138a2bd4cd8aa803f2098df960c186f6a7d",
+    ".q4t-work/chat-integration-prep-20261102/verify_chat_template": "f1aff9120be63d5f20f1f81bf1df247ac50c565c18eeb7bc232223c622b939f7",
+    ".q4t-work/chat-integration-prep-20261102/candidate-CMakeCache.txt": "52e07d3ce862297a21979fcef81df00a3c838238eb2c5bf12e6fde92f25906b3",
+    ".q4t-work/chat-integration-prep-20261102/chat_protocol_identity.h": "dadb2aa3e2d8bed6ae748c0adcbac3d30c3e7ee48f7e96037ef2b54086022366",
+    ".q4t-work/chat-integration-prep-20261102/chat_protocol_sources.json": "7ea2483482a51488fd64d2bdf5109a5748ce630dbfd62ab922e6ac90caf72b79"
+  },
+  "planned_limits": {
+    "generations": 24,
+    "planned_generations": 23,
+    "negatives": 10,
+    "starts": 3,
+    "capability_gets": 6,
+    "agent_runs": 3,
+    "agent_rounds": 2,
+    "agent_tool_calls": 1,
+    "agent_max_tokens": 256,
+    "fault_cases": 8,
+    "fault_process_starts": 12,
+    "fault_seconds": 180,
+    "http_seconds": 1800,
+    "stage_seconds": 2400
+  },
+  "required_host_definitions": 97,
+  "evidence_scope": "Syntax compilation, AST inventory and file identity only. No project module imported or executed; no fault signals or processes, HTTP, probes, tests or acceptance entrypoints."
+}

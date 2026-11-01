@@ -8,6 +8,7 @@
 [带ID工具历史关联与后续开发准备](CHAT_TOOL_HISTORY_2026-11-02.md)。
 [能力声明、统一有界验收入口与失败恢复](CHAT_INTEGRATION_PREP_2026-11-02.md)
 已形成开发快照，所有测试继续暂停。
+[完整工具往返、真实中断与日志崩溃场景准备](CHAT_ACCEPTANCE_SCENARIOS_2026-11-02.md)。
 最新专项：[main复审四项修复交付、证据与回退](MAIN_REAUDIT_FIX_RESULT_2026-10-31.md)；
 [修复范围与冻结预算](MAIN_REAUDIT_FIX_PLAN_2026-10-31.md)；
 [main修复后复审：4项P2既有遗漏与回归检查](MAIN_REAUDIT_2026-10-31.md)；

@@ -1,6 +1,7 @@
 """Bounded real HTTP protocol checks. Run only inside gpu_exclusive.py.
 
-Does not stop other services, install a binary, or execute model-named tools.
+Does not stop other services or install a binary. Only the demo's explicitly
+allowlisted local read-only lookup can execute; no arbitrary model dispatch.
 All requests and raw responses are retained, including the first failure.
 """
 import argparse
@@ -15,13 +16,20 @@ import subprocess
 import secrets
 import sys
 import time
+from unittest.mock import patch
+import urllib.request
+
+from acceptance import LIMITS
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT / 'tools/verify/startup_delivery'))
 from deploy import require_guard
 sys.path.insert(0, str(ROOT / 'tools/examples'))
-from chat_client import read_json, read_sse, validate_capabilities
+import agent_tools_demo as demo
+from chat_client import (ChatClient, _NoRedirect, read_json, read_sse,
+                         validate_capabilities)
+from tool_recovery import inspect_recovery
 
 
 def save(path, value):
@@ -155,15 +163,25 @@ class Run:
         self.requests = 0
         self.negative = 0
         self.starts = 0
+        self.capability_gets = 0
+        self.agent_runs = 0
 
     def budget(self):
-        require(time.monotonic() - self.started < 1800, '30-minute budget')
-        require(self.requests <= 24 and self.starts <= 3 and self.negative <= 10,
+        require(time.monotonic() - self.started < LIMITS['http_seconds'],
+                '30-minute budget')
+        require(self.requests <= LIMITS['generations'] and
+                self.starts <= LIMITS['starts'] and
+                self.negative <= LIMITS['negatives'] and
+                self.capability_gets <= LIMITS['capability_gets'] and
+                self.agent_runs <= LIMITS['agent_runs'],
                 'frozen request/startup budget')
 
     def request(self, method, path, payload=None):
+        if method == 'GET' and path == '/v1/capabilities':
+            self.capability_gets += 1
         self.budget()
-        timeout = max(1, min(120, 1800 - (time.monotonic() - self.started)))
+        remaining = LIMITS['http_seconds'] - (time.monotonic() - self.started)
+        timeout = max(1, min(120, remaining))
         connection = http.client.HTTPConnection('127.0.0.1', self.args.port,
                                                 timeout=timeout)
         try:
@@ -207,6 +225,10 @@ class Run:
                          usage=client_result.usage) == parsed,
                     'client/server protocol interpretation mismatch')
         save(folder / (name + '-parsed.json'), parsed)
+        self.wait_slot(name)
+        return parsed
+
+    def wait_slot(self, name):
         released_by = time.monotonic() + 3
         while True:
             code, raw_health = self.request('GET', '/healthz')
@@ -216,7 +238,6 @@ class Run:
                 break
             require(time.monotonic() < released_by, name + ': slot not released')
             time.sleep(0.01)
-        return parsed
 
     def pair(self, folder, kind, check=None):
         plain = self.chat(folder, kind + '-parsed', body(kind, parsed=True))
@@ -234,17 +255,88 @@ class Run:
         require(json.loads(calls[0]['function']['arguments']) == {'key': 'audit'},
                 'model generated incorrect arguments')
 
-    def resume(self, folder, result, stream=False):
-        request = body('tool', stream, True)
-        request['messages'].append(result['message'])
-        request['messages'].append({'role': 'tool',
-            'tool_call_id': result['message']['tool_calls'][0]['id'],
-            'content': '{"code":"831907"}'})
-        answer = self.chat(folder, 'resume-stream' if stream else 'resume', request)
-        require(answer['finish'] == 'stop' and
-                answer['message']['content'].strip() == '831907',
-                'tool-result continuation quality')
-        return answer
+    def agent_roundtrip(self, folder, *, stream, mtp=False):
+        self.agent_runs += 1
+        self.budget()
+        name = 'agent-sse' if stream else 'agent-json'
+        journal = folder / name
+        owner, trace, completions = self, [], []
+        generation_count = 0
+
+        class ObservedClient(ChatClient):
+            def __init__(self, base_url):
+                super().__init__(base_url)
+                # This driver targets its own loopback server, never an env proxy.
+                self.opener = urllib.request.build_opener(
+                    urllib.request.ProxyHandler({}), _NoRedirect())
+
+            def _open(self, request, timeout):
+                nonlocal generation_count
+                path = request.full_url.removeprefix(self.base)
+                if request.method == 'POST' and path == '/chat/completions':
+                    require(generation_count < LIMITS['agent_rounds'],
+                            'demo generation limit')
+                    generation_count += 1
+                    owner.requests += 1
+                elif request.method == 'GET' and path == '/capabilities':
+                    owner.capability_gets += 1
+                else:
+                    raise AssertionError('unplanned demo transport')
+                owner.budget()  # Reserve before any network side effect.
+                remaining = (LIMITS['http_seconds'] -
+                             (time.monotonic() - owner.started))
+                require(remaining >= timeout, 'insufficient HTTP time budget')
+                record = dict(method=request.method, path=path)
+                trace.append(record)
+                try:
+                    response = super()._open(request, timeout)
+                    record['status'] = response.status
+                    record['content_type'] = response.headers.get_content_type()
+                    return response
+                except BaseException as error:
+                    record['error'] = repr(error)
+                    raise
+
+            def capabilities(self, **kwargs):
+                value = super().capabilities(**kwargs,
+                    protocol_sha256=owner.args.protocol_sha256)
+                require(value['runtime'] == dict(media_enabled=False,
+                                                 mtp_enabled=mtp),
+                        'demo runtime capability mismatch')
+                return value
+
+            def complete(self, request, *, sink=None):
+                result = super().complete(request, sink=sink)
+                owner.budget()
+                owner.wait_slot(name)
+                completions.append(dict(message=result.message,
+                    finish=result.finish_reason, usage=result.usage))
+                return result
+
+        try:
+            # Instrument only accounting; both requests use the real client's
+            # HTTP transport and the unchanged demo dispatch/history loop.
+            with patch.object(demo, 'ChatClient', ObservedClient):
+                answer = demo.run(journal,
+                    f'http://127.0.0.1:{self.args.port}', stream=stream,
+                    max_rounds=LIMITS['agent_rounds'],
+                    max_tool_calls=LIMITS['agent_tool_calls'],
+                    max_tokens=LIMITS['agent_max_tokens'])
+            require(answer.strip() == '831907' and generation_count == 2 and
+                    len(completions) == 2, 'incomplete demo round trip')
+            self.tool(completions[0])
+            require(completions[1]['finish'] == 'stop', 'demo final finish')
+            recovery = inspect_recovery(journal)
+            save(folder / (name + '-recovery.json'), recovery)
+            require(recovery['state'] == 'COMPLETED' and
+                    recovery['requests'] == 2 and
+                    recovery['completed_tool_calls'] == 1 and
+                    recovery['automatic_retry'] is False,
+                    'completed demo journal did not reconcile')
+            save(folder / (name + '-parsed.json'), completions)
+            return journal, completions
+        finally:
+            save(folder / (name + '-transport.json'), trace)
 
     def model(self, name, binary, mtp, action):
         self.starts += 1
@@ -310,10 +402,10 @@ class Run:
                 require(actual == reference[kind], kind + ': raw baseline changed')
             basic = self.pair(folder, 'basic')
             require(basic['message']['content'].strip() == '710003', 'basic quality')
-            tool = self.pair(folder, 'tool', self.tool)
-            a = self.resume(folder, tool)
-            b = self.resume(folder, tool, True)
-            require(comparable(a) == comparable(b), 'resume wire mismatch')
+            _, json_turns = self.agent_roundtrip(folder, stream=False)
+            _, streamed = self.agent_roundtrip(folder, stream=True)
+            require([comparable(r) for r in json_turns] ==
+                    [comparable(r) for r in streamed], 'demo wire mismatch')
             ordered = self.chat(folder, 'history-ordered', tool_history_case())
             reordered = self.chat(folder, 'history-reordered', tool_history_case(True))
             require(comparable(ordered) == comparable(reordered),
@@ -346,8 +438,13 @@ class Run:
 
         def mtp(folder):
             self.chat(folder, 'tool-raw', body('tool', parsed=False))
-            tool = self.pair(folder, 'tool', self.tool)
-            self.resume(folder, tool)
+            journal, turns = self.agent_roundtrip(folder, stream=True, mtp=True)
+            request = json.loads((journal / 'round-00-request.json').read_text())
+            request['stream'] = False
+            request.pop('stream_options')
+            tool = self.chat(folder, 'tool-parsed', request)
+            require(comparable(tool) == comparable(turns[0]),
+                    'MTP tool wire mismatch')
             raw = self.chat(folder, 'thinking-raw', body('thinking', parsed=False))
             parsed = self.chat(folder, 'thinking-stream', body('thinking', True, True))
             before, marker, after = raw['message']['content'].partition('</think>')
@@ -385,6 +482,11 @@ def main():
     try:
         run.run()
         run.budget()
+        require((run.requests, run.negative, run.starts,
+                 run.capability_gets, run.agent_runs) == tuple(LIMITS[k] for k in
+                ('planned_generations', 'negatives', 'starts',
+                 'capability_gets', 'agent_runs')),
+                'planned HTTP coverage incomplete')
         status = 'PASS'
     except BaseException as exception:
         error = repr(exception)
@@ -392,6 +494,7 @@ def main():
     finally:
         save(args.output / 'result.json', dict(status=status, error=error,
              requests=run.requests, negative=run.negative, starts=run.starts,
+             capability_gets=run.capability_gets, agent_runs=run.agent_runs,
              elapsed_seconds=time.monotonic() - run.started,
              limitation='Bounded functional checks; no performance acceptance.'))
 

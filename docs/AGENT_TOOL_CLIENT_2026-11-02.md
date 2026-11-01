@@ -70,7 +70,8 @@ function.arguments原文，不把推理重复拼入content。模板重新渲染�
 [agent_tools_demo.py](../tools/examples/agent_tools_demo.py)演示应用如何
 显式校验并执行本地只读lookup，再把`{"code":"831907"}`作为工具结果
 提交给模型。默认最多4次生成请求、8次工具调用；正常任务为工具请求
-加最终回答两轮。每轮512输出tokens、120秒服务端截止。没有后续请求
+加最终回答两轮。每轮默认512输出tokens，可用`--max-tokens`选择
+1～512（统一验收固定256），120秒服务端截止。没有后续请求
 预算时不执行本轮工具，length/解析失败/HTTP错误均停止。
 
 工具注册、参数校验与读取RECORDS在示例里清晰分开；批次内任一未知

@@ -1,0 +1,19 @@
+{
+  "CMakeLists.txt": "3ac78c8d09507ef32af5c26ad2afcd5f383a735a1e98edb96a577190c863052f",
+  "cmake/ChatProtocolIdentity.cmake": "d6278714ca1c040d47a00cc53d68f6d6127534f3ccbe9397b52a8572de1a84de",
+  "cmake/HostTestSources.cmake": "6f88962dc0d440c6dda493703ffd55f169f3ddd968361e0fa614685fb8a9bfcf",
+  "cmake/chat_protocol_identity.h.in": "0ebe64b2382d92e2500fdb233302d4f49e62742ca086c3a358b886e29c2d6477",
+  "tests/host/CMakeLists.txt": "77d380bac23458fa9c82c91d8c91049bfc62b64b80973c51b6ab05e47457c60d",
+  "tests/server_chat_capabilities_test.cpp": "cc4bcf9f3eea625785d9a9ec1c53d6a0913074e1ee9de594511979afd648ac3a",
+  "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+  "tools/examples/chat_client.py": "6460ba209a03e480fae0381490505beb88d8b03d50cff36c0a18a1fe9b1d0229",
+  "tools/examples/test_chat_client.py": "9f48765afb4da89fd1a8847e5e83e23cc42b72d612ce5d52a028267820f86ceb",
+  "tools/examples/test_tool_recovery.py": "50ea63361b3c5900d2d3b3b4824372293a688b76013eb23e17720d9fd09fb010",
+  "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+  "tools/release/required_host_tests.txt": "9db9e10dd3c199c64ec9aab073f04b9e7db8d25f035be10afb9125dd0002ac46",
+  "tools/response_protocol/acceptance.py": "b7b05af3e9e5750fc4c8ca3c4cc2f16bf357359b32db36160be2e6c178d6e9be",
+  "tools/response_protocol/fault_fixture.py": "3a07d4ae1ac0499cc09e6b66c0db65d106621ebec09b1498f4600c2f91175f64",
+  "tools/response_protocol/test_acceptance.py": "55d09a30c61de3152e9e75d48240b48d7b3daa9700e9d5cb5f2aa07a085744d6",
+  "tools/response_protocol/verify.py": "cd0fe7bea38a9d838f71a3466c67deabce8e0403d027d4b0798e27d402ec62b6",
+  "tools/response_protocol/verify_failures.py": "c727f89a8239024dade5445bcf31965011509e0f6b4f146edf0a1fa0102af69a"
+}
