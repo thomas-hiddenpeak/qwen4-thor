@@ -1,0 +1,9 @@
+{
+  "utc": "2026-11-02T05:47:40.584258+00:00",
+  "gpu_compute_pids": [],
+  "shared_lock_acquired": true,
+  "foreign_recovery_marker": false,
+  "original_supervisor_exited": true,
+  "automatic_service_restart": false,
+  "scope": "Bounded read-only final occupancy; no model/health generation"
+}

@@ -1,0 +1,12 @@
+{
+  "message": {
+    "role": "assistant",
+    "content": "710003"
+  },
+  "finish": "stop",
+  "usage": {
+    "prompt_tokens": 22,
+    "completion_tokens": 7,
+    "total_tokens": 29
+  }
+}

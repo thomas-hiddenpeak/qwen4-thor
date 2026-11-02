@@ -1,16 +1,61 @@
-"""Offline identity and combined-result contracts; no process/model launches."""
+"""Identity, result and loopback transport contracts; no model launches."""
 from copy import deepcopy
+import http.server
 import json
 import os
 from pathlib import Path
 import tempfile
+import threading
+from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, call, patch
 
 import acceptance
+import verify
 
 
 class AcceptanceContracts(unittest.TestCase):
+    def test_http_transport_preserves_utf8_payload_and_byte_length(self):
+        received = []
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def do_POST(self):
+                self.connection.settimeout(2)
+                length = int(self.headers['Content-Length'])
+                body = self.rfile.read(length)
+                received.append((self.path, length, body))
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+            def log_message(self, *_args):
+                pass
+
+        server = http.server.HTTPServer(('127.0.0.1', 0), Handler)
+        thread = threading.Thread(target=server.serve_forever,
+                                  kwargs={'poll_interval': .01}, daemon=True)
+        thread.start()
+        payload = {'messages': [{'role': 'user', 'content': '只回复数字。é😀'}]}
+        try:
+            run = verify.Run(SimpleNamespace(port=server.server_port,
+                                             output=Path('.')))
+            code, response = run.request('POST', '/v1/chat/completions', payload)
+            self.assertEqual(code, 200)
+            self.assertEqual(json.loads(response), payload)
+            self.assertEqual(len(received), 1)
+            path, length, body = received[0]
+            self.assertEqual(path, '/v1/chat/completions')
+            self.assertEqual(length, len(body))
+            self.assertGreater(length, len(body.decode('utf-8')))
+            self.assertEqual(json.loads(body), payload)
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=2)
+        self.assertFalse(thread.is_alive())
+
     def test_interruption_drains_owned_guard_and_retains_failure(self):
         root = Path(os.environ.get("Q4T_TEST_OUTPUT_DIR",
                                    acceptance.ROOT / "build/acceptance-contracts"))

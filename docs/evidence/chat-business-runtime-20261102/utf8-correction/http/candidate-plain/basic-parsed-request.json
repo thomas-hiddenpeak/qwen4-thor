@@ -1,0 +1,20 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_tokens": 256,
+  "stream": false,
+  "request_timeout_ms": 120000,
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "reasoning_effort": "low"
+  },
+  "parse_response": true,
+  "messages": [
+    {
+      "role": "user",
+      "content": "只回复数字710003。"
+    }
+  ],
+  "request_id": "protocol-b0b7279187fddf311071f3a96222a27b",
+  "cancel_token": "728251eac64789292338533ee35bbda2b8a866a159a0d08cf8d506dd215d454c"
+}

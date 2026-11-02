@@ -1,0 +1,18 @@
+{
+  "reason": "One pre-send UTF-8 driver failure; no extra quality samples",
+  "prior_attempts": 1,
+  "prior_wire_generations": 0,
+  "prior_starts": 1,
+  "cumulative_attempts_max": 24,
+  "cumulative_starts_max": 4,
+  "cumulative_capability_gets_max": 7,
+  "deadline_monotonic": 1790475.720860833,
+  "reused_cpu_groups": [
+    "host",
+    "client",
+    "recovery",
+    "template"
+  ],
+  "rerun_group": "orchestration plus one new loopback UTF-8 regression",
+  "reused_real_fault_cases": 8
+}

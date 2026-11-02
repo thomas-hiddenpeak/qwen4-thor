@@ -1,0 +1,54 @@
+{
+  "original_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-plan-utf8-20261102.json",
+  "original_plan_sha256": "3e14569662b6ba4073a54ac22fe8b570314741147da258f0779a6662f577b8bf",
+  "script_sha256": "1a10d1b5cb48a33556deedc1781fd43c8274a5dd4df06fa0981089a214eccc10",
+  "steps": [
+    [
+      "orchestration",
+      100,
+      [
+        "/usr/bin/python3.12",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/test_acceptance.py"
+      ]
+    ],
+    [
+      "http",
+      1860,
+      [
+        "/usr/bin/python3.12",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py",
+        "--candidate",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/q4t-candidate",
+        "--baseline",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/response-parsing-20261102/previous/q4t",
+        "--model-dir",
+        "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-utf8-20261102/http",
+        "--port",
+        "18096",
+        "--protocol-sha256",
+        "a765c021575bd68f46ecdbf099c9450e4b05e318e5b2d132215b3a880420a569"
+      ]
+    ]
+  ],
+  "limits": {
+    "generations": 24,
+    "planned_generations": 23,
+    "negatives": 10,
+    "starts": 3,
+    "capability_gets": 6,
+    "agent_runs": 3,
+    "agent_rounds": 2,
+    "agent_tool_calls": 1,
+    "agent_max_tokens": 256,
+    "fault_cases": 8,
+    "fault_process_starts": 12,
+    "fault_seconds": 180,
+    "http_seconds": 1800,
+    "stage_seconds": 2400
+  },
+  "started": "2026-11-02T13:44:10.847732"
+}

@@ -1,0 +1,7 @@
+{
+  "artifacts": {
+    "python": {
+      "path": "/usr/bin/python3.12"
+    }
+  }
+}

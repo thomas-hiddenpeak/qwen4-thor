@@ -1,0 +1,69 @@
+{
+  "model": "qwen3.8-flash-next",
+  "messages": [
+    {
+      "role": "user",
+      "content": "请先调用lookup工具，key必须是audit。拿到工具结果后，只回复其中code字段的六位数字。在工具返回之前不要猜测答案。"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "reasoning_content": "思考\n",
+      "tool_calls": [
+        {
+          "id": "call-0",
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "arguments": "{\"key\":\"audit\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call-0",
+      "content": "{\"code\": \"831907\"}"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "lookup",
+        "description": "Read an authoritative record by key.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "audit"
+              ]
+            }
+          },
+          "required": [
+            "key"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "parse_response": true,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1,
+  "stream": false,
+  "max_tokens": 256,
+  "tool_choice": "auto",
+  "parallel_tool_calls": true,
+  "request_timeout_ms": 120000,
+  "request_id": "agent-df1925e07fb15e38c01a953884099ed3",
+  "cancel_token": "ea73158291e06b5e704774d12d441e1b2ba56ffdf8d752479b5b8ae7258884de",
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "preserve_thinking": true,
+    "reasoning_effort": "low"
+  }
+}

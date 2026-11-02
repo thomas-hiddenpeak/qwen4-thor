@@ -1,0 +1,5 @@
+{
+  "status": 200,
+  "raw": "{\"id\":\"protocol-3d01348a450f6f166c3b0faae88e5a28\",\"object\":\"chat.completion\",\"created\":1793598329,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"831907\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":390,\"completion_tokens\":7,\"total_tokens\":397}}",
+  "elapsed_seconds": 0.8175080791115761
+}

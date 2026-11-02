@@ -1,0 +1,5 @@
+{
+  "status": 400,
+  "raw": "{\"error\":{\"message\":\"parse_response=true requires messages\",\"type\":\"invalid_request_error\",\"code\":null}}",
+  "elapsed_seconds": 0.00027321092784404755
+}

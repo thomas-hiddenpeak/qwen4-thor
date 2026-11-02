@@ -1,0 +1,17 @@
+{
+  "base_url": "http://127.0.0.1:18096",
+  "model": "qwen3.8-flash-next",
+  "max_requests": 2,
+  "max_tool_calls": 1,
+  "session_id": null,
+  "stream": false,
+  "thinking": false,
+  "journal_version": 1,
+  "initial_messages": [
+    {
+      "role": "user",
+      "content": "请先调用lookup工具，key必须是audit。拿到工具结果后，只回复其中code字段的六位数字。在工具返回之前不要猜测答案。"
+    }
+  ],
+  "max_tokens": 256
+}

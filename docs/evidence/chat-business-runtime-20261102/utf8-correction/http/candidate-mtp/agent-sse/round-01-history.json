@@ -1,0 +1,29 @@
+[
+  {
+    "role": "user",
+    "content": "请先调用lookup工具，key必须是audit。拿到工具结果后，只回复其中code字段的六位数字。在工具返回之前不要猜测答案。"
+  },
+  {
+    "role": "assistant",
+    "content": null,
+    "tool_calls": [
+      {
+        "id": "call_agent-3d7edb6b9ef9ec0a65deb5f0b9fe7c33_0",
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "arguments": "{\"key\":\"audit\"}"
+        }
+      }
+    ]
+  },
+  {
+    "role": "tool",
+    "tool_call_id": "call_agent-3d7edb6b9ef9ec0a65deb5f0b9fe7c33_0",
+    "content": "{\"code\": \"831907\"}"
+  },
+  {
+    "role": "assistant",
+    "content": "831907"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py",
+    "--role",
+    "parent",
+    "--case",
+    "SIGTERM",
+    "--directory",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/faults/SIGTERM",
+    "--lease-root",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102"
+  ]
+}

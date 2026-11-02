@@ -1,0 +1,13 @@
+{
+  "name": "faults",
+  "argv": [
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify_failures.py",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/faults"
+  ],
+  "timeout": 210,
+  "returncode": 0,
+  "elapsed_seconds": 2.8170339369680732
+}

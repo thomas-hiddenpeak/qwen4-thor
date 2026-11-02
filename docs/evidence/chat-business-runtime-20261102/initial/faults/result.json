@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "error": null,
+  "completed": [
+    "SIGTERM",
+    "SIGINT",
+    "submitted",
+    "partial-wire",
+    "tool-started",
+    "tool-result",
+    "tool-history",
+    "final-response"
+  ],
+  "observed_fixture_processes": 12,
+  "elapsed_seconds": 2.6516300039365888,
+  "network_requests": 0,
+  "model_starts": 0,
+  "scope": "Real process interruption with synthetic model responses; not power-loss or model-quality evidence."
+}

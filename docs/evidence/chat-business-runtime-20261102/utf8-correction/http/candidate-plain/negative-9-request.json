@@ -1,0 +1,25 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_tokens": 256,
+  "stream": false,
+  "request_timeout_ms": 120000,
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "reasoning_effort": "low"
+  },
+  "tools": [
+    {
+      "type": "custom",
+      "name": "x"
+    }
+  ],
+  "messages": [
+    {
+      "role": "user",
+      "content": "请先调用lookup工具，key必须是audit。拿到工具结果后，只回复其中code字段的六位数字。在工具返回之前不要猜测答案。"
+    }
+  ],
+  "request_id": "protocol-b728a5330499fef280d0ccb66bb9085a",
+  "cancel_token": "fb55a0d94ffed41fbe923a4ee757fb663db6fc04b182180a78fc494246889f48"
+}

@@ -1,0 +1,24 @@
+{
+  "id": "agent-6cc79405ec3b1b66cc237d64914705f2",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": null,
+    "tool_calls": [
+      {
+        "id": "call_agent-6cc79405ec3b1b66cc237d64914705f2_0",
+        "type": "function",
+        "function": {
+          "name": "lookup",
+          "arguments": "{\"key\":\"audit\"}"
+        }
+      }
+    ]
+  },
+  "finish_reason": "tool_calls",
+  "usage": {
+    "prompt_tokens": 311,
+    "completion_tokens": 25,
+    "total_tokens": 336
+  }
+}

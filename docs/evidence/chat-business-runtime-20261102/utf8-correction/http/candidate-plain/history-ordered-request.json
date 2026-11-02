@@ -1,0 +1,74 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_tokens": 64,
+  "stream": false,
+  "request_timeout_ms": 120000,
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "reasoning_effort": "low"
+  },
+  "parse_response": true,
+  "tool_choice": "auto",
+  "parallel_tool_calls": true,
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "lookup",
+        "description": "Look up an authoritative code.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "key"
+          ]
+        }
+      }
+    }
+  ],
+  "messages": [
+    {
+      "role": "user",
+      "content": "读取下面已经完成的两个lookup结果。只回复key=alpha对应code的六位数字。不要再次调用工具，也不要回复beta对应的数字。"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "history-alpha",
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "arguments": "{\"key\":\"alpha\"}"
+          }
+        },
+        {
+          "id": "history-beta",
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "arguments": "{\"key\":\"beta\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "history-alpha",
+      "content": "{\"code\":\"831907\"}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "history-beta",
+      "content": "{\"code\":\"442106\"}"
+    }
+  ],
+  "request_id": "protocol-3d01348a450f6f166c3b0faae88e5a28",
+  "cancel_token": "894530b818d1e0ef7782ac9d443ea6a224bee7baf7204e7089ff6691ecb4054a"
+}

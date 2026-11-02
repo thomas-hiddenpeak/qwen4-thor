@@ -186,7 +186,8 @@ class Run:
                                                 timeout=timeout)
         try:
             connection.request(method, path,
-                json.dumps(payload, ensure_ascii=False) if payload is not None else None,
+                json.dumps(payload, ensure_ascii=False).encode('utf-8')
+                if payload is not None else None,
                 {'Content-Type': 'application/json'})
             response = connection.getresponse()
             return response.status, response.read().decode('utf-8')

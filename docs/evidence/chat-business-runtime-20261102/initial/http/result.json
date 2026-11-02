@@ -1,0 +1,11 @@
+{
+  "status": "FAIL",
+  "error": "UnicodeEncodeError('latin-1', '{\"model\": \"qwen3.8-flash-next\", \"temperature\": 0, \"max_tokens\": 256, \"stream\": false, \"request_timeout_ms\": 120000, \"chat_template_kwargs\": {\"enable_thinking\": false, \"reasoning_effort\": \"low\"}, \"messages\": [{\"role\": \"user\", \"content\": \"只回复数字710003。\"}], \"request_id\": \"protocol-0f2e736517a8313b653877d929ce1c03\", \"cancel_token\": \"73e9b4113621a96cd4455b859f4f4269194bad82b4426fcb187ac08a1b705a5c\"}', 237, 242, \"Body ('只回复数字') is not valid Latin-1. Use body.encode('utf-8') if you want to send it encoded in UTF-8.\")",
+  "requests": 1,
+  "negative": 0,
+  "starts": 1,
+  "capability_gets": 1,
+  "agent_runs": 0,
+  "elapsed_seconds": 36.43143277289346,
+  "limitation": "Bounded functional checks; no performance acceptance."
+}

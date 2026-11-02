@@ -1,0 +1,49 @@
+{
+  "model": "qwen3.8-flash-next",
+  "messages": [
+    {
+      "role": "user",
+      "content": "请先调用lookup工具，key必须是audit。拿到工具结果后，只回复其中code字段的六位数字。在工具返回之前不要猜测答案。"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "lookup",
+        "description": "Read an authoritative record by key.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string",
+              "enum": [
+                "audit"
+              ]
+            }
+          },
+          "required": [
+            "key"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "parse_response": true,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1,
+  "stream": false,
+  "max_tokens": 256,
+  "tool_choice": "auto",
+  "parallel_tool_calls": true,
+  "request_timeout_ms": 120000,
+  "request_id": "protocol-ea356bcf52a7d1a63a2bd9d56acbd796",
+  "cancel_token": "d3047bb6f8a34d5944f8ea352076afe2da680889380f088b617a30f1c0ace09d",
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "preserve_thinking": true,
+    "reasoning_effort": "low"
+  }
+}

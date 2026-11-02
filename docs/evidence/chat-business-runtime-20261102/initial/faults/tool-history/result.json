@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "error": null,
+  "signals": [
+    {
+      "pid": 1076502,
+      "signal": "SIGKILL"
+    }
+  ],
+  "identities": {
+    "1076502": {
+      "state": "S",
+      "ppid": 1076469,
+      "pgid": 1076502,
+      "start_ticks": 178807851,
+      "argv": [
+        "/usr/bin/python3.12",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py",
+        "--role",
+        "crash",
+        "--case",
+        "tool-history",
+        "--directory",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/faults/tool-history",
+        "--lease-root",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102"
+      ],
+      "executable": "/usr/bin/python3.12"
+    }
+  },
+  "forced_cleanup": false,
+  "fixture_pids": [
+    1076502
+  ],
+  "child_returncode": -9,
+  "network_requests": 0,
+  "model_starts": 0
+}

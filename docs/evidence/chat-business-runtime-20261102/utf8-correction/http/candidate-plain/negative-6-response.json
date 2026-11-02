@@ -1,0 +1,5 @@
+{
+  "status": 400,
+  "raw": "{\"error\":{\"message\":\"response_format is not supported\",\"type\":\"invalid_request_error\",\"code\":null}}",
+  "elapsed_seconds": 0.00025832210667431355
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py", line 193, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py", line 188, in main
+    {'parent': parent, 'guard': guard, 'leaf': leaf,
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py", line 62, in leaf
+    wait_file(args.directory / 'never-release-leaf', timeout=40)
+  File "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/fault_fixture.py", line 50, in wait_file
+    time.sleep(.01)
+KeyboardInterrupt

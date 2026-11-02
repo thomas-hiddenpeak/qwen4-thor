@@ -1,0 +1,5 @@
+{
+  "status": 200,
+  "raw": "{\"id\":\"protocol-ea356bcf52a7d1a63a2bd9d56acbd796\",\"object\":\"chat.completion\",\"created\":1793598379,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"call_protocol-ea356bcf52a7d1a63a2bd9d56acbd796_0\",\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"key\\\":\\\"audit\\\"}\"}}]},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":311,\"completion_tokens\":25,\"total_tokens\":336}}",
+  "elapsed_seconds": 1.0266398778185248
+}

@@ -1,0 +1,27 @@
+{
+  "state": "TOOL_OUTCOME_UNKNOWN",
+  "next_action": "Reconcile started calls without results; never automatically replay them.",
+  "automatic_retry": false,
+  "requests": 1,
+  "completed_tool_calls": 0,
+  "attempted_tool_calls": 1,
+  "remaining_requests": 1,
+  "remaining_tool_calls": 0,
+  "messages": [
+    {
+      "role": "user",
+      "content": "请先调用lookup工具，key必须是audit。拿到工具结果后，只回复其中code字段的六位数字。在工具返回之前不要猜测答案。"
+    }
+  ],
+  "pending_tool_calls": [
+    {
+      "call_id": "call-0",
+      "name": "lookup",
+      "arguments": {
+        "key": "audit"
+      }
+    }
+  ],
+  "known_results": {},
+  "cancellation_note": "202 accepts cancellation only; 404 does not prove no execution. Never reuse request IDs."
+}

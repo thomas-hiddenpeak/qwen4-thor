@@ -1,0 +1,26 @@
+{
+  "utc": "2026-11-02T05:38:27.904911+00:00",
+  "authorization": "用户：释放gpu出来",
+  "unit": "soar-flash-fast-v3-qualified-rollback-20261102.service",
+  "supervisor_pid": 813475,
+  "container_id": "9fb0504fd908c42e0db4fb8e90cce7a037ecfe2c7bb2adbc256318144a715164",
+  "container_name": "/soar-fast-v3-qualified-rollback-20261102",
+  "image": "sha256:10d0df20a140d12e987013b12da289e2dec0bcb1db4a14f2491d75c0c7ae5d6c",
+  "running": {
+    "vllm:num_requests_running": 0.0,
+    "vllm:num_requests_waiting": 0.0
+  },
+  "private_snapshot_sha256": {
+    "unit-show.txt": "34b0d43d099f88b9e5d937773f5624278057fd5eab125e563c56346bc70b4f4e",
+    "rollback-profile.json": "a799a126185582ea0465d9116e43543300f3a788cf72a263cc98e64a14eaa29e",
+    "docker-inspect.json": "b708b1ee28e54e3385625b1a22f9b1dd6607ad0d2c277f68c18988278d962018"
+  },
+  "operation": [
+    "systemctl",
+    "--user",
+    "stop",
+    "soar-flash-fast-v3-qualified-rollback-20261102.service"
+  ],
+  "afterwards": "run remaining accepted test scope; leave GPU released after owned cleanup",
+  "automatic_vllm_restart": false
+}

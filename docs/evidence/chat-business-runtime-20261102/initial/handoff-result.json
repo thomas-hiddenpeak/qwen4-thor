@@ -1,0 +1,15 @@
+{
+  "utc": "2026-11-02T05:39:53.111542+00:00",
+  "authorized_service_stopped": true,
+  "supervisor_exited": true,
+  "container_absent": true,
+  "foreign_recovery_marker_removed_by_owner": true,
+  "shared_lock_acquired": true,
+  "owner_terminal": {
+    "ownedCleanupConfirmed": true,
+    "q4tRestarted": false,
+    "readyWasReached": true,
+    "recoveryMarkerRetained": false
+  },
+  "remaining_runtime_checks": "must run under new gpu_exclusive guard"
+}

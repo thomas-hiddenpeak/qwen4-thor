@@ -1,5 +1,8 @@
 # 聊天业务验收证据
 
+后续GPU交接及实机矩阵已通过，见[最终证据](../chat-business-runtime-20261102/README.md)。
+本目录保留原CPU阶段及锁冲突现场，不追改原始结果。
+
 状态：**CPU_PASS_GPU_ADMISSION_ENV_ABORT**。源码bef9d24，候选
 830694ce。CPU五项共157个检查通过；真实进程故障及模型HTTP未执行。
 详见[结果与剩余工作](../../CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。

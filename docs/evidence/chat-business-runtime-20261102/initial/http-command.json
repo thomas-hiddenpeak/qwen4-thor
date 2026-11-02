@@ -1,0 +1,21 @@
+{
+  "name": "http",
+  "argv": [
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/verify.py",
+    "--candidate",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/q4t-candidate",
+    "--baseline",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/response-parsing-20261102/previous/q4t",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-runtime-20261102/http",
+    "--port",
+    "18096",
+    "--protocol-sha256",
+    "a765c021575bd68f46ecdbf099c9450e4b05e318e5b2d132215b3a880420a569"
+  ],
+  "timeout": 1860
+}

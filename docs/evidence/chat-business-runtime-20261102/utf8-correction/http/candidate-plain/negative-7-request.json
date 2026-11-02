@@ -1,0 +1,39 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 1,
+  "max_tokens": 256,
+  "stream": false,
+  "request_timeout_ms": 120000,
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "reasoning_effort": "low"
+  },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "lookup",
+        "description": "Look up an authoritative code.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "key"
+          ]
+        }
+      }
+    }
+  ],
+  "messages": [
+    {
+      "role": "user",
+      "content": "请先调用lookup工具，key必须是audit。拿到工具结果后，只回复其中code字段的六位数字。在工具返回之前不要猜测答案。"
+    }
+  ],
+  "request_id": "protocol-56977d4b376aa53c1ffcecb8fecf6afb",
+  "cancel_token": "94a2f976eaefb00efd3c9b382b0ad7585585b5a04931f8bad7982b39f22206a0"
+}

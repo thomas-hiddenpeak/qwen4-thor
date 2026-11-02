@@ -1,0 +1,170 @@
+{
+  "status": "PASS_BOUNDED_CHAT_INTEGRATION",
+  "candidate": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/q4t-candidate",
+    "sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51"
+  },
+  "protocol_sha256": "a765c021575bd68f46ecdbf099c9450e4b05e318e5b2d132215b3a880420a569",
+  "cpu_contracts": {
+    "host": 97,
+    "client": 22,
+    "recovery": 13,
+    "orchestration_transport": 5,
+    "template": 21
+  },
+  "real_fault_cases": 8,
+  "controlled_fixture_processes": 12,
+  "http": {
+    "status": "PASS",
+    "error": null,
+    "requests": 23,
+    "negative": 10,
+    "starts": 3,
+    "capability_gets": 6,
+    "agent_runs": 3,
+    "elapsed_seconds": 133.0262110759504,
+    "limitation": "Bounded functional checks; no performance acceptance."
+  },
+  "total_generation_attempts": 24,
+  "wire_generations": 23,
+  "total_model_starts": 4,
+  "total_capability_gets": 7,
+  "first_failure": "HTTP driver UnicodeEncodeError before generation dispatch; corrected to UTF-8 bytes",
+  "models": {
+    "baseline-plain": {
+      "generations": 2,
+      "shutdown": {
+        "clean": true,
+        "returncode": 0
+      },
+      "startup_resources": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1541,
+        "device_bytes": 79025839888,
+        "allocated": 1541,
+        "consumed": 1541,
+        "freed": 1541,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "0e6a148bcc76f8507e42326e4029148aa680700390ed5f00d3303f5c0c793bc9"
+      }
+    },
+    "candidate-plain": {
+      "generations": 14,
+      "shutdown": {
+        "clean": true,
+        "returncode": 0
+      },
+      "startup_resources": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1541,
+        "device_bytes": 79025839888,
+        "allocated": 1541,
+        "consumed": 1541,
+        "freed": 1541,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "0e6a148bcc76f8507e42326e4029148aa680700390ed5f00d3303f5c0c793bc9"
+      }
+    },
+    "candidate-mtp": {
+      "generations": 7,
+      "shutdown": {
+        "clean": true,
+        "returncode": 0
+      },
+      "startup_resources": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1606,
+        "device_bytes": 85541278088,
+        "allocated": 1606,
+        "consumed": 1606,
+        "freed": 1606,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"
+      }
+    }
+  },
+  "roundtrips": [
+    {
+      "mode": "candidate-plain",
+      "transport": "agent-json",
+      "tool": {
+        "name": "lookup",
+        "arguments": "{\"key\":\"audit\"}"
+      },
+      "answer": "831907",
+      "recovery_state": "COMPLETED"
+    },
+    {
+      "mode": "candidate-plain",
+      "transport": "agent-sse",
+      "tool": {
+        "name": "lookup",
+        "arguments": "{\"key\":\"audit\"}"
+      },
+      "answer": "831907",
+      "recovery_state": "COMPLETED"
+    },
+    {
+      "mode": "candidate-mtp",
+      "transport": "agent-sse",
+      "tool": {
+        "name": "lookup",
+        "arguments": "{\"key\":\"audit\"}"
+      },
+      "answer": "831907",
+      "recovery_state": "COMPLETED"
+    }
+  ],
+  "elapsed_from_first_guard_seconds": 391.52822002302855,
+  "env_abort_this_runtime_stage": 0,
+  "earlier_admission": "ENV_ABORT/LEASE_BUSY; retained in previous archive",
+  "final_release": {
+    "utc": "2026-11-02T05:47:40.584258+00:00",
+    "gpu_compute_pids": [],
+    "shared_lock_acquired": true,
+    "foreign_recovery_marker": false,
+    "original_supervisor_exited": true,
+    "automatic_service_restart": false,
+    "scope": "Bounded read-only final occupancy; no model/health generation"
+  },
+  "default_binary_sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+  "default_sidecar_sha256": "e6fdd13b7d140926ed4a0d42bcda37b6ec6689305960e3deab03b3f73dc294d6",
+  "deployed": false,
+  "performance_acceptance": false
+}
