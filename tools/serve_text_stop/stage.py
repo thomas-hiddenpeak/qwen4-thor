@@ -56,7 +56,7 @@ def sdk_environment():
 def cpu_gate():
     cpu = BASE / "cpu"
     for name in ("host-gate/result.json", "template-reuse.json",
-                 "startup-preflight/result.json", "driver-sdk-result.json",
+                 "startup-preflight/result.json", "driver-fixture-result.json",
                  "client-result.json"):
         h.require(h.read(cpu / name)["passed"], "CPU gate failed: " + name)
     for mode, count in (("on", 197), ("off", 188)):
@@ -176,6 +176,38 @@ def prepare():
             prior_counts=dict(starts=1, generations=0, negatives=0),
             prior_invocation=dict(guard_attempts=2, first=first["prior_invocation"],
                 sdk_failure=h.identity(prior / "business/result.json")))
+    if PACKAGE.name == "package-fixture":
+        prior = BASE / "execution-sdk"
+        h.verify_seal(BASE / "package-sdk")
+        failed = h.read(prior / "business/result.json")
+        h.require(failed["request_attempts"] == 8 and failed["negative_requests"] == 16
+                  and failed["starts"] == 1 and "content': '7'" in failed["error"],
+                  "unexpected length fixture failure")
+        folder = prior / "business/candidate-mtp"
+        observed = h.read(folder / "length-match-result.json")
+        h.require(observed["message"]["content"] == "7" and
+                  observed["finish_reason"] == "length" and
+                  observed["usage"]["completion_tokens"] == 1,
+                  "original one-token observation changed")
+        h.require(h.read(folder / "shutdown.json")["clean"] and
+                  h.read(prior / "lease/exit.json")["status"] == "COMMAND_FAILED",
+                  "fixture failure did not drain")
+        first = h.read(BASE / "package-sdk/plan.json")
+        h.require(first["candidate_sha256"] == plan["candidate_sha256"],
+                  "fixture repair must not change runtime")
+        labels = ["baseline", "eos-at-limit", "ascii-json", "ascii-sse", "chinese",
+                  "overlap", "unmatched-prefix"]
+        files = {label + "-" + suffix: h.identity(folder / (label + "-" + suffix))
+                 for label in labels for suffix in
+                 ("request.json", "wire.bin", "headers.json", "sdk.json", "result.json")}
+        files.update({f"negative-{i}-{kind}.bin": h.identity(folder / f"negative-{i}-{kind}.bin")
+                      for i in range(16) for kind in ("request", "response")})
+        plan.update(original_started=first["original_started"],
+            prior_counts=dict(starts=2, generations=8, negatives=16),
+            reuse_http=dict(files=files, labels=labels, generations=7, negatives=16,
+                           trace=h.identity(folder / "server.log")),
+            installed_plain=True, planned_new=dict(business=11, health=3, starts=2),
+            scope_note="Plain JSON/SSE and installed health share a single real build/q4t --no-mtp process. Default MTP behavior uses the identical accepted candidate ELF evidence; no second installed MTP load claimed.")
     h.save(PACKAGE / "plan.json", plan)
     h.seal(PACKAGE)
     print("PREPARED", plan["candidate_sha256"], flush=True)
@@ -227,6 +259,8 @@ def release(plan):
         tool_acceptance_sha256=h.sha(result), inherited_acceptance=inherited,
         implementation_capabilities=caps,
         scope=dict(hardware="local Thor", heads=["full"], max_seq=1, max_len=[8192],
+            installation_health="new build/q4t --no-mtp; plain JSON/SSE and health",
+            mtp_installation_evidence="same-SHA candidate default-MTP HTTP before install",
             text_stop="max 4 strings, 256 UTF-8 bytes each; constraints/cache excluded",
             max_prefill=2048, ordinary_decode=["default MTP k3", "plain"],
             constrained_decode="plain_host_masked_greedy", performance_acceptance=False,
@@ -245,6 +279,10 @@ def release(plan):
     h.save(directory / "q4t.release.json", metadata)
     h.save(directory / "binding.json", dict(old=plan["old_hashes"], new=dict(
         q4t=plan["candidate_sha256"], **{"q4t.release.json": h.sha(directory / "q4t.release.json")})))
+    metadata_scope = plan.get("scope_note")
+    if metadata_scope:
+        h.save(directory / "health-scope.json", dict(note=metadata_scope,
+            required_health_requests=3, rollback_on_failure=True))
     h.seal(directory)
     return directory
 
@@ -255,12 +293,13 @@ def bind():
     a.check, a.verifier, a.release = check, verifier, release
 
 
-def guard_command(retry=False, sdk_retry=False):
+def guard_command(retry=False, sdk_retry=False, fixture_retry=False):
     # The deployment guard validates exact absolute argv, not only the lock.
     return ["/usr/bin/python3", "-B", str(ROOT / "tools/evalscope/gpu_exclusive.py"),
             "--output", str(OUTPUT / "lease"), "--", str(SDK_PYTHON), "-B",
             str(Path(__file__).resolve()), "execute",
-            *(["--sdk-retry"] if sdk_retry else ["--guard-retry"] if retry else [])]
+            *(["--fixture-retry"] if fixture_retry else ["--sdk-retry"] if sdk_retry
+              else ["--guard-retry"] if retry else [])]
 
 
 def main():
@@ -270,18 +309,23 @@ def main():
     ap.add_argument("--output", type=Path)
     ap.add_argument("--guard-retry", action="store_true")
     ap.add_argument("--sdk-retry", action="store_true")
+    ap.add_argument("--fixture-retry", action="store_true")
     args = ap.parse_args()
     if args.guard_retry:
         PACKAGE, OUTPUT = BASE / "package-absolute", BASE / "execution-absolute"
     if args.sdk_retry:
         h.require(not args.guard_retry, "choose exactly one continuation")
         PACKAGE, OUTPUT = BASE / "package-sdk", BASE / "execution-sdk"
+    if args.fixture_retry:
+        h.require(not args.guard_retry and not args.sdk_retry, "choose one continuation")
+        PACKAGE, OUTPUT = BASE / "package-fixture", BASE / "execution-fixture"
     bind()
     if args.action == "prepare":
         prepare()
     elif args.action == "launch":
         h.require(sdk_environment() == check()["sdk_environment"], "SDK environment drift")
-        raise SystemExit(subprocess.run(guard_command(args.guard_retry, args.sdk_retry),
+        raise SystemExit(subprocess.run(guard_command(args.guard_retry, args.sdk_retry,
+                                                     args.fixture_retry),
                                        cwd=ROOT).returncode)
     elif args.action == "execute":
         h.require_guard(OUTPUT)

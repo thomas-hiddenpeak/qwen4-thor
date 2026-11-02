@@ -33,10 +33,39 @@ class Contracts(unittest.TestCase):
         with self.assertRaises(AssertionError):
             run.budget()
 
+    def test_fixture_reuse_keeps_total_and_installed_plain_budget(self):
+        run = object.__new__(v.Run)
+        run.installed, run.deadline = False, time.time() + 60
+        run.plan = dict(prior_counts=dict(starts=2, generations=8, negatives=16),
+                        installed_plain=True)
+        run.requests, run.negative, run.starts, run.capability_gets = 11, 0, 1, 1
+        run.budget()
+        run.requests = 12
+        with self.assertRaises(AssertionError):
+            run.budget()
+        run.installed, run.requests = True, 3
+        run.budget()
+        run.requests = 4
+        with self.assertRaises(AssertionError):
+            run.budget()
+        command = stage.guard_command(fixture_retry=True)
+        self.assertEqual(command[-1], "--fixture-retry")
+
+    def test_installed_health_checks_plain_and_final_trace(self):
+        run = object.__new__(v.Run)
+        run.plan = dict(installed_plain=True)
+        result = SimpleNamespace(message=dict(content="ALPHA0123"), finish_reason="stop")
+        with patch.object(run, "plain") as plain, patch.object(run, "success", return_value=result), \
+             patch.object(run, "resources_empty"), patch.object(run, "traces") as traces:
+            run.health(Path("/bounded"))
+            plain.assert_called_once_with(Path("/bounded"))
+            traces.assert_called_once_with(Path("/bounded"), mtp=False)
+
     def test_missing_sdk_precedes_model_start(self):
         with tempfile.TemporaryDirectory(dir=stage.BASE) as directory:
             run = object.__new__(v.Run)
             run.out, run.installed = Path(directory), False
+            run.plan = {}
             run.requests = run.negative = run.starts = 0
             run.started = time.monotonic()
             with patch.object(run, "sdk", side_effect=RuntimeError("missing SDK")), \

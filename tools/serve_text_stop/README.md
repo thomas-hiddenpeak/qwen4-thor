@@ -28,3 +28,9 @@ model start and zero requests. The final continuation is `--sdk-retry`, with
 `launch` binding the already accepted SDK venv and constructing its real client
 before taking the GPU lease. That prior start and the original deadline remain
 charged. Use the same continuation flag for prepare/finalize/rollback.
+
+The concrete length-fixture correction uses `--fixture-retry`. Seven accepted
+responses and sixteen negatives are reused by hash; 11 MTP requests remain.
+Plain JSON/SSE and installed health share one real installed --no-mtp process
+(3 requests), keeping totals 22 generations / 16 negatives / 4 model starts.
+Installed MTP uses identical candidate-ELF evidence; no extra MTP load is claimed.

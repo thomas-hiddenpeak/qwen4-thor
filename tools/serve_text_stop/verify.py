@@ -92,9 +92,13 @@ class Run(b.Run):
 
     def budget(self):
         wire.require(time.time() < self.deadline, "text stop deadline")
-        previous = getattr(self, "plan", {}).get("prior_counts", {})
-        wire.require(self.requests <= (1 if self.installed else 21) and
-                     self.negative <= (0 if self.installed else 16) and
+        plan = getattr(self, "plan", {})
+        previous = plan.get("prior_counts", {})
+        health = 3 if plan.get("installed_plain") else 1
+        wire.require(self.requests <= (health if self.installed else
+                                      22 - health - previous.get("generations", 0)) and
+                     self.negative <= (0 if self.installed else
+                                      16 - previous.get("negatives", 0)) and
                      self.starts <= (1 if self.installed else 3 - previous.get("starts", 0)) and
                      self.capability_gets <= (1 if self.installed else 3 - previous.get("starts", 0)),
                      "text stop budget")
@@ -139,25 +143,33 @@ class Run(b.Run):
         self.resources_empty(folder, "negative-drained")
 
     def business(self, folder):
-        self.negatives(folder)
-        baseline = self.success(folder, "baseline", copying(stop=None))
-        check_text(baseline, TEXT)
-        at_eos = self.success(folder, "eos-at-limit", copying(stop=None,
-            maximum=baseline.usage["completion_tokens"]))
-        b.compare(baseline, at_eos)
-        plain = self.success(folder, "ascii-json", copying())
-        streamed = self.success(folder, "ascii-sse", copying(stream=True))
-        check_text(plain, "ALPHA0123")
-        b.compare(plain, streamed)
-        wire.require(plain.usage["completion_tokens"] < baseline.usage["completion_tokens"],
-                     "stop did not shorten logical generation")
-        check_text(self.success(folder, "chinese", copying("开始中文停止之后", "中文停止",
-            stream=True)), "开始")
-        check_text(self.success(folder, "overlap", copying("ALPHAababaOMEGA",
-            ["ababa", "bab"], stream=True)), "ALPHAa")
-        check_text(self.success(folder, "unmatched-prefix", copying("ALPHAEN", "END")), "ALPHAEN")
-        for label, stop, expected, finish in (("length-match", "710", "", "stop"),
-                ("length-miss", "710X", "710", "length")):
+        reuse = self.plan.get("reuse_http")
+        if reuse:
+            for name, identity in reuse["files"].items():
+                path = Path(identity["path"])
+                wire.require(wire.digest(path) == identity["sha256"], "reused wire changed")
+                (folder / name).write_bytes(path.read_bytes())
+            wire.save(folder / "reused-http.json", reuse)
+        else:
+            self.negatives(folder)
+            baseline = self.success(folder, "baseline", copying(stop=None))
+            check_text(baseline, TEXT)
+            at_eos = self.success(folder, "eos-at-limit", copying(stop=None,
+                maximum=baseline.usage["completion_tokens"]))
+            b.compare(baseline, at_eos)
+            plain = self.success(folder, "ascii-json", copying())
+            streamed = self.success(folder, "ascii-sse", copying(stream=True))
+            check_text(plain, "ALPHA0123")
+            b.compare(plain, streamed)
+            wire.require(plain.usage["completion_tokens"] < baseline.usage["completion_tokens"],
+                         "stop did not shorten logical generation")
+            check_text(self.success(folder, "chinese", copying("开始中文停止之后", "中文停止",
+                stream=True)), "开始")
+            check_text(self.success(folder, "overlap", copying("ALPHAababaOMEGA",
+                ["ababa", "bab"], stream=True)), "ALPHAa")
+            check_text(self.success(folder, "unmatched-prefix", copying("ALPHAEN", "END")), "ALPHAEN")
+        for label, stop, expected, finish in (("length-match", "7", "", "stop"),
+                ("length-miss", "7X", "7", "length")):
             body = b.simple(stream=True)
             body.update(stop=stop, max_completion_tokens=1)
             result = self.success(folder, label, body)
@@ -209,19 +221,32 @@ class Run(b.Run):
         second = self.success(folder, "plain-sse", copying(stream=True))
         check_text(first, "ALPHA0123")
         b.compare(first, second)
-        prior = json.loads((self.out / "candidate-mtp/ascii-json-result.json").read_text())
+        directory = self.out.parent / "business" if self.installed else self.out
+        prior = json.loads((directory / "candidate-mtp/ascii-json-result.json").read_text())
         wire.require(first.message == prior["message"] and first.usage == prior["usage"],
                      "MTP/plain stopped response differs")
         self.resources_empty(folder, "plain-drained")
-        self.traces(folder, mtp=False)
+        if not self.installed:
+            self.traces(folder, mtp=False)
 
     def health(self, folder):
+        if self.plan.get("installed_plain"):
+            self.plain(folder)
         check_text(self.success(folder, "installed-stop", copying(stream=True)), "ALPHA0123")
         self.resources_empty(folder, "installed-drained")
-        self.traces(folder, mtp=True)
+        self.traces(folder, mtp=not self.plan.get("installed_plain"))
 
     def traces(self, folder, *, mtp):
         rows = stop_traces((folder / "server.log").read_text())
+        reuse = self.plan.get("reuse_http")
+        if mtp and reuse:
+            source = Path(reuse["trace"]["path"])
+            wire.require(wire.digest(source) == reuse["trace"]["sha256"], "trace reuse changed")
+            old = stop_traces(source.read_text())
+            for label in reuse["labels"]:
+                if label in old:
+                    wire.require(label not in rows, "repeated accepted case")
+                    rows[label] = dict(old[label], reused_from=str(source))
         wire.require(rows, "missing stop trace")
         for label, row in rows.items():
             path = folder / (label + "-result.json")
@@ -237,7 +262,8 @@ class Run(b.Run):
                 wire.require(len(rows) == 15 and rows["overlap"]["matched_index"] == 1,
                              "incomplete stop cases or overlap order")
         else:
-            wire.require(len(rows) == 2 and all(row["mtp_steps"] == 0 for row in rows.values()),
+            wire.require(len(rows) == (3 if self.installed else 2) and
+                         all(row["mtp_steps"] == 0 for row in rows.values()),
                          "plain ran MTP")
         wire.save(folder / "stop-trace-result.json", dict(passed=True, requests=rows))
 
@@ -264,12 +290,16 @@ class Run(b.Run):
                 pass
             binary = ROOT / "build/q4t" if self.installed else Path(self.plan["candidate"])
             if self.installed:
-                self.model("candidate-installed", binary, True, self.health)
+                self.model("candidate-installed", binary, not self.plan.get("installed_plain"), self.health)
             else:
                 self.model("candidate-mtp", binary, True, self.business)
-                self.model("candidate-plain", binary, False, self.plain)
-            wire.require(self.requests == (1 if self.installed else 20) and
-                         self.negative == (0 if self.installed else 16), "missing frozen cases")
+                if not self.plan.get("installed_plain"):
+                    self.model("candidate-plain", binary, False, self.plain)
+            expected = (3 if self.installed else 11) if self.plan.get("installed_plain") else \
+                       (1 if self.installed else 20)
+            wire.require(self.requests == expected and self.negative ==
+                         (0 if self.installed or self.plan.get("reuse_http") else 16),
+                         "missing frozen cases")
             for script in ("tools/serve_stage_a/check_schema.py",
                            "tools/serve_stage_b2a/check_schema.py",
                            "tools/serve_thinking_budget/check_schema.py",
@@ -283,5 +313,5 @@ class Run(b.Run):
         finally:
             state.update(request_attempts=self.requests, negative_requests=self.negative,
                 starts=self.starts, seconds=time.monotonic() - self.started,
-                performance_acceptance=False)
+                performance_acceptance=False, reused_http=self.plan.get("reuse_http"))
             wire.save(self.out / "result.json", state)
