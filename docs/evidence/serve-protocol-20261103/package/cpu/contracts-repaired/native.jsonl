@@ -1,0 +1,5 @@
+{"accepted":true}
+{"accepted":true}
+{"accepted":true}
+{"accepted":false,"response":{"error":{"message":"stop entries must be valid UTF-8 strings of 1..256 bytes","type":"invalid_request_error","code":"invalid_request","param":"stop"}}}
+{"accepted":false,"response":{"error":{"message":"invalid or duplicate function name","type":"invalid_request_error","code":"invalid_request","param":null}}}

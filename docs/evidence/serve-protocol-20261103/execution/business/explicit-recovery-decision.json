@@ -1,0 +1,21 @@
+{
+  "automatic_retry": false,
+  "source_checkpoint": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/read-success/round-00-history.json",
+    "sha256": "ad7ec7e6059d1f1b3e0fc287c0e1fe03ebf7a5665825c37c53dbab35e0d309f3",
+    "bytes": 3100
+  },
+  "failed_request": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/interrupted-final/round-00-request.json",
+    "sha256": "78d379600ea2291c320e894901724c61eb83a00923daa36bac9eeb1d79818fa6",
+    "bytes": 4672
+  },
+  "fresh_request": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/explicit-recovery/round-00-request.json",
+    "sha256": "26ae5d112f4f626cc56a1465e907d5d5b188f022943a2035679aca36f3b0dcd0",
+    "bytes": 4672
+  },
+  "new_tools_executed": 0,
+  "original_owners_and_slots_drained": true,
+  "scope": "Explicit new final answer from known complete tool results; no unknown tool replay"
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/check_contract.py", line 122, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/check_contract.py", line 82, in main
+    schemas = load_validators()
+              ^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/check_contract.py", line 67, in load_validators
+    registry = registry.with_resource(value["$id"], Resource.from_contents(value))
+                                      ~~~~~^^^^^^^
+KeyError: '$id'

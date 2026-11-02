@@ -1,0 +1,3600 @@
+[
+  {
+    "id": "model-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "model",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"model\":\"qwen3.8-flash-next\"}"
+    }
+  },
+  {
+    "id": "model-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "model",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"model\":null}"
+    }
+  },
+  {
+    "id": "model-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "model",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"model\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "model-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "model",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "prompt-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "prompt",
+    "fixture": {
+      "raw": "{\"prompt\":\"q\"}"
+    }
+  },
+  {
+    "id": "prompt-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prompt",
+    "fixture": {
+      "raw": "{\"prompt\":null}"
+    }
+  },
+  {
+    "id": "prompt-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prompt",
+    "fixture": {
+      "raw": "{\"prompt\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "prompt-omitted",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prompt",
+    "fixture": {
+      "raw": "{}"
+    }
+  },
+  {
+    "id": "messages-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "messages-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":null,\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "messages-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"messages\":{\"unexpected\":true},\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "messages-omitted",
+    "expected": false,
+    "shape_expected": false,
+    "field": "messages",
+    "fixture": {
+      "raw": "{\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "max_tokens-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "max_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_tokens\":2}"
+    }
+  },
+  {
+    "id": "max_tokens-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "max_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_tokens\":null}"
+    }
+  },
+  {
+    "id": "max_tokens-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "max_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_tokens\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "max_tokens-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "max_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "max_completion_tokens-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "max_completion_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_completion_tokens\":2}"
+    }
+  },
+  {
+    "id": "max_completion_tokens-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "max_completion_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_completion_tokens\":null}"
+    }
+  },
+  {
+    "id": "max_completion_tokens-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "max_completion_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_completion_tokens\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "max_completion_tokens-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "max_completion_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "stream-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "stream",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stream\":true}"
+    }
+  },
+  {
+    "id": "stream-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "stream",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stream\":null}"
+    }
+  },
+  {
+    "id": "stream-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "stream",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stream\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "stream-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "stream",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "stream_options-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "stream_options",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stream_options\":{\"include_usage\":true}}"
+    }
+  },
+  {
+    "id": "stream_options-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "stream_options",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stream_options\":null}"
+    }
+  },
+  {
+    "id": "stream_options-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "stream_options",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stream_options\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "stream_options-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "stream_options",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "request_id-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "request_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_id\":\"client-1\",\"cancel_token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "request_id-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "request_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_id\":null,\"cancel_token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "request_id-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "request_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_id\":{\"unexpected\":true},\"cancel_token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "request_id-omitted",
+    "expected": false,
+    "shape_expected": false,
+    "field": "request_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"cancel_token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "cancel_token-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "cancel_token",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_id\":\"client-1\",\"cancel_token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "cancel_token-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "cancel_token",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_id\":\"client-1\",\"cancel_token\":null}"
+    }
+  },
+  {
+    "id": "cancel_token-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "cancel_token",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_id\":\"client-1\",\"cancel_token\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "cancel_token-omitted",
+    "expected": false,
+    "shape_expected": false,
+    "field": "cancel_token",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_id\":\"client-1\"}"
+    }
+  },
+  {
+    "id": "request_timeout_ms-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "request_timeout_ms",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_timeout_ms\":500}"
+    }
+  },
+  {
+    "id": "request_timeout_ms-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "request_timeout_ms",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_timeout_ms\":null}"
+    }
+  },
+  {
+    "id": "request_timeout_ms-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "request_timeout_ms",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_timeout_ms\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "request_timeout_ms-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "request_timeout_ms",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "tools-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tools",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}]}"
+    }
+  },
+  {
+    "id": "tools-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tools",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":null}"
+    }
+  },
+  {
+    "id": "tools-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "tools",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "tools-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tools",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "chat_template_kwargs-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "chat_template_kwargs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "chat_template_kwargs-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "chat_template_kwargs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"chat_template_kwargs\":null}"
+    }
+  },
+  {
+    "id": "chat_template_kwargs-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "chat_template_kwargs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"chat_template_kwargs\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "chat_template_kwargs-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "chat_template_kwargs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "enable_thinking-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "enable_thinking",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "enable_thinking-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "enable_thinking",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":null}"
+    }
+  },
+  {
+    "id": "enable_thinking-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "enable_thinking",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "enable_thinking-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "enable_thinking",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}]}"
+    }
+  },
+  {
+    "id": "preserve_thinking-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "preserve_thinking",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"preserve_thinking\":true}"
+    }
+  },
+  {
+    "id": "preserve_thinking-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "preserve_thinking",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"preserve_thinking\":null}"
+    }
+  },
+  {
+    "id": "preserve_thinking-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "preserve_thinking",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"preserve_thinking\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "preserve_thinking-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "preserve_thinking",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "reasoning_effort-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "reasoning_effort",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"reasoning_effort\":\"low\"}"
+    }
+  },
+  {
+    "id": "reasoning_effort-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "reasoning_effort",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"reasoning_effort\":null}"
+    }
+  },
+  {
+    "id": "reasoning_effort-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "reasoning_effort",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"reasoning_effort\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "reasoning_effort-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "reasoning_effort",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "add_vision_id-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "add_vision_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"add_vision_id\":true}"
+    }
+  },
+  {
+    "id": "add_vision_id-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "add_vision_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"add_vision_id\":null}"
+    }
+  },
+  {
+    "id": "add_vision_id-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "add_vision_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"add_vision_id\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "add_vision_id-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "add_vision_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "reasoning_field-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "reasoning_field",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"reasoning_field\":\"reasoning\"}"
+    }
+  },
+  {
+    "id": "reasoning_field-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "reasoning_field",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"reasoning_field\":null}"
+    }
+  },
+  {
+    "id": "reasoning_field-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "reasoning_field",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"reasoning_field\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "reasoning_field-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "reasoning_field",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "include_reasoning-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "include_reasoning",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"include_reasoning\":false}"
+    }
+  },
+  {
+    "id": "include_reasoning-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "include_reasoning",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"include_reasoning\":null}"
+    }
+  },
+  {
+    "id": "include_reasoning-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "include_reasoning",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"include_reasoning\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "include_reasoning-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "include_reasoning",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "thinking_token_budget-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "thinking_token_budget",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"thinking_token_budget\":1}"
+    }
+  },
+  {
+    "id": "thinking_token_budget-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "thinking_token_budget",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"thinking_token_budget\":null}"
+    }
+  },
+  {
+    "id": "thinking_token_budget-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "thinking_token_budget",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"thinking_token_budget\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "thinking_token_budget-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "thinking_token_budget",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "temperature-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "temperature",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"temperature\":0}"
+    }
+  },
+  {
+    "id": "temperature-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "temperature",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"temperature\":null}"
+    }
+  },
+  {
+    "id": "temperature-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "temperature",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"temperature\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "temperature-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "temperature",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "top_p-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_p",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_p\":1}"
+    }
+  },
+  {
+    "id": "top_p-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_p",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_p\":null}"
+    }
+  },
+  {
+    "id": "top_p-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "top_p",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_p\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "top_p-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_p",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "n-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "n",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"n\":1}"
+    }
+  },
+  {
+    "id": "n-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "n",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"n\":null}"
+    }
+  },
+  {
+    "id": "n-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "n",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"n\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "n-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "n",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "frequency_penalty-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "frequency_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"frequency_penalty\":0}"
+    }
+  },
+  {
+    "id": "frequency_penalty-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "frequency_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"frequency_penalty\":null}"
+    }
+  },
+  {
+    "id": "frequency_penalty-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "frequency_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"frequency_penalty\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "frequency_penalty-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "frequency_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "presence_penalty-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "presence_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"presence_penalty\":0}"
+    }
+  },
+  {
+    "id": "presence_penalty-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "presence_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"presence_penalty\":null}"
+    }
+  },
+  {
+    "id": "presence_penalty-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "presence_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"presence_penalty\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "presence_penalty-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "presence_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "repetition_penalty-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "repetition_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"repetition_penalty\":1}"
+    }
+  },
+  {
+    "id": "repetition_penalty-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "repetition_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"repetition_penalty\":null}"
+    }
+  },
+  {
+    "id": "repetition_penalty-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "repetition_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"repetition_penalty\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "repetition_penalty-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "repetition_penalty",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "seed-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "seed",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":42}"
+    }
+  },
+  {
+    "id": "seed-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "seed",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":null}"
+    }
+  },
+  {
+    "id": "seed-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "seed",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "seed-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "seed",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "stop-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "stop",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":\"END\"}"
+    }
+  },
+  {
+    "id": "stop-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "stop",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":null}"
+    }
+  },
+  {
+    "id": "stop-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "stop",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "stop-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "stop",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "logprobs-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":false}"
+    }
+  },
+  {
+    "id": "logprobs-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":null}"
+    }
+  },
+  {
+    "id": "logprobs-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logprobs\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "logprobs-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "top_logprobs-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_logprobs\":0}"
+    }
+  },
+  {
+    "id": "top_logprobs-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_logprobs\":null}"
+    }
+  },
+  {
+    "id": "top_logprobs-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "top_logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"top_logprobs\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "top_logprobs-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "top_logprobs",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "logit_bias-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logit_bias",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logit_bias\":{}}"
+    }
+  },
+  {
+    "id": "logit_bias-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logit_bias",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logit_bias\":null}"
+    }
+  },
+  {
+    "id": "logit_bias-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "logit_bias",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"logit_bias\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "logit_bias-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "logit_bias",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "response_format-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_object\"}}"
+    }
+  },
+  {
+    "id": "response_format-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":null}"
+    }
+  },
+  {
+    "id": "response_format-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "response_format-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "response_format",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "user-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "user",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"user\":\"audit\"}"
+    }
+  },
+  {
+    "id": "user-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": "user",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"user\":null}"
+    }
+  },
+  {
+    "id": "user-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "user",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"user\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "user-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "user",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "session_id-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "session_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"session_id\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "session_id-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "session_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"session_id\":null}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "session_id-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "session_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"session_id\":{\"unexpected\":true}}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "session_id-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "session_id",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_scope-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "prefix_cache_scope",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_scope-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prefix_cache_scope",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":null}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_scope-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prefix_cache_scope",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":{\"unexpected\":true}}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_scope-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "prefix_cache_scope",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_write_tokens-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "prefix_cache_write_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"prefix_cache_write_tokens\":1024}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_write_tokens-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prefix_cache_write_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"prefix_cache_write_tokens\":null}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_write_tokens-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "prefix_cache_write_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"prefix_cache_write_tokens\":{\"unexpected\":true}}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "prefix_cache_write_tokens-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "prefix_cache_write_tokens",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "session_cache": true,
+      "prefix_cache": true
+    }
+  },
+  {
+    "id": "parse_response-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "parse_response",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"parse_response\":false}"
+    }
+  },
+  {
+    "id": "parse_response-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "parse_response",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"parse_response\":null}"
+    }
+  },
+  {
+    "id": "parse_response-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "parse_response",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"parse_response\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "parse_response-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "parse_response",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "tool_choice-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tool_choice",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tool_choice\":\"auto\"}"
+    }
+  },
+  {
+    "id": "tool_choice-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "tool_choice",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tool_choice\":null}"
+    }
+  },
+  {
+    "id": "tool_choice-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "tool_choice",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tool_choice\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "tool_choice-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "tool_choice",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "parallel_tool_calls-valid",
+    "expected": true,
+    "shape_expected": true,
+    "field": "parallel_tool_calls",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"parallel_tool_calls\":false}"
+    }
+  },
+  {
+    "id": "parallel_tool_calls-null",
+    "expected": false,
+    "shape_expected": false,
+    "field": "parallel_tool_calls",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"parallel_tool_calls\":null}"
+    }
+  },
+  {
+    "id": "parallel_tool_calls-wrong-shape",
+    "expected": false,
+    "shape_expected": false,
+    "field": "parallel_tool_calls",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"parallel_tool_calls\":{\"unexpected\":true}}"
+    }
+  },
+  {
+    "id": "parallel_tool_calls-omitted",
+    "expected": true,
+    "shape_expected": true,
+    "field": "parallel_tool_calls",
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "root-array",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "[]"
+    }
+  },
+  {
+    "id": "unknown-field",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"unknown\":true}"
+    }
+  },
+  {
+    "id": "both-inputs",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prompt\":\"q\"}"
+    }
+  },
+  {
+    "id": "raw-template-option",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"q\",\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "raw-null-thinking-budget",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"q\",\"thinking_token_budget\":null}"
+    }
+  },
+  {
+    "id": "raw-active-thinking-budget",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"q\",\"thinking_token_budget\":0}"
+    }
+  },
+  {
+    "id": "raw-unparsed",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"q\",\"parse_response\":false}"
+    }
+  },
+  {
+    "id": "raw-parsed",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"q\",\"parse_response\":true}"
+    }
+  },
+  {
+    "id": "limit-both-active",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_tokens\":1,\"max_completion_tokens\":2}"
+    }
+  },
+  {
+    "id": "limit-null-alias-None-2",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_tokens\":null,\"max_completion_tokens\":2}"
+    }
+  },
+  {
+    "id": "limit-null-alias-2-None",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_tokens\":2,\"max_completion_tokens\":null}"
+    }
+  },
+  {
+    "id": "limit-null-alias-None-None",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_tokens\":null,\"max_completion_tokens\":null}"
+    }
+  },
+  {
+    "id": "max_completion_tokens-edge-0",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_completion_tokens\":0}"
+    }
+  },
+  {
+    "id": "max_completion_tokens-edge-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_completion_tokens\":1}"
+    }
+  },
+  {
+    "id": "max_completion_tokens-edge-2",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_completion_tokens\":2147483647}"
+    }
+  },
+  {
+    "id": "max_completion_tokens-edge-3",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"max_completion_tokens\":2147483648}"
+    }
+  },
+  {
+    "id": "thinking_token_budget-edge-0",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"thinking_token_budget\":-1}"
+    }
+  },
+  {
+    "id": "thinking_token_budget-edge-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"thinking_token_budget\":0}"
+    }
+  },
+  {
+    "id": "thinking_token_budget-edge-2",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"thinking_token_budget\":2147483647}"
+    }
+  },
+  {
+    "id": "thinking_token_budget-edge-3",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"thinking_token_budget\":2147483648}"
+    }
+  },
+  {
+    "id": "request_timeout_ms-edge-0",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_timeout_ms\":0}"
+    }
+  },
+  {
+    "id": "request_timeout_ms-edge-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_timeout_ms\":1}"
+    }
+  },
+  {
+    "id": "request_timeout_ms-edge-2",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_timeout_ms\":10800000}"
+    }
+  },
+  {
+    "id": "request_timeout_ms-edge-3",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_timeout_ms\":10800001}"
+    }
+  },
+  {
+    "id": "seed-edge-0",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":-9007199254740992}"
+    }
+  },
+  {
+    "id": "seed-edge-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":-9007199254740991}"
+    }
+  },
+  {
+    "id": "seed-edge-2",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":9007199254740991}"
+    }
+  },
+  {
+    "id": "seed-edge-3",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"seed\":9007199254740992}"
+    }
+  },
+  {
+    "id": "exact-number-2.0",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\": [{\"role\": \"user\", \"content\": \"q\"}], \"enable_thinking\": false, \"max_completion_tokens\": 2.0}"
+    }
+  },
+  {
+    "id": "exact-number-2e0",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\": [{\"role\": \"user\", \"content\": \"q\"}], \"enable_thinking\": false, \"max_completion_tokens\": 2e0}"
+    }
+  },
+  {
+    "id": "exact-number-20e-1",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\": [{\"role\": \"user\", \"content\": \"q\"}], \"enable_thinking\": false, \"max_completion_tokens\": 20e-1}"
+    }
+  },
+  {
+    "id": "exact-number-2.0000000000000000001",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\": [{\"role\": \"user\", \"content\": \"q\"}], \"enable_thinking\": false, \"max_completion_tokens\": 2.0000000000000000001}"
+    }
+  },
+  {
+    "id": "exact-number-1.9999999999999999999",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\": [{\"role\": \"user\", \"content\": \"q\"}], \"enable_thinking\": false, \"max_completion_tokens\": 1.9999999999999999999}"
+    }
+  },
+  {
+    "id": "invalid-json-185",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"q\",\"prompt\":\"r\"}"
+    }
+  },
+  {
+    "id": "invalid-json-186",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"q\",\"temperature\":NaN}"
+    }
+  },
+  {
+    "id": "invalid-json-187",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"q\"} trailing"
+    }
+  },
+  {
+    "id": "invalid-json-188",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"\\ud800\"}"
+    }
+  },
+  {
+    "id": "invalid-json-189",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\": ["
+    }
+  },
+  {
+    "id": "invalid-json-190",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"q\",\"seed\":1e500}"
+    }
+  },
+  {
+    "id": "stop-bytes-191",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":\"中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中\"}"
+    }
+  },
+  {
+    "id": "stop-bytes-192",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":\"中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中\"}"
+    }
+  },
+  {
+    "id": "stop-bytes-193",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":\"\"}"
+    }
+  },
+  {
+    "id": "stop-bytes-194",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":[]}"
+    }
+  },
+  {
+    "id": "stop-bytes-195",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":[\"a\",\"b\",\"c\",\"d\"]}"
+    }
+  },
+  {
+    "id": "stop-bytes-196",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":[\"a\",\"a\",\"a\",\"a\",\"a\"]}"
+    }
+  },
+  {
+    "id": "stop-cache",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":\"end\",\"session_id\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "session_cache": true
+    }
+  },
+  {
+    "id": "stop-inactive-cache-seed",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"stop\":\"end\",\"prefix_cache_write_tokens\":0}"
+    }
+  },
+  {
+    "id": "session_id-disabled",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"session_id\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "prefix_cache_scope-disabled",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"prefix_cache_scope\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "different-served-model",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"model\":\"other\"}"
+    }
+  },
+  {
+    "id": "configured-served-alias",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"model\":\"alias\"}",
+      "model": "alias"
+    }
+  },
+  {
+    "id": "id-reserved-prefix",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"request_id\":\"chatcmpl-auto-test\",\"cancel_token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"
+    }
+  },
+  {
+    "id": "template-overrides",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":true,\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "null-nested-template",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"chat_template_kwargs\":{\"enable_thinking\":null}}"
+    }
+  },
+  {
+    "id": "system-first",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"system\",\"content\":\"rules\"},{\"role\":\"user\",\"content\":\"q\"}]}"
+    }
+  },
+  {
+    "id": "system-late",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"system\",\"content\":\"rules\"}]}"
+    }
+  },
+  {
+    "id": "developer-first",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":\"rules\"},{\"role\":\"user\",\"content\":\"q\"}]}"
+    }
+  },
+  {
+    "id": "developer-late",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"developer\",\"content\":\"rules\"}]}"
+    }
+  },
+  {
+    "id": "mixed-instructions",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"system\"},{\"role\":\"developer\"},{\"role\":\"user\",\"content\":\"q\"}]}"
+    }
+  },
+  {
+    "id": "no-user",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"content\":\"hi\"}]}"
+    }
+  },
+  {
+    "id": "tool-wrapper-not-query",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\" <tool_response>x</tool_response> \"}]}"
+    }
+  },
+  {
+    "id": "message-name-None",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\",\"name\":null}]}"
+    }
+  },
+  {
+    "id": "message-name-",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\",\"name\":\"\"}]}"
+    }
+  },
+  {
+    "id": "message-name-name",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\",\"name\":\"name\"}]}"
+    }
+  },
+  {
+    "id": "text-parts",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"text\":\"q\"},{\"type\":\"text\",\"text\":\"more\"}]}]}"
+    }
+  },
+  {
+    "id": "media-disabled",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"image_url\",\"image_url\":{\"url\":\"AA==\"}}]}]}"
+    }
+  },
+  {
+    "id": "reason-alias-218",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"content\":\"a\",\"reasoning\":\"r\",\"reasoning_content\":\"r\"},{\"role\":\"user\",\"content\":\"q\"}]}"
+    }
+  },
+  {
+    "id": "reason-alias-219",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"content\":\"a\",\"reasoning\":null,\"reasoning_content\":\"r\"},{\"role\":\"user\",\"content\":\"q\"}]}"
+    }
+  },
+  {
+    "id": "reason-alias-220",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"assistant\",\"content\":\"a\",\"reasoning\":\"r\",\"reasoning_content\":\"different\"},{\"role\":\"user\",\"content\":\"q\"}]}"
+    }
+  },
+  {
+    "id": "reason-on-user",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\",\"reasoning\":null}]}"
+    }
+  },
+  {
+    "id": "history-reordered",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-missing-result",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-duplicate-result",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-foreign-result",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"foreign\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-duplicate-call",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-mixed-ids",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-id-missing-type",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"b\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-null-result",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":null},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-id-reused-next-batch",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-231",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-232",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-233",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"[]\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-234",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{\\\"a\\\":1,\\\"a\\\":2}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-235",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":\"{\\\"bad<name\\\":1}\"}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "history-args-236",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"a\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":null}},{\"id\":\"b\",\"type\":\"function\",\"function\":{\"name\":\"read\",\"arguments\":{}}}]},{\"role\":\"tool\",\"tool_call_id\":\"b\",\"content\":\"second\"},{\"role\":\"tool\",\"tool_call_id\":\"a\",\"content\":\"first\"}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "legacy-flat-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"tool_calls\":[{\"name\":\"read\",\"arguments\":{}}]},{\"role\":\"tool\",\"content\":\"result\"}]}"
+    }
+  },
+  {
+    "id": "orphan-tool-id",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"tool\",\"content\":\"x\",\"tool_call_id\":\"a\"}]}"
+    }
+  },
+  {
+    "id": "tools-duplicate-names",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}]}"
+    }
+  },
+  {
+    "id": "tools-unicode-name",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}]}"
+    }
+  },
+  {
+    "id": "tools-name-byte-overflow",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}]}"
+    }
+  },
+  {
+    "id": "advisory-schema",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"unsupported\":\"advisory\"}}}]}"
+    }
+  },
+  {
+    "id": "none-ignores-argument-schema",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":true,\"parameters\":{\"type\":\"object\",\"properties\":{},\"unsupported\":\"advisory\"}}}],\"tool_choice\":\"none\"}"
+    }
+  },
+  {
+    "id": "strict-compiles-schema",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":true,\"parameters\":{\"type\":\"object\",\"properties\":{},\"unsupported\":\"advisory\"}}}]}"
+    }
+  },
+  {
+    "id": "tool-choice-245",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"tool_choice\":\"none\"}"
+    }
+  },
+  {
+    "id": "tool-choice-246",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"tool_choice\":\"required\"}"
+    }
+  },
+  {
+    "id": "tool-choice-247",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"tool_choice\":{\"type\":\"function\",\"function\":{\"name\":\"read\"}}}"
+    }
+  },
+  {
+    "id": "named-not-declared",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"tool_choice\":{\"type\":\"function\",\"function\":{\"name\":\"other\"}}}"
+    }
+  },
+  {
+    "id": "required-no-tools",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tool_choice\":\"required\"}"
+    }
+  },
+  {
+    "id": "strict-unparsed",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":true,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"parse_response\":false}"
+    }
+  },
+  {
+    "id": "none-backend-missing",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tool_choice\":\"none\"}",
+      "structured": false
+    }
+  },
+  {
+    "id": "none-stop",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tool_choice\":\"none\",\"stop\":\"END\"}"
+    }
+  },
+  {
+    "id": "none-empty-stop",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tool_choice\":\"none\",\"stop\":[]}"
+    }
+  },
+  {
+    "id": "json-with-tools-auto",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"response_format\":{\"type\":\"json_object\"}}"
+    }
+  },
+  {
+    "id": "json-with-tools-none",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":false,\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"response_format\":{\"type\":\"json_object\"},\"tool_choice\":\"none\"}"
+    }
+  },
+  {
+    "id": "output-schema-256",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "output-schema-257",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"schema\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false,\"maximum\":1}}}}"
+    }
+  },
+  {
+    "id": "output-schema-258",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"schema\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":\"string\"}},\"required\":[],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "output-schema-259",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"schema\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":\"integer\",\"enum\":[1]}},\"required\":[],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "output-schema-260",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"schema\":{\"type\":\"object\",\"properties\":{},\"additionalProperties\":true}}}}"
+    }
+  },
+  {
+    "id": "strict-all-required",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":\"string\"}},\"required\":[],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "json-nullable-string",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"answer\",\"strict\":true,\"schema\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":[\"string\",\"null\"]}},\"required\":[\"a\"],\"additionalProperties\":false}}}}"
+    }
+  },
+  {
+    "id": "xml-nullable-string",
+    "expected": false,
+    "shape_expected": null,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"read\",\"strict\":true,\"parameters\":{\"type\":\"object\",\"properties\":{\"a\":{\"type\":[\"string\",\"null\"]}},\"required\":[\"a\"],\"additionalProperties\":false}}}]}"
+    }
+  },
+  {
+    "id": "cancel-264",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"request_id\":\"client\",\"cancel_token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+      "kind": "cancel"
+    }
+  },
+  {
+    "id": "cancel-265",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"request_id\":\"client\"}",
+      "kind": "cancel"
+    }
+  },
+  {
+    "id": "cancel-266",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"request_id\":\"client\",\"cancel_token\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"unknown\":true}",
+      "kind": "cancel"
+    }
+  },
+  {
+    "id": "preflight-267",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"request\":{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false}}",
+      "kind": "preflight"
+    }
+  },
+  {
+    "id": "preflight-268",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"request\":{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false},\"include_prompt\":true}",
+      "kind": "preflight"
+    }
+  },
+  {
+    "id": "preflight-269",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"request\":{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false},\"include_prompt\":null}",
+      "kind": "preflight"
+    }
+  },
+  {
+    "id": "preflight-270",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"request\":{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"enable_thinking\":false},\"unknown\":true}",
+      "kind": "preflight"
+    }
+  },
+  {
+    "id": "reused-shape-system-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"system\",\"content\":\"Return only the six-digit audit code requested by the user. Do not explain.\"},{\"role\":\"user\",\"content\":\"The authoritative audit_code is 710003. What is the audit_code?\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-system-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"Return only the six-digit audit code requested by the user. Do not explain.\"},{\"role\":\"user\",\"content\":\"The authoritative audit_code is 710003. What is the audit_code?\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-user-only",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit_code is 740123. Reply with exactly those six digits and nothing else.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-user-only",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit_code is 740123. Reply with exactly those six digits and nothing else.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-multi-turn",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"system\",\"content\":\"Return only the six-digit audit code requested by the user. Do not explain.\"},{\"role\":\"user\",\"content\":\"The audit_code is 710130. Return it.\"},{\"role\":\"assistant\",\"content\":\"710130\"},{\"role\":\"user\",\"content\":\"Update: the authoritative audit_code is now 710257. Return the updated code only.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-multi-turn",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"Return only the six-digit audit code requested by the user. Do not explain.\"},{\"role\":\"user\",\"content\":\"The audit_code is 710130. Return it.\"},{\"role\":\"assistant\",\"content\":\"710130\"},{\"role\":\"user\",\"content\":\"Update: the authoritative audit_code is now 710257. Return the updated code only.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-text-parts",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"system\",\"content\":\"Return only the six-digit audit code requested by the user. Do not explain.\"},{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The authoritative audit_code is \"},{\"type\":\"text\",\"text\":\"710384. Return only the audit_code.\"}]}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-text-parts",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"Return only the six-digit audit code requested by the user. Do not explain.\"},{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The authoritative audit_code is \"},{\"type\":\"text\",\"text\":\"710384. Return only the audit_code.\"}]}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-chinese",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"system\",\"content\":\"只回答六位审计码，不要解释。\"},{\"role\":\"user\",\"content\":\"唯一有效的审计码是710511。请原样返回这六位数字。\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-chinese",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"只回答六位审计码，不要解释。\"},{\"role\":\"user\",\"content\":\"唯一有效的审计码是710511。请原样返回这六位数字。\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-whitespace",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"system\",\"content\":\"  Return only the six-digit audit code requested by the user. Do not explain.\\n\"},{\"role\":\"user\",\"content\":\"\\n  The authoritative audit_code is 710638. Return the code only.  \\n\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-whitespace",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"  Return only the six-digit audit code requested by the user. Do not explain.\\n\"},{\"role\":\"user\",\"content\":\"\\n  The authoritative audit_code is 710638. Return the code only.  \\n\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-thinking-default",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-thinking-default",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{}}"
+    }
+  },
+  {
+    "id": "reused-shape-thinking-true",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":true}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-thinking-true",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":true}}"
+    }
+  },
+  {
+    "id": "reused-shape-thinking-low",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"reasoning_effort\":\"low\"}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-thinking-low",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"reasoning_effort\":\"low\"}}"
+    }
+  },
+  {
+    "id": "reused-shape-thinking-medium",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"reasoning_effort\":\"medium\"}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-thinking-medium",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"reasoning_effort\":\"medium\"}}"
+    }
+  },
+  {
+    "id": "reused-shape-empty-system",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"system\",\"content\":\" \\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-empty-system",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\" \\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-unicode-trim",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"system\",\"content\":\"　Return only the audit code. \"},{\"role\":\"user\",\"content\":\" The audit code is 720041. Return exactly these six digits, with no explanation. \"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-unicode-trim",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"　Return only the audit code. \"},{\"role\":\"user\",\"content\":\" The audit code is 720041. Return exactly these six digits, with no explanation. \"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-history-preserve",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-history-preserve",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-history-discard",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-history-discard",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-null-assistant",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"Hello\"},{\"role\":\"assistant\",\"content\":null},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-null-assistant",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"Hello\"},{\"role\":\"assistant\",\"content\":null},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-tools-schema",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-tools-schema",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-tools-object-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}]},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-tools-object-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}]},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-tools-string-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"id\\\": 9007199254740993, \\\"scale\\\": 1.0, \\\"values\\\": [1e-05, 1000000.0, 1e+16, -0.0, true, null], \\\"text\\\": \\\"中文\\\\n<>&\\\"}\"}}]},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-tools-string-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"id\\\": 9007199254740993, \\\"scale\\\": 1.0, \\\"values\\\": [1e-05, 1000000.0, 1e+16, -0.0, true, null], \\\"text\\\": \\\"中文\\\\n<>&\\\"}\"}}]},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-consecutive-tools",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}]},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"},{\"role\":\"tool\",\"content\":\"Confirm: 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-consecutive-tools",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}]},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"},{\"role\":\"tool\",\"content\":\"Confirm: 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-tool-current-thinking-preserved",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}]},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-tool-current-thinking-preserved",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}]},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-tool-response-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"720041\",\"reasoning_content\":\"Current code.\"},{\"role\":\"user\",\"content\":\"<tool_response>Confirmed.</tool_response>\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-tool-response-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"720041\",\"reasoning_content\":\"Current code.\"},{\"role\":\"user\",\"content\":\"<tool_response>Confirmed.</tool_response>\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-null",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":null,\"name\":null},{\"role\":\"user\",\"content\":\"问\",\"name\":null}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-empty",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":\"\",\"name\":null},{\"role\":\"user\",\"content\":\"问\",\"name\":null}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-parts",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":[{\"type\":\"text\",\"text\":\"　中文\"},{\"text\":\" é 🚀 \"}],\"name\":null},{\"role\":\"user\",\"content\":\"问\",\"name\":null}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-unordered-identified-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":\"读取资料。\"},{\"role\":\"user\",\"content\":\"读两份。\"},{\"role\":\"assistant\",\"content\":null,\"reasoning_content\":\"读取。\",\"tool_calls\":[{\"id\":\"first\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}},{\"id\":\"second\",\"type\":\"function\",\"function\":{\"name\":\"second\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"content\":\"second结果\",\"tool_call_id\":\"second\"},{\"role\":\"tool\",\"content\":\"first结果\",\"tool_call_id\":\"first\"}],\"enable_thinking\":false,\"preserve_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-mixed-system-first",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"system\",\"content\":\"只回复数字。\"},{\"role\":\"developer\",\"content\":\"只回复数字。\"},{\"role\":\"user\",\"content\":\"只回复数字710003。\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-mixed-developer-first",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":\"只回复数字。\"},{\"role\":\"system\",\"content\":\"只回复数字。\"},{\"role\":\"user\",\"content\":\"只回复数字710003。\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-repeated-developer",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":\"只回复数字。\"},{\"role\":\"developer\",\"content\":\"只回复数字。\"},{\"role\":\"user\",\"content\":\"只回复数字710003。\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-repeated-system",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"system\",\"content\":\"只回复数字。\"},{\"role\":\"system\",\"content\":\"只回复数字。\"},{\"role\":\"user\",\"content\":\"只回复数字710003。\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-late-developer",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"只回复数字710003。\"},{\"role\":\"developer\",\"content\":\"只回复数字。\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-late-system",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"只回复数字710003。\"},{\"role\":\"system\",\"content\":\"只回复数字。\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-user-name",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"只回复数字710003。\",\"name\":\"alice\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-empty-name",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"只回复数字710003。\",\"name\":\"\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-developer-media",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":[{\"type\":\"image_url\",\"image_url\":{\"url\":\"invalid-base64\"}}]},{\"role\":\"user\",\"content\":\"只回复数字710003。\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-tool-name",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"只回复数字710003。\"},{\"role\":\"tool\",\"content\":\"x\",\"name\":\"lookup\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-unknown-role",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"function\",\"content\":\"x\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-unknown-instruction-part",
+    "expected": false,
+    "shape_expected": false,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":[{\"text\":\"x\",\"unknown\":true}]},{\"role\":\"user\",\"content\":\"只回复数字710003。\"}]}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-history-preserve",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-history-preserve",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-history-preserve",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":null,\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-history-preserve",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":null},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-developer-history-preserve",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-developer-history-preserve",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-history-preserve",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":null,\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-history-preserve",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":null},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-history-discard",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-history-discard",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-history-discard",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":null,\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-history-discard",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":null},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-developer-history-discard",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-developer-history-discard",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-history-discard",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":null,\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-history-discard",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":null},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-tools-object-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-tools-object-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-tools-object-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":null,\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-tools-object-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":null},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-developer-tools-object-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-developer-tools-object-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-tools-object-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":null,\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-tools-object-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":null},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-tools-string-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"id\\\": 9007199254740993, \\\"scale\\\": 1.0, \\\"values\\\": [1e-05, 1000000.0, 1e+16, -0.0, true, null], \\\"text\\\": \\\"中文\\\\n<>&\\\"}\"}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-tools-string-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"id\\\": 9007199254740993, \\\"scale\\\": 1.0, \\\"values\\\": [1e-05, 1000000.0, 1e+16, -0.0, true, null], \\\"text\\\": \\\"中文\\\\n<>&\\\"}\"}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-tools-string-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":null,\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"id\\\": 9007199254740993, \\\"scale\\\": 1.0, \\\"values\\\": [1e-05, 1000000.0, 1e+16, -0.0, true, null], \\\"text\\\": \\\"中文\\\\n<>&\\\"}\"}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-tools-string-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"id\\\": 9007199254740993, \\\"scale\\\": 1.0, \\\"values\\\": [1e-05, 1000000.0, 1e+16, -0.0, true, null], \\\"text\\\": \\\"中文\\\\n<>&\\\"}\"}}],\"reasoning\":null},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-developer-tools-string-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"id\\\": 9007199254740993, \\\"scale\\\": 1.0, \\\"values\\\": [1e-05, 1000000.0, 1e+16, -0.0, true, null], \\\"text\\\": \\\"中文\\\\n<>&\\\"}\"}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-developer-tools-string-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"id\\\": 9007199254740993, \\\"scale\\\": 1.0, \\\"values\\\": [1e-05, 1000000.0, 1e+16, -0.0, true, null], \\\"text\\\": \\\"中文\\\\n<>&\\\"}\"}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-tools-string-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":null,\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"id\\\": 9007199254740993, \\\"scale\\\": 1.0, \\\"values\\\": [1e-05, 1000000.0, 1e+16, -0.0, true, null], \\\"text\\\": \\\"中文\\\\n<>&\\\"}\"}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-tools-string-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":\"{\\\"id\\\": 9007199254740993, \\\"scale\\\": 1.0, \\\"values\\\": [1e-05, 1000000.0, 1e+16, -0.0, true, null], \\\"text\\\": \\\"中文\\\\n<>&\\\"}\"}}],\"reasoning\":null},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-consecutive-tools",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"},{\"role\":\"tool\",\"content\":\"Confirm: 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-consecutive-tools",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"},{\"role\":\"tool\",\"content\":\"Confirm: 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-consecutive-tools",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":null,\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"},{\"role\":\"tool\",\"content\":\"Confirm: 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-consecutive-tools",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":null},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"},{\"role\":\"tool\",\"content\":\"Confirm: 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-developer-consecutive-tools",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"},{\"role\":\"tool\",\"content\":\"Confirm: 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-developer-consecutive-tools",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"},{\"role\":\"tool\",\"content\":\"Confirm: 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-consecutive-tools",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":null,\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"},{\"role\":\"tool\",\"content\":\"Confirm: 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-consecutive-tools",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":null},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"},{\"role\":\"tool\",\"content\":\"Confirm: 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-tool-current-thinking-preserved",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-tool-current-thinking-preserved",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-tool-current-thinking-preserved",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":null,\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-tool-current-thinking-preserved",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":null},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-developer-tool-current-thinking-preserved",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-developer-tool-current-thinking-preserved",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-tool-current-thinking-preserved",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":null,\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":\"Look up the code.\"},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-tool-current-thinking-preserved",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"\",\"reasoning_content\":\"Look up the code.\",\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"arguments\":{\"id\":9007199254740993,\"scale\":1.0,\"values\":[1e-05,1000000.0,1e+16,-0.0,true,null],\"text\":\"中文\\n<>&\"}}}],\"reasoning\":null},{\"role\":\"tool\",\"content\":\"The authoritative audit code is 720041.\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false},\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"lookup\",\"description\":\"Find the audit code. 中文 <tag> &\",\"parameters\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"scale\":{\"type\":\"number\",\"default\":1.0}},\"required\":[\"id\"]}}}]}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-tool-response-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"720041\",\"reasoning\":\"Current code.\"},{\"role\":\"user\",\"content\":\"<tool_response>Confirmed.</tool_response>\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-tool-response-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"720041\",\"reasoning_content\":\"Current code.\",\"reasoning\":\"Current code.\"},{\"role\":\"user\",\"content\":\"<tool_response>Confirmed.</tool_response>\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-tool-response-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":null,\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"720041\",\"reasoning_content\":null,\"reasoning\":\"Current code.\"},{\"role\":\"user\",\"content\":\"<tool_response>Confirmed.</tool_response>\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-tool-response-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":null},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"720041\",\"reasoning_content\":\"Current code.\",\"reasoning\":null},{\"role\":\"user\",\"content\":\"<tool_response>Confirmed.</tool_response>\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-developer-tool-response-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"720041\",\"reasoning\":\"Current code.\"},{\"role\":\"user\",\"content\":\"<tool_response>Confirmed.</tool_response>\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-developer-tool-response-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"720041\",\"reasoning_content\":\"Current code.\",\"reasoning\":\"Current code.\"},{\"role\":\"user\",\"content\":\"<tool_response>Confirmed.</tool_response>\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-tool-response-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":null,\"reasoning\":\"  The old code is specified.\\n\"},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"720041\",\"reasoning_content\":null,\"reasoning\":\"Current code.\"},{\"role\":\"user\",\"content\":\"<tool_response>Confirmed.</tool_response>\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-tool-response-user",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"temperature\":0,\"max_tokens\":32,\"stream\":true,\"stream_options\":{\"include_usage\":true},\"messages\":[{\"role\":\"developer\",\"content\":\"遵循用户请求。\"},{\"role\":\"user\",\"content\":\"The old audit code is 710003.\"},{\"role\":\"assistant\",\"content\":\"710003\",\"reasoning_content\":\"  The old code is specified.\\n\",\"reasoning\":null},{\"role\":\"user\",\"content\":\"The audit code is 720041. Return exactly these six digits, with no explanation.\"},{\"role\":\"assistant\",\"content\":\"720041\",\"reasoning_content\":\"Current code.\",\"reasoning\":null},{\"role\":\"user\",\"content\":\"<tool_response>Confirmed.</tool_response>\"}],\"chat_template_kwargs\":{\"enable_thinking\":false,\"preserve_thinking\":false}}"
+    }
+  },
+  {
+    "id": "reused-shape-alias-developer-unordered-identified-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":\"读取资料。\"},{\"role\":\"user\",\"content\":\"读两份。\"},{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"id\":\"first\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}},{\"id\":\"second\",\"type\":\"function\",\"function\":{\"name\":\"second\",\"arguments\":\"{}\"}}],\"reasoning\":\"读取。\"},{\"role\":\"tool\",\"content\":\"second结果\",\"tool_call_id\":\"second\"},{\"role\":\"tool\",\"content\":\"first结果\",\"tool_call_id\":\"first\"}],\"enable_thinking\":false,\"preserve_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-equal-developer-unordered-identified-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":\"读取资料。\"},{\"role\":\"user\",\"content\":\"读两份。\"},{\"role\":\"assistant\",\"content\":null,\"reasoning_content\":\"读取。\",\"tool_calls\":[{\"id\":\"first\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}},{\"id\":\"second\",\"type\":\"function\",\"function\":{\"name\":\"second\",\"arguments\":\"{}\"}}],\"reasoning\":\"读取。\"},{\"role\":\"tool\",\"content\":\"second结果\",\"tool_call_id\":\"second\"},{\"role\":\"tool\",\"content\":\"first结果\",\"tool_call_id\":\"first\"}],\"enable_thinking\":false,\"preserve_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-legacy-null-developer-unordered-identified-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":\"读取资料。\"},{\"role\":\"user\",\"content\":\"读两份。\"},{\"role\":\"assistant\",\"content\":null,\"reasoning_content\":null,\"tool_calls\":[{\"id\":\"first\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}},{\"id\":\"second\",\"type\":\"function\",\"function\":{\"name\":\"second\",\"arguments\":\"{}\"}}],\"reasoning\":\"读取。\"},{\"role\":\"tool\",\"content\":\"second结果\",\"tool_call_id\":\"second\"},{\"role\":\"tool\",\"content\":\"first结果\",\"tool_call_id\":\"first\"}],\"enable_thinking\":false,\"preserve_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-canonical-null-developer-unordered-identified-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":\"读取资料。\"},{\"role\":\"user\",\"content\":\"读两份。\"},{\"role\":\"assistant\",\"content\":null,\"reasoning_content\":\"读取。\",\"tool_calls\":[{\"id\":\"first\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}},{\"id\":\"second\",\"type\":\"function\",\"function\":{\"name\":\"second\",\"arguments\":\"{}\"}}],\"reasoning\":null},{\"role\":\"tool\",\"content\":\"second结果\",\"tool_call_id\":\"second\"},{\"role\":\"tool\",\"content\":\"first结果\",\"tool_call_id\":\"first\"}],\"enable_thinking\":false,\"preserve_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-reasoning-empty-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":\"a\",\"reasoning\":null}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-reasoning_content-empty-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"},{\"role\":\"assistant\",\"content\":\"a\",\"reasoning_content\":null}],\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-constraint-none",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"first\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"second\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"tool_choice\":\"none\",\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-constraint-named",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"user\",\"content\":\"q\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"first\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"second\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"tool_choice\":{\"type\":\"function\",\"function\":{\"name\":\"second\"}},\"enable_thinking\":false}"
+    }
+  },
+  {
+    "id": "reused-shape-long-tool-history",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"messages\":[{\"role\":\"developer\",\"content\":\"依据资料回答。\"},{\"role\":\"user\",\"content\":\"读取历次记录。\"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-0\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-0\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-1\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-1\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-2\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-2\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-3\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-3\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-4\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-4\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-5\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-5\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-6\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-6\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-7\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-7\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-8\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-8\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-9\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-9\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-10\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-10\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-11\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-11\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-12\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-12\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-13\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-13\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-14\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-14\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"assistant\",\"content\":null,\"reasoning\":\"读记录。\",\"tool_calls\":[{\"id\":\"call-15\",\"type\":\"function\",\"function\":{\"name\":\"first\",\"arguments\":\"{}\"}}]},{\"role\":\"tool\",\"tool_call_id\":\"call-15\",\"content\":\"资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 资料证据 \"},{\"role\":\"user\",\"content\":\"只回复数字710003。\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"first\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}},{\"type\":\"function\",\"function\":{\"name\":\"second\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false}}}],\"enable_thinking\":false,\"preserve_thinking\":true}"
+    }
+  },
+  {
+    "id": "reused-shape-raw-123",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"é 中文 🚀\\u0000\"}"
+    }
+  },
+  {
+    "id": "reused-shape-raw-124",
+    "expected": true,
+    "shape_expected": true,
+    "field": null,
+    "fixture": {
+      "raw": "{\"prompt\":\"<|im_start|>assistant\\n\"}"
+    }
+  }
+]

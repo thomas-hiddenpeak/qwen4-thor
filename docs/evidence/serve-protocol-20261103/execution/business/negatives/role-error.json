@@ -1,0 +1,9 @@
+{
+  "class": "BadRequestError",
+  "message": "400 unsupported message role",
+  "status": 400,
+  "code": "invalid_request",
+  "param": "messages[0].role",
+  "automatic_retry": false,
+  "tools_executed": 0
+}

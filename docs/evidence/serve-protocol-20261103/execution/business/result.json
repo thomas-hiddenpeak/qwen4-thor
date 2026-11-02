@@ -1,0 +1,11 @@
+{
+  "status": "PASS_BOUNDED_PROTOCOL_CLIENT",
+  "counts": {
+    "generations": 10,
+    "negatives": 16,
+    "starts": 1
+  },
+  "seconds": 96.27240958297625,
+  "default_replaced": false,
+  "performance_acceptance": false
+}

@@ -1,0 +1,9 @@
+{
+  "class": "BadRequestError",
+  "message": "400 user must be a string or null (metadata only)",
+  "status": 400,
+  "code": "invalid_request",
+  "param": "user",
+  "automatic_retry": false,
+  "tools_executed": 0
+}

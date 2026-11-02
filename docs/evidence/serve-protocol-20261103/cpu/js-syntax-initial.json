@@ -1,0 +1,11 @@
+{
+  "command": [
+    "node",
+    "--check",
+    "tools/examples/js/test_chat_client.mjs"
+  ],
+  "returncode": 1,
+  "line": 147,
+  "error": "SyntaxError: Unexpected token ')'",
+  "source_sha256": "7f3d00f1afa1438fdaa701596e5c4fe548f4b19ed87415b203fd02eee3eb43e4"
+}

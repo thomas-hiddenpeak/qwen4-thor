@@ -1,0 +1,9 @@
+{
+  "class": "BadRequestError",
+  "message": "400 include_usage must be boolean",
+  "status": 400,
+  "code": "invalid_request",
+  "param": "stream_options.include_usage",
+  "automatic_retry": false,
+  "tools_executed": 0
+}

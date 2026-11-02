@@ -1,0 +1,9 @@
+{
+  "class": "BadRequestError",
+  "message": "400 reasoning_field must be reasoning or reasoning_content",
+  "status": 400,
+  "code": "invalid_request",
+  "param": "reasoning_field",
+  "automatic_retry": false,
+  "tools_executed": 0
+}

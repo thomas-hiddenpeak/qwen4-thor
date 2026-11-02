@@ -1,0 +1,3 @@
+data: {"id":"agent-5a2c8002dc4fd2a60146db9dab24eb51","object":"chat.completion.chunk","created":1793656259,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-5a2c8002dc4fd2a60146db9dab24eb51","object":"chat.completion.chunk","created":1793656259,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"æ

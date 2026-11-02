@@ -1,0 +1,12 @@
+data: {"id":"agent-df06d2ef95b4d14223a5911c4bce117c","object":"chat.completion.chunk","created":1793656251,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+: keep-alive
+
+data: {"id":"agent-df06d2ef95b4d14223a5911c4bce117c","object":"chat.completion.chunk","created":1793656251,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"根据读取的资料：\n\n1.  **模型 model_type**：`qwen4_exp`\n    *   引用：`[docs/MODEL.md:L1-L24]` 第21行：“| model_type | `qwen4_exp` (text: `qwen4_exp_text`) |”\n\n2.  **当前生成是否 greedy**：是\n    *   引用：`[docs/ARCHITECTURE.md:L1-L24]` 第15行：“...当前生成采用greedy，不支持完整OpenAI参数语义。”"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-df06d2ef95b4d14223a5911c4bce117c","object":"chat.completion.chunk","created":1793656251,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+data: {"id":"agent-df06d2ef95b4d14223a5911c4bce117c","object":"chat.completion.chunk","created":1793656251,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":1742,"completion_tokens":123,"total_tokens":1865}}
+
+data: [DONE]
+

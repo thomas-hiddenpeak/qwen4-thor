@@ -1,0 +1,8 @@
+{
+  "class": "BadRequestError",
+  "message": "400 unsupported field: extra",
+  "status": 400,
+  "code": "invalid_request",
+  "automatic_retry": false,
+  "tools_executed": 0
+}

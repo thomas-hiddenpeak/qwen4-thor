@@ -1,0 +1,43 @@
+✔ JSON and SSE SDK interpretation agrees with strict captured bytes (44.083304ms)
+✔ SDK models discovery uses one GET with no unsupported query (4.101024ms)
+✔ capability validation binds protocol and template identities (75.319566ms)
+✔ strict JSON rejects duplicate object keys (0.277016ms)
+✔ strict JSON rejects nested duplicate keys (0.147249ms)
+✔ strict JSON rejects near integer rounding (0.145147ms)
+✔ strict JSON rejects unsafe integer (0.095593ms)
+✔ strict JSON rejects nonfinite number (0.077833ms)
+✔ strict JSON rejects unpaired surrogate (0.126897ms)
+✔ strict JSON rejects trailing document (0.136287ms)
+✔ strict JSON rejects trailing comma (0.093574ms)
+✔ strict JSON accepts exact integral exponents and harmless prototype keys (0.179342ms)
+✔ reject complete-looking SSE with missing DONE (15.849416ms)
+✔ reject complete-looking SSE with missing usage (15.560945ms)
+✔ reject complete-looking SSE with duplicate usage (18.791178ms)
+✔ reject complete-looking SSE with choice after finish (12.826498ms)
+✔ reject complete-looking SSE with changed ID (13.358884ms)
+✔ reject complete-looking SSE with changed created (22.367976ms)
+✔ reject complete-looking SSE with changed model (8.848435ms)
+✔ reject complete-looking SSE with mixed reasoning fields (10.306502ms)
+✔ reject complete-looking SSE with duplicate role (20.078432ms)
+✔ reject complete-looking SSE with data after DONE ignored by SDK (9.486904ms)
+✔ reject complete-looking SSE with partial last frame (9.069869ms)
+✔ reject complete-looking SSE with usage arithmetic (18.604782ms)
+✔ split tool deltas produce one complete validated batch (18.079738ms)
+✔ whole batch validation rejects a later unknown tool before execution (0.451775ms)
+✔ tool completion rejects duplicate ID (10.398445ms)
+✔ tool completion rejects incomplete argument (0.252619ms)
+✔ tool completion rejects rounded argument (0.201573ms)
+✔ tool completion rejects wrong terminal (0.168638ms)
+✔ SDK HTTP 400 error retains code/param with zero retries (2.374275ms)
+✔ SDK HTTP 503 error retains code/param with zero retries (1.562584ms)
+✔ an open stream respects the total deadline and cannot complete or dispatch (51.01653ms)
+✔ reasoning and cached usage are checked independently of visible content (0.565886ms)
+✔ request creation uses fresh independent cancellation credentials (0.324175ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 531.369748

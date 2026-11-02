@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/stage.py", line 69, in cpu_gate
+    h.require("# tests 35" in js and "# pass 35" in js and "# fail 0" in js, "JS gate")
+  File "/home/rm01/models/dev/qwen4-thor/tools/verify/startup_delivery/build.py", line 47, in require
+    raise RuntimeError(message)
+RuntimeError: JS gate

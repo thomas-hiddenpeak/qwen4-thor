@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/stage.py", line 78, in cpu_gate
+    h.require(f"Ran {count} tests" in log and log.endswith("OK\n"), "gate: " + name)
+  File "/home/rm01/models/dev/qwen4-thor/tools/verify/startup_delivery/build.py", line 47, in require
+    raise RuntimeError(message)
+RuntimeError: gate: node-gate-test.log

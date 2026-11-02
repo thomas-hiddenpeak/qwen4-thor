@@ -1,0 +1,73 @@
+[
+  {
+    "id": "exact-number-2.0",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "exact-number-2e0",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "exact-number-20e-1",
+    "field": null,
+    "expected": true,
+    "shape_accepted": true,
+    "shape_error": null,
+    "native": {
+      "accepted": true
+    },
+    "passed": true
+  },
+  {
+    "id": "stop-bytes-192",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "'中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中中' is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "stop entries must be valid UTF-8 strings of 1..256 bytes",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "stop"
+        }
+      }
+    },
+    "passed": true
+  },
+  {
+    "id": "tools-name-byte-overflow",
+    "field": null,
+    "expected": false,
+    "shape_accepted": false,
+    "shape_error": "[{'type': 'function', 'function': {'name': '函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函函', 'strict': False, 'parameters': {'type': 'object', 'properties': {}, 'required': [], 'additionalProperties': False}}}] is not valid under any of the given schemas",
+    "native": {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "invalid or duplicate function name",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": null
+        }
+      }
+    },
+    "passed": true
+  }
+]

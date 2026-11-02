@@ -1,0 +1,1 @@
+{"error":{"message":"reasoning_field must be reasoning or reasoning_content","type":"invalid_request_error","code":"invalid_request","param":"reasoning_field"}}

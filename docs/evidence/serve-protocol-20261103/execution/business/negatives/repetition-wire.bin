@@ -1,0 +1,1 @@
+{"error":{"message":"repetition_penalty unsupported value in greedy mode","type":"invalid_request_error","code":"invalid_request","param":"repetition_penalty"}}

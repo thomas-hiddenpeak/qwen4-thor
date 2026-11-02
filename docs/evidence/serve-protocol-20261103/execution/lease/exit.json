@@ -1,0 +1,21 @@
+{
+  "status": "COMPLETED",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/stage.py",
+    "execute"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 0,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-11-02T21:51:10.031919+00:00",
+    "monotonic": 1846352.548805315,
+    "pid": 1804567
+  }
+}

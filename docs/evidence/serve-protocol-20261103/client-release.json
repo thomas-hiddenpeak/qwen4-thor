@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "release": "serve-protocol-client-20261103",
+  "acceptance": "ACCEPT_BOUNDED_PROTOCOL_CLIENT",
+  "source_commit": "58c0f2feeab2d525f84a74abfb9caa9a2d67ca41",
+  "service_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+    "bytes": 7083976
+  },
+  "service_sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "6aca6a3ebf951ed8e625ff4944b73c34f40f3854b92497be2a8abe485315e382",
+    "bytes": 39636
+  },
+  "protocol_sha256": "a6468bf23a7bfb9e870c047cda6d68565e968e13ac4e551fea983f9476f5f747",
+  "artifacts": {
+    "docs/serve-chat-request-v1.schema.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/serve-chat-request-v1.schema.json",
+      "sha256": "3ba1657df2b6c6cc5b7a63d3a6439832ff9ba0941f58511ae105493700896571",
+      "bytes": 33991
+    },
+    "docs/serve-input-semantics-v1.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/serve-input-semantics-v1.json",
+      "sha256": "1aff9b900eaaa0c13b167f568965c4b45cab2b83453b8b8ec47c4e7592aca6d0",
+      "bytes": 8026
+    },
+    "docs/serve-openapi-v1.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439
+    },
+    "tools/examples/js/chat_client.mjs": {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/examples/js/chat_client.mjs",
+      "sha256": "efe1c6fa38bb50ed35a0e51e36f0ac775e5ef5bab3b2472d7d1a8ecb2b1da590",
+      "bytes": 21853
+    },
+    "tools/examples/js/project_profile.mjs": {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/examples/js/project_profile.mjs",
+      "sha256": "d1a60bb5c45471b74ad2f4502a289191d55aeacd28a10f0536cc81dd04171732",
+      "bytes": 1350
+    },
+    "tools/serve_protocol/js_client.py": {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/js_client.py",
+      "sha256": "b605aafc7bbbaf9a258d511b5a11cec237525a4d5c21601846247443ca9f220d",
+      "bytes": 5507
+    },
+    "tools/serve_protocol/run_sdk.mjs": {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/run_sdk.mjs",
+      "sha256": "14bf08629dc14150f3d2abebe8512fc1f1b831d1acc378a7e57aa8ccbd877f2f",
+      "bytes": 2520
+    },
+    "tools/serve_protocol/sdk.mjs": {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/sdk.mjs",
+      "sha256": "b91fbfdb9763abda12908184736e51de4beaa9c5d406e465db1942a78dfd7fec",
+      "bytes": 805
+    },
+    "tools/serve_protocol/query_project.py": {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/query_project.py",
+      "sha256": "a7cdb2ccb4e2b66fa8082842af1194005a789723d983d2493961d9c99251ac2f",
+      "bytes": 1024
+    },
+    "tools/serve_protocol/package.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/package.json",
+      "sha256": "9d10867c56efa3486317f892eb499f87ccef746c07b246738c9ccd360bc29c14",
+      "bytes": 51
+    },
+    "tools/serve_protocol/package-lock.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/package-lock.json",
+      "sha256": "9b9de913a5e891b837173543006540760e2f7e0164f3ce79513fe35c40fd5c16",
+      "bytes": 1323
+    }
+  },
+  "sdk": {
+    "node": "24.18.0",
+    "openai": "7.47.0",
+    "tree_manifest": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/package/sdk.json",
+      "sha256": "a3e5c04d2614e158190f386dfe7e9c48330818cbc09cba49cb7b1ad92bb29d95",
+      "bytes": 534938
+    },
+    "automatic_retries": 0
+  },
+  "cpu": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/cpu-summary.json",
+    "sha256": "316fd87082ef7c51e648e76f710098b6d69afca0408f5cef6ac2f6e6d0a1ebcd",
+    "bytes": 983
+  },
+  "http": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/business/result.json",
+    "sha256": "ba4933bdc491e333f6c98c3e03502578f5089e74d1461c4b5082f1e2406d3d43",
+    "bytes": 222
+  },
+  "finalize": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/execution/finalized.json",
+    "sha256": "ba799790706c4f5d8918787e3a64470862009113ae7cb16265ee16047d55daa1",
+    "bytes": 697
+  },
+  "default_replaced": false,
+  "scope": [
+    "supported text input structure plus mandatory native semantics",
+    "official JS SDK models, JSON/SSE, errors, usage, strict read-only tool batches",
+    "explicit new final-answer request from complete saved tool results after real stream interruption"
+  ],
+  "exclusions": [
+    "full OpenAI API",
+    "all SDKs/frameworks",
+    "arbitrary JSON Schema",
+    "general cross-process task executor",
+    "loaded multi-client fairness",
+    "public-network/multi-tenant acceptance",
+    "performance acceptance"
+  ]
+}

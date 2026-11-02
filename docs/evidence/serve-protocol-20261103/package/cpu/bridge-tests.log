@@ -1,0 +1,17 @@
+test_actual_sdk_models_discovery (test_bridge.Bridge.test_actual_sdk_models_discovery) ... ok
+test_business_failure_is_a_result_not_transport_success_claim (test_bridge.Bridge.test_business_failure_is_a_result_not_transport_success_claim) ... ok
+test_explicit_capability_identity_override_is_enforced (test_bridge.Bridge.test_explicit_capability_identity_override_is_enforced) ... ok
+test_http_error_preserves_status_code_and_raw_with_zero_retries (test_bridge.Bridge.test_http_error_preserves_status_code_and_raw_with_zero_retries) ... ok
+test_missing_done_does_not_commit_or_dispatch (test_bridge.Bridge.test_missing_done_does_not_commit_or_dispatch) ... ok
+test_node_crash_retains_live_pipe_capture_and_unknown_outcome (test_bridge.Bridge.test_node_crash_retains_live_pipe_capture_and_unknown_outcome) ... ok
+test_real_read_journal_roundtrip_json (test_bridge.Bridge.test_real_read_journal_roundtrip_json) ... ok
+test_real_read_journal_roundtrip_sse_and_two_results (test_bridge.Bridge.test_real_read_journal_roundtrip_sse_and_two_results) ... ok
+test_recovery_tampering_is_not_replayed (test_bridge.Bridge.test_recovery_tampering_is_not_replayed) ... ok
+test_transport_disconnect_retains_partial_wire_without_retry (test_bridge.Bridge.test_transport_disconnect_retains_partial_wire_without_retry) ... ok
+test_whole_batch_invalid_tool_blocks_every_execution (test_bridge.Bridge.test_whole_batch_invalid_tool_blocks_every_execution) ... ok
+test_js_python_pure_validators_for_supported_argument_shapes (test_bridge.BusinessProfile.test_js_python_pure_validators_for_supported_argument_shapes) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 3.371s
+
+OK

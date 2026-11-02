@@ -1,0 +1,30 @@
+{
+  "model": "qwen3.8-flash-next",
+  "messages": [
+    {
+      "role": "developer",
+      "content": "遵循用户请求。"
+    },
+    {
+      "role": "user",
+      "content": "只回复数字710003。"
+    }
+  ],
+  "tools": [],
+  "parse_response": true,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1,
+  "stream": false,
+  "max_tokens": 128,
+  "tool_choice": "auto",
+  "parallel_tool_calls": true,
+  "request_timeout_ms": 180000,
+  "request_id": "agent-6367b5d182913969437be6048a4c8c69",
+  "cancel_token": "5f2a150a19f0eb5aa1f12df5aafdbb578aa080fa7d58743a8660e2c3eee2a993",
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "preserve_thinking": true,
+    "reasoning_effort": "low"
+  }
+}
