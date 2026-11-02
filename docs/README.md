@@ -3,6 +3,8 @@
 现行规范：[统一RAM与SSD offload合同](SSD_OFFLOAD_CONTRACT.md)。
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
+应用服务：[能力与 OpenAI 兼容矩阵、vLLM 差距与分阶段计划](APPLICATION_SERVICE.md)。
+
 聊天接入：[messages客户端、流式重组与只读工具往返](AGENT_TOOL_CLIENT_2026-11-02.md)；
 [服务端工具/推理输出协议](RESPONSE_PARSING_2026-11-02.md)。
 [带ID工具历史关联与后续开发准备](CHAT_TOOL_HISTORY_2026-11-02.md)。

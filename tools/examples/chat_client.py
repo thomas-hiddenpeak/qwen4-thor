@@ -25,6 +25,22 @@ class ProtocolError(ValueError):
 class RemoteError(RuntimeError):
     def __init__(self, status, body):
         self.status, self.body = status, body
+        value = body
+        if isinstance(value, (str, bytes)):
+            try:
+                value = load_json(value)
+            except ProtocolError:
+                value = {}
+        if isinstance(value, dict) and "error" in value:
+            value = value["error"]
+        value = value if isinstance(value, dict) else {}
+        self.code = value.get("code")
+        self.type = value.get("type")
+        self.param = value.get("param")
+        self.message = value.get("message")
+        # HTTP 200 can carry an SSE error. Neither it nor 5xx proves that
+        # generation or an application tool is safe to execute again.
+        self.automatic_retry_safe = False
         super().__init__(f"Remote response failed ({status}): {body}")
 
 

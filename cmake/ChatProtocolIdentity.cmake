@@ -7,6 +7,7 @@ set(protocol_inputs
   include/q4t/server/chat_response_parser.h
   include/q4t/server/chat_template.h
   include/q4t/server/chat_tool_history.h
+  include/q4t/server/http_response.h
   include/q4t/server/request_json.h
   src/server/chat_capabilities.cpp
   src/server/chat_contract.cpp
@@ -16,7 +17,8 @@ set(protocol_inputs
   src/server/chat_metrics.cpp
   src/server/chat_response_parser.cpp
   src/server/chat_template.cpp
-  src/server/chat_tool_history.cpp)
+  src/server/chat_tool_history.cpp
+  src/server/http_response.cpp)
 list(SORT protocol_inputs)
 set(protocol_manifest "")
 set(protocol_sources "{}")

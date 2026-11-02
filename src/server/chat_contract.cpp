@@ -56,7 +56,8 @@ Status TemplateOptions(const io::Json& options) {
 Status ValidateChatContract(const io::Json& req,
                             const std::string& model_name, bool allow_media) {
   auto status = Fields(req, {
-      "model", "prompt", "messages", "max_tokens", "stream", "stream_options",
+      "model", "prompt", "messages", "max_tokens", "max_completion_tokens",
+      "stream", "stream_options",
       "request_id", "cancel_token", "request_timeout_ms", "tools",
       "chat_template_kwargs", "enable_thinking", "preserve_thinking",
       "reasoning_effort", "add_vision_id", "temperature", "top_p", "n",
@@ -85,11 +86,19 @@ Status ValidateChatContract(const io::Json& req,
   }
   if (const auto* value = req.Find("stream"); value && !value->IsBool())
     return Status::Fail("stream must be boolean");
-  if (const auto* value = req.Find("max_tokens")) {
+  const auto* legacy_limit = req.Find("max_tokens");
+  const auto* limit = req.Find("max_completion_tokens");
+  if (legacy_limit && !legacy_limit->IsNull() && limit && !limit->IsNull())
+    return Status::Fail("provide only one of max_tokens or "
+                        "max_completion_tokens");
+  for (const char* key : {"max_tokens", "max_completion_tokens"}) {
+    const auto* value = req.Find(key);
+    if (!value || value->IsNull()) continue;
     const double n = value->AsDouble(-1);
     if (!value->IsNumber() || !std::isfinite(n) || n < 1 ||
         n > 2147483647.0 || std::trunc(n) != n)
-      return Status::Fail("max_tokens must be an integer in [1,2147483647]");
+      return Status::Fail(std::string(key) +
+                          " must be an integer in [1,2147483647] or null");
   }
   const auto* prompt = req.Find("prompt");
   const auto* messages = req.Find("messages");
@@ -170,6 +179,24 @@ Status ValidateChatContract(const io::Json& req,
     return Status::Fail("messages must be a nonempty array");
   for (const auto& message : messages->array) {
     if (!message.IsObject()) return Status::Fail("message must be an object");
+    status = Fields(message, {"role", "content", "reasoning_content",
+                              "tool_calls", "tool_call_id", "name", "refusal",
+                              "audio", "annotations", "function_call"});
+    if (!status) return status;
+    for (const char* key : {"name", "refusal", "audio", "annotations",
+                            "function_call"}) {
+      const auto* value = message.Find(key);
+      if (value && !value->IsNull())
+        return Status::Fail(std::string("message field not supported: ") + key);
+    }
+    const auto role = message.GetString("role");
+    if (!Known(role, {"system", "user", "assistant", "tool"}))
+      return Status::Fail("unsupported message role: " + role);
+    if (const auto* reasoning = message.Find("reasoning_content"); reasoning &&
+        (!reasoning->IsString() || role != "assistant"))
+      return Status::Fail("reasoning_content requires an assistant string");
+    if (message.Has("tool_calls") && role != "assistant")
+      return Status::Fail("tool_calls requires an assistant message");
     const auto* content = message.Find("content");
     if (!content || content->IsNull() || content->IsString()) continue;
     if (!content->IsArray()) return Status::Fail("invalid message content");
@@ -177,6 +204,15 @@ Status ValidateChatContract(const io::Json& req,
       if (!part.IsObject())
         return Status::Fail("content part must be an object");
       const std::string type = part.GetString("type");
+      if (part.Has("text") && !part.Has("image_url") &&
+          !part.Has("video_frames")) {
+        status = Fields(part, {"type", "text"});
+        if (!status) return status;
+        const auto* kind = part.Find("type");
+        if ((kind && (!kind->IsString() || kind->str != "text")) ||
+            !part.Find("text")->IsString())
+          return Status::Fail("text content part requires type=text and text");
+      }
       if (part.Has("image_url") || part.Has("video_frames") ||
           type == "image_url" || type == "video_frames" ||
           type == "video_url") {

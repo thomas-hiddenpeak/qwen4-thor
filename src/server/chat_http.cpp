@@ -131,11 +131,9 @@ Status ChatServer::Run() {
       ::setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
       counted = true;
       if (active_conns_.fetch_add(1, std::memory_order_relaxed) >= conn_cap_) {
-        SendSimple(fd, 503, "Service Unavailable",
-                   "{\"error\":{\"message\":\"server overloaded, retry\"}}",
-                   "application/json",
-                   {std::chrono::steady_clock::now() +
-                    std::chrono::milliseconds(250)});
+        SendError(fd, 503, "connection capacity exhausted",
+                  {std::chrono::steady_clock::now() +
+                   std::chrono::milliseconds(250)}, "capacity_exhausted");
         continue;
       }
       {
@@ -206,7 +204,7 @@ void ChatServer::HandleClient(int fd) {
     const char* reason = failure_status == 408 ? "Request Timeout" :
                          failure_status == 503 ? "Service Unavailable" :
                                                  "Bad Request";
-    SendSimple(fd, failure_status, reason, reason, "text/plain");
+    SendError(fd, failure_status, reason);
     return;
   }
   const auto t0 = std::chrono::steady_clock::now();
@@ -244,12 +242,14 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (!io::ParseJson(body, &req, true, kRequestJsonLimits).ok() ||
         !req.IsObject() ||
         !ValidRequestKey(req.GetString("cancel_token"))) {
-      SendError(fd, 400, "invalid cancellation request");
+      SendError(fd, 400, "invalid cancellation request", {},
+                "invalid_cancellation");
       return;
     }
     if (!requests_.Cancel(req.GetString("request_id"),
                           req.GetString("cancel_token"))) {
-      SendError(fd, 404, "no cancellable request with these credentials");
+      SendError(fd, 404, "no cancellable request with these credentials", {},
+                "request_not_found");
       return;
     }
     seq_cv_.notify_all();
@@ -262,8 +262,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     HandleChat(fd, body);
     return;
   }
-  SendSimple(fd, 404, "Not Found",
-             "{\"error\":{\"message\":\"not found\"}}", "application/json");
+  SendError(fd, 404, "route or method not found");
 }
 
 }  // namespace q4t::server

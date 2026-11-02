@@ -145,6 +145,68 @@ Q4T_TEST(server_http_response_send_status) {
   return true;
 }
 
+Q4T_TEST(server_http_error_classification) {
+  using namespace q4t::server::detail;
+  struct Case { int status; const char* reason; const char* type; };
+  for (const auto& item : std::vector<Case>{
+           {400, "Bad Request", "invalid_request_error"},
+           {404, "Not Found", "invalid_request_error"},
+           {408, "Request Timeout", "timeout_error"},
+           {409, "Conflict", "conflict_error"},
+           {500, "Internal Server Error", "server_error"},
+           {502, "Bad Gateway", "server_error"},
+           {503, "Service Unavailable", "service_unavailable_error"}}) {
+    SocketPair sockets;
+    SendError(sockets.fd[0], item.status, "bad \"参数\"", {}, "test_code", "n");
+    shutdown(sockets.fd[0], SHUT_WR);
+    std::array<char, 2048> bytes{};
+    const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(), MSG_WAITALL);
+    Q4T_CHECK(n > 0);
+    const std::string output(bytes.data(), static_cast<size_t>(n));
+    Q4T_CHECK(output.starts_with("HTTP/1.1 " + std::to_string(item.status) +
+                                 " " + item.reason + "\r\n"));
+    q4t::io::Json value;
+    Q4T_CHECK(q4t::io::ParseJson(
+        output.substr(output.find("\r\n\r\n") + 4), &value).ok());
+    const auto* error = value.Find("error");
+    Q4T_CHECK(error && error->GetString("type") == item.type);
+    Q4T_CHECK(error->GetString("message") == "bad \"参数\"");
+    Q4T_CHECK(error->GetString("code") == "test_code");
+    Q4T_CHECK(error->GetString("param") == "n");
+  }
+  return true;
+}
+
+Q4T_TEST(server_http_stream_error_is_single_terminal) {
+  using namespace q4t::server::detail;
+  SocketPair sockets;
+  auto state = ResponseState::kStreaming;
+  SendStreamError(sockets.fd[0], &state, 409, "cancelled", {},
+                  "deadline_exceeded");
+  SendStreamError(sockets.fd[0], &state, 500, "duplicate", {}, "internal_error");
+  shutdown(sockets.fd[0], SHUT_WR);
+  std::array<char, 2048> bytes{};
+  const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(), MSG_WAITALL);
+  Q4T_CHECK(n > 0);
+  const std::string output(bytes.data(), static_cast<size_t>(n));
+  Q4T_CHECK(output == "data: " + ErrorJson(409, "cancelled",
+              "deadline_exceeded") + "\r\n\r\ndata: [DONE]\r\n\r\n");
+  Q4T_CHECK(state == ResponseState::kTerminal);
+  return true;
+}
+
+Q4T_TEST(server_http_stream_creation_identity) {
+  using namespace q4t::server::detail;
+  for (const auto& event : {
+      SseChunk("id", "model", "assistant", "", "", 0, 1700000000),
+      SseDeltaChunk("id", "model", "{}", "stop", 0, 1700000000)}) {
+    q4t::io::Json value;
+    Q4T_CHECK(q4t::io::ParseJson(event.substr(6, event.size() - 10), &value).ok());
+    Q4T_CHECK(value.GetInt("created") == 1700000000);
+  }
+  return true;
+}
+
 Q4T_TEST(server_http_exception_terminal_states) {
   using q4t::server::detail::ResponseState;
   for (const auto state : {ResponseState::kUnsent, ResponseState::kHeadersStarted,

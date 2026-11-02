@@ -21,10 +21,12 @@ void SendExceptionResponse(int fd, ResponseState state) noexcept {
   constexpr char http[] =
       "HTTP/1.1 500 Internal Server Error\r\n"
       "Content-Type: application/json\r\nConnection: close\r\n\r\n"
-      "{\"error\":{\"message\":\"request failed\",\"type\":\"server_error\"}}";
+      "{\"error\":{\"message\":\"request failed\",\"type\":\"server_error\","
+      "\"code\":\"internal_error\",\"param\":null}}";
   constexpr char sse[] =
       "data: {\"error\":{\"message\":\"request failed\","
-      "\"type\":\"server_error\"}}\r\n\r\ndata: [DONE]\r\n\r\n";
+      "\"type\":\"server_error\",\"code\":\"internal_error\",\"param\":null}}"
+      "\r\n\r\ndata: [DONE]\r\n\r\n";
   const WriteOptions terminal{
       std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
   if (state == ResponseState::kStreaming)
@@ -197,12 +199,54 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
   return WriteAll(fd, resp, options);
 }
 
-void SendError(int fd, int code, const std::string& message,
-               const WriteOptions& options) {
-  const std::string body =
+namespace {
+struct ErrorInfo {
+  const char* reason;
+  const char* type;
+  const char* code;
+};
+
+ErrorInfo ErrorForStatus(int status) {
+  switch (status) {
+    case 400: return {"Bad Request", "invalid_request_error", "invalid_request"};
+    case 404: return {"Not Found", "invalid_request_error", "not_found"};
+    case 408: return {"Request Timeout", "timeout_error", "request_timeout"};
+    case 409: return {"Conflict", "conflict_error", "request_conflict"};
+    case 502: return {"Bad Gateway", "server_error", "upstream_error"};
+    case 503: return {"Service Unavailable", "service_unavailable_error",
+                      "service_unavailable"};
+    default: return {"Internal Server Error", "server_error", "internal_error"};
+  }
+}
+}  // namespace
+
+std::string ErrorJson(int status, const std::string& message,
+                      std::string_view error_code, std::string_view param) {
+  const auto info = ErrorForStatus(status);
+  return
       "{\"error\":{\"message\":\"" + JsonEscape(message) +
-      "\",\"type\":\"invalid_request_error\",\"code\":null}}";
-  SendSimple(fd, code, "Bad Request", body, "application/json", options);
+      "\",\"type\":\"" + info.type + "\",\"code\":\"" +
+      JsonEscape(std::string(error_code.empty() ? info.code : error_code)) +
+      "\",\"param\":" + (param.empty() ? "null" :
+          "\"" + JsonEscape(std::string(param)) + "\"") + "}}";
+}
+
+void SendError(int fd, int code, const std::string& message,
+               const WriteOptions& options, std::string_view error_code,
+               std::string_view param) {
+  SendSimple(fd, code, ErrorForStatus(code).reason,
+             ErrorJson(code, message, error_code, param), "application/json",
+             options);
+}
+
+void SendStreamError(int fd, ResponseState* state, int status,
+                      const std::string& message, const WriteOptions& options,
+                      std::string_view error_code) {
+  if (*state != ResponseState::kStreaming) return;
+  const std::string tail = "data: " + ErrorJson(status, message, error_code) +
+                           "\r\n\r\ndata: [DONE]\r\n\r\n";
+  *state = ResponseState::kTerminal;
+  WriteAll(fd, tail, options);
 }
 
 void SendResponseParseError(int fd, bool stream, ResponseState* state,
@@ -210,34 +254,31 @@ void SendResponseParseError(int fd, bool stream, ResponseState* state,
                             const WriteOptions& options) {
   if (*state != (stream ? ResponseState::kStreaming : ResponseState::kUnsent))
     return;
-  const std::string error =
-      "{\"error\":{\"message\":\"" + JsonEscape(message) +
-      "\",\"type\":\"server_error\",\"code\":\"response_parse_failed\"}}";
   if (stream) {
-    const std::string tail = "data: " + error + "\r\n\r\ndata: [DONE]\r\n\r\n";
-    *state = ResponseState::kTerminal;
-    WriteAll(fd, tail, options);
+    SendStreamError(fd, state, 502, message, options, "response_parse_failed");
   } else {
     *state = ResponseState::kTerminal;
-    SendSimple(fd, 502, "Bad Gateway", error, "application/json", options);
+    SendError(fd, 502, message, options, "response_parse_failed");
   }
 }
 
 // OpenAI SSE data chunk for a streaming completion.
 std::string SseChunk(const std::string& id, const std::string& model,
                      const std::string& delta_role, const std::string& content,
-                     const std::string& finish_reason, int index) {
+                     const std::string& finish_reason, int index,
+                     int64_t created) {
   std::string delta = "{";
   if (!delta_role.empty()) {
     delta += "\"role\":\"" + JsonEscape(delta_role) + "\",";
   }
   delta += "\"content\":\"" + JsonEscape(content) + "\"}";
-  return SseDeltaChunk(id, model, delta, finish_reason, index);
+  return SseDeltaChunk(id, model, delta, finish_reason, index, created);
 }
 
 std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,
-                          const std::string& finish_reason, int index) {
+                          const std::string& finish_reason, int index,
+                          int64_t created) {
   std::string choice = "{\"index\":" + std::to_string(index) +
                        ",\"delta\":" + delta_json;
   if (!finish_reason.empty()) {
@@ -249,7 +290,8 @@ std::string SseDeltaChunk(const std::string& id, const std::string& model,
   std::string obj =
       "{\"id\":\"" + JsonEscape(id) + "\",\"object\":\"chat.completion.chunk\","
       "\"created\":" +
-      std::to_string(std::time(nullptr)) + ",\"model\":\"" + JsonEscape(model) +
+      std::to_string(created ? created : std::time(nullptr)) +
+      ",\"model\":\"" + JsonEscape(model) +
       "\",\"choices\":[" + choice + "]}";
   return "data: " + obj + "\r\n\r\n";
 }

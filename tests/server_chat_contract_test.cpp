@@ -33,9 +33,43 @@ Q4T_TEST(chat_contract_rejects_unimplemented_constraints) {
            R"("logit_bias":{"1":1})", R"("top_k":1)",
            R"("response_format":{"type":"json_object"})",
            R"("tool_choice":"required")", R"("parallel_tool_calls":false)",
-           R"("max_completion_tokens":10)", R"("temprature":0)"}) {
+           R"("temprature":0)"}) {
     Q4T_CHECK(!Accept(std::string("{\"prompt\":\"hello\",") + field + "}"));
   }
+  return true;
+}
+
+Q4T_TEST(chat_contract_completion_token_budget) {
+  for (const auto* fields : {
+      R"("max_completion_tokens":1)",
+      R"("max_completion_tokens":2147483647)",
+      R"("max_completion_tokens":null,"max_tokens":10)",
+      R"("max_completion_tokens":10,"max_tokens":null)",
+      R"("max_completion_tokens":null,"max_tokens":null)"})
+    Q4T_CHECK(Accept(std::string(R"({"prompt":"hello",)") + fields + "}"));
+  for (const auto* fields : {
+      R"("max_completion_tokens":0)", R"("max_completion_tokens":true)",
+      R"("max_completion_tokens":1.5)", R"("max_completion_tokens":"10")",
+      R"("max_completion_tokens":2147483648)",
+      R"("max_completion_tokens":10,"max_tokens":10)",
+      R"("max_completion_tokens":10,"max_tokens":20)"})
+    Q4T_CHECK(!Accept(std::string(R"({"prompt":"hello",)") + fields + "}"));
+  return true;
+}
+
+Q4T_TEST(chat_contract_no_silent_message_semantics) {
+  for (const auto* message : {
+      R"({"role":"developer","content":"instruction"})",
+      R"({"role":"user","content":"hello","name":"alice"})",
+      R"({"role":"assistant","content":"x","refusal":"refused"})",
+      R"({"role":"user","content":"x","reasoning_content":"lost"})",
+      R"({"role":"user","content":"x","tool_calls":[]})",
+      R"({"role":"user","content":"x","contnet":"lost"})",
+      R"({"role":"user","content":[{"type":"file","text":"lost"}]})",
+      R"({"role":"user","content":[{"type":"text","text":"x","extra":1}]})"})
+    Q4T_CHECK(!Accept(std::string(R"({"messages":[)") + message + "]}"));
+  Q4T_CHECK(Accept(R"({"messages":[{"role":"user","content":"hi"},
+      {"role":"assistant","content":"hello","refusal":null}]})"));
   return true;
 }
 

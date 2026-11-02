@@ -105,13 +105,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
   } err_guard{metrics_.requests_error};
   if (!gpu_healthy_.load(std::memory_order_relaxed)) {
-    SendError(fd, 503, "GPU unhealthy after a device error; restart the server");
+    SendError(fd, 503, "GPU unhealthy after a device error; restart the server",
+              {}, "gpu_unhealthy");
     return;
   }
   const int chat_limit = TextAdmissionLimit(max_seq_);
   if (active_chats_.fetch_add(1) >= chat_limit) {
     active_chats_.fetch_sub(1);
-    SendError(fd, 503, "text request capacity exhausted");
+    SendError(fd, 503, "text request capacity exhausted", {},
+              "capacity_exhausted");
     return;
   }
   struct ChatGuard {
@@ -121,7 +123,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   io::Json req;
   Status s = io::ParseJson(body, &req, true, kRequestJsonLimits);
   if (!s.ok()) {
-    SendError(fd, 400, "invalid JSON: " + s.message());
+    SendError(fd, 400, "invalid JSON: " + s.message(), {}, "invalid_json");
     return;
   }
 
@@ -147,7 +149,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     if (!session_cache_.Acquire(session.key)) {
-      SendError(fd, 409, "session is busy or lease capacity exhausted");
+      SendError(fd, 409, "session is busy or lease capacity exhausted", {},
+                "session_busy", "session_id");
       return;
     }
     session.cache = &session_cache_;
@@ -191,7 +194,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   detail::ServeFaultPoint("handler.before_register");
   auto control = requests_.Register(request_id, key, deadline);
   if (!control) {
-    SendError(fd, 409, "request_id already active");
+    SendError(fd, 409, "request_id already active", {},
+              "request_id_conflict", "request_id");
     return;
   }
   struct Registration {
@@ -214,7 +218,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const auto send_cancel_error = [&](const char* message) {
     SendError(fd, 409, message,
               {std::chrono::steady_clock::now() +
-               std::chrono::milliseconds(250)});
+               std::chrono::milliseconds(250)}, control->Reason());
   };
   bool abort_counted = false;
   const auto count_abort = [&] {
@@ -231,7 +235,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
   // ValidateChatContract checked type and range before registration.
   int max_tokens = static_cast<int>(
-      req.GetInt("max_tokens", max_tokens_default_));
+      req.GetInt("max_completion_tokens",
+                 req.GetInt("max_tokens", max_tokens_default_)));
   // Upper bound: decode stops at max_len_ anyway (KV cache), so a huge
   // max_tokens only pins a seq slot and grows host buffers; cap it so one
   // request cannot starve the pool.
@@ -977,7 +982,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     for (const auto& delta : deltas) {
       detail::ServeFaultPoint("handler.before_content");
       if (!write_stream(detail::SseDeltaChunk(
-              id, model_field, delta.ToJson(), "", 0))) return false;
+              id, model_field, delta.ToJson(), "", 0, created))) return false;
       if (!first_delta_sent) {
         first_delta_sent = true;
         metrics_.ttft_seconds.Observe(std::chrono::duration<double>(
@@ -1007,7 +1012,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       count_abort();
     }
     if (!header_sent ||
-        !write_stream(SseChunk(id, model_field, "assistant", "", "", 0))) {
+        !write_stream(SseChunk(id, model_field, "assistant", "", "", 0,
+                               created))) {
       err_guard.ok = true;  // Count this as an abort, not a prefill error.
       model::ModelEndSequence(&seq);
       cleanup();
@@ -1676,13 +1682,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     const detail::WriteOptions terminal{
         std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
     if (stream) {
-      constexpr char cancelled_event[] =
-          "data: {\"error\":{\"message\":\"request cancelled\"}}\r\n\r\n"
-          "data: [DONE]\r\n\r\n";
-      *response_state = detail::ResponseState::kTerminal;
-      WriteAll(fd, cancelled_event, sizeof(cancelled_event) - 1, terminal);
+      detail::SendStreamError(fd, response_state, 409, "request cancelled",
+                              terminal, control->Reason());
     } else {
-      SendError(fd, 409, "request cancelled", terminal);
+      SendError(fd, 409, "request cancelled", terminal, control->Reason());
     }
     cleanup();
     return;
@@ -1695,18 +1698,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     const detail::WriteOptions terminal{
         std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
     if (stream) {
-      constexpr char failed_event[] =
-          "data: {\"error\":{\"message\":\"generation failed\","
-          "\"type\":\"server_error\",\"code\":\"generation_failed\"}}"
-          "\r\n\r\n"
-          "data: [DONE]\r\n\r\n";
-      *response_state = detail::ResponseState::kTerminal;
-      WriteAll(fd, failed_event, sizeof(failed_event) - 1, terminal);
+      detail::SendStreamError(fd, response_state, 500, "generation failed",
+                              terminal, "generation_failed");
     } else {
-      SendSimple(fd, 500, "Internal Server Error",
-                 "{\"error\":{\"message\":\"generation failed\","
-                 "\"type\":\"server_error\",\"code\":\"generation_failed\"}}",
-                 "application/json", terminal);
+      SendError(fd, 500, "generation failed", terminal, "generation_failed");
     }
     cleanup();
     return;
@@ -1759,7 +1754,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     // Once publication starts, an exception can only close the connection;
     // appending a second terminal would turn a truncated stream into a lie.
     const auto finish_chunk =
-        SseChunk(id, model_field, "", "", finish_reason, 0);
+        SseChunk(id, model_field, "", "", finish_reason, 0, created);
     std::string tail;
     if (include_usage && !client_disconnected) {
       tail =

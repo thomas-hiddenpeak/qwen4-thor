@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <chrono>
 #include <string>
 #include <string_view>
@@ -47,7 +48,15 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type,
                 const WriteOptions& options = {});
 void SendError(int fd, int code, const std::string& message,
-               const WriteOptions& options = {});
+               const WriteOptions& options = {},
+               std::string_view error_code = {}, std::string_view param = {});
+// Stable Q4T codes inside the OpenAI error envelope. No retry guarantee.
+std::string ErrorJson(int status, const std::string& message,
+                      std::string_view error_code = {},
+                      std::string_view param = {});
+void SendStreamError(int fd, ResponseState* state, int status,
+                      const std::string& message, const WriteOptions& options,
+                      std::string_view error_code);
 // A malformed model response is an error terminal, never stop/tool_calls.
 void SendResponseParseError(int fd, bool stream, ResponseState* state,
                             const std::string& message,
@@ -55,9 +64,11 @@ void SendResponseParseError(int fd, bool stream, ResponseState* state,
 // delta_json is an object serialized by the response parser, never raw input.
 std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,
-                          const std::string& finish_reason, int index);
+                          const std::string& finish_reason, int index,
+                          int64_t created = 0);
 std::string SseChunk(const std::string& id, const std::string& model,
                      const std::string& delta_role, const std::string& content,
-                     const std::string& finish_reason, int index);
+                     const std::string& finish_reason, int index,
+                     int64_t created = 0);
 
 }  // namespace q4t::server::detail
