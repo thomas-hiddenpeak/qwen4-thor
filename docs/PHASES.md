@@ -23,6 +23,7 @@ C项按明确业务条件单独冻结。
 | SRV-01 | A：统一请求身份与错误定位 | 已交付（限定范围） | 无；成功、拒绝和 SSE 错误可按同一关联身份定位 |
 | SRV-02 | A：就绪 / 排空与控制入口保障 | 已交付（限定范围） | 01；负载达到上限时，健康与取消仍有有界服务能力 |
 | SRV-03 | A：HTTP / SSE 合同、心跳与慢读边界 | 已交付（限定范围） | 01、02；代理和慢客户端下终态、取消、资源回收符合合同 |
+| SRV-03b | A回补：严格长payload实际背压 | 已冻结并开始CPU准备 | 同源专用构建真实EAGAIN；SSE取消/JSON写截止、等候普通和后续strict恢复，见03b合同 |
 | SRV-04 | B：消息角色与模板兼容 | B1已交付（单一指令槽profile） | developer替代开头system；混用/name拒绝；原生字节/ID与真实工具闭环已验 |
 | SRV-05 | B：推理字段、输出隐藏与推理预算 | 05a/05b均已限定交付；31ffc41e | 04；字段适配、输出隐藏、计算预算分别证明 |
 | SRV-06 | B：文本停止条件 | 已限定交付；a3fd64a3 | 04、05；跨 token / 跨块停止不泄漏尾部、不产生伪完整工具调用 |
@@ -96,7 +97,9 @@ SRV-08[限定交付与证据](SERVE_PROTOCOL_RESULT_2026-11-03.md)已完成。
 
 SRV-08首批机器合同为[传输响应schema](serve-transport-v1.schema.json)，
 只覆盖错误、completion、SSE chunk、readiness封套，配合wire顺序检查。
-完整输入OpenAPI、所有嵌套schema错误的精确param、JS/其他SDK仍待B。
+完整输入OpenAPI和固定JS后续已由SRV-08限定交付；所有嵌套schema错误
+的精确param与其他SDK未自动覆盖。严格长payload回补见
+[SRV-03b冻结范围](SERVE_BACKPRESSURE_2026-11-03.md)。
 
 ### B：完善客户端能实际使用的协议
 
