@@ -1,0 +1,42 @@
+{
+  "id": "chatcmpl-auto-3",
+  "choices": [
+    {
+      "finish_reason": "tool_calls",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": null,
+        "refusal": null,
+        "role": "assistant",
+        "annotations": null,
+        "audio": null,
+        "function_call": null,
+        "tool_calls": [
+          {
+            "id": "call_chatcmpl-auto-3_0",
+            "function": {
+              "arguments": "{\"path\":\"docs/MODEL.md\",\"start_line\":1,\"line_count\":8}",
+              "name": "read_project_record"
+            },
+            "type": "function"
+          }
+        ]
+      }
+    }
+  ],
+  "created": 1793611525,
+  "model": "qwen3.8-flash-next",
+  "object": "chat.completion",
+  "metadata": null,
+  "moderation": null,
+  "service_tier": null,
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 54,
+    "prompt_tokens": 435,
+    "total_tokens": 489,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": null
+  }
+}

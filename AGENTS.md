@@ -58,7 +58,7 @@ Qwen3.8-Flash-Next (qwen4_exp) 的原生推理引擎,
 # 构建 (要求: CMake >= 4.0 [pip 装 4.4.3] + g++-14 [apt]; C++23 host+device)
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 \
-  -DQ4T_CUDA_ARCHITECTURES=110a
+  -DQ4T_CUDA_ARCHITECTURES=110a -DQ4T_ENABLE_XGRAMMAR=ON
 cmake --build build --parallel
 
 # 运行（默认开启 MTP k=3；--no-mtp 回退普通 decode；评估参数与顺序见

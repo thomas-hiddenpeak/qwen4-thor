@@ -4,8 +4,9 @@
 引擎却缺工具响应”的应用层遗漏。与[主兼容矩阵](APPLICATION_SERVICE.md)
 一起维护；不能仅用功能数量衡量成熟度。
 
-工具控制 / 结构化输出已按优先级进入
-[仅开发阶段](STRUCTURED_OUTPUT_DEVELOPMENT_2026-11-02.md)，尚未测试。
+工具控制 / 结构化输出的
+[实现合同](STRUCTURED_OUTPUT_DEVELOPMENT_2026-11-02.md)已明确，后续已完成
+[有界验收与交付](STRUCTURED_OUTPUT_RESULT_2026-11-02.md)。
 下表已交付状态不因源码开发自动升级。
 
 ## 证据口径
@@ -14,7 +15,7 @@
 `reference/vllm/vllm/entrypoints/openai/` 和 `entrypoints/serve/`。
 同时核对当前官方文档（访问日期 2026-11-02）；未更新、构建或启动
 reference，未把 stable 网页当作本地固定 commit 的相同版本。
-本项目盘点起点 460ffd0，下表已同步 c3772d11 首批交付状态；历史
+本项目盘点起点 460ffd0，下表已同步 957211c7 工具控制交付状态；历史
 差异与具体失败另列，未验部分不标成熟。
 
 vLLM 的 Chat 服务组织了独立的请求 schema、工具 / 推理 parser、
@@ -32,10 +33,10 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 项目 | vLLM 参考实现 / 官方能力 | Q4T 状态与遗漏 | 优先级 / 处置 |
 |---|---|---|---|
 | 工具输出解析 | chat_completion/serving.py + tool parser | 已交付 JSON/SSE function calls | 复用已有验收 |
-| 工具选择控制 | auto/none/required/named；约束后端参与保证 | 仅 auto；其余拒绝 | B：分别定义保证，禁止仅提示词模拟 |
-| 禁止并行工具 | parallel_tool_calls=false 对输出作限制 | false 拒绝；true 不代表客户端并发执行 | B：多调用与结果回填一起验 |
-| 工具参数严格性 | strict / structural tags 受模型、parser、配置约束 | 只做解析与基本类型转换；不是全 schema 校验 | B：约束解码与应用参数验证分开 |
-| JSON / schema / grammar | structured_outputs、response_format | json_object / json_schema 不支持 | B：从结构化文档查询输出需求冻结 |
+| 工具选择控制 | auto/none/required/named；约束后端参与保证 | 已验四种模式，named 恰好一次；固定 XGrammar 约束 | B 首组已交付；受约束仅 parsed 文本 |
+| 禁止并行工具 | parallel_tool_calls=false 对输出作限制 | 已验 false 最多一次；true 不代表客户端并发执行 | B 首组已交付，完整批次验证后回填 |
+| 工具参数严格性 | strict / structural tags 受模型、parser、配置约束 | 有限 q4t-json-schema-v1，掩码＋最终独立验证；非完整 schema | B 首组已交付；未知 keyword 拒绝 |
+| JSON / schema / grammar | structured_outputs、response_format | json_object / 有限 json_schema 已验；未暴露任意 grammar | B 首组已交付；新路径不组合缓存 / 媒体 |
 | 文本停止条件 | stop 字符串 / token IDs、终态与 stop_reason | 仅 EOS / token预算 / 容量停止；有效 stop 拒绝 | B：跨 token、跨块、与工具标记组合验 |
 | 输出预算 | max_completion_tokens / legacy max_tokens | 首批已验两字段共用预算 | A 已交付：双非空拒绝 |
 | 消息角色 | 接口 schema 接收 OpenAI 角色，最终受模板支持限制 | developer 不支持；system 必须在首条 | B：明确角色映射后做模板对照，不静默降级 |
@@ -44,7 +45,7 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 推理输出字段 | 当前官方 / 固定源码为 reasoning | Q4T 为 reasoning_content | B：版本化适配，不宣称字段相同 |
 | 推理隐藏与预算 | include_reasoning / thinking_token_budget 等扩展 | 有模板 thinking/effort；无独立推理预算 | B：输出隐藏不等于停止推理计算 |
 | SSE 创建时间 | serving 对一请求持同一 created | 首批已统一同一请求各块时间 | A 已交付 |
-| SSE 工具参数增量 | parser 维护每调用 index/ID/参数增量 | Q4T 在完整调用后发参数；不是逐字参数流 | B：先声明时延边界；正确性优先 |
+| SSE 工具参数增量 | parser 维护每调用 index/ID/参数增量 | 普通路径完整调用后发布；受约束路径完整响应验证后发布 | B：非逐 token 参数流，保留时延边界 |
 | SSE 用量与中断 | usage tail、可选持续统计；断连不保证尾帧 | 已验尾帧；无持续统计 / reasoning token 明细 | B：完善字段矩阵，不假填 0 |
 | 错误语义 | protocol/exception handlers 分类与封套 | 首批已统一 JSON/SSE 分类与封套 | A 已交付；Q4T code 不等同所有外部错误语义 |
 | 关联请求 ID | middleware/x_request_id.py；可选请求 / 响应头 | 自定义 JSON request_id，HTTP header 不关联 | B：自动 ID / 错误 / 日志统一追踪 |
@@ -94,7 +95,8 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 第一阶段完成“不能误导”的协议地基与本页盘点；第二阶段以真实项目
 查询证明工具错误、引用与持久记录能闭环。之后优先：
 
-1. 工具选择控制 + 结构化输出（需要真实约束保证）。
+1. 工具选择控制 + 有限结构化输出已完成首组有界交付；更广 schema、
+   并发、逐 token 结构化流及受约束加速另行冻结。
 2. developer / name / reasoning 字段兼容、停止条件和 token 预检。
 3. 请求追踪、配置声明、网关访问策略与可恢复任务状态机。
 

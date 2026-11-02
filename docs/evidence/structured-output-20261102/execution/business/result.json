@@ -1,0 +1,8 @@
+{
+  "status": "PASS_BOUNDED_STRUCTURED_OUTPUT",
+  "requests": 16,
+  "negatives": 12,
+  "starts": 2,
+  "seconds": 116.48961354116909,
+  "performance_acceptance": false
+}

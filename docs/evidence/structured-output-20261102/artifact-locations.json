@@ -1,0 +1,10 @@
+{
+  "not_vendored_build_artifacts": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/execution/pair/q4t",
+      "sha256": "957211c7807a5189e5c124b13d52c4fe5a95a4213dfbce087007783cb479d5fc",
+      "bytes": 6866792
+    }
+  ],
+  "note": "Build artifacts remain under .q4t-work; raw HTTP and logs are archived here."
+}

@@ -18,7 +18,11 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 [messages客户端与只读工具往返示例](docs/AGENT_TOOL_CLIENT_2026-11-02.md)
 及持久日志恢复已完成有界业务验收；完整head和subset的安装健康均通过。
 接口见[输出协议](docs/RESPONSE_PARSING_2026-11-02.md)，默认身份、
-结果与回退见[交付记录](docs/CHAT_DELIVERY_2026-11-02.md)。
+结果与回退见[交付记录](docs/CHAT_DELIVERY_2026-11-02.md)。后续已补齐
+none / required / named、禁止多调用、strict 参数及有限 JSON Schema
+约束；当前默认 957211c7，边界与证据见
+[结构化输出交付](docs/STRUCTURED_OUTPUT_RESULT_2026-11-02.md)。
+受约束请求使用普通解码，SSE 内容在完整校验后发布；暂不组合缓存或媒体。
 当前未启动常驻模型服务，GPU保持释放；这些结果不等于通用SDK兼容、
 完整JSON Schema或任意业务质量保证。
 
@@ -87,7 +91,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 #   sudo apt-get install g++-14 pkg-config liburing-dev libicu-dev
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_CUDA_HOST_COMPILER=g++-14 \
-  -DQ4T_CUDA_ARCHITECTURES=110a
+  -DQ4T_CUDA_ARCHITECTURES=110a -DQ4T_ENABLE_XGRAMMAR=ON
 cmake --build build --parallel
 
 # 开发测试（默认SKIP也非零退出；发布范围与入口见tools/release）
@@ -97,6 +101,10 @@ python3 tools/evalscope/gpu_exclusive.py \
 ```
 
 ## 使用
+
+构建参数 ON 复现当前默认的工具控制 / 结构化输出能力，并拉取固定
+XGrammar C++ 依赖。CMake 选项自身默认 OFF，公共 host 构建不联网；
+OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成。
 
 ```bash
 # 版本与硬件探测

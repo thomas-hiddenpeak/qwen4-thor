@@ -1,0 +1,308 @@
+{
+  "candidate_sha256": "957211c7807a5189e5c124b13d52c4fe5a95a4213dfbce087007783cb479d5fc",
+  "protocol_sha256": "cda1fc473e24057ce46ad90bba7764928f901b9122b7e06bd789b86304adc5af",
+  "source_commit": "6bf61b75160eaa9d63218abdab6fbbfdc587dbf8",
+  "performance_acceptance": false,
+  "configuration": "full head; max_seq=1 max_prefill=2048 max_len=8192; greedy; constrained plain decode",
+  "stages": {
+    "business": {
+      "status": "PASS_BOUNDED_STRUCTURED_OUTPUT",
+      "requests": 16,
+      "negatives": 12,
+      "starts": 2,
+      "seconds": 116.48961354116909,
+      "performance_acceptance": false
+    },
+    "health": {
+      "status": "PASS_BOUNDED_STRUCTURED_OUTPUT",
+      "requests": 2,
+      "negatives": 0,
+      "starts": 1,
+      "seconds": 39.44196559814736,
+      "performance_acceptance": false
+    }
+  },
+  "seconds": 156.42497563362122,
+  "checks": [
+    {
+      "stage": "candidate-mtp",
+      "grammar_preparation_ms": [
+        169.51
+      ],
+      "grammar_preparation_scope": "vocabulary decode + tokenizer info + compilation, not compiler-only",
+      "process_shutdown": "clean",
+      "finalized_resources": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1606,
+        "device_bytes": 85541278088,
+        "allocated": 1606,
+        "consumed": 1606,
+        "freed": 1606,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"
+      },
+      "successful_responses": [
+        {
+          "case": "constrained-in-mtp-server",
+          "seconds": 3.4770155700389296,
+          "finish": "tool_calls",
+          "usage": {
+            "prompt_tokens": 379,
+            "completion_tokens": 54,
+            "total_tokens": 433
+          }
+        },
+        {
+          "case": "legacy-auto-tool",
+          "seconds": 1.8750505950301886,
+          "finish": "tool_calls",
+          "usage": {
+            "prompt_tokens": 374,
+            "completion_tokens": 54,
+            "total_tokens": 428
+          }
+        },
+        {
+          "case": "ordinary-auto",
+          "seconds": 0.4339607651345432,
+          "finish": "stop",
+          "usage": {
+            "prompt_tokens": 22,
+            "completion_tokens": 7,
+            "total_tokens": 29
+          }
+        }
+      ]
+    },
+    {
+      "stage": "candidate-plain",
+      "grammar_preparation_ms": [
+        163.129,
+        162.548,
+        160.917,
+        198.616,
+        160.877,
+        194.39,
+        159.068,
+        159.257,
+        171.482,
+        159.473,
+        166.575,
+        162.561,
+        158.368
+      ],
+      "grammar_preparation_scope": "vocabulary decode + tokenizer info + compilation, not compiler-only",
+      "process_shutdown": "clean",
+      "finalized_resources": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1541,
+        "device_bytes": 79025839888,
+        "allocated": 1541,
+        "consumed": 1541,
+        "freed": 1541,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "0e6a148bcc76f8507e42326e4029148aa680700390ed5f00d3303f5c0c793bc9"
+      },
+      "successful_responses": [
+        {
+          "case": "auto-single",
+          "seconds": 3.581068905070424,
+          "finish": "tool_calls",
+          "usage": {
+            "prompt_tokens": 435,
+            "completion_tokens": 54,
+            "total_tokens": 489
+          }
+        },
+        {
+          "case": "json-object",
+          "seconds": 0.9902156291063875,
+          "finish": "stop",
+          "usage": {
+            "prompt_tokens": 28,
+            "completion_tokens": 13,
+            "total_tokens": 41
+          }
+        },
+        {
+          "case": "named",
+          "seconds": 3.4607734750024974,
+          "finish": "tool_calls",
+          "usage": {
+            "prompt_tokens": 379,
+            "completion_tokens": 54,
+            "total_tokens": 433
+          }
+        },
+        {
+          "case": "nested-strict",
+          "seconds": 4.07174933492206,
+          "finish": "tool_calls",
+          "usage": {
+            "prompt_tokens": 392,
+            "completion_tokens": 65,
+            "total_tokens": 457
+          }
+        },
+        {
+          "case": "none",
+          "seconds": 0.7764132940210402,
+          "finish": "stop",
+          "usage": {
+            "prompt_tokens": 22,
+            "completion_tokens": 7,
+            "total_tokens": 29
+          }
+        },
+        {
+          "case": "project-answer",
+          "seconds": 3.2637095211539418,
+          "finish": "stop",
+          "usage": {
+            "prompt_tokens": 397,
+            "completion_tokens": 50,
+            "total_tokens": 447
+          }
+        },
+        {
+          "case": "project-read",
+          "seconds": 3.492221236927435,
+          "finish": "tool_calls",
+          "usage": {
+            "prompt_tokens": 395,
+            "completion_tokens": 54,
+            "total_tokens": 449
+          }
+        },
+        {
+          "case": "required-sse",
+          "seconds": 3.4977849170099944,
+          "finish": "tool_calls",
+          "usage": {
+            "prompt_tokens": 379,
+            "completion_tokens": 54,
+            "total_tokens": 433
+          }
+        },
+        {
+          "case": "schema-json",
+          "seconds": 1.4158005770295858,
+          "finish": "stop",
+          "usage": {
+            "prompt_tokens": 28,
+            "completion_tokens": 22,
+            "total_tokens": 50
+          }
+        },
+        {
+          "case": "schema-sse",
+          "seconds": 1.4127686088904738,
+          "finish": "stop",
+          "usage": {
+            "prompt_tokens": 28,
+            "completion_tokens": 22,
+            "total_tokens": 50
+          }
+        },
+        {
+          "case": "schema-thinking",
+          "seconds": 3.7848583781160414,
+          "finish": "stop",
+          "usage": {
+            "prompt_tokens": 56,
+            "completion_tokens": 65,
+            "total_tokens": 121
+          }
+        }
+      ]
+    },
+    {
+      "stage": "candidate-installed",
+      "grammar_preparation_ms": [
+        165.226
+      ],
+      "grammar_preparation_scope": "vocabulary decode + tokenizer info + compilation, not compiler-only",
+      "process_shutdown": "clean",
+      "finalized_resources": {
+        "schema": 1,
+        "event": "finalized",
+        "status": "PASS",
+        "count": 1606,
+        "device_bytes": 85541278088,
+        "allocated": 1606,
+        "consumed": 1606,
+        "freed": 1606,
+        "unhanded_remaining": 0,
+        "handed_live": 0,
+        "release_unknown": 0,
+        "error": "none",
+        "backend_rc": 0,
+        "error_index": 0,
+        "prepared": true,
+        "startup_complete": true,
+        "finalized": true,
+        "active": false,
+        "strategy": "stable_descending_bytes",
+        "plan_sha256": "281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"
+      },
+      "successful_responses": [
+        {
+          "case": "ordinary",
+          "seconds": 0.43422825494781137,
+          "finish": "stop",
+          "usage": {
+            "prompt_tokens": 22,
+            "completion_tokens": 7,
+            "total_tokens": 29
+          }
+        },
+        {
+          "case": "schema",
+          "seconds": 1.4285963501315564,
+          "finish": "stop",
+          "usage": {
+            "prompt_tokens": 28,
+            "completion_tokens": 22,
+            "total_tokens": 50
+          }
+        }
+      ]
+    }
+  ],
+  "project_quality": {
+    "expected": "Qwen3.8-Flash-Next (qwen4_exp)",
+    "actual": "根据读取的内容，模型架构名称为：**Qwen3.8-Flash-Next (qwen4_exp)**。\n\n工具给出的 citation 逐字引用如下：\n`[docs/MODEL.md:L1-L8]`",
+    "source": "docs/MODEL.md",
+    "source_sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+    "citation": "[docs/MODEL.md:L1-L8]",
+    "tool_executions": 1
+  },
+  "installed": {
+    "q4t": "957211c7807a5189e5c124b13d52c4fe5a95a4213dfbce087007783cb479d5fc",
+    "q4t.release.json": "9eba5472f952372464bf0a903c63074b2e73cd51321d0d19a0601f7f05426fad"
+  }
+}

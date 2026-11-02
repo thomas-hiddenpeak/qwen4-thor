@@ -4,16 +4,24 @@
 
 ## 当前推进目标
 
-工具控制 / 结构化输出正在开发（2026-11-02，起点 74579d5）：已接入
-none / required / named / parallel=false、有限 JSON Schema profile、
-固定 XGrammar 的 host token mask 及整份响应发布门。新路径显式启用，
-按请求使用普通解码；MTP / packed decode / cache / media 组合未验。
-用户随后授权停止 vLLM 并开展测试。17:12 CST 正常停监督器，容器 /
-恢复标记由其清理；GPU 计算进程为空、共享锁释放，可用 RAM 约
-23 → 117 GiB。首轮真实后端 host 145 / 无后端 140 / 客户端 23 项
-通过，候选已构建，HTTP 与交付仍待验；默认 c3772d11 / c80f1f14 未变。
-代码与待验用例不等于交付，见
-[开发合同、依赖与限制、待验范围](STRUCTURED_OUTPUT_DEVELOPMENT_2026-11-02.md)。
+工具控制 / 结构化输出已交付（2026-11-02，源码 6bf61b7）：默认
+957211c7 / sidecar 9eba5472，固定 XGrammar 已启用；none / required /
+named / parallel=false、strict 参数与有限 JSON Schema 均有掩码和
+整份响应发布门。普通请求仍 full head / MTP k3；受约束请求使用
+普通解码，SSE payload 完整校验后集中发布，cache / media 组合拒绝。
+
+host ON 145 / OFF 140、Thor 发布门 106＋后端 5、客户端 23、驱动 /
+回退各 6 通过，构建零警告；18 生成 / 12 拒绝 / 3 启动在 156.42 秒
+完成业务及安装健康，guard COMPLETED、ENV_ABORT 0。真实项目读取
+一次并回填，架构名和行号引用正确；三次启动资源归零。仅全 head /
+单槽 / 8192 容量有界验收，无性能接受或全 schema / 并发扩展声明。
+
+按用户授权 17:12 CST 停 vLLM 并清理自有容器 / 恢复标记；可用 RAM
+约 23 → 117 GiB。17:27:33 安装收尾后 GPU 空、共享锁释放、恢复标记
+均无，可用 RAM 约 114 GiB，没有常驻模型服务。旧 c3772d11 /
+c80f1f14、源码 bundle、完整回退链及 151 份原始证据保留。见
+[交付结果、时延与未覆盖范围、回退](STRUCTURED_OUTPUT_RESULT_2026-11-02.md)、
+[实现与 schema 合同](STRUCTURED_OUTPUT_DEVELOPMENT_2026-11-02.md)。
 
 应用服务首批已交付（2026-11-02）：默认 c3772d11 / sidecar c80f1f14，
 仍 full head / MTP k3；[能力与 OpenAI 兼容矩阵](APPLICATION_SERVICE.md)
@@ -32,7 +40,7 @@ none / required / named / parallel=false、有限 JSON Schema profile、
 外来共享恢复标记，未停止或清理该流程，后续不再测试。见
 [结果、失败与边界、证据及回退](APPLICATION_SERVICE_RESULT_2026-11-02.md)。
 
-后续优先工具选择保证与结构化约束、消息 / 推理字段适配、停止条件
+后续优先消息 / 推理字段适配、停止条件
 与预检、请求追踪及持久恢复。当前仍是私有文本服务子集；引用范围
 检查不等于逐句事实验证，实时状态不能从历史文档推断。
 以下聊天接入等为历史阶段记录，旧默认身份不替代上述当前交付。

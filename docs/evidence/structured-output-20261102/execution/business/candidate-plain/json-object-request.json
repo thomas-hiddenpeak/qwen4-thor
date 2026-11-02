@@ -1,0 +1,21 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_completion_tokens": 512,
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "只输出JSON对象，answer为17乘19的乘积。"
+    }
+  ],
+  "extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false,
+      "reasoning_effort": "low"
+    }
+  },
+  "response_format": {
+    "type": "json_object"
+  }
+}

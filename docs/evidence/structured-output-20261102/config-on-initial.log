@@ -1,0 +1,33 @@
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++-14 - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar/cmake/config.cmake
+-- Build type: Release
+-- Build Python bindings: ON
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Found Python: /home/rm01/.local/bin/python3.13 (found version "3.13.14") found components: Interpreter Development.Module
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import tvm_ffi, os; print(os.path.join(os.path.dirname(tvm_ffi.__file__), 'share', 'cmake', 'tvm_ffi'))
+    ^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'tvm_ffi'
+CMake Error at /home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar/cpp/tvm_ffi/CMakeLists.txt:17 (find_package):
+  Could not find a package configuration file provided by "tvm_ffi" with any
+  of the following names:
+
+    tvm_ffi.cps
+    tvm_ffiConfig.cmake
+    tvm_ffi-config.cmake
+
+  Add the installation prefix of "tvm_ffi" to CMAKE_PREFIX_PATH or set
+  "tvm_ffi_DIR" to a directory containing one of the above files.  If
+  "tvm_ffi" provides a separate development package or SDK, be sure it has
+  been installed.
+
+
+-- Configuring incomplete, errors occurred!

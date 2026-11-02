@@ -1,0 +1,12 @@
+{
+  "time": "2026-11-02T17:27:33.777389+08:00",
+  "compute_pids": [],
+  "lock_free": true,
+  "shared_recovery_marker": false,
+  "own_recovery_marker": false,
+  "memory": {
+    "MemFree": "31105288 kB",
+    "MemAvailable": "119887768 kB",
+    "Cached": "4434160 kB"
+  }
+}

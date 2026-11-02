@@ -1,0 +1,42 @@
+{
+  "id": "chatcmpl-auto-4",
+  "choices": [
+    {
+      "finish_reason": "tool_calls",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": null,
+        "refusal": null,
+        "role": "assistant",
+        "annotations": null,
+        "audio": null,
+        "function_call": null,
+        "tool_calls": [
+          {
+            "id": "call_chatcmpl-auto-4_0",
+            "function": {
+              "arguments": "{\"flags\":[true,false],\"meta\":{\"label\":\"中文\",\"score\":3},\"note\":null}",
+              "name": "record"
+            },
+            "type": "function"
+          }
+        ]
+      }
+    }
+  ],
+  "created": 1793611528,
+  "model": "qwen3.8-flash-next",
+  "object": "chat.completion",
+  "metadata": null,
+  "moderation": null,
+  "service_tier": null,
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 65,
+    "prompt_tokens": 392,
+    "total_tokens": 457,
+    "completion_tokens_details": null,
+    "prompt_tokens_details": null
+  }
+}

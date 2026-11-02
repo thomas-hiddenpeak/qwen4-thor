@@ -4,9 +4,10 @@
 只读查询本项目文档、发布与验收记录。代码优先；实现、验证和业务质量
 分别记录。此页是持续维护入口，历史验收不随新功能自动扩张。
 
-2026-11-02 后续已进入[工具控制与结构化输出开发阶段](STRUCTURED_OUTPUT_DEVELOPMENT_2026-11-02.md)：
-源码接入固定 grammar 后端与有限 schema profile；当前服务占用期间
-不测试、不部署。下表继续描述已交付 c3772d11，新代码不标为已验。
+2026-11-02 后续[工具控制与结构化输出已交付](STRUCTURED_OUTPUT_RESULT_2026-11-02.md)：
+默认 957211c7 / 9eba5472，固定 grammar 后端与有限 schema profile
+通过有界 SDK / HTTP / 项目读取验收。实现合同见
+[profile 与组合限制](STRUCTURED_OUTPUT_DEVELOPMENT_2026-11-02.md)。
 
 ## 边界与成熟度
 
@@ -18,7 +19,7 @@ OpenAI API 全兼容或生产多租户应用平台。模型支持、模板一致
 |---|---|---|
 | 推理与请求生命周期 | GPU 错误隔离、容量准入、取消、超时、槽回收；已有 Thor 验收 | 与应用协议分开验收；不把本轮当性能优化 |
 | 消息与模板 | 原生 qwen4_exp 模板、工具历史 ID 对齐、推理内容分离；21 模板用例 | 并非运行任意 HF Jinja 模板；新增模型需要独立适配 |
-| 输出协议 | JSON / SSE、工具调用、usage、统一错误、稳定 created、两种 token 预算字段已验 | 缺工具选择保证、结构化约束、停止序列和逐字工具参数增量 |
+| 输出协议 | JSON / SSE、工具控制、有限 strict/schema、usage、统一错误、稳定 created、两种 token 预算字段已验 | 完整 schema、停止序列和逐字工具参数增量未实现 |
 | 客户端 | 项目客户端、持久记录、只读恢复判定；OpenAI Python 3.42.1 限定互通通过 | 其他 SDK / 框架未验；没有自动重试 / 任务恢复执行器 |
 | 应用工具 | 真实发布、历史验收与不存在资料查询通过；来源范围、工具业务错误与预算门已验 | 自主广泛搜索、逐句事实验证与实时状态查询未验 |
 | 服务运维 | health、metrics、代理模板、可核验发布与回退 | 内置鉴权 / TLS / 租户配额 / 持久任务服务不在当前范围 |
@@ -30,7 +31,7 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 
 ## API 兼容矩阵
 
-当前交付为 c3772d11 / sidecar c80f1f14，盘点起点为 460ffd0 /
+当前交付为 957211c7 / sidecar 9eba5472，盘点起点为 460ffd0 /
 旧默认 830694ce。`已验`指本项目已有明确证据，不代表外部 SDK 全部
 版本通过。P1 / P2 的验证范围与具体失败在本页末尾及结果文档记录。
 完整 vLLM 对照与优先级见[32项服务能力盘点](VLLM_SERVICE_GAPS_2026-11-02.md)。
@@ -45,15 +46,15 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | JSON / stream=true | 已验 | SSE finish → 可选 usage → DONE；中断不能当完整响应 |
 | content / reasoning_content | 已验 | reasoning_content 是扩展字段；不等于 OpenAI reasoning item |
 | function tools / tool_call_id | 已验 | ID 唯一完整批次；文本结果可乱序归一；客户端执行 |
-| tool_choice | 部分 | 仅 auto；none / required / named 明确拒绝 |
-| parallel_tool_calls | 部分 | 仅 true；允许生成多调用，不代表应用并发执行 |
-| strict / JSON Schema 输出约束 | 明确拒绝 | 没有约束解码；应用仍需验证参数与工具结果 |
+| tool_choice | 已验，子集组合 | auto / none / required / named；named 恰好一个调用，显式约束模式仅 parsed messages |
+| parallel_tool_calls | 已验 | false 最多一个；true 允许多调用，不代表应用并发执行 |
+| strict / JSON Schema 输出约束 | 有限 profile 已验 | q4t-json-schema-v1，逐 token 掩码＋最终验证；未知关键字拒绝，应用仍须验证业务 |
 | max_tokens | 已验 | 正整数；包含推理 / 模板生成 token；受上下文容量约束 |
 | max_completion_tokens | 已验 | 与 max_tokens 共用生成预算；两个字段同时非空时拒绝歧义 |
 | temperature / top_p / n | 部分 | 仅 0 / 1 / 1；不可声称支持采样 |
 | penalties / seed | 部分 | 仅中性 penalty；seed 在 greedy 下不改变结果 |
 | stop / logprobs / logit_bias | 明确拒绝有效设置 | 仅接受现有中性空值；不是实现了这些功能 |
-| response_format | 部分 | 仅 text / null；json_object / json_schema 拒绝 |
+| response_format | 已验，有限 schema | text / null / json_object / json_schema；与非空 tools 同用须 none |
 | stream_options.include_usage | 已验 | 最后独立 usage；连接中断不保证收到 |
 | chat_template_kwargs | 已验，Q4T 扩展 | thinking/preserve/effort/vision ID；能力端点给出范围 |
 | unknown fields | 明确拒绝 | 不静默丢弃；Responses/store/metadata 等不可直接透传 |
@@ -93,9 +94,13 @@ P2：新增有界项目资料查询应用，工具只读本仓库允许范围内
 停止且保留记录。复用持久记录和只读恢复检查，不引入未知结果自动重放。
 使用具体 OpenAI Python SDK 版本做本地互通验证，与自有客户端分开记录。
 
-P3（后续独立阶段）：required/named/none 和 parallel=false 的真实保证、
-结构化约束解码、可恢复任务状态机、网关鉴权和租户配额。需要分别冻结
-业务合同与验收，不能仅增加接收字段便宣布完成。
+P3 第一组（已交付）：required/named/none、parallel=false 和有限
+schema 解码；18 生成 / 12 拒绝 / 3 启动通过。受约束 SSE 完整验证后
+发布，单槽 / full head / 8192 容量有界验收，不使用 MTP / packed decode，
+cache / media 组合拒绝。CMake 重建须 Q4T_ENABLE_XGRAMMAR=ON。
+
+后续独立阶段：消息 / 推理字段、停止条件、请求预检和追踪、可恢复
+任务状态机、网关鉴权和租户配额；分别冻结业务合同与验收。
 
 ## 本轮验证与交付合同
 
@@ -153,13 +158,14 @@ max_completion_tokens 包含可见和推理 token；工具执行属于应用端�
 不同模型支持的参数有差异。Q4T 的错误 code、取消、缓存与能力端点是
 本地合同，不冒充 OpenAI 平台的所有行为。
 
-## 首批当前交付
+## 首批交付历史
 
 P0 盘点与 P1 协议修补已交付；P2 真实发布查询、历史验收引用及资料
 不存在三场景闭环通过，OpenAI Python SDK 3.42.1 的限定接入通过。
-当前默认 c3772d11 / sidecar c80f1f14，本阶段结束已释放 GPU；后续
+该阶段默认 c3772d11 / sidecar c80f1f14，结束已释放 GPU；后续
 外部服务恢复观察见结果文档。194 项 CPU / 驱动
 合同、累计 18 生成 / 9 负例 / 4 启动及两次失败的修正边界，详见
 [交付结果与275份证据](APPLICATION_SERVICE_RESULT_2026-11-02.md)。
-P3 仍未完成；自主搜索、实时状态、逐句事实验证和更多 SDK 不能由
-三项有界任务通过外推。
+P3 工具控制 / 有限结构化输出后续已在 957211c7 交付（见页首）；
+其余规划仍未完成。自主搜索、实时状态、逐句事实验证和更多 SDK
+不能由三项有界任务通过外推。
