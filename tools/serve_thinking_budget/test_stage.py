@@ -118,6 +118,29 @@ class Contracts(unittest.TestCase):
                 v.prepare_cache(path)
             self.assertEqual((path / "evidence").read_text(), "keep")
 
+    def test_current_phase_ledger_reserves_installation(self):
+        run = object.__new__(v.Run)
+        run.plan = dict(limits=dict(starts=5, generations=22, negatives=12),
+                        prior_counts=dict(starts=1, generations=2, negatives=3))
+        run.installed, run.deadline = False, time.time() + 60
+        run.requests, run.negative, run.starts, run.capability_gets = 19, 9, 3, 3
+        run.budget()
+        with self.assertRaises(AssertionError):
+            run.counted()
+        run.requests, run.negative = 19, 10
+        with self.assertRaises(AssertionError):
+            run.budget()
+        run.negative, run.starts = 9, 4
+        with self.assertRaises(AssertionError):
+            run.budget()
+
+    def test_repair_does_not_reset_deadline(self):
+        run = object.__new__(v.Run)
+        plan = dict(started=300, original_started=100, limits=dict(seconds=1800))
+        with patch.object(v.b.Run, "__init__", return_value=None):
+            run.__init__(plan, Path("unused"))
+        self.assertEqual(run.deadline, 1870)
+
 
 if __name__ == "__main__":
     unittest.main()

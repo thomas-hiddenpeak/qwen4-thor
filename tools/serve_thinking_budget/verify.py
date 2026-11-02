@@ -96,13 +96,23 @@ def quality(result):
 
 
 class Run(b.Run):
+    def __init__(self, plan, output, *, installed=False):
+        super().__init__(plan, output, installed=installed)
+        self.deadline = plan.get("original_started", plan["started"]) + \
+            plan["limits"]["seconds"] - 30
+
     def budget(self):
         wire.require(time.time() < self.deadline, "thinking budget deadline")
-        previous = self.plan.get("prior_counts", {}) if hasattr(self, "plan") else {}
-        wire.require(self.requests <= (1 if self.installed else 21) and
-                     self.negative <= (0 if self.installed else 12) and
-                     self.starts <= (1 if self.installed else 3 - previous.get("starts", 0)) and
-                     self.capability_gets <= (1 if self.installed else 3),
+        plan = getattr(self, "plan", {})
+        previous = plan.get("prior_counts", {})
+        limits = plan.get("limits", dict(generations=22, negatives=12, starts=4))
+        generations = limits["generations"] - 1 - previous.get("generations", 0)
+        negatives = limits["negatives"] - previous.get("negatives", 0)
+        starts = limits["starts"] - 1 - previous.get("starts", 0)
+        wire.require(self.requests <= (1 if self.installed else generations) and
+                     self.negative <= (0 if self.installed else negatives) and
+                     self.starts <= (1 if self.installed else starts) and
+                     self.capability_gets <= (1 if self.installed else starts),
                      "thinking request/start budget")
 
     def sdk_chat(self, client, folder, label, request, **unused):

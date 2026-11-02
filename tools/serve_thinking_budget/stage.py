@@ -28,6 +28,7 @@ SCHEMAS = ("docs/serve-transport-v1.schema.json",
            "docs/serve-message-profile-v2.schema.json",
            "docs/serve-reasoning-v1.schema.json",
            "docs/serve-thinking-v1.schema.json")
+RELEASE_VERSION = "serve-thinking-budget-20261103"
 
 
 def cpu_gate():
@@ -45,7 +46,7 @@ def cpu_gate():
         h.require("warning:" not in text and "error:" not in text, "build diagnostics")
 
 
-def prepare():
+def prepare(*, provenance=None):
     h.require(not PACKAGE.exists(), "package already frozen")
     old = h.verify_pair(ROOT / "build/q4t", ROOT / "build/q4t.release.json", OLD_SHA)
     cpu_gate()
@@ -105,6 +106,8 @@ def prepare():
         planned=dict(starts=3, generations=19, negatives=12),
         startup_preflight=h.identity(PACKAGE / "candidate/startup_preflight"),
         cache_seed_tokens=h.read(BASE / "cpu/cache-probe-result.json")["tokens"])
+    if provenance is not None:
+        plan["provenance"] = provenance
     if PACKAGE.name == "package-correction":
         original = BASE / "execution"
         h.verify_seal(BASE / "package")
@@ -159,7 +162,7 @@ def release(plan):
         "acceptance_decision_sha256", "chat_protocol", "deployment_completion", "scope") if k in metadata})
     inherited["release"] = h.identity(PACKAGE / "previous/q4t.release.json")
     metadata.pop("deployment_completion", None)
-    metadata.update(version="serve-thinking-budget-20261103",
+    metadata.update(version=RELEASE_VERSION,
         binary_sha256=plan["candidate_sha256"], source_commit=plan["source_commit"],
         source_note="True thinking token admission and finite forced closure accepted for the frozen HTTP cases. MTP reserves a natural pending token before host-tail fallback; strict selection intersects grammar and forced token. Hidden output retains usage. Model/numerical sources unchanged; this is not a performance acceptance.",
         tested_source_manifest=str(PACKAGE / "candidate/runtime-source.json"),

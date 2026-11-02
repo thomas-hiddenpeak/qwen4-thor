@@ -1,0 +1,66 @@
+"""Fresh bounded HTTP phase after the retained, pre-model fixture failures."""
+import argparse
+from pathlib import Path
+import time
+
+import stage as s
+
+PRIOR = s.BASE
+BASE = s.ROOT / ".q4t-work/serve-thinking-budget-http-20261103"
+PACKAGE, OUTPUT = BASE / "package", BASE / "execution"
+LIMITS = dict(starts=5, generations=22, negatives=12, seconds=1800)
+CANDIDATE = "c02b94144c5a40c6118bd7dde306b298dce10c963045708f82082f6a5f2b8b54"
+
+
+def bind():
+    # BASE in the shared preparer remains the immutable build/CPU source.
+    s.PACKAGE, s.OUTPUT, s.LIMITS = PACKAGE, OUTPUT, LIMITS
+    s.RELEASE_VERSION = "serve-thinking-budget-http-20261103"
+    s.bind()
+
+
+def reuse():
+    for name in ("package", "package-correction", "cpu", "execution", "execution-correction"):
+        s.h.verify_seal(PRIOR / name)
+    retired = s.h.read(PRIOR / "retired.json")
+    s.h.require(not retired["accepted"] and retired["actual"] ==
+                dict(starts=2, generations=0, negatives=0, model_loads=0),
+                "prior phase is not the frozen pre-model failure state")
+    s.h.require(s.h.sha(PRIOR / "engine/q4t") == CANDIDATE, "candidate changed")
+    old_sources = s.h.read(PRIOR / "package-correction/sources.json")
+    checked = {p: digest for p, digest in old_sources.items()
+               if p.startswith(("src/", "include/", "cmake/", "tests/")) or p == "CMakeLists.txt"}
+    s.a.verify_hashes(s.ROOT, checked)
+    preflight = s.h.read(PRIOR / "cpu/startup-preflight/result.json")
+    s.a.verify_hashes(s.ROOT, preflight["sources"])
+    s.h.require(s.h.identity(preflight["binary"]["path"]) == preflight["binary"],
+                "startup preflight binary changed")
+    s.h.require(s.h.read(BASE / "driver-result.json")["passed"], "new driver checks failed")
+    return dict(prior_retired=s.h.identity(PRIOR / "retired.json"),
+        prior_counts=retired["actual"], prior_phase_preserved=True,
+        runtime_sources=checked, reused_cpu_seal=s.h.identity(PRIOR / "cpu/sealed-files.json"),
+        new_driver=s.h.identity(BASE / "driver-result.json"),
+        scope="Only previously unexecuted HTTP cases. Prior failures remain unaccepted; new limits are explicit.")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("action", choices=["prepare", "execute", "finalize", "rollback"])
+    parser.add_argument("--output", type=Path)
+    args = parser.parse_args()
+    bind()
+    if args.action == "prepare":
+        s.prepare(provenance=reuse())
+    elif args.action == "execute":
+        s.h.require_guard(OUTPUT)
+        s.h.save(OUTPUT / "begin.json", dict(started=time.time(), limits=LIMITS))
+        s.a.execute()
+    elif args.action == "finalize":
+        s.a.finalize()
+    else:
+        s.h.require(args.output is not None, "fresh lease output required")
+        s.a.restore(args.output.resolve())
+
+
+if __name__ == "__main__":
+    main()
