@@ -52,12 +52,35 @@ class Run(b.Run):
     def budget(self):
         wire.require(time.time() < self.deadline, "preflight stage deadline")
         prior = getattr(self, "plan", {}).get("prior_counts", {})
+        if getattr(self, "plan", {}).get("combined_plain"):
+            wire.require(not self.installed and
+                self.requests <= 12 - prior["generations"] and
+                self.starts <= 3 - prior["starts"] and
+                self.capability_gets <= 3 - prior["starts"] and
+                self.negative <= 20 - prior["negatives"] and
+                self.preflights <= 32 - prior["preflights"], "frozen stage budget")
+            return
         wire.require(self.requests <= (2 if self.installed else 10 - prior.get("generations", 0)) and
             self.starts <= (1 if self.installed else 2 - prior.get("starts", 0)) and
             self.capability_gets <= (1 if self.installed else 2 - prior.get("starts", 0)) and
             self.negative <= (0 if self.installed else 20 - prior.get("negatives", 0)) and
             self.preflights <= (2 if self.installed else 30 - prior.get("preflights", 0)),
             "frozen stage budget")
+
+    def wait_slot(self, name):
+        released_by = time.monotonic() + 3
+        while True:
+            code, raw = self.request("GET", "/healthz")
+            health = json.loads(raw)
+            wire.require(code == 200 and health["gpu_healthy"] and
+                health["seq_slots_total"] > 0, name + ": unhealthy")
+            if health["seq_slots_free"] == health["seq_slots_total"]:
+                break
+            wire.require(time.monotonic() < released_by, name + ": slot not released")
+            time.sleep(0.01)
+        self.observe(lambda rows: rows["q4t_active_chats"] == 0 and
+            rows["q4t_structured_active"] == 0 and
+            rows["q4t_structured_workers_active"] == 0)
 
     def http(self, folder, label, method, path, body=None, content_type="application/json"):
         payload = json.dumps(body, ensure_ascii=False).encode() if body is not None else b""
@@ -256,8 +279,8 @@ class Run(b.Run):
                 "actual slot selection differs from planning")
         self.resources_empty(folder, "explicit-drained")
 
-    def corrected_explicit(self, folder):
-        self.config(folder, explicit=True)
+    def corrected_explicit(self, folder, *, mtp=True):
+        self.config(folder, explicit=True, mtp=mtp)
         base = self.preflight(folder, "slot-count", b.simple())
         count = base["prompt_tokens"]
         body = b.simple()
@@ -290,6 +313,15 @@ class Run(b.Run):
                 "actual slot assignment differs")
         self.resources_empty(folder, "explicit-drained")
 
+    def combined_plain(self, folder):
+        self.corrected_explicit(folder, mtp=False)
+        left = self.success(folder, "plain-json", b.simple())
+        right = self.success(folder, "plain-sse", b.simple(stream=True))
+        b.compare(left, right)
+        wire.require((left.message["content"] or "").strip() == "710003",
+                     "plain quality")
+        self.resources_empty(folder, "plain-drained")
+
     def health(self, folder):
         self.config(folder, mtp=False)
         left = self.success(folder, "installed-json", b.simple())
@@ -300,7 +332,7 @@ class Run(b.Run):
 
     def model(self, name, binary, mtp, action):
         argv = command(binary, self.args.model_dir, self.args.port, mtp,
-                       explicit=name == "candidate-explicit")
+                       explicit=name in ("candidate-explicit", "candidate-plain-explicit"))
         probe = self.plan["startup_preflight"]
         wire.require(wire.digest(Path(probe["path"])) == probe["sha256"], "startup probe drift")
         checked = subprocess.run([probe["path"], *argv[2:]], cwd=ROOT,
@@ -327,7 +359,10 @@ class Run(b.Run):
                     stage.h.copy_checked(identity, folder / name)
                 self.checked.extend(reuse["successful_comparisons"])
                 wire.save(self.out / "reused-evidence.json", reuse)
-                self.model("candidate-explicit", binary, True, self.corrected_explicit)
+                if self.plan.get("combined_plain"):
+                    self.model("candidate-plain-explicit", binary, False, self.combined_plain)
+                else:
+                    self.model("candidate-explicit", binary, True, self.corrected_explicit)
             else:
                 probe = self.plan["lifecycle_probe"]
                 wire.require(wire.digest(Path(probe["path"])) == probe["sha256"], "lifecycle drift")
@@ -338,8 +373,9 @@ class Run(b.Run):
                 self.model("candidate-mtp", binary, True, self.business)
                 self.model("candidate-explicit", binary, True, self.explicit)
             corrected = bool(self.plan.get("reuse_http"))
-            wire.require(self.requests == (2 if self.installed or corrected else 10) and
-                self.preflights == (2 if self.installed else 5 if corrected else 27) and
+            combined = bool(self.plan.get("combined_plain"))
+            wire.require(self.requests == (4 if combined else 2 if self.installed or corrected else 10) and
+                self.preflights == (7 if combined else 2 if self.installed else 5 if corrected else 27) and
                 self.negative == (0 if self.installed else 1 if corrected else 16),
                 "missing frozen cases")
             for script in ("tools/serve_preflight/check_schema.py",
@@ -356,4 +392,8 @@ class Run(b.Run):
                 preflight_requests=self.preflights, starts=self.starts,
                 comparisons=self.checked, seconds=time.monotonic() - self.started,
                 performance_acceptance=False)
+            prior = self.plan.get("prior_counts", {})
+            state["cumulative"] = {key: prior.get(key, 0) + value for key, value in
+                dict(generations=self.requests, negatives=self.negative,
+                     preflights=self.preflights, starts=self.starts).items()}
             wire.save(self.out / "result.json", state)

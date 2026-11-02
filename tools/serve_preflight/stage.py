@@ -35,10 +35,13 @@ SCHEMAS = (*previous.SCHEMAS, "docs/serve-preflight-v1.schema.json",
 
 def cpu_gate():
     cpu = BASE / "cpu"
-    driver = "driver-corrected-result.json" if PACKAGE.name == "package-corrected" else "driver-result.json"
+    driver = {"package-corrected": "driver-corrected-result.json",
+              "package-final": "driver-final-result.json"}.get(PACKAGE.name, "driver-result.json")
     for name in ("host-gate/result.json", "template-diff/result.json",
                  "startup-preflight/result.json", driver):
         h.require(h.read(cpu / name)["passed"], "CPU gate failed: " + name)
+    if PACKAGE.name == "package-final":
+        h.require(h.read(cpu / "startup-final.json")["passed"], "combined CLI gate")
     for mode, count in (("off", 198), ("on", 207)):
         initial = (cpu / f"host-{mode}.log").read_text()
         h.require(f"{count} tests, {count-1} passed, 1 failed, 0 skipped" in initial
@@ -119,7 +122,7 @@ def prepare():
         startup_preflight=h.identity(PACKAGE / "candidate/startup_preflight"),
         prompt_probe=h.identity(PACKAGE / "candidate/q4t_preflight_probe"),
         lifecycle_probe=h.identity(PACKAGE / "candidate/q4t_http_lifecycle_tests"))
-    if PACKAGE.name == "package-corrected":
+    if PACKAGE.name in ("package-corrected", "package-final"):
         prior = BASE / "execution"
         h.verify_seal(BASE / "package")
         failure = h.read(prior / "business/result.json")
@@ -146,6 +149,23 @@ def prepare():
                 successful_comparisons=failure["comparisons"][:7]),
             planned_new=dict(business=2, health=2, starts=2, preflights=7, negatives=1),
             scope_note="Retain original auto-tool quality failure. Explicit tool_choice=none long-history retry also proves actual long-slot selection; exact 2049 eligibility is read-only, actual short-slot requirement is 2048. No repeated passed requests; cumulative 12 generations/30 preflights/16 negatives/3 starts, original 30 minute deadline.")
+    if PACKAGE.name == "package-final":
+        prior = BASE / "execution-corrected"
+        h.verify_seal(BASE / "package-corrected")
+        failure = h.read(prior / "business/result.json")
+        h.require([failure[k] for k in ("request_attempts", "negative_requests",
+            "preflight_requests", "starts")] == [0, 0, 1, 1] and
+            failure["error"] == "AssertionError('slot-count: slot not released')",
+            "unexpected second failure")
+        h.require(h.read(prior / "business/candidate-explicit/shutdown.json")["clean"] and
+            h.read(prior / "lease/exit.json")["status"] == "COMMAND_FAILED" and
+            h.read(BASE / "package-corrected/plan.json")["candidate_sha256"] == plan["candidate_sha256"],
+            "multi-slot driver correction requires drained identical runtime")
+        plan.update(combined_plain=True,
+            prior_counts=dict(starts=2, generations=8, negatives=15, preflights=24),
+            prior_driver_failure=h.identity(prior / "business/result.json"),
+            planned_new=dict(business=4, health=0, starts=1, preflights=7, negatives=1),
+            scope_note="Retain both failed runs. One final plain two-slot model start combines corrected long-history final answer, actual short/long slot assignment and plain JSON/SSE. Exact 2049 boundary remains read-only. Seven same-ELF MTP business cases reused. Installed path receives CLI/worker checks and identical-ELF HTTP reuse, no installed model start; dual-slot MTP generation is unverified. Cumulative 12 generations/31 preflights/16 negatives/3 starts, original 30 minute deadline.")
     h.save(PACKAGE / "plan.json", plan)
     h.seal(PACKAGE)
     print("PREPARED", plan["candidate_sha256"], flush=True)
@@ -166,6 +186,10 @@ def check():
 
 
 def verifier(plan, installed=False):
+    if installed and plan.get("combined_plain"):
+        health = module("preflight_installed_health", Path(__file__).with_name("installed_health.py"))
+        health.run(plan, OUTPUT)
+        return
     v = module("preflight_http_checks", Path(__file__).with_name("verify.py"))
     v.Run(plan, OUTPUT / ("health" if installed else "business"), installed=installed).run()
 
@@ -205,6 +229,11 @@ def release(plan):
             numerical_evidence=str(PACKAGE / "numerical-reuse.json")))
     if "scope_note" in plan:
         metadata["scope"]["fixture_correction_and_reuse"] = plan["scope_note"]
+    if plan.get("combined_plain"):
+        metadata["scope"].update(
+            installation_health="actual build/q4t CLI and grammar worker; same-ELF candidate HTTP reuse, no installed model load",
+            slot_decode_evidence={"uniform_1": "default MTP k3",
+                "explicit_2": "plain generation; MTP startup/config/preflight only"})
     metadata["chat_protocol"].update(protocol_sha256=plan["protocol_sha256"],
         template=caps["template"], preflight=caps["preflight"],
         preflight_schema=str(ROOT / SCHEMAS[-2]),
@@ -225,10 +254,11 @@ def bind():
     a.check, a.verifier, a.release = check, verifier, release
 
 
-def guard_command(corrected=False):
+def guard_command(corrected=False, final=False):
     return ["/usr/bin/python3", "-B", str(ROOT / "tools/evalscope/gpu_exclusive.py"),
         "--output", str(OUTPUT / "lease"), "--", str(SDK_PYTHON), "-B",
-        str(Path(__file__).resolve()), "execute", *(["--corrected"] if corrected else [])]
+        str(Path(__file__).resolve()), "execute",
+        *(["--final"] if final else ["--corrected"] if corrected else [])]
 
 
 def main():
@@ -236,16 +266,20 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("action", choices=["prepare", "launch", "execute", "finalize", "rollback"])
     ap.add_argument("--output", type=Path)
-    ap.add_argument("--corrected", action="store_true")
+    mode = ap.add_mutually_exclusive_group()
+    mode.add_argument("--corrected", action="store_true")
+    mode.add_argument("--final", action="store_true")
     args = ap.parse_args()
     if args.corrected:
         PACKAGE, OUTPUT = BASE / "package-corrected", BASE / "execution-corrected"
+    if args.final:
+        PACKAGE, OUTPUT = BASE / "package-final", BASE / "execution-final"
     bind()
     if args.action == "prepare":
         prepare()
     elif args.action == "launch":
         h.require(sdk_environment() == check()["sdk_environment"], "SDK drift")
-        raise SystemExit(subprocess.run(guard_command(args.corrected), cwd=ROOT).returncode)
+        raise SystemExit(subprocess.run(guard_command(args.corrected, args.final), cwd=ROOT).returncode)
     elif args.action == "execute":
         h.require_guard(OUTPUT)
         h.save(OUTPUT / "begin.json", dict(started=time.time(), limits=LIMITS))

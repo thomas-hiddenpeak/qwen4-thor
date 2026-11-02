@@ -137,6 +137,51 @@ class Contracts(unittest.TestCase):
                 identity = stage.h.identity(path)
                 self.assertEqual(stage.h.sha(path), identity["sha256"])
 
+    def test_multi_slot_wait_requires_all_slots_and_owners_released(self):
+        run = self.run_stub()
+        health = lambda free: (200, json.dumps(dict(gpu_healthy=True,
+            seq_slots_free=free, seq_slots_total=2)))
+        with patch.object(run, "request", side_effect=[health(1), health(2)]) as request, \
+             patch.object(run, "observe") as observe:
+            run.wait_slot("two-slots")
+            self.assertEqual(request.call_count, 2)
+            predicate = observe.call_args.args[0]
+            rows = dict(q4t_active_chats=0, q4t_structured_active=0,
+                        q4t_structured_workers_active=0)
+            self.assertTrue(predicate(rows))
+            rows["q4t_structured_workers_active"] = 1
+            self.assertFalse(predicate(rows))
+        with patch.object(run, "request", return_value=health(1)), \
+             patch.object(v.time, "monotonic", side_effect=[0, 4]):
+            with self.assertRaises(AssertionError):
+                run.wait_slot("still-occupied")
+
+    def test_final_budget_charges_both_failures_without_health_model_start(self):
+        for attribute in ("requests", "negative", "preflights", "starts", "capability_gets"):
+            run = self.run_stub()
+            run.plan = dict(combined_plain=True, prior_counts=dict(starts=2,
+                generations=8, negatives=15, preflights=24))
+            run.requests, run.negative, run.preflights = 4, 5, 8
+            run.starts = run.capability_gets = 1
+            run.budget()
+            setattr(run, attribute, getattr(run, attribute) + 1)
+            with self.assertRaises(AssertionError):
+                run.budget()
+        self.assertEqual(stage.guard_command(final=True)[-1], "--final")
+        failure = stage.h.read(stage.BASE / "execution-corrected/business/result.json")
+        self.assertEqual([failure[k] for k in ("request_attempts", "negative_requests",
+            "preflight_requests", "starts")], [0, 0, 1, 1])
+
+    def test_installed_health_routes_without_model_verifier(self):
+        from unittest.mock import Mock
+        health = Mock()
+        plan = dict(combined_plain=True)
+        with patch.object(stage, "module", return_value=health) as load:
+            stage.verifier(plan, installed=True)
+            self.assertEqual(load.call_args.args[1].name, "installed_health.py")
+            health.run.assert_called_once_with(plan, stage.OUTPUT)
+            health.Run.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()
