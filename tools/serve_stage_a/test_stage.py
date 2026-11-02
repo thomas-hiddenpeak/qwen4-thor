@@ -89,6 +89,21 @@ class Contracts(unittest.TestCase):
         with self.assertRaises(AssertionError):
             run.budget()
 
+    def test_slow_probe_reaches_incremental_writer_and_last_start_is_bounded(self):
+        body = v.slow_reader_request()
+        self.assertTrue(body["stream"])
+        self.assertNotIn("response_format", body)
+        self.assertEqual(body["request_id"], "transport-slow")
+        self.assertEqual(len(body["cancel_token"]), 64)
+        last = stage.module("last_contract", Path(__file__).with_name("closeout.py"))
+        run = object.__new__(last.Remaining)
+        run.deadline = time.time() + 60
+        run.requests, run.negative, run.starts, run.capability_gets = 4, 0, 1, 1
+        run.budget()
+        run.requests = 5
+        with self.assertRaises(RuntimeError):
+            run.budget()
+
 
 if __name__ == "__main__":
     unittest.main()

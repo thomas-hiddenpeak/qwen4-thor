@@ -55,6 +55,16 @@ def error_contract(raw, code, param=None):
     return body
 
 
+def slow_reader_request():
+    # Incremental text reaches the writer promptly; a strict response buffers
+    # all tokens and cannot be used to time-bound arrival at the write path.
+    body = s.request("从1开始逐行列出整数，一直列到1000，每行只写一个数字。",
+                     stream=True, max_completion_tokens=1024)
+    body.update(body.pop("extra_body"))
+    body.update(request_id="transport-slow", cancel_token="a" * 64)
+    return body
+
+
 class IdleProxy:
     """One owned loopback connection; enforce seven-second upstream idle timeout."""
     def __init__(self, target, request):
@@ -275,7 +285,7 @@ class Run(r.Run):
         self.shutdown_case(folder)
 
     def backpressure(self, folder):
-        body = r.long_request("transport-slow")
+        body = slow_reader_request()
         self.counted()
         wire.save(folder / "slow-request.json", body)
         sock = socket.socket()
@@ -289,7 +299,7 @@ class Run(r.Run):
                      str(len(payload)).encode() + b"\r\n\r\n" + payload)
         gate = folder / "backpressure"
         try:
-            end = time.monotonic() + 180
+            end = time.monotonic() + 60
             while not gate.with_suffix(".entered").exists():
                 self.budget()
                 wire.require(self.server.poll() is None and time.monotonic() < end,
