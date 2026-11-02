@@ -129,6 +129,15 @@ mock 合同通过。mock 仅验证 SDK 驱动，不替代后续真实 HTTP。
 07:41:21 UTC 开始的 30 分钟截止不重置。独立修正包与执行路径为
 `.q4t-work/application-service-correction-20261102/`，入口加 `--correction`。
 
+修正业务已通过（9 生成 / 2 启动），安装健康也通过（1 生成 / 1
+启动），但末尾 SDK venv 的独立 NVML worker 缺 pynvml，流程自动
+恢复旧 pair。此项记 ENV_ABORT_FINAL_MONITOR_IMPORT，原 guard 的
+COMMAND_FAILED 保留；不能把查询错误当 GPU 为空。修复固定使用
+系统解释器并在启动前检查，3 项失败 / 回退 / finalize 合同通过。
+使用 `tools/application_service/finish_delivery.py` 封存已通过身份
+和旧现场，持租约重新安装、核验 pair 与前后 NVML，再等 guard 成功
+后 finalize；不新增模型启动或 HTTP，原 30 分钟截止继续有效。
+
 ## 官方协议依据
 
 2026-11-02 核对官方文档：

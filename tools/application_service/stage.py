@@ -9,6 +9,7 @@ import copy
 import hashlib
 import importlib.util
 import json
+import secrets
 from pathlib import Path
 import shutil
 import subprocess
@@ -29,6 +30,27 @@ PACKAGE = BASE / "package"
 OUTPUT = BASE / "execution"
 MARKER = ROOT / "build/application-service-recovery.json"
 NAMES = ("q4t", "q4t.release.json")
+
+
+class EnvironmentAbort(RuntimeError):
+    pass
+
+
+def gpu_query():
+    # SDK venvs need not contain NVML bindings. The shared guard uses this
+    # system interpreter too; never interpret a missing import as an idle GPU.
+    request_id = secrets.token_hex(16)
+    return nvml_process_query.supervise([
+        "/usr/bin/python3", "-B", str(Path(nvml_process_query.__file__).resolve()),
+        "--worker", request_id], request_id, 5)
+
+
+def require_idle_gpu(path):
+    value = gpu_query()
+    h.save(path, value)
+    if value["status"] != "OK" or value["pids"]:
+        raise EnvironmentAbort("GPU monitoring failed or device is occupied")
+    return value
 
 
 def verify_hashes(base, values):
@@ -249,6 +271,7 @@ def execute():
     state = dict(status="RUNNING", started=time.time(), original_started=start)
     installed = False
     try:
+        require_idle_gpu(OUTPUT / "initial-gpu.json")
         verifier(plan)
         check()
         h.require(time.time() < start + 1500, "installation time reserve")
@@ -270,13 +293,12 @@ def execute():
         h.verify_pair(ROOT / "build/q4t", ROOT / "build/q4t.release.json",
                       plan["candidate_sha256"])
         verifier(plan, installed=True)
-        final = nvml_process_query.query(timeout=5)
-        h.save(OUTPUT / "final-gpu.json", final)
-        h.require(final["status"] == "OK" and not final["pids"], "GPU not released")
+        require_idle_gpu(OUTPUT / "final-gpu.json")
         h.require(time.time() < start + 1800, "overall deadline")
         state["status"] = "HEALTH_CHECKED_PENDING_GUARD"
     except BaseException as error:
-        state.update(status="FAILED", error=repr(error))
+        state.update(status="ENV_ABORT" if isinstance(error, EnvironmentAbort)
+                     else "FAILED", error=repr(error))
         if installed:
             try:
                 restore(OUTPUT)
