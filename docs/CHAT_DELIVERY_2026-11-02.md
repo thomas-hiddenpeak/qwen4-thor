@@ -12,8 +12,8 @@
 或统计非劣结论。
 
 默认保留完整head、MTP k3，缓存及suffix仍需显式启用。
-`parse_response`默认false；标准工具调用、推理内容和SSE输出需显式
-`parse_response: true`。不扩展strict schema、强制工具、媒体或SDK
+`messages`默认解析工具调用与推理内容，`parse_response: false`显式
+保留原始文本；`prompt`保持原始输出。不扩展strict schema、强制工具、媒体或SDK
 兼容范围。
 
 交付前核对已归档的原始证据封条、冻结源码/模型配置输入、候选及
@@ -70,4 +70,13 @@ python3 -B tools/evalscope/gpu_exclusive.py \
 
 ## 执行状态
 
-交付准备中；最终结果以本节、STATUS和原始安装证据为准。
+两head安装健康已通过：2启动/6生成/2能力GET，耗时89.05秒；
+模型及资源均退出。正式finalize前发现新sidecar把messages解析
+默认值误记为false，已按源码和本次真实capabilities修正工具及本页。
+同时限定TTFT元数据：raw计首个正文，parsed计正文、推理或完整工具
+delta的首次成功写入，不能混作性能对照。
+原封包、错误字段和执行代码保留；独立封存修正sidecar，持新租约
+仅替换元数据，不增加模型启动或请求。回退入口识别修正前后的已知
+sidecar身份。此修正不改运行时，不重跑已通过的健康证据。
+修正包位于`.q4t-work/chat-delivery-20261102/metadata-correction/`；
+其增量Git bundle接续原包的426f0dd锚点，原包不重写。

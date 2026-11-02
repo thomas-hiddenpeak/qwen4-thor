@@ -25,7 +25,8 @@ class RecoveryTest(unittest.TestCase):
         self.marker = self.build / 'chat-delivery-recovery.json'
         self.addCleanup(patch.stopall)
         for key, value in dict(ROOT=self.root, BASE=self.base,
-            PACKAGE=self.package, DEPLOYMENT=self.output, MARKER=self.marker).items():
+            PACKAGE=self.package, DEPLOYMENT=self.output, MARKER=self.marker,
+            CORRECTION=self.base / 'metadata-correction').items():
             patch.object(d, key, value).start()
         for version in ['previous', 'candidate']:
             folder = self.package / version
@@ -35,7 +36,9 @@ class RecoveryTest(unittest.TestCase):
             d.h.save(folder / 'q4t.release.json', dict(
                 binary_sha256=d.h.sha(folder / 'q4t'),
                 build_cache=str(folder / 'CMakeCache.txt'),
-                build_cache_sha256=d.h.sha(folder / 'CMakeCache.txt')))
+                build_cache_sha256=d.h.sha(folder / 'CMakeCache.txt'),
+                chat_protocol=dict(protocol_sha256='identity',
+                    parse_response_default=False, opt_in='parse_response=true')))
             patch.object(d, version.upper(), d.h.sha(folder / 'q4t')).start()
         d.h.save(self.package / 'tool-source.json', {})
         d.h.save(self.package / 'health-plan.json', dict(
@@ -130,6 +133,40 @@ class RecoveryTest(unittest.TestCase):
         with patch.object(d.h, 'require_guard') as guard:
             d.check()
             guard.assert_not_called()
+        self.assertEqual(before, self.before())
+
+    def correction(self, extra=None):
+        d.CORRECTION.mkdir()
+        original = self.package / 'candidate/q4t.release.json'
+        value = d.corrected_metadata(d.h.read(original))
+        value.update(extra or {})
+        d.h.save(d.CORRECTION / 'q4t.release.json', value)
+        d.h.save(d.CORRECTION / 'plan.json', dict(
+            previous_sidecar_sha256=d.h.sha(original)))
+        d.h.save(d.CORRECTION / 'capabilities.json', dict(
+            protocol_source_sha256='identity', chat=dict(
+                messages_parse_response_default=True, parse_response_false=True,
+                raw_prompt_parsing=False)))
+        d.h.seal(d.CORRECTION)
+
+    def test_metadata_correction_and_interrupted_correction_recover(self):
+        self.correction()
+        for corrected in [False, True]:
+            self.install('candidate', 'candidate')
+            if corrected:
+                shutil.copy2(d.CORRECTION / 'q4t.release.json',
+                             self.build / 'q4t.release.json')
+            with patch.object(d.h, 'require_guard'):
+                d.rollback(self.output)
+            self.assertEqual((self.build / 'q4t.release.json').read_bytes(),
+                (self.package / 'previous/q4t.release.json').read_bytes())
+
+    def test_metadata_correction_cannot_change_other_release_fields(self):
+        self.correction(dict(binary_sha256='foreign'))
+        before = self.before()
+        with patch.object(d.h, 'require_guard'), self.assertRaisesRegex(
+                RuntimeError, 'exceeded the chat protocol fix'):
+            d.rollback(self.output)
         self.assertEqual(before, self.before())
 
 

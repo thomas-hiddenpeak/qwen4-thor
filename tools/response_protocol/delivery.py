@@ -23,6 +23,7 @@ from acceptance import install_interrupt_handlers
 BASE = ROOT / '.q4t-work/chat-delivery-20261102'
 PACKAGE = BASE / 'package'
 DEPLOYMENT = BASE / 'deployment'
+CORRECTION = BASE / 'metadata-correction'
 MARKER = ROOT / 'build/chat-delivery-recovery.json'
 PREP = ROOT / '.q4t-work/chat-integration-prep-20261102'
 CANDIDATE = '830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51'
@@ -147,11 +148,13 @@ def prepare():
         metadata[field] = str(PACKAGE / relative)
         metadata[field + '_sha256'] = h.sha(PACKAGE / relative)
     metadata['chat_protocol'] = dict(protocol_sha256=plan['protocol_sha256'],
-        parse_response_default=False, opt_in='parse_response=true',
+        messages_parse_response_default=True, parse_response_false=True,
+        raw_prompt_parsing=False,
         capabilities='/v1/capabilities', tool_choice=['auto'],
         tool_calls='complete validated calls only', reasoning='reasoning_content',
         json_and_sse=True, tool_history_ids=True, constrained_decoding=False,
         media_acceptance=False, sdk_interoperability_acceptance=False)
+    metadata = corrected_metadata(metadata)
     h.save(PACKAGE / 'candidate/q4t.release.json', metadata)
     health = dict(candidate=str(ROOT / 'build/q4t'), output=str(DEPLOYMENT / 'run'),
         artifact=str(PACKAGE / 'artifact'), model_dir=plan['model_dir'],
@@ -167,18 +170,55 @@ def prepare():
     print('PACKAGE_READY', flush=True)
 
 
+def corrected_metadata(original):
+    value = copy.deepcopy(original)
+    chat = value['chat_protocol']
+    chat.pop('parse_response_default', None)
+    chat.pop('opt_in', None)
+    chat.update(messages_parse_response_default=True, parse_response_false=True,
+                raw_prompt_parsing=False)
+    value.setdefault('serving', {})['ttft'] = (
+        'raw: first nonempty content local write; parsed: first content, '
+        'reasoning, or complete tool delta local write')
+    return value
+
+
+def candidate_sidecar():
+    original = PACKAGE / 'candidate/q4t.release.json'
+    if not CORRECTION.exists():
+        return original
+    h.verify_seal(CORRECTION)
+    plan = h.read(CORRECTION / 'plan.json')
+    h.require(plan['previous_sidecar_sha256'] == h.sha(original),
+              'metadata correction parent differs')
+    current = CORRECTION / 'q4t.release.json'
+    h.require(h.read(current) == corrected_metadata(h.read(original)),
+              'metadata correction exceeded the chat protocol fix')
+    caps = h.read(CORRECTION / 'capabilities.json')
+    chat = h.read(current)['chat_protocol']
+    h.require(caps['protocol_source_sha256'] == chat['protocol_sha256'] and
+        all(caps['chat'][key] == chat[key] for key in
+            ['messages_parse_response_default', 'parse_response_false',
+             'raw_prompt_parsing']), 'metadata disagrees with observed capabilities')
+    return current
+
+
 def check():
     h.verify_seal(PACKAGE)
+    sidecar = candidate_sidecar()
     states = []
     for name in ['q4t', 'q4t.release.json']:
-        old, new = h.sha(PACKAGE / 'previous' / name), h.sha(PACKAGE / 'candidate' / name)
+        old = h.sha(PACKAGE / 'previous' / name)
+        original = h.sha(PACKAGE / 'candidate' / name)
+        new = h.sha(sidecar) if name == 'q4t.release.json' else original
         path = ROOT / 'build' / name
         h.require_regular(path)
         current = h.sha(path)
-        h.require(current in [old, new], 'unknown installed identity: ' + name)
+        h.require(current in [old, original, new], 'unknown installed identity: ' + name)
         states.append((name, old, new, current))
     for version, digest in [('previous', PREVIOUS), ('candidate', CANDIDATE)]:
         h.verify_pair(PACKAGE / version / 'q4t',
+            sidecar if version == 'candidate' else
             PACKAGE / version / 'q4t.release.json', digest,
             PACKAGE / version / 'CMakeCache.txt')
     h.require(not MARKER.exists() or h.read(MARKER)['package'] == str(PACKAGE),
@@ -199,7 +239,7 @@ def rollback(output):
         h.fsync_directory(MARKER.parent)
     for name, old, new, current in states:
         if current != old:
-            h.replace_checked(PACKAGE / 'previous' / name, ROOT / 'build' / name, new)
+            h.replace_checked(PACKAGE / 'previous' / name, ROOT / 'build' / name, current)
     h.verify_pair(ROOT / 'build/q4t', ROOT / 'build/q4t.release.json', PREVIOUS)
     MARKER.unlink()
     h.fsync_directory(MARKER.parent)
@@ -246,6 +286,51 @@ def deploy():
         h.save(DEPLOYMENT / 'deployment.json', state)
 
 
+def metadata(output):
+    """Correct only the sidecar after health; retain the original sealed package."""
+    h.require_guard(output)
+    h.require(not CORRECTION.exists(), 'metadata correction already prepared')
+    states = check()
+    h.require(all(new == current for _, _, new, current in states), 'health pair changed')
+    h.require(h.read(DEPLOYMENT / 'lease/exit.json')['status'] == 'COMPLETED',
+              'health guard not complete')
+    h.require(h.read(MARKER)['package'] == str(PACKAGE), 'owned marker missing')
+    h.require(time.time() < h.read(PACKAGE / 'health-plan.json')['deadline_unix'],
+              'original delivery deadline exhausted')
+    install_interrupt_handlers()
+    CORRECTION.mkdir()
+    original = PACKAGE / 'candidate/q4t.release.json'
+    h.save(CORRECTION / 'q4t.release.json', corrected_metadata(h.read(original)))
+    h.copy_checked(h.identity(DEPLOYMENT / 'run/full/agent-json/capabilities.json'),
+                   CORRECTION / 'capabilities.json')
+    h.copy_checked(h.identity(Path(__file__)), CORRECTION / 'delivery.py')
+    for name in ['recovery-tests-v2.log', 'recovery-tests-v2.json',
+                 'recovery-tests-v3.log', 'recovery-tests-v3.json']:
+        h.copy_checked(h.identity(ROOT / '.q4t-work/chat-delivery-prep-20261102' / name),
+                       CORRECTION / name)
+    for version in ['v2', 'v3']:
+        h.require(h.read(CORRECTION / ('recovery-tests-' + version + '.json'))[
+            'returncode'] == 0, 'metadata recovery contracts failed')
+    subprocess.run(['git', 'bundle', 'create', str(CORRECTION / 'source.bundle'),
+                    'HEAD', '^' + h.read(original)['source_commit']],
+                   cwd=ROOT, check=True)
+    h.save(CORRECTION / 'plan.json', dict(previous_sidecar_sha256=h.sha(original),
+        output=str(output), generation_budget=0, model_start_budget=0,
+        source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'],
+                                             cwd=ROOT, text=True).strip()))
+    h.seal(CORRECTION)
+    try:
+        sidecar = candidate_sidecar()
+        h.replace_checked(sidecar, ROOT / 'build/q4t.release.json', h.sha(original))
+        check()
+        h.save(output / 'metadata.json', dict(status='CORRECTED',
+            previous_sidecar_sha256=h.sha(original), sidecar_sha256=h.sha(sidecar),
+            binary_sha256=h.sha(ROOT / 'build/q4t'), finished=time.time()))
+    except BaseException:
+        rollback(output)
+        raise
+
+
 def finalize():
     guard = h.read(DEPLOYMENT / 'lease/exit.json')
     h.require(guard['status'] == 'COMPLETED' and guard['child_returncode'] == 0,
@@ -255,6 +340,13 @@ def finalize():
               state['finished'] < h.read(PACKAGE / 'health-plan.json')['deadline_unix'],
               'installed health not accepted')
     states = check()
+    if CORRECTION.exists():
+        output = Path(h.read(CORRECTION / 'plan.json')['output'])
+        correction_guard = h.read(output / 'lease/exit.json')
+        h.require(correction_guard['status'] == 'COMPLETED' and
+            correction_guard['child_returncode'] == 0 and
+            h.read(output / 'metadata.json')['status'] == 'CORRECTED',
+            'metadata correction guard not clean')
     h.require(all(new == current for _, _, new, current in states), 'installed pair changed')
     h.require(h.read(MARKER)['package'] == str(PACKAGE), 'owned marker missing')
     MARKER.unlink()
@@ -269,13 +361,14 @@ def finalize():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['prepare', 'check', 'deploy', 'finalize', 'rollback'])
+    parser.add_argument('action', choices=['prepare', 'check', 'deploy', 'finalize',
+                                         'rollback', 'metadata'])
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
-    if args.action == 'rollback':
-        h.require(args.output is not None, 'rollback needs its own output/lease')
+    if args.action in ['rollback', 'metadata']:
+        h.require(args.output is not None, 'mutation needs its own output/lease')
         output = args.output.resolve()
         h.require(output.is_relative_to(ROOT / '.q4t-work'), 'rollback output location')
-        rollback(output)
+        globals()[args.action](output)
     else:
         globals()[args.action]()
