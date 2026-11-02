@@ -219,11 +219,12 @@
       ]
     },
     "stop": {
-      "semantics": "只接受 null 或空数组",
-      "boundary": "有效停止序列明确拒绝 G3",
+      "semantics": "开发中：字符串或最多4个非空UTF-8字符串，每条256字节；null/[]禁用",
+      "boundary": "尚未验收；strict输出与state cache组合拒绝；JSON/SSE增量匹配，部分工具错误；不是完整OpenAI兼容",
       "evidence": [
-        "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "tests/server_text_stop_test.cpp",
+        "docs/SERVE_TEXT_STOP_2026-11-03.md",
+        "docs/serve-stop-v1.schema.json"
       ]
     },
     "logprobs": {
@@ -557,12 +558,12 @@
     ]
   },
   "sources_sha256": {
-    "cmake/ChatProtocolIdentity.cmake": "8d82e459f2717e31da0bf81236bc83bde6be69d7979e8b0101f806007acbd892",
+    "cmake/ChatProtocolIdentity.cmake": "66b97e923f07b948a2999c4814d0e1157746c4364b51c035a4720985523bbc3e",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/chat_capabilities.h": "7258dd026c08b16d5a09f55ea318036a86e1ad4c93d816d1aa2163f23d01540c",
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
-    "include/q4t/server/chat_response_parser.h": "727d432e825d2a1961dbbaf678ef217dd4d7cf48876cbea96c11402d263a09e0",
+    "include/q4t/server/chat_response_parser.h": "15b41a19e4eb3c3897e71c3b584b25ed0b669a7aa1119ade57b71d6ea9d57246",
     "include/q4t/server/chat_server.h": "c9be0f24271fc81fa78d33fb89c5b096120c81b5b8e9aa40398a4293f51c6d24",
     "include/q4t/server/chat_template.h": "f89fa01d5352cc6ec47ecff09c24bdb58f8bb0a3edfa5c89fe840791ac76bb51",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
@@ -589,17 +590,18 @@
     "include/q4t/server/structured_decoder.h": "1638718dda90f146037e8adc30705687e0a9aa8347930dc524a344f32c86b5f7",
     "include/q4t/server/suffix_causal.h": "a0bad73c2a8293367a4e907e06a40d21baec389ba81e9131a248f99432165f2b",
     "include/q4t/server/suffix_token_cache.h": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
+    "include/q4t/server/text_stop.h": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
     "include/q4t/server/thinking_budget.h": "902d062939a5f8cc43ac2dd761d4267624645d1a401c47f9ed748f28b2ee36ff",
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
     "src/main.cpp": "93cae8f751bfc446d812f1d786389b32ae577c3dd386fedcfc907d6b08539b67",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "src/server/chat_capabilities.cpp": "eafbf8e5e480600cda69942ccb1e9d2ba51834b7e3ec886540fbae7b06e601aa",
-    "src/server/chat_contract.cpp": "9366541bc928f7bf26d8be429e4c9d59b3d117f055a717c9547650fdd61f73f0",
-    "src/server/chat_generation.cpp": "7af3ba19b9730700d4ed7bd19af46c63dd4a62348f5ea246ceddbc86fda65683",
+    "src/server/chat_capabilities.cpp": "49029afe2aa8e1df46e4b9efac219a179dbed73530ec8c3363e79d53b5de6d47",
+    "src/server/chat_contract.cpp": "e964a90e839c1bcf5d57ef6b70a84da19f5d1c9fd92ab2489510e68ad0c3b7b8",
+    "src/server/chat_generation.cpp": "eac8795e42460b4bfadd8a8b6fc0be750b4baf3205575baef5b70c753a8823a3",
     "src/server/chat_http.cpp": "38798294599cf043e85889feaaa38842b9b471a89d0224d7c1d84bf51468b717",
     "src/server/chat_input.cpp": "a0bfc92dd9fc6b13102e2667345714445e3516740878331ce39f834713eaf020",
     "src/server/chat_metrics.cpp": "d14877ec73c859a3110d19ceeb911edbe3bbf9056e070fafb54eee7545314536",
-    "src/server/chat_response_parser.cpp": "36707c6b033ec61505b1dd386e9e47fbdc898215bd8cd4fe252b7d022aa4306c",
+    "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
     "src/server/chat_scheduler.cpp": "fa8abe68ea9c02826731fbc7dc10dbb728d0860708af5f33b1ea800ffacea2f6",
     "src/server/chat_server.cpp": "685f72a486679c9c5aed3c4b753a61a557717a2c6bae4d635263d497c7404740",
     "src/server/chat_server_internal.h": "a0b12f215356157635e6faae917c973c3b87ed56df30b47324895fd3911ea55a",
@@ -618,6 +620,7 @@
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
     "src/server/structured_decoder.cpp": "3d3c9d07a516e0cc10999183d1e2a3770daecac9257c8514a26f43873c877ddd",
+    "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
     "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8"
   },

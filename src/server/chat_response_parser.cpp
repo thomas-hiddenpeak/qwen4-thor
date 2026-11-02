@@ -362,16 +362,17 @@ Status ChatResponseParser::Append(std::string_view text,
 }
 
 Status ChatResponseParser::Finish(bool length_limited,
-                                  std::vector<ResponseDelta>* deltas) {
+                                  std::vector<ResponseDelta>* deltas,
+                                  bool text_stopped) {
   if (!status_) return status_;
   if (!initialized_ || finished_) return Fail("parser already finished");
   finished_ = true;
-  if (constraints_.active && length_limited)
+  if (constraints_.active && (length_limited || text_stopped))
     return Fail("constrained response exhausted output/context budget");
   if (region_ == Region::kTool ||
       (!tools_.empty() && pending_.starts_with("<tool_")))
     return Fail("incomplete tool call");
-  if (region_ == Region::kReasoning && !length_limited)
+  if (region_ == Region::kReasoning && !length_limited && !text_stopped)
     return Fail("reasoning block did not close before stop");
   Emit(region_, pending_, deltas);
   pending_.clear();

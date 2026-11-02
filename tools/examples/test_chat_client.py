@@ -80,6 +80,24 @@ class Response(io.BytesIO):
 
 
 class ClientContracts(unittest.TestCase):
+    def test_stop_request_contract(self):
+        messages = [dict(role="user", content="q")]
+        for stop in (None, [], "END", ["中" * 85, "a", "a", "b"]):
+            body = client.make_request(messages, [], stop=stop)
+            if stop is None:
+                self.assertNotIn("stop", body)
+            else:
+                self.assertEqual(body["stop"], stop)
+        for stop in (True, 1, {}, "", "x" * 257, "中" * 86, "\ud800",
+                     ["x", None], ["x", ""], ["x"] * 5):
+            with self.subTest(stop=repr(stop)):
+                with self.assertRaises(client.ProtocolError):
+                    client.make_request(messages, [], stop=stop)
+        with self.assertRaises(client.ProtocolError):
+            client.make_request(messages, [], stop="x", session_id="a" * 64)
+        self.assertEqual(client.make_request(messages, [], stop=[],
+                                             session_id="a" * 64)["stop"], [])
+
     def setUp(self):
         # These contracts must remain offline even if a future edit sends HTTP.
         self.network = patch("urllib.request.OpenerDirector.open",

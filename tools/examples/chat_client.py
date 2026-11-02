@@ -350,7 +350,7 @@ def read_json(response, *, sink=None, max_bytes=MAX_RESPONSE_BYTES):
 def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
                  thinking=False, max_tokens=512, timeout_ms=120000,
                  session_id=None, reasoning_field=None, include_reasoning=None,
-                 thinking_token_budget=None):
+                 thinking_token_budget=None, stop=None):
     require(isinstance(messages, list) and messages, "messages are required")
     require(isinstance(tools, list), "tools must be a list")
     require(type(stream) is bool and type(thinking) is bool, "invalid mode")
@@ -379,6 +379,19 @@ def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
                 0 <= thinking_token_budget <= 2147483647,
                 "invalid thinking token budget")
         body["thinking_token_budget"] = thinking_token_budget
+    if stop is not None:
+        require(isinstance(stop, (str, list)), "invalid stop type")
+        stops = [stop] if isinstance(stop, str) else stop
+        require(len(stops) <= 4, "stop allows at most 4 strings")
+        for item in stops:
+            require(isinstance(item, str), "invalid stop entry")
+            try:
+                length = len(item.encode("utf-8", errors="strict"))
+            except UnicodeError as exc:
+                raise ProtocolError("stop must be valid UTF-8") from exc
+            require(1 <= length <= 256, "invalid stop byte length")
+        require(not stops or session_id is None, "stop does not support cache")
+        body["stop"] = deepcopy(stop)
     if session_id is not None:
         require(isinstance(session_id, str) and len(session_id) == 64 and
                 all(c in "0123456789abcdef" for c in session_id),

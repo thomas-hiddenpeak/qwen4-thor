@@ -59,7 +59,7 @@ Q4T_TEST(chat_contract_rejects_unimplemented_constraints) {
   for (const char* field : {
            R"("temperature":0.5)", R"("top_p":0.9)", R"("n":2)",
            R"("frequency_penalty":1)", R"("presence_penalty":1)",
-           R"("repetition_penalty":1.1)", R"("stop":["END"])",
+           R"("repetition_penalty":1.1)",
            R"("logprobs":true)", R"("top_logprobs":1)",
            R"("logit_bias":{"1":1})", R"("top_k":1)",
            R"("response_format":{"type":"json_object"})",

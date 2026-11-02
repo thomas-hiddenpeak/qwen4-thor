@@ -26,6 +26,7 @@
 #include "q4t/server/request_diagnostics.h"
 #include "q4t/server/session_state.h"
 #include "q4t/server/thinking_budget.h"
+#include "q4t/server/text_stop.h"
 
 namespace q4t::server {
 namespace {
@@ -151,6 +152,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         {}, s ? "structured_backend_unavailable" : "invalid_output_constraint");
     return;
   }
+
+  std::vector<std::string> stops;
+  s = ParseTextStop(req, constraints.active, &stops, &error_param);
+  if (!s) {
+    SendError(fd, 400, s.message(), {}, "invalid_request", error_param);
+    return;
+  }
+  TextStopStream text_stop(std::move(stops));
 
   const std::string prefix_scope = req.GetString("prefix_cache_scope");
   const int prefix_write_tokens =
@@ -1187,12 +1196,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (!response_status) return false;
     std::vector<ResponseDelta> deltas;
     response_status = response_parser.Append(piece, &deltas);
-    return response_status.ok() && write_deltas(deltas);
+    return response_status.ok() && (!stream || write_deltas(deltas));
   };
   // Budget state always consumes raw token bytes, independently of transport
   // and UTF-8 buffering. Output parsing retains its existing terminal checks.
   const auto consume_token = [&](int32_t token) {
-    if (!stream && !thinking_budget.Enabled()) return true;
+    if (!stream && !thinking_budget.Enabled() && !text_stop.Enabled())
+      return true;
     std::string piece;
     {
       auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
@@ -1202,14 +1212,20 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (response_status && thinking_budget.Enabled())
       response_status =
           thinking_budget.Observe(token, piece, is_stop_token(token));
-    return response_status.ok() &&
-           (!stream || write_content(utf8.Append(piece)));
+    if (!response_status) return false;
+    if (stream || text_stop.Enabled()) {
+      if (!write_content(text_stop.Append(utf8.Append(piece)))) return false;
+    }
+    return !text_stop.Matched();
   };
 
   std::vector<int32_t> generated;
   int next_token = -1;
   std::string finish_reason = "stop";
   bool generation_failed = false;
+  int stop_mtp_steps = 0;
+  int stop_mtp_tokens = 0;
+  int stop_mtp_discarded = 0;
   int budget_mtp_steps = 0;
   int budget_mtp_tokens = 0;
   bool budget_mtp_fallback = false;
@@ -1477,6 +1493,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         break;
       }
       ++accepted_histogram[mtp_ar.mtp_accepted_count - 1];
+      if (text_stop.Enabled()) {
+        ++stop_mtp_steps;
+        stop_mtp_tokens += mtp_ar.mtp_accepted_count;
+      }
       if (thinking_budget.Enabled()) {
         ++budget_mtp_steps;
         budget_mtp_tokens += mtp_ar.mtp_accepted_count;
@@ -1492,6 +1512,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         const int32_t tok_id = mtp_ar.mtp_accepted[i];
         generated.push_back(tok_id);
         if (!consume_token(tok_id)) {
+          if (text_stop.Matched())
+            stop_mtp_discarded = mtp_ar.mtp_accepted_count - i - 1;
           done = true;
           finish_reason = "stop";
           break;
@@ -1514,6 +1536,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           std::fprintf(stderr, "[suffix] request=%s disabled=%s\n",
                        request_id.c_str(), suffix_status.message().c_str());
       }
+      // Stop/EOS/parser failure wins over a coincident length bound. KV was
+      // committed for the entire accepted batch; keep that state intact and
+      // retire it. Stop+cache is rejected before model work, so the invisible
+      // speculative suffix cannot become a reusable response snapshot.
+      if (done) break;
       if (static_cast<int>(generated.size()) >= max_tokens) {
         finish_reason = "length";
         break;
@@ -1946,8 +1973,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   // Both transports use the same parser. Never publish a successful terminal
   // (or a session snapshot) for malformed/truncated model tool output.
   if (response_status.ok()) {
-    if (stream) {
-      write_content(utf8.Finish());
+    if (stream || text_stop.Enabled()) {
+      write_content(text_stop.Append(utf8.Finish()));
+      if (response_status) write_content(text_stop.Finish());
+      if (text_stop.Matched()) finish_reason = "stop";
     } else {
       std::vector<std::uint32_t> gen_u32(generated.begin(), generated.end());
       std::string text;
@@ -1964,8 +1993,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   }
   if (response_status.ok()) {
     std::vector<ResponseDelta> deltas;
-    response_status = response_parser.Finish(finish_reason == "length", &deltas);
+    response_status = response_parser.Finish(finish_reason == "length", &deltas,
+                                             text_stop.Matched());
     if (response_status.ok() && stream) write_deltas(deltas);
+  }
+  if (text_stop.Enabled()) {
+    std::fprintf(stderr,
+                 "[text-stop] request=%s matched_index=%d tokens=%zu "
+                 "mtp_steps=%d mtp_tokens=%d mtp_discarded=%d\n",
+                 request_id.c_str(), text_stop.MatchedIndex(), generated.size(),
+                 stop_mtp_steps, stop_mtp_tokens, stop_mtp_discarded);
   }
   if (!response_status.ok()) {
     err_guard.ok = false;

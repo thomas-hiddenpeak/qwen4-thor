@@ -39,7 +39,9 @@ class ChatResponseParser {
   Status Init(const io::Json& request, std::string_view prompt,
               const std::string& request_id, bool collect);
   Status Append(std::string_view text, std::vector<ResponseDelta>* deltas);
-  Status Finish(bool length_limited, std::vector<ResponseDelta>* deltas);
+  // Intentional text stopping may end reasoning, but never a partial tool.
+  Status Finish(bool length_limited, std::vector<ResponseDelta>* deltas,
+                bool text_stopped = false);
   std::string MessageJson() const;
   bool HasToolCalls() const { return tool_count_ != 0; }
   bool Thinking() const { return region_ == Region::kReasoning; }

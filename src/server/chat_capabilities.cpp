@@ -6,6 +6,7 @@
 #include "q4t/server/output_schema.h"
 #include "q4t/server/reasoning_options.h"
 #include "q4t/server/thinking_budget.h"
+#include "q4t/server/text_stop.h"
 #include "q4t/server/structured_decoder.h"
 
 namespace q4t::server {
@@ -68,6 +69,18 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("budget_exhausted":"close_then_answer_and_mask_reentry",)"
          R"("budget_mtp":"reserve_pending_then_host_tail",)"
          R"("budget_usage_details":true},)"
+         R"("text_stop":{"profile":)" + Quote(std::string(kTextStopProfile)) +
+         R"(,"available":true,"max_strings":4,"max_utf8_bytes":256,)"
+         R"("null_or_empty_array":"disabled","empty_string":"reject",)"
+         R"("matching":"normalized_decoded_text_before_parser",)"
+         R"("includes_reasoning_and_tool_markup":true,)"
+         R"("selection":"earliest_completion_then_list_order",)"
+         R"("includes_stop_string":false,"finish_reason":"stop",)"
+         R"("completion_usage":"through_matching_token",)"
+         R"("mtp":"full_batch_kv_retired_after_logical_stop",)"
+         R"("speculative_tail_not_charged":true,"incomplete_tool":"error",)"
+         R"("incomplete_reasoning":"allowed_on_text_stop",)"
+         R"("constrained_output":false,"state_cache":false},)"
          R"("tools":{"type":"function","execution":"client",)" +
          options +
          R"("options_require_parsed_messages":true,)"

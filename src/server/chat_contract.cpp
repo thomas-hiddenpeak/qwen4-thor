@@ -9,6 +9,7 @@
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_constraints.h"
 #include "q4t/server/reasoning_options.h"
+#include "q4t/server/text_stop.h"
 
 namespace q4t::server {
 namespace {
@@ -178,6 +179,9 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   if (!status) return status;
   status = PlanOutputConstraints(req, &constraints);
   if (!status) return status;
+  std::vector<std::string> stops;
+  status = ParseTextStop(req, constraints.active, &stops, error_param);
+  if (!status) return status;
   if (prompt && (!prompt->IsString() || prompt->str.empty()))
     return invalid("prompt", "prompt must be a nonempty string");
   if (const auto* model = req.Find("model");
@@ -201,14 +205,13 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
         std::abs(seed->number) > 9007199254740991.0)
       return invalid("seed", "seed must be an exact binary64 integer or null");
   }
-  for (const char* key : {"logprobs", "top_logprobs", "stop", "logit_bias"}) {
+  for (const char* key : {"logprobs", "top_logprobs", "logit_bias"}) {
     const auto* value = req.Find(key);
     if (!value || value->IsNull()) continue;
     const std::string_view name(key);
     const bool neutral =
         (name == "logprobs" && value->IsBool() && !value->boolean) ||
         (name == "top_logprobs" && Number(*value, 0)) ||
-        (name == "stop" && value->IsArray() && value->array.empty()) ||
         (name == "logit_bias" && value->IsObject() && value->object.empty());
     if (!neutral) return invalid(key, std::string(key) + " is not supported");
   }

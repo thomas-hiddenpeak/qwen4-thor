@@ -7,6 +7,7 @@
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/structured_decoder.h"
+#include "q4t/server/text_stop.h"
 #include "q4t/test.h"
 
 namespace {
@@ -16,6 +17,19 @@ bool Hash(const std::string& text) {
          });
 }
 }  // namespace
+
+Q4T_TEST(chat_capabilities_text_stop_profile) {
+  q4t::io::Json caps;
+  Q4T_CHECK(q4t::io::ParseJson(
+      q4t::server::ChatCapabilitiesJson("m", false, true), &caps));
+  const auto* stop = caps.Find("text_stop");
+  Q4T_CHECK(stop && stop->GetString("profile") == q4t::server::kTextStopProfile);
+  Q4T_CHECK(stop->GetInt("max_strings", 0) == 4);
+  Q4T_CHECK(stop->GetInt("max_utf8_bytes", 0) == 256);
+  Q4T_CHECK(!stop->GetBool("constrained_output", true));
+  Q4T_CHECK(!stop->GetBool("state_cache", true));
+  return true;
+}
 
 Q4T_TEST(chat_capabilities_identity) {
   q4t::io::Json caps;
