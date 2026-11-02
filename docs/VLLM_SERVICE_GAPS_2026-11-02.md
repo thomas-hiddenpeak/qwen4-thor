@@ -10,11 +10,15 @@
 下表已交付状态不因源码开发自动升级。
 
 后续[serve 全链路审计](SERVE_COMPLETENESS_AUDIT_2026-11-02.md)已覆盖
-实际 6 路由 / 35 字段并复现输入与取消的嵌套合同缺口，补充可空值、
+审计起点6路由/35字段（当前8路由）并复现输入与取消的嵌套合同缺口，补充可空值、
 监控口径、流式存活和编译资源边界；后续输入A组与F5已修，F6独立
 准入、exec隔离、编译/匹配超时与2GiB地址空间限额已补；整机RAM和
 独立RSS保证仍不具备，不能沿用本表的
 单项成功结论把组合或未审形状标为通过。
+
+2026-11-03 [阶段A结果与明确限制](SERVE_STAGE_A_RESULT_2026-11-03.md)：
+请求身份、就绪/控制入口、HTTP/SSE及普通流背压限定交付。保留全部
+失败和未观察项，未把这些结果扩展到所有严格流组合或长prefill。
 
 ## 证据口径
 
@@ -22,7 +26,7 @@
 `reference/vllm/vllm/entrypoints/openai/` 和 `entrypoints/serve/`。
 同时核对当前官方文档（访问日期 2026-11-02）；未更新、构建或启动
 reference，未把 stable 网页当作本地固定 commit 的相同版本。
-本项目盘点起点 460ffd0，下表已同步 c8c412c4 输入/观测及编译隔离状态；历史
+本项目盘点起点 460ffd0，下表已同步142bb9d4输入/编译隔离及serve阶段A状态；历史
 差异与具体失败另列，未验部分不标成熟。
 
 vLLM 的 Chat 服务组织了独立的请求 schema、工具 / 推理 parser、
@@ -53,9 +57,9 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 推理隐藏与预算 | include_reasoning / thinking_token_budget 等扩展 | 有模板 thinking/effort；无独立推理预算 | B：输出隐藏不等于停止推理计算 |
 | SSE 创建时间 | serving 对一请求持同一 created | 首批已统一同一请求各块时间 | A 已交付 |
 | SSE 工具参数增量 | parser 维护每调用 index/ID/参数增量 | 普通路径完整调用后发布；受约束路径完整响应验证后发布 | B：非逐 token 参数流，保留时延边界 |
-| SSE 用量与中断 | usage tail、可选持续统计；断连不保证尾帧 | 已验尾帧；无持续统计 / reasoning token 明细 | B：完善字段矩阵，不假填 0 |
+| SSE 用量与中断 | usage tail、可选持续统计；断连不保证尾帧 | 已验usage:null、logprobs:null、尾帧、串行心跳与普通增量流背压 | SRV-03限定交付；严格长payload背压、推理token明细未证明/未实现 |
 | 错误语义 | protocol/exception handlers 分类与封套 | 首批已统一 JSON/SSE 分类与封套 | A 已交付；Q4T code 不等同所有外部错误语义 |
-| 关联请求 ID | middleware/x_request_id.py；可选请求 / 响应头 | 自定义 JSON request_id，HTTP header 不关联 | B：自动 ID / 错误 / 日志统一追踪 |
+| 关联请求 ID | middleware/x_request_id.py；可选请求 / 响应头 | X-Request-Id接收/随机生成/回传，诊断关联，和JSON取消ID分离 | SRV-01限定交付；仍不提供幂等 |
 | 幂等 / 自动重试 | 不能从 request ID 或 SDK 重试推断幂等执行 | 活跃 ID 去重，无持久幂等存储 | B：本轮禁自动重放，恢复判定已具备 |
 | 模型发现 | models/api_router.py，served names / adapter 视配置 | 单模型 models；无详情、别名策略 | B：客户端发现与错误模型合同 |
 | Tokenizer / 渲染预检 | tokenize/api_router.py、renderer APIs | 有离线 tokenizer / template 工具，无 HTTP 预检 | B：业务预预算，避免长请求到推理时才失败 |
@@ -65,10 +69,10 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 真实工具执行 | Chat function 调用通常由应用执行与回填 | 首批真实发布 / 历史验收 / 不存在资料查询已验 | A/P2 已交付有界只读链路；自主广泛检索未验 |
 | 取消 / 断连 / 关闭 | serving 检查断连并传播 abort；生命周期管理 | 已有取消、deadline、断连、shutdown 与槽回收 | 保留证据；不是新的缺失 |
 | 压力与配额 | 调度、准入与服务配置；不等于完整租户计费平台 | 连接 / body / chat / slot 上限已具备，无租户配额 | B/C：先错误可观测，再业务配额 |
-| 健康与观测 | health/load/version、Prometheus、请求 metrics | F5计时口径、固定取消原因已修复；新增受约束资源指标 | B后续：readiness、统一关联ID；[最新验收与资源边界](SERVE_GRAMMAR_ISOLATION_2026-11-02.md) |
+| 健康与观测 | health/load/version、Prometheus、请求 metrics | F5指标、livez/readyz、排空与4个控制连接预留已验 | SRV-02限定交付；不保证未分类慢头洪泛下控制可用 |
 | 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生未提供；现有 Nginx 示例未含完整鉴权配置 | C：在真实入口配置并验收，不能认为传了 api_key 就鉴权 |
-| HTTP 媒体类型 / 方法 | 框架路由与 JSON request validation | 未检查 Content-Type；不支持方法返回 404；禁 chunked upload | B：写成合同并补边界用例 |
-| OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | 无 OpenAPI schema；自有客户端及 Python SDK 3.42.1 限定互通已验 | B：按实际用例扩客户端，不外推其他 SDK |
+| HTTP 媒体类型 / 方法 | 框架路由与 JSON request validation | application/json UTF-8、405＋Allow、query400、GET body400已验 | SRV-03限定交付；仍禁chunked上传/连接复用 |
+| OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | A响应schema子集、自有客户端及Python SDK 3.42.1限定互通已验 | SRV-08继续完整输入协议/JS等矩阵，不外推其他SDK |
 | Embeddings / rerank / audio / 多模态 | 独立任务接口，取决于模型与 runner | 当前首版文本生成范围之外 | C：不能因为 vLLM 有端点就认为本模型有能力 |
 | LoRA / 动态权重 / 分布式管理 | 单独可选管理接口 | 不在本轮单模型 Thor 交付范围 | C：不为功能对齐暴露管理面 |
 

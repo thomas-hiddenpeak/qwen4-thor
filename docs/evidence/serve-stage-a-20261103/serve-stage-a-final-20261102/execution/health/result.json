@@ -1,0 +1,18 @@
+{
+  "status": "PASS_SAME_ELF_HTTP_HEALTH_REUSED",
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "142bb9d41b2b972d61d995f391cb890c4068b3fd6b7a68b71aa9dafe1f506317",
+    "bytes": 6942472
+  },
+  "http_source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp",
+  "http_source_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/sealed-files.json",
+    "sha256": "0309b963b9f55774c42851bc00493fa9fee69a01d094645d4910e3eaa12fe193",
+    "bytes": 5656
+  },
+  "installed_cli_stdout": "q4t (Qwen4-Thor) v0.1.0\n  target: Jetson AGX Thor, SM110a\n  model:  Qwen3.8-Flash-Next (qwen4_exp)\n",
+  "worker_reported_rss_bytes": 183058432,
+  "new_model_requests": 0,
+  "new_model_starts": 0
+}

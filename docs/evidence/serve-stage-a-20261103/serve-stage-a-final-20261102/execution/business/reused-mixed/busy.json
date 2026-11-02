@@ -1,0 +1,4 @@
+{
+  "status": 503,
+  "raw": "{\"error\":{\"message\":\"structured request capacity exhausted\",\"type\":\"service_unavailable_error\",\"code\":\"structured_capacity_exhausted\",\"param\":null}}"
+}

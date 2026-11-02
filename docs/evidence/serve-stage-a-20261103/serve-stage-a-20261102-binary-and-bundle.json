@@ -1,0 +1,37 @@
+{
+  "package/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/source.bundle",
+    "sha256": "d01a10e9d7e174e9b7ca943546190d50d71029ca87824b3c3e3a1c0c52b53917",
+    "bytes": 398241
+  },
+  "package/candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/candidate/q4t",
+    "sha256": "142bb9d41b2b972d61d995f391cb890c4068b3fd6b7a68b71aa9dafe1f506317",
+    "bytes": 6942472
+  },
+  "package/candidate/fault-q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/candidate/fault-q4t",
+    "sha256": "7647ca9fa9edbaf6c7e780f4bf03885a7e165749d4ff05a669e77cd9758a446c",
+    "bytes": 6942712
+  },
+  "package/candidate/fault-CMakeCache.txt": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/candidate/fault-CMakeCache.txt",
+    "sha256": "54f418beaeeb8430c79cbb7d1a13a04bbd9204aee8358adf488e6dbe7f14941b",
+    "bytes": 38784
+  },
+  "package/candidate/CMakeCache.txt": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/candidate/CMakeCache.txt",
+    "sha256": "8838010e4678528613bc0607703a98af0250018767f6b9f643dd6c81301ac26d",
+    "bytes": 38749
+  },
+  "package/previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/previous/q4t",
+    "sha256": "c8c412c4ab0f24c238d83e3e5def78baf4b25c99883eda382b0da7f560ed15d4",
+    "bytes": 6938016
+  },
+  "package/previous/CMakeCache.txt": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/previous/CMakeCache.txt",
+    "sha256": "ff4d572d3b0b98b7fc7c64d55befedf84faab1f8585e36ad283af8e8785adba4",
+    "bytes": 38815
+  }
+}

@@ -1,0 +1,14 @@
+test_done_and_error_order (test_stage.Contracts.test_done_and_error_order) ... ok
+test_error_location_is_not_lost (test_stage.Contracts.test_error_location_is_not_lost) ... ok
+test_finish_keeps_only_remaining_budget (test_stage.Contracts.test_finish_keeps_only_remaining_budget) ... ok
+test_identity_cannot_change_in_stream (test_stage.Contracts.test_identity_cannot_change_in_stream) ... ok
+test_installation_requires_guard_before_state_read (test_stage.Contracts.test_installation_requires_guard_before_state_read) ... ok
+test_next_request_waits_for_owner_cleanup_after_slot_release (test_stage.Contracts.test_next_request_waits_for_owner_cleanup_after_slot_release) ... ok
+test_nullable_wire_not_sdk_defaults (test_stage.Contracts.test_nullable_wire_not_sdk_defaults) ... ok
+test_slow_probe_reaches_incremental_writer_and_last_start_is_bounded (test_stage.Contracts.test_slow_probe_reaches_incremental_writer_and_last_start_is_bounded) ... ok
+test_stage_budget_cannot_expand (test_stage.Contracts.test_stage_budget_cannot_expand) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.040s
+
+OK

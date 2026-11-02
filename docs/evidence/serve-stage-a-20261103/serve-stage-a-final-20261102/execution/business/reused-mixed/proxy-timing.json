@@ -1,0 +1,6 @@
+{
+  "idle_timeout_seconds": 7,
+  "chunks": 4,
+  "heartbeat_received": true,
+  "max_observed_gap_seconds": 5.0001708588097245
+}

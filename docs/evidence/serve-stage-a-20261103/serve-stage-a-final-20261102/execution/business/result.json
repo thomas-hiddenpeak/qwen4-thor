@@ -1,0 +1,11 @@
+{
+  "status": "PASS_BOUNDED_SERVE_STAGE_A",
+  "request_attempts": 12,
+  "negative_requests": 9,
+  "starts": 3,
+  "new_attempts": 4,
+  "new_starts": 1,
+  "seconds_since_first_launch": 1171.5186789035797,
+  "failed_attempts_preserved": 2,
+  "performance_acceptance": false
+}

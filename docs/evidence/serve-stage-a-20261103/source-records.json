@@ -1,0 +1,2180 @@
+[
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/backend-gate.log",
+    "archive": "serve-stage-a-20261102/cpu/backend-gate.log",
+    "sha256": "99bc41e14d46993b7b41e77b6b17696b5e5b63418b3edf9a9f9e24782e0c1117",
+    "bytes": 436
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/build-comment.log",
+    "archive": "serve-stage-a-20261102/cpu/build-comment.log",
+    "sha256": "aa69011affedcd36c9560626baa130c22cb907ee4432d6131e009aa10d213ae5",
+    "bytes": 3754
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/build-engine.log",
+    "archive": "serve-stage-a-20261102/cpu/build-engine.log",
+    "sha256": "c6319ac01ad60e0889c60d7dd1d87d88692eaec46b14675fa937c12113b08ef5",
+    "bytes": 14410
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/build-fault-final.log",
+    "archive": "serve-stage-a-20261102/cpu/build-fault-final.log",
+    "sha256": "7510c4c76b124d21b7b336ee999742f2aa19d532c540849ccecc34edfd36d999",
+    "bytes": 1061
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/build-fault.log",
+    "archive": "serve-stage-a-20261102/cpu/build-fault.log",
+    "sha256": "13b3676808ab976fafe9cbc3b09d44e4c2f9ffd6000b21369055a2d272b5a21a",
+    "bytes": 9718
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/build-final.log",
+    "archive": "serve-stage-a-20261102/cpu/build-final.log",
+    "sha256": "68f4145243239925d1add030b2d7446e27e07c744d09280050447b63042c4eea",
+    "bytes": 2877
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/build-off.log",
+    "archive": "serve-stage-a-20261102/cpu/build-off.log",
+    "sha256": "66922e62c751ade4dbd74ef73378de7f5a77b15ede53908739c73b3c84536880",
+    "bytes": 4765
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/build-on.log",
+    "archive": "serve-stage-a-20261102/cpu/build-on.log",
+    "sha256": "70e9388c18506966dd9b00d37ab374571d7cbbabacde3b2a2116b5a5f3bbf4c9",
+    "bytes": 7914
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/build-results.json",
+    "archive": "serve-stage-a-20261102/cpu/build-results.json",
+    "sha256": "44aaa95e69755e28502f8bb10e9f6b44d38ef06d6733df24e982c3b8b0a4a7de",
+    "bytes": 2419
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/configure-engine.log",
+    "archive": "serve-stage-a-20261102/cpu/configure-engine.log",
+    "sha256": "459748d1a1abc04119d550fdef5e14cf7a833f460691dd5a8deae07ba96aa22f",
+    "bytes": 1312
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/configure-fault.log",
+    "archive": "serve-stage-a-20261102/cpu/configure-fault.log",
+    "sha256": "fd87567a5ecb109ebff25c03698bc929102d342c4e41204953b96bea28664187",
+    "bytes": 1324
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/configure-off.log",
+    "archive": "serve-stage-a-20261102/cpu/configure-off.log",
+    "sha256": "ab5c1f30b6fdb231130a7390f5db034df7fd3d88a693e3fb1f16df3c01d7bf02",
+    "bytes": 691
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/configure-on.log",
+    "archive": "serve-stage-a-20261102/cpu/configure-on.log",
+    "sha256": "2621429bec70d34a1ce90268b164f13ec213c53ced24faf561b0736918e5b105",
+    "bytes": 925
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/driver-closeout.log",
+    "archive": "serve-stage-a-20261102/cpu/driver-closeout.log",
+    "sha256": "84503b8073baec19c4722366a4c1efe86e640f9fc1888a1040c7edcbc89d510a",
+    "bytes": 1138
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/driver-final.log",
+    "archive": "serve-stage-a-20261102/cpu/driver-final.log",
+    "sha256": "c6b9b1f09add0403cc07e90bfdf272129b1ddfa2f8f7675ea8218862f2516371",
+    "bytes": 104
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/driver-final2.log",
+    "archive": "serve-stage-a-20261102/cpu/driver-final2.log",
+    "sha256": "43f84afc42ed1ec2c4097f834273e25a5589770dd5d0ecc6fc2d19acf3d9f280",
+    "bytes": 708
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/driver-repair-final.log",
+    "archive": "serve-stage-a-20261102/cpu/driver-repair-final.log",
+    "sha256": "b5107f8411b9885bb6ef82eede8eac33abf4f22343aa1f4434abcba0b634ef74",
+    "bytes": 970
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/driver-repair.log",
+    "archive": "serve-stage-a-20261102/cpu/driver-repair.log",
+    "sha256": "0b861eef8a39626a1f3d17143f86da405fa0db25c6dd26df4bed651638e052a9",
+    "bytes": 1672
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/driver-result.json",
+    "archive": "serve-stage-a-20261102/cpu/driver-result.json",
+    "sha256": "f60a8a47f0fe770f9959961359a2091ff451633e050d9e3d951ecede593e76af",
+    "bytes": 50
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/driver.log",
+    "archive": "serve-stage-a-20261102/cpu/driver.log",
+    "sha256": "43f84afc42ed1ec2c4097f834273e25a5589770dd5d0ecc6fc2d19acf3d9f280",
+    "bytes": 708
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/host-gate/list.log",
+    "archive": "serve-stage-a-20261102/cpu/host-gate/list.log",
+    "sha256": "b7583fee194d9334693f3cc8f6ff369c39e1c7e48a698e882efffbc4ea27adfe",
+    "bytes": 7772
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/host-gate/result.json",
+    "archive": "serve-stage-a-20261102/cpu/host-gate/result.json",
+    "sha256": "1da8abf06d67fdab1d68b82c5fa7b21ef3dd3d74f38226d82eae57f29cc29720",
+    "bytes": 6652
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/host-gate/run.log",
+    "archive": "serve-stage-a-20261102/cpu/host-gate/run.log",
+    "sha256": "2bb9f495c072f4180b574d89f608df1c7bc74589cd3a2d6d97446702c40eb866",
+    "bytes": 6651
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/host-off.log",
+    "archive": "serve-stage-a-20261102/cpu/host-off.log",
+    "sha256": "975e64a5bda83a1c26dcf3ef4a483779c96a51b128109608d6b8dc6c4193008e",
+    "bytes": 8739
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/host-on.log",
+    "archive": "serve-stage-a-20261102/cpu/host-on.log",
+    "sha256": "33af08bf225b43035a164d19abdf7d75b85970e1e9e5e386c4435b7f82ccd9d8",
+    "bytes": 9136
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/host-results.json",
+    "archive": "serve-stage-a-20261102/cpu/host-results.json",
+    "sha256": "0cd77233a3479e963522e9fad1674a9c8a128065e1f3f8142f4b1f68fcb9fca3",
+    "bytes": 167
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/http-gate-identity.json",
+    "archive": "serve-stage-a-20261102/cpu/http-gate-identity.json",
+    "sha256": "16ff0817701566de4b5bfe8a94a500d640be264b36c07d0e786913b8e5c334fc",
+    "bytes": 317
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu/inventory.json",
+    "archive": "serve-stage-a-20261102/cpu/inventory.json",
+    "sha256": "3f6f12f0a9297ed8a43be35104a9c6688290a8ed0674442b54ab6683e1fab22c",
+    "bytes": 168
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu-http/lease/events.jsonl",
+    "archive": "serve-stage-a-20261102/cpu-http/lease/events.jsonl",
+    "sha256": "7d7c3b23a3b307f76d859aaf43e4a409cfdc468de12c2626060ccd31b3ac0192",
+    "bytes": 1100
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu-http/lease/exit.json",
+    "archive": "serve-stage-a-20261102/cpu-http/lease/exit.json",
+    "sha256": "f832b0160864aacc212a992ae1dd1041178c3fa7301c8caf45d326728ce75106",
+    "bytes": 578
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu-http/lease/nvml-queries.jsonl",
+    "archive": "serve-stage-a-20261102/cpu-http/lease/nvml-queries.jsonl",
+    "sha256": "f06881807dcb0cd73a70f7cec7bc0efebbb050eff98c4c601ae7b9cab6c544d9",
+    "bytes": 6708
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu-http-final/lease/events.jsonl",
+    "archive": "serve-stage-a-20261102/cpu-http-final/lease/events.jsonl",
+    "sha256": "7d398f0d489899e3c1494810337fce2afe0095c460cb483115185e2fa3d32f16",
+    "bytes": 914
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu-http-final/lease/exit.json",
+    "archive": "serve-stage-a-20261102/cpu-http-final/lease/exit.json",
+    "sha256": "eb6919f3f3cec70527ba7a456950c7a3927cd620e27a78f6c575b187bd0f3dd6",
+    "bytes": 638
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu-http-final/lease/nvml-queries.jsonl",
+    "archive": "serve-stage-a-20261102/cpu-http-final/lease/nvml-queries.jsonl",
+    "sha256": "752e850937c73a0c6efdbf214df7a80c051eb6ba2624cf168450c8e812fe9a80",
+    "bytes": 4474
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/begin.json",
+    "archive": "serve-stage-a-20261102/execution/begin.json",
+    "sha256": "4565b5f77ecd9eff5a081f7253e03c174437d2a4a461bbdcf7b3400461259edb",
+    "bytes": 136
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/capabilities.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/capabilities.json",
+    "sha256": "39b9697ed67c82739f0be4346dc83dbd8a3542d6f51a442684a7992714af361a",
+    "bytes": 5514
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/command.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/command.json",
+    "sha256": "d277c3eede1ea3bb74aeb5244a7f499bc964ad6e3066116cf17571c21eac2806",
+    "bytes": 479
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/duplicate-id-request.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/duplicate-id-request.bin",
+    "sha256": "fe838050d0e84a6ea4862da1e5307ab30071ef0441dd0790485924cab95440d9",
+    "bytes": 112
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/duplicate-id-response.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/duplicate-id-response.bin",
+    "sha256": "04c1e48fd7e5fce6cb7dcaa969f1d9e414f9e6349d65ea97165ea165abbd3da6",
+    "bytes": 276
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/get-body-request.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/get-body-request.bin",
+    "sha256": "79fd3d38429438aeae6844bdaf82ae2f65e39989c7f4b9a64ff8edcf2ebad4df",
+    "bytes": 92
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/get-body-response.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/get-body-response.bin",
+    "sha256": "8fb77427e7a734aecc7d0bcdd4d58a1c057fa86bba22de958cd7621b2e365ac7",
+    "bytes": 250
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/media-request.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/media-request.bin",
+    "sha256": "94128b83817a577c6d14712fcc55419b02baecdd6e4059a5ac9dbeac7e048649",
+    "bytes": 132
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/media-response.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/media-response.bin",
+    "sha256": "a42cf55bc7e11039855c48b6d67f21316857f2f6a29badfd89521d7d9d6ebcd1",
+    "bytes": 299
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/method-request.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/method-request.bin",
+    "sha256": "12003ff0f5e043b296f513175db8219b5f9286d07291365aba74b277b3119672",
+    "bytes": 103
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/method-response.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/method-response.bin",
+    "sha256": "3dfb151ae458dbc11ac175d71d84d77e31dc7bf149c281c7c0236b0aa7992750",
+    "bytes": 268
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/missing-media-request.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/missing-media-request.bin",
+    "sha256": "4ccd14b9e79e7a93878b7ef8a9db4f45f3e7a8126acb3eea34a456d33f2bb40e",
+    "bytes": 105
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/missing-media-response.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/missing-media-response.bin",
+    "sha256": "a42cf55bc7e11039855c48b6d67f21316857f2f6a29badfd89521d7d9d6ebcd1",
+    "bytes": 299
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/ordinary-headers.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/ordinary-headers.json",
+    "sha256": "495abda8ce63707c2d8be4f904f16a56ebb925ca0a81c313067bc6b888d6fcab",
+    "bytes": 129
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/ordinary-request.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/ordinary-request.json",
+    "sha256": "f4149bdfe43b49f6538274ac8abf315cabc9c5142124f954e77a91203707fb42",
+    "bytes": 392
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/ordinary-result.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/ordinary-result.json",
+    "sha256": "9ac2f4fc3ccac5872429a40243c4c3c11a6982526147f2938fdbc19ad1a8a554",
+    "bytes": 317
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/ordinary-sdk.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/ordinary-sdk.json",
+    "sha256": "999c5a3a8daeb0dbb114be681677b625faf716a53e81b672d584274e254c9d5b",
+    "bytes": 739
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/ordinary-wire.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/ordinary-wire.bin",
+    "sha256": "db5e01e0922eb730df56662a09ef6d0e3dfd65769186fbc4d5990c88a8e0cab2",
+    "bytes": 314
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/parameter-request.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/parameter-request.bin",
+    "sha256": "f31e392fb67894be5bbb1d03554ceac6e4153895b0179138c930911ffbc597e0",
+    "bytes": 172
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/parameter-response.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/parameter-response.bin",
+    "sha256": "8af9402d02025668c8bb8a9f9575a8366eea4b29ae9fb0979ff0dcb1a1561e0f",
+    "bytes": 276
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-answer-headers.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-answer-headers.json",
+    "sha256": "67993eccaf15a3bcc55d49cab0968e97f522cddb60ad19aac221df04065efa49",
+    "bytes": 169
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-answer-request.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-answer-request.json",
+    "sha256": "568646f47bfd071d0a99f84994bd4ad7dda2d2dd3ded4d90080ac68fbcc972c2",
+    "bytes": 2801
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-answer-result.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-answer-result.json",
+    "sha256": "7633ff591b5f8473b34f4bf66f864f9f92931a7d0f5e601a9803a88f5f485a07",
+    "bytes": 473
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-answer-sdk.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-answer-sdk.json",
+    "sha256": "3486336732323ace15480d999bdd8d14d8f0c9db113b4f4d9c11e811b1402ffb",
+    "bytes": 2464
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-answer-wire.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-answer-wire.bin",
+    "sha256": "2a72bb56252d6ef898070515d4d3474e4aea8a82e97826a46a5efc6d367272c1",
+    "bytes": 1165
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-read-headers.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-read-headers.json",
+    "sha256": "90eaed3abb1849b334b40d907177384b8c22ae8fadcbe595e6e962af6c986f72",
+    "bytes": 167
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-read-request.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-read-request.json",
+    "sha256": "8a6d54a70937261bd06652b351e5f39d81cd103be98326657dd1717091360382",
+    "bytes": 1590
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-read-result.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-read-result.json",
+    "sha256": "374a103a3bd262442afacc9a92778219d4fff5daf1f963bfd1ba65b1bb1b95da",
+    "bytes": 624
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-read-sdk.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-read-sdk.json",
+    "sha256": "a7373364d65c6d833bb95aacc528fad41e75b2914f868985b4c48fd2f343dbe8",
+    "bytes": 2671
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-read-wire.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-read-wire.bin",
+    "sha256": "a5abfc3f019daf55a5b1a337aea9304cf26004c93b4f4a6e957b7eeeb706af8d",
+    "bytes": 1223
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/project-tool-result.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/project-tool-result.json",
+    "sha256": "6f7ef1318ad5ff5c083c3d3e3d33b5623aea42038d641fe8e42d75eb00eac058",
+    "bytes": 700
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/proxy-request.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/proxy-request.json",
+    "sha256": "32380c632d5d8dbe73272600a297e4533032329489f2172d7156d413d5591887",
+    "bytes": 1298
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/query-request.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/query-request.bin",
+    "sha256": "c4b2b04973b6ee65e64b877e515b6f76d6531cc4820bec8486764768b34d0c74",
+    "bytes": 97
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/query-response.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/query-response.bin",
+    "sha256": "1755cef6f35803eebf959bd5350d4f88bebaeb20ec0fb672228e40ae7dece4d5",
+    "bytes": 261
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/ready-request.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/ready-request.bin",
+    "sha256": "1131319a316215ca593c00d481e4f27626e095cbe26d81bcf6624a05db877d2d",
+    "bytes": 41
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/ready-response.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/ready-response.bin",
+    "sha256": "2259ea6257bcc228cea07eff11d992c33f7a692d2d3b072d7943e617a2a61556",
+    "bytes": 185
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/server.log",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/server.log",
+    "sha256": "5168a844850852ae3e2f2db4a4f45fe26c913121ba4d8c282f28cb8ae8f46490",
+    "bytes": 11629
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/shutdown.json",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/shutdown.json",
+    "sha256": "59dc0f379a7f0d5b5a1e7fdb8ae5d8c9f624b6fb743defc57161d5c30bc2254e",
+    "bytes": 39
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/unknown-request.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/unknown-request.bin",
+    "sha256": "d57a799831d930fce749dea1f049b50f716221d265a5208520ab0da3e0d05bb9",
+    "bytes": 91
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/candidate-mtp/unknown-response.bin",
+    "archive": "serve-stage-a-20261102/execution/business/candidate-mtp/unknown-response.bin",
+    "sha256": "65b5d6a7380a61380acd5d9e82c63a3e4843058ada0245033bbfe9419870a7cf",
+    "bytes": 240
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/business/result.json",
+    "archive": "serve-stage-a-20261102/execution/business/result.json",
+    "sha256": "1e7df0e6cef311499bbd567c398bb3f6dfca487e1feba3bd269f0e8e93ca3c79",
+    "bytes": 235
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/execution.json",
+    "archive": "serve-stage-a-20261102/execution/execution.json",
+    "sha256": "312c6bc05e2a69c4fde3ddac938a37853e9fe5aad02230d1f91531f0b4f3b2a9",
+    "bytes": 210
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/initial-gpu.json",
+    "archive": "serve-stage-a-20261102/execution/initial-gpu.json",
+    "sha256": "e29b3805f6c0accbf2ddbd7b4675ce33ff0a40b831c6af8f48b0d417545e34ea",
+    "bytes": 2258
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/launch-failure.json",
+    "archive": "serve-stage-a-20261102/execution/launch-failure.json",
+    "sha256": "6b694c87e96e0e6ba1ae0bd6a864bfd076b03fd8b618aabc07397e48853e6300",
+    "bytes": 947
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/lease/events.jsonl",
+    "archive": "serve-stage-a-20261102/execution/lease/events.jsonl",
+    "sha256": "a784745eebb74af7232dfe28f73bfcef7075e10f8f8c40abed360b8b0845c982",
+    "bytes": 10772
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/lease/exit.json",
+    "archive": "serve-stage-a-20261102/execution/lease/exit.json",
+    "sha256": "14f537d4a0f247db7ded3c3f8263b6bc2b4fea677c9a0e6dc0071ebc63990a55",
+    "bytes": 670
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/lease/nvml-queries.jsonl",
+    "archive": "serve-stage-a-20261102/execution/lease/nvml-queries.jsonl",
+    "sha256": "55c43e4de65fa903868b0b7f0f9da2e72084483b563337569421b745cf2a96ab",
+    "bytes": 129421
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/lease-relative-path-failure/events.jsonl",
+    "archive": "serve-stage-a-20261102/execution/lease-relative-path-failure/events.jsonl",
+    "sha256": "3967eb2dbe51509b012e2f3745f3b9007467abe839f35ce06196a08222e66c33",
+    "bytes": 919
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/lease-relative-path-failure/exit.json",
+    "archive": "serve-stage-a-20261102/execution/lease-relative-path-failure/exit.json",
+    "sha256": "5da6fc00dce32132a77678f6abb6755eee55c0be89ac5aee23ef25120179129b",
+    "bytes": 637
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/lease-relative-path-failure/nvml-queries.jsonl",
+    "archive": "serve-stage-a-20261102/execution/lease-relative-path-failure/nvml-queries.jsonl",
+    "sha256": "868358a9ed89a79f2675088581b215997852567341344daefb732db7491fc151",
+    "bytes": 4472
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/sealed-files.json",
+    "archive": "serve-stage-a-20261102/execution/sealed-files.json",
+    "sha256": "0309b963b9f55774c42851bc00493fa9fee69a01d094645d4910e3eaa12fe193",
+    "bytes": 5656
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/candidate/chat_protocol_sources.json",
+    "archive": "serve-stage-a-20261102/package/candidate/chat_protocol_sources.json",
+    "sha256": "a2d063a874efbdb55292a256be220988c8776c34fe82d1bff7c2f05f1bbb8bbe",
+    "bytes": 4178
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/candidate/compile_commands.json",
+    "archive": "serve-stage-a-20261102/package/candidate/compile_commands.json",
+    "sha256": "196e61e7c389c96703b37dabecc5e36789eac906f2b7c288f9fdb371d4b09051",
+    "bytes": 267419
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/candidate/fault-compile_commands.json",
+    "archive": "serve-stage-a-20261102/package/candidate/fault-compile_commands.json",
+    "sha256": "ec17abe480476004cfbc65159b2ba36b71588011ebe4e9f7bed60eefb30d919b",
+    "bytes": 270653
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/candidate/runtime-source.json",
+    "archive": "serve-stage-a-20261102/package/candidate/runtime-source.json",
+    "sha256": "3b35816ed3e5df6c39de58a979d6ae5c08902aae61918478ee2e871ffa7fc260",
+    "bytes": 18451
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/backend-gate.log",
+    "archive": "serve-stage-a-20261102/package/cpu/backend-gate.log",
+    "sha256": "99bc41e14d46993b7b41e77b6b17696b5e5b63418b3edf9a9f9e24782e0c1117",
+    "bytes": 436
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/build-comment.log",
+    "archive": "serve-stage-a-20261102/package/cpu/build-comment.log",
+    "sha256": "aa69011affedcd36c9560626baa130c22cb907ee4432d6131e009aa10d213ae5",
+    "bytes": 3754
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/build-engine.log",
+    "archive": "serve-stage-a-20261102/package/cpu/build-engine.log",
+    "sha256": "c6319ac01ad60e0889c60d7dd1d87d88692eaec46b14675fa937c12113b08ef5",
+    "bytes": 14410
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/build-fault-final.log",
+    "archive": "serve-stage-a-20261102/package/cpu/build-fault-final.log",
+    "sha256": "7510c4c76b124d21b7b336ee999742f2aa19d532c540849ccecc34edfd36d999",
+    "bytes": 1061
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/build-fault.log",
+    "archive": "serve-stage-a-20261102/package/cpu/build-fault.log",
+    "sha256": "13b3676808ab976fafe9cbc3b09d44e4c2f9ffd6000b21369055a2d272b5a21a",
+    "bytes": 9718
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/build-final.log",
+    "archive": "serve-stage-a-20261102/package/cpu/build-final.log",
+    "sha256": "68f4145243239925d1add030b2d7446e27e07c744d09280050447b63042c4eea",
+    "bytes": 2877
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/build-off.log",
+    "archive": "serve-stage-a-20261102/package/cpu/build-off.log",
+    "sha256": "66922e62c751ade4dbd74ef73378de7f5a77b15ede53908739c73b3c84536880",
+    "bytes": 4765
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/build-on.log",
+    "archive": "serve-stage-a-20261102/package/cpu/build-on.log",
+    "sha256": "70e9388c18506966dd9b00d37ab374571d7cbbabacde3b2a2116b5a5f3bbf4c9",
+    "bytes": 7914
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/build-results.json",
+    "archive": "serve-stage-a-20261102/package/cpu/build-results.json",
+    "sha256": "44aaa95e69755e28502f8bb10e9f6b44d38ef06d6733df24e982c3b8b0a4a7de",
+    "bytes": 2419
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/configure-engine.log",
+    "archive": "serve-stage-a-20261102/package/cpu/configure-engine.log",
+    "sha256": "459748d1a1abc04119d550fdef5e14cf7a833f460691dd5a8deae07ba96aa22f",
+    "bytes": 1312
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/configure-fault.log",
+    "archive": "serve-stage-a-20261102/package/cpu/configure-fault.log",
+    "sha256": "fd87567a5ecb109ebff25c03698bc929102d342c4e41204953b96bea28664187",
+    "bytes": 1324
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/configure-off.log",
+    "archive": "serve-stage-a-20261102/package/cpu/configure-off.log",
+    "sha256": "ab5c1f30b6fdb231130a7390f5db034df7fd3d88a693e3fb1f16df3c01d7bf02",
+    "bytes": 691
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/configure-on.log",
+    "archive": "serve-stage-a-20261102/package/cpu/configure-on.log",
+    "sha256": "2621429bec70d34a1ce90268b164f13ec213c53ced24faf561b0736918e5b105",
+    "bytes": 925
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/driver-final.log",
+    "archive": "serve-stage-a-20261102/package/cpu/driver-final.log",
+    "sha256": "c6b9b1f09add0403cc07e90bfdf272129b1ddfa2f8f7675ea8218862f2516371",
+    "bytes": 104
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/driver-final2.log",
+    "archive": "serve-stage-a-20261102/package/cpu/driver-final2.log",
+    "sha256": "43f84afc42ed1ec2c4097f834273e25a5589770dd5d0ecc6fc2d19acf3d9f280",
+    "bytes": 708
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/driver-result.json",
+    "archive": "serve-stage-a-20261102/package/cpu/driver-result.json",
+    "sha256": "f60a8a47f0fe770f9959961359a2091ff451633e050d9e3d951ecede593e76af",
+    "bytes": 50
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/driver.log",
+    "archive": "serve-stage-a-20261102/package/cpu/driver.log",
+    "sha256": "43f84afc42ed1ec2c4097f834273e25a5589770dd5d0ecc6fc2d19acf3d9f280",
+    "bytes": 708
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/host-gate/list.log",
+    "archive": "serve-stage-a-20261102/package/cpu/host-gate/list.log",
+    "sha256": "b7583fee194d9334693f3cc8f6ff369c39e1c7e48a698e882efffbc4ea27adfe",
+    "bytes": 7772
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/host-gate/result.json",
+    "archive": "serve-stage-a-20261102/package/cpu/host-gate/result.json",
+    "sha256": "1da8abf06d67fdab1d68b82c5fa7b21ef3dd3d74f38226d82eae57f29cc29720",
+    "bytes": 6652
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/host-gate/run.log",
+    "archive": "serve-stage-a-20261102/package/cpu/host-gate/run.log",
+    "sha256": "2bb9f495c072f4180b574d89f608df1c7bc74589cd3a2d6d97446702c40eb866",
+    "bytes": 6651
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/host-off.log",
+    "archive": "serve-stage-a-20261102/package/cpu/host-off.log",
+    "sha256": "975e64a5bda83a1c26dcf3ef4a483779c96a51b128109608d6b8dc6c4193008e",
+    "bytes": 8739
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/host-on.log",
+    "archive": "serve-stage-a-20261102/package/cpu/host-on.log",
+    "sha256": "33af08bf225b43035a164d19abdf7d75b85970e1e9e5e386c4435b7f82ccd9d8",
+    "bytes": 9136
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/host-results.json",
+    "archive": "serve-stage-a-20261102/package/cpu/host-results.json",
+    "sha256": "0cd77233a3479e963522e9fad1674a9c8a128065e1f3f8142f4b1f68fcb9fca3",
+    "bytes": 167
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/http-gate-identity.json",
+    "archive": "serve-stage-a-20261102/package/cpu/http-gate-identity.json",
+    "sha256": "16ff0817701566de4b5bfe8a94a500d640be264b36c07d0e786913b8e5c334fc",
+    "bytes": 317
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/cpu/inventory.json",
+    "archive": "serve-stage-a-20261102/package/cpu/inventory.json",
+    "sha256": "3f6f12f0a9297ed8a43be35104a9c6688290a8ed0674442b54ab6683e1fab22c",
+    "bytes": 168
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/numerical-reuse.json",
+    "archive": "serve-stage-a-20261102/package/numerical-reuse.json",
+    "sha256": "eded649062f5c56802906168869f34066b996470722afda63a770cb2bf8f6f50",
+    "bytes": 789
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/plan.json",
+    "archive": "serve-stage-a-20261102/package/plan.json",
+    "sha256": "20a92adc46e74bb207875c770f8d25661670f0bbb2005aeeb1ab61de57a29eaf",
+    "bytes": 1854
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/previous/q4t.release.json",
+    "archive": "serve-stage-a-20261102/package/previous/q4t.release.json",
+    "sha256": "da9f3ac5b41215157a6fbbb0d24ec540be7836c24d75d3bc6ed5228627032800",
+    "bytes": 21267
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/sealed-files.json",
+    "archive": "serve-stage-a-20261102/package/sealed-files.json",
+    "sha256": "304a5d8cc4eef51f3efbd38f6ca8a47c134f0f9707b789b928c9e51e2ba94b2a",
+    "bytes": 4135
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/package/sources.json",
+    "archive": "serve-stage-a-20261102/package/sources.json",
+    "sha256": "0d8e3bf78def416f6b33dd11c48db411d95a6958f36f89003e141526c42957af",
+    "bytes": 182133
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/begin.json",
+    "archive": "serve-stage-a-finish-20261102/execution/begin.json",
+    "sha256": "2d2e79188df38ae42920eafc12a0649d324d9f00fa10e3cf2fb9aa382016e349",
+    "bytes": 184
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/busy.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/busy.json",
+    "sha256": "2818a30280fb204e681f9ebe137a02dd2574ef830eda7f10954903a433fc9717",
+    "bytes": 197
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/capabilities.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/capabilities.json",
+    "sha256": "39b9697ed67c82739f0be4346dc83dbd8a3542d6f51a442684a7992714af361a",
+    "bytes": 5514
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/command.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/command.json",
+    "sha256": "bffe5f50e1f673c83d8107d796f5e43e92821bd1a5ec4515a270aa9c5c3e6f70",
+    "bytes": 719
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/deadline-request.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/deadline-request.bin",
+    "sha256": "0e76b136ed7be2f509c91cdaff8f1bfd5dde9888da27dbe93c0c979b02c2cab0",
+    "bytes": 1155
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/deadline-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/deadline-response.bin",
+    "sha256": "811b7db6d1bd53ef0a6bb1ecd7f89c13af66877bfca2b840e1a2f39fd00908ad",
+    "bytes": 565
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/proxy-cancel.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/proxy-cancel.json",
+    "sha256": "6cd7b04c6be93ff5e58dfd2e4c7aec47948a723318119fa22eab4e96b999baa2",
+    "bytes": 60
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/proxy-request.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/proxy-request.json",
+    "sha256": "32380c632d5d8dbe73272600a297e4533032329489f2172d7156d413d5591887",
+    "bytes": 1298
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/proxy-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/proxy-response.bin",
+    "sha256": "2d0336846845629b43e9b9f0294c0fee3b03ae0a154a63e57863861ef29d1df8",
+    "bytes": 524
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/proxy-timing.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/proxy-timing.json",
+    "sha256": "0c62e35ce986a7ea6b79470e2c829dd299a2c80784b9317a0dadb541e4e14f53",
+    "bytes": 127
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/proxy-upstream.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/proxy-upstream.bin",
+    "sha256": "2d0336846845629b43e9b9f0294c0fee3b03ae0a154a63e57863861ef29d1df8",
+    "bytes": 524
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/queued-ordinary-headers.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/queued-ordinary-headers.json",
+    "sha256": "287858bb0f41cc49635f9761a3c23e86e814fbd380c4e407517c2ffa047c16af",
+    "bytes": 136
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/queued-ordinary-request.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/queued-ordinary-request.json",
+    "sha256": "4f16f82fb0d906cb4d718b4ab483792d1ff6880e8a2abc13b3c2ed09f79aa12f",
+    "bytes": 399
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/queued-ordinary-result.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/queued-ordinary-result.json",
+    "sha256": "d8d9b5dd4ed1695f1e2ee3205d3b59a667f1256b03d60aa49f80794ef1d4d54b",
+    "bytes": 318
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/queued-ordinary-sdk.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/queued-ordinary-sdk.json",
+    "sha256": "fd96daebac764a291c361e198367d82c5141ed3d8f38a12e7310c75c484fa61a",
+    "bytes": 739
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/queued-ordinary-wire.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/queued-ordinary-wire.bin",
+    "sha256": "08655072b863daecfe748e9a7b6b2bedf1050e429d507edb9cd7137391229f3b",
+    "bytes": 314
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/ready-under-load.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/ready-under-load.json",
+    "sha256": "364ed76164d6482135e11c379f1554f0637c20d45c4bb817eaa8b6b8aa0e9042",
+    "bytes": 84
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/server.log",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/server.log",
+    "sha256": "9a438cd66a7150ee4570a51f684bdd9162b04f5b20871fe902a31f9505828b68",
+    "bytes": 11235
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/shutdown.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/shutdown.json",
+    "sha256": "59dc0f379a7f0d5b5a1e7fdb8ae5d8c9f624b6fb743defc57161d5c30bc2254e",
+    "bytes": 39
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-fault/slow-request.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-fault/slow-request.json",
+    "sha256": "648654c7d699aa1b0609af9bc4ec9feee67b769734ad6cc526e175f32ea6f222",
+    "bytes": 1297
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/capabilities.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/capabilities.json",
+    "sha256": "39b9697ed67c82739f0be4346dc83dbd8a3542d6f51a442684a7992714af361a",
+    "bytes": 5514
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/command.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/command.json",
+    "sha256": "d277c3eede1ea3bb74aeb5244a7f499bc964ad6e3066116cf17571c21eac2806",
+    "bytes": 479
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/duplicate-id-request.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/duplicate-id-request.bin",
+    "sha256": "fe838050d0e84a6ea4862da1e5307ab30071ef0441dd0790485924cab95440d9",
+    "bytes": 112
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/duplicate-id-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/duplicate-id-response.bin",
+    "sha256": "04c1e48fd7e5fce6cb7dcaa969f1d9e414f9e6349d65ea97165ea165abbd3da6",
+    "bytes": 276
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/get-body-request.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/get-body-request.bin",
+    "sha256": "79fd3d38429438aeae6844bdaf82ae2f65e39989c7f4b9a64ff8edcf2ebad4df",
+    "bytes": 92
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/get-body-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/get-body-response.bin",
+    "sha256": "8fb77427e7a734aecc7d0bcdd4d58a1c057fa86bba22de958cd7621b2e365ac7",
+    "bytes": 250
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/media-request.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/media-request.bin",
+    "sha256": "94128b83817a577c6d14712fcc55419b02baecdd6e4059a5ac9dbeac7e048649",
+    "bytes": 132
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/media-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/media-response.bin",
+    "sha256": "a42cf55bc7e11039855c48b6d67f21316857f2f6a29badfd89521d7d9d6ebcd1",
+    "bytes": 299
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/method-request.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/method-request.bin",
+    "sha256": "12003ff0f5e043b296f513175db8219b5f9286d07291365aba74b277b3119672",
+    "bytes": 103
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/method-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/method-response.bin",
+    "sha256": "3dfb151ae458dbc11ac175d71d84d77e31dc7bf149c281c7c0236b0aa7992750",
+    "bytes": 268
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/missing-media-request.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/missing-media-request.bin",
+    "sha256": "4ccd14b9e79e7a93878b7ef8a9db4f45f3e7a8126acb3eea34a456d33f2bb40e",
+    "bytes": 105
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/missing-media-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/missing-media-response.bin",
+    "sha256": "a42cf55bc7e11039855c48b6d67f21316857f2f6a29badfd89521d7d9d6ebcd1",
+    "bytes": 299
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/ordinary-headers.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/ordinary-headers.json",
+    "sha256": "495abda8ce63707c2d8be4f904f16a56ebb925ca0a81c313067bc6b888d6fcab",
+    "bytes": 129
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/ordinary-request.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/ordinary-request.json",
+    "sha256": "f4149bdfe43b49f6538274ac8abf315cabc9c5142124f954e77a91203707fb42",
+    "bytes": 392
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/ordinary-result.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/ordinary-result.json",
+    "sha256": "9ac2f4fc3ccac5872429a40243c4c3c11a6982526147f2938fdbc19ad1a8a554",
+    "bytes": 317
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/ordinary-sdk.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/ordinary-sdk.json",
+    "sha256": "999c5a3a8daeb0dbb114be681677b625faf716a53e81b672d584274e254c9d5b",
+    "bytes": 739
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/ordinary-wire.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/ordinary-wire.bin",
+    "sha256": "db5e01e0922eb730df56662a09ef6d0e3dfd65769186fbc4d5990c88a8e0cab2",
+    "bytes": 314
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/parameter-request.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/parameter-request.bin",
+    "sha256": "f31e392fb67894be5bbb1d03554ceac6e4153895b0179138c930911ffbc597e0",
+    "bytes": 172
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/parameter-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/parameter-response.bin",
+    "sha256": "8af9402d02025668c8bb8a9f9575a8366eea4b29ae9fb0979ff0dcb1a1561e0f",
+    "bytes": 276
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-answer-headers.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-answer-headers.json",
+    "sha256": "67993eccaf15a3bcc55d49cab0968e97f522cddb60ad19aac221df04065efa49",
+    "bytes": 169
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-answer-request.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-answer-request.json",
+    "sha256": "568646f47bfd071d0a99f84994bd4ad7dda2d2dd3ded4d90080ac68fbcc972c2",
+    "bytes": 2801
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-answer-result.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-answer-result.json",
+    "sha256": "7633ff591b5f8473b34f4bf66f864f9f92931a7d0f5e601a9803a88f5f485a07",
+    "bytes": 473
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-answer-sdk.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-answer-sdk.json",
+    "sha256": "3486336732323ace15480d999bdd8d14d8f0c9db113b4f4d9c11e811b1402ffb",
+    "bytes": 2464
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-answer-wire.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-answer-wire.bin",
+    "sha256": "2a72bb56252d6ef898070515d4d3474e4aea8a82e97826a46a5efc6d367272c1",
+    "bytes": 1165
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-read-headers.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-read-headers.json",
+    "sha256": "90eaed3abb1849b334b40d907177384b8c22ae8fadcbe595e6e962af6c986f72",
+    "bytes": 167
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-read-request.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-read-request.json",
+    "sha256": "8a6d54a70937261bd06652b351e5f39d81cd103be98326657dd1717091360382",
+    "bytes": 1590
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-read-result.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-read-result.json",
+    "sha256": "374a103a3bd262442afacc9a92778219d4fff5daf1f963bfd1ba65b1bb1b95da",
+    "bytes": 624
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-read-sdk.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-read-sdk.json",
+    "sha256": "a7373364d65c6d833bb95aacc528fad41e75b2914f868985b4c48fd2f343dbe8",
+    "bytes": 2671
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-read-wire.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-read-wire.bin",
+    "sha256": "a5abfc3f019daf55a5b1a337aea9304cf26004c93b4f4a6e957b7eeeb706af8d",
+    "bytes": 1223
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-tool-result.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/project-tool-result.json",
+    "sha256": "6f7ef1318ad5ff5c083c3d3e3d33b5623aea42038d641fe8e42d75eb00eac058",
+    "bytes": 700
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/proxy-request.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/proxy-request.json",
+    "sha256": "32380c632d5d8dbe73272600a297e4533032329489f2172d7156d413d5591887",
+    "bytes": 1298
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/query-request.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/query-request.bin",
+    "sha256": "c4b2b04973b6ee65e64b877e515b6f76d6531cc4820bec8486764768b34d0c74",
+    "bytes": 97
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/query-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/query-response.bin",
+    "sha256": "1755cef6f35803eebf959bd5350d4f88bebaeb20ec0fb672228e40ae7dece4d5",
+    "bytes": 261
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/ready-request.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/ready-request.bin",
+    "sha256": "1131319a316215ca593c00d481e4f27626e095cbe26d81bcf6624a05db877d2d",
+    "bytes": 41
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/ready-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/ready-response.bin",
+    "sha256": "2259ea6257bcc228cea07eff11d992c33f7a692d2d3b072d7943e617a2a61556",
+    "bytes": 185
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/server.log",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/server.log",
+    "sha256": "5168a844850852ae3e2f2db4a4f45fe26c913121ba4d8c282f28cb8ae8f46490",
+    "bytes": 11629
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/shutdown.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/shutdown.json",
+    "sha256": "59dc0f379a7f0d5b5a1e7fdb8ae5d8c9f624b6fb743defc57161d5c30bc2254e",
+    "bytes": 39
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/unknown-request.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/unknown-request.bin",
+    "sha256": "d57a799831d930fce749dea1f049b50f716221d265a5208520ab0da3e0d05bb9",
+    "bytes": 91
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/candidate-mtp/unknown-response.bin",
+    "archive": "serve-stage-a-finish-20261102/execution/business/candidate-mtp/unknown-response.bin",
+    "sha256": "65b5d6a7380a61380acd5d9e82c63a3e4843058ada0245033bbfe9419870a7cf",
+    "bytes": 240
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/result.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/result.json",
+    "sha256": "5cbc6ed75f8fdf67ad37015a50038c310aa7a8b7d013c40f27135eb27d1be1f2",
+    "bytes": 325
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/business/reused.json",
+    "archive": "serve-stage-a-finish-20261102/execution/business/reused.json",
+    "sha256": "399eb56a1ea7228ed42843d2ee096adb086256523eaec68aca5af0500fc3b8ab",
+    "bytes": 397
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/execution.json",
+    "archive": "serve-stage-a-finish-20261102/execution/execution.json",
+    "sha256": "9da7ab5067dca71fe5129bc0c98bd23d113b8552fd42705e9cf792e7f7f6db6c",
+    "bytes": 195
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/initial-gpu.json",
+    "archive": "serve-stage-a-finish-20261102/execution/initial-gpu.json",
+    "sha256": "327dcd99cd4e9410d474370ecc34a40a410cbcfe7006de8318cf4f75efb0e80f",
+    "bytes": 2258
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/lease/events.jsonl",
+    "archive": "serve-stage-a-finish-20261102/execution/lease/events.jsonl",
+    "sha256": "704d1c64bf359c30fdaa38fd5c324b23920bbaaad19fe2781b9546ba68a60a29",
+    "bytes": 38837
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/lease/exit.json",
+    "archive": "serve-stage-a-finish-20261102/execution/lease/exit.json",
+    "sha256": "4fd874371ce86bfb976b96c999e8b1ac9e4df6a6482ca99a7639324aa652b1de",
+    "bytes": 671
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/lease/nvml-queries.jsonl",
+    "archive": "serve-stage-a-finish-20261102/execution/lease/nvml-queries.jsonl",
+    "sha256": "18fc285961b0f5088ee00717a5eb2a14b5335fe21b74b2f0676504edbee6cd13",
+    "bytes": 486877
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/execution/sealed-files.json",
+    "archive": "serve-stage-a-finish-20261102/execution/sealed-files.json",
+    "sha256": "f2698c197e1988234535b1c4f997cb3c9589548dda8c40019067af82ab4cd589",
+    "bytes": 7552
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/candidate/chat_protocol_sources.json",
+    "archive": "serve-stage-a-finish-20261102/package/candidate/chat_protocol_sources.json",
+    "sha256": "a2d063a874efbdb55292a256be220988c8776c34fe82d1bff7c2f05f1bbb8bbe",
+    "bytes": 4178
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/candidate/compile_commands.json",
+    "archive": "serve-stage-a-finish-20261102/package/candidate/compile_commands.json",
+    "sha256": "196e61e7c389c96703b37dabecc5e36789eac906f2b7c288f9fdb371d4b09051",
+    "bytes": 267419
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/candidate/fault-compile_commands.json",
+    "archive": "serve-stage-a-finish-20261102/package/candidate/fault-compile_commands.json",
+    "sha256": "ec17abe480476004cfbc65159b2ba36b71588011ebe4e9f7bed60eefb30d919b",
+    "bytes": 270653
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/candidate/runtime-source.json",
+    "archive": "serve-stage-a-finish-20261102/package/candidate/runtime-source.json",
+    "sha256": "3b35816ed3e5df6c39de58a979d6ae5c08902aae61918478ee2e871ffa7fc260",
+    "bytes": 18451
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/backend-gate.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/backend-gate.log",
+    "sha256": "99bc41e14d46993b7b41e77b6b17696b5e5b63418b3edf9a9f9e24782e0c1117",
+    "bytes": 436
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/build-comment.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/build-comment.log",
+    "sha256": "aa69011affedcd36c9560626baa130c22cb907ee4432d6131e009aa10d213ae5",
+    "bytes": 3754
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/build-engine.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/build-engine.log",
+    "sha256": "c6319ac01ad60e0889c60d7dd1d87d88692eaec46b14675fa937c12113b08ef5",
+    "bytes": 14410
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/build-fault-final.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/build-fault-final.log",
+    "sha256": "7510c4c76b124d21b7b336ee999742f2aa19d532c540849ccecc34edfd36d999",
+    "bytes": 1061
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/build-fault.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/build-fault.log",
+    "sha256": "13b3676808ab976fafe9cbc3b09d44e4c2f9ffd6000b21369055a2d272b5a21a",
+    "bytes": 9718
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/build-final.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/build-final.log",
+    "sha256": "68f4145243239925d1add030b2d7446e27e07c744d09280050447b63042c4eea",
+    "bytes": 2877
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/build-off.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/build-off.log",
+    "sha256": "66922e62c751ade4dbd74ef73378de7f5a77b15ede53908739c73b3c84536880",
+    "bytes": 4765
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/build-on.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/build-on.log",
+    "sha256": "70e9388c18506966dd9b00d37ab374571d7cbbabacde3b2a2116b5a5f3bbf4c9",
+    "bytes": 7914
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/build-results.json",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/build-results.json",
+    "sha256": "44aaa95e69755e28502f8bb10e9f6b44d38ef06d6733df24e982c3b8b0a4a7de",
+    "bytes": 2419
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/configure-engine.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/configure-engine.log",
+    "sha256": "459748d1a1abc04119d550fdef5e14cf7a833f460691dd5a8deae07ba96aa22f",
+    "bytes": 1312
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/configure-fault.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/configure-fault.log",
+    "sha256": "fd87567a5ecb109ebff25c03698bc929102d342c4e41204953b96bea28664187",
+    "bytes": 1324
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/configure-off.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/configure-off.log",
+    "sha256": "ab5c1f30b6fdb231130a7390f5db034df7fd3d88a693e3fb1f16df3c01d7bf02",
+    "bytes": 691
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/configure-on.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/configure-on.log",
+    "sha256": "2621429bec70d34a1ce90268b164f13ec213c53ced24faf561b0736918e5b105",
+    "bytes": 925
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/driver-final.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/driver-final.log",
+    "sha256": "c6b9b1f09add0403cc07e90bfdf272129b1ddfa2f8f7675ea8218862f2516371",
+    "bytes": 104
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/driver-final2.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/driver-final2.log",
+    "sha256": "43f84afc42ed1ec2c4097f834273e25a5589770dd5d0ecc6fc2d19acf3d9f280",
+    "bytes": 708
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/driver-repair-final.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/driver-repair-final.log",
+    "sha256": "b5107f8411b9885bb6ef82eede8eac33abf4f22343aa1f4434abcba0b634ef74",
+    "bytes": 970
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/driver-repair.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/driver-repair.log",
+    "sha256": "0b861eef8a39626a1f3d17143f86da405fa0db25c6dd26df4bed651638e052a9",
+    "bytes": 1672
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/driver-result.json",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/driver-result.json",
+    "sha256": "f60a8a47f0fe770f9959961359a2091ff451633e050d9e3d951ecede593e76af",
+    "bytes": 50
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/driver.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/driver.log",
+    "sha256": "43f84afc42ed1ec2c4097f834273e25a5589770dd5d0ecc6fc2d19acf3d9f280",
+    "bytes": 708
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/host-gate/list.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/host-gate/list.log",
+    "sha256": "b7583fee194d9334693f3cc8f6ff369c39e1c7e48a698e882efffbc4ea27adfe",
+    "bytes": 7772
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/host-gate/result.json",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/host-gate/result.json",
+    "sha256": "1da8abf06d67fdab1d68b82c5fa7b21ef3dd3d74f38226d82eae57f29cc29720",
+    "bytes": 6652
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/host-gate/run.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/host-gate/run.log",
+    "sha256": "2bb9f495c072f4180b574d89f608df1c7bc74589cd3a2d6d97446702c40eb866",
+    "bytes": 6651
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/host-off.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/host-off.log",
+    "sha256": "975e64a5bda83a1c26dcf3ef4a483779c96a51b128109608d6b8dc6c4193008e",
+    "bytes": 8739
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/host-on.log",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/host-on.log",
+    "sha256": "33af08bf225b43035a164d19abdf7d75b85970e1e9e5e386c4435b7f82ccd9d8",
+    "bytes": 9136
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/host-results.json",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/host-results.json",
+    "sha256": "0cd77233a3479e963522e9fad1674a9c8a128065e1f3f8142f4b1f68fcb9fca3",
+    "bytes": 167
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/http-gate-identity.json",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/http-gate-identity.json",
+    "sha256": "16ff0817701566de4b5bfe8a94a500d640be264b36c07d0e786913b8e5c334fc",
+    "bytes": 317
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/cpu/inventory.json",
+    "archive": "serve-stage-a-finish-20261102/package/cpu/inventory.json",
+    "sha256": "3f6f12f0a9297ed8a43be35104a9c6688290a8ed0674442b54ab6683e1fab22c",
+    "bytes": 168
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/numerical-reuse.json",
+    "archive": "serve-stage-a-finish-20261102/package/numerical-reuse.json",
+    "sha256": "eded649062f5c56802906168869f34066b996470722afda63a770cb2bf8f6f50",
+    "bytes": 789
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/plan.json",
+    "archive": "serve-stage-a-finish-20261102/package/plan.json",
+    "sha256": "882db9503af120bb523426de060948334f920fbc79d431551fea25ce0b9f0648",
+    "bytes": 1908
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/previous/q4t.release.json",
+    "archive": "serve-stage-a-finish-20261102/package/previous/q4t.release.json",
+    "sha256": "da9f3ac5b41215157a6fbbb0d24ec540be7836c24d75d3bc6ed5228627032800",
+    "bytes": 21267
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/reuse.json",
+    "archive": "serve-stage-a-finish-20261102/package/reuse.json",
+    "sha256": "eaba5eaf484a41e8a23aa1d1386d388c3e108dd3c6b1ff5e55dd1b4ba59a285c",
+    "bytes": 1059
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/sealed-files.json",
+    "archive": "serve-stage-a-finish-20261102/package/sealed-files.json",
+    "sha256": "7a99a913fe1704fa6f0e0c3963dd8186448d4b77a1257d43cbf8ccbe274b25c1",
+    "bytes": 4415
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-finish-20261102/package/sources.json",
+    "archive": "serve-stage-a-finish-20261102/package/sources.json",
+    "sha256": "d83aa3b7a060cf2c92221bb0af988a5aa41aa3c027ae5930fc7a17e6b5e654e9",
+    "bytes": 182236
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/begin.json",
+    "archive": "serve-stage-a-final-20261102/execution/begin.json",
+    "sha256": "87b8a9e07d06223ff2e283e96f527d7e716615eeb494e051adbcfcab52a5f5b2",
+    "bytes": 184
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-headers.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-headers.json",
+    "sha256": "7ee792a7c84a49816b68023736eb3039164ba8e721a122c4181a97d944d55489",
+    "bytes": 131
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-memory.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-memory.json",
+    "sha256": "47aaf7f09992d26b3b0a5808460db02c1e7b00bf7d541899565bbc00a807e2b4",
+    "bytes": 3005
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-metrics.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-metrics.json",
+    "sha256": "5456b8a10078754424ce38ee166d1de82502e672ddbd1096107077a3bb942bdd",
+    "bytes": 13813
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-request.json",
+    "sha256": "fda94a6afcdcc0e7c3dffbbf8db85760fe781a8bff2254b2b67b50799f6efd50",
+    "bytes": 394
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-result.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-result.json",
+    "sha256": "10f85df2e5485aaac98f807474f3b4abfa2d2cc0b03e990e625004f4654728a5",
+    "bytes": 317
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-sdk.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-sdk.json",
+    "sha256": "1f911280ce84dfb5a482b2c0cc935bb4017dfc1ae719c4795f1e92e73217be2c",
+    "bytes": 739
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-wire.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/after-slow-wire.bin",
+    "sha256": "40abf1e2b68f022d219f742a5c317ad27297627f54aa13372fd1480a8f6876f5",
+    "bytes": 314
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/before-final-shutdown-memory.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/before-final-shutdown-memory.json",
+    "sha256": "f376595d2443ca4cf91c57fd04e53430f06a5a23dc13fa56c2839476610a175e",
+    "bytes": 3005
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/before-final-shutdown-metrics.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/before-final-shutdown-metrics.json",
+    "sha256": "c423aec9c6333e16c270e0f56084db4e86c4318d926294689e30d8a12b0d7a6a",
+    "bytes": 13831
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/before-shutdown-memory.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/before-shutdown-memory.json",
+    "sha256": "1cdf9f07574922edfe7f73dc3e60f136b746efc46be4f4a6f82277c19c81521e",
+    "bytes": 3005
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/before-shutdown-metrics.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/before-shutdown-metrics.json",
+    "sha256": "c423aec9c6333e16c270e0f56084db4e86c4318d926294689e30d8a12b0d7a6a",
+    "bytes": 13831
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/capabilities.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/capabilities.json",
+    "sha256": "39b9697ed67c82739f0be4346dc83dbd8a3542d6f51a442684a7992714af361a",
+    "bytes": 5514
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/command.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/command.json",
+    "sha256": "bb492c66e494bba5a25b7677acfdae056507e270e54f1ea1d5bdd9934142e630",
+    "bytes": 717
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/schema-headers.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/schema-headers.json",
+    "sha256": "0fc830452b7af2524e78457acf7eccace4ae16010d1cfdca2effe39b38be3ea9",
+    "bytes": 161
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/schema-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/schema-request.json",
+    "sha256": "d1c69b3e453aef3cf7aad58b00e1970795843038408216c953dc365607c3ec49",
+    "bytes": 980
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/schema-result.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/schema-result.json",
+    "sha256": "a09e70642ecaa14b670c0df9f45a43d21d6a53776765ca6bf471de445233dde5",
+    "bytes": 361
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/schema-sdk.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/schema-sdk.json",
+    "sha256": "049525756d6b241842920d647e3bdf8b50a0a51411b7a57d6716ff6c072a1401",
+    "bytes": 2351
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/schema-wire.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/schema-wire.bin",
+    "sha256": "718f07811b99e6cc15b7d272b82261d040fcee4b95cd29fb7086f58a00181e6b",
+    "bytes": 1052
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/server.log",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/server.log",
+    "sha256": "bf47154c402fee0b8a5b179d6f55b5827479fb8e2ecbf546366da0a7f82ee22f",
+    "bytes": 11369
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown-active-memory.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown-active-memory.json",
+    "sha256": "2bff4ecbd55c5bac586703e9a8a62894666196abb48fc76eb7ee167a694465b1",
+    "bytes": 3005
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown-active-metrics.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown-active-metrics.json",
+    "sha256": "3f2f3348f08e1d96452838993af50104f34c53dab51ae3e9ff60ed34fc204665",
+    "bytes": 13833
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown-long-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown-long-request.json",
+    "sha256": "8d496844f0b5eb247f7b66a5a036b206aaaed41c9448ea5b10b45236a23f588c",
+    "bytes": 1300
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown-wire.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown-wire.bin",
+    "sha256": "2a15e6b9cc221b315399efdb0dd5a32212ab00adb3950e28ebec579d3f6dc418",
+    "bytes": 535
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/shutdown.json",
+    "sha256": "59dc0f379a7f0d5b5a1e7fdb8ae5d8c9f624b6fb743defc57161d5c30bc2254e",
+    "bytes": 39
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/slow-cancel.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/slow-cancel.json",
+    "sha256": "6cd7b04c6be93ff5e58dfd2e4c7aec47948a723318119fa22eab4e96b999baa2",
+    "bytes": 60
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/slow-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/slow-request.json",
+    "sha256": "473e20e2afffbd9c8190ccadf9ba7bccc7a9ba9a49ed8905cf0c5568a4dd4fbf",
+    "bytes": 525
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-fault/slow-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-fault/slow-response.bin",
+    "sha256": "cc1fc268bed046a60b8d28221af31db635df188debc2e5ca8431303219039346",
+    "bytes": 2774
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/capabilities.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/capabilities.json",
+    "sha256": "39b9697ed67c82739f0be4346dc83dbd8a3542d6f51a442684a7992714af361a",
+    "bytes": 5514
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/command.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/command.json",
+    "sha256": "d277c3eede1ea3bb74aeb5244a7f499bc964ad6e3066116cf17571c21eac2806",
+    "bytes": 479
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/duplicate-id-request.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/duplicate-id-request.bin",
+    "sha256": "fe838050d0e84a6ea4862da1e5307ab30071ef0441dd0790485924cab95440d9",
+    "bytes": 112
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/duplicate-id-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/duplicate-id-response.bin",
+    "sha256": "04c1e48fd7e5fce6cb7dcaa969f1d9e414f9e6349d65ea97165ea165abbd3da6",
+    "bytes": 276
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/get-body-request.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/get-body-request.bin",
+    "sha256": "79fd3d38429438aeae6844bdaf82ae2f65e39989c7f4b9a64ff8edcf2ebad4df",
+    "bytes": 92
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/get-body-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/get-body-response.bin",
+    "sha256": "8fb77427e7a734aecc7d0bcdd4d58a1c057fa86bba22de958cd7621b2e365ac7",
+    "bytes": 250
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/media-request.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/media-request.bin",
+    "sha256": "94128b83817a577c6d14712fcc55419b02baecdd6e4059a5ac9dbeac7e048649",
+    "bytes": 132
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/media-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/media-response.bin",
+    "sha256": "a42cf55bc7e11039855c48b6d67f21316857f2f6a29badfd89521d7d9d6ebcd1",
+    "bytes": 299
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/method-request.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/method-request.bin",
+    "sha256": "12003ff0f5e043b296f513175db8219b5f9286d07291365aba74b277b3119672",
+    "bytes": 103
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/method-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/method-response.bin",
+    "sha256": "3dfb151ae458dbc11ac175d71d84d77e31dc7bf149c281c7c0236b0aa7992750",
+    "bytes": 268
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/missing-media-request.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/missing-media-request.bin",
+    "sha256": "4ccd14b9e79e7a93878b7ef8a9db4f45f3e7a8126acb3eea34a456d33f2bb40e",
+    "bytes": 105
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/missing-media-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/missing-media-response.bin",
+    "sha256": "a42cf55bc7e11039855c48b6d67f21316857f2f6a29badfd89521d7d9d6ebcd1",
+    "bytes": 299
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-headers.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-headers.json",
+    "sha256": "495abda8ce63707c2d8be4f904f16a56ebb925ca0a81c313067bc6b888d6fcab",
+    "bytes": 129
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-request.json",
+    "sha256": "f4149bdfe43b49f6538274ac8abf315cabc9c5142124f954e77a91203707fb42",
+    "bytes": 392
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-result.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-result.json",
+    "sha256": "9ac2f4fc3ccac5872429a40243c4c3c11a6982526147f2938fdbc19ad1a8a554",
+    "bytes": 317
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-sdk.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-sdk.json",
+    "sha256": "999c5a3a8daeb0dbb114be681677b625faf716a53e81b672d584274e254c9d5b",
+    "bytes": 739
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-wire.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/ordinary-wire.bin",
+    "sha256": "db5e01e0922eb730df56662a09ef6d0e3dfd65769186fbc4d5990c88a8e0cab2",
+    "bytes": 314
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/parameter-request.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/parameter-request.bin",
+    "sha256": "f31e392fb67894be5bbb1d03554ceac6e4153895b0179138c930911ffbc597e0",
+    "bytes": 172
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/parameter-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/parameter-response.bin",
+    "sha256": "8af9402d02025668c8bb8a9f9575a8366eea4b29ae9fb0979ff0dcb1a1561e0f",
+    "bytes": 276
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-headers.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-headers.json",
+    "sha256": "67993eccaf15a3bcc55d49cab0968e97f522cddb60ad19aac221df04065efa49",
+    "bytes": 169
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-request.json",
+    "sha256": "568646f47bfd071d0a99f84994bd4ad7dda2d2dd3ded4d90080ac68fbcc972c2",
+    "bytes": 2801
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-result.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-result.json",
+    "sha256": "7633ff591b5f8473b34f4bf66f864f9f92931a7d0f5e601a9803a88f5f485a07",
+    "bytes": 473
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-sdk.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-sdk.json",
+    "sha256": "3486336732323ace15480d999bdd8d14d8f0c9db113b4f4d9c11e811b1402ffb",
+    "bytes": 2464
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-wire.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-answer-wire.bin",
+    "sha256": "2a72bb56252d6ef898070515d4d3474e4aea8a82e97826a46a5efc6d367272c1",
+    "bytes": 1165
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-headers.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-headers.json",
+    "sha256": "90eaed3abb1849b334b40d907177384b8c22ae8fadcbe595e6e962af6c986f72",
+    "bytes": 167
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-request.json",
+    "sha256": "8a6d54a70937261bd06652b351e5f39d81cd103be98326657dd1717091360382",
+    "bytes": 1590
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-result.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-result.json",
+    "sha256": "374a103a3bd262442afacc9a92778219d4fff5daf1f963bfd1ba65b1bb1b95da",
+    "bytes": 624
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-sdk.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-sdk.json",
+    "sha256": "a7373364d65c6d833bb95aacc528fad41e75b2914f868985b4c48fd2f343dbe8",
+    "bytes": 2671
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-wire.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-read-wire.bin",
+    "sha256": "a5abfc3f019daf55a5b1a337aea9304cf26004c93b4f4a6e957b7eeeb706af8d",
+    "bytes": 1223
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/project-tool-result.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/project-tool-result.json",
+    "sha256": "6f7ef1318ad5ff5c083c3d3e3d33b5623aea42038d641fe8e42d75eb00eac058",
+    "bytes": 700
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/proxy-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/proxy-request.json",
+    "sha256": "32380c632d5d8dbe73272600a297e4533032329489f2172d7156d413d5591887",
+    "bytes": 1298
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/query-request.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/query-request.bin",
+    "sha256": "c4b2b04973b6ee65e64b877e515b6f76d6531cc4820bec8486764768b34d0c74",
+    "bytes": 97
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/query-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/query-response.bin",
+    "sha256": "1755cef6f35803eebf959bd5350d4f88bebaeb20ec0fb672228e40ae7dece4d5",
+    "bytes": 261
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/ready-request.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/ready-request.bin",
+    "sha256": "1131319a316215ca593c00d481e4f27626e095cbe26d81bcf6624a05db877d2d",
+    "bytes": 41
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/ready-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/ready-response.bin",
+    "sha256": "2259ea6257bcc228cea07eff11d992c33f7a692d2d3b072d7943e617a2a61556",
+    "bytes": 185
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/server.log",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/server.log",
+    "sha256": "5168a844850852ae3e2f2db4a4f45fe26c913121ba4d8c282f28cb8ae8f46490",
+    "bytes": 11629
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/shutdown.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/shutdown.json",
+    "sha256": "59dc0f379a7f0d5b5a1e7fdb8ae5d8c9f624b6fb743defc57161d5c30bc2254e",
+    "bytes": 39
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/unknown-request.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/unknown-request.bin",
+    "sha256": "d57a799831d930fce749dea1f049b50f716221d265a5208520ab0da3e0d05bb9",
+    "bytes": 91
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/candidate-mtp/unknown-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/candidate-mtp/unknown-response.bin",
+    "sha256": "65b5d6a7380a61380acd5d9e82c63a3e4843058ada0245033bbfe9419870a7cf",
+    "bytes": 240
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/result.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/result.json",
+    "sha256": "f52d07c814f6c25213e98c2f9602678ec0fb43f9a83ddbf91b8af15c4663cff7",
+    "bytes": 273
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/busy.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/busy.json",
+    "sha256": "2818a30280fb204e681f9ebe137a02dd2574ef830eda7f10954903a433fc9717",
+    "bytes": 197
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/capabilities.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/capabilities.json",
+    "sha256": "39b9697ed67c82739f0be4346dc83dbd8a3542d6f51a442684a7992714af361a",
+    "bytes": 5514
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/command.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/command.json",
+    "sha256": "bffe5f50e1f673c83d8107d796f5e43e92821bd1a5ec4515a270aa9c5c3e6f70",
+    "bytes": 719
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/deadline-request.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/deadline-request.bin",
+    "sha256": "0e76b136ed7be2f509c91cdaff8f1bfd5dde9888da27dbe93c0c979b02c2cab0",
+    "bytes": 1155
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/deadline-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/deadline-response.bin",
+    "sha256": "811b7db6d1bd53ef0a6bb1ecd7f89c13af66877bfca2b840e1a2f39fd00908ad",
+    "bytes": 565
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-cancel.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-cancel.json",
+    "sha256": "6cd7b04c6be93ff5e58dfd2e4c7aec47948a723318119fa22eab4e96b999baa2",
+    "bytes": 60
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-request.json",
+    "sha256": "32380c632d5d8dbe73272600a297e4533032329489f2172d7156d413d5591887",
+    "bytes": 1298
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-response.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-response.bin",
+    "sha256": "2d0336846845629b43e9b9f0294c0fee3b03ae0a154a63e57863861ef29d1df8",
+    "bytes": 524
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-timing.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-timing.json",
+    "sha256": "0c62e35ce986a7ea6b79470e2c829dd299a2c80784b9317a0dadb541e4e14f53",
+    "bytes": 127
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-upstream.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/proxy-upstream.bin",
+    "sha256": "2d0336846845629b43e9b9f0294c0fee3b03ae0a154a63e57863861ef29d1df8",
+    "bytes": 524
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-headers.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-headers.json",
+    "sha256": "287858bb0f41cc49635f9761a3c23e86e814fbd380c4e407517c2ffa047c16af",
+    "bytes": 136
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-request.json",
+    "sha256": "4f16f82fb0d906cb4d718b4ab483792d1ff6880e8a2abc13b3c2ed09f79aa12f",
+    "bytes": 399
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-result.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-result.json",
+    "sha256": "d8d9b5dd4ed1695f1e2ee3205d3b59a667f1256b03d60aa49f80794ef1d4d54b",
+    "bytes": 318
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-sdk.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-sdk.json",
+    "sha256": "fd96daebac764a291c361e198367d82c5141ed3d8f38a12e7310c75c484fa61a",
+    "bytes": 739
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-wire.bin",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/queued-ordinary-wire.bin",
+    "sha256": "08655072b863daecfe748e9a7b6b2bedf1050e429d507edb9cd7137391229f3b",
+    "bytes": 314
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/ready-under-load.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/ready-under-load.json",
+    "sha256": "364ed76164d6482135e11c379f1554f0637c20d45c4bb817eaa8b6b8aa0e9042",
+    "bytes": 84
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/server.log",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/server.log",
+    "sha256": "9a438cd66a7150ee4570a51f684bdd9162b04f5b20871fe902a31f9505828b68",
+    "bytes": 11235
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/shutdown.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/shutdown.json",
+    "sha256": "59dc0f379a7f0d5b5a1e7fdb8ae5d8c9f624b6fb743defc57161d5c30bc2254e",
+    "bytes": 39
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/reused-mixed/slow-request.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/reused-mixed/slow-request.json",
+    "sha256": "648654c7d699aa1b0609af9bc4ec9feee67b769734ad6cc526e175f32ea6f222",
+    "bytes": 1297
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/business/schema-result.json",
+    "archive": "serve-stage-a-final-20261102/execution/business/schema-result.json",
+    "sha256": "1ce0b46b6405ce2f1b59781dadf76bc337e3cb7848f52be2b24bd375eea2856d",
+    "bytes": 3700
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/execution.json",
+    "archive": "serve-stage-a-final-20261102/execution/execution.json",
+    "sha256": "3f8b3c9c5b13fd1268b2ce38ff42f370df9f168323d7e16b7fc790becbe7b313",
+    "bytes": 153
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/final-gpu.json",
+    "archive": "serve-stage-a-final-20261102/execution/final-gpu.json",
+    "sha256": "110b1262c7edd3387ca91a078a7f38235edf43512885a01b50084ffabbe4f988",
+    "bytes": 2260
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/finalized.json",
+    "archive": "serve-stage-a-final-20261102/execution/finalized.json",
+    "sha256": "1acf0041b0addb9bbf94a54d7a7b019151169ccad19c9694882a046dab47cfc8",
+    "bytes": 313
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/health/result.json",
+    "archive": "serve-stage-a-final-20261102/execution/health/result.json",
+    "sha256": "4384cad98f96bc3847e9cd9d1dd86f1bd9027169276c2c9a282190f336b9d924",
+    "bytes": 814
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/initial-gpu.json",
+    "archive": "serve-stage-a-final-20261102/execution/initial-gpu.json",
+    "sha256": "aab94ed028fe3aadbbc501e60f9683f7af9de4ce06d06dc04846843c0f2fbba5",
+    "bytes": 2260
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/lease/events.jsonl",
+    "archive": "serve-stage-a-final-20261102/execution/lease/events.jsonl",
+    "sha256": "9650fde76ce4c3c2c6208aa5921320c749f6cc70cc5f8e72d7fcaebc2763ea0c",
+    "bytes": 7794
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/lease/exit.json",
+    "archive": "serve-stage-a-final-20261102/execution/lease/exit.json",
+    "sha256": "ed00ade32cf07c7c25aa4687fcbbe1e9a37388abc0c14c850db489e1bdb3e2e4",
+    "bytes": 668
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/lease/nvml-queries.jsonl",
+    "archive": "serve-stage-a-final-20261102/execution/lease/nvml-queries.jsonl",
+    "sha256": "3876d998be5893b1f71ea598a78ead633e564903943b4fe9c15a606c7799f3f8",
+    "bytes": 91538
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/pair/q4t.release.json",
+    "archive": "serve-stage-a-final-20261102/execution/pair/q4t.release.json",
+    "sha256": "94ce08253aa345db4775de3b1002c9daf29a91d058fea682ede946c6bcde5fdf",
+    "bytes": 25259
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/post-delivery.json",
+    "archive": "serve-stage-a-final-20261102/execution/post-delivery.json",
+    "sha256": "a300599dd0c6f1fc7b660efc64aaf6b318493fd2de2722051a914198cd447d85",
+    "bytes": 465
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/release/binding.json",
+    "archive": "serve-stage-a-final-20261102/execution/release/binding.json",
+    "sha256": "76284cac13261b92cc8470cd434f1523c9a76913304ed94211e24d759228ec39",
+    "bytes": 375
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/release/q4t.release.json",
+    "archive": "serve-stage-a-final-20261102/execution/release/q4t.release.json",
+    "sha256": "94ce08253aa345db4775de3b1002c9daf29a91d058fea682ede946c6bcde5fdf",
+    "bytes": 25259
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/release/sealed-files.json",
+    "archive": "serve-stage-a-final-20261102/execution/release/sealed-files.json",
+    "sha256": "3424b60bc8aafb5b8926641f98a02d8897554567fe0fb56720be6cb5e88b04b8",
+    "bytes": 179
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/execution/sealed-files.json",
+    "archive": "serve-stage-a-final-20261102/execution/sealed-files.json",
+    "sha256": "84a393a02cd123dac8105489f3f2af405459ca8c6bbc80420a8ad5f93f941880",
+    "bytes": 11800
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/candidate/chat_protocol_sources.json",
+    "archive": "serve-stage-a-final-20261102/package/candidate/chat_protocol_sources.json",
+    "sha256": "a2d063a874efbdb55292a256be220988c8776c34fe82d1bff7c2f05f1bbb8bbe",
+    "bytes": 4178
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/candidate/compile_commands.json",
+    "archive": "serve-stage-a-final-20261102/package/candidate/compile_commands.json",
+    "sha256": "196e61e7c389c96703b37dabecc5e36789eac906f2b7c288f9fdb371d4b09051",
+    "bytes": 267419
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/candidate/fault-compile_commands.json",
+    "archive": "serve-stage-a-final-20261102/package/candidate/fault-compile_commands.json",
+    "sha256": "ec17abe480476004cfbc65159b2ba36b71588011ebe4e9f7bed60eefb30d919b",
+    "bytes": 270653
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/candidate/runtime-source.json",
+    "archive": "serve-stage-a-final-20261102/package/candidate/runtime-source.json",
+    "sha256": "3b35816ed3e5df6c39de58a979d6ae5c08902aae61918478ee2e871ffa7fc260",
+    "bytes": 18451
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/backend-gate.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/backend-gate.log",
+    "sha256": "99bc41e14d46993b7b41e77b6b17696b5e5b63418b3edf9a9f9e24782e0c1117",
+    "bytes": 436
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/build-comment.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/build-comment.log",
+    "sha256": "aa69011affedcd36c9560626baa130c22cb907ee4432d6131e009aa10d213ae5",
+    "bytes": 3754
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/build-engine.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/build-engine.log",
+    "sha256": "c6319ac01ad60e0889c60d7dd1d87d88692eaec46b14675fa937c12113b08ef5",
+    "bytes": 14410
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/build-fault-final.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/build-fault-final.log",
+    "sha256": "7510c4c76b124d21b7b336ee999742f2aa19d532c540849ccecc34edfd36d999",
+    "bytes": 1061
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/build-fault.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/build-fault.log",
+    "sha256": "13b3676808ab976fafe9cbc3b09d44e4c2f9ffd6000b21369055a2d272b5a21a",
+    "bytes": 9718
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/build-final.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/build-final.log",
+    "sha256": "68f4145243239925d1add030b2d7446e27e07c744d09280050447b63042c4eea",
+    "bytes": 2877
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/build-off.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/build-off.log",
+    "sha256": "66922e62c751ade4dbd74ef73378de7f5a77b15ede53908739c73b3c84536880",
+    "bytes": 4765
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/build-on.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/build-on.log",
+    "sha256": "70e9388c18506966dd9b00d37ab374571d7cbbabacde3b2a2116b5a5f3bbf4c9",
+    "bytes": 7914
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/build-results.json",
+    "archive": "serve-stage-a-final-20261102/package/cpu/build-results.json",
+    "sha256": "44aaa95e69755e28502f8bb10e9f6b44d38ef06d6733df24e982c3b8b0a4a7de",
+    "bytes": 2419
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/configure-engine.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/configure-engine.log",
+    "sha256": "459748d1a1abc04119d550fdef5e14cf7a833f460691dd5a8deae07ba96aa22f",
+    "bytes": 1312
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/configure-fault.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/configure-fault.log",
+    "sha256": "fd87567a5ecb109ebff25c03698bc929102d342c4e41204953b96bea28664187",
+    "bytes": 1324
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/configure-off.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/configure-off.log",
+    "sha256": "ab5c1f30b6fdb231130a7390f5db034df7fd3d88a693e3fb1f16df3c01d7bf02",
+    "bytes": 691
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/configure-on.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/configure-on.log",
+    "sha256": "2621429bec70d34a1ce90268b164f13ec213c53ced24faf561b0736918e5b105",
+    "bytes": 925
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/driver-closeout.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/driver-closeout.log",
+    "sha256": "84503b8073baec19c4722366a4c1efe86e640f9fc1888a1040c7edcbc89d510a",
+    "bytes": 1138
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/driver-final.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/driver-final.log",
+    "sha256": "c6b9b1f09add0403cc07e90bfdf272129b1ddfa2f8f7675ea8218862f2516371",
+    "bytes": 104
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/driver-final2.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/driver-final2.log",
+    "sha256": "43f84afc42ed1ec2c4097f834273e25a5589770dd5d0ecc6fc2d19acf3d9f280",
+    "bytes": 708
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/driver-repair-final.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/driver-repair-final.log",
+    "sha256": "b5107f8411b9885bb6ef82eede8eac33abf4f22343aa1f4434abcba0b634ef74",
+    "bytes": 970
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/driver-repair.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/driver-repair.log",
+    "sha256": "0b861eef8a39626a1f3d17143f86da405fa0db25c6dd26df4bed651638e052a9",
+    "bytes": 1672
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/driver-result.json",
+    "archive": "serve-stage-a-final-20261102/package/cpu/driver-result.json",
+    "sha256": "f60a8a47f0fe770f9959961359a2091ff451633e050d9e3d951ecede593e76af",
+    "bytes": 50
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/driver.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/driver.log",
+    "sha256": "43f84afc42ed1ec2c4097f834273e25a5589770dd5d0ecc6fc2d19acf3d9f280",
+    "bytes": 708
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/host-gate/list.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/host-gate/list.log",
+    "sha256": "b7583fee194d9334693f3cc8f6ff369c39e1c7e48a698e882efffbc4ea27adfe",
+    "bytes": 7772
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/host-gate/result.json",
+    "archive": "serve-stage-a-final-20261102/package/cpu/host-gate/result.json",
+    "sha256": "1da8abf06d67fdab1d68b82c5fa7b21ef3dd3d74f38226d82eae57f29cc29720",
+    "bytes": 6652
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/host-gate/run.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/host-gate/run.log",
+    "sha256": "2bb9f495c072f4180b574d89f608df1c7bc74589cd3a2d6d97446702c40eb866",
+    "bytes": 6651
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/host-off.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/host-off.log",
+    "sha256": "975e64a5bda83a1c26dcf3ef4a483779c96a51b128109608d6b8dc6c4193008e",
+    "bytes": 8739
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/host-on.log",
+    "archive": "serve-stage-a-final-20261102/package/cpu/host-on.log",
+    "sha256": "33af08bf225b43035a164d19abdf7d75b85970e1e9e5e386c4435b7f82ccd9d8",
+    "bytes": 9136
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/host-results.json",
+    "archive": "serve-stage-a-final-20261102/package/cpu/host-results.json",
+    "sha256": "0cd77233a3479e963522e9fad1674a9c8a128065e1f3f8142f4b1f68fcb9fca3",
+    "bytes": 167
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/http-gate-identity.json",
+    "archive": "serve-stage-a-final-20261102/package/cpu/http-gate-identity.json",
+    "sha256": "16ff0817701566de4b5bfe8a94a500d640be264b36c07d0e786913b8e5c334fc",
+    "bytes": 317
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/cpu/inventory.json",
+    "archive": "serve-stage-a-final-20261102/package/cpu/inventory.json",
+    "sha256": "3f6f12f0a9297ed8a43be35104a9c6688290a8ed0674442b54ab6683e1fab22c",
+    "bytes": 168
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/numerical-reuse.json",
+    "archive": "serve-stage-a-final-20261102/package/numerical-reuse.json",
+    "sha256": "eded649062f5c56802906168869f34066b996470722afda63a770cb2bf8f6f50",
+    "bytes": 789
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/plan.json",
+    "archive": "serve-stage-a-final-20261102/package/plan.json",
+    "sha256": "0c05cfc2d236a8d022fdd50a2c6735bdc0c6e2a67007f6529eabd3133e8d8727",
+    "bytes": 1906
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/previous/q4t.release.json",
+    "archive": "serve-stage-a-final-20261102/package/previous/q4t.release.json",
+    "sha256": "da9f3ac5b41215157a6fbbb0d24ec540be7836c24d75d3bc6ed5228627032800",
+    "bytes": 21267
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/reuse.json",
+    "archive": "serve-stage-a-final-20261102/package/reuse.json",
+    "sha256": "f33200b149cf1b3bf2036be81690a4370b4d162c4079042ddcc85cb81a783822",
+    "bytes": 1226
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/sealed-files.json",
+    "archive": "serve-stage-a-final-20261102/package/sealed-files.json",
+    "sha256": "474741ec2dc8a1d856aefb4bfe69dba111357ef13af220c05157af5bd0a27a31",
+    "bytes": 4512
+  },
+  {
+    "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/sources.json",
+    "archive": "serve-stage-a-final-20261102/package/sources.json",
+    "sha256": "555ed60ca829a714925d8c8c8e2fc7ed4a5b27108d8fd618dde94afe0937f968",
+    "bytes": 182341
+  }
+]

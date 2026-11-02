@@ -1,0 +1,11 @@
+test_done_and_error_order (test_stage.Contracts.test_done_and_error_order) ... ok
+test_error_location_is_not_lost (test_stage.Contracts.test_error_location_is_not_lost) ... ok
+test_identity_cannot_change_in_stream (test_stage.Contracts.test_identity_cannot_change_in_stream) ... ok
+test_installation_requires_guard_before_state_read (test_stage.Contracts.test_installation_requires_guard_before_state_read) ... ok
+test_nullable_wire_not_sdk_defaults (test_stage.Contracts.test_nullable_wire_not_sdk_defaults) ... ok
+test_stage_budget_cannot_expand (test_stage.Contracts.test_stage_budget_cannot_expand) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+OK

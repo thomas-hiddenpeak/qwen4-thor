@@ -1,0 +1,12 @@
+{
+  "status": "FAILED",
+  "error": "AssertionError('real TCP EAGAIN was not observed')",
+  "request_attempts": 8,
+  "negative_requests": 9,
+  "starts": 2,
+  "new_attempts": 4,
+  "new_starts": 1,
+  "seconds_since_first_launch": 834.0470764636993,
+  "prior_rejected_generation_attempts": 1,
+  "performance_acceptance": false
+}

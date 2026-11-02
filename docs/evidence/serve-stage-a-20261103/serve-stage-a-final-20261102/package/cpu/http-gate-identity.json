@@ -1,0 +1,7 @@
+{
+  "sha256": "6733732fe65543b47a9f9e49bb747f9138f47b06464a11495c45d866b60a44a8",
+  "guard": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/cpu-http/lease/exit.json",
+  "passed": true,
+  "tests": 7,
+  "subsequent_change": "Only remove duplicate HTTP exception log; no lifecycle behavior change"
+}

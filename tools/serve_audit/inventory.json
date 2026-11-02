@@ -580,8 +580,9 @@
       "tests/server_http_request_test.cpp",
       "tests/server_http_response_test.cpp",
       "tools/serve_reliability/http_lifecycle_test.cpp",
-      "tools/serve_stage_a/verify.py"
+      "tools/serve_stage_a/verify.py",
+      "docs/SERVE_STAGE_A_RESULT_2026-11-03.md"
     ],
-    "real_acceptance": "pending"
+    "real_acceptance": "Bounded delivery 2026-11-03, runtime e0d9f9d / ELF 142bb9d4; strict long buffered backpressure not proven"
   }
 }

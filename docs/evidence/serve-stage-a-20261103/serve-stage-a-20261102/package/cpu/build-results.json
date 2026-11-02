@@ -1,0 +1,96 @@
+[
+  {
+    "step": "configure-off",
+    "returncode": 0,
+    "seconds": 0.6144733428955078,
+    "command": [
+      "cmake",
+      "-S",
+      "tests/host",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/host-off",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=g++-14",
+      "-DQ4T_ENABLE_XGRAMMAR=OFF"
+    ]
+  },
+  {
+    "step": "build-off",
+    "returncode": 0,
+    "seconds": 8.339634895324707,
+    "command": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/host-off",
+      "--target",
+      "q4t_host_tests",
+      "--parallel",
+      "8"
+    ]
+  },
+  {
+    "step": "configure-on",
+    "returncode": 0,
+    "seconds": 0.6144256591796875,
+    "command": [
+      "cmake",
+      "-S",
+      "tests/host",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/host-on",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=g++-14",
+      "-DQ4T_ENABLE_XGRAMMAR=ON",
+      "-DFETCHCONTENT_SOURCE_DIR_Q4T_XGRAMMAR=/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar"
+    ]
+  },
+  {
+    "step": "build-on",
+    "returncode": 0,
+    "seconds": 21.63189959526062,
+    "command": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/host-on",
+      "--target",
+      "q4t_host_tests",
+      "--parallel",
+      "8"
+    ]
+  },
+  {
+    "step": "configure-engine",
+    "returncode": 0,
+    "seconds": 2.1188294887542725,
+    "command": [
+      "cmake",
+      "-S",
+      ".",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/engine",
+      "-DCMAKE_BUILD_TYPE=Release",
+      "-DCMAKE_CXX_COMPILER=g++-14",
+      "-DQ4T_ENABLE_XGRAMMAR=ON",
+      "-DFETCHCONTENT_SOURCE_DIR_Q4T_XGRAMMAR=/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar",
+      "-DCMAKE_CUDA_HOST_COMPILER=g++-14",
+      "-DQ4T_CUDA_ARCHITECTURES=110a",
+      "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+    ]
+  },
+  {
+    "step": "build-engine",
+    "returncode": 0,
+    "seconds": 66.82424068450928,
+    "command": [
+      "cmake",
+      "--build",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/engine",
+      "--target",
+      "q4t",
+      "q4t_host_tests",
+      "q4t_http_lifecycle_tests",
+      "--parallel",
+      "8"
+    ]
+  }
+]
