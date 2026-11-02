@@ -76,7 +76,6 @@ using detail::WriteAll;
 using detail::SendSimple;
 using detail::SendError;
 using detail::SseChunk;
-using detail::PrepareChatInput;
 
 void ChatServer::HandleChat(int fd, const std::string& body) {
   detail::ResponseState response = detail::ResponseState::kUnsent;
@@ -137,45 +136,23 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
 
-  std::string error_param;
-  s = ValidateChatContract(req, model_name_, allow_media_, &error_param);
-  if (!s.ok()) {
-    SendError(fd, 400, s.message(), {}, "invalid_request", error_param);
-    return;
-  }
-
-  OutputConstraints constraints;
-  s = PlanOutputConstraints(req, &constraints);
-  if (!s || (constraints.active && !kStructuredDecodingAvailable)) {
-    SendError(
-        fd, 400, s ? "structured decoding backend is not built" : s.message(),
-        {}, s ? "structured_backend_unavailable" : "invalid_output_constraint");
-    return;
-  }
-
-  std::vector<std::string> stops;
-  s = ParseTextStop(req, constraints.active, &stops, &error_param);
+  const auto planning_config = PlanningConfig();
+  ChatRequestPlan request_plan;
+  ChatPlanError planning_error;
+  s = PlanChatRequest(req, planning_config, &request_plan, &planning_error);
   if (!s) {
-    SendError(fd, 400, s.message(), {}, "invalid_request", error_param);
+    SendError(fd, 400, s.message(), {}, planning_error.code, planning_error.param);
     return;
   }
-  TextStopStream text_stop(std::move(stops));
-
+  const auto& constraints = request_plan.constraints;
+  TextStopStream text_stop(std::move(request_plan.stops));
   const std::string prefix_scope = req.GetString("prefix_cache_scope");
   const int prefix_write_tokens =
       static_cast<int>(req.GetInt("prefix_cache_write_tokens", 0));
-  if (!prefix_scope.empty() && !prefix_cache_.Enabled()) {
-    SendError(fd, 400, "prefix cache is not enabled");
-    return;
-  }
   std::vector<std::unique_ptr<SessionLease>> shared_writes;
   SessionLease session;
   session.key = req.GetString("session_id");
   if (!session.key.empty()) {
-    if (!session_cache_.Enabled()) {
-      SendError(fd, 400, "session cache is not enabled");
-      return;
-    }
     if (!session_cache_.Acquire(session.key)) {
       SendError(fd, 409, "session is busy or lease capacity exhausted", {},
                 "session_busy", "session_id");
@@ -242,14 +219,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     err_guard.ok = true;
   };
 
-  // ValidateChatContract checked type and range before registration.
-  int max_tokens = static_cast<int>(
-      req.GetInt("max_completion_tokens",
-                 req.GetInt("max_tokens", max_tokens_default_)));
-  // Upper bound: decode stops at max_len_ anyway (KV cache), so a huge
-  // max_tokens only pins a seq slot and grows host buffers; cap it so one
-  // request cannot starve the pool.
-  if (max_tokens > max_len_) max_tokens = max_len_;
+  const int max_tokens = ChatOutputLimit(req, planning_config);
 
   // stream flag.
   const bool stream = req.GetBool("stream", false);
@@ -265,10 +235,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
   std::string prompt;
   std::vector<VisionItem> items;
-  if (constraints.active) {
-    const auto render_request = ConstraintTemplateRequest(req, constraints);
-    if (!PrepareChatInput(fd, render_request, &prompt, &items)) return;
-  } else if (!PrepareChatInput(fd, req, &prompt, &items)) {
+  s = PrepareChatPrompt(req, constraints, &prompt, &items,
+                         &planning_error.param);
+  if (!s) {
+    SendError(fd, 400, s.message(), {}, "invalid_request", planning_error.param);
     return;
   }
   ChatResponseParser response_parser;
@@ -463,36 +433,27 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::vector<std::uint32_t> prompt_u32;
   std::vector<int32_t> ids;
   const bool explicit_slots = !seq_capacities_.empty();
-  size_t required_capacity = 0;
-  if (explicit_slots) {
-    diagnostic.Stage("encode");
-    {
-      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-      s = tok_->Encode(prompt, &prompt_u32, {.cancelled = cancelled});
-    }
-    if (!s.ok()) {
-      if (cancelled()) {
-        count_abort();
-        send_cancel_error("request cancelled during encoding");
-        return;
-      }
-      SendError(fd, 400, "encode failed: " + s.message());
-      return;
-    }
-    required_capacity = prompt_u32.size() + static_cast<size_t>(max_tokens);
-    if (prompt_u32.empty() ||
-        required_capacity > static_cast<size_t>(max_len_)) {
-      SendError(fd, 400, "input plus output budget exceeds slot capacity");
-      return;
-    }
-    ids.assign(prompt_u32.begin(), prompt_u32.end());
-    s = ValidatePrefixSeedBoundary(prefix_write_tokens,
-                                     prefix_cache_checkpoints_, ids.size());
-    if (!s.ok()) {
-      SendError(fd, 400, s.message());
-      return;
-    }
+  ChatPromptBudget prompt_budget;
+  diagnostic.Stage("encode");
+  {
+    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+    s = EncodeChatPrompt(
+        req, planning_config, prompt,
+        [&](std::string_view text, std::vector<uint32_t>* out) {
+          return tok_->Encode(text, out, {.cancelled = cancelled});
+        }, &prompt_u32, &prompt_budget, &planning_error);
   }
+  if (!s) {
+    if (cancelled()) {
+      count_abort();
+      send_cancel_error("request cancelled during encoding");
+    } else {
+      SendError(fd, 400, s.message(), {}, planning_error.code, planning_error.param);
+    }
+    return;
+  }
+  ids.assign(prompt_u32.begin(), prompt_u32.end());
+  const size_t required_capacity = prompt_budget.required_capacity;
 
   // B1 multi-request scheduling: each request runs on its own thread. All
   // GPU work uses the DEFAULT stream (the model's per-forward scratch is a
@@ -577,27 +538,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     cleanup();
     send_cancel_error("request cancelled before encoding");
     return;
-  }
-
-  // 1. Encode prompt (CPU, outside model_mu_). The tokenizer's ICU regex
-  // engine is not thread-safe, so Encode is serialized behind tok_mu_.
-  if (!explicit_slots) {
-    {
-      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-      s = tok_->Encode(prompt, &prompt_u32, {.cancelled = cancelled});
-    }
-    if (!s.ok()) {
-      if (cancelled()) {
-        count_abort();
-        cleanup();
-        send_cancel_error("request cancelled during encoding");
-        return;
-      }
-      SendError(fd, 400, "encode failed: " + s.message());
-      cleanup();
-      return;
-    }
-    ids.assign(prompt_u32.begin(), prompt_u32.end());
   }
 
   // 1b. Multimodal: each <|image_pad|> (image_token_id) / <|video_pad|>

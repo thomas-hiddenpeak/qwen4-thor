@@ -28,6 +28,12 @@ ChatServer::~ChatServer() = default;
 SessionCache::~SessionCache() = default;
 SessionCache::Entry::~Entry() = default;
 void ChatServer::StopScheduler() {}
+void ChatServer::HandleConfig(int fd) {
+  detail::SendError(fd, 501, "audit fixture has no runtime configuration");
+}
+void ChatServer::HandlePreflight(int fd, const std::string&) {
+  detail::SendError(fd, 501, "audit fixture has no planning backend");
+}
 void ChatServer::HandleChat(int fd, const std::string&) {
   // Reaching this stub proves dispatch only, NOT generation acceptance.
   detail::SendSimple(fd, 200, "OK", R"({"backend":"audit_stub"})",

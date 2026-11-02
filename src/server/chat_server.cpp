@@ -598,6 +598,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
     if (!s.ok()) return s;
   }
 #endif
+  effective_config_ = EffectiveServeConfigJson(
+      opts, PlanningConfig(), budget_valid_, mtp_loaded_, conn_cap_);
   model_ready_.store(true);
   return Status();
 }

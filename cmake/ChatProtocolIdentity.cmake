@@ -13,6 +13,9 @@ set(protocol_inputs
   include/q4t/server/chat_capabilities.h
   include/q4t/server/input_contract.h
   include/q4t/server/chat_contract.h
+  include/q4t/server/chat_plan.h
+  include/q4t/server/chat_prompt.h
+  include/q4t/server/server_options.h
   include/q4t/server/thinking_budget.h
   include/q4t/server/text_stop.h
   include/q4t/server/reasoning_options.h
@@ -32,6 +35,10 @@ set(protocol_inputs
   src/server/chat_capabilities.cpp
   src/server/input_contract.cpp
   src/server/chat_contract.cpp
+  src/server/chat_plan.cpp
+  src/server/chat_prompt.cpp
+  src/server/chat_preflight.cpp
+  src/server/server_options.cpp
   src/server/chat_generation.cpp
   src/server/chat_http.cpp
   src/server/chat_input.cpp

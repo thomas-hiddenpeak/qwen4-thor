@@ -1,6 +1,7 @@
 #include "q4t/server/chat_capabilities.h"
 
 #include "q4t/server/chat_protocol_identity.h"
+#include "q4t/server/chat_plan.h"
 #include "q4t/server/chat_template.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
@@ -69,6 +70,12 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("budget_exhausted":"close_then_answer_and_mask_reentry",)"
          R"("budget_mtp":"reserve_pending_then_host_tail",)"
          R"("budget_usage_details":true},)"
+         R"("preflight":{"profile":)" + Quote(std::string(kPreflightProfile)) +
+         R"(,"endpoint":"/v1/chat/preflight","config_endpoint":"/v1/config",)"
+         R"("text_only":true,"prompt_preview":"opt_in",)"
+         R"("token_ids":"opt_in","response_max_bytes":8388608,)"
+         R"("shares_chat_planning":true,"reserves_slot":false,)"
+         R"("executes_model":false,"compiles_grammar":false},)"
          R"("text_stop":{"profile":)" + Quote(std::string(kTextStopProfile)) +
          R"(,"available":true,"max_strings":4,"max_utf8_bytes":256,)"
          R"("null_or_empty_array":"disabled","empty_string":"reject",)"

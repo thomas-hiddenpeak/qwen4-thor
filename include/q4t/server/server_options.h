@@ -18,6 +18,9 @@ inline int TextAdmissionLimit(int slots) { return std::max(32, slots * 2); }
 enum class StartupPlanMode { kAuto, kOff, kRequired };
 
 struct ServerOptions {
+  // Option names only, retained transactionally by the CLI parser. Values
+  // such as model/cache paths are never included in configuration discovery.
+  std::vector<std::string> supplied_options;
   // Numeric IPv4 only. Remote access requires an explicit address.
   std::string host = "127.0.0.1";
   int port = 8000;

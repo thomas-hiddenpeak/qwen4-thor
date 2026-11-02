@@ -255,7 +255,8 @@ void ChatServer::HandleClient(int fd) {
                 headers.error_param);
       return;
     }
-    if (path == "/v1/chat/completions" || path == "/v1/requests/cancel") {
+    if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
+        path == "/v1/requests/cancel") {
       if (method == "POST") {
         std::string type = headers.content_type;
         for (char& c : type)
@@ -301,9 +302,11 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   }
   std::string_view expected;
   if (path == "/healthz" || path == "/livez" || path == "/readyz" ||
-      path == "/v1/models" || path == "/v1/capabilities" || path == "/metrics")
+      path == "/v1/models" || path == "/v1/capabilities" ||
+      path == "/v1/config" || path == "/metrics")
     expected = "GET";
-  else if (path == "/v1/chat/completions" || path == "/v1/requests/cancel")
+  else if (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
+           path == "/v1/requests/cancel")
     expected = "POST";
   if (!expected.empty() && method != expected) {
     SendError(fd, 405, "method not allowed", {}, "method_not_allowed", "method",
@@ -333,6 +336,14 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   }
   if (path == "/v1/capabilities" && method == "GET") {
     HandleCapabilities(fd);
+    return;
+  }
+  if (path == "/v1/config" && method == "GET") {
+    HandleConfig(fd);
+    return;
+  }
+  if (path == "/v1/chat/preflight" && method == "POST") {
+    HandlePreflight(fd, body);
     return;
   }
   if (path == "/metrics" && method == "GET") {

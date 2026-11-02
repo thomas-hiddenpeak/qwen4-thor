@@ -96,6 +96,31 @@ Q4T_TEST(http_body_capacity_and_trailing_bytes) {
   return true;
 }
 
+Q4T_TEST(http_preflight_body_uses_shared_chat_reservation) {
+  using namespace q4t::server;
+  std::string body;
+  Q4T_CHECK(Read("POST /v1/chat/preflight HTTP/1.1\r\nHost: local\r\n"
+                 "Content-Length: 5000\r\n\r\n" + std::string(5000, 'x'), &body));
+  Q4T_CHECK(body.size() == 5000);
+  HttpBodyBudget budget(8);
+  HttpBodyLease chat(budget);
+  Q4T_CHECK(chat.Acquire(8));
+  int fd[2];
+  Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+  const std::string wire = "POST /v1/chat/preflight HTTP/1.1\r\nHost: local\r\n"
+                           "Content-Length: 1\r\n\r\n";
+  Q4T_CHECK(send(fd[0], wire.data(), wire.size(), MSG_NOSIGNAL) > 0);
+  std::string method, path;
+  HttpBodyLease preflight(budget);
+  int status = 400;
+  const bool ok = ReadHttpRequest(fd[1], &method, &path, &body, 100,
+                                   &preflight, &status);
+  close(fd[0]);
+  close(fd[1]);
+  Q4T_CHECK(!ok && status == 503 && budget.Used() == 8);
+  return true;
+}
+
 Q4T_TEST(http_absolute_deadline_and_body_budget) {
   using namespace q4t::server;
   HttpBodyBudget budget(8);

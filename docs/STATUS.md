@@ -5,8 +5,13 @@
 ## 当前推进目标
 
 长期目标“持续推进完善serve到工业水准”保持active，按
-[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续；下一项SRV-07
-请求预检与有效配置。SRV-06文本stop已限定交付，当前默认a3fd64a3 /
+[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续；当前SRV-07
+请求预检与有效配置开发中，范围见[SRV-07合同](SERVE_PREFLIGHT_2026-11-03.md)。
+CPU已验，真实HTTP/安装待验；默认继续保持SRV-06。
+SRV-07候选5642eb68：生产164 host＋后端9、125模板/ID差分、客户端31、
+驱动7与3组真实CLI预检通过；零警告。host OFF198/ON207首轮各1夹具
+错误（2.0应为合法整数）已仅重验该项通过；生产测试目标漏链接已修复，
+运行时SHA不变。原始失败保留，尚未开始GPU模型验证。SRV-06文本stop已限定交付，当前默认a3fd64a3 /
 sidecar49c7c631，运行时ea2dbcfb、冻结源码/驱动85e309c1，完整head；
 [合同、真实结果、失败与回退](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 

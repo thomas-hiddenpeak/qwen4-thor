@@ -270,6 +270,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/grammar_worker.cpp
   src/server/structured_decoder.cpp
   src/server/chat_input.cpp
+  src/server/chat_prompt.cpp
+  src/server/chat_plan.cpp
+  src/server/chat_preflight.cpp
   src/server/chat_metrics.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_generation.cpp
@@ -386,6 +389,13 @@ add_executable(q4t_gemm_roofline_bench tools/gemm_roofline_bench.cu)
 target_link_libraries(q4t_gemm_roofline_bench PRIVATE CUDA::cudart
                                                      CUDA::cublasLt)
 
+# CPU-only request planner probe; linking the runner does not execute CUDA.
+add_executable(q4t_preflight_probe EXCLUDE_FROM_ALL
+  tools/serve_preflight/prompt_probe.cpp)
+target_link_libraries(q4t_preflight_probe PRIVATE q4t_server)
+target_compile_options(q4t_preflight_probe PRIVATE -Wall -Wextra -Werror)
+q4t_link_structured_output(q4t_preflight_probe)
+
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
@@ -422,6 +432,10 @@ if(Q4T_BUILD_TESTS)
     tests/server_output_constraints_test.cpp
     src/server/input_contract.cpp
     src/server/chat_contract.cpp
+    src/server/chat_prompt.cpp
+    src/server/chat_plan.cpp
+    tests/server_chat_plan_test.cpp
+    src/server/server_options.cpp
     src/server/http_response.cpp
     tests/server_http_response_test.cpp
     src/server/http_request.cpp

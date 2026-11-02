@@ -80,6 +80,57 @@ class Response(io.BytesIO):
 
 
 class ClientContracts(unittest.TestCase):
+    def test_preflight_roundtrip_is_read_only_and_exact(self):
+        request = dict(model="m", prompt="q", stream=True)
+        expected = dict(object="q4t.chat.preflight", profile="q4t-preflight-v1",
+            protocol_source_sha256="a" * 64, model="m", prompt_tokens=2,
+            execution_guaranteed=False, prompt="q", token_ids=[1, 2])
+        agent = client.ChatClient("http://localhost/v1")
+        with patch.object(agent, "_post", return_value=Response(
+                json.dumps(expected).encode(), "application/json")) as post:
+            self.assertEqual(agent.preflight(request, include_prompt=True,
+                include_token_ids=True, protocol_sha256="a" * 64), expected)
+            post.assert_called_once_with("/chat/preflight", dict(request=request,
+                include_prompt=True, include_token_ids=True), 30)
+        self.assertEqual(request, dict(model="m", prompt="q", stream=True))
+
+    def test_preflight_rejects_false_assurances_and_malformed_projection(self):
+        good = dict(object="q4t.chat.preflight", profile="q4t-preflight-v1",
+            protocol_source_sha256="a" * 64, model="m", prompt_tokens=1,
+            execution_guaranteed=False)
+        agent = client.ChatClient("http://localhost/v1")
+        for fields in (dict(execution_guaranteed=True), dict(prompt_tokens=True),
+            dict(prompt_tokens=0), dict(profile="other"), dict(token_ids=[1]),
+            dict(prompt="unsolicited"), dict(protocol_source_sha256="x"),
+            dict(model="other")):
+            with self.subTest(fields=fields), patch.object(agent, "_post",
+                return_value=Response(json.dumps(dict(good, **fields)).encode(),
+                                      "application/json")):
+                with self.assertRaises(client.ProtocolError):
+                    agent.preflight(dict(model="m", prompt="q"))
+        with patch.object(agent, "_post") as post:
+            with self.assertRaises(client.ProtocolError):
+                agent.preflight({}, include_prompt=None)
+            post.assert_not_called()
+
+    def test_effective_configuration_endpoint_and_no_fallback(self):
+        expected = dict(object="q4t.serve.config", profile="q4t-config-v1",
+                        protocol_source_sha256="a" * 64)
+        agent = client.ChatClient("http://localhost/v1", api_key="key")
+        with patch.object(agent, "_open", return_value=Response(
+            json.dumps(expected).encode(), "application/json")) as opened:
+            self.assertEqual(agent.configuration(), expected)
+            req, timeout = opened.call_args.args
+            self.assertEqual(req.full_url, "http://localhost/v1/config")
+            self.assertEqual(req.method, "GET")
+            self.assertEqual(req.headers["Authorization"], "Bearer key")
+            self.assertEqual(timeout, 10)
+        with patch.object(agent, "_post", side_effect=client.RemoteError(404,
+            '{"error":{"message":"missing"}}')) as post:
+            with self.assertRaises(client.RemoteError):
+                agent.preflight({})
+            self.assertEqual(post.call_count, 1)
+
     def test_stop_request_contract(self):
         messages = [dict(role="user", content="q")]
         for stop in (None, [], "END", ["中" * 85, "a", "a", "b"]):

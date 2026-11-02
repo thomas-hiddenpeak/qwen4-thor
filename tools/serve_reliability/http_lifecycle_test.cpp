@@ -29,6 +29,12 @@ SessionCache::~SessionCache() = default;
 SessionCache::Entry::~Entry() = default;
 void ChatServer::StopScheduler() {}
 void ChatServer::HandleChat(int, const std::string&) { throw std::bad_alloc(); }
+void ChatServer::HandlePreflight(int, const std::string&) {
+  throw std::bad_alloc();  // Lifecycle fixture only, not planning acceptance.
+}
+void ChatServer::HandleConfig(int fd) {
+  detail::SendError(fd, 501, "lifecycle fixture has no configuration");
+}
 void ChatServer::HandleHealth(int fd) {
   detail::SendSimple(fd, 200, "OK", "ok", "text/plain");
 }

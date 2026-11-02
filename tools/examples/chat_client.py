@@ -494,6 +494,64 @@ class ChatClient:
         return validate_capabilities(load_json(raw), model,
             protocol_sha256=protocol_sha256, template_sha256=template_sha256)
 
+    @staticmethod
+    def _extension(response, *, object_name, profile, max_bytes):
+        require(response.status == 200 and
+                response.headers.get_content_type() == "application/json",
+                "unexpected extension response")
+        raw = response.read(max_bytes + 1)
+        require(len(raw) <= max_bytes, "oversized extension response")
+        result = load_json(raw)
+        require(isinstance(result, dict) and result.get("object") == object_name
+                and result.get("profile") == profile,
+                "unsupported extension profile")
+        digest = result.get("protocol_source_sha256")
+        require(isinstance(digest, str) and len(digest) == 64 and
+                all(c in "0123456789abcdef" for c in digest),
+                "invalid extension protocol identity")
+        return result
+
+    def configuration(self):
+        headers = {"Accept": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = "Bearer " + self.api_key
+        request = urllib.request.Request(self.base + "/config", headers=headers,
+                                         method="GET")
+        with self._open(request, 10) as response:
+            return self._extension(response, object_name="q4t.serve.config",
+                                   profile="q4t-config-v1", max_bytes=65536)
+
+    def preflight(self, body, *, include_prompt=False, include_token_ids=False,
+                  protocol_sha256=None):
+        """Read-only planning; never executes, reserves, or automatically retries."""
+        require(isinstance(body, dict) and type(include_prompt) is bool and
+                type(include_token_ids) is bool, "invalid preflight arguments")
+        envelope = dict(request=body, include_prompt=include_prompt,
+                        include_token_ids=include_token_ids)
+        with self._post("/chat/preflight", envelope, 30) as response:
+            result = self._extension(response, object_name="q4t.chat.preflight",
+                profile="q4t-preflight-v1", max_bytes=8 * 1024 * 1024)
+        require(result.get("execution_guaranteed") is False,
+                "preflight cannot guarantee execution")
+        count = result.get("prompt_tokens")
+        require(type(count) is int and count > 0, "invalid preflight token count")
+        require(("prompt" in result) == include_prompt and
+                ("token_ids" in result) == include_token_ids,
+                "preview selection mismatch")
+        if include_prompt:
+            _text(result["prompt"], "preflight prompt", nonempty=True)
+        if include_token_ids:
+            ids = result["token_ids"]
+            require(isinstance(ids, list) and len(ids) == count and
+                    all(type(n) is int and n >= 0 for n in ids),
+                    "invalid preflight token IDs")
+        if "model" in body:
+            require(result.get("model") == body["model"], "preflight model mismatch")
+        if protocol_sha256 is not None:
+            require(result["protocol_source_sha256"] == protocol_sha256,
+                    "preflight protocol identity mismatch")
+        return result
+
     def complete(self, body, *, sink=None):
         require(body.get("parse_response") is True and "messages" in body,
                 "this client requires parsed messages")

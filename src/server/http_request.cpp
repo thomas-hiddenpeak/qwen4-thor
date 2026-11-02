@@ -64,7 +64,6 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     }
   };
   constexpr size_t kMaxHeader = 64 * 1024;
-  constexpr size_t kMaxBody = 16 * 1024 * 1024;
   std::string buf;
   char tmp[4096];
   size_t header_end = std::string::npos;
@@ -120,7 +119,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       const auto result = std::from_chars(value.data(),
                                           value.data() + value.size(), length);
       if (result.ec != std::errc{} ||
-          result.ptr != value.data() + value.size() || length > kMaxBody)
+          result.ptr != value.data() + value.size() || length > kChatBodyBytes)
         return false;
     } else if (name == "transfer-encoding" || name == "expect") {
       return false;
@@ -152,7 +151,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   *path = target;
   headers->content_length = length;
   if (admit && !admit()) return false;
-  if (target == "/v1/chat/completions") {
+  if (target == "/v1/chat/completions" || target == "/v1/chat/preflight") {
     if (lease && !lease->Acquire(length)) {
       if (failure_status) *failure_status = 503;
       return false;

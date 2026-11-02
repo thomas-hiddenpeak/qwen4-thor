@@ -9,6 +9,10 @@
 
 namespace q4t::server {
 
+inline constexpr size_t kChatBodyBytes = 16 * 1024 * 1024;
+inline constexpr size_t kAggregateChatBodyBytes = 48 * 1024 * 1024;
+inline constexpr int kReservedControlConnections = 4;
+
 inline bool ValidHttpRequestId(std::string_view id) {
   if (id.empty() || id.size() > 128) return false;
   for (unsigned char c : id)
@@ -65,7 +69,7 @@ class HttpBodyLease {
 
 // Supports HTTP/1.0 and HTTP/1.1 origin-form requests with Content-Length.
 // Rejects transfer encoding, Expect, duplicate framing/Host, malformed fields,
-// Headers <=64 KiB; chat bodies <=16 MiB, other routes <=4 KiB.
+// Headers <=64 KiB; chat/preflight bodies <=16 MiB, other routes <=4 KiB.
 // timeout_ms is an absolute header+body deadline, unaffected by progress.
 // A supplied lease reserves chat bytes before body reads (released by caller).
 // Headers expose validated transport metadata. admit runs after headers and

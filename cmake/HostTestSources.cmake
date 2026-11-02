@@ -43,7 +43,10 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_output_constraints_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_request.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/input_contract.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_contract.cpp)
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_contract.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_prompt.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_plan.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_plan_test.cpp)
 if(Q4T_ENABLE_XGRAMMAR)
   list(APPEND Q4T_HOST_TEST_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/../tests/server_structured_decoder_test.cpp)

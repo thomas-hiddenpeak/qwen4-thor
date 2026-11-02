@@ -104,6 +104,9 @@ Status ParseServerOptions(std::span<const std::string_view> args,
   ServerOptions parsed = *options;
   for (size_t i = 0; i < args.size(); ++i) {
     const auto key = args[i];
+    if (std::find(parsed.supplied_options.begin(), parsed.supplied_options.end(),
+                  key) == parsed.supplied_options.end())
+      parsed.supplied_options.emplace_back(key);
     if (key == "--mtp") {
       parsed.no_mtp = false;
       continue;

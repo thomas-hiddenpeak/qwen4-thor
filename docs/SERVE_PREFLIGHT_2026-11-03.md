@@ -1,0 +1,55 @@
+# SRV-07：请求预检与有效配置合同
+
+2026-11-03冻结；业务可靠性开发，不作性能优化接受声明。基线为
+SRV-06的a3fd64a3/49c7c631，源码77bd4425。当前仅冻结开发范围，
+测试、真实HTTP、默认安装均须另有证据，不能从此文推导已交付。
+
+## 接口与共同路径
+
+- `POST /v1/chat/preflight`：JSON对象包含必需`request`（完整Chat请求），
+  可选`include_prompt`和`include_token_ids`（boolean，默认false）。
+  不接受额外字段或null选项；即使内层stream=true也只返回普通JSON。
+- `GET /v1/config`：启动后实际有效上下文、输出默认、prefill分块、
+  槽位容量、MTP/cache状态、请求/连接限制及来源；不公开路径、凭据。
+- 共用真实Chat的输入校验、约束规划、原生模板、实际Tokenizer和预算；
+  普通/严格模板必须一致，不能用近似token计数。仅预检文本，媒体明确
+  拒绝。与Chat同样的body/JSON/Tokenizer限制、共享文本请求准入；
+  不占用保留控制连接。可选预览按转义文本/token数组的保守编码上界
+  做8MiB准入（实际wire可能更小）；超预算明确错误，不截断。
+- 预检不注册completion/cancel凭据、不获取会话/严格/GPU租约、不读写
+  KV缓存、不编译grammar、不加载模型、不执行GPU。已运行服务使用
+  自己的Tokenizer；不是离线启动另一个模型。输出明确列出未检查项。
+
+## 预算口径
+
+统一槽位保持现有规则：输入必须小于上下文；输出请求先截至max_len，
+实际可用输出为min(该值, max_len-prompt_tokens)。显式槽位要求输入+
+已截输出全量可容纳，列出合格槽位，不承诺当时空闲或未来预留。
+max_prefill是分块大小，不是输入上限。usage包含完整输入，缓存命中
+不改变该口径。EOS、文本stop、推理闭合和工具/JSON最终校验可提前结束
+或失败，因此预算是上限，不能保证产出所需答案或完整结构。
+
+内层错误沿用Chat的code/param，param相对内层request（不再加request.
+前缀）；包装错误指向包装字段。输出默认来源区分请求字段、服务默认；
+有效配置区分CLI/程序化ServerOptions/内建默认与内存预算推导。
+CPU分词可在GPU槽位前完成；保留现有SSE在模板/严格准入后的启动合同。
+
+## 验证出口
+
+先成组实现再验证：host OFF/ON、生产必需host/grammar、真实Tokenizer
+模板与ID差分，覆盖null/default、两类槽位、长工具历史、严格模板、
+前缀checkpoint、无缓存副作用、错误位置、预览上限及来源。旧实现未
+变的合同按依赖复用；新增HTTP驱动做离线失败/预算/回退测试。
+
+真实HTTP计划最多12次生成、32次预检（含负例）、20次其它专门负例、
+3次模型启动、从首次guard入口起30分钟；不自动扩样/重置失败。覆盖
+默认MTP、显式槽位、plain、安装健康；普通JSON/SSE、stop、推理预算、
+严格工具及真实项目读取回填；预检计数与真实usage相等，长历史和
+边界错误一致；比较metrics证明预检没有生成/grammar/cache副作用。
+每个完整执行驱动持有同一GPU锁。环境冲突记ENV_ABORT，只停止自有
+进程；未知服务不得干预。通过后封存默认pair与回退链、安装、有界健康、
+commit/push。若中间发现缺陷保留原始失败，只重验受影响项。
+
+本地只读vLLM参考67111973的`serve/tokenize/serving.py`复用renderer
+预处理返回count/tokens/max_model_len；本项目采用自己的版本化预检
+合同，增加实际槽位/输出预算，不声称其tokenize端点协议兼容。

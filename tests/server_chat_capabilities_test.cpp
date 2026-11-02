@@ -31,6 +31,21 @@ Q4T_TEST(chat_capabilities_text_stop_profile) {
   return true;
 }
 
+Q4T_TEST(chat_capabilities_preflight_contract) {
+  q4t::io::Json caps;
+  Q4T_CHECK(q4t::io::ParseJson(
+      q4t::server::ChatCapabilitiesJson("m", false, true), &caps));
+  const auto* preflight = caps.Find("preflight");
+  Q4T_CHECK(preflight && preflight->GetString("profile") == "q4t-preflight-v1");
+  Q4T_CHECK(preflight->GetString("endpoint") == "/v1/chat/preflight");
+  Q4T_CHECK(preflight->GetString("config_endpoint") == "/v1/config");
+  Q4T_CHECK(preflight->GetBool("shares_chat_planning"));
+  Q4T_CHECK(!preflight->GetBool("executes_model", true));
+  Q4T_CHECK(!preflight->GetBool("compiles_grammar", true));
+  Q4T_CHECK(!preflight->GetBool("reserves_slot", true));
+  return true;
+}
+
 Q4T_TEST(chat_capabilities_identity) {
   q4t::io::Json caps;
   Q4T_CHECK(q4t::io::ParseJson(

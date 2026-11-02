@@ -1,11 +1,9 @@
 // OpenAI-compatible HTTP server for q4t (Phase 1 `serve` command).
 //
 // A minimal, dependency-free HTTP/1.1 server built on POSIX sockets. It serves
-// three endpoints:
-//   GET  /healthz               -> 200 "ok"
-//   GET  /v1/models             -> 200 OpenAI model list
-//   GET  /v1/capabilities       -> protocol/template implementation identity
-//   POST /v1/chat/completions   -> 200 OpenAI chat completion (stream or not)
+// bounded routes: /healthz, /livez, /readyz, /metrics, /v1/models,
+// /v1/capabilities, /v1/config, /v1/chat/preflight, /v1/chat/completions,
+// and /v1/requests/cancel. Preflight/config are private protocol extensions.
 //
 // The model is stateful (per-layer SSM/conv/KV caches persist across decode
 // steps). B1 makes requests concurrent: each client is handled on its own
@@ -33,6 +31,8 @@
 #include "q4t/server/http_request.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/server_options.h"
+#include "q4t/server/chat_plan.h"
+#include "q4t/server/chat_prompt.h"
 #include "q4t/model/model_owner.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/request_control.h"
@@ -48,17 +48,6 @@
 
 namespace q4t {
 namespace server {
-
-// One multimodal content part: a single image (1 frame) or a video (N frames).
-// `frames` holds raw decoded PNG/JPEG byte buffers. `kind` selects the
-// processor budget (image vs video) and the placeholder token (image_token_id
-// vs video_token_id). Items are kept in content-part (prompt position) order
-// so the vision feature rows line up with the placeholders left-to-right.
-struct VisionItem {
-  enum Kind { kImage, kVideo };
-  Kind kind = kImage;
-  std::vector<std::string> frames;  // decoded PNG/JPEG bytes (1 for an image)
-};
 
 // Fixed-bucket, lock-free latency histogram (Prometheus style). Buckets are
 // le boundaries in seconds; sum is accumulated in microseconds.
@@ -148,6 +137,9 @@ class ChatServer {
   void HandleModels(int fd);
   void HandleCapabilities(int fd);
   void HandleMetrics(int fd);
+  void HandlePreflight(int fd, const std::string& body);
+  void HandleConfig(int fd);
+  ChatPlanConfig PlanningConfig() const;
   void HandleChat(int fd, const std::string& body);
   void HandleChatImpl(int fd, const std::string& body,
                       detail::ResponseState* response_state);
@@ -291,12 +283,12 @@ class ChatServer {
   // In-flight request-thread cap: bounds how many connections may be waiting
   // in the AllocSeqId queue at once, so a connection flood cannot spawn
   // unbounded threads. Excess connections are refused (503) to shed load.
-  HttpBodyBudget body_budget_{48 * 1024 * 1024};
+  HttpBodyBudget body_budget_{kAggregateChatBodyBytes};
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
   std::atomic<int> business_conns_{0};
   std::atomic<int> control_conns_{0};
-  static constexpr int kControlConnections = 4;
+  static constexpr int kControlConnections = kReservedControlConnections;
   int conn_cap_ = 512;
   // Poll observes stop within 25ms. A draining listener serves control only
   // for at most 2 seconds; remaining owned sockets then close before cleanup.
@@ -325,6 +317,7 @@ class ChatServer {
                          std::vector<std::array<int, 3>>* out_grids,
                          std::string* err);
 
+  std::string effective_config_;
   std::string model_name_;
   std::string host_ = "127.0.0.1";
   bool allow_media_ = false;
