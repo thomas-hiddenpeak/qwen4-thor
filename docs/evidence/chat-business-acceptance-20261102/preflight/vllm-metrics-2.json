@@ -1,0 +1,17 @@
+{
+  "time": "2026-11-02T13:23:40.086624+08:00",
+  "status": 200,
+  "metrics": [
+    "vllm:num_requests_running{engine=\"0\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:num_requests_waiting{engine=\"0\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:num_requests_waiting_by_reason{engine=\"0\",model_name=\"qwen3.8-flash-next\",reason=\"capacity\"} 0.0",
+    "vllm:num_requests_waiting_by_reason{engine=\"0\",model_name=\"qwen3.8-flash-next\",reason=\"deferred\"} 0.0",
+    "vllm:prompt_tokens_total{engine=\"0\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:generation_tokens_total{engine=\"0\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:request_success_total{engine=\"0\",finished_reason=\"stop\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:request_success_total{engine=\"0\",finished_reason=\"length\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:request_success_total{engine=\"0\",finished_reason=\"abort\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:request_success_total{engine=\"0\",finished_reason=\"error\",model_name=\"qwen3.8-flash-next\"} 0.0",
+    "vllm:request_success_total{engine=\"0\",finished_reason=\"repetition\",model_name=\"qwen3.8-flash-next\"} 0.0"
+  ]
+}

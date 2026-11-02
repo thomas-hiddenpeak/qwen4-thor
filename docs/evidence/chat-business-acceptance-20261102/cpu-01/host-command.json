@@ -1,0 +1,13 @@
+{
+  "name": "host",
+  "argv": [
+    "/usr/bin/python3.12",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/release/check_host_contracts.py",
+    "--test-binary",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/q4t_host_tests",
+    "--output",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-acceptance-20261102/cpu-01/host"
+  ],
+  "timeout": 200
+}

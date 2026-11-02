@@ -1,0 +1,23 @@
+{
+  "status": "ENV_ABORT",
+  "reason": "LEASE_BUSY",
+  "test_processes_started": 0,
+  "models_started": 0,
+  "generation_requests": 0,
+  "service_mutations": 0,
+  "observed_at": "2026-11-02T13:31:15.448745",
+  "holder_pid": 813475,
+  "holder_unit": "soar-flash-fast-v3-qualified-rollback-20261102.service",
+  "supervisor": {
+    "path": "/home/rm01/.local/state/soar-flash-fast-v3-20261102/control/supervisor.py",
+    "sha256": "c2db8408b082954bae50a1f6c3b06e26e1b1a0bcbf2ba201f4b3a16d2e74ba6a"
+  },
+  "recovery_marker": {
+    "approvalSha256": "1602b463461df26643747625bd50bad896f66dc6542da85f5ead8e05cb5456f0",
+    "owner": "flash-fast-v3-20261102",
+    "pid": 813475,
+    "state": "/home/rm01/.local/state/soar-flash-fast-v3-20261102"
+  },
+  "original_plan": "chat-business-plan-20261102.json",
+  "actual_lock_holder": "813475 python3         WRITE /home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock"
+}

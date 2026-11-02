@@ -1,0 +1,57 @@
+{
+  "plan_sha256": "b2df890b9040f8e40abbaa15b23f0a7173c503ecc250d1de9268be9e152d4562",
+  "plan_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-plan-20261102.json",
+  "steps": [
+    [
+      "host",
+      200,
+      [
+        "/usr/bin/python3.12",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/release/check_host_contracts.py",
+        "--test-binary",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/q4t_host_tests",
+        "--output",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-business-acceptance-20261102/cpu-01/host"
+      ]
+    ],
+    [
+      "client",
+      100,
+      [
+        "/usr/bin/python3.12",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/examples/test_chat_client.py"
+      ]
+    ],
+    [
+      "recovery",
+      100,
+      [
+        "/usr/bin/python3.12",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/examples/test_tool_recovery.py"
+      ]
+    ],
+    [
+      "orchestration",
+      100,
+      [
+        "/usr/bin/python3.12",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/test_acceptance.py"
+      ]
+    ],
+    [
+      "template",
+      60,
+      [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/verify_chat_template",
+        "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/chat_template_cases.jsonl"
+      ]
+    ]
+  ],
+  "deadline_seconds": 560,
+  "runtime_validation": false,
+  "reason": "GPU lease busy; independent CPU checks only"
+}

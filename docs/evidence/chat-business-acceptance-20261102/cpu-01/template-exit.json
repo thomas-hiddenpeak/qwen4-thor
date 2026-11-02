@@ -1,0 +1,10 @@
+{
+  "name": "template",
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-integration-prep-20261102/verify_chat_template",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/fixtures/chat_template_cases.jsonl"
+  ],
+  "timeout": 60,
+  "returncode": 0,
+  "seconds": 0.0034771899227052927
+}
