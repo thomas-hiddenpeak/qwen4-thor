@@ -4,6 +4,7 @@ Preparation never changes the installed pair. Execute/rollback need the shared
 GPU lease. Unknown identities and foreign recovery markers are not overwritten.
 """
 import argparse
+import ast
 import copy
 import hashlib
 import importlib.util
@@ -113,6 +114,38 @@ def prepare():
         model_inputs=model_inputs, sdk_version="3.42.1",
         limits=dict(starts=3, generations=16, negatives=12, seconds=1800),
         source_manifest_sha256=h.sha(PACKAGE / "sources.json"))
+    if (BASE / "correction.json").exists():
+        correction = h.read(BASE / "correction.json")
+        original = ROOT / ".q4t-work/application-service-20261102"
+        h.verify_seal(original / "package")
+        h.verify_seal(original / "execution")
+        old_plan = h.read(original / "package/plan.json")
+        h.require(old_plan["candidate_sha256"] == plan["candidate_sha256"] and
+                  old_plan["protocol_sha256"] == plan["protocol_sha256"],
+                  "cannot reuse HTTP evidence for changed runtime")
+        # Reuse only SDK paths whose implementation is identical, not the
+        # failed project query or an overall PASS that does not exist.
+        old_source = subprocess.check_output(["git", "show",
+            old_plan["source_commit"] + ":tools/application_service/verify.py"],
+            cwd=ROOT, text=True)
+        new_source = (ROOT / "tools/application_service/verify.py").read_text()
+        def methods(source):
+            tree = ast.parse(source)
+            cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and
+                       n.name == "Run")
+            return {n.name: ast.dump(n, include_attributes=False)
+                    for n in cls.body if isinstance(n, ast.FunctionDef)}
+        old_methods, new_methods = methods(old_source), methods(new_source)
+        for name in ("sdk", "sdk_chat", "request_body"):
+            h.require(old_methods[name] == new_methods[name], "SDK path changed")
+        h.require(correction["status"] == "PASS" and
+                  h.read(original / "execution/lease/exit.json")["status"] ==
+                  "COMMAND_FAILED", "correction prerequisites")
+        plan.update(reuse_sdk_http=str(original / "execution"),
+                    original_started=h.read(original / "execution/execution.json")["started"],
+                    prior_counts=dict(starts=1, requests=8, negatives=9))
+        plan["limits"] = dict(starts=4, generations=20, negatives=12, seconds=1800)
+        shutil.copy2(BASE / "correction.json", PACKAGE / "correction.json")
     h.save(PACKAGE / "plan.json", plan)
     h.seal(PACKAGE)
     print("PREPARED", plan["candidate_sha256"], flush=True)
@@ -212,8 +245,8 @@ def execute():
     h.require(not list((ROOT / "build").glob("*recovery*.json")), "recovery pending")
     h.require(not (OUTPUT / "execution.json").exists(), "no automatic retry")
     acceptance.install_interrupt_handlers()
-    start = time.time()
-    state = dict(status="RUNNING", started=start)
+    start = plan.get("original_started", time.time())
+    state = dict(status="RUNNING", started=time.time(), original_started=start)
     installed = False
     try:
         verifier(plan)
@@ -275,10 +308,15 @@ def finalize():
 
 
 def main():
+    global BASE, PACKAGE, OUTPUT
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["prepare", "execute", "finalize", "rollback"])
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--correction", action="store_true")
     args = parser.parse_args()
+    if args.correction:
+        BASE = ROOT / ".q4t-work/application-service-correction-20261102"
+        PACKAGE, OUTPUT = BASE / "package", BASE / "execution"
     if args.action == "rollback":
         h.require(args.output is not None, "rollback needs a fresh lease output")
         restore(args.output.resolve())

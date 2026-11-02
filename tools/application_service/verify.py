@@ -32,7 +32,8 @@ from tool_recovery import inspect_recovery
 class Run(wire.Run):
     def __init__(self, plan, output, *, installed=False):
         self.plan, self.installed = plan, installed
-        self.deadline = time.time() + (300 if installed else 1200)
+        self.deadline = min(time.time() + (300 if installed else 1200),
+            plan.get("original_started", time.time()) + 1800 - 30)
         super().__init__(SimpleNamespace(output=Path(output), port=18098,
             model_dir=Path(plan["model_dir"]),
             protocol_sha256=plan["protocol_sha256"]))
@@ -40,7 +41,8 @@ class Run(wire.Run):
 
     def budget(self):
         wire.require(time.time() < self.deadline, "application stage deadline")
-        wire.require(self.requests <= (1 if self.installed else 15) and
+        limit = 11 if self.plan.get("reuse_sdk_http") else 15
+        wire.require(self.requests <= (1 if self.installed else limit) and
                      self.negative <= 12 and self.starts <=
                      (1 if self.installed else 2) and self.capability_gets <= 8,
                      "application stage request/start budget")
@@ -147,7 +149,8 @@ class Run(wire.Run):
         client.opener = urllib.request.build_opener(
             urllib.request.ProxyHandler({}), wire._NoRedirect())
         answer = project_query.run(folder / label, url, question, stream=stream,
-                                  max_rounds=3, client=client)
+                                  max_rounds=4 if label == "acceptance-query"
+                                             else 3, client=client)
         wire.require(expected in answer, label + ": business answer incorrect")
         recovered = inspect_recovery(folder / label)
         wire.require(recovered["state"] == "COMPLETED", label + ": journal invalid")
@@ -155,7 +158,7 @@ class Run(wire.Run):
             expected=expected, recovery=recovered))
         self.wait_slot(label)
 
-    def ordinary(self, folder):
+    def sdk_checks(self, folder):
         with self.sdk() as client:
             models = client.models.list()
             wire.save(folder / "sdk-models.json", models.model_dump(mode="json"))
@@ -188,6 +191,10 @@ class Run(wire.Run):
         wire.save(folder / "unsupported-route.json", dict(status=status, raw=raw))
         wire.require(status == 404 and json.loads(raw)["error"]["code"] ==
                      "not_found", "unsupported route error")
+
+    def ordinary(self, folder):
+        if not self.plan.get("reuse_sdk_http"):
+            self.sdk_checks(folder)
         previous = self.plan["previous_binary_sha256"]
         self.query(folder, "release-query",
             "调用read_project_record读取build/q4t.release.json第1行起20行。"

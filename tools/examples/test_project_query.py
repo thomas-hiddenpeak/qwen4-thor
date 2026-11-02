@@ -84,6 +84,9 @@ class ProjectContracts(unittest.TestCase):
         self.assertEqual(inspect_recovery(directory)["state"], "COMPLETED")
         result = json.loads((directory / "round-00-tool-000-result.json").read_text())
         self.assertEqual(json.loads(result["content"])["source"], source)
+        self.assertEqual(json.loads(result["content"])["application_budget"],
+            dict(remaining_model_requests=3, remaining_tool_calls=7,
+                 final_response_required=False))
         self.assertEqual(fake.calls, 2)
 
     def test_missing_record_returned_to_model(self):

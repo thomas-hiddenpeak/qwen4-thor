@@ -23,6 +23,9 @@ SYSTEM = """你是本项目的资料查询助手。必须先调用工具读取�
 区分源码实现、历史验收、当前发布元数据；历史记录不能证明当前服务在运行。
 引用工具返回的 citation 原文。不得编造路径、行号或未查到的结果。
 如果工具返回错误，说明无法核实及错误码，不要把失败描述成查询成功。
+工具结果中的 application_budget 是应用剩余预算。若 final_response_required
+为 true，必须根据已有资料给出最终答案或说明无法核实，不再调用工具。
+资料已足够时直接回答，避免重复查询同一事实。
 仅回答用户的问题，保持简洁。"""
 CITATION = re.compile(r"\[(?:docs/[^\]\n]+|build/q4t\.release\.json):L\d+-L\d+\]")
 
@@ -91,6 +94,11 @@ def _run(directory, client, base_url, question, stream, rounds, tool_limit, mode
                 prefix = f"{label}-tool-{index:03d}"
                 save(directory / (prefix + "-started.json"), asdict(invocation))
                 value = records.execute(invocation)
+                value["application_budget"] = dict(
+                    remaining_model_requests=rounds - turn - 1,
+                    remaining_tool_calls=tool_limit - calls - 1,
+                    final_response_required=turn + 2 == rounds or
+                        calls + 1 == tool_limit)
                 content = json.dumps(value, ensure_ascii=False, allow_nan=False)
                 save(directory / (prefix + "-result.json"),
                      dict(tool_call_id=invocation.call_id, content=content))
