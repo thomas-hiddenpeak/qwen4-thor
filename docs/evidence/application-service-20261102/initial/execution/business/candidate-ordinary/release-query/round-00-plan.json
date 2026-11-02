@@ -1,0 +1,11 @@
+[
+  {
+    "call_id": "call_agent-0d4e4ab966f624c8ac4164cdede6cc77_0",
+    "name": "read_project_record",
+    "arguments": {
+      "path": "build/q4t.release.json",
+      "start_line": 1,
+      "line_count": 20
+    }
+  }
+]

@@ -1,0 +1,10 @@
+data: {"id":"agent-8d6d94734b1c8372d73507b40a607b00","object":"chat.completion.chunk","created":1793605871,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
+
+data: {"id":"agent-8d6d94734b1c8372d73507b40a607b00","object":"chat.completion.chunk","created":1793605871,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_agent-8d6d94734b1c8372d73507b40a607b00_0","type":"function","function":{"name":"read_project_record","arguments":"{\"path\":\"docs/CHAT_DELIVERY_2026-11-02.md\",\"start_line\":46,\"line_count\":58}"}}]},"finish_reason":null}]}
+
+data: {"id":"agent-8d6d94734b1c8372d73507b40a607b00","object":"chat.completion.chunk","created":1793605871,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":""},"finish_reason":"tool_calls"}]}
+
+data: {"id":"agent-8d6d94734b1c8372d73507b40a607b00","object":"chat.completion.chunk","created":1793605871,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":1786,"completion_tokens":68,"total_tokens":1854}}
+
+data: [DONE]
+

@@ -14,9 +14,9 @@ OpenAI API 全兼容或生产多租户应用平台。模型支持、模板一致
 |---|---|---|
 | 推理与请求生命周期 | GPU 错误隔离、容量准入、取消、超时、槽回收；已有 Thor 验收 | 与应用协议分开验收；不把本轮当性能优化 |
 | 消息与模板 | 原生 qwen4_exp 模板、工具历史 ID 对齐、推理内容分离；21 模板用例 | 并非运行任意 HF Jinja 模板；新增模型需要独立适配 |
-| 输出协议 | JSON / SSE、工具调用、usage、终态与错误门；此前 23 生成 / 10 负例 | 错误封套不统一；标准 token 上限字段缺失 |
-| 客户端 | 项目客户端、完整响应后执行、持久调用记录、只读恢复判定 | 第三方 SDK 尚未验；没有自动重试 / 任务恢复执行器 |
-| 应用工具 | 固定 lookup 示例有真实模型往返 | 真实文档检索、来源引用、工具业务错误需补齐 |
+| 输出协议 | JSON / SSE、工具调用、usage、统一错误、稳定 created、两种 token 预算字段已验 | 缺工具选择保证、结构化约束、停止序列和逐字工具参数增量 |
+| 客户端 | 项目客户端、持久记录、只读恢复判定；OpenAI Python 3.42.1 限定互通通过 | 其他 SDK / 框架未验；没有自动重试 / 任务恢复执行器 |
+| 应用工具 | 真实发布、历史验收与不存在资料查询通过；来源范围、工具业务错误与预算门已验 | 自主广泛搜索、逐句事实验证与实时状态查询未验 |
 | 服务运维 | health、metrics、代理模板、可核验发布与回退 | 内置鉴权 / TLS / 租户配额 / 持久任务服务不在当前范围 |
 
 Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Thor
@@ -26,14 +26,15 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 
 ## API 兼容矩阵
 
-基线为 460ffd0 / 默认程序 830694ce。`已验`指本项目已有明确证据，
-不代表外部 SDK 全部版本通过。P1 / P2 状态在本页末尾更新。
+当前交付为 c3772d11 / sidecar c80f1f14，盘点起点为 460ffd0 /
+旧默认 830694ce。`已验`指本项目已有明确证据，不代表外部 SDK 全部
+版本通过。P1 / P2 的验证范围与具体失败在本页末尾及结果文档记录。
 完整 vLLM 对照与优先级见[32项服务能力盘点](VLLM_SERVICE_GAPS_2026-11-02.md)。
 
-| API / 能力 | 基线状态 | 限制与证据 / 行动 |
+| API / 能力 | 当前状态 | 限制与证据 / 行动 |
 |---|---|---|
 | POST /v1/chat/completions | 已验，子集 | 单模型、单 choice；chat_generation.cpp |
-| GET /v1/models | 实现 | 单个配置模型；不支持模型详情 / 管理 |
+| GET /v1/models | 已验，SDK 3.42.1 | 单个配置模型；不支持模型详情 / 管理 |
 | GET /v1/capabilities | 已验，Q4T 扩展 | 实现身份，不是发布或质量证明 |
 | messages | 已验 | 默认解析；system/user/assistant/tool；模板决定角色边界 |
 | prompt / parse_response=false | 已验，Q4T 扩展 | raw 文本；不解析工具或推理 |
@@ -44,7 +45,7 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | parallel_tool_calls | 部分 | 仅 true；允许生成多调用，不代表应用并发执行 |
 | strict / JSON Schema 输出约束 | 明确拒绝 | 没有约束解码；应用仍需验证参数与工具结果 |
 | max_tokens | 已验 | 正整数；包含推理 / 模板生成 token；受上下文容量约束 |
-| max_completion_tokens | 基线拒绝 → P1 | 同一生成预算；两个字段同时非空时拒绝歧义 |
+| max_completion_tokens | 已验 | 与 max_tokens 共用生成预算；两个字段同时非空时拒绝歧义 |
 | temperature / top_p / n | 部分 | 仅 0 / 1 / 1；不可声称支持采样 |
 | penalties / seed | 部分 | 仅中性 penalty；seed 在 greedy 下不改变结果 |
 | stop / logprobs / logit_bias | 明确拒绝有效设置 | 仅接受现有中性空值；不是实现了这些功能 |
@@ -52,13 +53,13 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | stream_options.include_usage | 已验 | 最后独立 usage；连接中断不保证收到 |
 | chat_template_kwargs | 已验，Q4T 扩展 | thinking/preserve/effort/vision ID；能力端点给出范围 |
 | unknown fields | 明确拒绝 | 不静默丢弃；Responses/store/metadata 等不可直接透传 |
-| 错误 JSON | 部分 → P1 | 补统一 message/type/code/param 和正确 HTTP 状态原因 |
-| SSE 错误 | 部分 → P1 | 错误 + DONE，不发成功 finish / usage；无自动重放 |
+| 错误 JSON | 已验，Q4T 错误码 | 统一 message/type/code/param 和 HTTP 状态原因；不等同云端全部错误语义 |
+| SSE 错误 | 已验 | 错误 + DONE，不发成功 finish / usage；无自动重放 |
 | 请求取消 / deadline | 已验，Q4T 扩展 | 202 仅接受取消；404 不证明请求未执行 |
 | request_id / session_id | 已验，Q4T 扩展 | 活跃 ID 去重 / 同进程 KV 缓存；不是持久任务与幂等键 |
 | Responses / Assistants / Batch | 未实现 | 不能通过更换 base_url 使用 |
 | 图片 / 视频 / 音频 | 非首批文本兼容范围 | 媒体实验开关不代表多模态业务验收 |
-| OpenAI Python SDK | 未验证 → P2 | 冻结具体版本验证 JSON/SSE/工具和错误；关闭自动重试 |
+| OpenAI Python SDK | 3.42.1 限定互通通过 | models、JSON/SSE、工具往返、预算与参数错误；关闭自动重试 |
 | 其他 SDK / 框架 | 未验证 | 不从 Python 或自有客户端通过外推 |
 | 鉴权 / TLS / 多租户隔离 | 不内置 | 由明确配置的应用网关承担；当前仅本地受控验证 |
 
@@ -99,7 +100,7 @@ P3（后续独立阶段）：required/named/none 和 parallel=false 的真实保
 GPU 阶段完整驱动持共享锁；检测竞争 / 监控失败为 ENV_ABORT，停止自有
 进程并保留现场。结束后 GPU 释放，不启动常驻服务。
 
-预算：最多 3 次模型启动（候选、MTP 配置、安装健康）、16 次生成、
+原冻结预算：最多 3 次模型启动（候选、MTP 配置、安装健康）、16 次生成、
 12 个负例 HTTP、30 分钟 GPU 阶段；原始请求 / 响应 / 工具结果 / 模型
 进程日志均留存。验证文本质量、工具事实与引用、预算生效和错误分类；
 不重跑已通过且身份未变的内核数值、模板和性能矩阵。交付前保留旧
@@ -147,3 +148,14 @@ COMMAND_FAILED 保留；不能把查询错误当 GPU 为空。修复固定使用
 max_completion_tokens 包含可见和推理 token；工具执行属于应用端；
 不同模型支持的参数有差异。Q4T 的错误 code、取消、缓存与能力端点是
 本地合同，不冒充 OpenAI 平台的所有行为。
+
+## 首批当前交付
+
+P0 盘点与 P1 协议修补已交付；P2 真实发布查询、历史验收引用及资料
+不存在三场景闭环通过，OpenAI Python SDK 3.42.1 的限定接入通过。
+当前默认 c3772d11 / sidecar c80f1f14，本阶段结束已释放 GPU；后续
+外部服务恢复观察见结果文档。194 项 CPU / 驱动
+合同、累计 18 生成 / 9 负例 / 4 启动及两次失败的修正边界，详见
+[交付结果与275份证据](APPLICATION_SERVICE_RESULT_2026-11-02.md)。
+P3 仍未完成；自主搜索、实时状态、逐句事实验证和更多 SDK 不能由
+三项有界任务通过外推。

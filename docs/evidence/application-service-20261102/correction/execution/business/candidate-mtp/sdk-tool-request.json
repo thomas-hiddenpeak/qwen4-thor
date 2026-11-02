@@ -1,0 +1,47 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_completion_tokens": 512,
+  "stream": false,
+  "messages": [
+    {
+      "role": "user",
+      "content": "先调用read_project_record读取build/q4t.release.json，start_line=1，line_count=10。然后只回答工具结果中binary_sha256的完整值。"
+    }
+  ],
+  "extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    }
+  },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_record",
+        "description": "Read real project documentation or acceptance JSON under docs/, or the installed release metadata build/q4t.release.json. Returns numbered lines, a source SHA256 and an exact citation. Use the returned citation verbatim in the answer.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "start_line": {
+              "type": "integer"
+            },
+            "line_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto"
+}

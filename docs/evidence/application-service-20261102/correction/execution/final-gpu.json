@@ -1,0 +1,15 @@
+{
+  "status": "ERROR",
+  "pids": null,
+  "request_id": "0eb81a5cd59dc24b041759b67303a2c8",
+  "worker_pid": 1173034,
+  "stdout": "{\"request_id\": \"0eb81a5cd59dc24b041759b67303a2c8\", \"monotonic\": 1796058.451849317, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"0eb81a5cd59dc24b041759b67303a2c8\", \"monotonic\": 1796058.451958066, \"event\": \"result\", \"status\": \"ERROR\", \"error\": {\"type\": \"ModuleNotFoundError\", \"message\": \"No module named 'pynvml'\", \"nvml_code\": null}, \"device_count\": null, \"pids\": null, \"process_memory\": null}\n",
+  "stderr": "",
+  "returncode": 1,
+  "seconds": 0.03915670095011592,
+  "error": {
+    "type": "ModuleNotFoundError",
+    "message": "No module named 'pynvml'",
+    "nvml_code": null
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "status": 400,
+  "raw": "{\"error\":{\"message\":\"message field not supported: name\",\"type\":\"invalid_request_error\",\"code\":\"invalid_request\",\"param\":null}}",
+  "sdk_class": "BadRequestError",
+  "code": "invalid_request",
+  "type": "invalid_request_error",
+  "param": null
+}

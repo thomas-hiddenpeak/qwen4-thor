@@ -4,6 +4,8 @@
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
 应用服务：[能力与 OpenAI 兼容矩阵、vLLM 差距与分阶段计划](APPLICATION_SERVICE.md)。
+[32项 vLLM 服务遗漏盘点](VLLM_SERVICE_GAPS_2026-11-02.md)；
+[首批交付、真实 SDK/资料查询、275份证据与回退](APPLICATION_SERVICE_RESULT_2026-11-02.md)。
 
 聊天接入：[messages客户端、流式重组与只读工具往返](AGENT_TOOL_CLIENT_2026-11-02.md)；
 [服务端工具/推理输出协议](RESPONSE_PARSING_2026-11-02.md)。
@@ -11,8 +13,9 @@
 [能力声明、统一有界验收入口与失败恢复](CHAT_INTEGRATION_PREP_2026-11-02.md)
 有界业务验收通过：158项CPU/模板、8真实故障、23生成/10负例HTTP；
 见[验收结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。
-当前已安装830694ce/0f28e0f0，两head安装健康通过、GPU保持释放；
-见[正式交付、98份证据与回退](CHAT_DELIVERY_2026-11-02.md)。
+聊天接入原交付830694ce/0f28e0f0已由应用服务c3772d11/c80f1f14替代，
+本阶段已释放 GPU，之后外部恢复流程另行占用（见应用服务结果）；
+原[正式交付、98份证据与回退](CHAT_DELIVERY_2026-11-02.md)保留。
 [完整工具往返、真实中断与日志崩溃场景准备](CHAT_ACCEPTANCE_SCENARIOS_2026-11-02.md)。
 最新专项：[main复审四项修复交付、证据与回退](MAIN_REAUDIT_FIX_RESULT_2026-10-31.md)；
 [修复范围与冻结预算](MAIN_REAUDIT_FIX_PLAN_2026-10-31.md)；

@@ -1,0 +1,32 @@
+[
+  {
+    "command": [
+      "build/q4t_host_tests"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "tools/examples/test_chat_client.py"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "tools/examples/test_tool_recovery.py"
+    ],
+    "returncode": 0
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "tools/examples/test_project_query.py"
+    ],
+    "returncode": 0
+  }
+]

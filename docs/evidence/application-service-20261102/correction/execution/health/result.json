@@ -1,0 +1,10 @@
+{
+  "status": "PASS_BOUNDED_APPLICATION_SERVICE",
+  "candidate_sha256": "c3772d111088f8dbd7f07b6b482367da05c50112dd6502f047cd4627da2ea23a",
+  "sdk": "3.42.1",
+  "requests": 1,
+  "negatives": 0,
+  "starts": 1,
+  "capability_gets": 1,
+  "seconds": 35.9917685710825
+}

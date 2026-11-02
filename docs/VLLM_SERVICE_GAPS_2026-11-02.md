@@ -10,7 +10,8 @@
 `reference/vllm/vllm/entrypoints/openai/` 和 `entrypoints/serve/`。
 同时核对当前官方文档（访问日期 2026-11-02）；未更新、构建或启动
 reference，未把 stable 网页当作本地固定 commit 的相同版本。
-本项目对照基线 460ffd0，首批修复另列，未验部分不标成熟。
+本项目盘点起点 460ffd0，下表已同步 c3772d11 首批交付状态；历史
+差异与具体失败另列，未验部分不标成熟。
 
 vLLM 的 Chat 服务组织了独立的请求 schema、工具 / 推理 parser、
 structured-output 后端、stream/non-stream serving 和 middleware。
@@ -32,16 +33,16 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 工具参数严格性 | strict / structural tags 受模型、parser、配置约束 | 只做解析与基本类型转换；不是全 schema 校验 | B：约束解码与应用参数验证分开 |
 | JSON / schema / grammar | structured_outputs、response_format | json_object / json_schema 不支持 | B：从结构化文档查询输出需求冻结 |
 | 文本停止条件 | stop 字符串 / token IDs、终态与 stop_reason | 仅 EOS / token预算 / 容量停止；有效 stop 拒绝 | B：跨 token、跨块、与工具标记组合验 |
-| 输出预算 | max_completion_tokens / legacy max_tokens | 新字段原来拒绝 | A：首批共用预算，双非空拒绝 |
+| 输出预算 | max_completion_tokens / legacy max_tokens | 首批已验两字段共用预算 | A 已交付：双非空拒绝 |
 | 消息角色 | 接口 schema 接收 OpenAI 角色，最终受模板支持限制 | developer 不支持；system 必须在首条 | B：明确角色映射后做模板对照，不静默降级 |
-| 消息 name / refusal / audio | schema 有相应字段，具体模型路径决定语义 | 基线可被忽略，导致输入含义丢失 | A：首批拒绝非空未实现字段 |
-| 嵌套输入校验 | 独立协议类型与 validation handlers | 顶层严格，嵌套消息 / content 部分宽松 | A：首批补可确认的静默丢弃；其他嵌套另审 |
+| 消息 name / refusal / audio | schema 有相应字段，具体模型路径决定语义 | 首批已拒绝非空未实现字段 | A 已交付拒绝合同；B 另行实现语义 |
+| 嵌套输入校验 | 独立协议类型与 validation handlers | 顶层严格，首批补消息字段 / role / 文本 content 校验 | A 已交付已确认缺口；其他嵌套另审 |
 | 推理输出字段 | 当前官方 / 固定源码为 reasoning | Q4T 为 reasoning_content | B：版本化适配，不宣称字段相同 |
 | 推理隐藏与预算 | include_reasoning / thinking_token_budget 等扩展 | 有模板 thinking/effort；无独立推理预算 | B：输出隐藏不等于停止推理计算 |
-| SSE 创建时间 | serving 对一请求持同一 created | 基线逐块取时间，usage 又用另一个时间 | A：首批统一请求时间 |
+| SSE 创建时间 | serving 对一请求持同一 created | 首批已统一同一请求各块时间 | A 已交付 |
 | SSE 工具参数增量 | parser 维护每调用 index/ID/参数增量 | Q4T 在完整调用后发参数；不是逐字参数流 | B：先声明时延边界；正确性优先 |
 | SSE 用量与中断 | usage tail、可选持续统计；断连不保证尾帧 | 已验尾帧；无持续统计 / reasoning token 明细 | B：完善字段矩阵，不假填 0 |
-| 错误语义 | protocol/exception handlers 分类与封套 | 基线 5xx 标 invalid_request、部分纯文本 | A：首批统一 JSON/SSE 与分类 |
+| 错误语义 | protocol/exception handlers 分类与封套 | 首批已统一 JSON/SSE 分类与封套 | A 已交付；Q4T code 不等同所有外部错误语义 |
 | 关联请求 ID | middleware/x_request_id.py；可选请求 / 响应头 | 自定义 JSON request_id，HTTP header 不关联 | B：自动 ID / 错误 / 日志统一追踪 |
 | 幂等 / 自动重试 | 不能从 request ID 或 SDK 重试推断幂等执行 | 活跃 ID 去重，无持久幂等存储 | B：本轮禁自动重放，恢复判定已具备 |
 | 模型发现 | models/api_router.py，served names / adapter 视配置 | 单模型 models；无详情、别名策略 | B：客户端发现与错误模型合同 |
@@ -49,13 +50,13 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 默认生成配置 | generation_config 与 serving 配置 | greedy 固定、若干中性参数兼容 | B：明确 effective defaults 与配置来源 |
 | 多 choice / logprobs / sampling | 相应生成参数与响应结构 | n=1、greedy，logprobs 拒绝 | C：需要底层支持，不是 HTTP 字段补丁 |
 | 会话与 Responses | 独立 responses 路由 / stateful 路径，受配置限制 | 只支持 Chat；session cache 是同进程 KV | B：应用持久会话先于新增一套 API |
-| 真实工具执行 | Chat function 调用通常由应用执行与回填 | 固定 lookup 示例已验；真实资料查询待补 | A/P2：有界只读工具、来源与业务错误 |
+| 真实工具执行 | Chat function 调用通常由应用执行与回填 | 首批真实发布 / 历史验收 / 不存在资料查询已验 | A/P2 已交付有界只读链路；自主广泛检索未验 |
 | 取消 / 断连 / 关闭 | serving 检查断连并传播 abort；生命周期管理 | 已有取消、deadline、断连、shutdown 与槽回收 | 保留证据；不是新的缺失 |
 | 压力与配额 | 调度、准入与服务配置；不等于完整租户计费平台 | 连接 / body / chat / slot 上限已具备，无租户配额 | B/C：先错误可观测，再业务配额 |
 | 健康与观测 | health/load/version、Prometheus、请求 metrics | healthz/metrics 与请求诊断已有；无统一 trace header | B：readiness、故障分类与关联 ID |
 | 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生未提供；现有 Nginx 示例未含完整鉴权配置 | C：在真实入口配置并验收，不能认为传了 api_key 就鉴权 |
 | HTTP 媒体类型 / 方法 | 框架路由与 JSON request validation | 未检查 Content-Type；不支持方法返回 404；禁 chunked upload | B：写成合同并补边界用例 |
-| OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | 无 OpenAPI schema；自有客户端已验，SDK待验 | B：先固定版本与实际用例，再扩客户端 |
+| OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | 无 OpenAPI schema；自有客户端及 Python SDK 3.42.1 限定互通已验 | B：按实际用例扩客户端，不外推其他 SDK |
 | Embeddings / rerank / audio / 多模态 | 独立任务接口，取决于模型与 runner | 当前首版文本生成范围之外 | C：不能因为 vLLM 有端点就认为本模型有能力 |
 | LoRA / 动态权重 / 分布式管理 | 单独可选管理接口 | 不在本轮单模型 Thor 交付范围 | C：不为功能对齐暴露管理面 |
 
@@ -104,3 +105,10 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 [推理字段迁移与预算](https://docs.vllm.ai/en/stable/features/reasoning_outputs/)。
 SDK 重试与错误行为参照
 [OpenAI Python SDK 官方说明](https://github.com/openai/openai-python)。
+
+首批交付更新：上表从 460ffd0 盘点基线更新至当前交付；token 预算别名、错误
+封套与类型、SSE created、已确认的嵌套消息语义拒绝、真实项目读取
+已在 c3772d11 验证交付。Python SDK 3.42.1 的限定互通已通过，
+仍不能提升为所有 SDK / 字段全兼容。轮次预算与监控环境两次实际
+失败、明确复用的证据和剩余质量边界见
+[首批结果](APPLICATION_SERVICE_RESULT_2026-11-02.md)。

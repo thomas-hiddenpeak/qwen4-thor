@@ -1,0 +1,4 @@
+{
+  "tool_call_id": "call_agent-16de5a2bd03ab900a1dbbd6959a89e61_0",
+  "content": "{\"ok\": false, \"error\": {\"code\": \"record_not_found\", \"message\": \"Project record could not be read.\"}, \"application_budget\": {\"remaining_model_requests\": 2, \"remaining_tool_calls\": 7, \"final_response_required\": false}}"
+}

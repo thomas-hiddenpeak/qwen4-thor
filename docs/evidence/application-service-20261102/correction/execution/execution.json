@@ -1,0 +1,8 @@
+{
+  "status": "FAILED",
+  "started": 1793605815.614924,
+  "original_started": 1793605281.1428385,
+  "error": "RuntimeError('GPU not released')",
+  "rollback": "RESTORED",
+  "finished": 1793605976.068478
+}

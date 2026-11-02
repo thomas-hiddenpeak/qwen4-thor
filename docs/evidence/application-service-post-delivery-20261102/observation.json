@@ -1,0 +1,13 @@
+{
+  "observed_utc": "2026-11-02T08:11:28.838806+00:00",
+  "marker_exists": true,
+  "marker_mtime_utc": "2026-11-02T08:09:06.166677+00:00",
+  "lock_free": false,
+  "gpu_status": "OK",
+  "gpu_pids": [
+    1187183
+  ],
+  "owner_pid": 1186282,
+  "phase": "external service restoration after completed delivery",
+  "original_record_sha256": "4afb5f088b09babf095ee616f8394806c7d35ebd8d2c0e4855cef696f5ecc122"
+}

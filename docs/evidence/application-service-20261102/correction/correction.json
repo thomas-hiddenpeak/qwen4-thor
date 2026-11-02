@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "name": "query",
+      "returncode": 0
+    },
+    {
+      "name": "stage",
+      "returncode": 0
+    },
+    {
+      "name": "sdk",
+      "returncode": 0
+    }
+  ],
+  "reason": "Give application tool results explicit remaining budgets; four-turn history query; reuse unchanged SDK and runtime evidence.",
+  "original_execution": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/execution",
+  "original_seal_sha256": "eb02e6fa26dae77f14da8418c5477f0d409d9cda5400e94ed5da617c577251b8"
+}

@@ -1,0 +1,40 @@
+{
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "5fae4433313bc16b170853ea60de3817",
+    "worker_pid": 1182045,
+    "stdout": "{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.223850633, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.231625386, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.23165783, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.235806167, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.004135976079851389}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.235854001, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.23589764, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.4156953915953636e-05}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.235912464, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.242374538, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006454870104789734}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.24239526, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.243481402, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0010795029811561108}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.24349943, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.244744821, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012389381881803274}\n{\"request_id\": \"5fae4433313bc16b170853ea60de3817\", \"monotonic\": 1796675.244767987, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.06208047200925648,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "shared_lock_free": true,
+  "recovery_markers": [],
+  "installed": {
+    "q4t": "c3772d111088f8dbd7f07b6b482367da05c50112dd6502f047cd4627da2ea23a",
+    "q4t.release.json": "c80f1f14b1abe39a24e45a9fe37a0fa4e9b8a5fd47a4537799f816dca852e5a1"
+  },
+  "runtime_files": 164,
+  "runtime_changes": [
+    "include/q4t/server/http_response.h",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_contract.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/http_response.cpp"
+  ],
+  "finalized": {
+    "status": "DELIVERED",
+    "time": 1793606526.843916,
+    "installed": {
+      "q4t": "c3772d111088f8dbd7f07b6b482367da05c50112dd6502f047cd4627da2ea23a",
+      "q4t.release.json": "c80f1f14b1abe39a24e45a9fe37a0fa4e9b8a5fd47a4537799f816dca852e5a1"
+    },
+    "source_commit": "8922c44685f72fa592c3fe89321cde83eaf10d09",
+    "elapsed_from_original_start": 1245.701078414917
+  },
+  "ci": "[{\"conclusion\":\"success\",\"headSha\":\"8922c44685f72fa592c3fe89321cde83eaf10d09\",\"status\":\"completed\",\"url\":\"https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41409900524\"},{\"conclusion\":\"success\",\"headSha\":\"5340cc45a8cf785371d1ab34435b79589e383f5f\",\"status\":\"completed\",\"url\":\"https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41408778718\"},{\"conclusion\":\"success\",\"headSha\":\"2fe6cdcfe5805ef8ebd7dd0997c4c68c7f4a3073\",\"status\":\"completed\",\"url\":\"https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/41407853887\"}]\n"
+}

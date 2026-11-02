@@ -1,0 +1,55 @@
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1
+[q4t][startup] tokenizer 528 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=8192 max_seq=1 max_prefill=2048 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=93.36 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=687669248 mtp_workspace=926107648 forward_buffers=104898564 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=1.24 GB (peak admitted MTP request allocations)  state_pool=0.39 GB
+[q4t][budget]   => max_len=8192 max_seq=1
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476920 mtp_checkpoints=346927104 mtp_forward_temp=4206736
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=97103842376 runtime_peak=94990027992 estimated_total=97103842376
+[q4t][startup] budget 448 ms
+[q4t][capacity] requested_max_len=8192 requested_max_seq=1 requested_max_prefill=2048 effective_max_len=8192 effective_max_seq=1 effective_max_prefill=2048 budget_enabled=1 budget_feasible=true
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":0,"freed":0,"unhanded_remaining":1606,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2586 ms
+[q4t][startup] model_load 28691 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 2856 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":0,"unhanded_remaining":0,"handed_live":1606,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup] startup_total 35110 ms
+[q4t] serving on port 18098 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.001
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=registered stage=validation seq=-1 elapsed_ms=0.052
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=slot_admission seq=-1 elapsed_ms=0.071
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=admitted stage=slot_admission seq=0 elapsed_ms=0.075
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=encode seq=0 elapsed_ms=0.077
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=prefill seq=0 elapsed_ms=2.213
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=decode seq=0 elapsed_ms=583.011
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[mtp-accept] request=chatcmpl-auto-0 draft_counts=0,0,1,13
+[q4t][mem] phase=request_end id=chatcmpl-auto-0 dev_used_gb=99.922 dev_total_gb=131.921 rss_mb=914.0 mem_free_gb=16.558 mem_avail_gb=35.264 cached_gb=3.853
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=response seq=0 elapsed_ms=1971.028
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=1971.168 slot_wait_ms=0.002 model_lock_ms=0.001 tokenizer_lock_ms=0.000 scheduler_completion_ms=1329.047 stream_write_ms=0.000 scheduler_waits=14
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=registered stage=validation seq=-1 elapsed_ms=0.073
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=slot_admission seq=-1 elapsed_ms=0.102
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=admitted stage=slot_admission seq=0 elapsed_ms=0.107
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=encode seq=0 elapsed_ms=0.108
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=prefill seq=0 elapsed_ms=3.403
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=decode seq=0 elapsed_ms=839.384
+[mtp-accept] request=chatcmpl-auto-1 draft_counts=0,2,1,17
+[q4t][mem] phase=request_end id=chatcmpl-auto-1 dev_used_gb=99.883 dev_total_gb=131.921 rss_mb=918.1 mem_free_gb=16.603 mem_avail_gb=35.303 cached_gb=3.854
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=response seq=0 elapsed_ms=2797.688
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=2797.773 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.007 scheduler_completion_ms=1882.847 stream_write_ms=0.466 scheduler_waits=20
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=34
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":1606,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}

@@ -1,0 +1,69 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_completion_tokens": 512,
+  "stream": true,
+  "messages": [
+    {
+      "role": "user",
+      "content": "先调用read_project_record读取build/q4t.release.json，start_line=1，line_count=10。然后只回答工具结果中binary_sha256的完整值。"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_chatcmpl-auto-0_0",
+          "type": "function",
+          "function": {
+            "name": "read_project_record",
+            "arguments": "{\"path\":\"build/q4t.release.json\",\"start_line\":1,\"line_count\":10}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_chatcmpl-auto-0_0",
+      "content": "{\"ok\": true, \"source\": {\"path\": \"build/q4t.release.json\", \"sha256\": \"0f28e0f08322c6ad513dc9117e95f6913d34876b43485534e150b67f8544f1aa\", \"start_line\": 1, \"end_line\": 10, \"citation\": \"[build/q4t.release.json:L1-L10]\", \"text\": \"1: {\\n2:   \\\"version\\\": \\\"chat-integration-20261102\\\",\\n3:   \\\"binary_sha256\\\": \\\"830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51\\\",\\n4:   \\\"source_commit\\\": \\\"426f0dd2d19b99ba29c7678b3b356cbe94005a56\\\",\\n5:   \\\"source_note\\\": \\\"Prebuilt accepted chat candidate; this commit contains the exact tested runtime sources. Build-time parent and actual cache are retained in candidate/development.json; no rebuild.\\\",\\n6:   \\\"tested_source_manifest\\\": \\\"/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/candidate/runtime-source.json\\\",\\n7:   \\\"tested_source_manifest_sha256\\\": \\\"565f29fb7964bdcb8889c7cbc4e095baf8dab081b9f4752c3c55dbfaaf514e08\\\",\\n8:   \\\"build_cache\\\": \\\"/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/candidate/CMakeCache.txt\\\",\\n9:   \\\"build_cache_sha256\\\": \\\"52e07d3ce862297a21979fcef81df00a3c838238eb2c5bf12e6fde92f25906b3\\\",\\n10:   \\\"acceptance\\\": \\\"ACCEPT_BOUNDED_CHAT_INTEGRATION\\\",\", \"truncated\": false}, \"total_lines\": 165}"
+    }
+  ],
+  "extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    }
+  },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_record",
+        "description": "Read real project documentation or acceptance JSON under docs/, or the installed release metadata build/q4t.release.json. Returns numbered lines, a source SHA256 and an exact citation. Use the returned citation verbatim in the answer.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "start_line": {
+              "type": "integer"
+            },
+            "line_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "stream_options": {
+    "include_usage": true
+  }
+}
