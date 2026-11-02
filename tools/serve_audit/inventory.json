@@ -391,7 +391,7 @@
       ]
     },
     "GET /metrics": {
-      "semantics": "独立slot_wait/admission/generation_exit/response；固定原因取消计数；constrained准备与租约指标；开发候选含slot等候数、queue/text准入拒绝固定计数",
+      "semantics": "独立slot_wait/admission/generation_exit/response；固定原因取消计数；constrained准备与租约指标；SRV-02b已验slot等候数、queue/text准入拒绝固定计数",
       "boundary": "queue/e2e保留原语义的弃用别名；存储计量非compiler峰值；局部写完不保证客户端消费",
       "evidence": [
         "src/server/chat_metrics.cpp",
@@ -446,7 +446,7 @@
       ]
     },
     "GET /v1/config": {
-      "semantics": "启动后实际上下文、输出默认、槽位、限制和来源，只读；开发候选含inflight/queued请求值与预算后有效值、capacity_fifo_best_fit策略",
+      "semantics": "启动后实际上下文、输出默认、槽位、限制和来源，只读；SRV-02b已验inflight/queued请求值与预算后有效值、capacity_fifo_best_fit策略",
       "boundary": "不公开路径/凭据；不保证可用槽位、全机RAM或未来执行成功；限定HTTP已验",
       "evidence": [
         "docs/SERVE_PREFLIGHT_2026-11-03.md",
@@ -711,9 +711,13 @@
   },
   "review_note": "2026-11-03 SRV-07：审核共用规划/渲染拆分、生成前分词、两类预算保留、只读资源边界与配置来源；CPU有证据，真实HTTP尚待验。",
   "admission_review_20261103": {
-    "status": "development_candidate_not_accepted",
+    "status": "accepted_bounded",
     "scope": "CAS inflight lease, capacity FIFO slot queue, cancellation cleanup and discovery/metrics",
     "contract": "docs/SERVE_ADMISSION_2026-11-03.md",
-    "evidence_pending": "new targeted host/native-admission and bounded real HTTP gates"
+    "result": "docs/SERVE_ADMISSION_RESULT_2026-11-03.md",
+    "runtime_source": "919cc01f807c7c6cc6b096edfdd2c1576dc8b9ba",
+    "production_sha256": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+    "evidence": "docs/evidence/serve-admission-20261103",
+    "limitation": "No strict long-payload backpressure, public-network or long-soak acceptance"
   }
 }

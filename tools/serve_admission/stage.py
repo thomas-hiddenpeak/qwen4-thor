@@ -267,6 +267,21 @@ def finalize():
     h.seal(OUTPUT)
 
 
+def rollback_plan():
+    # A later workspace edit must not invalidate a known, sealed rollback pair.
+    # Execution acceptance still uses check() and its exact current sources.
+    h.verify_seal(PACKAGE)
+    plan = h.read(PACKAGE / "plan.json")
+    h.require(plan["root"] == str(ROOT) and plan["limits"] == LIMITS and
+              plan["previous_binary_sha256"] == prior.DEFAULT_SHA and
+              plan["old_hashes"]["q4t"] == prior.DEFAULT_SHA,
+              "foreign rollback package")
+    h.check_identity(plan["binary"])
+    h.verify_pair(PACKAGE / "previous/q4t", PACKAGE / "previous/q4t.release.json",
+                  plan["previous_binary_sha256"], PACKAGE / "previous/CMakeCache.txt")
+    return plan
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("prepare", "launch", "execute", "finalize", "rollback"))
@@ -279,6 +294,7 @@ def main():
     if args.action == "rollback":
         h.require(args.output is not None, "fresh lease output required")
         bind()
+        a.check = rollback_plan
         a.restore(args.output.resolve())
         return
     globals()[args.action]()

@@ -1,0 +1,51 @@
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=exception-1 error=internal_error
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=req-6fe58855c9fa4a99bf284c455f564c37 status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-0a3734dc9940537b3bd0c123258abf5b status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-a4fd06f9eb88fd6ec108a4b7319643e1 status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-70c72cbf864f29b1681e5c1d7cade83a status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-2725c89077948cf0726ffd15ae29aae6 status=404 error=request_not_found
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] accept/thread exception: std::bad_alloc
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=route-1 status=405 error=method_not_allowed
+[q4t][http] trace_id=req-de62581e262f4e234e38bbccbb4c247f status=400 error=unsupported_query
+[q4t][http] trace_id=req-d588dea173ba89369c9d1dada62d21d5 status=404 error=not_found
+[q4t][http] trace_id=req-84495aca883033b5be0d1ba60c61c4a4 status=415 error=unsupported_media_type
+[q4t][http] trace_id=req-711d537087c40b99ef6d298ccdb48733 status=415 error=unsupported_media_type
+[q4t][http] trace_id=req-8d94ab1ea1649d5fa13c160571eedfcd status=415 error=unsupported_media_type
+[q4t][http] trace_id=req-8828acdf70ea5a74d6bf13a71ccb8dee error=internal_error
+[q4t][http] trace_id=req-f148a8a8f5a11c7ed596aa0681d48d75 status=400 error=invalid_request_id_header
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=req-367226f4e5749e80a08978826ca35502 status=503 error=capacity_exhausted
+[q4t][http] trace_id=req-c6fadf4ce1e6a30103f18483b2bb6dfc status=503 error=server_draining
+[q4t][http] trace_id=req-b617f25e4b86370b06a489f50ba0feb9 status=400 error=invalid_request
+[q4t][http] trace_id=req-f7937f70c5b88d0a2cf2ba262ab7bff2 status=400 error=invalid_request
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[PASS] http_stop_before_and_during_listener_publication
+[PASS] http_exception_keeps_server_and_releases_connections
+[PASS] http_cancel_validates_before_registry_mutation
+[PASS] http_thread_creation_failure_rolls_back
+[PASS] http_validation_gate_is_an_explicit_handshake
+[PASS] http_methods_media_queries_and_trace_headers
+[PASS] http_control_reserve_and_draining_readiness
+[PASS] admission_runtime_fifo_survives_later_arrival_and_slot_transfer
+[PASS] admission_runtime_zero_and_full_queue_reject_without_slot_loss
+[PASS] admission_runtime_full_queue_allows_incompatible_idle_slot
+[PASS] admission_runtime_cancel_head_middle_tail_wakes_successors
+[PASS] admission_runtime_deadline_disconnect_stop_and_gpu_failure_cleanup
+[PASS] admission_runtime_exception_unlinks_before_successor_recovery
+13 tests, 13 passed, 0 failed, 0 skipped

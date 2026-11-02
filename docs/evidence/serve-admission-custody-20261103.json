@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "git_index_evidence_files": 238,
+  "archive_seals_valid": true,
+  "document_links_missing": [],
+  "retained_first_audit_failure": "directory add omitted ignored .bin wire files; forced addition restores exact original bytes",
+  "raw_evidence_whitespace": "Three CMakeCache snapshots retain their original blank final line; no source whitespace errors"
+}

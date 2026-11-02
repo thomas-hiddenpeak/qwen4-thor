@@ -1,0 +1,35 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/fault/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18101",
+    "--max-prefill",
+    "2048",
+    "--max-len",
+    "8192",
+    "--max-seq",
+    "2",
+    "--max-inflight-requests",
+    "8",
+    "--max-queued-requests",
+    "2",
+    "--no-mtp",
+    "--seq-capacities",
+    "8192,2048"
+  ],
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/fault/q4t",
+    "sha256": "234fae71f3970a85c97383405eecd57ea6477cc0ad75dbeade6c2a147bef396b",
+    "bytes": 7085416
+  },
+  "validation_env": {
+    "Q4T_SERVE_PAUSE": "handler.before_response",
+    "Q4T_SERVE_REQUEST": "srv02b-response-holder",
+    "Q4T_SERVE_GATE": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/business/capacity-fault/response"
+  }
+}

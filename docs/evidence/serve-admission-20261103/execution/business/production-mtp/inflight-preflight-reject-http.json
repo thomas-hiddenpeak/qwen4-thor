@@ -1,0 +1,10 @@
+{
+  "status": 503,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "131",
+    "X-Request-Id": "req-7fe871832adb8a61f4c37fb47b0bfcec",
+    "Connection": "close"
+  },
+  "raw": "{\"error\":{\"message\":\"text request capacity exhausted\",\"type\":\"service_unavailable_error\",\"code\":\"capacity_exhausted\",\"param\":null}}"
+}

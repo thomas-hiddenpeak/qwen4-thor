@@ -5,8 +5,38 @@
 ## 当前推进目标
 
 长期目标“持续推进完善serve到工业水准”保持active，按
-[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。SRV-07请求
-预检/有效配置已限定交付；当前默认5642eb68 / sidecar6aca6a3e，运行时
+[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
+
+SRV-02b准入/容量FIFO已限定交付；当前默认c16caf05 / sidecarbe4cd021，
+冻结运行时/驱动919cc01f、protocol b70fc28a，完整head；
+[结果、原始失败、证据与回退](SERVE_ADMISSION_RESULT_2026-11-03.md)。
+可配置chat/preflight总准入、slot等候、准备后的容量FIFO/取消注销，
+有效配置与固定指标同步。实际10生成尝试/4拒绝/2启动首轮完成：
+生产MTP总准入/取消回收/JS真实资料工具和专用plain异容量次序
+H0/B1/C0/D0、满队列JSON/SSE错误及strict恢复通过；2有意取消不记成功。
+
+业务81.573秒、110.008秒finalize，guard COMPLETED/ENV_ABORT0；
+未扩大12/8/3/30分钟硬上限，不作性能接受声明。安装CLI/worker通过，
+HTTP明确复用同SHA生产候选，无额外安装模型启动；旧5642eb68/6aca6a3e
+及完整回退链保留。工作区后续改动不再阻断封存pair回退，CPU2项通过，
+未实际回退已交付程序。
+
+CPU OFF206/ON215、必需172、真实等待6、后端9、锁内HTTP原生13通过；
+配置15项、驱动13项保留原来源枚举/数组根/数组上限夹具失败，定向修复。
+计划输入7种native通过。生产/专用/probe零警告，192运行时文件未改模型
+数值；10生成wire/17封套及4拒绝/5封套通过，227原记录封存231文件3.02MB。
+含独立收尾证据共238份Git blob已按字节核对，原wire未受忽略规则遗漏。
+07:13:45 CST GPU PID空、锁可用、无模型/worker/恢复标记，MemAvailable
+116.997GiB。稀疏parent/worker RSS与系统内存分列，不当整机峰值保证。
+
+下一独立包[SRV-01b接收拒绝与输出失败观测](SERVE_OBSERVABILITY_2026-11-03.md)
+已冻结开发范围、尚未实现：body/读取拒绝原因、首次写失败分类与固定
+计数，先CPU后另冻真实HTTP预算。03b严格长payload背压仍未通过；
+访问运维、长稳和通用任务恢复仍待办，不能把02b当工业化全部完成。
+
+## SRV-07/08及03b交付历史
+
+SRV-07请求预检/有效配置已限定交付；当时默认5642eb68 / sidecar6aca6a3e，运行时
 b3ae710e、冻结驱动24310aba，完整head。详见[结果、失败、证据与回退](SERVE_PREFLIGHT_RESULT_2026-11-03.md)。
 
 真实预检与prompt usage一致；MTP单槽、plain双槽、长工具历史、严格
@@ -58,15 +88,7 @@ Thor缺task/*/children导致漏worker采样，已改PPid/start-ticks发现，
 采样未知；日志post-exec224.027MiB另列，不相加。06:25:12 CST GPU空、
 锁可用、无恢复标记/模型，MemAvailable116.976GiB。
 
-下一独立包[SRV-02b准入与容量适配排队开发合同](SERVE_ADMISSION_2026-11-03.md)
-源码已接入开发候选：可配置inflight/queued、CAS准入租约、容量适配FIFO、
-取消/异常注销、配置schema和固定指标；默认程序仍未替换，真实HTTP待执行。
-生产c16caf05/专用234fae71零警告，OFF206/ON215、必需172、真实等待6、
-grammar后端9通过。配置15项保留原来源枚举夹具失败，修复5项、其余10复用；
-驱动原11项保留数组根/数组上限两次夹具失败，定向修复；新增role前缀
-合同2项，受影响7项重验通过，共13项。计划输入7种由生产native probe通过。
-已冻结HTTP计划10生成/4拒绝/2启动，硬限12/8/3及30分钟、全阶段同一锁；
-不能用它代替03b。body拒绝和写失败归类、访问运维与长稳仍待后续。
+SRV-02b随后已按上方交付；不能用它代替03b。当前下一项见上方01b开发合同。
 
 ## SRV-06交付历史
 

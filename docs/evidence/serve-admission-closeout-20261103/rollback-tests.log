@@ -1,0 +1,7 @@
+test_foreign_package_refused_before_artifact_use (tools.serve_admission.test_rollback.RollbackTests.test_foreign_package_refused_before_artifact_use) ... ok
+test_sealed_pair_remains_usable_after_workspace_changes (tools.serve_admission.test_rollback.RollbackTests.test_sealed_pair_remains_usable_after_workspace_changes) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.103s
+
+OK

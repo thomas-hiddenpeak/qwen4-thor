@@ -1,0 +1,22 @@
+{
+  "rollback-tests.log": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/closeout/rollback-tests.log",
+    "sha256": "c5fae7d5da33b773506eb363584d7dbe49087308e8e2eb0dabd8f179687f6b1d",
+    "bytes": 426
+  },
+  "rollback-result.json": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/closeout/rollback-result.json",
+    "sha256": "4554e97fae7ff7e8d9eeaeca39645fa48d1ade3fda961caad1e18a5f2bafe5dd",
+    "bytes": 405
+  },
+  "stage-after-delivery.py": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_admission/stage.py",
+    "sha256": "7a5c6ce516af317729682202fd4351b08cdad2a3c3f85151c32fa3689d6e9c3c",
+    "bytes": 16802
+  },
+  "test_rollback.py": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_admission/test_rollback.py",
+    "sha256": "b9bcbb8eb976cad3d5e6890e8246dc580c30e4af07ab9e3f413807a08a81bb07",
+    "bytes": 1240
+  }
+}

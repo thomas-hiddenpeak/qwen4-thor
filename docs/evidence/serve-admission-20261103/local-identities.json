@@ -1,0 +1,52 @@
+{
+  "execution/pair/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/execution/pair/q4t",
+    "sha256": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+    "bytes": 7083456
+  },
+  "package/candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/candidate/q4t",
+    "sha256": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+    "bytes": 7083456
+  },
+  "package/candidate/q4t_http_lifecycle_tests": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "ff4d71a4423c4a0c5d010495897af3997da174cd81322e29a77f5785a2db3679",
+    "bytes": 672328
+  },
+  "package/cpu/config-probe/config_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/cpu/config-probe/config_probe",
+    "sha256": "36f725a33c3c4f8df6e05be1e2a759b6c08fbf744e13c6fed2fe3be5c101b288",
+    "bytes": 428072
+  },
+  "package/cpu/config-probe/probe.o": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/cpu/config-probe/probe.o",
+    "sha256": "4dd4694701b49b253f2f154032190cae5085b3a9ecd51aea52bde78f62c04b01",
+    "bytes": 19160
+  },
+  "package/cpu/planned-native/contract_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/cpu/planned-native/contract_probe",
+    "sha256": "d63791169f9382fb84d427d2fffba19033a886a6ee15b8410916e27f9ec77646",
+    "bytes": 497504
+  },
+  "package/cpu/planned-native/probe.o": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/cpu/planned-native/probe.o",
+    "sha256": "d1b9fba0893e69d1e48d41dc70c197d1100915787397538a5cf45debfe8c4b88",
+    "bytes": 25984
+  },
+  "package/fault/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/fault/q4t",
+    "sha256": "234fae71f3970a85c97383405eecd57ea6477cc0ad75dbeade6c2a147bef396b",
+    "bytes": 7085416
+  },
+  "package/previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/previous/q4t",
+    "sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+    "bytes": 7083976
+  },
+  "package/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/source.bundle",
+    "sha256": "fa8211f988c6e722b27ffb8ccd5e43a4c2fe8cba3e57b621e7080160c274e0ed",
+    "bytes": 45550
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    "X-Accel-Buffering": "no",
+    "X-Request-Id": "req-ad1a1de2a874dd5fe551852a629b35d3",
+    "Connection": "close"
+  },
+  "raw": "data: {\"id\":\"agent-6c8978f6717fe6d241a1ebcc88b67e6d\",\"object\":\"chat.completion.chunk\",\"created\":1793661152,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null,\"logprobs\":null}],\"usage\":null}\r\n\r\ndata: {\"error\":{\"message\":\"slot waiting capacity exhausted\",\"type\":\"service_unavailable_error\",\"code\":\"queue_capacity_exhausted\",\"param\":null}}\r\n\r\ndata: [DONE]\r\n\r\n"
+}

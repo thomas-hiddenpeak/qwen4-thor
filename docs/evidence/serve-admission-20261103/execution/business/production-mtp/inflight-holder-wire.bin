@@ -1,0 +1,4 @@
+data: {"id":"agent-91d21c832f70c5df5374ce416c4ad8fc","object":"chat.completion.chunk","created":1793661109,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"error":{"message":"request cancelled during prefill","type":"conflict_error","code":"explicit_cancel","param":null}}
+

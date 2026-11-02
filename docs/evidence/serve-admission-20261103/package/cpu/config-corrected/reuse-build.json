@@ -1,0 +1,5 @@
+{
+  "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/cpu/config-probe/config_probe",
+  "sha256": "36f725a33c3c4f8df6e05be1e2a759b6c08fbf744e13c6fed2fe3be5c101b288",
+  "prior_result_sha256": "41b0af009bce118645c15fc39b9eda486d15b3df5266f7bcbc1437007462064c"
+}

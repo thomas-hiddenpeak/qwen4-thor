@@ -13,6 +13,8 @@
 [SRV-03b严格输出背压、受载控制及后续资源任务冻结](SERVE_BACKPRESSURE_2026-11-03.md)。
 [SRV-03b本轮未通过、取证缺口及证据](SERVE_BACKPRESSURE_RESULT_2026-11-03.md)，
 [SRV-02b准入与容量适配排队开发合同](SERVE_ADMISSION_2026-11-03.md)。
+[SRV-02b准入/容量FIFO交付、真实队列/工具/回退证据](SERVE_ADMISSION_RESULT_2026-11-03.md)；
+[下一包SRV-01b接收拒绝/输出失败观测](SERVE_OBSERVABILITY_2026-11-03.md)。
 [SRV-06文本停止交付、跨块/MTP/工具终态、失败与回退](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 [SRV-05b真实预算交付、质量修复、MTP/缓存及完整证据](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)；
 [先前开发和未完成HTTP记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)保留。
@@ -34,7 +36,7 @@
 见[验收结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。
 聊天接入 830694ce、应用服务 c3772d11 的后续默认为结构化输出
 957211c7 / 9eba5472，再更新输入合同 ea678009 / 90372798；当前为
-serve预检5642eb68 / 6aca6a3e（之前SRV-06为a3fd64a3）。
+serve准入c16caf05 / be4cd021（之前SRV-07为5642eb68 / 6aca6a3e）。
 外部 vLLM 已按授权停止，当前交付后 GPU 释放；
 原[正式交付、98份证据与回退](CHAT_DELIVERY_2026-11-02.md)保留。
 [完整工具往返、真实中断与日志崩溃场景准备](CHAT_ACCEPTANCE_SCENARIOS_2026-11-02.md)。

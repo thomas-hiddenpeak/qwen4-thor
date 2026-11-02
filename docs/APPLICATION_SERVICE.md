@@ -4,8 +4,15 @@
 只读查询本项目文档、发布与验收记录。代码优先；实现、验证和业务质量
 分别记录。此页是持续维护入口，历史验收不随新功能自动扩张。
 
+2026-11-03 [SRV-02b准入/容量FIFO已限定交付](SERVE_ADMISSION_RESULT_2026-11-03.md)：
+当前默认c16caf05/be4cd021。共享chat/preflight准入、slot等候上限、准备后
+容量FIFO、取消注销、配置/指标；生产MTP总准入/真实JS资料工具和专用plain
+异容量排队/满队列JSON/SSE拒绝/恢复通过，10生成尝试/4拒绝/2启动。
+不承诺HTTP到达顺序、每租户公平或整机RAM。下一项为
+[接收拒绝/首次写失败观测](SERVE_OBSERVABILITY_2026-11-03.md)，尚未实现。
+
 2026-11-03 [SRV-07预检/配置已交付](SERVE_PREFLIGHT_RESULT_2026-11-03.md)：
-当前默认5642eb68/6aca6a3e。只读预检共用生产合同/模板/分词/预算，
+当时默认5642eb68/6aca6a3e。只读预检共用生产合同/模板/分词/预算，
 返回值与真实usage一致；有效配置可发现。预检不预留槽位、不编译grammar，
 不保证执行或答案质量；双槽plain已验，双槽MTP生成未验。
 [SRV-08完整输入/JS接入已限定交付](SERVE_PROTOCOL_RESULT_2026-11-03.md)：
@@ -16,8 +23,8 @@
 [SRV-03b本轮未通过](SERVE_BACKPRESSURE_RESULT_2026-11-03.md)：长strict载荷
 在输出预算内未闭合，1生成/1启动，没有实际EAGAIN。取证缺口/原始失败
 保留，工具已CPU修复，默认不变、GPU释放；不能把CPU编码估计当真实生成。
-[SRV-02b准入与容量FIFO](SERVE_ADMISSION_2026-11-03.md)已实现开发候选并通过
-CPU合同；真实HTTP预算已冻结，尚未交付到默认程序。
+[SRV-02b准入与容量FIFO](SERVE_ADMISSION_RESULT_2026-11-03.md)随后已交付，
+不能代替03b的长载荷背压证明。
 
 2026-11-03 [SRV-06文本停止已交付](SERVE_TEXT_STOP_RESULT_2026-11-03.md)：
 当时默认a3fd64a3/49c7c631。跨token/块与中文停止、JSON/SSE、MTP逻辑
@@ -130,7 +137,8 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | HTTP媒体 / 方法 / query | 已验 | application/json UTF-8；405＋Allow、query400、GET body400；连接关闭 |
 | 控制入口 / 慢读 | 限定已验 | 4控制连接预留；普通增量流真实EAGAIN后取消回收；不保证慢头洪泛 |
 | POST /v1/chat/preflight | SRV-07限定已验 | 共用合同/模板/分词/预算；可选prompt/IDs；不预留资源或保证执行 |
-| GET /v1/config | SRV-07限定已验 | 实际容量、默认与运行配置；不暴露模型目录/凭据 |
+| GET /v1/config | SRV-07/02b限定已验 | 实际容量、默认与运行配置、准入/等候请求值与有效值；不暴露模型目录/凭据 |
+| 请求准入 / slot队列 | SRV-02b限定已验 | chat/preflight共享上限，准备后的容量FIFO；满队列503或已开SSE的唯一错误终态；非每租户公平或RAM预留 |
 | 机器schema | SRV-08限定交付 | 38字段/10路由OpenAPI加必需原生语义清单；396 CPU差分，实际25 wire/56封套；标准schema本身不证明动态准入 |
 | Responses / Assistants / Batch | 未实现 | 不能通过更换 base_url 使用 |
 | 图片 / 视频 / 音频 | 非首批文本兼容范围 | 媒体实验开关不代表多模态业务验收 |

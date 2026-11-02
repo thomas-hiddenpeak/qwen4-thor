@@ -1,0 +1,11 @@
+{
+  "status": "PASS_BOUNDED_ADMISSION",
+  "counts": {
+    "generations": 10,
+    "negatives": 4,
+    "starts": 2
+  },
+  "seconds": 81.57272930489853,
+  "performance_acceptance": false,
+  "automatic_retry": false
+}

@@ -12,7 +12,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
-当前默认程序`5642eb68`已包含工具/推理输出解析、JSON/SSE、带ID工具
+当前默认程序`c16caf05`已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
@@ -34,6 +34,10 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 `POST /v1/chat/preflight`只读返回实际token数量、输出预算和合格槽位，
 `GET /v1/config`提供有效配置与来源；预检不会预留资源或保证生成成功。
 包装格式、文本范围与[真实验证证据](docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md)已公开。
+`--max-inflight-requests`配置chat/preflight共同准入上限，
+`--max-queued-requests`配置slot等候上限。准备完成后按容量适配FIFO授予
+槽位，队列满时拒绝等待，空闲小槽仍可供不阻碍先来请求的小请求使用；
+[真实队列、取消/工具恢复与回退证据](docs/SERVE_ADMISSION_RESULT_2026-11-03.md)。
 最新验收限完整head，旧subset证据不自动扩张到新候选。
 当前未启动常驻模型服务，GPU保持释放；通用SDK、完整JSON Schema、
 多人运行边界和长期稳定仍按[工业化验收账](docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进。
@@ -155,6 +159,8 @@ OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成�
 |---|---|
 | `--host` / `--port` | `127.0.0.1` / `8000`；host 接受数字 IPv4 |
 | `--max-seq` | `1` |
+| `--max-inflight-requests` | 省略为max(32,2×有效槽数)；显式1..4096，共享chat/preflight，含准备/等待/输出 |
+| `--max-queued-requests` | 省略为max(0,有效inflight−有效槽数)；显式0..4096且不超过inflight，0表示不等待 |
 | `--seq-capacities` | 默认等长槽；显式逗号列表为每槽输入＋输出容量，须与max-seq/max-len匹配，预算不足时拒绝；推荐agent布局见上例 |
 | `--max-prefill` | `0` 表示使用模型默认 `2048`；可显式设至 `8192` |
 | `--max-len` | `0`，默认预算开启时自动推导有效长度 |

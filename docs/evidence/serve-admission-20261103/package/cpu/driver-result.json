@@ -1,0 +1,19 @@
+{
+  "passed": false,
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_admission.test_driver",
+    "-v"
+  ],
+  "exit": 1,
+  "sources": {
+    "tools/serve_admission/stage.py": "4de44bf8f40701b0d353f0cc77cd00c360c9e054ebf2ee59c3c6c9c961168ded",
+    "tools/serve_admission/installed_health.py": "40b2fef911ea2080069a8f03a0d04fa78b045dcd311c4bd7a968972344d7c69f",
+    "tools/serve_admission/test_driver.py": "06c08cb7c23707f4cd2e9978d15199be8b87c63b2000ca6519bb4c2c42fea58f",
+    "tools/serve_admission/verify.py": "55f0b39fcbf3c9c721aa419cbd0399edeb81cdaa5b17cb17dcbbb37eb0b3d63e",
+    "tools/serve_admission/config_check.py": "1581b283f28df5f80c433367be3eb5571964b11b9c904f6e480e42b5eaf20126"
+  }
+}

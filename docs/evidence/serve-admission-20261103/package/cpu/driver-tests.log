@@ -1,0 +1,61 @@
+test_absolute_guard_and_distinct_stage (tools.serve_admission.test_driver.DriverTests.test_absolute_guard_and_distinct_stage) ... ok
+test_budget_refuses_extra_attempt_before_recording (tools.serve_admission.test_driver.DriverTests.test_budget_refuses_extra_attempt_before_recording) ... ok
+test_cancel_does_not_accept_success (tools.serve_admission.test_driver.DriverTests.test_cancel_does_not_accept_success) ... ok
+test_json_rejection_exact_code (tools.serve_admission.test_driver.DriverTests.test_json_rejection_exact_code) ... ok
+test_real_startup_cli_parses_without_loading (tools.serve_admission.test_driver.DriverTests.test_real_startup_cli_parses_without_loading) ... ok
+test_rejection_cannot_contain_success (tools.serve_admission.test_driver.DriverTests.test_rejection_cannot_contain_success) ... ok
+test_rejection_cannot_end_before_error (tools.serve_admission.test_driver.DriverTests.test_rejection_cannot_end_before_error) ... ok
+test_request_shapes_and_bounded_payload (tools.serve_admission.test_driver.DriverTests.test_request_shapes_and_bounded_payload) ... ERROR
+test_same_source_build_and_fault_separation (tools.serve_admission.test_driver.DriverTests.test_same_source_build_and_fault_separation) ... ok
+test_sse_error_is_logical_rejection_after_200 (tools.serve_admission.test_driver.DriverTests.test_sse_error_is_logical_rejection_after_200) ... ok
+test_sse_rejects_duplicate_or_missing_terminal (tools.serve_admission.test_driver.DriverTests.test_sse_rejects_duplicate_or_missing_terminal) ... ok
+
+======================================================================
+ERROR: test_request_shapes_and_bounded_payload (tools.serve_admission.test_driver.DriverTests.test_request_shapes_and_bounded_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_admission/test_driver.py", line 26, in test_request_shapes_and_bounded_payload
+    validators["chat"].validate(body)
+  File "/home/rm01/.local/lib/python3.12/site-packages/jsonschema/validators.py", line 450, in validate
+    raise error
+jsonschema.exceptions.ValidationError: {'type': 'json_schema', 'json_schema': {'name': 'admission', 'strict': True, 'schema': {'type': 'array', 'minItems': 128, 'maxItems': 128, 'items': {'type': 'boolean', 'enum': [True]}}}} is not valid under any of the given schemas
+
+Failed validating 'anyOf' in schema['properties']['response_format']:
+    {'anyOf': [{'oneOf': [{'type': 'object',
+                           'properties': {'type': {'enum': ['text',
+                                                            'json_object']}},
+                           'required': ['type'],
+                           'additionalProperties': False},
+                          {'type': 'object',
+                           'properties': {'type': {'const': 'json_schema'},
+                                          'json_schema': {'type': 'object',
+                                                          'properties': {'name': {'type': 'string',
+                                                                                  'minLength': 1,
+                                                                                  'maxLength': 64,
+                                                                                  'pattern': '^[A-Za-z0-9_-]+$'},
+                                                                         'description': {'type': 'string'},
+                                                                         'strict': {'type': ['boolean',
+                                                                                             'null']},
+                                                                         'schema': {'allOf': [{'$ref': '#/$defs/schemaNode'},
+                                                                                              {'properties': {'type': {'const': 'object'}}}]}},
+                                                          'required': ['name',
+                                                                       'schema'],
+                                                          'additionalProperties': False}},
+                           'required': ['type', 'json_schema'],
+                           'additionalProperties': False}]},
+               {'type': 'null'}]}
+
+On instance['response_format']:
+    {'type': 'json_schema',
+     'json_schema': {'name': 'admission',
+                     'strict': True,
+                     'schema': {'type': 'array',
+                                'minItems': 128,
+                                'maxItems': 128,
+                                'items': {'type': 'boolean',
+                                          'enum': [True]}}}}
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.180s
+
+FAILED (errors=1)

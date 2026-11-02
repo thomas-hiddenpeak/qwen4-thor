@@ -1,0 +1,46 @@
+{
+  "actual": [
+    [
+      "srv02b-response-holder",
+      0,
+      8192
+    ],
+    [
+      "agent-060117d3daddbfba0e9689e15091512a",
+      1,
+      2048
+    ],
+    [
+      "agent-b2e2b84d18de37614faf1ad4cf3b6e6f",
+      0,
+      8192
+    ],
+    [
+      "agent-4fec13ecd2b3bdc97d170d713f39f54a",
+      0,
+      8192
+    ]
+  ],
+  "expected": [
+    [
+      "srv02b-response-holder",
+      0,
+      8192
+    ],
+    [
+      "agent-060117d3daddbfba0e9689e15091512a",
+      1,
+      2048
+    ],
+    [
+      "agent-b2e2b84d18de37614faf1ad4cf3b6e6f",
+      0,
+      8192
+    ],
+    [
+      "agent-4fec13ecd2b3bdc97d170d713f39f54a",
+      0,
+      8192
+    ]
+  ]
+}
