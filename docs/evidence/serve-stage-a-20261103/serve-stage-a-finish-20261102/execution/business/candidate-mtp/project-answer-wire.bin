@@ -1,0 +1,10 @@
+data: {"id":"chatcmpl-auto-299c2e0c3264ca7c63c9e86f796dbe15","object":"chat.completion.chunk","created":1793634307,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-299c2e0c3264ca7c63c9e86f796dbe15","object":"chat.completion.chunk","created":1793634307,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"根据读取的内容，模型架构名称为：**Qwen3.8-Flash-Next (qwen4_exp)**。\n\n工具给出的 citation 逐字引用如下：\n`[docs/MODEL.md:L1-L8]`"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-299c2e0c3264ca7c63c9e86f796dbe15","object":"chat.completion.chunk","created":1793634307,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+data: {"id":"chatcmpl-auto-299c2e0c3264ca7c63c9e86f796dbe15","object":"chat.completion.chunk","created":1793634307,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":397,"completion_tokens":50,"total_tokens":447}}
+
+data: [DONE]
+

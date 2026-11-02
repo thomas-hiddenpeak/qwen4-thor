@@ -1,0 +1,6 @@
+POST /v1/chat/completions HTTP/1.1
+Host: localhost
+Content-Type: application/json
+Content-Length: 1046
+
+{"model": "qwen3.8-flash-next", "temperature": 0, "max_completion_tokens": 4096, "stream": true, "messages": [{"role": "user", "content": "\u53ea\u8f93\u51fa\u7b26\u5408schema\u7684JSON\u5bf9\u8c61\uff0c\u5c06xs\u586b\u6ee1\u3002"}], "stream_options": {"include_usage": true}, "response_format": {"type": "json_schema", "json_schema": {"name": "long", "strict": true, "schema": {"type": "object", "properties": {"xs": {"type": "array", "minItems": 64, "maxItems": 64, "items": {"type": "string", "enum": ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"]}}}, "required": ["xs"], "additionalProperties": false}}}, "chat_template_kwargs": {"enable_thinking": false, "reasoning_effort": "low"}, "request_id": "transport-deadline", "cancel_token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "request_timeout_ms": 1}

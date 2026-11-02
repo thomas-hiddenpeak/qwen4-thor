@@ -1,0 +1,7 @@
+HTTP/1.1 415 Unsupported Media Type
+Content-Type: application/json
+Content-Length: 158
+X-Request-Id: transport-test
+Connection: close
+
+{"error":{"message":"Content-Type must be application/json with UTF-8","type":"invalid_request_error","code":"unsupported_media_type","param":"Content-Type"}}

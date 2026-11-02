@@ -17,7 +17,7 @@ CPU OFF162/ON169、Thor128＋后端7、HTTP7＋异常出口1、驱动9通过，
 未扩大首次launch起30分钟预算。最终guard COMPLETED、ENV_ABORT0。
 安装HTTP健康复用同SHA生产ELF，安装路径另验CLI和worker握手。
 
-363份原始记录、旧c8c412c4/da9f3ac5和完整回退链封存。00:03 CST
+363份原始记录（含wire与服务日志）、旧c8c412c4/da9f3ac5和完整回退链封存。00:03 CST
 GPU计算PID空、锁可用、无恢复标记/常驻模型，MemAvailable约116.27GiB。
 严格长payload180秒内未到写阶段，未证明该组合背压；代理/混合及
 最后背压/关闭使用同源专用构建，生产ELF不含故障宏。不宣称所有
