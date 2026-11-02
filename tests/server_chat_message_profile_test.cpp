@@ -121,3 +121,83 @@ Q4T_TEST(chat_message_profile_preserves_history_rules) {
   Q4T_CHECK(!RenderChatPrompt(request, {"read"}, &prompt));
   return true;
 }
+
+Q4T_TEST(chat_reasoning_history_alias_contract) {
+  const std::string prefix = R"([{"role":"user","content":"q"},)";
+  std::string reference;
+  for (const auto* fields : {
+           R"("reasoning_content":"  why✅  ")",
+           R"("reasoning":"  why✅  ")",
+           R"("reasoning":"  why✅  ","reasoning_content":null)",
+           R"("reasoning":null,"reasoning_content":"  why✅  ")",
+           R"("reasoning":"  why✅  ","reasoning_content":"  why✅  ")"}) {
+    Json request;
+    Q4T_CHECK(Read(prefix + "{\"role\":\"assistant\",\"content\":\"a\"," +
+                       fields + "}]", &request));
+    std::string param, prompt;
+    Q4T_CHECK(ValidateChatContract(request, "m", false, &param));
+    Q4T_CHECK(param.empty());
+    Q4T_CHECK(RenderChatPrompt(request, {"q", "a"}, &prompt));
+    if (reference.empty()) reference = prompt;
+    Q4T_CHECK(prompt == reference);
+    Q4T_CHECK(prompt.find("<think>\nwhy✅\n</think>\n\na") != prompt.npos);
+  }
+  // Missing, null and empty all render the same single native reasoning slot.
+  for (const auto* fields : {"", R"(,"reasoning":null)",
+                             R"(,"reasoning_content":null)",
+                             R"(,"reasoning":"","reasoning_content":null)"}) {
+    Json request;
+    Q4T_CHECK(Read(prefix + R"({"role":"assistant","content":"a")" +
+                       fields + "}]", &request));
+    Q4T_CHECK(ValidateChatContract(request, "m", false));
+    std::string prompt;
+    Q4T_CHECK(RenderChatPrompt(request, {"q", "a"}, &prompt));
+    Q4T_CHECK(prompt.find("<think>\n\n</think>\n\na") != prompt.npos);
+  }
+  return true;
+}
+
+Q4T_TEST(chat_reasoning_history_conflicts_rejected_before_render) {
+  const std::pair<const char*, const char*> cases[] = {
+      {R"({"role":"assistant","reasoning":"a","reasoning_content":"b"})",
+       "reasoning"},
+      {R"({"role":"assistant","reasoning":1})", "reasoning"},
+      {R"({"role":"assistant","reasoning_content":false})", "reasoning_content"},
+      {R"({"role":"user","reasoning":null})", "reasoning"},
+      {R"({"role":"tool","reasoning_content":"x"})", "reasoning_content"}};
+  for (const auto& [message, field] : cases) {
+    Json request;
+    Q4T_CHECK(Read(std::string(R"([{"role":"user","content":"q"},)") +
+                       message + ']', &request));
+    std::string param, prompt;
+    Q4T_CHECK(!ValidateChatContract(request, "m", false, &param));
+    Q4T_CHECK(param == "messages[1]." + std::string(field));
+    Q4T_CHECK(!RenderChatPrompt(request, {"q", "a"}, &prompt));
+    Q4T_CHECK(prompt.empty());
+  }
+  return true;
+}
+
+Q4T_TEST(chat_reasoning_controls_require_parsed_messages) {
+  for (const auto* field : {"reasoning_field", "include_reasoning"}) {
+    const auto valid = std::string(field) == "reasoning_field"
+                           ? "\"reasoning\"" : "false";
+    for (const auto* body : {
+             R"("messages":[{"role":"user","content":"q"}])",
+             R"("messages":[{"role":"user","content":"q"}],"parse_response":false)",
+             R"("prompt":"raw")"}) {
+      for (const auto* value : {valid, "null", "17", "\"unknown\""}) {
+        Json request;
+        Q4T_CHECK(q4t::io::ParseJson(std::string("{") + body + ",\"" +
+                                       field + "\":" + value + '}', &request));
+        std::string param;
+        const bool accepted = value == valid &&
+            !request.Has("prompt") && request.GetBool("parse_response", true);
+        Q4T_CHECK(ValidateChatContract(request, "m", false, &param).ok() ==
+                  accepted);
+        Q4T_CHECK(accepted ? param.empty() : param == field);
+      }
+    }
+  }
+  return true;
+}

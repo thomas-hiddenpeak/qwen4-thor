@@ -113,13 +113,16 @@ def _usage(value):
 def _message(value):
     require(isinstance(value, dict) and value.get("role") == "assistant",
             "expected assistant message")
-    require(not (set(value) - {"role", "content", "reasoning_content",
+    require(not (set(value) - {"role", "content", "reasoning_content", "reasoning",
                                "tool_calls"}), "unsupported message field")
     require("content" in value, "missing message content")
     if value["content"] is not None:
         _text(value["content"], "invalid content")
-    if "reasoning_content" in value:
-        _text(value["reasoning_content"], "invalid reasoning content")
+    reasoning_fields = [key for key in ("reasoning_content", "reasoning")
+                        if value.get(key) is not None]
+    require(len(reasoning_fields) <= 1, "mixed reasoning response fields")
+    for key in reasoning_fields:
+        _text(value[key], "invalid " + key)
     calls = value.get("tool_calls", [])
     require(isinstance(calls, list) and len(calls) <= MAX_TOOL_CALLS,
             "invalid tool call list")
@@ -181,6 +184,7 @@ class _Stream:
     def __init__(self):
         self.identifier = self.model = self.finish = self.usage = None
         self.role = False
+        self.reasoning_field = None
         self.content, self.reasoning, self.calls = [], [], []
 
     def feed(self, event):
@@ -201,17 +205,22 @@ class _Stream:
         choice = _choice(choices)
         delta = choice.get("delta")
         require(isinstance(delta, dict), "missing delta")
-        require(not (set(delta) - {"role", "content", "reasoning_content",
+        require(not (set(delta) - {"role", "content", "reasoning_content", "reasoning",
                                    "tool_calls"}), "unsupported delta field")
         if "role" in delta:
             require(not self.role and delta["role"] == "assistant",
                     "invalid or duplicate assistant role")
             self.role = True
         require(self.role, "delta before assistant role")
-        for name, target in (("content", self.content),
-                             ("reasoning_content", self.reasoning)):
-            if delta.get(name) is not None:
-                target.append(_text(delta[name], "invalid " + name))
+        if delta.get("content") is not None:
+            self.content.append(_text(delta["content"], "invalid content"))
+        for name in ("reasoning_content", "reasoning"):
+            if delta.get(name) is None:
+                continue
+            require(self.reasoning_field in (None, name),
+                    "reasoning response field changed mid-stream")
+            self.reasoning_field = name
+            self.reasoning.append(_text(delta[name], "invalid " + name))
         calls = delta.get("tool_calls", [])
         require(isinstance(calls, list), "invalid tool delta list")
         for call in calls:
@@ -252,7 +261,7 @@ class _Stream:
         content, reasoning = "".join(self.content), "".join(self.reasoning)
         message = dict(role="assistant", content=content)
         if reasoning:
-            message["reasoning_content"] = reasoning
+            message[self.reasoning_field] = reasoning
         if self.calls:
             message["tool_calls"] = [dict(id=c["id"], type="function",
                 function=dict(name="".join(c["name"]),
@@ -322,7 +331,7 @@ def read_json(response, *, sink=None, max_bytes=MAX_RESPONSE_BYTES):
 
 def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
                  thinking=False, max_tokens=512, timeout_ms=120000,
-                 session_id=None):
+                 session_id=None, reasoning_field=None, include_reasoning=None):
     require(isinstance(messages, list) and messages, "messages are required")
     require(isinstance(tools, list), "tools must be a list")
     require(type(stream) is bool and type(thinking) is bool, "invalid mode")
@@ -339,6 +348,13 @@ def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
                     reasoning_effort="low"))
     if stream:
         body["stream_options"] = dict(include_usage=True)
+    if reasoning_field is not None:
+        require(reasoning_field in ("reasoning_content", "reasoning"),
+                "invalid reasoning field")
+        body["reasoning_field"] = reasoning_field
+    if include_reasoning is not None:
+        require(type(include_reasoning) is bool, "invalid include_reasoning")
+        body["include_reasoning"] = include_reasoning
     if session_id is not None:
         require(isinstance(session_id, str) and len(session_id) == 64 and
                 all(c in "0123456789abcdef" for c in session_id),

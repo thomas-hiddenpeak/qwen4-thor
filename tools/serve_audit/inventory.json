@@ -21,7 +21,7 @@
       ]
     },
     "messages": {
-      "semantics": "原生模板与parsed默认；单条开头developer作为system替代；历史调用形状与结果必填",
+      "semantics": "原生模板与parsed默认；单条开头developer作为system替代；历史调用形状与结果必填；assistant推理历史双字段相等合并/null为空/冲突拒绝",
       "boundary": "混用/重复/错位指令、非null消息name与指令媒体拒绝；无ID历史仅原生兼容；B1 profile限定HTTP已验",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
@@ -31,7 +31,8 @@
         "tests/server_chat_message_profile_test.cpp",
         "docs/SERVE_STAGE_B1_2026-11-03.md",
         "docs/serve-message-profile-v2.schema.json",
-        "docs/SERVE_STAGE_B1_RESULT_2026-11-03.md"
+        "docs/SERVE_STAGE_B1_RESULT_2026-11-03.md",
+        "docs/SERVE_STAGE_B2_2026-11-03.md"
       ]
     },
     "max_tokens": {
@@ -130,11 +131,12 @@
       ]
     },
     "preserve_thinking": {
-      "semantics": "保留历史 reasoning_content",
-      "boundary": "模板选项，不是持久会话",
+      "semantics": "保留历史reasoning/reasoning_content的单一原生推理槽",
+      "boundary": "模板选项，不是持久会话；别名非null冲突拒绝，assistant缺省/null为空",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_message_profile_test.cpp"
       ]
     },
     "reasoning_effort": {
@@ -326,6 +328,24 @@
         "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
         "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
       ]
+    },
+    "include_reasoning": {
+      "semantics": "默认true；false不收集/发布已解析的推理正文；解析与错误终态保留",
+      "boundary": "只支持parsed messages，显式null拒绝；不减少生成或usage，不过滤content中的自述；05a CPU已验，HTTP待验",
+      "evidence": [
+        "tests/server_chat_response_parser_test.cpp",
+        "tests/server_chat_message_profile_test.cpp",
+        "docs/SERVE_STAGE_B2_2026-11-03.md"
+      ]
+    },
+    "reasoning_field": {
+      "semantics": "选择reasoning或reasoning_content，默认后者；JSON/SSE同一响应只使用一个字段",
+      "boundary": "仅parsed messages，非法值/null拒绝；非Responses API，不代表推理预算",
+      "evidence": [
+        "tests/server_chat_response_parser_test.cpp",
+        "tools/examples/test_chat_client.py",
+        "docs/serve-reasoning-v1.schema.json"
+      ]
     }
   },
   "routes": {
@@ -422,6 +442,8 @@
       "enable_thinking",
       "preserve_thinking",
       "reasoning_effort",
+      "reasoning_field",
+      "include_reasoning",
       "add_vision_id",
       "temperature",
       "top_p",
@@ -450,6 +472,7 @@
       "role",
       "content",
       "reasoning_content",
+      "reasoning",
       "tool_calls",
       "tool_call_id",
       "name",
@@ -519,12 +542,12 @@
     ]
   },
   "sources_sha256": {
-    "cmake/ChatProtocolIdentity.cmake": "a93a6f7ae7a9254206bfd2255f84c7cbdf9820b66dc57b4cdc42e4f78ad7c732",
+    "cmake/ChatProtocolIdentity.cmake": "cdb5922b949fa2f4273450458ec2ed36a1af2783171e3e18b89a321cf9b40369",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/chat_capabilities.h": "7258dd026c08b16d5a09f55ea318036a86e1ad4c93d816d1aa2163f23d01540c",
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
-    "include/q4t/server/chat_response_parser.h": "6f2da0dcd7f548ef6de8860f822516354c561c447a4fee1c43a0e450124cc2cf",
+    "include/q4t/server/chat_response_parser.h": "9559de58ab50d072767c56562b4f96ee55f636e7782bb16b369619d0faac98be",
     "include/q4t/server/chat_server.h": "7b75b91ff39cf1bc0a5f51dac719eb59d854e979c24094c5d74eeced45a920bb",
     "include/q4t/server/chat_template.h": "f89fa01d5352cc6ec47ecff09c24bdb58f8bb0a3edfa5c89fe840791ac76bb51",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
@@ -537,6 +560,7 @@
     "include/q4t/server/output_constraints.h": "3b3e67271fa0d0edd04d5479e9a6a6cae570bfb73737038ce2bafa2f410ca306",
     "include/q4t/server/output_schema.h": "83fd9a353b2fd2587ed75f2908790b9ee63ad5f4d063c9aab9d6c800bc151779",
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
+    "include/q4t/server/reasoning_options.h": "8a0a7c59de5cffe5a3fd3697cfdd17504d510c3b4538d86393a5ba1e153a675c",
     "include/q4t/server/request_control.h": "a895f0242061d713dee73edd90db8b2a176ae332e0df856b3431bc896c47fb13",
     "include/q4t/server/request_diagnostics.h": "1317e9ff60dfb0094c22cb28292b46b0330293dcbda161fb7a6f1c8095bcca6a",
     "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
@@ -553,17 +577,17 @@
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
     "src/main.cpp": "93cae8f751bfc446d812f1d786389b32ae577c3dd386fedcfc907d6b08539b67",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "src/server/chat_capabilities.cpp": "a63a88249cb87833858ca3e6f53c1f18527a399448268a7c40a390c4f950f795",
-    "src/server/chat_contract.cpp": "f8a4639996c1a0208159c4f8003bdb79a66348fd16080256c23a3fa9d031021c",
+    "src/server/chat_capabilities.cpp": "cfc90f14dd51c8dff402191a115e4d8a707f692e94fc7a71debf32a81d363dd6",
+    "src/server/chat_contract.cpp": "22596badfe62ad547fa0e9ecc73d3174fc540fef20631ca7741002ddcb62d7fe",
     "src/server/chat_generation.cpp": "0677c8567efcbc9aca415f2ea253a644710ba53461f0e6fe4143db9feaa128eb",
     "src/server/chat_http.cpp": "38798294599cf043e85889feaaa38842b9b471a89d0224d7c1d84bf51468b717",
     "src/server/chat_input.cpp": "a0bfc92dd9fc6b13102e2667345714445e3516740878331ce39f834713eaf020",
     "src/server/chat_metrics.cpp": "1886838398fe712b6d56d352ca1d3baa96aefc558f4e566c2db6983e0ea67bb5",
-    "src/server/chat_response_parser.cpp": "dec8d134d331405688c53150d4dcaeb2736c4a86f5d094ca3dd5f6c809502859",
+    "src/server/chat_response_parser.cpp": "36707c6b033ec61505b1dd386e9e47fbdc898215bd8cd4fe252b7d022aa4306c",
     "src/server/chat_scheduler.cpp": "fa8abe68ea9c02826731fbc7dc10dbb728d0860708af5f33b1ea800ffacea2f6",
     "src/server/chat_server.cpp": "685f72a486679c9c5aed3c4b753a61a557717a2c6bae4d635263d497c7404740",
     "src/server/chat_server_internal.h": "a0b12f215356157635e6faae917c973c3b87ed56df30b47324895fd3911ea55a",
-    "src/server/chat_template.cpp": "3f7f8dc6fe624413b170b9c33315dd42679835e0b0a55bdcd052ba1c7b22de88",
+    "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
     "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
     "src/server/grammar_process.cpp": "14345c6e0470133fe9a1a57659503eabe0b477b2438f5b82f76ab07a57ae02bb",
     "src/server/grammar_worker.cpp": "aca2920b675dce548ceb194690440f00763352ed2d482751100b6345580e560c",
@@ -573,6 +597,7 @@
     "src/server/input_contract.cpp": "b11ff893774749edcc59f636eb0de762956cb17e650db7755490df55b5f81d13",
     "src/server/output_constraints.cpp": "76630cbef022cf14d250dc890d983d912bd44096c80a275c630ad30196f285f0",
     "src/server/output_schema.cpp": "b9309e2102d6f44e412c4c8c59d1c1b5e35fbcb71dae60c56cb70af453f05d4f",
+    "src/server/reasoning_options.cpp": "bbd49dec7b5689ecee57a087fbb855b03dabeba82285dd3ea9ffe112793369f1",
     "src/server/server_options.cpp": "06e9470e9d294b8604677fefd74ab9d9b23c5dbe70b17a652174c7b1e4a4c1fc",
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",

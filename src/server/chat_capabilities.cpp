@@ -4,6 +4,7 @@
 #include "q4t/server/chat_template.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/reasoning_options.h"
 #include "q4t/server/structured_decoder.h"
 
 namespace q4t::server {
@@ -29,7 +30,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"(,"chat":{"messages":true,"raw_prompt":true,)"
          R"("messages_parse_response_default":true,)"
          R"("parse_response_false":true,"raw_prompt_parsing":false,)"
-         R"("content":true,"reasoning_content":true,"tool_calls":true,)"
+         R"("content":true,"reasoning_content":true,"reasoning":true,)"
+         R"("tool_calls":true,)"
          R"("stream":true,"stream_include_usage":true,)"
          R"("stream_usage_null":true,"choice_logprobs_null":true,)"
          R"("stream_heartbeat_ms":5000,"heartbeat_write_timeout_ms":1000,)"
@@ -46,6 +48,14 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("stream_terminal_order":["finish","usage_if_requested","DONE"],)"
          R"("parse_error":{"http_status":502,"sse_error_then_done":true,)"
          R"("successful_finish":false},"sampling":"greedy","choices":1},)"
+         R"("reasoning":{"profile":)" + Quote(std::string(kReasoningProfile)) +
+         R"(,"fields":["reasoning_content","reasoning"],)"
+         R"("default_field":"reasoning_content","field_option":"reasoning_field",)"
+         R"("include_option":"include_reasoning","include_default":true,)"
+         R"("options_require_parsed_messages":true,"option_null":"reject",)"
+         R"("history_null":"absent","history_conflict":"reject_unequal",)"
+         R"("history_role":"assistant","hidden_usage":"unchanged",)"
+         R"("hidden_content_filter":false,"thinking_token_budget":false},)"
          R"("tools":{"type":"function","execution":"client",)" +
          options +
          R"("options_require_parsed_messages":true,)"

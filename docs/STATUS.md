@@ -4,6 +4,15 @@
 
 ## 当前推进目标
 
+
+长期目标已设为“持续推进完善serve到工业水准”，保持active。
+按[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续当前B组，
+本轮进入SRV-05a字段适配/输出隐藏，05b真实推理预算并行梳理实现
+边界；具体[开发合同](SERVE_STAGE_B2_2026-11-03.md)。05a实现已通过
+CPU OFF171/ON178、Thor137＋后端7、客户端26、驱动6和120模板差分
+（108正例逐字节/ID、12拒绝，含21旧fixture），零警告。HTTP待验，
+默认仍为下文B1；子项交付不关闭长期目标或整个SRV-05。
+
 Serve阶段B1（SRV-04）已按模型profile交付；默认`f1133bcc` /
 sidecar`2edfb882`，源码/驱动c299c647。支持单条开头developer作为
 system替代，明确拒绝混用/重复/错位指令、非null消息name和指令媒体；

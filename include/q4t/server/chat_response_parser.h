@@ -8,6 +8,7 @@
 
 #include "q4t/io/json.h"
 #include "q4t/server/output_constraints.h"
+#include "q4t/server/reasoning_options.h"
 #include "q4t/status.h"
 
 namespace q4t::server {
@@ -24,6 +25,7 @@ struct ResponseDelta {
   Kind kind = Kind::kContent;
   std::string text;
   ResponseToolCall call;
+  ReasoningField reasoning_field = ReasoningField::kReasoningContent;
   std::string ToJson() const;
 };
 
@@ -64,6 +66,7 @@ class ChatResponseParser {
   std::vector<ResponseToolCall> calls_;
   const io::Json* request_ = nullptr;
   OutputConstraints constraints_;
+  ReasoningOptions reasoning_options_;
   size_t constrained_bytes_ = 0;
   std::vector<ResponseDelta> deferred_;
 };

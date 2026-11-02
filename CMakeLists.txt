@@ -261,6 +261,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_http.cpp
   src/server/http_response.cpp
   src/server/chat_response_parser.cpp
+  src/server/reasoning_options.cpp
   src/server/output_schema.cpp
   src/server/output_constraints.cpp
   src/server/grammar_process.cpp
@@ -405,6 +406,7 @@ if(Q4T_BUILD_TESTS)
     src/server/chat_template.cpp
     tests/server_chat_tool_history_test.cpp
     src/server/chat_response_parser.cpp
+    src/server/reasoning_options.cpp
     tests/server_chat_response_parser_test.cpp
     src/server/output_schema.cpp
     src/server/output_constraints.cpp
@@ -646,6 +648,7 @@ add_executable(q4t_prefix_seed_contract EXCLUDE_FROM_ALL
   tools/prefix_seed/policy_contract.cpp src/server/chat_contract.cpp
   src/server/chat_tool_history.cpp src/server/output_constraints.cpp
   src/server/chat_template.cpp src/server/chat_response_parser.cpp
+  src/server/reasoning_options.cpp
   src/server/output_schema.cpp src/server/http_response.cpp src/io/json.cpp)
 target_include_directories(q4t_prefix_seed_contract PRIVATE include)
 target_compile_options(q4t_prefix_seed_contract PRIVATE -Wall -Wextra)

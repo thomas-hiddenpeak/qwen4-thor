@@ -283,3 +283,6 @@ serve阶段B1 f1133bcc / 2edfb882（之前A为142bb9d4）。
 - [固定 k3 suffix 同步收尾合同](MTP_SUFFIX_SYNCHRONOUS_2026-10-26.md)
 
 - [固定 k3 suffix 报告路径绑定修复](MTP_SUFFIX_REPORT_BINDING_2026-10-26.md)
+
+- [Serve工业化持续目标与验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)
+- [Serve B2推理协议与控制](SERVE_STAGE_B2_2026-11-03.md)

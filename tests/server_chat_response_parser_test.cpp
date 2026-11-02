@@ -36,8 +36,14 @@ std::string Call(const std::string& body = {},
 
 // Reassemble actual SSE JSON fields as a client would. Compare with the
 // non-streaming message; this checks the wire contract, not just parser state.
-bool CheckWire(const Json& message, const std::vector<ResponseDelta>& deltas) {
+bool CheckWire(const Json& message, const std::vector<ResponseDelta>& deltas,
+               const std::string& reasoning_field = "reasoning_content",
+               bool hidden = false) {
   std::string content, reasoning;
+  const auto other = reasoning_field == "reasoning" ? "reasoning_content"
+                                                   : "reasoning";
+  Q4T_CHECK(!message.Has(other));
+  Q4T_CHECK(!hidden || !message.Has(reasoning_field));
   std::vector<Json> calls;
   for (const auto& delta : deltas) {
     const auto frame = q4t::server::detail::SseDeltaChunk(
@@ -50,7 +56,9 @@ bool CheckWire(const Json& message, const std::vector<ResponseDelta>& deltas) {
     Q4T_CHECK(choice.Find("finish_reason")->IsNull());
     const auto* field = choice.Find("delta");
     content += field->GetString("content");
-    reasoning += field->GetString("reasoning_content");
+    Q4T_CHECK(!field->Has(other));
+    Q4T_CHECK(!hidden || !field->Has(reasoning_field));
+    reasoning += field->GetString(reasoning_field);
     if (const auto* tools = field->GetArray("tool_calls")) {
       for (const auto& call : tools->array) {
         Q4T_CHECK(call.GetInt("index", -1) ==
@@ -63,7 +71,7 @@ bool CheckWire(const Json& message, const std::vector<ResponseDelta>& deltas) {
     }
   }
   Q4T_CHECK(content == message.GetString("content"));
-  Q4T_CHECK(reasoning == message.GetString("reasoning_content"));
+  Q4T_CHECK(reasoning == message.GetString(reasoning_field));
   const auto* expected = message.GetArray("tool_calls");
   Q4T_CHECK(calls.size() == (expected ? expected->array.size() : 0));
   for (size_t i = 0; i < calls.size(); ++i) {
@@ -93,12 +101,14 @@ bool EverySplit(const Json& request, const std::string& text,
   Q4T_CHECK(full.Finish(false, &deltas).ok());
   const auto expected = full.MessageJson();
   Json message;
+  const auto field = request.GetString("reasoning_field", "reasoning_content");
+  const bool hidden = !request.GetBool("include_reasoning", true);
   Q4T_CHECK(q4t::io::ParseJson(expected, &message).ok());
   Q4T_CHECK(message.GetString("content") == expected_content);
-  Q4T_CHECK(message.GetString("reasoning_content") == expected_reasoning);
+  Q4T_CHECK(message.GetString(field) == expected_reasoning);
   const auto* calls = message.GetArray("tool_calls");
   Q4T_CHECK((calls ? calls->array.size() : 0) == expected_calls);
-  Q4T_CHECK(CheckWire(message, deltas));
+  Q4T_CHECK(CheckWire(message, deltas, field, hidden));
   for (size_t split = 0; split <= text.size(); ++split) {
     ChatResponseParser stream;
     q4t::server::detail::Utf8Stream utf8;
@@ -108,7 +118,7 @@ bool EverySplit(const Json& request, const std::string& text,
     Q4T_CHECK(stream.Append(utf8.Append(text.substr(split)), &deltas).ok());
     Q4T_CHECK(stream.Append(utf8.Finish(), &deltas).ok());
     Q4T_CHECK(stream.Finish(false, &deltas).ok());
-    Q4T_CHECK(CheckWire(message, deltas));
+    Q4T_CHECK(CheckWire(message, deltas, field, hidden));
   }
   // One-byte feeds exercise more than one split within a delimiter/codepoint.
   ChatResponseParser stream;
@@ -119,7 +129,7 @@ bool EverySplit(const Json& request, const std::string& text,
     Q4T_CHECK(stream.Append(utf8.Append(std::string(1, byte)), &deltas).ok());
   Q4T_CHECK(stream.Append(utf8.Finish(), &deltas).ok());
   Q4T_CHECK(stream.Finish(false, &deltas).ok());
-  Q4T_CHECK(CheckWire(message, deltas));
+  Q4T_CHECK(CheckWire(message, deltas, field, hidden));
   if (final) *final = std::move(message);
   return true;
 }
@@ -328,5 +338,76 @@ Q4T_TEST(chat_response_request_definitions_are_checked) {
     ChatResponseParser parser;
     Q4T_CHECK(!parser.Init(request, kClosed, "request", true).ok());
   }
+  return true;
+}
+
+Q4T_TEST(chat_response_reasoning_selection_and_hidden_splits) {
+  const std::string reason = "秘密分析✅<tool_call>推理示例</tool_call>";
+  const std::string answer = "正文中说思考不是隐藏区✅";
+  for (const auto* field : {"reasoning", "reasoning_content"}) {
+    for (bool include : {false, true}) {
+      auto request = Request();
+      Json options;
+      Q4T_CHECK(q4t::io::ParseJson(
+          std::string("{\"reasoning_field\":\"") + field +
+              "\",\"include_reasoning\":" + (include ? "true}" : "false}"),
+          &options));
+      for (const auto& item : options.object) request.object.push_back(item);
+      const auto expected = include ? reason : "";
+      Q4T_CHECK(EverySplit(request, reason + "</think>" + answer + Call(),
+                           kThinking, answer, expected, 1));
+      Q4T_CHECK(EverySplit(request, "<think>" + reason + "</think>" + answer,
+                           kClosed, answer, expected, 0));
+      // A second reasoning region must follow the same hiding/field contract.
+      Q4T_CHECK(EverySplit(request, reason + "</think>" + answer +
+                           "<think>" + reason + "</think>", kThinking,
+                           answer, expected + expected, 0));
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(chat_response_hidden_reasoning_preserves_failure_and_limits) {
+  Json request;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"messages":[],"include_reasoning":false})", &request));
+  for (bool collect : {false, true}) {
+    for (bool limited : {false, true}) {
+      ChatResponseParser parser;
+      std::vector<ResponseDelta> deltas;
+      Q4T_CHECK(parser.Init(request, kThinking, "r", collect));
+      Q4T_CHECK(parser.Append("private✅</thi", &deltas));
+      Q4T_CHECK(deltas.empty());
+      Q4T_CHECK(parser.Finish(limited, &deltas).ok() == limited);
+      Q4T_CHECK(deltas.empty());
+      Q4T_CHECK(parser.MessageJson() == R"({"role":"assistant","content":""})");
+    }
+  }
+  Q4T_CHECK(q4t::io::ParseJson(R"({"messages":[],"include_reasoning":false,
+      "response_format":{"type":"json_object"}})", &request));
+  for (const auto* payload : {R"({"text":"<think>literal</think>✅"})",
+                              R"({"text":)", "[]"}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kThinking, "r", true));
+    Q4T_CHECK(parser.Append(std::string("private</think>") + payload, &deltas));
+    Q4T_CHECK(deltas.empty());  // Strict payload stays deferred until valid.
+    const bool valid = std::string(payload).ends_with("}");
+    Q4T_CHECK(parser.Finish(false, &deltas).ok() == valid);
+    if (valid) {
+      Json message;
+      Q4T_CHECK(q4t::io::ParseJson(parser.MessageJson(), &message));
+      Q4T_CHECK(message.GetString("content") == payload);
+      Q4T_CHECK(CheckWire(message, deltas, "reasoning_content", true));
+    } else {
+      Q4T_CHECK(deltas.empty());
+    }
+  }
+  ChatResponseParser bounded;
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(bounded.Init(request, kThinking, "r", false));
+  Q4T_CHECK(!bounded.Append(
+      std::string(ChatResponseParser::kMaxToolBytes + 1, 'x'), &deltas));
+  Q4T_CHECK(deltas.empty());
   return true;
 }

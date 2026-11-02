@@ -96,6 +96,53 @@ class ClientContracts(unittest.TestCase):
         self.assertEqual(captured.getvalue(), raw)
         self.assertEqual(USAGE, result.usage)
 
+    def test_reasoning_alias_roundtrip_and_hidden_output(self):
+        message = deepcopy(MESSAGE)
+        message["reasoning"] = message.pop("reasoning_content")
+        deltas = [{"reasoning": "思"}, {"reasoning": "考\n"},
+                  {"tool_calls": [dict(index=0, **deepcopy(CALL))]}]
+        result = client.read_sse(io.BytesIO(stream(deltas)))
+        self.assertEqual(result, completion(message))
+        history = [{"role": "user", "content": "query"}]
+        following = client.append_tool_results(history, result,
+                                               {"call-0": "result"})
+        self.assertEqual(following[1], message)
+        hidden = deepcopy(message)
+        del hidden["reasoning"]
+        self.assertEqual(client.read_sse(io.BytesIO(stream(deltas[2:]))),
+                         completion(hidden))
+        self.assertEqual(result.usage, USAGE)
+
+    def test_reasoning_fields_cannot_mix_or_switch(self):
+        for values in (("same", "same"), ("", ""), ("first", "second")):
+            for fields in (("reasoning", "reasoning_content"),
+                           ("reasoning_content", "reasoning")):
+                mixed = dict(zip(fields, values))
+                message = dict(role="assistant", content="answer", **mixed)
+                with self.assertRaises(client.ProtocolError):
+                    completion(message, "stop")
+                for deltas in ([mixed], [{k: v} for k, v in mixed.items()]):
+                    with self.assertRaises(client.ProtocolError):
+                        client.read_sse(io.BytesIO(stream(deltas, finish="stop")))
+        # Null placeholders are not a second active reasoning field.
+        self.assertEqual(completion(dict(role="assistant", content="answer",
+            reasoning="why", reasoning_content=None), "stop").message["reasoning"],
+            "why")
+
+    def test_reasoning_request_options_are_explicit(self):
+        history = [dict(role="user", content="query")]
+        default = client.make_request(history, [])
+        self.assertNotIn("reasoning_field", default)
+        self.assertNotIn("include_reasoning", default)
+        request = client.make_request(history, [], reasoning_field="reasoning",
+                                      include_reasoning=False)
+        self.assertEqual(request["reasoning_field"], "reasoning")
+        self.assertIs(request["include_reasoning"], False)
+        for kwargs in (dict(reasoning_field="unknown"),
+                       dict(include_reasoning=0), dict(include_reasoning="false")):
+            with self.assertRaises(client.ProtocolError):
+                client.make_request(history, [], **kwargs)
+
     def test_fragmented_interleaved_tools_and_unicode(self):
         deltas = [{"content": "前言\n", "reasoning_content": "思"},
             {"reasoning_content": "考\n", "tool_calls": [dict(index=0,

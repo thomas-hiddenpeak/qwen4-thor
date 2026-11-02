@@ -8,6 +8,7 @@
 #include "q4t/server/chat_template.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_constraints.h"
+#include "q4t/server/reasoning_options.h"
 
 namespace q4t::server {
 namespace {
@@ -88,6 +89,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                         "enable_thinking",
                         "preserve_thinking",
                         "reasoning_effort",
+                        "reasoning_field",
+                        "include_reasoning",
                         "add_vision_id",
                         "temperature",
                         "top_p",
@@ -169,6 +172,9 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
       (!parsed->IsBool() || (parsed->boolean && !messages)))
     return invalid("parse_response", "parse_response=true requires messages");
   OutputConstraints constraints;
+  ReasoningOptions reasoning;
+  status = ParseReasoningOptions(req, &reasoning, error_param);
+  if (!status) return status;
   status = PlanOutputConstraints(req, &constraints);
   if (!status) return status;
   if (prompt && (!prompt->IsString() || prompt->str.empty()))
@@ -242,7 +248,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
     const auto& message = messages->array[index];
     *error_param = "messages[" + std::to_string(index) + "]";
     if (!message.IsObject()) return Status::Fail("message must be an object");
-    status = Fields(message, {"role", "content", "reasoning_content",
+    status = Fields(message, {"role", "content", "reasoning_content", "reasoning",
                               "tool_calls", "tool_call_id", "name", "refusal",
                               "audio", "annotations", "function_call"});
     if (!status) return status;
@@ -252,11 +258,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
       if (value && !value->IsNull())
         return Status::Fail(std::string("message field not supported: ") + key);
     }
-    const auto role = message.GetString("role");
-    if (const auto* reasoning = message.Find("reasoning_content"); reasoning &&
-        (!reasoning->IsString() || role != "assistant"))
-      return Status::Fail("reasoning_content requires an assistant string");
-    if (message.Has("tool_calls") && role != "assistant")
+    if (message.Has("tool_calls") && message.GetString("role") != "assistant")
       return Status::Fail("tool_calls requires an assistant message");
     const auto* content = message.Find("content");
     if (!content || content->IsNull() || content->IsString()) continue;

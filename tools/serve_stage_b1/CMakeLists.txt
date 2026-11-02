@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(ICU REQUIRED COMPONENTS uc i18n)
 find_package(Threads REQUIRED)
 add_executable(template_probe template_probe.cpp
+  ../../src/server/reasoning_options.cpp
   ../../src/server/chat_template.cpp ../../src/server/chat_contract.cpp
   ../../src/server/chat_tool_history.cpp ../../src/server/input_contract.cpp
   ../../src/server/output_constraints.cpp ../../src/server/output_schema.cpp

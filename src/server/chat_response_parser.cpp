@@ -158,9 +158,9 @@ size_t Lookahead(std::string_view text, std::string_view marker) {
 std::string ResponseDelta::ToJson() const {
   if (kind == Kind::kTool)
     return "{\"tool_calls\":[" + ToolJson(call, true) + "]}";
-  return std::string(kind == Kind::kReasoning ? "{\"reasoning_content\":"
-                                              : "{\"content\":") +
-         Quote(text) + '}';
+  const auto field = kind == Kind::kReasoning
+                         ? ReasoningFieldName(reasoning_field) : "content";
+  return '{' + Quote(field) + ':' + Quote(text) + '}';
 }
 
 Status ChatResponseParser::Init(const io::Json& request,
@@ -169,6 +169,8 @@ Status ChatResponseParser::Init(const io::Json& request,
   if (initialized_) return Fail("parser already initialized");
   initialized_ = true;
   request_ = &request;
+  auto reason_status = ParseReasoningOptions(request, &reasoning_options_);
+  if (!reason_status) return Fail(reason_status.message());
   auto plan_status = PlanOutputConstraints(request, &constraints_);
   if (!plan_status) return Fail(plan_status.message());
   collect_ = collect || constraints_.active;
@@ -210,6 +212,7 @@ void ChatResponseParser::Emit(Region region, std::string_view text,
                               std::vector<ResponseDelta>* deltas) {
   if (text.empty()) return;
   const bool reasoning = region == Region::kReasoning;
+  if (reasoning && !reasoning_options_.include) return;
   if (collect_) (reasoning ? reasoning_ : content_).append(text);
   const auto kind = reasoning ? ResponseDelta::Kind::kReasoning
                               : ResponseDelta::Kind::kContent;
@@ -217,7 +220,7 @@ void ChatResponseParser::Emit(Region region, std::string_view text,
   if (constraints_.active && !target->empty() && target->back().kind == kind)
     target->back().text.append(text);
   else
-    target->push_back({kind, std::string(text), {}});
+    target->push_back({kind, std::string(text), {}, reasoning_options_.field});
 }
 
 Status ChatResponseParser::ParseTool(std::string_view block,
@@ -393,7 +396,8 @@ std::string ChatResponseParser::MessageJson() const {
   std::string message = "{\"role\":\"assistant\",\"content\":";
   message += content_.empty() && !calls_.empty() ? "null" : Quote(content_);
   if (!reasoning_.empty())
-    message += ",\"reasoning_content\":" + Quote(reasoning_);
+    message += ',' + Quote(ReasoningFieldName(reasoning_options_.field)) + ':' +
+               Quote(reasoning_);
   if (!calls_.empty()) {
     message += ",\"tool_calls\":[";
     for (size_t i = 0; i < calls_.size(); ++i) {

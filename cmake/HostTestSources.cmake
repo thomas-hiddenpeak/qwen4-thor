@@ -31,6 +31,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_template.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_tool_history_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_response_parser.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/reasoning_options.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_response_parser_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/output_schema.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/output_constraints.cpp

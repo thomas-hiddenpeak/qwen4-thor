@@ -3,6 +3,7 @@
 #include "q4t/server/chat_tool_history.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/reasoning_options.h"
 
 #include <charconv>
 #include <cmath>
@@ -261,6 +262,10 @@ Status ValidateChatMessageProfile(const io::Json& messages,
     if (name && !name->IsNull())
       return invalid(path + ".name",
                      "message name is not represented by this model template");
+    std::string_view reasoning;
+    auto reason_status =
+        ResolveMessageReasoning(message, i, &reasoning, error_param);
+    if (!reason_status) return reason_status;
     if (!instruction) continue;
     const auto* content = message.Find("content");
     if (!content || content->IsNull() || content->IsString()) continue;
@@ -377,7 +382,10 @@ Status RenderChatPrompt(const io::Json& request,
     } else if (role == "assistant") {
       *prompt += "<|im_start|>assistant\n";
       if (preserve || i > last_query) {
-        *prompt += "<think>\n" + Trim(ms[i].GetString("reasoning_content")) +
+        std::string_view reasoning;
+        auto status = ResolveMessageReasoning(ms[i], i, &reasoning);
+        if (!status) return status;
+        *prompt += "<think>\n" + Trim(std::string(reasoning)) +
                    "\n</think>\n\n";
       }
       *prompt += text[i];
