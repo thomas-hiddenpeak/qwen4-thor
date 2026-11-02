@@ -1,0 +1,2 @@
+# Validated local client; no OpenAI-hosted calls are made by this suite.
+openai==3.42.1

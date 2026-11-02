@@ -105,6 +105,18 @@ GPU 阶段完整驱动持共享锁；检测竞争 / 监控失败为 ENV_ABORT，
 不重跑已通过且身份未变的内核数值、模板和性能矩阵。交付前保留旧
 二进制 / sidecar、候选源码身份、构建配置和可核验回退入口。
 
+驱动：`tools/application_service/stage.py prepare|execute|finalize`。
+prepare 不加载模型；execute 必须由同一个 gpu_exclusive 驱动持锁。
+失败不隐式重试；安装后的完整 / 部分已知 pair 均可恢复。候选与旧
+程序 / sidecar、真实 CMakeCache、运行时 manifest、源代码 bundle
+及只读封条放在 `.q4t-work/application-service-20261102/package/`。
+安装前持久化 `build/application-service-recovery.json`，guard 成功
+后 finalize 才清除；两文件分别原子替换，不声称断电事务。
+
+CPU 先验：138 host、22 客户端、13 恢复、9 项目工具、6 回退、3 SDK
+mock 合同通过。mock 仅验证 SDK 驱动，不替代后续真实 HTTP。
+默认全 head / MTP k3、缓存和 suffix 的启用策略不因服务补齐改变。
+
 ## 官方协议依据
 
 2026-11-02 核对官方文档：

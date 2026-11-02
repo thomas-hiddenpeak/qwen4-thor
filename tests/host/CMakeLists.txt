@@ -115,6 +115,8 @@ q4t_add_python_contract(q4t_tool_recovery_contracts
   tools/examples/test_tool_recovery.py)
 q4t_add_python_contract(q4t_project_query_contracts
   tools/examples/test_project_query.py)
+q4t_add_python_contract(q4t_application_delivery_contracts
+  tools/application_service/test_stage.py)
 q4t_add_python_contract(q4t_chat_acceptance_contracts
   tools/response_protocol/test_acceptance.py)
 # A build of Python can omit pidfd APIs despite a new version number. Probe the
