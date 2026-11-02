@@ -94,6 +94,14 @@ class IdleProxy:
 
 
 class Run(r.Run):
+    def wait_slot(self, name):
+        super().wait_slot(name)
+        # This serial acceptance client must await response-owner destruction,
+        # not just GPU slot release, before submitting its next strict request.
+        self.observe(lambda rows: rows["q4t_active_chats"] == 0 and
+                     rows["q4t_structured_active"] == 0 and
+                     rows["q4t_structured_workers_active"] == 0)
+
     def budget(self):
         wire.require(time.time() < self.deadline, "stage A deadline")
         wire.require(self.requests <= (2 if self.installed else 10) and
@@ -225,6 +233,8 @@ class Run(r.Run):
             except BaseException:
                 self.stop()
                 raise
+            finally:
+                (folder / "proxy-upstream.bin").write_bytes(proxy.raw)
         wire.require(bytes(proxy.raw) == response, "proxy/client bytes differ")
         wire.save(folder / "proxy-timing.json", dict(idle_timeout_seconds=7,
             chunks=len(proxy.times), heartbeat_received=proxy.heartbeat.is_set(),
@@ -261,7 +271,7 @@ class Run(r.Run):
         self.project_loop(folder, strict=True, stream=True)
         self.proxy_cancel(folder)
         self.deadline_case(folder)
-        self.resources_empty(folder, "before-shutdown")
+        self.resources_empty(folder, "before-final-shutdown")
         self.shutdown_case(folder)
 
     def backpressure(self, folder):

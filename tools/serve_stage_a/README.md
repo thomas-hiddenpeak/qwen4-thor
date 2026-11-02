@@ -17,12 +17,19 @@ schema 验证使用本机 `jsonschema`，版本记录在结果中。
 
 ```bash
 python3 -B tools/serve_stage_a/stage.py prepare
-/usr/bin/python3 -B tools/evalscope/gpu_exclusive.py \
+/usr/bin/python3 -B /home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py \
   --output /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-20261102/execution/lease -- \
   /home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/bin/python -B \
-  tools/serve_stage_a/stage.py execute
+  /home/rm01/models/dev/qwen4-thor/tools/serve_stage_a/stage.py execute
 python3 -B tools/serve_stage_a/stage.py finalize
 ```
 
 `docs/serve-transport-v1.schema.json` 只冻结本阶段响应封套和传输约定。
 SRV-08 完整输入 schema、JS 和其他 agent SDK 矩阵仍待后续完成。
+
+首轮祖先路径校验失败为0请求/0启动；绝对路径修正后，工具闭环已过，
+下一条严格请求因前一请求owner尚未析构而503。失败现场保留，补齐
+等待worker/租约清理；`finish.py` 仅复用已核实的3成功/8负例，并补
+剩余项。剩余混合/代理/背压/关闭合并到一次专用构建启动，安装健康
+保留一次生产构建启动。包含失败累计仍为3启动/12尝试/30分钟；
+不是重新运行整个矩阵，也未重置首次launch时间。

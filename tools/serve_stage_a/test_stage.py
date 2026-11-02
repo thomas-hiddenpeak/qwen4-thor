@@ -66,6 +66,29 @@ class Contracts(unittest.TestCase):
                 stage.a.execute()
             checked.assert_not_called()
 
+    def test_next_request_waits_for_owner_cleanup_after_slot_release(self):
+        run = object.__new__(v.Run)
+        from unittest.mock import Mock
+        run.observe = Mock()
+        with patch.object(v.r.Run, "wait_slot") as slot:
+            run.wait_slot("next")
+            slot.assert_called_once_with("next")
+        predicate = run.observe.call_args.args[0]
+        self.assertFalse(predicate(dict(q4t_active_chats=1, q4t_structured_active=1,
+                                        q4t_structured_workers_active=1)))
+        self.assertTrue(predicate(dict(q4t_active_chats=0, q4t_structured_active=0,
+                                       q4t_structured_workers_active=0)))
+
+    def test_finish_keeps_only_remaining_budget(self):
+        import finish
+        run = object.__new__(finish.FinishRun)
+        run.installed, run.deadline = False, time.time() + 60
+        run.requests, run.negative, run.starts, run.capability_gets = 6, 1, 1, 1
+        run.budget()
+        run.starts = 2
+        with self.assertRaises(AssertionError):
+            run.budget()
+
 
 if __name__ == "__main__":
     unittest.main()
