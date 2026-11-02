@@ -48,6 +48,7 @@ struct StructuredDecoder::Impl {
               ? "grammar worker memory limit exceeded"
               : "grammar worker compilation or matching failed");
     }
+    process->ReportRss(reply.reported_rss_bytes);
     terminated = (reply.flags & 1) != 0;
     masked = (reply.flags & 2) != 0;
     const size_t expected = (ready || terminated) ? 0 : mask.size();
@@ -142,6 +143,7 @@ Status StructuredDecoder::Create(const OutputConstraints& plan,
                  std::chrono::steady_clock::now() +
                      std::chrono::milliseconds(kGrammarCompileMilliseconds));
     status = impl->Receive(deadline, true);
+    if (status && control.worker_ready) control.worker_ready();
     uint32_t wire_size = static_cast<uint32_t>(bytes.size());
     if (status)
       status = impl->Transfer(&wire_size, sizeof(wire_size), true, deadline);

@@ -13,6 +13,7 @@ struct GrammarReply {
   WorkerCode code = WorkerCode::kOk;
   uint32_t flags = 0;  // bit 0: terminated; bit 1: mask is restrictive
   uint32_t words = 0;
+  uint64_t reported_rss_bytes = 0;  // post-exec VmHWM; zero means unavailable
 };
-static_assert(sizeof(GrammarReply) == 16);
+static_assert(sizeof(GrammarReply) == 24);
 }  // namespace q4t::server::detail

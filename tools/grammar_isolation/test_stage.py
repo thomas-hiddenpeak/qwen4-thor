@@ -82,14 +82,15 @@ class StageContracts(unittest.TestCase):
         self.assertEqual(len(shape["properties"]["xs"]["items"]["enum"][0]), 256)
 
     def test_worker_accounting_rejects_leaks_and_wrong_memory_scope(self):
-        rows = dict(q4t_structured_workers_active=0,
+        rows = dict(q4t_structured_worker_lifetime_max_rss_bytes=4 * 1024**3,
+            q4t_structured_workers_active=0,
             q4t_structured_workers_started_total=2,
             q4t_structured_workers_reaped_total=2,
-            q4t_structured_worker_max_rss_bytes=1024**2)
+            q4t_structured_worker_reported_rss_bytes=1024**2)
         v.worker_contract(rows)
         for name, value in [("q4t_structured_workers_active", 1),
                             ("q4t_structured_workers_reaped_total", 1),
-                            ("q4t_structured_worker_max_rss_bytes", 3 * 1024**3)]:
+                            ("q4t_structured_worker_reported_rss_bytes", 3 * 1024**3)]:
             with self.assertRaises(AssertionError):
                 v.worker_contract(dict(rows, **{name: value}))
 

@@ -20,8 +20,10 @@ inline constexpr int kGrammarStepMilliseconds = 2000;
 enum class GrammarFailure { kNone, kCancelled, kTimeout, kResource, kWorker };
 
 struct GrammarWorkerReport {
-  uint64_t max_rss_bytes =
-      0;                // wait4 ru_maxrss, not the server/whole-machine RAM
+  // wait4 includes pre-exec inherited mm peaks; do not compare with RLIMIT_AS.
+  uint64_t max_rss_bytes = 0;
+  // Last reported post-exec VmHWM. Zero means unknown, not zero consumption.
+  uint64_t reported_rss_bytes = 0;
   int exit_status = 0;  // raw wait status, includes deliberate cleanup kill
   bool reaped = false;
 };
@@ -29,6 +31,7 @@ struct GrammarWorkerReport {
 struct GrammarControl {
   std::function<bool()> cancelled;
   std::function<void()> worker_started;
+  std::function<void()> worker_ready;
   std::function<void()> compile_started;
   std::function<void(const GrammarWorkerReport&)> worker_finished;
   std::chrono::steady_clock::time_point compile_deadline =
@@ -51,6 +54,7 @@ class GrammarProcess {
   Status Transfer(void* data, size_t bytes, bool write,
                   std::chrono::steady_clock::time_point deadline);
   GrammarFailure Failure() const { return failure_; }
+  void ReportRss(uint64_t bytes);
   void Stop();
 
  private:
@@ -60,6 +64,7 @@ class GrammarProcess {
   int pid_ = -1;
   int pid_fd_ = -1;
   GrammarFailure failure_ = GrammarFailure::kNone;
+  uint64_t reported_rss_bytes_ = 0;
 };
 
 // Shared child entry validation: exact inherited UNIX socket, parent death,

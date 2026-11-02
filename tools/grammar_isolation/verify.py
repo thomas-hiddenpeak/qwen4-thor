@@ -18,7 +18,7 @@ def worker_contract(rows):
     wire.require(rows["q4t_structured_workers_active"] == 0 and
         rows["q4t_structured_workers_started_total"] ==
         rows["q4t_structured_workers_reaped_total"], "worker leak or missing reap")
-    wire.require(0 < rows["q4t_structured_worker_max_rss_bytes"] <= 2 * 1024**3,
+    wire.require(0 < rows["q4t_structured_worker_reported_rss_bytes"] <= 2 * 1024**3,
                  "worker RSS outside measured bounded scope")
 
 
@@ -32,8 +32,15 @@ class Run(r.Run):
     def owned_worker(self):
         # Discover only a direct child of the server this driver created.
         children = set()
-        for task in Path(f"/proc/{self.server.pid}/task").iterdir():
-            children.update(map(int, (task / "children").read_text().split()))
+        for proc in Path("/proc").iterdir():
+            if not proc.name.isdigit():
+                continue
+            try:
+                status = (proc / "status").read_text()
+            except (FileNotFoundError, ProcessLookupError, PermissionError):
+                continue
+            if f"PPid:\t{self.server.pid}\n" in status:
+                children.add(int(proc.name))
         wire.require(len(children) == 1, "expected exactly one owned worker")
         pid = children.pop()
         descriptor = os.pidfd_open(pid)
@@ -62,11 +69,19 @@ class Run(r.Run):
         start = time.monotonic()
         try:
             self.observe(lambda m: m["q4t_structured_workers_active"] == 1 and
-                         m["q4t_structured_preparing"] == 1, timeout=5)
+                         m["q4t_structured_preparing"] == 1 and
+                         m["q4t_structured_workers_ready_total"] >
+                         before["q4t_structured_workers_ready_total"], timeout=5)
             if stall:
                 descriptor, identity = self.owned_worker()
                 signal.pidfd_send_signal(descriptor, signal.SIGSTOP)
                 wire.save(folder / "stopped-worker.json", identity)
+                # proc status is post-exec. wait4 ru_maxrss also includes the
+                # inherited pre-exec mm and cannot be compared with this cap.
+                vm_size = int(next(line for line in identity["status"].splitlines()
+                    if line.startswith("VmSize:")).split()[1]) * 1024
+                wire.require(vm_size <= 2 * 1024**3 and
+                    "2147483648" in identity["limits"], "worker AS limit absent")
                 rows, _ = self.snapshot(folder, "worker-stopped")
                 wire.require(rows["q4t_structured_preparing"] == 1 and
                     rows["q4t_target_ready_seconds_count"] ==

@@ -121,11 +121,16 @@ void GrammarProcess::Stop() {
     } while (result < 0 && errno == EINTR);
     report.reaped = result == pid_;
     report.max_rss_bytes = static_cast<uint64_t>(usage.ru_maxrss) * 1024;
+    report.reported_rss_bytes = reported_rss_bytes_;
     pid_ = -1;
     if (control_.worker_finished) control_.worker_finished(report);
   }
   if (pid_fd_ >= 0) close(std::exchange(pid_fd_, -1));
   if (socket_ >= 0) close(std::exchange(socket_, -1));
+}
+
+void GrammarProcess::ReportRss(uint64_t bytes) {
+  reported_rss_bytes_ = std::max(reported_rss_bytes_, bytes);
 }
 
 Status GrammarProcess::Transfer(

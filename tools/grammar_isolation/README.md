@@ -9,10 +9,13 @@
 ```bash
 python3 -B tools/grammar_isolation/stage.py prepare
 /usr/bin/python3 -B /home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py \
-  --output /home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-20261102/execution/lease -- \
+  --output /home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-20261102-repair/execution/lease -- \
   /home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/bin/python -B \
   /home/rm01/models/dev/qwen4-thor/tools/grammar_isolation/stage.py execute
 python3 -B tools/grammar_isolation/stage.py finalize
 ```
 
 [实现边界、冻结CPU清单及结果](../../docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md)。
+
+首轮因本机无proc children接口在1次尝试/1启动后退出，原现场保留。
+修复后仅剩2启动/11尝试上限；沿用第一次begin时间和30分钟总窗口。

@@ -87,6 +87,8 @@ void ChatServer::HandleMetrics(int fd) {
           metrics_.structured_prepare_failed.load());
   counter("q4t_structured_workers_started_total", "Grammar worker execs.",
           metrics_.structured_workers_started.load());
+  counter("q4t_structured_workers_ready_total", "Workers with limits installed.",
+          metrics_.structured_workers_ready.load());
   counter("q4t_structured_compiles_started_total", "Worker compiler entries.",
           metrics_.structured_compiles_started.load());
   counter("q4t_structured_workers_reaped_total", "Grammar workers reaped.",
@@ -97,9 +99,15 @@ void ChatServer::HandleMetrics(int fd) {
           metrics_.structured_resource_exhausted.load());
   gauge("q4t_structured_workers_active", "Owned unreaped grammar processes.",
         metrics_.structured_workers_active.load());
-  gauge("q4t_structured_worker_max_rss_bytes",
-        "Largest reaped worker ru_maxrss; not server or system memory.",
+  gauge("q4t_structured_worker_lifetime_max_rss_bytes",
+        "wait4 ru_maxrss includes pre-exec inherited mm; not AS-limited peak.",
         metrics_.structured_worker_max_rss_bytes.load());
+  gauge("q4t_structured_worker_reported_rss_bytes",
+        "Maximum reported post-exec VmHWM; may omit tail before abrupt kill.",
+        metrics_.structured_worker_reported_rss_bytes.load());
+  counter("q4t_structured_worker_rss_reports_total",
+          "Reaped workers with a valid post-exec VmHWM report.",
+          metrics_.structured_worker_rss_reports.load());
   counter("q4t_prompt_tokens_total", "Total prompt tokens processed.",
           metrics_.prompt_tokens_total.load());
   counter("q4t_generation_tokens_total", "Total tokens generated.",

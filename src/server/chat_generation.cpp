@@ -326,6 +326,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     grammar_control.compile_started = [&] {
       metrics_.structured_compiles_started.fetch_add(1);
     };
+    grammar_control.worker_ready = [&] {
+      metrics_.structured_workers_ready.fetch_add(1);
+    };
     grammar_control.worker_finished = [&](const GrammarWorkerReport& report) {
       if (report.reaped) {
         metrics_.structured_workers_active.fetch_sub(1);
@@ -335,10 +338,19 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       while (peak < report.max_rss_bytes &&
              !metrics_.structured_worker_max_rss_bytes.compare_exchange_weak(
                  peak, report.max_rss_bytes)) {}
+      if (report.reported_rss_bytes) {
+        metrics_.structured_worker_rss_reports.fetch_add(1);
+        auto reported = metrics_.structured_worker_reported_rss_bytes.load();
+        while (reported < report.reported_rss_bytes &&
+               !metrics_.structured_worker_reported_rss_bytes
+                    .compare_exchange_weak(reported, report.reported_rss_bytes)) {}
+      }
       std::fprintf(stderr,
-                   "[q4t] grammar worker reaped=%d max_rss_bytes=%lu "
+                   "[q4t] grammar worker reaped=%d lifetime_max_rss_bytes=%lu "
+                   "reported_post_exec_rss_bytes=%lu "
                    "wait_status=%d\n",
-                   report.reaped, report.max_rss_bytes, report.exit_status);
+                   report.reaped, report.max_rss_bytes,
+                   report.reported_rss_bytes, report.exit_status);
     };
     GrammarFailure compile_failure = GrammarFailure::kNone;
     if (s)

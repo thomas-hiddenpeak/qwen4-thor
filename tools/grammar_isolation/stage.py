@@ -27,9 +27,10 @@ def module(name, path):
 
 a = module("application_delivery", ROOT / "tools/application_service/stage.py")
 h = a.h
-BASE = ROOT / ".q4t-work/grammar-isolation-20261102"
+BASE = ROOT / ".q4t-work/grammar-isolation-20261102-repair"
+ORIGINAL_BEGIN = ROOT / ".q4t-work/grammar-isolation-20261102/execution/begin.json"
 PACKAGE, OUTPUT = BASE / "package", BASE / "execution"
-LIMITS = dict(starts=3, generations=12, negatives=6, seconds=1800)
+LIMITS = dict(starts=2, generations=11, negatives=6, seconds=1800)
 
 
 def prepare():
@@ -184,7 +185,8 @@ def main():
         prepare()
     elif args.action == "execute":
         h.require_guard(OUTPUT)
-        h.save(OUTPUT / "begin.json", dict(started=time.time(), limits=LIMITS))
+        h.save(OUTPUT / "begin.json", dict(started=h.read(ORIGINAL_BEGIN)["started"], limits=LIMITS,
+            prior_attempts=1, prior_starts=1))
         plan = check()
         with (OUTPUT / "http-contract.log").open("x") as log:
             subprocess.run([plan["http_contract"]["path"]], cwd=ROOT, check=True,

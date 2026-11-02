@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include <cstring>
+#include <cstdio>
 #include <exception>
 #include <new>
 #include <stdexcept>
@@ -50,9 +51,26 @@ class Input {
   size_t offset_ = 0;
 };
 
+uint64_t ReportedRss() {
+  FILE* file = std::fopen("/proc/self/status", "r");
+  if (!file) return 0;
+  uint64_t bytes = 0;
+  char line[256];
+  while (std::fgets(line, sizeof(line), file)) {
+    unsigned long kb;
+    if (std::sscanf(line, "VmHWM: %lu kB", &kb) == 1) {
+      bytes = static_cast<uint64_t>(kb) * 1024;
+      break;
+    }
+  }
+  std::fclose(file);
+  return bytes;
+}
+
 bool Reply(WorkerCode code) {
   GrammarReply reply;
   reply.code = code;
+  reply.reported_rss_bytes = ReportedRss();
   return WorkerTransfer(&reply, sizeof(reply), true);
 }
 
@@ -60,6 +78,7 @@ bool Mask(xgrammar::GrammarMatcher& matcher, std::vector<int32_t>& mask) {
   GrammarReply reply;
   if (matcher.IsTerminated()) {
     reply.flags = 1;
+    reply.reported_rss_bytes = ReportedRss();
     return WorkerTransfer(&reply, sizeof(reply), true);
   }
   std::fill(mask.begin(), mask.end(), -1);
@@ -72,6 +91,7 @@ bool Mask(xgrammar::GrammarMatcher& matcher, std::vector<int32_t>& mask) {
   tensor.shape = &shape;
   reply.flags = matcher.FillNextTokenBitmask(&tensor) ? 2 : 0;
   reply.words = static_cast<uint32_t>(mask.size());
+  reply.reported_rss_bytes = ReportedRss();
   return WorkerTransfer(&reply, sizeof(reply), true) &&
          WorkerTransfer(mask.data(), mask.size() * sizeof(int32_t), true);
 }

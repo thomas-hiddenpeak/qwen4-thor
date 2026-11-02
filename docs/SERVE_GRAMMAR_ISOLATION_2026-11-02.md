@@ -29,7 +29,10 @@
   constraint_resource_exhausted，异常worker502/constraint_worker_failed。
   请求取消仍409及既有原因；生成阶段失败保持既有错误终态，无成功finish。
   不自动重试。capabilities暴露这些限制；metrics记录start/reap/active、
-  compiler entry、编译超限及`wait4.ru_maxrss`，不把它与CUDA数值相加。
+  compiler entry、编译超限及工作进程报告的post-exec VmHWM。
+  `wait4.ru_maxrss`另列lifetime指标：它包含exec前继承的mm峰值，不能
+  与worker地址空间上限直接比较或当作新增RAM；VmHWM报告可能漏掉
+  突然kill前最后一段增长，零报告视为未知，不冒充完整峰值。
 
 Linux语义依据：[getrlimit](https://man7.org/linux/man-pages/man2/getrlimit.2.html)、
 [parent death signal](https://man7.org/linux/man-pages/man2/PR_SET_PDEATHSIG.2const.html)、
@@ -53,3 +56,19 @@ CPU已通过：host ON164/OFF157、Thor必需123＋后端7、驱动7/回退6，
 当前尚未进行HTTP/GPU验收或替换默认。真实清单实际10次请求尝试/
 1个过载拒绝/2启动，其中一次通过pidfd暂停本阶段拥有的worker，验证
 编译10秒超时/回收，不属于真实生产故障注入接口。
+
+
+## 首轮失败与针对性修复
+
+首轮guard COMMAND_FAILED（非ENV_ABORT），1尝试/1启动、38.61秒。
+本机内核没有`/proc/PID/task/TID/children`，驱动识别阶段失败；server
+正常shutdown，worker回收，未安装候选。现场保留在原阶段execution。
+发现wait4原始ru_maxrss为4093353984字节，包含exec前父mm峰值；据此
+修正计量为child报告的post-exec VmHWM和原始lifetime rusage分列。
+[proc status](https://man7.org/linux/man-pages/man5/proc_pid_status.5.html)定义
+VmHWM；它是进程当前映射的历史RSS观察，并非memcg物理计量。
+
+驱动改为读取proc status按已创建server的PPid筛选，再核对同ELF、
+命令和父身份后使用pidfd；仅在worker确认rlimit安装后暂停它。
+修复阶段用`.q4t-work/grammar-isolation-20261102-repair/`，沿用首轮
+started与30分钟总窗口，剩余至多2启动/11尝试，不扩大原预算。

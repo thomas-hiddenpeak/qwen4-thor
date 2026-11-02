@@ -8,7 +8,9 @@
 2GiB RLIMIT_AS、10秒编译（含准备）/2秒匹配、取消后 kill/reap。
 这限制工作进程用户地址空间，不等于整机RAM或memcg限制。默认仍
 f03ee0d4/a1e9d24e；host ON164/OFF157、Thor123＋后端7、驱动7/回退6
-已通过，构建零警告。待真实HTTP验收；冻结范围与验收见
+已通过，构建零警告。首轮HTTP驱动因本机缺proc children接口中止，
+默认未改；已修复识别并拆分post-exec VmHWM与继承峰值rusage，待按
+原预算重验受影响项。冻结范围与验收见
 [编译隔离合同](SERVE_GRAMMAR_ISOLATION_2026-11-02.md)。
 
 以下为上一组已交付状态。

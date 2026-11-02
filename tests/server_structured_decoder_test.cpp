@@ -156,15 +156,19 @@ Q4T_TEST(structured_decoder_cancel_after_compiler_entry_reaps) {
   const auto plan = Plan(
       R"("enable_thinking":false,"response_format":{"type":"json_object"})");
   q4t::server::GrammarControl control;
-  bool compiling = false, reaped = false;
+  bool compiling = false, ready = false, reaped = false;
+  control.worker_ready = [&] { ready = true; };
   control.compile_started = [&] { compiling = true; };
   control.cancelled = [&] { return compiling; };
-  control.worker_finished = [&](const auto& report) { reaped = report.reaped; };
+  control.worker_finished = [&](const auto& report) {
+    reaped = report.reaped && report.reported_rss_bytes > 0 &&
+             report.reported_rss_bytes <= control.address_space_bytes;
+  };
   q4t::server::GrammarFailure failure;
   std::unique_ptr<StructuredDecoder> decoder;
   Q4T_CHECK(!StructuredDecoder::Create(plan, Vocabulary(), 260, {0}, &decoder,
                                        control, &failure));
-  Q4T_CHECK(compiling && reaped && !decoder &&
+  Q4T_CHECK(ready && compiling && reaped && !decoder &&
             failure == q4t::server::GrammarFailure::kCancelled);
   return true;
 }
