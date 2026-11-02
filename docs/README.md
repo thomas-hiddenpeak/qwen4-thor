@@ -8,6 +8,7 @@
 [Serve阶段B1角色profile交付、模板差分与真实工具闭环](SERVE_STAGE_B1_RESULT_2026-11-03.md)。
 [Serve B2a推理字段/隐藏交付及真实工具历史回填](SERVE_STAGE_B2A_RESULT_2026-11-03.md)。
 [SRV-07预检/有效配置交付、真实usage/槽位与完整证据](SERVE_PREFLIGHT_RESULT_2026-11-03.md)。
+[SRV-08完整输入机器合同、固定JS SDK与失败恢复验收](SERVE_PROTOCOL_2026-11-03.md)。
 [SRV-06文本停止交付、跨块/MTP/工具终态、失败与回退](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 [SRV-05b真实预算交付、质量修复、MTP/缓存及完整证据](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)；
 [先前开发和未完成HTTP记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)保留。

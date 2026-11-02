@@ -1,0 +1,151 @@
+{
+  "profile": "q4t-input-semantics-v1",
+  "required": true,
+  "structural_schema": "serve-chat-request-v1.schema.json",
+  "offline_probe": "tools/serve_protocol/contract_probe.cpp",
+  "probe_excludes": [
+    "HTTP framing",
+    "tokenization",
+    "token/slot admission",
+    "grammar compilation",
+    "runtime availability",
+    "model execution"
+  ],
+  "runtime_preflight": "POST /v1/chat/preflight",
+  "rules": [
+    {
+      "id": "json-lexical",
+      "sources": [
+        "src/io/json.cpp",
+        "include/q4t/server/request_json.h"
+      ],
+      "contract": "UTF-8 JSON; no duplicate keys, nonfinite numbers or trailing data; depth64/65536 values/16MiB decoded string bytes. Integer fields use exact source lexemes, not rounded binary64 values."
+    },
+    {
+      "id": "transport-body",
+      "sources": [
+        "src/server/http_request.cpp",
+        "src/server/chat_http.cpp"
+      ],
+      "contract": "16MiB Chat/preflight body, 48MiB aggregate; cancel body4096. POST application/json UTF-8, no query strings, GET no body, methods exact; framing and header limits apply before parsing."
+    },
+    {
+      "id": "model-and-credentials",
+      "sources": [
+        "src/server/input_contract.cpp",
+        "src/server/chat_contract.cpp"
+      ],
+      "contract": "If present model equals served identifier. request_id and fresh lowercase64hex cancel_token together; reserved auto prefix forbidden. Active ID registry/cancel authority are runtime checks, not idempotency."
+    },
+    {
+      "id": "utf8-byte-length",
+      "sources": [
+        "src/server/input_contract.cpp",
+        "src/server/text_stop.cpp"
+      ],
+      "contract": "x-q4t-max-utf8-bytes counts encoded bytes, not codepoints/UTF-16. Historical names/parameter keys forbid C0, DEL and angle brackets; stop valid UTF-8 1..256 bytes, up to4."
+    },
+    {
+      "id": "real-user-query",
+      "sources": [
+        "src/server/chat_template.cpp"
+      ],
+      "contract": "At least one user message remains after native Unicode trim and exclusion of whole <tool_response>...</tool_response> user wrappers. Instruction slot only first system OR developer."
+    },
+    {
+      "id": "reasoning-aliases",
+      "sources": [
+        "src/server/reasoning_options.cpp"
+      ],
+      "contract": "Only assistant may carry reasoning aliases; two string values must agree byte-for-byte. Null alias may defer to the other. Hidden output preserves computation/usage."
+    },
+    {
+      "id": "historical-arguments",
+      "sources": [
+        "src/server/chat_tool_history.cpp"
+      ],
+      "contract": "Arguments are object or JSON text of an object using production parser budgets. Every top-level argument name is valid. No silent parameter dropping."
+    },
+    {
+      "id": "historical-batches",
+      "sources": [
+        "src/server/chat_tool_history.cpp"
+      ],
+      "contract": "Any ID in a batch requires all nested calls to have valid unique IDs and type=function. Exactly one contiguous result for every ID; no orphan/duplicate/missing/mixed IDs. Text results may reorder. Unlabelled native legacy has distinct preserved rules; IDs are unique per batch, not globally."
+    },
+    {
+      "id": "tool-definitions",
+      "sources": [
+        "src/server/input_contract.cpp",
+        "src/server/output_constraints.cpp"
+      ],
+      "contract": "Function names unique. Auto/raw parameter schemas advisory, but parameters/properties must be objects. A named choice must exist when compiling tool arguments; none mode removes tools and intentionally does not compile their argument schemas."
+    },
+    {
+      "id": "constraint-combinations",
+      "sources": [
+        "src/server/output_constraints.cpp",
+        "src/server/text_stop.cpp"
+      ],
+      "contract": "JSON output/none/required/named/strict tools/nonparallel nonempty tools activate constraints. Parsed text required, state caches and effective stop forbidden; JSON plus tools requires none. Compiled tool branches max16 tools and ASCII safe names. Compiled structural tag <=65536 bytes."
+    },
+    {
+      "id": "finite-schema",
+      "sources": [
+        "src/server/output_schema.cpp"
+      ],
+      "contract": "Root exact object; serialized schema<=16384 bytes; depth<=8/<=128 nodes; object<=32 properties/additionalProperties=false; required unique declared keys, all required in strict mode. Enum1..32 distinct matching string/bool/null; no numeric enums. minItems<=maxItems; bounds0..64. XML top properties ASCII1..64, no reserved XML delimiters in names/enums, no nullable top-level XML string parameters."
+    },
+    {
+      "id": "response-parser-prefix",
+      "sources": [
+        "src/server/chat_response_parser.cpp",
+        "src/server/thinking_budget.cpp"
+      ],
+      "contract": "Production parser and thinking budget initialization must accept native generation prefix. Real thinking closure token preparation remains execution-time validation."
+    },
+    {
+      "id": "configured-capabilities",
+      "sources": [
+        "src/server/chat_plan.cpp"
+      ],
+      "contract": "Structured backend must actually be built; state caches require their effective enabled configuration. Probe flags describe hypothetical config; they do not prove a running backend or cache."
+    },
+    {
+      "id": "token-and-slot-budget",
+      "sources": [
+        "src/server/chat_plan.cpp",
+        "include/q4t/server/prefix_cache_policy.h"
+      ],
+      "contract": "Production tokenizer and max_len determine input/output allowance. Uniform clips output, explicit capacity fits full capped budget; prefix seed must match configured checkpoint and fit prompt. Optional preflight preview has conservative encoded8MiB bound."
+    },
+    {
+      "id": "runtime-admission",
+      "sources": [
+        "src/server/chat_generation.cpp",
+        "src/server/chat_preflight.cpp"
+      ],
+      "contract": "Availability/registry/cache lease/GPU health/deadline/cancellation/grammar compilation are not established by schema or offline probe. Preflight does not reserve them or guarantee successful execution or answer quality."
+    }
+  ],
+  "sources_sha256": {
+    "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
+    "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
+    "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
+    "src/server/chat_contract.cpp": "e964a90e839c1bcf5d57ef6b70a84da19f5d1c9fd92ab2489510e68ad0c3b7b8",
+    "src/server/chat_generation.cpp": "cb337acd07d19fb6f7dd78531c28f38585c304132a505cd0570433ba725e0bbb",
+    "src/server/chat_http.cpp": "6f3b16942ed3747b75a3ee411f0c9b0f2f71661bc629f25aa577ca289be86aa2",
+    "src/server/chat_plan.cpp": "0122fa79966f9630c3c457b01e15f09b81650217db0ff1cbd87e88a37d3562be",
+    "src/server/chat_preflight.cpp": "469f93aed21c99d0978af6f195888353995aa79445b26082504c67c9eafe4802",
+    "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
+    "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
+    "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
+    "src/server/http_request.cpp": "ee120f3af80e12ff7cd407efa624754379cc8019ec062309d84430361d08873d",
+    "src/server/input_contract.cpp": "b11ff893774749edcc59f636eb0de762956cb17e650db7755490df55b5f81d13",
+    "src/server/output_constraints.cpp": "76630cbef022cf14d250dc890d983d912bd44096c80a275c630ad30196f285f0",
+    "src/server/output_schema.cpp": "b9309e2102d6f44e412c4c8c59d1c1b5e35fbcb71dae60c56cb70af453f05d4f",
+    "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
+    "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
+    "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259"
+  }
+}

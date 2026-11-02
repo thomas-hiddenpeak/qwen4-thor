@@ -4,11 +4,18 @@
 只读查询本项目文档、发布与验收记录。代码优先；实现、验证和业务质量
 分别记录。此页是持续维护入口，历史验收不随新功能自动扩张。
 
+2026-11-03 [SRV-07预检/配置已交付](SERVE_PREFLIGHT_RESULT_2026-11-03.md)：
+当前默认5642eb68/6aca6a3e。只读预检共用生产合同/模板/分词/预算，
+返回值与真实usage一致；有效配置可发现。预检不预留槽位、不编译grammar，
+不保证执行或答案质量；双槽plain已验，双槽MTP生成未验。
+[SRV-08完整输入/JS接入](SERVE_PROTOCOL_2026-11-03.md)已完成离线检查，
+真实HTTP尚待执行；现有Python与运行时接受按身份复用。
+
 2026-11-03 [SRV-06文本停止已交付](SERVE_TEXT_STOP_RESULT_2026-11-03.md)：
-当前默认a3fd64a3/49c7c631。跨token/块与中文停止、JSON/SSE、MTP逻辑
+当时默认a3fd64a3/49c7c631。跨token/块与中文停止、JSON/SSE、MTP逻辑
 停止和完整KV退休、普通工具截断错误、真实资料回填及安装plain已验。
 21有效用例，累计22生成/16负例/4模型启动，保留所有入口/夹具失败。
-产品预检、完整客户端矩阵和运营仍待后续。以下为既有交付历史。
+产品预检已在SRV-07交付，完整客户端矩阵和运营仍待后续。以下为既有交付历史。
 
 2026-11-03 [SRV-05b已交付](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)：
 当时默认31ffc41e/9a71a0a7。原生thinking预算、实际控制token、MTP回退、
@@ -63,8 +70,8 @@ OpenAI API 全兼容或生产多租户应用平台。模型支持、模板一致
 |---|---|---|
 | 推理与请求生命周期 | GPU 错误隔离、容量准入、取消、超时、槽回收；已有 Thor 验收 | 与应用协议分开验收；不把本轮当性能优化 |
 | 消息与模板 | 原生 qwen4_exp、单条developer适配、工具历史ID、推理分离；46组模板正例 | 并非运行任意 HF Jinja 模板；新增模型需要独立适配 |
-| 输出协议 | JSON / SSE、工具控制、有限 strict/schema、usage、统一错误、稳定 created、max_tokens/max_completion_tokens 已验 | 完整 schema、停止序列和逐字工具参数增量未实现 |
-| 客户端 | 项目客户端、持久记录、只读恢复判定；OpenAI Python 3.42.1 限定互通通过 | 其他 SDK / 框架未验；没有自动重试 / 任务恢复执行器 |
+| 输出协议 | JSON / SSE、工具控制、有限 strict/schema、usage、错误、稳定 created、输出预算与stop已验 | 任意JSON Schema和逐字工具参数增量未实现；完整输入机器合同开发已验CPU |
+| 客户端 | 项目客户端、持久记录、只读恢复判定；OpenAI Python 3.42.1 限定互通通过 | JS7.47.0离线已验、真实HTTP待验；其他框架未验；没有通用任务恢复执行器 |
 | 应用工具 | 真实发布、历史验收与不存在资料查询通过；来源范围、工具业务错误与预算门已验 | 自主广泛搜索、逐句事实验证与实时状态查询未验 |
 | 服务运维 | livez/readyz、4控制连接预留、追踪ID、metrics、代理保活、可核验发布回退 | 内置鉴权 / TLS / 租户配额 / 持久任务服务不在当前范围 |
 
@@ -75,7 +82,7 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 
 ## API 兼容矩阵
 
-当前交付为 31ffc41e / sidecar 9a71a0a7，盘点起点为 460ffd0 /
+当前交付为 5642eb68 / sidecar 6aca6a3e，盘点起点为 460ffd0 /
 旧默认 830694ce。`已验`指本项目已有明确证据，不代表外部 SDK 全部
 版本通过。P1 / P2 的验证范围与具体失败在本页末尾及结果文档记录。
 完整 vLLM 对照与优先级见[32项服务能力盘点](VLLM_SERVICE_GAPS_2026-11-02.md)。
@@ -114,11 +121,14 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | GET /livez、/readyz | 限定已验 | 普通忙仍ready；GPU unhealthy或排空ready503；加载后才监听 |
 | HTTP媒体 / 方法 / query | 已验 | application/json UTF-8；405＋Allow、query400、GET body400；连接关闭 |
 | 控制入口 / 慢读 | 限定已验 | 4控制连接预留；普通增量流真实EAGAIN后取消回收；不保证慢头洪泛 |
-| 机器schema | A响应及B1消息子集已验 | error/completion/chunk/readiness与角色/指令位置/name/指令文本；完整输入OpenAPI和其他SDK待SRV-08 |
+| POST /v1/chat/preflight | SRV-07限定已验 | 共用合同/模板/分词/预算；可选prompt/IDs；不预留资源或保证执行 |
+| GET /v1/config | SRV-07限定已验 | 实际容量、默认与运行配置；不暴露模型目录/凭据 |
+| 机器schema | 既有响应投影已验；完整输入CPU通过 | 38字段/10路由OpenAPI加必需原生语义清单；标准schema本身不证明动态准入 |
 | Responses / Assistants / Batch | 未实现 | 不能通过更换 base_url 使用 |
 | 图片 / 视频 / 音频 | 非首批文本兼容范围 | 媒体实验开关不代表多模态业务验收 |
 | OpenAI Python SDK | 3.42.1 限定互通通过 | models、JSON/SSE、工具往返、预算与参数错误；关闭自动重试 |
-| 其他 SDK / 框架 | 未验证 | 不从 Python 或自有客户端通过外推 |
+| OpenAI JS SDK | 7.47.0离线通过，HTTP待验 | Node24.18.0；完整EOF/usage/终态/批次门，零自动重试；现场矩阵见SRV-08 |
+| 其他 SDK / 框架 | 未验证 | 不从 Python / JS 或自有客户端通过外推 |
 | 鉴权 / TLS / 多租户隔离 | 不内置 | 由明确配置的应用网关承担；当前仅本地受控验证 |
 
 实现入口：[请求合同](../src/server/chat_contract.cpp)、
