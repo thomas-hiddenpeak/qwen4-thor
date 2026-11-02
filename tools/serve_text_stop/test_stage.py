@@ -14,6 +14,18 @@ import check_schema
 
 
 class Contracts(unittest.TestCase):
+    def test_launch_uses_absolute_guard_identity(self):
+        command = stage.guard_command(True)
+        self.assertEqual(command[2], str(stage.ROOT / "tools/evalscope/gpu_exclusive.py"))
+        self.assertEqual(command[4], str(stage.OUTPUT / "lease"))
+        self.assertEqual(command[-2:], ["execute", "--guard-retry"])
+        self.assertTrue(Path(command[-3]).is_absolute())
+
+    def test_guard_retry_keeps_first_deadline(self):
+        with patch.object(v.b.Run, "__init__", return_value=None):
+            run = v.Run(dict(started=2000, original_started=1000), Path("/unused"))
+            self.assertEqual(run.deadline, 2770)
+
     def test_shape_byte_limits_and_neutral_cache(self):
         for stop in (None, [], "x" * 256, ["中" * 85, "x", "y", "z"]):
             check_schema.check_request(dict(stop=stop))

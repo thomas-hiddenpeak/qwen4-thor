@@ -1,8 +1,10 @@
 """Identity-bound text-stop delivery using the existing guarded pair/rollback path."""
 import argparse
 import copy
+import datetime
 import hashlib
 import importlib.util
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -35,7 +37,7 @@ RELEASE_VERSION = "serve-text-stop-20261103"
 def cpu_gate():
     cpu = BASE / "cpu"
     for name in ("host-gate/result.json", "template-reuse.json",
-                 "startup-preflight/result.json", "driver-final-result.json",
+                 "startup-preflight/result.json", "driver-launch-result.json",
                  "client-result.json"):
         h.require(h.read(cpu / name)["passed"], "CPU gate failed: " + name)
     for mode, count in (("on", 197), ("off", 188)):
@@ -115,6 +117,27 @@ def prepare():
         source_manifest_sha256=h.sha(PACKAGE / "sources.json"),
         planned=dict(starts=3, generations=21, negatives=16),
         startup_preflight=h.identity(PACKAGE / "candidate/startup_preflight"))
+    if PACKAGE.name == "package-absolute":
+        prior_output = BASE / "execution"
+        prior_package = BASE / "package"
+        h.verify_seal(prior_package)
+        h.require(set(p.name for p in prior_output.iterdir()) == {"lease"},
+                  "guard retry requires zero model/request execution")
+        failure = h.read(prior_output / "lease/exit.json")
+        h.require(failure["status"] == "COMMAND_FAILED" and
+                  "no matching deployment guard ancestor" in
+                  (BASE / "launch.log").read_text(), "unexpected guard failure")
+        first = h.read(prior_package / "plan.json")
+        h.require(plan["candidate_sha256"] == first["candidate_sha256"],
+                  "guard retry cannot change runtime")
+        events = [json.loads(line) for line in
+                  (prior_output / "lease/events.jsonl").read_text().splitlines()]
+        plan["original_started"] = datetime.datetime.fromisoformat(
+            events[0]["utc"]).timestamp()
+        plan["prior_invocation"] = dict(generations=0, negatives=0, starts=0,
+            guard_attempts=1, output=str(prior_output),
+            exit=h.identity(prior_output / "lease/exit.json"),
+            log=h.identity(BASE / "launch.log"))
     h.save(PACKAGE / "plan.json", plan)
     h.seal(PACKAGE)
     print("PREPARED", plan["candidate_sha256"], flush=True)
@@ -142,7 +165,6 @@ def verifier(plan, installed=False):
 def release(plan):
     result = OUTPUT / "business/result.json"
     h.require(h.read(result)["status"] == "PASS_BOUNDED_TEXT_STOP", "business gate")
-    import json
     caps = json.loads(h.read(OUTPUT / "business/candidate-mtp/capabilities.json")["raw"])
     h.require(caps["structured_output"]["available"] and
               caps["template"]["message_profile"] == "qwen3.8-native-v2" and
@@ -195,15 +217,27 @@ def bind():
     a.check, a.verifier, a.release = check, verifier, release
 
 
+def guard_command(retry=False):
+    # The deployment guard validates exact absolute argv, not only the lock.
+    return ["/usr/bin/python3", "-B", str(ROOT / "tools/evalscope/gpu_exclusive.py"),
+            "--output", str(OUTPUT / "lease"), "--", "/usr/bin/python3", "-B",
+            str(Path(__file__).resolve()), "execute", *(["--guard-retry"] if retry else [])]
+
+
 def main():
     global PACKAGE, OUTPUT
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("action", choices=["prepare", "execute", "finalize", "rollback"])
+    ap.add_argument("action", choices=["prepare", "launch", "execute", "finalize", "rollback"])
     ap.add_argument("--output", type=Path)
+    ap.add_argument("--guard-retry", action="store_true")
     args = ap.parse_args()
+    if args.guard_retry:
+        PACKAGE, OUTPUT = BASE / "package-absolute", BASE / "execution-absolute"
     bind()
     if args.action == "prepare":
         prepare()
+    elif args.action == "launch":
+        raise SystemExit(subprocess.run(guard_command(args.guard_retry), cwd=ROOT).returncode)
     elif args.action == "execute":
         h.require_guard(OUTPUT)
         h.save(OUTPUT / "begin.json", dict(started=time.time(), limits=LIMITS))

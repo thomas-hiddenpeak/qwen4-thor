@@ -17,3 +17,8 @@ Active stop with constraints/state caches is rejected; neutral stop retains the
 previous behavior. Ordinary auto tools must finish parsing before execution.
 Original failed compiler/fixture records are retained separately; only the
 affected fixture is rerun. Neither commit nor CPU success is release acceptance.
+
+The first relative guard invocation was rejected before model/request work.
+Use `stage.py launch --guard-retry` for the frozen absolute-path continuation;
+`prepare/finalize/rollback` also take `--guard-retry`. Its original deadline
+comes from the first failed lease, which remains intact. Runtime is unchanged.

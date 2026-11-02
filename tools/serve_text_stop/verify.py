@@ -86,6 +86,10 @@ def stop_traces(log):
 class Run(b.Run):
     sdk_chat = transport.Run.sdk_chat  # Captures raw wire even on SDK failure.
 
+    def __init__(self, plan, output, *, installed=False):
+        super().__init__(plan, output, installed=installed)
+        self.deadline = plan.get("original_started", plan["started"]) + 1800 - 30
+
     def budget(self):
         wire.require(time.time() < self.deadline, "text stop deadline")
         wire.require(self.requests <= (1 if self.installed else 21) and
