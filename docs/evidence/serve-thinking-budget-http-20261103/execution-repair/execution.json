@@ -1,0 +1,7 @@
+{
+  "status": "FAILED",
+  "started": 1793645527.0574813,
+  "original_started": 1793645388.189334,
+  "error": "AssertionError('answer quality')",
+  "finished": 1793645568.3281353
+}

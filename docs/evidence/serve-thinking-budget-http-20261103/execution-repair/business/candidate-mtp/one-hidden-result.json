@@ -1,0 +1,23 @@
+{
+  "id": "chatcmpl-auto-cd29ff3628445fbe6e2494e45817bc71",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "只回复数字710003。\n</think>\n\n710003"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 55,
+    "completion_tokens": 22,
+    "total_tokens": 77,
+    "completion_tokens_details": {
+      "reasoning_tokens": 2
+    },
+    "q4t_thinking_budget": {
+      "limit": 1,
+      "consumed": 1,
+      "forced_closure_tokens": 1
+    }
+  },
+  "seconds": 1.3319943728856742
+}

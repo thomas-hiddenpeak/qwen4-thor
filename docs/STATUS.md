@@ -4,50 +4,35 @@
 
 ## 当前推进目标
 
+长期目标“持续推进完善serve到工业水准”保持active，按
+[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续；下一项SRV-06文本stop。
+SRV-05a字段/隐藏及05b真实预算已限定交付；当前默认`31ffc41e` /
+sidecar`9a71a0a7`，冻结源码/驱动97e2f573，完整head；
+[验收、失败修复、证据与回退](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)。
 
-长期目标“持续推进完善serve到工业水准”保持active；按
-[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)逐项推进。
-SRV-05a推理字段/隐藏已交付，默认`ecd5d21f` / sidecar`91ce0ed9`，
-源码/驱动24c831da；[结果与证据](SERVE_STAGE_B2A_RESULT_2026-11-03.md)。
-assistant历史双字段string/null与冲突校验、reasoning_field选择、
-include_reasoning隐藏、客户端JSON/SSE与工具历史回填已闭合。
-隐藏不减少计算或usage；05b真实预算已实现、待本机HTTP验收。
+thinking_token_budget支持parsed messages精确整数/null；耗尽后实际选择
+原生换行/close/空行，必要UTF-8补齐，总控制上限14（本批实际3）。
+MTP提交前留pending再转host尾部，grammar接受同一控制token；usage
+明确自然/forced和reasoning_tokens，隐藏不改变计量，总输出预算优先。
 
-CPU OFF171/ON178、Thor137＋后端7、客户端26、驱动6、120模板差分
-（108逐字节/ID正例＋12拒绝，含21旧fixture）通过，零警告。真实
-13生成/12负例/3启动首轮通过，含两字段JSON/SSE公开/隐藏对照、
-严格项目资料工具回填、隐藏schema、plain与安装路径HTTP健康。
-25响应/115封套、95推理message/delta通过schema及请求关联检查；
-执行129.47秒、finalize147.28秒，guard COMPLETED/ENV_ABORT0。
-模型/数值源码未变，完整head/普通MTP k3、strict plain保持，不作
-性能接受声明。CPU一次CLI参数误用原日志保留，不计为运行时失败。
+本阶段累计21生成/12负例/5启动尝试，包含Popen前路径错误和预算1
+质量失败；原件保留。边界修正后17新增+2有效复用形成完整19用例，
+含严格工具真实回填、schema、总长度终态、MTP/plain、缓存8473token
+实际恢复及fresh完整message一致、真实build/q4t健康。最终guard COMPLETED，
+ENV_ABORT0；执行143.37秒，首次入口到finalize1317.76秒，不作性能接受声明。
+31响应/121封套、99推理message/delta、18份usage检查通过；
+415原始记录/419文件封存，已核对原字节与SHA。
 
-174份原始记录封存（仓库178文件），旧f1133bcc/2edfb882和完整回退
-链保留。01:39 CST GPU计算PID空、锁可用、无恢复标记/常驻模型，
-MemAvailable约116.41GiB。阶段A保留项不因本批通过消失。
+原CPU OFF179/ON188、原生145+后端9、客户端27、模板120按依赖复用；
+修正后零警告构建，针对预算8/grammar1/capabilities4/客户端1/驱动13重验。
+当前元数据/能力与真实默认已同步；旧ecd5d21f/91ce0ed9和完整回退链保留。
+03:13 CST GPU计算PID空、锁可用、无恢复标记/常驻模型，MemAvailable116.55GiB。
+原开发阶段2次模型加载前失败与159份归档保留，未被新结果覆盖。
 
-当前SRV-05b[实现/CPU已通过，真实HTTP未验收](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)。
-OFF179/ON188、原生145+后端9、客户端27、最终驱动9和生产启动预检5项通过，
-零警告；模板120按身份复用。候选c02b9414未接受，默认保持05a。
-两次启动分别因缺显式缓存容量、未创建私有目录而在模型加载前失败；
-0生成/0负例，均非ENV_ABORT；155原始记录/159归档文件封存，
-目录准备与启动前CPU预检已修复。
-本轮4次启动额度剩2次不足以覆盖完整3段验收，477.29秒处关闭本轮，
-不扩大预算、不跳过安装健康。02:38 CST GPU空/锁可用/无恢复标记，
-MemAvailable约117.00GiB。下一阶段明确冻结未执行HTTP用例后继续05b，
-再推进SRV-06 stop、SRV-07预检/有效配置和SRV-08完整输入协议/JS SDK。
-长期目标保持active，05b和整个SRV-05未关闭。
-
-后续[独立HTTP阶段已冻结](SERVE_THINKING_HTTP_2026-11-03.md)：仍复用c02b9414，
-核对299个运行时/构建/测试源码身份，新增11项驱动检查通过；计划19生成/
-12负例/3启动，上限22/12/5及1800秒，只补尚未执行项。原阶段retired和
-两次失败保持，当前默认仍05a；新阶段通过前不交付候选。首次启动前probe路径str/Path错误已修复，
-未创建服务进程/零请求；12项驱动回归通过，修正执行继续首次时间及额度。
-
-本阶段已真实通过12输入负例与缺省/null、预算0，预算1出现正文续写推理的
-质量失败；原始输出保留。已将实际forced边界修正为原生换行/close/空行，
-CPU针对预算8/grammar1/capabilities4/客户端1/驱动13通过；新候选待复验。
-继续首次时间及5启动/22生成上限，复用无影响的缺省/null/输入拒绝证据。
+SRV-06 stop、SRV-07产品预检/有效配置、SRV-08完整输入协议/JS SDK
+及受载资源、严格长payload背压、访问运维和长期稳定仍未完成。
+[05a历史交付](SERVE_STAGE_B2A_RESULT_2026-11-03.md)及
+[05b先前未接受记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)保留。
 
 ## 阶段 B1 交付历史
 

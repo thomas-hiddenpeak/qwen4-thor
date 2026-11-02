@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "requests": {
+    "plain-0": {
+      "limit": 0,
+      "consumed": 0,
+      "forced": 3,
+      "reasoning_tokens": 3,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    },
+    "plain-16": {
+      "limit": 16,
+      "consumed": 16,
+      "forced": 3,
+      "reasoning_tokens": 19,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    }
+  }
+}

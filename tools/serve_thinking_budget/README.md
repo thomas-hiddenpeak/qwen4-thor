@@ -1,6 +1,11 @@
 # SRV-05b 真实 thinking token 预算验收
 
-本轮已停止GPU验收，**尚未通过/交付**。两次启动分别在参数与缓存目录
+后续独立HTTP阶段已交付31ffc41e/9a71a0a7，见
+[结果与证据](../../docs/SERVE_THINKING_HTTP_RESULT_2026-11-03.md)。
+入口为`http_stage.py`，质量失败后以`--boundary`完成真实复验和安装；
+所有历史失败均保留。以下段落描述旧`stage.py`开发批次。
+
+旧开发批次已停止GPU验收，**当时尚未通过/交付**。两次启动分别在参数与缓存目录
 校验退出，零模型加载/零生成；原始package和execution及correction均保留。
 剩余2启动不足以完成业务MTP、plain、安装健康3段，不自动扩展上限。
 默认仍是上一05a。`retired.json`阻止本轮继续execute；下一GPU阶段需明确

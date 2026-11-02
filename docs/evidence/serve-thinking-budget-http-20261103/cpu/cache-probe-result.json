@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "tokens": 8467,
+  "probe": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/probe/template_probe",
+  "probe_sha256": "46cb1b22b99e53bf5b21786ee3d8bea6c3a06fb4a2aecee0e806aa06cb1252be",
+  "tokenizer_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+  "note": "Prior native renderer/tokenizer; new budget controls excluded from rendering-only probe. New native CPU contracts verify budget inputs."
+}

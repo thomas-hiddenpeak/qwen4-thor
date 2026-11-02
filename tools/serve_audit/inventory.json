@@ -351,13 +351,14 @@
     },
     "thinking_token_budget": {
       "semantics": "缺省/null关闭；parsed messages精确整数0..2147483647；自然token计量/有限强制闭合并继续答案",
-      "boundary": "自然closing计预算；forced为原生换行/闭合/空行及必要UTF8补齐，最多14并计completion；总输出优先；MTP批前留pending再host尾部；真实HTTP预算1原失败保留、修复待验",
+      "boundary": "自然closing计预算；forced为原生换行/闭合/空行及必要UTF8补齐，最多14并计completion；总输出优先；MTP批前留pending再host尾部；真实HTTP预算1原失败保留，修正后19用例限定通过；完整head/seq1",
       "evidence": [
         "tests/server_thinking_budget_test.cpp",
         "tests/server_structured_decoder_test.cpp",
         "docs/SERVE_THINKING_BUDGET_2026-11-03.md",
         "docs/serve-thinking-v1.schema.json",
-        "tools/serve_thinking_budget/verify.py"
+        "tools/serve_thinking_budget/verify.py",
+        "docs/SERVE_THINKING_HTTP_RESULT_2026-11-03.md"
       ]
     }
   },
@@ -665,8 +666,8 @@
       "src/server/structured_decoder.cpp",
       "src/server/thinking_budget.cpp"
     ],
-    "http_status": "budget_one_quality_failure_native_boundary_repair_pending",
+    "http_status": "accepted_bounded_after_native_boundary_repair",
     "report": "docs/SERVE_THINKING_BUDGET_2026-11-03.md",
-    "result": "docs/SERVE_THINKING_BUDGET_RESULT_2026-11-03.md"
+    "result": "docs/SERVE_THINKING_HTTP_RESULT_2026-11-03.md"
   }
 }

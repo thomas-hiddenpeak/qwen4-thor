@@ -4,14 +4,12 @@
 只读查询本项目文档、发布与验收记录。代码优先；实现、验证和业务质量
 分别记录。此页是持续维护入口，历史验收不随新功能自动扩张。
 
-2026-11-03 [SRV-05a已交付](SERVE_STAGE_B2A_RESULT_2026-11-03.md)：
-当前默认ecd5d21f/91ce0ed9。reasoning历史别名、显式响应字段与输出隐藏
-通过CPU/原生模板/客户端及13次真实生成验收；公开/隐藏对正文与usage
-一致，真实工具历史回填、schema、plain与安装健康通过。推理预算、
-stop、预检和其余工业化要求仍待后续。
-SRV-05b[代码/CPU已完成但未交付](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)：
-预算控制候选c02b9414尚无真实HTTP证据，当前默认仍不支持thinking_token_budget。
-
+2026-11-03 [SRV-05b已交付](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)：
+当前默认31ffc41e/9a71a0a7。原生thinking预算、实际控制token、MTP回退、
+usage、严格工具/JSON和私有缓存恢复已按19用例验收。累计21次生成含
+预算1原质量失败，修正为原生换行/close/空行后通过；完整失败与复用记录保留。
+[05a字段/隐藏交付](SERVE_STAGE_B2A_RESULT_2026-11-03.md)继续有效；
+stop、产品预检、完整客户端矩阵和运营要求仍待后续。
 
 2026-11-03 [serve阶段B1已交付](SERVE_STAGE_B1_RESULT_2026-11-03.md)：
 当时默认f1133bcc/2edfb882。单条开头developer作为system替代，混用、
@@ -71,7 +69,7 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 
 ## API 兼容矩阵
 
-当前交付为 ecd5d21f / sidecar 91ce0ed9，盘点起点为 460ffd0 /
+当前交付为 31ffc41e / sidecar 9a71a0a7，盘点起点为 460ffd0 /
 旧默认 830694ce。`已验`指本项目已有明确证据，不代表外部 SDK 全部
 版本通过。P1 / P2 的验证范围与具体失败在本页末尾及结果文档记录。
 完整 vLLM 对照与优先级见[32项服务能力盘点](VLLM_SERVICE_GAPS_2026-11-02.md)。
@@ -87,7 +85,7 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | JSON / stream=true | 限定已验 | 首帧提前；5秒注释心跳；finish → 可选 usage → DONE；中断不能当完整响应 |
 | content / reasoning_content / reasoning | 05a限定已验 | 默认reasoning_content，可用reasoning_field选择；JSON/SSE固定单字段；历史别名相等合并/冲突拒绝 |
 | include_reasoning | 05a限定已验 | bool默认true；false隐藏解析出的推理，计算/usage保留；raw/unparsed与null拒绝，不是正文过滤或隐私隔离 |
-| thinking_token_budget | 未实现 | 05b待开发；不把输出隐藏或effort当作计算预算 |
+| thinking_token_budget | 05b限定已验 | parsed messages精确整数0..2147483647/null；自然配额+最多14强制边界token，总输出优先；MTP预留pending后回退；不是FLOPs上限 |
 | function tools / tool_call_id | 已验 | ID 唯一完整批次；文本结果可乱序归一；客户端执行 |
 | tool_choice | 已验，子集组合 | auto / none / required / named；named 恰好一个调用，显式约束模式仅 parsed messages |
 | parallel_tool_calls | 已验 | false 最多一个；true 允许多调用，不代表应用并发执行 |
@@ -134,7 +132,7 @@ P1：补 max_completion_tokens 与 max_tokens 共用预算；统一 HTTP / SSE
 协议源码身份覆盖对应实现。保留不支持参数的显式拒绝，不引入假约束。
 参照 vLLM 盘点新增首批项：SSE created 请求身份保持一致，未实现的
 嵌套消息语义显式拒绝（允许 name/refusal/audio/annotations/function_call
-为null，拒绝其他值；developer后续B1已按单槽profile适配，reasoning别名仍待办）。
+为null，拒绝其他值；developer后续B1已按单槽profile适配，reasoning别名后续05a已交付）。
 
 P2：新增有界项目资料查询应用，工具只读本仓库允许范围内的真实文件，
 返回路径、行号和内容身份；模型输入不作为任意文件 / 命令 / URL 执行。

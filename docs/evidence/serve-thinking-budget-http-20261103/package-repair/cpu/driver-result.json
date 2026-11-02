@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "tests": 9,
+  "log": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/cpu/driver-preflight.log",
+  "log_sha256": "383e0baf215e9424889987d6e0826730370a7d89175bac3f9d7c2fa76c2b1879",
+  "scope": "Includes exact private directory creation and failure-wire preservation"
+}

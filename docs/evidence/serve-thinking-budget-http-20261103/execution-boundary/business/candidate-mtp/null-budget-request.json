@@ -1,0 +1,27 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_completion_tokens": 128,
+  "stream": false,
+  "messages": [
+    {
+      "role": "developer",
+      "content": "遵循用户请求。"
+    },
+    {
+      "role": "user",
+      "content": "只回复数字710003。"
+    }
+  ],
+  "extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": true,
+      "reasoning_effort": "low"
+    },
+    "thinking_token_budget": null,
+    "request_timeout_ms": 180000
+  },
+  "extra_headers": {
+    "X-Request-Id": "trace-null-budget"
+  }
+}

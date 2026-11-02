@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "tests": 12,
+  "log": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/driver-repair.log",
+    "sha256": "56fa0545e3ce473290a8eaebeede7d7134b6003fd9cfba880ccb2fd9b4b0fc13",
+    "bytes": 111
+  },
+  "scope": "Serialized path and actual launch directory regression plus limits and wire failure retention"
+}

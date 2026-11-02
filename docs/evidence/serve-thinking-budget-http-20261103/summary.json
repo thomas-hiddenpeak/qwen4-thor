@@ -1,0 +1,52 @@
+{
+  "candidate": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+  "sidecar": "9a71a0a72e76da3b3850a340fb30b882da633a867e51bf454bee92ba9f5f9a72",
+  "execute_seconds": 143.36923718452454,
+  "overall_to_finalize": 1317.7627589702606,
+  "mem_available_GiB": 116.54658508300781,
+  "when": "2026-11-03T03:13:20.557595+08:00",
+  "schema": [
+    {
+      "phase": "business",
+      "name": "schema-result",
+      "files": 30,
+      "envelopes": 120,
+      "messages": 0
+    },
+    {
+      "phase": "business",
+      "name": "reasoning-schema-result",
+      "files": 17,
+      "envelopes": 0,
+      "messages": 98
+    },
+    {
+      "phase": "business",
+      "name": "thinking-schema-result",
+      "files": 17,
+      "envelopes": 0,
+      "messages": 0
+    },
+    {
+      "phase": "health",
+      "name": "schema-result",
+      "files": 1,
+      "envelopes": 1,
+      "messages": 0
+    },
+    {
+      "phase": "health",
+      "name": "reasoning-schema-result",
+      "files": 1,
+      "envelopes": 0,
+      "messages": 1
+    },
+    {
+      "phase": "health",
+      "name": "thinking-schema-result",
+      "files": 1,
+      "envelopes": 0,
+      "messages": 0
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "artifacts": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/cpu/startup-preflight/startup_preflight",
+      "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+      "bytes": 149552
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package/candidate/q4t",
+      "sha256": "c02b94144c5a40c6118bd7dde306b298dce10c963045708f82082f6a5f2b8b54",
+      "bytes": 7012520
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package/candidate/startup_preflight",
+      "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+      "bytes": 149552
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package/cpu/startup-preflight/startup_preflight",
+      "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+      "bytes": 149552
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package/previous/q4t",
+      "sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+      "bytes": 6943272
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package/source.bundle",
+      "sha256": "231ad9e2f1dd9d6a21f2a9550ae1e1896164adc6abd94c33ca1fd2d672bc3f8d",
+      "bytes": 478760
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-repair/candidate/q4t",
+      "sha256": "c02b94144c5a40c6118bd7dde306b298dce10c963045708f82082f6a5f2b8b54",
+      "bytes": 7012520
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-repair/candidate/startup_preflight",
+      "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+      "bytes": 149552
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-repair/cpu/startup-preflight/startup_preflight",
+      "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+      "bytes": 149552
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-repair/previous/q4t",
+      "sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+      "bytes": 6943272
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-repair/source.bundle",
+      "sha256": "0c560dfd3db02f6df0177e04652d439fdf5378106298c4e69bf856e4b113e221",
+      "bytes": 487525
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/candidate/q4t",
+      "sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+      "bytes": 7012672
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/candidate/startup_preflight",
+      "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+      "bytes": 149552
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/cpu/startup-preflight/startup_preflight",
+      "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+      "bytes": 149552
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/previous/q4t",
+      "sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+      "bytes": 6943272
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/source.bundle",
+      "sha256": "7618cc18a6066da865fd573360af5a393acd4be91d421df8a64abd39771b6a07",
+      "bytes": 493808
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/pair/q4t",
+      "sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+      "bytes": 7012672
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/engine/q4t",
+      "sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+      "bytes": 7012672
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/engine/q4t_host_tests",
+      "sha256": "86bff013377a0917aae068f77434c13e4a957a7c913a7071f96945f4cbdca491",
+      "bytes": 3426104
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/engine/CMakeCache.txt",
+      "sha256": "c53c81d11e2ca07a5c44a524732412a75ca32be2adb4140534b36322fb1cffcf",
+      "bytes": 38827
+    }
+  ],
+  "note": "Large local artifacts retained; old phase evidence lives in its separate immutable archive."
+}

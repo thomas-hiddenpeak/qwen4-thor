@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "tests": 11,
+  "log": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/driver.log",
+    "sha256": "e607e96577e89de6faace24a5b0738ef35ef10461822faf24ab3c9de00b167e2",
+    "bytes": 110
+  },
+  "sources": {
+    "tools/serve_thinking_budget/prepare_cpu.py": "7f895e0018865388880510dcccd67fbf2fa498691fca5a8dd8d9543cd6e0d925",
+    "tools/serve_thinking_budget/stage.py": "b49bfaac6ae9df2f5ded8cc96bdad203a49eb8a1ce9080625ff0a9097475b147",
+    "tools/serve_thinking_budget/check_schema.py": "a8d7bd59c60d388d76de0365cb8db3080ac31d936462bb1d424d711f740266eb",
+    "tools/serve_thinking_budget/http_stage.py": "5c93c5b41f455ea5b85891ee4614e78c54f1ccd285b3bbee5d17fb8abdc70be4",
+    "tools/serve_thinking_budget/verify.py": "0ea22babea31b6d2b080bc403be96fa287c90014f796bb25931d8751154f9a6e",
+    "tools/serve_thinking_budget/startup_preflight.py": "57b2b4d5c7344040b779f1e61df1deb8b3773a5e480d1f9b0d02b476e7f2112f",
+    "tools/serve_thinking_budget/test_stage.py": "277f07c038c298cb4fb83f764c62d0f53910cb678102ea7f78f9638da11aca72"
+  }
+}

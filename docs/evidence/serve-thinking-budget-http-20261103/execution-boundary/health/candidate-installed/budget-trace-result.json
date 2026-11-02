@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "requests": {
+    "installed-zero": {
+      "limit": 0,
+      "consumed": 0,
+      "forced": 3,
+      "reasoning_tokens": 3,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "fallback": 0
+    }
+  }
+}

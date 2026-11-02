@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-transport:v1",
+  "jsonschema_version": "4.26.0",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-boundary/health/candidate-installed/installed-zero-wire.bin",
+      "validated_envelopes": 1
+    }
+  ]
+}

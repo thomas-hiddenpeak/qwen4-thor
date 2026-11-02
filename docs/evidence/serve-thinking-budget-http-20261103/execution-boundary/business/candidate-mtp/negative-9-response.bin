@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 158
+X-Request-Id: req-e4b4a9494f2fa2ba06bc28e617f2b921
+Connection: close
+
+{"error":{"message":"thinking_token_budget requires parsed messages","type":"invalid_request_error","code":"invalid_request","param":"thinking_token_budget"}}

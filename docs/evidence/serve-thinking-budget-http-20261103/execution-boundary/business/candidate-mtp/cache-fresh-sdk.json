@@ -1,0 +1,45 @@
+{
+  "id": "chatcmpl-auto-78610facb4a0f9a6d42ac55fa5adf79e",
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "logprobs": null,
+      "message": {
+        "content": "\n\n710003",
+        "refusal": null,
+        "role": "assistant",
+        "annotations": null,
+        "audio": null,
+        "function_call": null,
+        "tool_calls": null,
+        "reasoning": "用户要求我只回复数字710\n"
+      }
+    }
+  ],
+  "created": 1793646615,
+  "model": "qwen3.8-flash-next",
+  "object": "chat.completion",
+  "metadata": null,
+  "moderation": null,
+  "service_tier": null,
+  "system_fingerprint": null,
+  "usage": {
+    "completion_tokens": 18,
+    "prompt_tokens": 8507,
+    "total_tokens": 8525,
+    "completion_tokens_details": {
+      "accepted_prediction_tokens": null,
+      "audio_tokens": null,
+      "reasoning_tokens": 11,
+      "rejected_prediction_tokens": null,
+      "text_tokens": null
+    },
+    "prompt_tokens_details": null,
+    "q4t_thinking_budget": {
+      "limit": 8,
+      "consumed": 8,
+      "forced_closure_tokens": 3
+    }
+  }
+}

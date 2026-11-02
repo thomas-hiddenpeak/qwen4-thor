@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "source_commit": "97e2f5739d08dd6f90a9ef6968de950a6c6f16f7",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/candidate/q4t",
+  "candidate_sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+  "old_hashes": {
+    "q4t": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+    "q4t.release.json": "91ce0ed94e4ee2c9bcb30895258a6bb30bef3cfe8e37f0dd6ac9160fb314ecfb"
+  },
+  "previous_binary_sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+  "protocol_sha256": "2918e45ab872d1768dd2a514d393a0a010bb1f3855f8d51cf94a09d1ac1ff563",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_version": "3.42.1",
+  "limits": {
+    "starts": 5,
+    "generations": 22,
+    "negatives": 12,
+    "seconds": 1800
+  },
+  "source_manifest_sha256": "df394044ac59eebb0ccefe48f4dec10fb532e112eb4a8cd7093609c61d9334fb",
+  "planned": {
+    "starts": 3,
+    "generations": 19,
+    "negatives": 12
+  },
+  "startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/candidate/startup_preflight",
+    "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+    "bytes": 149552
+  },
+  "cache_seed_tokens": 8467,
+  "provenance": {
+    "prior_retired": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/retired.json",
+      "sha256": "163c5906bb969481f1e4c7137c868f4f65cfd8d96142818e0f177ad9c95cf4a1",
+      "bytes": 695
+    },
+    "prior_phase_preserved": true,
+    "changed_sources": [
+      "include/q4t/server/thinking_budget.h",
+      "src/server/chat_capabilities.cpp",
+      "src/server/thinking_budget.cpp",
+      "tests/server_chat_capabilities_test.cpp",
+      "tests/server_structured_decoder_test.cpp",
+      "tests/server_thinking_budget_test.cpp"
+    ],
+    "reused_cpu_seal": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/cpu/sealed-files.json",
+      "sha256": "ac9e0a2d5ef8f2789bc40f9ed332e18f84dc00f611544a73eba99cfda936cf52",
+      "bytes": 4418
+    },
+    "repair_cpu": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/cpu/repair-result.json",
+      "sha256": "13734aa3cc73cd5a380ff33c5173f067a78540215d0f566dfcf1a460433063da",
+      "bytes": 820
+    },
+    "reuse_http": {
+      "files": {
+        "negative-3-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-3-request.bin",
+          "sha256": "320e201d7ecd4809cbb2b33429c4c49a544e3f2d9428cfea95afc9c551002265",
+          "bytes": 228
+        },
+        "unbudgeted-request.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/unbudgeted-request.json",
+          "sha256": "cb9a65c6f08d078f1ddcd92bc1838132d7f62b158759149267d0e2f2fde340eb",
+          "bytes": 508
+        },
+        "negative-4-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-4-response.bin",
+          "sha256": "3b360f5777cf12dbbfff5385e943b5aac1dc039e91a07e7de9eadbd9671c1546",
+          "bytes": 330
+        },
+        "negative-2-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-2-request.bin",
+          "sha256": "aa016f083a941a364d2bb8df687c901fb7b2a7a743e294218be3d176e8a2ade2",
+          "bytes": 230
+        },
+        "null-budget-wire.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/null-budget-wire.bin",
+          "sha256": "b46d11d8cc957bf37a220d929c2ebe2ac83f09f636c75501480bb613e2a2d925",
+          "bytes": 407
+        },
+        "negative-8-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-8-request.bin",
+          "sha256": "ce7b98fc79c7b20fbee9b2bf1a7c9769c38c1071d062135bd56360478c46b024",
+          "bytes": 195
+        },
+        "unbudgeted-wire.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/unbudgeted-wire.bin",
+          "sha256": "9ce9f9d204d12b44a2038fda1d281d213209d2c53e38b4691a333949aad84742",
+          "bytes": 407
+        },
+        "negative-8-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-8-response.bin",
+          "sha256": "8ca970e3f477bb24a6f3bda0d95c428cd6bcb6750c7675404b23e0b1bb1b0778",
+          "bytes": 310
+        },
+        "negative-7-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-7-request.bin",
+          "sha256": "b51541173e6bd7bd2c67099bc855afaecbc4ce48d54edbd436993df72c9d32a5",
+          "bytes": 227
+        },
+        "negative-9-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-9-response.bin",
+          "sha256": "c6c55cd61d075bcb93576d3d04c92a477e444cfbda3dbffc4d87ebc6942a9fa0",
+          "bytes": 310
+        },
+        "negative-5-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-5-response.bin",
+          "sha256": "d849a7b9c9ef3ecd7bc5b224d79514455e09bd76cac125a5e8da3224cf1080da",
+          "bytes": 330
+        },
+        "unbudgeted-result.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/unbudgeted-result.json",
+          "sha256": "feaabe302100a2a71f76a067102404295532109c21d81972376747a78b389e5a",
+          "bytes": 415
+        },
+        "negative-4-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-4-request.bin",
+          "sha256": "d4bc32f6bba01cd2a77c7074ec98e4c21fefe5650b1ae702b183eabcb09fb444",
+          "bytes": 229
+        },
+        "negative-1-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-1-request.bin",
+          "sha256": "53d2d6fd28504cd94163e1df0b61d646c2d0fc7b8ad6f332fc6a837a034b24b3",
+          "bytes": 235
+        },
+        "negative-2-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-2-response.bin",
+          "sha256": "ece5676b507693715cfe7b200fab545e50f14c019178aac91bbe275f32c76a4a",
+          "bytes": 330
+        },
+        "negative-1-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-1-response.bin",
+          "sha256": "2cd15c35bb6a2eecef8beb989ab3d24b7458f1ee61cdd744e5316351e1de840b",
+          "bytes": 330
+        },
+        "negative-9-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-9-request.bin",
+          "sha256": "1d515719569a5dee47b826db90a66c38d109a8345484b725e5689283fa471cc5",
+          "bytes": 251
+        },
+        "negative-0-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-0-request.bin",
+          "sha256": "145ff048dd977fcc58e2ad77a64d38bad646d800fd910e841d4c341428a2605a",
+          "bytes": 228
+        },
+        "negative-0-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-0-response.bin",
+          "sha256": "6010a040cf0344dbd1bd637dee8d6221e376e3d19fb19c387b5b9bbbb3b78be7",
+          "bytes": 330
+        },
+        "negative-6-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-6-request.bin",
+          "sha256": "44b56f92ff827fffd5955e70fdda11decdc0e9618dbe9e79e6ecfac77b0db093",
+          "bytes": 228
+        },
+        "negative-10-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-10-request.bin",
+          "sha256": "7d44c21936fadcc5da888608fc592cb051bd94d472595d98a41d93acbb88ba60",
+          "bytes": 230
+        },
+        "unbudgeted-headers.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/unbudgeted-headers.json",
+          "sha256": "526c9a13282b705aa5879c55597f8de912733929530a9b0d5ff8cd92cc865b3a",
+          "bytes": 131
+        },
+        "null-budget-sdk.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/null-budget-sdk.json",
+          "sha256": "6b0700e23b7a432536a806112cf71db78f810546188e871434e6c5830b3ef93c",
+          "bytes": 842
+        },
+        "unbudgeted-sdk.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/unbudgeted-sdk.json",
+          "sha256": "0f0fe8e21b46465df96107a018f4d30f2186c1cfcab7479ba179e69697960fa2",
+          "bytes": 842
+        },
+        "negative-10-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-10-response.bin",
+          "sha256": "9fca1390b9b117a97181838df9f408ec97b95a23d0f4602726da0992326dad82",
+          "bytes": 330
+        },
+        "negative-5-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-5-request.bin",
+          "sha256": "a131d8cdaf1f8819ca1d667f097268abeb930f4af8c42cd2a61a5b0b51d80875",
+          "bytes": 243
+        },
+        "negative-11-request.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-11-request.bin",
+          "sha256": "b0504fb7eeb8dbcd7e48b5afd8168c9e082a374b1f93a7d4d359b4cac648164a",
+          "bytes": 258
+        },
+        "negative-3-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-3-response.bin",
+          "sha256": "af5d427e6a57b09c344c828dfec38680fc951a299fe8bfa514b32790cd4200a0",
+          "bytes": 330
+        },
+        "negative-11-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-11-response.bin",
+          "sha256": "988df898b769615a2fbe9f7838141ea420cc6c0b35c6e8c2544b8fe2ba17142c",
+          "bytes": 330
+        },
+        "null-budget-result.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/null-budget-result.json",
+          "sha256": "45846db677afafec432d1c7b1cd3b9267c36a67242d122d37aae8a1ace9df4e6",
+          "bytes": 416
+        },
+        "negative-6-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-6-response.bin",
+          "sha256": "48ababbe76b671b20a6e7e4d6cc7c3e644c3617a26b26cd7063756d267c10487",
+          "bytes": 330
+        },
+        "negative-7-response.bin": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/negative-7-response.bin",
+          "sha256": "f6587af3d30610cea313322f374e76685ed8b9aea2e71b402cc08f3215c5afdd",
+          "bytes": 330
+        },
+        "null-budget-request.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/null-budget-request.json",
+          "sha256": "cfba3e852a0b16b964e5ba0e42391d6efa88aa0e2aeed50337facfab3a664ce5",
+          "bytes": 544
+        },
+        "null-budget-headers.json": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair/business/candidate-mtp/null-budget-headers.json",
+          "sha256": "81ec2c34b088ac9a61bf5293b95a856929795ad3feab20696e54bf4d967f14d5",
+          "bytes": 132
+        }
+      },
+      "generations": 2,
+      "negatives": 12,
+      "rationale": "Only nonnull enabled budget closure changed. Absent/null generation and input validation exit before PrepareTokens; their source paths are unchanged. Budget zero and one are rerun."
+    }
+  },
+  "original_started": 1793645388.189334,
+  "prior_counts": {
+    "starts": 2,
+    "generations": 4,
+    "negatives": 12
+  },
+  "prior_execution": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/execution-repair"
+}
