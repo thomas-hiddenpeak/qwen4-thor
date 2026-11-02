@@ -136,6 +136,8 @@ class Run(r.Run):
         self.mixed_cancel(folder)
         self.deadline_case(folder)
         self.project_loop(folder, strict=True, stream=True)
+        self.observe(lambda m: m["q4t_structured_workers_active"] == 0 and
+                     m["q4t_structured_active"] == 0)
         rows, raw = self.snapshot(folder, "before-final-shutdown")
         r.metric_contract(raw)
         worker_contract(rows)

@@ -72,3 +72,17 @@ VmHWM；它是进程当前映射的历史RSS观察，并非memcg物理计量。
 命令和父身份后使用pidfd；仅在worker确认rlimit安装后暂停它。
 修复阶段用`.q4t-work/grammar-isolation-20261102-repair/`，沿用首轮
 started与30分钟总窗口，剩余至多2启动/11尝试，不扩大原预算。
+
+## 第二轮观察时序修复与收尾范围
+
+修复候选c8c412c4在55.13秒内完成7尝试/1拒绝/1启动，编译timeout
+10.008秒、编译取消0.067秒、混合与真实工具闭环已通过。末尾snapshot
+遇到响应已送完但最后worker尚在reap的窗口，错误判泄漏；随后日志
+明确最后worker已回收、server正常关闭。修复驱动等待资源清理，保留
+该失败；不重复同身份已通过用例。
+
+最后一次启动只做普通/JSON schema健康和active shutdown，共3请求；
+累计包含第一轮失败将为11尝试/1拒绝/3启动，仍原30分钟窗口。通过
+后安装同SHA ELF，复用刚完成的同ELF HTTP健康；安装路径再验证CLI和
+私有worker限额握手，无新模型请求。运行时/ad69ce4和候选c8c412c4
+不变，源码与依赖hash绑定；有界收尾见tools/grammar_isolation/finish.py。
