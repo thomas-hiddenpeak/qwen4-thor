@@ -5,6 +5,7 @@
 #include <string_view>
 
 #include "q4t/server/chat_tool_history.h"
+#include "q4t/server/output_constraints.h"
 
 namespace q4t::server {
 namespace {
@@ -107,14 +108,9 @@ Status ValidateChatContract(const io::Json& req,
   if (const auto* parsed = req.Find("parse_response"); parsed &&
       (!parsed->IsBool() || (parsed->boolean && !messages)))
     return Status::Fail("parse_response=true requires messages");
-  const bool parsed = messages && req.GetBool("parse_response", true);
-  if (const auto* choice = req.Find("tool_choice"); choice &&
-      (!parsed || !choice->IsString() || choice->str != "auto"))
-    return Status::Fail("only tool_choice=auto with parsed messages is supported");
-  if (const auto* parallel = req.Find("parallel_tool_calls"); parallel &&
-      (!parsed || !parallel->IsBool() || !parallel->boolean))
-    return Status::Fail("only parallel_tool_calls=true with parsed messages "
-                        "is supported");
+  OutputConstraints constraints;
+  status = PlanOutputConstraints(req, &constraints);
+  if (!status) return status;
   if (prompt && (!prompt->IsString() || prompt->str.empty()))
     return Status::Fail("prompt must be a nonempty string");
   if (const auto* model = req.Find("model");
@@ -136,8 +132,7 @@ Status ValidateChatContract(const io::Json& req,
         std::trunc(seed->number) != seed->number)
       return Status::Fail("seed must be an exact binary64 integer or null");
   }
-  for (const char* key : {"logprobs", "top_logprobs", "stop", "logit_bias",
-                          "response_format"}) {
+  for (const char* key : {"logprobs", "top_logprobs", "stop", "logit_bias"}) {
     const auto* value = req.Find(key);
     if (!value || value->IsNull()) continue;
     const std::string_view name(key);
@@ -145,9 +140,7 @@ Status ValidateChatContract(const io::Json& req,
         (name == "logprobs" && value->IsBool() && !value->boolean) ||
         (name == "top_logprobs" && Number(*value, 0)) ||
         (name == "stop" && value->IsArray() && value->array.empty()) ||
-        (name == "logit_bias" && value->IsObject() && value->object.empty()) ||
-        (name == "response_format" && value->IsObject() &&
-         value->object.size() == 1 && value->GetString("type") == "text");
+        (name == "logit_bias" && value->IsObject() && value->object.empty());
     if (!neutral) return Status::Fail(std::string(key) + " is not supported");
   }
   if (const auto* options = req.Find("stream_options")) {
@@ -216,6 +209,8 @@ Status ValidateChatContract(const io::Json& req,
       if (part.Has("image_url") || part.Has("video_frames") ||
           type == "image_url" || type == "video_frames" ||
           type == "video_url") {
+        if (constraints.active)
+          return Status::Fail("constrained output requires text-only messages");
         if (!allow_media)
           return Status::Fail(
               "media disabled; experimental --allow-media required");

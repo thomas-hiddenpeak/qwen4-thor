@@ -4,6 +4,17 @@
 
 ## 当前推进目标
 
+工具控制 / 结构化输出正在开发（2026-11-02，起点 74579d5）：已接入
+none / required / named / parallel=false、有限 JSON Schema profile、
+固定 XGrammar 的 host token mask 及整份响应发布门。新路径显式启用，
+按请求使用普通解码；MTP / packed decode / cache / media 组合未验。
+用户随后授权停止 vLLM 并开展测试。17:12 CST 正常停监督器，容器 /
+恢复标记由其清理；GPU 计算进程为空、共享锁释放，可用 RAM 约
+23 → 117 GiB。首轮真实后端 host 145 / 无后端 140 / 客户端 23 项
+通过，候选已构建，HTTP 与交付仍待验；默认 c3772d11 / c80f1f14 未变。
+代码与待验用例不等于交付，见
+[开发合同、依赖与限制、待验范围](STRUCTURED_OUTPUT_DEVELOPMENT_2026-11-02.md)。
+
 应用服务首批已交付（2026-11-02）：默认 c3772d11 / sidecar c80f1f14，
 仍 full head / MTP k3；[能力与 OpenAI 兼容矩阵](APPLICATION_SERVICE.md)
 及[32项 vLLM 对照](VLLM_SERVICE_GAPS_2026-11-02.md)已同步当前交付状态。补 token

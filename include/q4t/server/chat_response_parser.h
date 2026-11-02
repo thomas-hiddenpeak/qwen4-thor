@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "q4t/io/json.h"
+#include "q4t/server/output_constraints.h"
 #include "q4t/status.h"
 
 namespace q4t::server {
@@ -61,6 +62,10 @@ class ChatResponseParser {
   std::string content_;
   std::string reasoning_;
   std::vector<ResponseToolCall> calls_;
+  const io::Json* request_ = nullptr;
+  OutputConstraints constraints_;
+  size_t constrained_bytes_ = 0;
+  std::vector<ResponseDelta> deferred_;
 };
 
 }  // namespace q4t::server

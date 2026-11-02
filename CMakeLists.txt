@@ -261,6 +261,9 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_http.cpp
   src/server/http_response.cpp
   src/server/chat_response_parser.cpp
+  src/server/output_schema.cpp
+  src/server/output_constraints.cpp
+  src/server/structured_decoder.cpp
   src/server/chat_input.cpp
   src/server/chat_metrics.cpp
   src/server/chat_scheduler.cpp
@@ -273,6 +276,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
                              src/server/chat_template.cpp)
 target_include_directories(q4t_server PUBLIC include)
 target_include_directories(q4t_server PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
+q4t_link_structured_output(q4t_server)
 option(Q4T_SERVE_FAULT_INJECTION "Validation-only serving fault hooks" OFF)
 if(Q4T_SERVE_FAULT_INJECTION)
   target_compile_definitions(q4t_server PRIVATE Q4T_SERVE_FAULT_INJECTION=1)
@@ -398,6 +402,10 @@ if(Q4T_BUILD_TESTS)
     tests/server_chat_tool_history_test.cpp
     src/server/chat_response_parser.cpp
     tests/server_chat_response_parser_test.cpp
+    src/server/output_schema.cpp
+    src/server/output_constraints.cpp
+    src/server/structured_decoder.cpp
+    tests/server_output_constraints_test.cpp
     src/server/chat_contract.cpp
     src/server/http_response.cpp
     tests/server_http_response_test.cpp
@@ -459,6 +467,10 @@ if(Q4T_BUILD_TESTS)
   target_link_libraries(q4t_agent_capacity PRIVATE ${Q4T_TEST_LIBS})
 
   add_executable(q4t_tests ${Q4T_TEST_SOURCES})
+  q4t_link_structured_output(q4t_tests)
+  if(Q4T_ENABLE_XGRAMMAR)
+    target_sources(q4t_tests PRIVATE tests/server_structured_decoder_test.cpp)
+  endif()
   target_include_directories(q4t_tests PRIVATE include)
   target_include_directories(q4t_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_tests PRIVATE ${Q4T_TEST_LIBS})
@@ -511,6 +523,7 @@ if(Q4T_BUILD_TESTS)
   include(cmake/HostTestSources.cmake)
   find_package(Threads REQUIRED)
   add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
+  q4t_link_structured_output(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE include)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
   target_link_libraries(q4t_host_tests PRIVATE q4t_io Threads::Threads)
@@ -621,6 +634,7 @@ target_compile_options(q4t_prefix_state_contract PRIVATE -Wall -Wextra)
 add_executable(q4t_prefix_seed_contract EXCLUDE_FROM_ALL
   tests/test_main.cpp tests/server_chat_contract_test.cpp
   tools/prefix_seed/policy_contract.cpp src/server/chat_contract.cpp
-  src/io/json.cpp)
+  src/server/chat_tool_history.cpp src/server/output_constraints.cpp
+  src/server/output_schema.cpp src/server/http_response.cpp src/io/json.cpp)
 target_include_directories(q4t_prefix_seed_contract PRIVATE include)
 target_compile_options(q4t_prefix_seed_contract PRIVATE -Wall -Wextra)

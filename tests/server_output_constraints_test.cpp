@@ -1,0 +1,275 @@
+#include "q4t/server/output_constraints.h"
+
+#include <algorithm>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+#include "q4t/server/chat_contract.h"
+#include "q4t/server/chat_response_parser.h"
+#include "q4t/server/chat_template.h"
+#include "q4t/server/output_schema.h"
+#include "q4t/test.h"
+
+namespace {
+using q4t::io::Json;
+using q4t::server::ChatResponseParser;
+using q4t::server::OutputConstraints;
+using q4t::server::ResponseDelta;
+constexpr auto kClosed = "<|im_start|>assistant\n<think>\n\n</think>\n\n";
+constexpr auto kThinking = "<|im_start|>assistant\n<think>\n";
+constexpr auto kSchema = R"({"type":"object","properties":{
+  "path":{"type":"string","enum":["docs/STATUS.md"]},
+  "line":{"type":"integer"}},"required":["path","line"],
+  "additionalProperties":false})";
+
+Json Parse(const std::string& text) {
+  Json value;
+  if (!q4t::io::ParseJson(text, &value, true, {32, 65536, 1048576, true}))
+    throw std::runtime_error("invalid test JSON");
+  return value;
+}
+
+Json Request(std::string_view options = {}, bool strict = false) {
+  return Parse(std::string(R"({"messages":[{"role":"user","content":"q"}],)"
+                           R"("enable_thinking":false,"tools":[)"
+                           R"({"type":"function","function":{"name":"read",)"
+                           R"("strict":)") +
+               (strict ? "true" : "false") + R"(,"parameters":)" + kSchema +
+               R"(}},)"
+               R"({"type":"function","function":{"name":"noop"}}])" +
+               (options.empty() ? "" : "," + std::string(options)) + '}');
+}
+
+std::string Call(std::string_view name = "read",
+                 std::string_view args =
+                     "<parameter=path>docs/STATUS.md</parameter>\n"
+                     "<parameter=line>1</parameter>") {
+  return "<tool_call>\n<function=" + std::string(name) + ">\n" +
+         std::string(args) + "\n</function>\n</tool_call>";
+}
+}  // namespace
+
+Q4T_TEST(output_constraints_tool_choice_plan) {
+  OutputConstraints plan;
+  for (const auto* options :
+       {R"("tool_choice":"none")", R"("tool_choice":"required")",
+        R"("tool_choice":{"type":"function","function":{"name":"read"}})",
+        R"("tool_choice":"auto","parallel_tool_calls":false)"}) {
+    const auto request = Request(options);
+    Q4T_CHECK(q4t::server::ValidateChatContract(request, "m", false).ok());
+    Q4T_CHECK(q4t::server::PlanOutputConstraints(request, &plan).ok());
+    Q4T_CHECK(plan.active && !plan.structural_tag.empty());
+    Q4T_CHECK(Parse(plan.structural_tag).GetString("type") == "structural_tag");
+  }
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(Request(), &plan).ok());
+  Q4T_CHECK(!plan.active);
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(Request({}, true), &plan).ok());
+  Q4T_CHECK(plan.active);
+  for (const auto* options :
+       {R"("tool_choice":"force")", R"("parallel_tool_calls":0)",
+        R"("tool_choice":{"type":"function","function":{"name":"absent"}})",
+        R"("tool_choice":{"type":"function","function":{"name":"read","x":1}})",
+        R"("tool_choice":"required","parse_response":false)",
+        R"("tool_choice":"required","session_id":"x")"})
+    Q4T_CHECK(
+        !q4t::server::PlanOutputConstraints(Request(options), &plan).ok());
+  return true;
+}
+
+Q4T_TEST(output_constraints_schema_profile_rejects_silent_downgrade) {
+  Q4T_CHECK(q4t::server::ValidateOutputSchema(Parse(kSchema), true).ok());
+  for (const auto* extra :
+       {R"("$ref":"#/$defs/x")", R"("oneOf":[])", R"("pattern":".*")",
+        R"("minimum":0)", R"("minLength":1)", R"("default":{})",
+        R"("required":["missing"])", R"("additionalProperties":true)"}) {
+    auto schema = Parse(kSchema);
+    const auto patch = Parse("{" + std::string(extra) + "}").object[0];
+    std::erase_if(schema.object,
+                  [&](const auto& item) { return item.first == patch.first; });
+    schema.object.push_back(patch);
+    Q4T_CHECK(!q4t::server::ValidateOutputSchema(schema, true).ok());
+  }
+  auto schema = Parse(kSchema);
+  for (auto& [key, value] : schema.object)
+    if (key == "required") value.array.clear();
+  Q4T_CHECK(!q4t::server::ValidateOutputSchema(schema, true).ok());
+  Q4T_CHECK(q4t::server::ValidateOutputSchema(schema, false).ok());
+  return true;
+}
+
+Q4T_TEST(output_constraints_nested_values_and_exact_integers) {
+  const auto schema = Parse(R"({"type":"object","properties":{
+    "values":{"type":"array","items":{"type":["integer","null"]},
+              "minItems":1,"maxItems":2}},"required":["values"],
+    "additionalProperties":false})");
+  Q4T_CHECK(q4t::server::ValidateOutputSchema(schema, true).ok());
+  for (const auto* value :
+       {R"({"values":[null,9007199254740993]})", R"({"values":[1.00e2]})"})
+    Q4T_CHECK(q4t::server::ValidateOutputValue(schema, Parse(value)).ok());
+  for (const auto* value :
+       {R"({"values":[1.0000000000000001]})", R"({"values":[1e-1]})",
+        R"({"values":[]})", R"({"values":[1,2,3]})", R"({"values":[true]})",
+        R"({"values":[1],"extra":1})", R"({})"})
+    Q4T_CHECK(!q4t::server::ValidateOutputValue(schema, Parse(value)).ok());
+  return true;
+}
+
+Q4T_TEST(output_constraints_batch_barrier_and_named_choice) {
+  const auto request = Request(R"("tool_choice":"required",
+                                 "parallel_tool_calls":false)");
+  for (const auto& text : {Call() + "\n" + Call("noop", ""), Call("absent", ""),
+                           Call("read", "<parameter=line>1</parameter>")}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
+    Q4T_CHECK(!parser.Append(text, &deltas).ok());
+    Q4T_CHECK(deltas.empty());
+  }
+  const auto named = Request(
+      R"("tool_choice":{"type":"function","function":{"name":"read"}})");
+  ChatResponseParser parser;
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Init(named, kClosed, "id", false).ok());
+  Q4T_CHECK(!parser.Append(Call("noop", ""), &deltas).ok());
+  Q4T_CHECK(deltas.empty());
+  return true;
+}
+
+Q4T_TEST(output_constraints_all_chunk_splits_and_tool_errors) {
+  const auto request = Request(R"("tool_choice":"required")");
+  const auto text = Call();
+  for (size_t split = 0; split <= text.size(); ++split) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
+    Q4T_CHECK(parser.Append(text.substr(0, split), &deltas).ok());
+    Q4T_CHECK(parser.Append(text.substr(split), &deltas).ok());
+    Q4T_CHECK(deltas.empty());
+    Q4T_CHECK(parser.Finish(false, &deltas).ok());
+    size_t calls = 0;
+    for (const auto& delta : deltas) {
+      if (delta.kind != ResponseDelta::Kind::kTool) continue;
+      ++calls;
+      Q4T_CHECK(delta.call.id == "call_id_0" && delta.call.name == "read");
+      Q4T_CHECK(Parse(delta.call.arguments).GetString("path") ==
+                "docs/STATUS.md");
+    }
+    Q4T_CHECK(calls == 1);
+  }
+  for (const auto* args :
+       {"<parameter=path>other</parameter><parameter=line>1</parameter>",
+        "<parameter=path>docs/STATUS.md</parameter><parameter=line>1.5</"
+        "parameter>",
+        "<parameter=path>docs/STATUS.md</parameter><parameter=line>1</"
+        "parameter>"
+        "<parameter=extra>ignored</parameter>"}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
+    Q4T_CHECK(!parser.Append(Call("read", args), &deltas).ok());
+    Q4T_CHECK(deltas.empty());
+  }
+  return true;
+}
+
+Q4T_TEST(output_constraints_none_required_and_length_terminals) {
+  for (const auto* choice : {"none", "required"}) {
+    const auto request =
+        Request("\"tool_choice\":\"" + std::string(choice) + '"');
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
+    Q4T_CHECK(parser.Append("ordinary text", &deltas).ok());
+    Q4T_CHECK(deltas.empty());
+    Q4T_CHECK(parser.Finish(false, &deltas).ok() ==
+              (std::string(choice) == "none"));
+  }
+  const auto request = Request(R"("tool_choice":"required")");
+  ChatResponseParser parser;
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
+  Q4T_CHECK(parser.Append(Call(), &deltas).ok());
+  Q4T_CHECK(!parser.Finish(true, &deltas).ok() && deltas.empty());
+  const auto none = Request(R"("tool_choice":"none")");
+  ChatResponseParser forbidden;
+  Q4T_CHECK(forbidden.Init(none, kClosed, "id", false).ok());
+  Q4T_CHECK(!forbidden.Append(Call(), &deltas).ok() && deltas.empty());
+  return true;
+}
+
+Q4T_TEST(output_constraints_json_markers_are_data) {
+  const auto request = Parse(R"({"messages":[{"role":"user","content":"q"}],
+      "response_format":{"type":"json_object"}})");
+  const std::string body =
+      R"({"quoted":"<think><tool_call></tool_call>","x":1})";
+  for (size_t split = 0; split <= body.size(); ++split) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kThinking, "id", false).ok());
+    Q4T_CHECK(parser.Append("reason</think>\n\n", &deltas).ok());
+    Q4T_CHECK(parser.Append(body.substr(0, split), &deltas).ok());
+    Q4T_CHECK(parser.Append(body.substr(split), &deltas).ok());
+    Q4T_CHECK(deltas.empty() && !parser.HasToolCalls());
+    Q4T_CHECK(parser.Finish(false, &deltas).ok());
+    const auto message = Parse(parser.MessageJson());
+    Q4T_CHECK(message.GetString("reasoning_content") == "reason");
+    Q4T_CHECK(Parse(message.GetString("content")).GetInt("x") == 1);
+  }
+  for (const auto* bad : {R"({"x":1,"x":2})", "[1]", "{", "{} trailing"}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
+    Q4T_CHECK(parser.Append(bad, &deltas).ok());
+    Q4T_CHECK(!parser.Finish(false, &deltas).ok() && deltas.empty());
+  }
+  return true;
+}
+
+Q4T_TEST(output_constraints_json_schema_and_combinations) {
+  auto request = Parse(
+      std::string(R"({"messages":[{"role":"user","content":"q"}],)"
+                  R"("response_format":{"type":"json_schema","json_schema":{)"
+                  R"("name":"record","strict":true,"schema":)") +
+      kSchema + "}}}");
+  OutputConstraints plan;
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(request, &plan).ok());
+  Q4T_CHECK(plan.active && plan.json_output);
+  for (const auto* content :
+       {R"({"path":"other","line":1})", R"({"path":"docs/STATUS.md"})"}) {
+    ChatResponseParser parser;
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Init(request, kClosed, "id", false).ok());
+    Q4T_CHECK(parser.Append(content, &deltas).ok());
+    Q4T_CHECK(!parser.Finish(false, &deltas).ok() && deltas.empty());
+  }
+  const auto with_tools =
+      Request(R"("response_format":{"type":"json_object"})");
+  Q4T_CHECK(!q4t::server::PlanOutputConstraints(with_tools, &plan).ok());
+  Q4T_CHECK(
+      q4t::server::PlanOutputConstraints(
+          Request(
+              R"("tool_choice":"none","response_format":{"type":"json_object"})"),
+          &plan)
+          .ok());
+  return true;
+}
+
+Q4T_TEST(output_constraints_template_filters_preserve_request) {
+  OutputConstraints plan;
+  const auto request = Request(R"("tool_choice":"none")");
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(request, &plan).ok());
+  const auto filtered = q4t::server::ConstraintTemplateRequest(request, plan);
+  Q4T_CHECK(filtered.GetArray("tools")->array.empty());
+  Q4T_CHECK(request.GetArray("tools")->array.size() == 2);
+  Q4T_CHECK(filtered.GetArray("messages")->array.size() == 1);
+  const auto named = Request(
+      R"("tool_choice":{"type":"function","function":{"name":"noop"}})");
+  Q4T_CHECK(q4t::server::PlanOutputConstraints(named, &plan).ok());
+  const auto single = q4t::server::ConstraintTemplateRequest(named, plan);
+  Q4T_CHECK(single.GetArray("tools")->array.size() == 1);
+  Q4T_CHECK(
+      single.GetArray("tools")->array[0].Find("function")->GetString("name") ==
+      "noop");
+  return true;
+}

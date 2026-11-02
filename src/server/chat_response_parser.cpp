@@ -168,7 +168,10 @@ Status ChatResponseParser::Init(const io::Json& request,
                                 const std::string& request_id, bool collect) {
   if (initialized_) return Fail("parser already initialized");
   initialized_ = true;
-  collect_ = collect;
+  request_ = &request;
+  auto plan_status = PlanOutputConstraints(request, &constraints_);
+  if (!plan_status) return Fail(plan_status.message());
+  collect_ = collect || constraints_.active;
   parsed_ = request.Has("messages") && request.GetBool("parse_response", true);
   id_prefix_ = "call_" + request_id + '_';
   if (!parsed_) return Status();
@@ -187,9 +190,8 @@ Status ChatResponseParser::Init(const io::Json& request,
         name.find_first_of("<>\r\n") != name.npos ||
         !tools_.emplace(name, fn).second)
       return Fail("invalid or duplicate tool name");
-    if (const auto* strict = fn->Find("strict");
-        strict && (!strict->IsBool() || strict->boolean))
-      return Fail("strict tool schemas are not supported");
+    if (const auto* strict = fn->Find("strict"); strict && !strict->IsBool())
+      return Fail("strict must be boolean");
     const auto* parameters = fn->Find("parameters");
     if (parameters && !parameters->IsObject())
       return Fail("tool parameters must be a schema object");
@@ -211,10 +213,13 @@ void ChatResponseParser::Emit(Region region, std::string_view text,
   if (text.empty()) return;
   const bool reasoning = region == Region::kReasoning;
   if (collect_) (reasoning ? reasoning_ : content_).append(text);
-  deltas->push_back({reasoning ? ResponseDelta::Kind::kReasoning
-                               : ResponseDelta::Kind::kContent,
-                     std::string(text),
-                     {}});
+  const auto kind = reasoning ? ResponseDelta::Kind::kReasoning
+                              : ResponseDelta::Kind::kContent;
+  auto* target = constraints_.active ? &deferred_ : deltas;
+  if (constraints_.active && !target->empty() && target->back().kind == kind)
+    target->back().text.append(text);
+  else
+    target->push_back({kind, std::string(text), {}});
 }
 
 Status ChatResponseParser::ParseTool(std::string_view block,
@@ -225,6 +230,15 @@ Status ChatResponseParser::ParseTool(std::string_view block,
   const auto end = block.find('>');
   if (end == block.npos) return Status::Fail("incomplete function name");
   call->name = std::string(block.substr(10, end - 10));
+  if (constraints_.choice == OutputConstraints::ToolChoice::kNone)
+    return Status::Fail("tool call forbidden by tool_choice=none");
+  if (constraints_.choice == OutputConstraints::ToolChoice::kNamed &&
+      call->name != constraints_.named_tool)
+    return Status::Fail("generated tool does not match named choice");
+  if ((!constraints_.parallel ||
+       constraints_.choice == OutputConstraints::ToolChoice::kNamed) &&
+      tool_count_ != 0)
+    return Status::Fail("multiple tool calls forbidden by request");
   const auto fn = tools_.find(call->name);
   if (fn == tools_.end()) return Status::Fail("unknown generated tool name");
   const auto* parameters = fn->second->Find("parameters");
@@ -258,6 +272,10 @@ Status ChatResponseParser::ParseTool(std::string_view block,
     block.remove_prefix(close + std::string_view("</parameter>").size());
   }
   call->arguments += '}';
+  if (constraints_.active) {
+    auto status = ValidateConstrainedArguments(*fn->second, call->arguments);
+    if (!status) return status;
+  }
   call->index = tool_count_;
   call->id = id_prefix_ + std::to_string(tool_count_);
   return Status();
@@ -267,12 +285,25 @@ Status ChatResponseParser::Append(std::string_view text,
                                   std::vector<ResponseDelta>* deltas) {
   if (!status_) return status_;
   if (!initialized_ || finished_) return Fail("parser is not accepting input");
+  if (constraints_.active) {
+    if (text.size() > kMaxToolBytes - constrained_bytes_)
+      return Fail("constrained response exceeds 1 MiB");
+    constrained_bytes_ += text.size();
+  }
   if (!parsed_) {
     Emit(Region::kContent, text, deltas);
     return Status();
   }
   pending_.append(text);
   while (!pending_.empty()) {
+    if (constraints_.json_output && region_ == Region::kContent) {
+      // Marker-shaped substrings inside JSON strings are data, not tool or
+      // reasoning delimiters. The initial thinking prefix is handled above
+      // this region by the same native parser as ordinary requests.
+      Emit(region_, pending_, deltas);
+      pending_.clear();
+      return Status();
+    }
     if (region_ == Region::kTool) {
       const auto end = pending_.find(kToolClose, tool_scan_);
       const auto body_size =
@@ -293,7 +324,8 @@ Status ChatResponseParser::Append(std::string_view text,
       if (!status) return Fail(status.message());
       ++tool_count_;
       if (collect_) calls_.push_back(call);
-      deltas->push_back({ResponseDelta::Kind::kTool, {}, std::move(call)});
+      auto* target = constraints_.active ? &deferred_ : deltas;
+      target->push_back({ResponseDelta::Kind::kTool, {}, std::move(call)});
       pending_.erase(0, end + kToolClose.size());
       region_ = Region::kContent;
       continue;
@@ -301,7 +333,9 @@ Status ChatResponseParser::Append(std::string_view text,
     auto marker = region_ == Region::kReasoning ? kThinkClose : kThinkOpen;
     auto found = pending_.find(marker);
     size_t keep = Lookahead(pending_, marker);
-    if (region_ == Region::kContent && !tools_.empty()) {
+    if (region_ == Region::kContent &&
+        (!tools_.empty() ||
+         constraints_.choice == OutputConstraints::ToolChoice::kNone)) {
       const auto tool = pending_.find(kToolOpen);
       if (tool != pending_.npos && (found == pending_.npos || tool < found)) {
         found = tool;
@@ -331,6 +365,8 @@ Status ChatResponseParser::Finish(bool length_limited,
   if (!status_) return status_;
   if (!initialized_ || finished_) return Fail("parser already finished");
   finished_ = true;
+  if (constraints_.active && length_limited)
+    return Fail("constrained response exhausted output/context budget");
   if (region_ == Region::kTool ||
       (!tools_.empty() && pending_.starts_with("<tool_")))
     return Fail("incomplete tool call");
@@ -338,6 +374,20 @@ Status ChatResponseParser::Finish(bool length_limited,
     return Fail("reasoning block did not close before stop");
   Emit(region_, pending_, deltas);
   pending_.clear();
+  if (constraints_.active) {
+    if ((constraints_.choice == OutputConstraints::ToolChoice::kRequired ||
+         constraints_.choice == OutputConstraints::ToolChoice::kNamed) &&
+        tool_count_ == 0)
+      return Fail("required tool call missing");
+    if (constraints_.json_output) {
+      const auto status = ValidateConstrainedContent(*request_, content_);
+      if (!status) return Fail(status.message());
+    }
+    // No usable content/reasoning/tool frames escape before the entire
+    // constrained response passes. A later invalid call invalidates the batch.
+    for (auto& delta : deferred_) deltas->push_back(std::move(delta));
+    deferred_.clear();
+  }
   return Status();
 }
 

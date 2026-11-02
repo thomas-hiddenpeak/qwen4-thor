@@ -369,10 +369,12 @@ def validate_capabilities(value, model, *, protocol_sha256=None,
         require(chat.get(key) is True, "required chat capability: " + key)
     require(tools.get("type") == "function" and
             tools.get("execution") == "client" and
-            tools.get("tool_choice") == ["auto"] and
+            isinstance(tools.get("tool_choice"), list) and
+            all(isinstance(item, str) for item in tools["tool_choice"]) and
+            "auto" in tools["tool_choice"] and
             isinstance(tools.get("parallel_tool_calls"), list) and
-            len(tools["parallel_tool_calls"]) == 1 and
-            tools["parallel_tool_calls"][0] is True,
+            all(type(item) is bool for item in tools["parallel_tool_calls"]) and
+            any(item is True for item in tools["parallel_tool_calls"]),
             "incompatible tool protocol")
     require(isinstance(template.get("id"), str) and template["id"],
             "missing template identity")

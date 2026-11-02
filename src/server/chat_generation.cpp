@@ -15,6 +15,7 @@
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_response_parser.h"
+#include "q4t/server/structured_decoder.h"
 #include "q4t/server/prefix_cache_policy.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/mtp_policy.h"
@@ -130,6 +131,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   s = ValidateChatContract(req, model_name_, allow_media_);
   if (!s.ok()) {
     SendError(fd, 400, s.message());
+    return;
+  }
+
+  OutputConstraints constraints;
+  s = PlanOutputConstraints(req, &constraints);
+  if (!s || (constraints.active && !kStructuredDecodingAvailable)) {
+    SendError(
+        fd, 400, s ? "structured decoding backend is not built" : s.message(),
+        {}, s ? "structured_backend_unavailable" : "invalid_output_constraint");
     return;
   }
 
@@ -250,12 +260,49 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
   std::string prompt;
   std::vector<VisionItem> items;
-  if (!PrepareChatInput(fd, req, &prompt, &items)) return;
+  if (constraints.active) {
+    const auto render_request = ConstraintTemplateRequest(req, constraints);
+    if (!PrepareChatInput(fd, render_request, &prompt, &items)) return;
+  } else if (!PrepareChatInput(fd, req, &prompt, &items)) {
+    return;
+  }
   ChatResponseParser response_parser;
   s = response_parser.Init(req, prompt, request_id, !stream);
   if (!s.ok()) {
     SendError(fd, 400, s.message());
     return;
+  }
+
+  std::unique_ptr<StructuredDecoder> structured;
+  if (constraints.active) {
+    diagnostic.Stage("grammar_compile");
+    // Decode is immutable. Use its exact raw bytes, including partial UTF-8
+    // token pieces; never normalize or re-encode a token for the mask.
+    std::vector<std::string> vocabulary(tok_->VocabSize());
+    std::vector<uint32_t> one(1);
+    for (uint32_t token = 0; token < vocabulary.size(); ++token) {
+      if (token % 256 == 0 && cancelled()) {
+        count_abort();
+        send_cancel_error("request cancelled before grammar compilation");
+        return;
+      }
+      one[0] = token;
+      s = tok_->Decode(one, true, &vocabulary[token]);
+      if (!s) break;
+    }
+    if (s)
+      s = StructuredDecoder::Create(constraints, vocabulary,
+                                    model_.Get().cfg.vocab, stop_token_ids_,
+                                    &structured);
+    if (cancelled()) {
+      count_abort();
+      send_cancel_error("request cancelled during grammar compilation");
+      return;
+    }
+    if (!s) {
+      SendError(fd, 400, s.message(), {}, "constraint_compile_failed");
+      return;
+    }
   }
 
   std::vector<std::uint32_t> prompt_u32;
@@ -498,10 +545,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       mtp_loaded_
           ? static_cast<size_t>(mtp_.cfg.hc) * static_cast<size_t>(mtp_.cfg.hs)
           : 0;
-  const bool stream_mtp = mtp_loaded_ && explicit_slots;
+  const bool stream_mtp = mtp_loaded_ && !structured && explicit_slots;
   int32_t stream_d0 = -1;
   bool stream_draft_ready = false;
-  if (mtp_loaded_) {
+  if (mtp_loaded_ && !structured) {
     // OOM preflight (runtime). On unified memory a large cudaMalloc does not
     // merely fail — it can push MemFree to zero and trip the global OOM
     // killer (the 2026-09-19 reboot). So before attempting the trunk
@@ -1026,9 +1073,17 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::string finish_reason = "stop";
   bool generation_failed = false;
 
+  const auto select_token = [&](const uint16_t* logits) {
+    if (!structured) return argmax(logits);
+    int32_t token = -1;
+    response_status =
+        structured->Select({logits, static_cast<size_t>(vocab)}, &token);
+    return token;
+  };
+
   // Every prefill path reads its selected final row under model_mu_ and
   // checks stream completion before publishing h_logits to this thread.
-  next_token = argmax(h_logits.data());
+  next_token = select_token(h_logits.data());
   metrics_.target_ready_seconds.Observe(
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
           .count());
@@ -1429,7 +1484,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     });
     {
       const std::lock_guard<std::mutex> lock(sched_mu_);
-      use_sched = scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
+      // The current packed scheduler argmax has no request-specific mask.
+      // Constrained requests must stay on the host-logit fallback until a
+      // separately accepted scheduler/MTP mask implementation exists.
+      use_sched = !structured && scheduler_active_ && !scheduler_stop_ &&
+                  d_sched_logits_ &&
                   static_cast<int>(active_.size()) < max_seq_;
       if (use_sched) {
         ar.seq = &seq;
@@ -1441,7 +1500,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     for (int step = static_cast<int>(generated.size());
          step < max_tokens; ++step) {
-      if (cancelled()) break;
+      if (cancelled() || !response_status) break;
       generated.push_back(next_token);
       if (is_stop_token(next_token)) {
         finish_reason = "stop";
@@ -1523,7 +1582,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           generation_failed = true;
           break;
         }
-        next_token = argmax(h_logits.data());
+        next_token = select_token(h_logits.data());
       }
     }
     active_registration.Run();
@@ -1707,6 +1766,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
   diagnostic.Stage("response");
+  if (response_status && structured && !structured->Terminated())
+    response_status = Status::Fail(
+        "constrained response did not reach a grammar-accepted stop token");
   // Both transports use the same parser. Never publish a successful terminal
   // (or a session snapshot) for malformed/truncated model tool output.
   if (response_status.ok()) {
@@ -1733,11 +1795,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   }
   if (!response_status.ok()) {
     err_guard.ok = false;
-    diagnostic.Outcome("error", "response_parse_failed");
+    const char* code = !structured ? "response_parse_failed"
+                       : finish_reason == "length"
+                           ? "structured_output_incomplete"
+                           : "structured_output_invalid";
+    diagnostic.Outcome("error", code);
     const detail::WriteOptions terminal{
         std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
     detail::SendResponseParseError(fd, stream, response_state,
-                                   response_status.message(), terminal);
+                                   response_status.message(), terminal, code);
     cleanup();
     return;
   }

@@ -1,5 +1,6 @@
 # Embed source identity without Git state, runtime probes, or model access.
 include_guard(GLOBAL)
+include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
   include/q4t/server/chat_capabilities.h
@@ -9,6 +10,10 @@ set(protocol_inputs
   include/q4t/server/chat_tool_history.h
   include/q4t/server/http_response.h
   include/q4t/server/request_json.h
+  include/q4t/server/output_schema.h
+  include/q4t/server/output_constraints.h
+  include/q4t/server/structured_decoder.h
+  cmake/StructuredOutput.cmake
   src/server/chat_capabilities.cpp
   src/server/chat_contract.cpp
   src/server/chat_generation.cpp
@@ -18,7 +23,10 @@ set(protocol_inputs
   src/server/chat_response_parser.cpp
   src/server/chat_template.cpp
   src/server/chat_tool_history.cpp
-  src/server/http_response.cpp)
+  src/server/http_response.cpp
+  src/server/output_schema.cpp
+  src/server/output_constraints.cpp
+  src/server/structured_decoder.cpp)
 list(SORT protocol_inputs)
 set(protocol_manifest "")
 set(protocol_sources "{}")

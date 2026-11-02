@@ -60,7 +60,8 @@ void SendStreamError(int fd, ResponseState* state, int status,
 // A malformed model response is an error terminal, never stop/tool_calls.
 void SendResponseParseError(int fd, bool stream, ResponseState* state,
                             const std::string& message,
-                            const WriteOptions& options = {});
+                            const WriteOptions& options = {},
+                            std::string_view code = "response_parse_failed");
 // delta_json is an object serialized by the response parser, never raw input.
 std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,

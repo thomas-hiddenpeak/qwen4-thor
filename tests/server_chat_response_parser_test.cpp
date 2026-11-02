@@ -315,7 +315,7 @@ Q4T_TEST(chat_response_bounds) {
 Q4T_TEST(chat_response_request_definitions_are_checked) {
   for (
       const auto* tools :
-      {R"([{"type":"function","function":{"name":"x","strict":true}}])",
+      {R"([{"type":"function","function":{"name":"x","strict":"true"}}])",
        R"([{"type":"function","function":{"name":"x","parameters":[]}}])",
        R"([{"type":"function","function":{"name":"x","parameters":{"properties":[]}}}])",
        R"([{"type":"function","function":{"name":"x"}},{"type":"function","function":{"name":"x"}}])",

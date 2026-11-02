@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(../../cmake/HostTestSources.cmake)
 find_package(Threads REQUIRED)
 add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES} ../../src/io/json.cpp)
+q4t_link_structured_output(q4t_host_tests)
 target_include_directories(q4t_host_tests PRIVATE ../../include)
 target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})
 target_compile_options(q4t_host_tests PRIVATE -Wall -Wextra -Werror)
@@ -117,6 +118,8 @@ q4t_add_python_contract(q4t_project_query_contracts
   tools/examples/test_project_query.py)
 q4t_add_python_contract(q4t_application_delivery_contracts
   tools/application_service/test_stage.py)
+q4t_add_python_contract(q4t_structured_output_stage_contracts
+  tools/structured_output/test_stage.py)
 q4t_add_python_contract(q4t_chat_acceptance_contracts
   tools/response_protocol/test_acceptance.py)
 # A build of Python can omit pidfd APIs despite a new version number. Probe the

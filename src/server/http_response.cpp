@@ -251,14 +251,15 @@ void SendStreamError(int fd, ResponseState* state, int status,
 
 void SendResponseParseError(int fd, bool stream, ResponseState* state,
                             const std::string& message,
-                            const WriteOptions& options) {
+                            const WriteOptions& options,
+                            std::string_view code) {
   if (*state != (stream ? ResponseState::kStreaming : ResponseState::kUnsent))
     return;
   if (stream) {
-    SendStreamError(fd, state, 502, message, options, "response_parse_failed");
+    SendStreamError(fd, state, 502, message, options, code);
   } else {
     *state = ResponseState::kTerminal;
-    SendError(fd, 502, message, options, "response_parse_failed");
+    SendError(fd, 502, message, options, code);
   }
 }
 

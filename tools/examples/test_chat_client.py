@@ -335,6 +335,20 @@ class ClientContracts(unittest.TestCase):
         self.assertIsNone(request.data)
         self.assertEqual(request.full_url, "http://localhost:18096/v1/capabilities")
 
+    def test_capability_superset_preserves_auto_client(self):
+        caps = capabilities()
+        caps["tools"]["tool_choice"] = ["auto", "none", "required", "named"]
+        caps["tools"]["parallel_tool_calls"] = [True, False]
+        self.assertEqual(client.validate_capabilities(caps, caps["model"]), caps)
+        for key, value in (("tool_choice", ["required"]),
+                           ("tool_choice", ["auto", 1]),
+                           ("parallel_tool_calls", [False]),
+                           ("parallel_tool_calls", [True, 0])):
+            changed = deepcopy(caps)
+            changed["tools"][key] = value
+            with self.assertRaises(client.ProtocolError):
+                client.validate_capabilities(changed, caps["model"])
+
     def test_capability_failure_does_not_fallback_or_generate(self):
         for response in (Response(b"x" * 65537, "application/json"),
                          Response(b"{}", "text/html"),
