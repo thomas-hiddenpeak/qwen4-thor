@@ -82,5 +82,20 @@ CPU先验完成后，整阶段由绝对路径gpu_exclusive持同一锁。检测�
 修正后的CPU准备通过：schema429字节、输出12443字节，tokenizers0.23.2
 固定编码243tokens；JSON/SSE两个请求均通过机器合同与生产探针。
 原件在`.q4t-work/serve-backpressure-20261103/payload`和`payload-array`。
-这不是grammar编译、模型真实分段、TCP背压或HTTP通过；专用构建和
-真实驱动仍待完成，新GPU预算尚未开始计时。
+这不是grammar编译、模型真实分段、TCP背压或HTTP通过。
+
+专用构建903c4f77已零警告完成，189运行时文件与默认相同，生成协议
+文件逐字节相同；仅q4t_server的既有故障宏开启，其他Q4T配置/编译器/
+Release flags核对相同。产物不安装。驱动先等真实EAGAIN，核对response
+阶段日志，再提交普通请求、观察active=2/slot=0和strict拒绝；清理完毕
+前客户端保持不读。原始网络前缀必须有严格内容、不能只有heartbeat，
+完整客户端必须拒绝，且没有成功尾帧/第二HTTP响应。每组再检查两次
+恢复、固定终态计数、worker reap和全部owner归零。
+
+驱动CPU首次8项：7通过，1项构建门误遍历CMake导出的其他测试target，
+把它们不启用故障宏误报为产品缺失；限定实际q4t_server target后该项
+定向通过，原错误/脚本保留，其余7项复用。覆盖固定预算/原始截止、
+guard优先、小窗口先于connect、不提前读取、部分wire拒绝、native输入、
+全部owner排空和恢复路径。准备入口为`tools/serve_backpressure/stage.py`，
+`prepare`封包、`launch`经共享guard完整持锁、`finalize`验证并封存；
+尚未启动新GPU阶段，真实生成/背压结论待验。
