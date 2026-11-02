@@ -1,0 +1,26 @@
+test_budget_charges_once_and_never_resets_deadline (tools.serve_backpressure.test_stage.Contracts.test_budget_charges_once_and_never_resets_deadline) ... ok
+test_build_matches_runtime_and_only_explicit_fault_setting_changes (tools.serve_backpressure.test_stage.Contracts.test_build_matches_runtime_and_only_explicit_fault_setting_changes) ... ERROR
+test_case_keeps_peer_unread_until_cleanup_and_checks_recovery (tools.serve_backpressure.test_stage.Contracts.test_case_keeps_peer_unread_until_cleanup_and_checks_recovery) ... ok
+test_drain_waits_for_all_owners_not_only_slot (tools.serve_backpressure.test_stage.Contracts.test_drain_waits_for_all_owners_not_only_slot) ... ok
+test_existing_payload_and_new_requests_match_native_contract (tools.serve_backpressure.test_stage.Contracts.test_existing_payload_and_new_requests_match_native_contract) ... ok
+test_guard_is_absolute_and_precedes_checks (tools.serve_backpressure.test_stage.Contracts.test_guard_is_absolute_and_precedes_checks) ... ok
+test_partial_wire_rejects_success_second_status_and_heartbeat_only (tools.serve_backpressure.test_stage.Contracts.test_partial_wire_rejects_success_second_status_and_heartbeat_only) ... ok
+test_receive_window_precedes_connect_no_read_on_submission (tools.serve_backpressure.test_stage.Contracts.test_receive_window_precedes_connect_no_read_on_submission) ... ok
+
+======================================================================
+ERROR: test_build_matches_runtime_and_only_explicit_fault_setting_changes (tools.serve_backpressure.test_stage.Contracts.test_build_matches_runtime_and_only_explicit_fault_setting_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_backpressure/test_stage.py", line 84, in test_build_matches_runtime_and_only_explicit_fault_setting_changes
+    self.assertEqual(stage.build_gate()["runtime_files"], 189)
+                     ^^^^^^^^^^^^^^^^^^
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_backpressure/stage.py", line 55, in build_gate
+    h.require(server and all("-DQ4T_SERVE_FAULT_INJECTION=1" in row["command"]
+  File "/home/rm01/models/dev/qwen4-thor/tools/verify/startup_delivery/build.py", line 47, in require
+    raise RuntimeError(message)
+RuntimeError: fault macro missing
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.162s
+
+FAILED (errors=1)

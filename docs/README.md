@@ -11,6 +11,8 @@
 [SRV-08完整输入机器合同、固定JS SDK与失败恢复验收](SERVE_PROTOCOL_2026-11-03.md)。
 [SRV-08交付、真实双工具/业务错误/答案流恢复及版本证据](SERVE_PROTOCOL_RESULT_2026-11-03.md)。
 [SRV-03b严格输出背压、受载控制及后续资源任务冻结](SERVE_BACKPRESSURE_2026-11-03.md)。
+[SRV-03b本轮未通过、取证缺口及证据](SERVE_BACKPRESSURE_RESULT_2026-11-03.md)，
+[SRV-02b准入与容量适配排队开发合同](SERVE_ADMISSION_2026-11-03.md)。
 [SRV-06文本停止交付、跨块/MTP/工具终态、失败与回退](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 [SRV-05b真实预算交付、质量修复、MTP/缓存及完整证据](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)；
 [先前开发和未完成HTTP记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)保留。

@@ -86,6 +86,71 @@ def partial_contract(raw, stream):
     raise AssertionError("partial response was accepted as a complete turn")
 
 
+def ended_before_eagain(log, request_id):
+    """Only this registered request's terminal diagnostic permits early read."""
+    match = re.search(r"^\[q4t\]\[request\] [^\n]* id="+
+                      re.escape(request_id)+r" event=end [^\n]*$", log, re.M)
+    return match[0] if match else None
+
+
+def preserve_ended_wire(sock, folder, diagnostic):
+    """Failure evidence only. Never used to claim a successful backpressure case.
+
+    The handler has already ended, so receiving its response cannot change an
+    in-progress write. Retain any prefix even if recv fails. No model replay.
+    """
+    h.save(folder / "ended-before-eagain.json", dict(diagnostic=diagnostic,
+        accepted=False, reason="request ended without the required EAGAIN"))
+    total, failure = 0, None
+    try:
+        sock.settimeout(3)
+        with (folder / "long-ended-wire.bin").open("xb", buffering=0) as wire:
+            while True:
+                part = sock.recv(min(65536, 1024*1024-total+1))
+                if not part:
+                    break
+                wire.write(part)
+                os.fsync(wire.fileno())
+                total += len(part)
+                require(total <= 1024*1024, "failed response capture limit")
+    except (OSError, ProtocolError) as error:
+        failure = repr(error)
+    h.save(folder / "ended-wire-capture.json", dict(bytes=total, read_error=failure,
+                                                  acceptance=False))
+
+
+def memory_snapshot(parent, proc=Path("/proc")):
+    """Use stat PPid: Thor need not enable CONFIG_CHECKPOINT_RESTORE/children.
+
+    Raw RSS values are separate observations. Parent GPU allocations, shared
+    mappings and global MemAvailable must not be summed as unique physical RAM.
+    """
+    rows, starts, errors = {}, {}, []
+    for directory in proc.iterdir():
+        if not directory.name.isdigit():
+            continue
+        try:
+            fields = (directory / "stat").read_text().rsplit(")", 1)[1].split()
+            ppid, start = int(fields[1]), int(fields[19])
+            if int(directory.name) != parent and ppid != parent:
+                continue
+            status = (directory / "status").read_text()
+            after = (directory / "stat").read_text().rsplit(")", 1)[1].split()
+            if int(after[1]) != ppid or int(after[19]) != start:
+                errors.append(dict(pid=directory.name, error="identity changed during sample"))
+                continue
+            rows[directory.name], starts[directory.name] = status, start
+        except (FileNotFoundError, ProcessLookupError):
+            # /proc is not an atomic snapshot; a process may exit in between.
+            continue
+        except (OSError, IndexError, ValueError) as error:
+            errors.append(dict(pid=directory.name, error=repr(error)))
+    require(str(parent) in rows, "parent memory observation missing")
+    return dict(monotonic=time.monotonic(), processes=rows, process_start_ticks=starts,
+                child_discovery="proc_stat_ppid", sampling_errors=errors,
+                meminfo=(proc / "meminfo").read_text())
+
+
 class Run:
     def __init__(self, plan, output):
         self.plan, self.out = plan, output
@@ -129,20 +194,7 @@ class Run:
         return json.loads(value["raw"])
 
     def memory(self):
-        # Separate raw RSS values; shared pages are not added as unique RAM.
-        rows, children = {}, set()
-        for path in Path(f"/proc/{self.server.pid}/task").glob("*/children"):
-            try:
-                children.update(int(pid) for pid in path.read_text().split())
-            except FileNotFoundError:
-                pass
-        for pid in [self.server.pid, *sorted(children)]:
-            try:
-                rows[str(pid)] = Path(f"/proc/{pid}/status").read_text()
-            except FileNotFoundError:
-                rows[str(pid)] = "process exited during sample"
-        return dict(monotonic=time.monotonic(), processes=rows,
-                    meminfo=Path("/proc/meminfo").read_text())
+        return memory_snapshot(self.server.pid)
 
     def snapshot(self, folder, label):
         value = self.http("GET", "/metrics")
@@ -213,6 +265,11 @@ class Run:
             next_sample = 0
             while not gate.with_suffix(".entered").exists():
                 self.budget()
+                diagnostic = ended_before_eagain((folder / "server.log").read_text(),
+                                                 body["request_id"])
+                if diagnostic:
+                    preserve_ended_wire(sock, folder, diagnostic)
+                    raise ProtocolError("request ended before required EAGAIN; raw wire retained")
                 if time.monotonic() >= next_sample:
                     samples.append(self.memory())
                     next_sample = time.monotonic()+1

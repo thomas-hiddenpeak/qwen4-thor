@@ -1,0 +1,11 @@
+{
+  "worker_samples_available": false,
+  "reason": "Thor procfs lacks task/*/children; first driver silently missed direct worker",
+  "worker_rss_not_zero": true,
+  "worker_reaped": 1,
+  "worker_lifetime_max_rss_bytes": 4093374464,
+  "worker_post_exec_reported_rss_bytes": 234909696,
+  "worker_wait_status": 9,
+  "accounting": "The wait4 lifetime high water includes pre-exec inherited memory; post-exec reported VmHWM is separate, not a sampled RSS trace. No sum of peaks or physical-RAM hard-limit claim.",
+  "repair": "proc_stat_ppid enumeration with start-tick checks; CPU fixture and actual idle child passed; no model rerun"
+}

@@ -1,0 +1,7 @@
+test_proc_stat_discovers_child_without_children_file (tools.serve_backpressure.test_failure.Capture.test_proc_stat_discovers_child_without_children_file) ... ok
+test_actual_cpu_child_is_observed_and_reaped (tools.serve_backpressure.test_failure.Capture.test_actual_cpu_child_is_observed_and_reaped) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.011s
+
+OK

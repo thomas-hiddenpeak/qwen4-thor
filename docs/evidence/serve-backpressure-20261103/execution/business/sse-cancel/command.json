@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backpressure-20261103/package/candidate/q4t",
+    "serve",
+    "--model-dir",
+    "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18100",
+    "--max-seq",
+    "1",
+    "--max-prefill",
+    "2048",
+    "--max-len",
+    "8192"
+  ],
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backpressure-20261103/package/candidate/q4t",
+    "sha256": "903c4f77b19e9a1d0802d22e6a64267afa2a357cc55cf20172628507962450d3",
+    "bytes": 7084352
+  },
+  "validation_env": {
+    "Q4T_SERVE_TEST_SNDBUF": "1",
+    "Q4T_SERVE_PAUSE": "write.backpressure",
+    "Q4T_SERVE_GATE": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backpressure-20261103/execution/business/sse-cancel/backpressure"
+  }
+}

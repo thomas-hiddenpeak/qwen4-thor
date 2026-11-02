@@ -1,0 +1,8 @@
+test_capture_timeout_keeps_prefix_without_overwriting (tools.serve_backpressure.test_failure.Capture.test_capture_timeout_keeps_prefix_without_overwriting) ... ok
+test_complete_error_wire_is_evidence_not_acceptance (tools.serve_backpressure.test_failure.Capture.test_complete_error_wire_is_evidence_not_acceptance) ... ok
+test_only_matching_terminal_diagnostic_allows_read (tools.serve_backpressure.test_failure.Capture.test_only_matching_terminal_diagnostic_allows_read) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.005s
+
+OK
