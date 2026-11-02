@@ -228,8 +228,10 @@ def semantics():
          "Structured backend must actually be built; state caches require their effective enabled configuration. Probe flags describe hypothetical config; they do not prove a running backend or cache."),
         ("token-and-slot-budget", ["src/server/chat_plan.cpp", "include/q4t/server/prefix_cache_policy.h"],
          "Production tokenizer and max_len determine input/output allowance. Uniform clips output, explicit capacity fits full capped budget; prefix seed must match configured checkpoint and fit prompt. Optional preflight preview has conservative encoded8MiB bound."),
-        ("runtime-admission", ["src/server/chat_generation.cpp", "src/server/chat_preflight.cpp"],
-         "Availability/registry/cache lease/GPU health/deadline/cancellation/grammar compilation are not established by schema or offline probe. Preflight does not reserve them or guarantee successful execution or answer quality.")]
+        ("runtime-admission", ["src/server/chat_generation.cpp", "src/server/chat_preflight.cpp",
+             "src/server/chat_admission.cpp", "include/q4t/server/request_admission.h",
+             "include/q4t/server/sequence_admission.h", "src/server/server_options.cpp"],
+         "Availability/registry/cache lease/GPU health/deadline/cancellation/grammar compilation are not established by schema or offline probe. Chat/preflight share a configured inflight bound through output cleanup; only generation enters the separately bounded capacity-FIFO slot queue after preparation. Queue fullness can reject independently of whole-server RAM and connection/body limits. Preflight does not reserve slots or guarantee execution or answer quality.")]
     paths = sorted({p for _, sources, _ in rules for p in sources})
     return dict(profile="q4t-input-semantics-v1", required=True,
         structural_schema="serve-chat-request-v1.schema.json",

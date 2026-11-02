@@ -289,6 +289,19 @@
         },
         "preflight_response_bytes": {
           "const": 8388608
+        },
+        "queued_requests": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "queue_policy": {
+          "const": "capacity_fifo_best_fit"
+        },
+        "queue_order": {
+          "const": "slot_admission_arrival"
+        },
+        "queue_excludes_preparation": {
+          "const": true
         }
       },
       "required": [
@@ -300,7 +313,11 @@
         "aggregate_body_bytes",
         "tokenizer_input_bytes",
         "tokenizer_tokens",
-        "preflight_response_bytes"
+        "preflight_response_bytes",
+        "queued_requests",
+        "queue_policy",
+        "queue_order",
+        "queue_excludes_preparation"
       ]
     },
     "configuration_mutable": {
@@ -308,6 +325,68 @@
     },
     "paths_redacted": {
       "const": true
+    },
+    "max_inflight_requests": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "effective": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source": {
+          "enum": [
+            "cli",
+            "server_options",
+            "builtin_default"
+          ]
+        },
+        "resolution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requested",
+        "effective",
+        "source",
+        "resolution"
+      ],
+      "description": "Requested auto sentinel 0; effective value derived after startup budget. Request count, not RAM or connection reservation."
+    },
+    "max_queued_requests": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requested": {
+          "type": "integer",
+          "minimum": -1
+        },
+        "effective": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source": {
+          "enum": [
+            "cli",
+            "server_options",
+            "builtin_default"
+          ]
+        },
+        "resolution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "requested",
+        "effective",
+        "source",
+        "resolution"
+      ],
+      "description": "Requested auto sentinel -1; effective value derived after startup budget. Request count, not RAM or connection reservation."
     }
   },
   "required": [
@@ -324,6 +403,8 @@
     "runtime",
     "limits",
     "configuration_mutable",
-    "paths_redacted"
+    "paths_redacted",
+    "max_inflight_requests",
+    "max_queued_requests"
   ]
 }

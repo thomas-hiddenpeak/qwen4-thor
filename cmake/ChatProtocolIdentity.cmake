@@ -16,6 +16,9 @@ set(protocol_inputs
   include/q4t/server/chat_plan.h
   include/q4t/server/chat_prompt.h
   include/q4t/server/server_options.h
+  include/q4t/server/sequence_admission.h
+  include/q4t/server/request_admission.h
+  include/q4t/runtime/sequence_capacity.h
   include/q4t/server/thinking_budget.h
   include/q4t/server/text_stop.h
   include/q4t/server/reasoning_options.h
@@ -52,6 +55,8 @@ set(protocol_inputs
   src/server/http_response.cpp
   src/server/http_request.cpp
   src/server/chat_server.cpp
+  src/server/chat_scheduler.cpp
+  src/server/chat_admission.cpp
   src/server/output_schema.cpp
   src/server/output_constraints.cpp
   src/server/structured_decoder.cpp)

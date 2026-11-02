@@ -129,8 +129,10 @@ void ChatServer::HandleMetrics(int fd) {
           metrics_.execution_steps_total.load());
 
   int free_slots = 0;
+  size_t queued_requests = 0;
   {
     const std::lock_guard<std::mutex> lock(seq_mu_);
+    queued_requests = seq_waiters_.Size();
     for (bool f : seq_free_)
       if (f) ++free_slots;
   }
@@ -138,8 +140,15 @@ void ChatServer::HandleMetrics(int fd) {
         active_conns_.load());
   gauge("q4t_request_body_bytes", "Reserved chat body bytes (48 MiB cap).",
         body_budget_.Used());
-  gauge("q4t_active_chats", "Parsing, queued and generating chat requests.",
+  gauge("q4t_active_chats", "Admitted chat/preflight through output cleanup.",
         active_chats_.load());
+  gauge("q4t_queued_requests", "Slot waiters, excluding preprocessing.",
+        queued_requests);
+  counter("q4t_queue_rejected_total", "Requests rejected at the slot queue.",
+          metrics_.queue_rejected.load());
+  counter("q4t_text_admission_rejected_total",
+          "Chat/preflight rejected at the shared inflight limit.",
+          metrics_.text_admission_rejected.load());
   gauge("q4t_business_connections", "Classified non-control connections.",
         business_conns_.load());
   gauge("q4t_control_connections", "Classified control connections (limit 4).",

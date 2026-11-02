@@ -31,6 +31,7 @@
 #include "q4t/server/http_request.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/server_options.h"
+#include "q4t/server/sequence_admission.h"
 #include "q4t/server/chat_plan.h"
 #include "q4t/server/chat_prompt.h"
 #include "q4t/model/model_owner.h"
@@ -66,6 +67,8 @@ struct ServeMetrics {
   std::atomic<uint64_t> requests_success{0};
   std::atomic<uint64_t> requests_error{0};    // rejected before generation
   std::atomic<uint64_t> requests_aborted{0};  // all cooperative abort reasons
+  std::atomic<uint64_t> text_admission_rejected{0};
+  std::atomic<uint64_t> queue_rejected{0};
   std::array<std::atomic<uint64_t>, kAbortReasons.size()> abort_reasons{};
   std::atomic<int> structured_active{0};  // prep through response cleanup
   std::atomic<int> structured_preparing{0};
@@ -146,7 +149,7 @@ class ChatServer {
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.
-  // Negative results: -1 stopping, -2 cancelled, -3 GPU unhealthy.
+  // Negative: -1 stopping, -2 cancelled, -3 GPU unhealthy, -4 queue full.
   // Admission is provisional: recheck GPU health under model_mu_ at submit.
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
@@ -155,6 +158,7 @@ class ChatServer {
   void FreeSeqId(int seq_id);
   std::mutex model_mu_;   // serializes all model forwards (main + MTP + vision)
   std::mutex seq_mu_;     // guards the seq_id free pool
+  SequenceAdmissionQueue seq_waiters_;  // also guarded by seq_mu_
   std::condition_variable seq_cv_;  // requests queue here for a free seq slot
   bool seq_stopping_ = false;       // set on shutdown to release seq waiters
 
@@ -279,6 +283,7 @@ class ChatServer {
   std::mutex tok_mu_;
   std::vector<bool> seq_free_;  // [max_seq]; true = available
   int max_seq_ = 8;
+  AdmissionLimits admission_limits_;
   std::vector<int> seq_capacities_;
   // In-flight request-thread cap: bounds how many connections may be waiting
   // in the AllocSeqId queue at once, so a connection flood cannot spawn

@@ -48,6 +48,6 @@ SRV-06/07/08均已限定交付；03b严格长payload真实尝试未到写阶段�
 - SRV-03b：[本轮未通过](SERVE_BACKPRESSURE_RESULT_2026-11-03.md)，1生成/1启动、
   strict未在预算内闭合，无EAGAIN；默认不变、GPU已释放，不扩大原预算。
   错误wire与worker发现工具已CPU修复，不能补回原取证或追认通过。
-- SRV-02b：[开发合同已排入](SERVE_ADMISSION_2026-11-03.md)，可配置准入/等候、
-  容量FIFO、取消注销、配置/固定指标；尚未实现，后续独立冻结HTTP预算。
+- SRV-02b：[开发候选/CPU已通过](SERVE_ADMISSION_2026-11-03.md)，可配置准入/等候、
+  容量FIFO、取消注销、配置/固定指标；真实HTTP计划10/4/2已冻结，未交付。
   严格背压、访问运维与长稳继续待办，长期目标保持active。

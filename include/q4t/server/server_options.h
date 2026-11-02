@@ -15,6 +15,11 @@ namespace q4t::server {
 // Parsing/queued requests have a separate bound from active GPU slots.
 inline int TextAdmissionLimit(int slots) { return std::max(32, slots * 2); }
 
+struct AdmissionLimits {
+  int inflight = 32;
+  int queued = 31;
+};
+
 enum class StartupPlanMode { kAuto, kOff, kRequired };
 
 struct ServerOptions {
@@ -35,6 +40,10 @@ struct ServerOptions {
   // in-flight request owns one seq_id; the model's SSM/conv/PLE-conv/KV/indexer
   // state is pooled [max_seq, ...] so concurrent requests are isolated.
   int max_seq = 1;
+  // Internal auto sentinels; explicit CLI values are 1..4096 and 0..4096.
+  // Inflight includes preflight/preparation/output; queued only slot waiters.
+  int max_inflight_requests = 0;
+  int max_queued_requests = -1;
   std::vector<int> seq_capacities;  // Empty keeps uniform slot capacity.
   // MTP speculative decode is the default (k=3, ~2x decode speedup, five-tier
   // E2E accepted 2026-10-14); --no-mtp opts back to plain greedy decode.
@@ -90,6 +99,10 @@ struct ServerCapabilities {
 
 ServerCapabilities CapabilitiesFor(const ServerOptions& options);
 Status ValidateServerOptions(const ServerOptions& options);
+// Resolve only after the startup memory budget has fixed effective slots.
+// Failure leaves output unchanged. Does not reserve RAM or connections.
+Status ResolveAdmissionLimits(const ServerOptions& options, int effective_slots,
+                              AdmissionLimits* output);
 // Parse transactionally; invalid arguments leave the supplied options intact.
 Status ParseServerOptions(std::span<const std::string_view> args,
                           ServerOptions* options);

@@ -16,7 +16,8 @@
 [SRV-03b本轮未通过](SERVE_BACKPRESSURE_RESULT_2026-11-03.md)：长strict载荷
 在输出预算内未闭合，1生成/1启动，没有实际EAGAIN。取证缺口/原始失败
 保留，工具已CPU修复，默认不变、GPU释放；不能把CPU编码估计当真实生成。
-[SRV-02b准入与容量FIFO](SERVE_ADMISSION_2026-11-03.md)已排入开发，尚未支持。
+[SRV-02b准入与容量FIFO](SERVE_ADMISSION_2026-11-03.md)已实现开发候选并通过
+CPU合同；真实HTTP预算已冻结，尚未交付到默认程序。
 
 2026-11-03 [SRV-06文本停止已交付](SERVE_TEXT_STOP_RESULT_2026-11-03.md)：
 当时默认a3fd64a3/49c7c631。跨token/块与中文停止、JSON/SSE、MTP逻辑

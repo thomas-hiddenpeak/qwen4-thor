@@ -274,6 +274,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_plan.cpp
   src/server/chat_preflight.cpp
   src/server/chat_metrics.cpp
+  src/server/chat_admission.cpp
   src/server/chat_scheduler.cpp
   src/server/chat_generation.cpp
   src/server/session_cache.cpp
@@ -435,6 +436,7 @@ if(Q4T_BUILD_TESTS)
     src/server/chat_prompt.cpp
     src/server/chat_plan.cpp
     tests/server_chat_plan_test.cpp
+    tests/server_sequence_admission_test.cpp
     src/server/server_options.cpp
     src/server/http_response.cpp
     tests/server_http_response_test.cpp
@@ -562,6 +564,8 @@ if(Q4T_BUILD_TESTS)
     target_link_libraries(q4t_host_tests PRIVATE q4t_text)
     add_executable(q4t_http_lifecycle_tests
       tools/serve_reliability/http_lifecycle_test.cpp tests/test_main.cpp
+      tools/serve_reliability/admission_contract_test.cpp
+      src/server/chat_admission.cpp
       src/server/chat_http.cpp src/server/http_request.cpp
       src/server/input_contract.cpp src/server/output_schema.cpp
       src/server/http_response.cpp src/trace/router_trace.cpp)

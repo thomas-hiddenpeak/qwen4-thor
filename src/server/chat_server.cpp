@@ -340,6 +340,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // B1: pool the per-sequence recurrent state for up to max_seq concurrent
   // requests. Each in-flight request owns one seq_id.
   max_seq_ = eff_max_seq;
+  s = ResolveAdmissionLimits(opts, max_seq_, &admission_limits_);
+  if (!s.ok()) return s;
+  std::fprintf(stderr,
+               "[q4t][admission] inflight=%d queued=%d "
+               "policy=capacity_fifo_best_fit\n",
+               admission_limits_.inflight, admission_limits_.queued);
   cfg.max_seq = max_seq_;
   cfg.seq_capacities = opts.seq_capacities;
   seq_capacities_ = opts.seq_capacities;
@@ -347,8 +353,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
     std::fprintf(stderr, "[q4t][slots] capacities=");
     for (size_t i = 0; i < seq_capacities_.size(); ++i)
       std::fprintf(stderr, "%s%d", i ? "," : "", seq_capacities_[i]);
-    std::fprintf(stderr, " stream_mtp_prefill=%d text_admission=32\n",
-                 capabilities.mtp);
+    std::fprintf(stderr, " stream_mtp_prefill=%d text_admission=%d\n",
+                 capabilities.mtp, admission_limits_.inflight);
   }
   bool planned_startup = false;
 #ifdef Q4T_STARTUP_RESOURCE_PLAN

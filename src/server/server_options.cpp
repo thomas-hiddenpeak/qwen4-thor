@@ -14,7 +14,35 @@ ServerCapabilities CapabilitiesFor(const ServerOptions& options) {
   return {!options.no_mtp, options.allow_media, options.max_seq > 1};
 }
 
+Status ResolveAdmissionLimits(const ServerOptions& options, int effective_slots,
+                              AdmissionLimits* output) {
+  if (effective_slots < 1 || effective_slots > 8192)
+    return Status::Fail("effective slots must be in [1,8192]");
+  if (options.max_inflight_requests < 0 ||
+      options.max_inflight_requests > 4096 ||
+      options.max_queued_requests < -1 || options.max_queued_requests > 4096)
+    return Status::Fail("invalid admission request limits");
+  AdmissionLimits result;
+  result.inflight = options.max_inflight_requests
+                        ? options.max_inflight_requests
+                        : TextAdmissionLimit(effective_slots);
+  result.queued = options.max_queued_requests >= 0
+                      ? options.max_queued_requests
+                      : std::max(0, result.inflight - effective_slots);
+  if (result.queued > result.inflight)
+    return Status::Fail("max-queued-requests exceeds effective inflight limit");
+  *output = result;
+  return Status();
+}
+
 Status ValidateServerOptions(const ServerOptions& options) {
+  if (options.max_inflight_requests < 0 ||
+      options.max_inflight_requests > 4096 ||
+      options.max_queued_requests < -1 || options.max_queued_requests > 4096)
+    return Status::Fail("admission limits must be auto or in [0,4096]");
+  if (options.max_inflight_requests > 0 &&
+      options.max_queued_requests > options.max_inflight_requests)
+    return Status::Fail("max-queued-requests exceeds max-inflight-requests");
   if ((!options.session_cache_dir.empty() ||
        !options.prefix_cache_dir.empty()) &&
       (options.no_mtp || options.mtp_k != 3 || options.allow_media ||
@@ -137,6 +165,9 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--max-prefill") integer = &parsed.max_prefill;
     if (key == "--max-len") integer = &parsed.max_len;
     if (key == "--max-seq") integer = &parsed.max_seq;
+    if (key == "--max-inflight-requests")
+      integer = &parsed.max_inflight_requests;
+    if (key == "--max-queued-requests") integer = &parsed.max_queued_requests;
     if (key == "--moe-trace-max-mib") integer = &parsed.moe_trace_max_mib;
     if (key == "--moe-resident-slots") integer = &parsed.moe_resident_slots;
     if (key == "--request-deadline-ms") integer = &parsed.request_deadline_ms;
@@ -201,6 +232,10 @@ Status ParseServerOptions(std::span<const std::string_view> args,
                   : std::from_chars(value.data(), end, parsed.mem_fraction);
       if (result.ec != std::errc() || result.ptr != end)
         return Status::Fail("invalid numeric value for " + std::string(key));
+      if ((key == "--max-inflight-requests" && *integer <= 0) ||
+          (key == "--max-queued-requests" && *integer < 0))
+        return Status::Fail("explicit admission limit out of range: " +
+                            std::string(key));
     }
   }
   Status status = ValidateServerOptions(parsed);

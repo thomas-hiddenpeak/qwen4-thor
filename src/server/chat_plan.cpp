@@ -264,6 +264,17 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          number("--request-deadline-ms", requested.request_deadline_ms,
                 defaults.request_deadline_ms, config.request_deadline_ms,
                 "request_override") +
+         R"(,"max_inflight_requests":)" +
+         number("--max-inflight-requests", requested.max_inflight_requests,
+                defaults.max_inflight_requests, config.admission.inflight,
+                requested.max_inflight_requests ? "requested"
+                                                : "effective_slots_default") +
+         R"(,"max_queued_requests":)" +
+         number("--max-queued-requests", requested.max_queued_requests,
+                defaults.max_queued_requests, config.admission.queued,
+                requested.max_queued_requests >= 0
+                    ? "requested"
+                    : "effective_admission_default") +
          R"(,"slots":{"capacities":)" + Array(capacities) + R"(,"policy":)" +
          Quote(config.capacities.empty() ? "uniform_context_clip"
                                          : "explicit_full_budget") +
@@ -279,7 +290,11 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"(,"prefix_checkpoints":)" + Array(config.checkpoints) +
          R"(,"memory_budget_enabled":)" + Bool(budget_enabled) +
          R"(,"whole_server_ram_limit":false},"limits":{"text_requests":)" +
-         std::to_string(TextAdmissionLimit(config.max_seq)) +
+         std::to_string(config.admission.inflight) + R"(,"queued_requests":)" +
+         std::to_string(config.admission.queued) +
+         R"(,"queue_policy":"capacity_fifo_best_fit",)"
+         R"("queue_order":"slot_admission_arrival",)"
+         R"("queue_excludes_preparation":true)" +
          R"(,"preflight_shares_text_admission":true,"business_connections":)" +
          std::to_string(business_connections) + R"(,"control_connections":)" +
          std::to_string(kReservedControlConnections) + R"(,"body_bytes":)" +

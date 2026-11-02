@@ -5,6 +5,7 @@
 #include "q4t/server/lifetime.h"
 #include "q4t/server/serve_fault.h"
 #include "q4t/test.h"
+#include "contract_access.h"
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -42,37 +43,6 @@ void ChatServer::HandleModels(int fd) { HandleHealth(fd); }
 void ChatServer::HandleCapabilities(int fd) { HandleHealth(fd); }
 void ChatServer::HandleMetrics(int fd) { HandleHealth(fd); }
 
-struct ServeContractAccess {
-  static std::shared_ptr<RequestControl> Register(ChatServer& server,
-                                                const std::string& token) {
-    return server.requests_.Register("cancel-contract", token,
-        std::chrono::steady_clock::now() + std::chrono::seconds(30));
-  }
-  static void Configure(ChatServer& server) {
-    server.port_ = 0;
-    server.conn_cap_ = 2;
-    server.model_ready_.store(true);
-  }
-  static int Business(ChatServer& server) {
-    return server.business_conns_.load();
-  }
-  static void Healthy(ChatServer& server, bool healthy) {
-    server.gpu_healthy_.store(healthy);
-  }
-  static int Port(ChatServer& server) {
-    const int fd = server.listen_fd_.load();
-    sockaddr_in addr{};
-    socklen_t length = sizeof(addr);
-    return fd >= 0 && !getsockname(fd, reinterpret_cast<sockaddr*>(&addr),
-                                  &length) ? ntohs(addr.sin_port) : -1;
-  }
-  static bool Empty(ChatServer& server) {
-    const std::lock_guard<std::mutex> lock(server.connections_mu_);
-    return server.connections_.empty() && server.active_conns_.load() == 0 &&
-           server.business_conns_.load() == 0 &&
-           server.control_conns_.load() == 0 && server.listen_fd_.load() == -1;
-  }
-};
 }  // namespace q4t::server
 
 namespace {

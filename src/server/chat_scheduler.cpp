@@ -51,33 +51,6 @@ Status FinishHostReadback(cudaError_t copy_error,
 }
 }
 
-int ChatServer::AllocSeqId(RequestControl* control, int fd, size_t required) {
-  std::unique_lock<std::mutex> lock(seq_mu_);
-  for (;;) {
-    if (seq_stopping_) return -1;
-    if (!gpu_healthy_.load(std::memory_order_relaxed)) return -3;
-    if (RequestCancelled(control, fd)) return -2;
-    const int slot = runtime::SelectSequenceSlot(seq_capacities_, max_len_,
-                                                 seq_free_, required);
-    if (slot >= 0) {
-      seq_free_[slot] = false;
-      return slot;
-    }
-    // Socket EOF/deadlines need no extra watcher thread. Explicit cancellation
-    // wakes this wait; timeout bounds polling even if a notification races it.
-    seq_cv_.wait_for(lock, std::chrono::milliseconds(100));
-  }
-}
-
-void ChatServer::FreeSeqId(int seq_id) {
-  if (seq_id < 0) return;
-  {
-    const std::lock_guard<std::mutex> lock(seq_mu_);
-    if (seq_id < max_seq_) seq_free_[static_cast<size_t>(seq_id)] = true;
-  }
-  seq_cv_.notify_all();  // waiters may need different slot capacities
-}
-
 void ChatServer::ReleaseActiveRequest(ActiveRequest* request) noexcept {
   if (std::uncaught_exceptions())
     request->control->Cancel(RequestControl::State::kFailure);

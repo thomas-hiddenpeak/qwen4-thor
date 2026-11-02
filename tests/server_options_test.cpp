@@ -50,6 +50,52 @@ Q4T_TEST(serve_agent_slot_capacity_and_admission) {
   return true;
 }
 
+Q4T_TEST(serve_admission_options_and_transactional_bounds) {
+  auto options = Defaults();
+  Q4T_CHECK(
+      Parse({"--max-inflight-requests", "4", "--max-queued-requests", "0"},
+            &options));
+  Q4T_CHECK(options.max_inflight_requests == 4 &&
+            options.max_queued_requests == 0);
+  for (auto value : {"0", "-1", "4097", "2147483647", "1.5", "1x"}) {
+    Q4T_CHECK(!Parse({"--max-inflight-requests", value}, &options));
+    Q4T_CHECK(options.max_inflight_requests == 4);
+  }
+  for (auto value : {"-1", "4097", "5", "1.5", "1x"}) {
+    Q4T_CHECK(!Parse({"--max-queued-requests", value}, &options));
+    Q4T_CHECK(options.max_queued_requests == 0);
+  }
+  Q4T_CHECK(Parse(
+      {"--max-inflight-requests", "4096", "--max-queued-requests", "4096"},
+      &options));
+  return true;
+}
+
+Q4T_TEST(serve_admission_resolves_after_budget_without_silent_clamp) {
+  auto options = Defaults();
+  options.max_seq = 32;
+  q4t::server::AdmissionLimits limits;
+  Q4T_CHECK(ResolveAdmissionLimits(options, 32, &limits));
+  Q4T_CHECK(limits.inflight == 64 && limits.queued == 32);
+  Q4T_CHECK(ResolveAdmissionLimits(options, 2, &limits));
+  Q4T_CHECK(limits.inflight == 32 && limits.queued == 30);
+  options.max_queued_requests = 40;
+  Q4T_CHECK(ResolveAdmissionLimits(options, 32, &limits));
+  Q4T_CHECK(limits.queued == 40);
+  Q4T_CHECK(!ResolveAdmissionLimits(options, 2, &limits));
+  Q4T_CHECK(limits.inflight == 64 && limits.queued == 40);
+  options.max_inflight_requests = 1;
+  options.max_queued_requests = -1;
+  Q4T_CHECK(ResolveAdmissionLimits(options, 2, &limits));
+  Q4T_CHECK(limits.inflight == 1 && limits.queued == 0);
+  for (int slots : {0, -1, 8193})
+    Q4T_CHECK(!ResolveAdmissionLimits(options, slots, &limits));
+  options.max_inflight_requests = -1;
+  Q4T_CHECK(!q4t::server::ValidateServerOptions(options));
+  Q4T_CHECK(!ResolveAdmissionLimits(options, 1, &limits));
+  return true;
+}
+
 Q4T_TEST(serve_default_is_single_text_greedy) {
   auto options = Defaults();
   Q4T_CHECK(Parse({}, &options));

@@ -14,6 +14,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/trace/router_trace.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/test_main.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_options_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_sequence_admission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_mtp_policy_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_scheduler_submission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_state_contract_test.cpp

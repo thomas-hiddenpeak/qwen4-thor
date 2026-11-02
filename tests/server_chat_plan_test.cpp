@@ -279,3 +279,32 @@ Q4T_TEST(chat_config_effective_sources_and_redaction) {
             "model_config_default");
   return true;
 }
+
+Q4T_TEST(chat_config_admission_snapshot_and_queue_policy) {
+  auto config = Config();
+  config.max_seq = 2;
+  ServerOptions opts;
+  opts.model_dir = "/model";
+  opts.max_seq = 32;
+  Q4T_CHECK(ResolveAdmissionLimits(opts, config.max_seq, &config.admission));
+  Json response;
+  Q4T_CHECK(Parse(EffectiveServeConfigJson(opts, config, true, true, 128),
+                  &response));
+  Q4T_CHECK(response.Find("max_inflight_requests")->GetInt("requested") == 0);
+  Q4T_CHECK(response.Find("max_inflight_requests")->GetInt("effective") == 32);
+  Q4T_CHECK(response.Find("max_queued_requests")->GetInt("requested") == -1);
+  Q4T_CHECK(response.Find("max_queued_requests")->GetInt("effective") == 30);
+  Q4T_CHECK(response.Find("limits")->GetInt("queued_requests") == 30);
+  Q4T_CHECK(response.Find("limits")->GetString("queue_policy") ==
+            "capacity_fifo_best_fit");
+  const std::vector<std::string_view> args{"--max-inflight-requests", "5",
+                                           "--max-queued-requests", "0"};
+  Q4T_CHECK(ParseServerOptions(args, &opts));
+  Q4T_CHECK(ResolveAdmissionLimits(opts, config.max_seq, &config.admission));
+  Q4T_CHECK(Parse(EffectiveServeConfigJson(opts, config, true, true, 128),
+                  &response));
+  Q4T_CHECK(response.Find("max_queued_requests")->GetString("source") == "cli");
+  Q4T_CHECK(response.Find("max_queued_requests")->GetInt("effective") == 0);
+  Q4T_CHECK(response.Find("limits")->GetInt("text_requests") == 5);
+  return true;
+}

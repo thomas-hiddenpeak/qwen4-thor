@@ -24,6 +24,7 @@
 #include "q4t/server/mtp_policy.h"
 #include "q4t/server/scheduler_submission.h"
 #include "q4t/server/request_diagnostics.h"
+#include "q4t/server/request_admission.h"
 #include "q4t/server/session_state.h"
 #include "q4t/server/thinking_budget.h"
 #include "q4t/server/text_stop.h"
@@ -116,17 +117,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               {}, "gpu_unhealthy");
     return;
   }
-  const int chat_limit = TextAdmissionLimit(max_seq_);
-  if (active_chats_.fetch_add(1) >= chat_limit) {
-    active_chats_.fetch_sub(1);
+  RequestAdmissionLease chat_lease(active_chats_, admission_limits_.inflight);
+  if (!chat_lease.TryAcquire()) {
+    metrics_.text_admission_rejected.fetch_add(1, std::memory_order_relaxed);
     SendError(fd, 503, "text request capacity exhausted", {},
               "capacity_exhausted");
     return;
   }
-  struct ChatGuard {
-    std::atomic<int>& count;
-    ~ChatGuard() { count.fetch_sub(1); }
-  } chat_guard{active_chats_};
   // Outlives request/grammar/response buffers; release only after cleanup.
   StructuredRequestLease structured_lease(metrics_.structured_active);
   io::Json req;
@@ -468,6 +465,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     seq_id = AllocSeqId(control.get(), fd, required_capacity);
   }
   metrics_.slot_wait_seconds.Observe(diagnostic.Total(Wait::kSlot) / 1000.0);
+  if (seq_id == -4) {
+    diagnostic.Outcome("error", "queue_capacity_exhausted");
+    // SendError uses the existing response context: JSON 503 before headers,
+    // one SSE error terminal after headers, never a second HTTP response.
+    SendError(fd, 503, "slot waiting capacity exhausted", {},
+              "queue_capacity_exhausted");
+    return;
+  }
   if (seq_id == -3) {
     SendError(fd, 503, "GPU unhealthy; restart server");
     return;

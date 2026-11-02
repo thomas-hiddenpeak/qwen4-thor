@@ -1,6 +1,7 @@
 #include "chat_server_internal.h"
 
 #include "q4t/server/chat_response_parser.h"
+#include "q4t/server/request_admission.h"
 #include "q4t/server/reasoning_options.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/structured_decoder.h"
@@ -15,6 +16,7 @@ ChatPlanConfig ChatServer::PlanningConfig() const {
           .max_prefill = max_prefill_,
           .default_max_tokens = max_tokens_default_,
           .request_deadline_ms = request_deadline_ms_,
+          .admission = admission_limits_,
           .allow_media = allow_media_,
           .structured = kStructuredDecodingAvailable,
           .session_cache = session_cache_.Enabled(),
@@ -29,13 +31,13 @@ void ChatServer::HandleConfig(int fd) {
 
 void ChatServer::HandlePreflight(int fd, const std::string& body) {
   const auto arrived = std::chrono::steady_clock::now();
-  if (active_chats_.fetch_add(1) >= TextAdmissionLimit(max_seq_)) {
-    active_chats_.fetch_sub(1);
+  RequestAdmissionLease lease(active_chats_, admission_limits_.inflight);
+  if (!lease.TryAcquire()) {
+    metrics_.text_admission_rejected.fetch_add(1, std::memory_order_relaxed);
     detail::SendError(fd, 503, "text request capacity exhausted", {},
                       "capacity_exhausted");
     return;
   }
-  ScopeExit release([&] { active_chats_.fetch_sub(1); });
   io::Json envelope;
   auto status = io::ParseJson(body, &envelope, true, kRequestJsonLimits);
   if (!status) {
