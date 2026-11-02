@@ -11,7 +11,8 @@
 
 后续[serve 全链路审计](SERVE_COMPLETENESS_AUDIT_2026-11-02.md)已覆盖
 实际 6 路由 / 35 字段并复现输入与取消的嵌套合同缺口，补充可空值、
-监控口径、流式存活和编译资源边界；新发现未修复，不能沿用本表的
+监控口径、流式存活和编译资源边界；后续输入A组与F5已修，F6独立
+准入已补、硬编译时间/RSS仍未闭合，不能沿用本表的
 单项成功结论把组合或未审形状标为通过。
 
 ## 证据口径
@@ -20,7 +21,7 @@
 `reference/vllm/vllm/entrypoints/openai/` 和 `entrypoints/serve/`。
 同时核对当前官方文档（访问日期 2026-11-02）；未更新、构建或启动
 reference，未把 stable 网页当作本地固定 commit 的相同版本。
-本项目盘点起点 460ffd0，下表已同步 957211c7 工具控制交付状态；历史
+本项目盘点起点 460ffd0，下表已同步 f03ee0d4 输入/观测及首个资源门状态；历史
 差异与具体失败另列，未验部分不标成熟。
 
 vLLM 的 Chat 服务组织了独立的请求 schema、工具 / 推理 parser、
@@ -63,7 +64,7 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 真实工具执行 | Chat function 调用通常由应用执行与回填 | 首批真实发布 / 历史验收 / 不存在资料查询已验 | A/P2 已交付有界只读链路；自主广泛检索未验 |
 | 取消 / 断连 / 关闭 | serving 检查断连并传播 abort；生命周期管理 | 已有取消、deadline、断连、shutdown 与槽回收 | 保留证据；不是新的缺失 |
 | 压力与配额 | 调度、准入与服务配置；不等于完整租户计费平台 | 连接 / body / chat / slot 上限已具备，无租户配额 | B/C：先错误可观测，再业务配额 |
-| 健康与观测 | health/load/version、Prometheus、请求 metrics | healthz/metrics 与请求诊断已有；审计 F5 确认队列等指标口径问题 | B：修正口径、readiness、故障分类与关联 ID |
+| 健康与观测 | health/load/version、Prometheus、请求 metrics | F5计时口径、固定取消原因已修复；新增受约束资源指标 | B后续：readiness、统一关联ID；[最新验收与剩余资源边界](SERVE_RESOURCE_BOUNDARIES_2026-11-02.md) |
 | 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生未提供；现有 Nginx 示例未含完整鉴权配置 | C：在真实入口配置并验收，不能认为传了 api_key 就鉴权 |
 | HTTP 媒体类型 / 方法 | 框架路由与 JSON request validation | 未检查 Content-Type；不支持方法返回 404；禁 chunked upload | B：写成合同并补边界用例 |
 | OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | 无 OpenAPI schema；自有客户端及 Python SDK 3.42.1 限定互通已验 | B：按实际用例扩客户端，不外推其他 SDK |

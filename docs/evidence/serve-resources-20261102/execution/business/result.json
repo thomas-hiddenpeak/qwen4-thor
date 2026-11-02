@@ -1,0 +1,9 @@
+{
+  "status": "PASS_BOUNDED_SERVE_RESOURCES",
+  "request_attempts": 6,
+  "overload_rejections": 1,
+  "starts": 1,
+  "seconds": 48.3775538939517,
+  "performance_acceptance": false,
+  "hard_compile_memory_or_time_bound": false
+}

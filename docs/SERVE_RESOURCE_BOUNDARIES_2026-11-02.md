@@ -42,4 +42,52 @@ NVML 记录观察统一 RAM；不把 CPU/RSS 和 GPU 分配相加声称物理峰
 CPU 检查通过：host ON156 / OFF151、Thor 必需117＋后端5、驱动6 /
 回退6，构建零警告。A组已通过且身份未变的输入 / 模板 / 客户端证明
 复用；真实混合清单为8个请求尝试 / 1个503 / 2启动，在上限内。
-当前默认未替换，等待 GPU guard 下混合验收与安装健康。
+## 交付结果
+
+2026-11-02 19:12 CST 混合验收、安装健康及 finalize 完成。源码
+`caced6d`，当前默认 binary
+`f03ee0d465419c2320552cfc20a589c5104e139120baa7204fed60a71d80b56b`，
+sidecar `a1e9d24e3119a76939ed0859ac3d2f27bf49610df1a5d653efea93482ff08402`。
+继续完整 head / MTP k3 默认，受约束请求 plain masked decode。
+
+- 生产 HTTP 支架5项、业务48.38秒、安装健康39.43秒通过；执行窗口
+  88.42秒。共8次模型请求尝试 / 1个过载503 / 2启动，5次正常完成、
+  显式取消 / 短deadline / shutdown 各一次预期中止。guard COMPLETED、
+  ENV_ABORT0，无重试或候选失败。
+- 未读SSE的严格请求运行时，第二个严格请求得到503；普通请求成功
+  进入槽等待，显式取消前者后输出710003。取消JSON/SSE终态检查未
+  出现成功finish；deadline返回409/deadline_exceeded。
+- 取消之后真实读取 docs/MODEL.md 并回填，架构与行号引用正确；
+  工具响应3.508秒，最终回答3.237秒。带请求SIGTERM记录server_shutdown，
+  正常退出；安装健康普通MTP输出710003，schema输出323/中文。
+- 关闭前固定取消计数为explicit=1、deadline=1，其余0，总数2；
+  之后shutdown以日志验证（监听已关闭，不能再查询最后metrics）。
+  structured active/preparing/vocab计数归零，拒绝1、准备失败0。
+- 同一快照：admission累计0.542056秒、slot wait累计0.049827秒；
+  后者与请求诊断逐项相符，预处理没有混入slot等待。旧queue/e2e与
+  新名直方图逐样本相等。generation包含取消尝试、response只统计
+  成功完整写入，不能比较不同样本总体的sum来判断单请求阶段顺序。
+
+## RAM 观察及未证明项
+
+业务服务阶段RSS从704.82MiB升至最高采样1014.34MiB；进程VmHWM
+为3903.98MiB（含启动，不等于编译峰值）。采样的系统MemAvailable
+最低约32.13GiB。取消并清理后RSS仍高于初始值；不能从对象计数归零
+推断allocator已将物理页全部返还，未对保留页逐项归因。原始进程 /
+系统快照和NVML监控均保留，不累加重叠指标冒充统一RAM物理峰值。
+
+两次模型退出均0 in-flight，startup reservation分配全部释放；
+最终NVML计算PID为空，GPU锁释放，无自有恢复标记或常驻服务。
+这些结果关闭F5与本组独立准入/协作取消合同；**F6的硬编译时间 /
+峰值RSS边界仍未闭合**，未知schema极值和更多并发组合不能沿用本次
+通过结论。统一HTTP request-id、心跳及真正发送背压也未在本组加入。
+
+原始证据及实际归档文件SHA见
+[封存清单](evidence/serve-resources-20261102/sealed-files.json)。
+本机 `.q4t-work/serve-resources-20261102/package/` 保存前一默认
+ea678009 / 90372798、当前pair与源码bundle；构建产物留本机，文档
+归档仅保留其身份收据。回退继续要求对应冻结源码和共享guard，未知
+pair不覆盖。模型 / 数值源码未变：旧manifest中仅5个服务文件变化，
+新增两份资源 / 原因合同头；A组未改的输入 / 模板 / 客户端证据复用。
+发布的历史协议使用独立副本并指向原sidecar，已核对前一协议未被
+当前metadata更新改写。没有性能优化、全上下文或生产多租户接受声明。
