@@ -33,6 +33,7 @@ SCHEMAS = ("docs/serve-transport-v1.schema.json",
 def cpu_gate():
     cpu = BASE / "cpu"
     for name in ("host-gate/result.json", "template-reuse.json", "cache-probe-result.json",
+                 "startup-preflight/result.json",
                  "driver-result.json", "client-result.json"):
         h.require(h.read(cpu / name)["passed"], "CPU gate failed: " + name)
     for log, total in (("host-on.log", 188), ("host-off.log", 179),
@@ -66,6 +67,8 @@ def prepare():
     h.copy_checked(h.identity(old["build_cache"]), PACKAGE / "previous/CMakeCache.txt")
     for name in ("q4t", "CMakeCache.txt", "compile_commands.json"):
         h.copy_checked(h.identity(BASE / "engine" / name), PACKAGE / "candidate" / name)
+    preflight = h.read(BASE / "cpu/startup-preflight/result.json")["binary"]
+    h.copy_checked(preflight, PACKAGE / "candidate/startup_preflight")
     for name in ("chat_protocol_identity.h", "chat_protocol_sources.json"):
         h.copy_checked(h.identity(generated / name), PACKAGE / "candidate" / name)
     previous = h.read(old["tested_source_manifest"])
@@ -100,6 +103,7 @@ def prepare():
         sdk_version="3.42.1", limits=LIMITS,
         source_manifest_sha256=h.sha(PACKAGE / "sources.json"),
         planned=dict(starts=3, generations=19, negatives=12),
+        startup_preflight=h.identity(PACKAGE / "candidate/startup_preflight"),
         cache_seed_tokens=h.read(BASE / "cpu/cache-probe-result.json")["tokens"])
     if PACKAGE.name == "package-correction":
         original = BASE / "execution"
@@ -207,6 +211,9 @@ def main():
     if args.correction:
         PACKAGE, OUTPUT = BASE / "package-correction", BASE / "execution-correction"
     bind()
+    if args.action == "execute":
+        h.require(not (BASE / "retired.json").exists(),
+                  "phase closed without HTTP acceptance; preserve evidence and plan a fresh bounded phase")
     if args.action == "prepare":
         prepare()
     elif args.action == "execute":

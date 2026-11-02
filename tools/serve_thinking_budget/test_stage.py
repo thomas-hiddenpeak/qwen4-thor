@@ -108,6 +108,16 @@ class Contracts(unittest.TestCase):
             self.assertEqual((folder / "failure-wire.bin").read_bytes(), error.response.content)
             self.assertIn("expected failure", (folder / "failure-failure.json").read_text())
 
+    def test_cache_directory_is_private_and_never_reuses_existing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "private-cache"
+            v.prepare_cache(path)
+            self.assertEqual(path.stat().st_mode & 0o777, 0o700)
+            (path / "evidence").write_text("keep")
+            with self.assertRaises(FileExistsError):
+                v.prepare_cache(path)
+            self.assertEqual((path / "evidence").read_text(), "keep")
+
 
 if __name__ == "__main__":
     unittest.main()

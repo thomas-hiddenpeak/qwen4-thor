@@ -665,7 +665,8 @@
       "src/server/structured_decoder.cpp",
       "src/server/thinking_budget.cpp"
     ],
-    "http_status": "pending",
-    "report": "docs/SERVE_THINKING_BUDGET_2026-11-03.md"
+    "http_status": "not_accepted_two_pre_model_startup_fixture_failures",
+    "report": "docs/SERVE_THINKING_BUDGET_2026-11-03.md",
+    "result": "docs/SERVE_THINKING_BUDGET_RESULT_2026-11-03.md"
   }
 }

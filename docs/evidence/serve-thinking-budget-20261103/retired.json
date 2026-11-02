@@ -1,0 +1,26 @@
+{
+  "status": "DEVELOPMENT_READY_HTTP_NOT_ACCEPTED",
+  "accepted": false,
+  "reason": "Two pre-model startup fixture failures consumed two of four starts; three required starts remain. No automatic expansion.",
+  "limits": {
+    "starts": 4,
+    "generations": 22,
+    "negatives": 12,
+    "seconds": 1800
+  },
+  "actual": {
+    "starts": 2,
+    "generations": 0,
+    "negatives": 0,
+    "model_loads": 0
+  },
+  "remaining_required": {
+    "starts": 3,
+    "generations": 19,
+    "negatives": 12
+  },
+  "candidate_sha256": "c02b94144c5a40c6118bd7dde306b298dce10c963045708f82082f6a5f2b8b54",
+  "default_unchanged": true,
+  "original_started": 1793644231.1028798,
+  "closed": 1793644708.3955557
+}

@@ -1,0 +1,35 @@
+{
+  "time": 1793644708.3388183,
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "72f58c4e732553e53a6b8f75702c71cd",
+    "worker_pid": 1649600,
+    "stdout": "{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.818685498, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.827397181, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.827436514, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.831838073, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.004390456015244126}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.831880479, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.831923702, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.379606641829014e-05}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.83193809, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.839178534, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.007232990115880966}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.839198636, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.840277192, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0010719820857048035}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.840294673, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.841572348, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012700548395514488}\n{\"request_id\": \"72f58c4e732553e53a6b8f75702c71cd\", \"monotonic\": 1834790.841600247, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.07008949294686317,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "lock_available": true,
+  "recovery_markers": [],
+  "memory": {
+    "MemTotal_KiB": 128828748,
+    "MemFree_KiB": 30795736,
+    "MemAvailable_KiB": 122680368,
+    "Cached_KiB": 7085728
+  },
+  "default": {
+    "q4t": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+      "bytes": 6943272
+    },
+    "q4t.release.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+      "sha256": "91ce0ed94e4ee2c9bcb30895258a6bb30bef3cfe8e37f0dd6ac9160fb314ecfb",
+      "bytes": 31470
+    }
+  }
+}

@@ -7,6 +7,7 @@
 [Serve阶段A交付、HTTP/SSE合同与剩余边界](SERVE_STAGE_A_RESULT_2026-11-03.md)。
 [Serve阶段B1角色profile交付、模板差分与真实工具闭环](SERVE_STAGE_B1_RESULT_2026-11-03.md)。
 [Serve B2a推理字段/隐藏交付及真实工具历史回填](SERVE_STAGE_B2A_RESULT_2026-11-03.md)。
+[SRV-05b真实预算开发、CPU通过与未完成HTTP验收记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)。
 [当前 serve 任务队列、依赖与每批验收出口](PHASES.md#队列与依赖)。
 [serve 全链路审计、具体遗漏与防漏检查](SERVE_COMPLETENESS_AUDIT_2026-11-02.md)。
 [输入合同 A 组修复、真实 JSON/SSE 工具闭环与默认交付](SERVE_INPUT_CONTRACT_2026-11-02.md)。

@@ -48,8 +48,8 @@ def main():
     stage.h.save(cpu / "template-reuse.json", dict(passed=True, files=checks,
         history_function_exact=True, prior=str(prior), prior_sha256=stage.h.sha(prior),
         scope="120 prior cases; unchanged native template/tokenizer/history resolver. No new differential run claimed."))
-    for prefix, count in (("driver", 8), ("client", 27)):
-        log = cpu / ("driver-capture.log" if prefix == "driver" else "client.log")
+    for prefix, count in (("driver", 9), ("client", 27)):
+        log = cpu / ("driver-preflight.log" if prefix == "driver" else "client.log")
         assert f"Ran {count} tests" in log.read_text() and log.read_text().endswith("\nOK\n")
         stage.h.save(cpu / (prefix + "-result.json"), dict(passed=True, tests=count,
                      log_sha256=stage.h.sha(log)))

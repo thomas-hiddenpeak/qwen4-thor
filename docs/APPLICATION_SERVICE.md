@@ -9,6 +9,9 @@
 通过CPU/原生模板/客户端及13次真实生成验收；公开/隐藏对正文与usage
 一致，真实工具历史回填、schema、plain与安装健康通过。推理预算、
 stop、预检和其余工业化要求仍待后续。
+SRV-05b[代码/CPU已完成但未交付](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)：
+预算控制候选c02b9414尚无真实HTTP证据，当前默认仍不支持thinking_token_budget。
+
 
 2026-11-03 [serve阶段B1已交付](SERVE_STAGE_B1_RESULT_2026-11-03.md)：
 当时默认f1133bcc/2edfb882。单条开头developer作为system替代，混用、
@@ -56,7 +59,7 @@ OpenAI API 全兼容或生产多租户应用平台。模型支持、模板一致
 |---|---|---|
 | 推理与请求生命周期 | GPU 错误隔离、容量准入、取消、超时、槽回收；已有 Thor 验收 | 与应用协议分开验收；不把本轮当性能优化 |
 | 消息与模板 | 原生 qwen4_exp、单条developer适配、工具历史ID、推理分离；46组模板正例 | 并非运行任意 HF Jinja 模板；新增模型需要独立适配 |
-| 输出协议 | JSON / SSE、工具控制、有限 strict/schema、usage、统一错误、稳定 created、两种 token 预算字段已验 | 完整 schema、停止序列和逐字工具参数增量未实现 |
+| 输出协议 | JSON / SSE、工具控制、有限 strict/schema、usage、统一错误、稳定 created、max_tokens/max_completion_tokens 已验 | 完整 schema、停止序列和逐字工具参数增量未实现 |
 | 客户端 | 项目客户端、持久记录、只读恢复判定；OpenAI Python 3.42.1 限定互通通过 | 其他 SDK / 框架未验；没有自动重试 / 任务恢复执行器 |
 | 应用工具 | 真实发布、历史验收与不存在资料查询通过；来源范围、工具业务错误与预算门已验 | 自主广泛搜索、逐句事实验证与实时状态查询未验 |
 | 服务运维 | livez/readyz、4控制连接预留、追踪ID、metrics、代理保活、可核验发布回退 | 内置鉴权 / TLS / 租户配额 / 持久任务服务不在当前范围 |

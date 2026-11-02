@@ -53,6 +53,12 @@ def command(binary, model, port, mtp, cache=None):
 b.command_original = b.command
 
 
+def prepare_cache(directory):
+    # The acceptance owns a fresh private directory, never an existing pool.
+    directory.mkdir(mode=0o700)
+    wire.require(directory.stat().st_mode & 0o777 == 0o700, "private cache permissions")
+
+
 def negative_cases():
     # Preserve lexical fractional values: Python float rounding is not an oracle.
     values = ("-1", "2147483648", "true", '"8"', "1.5",
@@ -326,8 +332,20 @@ class Run(b.Run):
 
     def model(self, name, binary, mtp, action):
         cache = self.out / name / "session-cache" if name == "candidate-mtp" else None
-        with patch.object(b, "command", lambda binary, model, port, mtp:
-                          command(binary, model, port, mtp, cache)):
+        def launch_command(binary, model, port, mtp):
+            if cache is not None:
+                prepare_cache(cache)
+            argv = command(binary, model, port, mtp, cache)
+            preflight = self.plan["startup_preflight"]
+            wire.require(wire.digest(preflight["path"]) == preflight["sha256"],
+                         "startup preflight identity changed")
+            result = subprocess.run([preflight["path"], *argv[2:]], cwd=ROOT,
+                                    capture_output=True, text=True, timeout=20)
+            wire.save(self.out / name / "startup-preflight.json", dict(argv=argv,
+                returncode=result.returncode, stdout=result.stdout, stderr=result.stderr))
+            wire.require(result.returncode == 0, "CPU startup preflight failed")
+            return argv
+        with patch.object(b, "command", launch_command):
             super().model(name, binary, mtp, action)
 
     def run(self):

@@ -1,5 +1,11 @@
 # SRV-05b 真实 thinking token 预算验收
 
+本轮已停止GPU验收，**尚未通过/交付**。两次启动分别在参数与缓存目录
+校验退出，零模型加载/零生成；原始package和execution及correction均保留。
+剩余2启动不足以完成业务MTP、plain、安装健康3段，不自动扩展上限。
+默认仍是上一05a。`retired.json`阻止本轮继续execute；下一GPU阶段需明确
+重新冻结未执行用例及边界，并复用仍同身份的CPU证据，不把本轮判为通过。
+
 业务正确性阶段；不接受性能优化结论。开发/计量合同见
 [合同](../../docs/SERVE_THINKING_BUDGET_2026-11-03.md)。无权重 CPU gate
 与本机真实 HTTP 分开记录，不把文字中出现闭合标记当作 token 控制证据。
@@ -21,3 +27,9 @@ metrics交叉核对；旧120模板差分仅在渲染/历史函数/分词器身�
 -B tools/serve_thinking_budget/stage.py execute` 完成HTTP、配对安装、安装
 路径健康。guard COMPLETED 后 `finalize`，保留旧ELF/sidecar与source.bundle。
 失败保存全部原始结果；不干预其他服务、不仅凭driver退出码宣布交付。
+
+后续驱动已补齐每次启动前的CPU检查：新建0700私有目录、运行与生产
+相同的ParseServerOptions和SessionCache.Open（含O_TMPFILE/O_DIRECT）。
+`startup_preflight.py`构建无CUDA探针并直接验证两种原失败和三种正确
+启动命令；启动前再次对将要使用的真实argv/目录检查。它不加载权重、
+不监听HTTP、不验证GPU容量或服务可用性，也不等同于完整SRV-07预检。

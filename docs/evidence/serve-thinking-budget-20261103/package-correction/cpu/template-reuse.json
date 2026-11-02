@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "files": {
+    "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
+    "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
+    "src/server/chat_input.cpp": "a0bfc92dd9fc6b13102e2667345714445e3516740878331ce39f834713eaf020",
+    "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8"
+  },
+  "history_function_exact": true,
+  "prior": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/cpu/template-diff/result.json",
+  "prior_sha256": "d30ece22ac477a9d902db4a097a8e9438ad6be8523d0690b560da2de1b1d9833",
+  "scope": "120 prior cases; unchanged native template/tokenizer/history resolver. No new differential run claimed."
+}
