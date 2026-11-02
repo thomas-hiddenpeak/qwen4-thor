@@ -141,6 +141,28 @@ class Contracts(unittest.TestCase):
             run.__init__(plan, Path("unused"))
         self.assertEqual(run.deadline, 1870)
 
+    def test_launch_preflight_uses_serialized_path_and_actual_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            run = object.__new__(v.Run)
+            run.out = Path(directory)
+            probe = run.out / "preflight"
+            probe.write_bytes(b"identity fixture")
+            run.plan = dict(startup_preflight=stage.h.identity(probe))
+            def before_popen(self, name, binary, mtp, action):
+                (self.out / name).mkdir(mode=0o700)
+                return v.b.command(binary, "model", 18099, mtp)
+            def preflight(argv, **unused):
+                self.assertEqual(argv[0], str(probe))
+                cache = Path(argv[argv.index("--session-cache-dir") + 1])
+                self.assertTrue(cache.is_dir())
+                self.assertEqual(cache.stat().st_mode & 0o777, 0o700)
+                return SimpleNamespace(returncode=0, stdout="{}", stderr="")
+            with patch.object(v.b.Run, "model", before_popen), \
+                 patch.object(v.subprocess, "run", side_effect=preflight) as called:
+                argv = run.model("candidate-mtp", Path("candidate"), True, None)
+            called.assert_called_once()
+            self.assertTrue((run.out / "candidate-mtp/startup-preflight.json").is_file())
+
 
 if __name__ == "__main__":
     unittest.main()

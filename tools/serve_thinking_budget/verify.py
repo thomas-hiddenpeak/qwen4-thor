@@ -347,7 +347,7 @@ class Run(b.Run):
                 prepare_cache(cache)
             argv = command(binary, model, port, mtp, cache)
             preflight = self.plan["startup_preflight"]
-            wire.require(wire.digest(preflight["path"]) == preflight["sha256"],
+            wire.require(wire.digest(Path(preflight["path"])) == preflight["sha256"],
                          "startup preflight identity changed")
             result = subprocess.run([preflight["path"], *argv[2:]], cwd=ROOT,
                                     capture_output=True, text=True, timeout=20)

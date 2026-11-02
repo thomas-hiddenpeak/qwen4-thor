@@ -46,7 +46,7 @@ def cpu_gate():
         h.require("warning:" not in text and "error:" not in text, "build diagnostics")
 
 
-def prepare(*, provenance=None):
+def prepare(*, provenance=None, continuation=None):
     h.require(not PACKAGE.exists(), "package already frozen")
     old = h.verify_pair(ROOT / "build/q4t", ROOT / "build/q4t.release.json", OLD_SHA)
     cpu_gate()
@@ -108,6 +108,10 @@ def prepare(*, provenance=None):
         cache_seed_tokens=h.read(BASE / "cpu/cache-probe-result.json")["tokens"])
     if provenance is not None:
         plan["provenance"] = provenance
+    if continuation is not None:
+        h.require(set(continuation) == {"original_started", "prior_counts", "prior_execution"},
+                  "invalid continuation keys")
+        plan.update(continuation)
     if PACKAGE.name == "package-correction":
         original = BASE / "execution"
         h.verify_seal(BASE / "package")
