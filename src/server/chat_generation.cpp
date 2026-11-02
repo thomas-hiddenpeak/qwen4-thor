@@ -315,10 +315,37 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (token % 256 == 0)
         metrics_.structured_vocab_bytes.store(storage.Used());
     }
+    GrammarControl grammar_control;
+    grammar_control.cancelled = cancelled;
+    grammar_control.compile_deadline =
+        prepare_start + std::chrono::milliseconds(kGrammarCompileMilliseconds);
+    grammar_control.worker_started = [&] {
+      metrics_.structured_workers_started.fetch_add(1);
+      metrics_.structured_workers_active.fetch_add(1);
+    };
+    grammar_control.compile_started = [&] {
+      metrics_.structured_compiles_started.fetch_add(1);
+    };
+    grammar_control.worker_finished = [&](const GrammarWorkerReport& report) {
+      if (report.reaped) {
+        metrics_.structured_workers_active.fetch_sub(1);
+        metrics_.structured_workers_reaped.fetch_add(1);
+      }
+      auto peak = metrics_.structured_worker_max_rss_bytes.load();
+      while (peak < report.max_rss_bytes &&
+             !metrics_.structured_worker_max_rss_bytes.compare_exchange_weak(
+                 peak, report.max_rss_bytes)) {}
+      std::fprintf(stderr,
+                   "[q4t] grammar worker reaped=%d max_rss_bytes=%lu "
+                   "wait_status=%d\n",
+                   report.reaped, report.max_rss_bytes, report.exit_status);
+    };
+    GrammarFailure compile_failure = GrammarFailure::kNone;
     if (s)
       s = StructuredDecoder::Create(constraints, vocabulary,
                                     model_.Get().cfg.vocab, stop_token_ids_,
-                                    &structured);
+                                    &structured, grammar_control,
+                                    &compile_failure);
     if (cancelled()) {
       count_abort();
       send_cancel_error("request cancelled during grammar compilation");
@@ -327,7 +354,17 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     if (!s) {
       metrics_.structured_prepare_failed.fetch_add(1,
                                                    std::memory_order_relaxed);
-      SendError(fd, 400, s.message(), {}, "constraint_compile_failed");
+      if (compile_failure == GrammarFailure::kTimeout) {
+        metrics_.structured_compile_timeouts.fetch_add(1);
+        SendError(fd, 503, s.message(), {}, "constraint_compile_timeout");
+      } else if (compile_failure == GrammarFailure::kResource) {
+        metrics_.structured_resource_exhausted.fetch_add(1);
+        SendError(fd, 503, s.message(), {}, "constraint_resource_exhausted");
+      } else if (compile_failure == GrammarFailure::kWorker) {
+        SendError(fd, 502, s.message(), {}, "constraint_worker_failed");
+      } else {
+        SendError(fd, 400, s.message(), {}, "constraint_compile_failed");
+      }
       return;
     }
   }

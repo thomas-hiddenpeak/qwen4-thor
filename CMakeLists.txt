@@ -263,6 +263,8 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/chat_response_parser.cpp
   src/server/output_schema.cpp
   src/server/output_constraints.cpp
+  src/server/grammar_process.cpp
+  src/server/grammar_worker.cpp
   src/server/structured_decoder.cpp
   src/server/chat_input.cpp
   src/server/chat_metrics.cpp
@@ -289,6 +291,7 @@ target_link_libraries(q4t_server PUBLIC q4t_model q4t_text q4t_io q4t_runtime
 # q4t — CLI executable
 # ---------------------------------------------------------------------------
 add_executable(q4t src/main.cpp)
+q4t_link_structured_output(q4t)
 target_include_directories(q4t PRIVATE include)
 target_link_libraries(q4t PRIVATE q4t_model q4t_text q4t_ple q4t_quant
                                   q4t_server CUDA::cudart)
@@ -405,6 +408,8 @@ if(Q4T_BUILD_TESTS)
     tests/server_chat_response_parser_test.cpp
     src/server/output_schema.cpp
     src/server/output_constraints.cpp
+    src/server/grammar_process.cpp
+    src/server/grammar_worker.cpp
     src/server/structured_decoder.cpp
     tests/server_output_constraints_test.cpp
     src/server/input_contract.cpp
@@ -525,6 +530,7 @@ if(Q4T_BUILD_TESTS)
   include(cmake/HostTestSources.cmake)
   find_package(Threads REQUIRED)
   add_executable(q4t_host_tests ${Q4T_HOST_TEST_SOURCES})
+  target_compile_definitions(q4t_host_tests PRIVATE Q4T_GRAMMAR_PROCESS_TESTS=1)
   q4t_link_structured_output(q4t_host_tests)
   target_include_directories(q4t_host_tests PRIVATE include)
   target_include_directories(q4t_host_tests PRIVATE ${Q4T_CHAT_PROTOCOL_INCLUDE_DIR})

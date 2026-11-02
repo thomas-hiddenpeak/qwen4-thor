@@ -151,3 +151,42 @@ Q4T_TEST(structured_decoder_no_finite_candidate_or_bad_vocabulary) {
   Q4T_CHECK(!decoder->Terminated());
   return true;
 }
+
+Q4T_TEST(structured_decoder_cancel_after_compiler_entry_reaps) {
+  const auto plan = Plan(
+      R"("enable_thinking":false,"response_format":{"type":"json_object"})");
+  q4t::server::GrammarControl control;
+  bool compiling = false, reaped = false;
+  control.compile_started = [&] { compiling = true; };
+  control.cancelled = [&] { return compiling; };
+  control.worker_finished = [&](const auto& report) { reaped = report.reaped; };
+  q4t::server::GrammarFailure failure;
+  std::unique_ptr<StructuredDecoder> decoder;
+  Q4T_CHECK(!StructuredDecoder::Create(plan, Vocabulary(), 260, {0}, &decoder,
+                                       control, &failure));
+  Q4T_CHECK(compiling && reaped && !decoder &&
+            failure == q4t::server::GrammarFailure::kCancelled);
+  return true;
+}
+
+Q4T_TEST(structured_decoder_expired_and_memory_failure_are_closed) {
+  const auto plan = Plan(
+      R"("enable_thinking":false,"response_format":{"type":"json_object"})");
+  q4t::server::GrammarControl control;
+  control.compile_deadline = std::chrono::steady_clock::now();
+  q4t::server::GrammarFailure failure;
+  std::unique_ptr<StructuredDecoder> decoder;
+  Q4T_CHECK(!StructuredDecoder::Create(plan, Vocabulary(), 260, {0}, &decoder,
+                                       control, &failure));
+  Q4T_CHECK(failure == q4t::server::GrammarFailure::kTimeout && !decoder);
+  control = {};
+  control.address_space_bytes = 1024 * 1024;  // Below loaded ELF baseline.
+  bool reaped = false;
+  control.worker_finished = [&](const auto& report) { reaped = report.reaped; };
+  Q4T_CHECK(!StructuredDecoder::Create(plan, Vocabulary(), 260, {0}, &decoder,
+                                       control, &failure));
+  Q4T_CHECK(failure == q4t::server::GrammarFailure::kResource && !decoder &&
+            reaped);
+  Q4T_CHECK(StructuredDecoder::Create(plan, Vocabulary(), 260, {0}, &decoder));
+  return true;
+}

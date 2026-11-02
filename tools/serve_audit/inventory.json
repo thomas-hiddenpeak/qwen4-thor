@@ -99,12 +99,13 @@
     },
     "tools": {
       "semantics": "各模式共用函数定义白名单；strict:null=false",
-      "boundary": "普通 schema 仍为提示，不保证完整 JSON Schema；强约束有限 profile 不变",
+      "boundary": "普通 schema 仍为提示，不保证完整 JSON Schema；强约束有限 profile 不变; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_chat_response_parser_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
       ]
     },
     "chat_template_kwargs": {
@@ -245,14 +246,15 @@
     },
     "response_format": {
       "semantics": "text/null 或受约束 JSON 对象/有限 schema；schema.strict:null=false",
-      "boundary": "XGrammar ON；tools 同用须 none；数组界限精确整数 0..64；缓存/媒体拒绝；constrained独立租约限1，忙时503；编译仍协作取消",
+      "boundary": "XGrammar ON；tools 同用须 none；数组界限精确整数 0..64；缓存/媒体拒绝；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "tests/server_chat_contract_test.cpp",
         "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
         "tests/server_structured_admission_test.cpp",
-        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
       ]
     },
     "user": {
@@ -300,22 +302,24 @@
     },
     "tool_choice": {
       "semantics": "auto/none/required/named",
-      "boundary": "非 auto 需约束后端；named 恰好一次；只 parsed messages；constrained独立租约限1，忙时503；编译仍协作取消",
+      "boundary": "非 auto 需约束后端；named 恰好一次；只 parsed messages；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "tests/server_structured_admission_test.cpp",
-        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
       ]
     },
     "parallel_tool_calls": {
       "semantics": "false 最多一次；true 允许多调用",
-      "boundary": "不是工具执行并发开关；false+tools 走约束；constrained独立租约限1，忙时503；编译仍协作取消",
+      "boundary": "不是工具执行并发开关；false+tools 走约束；constrained独立租约限1，忙时503；编译仍协作取消; constrained compiler/matcher isolated in one exec worker with 2GiB RLIMIT_AS and interruptible 10s/2s budgets; no whole-server memory guarantee",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "tests/server_structured_admission_test.cpp",
-        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+        "docs/SERVE_GRAMMAR_ISOLATION_2026-11-02.md"
       ]
     }
   },
@@ -488,15 +492,16 @@
     ]
   },
   "sources_sha256": {
-    "cmake/ChatProtocolIdentity.cmake": "40067cbda727af741af1b68c0ae72ae4e92de47cab13c629be3597a9ef2538a3",
+    "cmake/ChatProtocolIdentity.cmake": "0d7342e2ee164273acb0e74af9687a15367e9743ae98ebea31e7d6921cfcf92f",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/chat_capabilities.h": "7258dd026c08b16d5a09f55ea318036a86e1ad4c93d816d1aa2163f23d01540c",
     "include/q4t/server/chat_contract.h": "cc1fc63b8f551dcf705c1692cc9b551d64040487245827ea74fbb190010c7bdf",
     "include/q4t/server/chat_response_parser.h": "6f2da0dcd7f548ef6de8860f822516354c561c447a4fee1c43a0e450124cc2cf",
-    "include/q4t/server/chat_server.h": "77b2ee250909f6d05d888382d1d094ee1ba51a1b1fc1ba55ca026fa604b25863",
+    "include/q4t/server/chat_server.h": "f6618239d872fb4b0a37bfddb19853653db80b4383f576109e132212653d596c",
     "include/q4t/server/chat_template.h": "5be2647b6559eca3373642188ce5f79bd7672139991ecc148d4e722c4730c1b0",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
+    "include/q4t/server/grammar_process.h": "396ff9a96de9dbe8fcdaccdc44c2ebe4003743c372e89eba9f92ad9c44bda48a",
     "include/q4t/server/http_request.h": "7c5f076db8fec2f745223a499f1510ce8e08208ee120e3e5b682b8ee80c53b43",
     "include/q4t/server/http_response.h": "e82717241bb8d7d09e27b198e9b248e9fd547bb3ed29d35591a64a2b3f6239af",
     "include/q4t/server/input_contract.h": "b10e1fb838738b687c5a8f30808f895b38f4fd204dd34e5aefaa84059ac7154e",
@@ -515,24 +520,27 @@
     "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
     "include/q4t/server/session_state.h": "dfab02068951eed30bfd1b5dc4d6926afdea7ce9094533f6bb1f7fc168c61d4a",
     "include/q4t/server/structured_admission.h": "b68bb192ab642dd7e4564649b52cd7a5c589d5f781cf1222e0b47e2c72182d80",
-    "include/q4t/server/structured_decoder.h": "47bc68cee8b3a7433117ae5ee10b702f17e6dec94bf85ac6564c08db52871b75",
+    "include/q4t/server/structured_decoder.h": "37225227df8afecbaa0ae65bb71364a33b07aaf756b029d031ee813d769d17ea",
     "include/q4t/server/suffix_causal.h": "a0bad73c2a8293367a4e907e06a40d21baec389ba81e9131a248f99432165f2b",
     "include/q4t/server/suffix_token_cache.h": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
-    "src/main.cpp": "09eb90bd2246afe03c72ad4be71743cfed8076f0ccd3fbba999eb119b27b4deb",
+    "src/main.cpp": "93cae8f751bfc446d812f1d786389b32ae577c3dd386fedcfc907d6b08539b67",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "src/server/chat_capabilities.cpp": "8a2947b6fcb956f811c4a68bada54310993d30e4c16be93db02bcaf14d741465",
+    "src/server/chat_capabilities.cpp": "6d9dda87228fc41bbd7cbc80466d654bcb3784d1cd38a8803c24cafdfec0d149",
     "src/server/chat_contract.cpp": "2278a6c8474d61ca21244061e6b25ea97cd38ab0d7f1ecda5a6c59b962390e96",
-    "src/server/chat_generation.cpp": "8ba24d18c2c50069a6f4c7b5fb480882a9b70dae525b279adfb5b8ab42cb8b8d",
+    "src/server/chat_generation.cpp": "52262029b498c8f07cbfc05c51a80f4717fdde97cf3bfca91b586831df63367e",
     "src/server/chat_http.cpp": "114c84ba1b3a8c48c1e90e39695e4248fe7b4c86124696eaac99f53c6486ab49",
     "src/server/chat_input.cpp": "1b1c5baf72f418c1377c07c48e8499adb3e01ad72d0b3ebccaa09cbfc7075992",
-    "src/server/chat_metrics.cpp": "8a4885428145c43d4956c2f88d4c27a907c6b76f22ced7dddd0d44a8b50fed60",
+    "src/server/chat_metrics.cpp": "b24507997a7c2b7275a9c0c40684f20996205777d61b8d4588b886bd6b35ee79",
     "src/server/chat_response_parser.cpp": "dec8d134d331405688c53150d4dcaeb2736c4a86f5d094ca3dd5f6c809502859",
     "src/server/chat_scheduler.cpp": "fa8abe68ea9c02826731fbc7dc10dbb728d0860708af5f33b1ea800ffacea2f6",
     "src/server/chat_server.cpp": "228bdfcee62e79ec933488f13c3166e972702b2953dde2ef28361c58c2c66317",
     "src/server/chat_server_internal.h": "a0b12f215356157635e6faae917c973c3b87ed56df30b47324895fd3911ea55a",
     "src/server/chat_template.cpp": "351677cef7accf3461dc40a8b2d6e896bbfb2f25fc94ebb33b7e8b4b1f01d3a0",
     "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
+    "src/server/grammar_process.cpp": "b676b7deafb0cf8a795b085946abe1ec27f5e68e8d6df4abcfc64e92347b7c29",
+    "src/server/grammar_worker.cpp": "36b31556a5c2e3a12b918c32433dd122c62bafe99f244e493b7ffe2dc1fca52d",
+    "src/server/grammar_worker_internal.h": "4df5f319cb8704bb982817ee263f5685a6687aada0f468f19bf668e96ff8ce54",
     "src/server/http_request.cpp": "a0609922a91e8517b410bf0c6e236dd524f0584be152362fd17e316039c66aaa",
     "src/server/http_response.cpp": "004372d91bf53297fc4d7d6bef61abd6569425345968f656a86e2e4490ccdcb1",
     "src/server/input_contract.cpp": "b11ff893774749edcc59f636eb0de762956cb17e650db7755490df55b5f81d13",
@@ -541,7 +549,7 @@
     "src/server/server_options.cpp": "06e9470e9d294b8604677fefd74ab9d9b23c5dbe70b17a652174c7b1e4a4c1fc",
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
-    "src/server/structured_decoder.cpp": "d61b1932759eeb932f314c329f4d3e4c16881b8a426b305ad01ca9363da77515",
+    "src/server/structured_decoder.cpp": "7bbb5cb89c57d8bdf6e7c7988832efa6583e05e9cdaa2838f52bd7179cbcadb2",
     "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",

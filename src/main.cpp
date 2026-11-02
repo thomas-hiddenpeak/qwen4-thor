@@ -27,6 +27,7 @@
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/chat_server.h"
 #include "q4t/server/lifetime.h"
+#include "q4t/server/structured_decoder.h"
 #include "q4t/text/tokenizer.h"
 
 namespace {
@@ -862,6 +863,8 @@ int RunServe(int argc, char** argv) {
 }  // namespace
 
 int main(int argc, char** argv) {
+  const int worker = q4t::server::MaybeRunGrammarWorker(argc, argv);
+  if (worker >= 0) return worker;
   if (argc < 2) {
     PrintUsage(argv[0]);
     return 1;

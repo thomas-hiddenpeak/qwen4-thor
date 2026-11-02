@@ -3,6 +3,11 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  src/main.cpp
+  include/q4t/server/grammar_process.h
+  src/server/grammar_process.cpp
+  src/server/grammar_worker.cpp
+  src/server/grammar_worker_internal.h
   include/q4t/server/abort_reason.h
   include/q4t/server/structured_admission.h
   include/q4t/server/chat_capabilities.h

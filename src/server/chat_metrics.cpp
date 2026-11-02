@@ -85,6 +85,21 @@ void ChatServer::HandleMetrics(int fd) {
   counter("q4t_structured_prepare_failed_total",
           "Vocabulary or grammar preparation failures.",
           metrics_.structured_prepare_failed.load());
+  counter("q4t_structured_workers_started_total", "Grammar worker execs.",
+          metrics_.structured_workers_started.load());
+  counter("q4t_structured_compiles_started_total", "Worker compiler entries.",
+          metrics_.structured_compiles_started.load());
+  counter("q4t_structured_workers_reaped_total", "Grammar workers reaped.",
+          metrics_.structured_workers_reaped.load());
+  counter("q4t_structured_compile_timeouts_total", "Hard preparation timeouts.",
+          metrics_.structured_compile_timeouts.load());
+  counter("q4t_structured_resource_exhausted_total", "Preparation memory limits.",
+          metrics_.structured_resource_exhausted.load());
+  gauge("q4t_structured_workers_active", "Owned unreaped grammar processes.",
+        metrics_.structured_workers_active.load());
+  gauge("q4t_structured_worker_max_rss_bytes",
+        "Largest reaped worker ru_maxrss; not server or system memory.",
+        metrics_.structured_worker_max_rss_bytes.load());
   counter("q4t_prompt_tokens_total", "Total prompt tokens processed.",
           metrics_.prompt_tokens_total.load());
   counter("q4t_generation_tokens_total", "Total tokens generated.",

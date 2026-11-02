@@ -83,6 +83,13 @@ struct ServeMetrics {
   std::atomic<uint64_t> structured_rejected{0};
   std::atomic<uint64_t> structured_prepare_failed{0};
   std::atomic<uint64_t> structured_vocab_bytes{0};
+  std::atomic<int> structured_workers_active{0};
+  std::atomic<uint64_t> structured_workers_started{0};
+  std::atomic<uint64_t> structured_compiles_started{0};
+  std::atomic<uint64_t> structured_workers_reaped{0};
+  std::atomic<uint64_t> structured_worker_max_rss_bytes{0};
+  std::atomic<uint64_t> structured_compile_timeouts{0};
+  std::atomic<uint64_t> structured_resource_exhausted{0};
   std::atomic<uint64_t> prompt_tokens_total{0};
   std::atomic<uint64_t> generation_tokens_total{0};
   std::atomic<uint64_t> execution_steps_total{0};

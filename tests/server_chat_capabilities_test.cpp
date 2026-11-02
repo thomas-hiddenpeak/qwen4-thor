@@ -55,6 +55,11 @@ Q4T_TEST(chat_capabilities_option_contract) {
   Q4T_CHECK(structured->GetString("backend_revision") ==
             q4t::server::kXGrammarRevision);
   Q4T_CHECK(!structured->GetBool("mtp", true));
+  const auto* resources = structured->Find("resources");
+  Q4T_CHECK(resources && resources->GetBool("compile_interruptible"));
+  Q4T_CHECK(resources->GetInt("worker_address_space_bytes") ==
+            q4t::server::kGrammarAddressSpaceLimit);
+  Q4T_CHECK(!resources->GetBool("whole_server_ram_limit", true));
   for (const auto* choice : {"auto", "none", "required"}) {
     q4t::io::Json request;
     Q4T_CHECK(q4t::io::ParseJson(
