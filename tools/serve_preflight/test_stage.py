@@ -104,6 +104,39 @@ class Contracts(unittest.TestCase):
         with self.assertRaises(Exception):
             check_schema.check_value(value, schemas)
 
+    def test_corrected_budget_charges_failed_generation_and_all_preflights(self):
+        run = self.run_stub()
+        run.plan = dict(prior_counts=dict(starts=1, generations=8, negatives=15,
+                                         preflights=23))
+        run.requests, run.negative, run.preflights = 2, 5, 7
+        run.starts = run.capability_gets = 1
+        run.budget()
+        run.requests = 3
+        with self.assertRaises(AssertionError):
+            run.budget()
+        run.requests, run.preflights = 2, 8
+        with self.assertRaises(AssertionError):
+            run.budget()
+        self.assertEqual(stage.guard_command(True)[-1], "--corrected")
+
+    def test_retained_failure_and_same_runtime_are_exact(self):
+        prior = stage.BASE / "execution"
+        failure = stage.h.read(prior / "business/result.json")
+        self.assertEqual(failure["error"],
+                         'AttributeError("\'NoneType\' object has no attribute \'strip\'")')
+        self.assertEqual([failure[k] for k in ("request_attempts", "negative_requests",
+            "preflight_requests", "starts")], [8, 15, 23, 1])
+        self.assertEqual(stage.h.sha(stage.BASE / "engine/q4t"),
+                         stage.h.read(stage.BASE / "package/plan.json")["candidate_sha256"])
+
+    def test_reuse_requires_every_original_file_identity(self):
+        files = list((stage.BASE / "execution/business/candidate-mtp").iterdir())
+        self.assertTrue(files)
+        for path in files:
+            if path.is_file():
+                identity = stage.h.identity(path)
+                self.assertEqual(stage.h.sha(path), identity["sha256"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -51,11 +51,13 @@ class Run(b.Run):
 
     def budget(self):
         wire.require(time.time() < self.deadline, "preflight stage deadline")
-        wire.require(self.requests <= (2 if self.installed else 10) and
-            self.starts <= (1 if self.installed else 2) and
-            self.capability_gets <= (1 if self.installed else 2) and
-            self.negative <= (0 if self.installed else 20) and
-            self.preflights <= (2 if self.installed else 30), "frozen stage budget")
+        prior = getattr(self, "plan", {}).get("prior_counts", {})
+        wire.require(self.requests <= (2 if self.installed else 10 - prior.get("generations", 0)) and
+            self.starts <= (1 if self.installed else 2 - prior.get("starts", 0)) and
+            self.capability_gets <= (1 if self.installed else 2 - prior.get("starts", 0)) and
+            self.negative <= (0 if self.installed else 20 - prior.get("negatives", 0)) and
+            self.preflights <= (2 if self.installed else 30 - prior.get("preflights", 0)),
+            "frozen stage budget")
 
     def http(self, folder, label, method, path, body=None, content_type="application/json"):
         payload = json.dumps(body, ensure_ascii=False).encode() if body is not None else b""
@@ -228,7 +230,7 @@ class Run(b.Run):
             tools=long_request["tools"], stream=False, max_completion_tokens=128,
             extra_body={k: v for k, v in long_request.items() if k not in ("messages", "tools")})
         long_result = self.success(folder, "long-history", long_body)
-        wire.require(long_result.message["content"].strip() == "710003" and
+        wire.require((long_result.message["content"] or "").strip() == "710003" and
                      long_result.usage["prompt_tokens"] > 2048, "long history quality")
         self.resources_empty(folder, "business-drained")
 
@@ -252,6 +254,40 @@ class Run(b.Run):
             wire.require(re.search(rf"\[q4t\]\[slot-admission\].* slot={slot} capacity="
                 rf"{2048 if slot == 0 else 8192} required={required}\n", log),
                 "actual slot selection differs from planning")
+        self.resources_empty(folder, "explicit-drained")
+
+    def corrected_explicit(self, folder):
+        self.config(folder, explicit=True)
+        base = self.preflight(folder, "slot-count", b.simple())
+        count = base["prompt_tokens"]
+        body = b.simple()
+        body["max_completion_tokens"] = 2048 - count
+        small = self.success(folder, "slot-short", body)
+        wire.require(small.message["content"].strip() == "710003" and
+            self.checked[-1]["admission"]["eligible_slots"] == [0, 1], "short slot")
+        body["max_completion_tokens"] += 1
+        edge = self.preflight(folder, "slot-edge-readonly", body)
+        wire.require(edge["admission"]["eligible_slots"] == [1] and
+            edge["admission"]["required_capacity"] == 2049, "exact eligibility edge")
+        rows = stage.h.read(stage.PACKAGE / "cpu/template-diff/cases.json")
+        request = next(r["request"] for r in rows if r["id"] == "long-tool-history")
+        body = dict(model="qwen3.8-flash-next", messages=request["messages"],
+            tools=request["tools"], stream=False, max_completion_tokens=128,
+            tool_choice="none", extra_body={k: v for k, v in request.items()
+                                           if k not in ("messages", "tools")})
+        result = self.success(folder, "long-history-final-answer", body)
+        wire.require((result.message["content"] or "").strip() == "710003" and
+            result.finish_reason == "stop" and not result.message.get("tool_calls"),
+            "explicit final-answer long history quality")
+        long = self.checked[-1]["admission"]
+        wire.require(long["eligible_slots"] == [1], "long history slot eligibility")
+        self.rejection_pair(folder, "slot-overflow", dict(prompt="q",
+            max_completion_tokens=2147483647), "context_length_exceeded", "max_completion_tokens")
+        log = (folder / "server.log").read_text()
+        for slot, required in ((0, 2048), (1, long["required_capacity"])):
+            wire.require(re.search(rf"\[q4t\]\[slot-admission\].* slot={slot} capacity="
+                rf"{2048 if slot == 0 else 8192} required={required}\n", log),
+                "actual slot assignment differs")
         self.resources_empty(folder, "explicit-drained")
 
     def health(self, folder):
@@ -283,6 +319,15 @@ class Run(b.Run):
             binary = ROOT / "build/q4t" if self.installed else Path(self.plan["candidate"])
             if self.installed:
                 self.model("candidate-installed", binary, False, self.health)
+            elif self.plan.get("reuse_http"):
+                reuse = self.plan["reuse_http"]
+                folder = self.out / "candidate-mtp"
+                folder.mkdir()
+                for name, identity in reuse["files"].items():
+                    stage.h.copy_checked(identity, folder / name)
+                self.checked.extend(reuse["successful_comparisons"])
+                wire.save(self.out / "reused-evidence.json", reuse)
+                self.model("candidate-explicit", binary, True, self.corrected_explicit)
             else:
                 probe = self.plan["lifecycle_probe"]
                 wire.require(wire.digest(Path(probe["path"])) == probe["sha256"], "lifecycle drift")
@@ -292,9 +337,11 @@ class Run(b.Run):
                 wire.require(checked.returncode == 0, "HTTP lifecycle contracts failed")
                 self.model("candidate-mtp", binary, True, self.business)
                 self.model("candidate-explicit", binary, True, self.explicit)
-            wire.require(self.requests == (2 if self.installed else 10) and
-                self.preflights == (2 if self.installed else 27) and
-                self.negative == (0 if self.installed else 16), "missing frozen cases")
+            corrected = bool(self.plan.get("reuse_http"))
+            wire.require(self.requests == (2 if self.installed or corrected else 10) and
+                self.preflights == (2 if self.installed else 5 if corrected else 27) and
+                self.negative == (0 if self.installed else 1 if corrected else 16),
+                "missing frozen cases")
             for script in ("tools/serve_preflight/check_schema.py",
                            "tools/serve_stage_b2a/check_schema.py",
                            "tools/serve_thinking_budget/check_schema.py"):

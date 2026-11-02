@@ -1,6 +1,7 @@
 """Frozen preflight delivery, guarded pair replacement, and identity rollback."""
 import argparse
 import copy
+import datetime
 import hashlib
 import importlib.util
 import json
@@ -34,8 +35,9 @@ SCHEMAS = (*previous.SCHEMAS, "docs/serve-preflight-v1.schema.json",
 
 def cpu_gate():
     cpu = BASE / "cpu"
+    driver = "driver-corrected-result.json" if PACKAGE.name == "package-corrected" else "driver-result.json"
     for name in ("host-gate/result.json", "template-diff/result.json",
-                 "startup-preflight/result.json", "driver-result.json"):
+                 "startup-preflight/result.json", driver):
         h.require(h.read(cpu / name)["passed"], "CPU gate failed: " + name)
     for mode, count in (("off", 198), ("on", 207)):
         initial = (cpu / f"host-{mode}.log").read_text()
@@ -117,6 +119,33 @@ def prepare():
         startup_preflight=h.identity(PACKAGE / "candidate/startup_preflight"),
         prompt_probe=h.identity(PACKAGE / "candidate/q4t_preflight_probe"),
         lifecycle_probe=h.identity(PACKAGE / "candidate/q4t_http_lifecycle_tests"))
+    if PACKAGE.name == "package-corrected":
+        prior = BASE / "execution"
+        h.verify_seal(BASE / "package")
+        failure = h.read(prior / "business/result.json")
+        h.require(failure["request_attempts"] == 8 and failure["negative_requests"] == 15
+            and failure["preflight_requests"] == 23 and failure["starts"] == 1 and
+            failure["error"] == 'AttributeError("\'NoneType\' object has no attribute \'strip\'")',
+            "unexpected long-history failure")
+        folder = prior / "business/candidate-mtp"
+        observed = h.read(folder / "long-history-result.json")
+        h.require(observed["finish_reason"] == "tool_calls" and
+            observed["message"]["tool_calls"][0]["function"] ==
+                dict(name="first", arguments="{}") and
+            observed["usage"]["prompt_tokens"] == 5660,
+            "original long-history observation changed")
+        h.require(h.read(folder / "shutdown.json")["clean"] and
+            h.read(prior / "lease/exit.json")["status"] == "COMMAND_FAILED" and
+            h.read(BASE / "package/plan.json")["candidate_sha256"] == plan["candidate_sha256"],
+            "fixture correction requires drained identical runtime")
+        event = json.loads((prior / "lease/events.jsonl").read_text().splitlines()[0])
+        plan.update(original_started=datetime.datetime.fromisoformat(event["utc"]).timestamp(),
+            prior_counts=dict(starts=1, generations=8, negatives=15, preflights=23),
+            reuse_http=dict(files={p.name: h.identity(p) for p in folder.iterdir() if p.is_file()},
+                failed_result=h.identity(prior / "business/result.json"),
+                successful_comparisons=failure["comparisons"][:7]),
+            planned_new=dict(business=2, health=2, starts=2, preflights=7, negatives=1),
+            scope_note="Retain original auto-tool quality failure. Explicit tool_choice=none long-history retry also proves actual long-slot selection; exact 2049 eligibility is read-only, actual short-slot requirement is 2048. No repeated passed requests; cumulative 12 generations/30 preflights/16 negatives/3 starts, original 30 minute deadline.")
     h.save(PACKAGE / "plan.json", plan)
     h.seal(PACKAGE)
     print("PREPARED", plan["candidate_sha256"], flush=True)
@@ -132,7 +161,7 @@ def check():
     h.require(h.sha(plan["candidate"]) == plan["candidate_sha256"], "candidate changed")
     if (OUTPUT / "begin.json").exists():
         plan["started"] = h.read(OUTPUT / "begin.json")["started"]
-        plan["original_started"] = plan["started"]
+        plan.setdefault("original_started", plan["started"])
     return plan
 
 
@@ -174,6 +203,8 @@ def release(plan):
             preflight="text only; no slot/lease/cache/grammar/model side effects",
             performance_acceptance=False,
             numerical_evidence=str(PACKAGE / "numerical-reuse.json")))
+    if "scope_note" in plan:
+        metadata["scope"]["fixture_correction_and_reuse"] = plan["scope_note"]
     metadata["chat_protocol"].update(protocol_sha256=plan["protocol_sha256"],
         template=caps["template"], preflight=caps["preflight"],
         preflight_schema=str(ROOT / SCHEMAS[-2]),
@@ -194,23 +225,27 @@ def bind():
     a.check, a.verifier, a.release = check, verifier, release
 
 
-def guard_command():
+def guard_command(corrected=False):
     return ["/usr/bin/python3", "-B", str(ROOT / "tools/evalscope/gpu_exclusive.py"),
         "--output", str(OUTPUT / "lease"), "--", str(SDK_PYTHON), "-B",
-        str(Path(__file__).resolve()), "execute"]
+        str(Path(__file__).resolve()), "execute", *(["--corrected"] if corrected else [])]
 
 
 def main():
+    global PACKAGE, OUTPUT
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("action", choices=["prepare", "launch", "execute", "finalize", "rollback"])
     ap.add_argument("--output", type=Path)
+    ap.add_argument("--corrected", action="store_true")
     args = ap.parse_args()
+    if args.corrected:
+        PACKAGE, OUTPUT = BASE / "package-corrected", BASE / "execution-corrected"
     bind()
     if args.action == "prepare":
         prepare()
     elif args.action == "launch":
         h.require(sdk_environment() == check()["sdk_environment"], "SDK drift")
-        raise SystemExit(subprocess.run(guard_command(), cwd=ROOT).returncode)
+        raise SystemExit(subprocess.run(guard_command(args.corrected), cwd=ROOT).returncode)
     elif args.action == "execute":
         h.require_guard(OUTPUT)
         h.save(OUTPUT / "begin.json", dict(started=time.time(), limits=LIMITS))
