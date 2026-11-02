@@ -42,6 +42,7 @@
 #include "q4t/runtime/startup_reservation.h"
 #endif
 #include "q4t/text/tokenizer.h"
+#include "q4t/server/abort_reason.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/vision.h"
 
@@ -75,7 +76,13 @@ struct ServeMetrics {
   std::atomic<uint64_t> requests_total{0};
   std::atomic<uint64_t> requests_success{0};
   std::atomic<uint64_t> requests_error{0};    // rejected before generation
-  std::atomic<uint64_t> requests_aborted{0};  // client disconnect mid-stream
+  std::atomic<uint64_t> requests_aborted{0};  // all cooperative abort reasons
+  std::array<std::atomic<uint64_t>, kAbortReasons.size()> abort_reasons{};
+  std::atomic<int> structured_active{0};  // prep through response cleanup
+  std::atomic<int> structured_preparing{0};
+  std::atomic<uint64_t> structured_rejected{0};
+  std::atomic<uint64_t> structured_prepare_failed{0};
+  std::atomic<uint64_t> structured_vocab_bytes{0};
   std::atomic<uint64_t> prompt_tokens_total{0};
   std::atomic<uint64_t> generation_tokens_total{0};
   std::atomic<uint64_t> execution_steps_total{0};
@@ -84,6 +91,8 @@ struct ServeMetrics {
   MetricHistogram response_seconds;  // arrival -> full local response write
   MetricHistogram e2e_seconds;    // arrival -> last token
   MetricHistogram queue_seconds;  // arrival -> seq slot acquired
+  MetricHistogram slot_wait_seconds;           // only AllocSeqId
+  MetricHistogram structured_prepare_seconds;  // vocabulary + compile
 };
 
 class ChatServer {

@@ -62,13 +62,29 @@ void ChatServer::HandleMetrics(int fd) {
 
   counter("q4t_requests_total", "Total chat requests received.",
           metrics_.requests_total.load());
-  counter("q4t_requests_success_total", "Requests that finished generating.",
+  counter("q4t_requests_success_total",
+          "Requests with a complete local response write.",
           metrics_.requests_success.load());
   counter("q4t_requests_error_total",
           "Requests rejected or failed during generation.",
           metrics_.requests_error.load());
-  counter("q4t_requests_aborted_total", "Requests aborted by client disconnect.",
+  counter("q4t_requests_aborted_total",
+          "Requests aborted for any cooperative cancellation reason.",
           metrics_.requests_aborted.load());
+  b += "# HELP q4t_requests_aborted_by_reason_total Cooperative aborts by "
+       "fixed reason.\n"
+       "# TYPE q4t_requests_aborted_by_reason_total counter\n";
+  for (size_t i = 0; i < kAbortReasons.size(); ++i) {
+    b += "q4t_requests_aborted_by_reason_total{reason=\"";
+    b += kAbortReasons[i];
+    b += "\"} " + std::to_string(metrics_.abort_reasons[i].load()) + '\n';
+  }
+  counter("q4t_structured_rejected_total",
+          "Structured requests rejected by independent admission.",
+          metrics_.structured_rejected.load());
+  counter("q4t_structured_prepare_failed_total",
+          "Vocabulary or grammar preparation failures.",
+          metrics_.structured_prepare_failed.load());
   counter("q4t_prompt_tokens_total", "Total prompt tokens processed.",
           metrics_.prompt_tokens_total.load());
   counter("q4t_generation_tokens_total", "Total tokens generated.",
@@ -89,6 +105,15 @@ void ChatServer::HandleMetrics(int fd) {
         body_budget_.Used());
   gauge("q4t_active_chats", "Parsing, queued and generating chat requests.",
         active_chats_.load());
+  gauge("q4t_structured_active",
+        "Structured leases held through response cleanup (limit 1).",
+        metrics_.structured_active.load());
+  gauge("q4t_structured_preparing",
+        "Requests decoding vocabulary or compiling grammar.",
+        metrics_.structured_preparing.load());
+  gauge("q4t_structured_vocab_bytes",
+        "Conservative decoded vocabulary storage, not compiler RSS.",
+        metrics_.structured_vocab_bytes.load());
   gauge("q4t_seq_slots_total", "Sequence-state pool size (max_seq).", max_seq_);
   gauge("q4t_seq_slots_free", "Free sequence-state slots.", free_slots);
   gauge("q4t_gpu_healthy", "1 if no sticky CUDA error observed, else 0.",
@@ -101,10 +126,27 @@ void ChatServer::HandleMetrics(int fd) {
             metrics_.target_ready_seconds);
   histogram("q4t_response_seconds", "Arrival to complete local response write.",
             metrics_.response_seconds);
-  histogram("q4t_e2e_seconds", "End-to-end request latency.",
+  histogram("q4t_generation_complete_seconds",
+            "Arrival to generation exit; excludes final validation and "
+            "response write.",
             metrics_.e2e_seconds);
-  histogram("q4t_queue_seconds", "Seq-slot queue wait.",
+  histogram("q4t_e2e_seconds",
+            "Deprecated alias for q4t_generation_complete_seconds, not full "
+            "response latency.",
+            metrics_.e2e_seconds);
+  histogram("q4t_admission_seconds",
+            "Arrival to acquired slot, including preprocessing.",
             metrics_.queue_seconds);
+  histogram(
+      "q4t_queue_seconds",
+      "Deprecated alias for q4t_admission_seconds, includes preprocessing.",
+      metrics_.queue_seconds);
+  histogram("q4t_slot_wait_seconds",
+            "Time inside slot allocation, including cancelled waits.",
+            metrics_.slot_wait_seconds);
+  histogram("q4t_structured_prepare_seconds",
+            "Vocabulary and grammar preparation, including failed attempts.",
+            metrics_.structured_prepare_seconds);
 
   SendSimple(fd, 200, "OK", b, "text/plain; version=0.0.4");
 }

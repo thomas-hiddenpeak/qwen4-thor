@@ -16,6 +16,7 @@
 #include "q4t/server/chat_contract.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/structured_decoder.h"
+#include "q4t/server/structured_admission.h"
 #include "q4t/server/prefix_cache_policy.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/mtp_policy.h"
@@ -120,6 +121,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     std::atomic<int>& count;
     ~ChatGuard() { count.fetch_sub(1); }
   } chat_guard{active_chats_};
+  // Outlives request/grammar/response buffers; release only after cleanup.
+  StructuredRequestLease structured_lease(metrics_.structured_active);
   io::Json req;
   Status s = io::ParseJson(body, &req, true, kRequestJsonLimits);
   if (!s.ok()) {
@@ -214,6 +217,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     err_guard.aborted = true;
     if (!abort_counted) {
       metrics_.requests_aborted.fetch_add(1, std::memory_order_relaxed);
+      metrics_.abort_reasons[AbortReasonIndex(control->Reason())].fetch_add(
+          1, std::memory_order_relaxed);
       abort_counted = true;
       std::fprintf(stderr, "[q4t] request cancelled id=%s reason=%s\n",
                    request_id.c_str(), control->Reason());
@@ -251,12 +256,48 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
 
+  // The outer lease outlives this grammar, including exception unwinding.
   std::unique_ptr<StructuredDecoder> structured;
   if (constraints.active) {
+    if (cancelled()) {
+      count_abort();
+      send_cancel_error("request cancelled before structured admission");
+      return;
+    }
+    if (!structured_lease.TryAcquire()) {
+      metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
+      SendError(fd, 503, "structured request capacity exhausted", {},
+                "structured_capacity_exhausted");
+      return;
+    }
+    const auto prepare_start = std::chrono::steady_clock::now();
+    metrics_.structured_preparing.fetch_add(1, std::memory_order_relaxed);
+    ScopeExit prepared([&] {
+      metrics_.structured_vocab_bytes.store(0, std::memory_order_relaxed);
+      metrics_.structured_preparing.fetch_sub(1, std::memory_order_relaxed);
+      metrics_.structured_prepare_seconds.Observe(
+          std::chrono::duration<double>(std::chrono::steady_clock::now() -
+                                        prepare_start)
+              .count());
+    });
     diagnostic.Stage("grammar_compile");
     // Decode is immutable. Use its exact raw bytes, including partial UTF-8
     // token pieces; never normalize or re-encode a token for the mask.
-    std::vector<std::string> vocabulary(tok_->VocabSize());
+    const auto vocab_size = tok_->VocabSize();
+    if (vocab_size <= 0 || vocab_size > 300000) {
+      metrics_.structured_prepare_failed.fetch_add(1);
+      SendError(fd, 400, "invalid structured vocabulary size", {},
+                "constraint_compile_failed");
+      return;
+    }
+    std::vector<std::string> vocabulary(vocab_size);
+    VocabularyStorageBudget storage;
+    if (!storage.Charge(vocabulary.capacity() * sizeof(std::string))) {
+      metrics_.structured_prepare_failed.fetch_add(1);
+      SendError(fd, 400, "structured vocabulary storage budget exceeded", {},
+                "constraint_compile_failed");
+      return;
+    }
     std::vector<uint32_t> one(1);
     for (uint32_t token = 0; token < vocabulary.size(); ++token) {
       if (token % 256 == 0 && cancelled()) {
@@ -267,6 +308,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       one[0] = token;
       s = tok_->Decode(one, true, &vocabulary[token]);
       if (!s) break;
+      if (!storage.Charge(vocabulary[token].capacity() + 1)) {
+        s = Status::Fail("structured vocabulary storage exceeds 32 MiB");
+        break;
+      }
+      if (token % 256 == 0)
+        metrics_.structured_vocab_bytes.store(storage.Used());
     }
     if (s)
       s = StructuredDecoder::Create(constraints, vocabulary,
@@ -278,6 +325,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
     if (!s) {
+      metrics_.structured_prepare_failed.fetch_add(1,
+                                                   std::memory_order_relaxed);
       SendError(fd, 400, s.message(), {}, "constraint_compile_failed");
       return;
     }
@@ -329,6 +378,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     RequestDiagnostics::Scope wait(diagnostic, Wait::kSlot);
     seq_id = AllocSeqId(control.get(), fd, required_capacity);
   }
+  metrics_.slot_wait_seconds.Observe(diagnostic.Total(Wait::kSlot) / 1000.0);
   if (seq_id == -3) {
     SendError(fd, 503, "GPU unhealthy; restart server");
     return;

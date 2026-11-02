@@ -89,7 +89,7 @@
     },
     "request_timeout_ms": {
       "semantics": "原文精确整数 [1,10800000]；注册前拒绝错误值",
-      "boundary": "不含读取 body；编译/部分等待不可抢占 F6",
+      "boundary": "不含读取 body；编译内不可抢占，前后协作取消；shutdown等待in-flight编译，非硬时间保证",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -245,12 +245,14 @@
     },
     "response_format": {
       "semantics": "text/null 或受约束 JSON 对象/有限 schema；schema.strict:null=false",
-      "boundary": "XGrammar ON；tools 同用须 none；数组界限精确整数 0..64；缓存/媒体拒绝",
+      "boundary": "XGrammar ON；tools 同用须 none；数组界限精确整数 0..64；缓存/媒体拒绝；constrained独立租约限1，忙时503；编译仍协作取消",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "tests/server_structured_admission_test.cpp",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
       ]
     },
     "user": {
@@ -298,18 +300,22 @@
     },
     "tool_choice": {
       "semantics": "auto/none/required/named",
-      "boundary": "非 auto 需约束后端；named 恰好一次；只 parsed messages",
+      "boundary": "非 auto 需约束后端；named 恰好一次；只 parsed messages；constrained独立租约限1，忙时503；编译仍协作取消",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_structured_admission_test.cpp",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
       ]
     },
     "parallel_tool_calls": {
       "semantics": "false 最多一次；true 允许多调用",
-      "boundary": "不是工具执行并发开关；false+tools 走约束",
+      "boundary": "不是工具执行并发开关；false+tools 走约束；constrained独立租约限1，忙时503；编译仍协作取消",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_structured_admission_test.cpp",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
       ]
     }
   },
@@ -332,18 +338,20 @@
     },
     "GET /v1/capabilities": {
       "semantics": "实现/模板源码身份与能力边界",
-      "boundary": "implementation_only；不是发布/实际配置完整证明",
+      "boundary": "implementation_only；不是发布/实际配置完整证明；明示单constrained租约、编译不可抢占及非RSS硬上限",
       "evidence": [
         "tests/server_chat_capabilities_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
       ]
     },
     "GET /metrics": {
-      "semantics": "Prometheus 资源/执行与时延观测",
-      "boundary": "F5 口径错误；无按结果/阶段错误分类指标",
+      "semantics": "独立slot_wait/admission/generation_exit/response；固定原因取消计数；constrained准备与租约指标",
+      "boundary": "queue/e2e保留原语义的弃用别名；存储计量非compiler峰值；局部写完不保证客户端消费",
       "evidence": [
-        "docs/SERVE_RELIABILITY_2026-10-30.md",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "src/server/chat_metrics.cpp",
+        "tools/serve_resources/verify.py",
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
       ]
     },
     "POST /v1/requests/cancel": {
@@ -480,12 +488,13 @@
     ]
   },
   "sources_sha256": {
-    "cmake/ChatProtocolIdentity.cmake": "b67382fbc9974033a82b3239511d690a97c3760cbd9adeca9cfb63952fe57e29",
+    "cmake/ChatProtocolIdentity.cmake": "40067cbda727af741af1b68c0ae72ae4e92de47cab13c629be3597a9ef2538a3",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
+    "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/chat_capabilities.h": "7258dd026c08b16d5a09f55ea318036a86e1ad4c93d816d1aa2163f23d01540c",
     "include/q4t/server/chat_contract.h": "cc1fc63b8f551dcf705c1692cc9b551d64040487245827ea74fbb190010c7bdf",
     "include/q4t/server/chat_response_parser.h": "6f2da0dcd7f548ef6de8860f822516354c561c447a4fee1c43a0e450124cc2cf",
-    "include/q4t/server/chat_server.h": "bb19d2198ac8f06a81cb0b91f2578aecae32954e3f4437495de0cf298b534afc",
+    "include/q4t/server/chat_server.h": "77b2ee250909f6d05d888382d1d094ee1ba51a1b1fc1ba55ca026fa604b25863",
     "include/q4t/server/chat_template.h": "5be2647b6559eca3373642188ce5f79bd7672139991ecc148d4e722c4730c1b0",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/http_request.h": "7c5f076db8fec2f745223a499f1510ce8e08208ee120e3e5b682b8ee80c53b43",
@@ -505,18 +514,19 @@
     "include/q4t/server/session_cache.h": "127b61a11a7e3e7078d0c5403f2ce2eb7114e57828594e8fe76c62ea93e14e6d",
     "include/q4t/server/session_save_timing.h": "317a0c125930305e10596efa2345e5af23f57345ad8059fd4065cb9f9ab5db06",
     "include/q4t/server/session_state.h": "dfab02068951eed30bfd1b5dc4d6926afdea7ce9094533f6bb1f7fc168c61d4a",
+    "include/q4t/server/structured_admission.h": "b68bb192ab642dd7e4564649b52cd7a5c589d5f781cf1222e0b47e2c72182d80",
     "include/q4t/server/structured_decoder.h": "47bc68cee8b3a7433117ae5ee10b702f17e6dec94bf85ac6564c08db52871b75",
     "include/q4t/server/suffix_causal.h": "a0bad73c2a8293367a4e907e06a40d21baec389ba81e9131a248f99432165f2b",
     "include/q4t/server/suffix_token_cache.h": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
     "src/main.cpp": "09eb90bd2246afe03c72ad4be71743cfed8076f0ccd3fbba999eb119b27b4deb",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "src/server/chat_capabilities.cpp": "983c1d2073ffaa39a467edb6ff58e1e504820382eedab0bdef1e86890a1f835a",
+    "src/server/chat_capabilities.cpp": "8a2947b6fcb956f811c4a68bada54310993d30e4c16be93db02bcaf14d741465",
     "src/server/chat_contract.cpp": "2278a6c8474d61ca21244061e6b25ea97cd38ab0d7f1ecda5a6c59b962390e96",
-    "src/server/chat_generation.cpp": "2e5ce89cd2611c572143992767e7170b18a677a43c89398b43a3ff8d6ef65e40",
+    "src/server/chat_generation.cpp": "8ba24d18c2c50069a6f4c7b5fb480882a9b70dae525b279adfb5b8ab42cb8b8d",
     "src/server/chat_http.cpp": "114c84ba1b3a8c48c1e90e39695e4248fe7b4c86124696eaac99f53c6486ab49",
     "src/server/chat_input.cpp": "1b1c5baf72f418c1377c07c48e8499adb3e01ad72d0b3ebccaa09cbfc7075992",
-    "src/server/chat_metrics.cpp": "1e08a6115d85f7a8cffd37e62d17b1b585585d08a4b115dd719516fe76e6a41a",
+    "src/server/chat_metrics.cpp": "8a4885428145c43d4956c2f88d4c27a907c6b76f22ced7dddd0d44a8b50fed60",
     "src/server/chat_response_parser.cpp": "dec8d134d331405688c53150d4dcaeb2736c4a86f5d094ca3dd5f6c809502859",
     "src/server/chat_scheduler.cpp": "fa8abe68ea9c02826731fbc7dc10dbb728d0860708af5f33b1ea800ffacea2f6",
     "src/server/chat_server.cpp": "228bdfcee62e79ec933488f13c3166e972702b2953dde2ef28361c58c2c66317",
@@ -531,8 +541,9 @@
     "src/server/server_options.cpp": "06e9470e9d294b8604677fefd74ab9d9b23c5dbe70b17a652174c7b1e4a4c1fc",
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
-    "src/server/structured_decoder.cpp": "8ae6eeaf142aad749164d572ec4557462ce3ee8647aa47155abd5e980c469ee3",
+    "src/server/structured_decoder.cpp": "d61b1932759eeb932f314c329f4d3e4c16881b8a426b305ad01ca9363da77515",
     "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8"
   },
-  "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+  "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+  "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
 }

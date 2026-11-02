@@ -68,7 +68,20 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("named_tool_max_calls":1,"max_tools":16,"max_response_bytes":1048576,)"
          R"("max_schema_bytes":16384,"max_schema_depth":8,)"
          R"("max_schema_nodes":128,"object_key_order":"schema",)"
-         R"("json_with_tools":"requires_tool_choice_none"},"template":{)"
+         R"("json_with_tools":"requires_tool_choice_none",)"
+         R"("resources":{"active_limit":1,"overload_status":503,)"
+         R"("overload_code":"structured_capacity_exhausted",)"
+         R"("lease":"preparation_through_response_cleanup",)"
+         R"("compiler_threads":1,"compiler_cache":false,)"
+         R"("decoded_vocab_storage_bytes":33554432,)"
+         R"("compiled_grammar_bytes":67108864,"compile_peak_rss_limit":false,)"
+         R"("compile_interruptible":false,"shutdown":"drain_inflight_compile"}},)"
+         R"("observability":{"version":2,"full_response":"q4t_response_seconds",)"
+         R"("slot_wait":"q4t_slot_wait_seconds",)"
+         R"("admission":"q4t_admission_seconds",)"
+         R"("generation_exit":"q4t_generation_complete_seconds",)"
+         R"("legacy_queue_e2e":"deprecated_aliases",)"
+         R"("cancellation":"fixed_reason_counters"},"template":{)"
          R"("id":"qwen4_exp-native-v1","reference_sha256":)" +
          Quote(identity::kTemplateReference) + R"(,"renderer_source_sha256":)" +
          Quote(identity::kRenderer) + R"(,"tool_history_source_sha256":)" +

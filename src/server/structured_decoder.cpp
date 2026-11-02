@@ -1,4 +1,5 @@
 #include "q4t/server/structured_decoder.h"
+#include "q4t/server/structured_admission.h"
 
 #include <algorithm>
 #include <cmath>
@@ -50,7 +51,7 @@ Status StructuredDecoder::Create(const OutputConstraints& plan,
     // max_memory_bytes is a cache bound, NOT a peak compilation RSS limit.
     xgrammar::GrammarCompiler compiler(tokenizer, 1, false, 0);
     const auto grammar = compiler.CompileStructuralTag(plan.structural_tag);
-    if (grammar.MemorySizeBytes() > 64 * 1024 * 1024)
+    if (grammar.MemorySizeBytes() > kCompiledGrammarLimit)
       return Status::Fail("compiled grammar exceeds 64 MiB");
     out->reset(
         new StructuredDecoder(std::make_unique<Impl>(grammar, model_vocab)));

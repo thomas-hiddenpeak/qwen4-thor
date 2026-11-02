@@ -14,8 +14,8 @@ candidate MTP：普通 auto JSON 两轮，共 2 次；安装健康 2 次。拒�
 
 ```bash
 python3 -B tools/input_contract/stage.py prepare
-/usr/bin/python3 -B tools/evalscope/gpu_exclusive.py \
-  --output .q4t-work/input-contract-20261102/execution/lease -- \
+/usr/bin/python3 -B /home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py \
+  --output /home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/execution/lease -- \
   .q4t-work/application-service-20261102/sdk-env/bin/python -B \
   tools/input_contract/stage.py execute
 python3 -B tools/input_contract/stage.py finalize
