@@ -22,7 +22,7 @@
     },
     "messages": {
       "semantics": "原生模板与parsed默认；单条开头developer作为system替代；历史调用形状与结果必填",
-      "boundary": "混用/重复/错位指令、非null消息name与指令媒体拒绝；无ID历史仅原生兼容；角色profile待本批HTTP验收",
+      "boundary": "混用/重复/错位指令、非null消息name与指令媒体拒绝；无ID历史仅原生兼容；B1 profile限定HTTP已验",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -30,7 +30,8 @@
         "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
         "tests/server_chat_message_profile_test.cpp",
         "docs/SERVE_STAGE_B1_2026-11-03.md",
-        "docs/serve-message-profile-v2.schema.json"
+        "docs/serve-message-profile-v2.schema.json",
+        "docs/SERVE_STAGE_B1_RESULT_2026-11-03.md"
       ]
     },
     "max_tokens": {
@@ -602,7 +603,7 @@
       "src/server/chat_template.cpp"
     ],
     "cpu_template_cases": 58,
-    "http_status": "pending",
-    "report": "docs/SERVE_STAGE_B1_2026-11-03.md"
+    "http_status": "accepted_within_profile",
+    "report": "docs/SERVE_STAGE_B1_RESULT_2026-11-03.md"
   }
 }

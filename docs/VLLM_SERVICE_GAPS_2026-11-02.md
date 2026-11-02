@@ -26,7 +26,7 @@
 `reference/vllm/vllm/entrypoints/openai/` 和 `entrypoints/serve/`。
 同时核对当前官方文档（访问日期 2026-11-02）；未更新、构建或启动
 reference，未把 stable 网页当作本地固定 commit 的相同版本。
-本项目盘点起点 460ffd0，下表已同步142bb9d4输入/编译隔离及serve阶段A状态；历史
+本项目盘点起点 460ffd0，下表已同步f1133bcc输入/编译隔离及serve阶段A/B1状态；历史
 差异与具体失败另列，未验部分不标成熟。
 
 vLLM 的 Chat 服务组织了独立的请求 schema、工具 / 推理 parser、
@@ -50,8 +50,8 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | JSON / schema / grammar | structured_outputs、response_format | json_object / 有限 json_schema 已验；未暴露任意 grammar | B 首组已交付；新路径不组合缓存 / 媒体 |
 | 文本停止条件 | stop 字符串 / token IDs、终态与 stop_reason | 仅 EOS / token预算 / 容量停止；有效 stop 拒绝 | B：跨 token、跨块、与工具标记组合验 |
 | 输出预算 | max_completion_tokens / legacy max_tokens | 首批已验两字段共用预算 | A 已交付：双非空拒绝 |
-| 消息角色 | 接口 schema 接收 OpenAI 角色，最终受模板支持限制 | developer 不支持；system 必须在首条 | B：明确角色映射后做模板对照，不静默降级 |
-| 消息 name / refusal / audio | schema 有相应字段，具体模型路径决定语义 | 首批已拒绝非空未实现字段 | A 已交付拒绝合同；B 另行实现语义 |
+| 消息角色 | 接口schema接收OpenAI角色，最终受模板支持限制 | SRV-04已验单条开头developer替代system；混用/重复/错位拒绝 | [B1限定交付](SERVE_STAGE_B1_RESULT_2026-11-03.md)：原生字节/ID及SDK工具闭环 |
+| 消息 name / refusal / audio | schema有相应字段，具体模型路径决定语义 | 非null仍拒绝；B1确认模型不表达name并定位具体字段 | B1拒绝合同已验；有具体模板语义才另行支持 |
 | 嵌套输入校验 | 独立协议类型与 validation handlers | 工具定义 / 历史 / cancel 已补共用严格校验，真实 JSON/SSE 工具闭环通过 | [输入合同 A 组已交付](SERVE_INPUT_CONTRACT_2026-11-02.md)：F1/F2/F4 |
 | 推理输出字段 | 当前官方 / 固定源码为 reasoning | Q4T 为 reasoning_content | B：版本化适配，不宣称字段相同 |
 | 推理隐藏与预算 | include_reasoning / thinking_token_budget 等扩展 | 有模板 thinking/effort；无独立推理预算 | B：输出隐藏不等于停止推理计算 |
@@ -72,7 +72,7 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 健康与观测 | health/load/version、Prometheus、请求 metrics | F5指标、livez/readyz、排空与4个控制连接预留已验 | SRV-02限定交付；不保证未分类慢头洪泛下控制可用 |
 | 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生未提供；现有 Nginx 示例未含完整鉴权配置 | C：在真实入口配置并验收，不能认为传了 api_key 就鉴权 |
 | HTTP 媒体类型 / 方法 | 框架路由与 JSON request validation | application/json UTF-8、405＋Allow、query400、GET body400已验 | SRV-03限定交付；仍禁chunked上传/连接复用 |
-| OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | A响应schema子集、自有客户端及Python SDK 3.42.1限定互通已验 | SRV-08继续完整输入协议/JS等矩阵，不外推其他SDK |
+| OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | A响应/B1消息schema子集、自有客户端及Python SDK 3.42.1限定互通已验 | SRV-08继续完整输入协议/JS等矩阵，不外推其他SDK |
 | Embeddings / rerank / audio / 多模态 | 独立任务接口，取决于模型与 runner | 当前首版文本生成范围之外 | C：不能因为 vLLM 有端点就认为本模型有能力 |
 | LoRA / 动态权重 / 分布式管理 | 单独可选管理接口 | 不在本轮单模型 Thor 交付范围 | C：不为功能对齐暴露管理面 |
 

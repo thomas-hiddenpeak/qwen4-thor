@@ -4,11 +4,17 @@
 只读查询本项目文档、发布与验收记录。代码优先；实现、验证和业务质量
 分别记录。此页是持续维护入口，历史验收不随新功能自动扩张。
 
+2026-11-03 [serve阶段B1已交付](SERVE_STAGE_B1_RESULT_2026-11-03.md)：
+当前默认f1133bcc/2edfb882。单条开头developer作为system替代，混用、
+重复、错位与非null消息name拒绝；指令媒体解码前拒绝。46组模板正例
+逐字节/逐ID及12拒绝形状通过；真实SDK JSON/SSE、工具回填和安装健康
+通过。推理控制、stop、预检和完整客户端矩阵仍待后续。
+
 2026-11-03 [serve阶段A已交付](SERVE_STAGE_A_RESULT_2026-11-03.md)：
-当前默认142bb9d4/94ce0825。X-Request-Id、显式错误param、livez/readyz、
+该阶段默认142bb9d4/94ce0825。X-Request-Id、显式错误param、livez/readyz、
 4个控制连接预留、HTTP媒体/方法/query合同、提前SSE与5秒串行心跳、
 nullable字段和普通流实际背压均有有界证据。严格payload继续整份
-缓冲，该长响应背压组合未证明；完整角色/推理/停止/预检仍待B。
+缓冲，该长响应背压组合未证明；其他角色组合/推理/停止/预检仍待B后续。
 
 2026-11-02 [编译/匹配隔离已交付](SERVE_GRAMMAR_ISOLATION_2026-11-02.md)：
 此前默认c8c412c4/sidecar da9f3ac5。F5计时口径与固定取消原因、严格
@@ -43,7 +49,7 @@ OpenAI API 全兼容或生产多租户应用平台。模型支持、模板一致
 | 层次 | 已有实现 / 证据 | 尚欠能力 |
 |---|---|---|
 | 推理与请求生命周期 | GPU 错误隔离、容量准入、取消、超时、槽回收；已有 Thor 验收 | 与应用协议分开验收；不把本轮当性能优化 |
-| 消息与模板 | 原生 qwen4_exp 模板、工具历史 ID 对齐、推理内容分离；21 模板用例 | 并非运行任意 HF Jinja 模板；新增模型需要独立适配 |
+| 消息与模板 | 原生 qwen4_exp、单条developer适配、工具历史ID、推理分离；46组模板正例 | 并非运行任意 HF Jinja 模板；新增模型需要独立适配 |
 | 输出协议 | JSON / SSE、工具控制、有限 strict/schema、usage、统一错误、稳定 created、两种 token 预算字段已验 | 完整 schema、停止序列和逐字工具参数增量未实现 |
 | 客户端 | 项目客户端、持久记录、只读恢复判定；OpenAI Python 3.42.1 限定互通通过 | 其他 SDK / 框架未验；没有自动重试 / 任务恢复执行器 |
 | 应用工具 | 真实发布、历史验收与不存在资料查询通过；来源范围、工具业务错误与预算门已验 | 自主广泛搜索、逐句事实验证与实时状态查询未验 |
@@ -56,7 +62,7 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 
 ## API 兼容矩阵
 
-当前交付为 142bb9d4 / sidecar 94ce0825，盘点起点为 460ffd0 /
+当前交付为 f1133bcc / sidecar 2edfb882，盘点起点为 460ffd0 /
 旧默认 830694ce。`已验`指本项目已有明确证据，不代表外部 SDK 全部
 版本通过。P1 / P2 的验证范围与具体失败在本页末尾及结果文档记录。
 完整 vLLM 对照与优先级见[32项服务能力盘点](VLLM_SERVICE_GAPS_2026-11-02.md)。
@@ -66,7 +72,8 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | POST /v1/chat/completions | 已验，子集 | 单模型、单 choice；chat_generation.cpp |
 | GET /v1/models | 已验，SDK 3.42.1 | 单个配置模型；不支持模型详情 / 管理 |
 | GET /v1/capabilities | 已验，Q4T 扩展 | 实现身份，不是发布或质量证明 |
-| messages | 已验 | 默认解析；system/user/assistant/tool；模板决定角色边界 |
+| messages | profile限定已验 | 默认解析；system/developer/user/assistant/tool；system或developer仅第0条且不能混用 |
+| message.name | 明确拒绝非null | 模板不表达名称；省略/null允许，含空串的其他值400；tool_call_id负责工具关联 |
 | prompt / parse_response=false | 已验，Q4T 扩展 | raw 文本；不解析工具或推理 |
 | JSON / stream=true | 限定已验 | 首帧提前；5秒注释心跳；finish → 可选 usage → DONE；中断不能当完整响应 |
 | content / reasoning_content | 已验 | reasoning_content 是扩展字段；不等于 OpenAI reasoning item |
@@ -91,7 +98,7 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | GET /livez、/readyz | 限定已验 | 普通忙仍ready；GPU unhealthy或排空ready503；加载后才监听 |
 | HTTP媒体 / 方法 / query | 已验 | application/json UTF-8；405＋Allow、query400、GET body400；连接关闭 |
 | 控制入口 / 慢读 | 限定已验 | 4控制连接预留；普通增量流真实EAGAIN后取消回收；不保证慢头洪泛 |
-| 响应schema | A子集已验 | error/completion/chunk/readiness；完整输入OpenAPI与其他SDK待SRV-08 |
+| 机器schema | A响应及B1消息子集已验 | error/completion/chunk/readiness与角色/指令位置/name/指令文本；完整输入OpenAPI和其他SDK待SRV-08 |
 | Responses / Assistants / Batch | 未实现 | 不能通过更换 base_url 使用 |
 | 图片 / 视频 / 音频 | 非首批文本兼容范围 | 媒体实验开关不代表多模态业务验收 |
 | OpenAI Python SDK | 3.42.1 限定互通通过 | models、JSON/SSE、工具往返、预算与参数错误；关闭自动重试 |
@@ -116,7 +123,7 @@ P1：补 max_completion_tokens 与 max_tokens 共用预算；统一 HTTP / SSE
 协议源码身份覆盖对应实现。保留不支持参数的显式拒绝，不引入假约束。
 参照 vLLM 盘点新增首批项：SSE created 请求身份保持一致，未实现的
 嵌套消息语义显式拒绝（允许 name/refusal/audio/annotations/function_call
-为空，拒绝非空；developer 和 reasoning 别名后续适配）。
+为null，拒绝其他值；developer后续B1已按单槽profile适配，reasoning别名仍待办）。
 
 P2：新增有界项目资料查询应用，工具只读本仓库允许范围内的真实文件，
 返回路径、行号和内容身份；模型输入不作为任意文件 / 命令 / URL 执行。
@@ -129,7 +136,7 @@ schema 解码；18 生成 / 12 拒绝 / 3 启动通过。受约束 SSE 完整验
 发布，单槽 / full head / 8192 容量有界验收，不使用 MTP / packed decode，
 cache / media 组合拒绝。CMake 重建须 Q4T_ENABLE_XGRAMMAR=ON。
 
-后续独立阶段：消息 / 推理字段、停止条件、请求预检和追踪、可恢复
+后续独立阶段：推理字段/隐藏/预算、停止条件、请求预检、可恢复
 任务状态机、网关鉴权和租户配额；分别冻结业务合同与验收。
 
 ## 本轮验证与交付合同

@@ -5,7 +5,7 @@
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
 应用服务：[能力与 OpenAI 兼容矩阵、vLLM 差距与分阶段计划](APPLICATION_SERVICE.md)。
 [Serve阶段A交付、HTTP/SSE合同与剩余边界](SERVE_STAGE_A_RESULT_2026-11-03.md)。
-[Serve阶段B1角色profile范围与验收冻结](SERVE_STAGE_B1_2026-11-03.md)。
+[Serve阶段B1角色profile交付、模板差分与真实工具闭环](SERVE_STAGE_B1_RESULT_2026-11-03.md)。
 [当前 serve 任务队列、依赖与每批验收出口](PHASES.md#队列与依赖)。
 [serve 全链路审计、具体遗漏与防漏检查](SERVE_COMPLETENESS_AUDIT_2026-11-02.md)。
 [输入合同 A 组修复、真实 JSON/SSE 工具闭环与默认交付](SERVE_INPUT_CONTRACT_2026-11-02.md)。
@@ -24,7 +24,7 @@
 见[验收结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。
 聊天接入 830694ce、应用服务 c3772d11 的后续默认为结构化输出
 957211c7 / 9eba5472，再更新输入合同 ea678009 / 90372798；当前为
-serve阶段A 142bb9d4 / 94ce0825（之前编译隔离c8c412c4）。
+serve阶段B1 f1133bcc / 2edfb882（之前A为142bb9d4）。
 外部 vLLM 已按授权停止，当前交付后 GPU 释放；
 原[正式交付、98份证据与回退](CHAT_DELIVERY_2026-11-02.md)保留。
 [完整工具往返、真实中断与日志崩溃场景准备](CHAT_ACCEPTANCE_SCENARIOS_2026-11-02.md)。

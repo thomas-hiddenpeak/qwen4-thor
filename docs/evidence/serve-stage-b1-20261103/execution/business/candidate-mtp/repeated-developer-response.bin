@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 209
+X-Request-Id: req-e80c6580452a4d88c5984f30f8a6c9b3
+Connection: close
+
+{"error":{"message":"system or developer must be the single leading instruction message; mixing or repeating is unsupported","type":"invalid_request_error","code":"invalid_request","param":"messages[1].role"}}

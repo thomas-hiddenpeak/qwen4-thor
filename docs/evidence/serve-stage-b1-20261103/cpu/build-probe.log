@@ -1,0 +1,29 @@
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++-14 - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found ICU: /usr/include (found version "74.2") found components: uc i18n
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/probe
+[ 16%] Building CXX object CMakeFiles/template_probe.dir/template_probe.cpp.o
+[ 16%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_template.cpp.o
+[ 25%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_contract.cpp.o
+[ 33%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/chat_tool_history.cpp.o
+[ 41%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/input_contract.cpp.o
+[ 50%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/output_constraints.cpp.o
+[ 58%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/output_schema.cpp.o
+[ 66%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/http_response.cpp.o
+[ 75%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/server/http_request.cpp.o
+[ 83%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/io/json.cpp.o
+[ 91%] Building CXX object CMakeFiles/template_probe.dir/home/rm01/models/dev/qwen4-thor/src/text/tokenizer.cpp.o
+[100%] Linking CXX executable template_probe
+[100%] Built target template_probe
+[  8%] Building CXX object CMakeFiles/template_probe.dir/template_probe.cpp.o
+[ 16%] Linking CXX executable template_probe
+[100%] Built target template_probe

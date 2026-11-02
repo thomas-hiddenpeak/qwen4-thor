@@ -1,20 +1,32 @@
 # 当前状态
 
-
-## Serve 阶段 B1 已配置并开发（2026-11-03）
-
-本批推进SRV-04：唯一开头的developer作为system替代；两者混用、
-重复、错位与非null消息name明确拒绝。目标profile为
-`qwen3.8-native-v2`，保留模型原生thinking和工具历史规则。
-入口与直接模板共用角色校验，指令消息媒体在解码前拒绝。
-实施/验收范围见[阶段B1冻结](SERVE_STAGE_B1_2026-11-03.md)。
-CPU OFF166/ON173、Thor132＋后端7、58项模板/消息差分和6项驱动
-合同通过，构建零警告。真实HTTP尚未运行；默认仍为142bb9d4。
-SRV-05～07和完整SDK矩阵继续排队，不随B1配置标记完成。
-
 更新：2026-11-03。代码是实现事实来源，验收以[EVALUATION.md](EVALUATION.md)为准。
 
 ## 当前推进目标
+
+Serve阶段B1（SRV-04）已按模型profile交付；默认`f1133bcc` /
+sidecar`2edfb882`，源码/驱动c299c647。支持单条开头developer作为
+system替代，明确拒绝混用/重复/错位指令、非null消息name和指令媒体；
+入口与模板共用校验。新profile、能力声明与消息schema子集已同步。
+详见[结果、证据与回退](SERVE_STAGE_B1_RESULT_2026-11-03.md)。
+
+CPU OFF166/ON173、Thor132＋后端7、58模板/消息差分、驱动6通过，
+零警告。真实7生成/12负例/3启动全部首轮通过：developer/system
+回答与usage一致、thinking SSE、严格工具读取真实项目资料并回填引用、
+plain及安装路径HTTP健康；19响应/59封套通过schema。117.20秒执行、
+138.08秒finalize，guard COMPLETED/ENV_ABORT0。完整head/普通MTP k3、
+严格plain约束路径保持，模型/数值源码未变，不作性能接受声明。
+
+137份原始记录已封存（仓库141文件），旧142bb9d4/94ce0825和完整
+回退链保留。00:52 CST GPU计算PID空、锁可用、无恢复标记/常驻模型，
+MemAvailable约116.20GiB。非null name、混合指令层级仍不支持；不宣称
+完整OpenAI兼容或整个阶段B完成，阶段A保留项仍有效。
+
+下一目标按[任务队列](PHASES.md#队列与依赖)推进SRV-05：reasoning字段
+适配、输出隐藏与推理预算分别冻结并验收；随后SRV-06 stop、SRV-07
+预检/有效配置。SRV-08继续完整输入协议与JS SDK；SRV-09～11条件待办。
+
+## 阶段 A 交付历史
 
 serve 阶段 A 已按限定范围交付（2026-11-03）：SRV-01请求追踪与错误
 定位、SRV-02就绪/排空和控制连接预留、SRV-03 HTTP/SSE合同、串行
@@ -35,9 +47,8 @@ GPU计算PID空、锁可用、无恢复标记/常驻模型，MemAvailable约116.
 最后背压/关闭使用同源专用构建，生产ELF不含故障宏。不宣称所有
 prefill/代理、完整SDK或多租户完备，见[结果与边界](SERVE_STAGE_A_RESULT_2026-11-03.md)。
 
-下一阶段按[任务队列](PHASES.md#队列与依赖)推进SRV-04～07：消息角色
-与模板、推理字段/隐藏/预算、文本停止、token/渲染预检；SRV-08继续
-完整协议与客户端矩阵。SRV-09～11仍为条件待办，尚未开发。
+阶段A交付后排入B组；SRV-04现已按上文profile交付，其余任务状态
+以上方当前目标及PHASES为准。
 
 以下为先前阶段交付历史，当前默认及剩余边界以上述状态为准。
 
