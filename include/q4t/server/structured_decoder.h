@@ -36,7 +36,10 @@ class StructuredDecoder {
                        GrammarFailure* failure = nullptr);
   // Masks *before* greedy selection and accepts the selected token exactly
   // once. No fallback to an unmasked token on failure.
-  Status Select(std::span<const uint16_t> logits, int32_t* token);
+  // forced_token >= 0 must itself be grammar-allowed and finite. A rejected
+  // forced token leaves the matcher unchanged; it is never substituted later.
+  Status Select(std::span<const uint16_t> logits, int32_t* token,
+                int32_t forced_token = -1);
   bool Terminated() const;
 
  private:

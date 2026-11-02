@@ -5,6 +5,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/reasoning_options.h"
+#include "q4t/server/thinking_budget.h"
 #include "q4t/server/structured_decoder.h"
 
 namespace q4t::server {
@@ -48,14 +49,24 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("stream_terminal_order":["finish","usage_if_requested","DONE"],)"
          R"("parse_error":{"http_status":502,"sse_error_then_done":true,)"
          R"("successful_finish":false},"sampling":"greedy","choices":1},)"
-         R"("reasoning":{"profile":)" + Quote(std::string(kReasoningProfile)) +
+         R"("reasoning":{"profile":)" +
+         Quote(std::string(kReasoningProfile)) +
          R"(,"fields":["reasoning_content","reasoning"],)"
          R"("default_field":"reasoning_content","field_option":"reasoning_field",)"
          R"("include_option":"include_reasoning","include_default":true,)"
          R"("options_require_parsed_messages":true,"option_null":"reject",)"
          R"("history_null":"absent","history_conflict":"reject_unequal",)"
          R"("history_role":"assistant","hidden_usage":"unchanged",)"
-         R"("hidden_content_filter":false,"thinking_token_budget":false},)"
+         R"("hidden_content_filter":false,"thinking_token_budget":true,)"
+         R"("budget_profile":)" +
+         Quote(std::string(kThinkingBudgetProfile)) +
+         R"(,"budget_range":[0,2147483647],"budget_null":"disabled",)"
+         R"("budget_accounting":"natural_tokens_starting_or_entering_reasoning",)"
+         R"("natural_closing_token_charged":true,"forced_tokens_extra":true,)"
+         R"("max_forced_closure_tokens":11,"total_output_limit_priority":true,)"
+         R"("budget_exhausted":"close_then_answer_and_mask_reentry",)"
+         R"("budget_mtp":"reserve_pending_then_host_tail",)"
+         R"("budget_usage_details":true},)"
          R"("tools":{"type":"function","execution":"client",)" +
          options +
          R"("options_require_parsed_messages":true,)"

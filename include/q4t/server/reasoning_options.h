@@ -1,4 +1,4 @@
-// Parsed reasoning transport and historical aliases; no generation controls.
+// Parsed reasoning transport, historical aliases, and generation budget input.
 #pragma once
 
 #include <string>
@@ -16,6 +16,7 @@ std::string_view ReasoningFieldName(ReasoningField field);
 struct ReasoningOptions {
   ReasoningField field = ReasoningField::kReasoningContent;
   bool include = true;
+  int64_t token_budget = -1;  // Absent/null; otherwise a nonnegative integer.
 };
 
 Status ParseReasoningOptions(const io::Json& request, ReasoningOptions* options,

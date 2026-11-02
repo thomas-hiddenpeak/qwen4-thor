@@ -1,6 +1,7 @@
 // Opt-in real XGrammar CPU contracts. Defined/compiled, not executed during
 // the development-only stage. No synthetic test substitutes for Thor E2E.
 #include "q4t/server/structured_decoder.h"
+#include "q4t/server/thinking_budget.h"
 
 #include <cstring>
 #include <limits>
@@ -192,5 +193,86 @@ Q4T_TEST(structured_decoder_expired_and_memory_failure_are_closed) {
   Q4T_CHECK(failure == q4t::server::GrammarFailure::kResource && !decoder &&
             reaped);
   Q4T_CHECK(StructuredDecoder::Create(plan, Vocabulary(), 260, {0}, &decoder));
+  return true;
+}
+
+Q4T_TEST(structured_decoder_forced_token_intersection_is_transactional) {
+  const auto plan = Plan(
+      R"("enable_thinking":false,"response_format":{"type":"json_object"})");
+  std::unique_ptr<StructuredDecoder> decoder;
+  Q4T_CHECK(StructuredDecoder::Create(plan, Vocabulary(), 260, {0}, &decoder));
+  std::vector<uint16_t> logits(260, Bf16(-20));
+  int32_t token = -1;
+  for (int32_t invalid : {0, 'a' + 1, 257, 259, 260, -2}) {
+    Q4T_CHECK(!decoder->Select(logits, &token, invalid));
+    Q4T_CHECK(token == -1 && !decoder->Terminated());
+  }
+  logits['{' + 1] = Bf16(std::numeric_limits<float>::quiet_NaN());
+  Q4T_CHECK(!decoder->Select(logits, &token, '{' + 1));
+  logits['{' + 1] = Bf16(-20);
+  // None of the rejected selections advanced the matcher.
+  Q4T_CHECK(decoder->Select(logits, &token, '{' + 1) && token == '{' + 1);
+  Q4T_CHECK(decoder->Select(logits, &token, '}' + 1) && token == '}' + 1);
+  Q4T_CHECK(decoder->Select(logits, &token, 0) && token == 0);
+  Q4T_CHECK(decoder->Terminated());
+  return true;
+}
+
+Q4T_TEST(structured_decoder_budget_closure_and_utf8_share_accepted_tokens) {
+  const auto plan = Plan(R"("response_format":{"type":"json_object"})");
+  for (int limit : {0, 2}) {
+    auto vocabulary = Vocabulary();
+    std::unique_ptr<StructuredDecoder> decoder;
+    Q4T_CHECK(StructuredDecoder::Create(plan, vocabulary, 260, {0}, &decoder));
+    q4t::server::ThinkingBudget budget;
+    Q4T_CHECK(budget.Init(limit, "<think>\n", true, false));
+    const int32_t stops[] = {0};
+    Q4T_CHECK(budget.PrepareTokens(
+        [](std::string_view text, std::vector<int32_t>* ids) {
+          ids->clear();
+          for (unsigned char c : text) ids->push_back(c + 1);
+          return q4t::Status();
+        },
+        [&](int32_t id, std::string* text) {
+          *text = vocabulary[id];
+          return q4t::Status();
+        },
+        258, stops));
+    std::vector<uint16_t> logits(260, Bf16(-20));
+    const int32_t prefix[] = {0xe4 + 1, 0xb8 + 1};
+    for (int i = 0; i < limit; ++i) {
+      const auto expected = prefix[i];
+      logits[expected] = Bf16(20);
+      int32_t token;
+      Q4T_CHECK(decoder->Select(logits, &token) && token == expected);
+      Q4T_CHECK(budget.Observe(token, vocabulary[token]));
+      logits[expected] = Bf16(-20);
+    }
+    std::string forced;
+    for (int32_t next; (next = budget.ForcedToken()) >= 0;) {
+      int32_t token;
+      // Prefer a different, valid text token in the raw logits. The forced
+      // token must win before acceptance, including the UTF-8 continuation
+      // byte.
+      logits['x' + 1] = Bf16(100);
+      Q4T_CHECK(decoder->Select(logits, &token, next) && token == next);
+      Q4T_CHECK(budget.Observe(token, vocabulary[token]));
+      forced += vocabulary[token];
+    }
+    Q4T_CHECK(forced == (limit ? "\x80</think>" : "</think>"));
+    Q4T_CHECK(budget.Consumed() == limit);
+    Q4T_CHECK(budget.ForcedTokens() == (limit ? 9 : 8) && !budget.Thinking());
+    for (const unsigned char c :
+         std::string("{\"example\":\"<think>literal</think>\"}")) {
+      int32_t token;
+      Q4T_CHECK(decoder->Select(logits, &token, c + 1) && token == c + 1);
+      Q4T_CHECK(budget.Allows(vocabulary[token]));
+      Q4T_CHECK(budget.Observe(token, vocabulary[token]));
+    }
+    int32_t token;
+    Q4T_CHECK(decoder->Select(logits, &token, 0) && token == 0);
+    Q4T_CHECK(decoder->Terminated() &&
+              budget.ReasoningTokens() == (limit ? 11 : 8));
+  }
   return true;
 }

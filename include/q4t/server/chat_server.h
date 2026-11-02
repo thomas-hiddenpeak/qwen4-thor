@@ -95,6 +95,10 @@ struct ServeMetrics {
   std::atomic<uint64_t> structured_resource_exhausted{0};
   std::atomic<uint64_t> prompt_tokens_total{0};
   std::atomic<uint64_t> generation_tokens_total{0};
+  std::atomic<uint64_t> reasoning_budget_tokens_total{0};
+  std::atomic<uint64_t> reasoning_forced_tokens_total{0};
+  std::atomic<uint64_t> reasoning_forced_requests{0};
+  std::atomic<uint64_t> reasoning_mtp_fallbacks{0};
   std::atomic<uint64_t> execution_steps_total{0};
   MetricHistogram ttft_seconds;   // streaming: arrival -> first content sent
   MetricHistogram target_ready_seconds;  // arrival -> first target token ready

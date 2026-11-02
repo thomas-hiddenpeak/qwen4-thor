@@ -11,7 +11,7 @@ SRV-05a推理字段/隐藏已交付，默认`ecd5d21f` / sidecar`91ce0ed9`，
 源码/驱动24c831da；[结果与证据](SERVE_STAGE_B2A_RESULT_2026-11-03.md)。
 assistant历史双字段string/null与冲突校验、reasoning_field选择、
 include_reasoning隐藏、客户端JSON/SSE与工具历史回填已闭合。
-隐藏不减少计算或usage，05b真实推理预算仍未实现。
+隐藏不减少计算或usage；05b真实预算已实现、待本机HTTP验收。
 
 CPU OFF171/ON178、Thor137＋后端7、客户端26、驱动6、120模板差分
 （108逐字节/ID正例＋12拒绝，含21旧fixture）通过，零警告。真实
@@ -26,8 +26,11 @@ CPU OFF171/ON178、Thor137＋后端7、客户端26、驱动6、120模板差分
 链保留。01:39 CST GPU计算PID空、锁可用、无恢复标记/常驻模型，
 MemAvailable约116.41GiB。阶段A保留项不因本批通过消失。
 
-下一项SRV-05b：冻结真实token计量、强制闭合入模型/KV/grammar及
-MTP批次边界后验收；随后SRV-06 stop、SRV-07预检/有效配置，
+当前SRV-05b已冻结[真实预算开发合同](SERVE_THINKING_BUDGET_2026-11-03.md)：
+自然token保守计量、有限UTF-8/闭合控制、grammar交集和MTP保留pending
+的回退边界；实现及CPU通过：OFF179/ON188、原生145+后端9、客户端27、
+驱动8，零警告；模板120按身份复用。HTTP已冻结19生成/12负例/3启动，
+上限22/12/4、1800秒；未启动，默认仍为05a。随后SRV-06 stop、SRV-07预检/有效配置，
 SRV-08完整输入协议与JS SDK。子项交付不关闭SRV-05或长期目标。
 
 ## 阶段 B1 交付历史
@@ -87,7 +90,7 @@ XGrammar编译和匹配在单个exec worker中执行：2GiB RLIMIT_AS，10秒
 硬限制是worker用户地址空间，不是整机RAM或单独RSS执法。post-exec
 VmHWM报告与包含exec前继承峰值的wait4 rusage分列；未知不记成已测0。
 
-host ON164/OFF157、Thor123＋后端7、驱动7/回退6/收尾3通过，构建
+host ON164/OFF157、Thor123＋后端7、驱动8/回退6/收尾3通过，构建
 零警告。真实编译超时10.008秒、取消67ms，普通/严格混合、真实文档
 读取回填、schema中文和active shutdown通过；包含两次已保留的驱动
 失败累计11尝试/1过载拒绝/3启动。最终guard COMPLETED、ENV_ABORT0，

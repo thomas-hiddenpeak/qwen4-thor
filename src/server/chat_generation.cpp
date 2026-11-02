@@ -4,9 +4,11 @@
 #include <algorithm>
 #include <cctype>
 #include <chrono>
+#include <cmath>
 #include <cstdio>
 #include <cstring>
 #include <ctime>
+#include <limits>
 #include <span>
 #include <string>
 #include <vector>
@@ -23,6 +25,7 @@
 #include "q4t/server/scheduler_submission.h"
 #include "q4t/server/request_diagnostics.h"
 #include "q4t/server/session_state.h"
+#include "q4t/server/thinking_budget.h"
 
 namespace q4t::server {
 namespace {
@@ -263,6 +266,40 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   s = response_parser.Init(req, prompt, request_id, !stream);
   if (!s.ok()) {
     SendError(fd, 400, s.message());
+    return;
+  }
+  ReasoningOptions reasoning_options;
+  s = ParseReasoningOptions(req, &reasoning_options);
+  ThinkingBudget thinking_budget;
+  const auto* request_tools = req.GetArray("tools");
+  if (s)
+    s = thinking_budget.Init(
+        reasoning_options.token_budget, prompt, constraints.json_output,
+        (request_tools && !request_tools->array.empty()) ||
+            constraints.choice == OutputConstraints::ToolChoice::kNone);
+  if (s && thinking_budget.Enabled()) {
+    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+    const auto encode = [&](std::string_view text, std::vector<int32_t>* out) {
+      std::vector<uint32_t> ids;
+      auto status = tok_->Encode(text, &ids, {.cancelled = cancelled});
+      out->assign(ids.begin(), ids.end());
+      return status;
+    };
+    const auto decode = [&](int32_t token, std::string* out) {
+      if (cancelled())
+        return Status::Fail("thinking budget preparation cancelled");
+      return tok_->Decode({static_cast<uint32_t>(token)}, true, out);
+    };
+    s = thinking_budget.PrepareTokens(encode, decode, tok_->VocabSize(),
+                                      stop_token_ids_);
+  }
+  if (!s) {
+    if (cancelled()) {
+      count_abort();
+      send_cancel_error("request cancelled during thinking preparation");
+    } else {
+      SendError(fd, 500, s.message(), {}, "thinking_budget_unavailable");
+    }
     return;
   }
 
@@ -1152,17 +1189,69 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     response_status = response_parser.Append(piece, &deltas);
     return response_status.ok() && write_deltas(deltas);
   };
+  // Budget state always consumes raw token bytes, independently of transport
+  // and UTF-8 buffering. Output parsing retains its existing terminal checks.
+  const auto consume_token = [&](int32_t token) {
+    if (!stream && !thinking_budget.Enabled()) return true;
+    std::string piece;
+    {
+      auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+      response_status =
+          tok_->Decode({static_cast<uint32_t>(token)}, true, &piece);
+    }
+    if (response_status && thinking_budget.Enabled())
+      response_status =
+          thinking_budget.Observe(token, piece, is_stop_token(token));
+    return response_status.ok() &&
+           (!stream || write_content(utf8.Append(piece)));
+  };
 
   std::vector<int32_t> generated;
   int next_token = -1;
   std::string finish_reason = "stop";
   bool generation_failed = false;
+  int budget_mtp_steps = 0;
+  int budget_mtp_tokens = 0;
+  bool budget_mtp_fallback = false;
 
   const auto select_token = [&](const uint16_t* logits) {
-    if (!structured) return argmax(logits);
+    const auto forced = thinking_budget.ForcedToken();
+    if (!structured) {
+      if (!thinking_budget.Enabled() ||
+          thinking_budget.Consumed() < reasoning_options.token_budget)
+        return argmax(logits);
+      // The remaining plain tail has per-request selection constraints. Its
+      // logits belong to the state *before* this next token is consumed.
+      int32_t best_token = -1;
+      float best = -std::numeric_limits<float>::infinity();
+      for (int32_t token = 0; token < vocab; ++token) {
+        if (forced >= 0 && token != forced) continue;
+        const uint32_t bits = static_cast<uint32_t>(logits[token]) << 16;
+        float value;
+        std::memcpy(&value, &bits, sizeof(value));
+        if (!std::isfinite(value) || value <= best) continue;
+        if (forced < 0 && !is_stop_token(token)) {
+          if (static_cast<uint32_t>(token) >= tok_->VocabSize()) continue;
+          std::string piece;
+          {
+            auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+            response_status =
+                tok_->Decode({static_cast<uint32_t>(token)}, true, &piece);
+          }
+          if (!response_status) return -1;
+          if (!thinking_budget.Allows(piece)) continue;
+        }
+        best_token = token;
+        best = value;
+      }
+      if (best_token < 0)
+        response_status =
+            Status::Fail("no finite thinking-budget-allowed token");
+      return best_token;
+    }
     int32_t token = -1;
-    response_status =
-        structured->Select({logits, static_cast<size_t>(vocab)}, &token);
+    response_status = structured->Select({logits, static_cast<size_t>(vocab)},
+                                         &token, forced);
     return token;
   };
 
@@ -1197,7 +1286,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   // is null and we fall back to plain decode. MTP is precision-safe: the main
   // model verifies every draft token under the documented T>1 near-tie
   // contract; it need not be bit-identical to the T=1 arithmetic path.
-  bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr;
+  bool use_mtp = mtp_loaded_ && d_trunk_full != nullptr &&
+                 thinking_budget.CanSpeculate(mtp_k_ + 1);
   int32_t mtp_b = stream_draft_ready ? next_token : -1;
   int32_t mtp_d0 = stream_draft_ready ? stream_d0 : -1;
   if (use_mtp && !stream_mtp) {
@@ -1338,6 +1428,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         break;
       }
       const int remaining = max_tokens - static_cast<int>(generated.size());
+      if (!thinking_budget.CanSpeculate(mtp_k_ + 1)) {
+        // Reserve one admitted pending token before switching to host logits.
+        // No speculative work or KV for this next step has been submitted.
+        next_token = mtp_b;
+        use_mtp = false;
+        budget_mtp_fallback = true;
+        break;
+      }
       if (!MtpGenerationStepFits(seq.position, request_capacity,
                                  model_.Get().cfg.max_prefill, mtp_k_,
                                  remaining)) {
@@ -1379,6 +1477,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         break;
       }
       ++accepted_histogram[mtp_ar.mtp_accepted_count - 1];
+      if (thinking_budget.Enabled()) {
+        ++budget_mtp_steps;
+        budget_mtp_tokens += mtp_ar.mtp_accepted_count;
+      }
       if (mtp_suffix_) {
         auto& histogram = mtp_ar.mtp_suffix_ready ? suffix_accepted
                                                 : neural_accepted;
@@ -1389,26 +1491,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
            ++i) {
         const int32_t tok_id = mtp_ar.mtp_accepted[i];
         generated.push_back(tok_id);
-        if (stream) {
-          std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
-          std::string piece;
-          bool wrote = true;
-          bool decoded = false;
-          {
-            auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-            decoded = tok_->Decode(one, true, &piece).ok();
-          }
-          if (decoded) {
-            wrote = write_content(utf8.Append(piece));
-          } else {
-            response_status = Status::Fail("token decode failed");
-            wrote = false;
-          }
-          if (!wrote) {  // Disconnect or parser/decode failure: free the slot.
-            done = true;
-            finish_reason = "stop";
-            break;
-          }
+        if (!consume_token(tok_id)) {
+          done = true;
+          finish_reason = "stop";
+          break;
         }
         if (is_stop_token(tok_id)) {
           done = true;
@@ -1451,7 +1537,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   mtp_registration.Run();
   // No scheduler owns this row now. Capture the complete target/shifted-draft
   // boundary before any ordinary-decode tail; publication waits for successful
-  // HTTP completion. At most three emitted tail tokens will be recomputed.
+  // HTTP completion. A thinking-budget tail can be longer than the ordinary
+  // capacity tail; only this complete earlier MTP boundary is reusable.
   if (session.cache && mtp_sched && !generation_failed && response_status.ok() &&
       !cancelled() &&
       seq.stage == model::ModelSequence::Stage::kDecode && !seq.HasPending() &&
@@ -1572,8 +1659,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       // The current packed scheduler argmax has no request-specific mask.
       // Constrained requests must stay on the host-logit fallback until a
       // separately accepted scheduler/MTP mask implementation exists.
-      use_sched = !structured && scheduler_active_ && !scheduler_stop_ &&
-                  d_sched_logits_ &&
+      use_sched = !structured && !thinking_budget.Enabled() &&
+                  scheduler_active_ && !scheduler_stop_ && d_sched_logits_ &&
                   static_cast<int>(active_.size()) < max_seq_;
       if (use_sched) {
         ar.seq = &seq;
@@ -1592,26 +1679,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         break;
       }
       const int32_t tok_id = next_token;
-      // Emit the token text (decode this single token).
-      if (stream) {
-        std::vector<std::uint32_t> one(1, static_cast<std::uint32_t>(tok_id));
-        std::string piece;
-        bool wrote = true;
-        bool decoded = false;
-        {
-          auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-          decoded = tok_->Decode(one, true, &piece).ok();
-        }
-        if (decoded) {
-          wrote = write_content(utf8.Append(piece));
-        } else {
-          response_status = Status::Fail("token decode failed");
-          wrote = false;
-        }
-        if (!wrote) {  // Disconnect or parser/decode failure: free the slot.
-          finish_reason = "stop";
-          break;
-        }
+      if (!consume_token(tok_id)) {
+        finish_reason = "stop";
+        break;
       }
       // The current token is already emitted (or buffered for non-streaming).
       // Do not prepare another token when this request cannot consume it.
@@ -1673,6 +1743,25 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     active_registration.Run();
   }
   trace_output_tokens = generated.size();
+  if (thinking_budget.Enabled()) {
+    std::fprintf(
+        stderr,
+        "[thinking-budget] request=%s limit=%lld consumed=%lld forced=%lld "
+        "reasoning_tokens=%lld mtp_steps=%d mtp_tokens=%d fallback=%d\n",
+        request_id.c_str(),
+        static_cast<long long>(reasoning_options.token_budget),
+        static_cast<long long>(thinking_budget.Consumed()),
+        static_cast<long long>(thinking_budget.ForcedTokens()),
+        static_cast<long long>(thinking_budget.ReasoningTokens()),
+        budget_mtp_steps, budget_mtp_tokens, budget_mtp_fallback);
+    metrics_.reasoning_budget_tokens_total.fetch_add(
+        thinking_budget.Consumed());
+    metrics_.reasoning_forced_tokens_total.fetch_add(
+        thinking_budget.ForcedTokens());
+    if (thinking_budget.ForcedTokens())
+      metrics_.reasoning_forced_requests.fetch_add(1);
+    if (budget_mtp_fallback) metrics_.reasoning_mtp_fallbacks.fetch_add(1);
+  }
   if (generation_failed) seq.Fail();
   model::ModelEndSequence(&seq);
   LogMemorySnapshot("request_end", id);
@@ -1898,6 +1987,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       ? ",\"prompt_tokens_details\":{\"cached_tokens\":" +
             std::to_string(restored_prefix) + "}"
       : "";
+  const std::string reasoning_usage = thinking_budget.UsageFields();
   detail::ServeRequestFaultPoint("handler.before_response", request_id.c_str());
   // 4. Finalize.
   stop_heartbeat.Run();
@@ -1909,15 +1999,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                        0, created, include_usage);
     std::string tail;
     if (include_usage && !client_disconnected) {
-      tail =
-          "data: {\"id\":\"" + id +
-          "\",\"object\":\"chat.completion.chunk\",\"created\":" +
-          std::to_string(created) + ",\"model\":\"" +
-          JsonEscape(model_field) + "\",\"choices\":[],\"usage\":{" +
-          "\"prompt_tokens\":" + std::to_string(T) +
-          ",\"completion_tokens\":" + std::to_string(generated.size()) +
-          ",\"total_tokens\":" + std::to_string(T + generated.size()) + cached_usage +
-          "}}\r\n\r\n";
+      tail = "data: {\"id\":\"" + id +
+             "\",\"object\":\"chat.completion.chunk\",\"created\":" +
+             std::to_string(created) + ",\"model\":\"" +
+             JsonEscape(model_field) + "\",\"choices\":[],\"usage\":{" +
+             "\"prompt_tokens\":" + std::to_string(T) +
+             ",\"completion_tokens\":" + std::to_string(generated.size()) +
+             ",\"total_tokens\":" + std::to_string(T + generated.size()) +
+             cached_usage + reasoning_usage + "}}\r\n\r\n";
     }
     tail += "data: [DONE]\r\n\r\n";
     *response_state = detail::ResponseState::kTerminal;
@@ -1938,7 +2027,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         std::to_string(T) +
         ",\"completion_tokens\":" + std::to_string(generated.size()) +
         ",\"total_tokens\":" + std::to_string(T + generated.size()) +
-        cached_usage + "}";
+        cached_usage + reasoning_usage + "}";
     resp += "}";
     if (!SendSimple(fd, 200, "OK", resp, "application/json",
                     {.control = control.get()})) {

@@ -101,6 +101,24 @@ def _usage(value):
     require(value["total_tokens"] ==
             value["prompt_tokens"] + value["completion_tokens"],
             "inconsistent usage total")
+    details = value.get("completion_tokens_details")
+    if details is not None:
+        require(isinstance(details, dict), "invalid completion token details")
+        reasoning = details.get("reasoning_tokens")
+        require(type(reasoning) is int and
+                0 <= reasoning <= value["completion_tokens"],
+                "invalid reasoning token count")
+    budget = value.get("q4t_thinking_budget")
+    if budget is not None:
+        require(isinstance(budget, dict) and details is not None,
+                "invalid thinking budget accounting")
+        for key in ("limit", "consumed", "forced_closure_tokens"):
+            require(type(budget.get(key)) is int and budget[key] >= 0,
+                    "invalid thinking budget field: " + key)
+        require(budget["consumed"] <= budget["limit"] <= 2147483647 and
+                budget["forced_closure_tokens"] <= 11 and
+                budget["consumed"] + budget["forced_closure_tokens"] ==
+                details["reasoning_tokens"], "inconsistent thinking budget usage")
     if "prompt_tokens_details" in value:
         details = value["prompt_tokens_details"]
         require(isinstance(details, dict), "invalid prompt token details")
@@ -331,7 +349,8 @@ def read_json(response, *, sink=None, max_bytes=MAX_RESPONSE_BYTES):
 
 def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
                  thinking=False, max_tokens=512, timeout_ms=120000,
-                 session_id=None, reasoning_field=None, include_reasoning=None):
+                 session_id=None, reasoning_field=None, include_reasoning=None,
+                 thinking_token_budget=None):
     require(isinstance(messages, list) and messages, "messages are required")
     require(isinstance(tools, list), "tools must be a list")
     require(type(stream) is bool and type(thinking) is bool, "invalid mode")
@@ -355,6 +374,11 @@ def make_request(messages, tools, *, model="qwen3.8-flash-next", stream=True,
     if include_reasoning is not None:
         require(type(include_reasoning) is bool, "invalid include_reasoning")
         body["include_reasoning"] = include_reasoning
+    if thinking_token_budget is not None:
+        require(type(thinking_token_budget) is int and
+                0 <= thinking_token_budget <= 2147483647,
+                "invalid thinking token budget")
+        body["thinking_token_budget"] = thinking_token_budget
     if session_id is not None:
         require(isinstance(session_id, str) and len(session_id) == 64 and
                 all(c in "0123456789abcdef" for c in session_id),

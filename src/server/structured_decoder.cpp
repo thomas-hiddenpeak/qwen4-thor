@@ -176,14 +176,16 @@ Status StructuredDecoder::Create(const OutputConstraints& plan,
 }
 
 Status StructuredDecoder::Select(std::span<const uint16_t> logits,
-                                 int32_t* token) {
+                                 int32_t* token, int32_t forced_token) {
   *token = -1;
 #ifdef Q4T_ENABLE_XGRAMMAR
-  if (logits.size() != static_cast<size_t>(impl_->vocab) || impl_->terminated)
+  if (logits.size() != static_cast<size_t>(impl_->vocab) || impl_->terminated ||
+      forced_token < -1 || forced_token >= impl_->vocab)
     return Status::Fail("invalid constrained decoding state/logit shape");
   try {
     float best = -std::numeric_limits<float>::infinity();
     for (int32_t i = 0; i < impl_->vocab; ++i) {
+      if (forced_token >= 0 && i != forced_token) continue;
       if (impl_->masked && !(static_cast<uint32_t>(impl_->mask[i / 32]) &
                              (uint32_t{1} << (i % 32))))
         continue;
@@ -212,6 +214,7 @@ Status StructuredDecoder::Select(std::span<const uint16_t> logits,
   }
 #else
   (void)logits;
+  (void)forced_token;
   return Status::Fail("structured decoding backend is not built");
 #endif
 }

@@ -42,6 +42,7 @@ class ChatResponseParser {
   Status Finish(bool length_limited, std::vector<ResponseDelta>* deltas);
   std::string MessageJson() const;
   bool HasToolCalls() const { return tool_count_ != 0; }
+  bool Thinking() const { return region_ == Region::kReasoning; }
 
  private:
   enum class Region { kContent, kReasoning, kTool };

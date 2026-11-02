@@ -35,7 +35,8 @@ B1代码、默认交付和原始证据，属于实际进展；05a已交付，继
 - SRV-05a：[已交付](SERVE_STAGE_B2A_RESULT_2026-11-03.md)，历史别名/冲突、
   显式字段、输出隐藏含JSON/SSE、工具/schema与真实回填；实施冻结见
   [B2推理协议合同](SERVE_STAGE_B2_2026-11-03.md)。
-- SRV-05b：推理token预算及用量。正在设计真实选词/闭合路径，MTP
+- SRV-05b：推理token预算及用量。[实现/CPU已通过](SERVE_THINKING_BUDGET_2026-11-03.md)，
+  冻结真实HTTP验收待运行；MTP
   批次不得跨预算直接发布，预算耗尽后闭合thinking再继续回答；总输出
   预算仍优先。需检查强制闭合token入模型/KV、grammar状态和缓存边界。
   05a通过不关闭SRV-05，预算也不能用输出隐藏或effort替代。

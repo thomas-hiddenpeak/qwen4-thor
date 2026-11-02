@@ -1,5 +1,7 @@
 #include "q4t/server/reasoning_options.h"
 
+#include "q4t/server/input_contract.h"
+
 namespace q4t::server {
 
 std::string_view ReasoningFieldName(ReasoningField field) {
@@ -33,6 +35,18 @@ Status ParseReasoningOptions(const io::Json& request, ReasoningOptions* options,
       return invalid("include_reasoning",
                      "include_reasoning requires parsed messages");
     options->include = include->boolean;
+  }
+  if (const auto* budget = request.Find("thinking_token_budget");
+      budget && !budget->IsNull()) {
+    if (!IsInputInteger(*budget) || budget->number < 0 ||
+        budget->number > 2147483647.0)
+      return invalid("thinking_token_budget",
+                     "thinking_token_budget must be an integer in "
+                     "[0,2147483647] or null");
+    if (!parsed)
+      return invalid("thinking_token_budget",
+                     "thinking_token_budget requires parsed messages");
+    options->token_budget = budget->AsInt();
   }
   return Status();
 }

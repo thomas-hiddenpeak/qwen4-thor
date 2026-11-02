@@ -143,6 +143,30 @@ class ClientContracts(unittest.TestCase):
             with self.assertRaises(client.ProtocolError):
                 client.make_request(history, [], **kwargs)
 
+    def test_thinking_budget_input_and_usage(self):
+        body = client.make_request([dict(role="user", content="q")], [],
+                                   thinking_token_budget=0)
+        self.assertEqual(body["thinking_token_budget"], 0)
+        for bad in (True, -1, 1.1, 2147483648, "1"):
+            with self.assertRaises(client.ProtocolError):
+                client.make_request([dict(role="user", content="q")], [],
+                                    thinking_token_budget=bad)
+        usage = dict(prompt_tokens=10, completion_tokens=9, total_tokens=19,
+            completion_tokens_details=dict(reasoning_tokens=6),
+            q4t_thinking_budget=dict(limit=5, consumed=5, forced_closure_tokens=1))
+        self.assertEqual(client._usage(usage), usage)
+        for changes in (dict(consumed=6), dict(forced_closure_tokens=12),
+                        dict(limit=True), dict(consumed=-1)):
+            invalid = deepcopy(usage)
+            invalid["q4t_thinking_budget"].update(changes)
+            with self.assertRaises(client.ProtocolError):
+                client._usage(invalid)
+        for reasoning in (True, -1, 10, None):
+            invalid = deepcopy(usage)
+            invalid["completion_tokens_details"]["reasoning_tokens"] = reasoning
+            with self.assertRaises(client.ProtocolError):
+                client._usage(invalid)
+
     def test_fragmented_interleaved_tools_and_unicode(self):
         deltas = [{"content": "前言\n", "reasoning_content": "思"},
             {"reasoning_content": "考\n", "tool_calls": [dict(index=0,

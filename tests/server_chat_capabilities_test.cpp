@@ -40,7 +40,9 @@ Q4T_TEST(chat_capabilities_identity) {
   Q4T_CHECK(reasoning->GetString("default_field") == "reasoning_content");
   Q4T_CHECK(reasoning->GetBool("include_default"));
   Q4T_CHECK(reasoning->GetBool("options_require_parsed_messages"));
-  Q4T_CHECK(!reasoning->GetBool("thinking_token_budget", true));
+  Q4T_CHECK(reasoning->GetBool("thinking_token_budget"));
+  Q4T_CHECK(reasoning->GetString("budget_profile") == "q4t-thinking-v1");
+  Q4T_CHECK(reasoning->GetInt("max_forced_closure_tokens") == 11);
   Q4T_CHECK(templ->GetString("message_name") == "absent_or_null_only");
   for (const auto* key : {"reference_sha256", "renderer_source_sha256",
                           "tool_history_source_sha256", "fixture_sha256"})
