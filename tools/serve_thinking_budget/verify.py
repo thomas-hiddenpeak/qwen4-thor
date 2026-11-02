@@ -46,7 +46,7 @@ def command(binary, model, port, mtp, cache=None):
     args = b.command_original(binary, model, port, mtp)
     if cache is not None:
         args[args.index("--max-len") + 1] = "16384"
-        args += ["--session-cache-dir", str(cache)]
+        args += ["--seq-capacities", "16384", "--session-cache-dir", str(cache)]
     return args
 
 
@@ -92,9 +92,10 @@ def quality(result):
 class Run(b.Run):
     def budget(self):
         wire.require(time.time() < self.deadline, "thinking budget deadline")
+        previous = self.plan.get("prior_counts", {}) if hasattr(self, "plan") else {}
         wire.require(self.requests <= (1 if self.installed else 21) and
                      self.negative <= (0 if self.installed else 12) and
-                     self.starts <= (1 if self.installed else 3) and
+                     self.starts <= (1 if self.installed else 3 - previous.get("starts", 0)) and
                      self.capability_gets <= (1 if self.installed else 3),
                      "thinking request/start budget")
 

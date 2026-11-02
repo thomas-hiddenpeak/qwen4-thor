@@ -60,6 +60,7 @@ class Contracts(unittest.TestCase):
     def test_command_limits_and_private_cache(self):
         mtp = v.command("candidate", "model", 18098, True, Path("/private/cache"))
         self.assertEqual(mtp[mtp.index("--max-len") + 1], "16384")
+        self.assertEqual(mtp[mtp.index("--seq-capacities") + 1], "16384")
         self.assertNotIn("--no-mtp", mtp)
         plain = v.command("candidate", "model", 18098, False)
         self.assertIn("--no-mtp", plain)

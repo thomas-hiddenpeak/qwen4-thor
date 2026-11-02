@@ -101,6 +101,23 @@ def prepare():
         source_manifest_sha256=h.sha(PACKAGE / "sources.json"),
         planned=dict(starts=3, generations=19, negatives=12),
         cache_seed_tokens=h.read(BASE / "cpu/cache-probe-result.json")["tokens"])
+    if PACKAGE.name == "package-correction":
+        original = BASE / "execution"
+        h.verify_seal(BASE / "package")
+        failed = h.read(original / "business/result.json")
+        h.require(failed["status"] == "FAILED" and failed["request_attempts"] == 0 and
+                  failed["negative_requests"] == 0 and failed["starts"] == 1 and
+                  h.read(original / "lease/exit.json")["status"] == "COMMAND_FAILED",
+                  "correction only covers the one pre-model CLI startup failure")
+        h.require("state caches require text k=3, explicit slots" in
+                  (original / "business/candidate-mtp/server.log").read_text(),
+                  "unexpected original failure")
+        h.require(plan["candidate_sha256"] ==
+                  h.read(BASE / "package/plan.json")["candidate_sha256"],
+                  "CLI correction must not change runtime binary")
+        plan.update(original_started=h.read(original / "begin.json")["started"],
+                    prior_counts=dict(starts=1, generations=0, negatives=0),
+                    prior_execution=str(original))
     h.save(PACKAGE / "plan.json", plan)
     h.seal(PACKAGE)
     print("PREPARED", plan["candidate_sha256"], flush=True)
@@ -116,7 +133,7 @@ def check():
     h.require(h.sha(plan["candidate"]) == plan["candidate_sha256"], "candidate changed")
     if (OUTPUT / "begin.json").exists():
         plan["started"] = h.read(OUTPUT / "begin.json")["started"]
-        plan["original_started"] = plan["started"]
+        plan.setdefault("original_started", plan["started"])
     return plan
 
 
@@ -180,10 +197,15 @@ def bind():
 
 
 def main():
+    global PACKAGE, OUTPUT
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("action", choices=["prepare", "execute", "finalize", "rollback"])
     ap.add_argument("--output", type=Path)
+    ap.add_argument("--correction", action="store_true",
+                    help="one retained pre-model CLI startup failure; original limits apply")
     args = ap.parse_args()
+    if args.correction:
+        PACKAGE, OUTPUT = BASE / "package-correction", BASE / "execution-correction"
     bind()
     if args.action == "prepare":
         prepare()
