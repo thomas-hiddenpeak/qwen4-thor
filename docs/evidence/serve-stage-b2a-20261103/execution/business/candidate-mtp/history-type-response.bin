@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 154
+X-Request-Id: req-d0548b403d4fe3162473243d425014e9
+Connection: close
+
+{"error":{"message":"reasoning history must be a string or null","type":"invalid_request_error","code":"invalid_request","param":"messages[1].reasoning"}}

@@ -331,11 +331,12 @@
     },
     "include_reasoning": {
       "semantics": "默认true；false不收集/发布已解析的推理正文；解析与错误终态保留",
-      "boundary": "只支持parsed messages，显式null拒绝；不减少生成或usage，不过滤content中的自述；05a CPU已验，HTTP待验",
+      "boundary": "只支持parsed messages，显式null拒绝；不减少生成或usage，不过滤content中的自述；05a限定CPU/HTTP/工具闭环已验",
       "evidence": [
         "tests/server_chat_response_parser_test.cpp",
         "tests/server_chat_message_profile_test.cpp",
-        "docs/SERVE_STAGE_B2_2026-11-03.md"
+        "docs/SERVE_STAGE_B2_2026-11-03.md",
+        "docs/SERVE_STAGE_B2A_RESULT_2026-11-03.md"
       ]
     },
     "reasoning_field": {
@@ -344,7 +345,8 @@
       "evidence": [
         "tests/server_chat_response_parser_test.cpp",
         "tools/examples/test_chat_client.py",
-        "docs/serve-reasoning-v1.schema.json"
+        "docs/serve-reasoning-v1.schema.json",
+        "docs/SERVE_STAGE_B2A_RESULT_2026-11-03.md"
       ]
     }
   },

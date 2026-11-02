@@ -1,5 +1,10 @@
 # messages 工具客户端开发
 
+当前已交付[SRV-05a推理协议](SERVE_STAGE_B2A_RESULT_2026-11-03.md)：
+默认ecd5d21f/91ce0ed9，支持reasoning历史别名、reasoning_field选择、
+include_reasoning输出隐藏；客户端26项及真实工具历史回填通过。
+推理预算仍未实现。以下旧默认和验收数字仅属历史开发快照。
+
 后续有界业务验收已通过，见[结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。
 830694ce现已成为默认程序，两head安装健康通过、GPU已释放，见
 [交付与回退](CHAT_DELIVERY_2026-11-02.md)。客户端22项、恢复13项及

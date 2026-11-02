@@ -3,6 +3,9 @@
 基线ff7e750，默认f1133bcc/2edfb882。本页是SRV-05的成组开发合同；
 整体工业化目标见[验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)。
 
+05a已于01:38 CST交付，见[实际结果与回退](SERVE_STAGE_B2A_RESULT_2026-11-03.md)。
+以下保留开发/验收合同；05b仍未实现。
+
 ## 05a：字段和隐藏
 
 1. assistant历史接受`reasoning`和`reasoning_content`字符串/null；

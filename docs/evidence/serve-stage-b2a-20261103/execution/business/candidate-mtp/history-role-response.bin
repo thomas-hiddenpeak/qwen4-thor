@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 159
+X-Request-Id: req-18fd9ca5fc032ada7da01805b67eee58
+Connection: close
+
+{"error":{"message":"reasoning history requires an assistant message","type":"invalid_request_error","code":"invalid_request","param":"messages[1].reasoning"}}

@@ -53,8 +53,8 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 消息角色 | 接口schema接收OpenAI角色，最终受模板支持限制 | SRV-04已验单条开头developer替代system；混用/重复/错位拒绝 | [B1限定交付](SERVE_STAGE_B1_RESULT_2026-11-03.md)：原生字节/ID及SDK工具闭环 |
 | 消息 name / refusal / audio | schema有相应字段，具体模型路径决定语义 | 非null仍拒绝；B1确认模型不表达name并定位具体字段 | B1拒绝合同已验；有具体模板语义才另行支持 |
 | 嵌套输入校验 | 独立协议类型与 validation handlers | 工具定义 / 历史 / cancel 已补共用严格校验，真实 JSON/SSE 工具闭环通过 | [输入合同 A 组已交付](SERVE_INPUT_CONTRACT_2026-11-02.md)：F1/F2/F4 |
-| 推理输出字段 | 当前官方 / 固定源码为 reasoning | Q4T 为 reasoning_content | B：版本化适配，不宣称字段相同 |
-| 推理隐藏与预算 | include_reasoning / thinking_token_budget 等扩展 | 有模板 thinking/effort；无独立推理预算 | B：输出隐藏不等于停止推理计算 |
+| 推理输出字段 | 当前官方 / 固定源码为 reasoning | 05a已交付：默认reasoning_content，显式选reasoning；历史双字段冲突校验 | B：两字段JSON/SSE及真实工具回填已验；非Responses |
+| 推理隐藏与预算 | include_reasoning / thinking_token_budget 等扩展 | 05a include_reasoning隐藏已验；仍无独立推理预算 | B：05b继续真实选词与强制闭合，隐藏不减少usage |
 | SSE 创建时间 | serving 对一请求持同一 created | 首批已统一同一请求各块时间 | A 已交付 |
 | SSE 工具参数增量 | parser 维护每调用 index/ID/参数增量 | 普通路径完整调用后发布；受约束路径完整响应验证后发布 | B：非逐 token 参数流，保留时延边界 |
 | SSE 用量与中断 | usage tail、可选持续统计；断连不保证尾帧 | 已验usage:null、logprobs:null、尾帧、串行心跳与普通增量流背压 | SRV-03限定交付；严格长payload背压、推理token明细未证明/未实现 |

@@ -4,12 +4,14 @@
 只读查询本项目文档、发布与验收记录。代码优先；实现、验证和业务质量
 分别记录。此页是持续维护入口，历史验收不随新功能自动扩张。
 
-2026-11-03 [SRV-05a开发合同](SERVE_STAGE_B2_2026-11-03.md)：
-新增历史reasoning别名、输出字段选择与隐藏，CPU/模板/客户端已通过，
-HTTP尚待验；默认仍为B1。推理预算和后续工业化门保持未完成。
+2026-11-03 [SRV-05a已交付](SERVE_STAGE_B2A_RESULT_2026-11-03.md)：
+当前默认ecd5d21f/91ce0ed9。reasoning历史别名、显式响应字段与输出隐藏
+通过CPU/原生模板/客户端及13次真实生成验收；公开/隐藏对正文与usage
+一致，真实工具历史回填、schema、plain与安装健康通过。推理预算、
+stop、预检和其余工业化要求仍待后续。
 
 2026-11-03 [serve阶段B1已交付](SERVE_STAGE_B1_RESULT_2026-11-03.md)：
-当前默认f1133bcc/2edfb882。单条开头developer作为system替代，混用、
+当时默认f1133bcc/2edfb882。单条开头developer作为system替代，混用、
 重复、错位与非null消息name拒绝；指令媒体解码前拒绝。46组模板正例
 逐字节/逐ID及12拒绝形状通过；真实SDK JSON/SSE、工具回填和安装健康
 通过。推理控制、stop、预检和完整客户端矩阵仍待后续。
@@ -66,7 +68,7 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 
 ## API 兼容矩阵
 
-当前交付为 f1133bcc / sidecar 2edfb882，盘点起点为 460ffd0 /
+当前交付为 ecd5d21f / sidecar 91ce0ed9，盘点起点为 460ffd0 /
 旧默认 830694ce。`已验`指本项目已有明确证据，不代表外部 SDK 全部
 版本通过。P1 / P2 的验证范围与具体失败在本页末尾及结果文档记录。
 完整 vLLM 对照与优先级见[32项服务能力盘点](VLLM_SERVICE_GAPS_2026-11-02.md)。
@@ -80,7 +82,9 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | message.name | 明确拒绝非null | 模板不表达名称；省略/null允许，含空串的其他值400；tool_call_id负责工具关联 |
 | prompt / parse_response=false | 已验，Q4T 扩展 | raw 文本；不解析工具或推理 |
 | JSON / stream=true | 限定已验 | 首帧提前；5秒注释心跳；finish → 可选 usage → DONE；中断不能当完整响应 |
-| content / reasoning_content | 已验 | reasoning_content 是扩展字段；不等于 OpenAI reasoning item |
+| content / reasoning_content / reasoning | 05a限定已验 | 默认reasoning_content，可用reasoning_field选择；JSON/SSE固定单字段；历史别名相等合并/冲突拒绝 |
+| include_reasoning | 05a限定已验 | bool默认true；false隐藏解析出的推理，计算/usage保留；raw/unparsed与null拒绝，不是正文过滤或隐私隔离 |
+| thinking_token_budget | 未实现 | 05b待开发；不把输出隐藏或effort当作计算预算 |
 | function tools / tool_call_id | 已验 | ID 唯一完整批次；文本结果可乱序归一；客户端执行 |
 | tool_choice | 已验，子集组合 | auto / none / required / named；named 恰好一个调用，显式约束模式仅 parsed messages |
 | parallel_tool_calls | 已验 | false 最多一个；true 允许多调用，不代表应用并发执行 |

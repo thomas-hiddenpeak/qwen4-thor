@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 150
+X-Request-Id: req-0467a2d4e7dce46245502d771fb868ad
+Connection: close
+
+{"error":{"message":"include_reasoning requires parsed messages","type":"invalid_request_error","code":"invalid_request","param":"include_reasoning"}}

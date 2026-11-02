@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "source_commit": "24c831da04d89d680196103e63fe7889432805f9",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/package/candidate/q4t",
+  "candidate_sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+  "old_hashes": {
+    "q4t": "f1133bcc539caa5148200e2603269646ab46047fb32ff22f722ac4830b88a305",
+    "q4t.release.json": "2edfb882a543195cf03608c8ad5ed1876aa66c3c991a81e9b5227a25000c1507"
+  },
+  "previous_binary_sha256": "f1133bcc539caa5148200e2603269646ab46047fb32ff22f722ac4830b88a305",
+  "protocol_sha256": "ca823ac15bd4b7012d3cb6ec6189d52e620baa225d1f1c784e50a660476d7be5",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_version": "3.42.1",
+  "limits": {
+    "starts": 3,
+    "generations": 14,
+    "negatives": 12,
+    "seconds": 1800
+  },
+  "source_manifest_sha256": "57b1cd7eebc40803c4dd200a576a3a7bdb9438b84b5c4b80de71b59db1dd373f"
+}

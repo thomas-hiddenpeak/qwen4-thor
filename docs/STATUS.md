@@ -5,13 +5,32 @@
 ## 当前推进目标
 
 
-长期目标已设为“持续推进完善serve到工业水准”，保持active。
-按[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续当前B组，
-本轮进入SRV-05a字段适配/输出隐藏，05b真实推理预算并行梳理实现
-边界；具体[开发合同](SERVE_STAGE_B2_2026-11-03.md)。05a实现已通过
-CPU OFF171/ON178、Thor137＋后端7、客户端26、驱动6和120模板差分
-（108正例逐字节/ID、12拒绝，含21旧fixture），零警告。HTTP待验，
-默认仍为下文B1；子项交付不关闭长期目标或整个SRV-05。
+长期目标“持续推进完善serve到工业水准”保持active；按
+[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)逐项推进。
+SRV-05a推理字段/隐藏已交付，默认`ecd5d21f` / sidecar`91ce0ed9`，
+源码/驱动24c831da；[结果与证据](SERVE_STAGE_B2A_RESULT_2026-11-03.md)。
+assistant历史双字段string/null与冲突校验、reasoning_field选择、
+include_reasoning隐藏、客户端JSON/SSE与工具历史回填已闭合。
+隐藏不减少计算或usage，05b真实推理预算仍未实现。
+
+CPU OFF171/ON178、Thor137＋后端7、客户端26、驱动6、120模板差分
+（108逐字节/ID正例＋12拒绝，含21旧fixture）通过，零警告。真实
+13生成/12负例/3启动首轮通过，含两字段JSON/SSE公开/隐藏对照、
+严格项目资料工具回填、隐藏schema、plain与安装路径HTTP健康。
+25响应/115封套、95推理message/delta通过schema及请求关联检查；
+执行129.47秒、finalize147.28秒，guard COMPLETED/ENV_ABORT0。
+模型/数值源码未变，完整head/普通MTP k3、strict plain保持，不作
+性能接受声明。CPU一次CLI参数误用原日志保留，不计为运行时失败。
+
+174份原始记录封存（仓库178文件），旧f1133bcc/2edfb882和完整回退
+链保留。01:39 CST GPU计算PID空、锁可用、无恢复标记/常驻模型，
+MemAvailable约116.41GiB。阶段A保留项不因本批通过消失。
+
+下一项SRV-05b：冻结真实token计量、强制闭合入模型/KV/grammar及
+MTP批次边界后验收；随后SRV-06 stop、SRV-07预检/有效配置，
+SRV-08完整输入协议与JS SDK。子项交付不关闭SRV-05或长期目标。
+
+## 阶段 B1 交付历史
 
 Serve阶段B1（SRV-04）已按模型profile交付；默认`f1133bcc` /
 sidecar`2edfb882`，源码/驱动c299c647。支持单条开头developer作为
@@ -31,9 +50,7 @@ plain及安装路径HTTP健康；19响应/59封套通过schema。117.20秒执行
 MemAvailable约116.20GiB。非null name、混合指令层级仍不支持；不宣称
 完整OpenAI兼容或整个阶段B完成，阶段A保留项仍有效。
 
-下一目标按[任务队列](PHASES.md#队列与依赖)推进SRV-05：reasoning字段
-适配、输出隐藏与推理预算分别冻结并验收；随后SRV-06 stop、SRV-07
-预检/有效配置。SRV-08继续完整输入协议与JS SDK；SRV-09～11条件待办。
+当前下一项以上方目标为准；SRV-09～11条件待办。
 
 ## 阶段 A 交付历史
 

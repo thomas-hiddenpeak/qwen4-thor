@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "versions": {
+    "transformers": "5.16.1",
+    "tokenizers": "0.23.2",
+    "jinja2": "3.1.2",
+    "jsonschema": "4.26.0"
+  },
+  "cases": 120,
+  "probe_sha256": "46cb1b22b99e53bf5b21786ee3d8bea6c3a06fb4a2aecee0e806aa06cb1252be",
+  "schema_sha256": "0618a6b85fee0f37f2df9347b1f260eee6882b74854f5177cef4b5527bb3bd61",
+  "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+  "tokenizer_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+  "performance_acceptance": false,
+  "positives": 108,
+  "negatives": 12
+}

@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 149
+X-Request-Id: req-aab4414899c914860b42ae966594abad
+Connection: close
+
+{"error":{"message":"conflicting reasoning history aliases","type":"invalid_request_error","code":"invalid_request","param":"messages[1].reasoning"}}

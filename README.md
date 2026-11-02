@@ -12,19 +12,21 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
-当前默认程序已包含工具/推理输出解析、JSON/SSE协议、带ID工具历史
-关联和`/v1/capabilities`能力/模板身份查询。`messages`默认解析；
-`parse_response: false`保留原始输出，`prompt`始终为raw。
-[messages客户端与只读工具往返示例](docs/AGENT_TOOL_CLIENT_2026-11-02.md)
-及持久日志恢复已完成有界业务验收；完整head和subset的安装健康均通过。
-接口见[输出协议](docs/RESPONSE_PARSING_2026-11-02.md)，默认身份、
-结果与回退见[交付记录](docs/CHAT_DELIVERY_2026-11-02.md)。后续已补齐
-none / required / named、禁止多调用、strict 参数及有限 JSON Schema
-约束；当前默认 957211c7，边界与证据见
-[结构化输出交付](docs/STRUCTURED_OUTPUT_RESULT_2026-11-02.md)。
-受约束请求使用普通解码，SSE 内容在完整校验后发布；暂不组合缓存或媒体。
-当前未启动常驻模型服务，GPU保持释放；这些结果不等于通用SDK兼容、
-完整JSON Schema或任意业务质量保证。
+当前默认程序`ecd5d21f`已包含工具/推理输出解析、JSON/SSE、带ID工具
+历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
+`messages`默认解析；`parse_response: false`保留原始输出，`prompt`
+始终为raw。none / required / named、禁止多调用、strict工具参数和
+有限JSON Schema已验，受约束请求仍普通解码，完整校验后发布SSE内容，
+暂不组合缓存或媒体。范围见[应用兼容矩阵](docs/APPLICATION_SERVICE.md)。
+
+`reasoning_field`可选择`reasoning`或默认`reasoning_content`；
+`include_reasoning: false`隐藏已解析的推理正文，计算和usage不变。
+这两个选项只支持parsed messages。历史推理字段别名、流式字段稳定、
+真实只读工具回填及安装HTTP通过，见[本批结果与回退](docs/SERVE_STAGE_B2A_RESULT_2026-11-03.md)。
+推理预算仍待开发；接口与客户端示例见[messages客户端](docs/AGENT_TOOL_CLIENT_2026-11-02.md)。
+最新验收限完整head，旧subset证据不自动扩张到新候选。
+当前未启动常驻模型服务，GPU保持释放；通用SDK、完整JSON Schema、
+多人运行边界和长期稳定仍按[工业化验收账](docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进。
 
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
   MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 生成
@@ -236,7 +238,7 @@ install -d -m 700 .q4t-work/agent-session-cache
 要稳定命中，客户端需保留原始模板文本及生成历史。本轮收益使用预渲染
 `prompt`测量；`messages`恢复前也逐token检查，但模板会trim文本、重建
 thinking和工具调用。带thinking的整段输出直接放回`content`可能被重复
-包裹，结构化接入需正确保留`reasoning_content`、`content`和`tool_calls`。
+包裹，结构化接入需保留响应选定的`reasoning_content`或`reasoning`、`content`和`tool_calls`。
 历史被改写、压缩或模板选项改变时可能未命中并重新prefill。当前没有针对
 某个agent SDK的即插即用适配验收。
 
