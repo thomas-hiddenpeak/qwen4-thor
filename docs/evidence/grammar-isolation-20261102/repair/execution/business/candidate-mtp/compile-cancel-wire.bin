@@ -1,0 +1,6 @@
+HTTP/1.1 409 Conflict
+Content-Type: application/json
+Content-Length: 130
+Connection: close
+
+{"error":{"message":"request cancelled during grammar compilation","type":"conflict_error","code":"explicit_cancel","param":null}}

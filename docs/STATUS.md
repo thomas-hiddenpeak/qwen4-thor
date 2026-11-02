@@ -4,14 +4,27 @@
 
 ## 当前推进目标
 
-继续F6：正在实现 exec 隔离的编译/匹配工作进程，单工作进程，
-2GiB RLIMIT_AS、10秒编译（含准备）/2秒匹配、取消后 kill/reap。
-这限制工作进程用户地址空间，不等于整机RAM或memcg限制。默认仍
-f03ee0d4/a1e9d24e；host ON164/OFF157、Thor123＋后端7、驱动7/回退6
-已通过，构建零警告。首轮HTTP驱动因本机缺proc children接口中止，
-默认未改；已修复识别并拆分post-exec VmHWM与继承峰值rusage，待按
-原预算重验受影响项。冻结范围与验收见
-[编译隔离合同](SERVE_GRAMMAR_ISOLATION_2026-11-02.md)。
+serve输入合同、首批观测及F6编译隔离已交付（2026-11-02）。当前默认
+`c8c412c4` / sidecar `da9f3ac5`，运行时源码ad69ce4，收尾工具590e9ca；
+完整head/MTP k3默认不变，受约束请求仍plain masked decode。
+
+XGrammar编译和匹配在单个exec worker中执行：2GiB RLIMIT_AS，10秒
+编译/准备窗口、每步匹配2秒；取消/超时/关闭只kill并reap本请求worker。
+硬限制是worker用户地址空间，不是整机RAM或单独RSS执法。post-exec
+VmHWM报告与包含exec前继承峰值的wait4 rusage分列；未知不记成已测0。
+
+host ON164/OFF157、Thor123＋后端7、驱动7/回退6/收尾3通过，构建
+零警告。真实编译超时10.008秒、取消67ms，普通/严格混合、真实文档
+读取回填、schema中文和active shutdown通过；包含两次已保留的驱动
+失败累计11尝试/1过载拒绝/3启动。最终guard COMPLETED、ENV_ABORT0，
+1548.99秒内finalize，未扩大30分钟/3启动预算。同SHA HTTP健康复用，
+安装路径另做CLI及worker限额握手，无新增模型请求。
+
+21:03 CST GPU空、共享锁可用、无恢复标记/常驻模型，旧f03ee0d4/
+a1e9d24e及源码/证据回退链保留，217条原始记录封存。F6已给出隔离、
+抢占及工作进程硬地址空间方案；未声称全schema极值、整机RAM或生产
+多租户完备。后续仍有统一请求头ID、心跳/真实背压、角色/停止/预检。
+详见[边界、失败、复用与交付证据](SERVE_GRAMMAR_ISOLATION_2026-11-02.md)。
 
 以下为上一组已交付状态。
 

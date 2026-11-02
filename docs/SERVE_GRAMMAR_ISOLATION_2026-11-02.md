@@ -86,3 +86,49 @@ started与30分钟总窗口，剩余至多2启动/11尝试，不扩大原预算�
 后安装同SHA ELF，复用刚完成的同ELF HTTP健康；安装路径再验证CLI和
 私有worker限额握手，无新模型请求。运行时/ad69ce4和候选c8c412c4
 不变，源码与依赖hash绑定；有界收尾见tools/grammar_isolation/finish.py。
+
+
+## 最终交付与证据
+
+2026-11-02 21:01 CST finalize。运行时源码ad69ce4，收尾源码590e9ca，
+默认binary `c8c412c4ab0f24c238d83e3e5def78baf4b25c99883eda382b0da7f560ed15d4`，
+sidecar `da9f3ac5b41215157a6fbbb0d24ec540be7836c24d75d3bc6ed5228627032800`。
+完整head/MTP k3默认保持；受约束plain greedy的数值/掩码未改。
+
+- CPU最终host ON164/OFF157、Thor必需123＋后端7，驱动7、回退6、
+  收尾3，构建零警告；生产HTTP生命周期5已在之前guard通过并复用。
+- 修复候选7请求中编译10.007895秒返回503/constraint_compile_timeout，
+  0.067200秒取消返回409，均未生成token。超时通过暂停自有worker制造，
+  没有对外故障注入字段。worker已确认rlimit就绪，截获AS软/硬均2GiB。
+- 普通排队710003，严格忙时503；真实strict SSE读取docs/MODEL.md
+  并回填，Qwen3.8-Flash-Next与引用[docs/MODEL.md:L1-L8]正确。
+  工具/回答分别3.554/3.291秒。此前7项通过证据经原seal及身份核对复用，
+  末尾观察失败仍保留为FAILED，没有改写原记录。
+- 最后1次启动/3请求在46.65秒完成普通710003（0.469秒）、严格SSE
+  323/中文（1.463秒）与带生成请求的SIGTERM关闭；server_shutdown原因、
+  全部worker reap、0 in-flight与全部startup reservation释放均有原日志。
+- 安装后校验binary/sidecar身份，实际运行安装路径CLI与私有worker握手；
+  HTTP健康复用安装前刚测的同SHA ELF，**没有额外声称安装后重载模型**。
+  这里worker使用/proc/self/exe、无旁置helper可错配。累计11请求尝试、
+  1过载拒绝、3模型启动，模型阶段合计140.39秒（含失败），从首次begin
+  到finalize1548.99秒，仍原30分钟窗口。最终guard COMPLETED，ENV_ABORT0。
+
+修复/最终阶段分别回收5/2个HTTP worker；post-exec VmHWM报告的最大
+观察值224.07MiB。原始lifetime ru_maxrss约3903.77MiB，含exec前继承mm，
+不是新增worker物理RAM。安装路径额外CPU握手报告约174.70MiB。这些是
+有范围的RSS观察，proc统计本身有近似性，也可能漏掉突然kill前最后一段；
+强制边界来自RLIMIT_AS，不以采样或RSS数值验证替代内核地址空间限制。
+
+21:03 CST复查GPU计算PID空、共享锁可用、无恢复标记/常驻服务。
+[217条原始文件与身份收据](evidence/grammar-isolation-20261102/sealed-files.json)
+保留两次失败、三阶段源码/模型/构建输入、JSON/SSE、metrics、worker/
+进程RAM、guard、release及finalize。ELF与source bundle只保留在本机
+`.q4t-work/grammar-isolation-{20261102,20261102-repair,final-20261102}/`。
+当前回退入口是`tools/grammar_isolation/finish.py rollback --output ABS_DIR`，
+要求相应冻结源码和新完整GPU guard；未知pair不覆盖，旧f03ee0d4/
+a1e9d24e及更早回退链未动。
+
+本组关闭F6已冻结的编译/匹配隔离、抢占与工作进程地址空间范围。
+capabilities仍明确`compile_peak_rss_limit=false`、`whole_server_ram_limit=false`；
+不是独立RSS控制器，不扩展为全schema极值、更多并发或多租户完备声明。
+统一请求头ID、心跳/真实背压、消息角色/停止/预检继续按原审计排期。

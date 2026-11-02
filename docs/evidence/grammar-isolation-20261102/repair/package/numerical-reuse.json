@@ -1,0 +1,14 @@
+{
+  "changed": [
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/structured_decoder.h",
+    "src/main.cpp",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_metrics.cpp",
+    "src/server/structured_decoder.cpp"
+  ],
+  "previous_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/candidate/runtime-source.json",
+  "unchanged_model_and_numerical_sources": true,
+  "performance_acceptance": false
+}

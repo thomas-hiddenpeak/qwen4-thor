@@ -1,0 +1,48 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": 0,
+  "max_completion_tokens": 4096,
+  "stream": true,
+  "messages": [
+    {
+      "role": "user",
+      "content": "只输出符合schema的JSON对象，将xs填满。"
+    }
+  ],
+  "stream_options": {
+    "include_usage": true
+  },
+  "response_format": {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "long",
+      "strict": true,
+      "schema": {
+        "type": "object",
+        "properties": {
+          "xs": {
+            "type": "array",
+            "minItems": 64,
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "enum": [
+                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+              ]
+            }
+          }
+        },
+        "required": [
+          "xs"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "reasoning_effort": "low"
+  },
+  "request_id": "resource-shutdown",
+  "cancel_token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}

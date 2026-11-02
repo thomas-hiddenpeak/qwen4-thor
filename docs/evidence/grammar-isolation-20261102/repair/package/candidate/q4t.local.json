@@ -1,0 +1,8 @@
+{
+  "local_artifact": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-20261102-repair/package/candidate/q4t",
+    "sha256": "c8c412c4ab0f24c238d83e3e5def78baf4b25c99883eda382b0da7f560ed15d4",
+    "bytes": 6938016
+  },
+  "archived_binary": false
+}

@@ -1,0 +1,23 @@
+{
+  "status": 503,
+  "raw": "{\"error\":{\"message\":\"structured request capacity exhausted\",\"type\":\"service_unavailable_error\",\"code\":\"structured_capacity_exhausted\",\"param\":null}}",
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "temperature": 0,
+    "max_completion_tokens": 512,
+    "stream": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "只输出JSON对象"
+      }
+    ],
+    "response_format": {
+      "type": "json_object"
+    },
+    "chat_template_kwargs": {
+      "enable_thinking": false,
+      "reasoning_effort": "low"
+    }
+  }
+}
