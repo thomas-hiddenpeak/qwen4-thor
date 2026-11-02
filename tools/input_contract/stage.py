@@ -51,6 +51,10 @@ def prepare():
               and "[100%] Built target q4t_host_tests" in original,
               "engine/host build missing; original HTTP-only link failure retained")
     h.require(h.read(cpu / "driver-result.json")["passed"], "driver contracts failed")
+    # Check required build records before creating even a partial package.
+    for name in ("q4t", "CMakeCache.txt", "compile_commands.json",
+                 "q4t_http_lifecycle_tests"):
+        h.identity(BASE / "engine" / name)
     PACKAGE.mkdir()
     for name in ("previous", "candidate"):
         (PACKAGE / name).mkdir()
