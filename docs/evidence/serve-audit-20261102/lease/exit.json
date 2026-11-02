@@ -1,0 +1,24 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "tools/serve_audit/run.py",
+    "--engine-build",
+    ".q4t-work/structured-control-20261102/engine",
+    "--output",
+    ".q4t-work/serve-audit-20261102/run"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-11-02T10:03:39.254173+00:00",
+    "monotonic": 1803901.771056977,
+    "pid": 1248889
+  }
+}

@@ -9,6 +9,11 @@
 [有界验收与交付](STRUCTURED_OUTPUT_RESULT_2026-11-02.md)。
 下表已交付状态不因源码开发自动升级。
 
+后续[serve 全链路审计](SERVE_COMPLETENESS_AUDIT_2026-11-02.md)已覆盖
+实际 6 路由 / 35 字段并复现输入与取消的嵌套合同缺口，补充可空值、
+监控口径、流式存活和编译资源边界；新发现未修复，不能沿用本表的
+单项成功结论把组合或未审形状标为通过。
+
 ## 证据口径
 
 只读本地 vLLM `67111973eeb104e83bc6707a2d0f139737b711a0`，入口为
@@ -41,7 +46,7 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 输出预算 | max_completion_tokens / legacy max_tokens | 首批已验两字段共用预算 | A 已交付：双非空拒绝 |
 | 消息角色 | 接口 schema 接收 OpenAI 角色，最终受模板支持限制 | developer 不支持；system 必须在首条 | B：明确角色映射后做模板对照，不静默降级 |
 | 消息 name / refusal / audio | schema 有相应字段，具体模型路径决定语义 | 首批已拒绝非空未实现字段 | A 已交付拒绝合同；B 另行实现语义 |
-| 嵌套输入校验 | 独立协议类型与 validation handlers | 顶层严格，首批补消息字段 / role / 文本 content 校验 | A 已交付已确认缺口；其他嵌套另审 |
+| 嵌套输入校验 | 独立协议类型与 validation handlers | 首批消息 / role / 文本 content 已验；工具定义、历史、cancel 仍有缺口 | A：后续审计 F1/F2/F4 待修 |
 | 推理输出字段 | 当前官方 / 固定源码为 reasoning | Q4T 为 reasoning_content | B：版本化适配，不宣称字段相同 |
 | 推理隐藏与预算 | include_reasoning / thinking_token_budget 等扩展 | 有模板 thinking/effort；无独立推理预算 | B：输出隐藏不等于停止推理计算 |
 | SSE 创建时间 | serving 对一请求持同一 created | 首批已统一同一请求各块时间 | A 已交付 |
@@ -58,7 +63,7 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 真实工具执行 | Chat function 调用通常由应用执行与回填 | 首批真实发布 / 历史验收 / 不存在资料查询已验 | A/P2 已交付有界只读链路；自主广泛检索未验 |
 | 取消 / 断连 / 关闭 | serving 检查断连并传播 abort；生命周期管理 | 已有取消、deadline、断连、shutdown 与槽回收 | 保留证据；不是新的缺失 |
 | 压力与配额 | 调度、准入与服务配置；不等于完整租户计费平台 | 连接 / body / chat / slot 上限已具备，无租户配额 | B/C：先错误可观测，再业务配额 |
-| 健康与观测 | health/load/version、Prometheus、请求 metrics | healthz/metrics 与请求诊断已有；无统一 trace header | B：readiness、故障分类与关联 ID |
+| 健康与观测 | health/load/version、Prometheus、请求 metrics | healthz/metrics 与请求诊断已有；审计 F5 确认队列等指标口径问题 | B：修正口径、readiness、故障分类与关联 ID |
 | 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生未提供；现有 Nginx 示例未含完整鉴权配置 | C：在真实入口配置并验收，不能认为传了 api_key 就鉴权 |
 | HTTP 媒体类型 / 方法 | 框架路由与 JSON request validation | 未检查 Content-Type；不支持方法返回 404；禁 chunked upload | B：写成合同并补边界用例 |
 | OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | 无 OpenAPI schema；自有客户端及 Python SDK 3.42.1 限定互通已验 | B：按实际用例扩客户端，不外推其他 SDK |

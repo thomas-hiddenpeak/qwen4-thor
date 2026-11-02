@@ -1,0 +1,4 @@
+/usr/bin/ld: /tmp/ccr5SjUL.o: in function `q4t::model::Model::~Model()':
+probe.cpp:(.text._ZN3q4t5model5ModelD2Ev[_ZN3q4t5model5ModelD5Ev]+0x154): undefined reference to `q4t::io::WeightLoader::~WeightLoader()'
+/usr/bin/ld: probe.cpp:(.text._ZN3q4t5model5ModelD2Ev[_ZN3q4t5model5ModelD5Ev]+0x170): undefined reference to `q4t::io::WeightIndex::~WeightIndex()'
+collect2: error: ld returned 1 exit status

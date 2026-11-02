@@ -1,0 +1,82 @@
+{
+  "purpose": "serve_completeness_audit_not_runtime_fix_or_release_acceptance",
+  "audit_base_commit": "7606435f3f3191570fca376379cdf010b066ac15",
+  "files": {
+    "inventory-check.json": {
+      "bytes": 168,
+      "sha256": "3ff78cc7f0d67243d48d0a9a77e5deb27489aa44875d580198720cb8166c45eb"
+    },
+    "lease/events.jsonl": {
+      "bytes": 3706,
+      "sha256": "34da4b4117430709bcb570ec2b607f26ae87ab28a714550d0e693bf099a0793a"
+    },
+    "lease/exit.json": {
+      "bytes": 676,
+      "sha256": "35ccfc40c7acbcc28c26fbcf2b22238f06ae319b8605bcf854fb4e779fa042e5"
+    },
+    "lease/nvml-queries.jsonl": {
+      "bytes": 38009,
+      "sha256": "9fa95777406ff77621d97b94ae62f2bb68239c12edff75fc8725c97ecc12272a"
+    },
+    "lease-repair/events.jsonl": {
+      "bytes": 3517,
+      "sha256": "f980185eb20e8afb87d5255fd86be946cf813ca4916402109ceb44e154ef665f"
+    },
+    "lease-repair/exit.json": {
+      "bytes": 677,
+      "sha256": "64290a6744a9eeb260f7c9a249bd8df3f1af86469e1cb411cf7a5d797359b94e"
+    },
+    "lease-repair/nvml-queries.jsonl": {
+      "bytes": 35770,
+      "sha256": "363d3b501cae15cf57151946fc3c4e26d05d9488bd88614e2253e399ff6189f6"
+    },
+    "run/build-command.json": {
+      "bytes": 954,
+      "sha256": "8b3f36557cf28a97cf2914a66d3589fe45ff3fa4fcc96804762c07f9ca206f3f"
+    },
+    "run/build.stderr": {
+      "bytes": 403,
+      "sha256": "753e61d078269aa992c9471848ee0dd060464ee2808b1b00975c5c15aeccc4d3"
+    },
+    "run/build.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run-repair/build-command.json": {
+      "bytes": 1178,
+      "sha256": "1f84387bea927c0adfb49456ff48fd1287693d5be09dc578ca755c87ee760158"
+    },
+    "run-repair/build.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run-repair/build.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run-repair/fixtures.jsonl": {
+      "bytes": 9510,
+      "sha256": "c35951895b828807ca7691c00465484153d656476cd328373d09f6891cd8ce67"
+    },
+    "run-repair/observations.jsonl": {
+      "bytes": 12376,
+      "sha256": "af2b59ef4a3b135ce840f7fcad48ea91878cd7ca9f40635d8080f9e239c39efe"
+    },
+    "run-repair/probe.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run-repair/result.json": {
+      "bytes": 8380,
+      "sha256": "a4db41ec8bd92a20a5a8090c2807ac35933d741ac040ed3369b833379449242b"
+    },
+    "verification.json": {
+      "bytes": 3285,
+      "sha256": "eb866812cf44ba648cb3a127f18883d73cbb0893104adb350f143d1c0b8a8849"
+    }
+  },
+  "excluded": [
+    "compiled probe remains under .q4t-work/"
+  ],
+  "file_count": 18
+}
