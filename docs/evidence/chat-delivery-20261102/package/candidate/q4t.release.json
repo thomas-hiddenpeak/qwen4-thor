@@ -1,0 +1,164 @@
+{
+  "version": "chat-integration-20261102",
+  "binary_sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+  "source_commit": "426f0dd2d19b99ba29c7678b3b356cbe94005a56",
+  "source_note": "Prebuilt accepted chat candidate; this commit contains the exact tested runtime sources. Build-time parent and actual cache are retained in candidate/development.json; no rebuild.",
+  "tested_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/candidate/runtime-source.json",
+  "tested_source_manifest_sha256": "565f29fb7964bdcb8889c7cbc4e095baf8dab081b9f4752c3c55dbfaaf514e08",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/candidate/CMakeCache.txt",
+  "build_cache_sha256": "52e07d3ce862297a21979fcef81df00a3c838238eb2c5bf12e6fde92f25906b3",
+  "acceptance": "ACCEPT_BOUNDED_CHAT_INTEGRATION",
+  "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/business-acceptance.md",
+  "acceptance_snapshot_sha256": "88cd7061ef66f2ce01a100551ac70960b3beef38649e878eddcb6273b52207da",
+  "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/evidence/utf8-correction/result.json",
+  "acceptance_decision_sha256": "4b3fa23e3ed1e740b772d95d250acc4ae38acb1bbfd8dad9c6cc35cfcf7001ab",
+  "acceptance_audit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/evidence/accepted-archives.json",
+  "acceptance_audit_sha256": "ea35d968af4af6ced2e461d11ecb90155ad9b54228d38fcc1f7ac37f3a7775fc",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/previous/q4t.release.json",
+  "subset_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/artifact",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "defaults": {
+    "head": "full",
+    "mtp": true,
+    "mtp_k": 3,
+    "suffix": false,
+    "max_seq": 1,
+    "session_cache": false,
+    "prefix_cache": false,
+    "session_incremental": false
+  },
+  "agent_configuration": {
+    "max_seq": 4,
+    "max_prefill": 4096,
+    "max_len": 208896,
+    "seq_capacities": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "admitted_requests": 32
+  },
+  "session_cache": {
+    "enabled_by": "--session-cache-dir DIR plus session_id",
+    "max_entries": 8,
+    "disk_budget_bytes": 25769803776,
+    "ram_budget_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "min_prefix": 8192,
+    "same_process_only": true
+  },
+  "prefix_cache": {
+    "enabled_by": "--prefix-cache-dir DIR plus prefix_cache_scope",
+    "checkpoints": [
+      8192,
+      32768,
+      65536
+    ],
+    "write_field": "prefix_cache_write_tokens",
+    "default_readonly": true,
+    "max_writes_per_request": 1,
+    "max_checkpoints": 4,
+    "checkpoint_range": [
+      1024,
+      131072
+    ],
+    "max_entries": 8,
+    "disk_budget_bytes": 8589934592,
+    "ram_budget_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "same_process_only": true
+  },
+  "scope": {
+    "hardware": "local Thor",
+    "decoding": "text greedy MTP k3",
+    "heads": [
+      "full",
+      "65536-row BF16 subset"
+    ],
+    "slots": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "max_prefill": 4096,
+    "shared_boundaries_tested": [
+      8192,
+      32768
+    ],
+    "request_policy": "one explicit seed per successful source request; children readonly by default",
+    "prefix_cache_default": false,
+    "same_process_only": true
+  },
+  "atomicity": "Individual atomic replaces, durable recovery marker, identity-checked rollback; not a two-file power-loss transaction",
+  "incremental": {
+    "enabled_by": "Q4T_SESSION_INCREMENTAL=1",
+    "default": false,
+    "private_only": true,
+    "block_bytes": 8388608,
+    "max_ranges": 1024,
+    "max_blocks": 8192,
+    "max_entries": 8,
+    "first_save": "full",
+    "restore_required_in_current_lease": true,
+    "checksums": "all valid bytes every save and restore",
+    "same_process_only": true,
+    "statistical_noninferiority": false
+  },
+  "serving": {
+    "utf8": "complete scalars per event; invalid terminal bytes replaced",
+    "send_success": "complete local write and request completion wins cancellation",
+    "ttft": "streaming first nonempty content local write",
+    "target_ready": "separate legacy first-target-ready metric",
+    "logical_write_deadline_seconds": 30,
+    "terminal_write_budget_ms": 250,
+    "batching": "existing all-active selection",
+    "fault_injection": false,
+    "performance_acceptance": false,
+    "header_state": "actual successful writes; partial headers close on exception",
+    "private_publication": "actual saved token prefix; matching positive and negative continuation"
+  },
+  "audit_p2": {
+    "fixed": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8"
+    ],
+    "pending": []
+  },
+  "tool_source_commit": "426f0dd2d19b99ba29c7678b3b356cbe94005a56",
+  "tool_acceptance": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/evidence/utf8-correction/result.json",
+  "tool_acceptance_sha256": "4b3fa23e3ed1e740b772d95d250acc4ae38acb1bbfd8dad9c6cc35cfcf7001ab",
+  "main_reaudit": {
+    "fixed": [
+      "R1",
+      "R2",
+      "R3",
+      "R4"
+    ],
+    "pending": []
+  },
+  "chat_protocol": {
+    "protocol_sha256": "a765c021575bd68f46ecdbf099c9450e4b05e318e5b2d132215b3a880420a569",
+    "parse_response_default": false,
+    "opt_in": "parse_response=true",
+    "capabilities": "/v1/capabilities",
+    "tool_choice": [
+      "auto"
+    ],
+    "tool_calls": "complete validated calls only",
+    "reasoning": "reasoning_content",
+    "json_and_sse": true,
+    "tool_history_ids": true,
+    "constrained_decoding": false,
+    "media_acceptance": false,
+    "sdk_interoperability_acceptance": false
+  }
+}

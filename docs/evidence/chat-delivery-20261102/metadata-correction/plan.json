@@ -1,0 +1,7 @@
+{
+  "previous_sidecar_sha256": "4d07a9f52a95bf48ad6d642a86f49a59c43bae6605cba10694d62a656c28af25",
+  "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/metadata-deployment",
+  "generation_budget": 0,
+  "model_start_budget": 0,
+  "source_commit": "9466ea52ed00aa18f818993f9229996cf0a3676c"
+}

@@ -1,0 +1,17 @@
+{
+  "status": "DELIVERED",
+  "binary_sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+  "sidecar_sha256": "0f28e0f08322c6ad513dc9117e95f6913d34876b43485534e150b67f8544f1aa",
+  "health": {
+    "status": "PASS",
+    "error": null,
+    "requests": 6,
+    "starts": 2,
+    "capability_gets": 2,
+    "agent_runs": 2,
+    "elapsed_seconds": 89.04621270415373
+  },
+  "persistent_service": false,
+  "performance_acceptance": false,
+  "finished": 1793601350.3007307
+}

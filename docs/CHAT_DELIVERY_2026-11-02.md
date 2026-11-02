@@ -70,8 +70,16 @@ python3 -B tools/evalscope/gpu_exclusive.py \
 
 ## 执行状态
 
+**PASS_DELIVERED_CHAT_INTEGRATION**，当前默认程序SHA256为
+`830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51`，
+sidecar为`0f28e0f08322c6ad513dc9117e95f6913d34876b43485534e150b67f8544f1aa`。
+运行时及初始交付源码锚点426f0dd，元数据修正/当前回退入口9466ea5。
+164项运行时与1553项既有验收输入源码身份未变，未重新编译。
+旧0c5ab1de/e6fdd13b完整pair与真实cache保留在原包的previous/。
+
 两head安装健康已通过：2启动/6生成/2能力GET，耗时89.05秒；
-模型及资源均退出。正式finalize前发现新sidecar把messages解析
+完整head1619项、subset1621项分配全部释放，两个模型正常退出。
+正式finalize前发现新sidecar把messages解析
 默认值误记为false，已按源码和本次真实capabilities修正工具及本页。
 同时限定TTFT元数据：raw计首个正文，parsed计正文、推理或完整工具
 delta的首次成功写入，不能混作性能对照。
@@ -80,3 +88,16 @@ delta的首次成功写入，不能混作性能对照。
 sidecar身份。此修正不改运行时，不重跑已通过的健康证据。
 修正包位于`.q4t-work/chat-delivery-20261102/metadata-correction/`；
 其增量Git bundle接续原包的426f0dd锚点，原包不重写。
+
+新增回退合同当前9项通过：首版7项，元数据修正后9项，TTFT说明
+调整后仅重验2项相关合同；其余通过结果复用。安装健康与元数据
+修正各持一个完整阶段租约，两次guard均COMPLETED、无ENV_ABORT。
+元数据阶段0启动/0生成；从安装开始至finalize共694.04秒，仍在
+原20分钟截止内。服务最后保持停止，NVML计算进程为空、共享锁可
+获取、自有与共享恢复标记均不存在，58001代理未操作。
+
+[98份原始安装与修正证据](evidence/chat-delivery-20261102/README.md)
+已封存，含请求/响应、客户端持久日志、能力记录、服务器清理、
+两次guard、两版sidecar、源码、CPU合同及独立核验。原始错误描述
+保留在包快照，当前说明以修正版为准。没有新增性能、缓存、四路
+并发或通用SDK兼容接受结论。

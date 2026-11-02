@@ -1,0 +1,148 @@
+{
+  "version": "main-reaudit-repairs-20261031",
+  "binary_sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+  "source_commit": "55299a0a98a329f758a13db7bf2a51090f781818",
+  "source_note": "Expert tensor contracts, hot-list dedup, load exceptions and descendant cleanup.",
+  "tested_source_manifest": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/candidate/runtime-source.json",
+  "tested_source_manifest_sha256": "018650fd754b58dee943781c7c613eb317742ff1862d3597317369038f762ec6",
+  "build_cache": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/candidate/CMakeCache.txt",
+  "build_cache_sha256": "276e16e4338fa3e24cf3d48db9a1f721fa60c03ea6754b66cbb768e78a2a15ba",
+  "acceptance": "ACCEPT_BOUNDED_MAIN_REAUDIT_REPAIR",
+  "acceptance_snapshot": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/acceptance-contract.md",
+  "acceptance_snapshot_sha256": "2167dd01fc23ea1aa6a2e9c919d62895c25bdb607e40731055f45c480714606a",
+  "acceptance_decision": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/decision.json",
+  "acceptance_decision_sha256": "12e7700ba032a0e4ba46bf5c2607d37411000eddafcbfc71da9ebff5d29b2180",
+  "acceptance_audit": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/evidence/archive-receipt.json",
+  "acceptance_audit_sha256": "9acad745c1f25cb03df5f00d7ab864d9cc83fe4009e40afe2c0dc7e86fcb6a8d",
+  "previous_binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/previous/q4t",
+  "previous_release": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/previous/q4t.release.json",
+  "subset_artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/artifact",
+  "subset_manifest_sha256": "b63b0f251fddc8a75749a54dd4b22477fdb8da875cc26f83595534c71062c3ce",
+  "defaults": {
+    "head": "full",
+    "mtp": true,
+    "mtp_k": 3,
+    "suffix": false,
+    "max_seq": 1,
+    "session_cache": false,
+    "prefix_cache": false,
+    "session_incremental": false
+  },
+  "agent_configuration": {
+    "max_seq": 4,
+    "max_prefill": 4096,
+    "max_len": 208896,
+    "seq_capacities": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "admitted_requests": 32
+  },
+  "session_cache": {
+    "enabled_by": "--session-cache-dir DIR plus session_id",
+    "max_entries": 8,
+    "disk_budget_bytes": 25769803776,
+    "ram_budget_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "min_prefix": 8192,
+    "same_process_only": true
+  },
+  "prefix_cache": {
+    "enabled_by": "--prefix-cache-dir DIR plus prefix_cache_scope",
+    "checkpoints": [
+      8192,
+      32768,
+      65536
+    ],
+    "write_field": "prefix_cache_write_tokens",
+    "default_readonly": true,
+    "max_writes_per_request": 1,
+    "max_checkpoints": 4,
+    "checkpoint_range": [
+      1024,
+      131072
+    ],
+    "max_entries": 8,
+    "disk_budget_bytes": 8589934592,
+    "ram_budget_bytes": 33554432,
+    "ttl_seconds": 1800,
+    "same_process_only": true
+  },
+  "scope": {
+    "hardware": "local Thor",
+    "decoding": "text greedy MTP k3",
+    "heads": [
+      "full",
+      "65536-row BF16 subset"
+    ],
+    "slots": [
+      208896,
+      65536,
+      65536,
+      65536
+    ],
+    "max_prefill": 4096,
+    "shared_boundaries_tested": [
+      8192,
+      32768
+    ],
+    "request_policy": "one explicit seed per successful source request; children readonly by default",
+    "prefix_cache_default": false,
+    "same_process_only": true
+  },
+  "atomicity": "Individual atomic replaces, durable recovery marker, identity-checked rollback; not a two-file power-loss transaction",
+  "incremental": {
+    "enabled_by": "Q4T_SESSION_INCREMENTAL=1",
+    "default": false,
+    "private_only": true,
+    "block_bytes": 8388608,
+    "max_ranges": 1024,
+    "max_blocks": 8192,
+    "max_entries": 8,
+    "first_save": "full",
+    "restore_required_in_current_lease": true,
+    "checksums": "all valid bytes every save and restore",
+    "same_process_only": true,
+    "statistical_noninferiority": false
+  },
+  "serving": {
+    "utf8": "complete scalars per event; invalid terminal bytes replaced",
+    "send_success": "complete local write and request completion wins cancellation",
+    "ttft": "streaming first nonempty content local write",
+    "target_ready": "separate legacy first-target-ready metric",
+    "logical_write_deadline_seconds": 30,
+    "terminal_write_budget_ms": 250,
+    "batching": "existing all-active selection",
+    "fault_injection": false,
+    "performance_acceptance": false,
+    "header_state": "actual successful writes; partial headers close on exception",
+    "private_publication": "actual saved token prefix; matching positive and negative continuation"
+  },
+  "audit_p2": {
+    "fixed": [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8"
+    ],
+    "pending": []
+  },
+  "tool_source_commit": "55299a0a98a329f758a13db7bf2a51090f781818",
+  "tool_acceptance": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/decision.json",
+  "tool_acceptance_sha256": "12e7700ba032a0e4ba46bf5c2607d37411000eddafcbfc71da9ebff5d29b2180",
+  "main_reaudit": {
+    "fixed": [
+      "R1",
+      "R2",
+      "R3",
+      "R4"
+    ],
+    "pending": []
+  }
+}

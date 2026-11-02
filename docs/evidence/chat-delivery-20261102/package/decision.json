@@ -1,0 +1,12 @@
+{
+  "status": "ACCEPT_BOUNDED_CHAT_DELIVERY",
+  "candidate_sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+  "previous_sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+  "accepted_result": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/chat-business-runtime-20261102/utf8-correction/result.json",
+    "sha256": "4b3fa23e3ed1e740b772d95d250acc4ae38acb1bbfd8dad9c6cc35cfcf7001ab",
+    "bytes": 4917
+  },
+  "performance_acceptance": false,
+  "pending": "installed health and clean guard"
+}

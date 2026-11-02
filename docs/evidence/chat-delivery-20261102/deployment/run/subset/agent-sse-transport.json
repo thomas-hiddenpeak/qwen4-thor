@@ -1,0 +1,20 @@
+[
+  {
+    "method": "GET",
+    "path": "/capabilities",
+    "status": 200,
+    "content_type": "application/json"
+  },
+  {
+    "method": "POST",
+    "path": "/chat/completions",
+    "status": 200,
+    "content_type": "text/event-stream"
+  },
+  {
+    "method": "POST",
+    "path": "/chat/completions",
+    "status": 200,
+    "content_type": "text/event-stream"
+  }
+]

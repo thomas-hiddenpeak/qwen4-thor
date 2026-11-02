@@ -1,0 +1,42 @@
+{
+  "state": "COMPLETED",
+  "next_action": "No replay needed. Task success requires its own business check, separate from protocol completion.",
+  "automatic_retry": false,
+  "requests": 2,
+  "completed_tool_calls": 1,
+  "attempted_tool_calls": 1,
+  "remaining_requests": 0,
+  "remaining_tool_calls": 0,
+  "messages": [
+    {
+      "role": "user",
+      "content": "请先调用lookup工具，key必须是audit。拿到工具结果后，只回复其中code字段的六位数字。在工具返回之前不要猜测答案。"
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_agent-f617d0ab53eed112946637138368568f_0",
+          "type": "function",
+          "function": {
+            "name": "lookup",
+            "arguments": "{\"key\":\"audit\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_agent-f617d0ab53eed112946637138368568f_0",
+      "content": "{\"code\": \"831907\"}"
+    },
+    {
+      "role": "assistant",
+      "content": "831907"
+    }
+  ],
+  "pending_tool_calls": [],
+  "known_results": {},
+  "cancellation_note": "202 accepts cancellation only; 404 does not prove no execution. Never reuse request IDs."
+}

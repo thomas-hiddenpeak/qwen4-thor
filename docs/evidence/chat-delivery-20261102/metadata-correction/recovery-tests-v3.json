@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "python3",
+    "-B",
+    "tools/response_protocol/test_delivery.py",
+    "-v",
+    "RecoveryTest.test_metadata_correction_and_interrupted_correction_recover",
+    "RecoveryTest.test_metadata_correction_cannot_change_other_release_fields"
+  ],
+  "returncode": 0,
+  "finished": 1793601080.5313957,
+  "reuse": "Other seven contracts reuse v2; only corrected_metadata changed their dependencies."
+}

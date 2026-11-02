@@ -12,15 +12,15 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
-开发分支正在补齐工具/推理输出解析与流式协议，因设备vLLM实际业务
-占用暂不测试、未部署；已交付默认程序仍使用原始文本响应。
-候选接口与验收边界见[输出协议](docs/RESPONSE_PARSING_2026-11-02.md)。
-对应的[messages客户端与只读工具往返示例](docs/AGENT_TOOL_CLIENT_2026-11-02.md)
-也已提供开发快照，仅语法编译，尚未运行验证。
-[工具历史关联](docs/CHAT_TOOL_HISTORY_2026-11-02.md)已补齐带ID文本结果
-乱序归一与关联校验，仅编译完成，未测试或部署。
-[能力/模板身份查询、统一验收入口与只读失败恢复](docs/CHAT_INTEGRATION_PREP_2026-11-02.md)
-也已完成开发准备；当前默认程序尚不包含这些候选功能。
+当前默认程序已包含工具/推理输出解析、JSON/SSE协议、带ID工具历史
+关联和`/v1/capabilities`能力/模板身份查询。`messages`默认解析；
+`parse_response: false`保留原始输出，`prompt`始终为raw。
+[messages客户端与只读工具往返示例](docs/AGENT_TOOL_CLIENT_2026-11-02.md)
+及持久日志恢复已完成有界业务验收；完整head和subset的安装健康均通过。
+接口见[输出协议](docs/RESPONSE_PARSING_2026-11-02.md)，默认身份、
+结果与回退见[交付记录](docs/CHAT_DELIVERY_2026-11-02.md)。
+当前未启动常驻模型服务，GPU保持释放；这些结果不等于通用SDK兼容、
+完整JSON Schema或任意业务质量保证。
 
 - **文本推理**: 48 层完整 forward (36 linear_attention + 12 full_attention),
   MoE 专家使用 NVFP4 W4A4，其他路径含 BF16/FP32；Paged KV cache、greedy 生成

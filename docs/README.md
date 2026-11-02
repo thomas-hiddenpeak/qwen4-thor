@@ -8,7 +8,9 @@
 [带ID工具历史关联与后续开发准备](CHAT_TOOL_HISTORY_2026-11-02.md)。
 [能力声明、统一有界验收入口与失败恢复](CHAT_INTEGRATION_PREP_2026-11-02.md)
 有界业务验收通过：158项CPU/模板、8真实故障、23生成/10负例HTTP；
-候选未安装，GPU已释放，见[验收结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。
+见[验收结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。
+当前已安装830694ce/0f28e0f0，两head安装健康通过、GPU保持释放；
+见[正式交付、98份证据与回退](CHAT_DELIVERY_2026-11-02.md)。
 [完整工具往返、真实中断与日志崩溃场景准备](CHAT_ACCEPTANCE_SCENARIOS_2026-11-02.md)。
 最新专项：[main复审四项修复交付、证据与回退](MAIN_REAUDIT_FIX_RESULT_2026-10-31.md)；
 [修复范围与冻结预算](MAIN_REAUDIT_FIX_PLAN_2026-10-31.md)；

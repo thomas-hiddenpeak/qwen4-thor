@@ -1,0 +1,21 @@
+{
+  "candidate": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+  "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/deployment/run",
+  "artifact": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/artifact",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "protocol_sha256": "a765c021575bd68f46ecdbf099c9450e4b05e318e5b2d132215b3a880420a569",
+  "port": 18097,
+  "deadline_unix": 1793601816.641847,
+  "limits": {
+    "starts": 2,
+    "generations": 6,
+    "capability_gets": 2,
+    "seconds": 1200
+  }
+}
