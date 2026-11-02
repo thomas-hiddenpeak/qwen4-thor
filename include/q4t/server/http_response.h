@@ -12,6 +12,7 @@
 #include <thread>
 
 #include "q4t/server/request_control.h"
+#include "q4t/server/http_observation.h"
 
 namespace q4t::server::detail {
 
@@ -49,7 +50,8 @@ std::string NewRequestId(std::string_view prefix = "req-");
 // touches model resources. It is joined before the socket owner can return.
 class HttpResponseContext {
  public:
-  explicit HttpResponseContext(int fd);
+  // Metrics must outlive the context. Publishing occurs after heartbeat join.
+  explicit HttpResponseContext(int fd, HttpTransportMetrics* metrics = nullptr);
   ~HttpResponseContext();
   HttpResponseContext(const HttpResponseContext&) = delete;
   HttpResponseContext& operator=(const HttpResponseContext&) = delete;
@@ -61,11 +63,16 @@ class HttpResponseContext {
       std::shared_ptr<RequestControl> control,
       std::chrono::milliseconds interval = std::chrono::seconds(5));
   void StopHeartbeats();
+  void RecordReceiveFailure(HttpReceiveFailure reason, int status,
+                            int system_error = 0);
+  HttpWriteObservation WriteFailure();
   bool Write(const char* data, size_t size, const WriteOptions& options,
              ResponseState* header_state = nullptr);
 
  private:
   void HeartbeatLoop();
+  // Caller holds write_mu_. Only the first failed write is retained.
+  void RecordWriteFailure(HttpWriteObservation value, HttpWriteOrigin origin);
   const int fd_;
   HttpResponseContext* const previous_;
   std::string trace_id_;
@@ -74,7 +81,11 @@ class HttpResponseContext {
   std::condition_variable wake_;
   std::thread heartbeat_;
   bool stop_ = false;
-  bool write_failed_ = false;
+  HttpWriteObservation write_failure_;
+  HttpTransportMetrics* const metrics_;
+  HttpReceiveFailure receive_failure_ = HttpReceiveFailure::kNone;
+  int receive_status_ = 0;
+  int receive_system_error_ = 0;
   std::shared_ptr<RequestControl> control_;
   std::chrono::milliseconds interval_{5000};
   std::chrono::steady_clock::time_point last_write_ =

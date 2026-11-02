@@ -62,6 +62,30 @@ void ChatServer::HandleMetrics(int fd) {
 
   counter("q4t_requests_total", "Total chat requests received.",
           metrics_.requests_total.load());
+  b += "# HELP q4t_http_receive_failures_total First transport/route rejection "
+       "per connection; excludes business validation.\n"
+       "# TYPE q4t_http_receive_failures_total counter\n";
+  for (size_t i = 1; i < kHttpReceiveReasons.size(); ++i) {
+    b += "q4t_http_receive_failures_total{reason=\"";
+    b += kHttpReceiveReasons[i];
+    b += "\"} " + std::to_string(metrics_.http_transport.receive[i].load()) +
+         '\n';
+  }
+  b += "# HELP q4t_http_write_failures_total First failed logical write per "
+       "connection, published after heartbeat join; not task outcomes.\n"
+       "# TYPE q4t_http_write_failures_total counter\n";
+  for (size_t origin = 0; origin < kHttpWriteOrigins.size(); ++origin) {
+    for (size_t reason = 1; reason < kHttpWriteReasons.size(); ++reason) {
+      b += "q4t_http_write_failures_total{origin=\"";
+      b += kHttpWriteOrigins[origin];
+      b += "\",reason=\"";
+      b += kHttpWriteReasons[reason];
+      b +=
+          "\"} " +
+          std::to_string(metrics_.http_transport.write[origin][reason].load()) +
+          '\n';
+    }
+  }
   counter("q4t_requests_success_total",
           "Requests with a complete local response write.",
           metrics_.requests_success.load());

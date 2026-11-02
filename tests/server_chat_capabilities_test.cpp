@@ -18,6 +18,26 @@ bool Hash(const std::string& text) {
 }
 }  // namespace
 
+Q4T_TEST(chat_capabilities_transport_observation_contract) {
+  q4t::io::Json caps;
+  Q4T_CHECK(q4t::io::ParseJson(
+      q4t::server::ChatCapabilitiesJson("m", false, true), &caps));
+  const auto* observation = caps.Find("observability");
+  Q4T_CHECK(observation && observation->GetInt("version") == 3);
+  Q4T_CHECK(observation->GetString("http_receive_failures") ==
+            "q4t_http_receive_failures_total");
+  Q4T_CHECK(observation->GetString("http_write_failures") ==
+            "q4t_http_write_failures_total");
+  Q4T_CHECK(observation->GetString("transport_counts") ==
+            "first_receive_and_write_failure_per_connection");
+  Q4T_CHECK(observation->GetString("transport_publication") ==
+            "after_heartbeat_join");
+  Q4T_CHECK(observation->GetBool("receive_excludes_business_validation"));
+  Q4T_CHECK(observation->GetString("body_capacity_error") ==
+            "body_capacity_exhausted");
+  return true;
+}
+
 Q4T_TEST(chat_capabilities_text_stop_profile) {
   q4t::io::Json caps;
   Q4T_CHECK(q4t::io::ParseJson(

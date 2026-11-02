@@ -7,6 +7,8 @@
 #include <string>
 #include <string_view>
 
+#include "q4t/server/http_observation.h"
+
 namespace q4t::server {
 
 inline constexpr size_t kChatBodyBytes = 16 * 1024 * 1024;
@@ -29,6 +31,8 @@ struct HttpRequestHeaders {
   std::string error_code;
   std::string error_param;
   size_t content_length = 0;
+  HttpReceiveFailure failure = HttpReceiveFailure::kNone;
+  int system_error = 0;
 };
 
 // Reservation spans reading, parsing, queueing and response completion.

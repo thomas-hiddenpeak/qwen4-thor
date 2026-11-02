@@ -70,13 +70,15 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("budget_exhausted":"close_then_answer_and_mask_reentry",)"
          R"("budget_mtp":"reserve_pending_then_host_tail",)"
          R"("budget_usage_details":true},)"
-         R"("preflight":{"profile":)" + Quote(std::string(kPreflightProfile)) +
+         R"("preflight":{"profile":)" +
+         Quote(std::string(kPreflightProfile)) +
          R"(,"endpoint":"/v1/chat/preflight","config_endpoint":"/v1/config",)"
          R"("text_only":true,"prompt_preview":"opt_in",)"
          R"("token_ids":"opt_in","response_max_bytes":8388608,)"
          R"("shares_chat_planning":true,"reserves_slot":false,)"
          R"("executes_model":false,"compiles_grammar":false},)"
-         R"("text_stop":{"profile":)" + Quote(std::string(kTextStopProfile)) +
+         R"("text_stop":{"profile":)" +
+         Quote(std::string(kTextStopProfile)) +
          R"(,"available":true,"max_strings":4,"max_utf8_bytes":256,)"
          R"("null_or_empty_array":"disabled","empty_string":"reject",)"
          R"("matching":"normalized_decoded_text_before_parser",)"
@@ -132,7 +134,13 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("compile_timeout_code":"constraint_compile_timeout",)"
          R"("memory_limit_code":"constraint_resource_exhausted",)"
          R"("worker_failure_code":"constraint_worker_failed"}},)"
-         R"("observability":{"version":2,"full_response":"q4t_response_seconds",)"
+         R"("observability":{"version":3,"full_response":"q4t_response_seconds",)"
+         R"("http_receive_failures":"q4t_http_receive_failures_total",)"
+         R"("http_write_failures":"q4t_http_write_failures_total",)"
+         R"("transport_counts":"first_receive_and_write_failure_per_connection",)"
+         R"("transport_publication":"after_heartbeat_join",)"
+         R"("receive_excludes_business_validation":true,)"
+         R"("body_capacity_error":"body_capacity_exhausted",)"
          R"("slot_wait":"q4t_slot_wait_seconds",)"
          R"("admission":"q4t_admission_seconds",)"
          R"("generation_exit":"q4t_generation_complete_seconds",)"

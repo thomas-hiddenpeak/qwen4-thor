@@ -202,8 +202,9 @@ def semantics():
     rules = [
         ("json-lexical", ["src/io/json.cpp", "include/q4t/server/request_json.h"],
          "UTF-8 JSON; no duplicate keys, nonfinite numbers or trailing data; depth64/65536 values/16MiB decoded string bytes. Integer fields use exact source lexemes, not rounded binary64 values."),
-        ("transport-body", ["src/server/http_request.cpp", "src/server/chat_http.cpp"],
-         "16MiB Chat/preflight body, 48MiB aggregate; cancel body4096. POST application/json UTF-8, no query strings, GET no body, methods exact; framing and header limits apply before parsing."),
+        ("transport-body", ["src/server/http_request.cpp", "src/server/chat_http.cpp",
+             "include/q4t/server/http_observation.h"],
+         "16MiB Chat/preflight body, 48MiB aggregate reservation; capacity failure is HTTP503/body_capacity_exhausted/param=body before body read. This is not a RAM measurement. Cancel body4096. POST application/json UTF-8, no query strings, GET no body, methods exact; framing and header limits apply before parsing. Fixed first receive-failure counters exclude business validation."),
         ("model-and-credentials", ["src/server/input_contract.cpp", "src/server/chat_contract.cpp"],
          "If present model equals served identifier. request_id and fresh lowercase64hex cancel_token together; reserved auto prefix forbidden. Active ID registry/cancel authority are runtime checks, not idempotency."),
         ("utf8-byte-length", ["src/server/input_contract.cpp", "src/server/text_stop.cpp"],

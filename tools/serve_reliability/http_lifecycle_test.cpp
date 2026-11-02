@@ -15,6 +15,8 @@
 #include <future>
 #include <filesystem>
 #include <stdexcept>
+#include <cerrno>
+#include <cstring>
 
 namespace q4t::model {
 ModelOwner::~ModelOwner() = default;
@@ -305,5 +307,150 @@ Q4T_TEST(http_control_reserve_and_draining_readiness) {
   close_slow.Run();
   Q4T_CHECK(run.wait_for(3s) == std::future_status::ready && run.get().ok());
   Q4T_CHECK(ServeContractAccess::Empty(server));
+  return true;
+}
+
+Q4T_TEST(http_receive_observation_body_routes_and_business_boundary) {
+  using namespace q4t::server;
+  ChatServer server;
+  ServeContractAccess::Configure(server);
+  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  {
+    HttpBodyLease held(ServeContractAccess::BodyBudget(server));
+    Q4T_CHECK(held.Acquire(kAggregateChatBodyBytes));
+    const auto response =
+        Request(server,
+                "POST /v1/chat/preflight HTTP/1.1\r\nHost: t\r\n"
+                "X-Request-Id: observation.fixture\r\nContent-Type: "
+                "application/json\r\n"
+                "Content-Length: 1\r\n\r\n");
+    Q4T_CHECK(response.starts_with("HTTP/1.1 503 "));
+    Q4T_CHECK(response.find("body_capacity_exhausted") != response.npos);
+    Q4T_CHECK(response.find("\"param\":\"body\"") != response.npos);
+    Q4T_CHECK(response.find("X-Request-Id: observation.fixture") !=
+              response.npos);
+    Q4T_CHECK(ServeContractAccess::ReceiveFailures(
+                  server, HttpReceiveFailure::kBodyCapacity) == 1);
+    Q4T_CHECK(ServeContractAccess::BodyBudget(server).Used() ==
+              kAggregateChatBodyBytes);
+  }
+  for (const auto& item :
+       {std::pair{"GET /unknown HTTP/1.1\r\nHost: t\r\n\r\n",
+                  HttpReceiveFailure::kRoute},
+        {"GET /healthz?q HTTP/1.1\r\nHost: t\r\n\r\n",
+         HttpReceiveFailure::kQuery},
+        {"GET /v1/chat/completions HTTP/1.1\r\nHost: t\r\n\r\n",
+         HttpReceiveFailure::kMethod},
+        {"GET /healthz HTTP/1.1\r\nHost: t\r\nContent-Length: 1\r\n\r\nx",
+         HttpReceiveFailure::kUnexpectedBody},
+        {"POST /v1/chat/completions HTTP/1.1\r\nHost: t\r\n"
+         "Content-Type: text/plain\r\nContent-Length: 2\r\n\r\n{}",
+         HttpReceiveFailure::kMedia}}) {
+    Q4T_CHECK(Request(server, item.first).find("\"error\"") !=
+              std::string::npos);
+    Q4T_CHECK(ServeContractAccess::ReceiveFailures(server, item.second) == 1);
+  }
+  // The fixture deliberately throws inside chat. That is not a receive error.
+  Q4T_CHECK(
+      Request(server,
+              "POST /v1/chat/completions HTTP/1.1\r\nHost: t\r\n"
+              "Content-Type: application/json\r\nContent-Length: 2\r\n\r\n{}")
+          .starts_with("HTTP/1.1 500 "));
+  Q4T_CHECK(ServeContractAccess::ReceiveFailures(
+                server, HttpReceiveFailure::kException) == 0);
+  stop.Run();
+  Q4T_CHECK(run.wait_for(3s) == std::future_status::ready && run.get().ok());
+  Q4T_CHECK(ServeContractAccess::Empty(server));
+  Q4T_CHECK(ServeContractAccess::BodyBudget(server).Used() == 0);
+  return true;
+}
+
+Q4T_TEST(observation_runtime_partial_header_exception_remains_first) {
+  using namespace q4t::server;
+  using namespace q4t::server::detail;
+  int fd[2];
+  Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+  ScopeExit close_socket([&] {
+    close(fd[0]);
+    close(fd[1]);
+  });
+  setenv("Q4T_SERVE_FAULT", "handler.partial_header", 1);
+  serve_test_hook = +[](const char* name) {
+    if (!std::strcmp(name, "handler.partial_header")) throw std::bad_alloc();
+  };
+  ScopeExit reset([] {
+    serve_test_hook = nullptr;
+    unsetenv("Q4T_SERVE_FAULT");
+  });
+  HttpTransportMetrics metrics;
+  {
+    HttpResponseContext context(fd[0], &metrics);
+    bool thrown = false;
+    try {
+      BeginStreamingResponse(fd[0], context.State());
+    } catch (const std::bad_alloc&) {
+      thrown = true;
+    }
+    Q4T_CHECK(thrown && *context.State() == ResponseState::kHeadersStarted);
+    const auto failure = context.WriteFailure();
+    Q4T_CHECK(failure.reason == HttpWriteFailure::kException);
+    Q4T_CHECK(failure.origin == HttpWriteOrigin::kHandler &&
+              failure.transferred == 8);
+    SendExceptionResponse(fd[0], *context.State());
+    Q4T_CHECK(!WriteAll(fd[0], "duplicate"));
+    Q4T_CHECK(context.WriteFailure().transferred == 8);
+  }
+  Q4T_CHECK(metrics.write[static_cast<size_t>(HttpWriteOrigin::kHandler)]
+                         [static_cast<size_t>(HttpWriteFailure::kException)] ==
+            1);
+  return true;
+}
+
+Q4T_TEST(observation_runtime_heartbeat_exception_joins_and_counts_once) {
+  using namespace q4t::server;
+  using namespace q4t::server::detail;
+  int fd[2];
+  Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+  ScopeExit close_socket([&] {
+    close(fd[0]);
+    close(fd[1]);
+  });
+  int small = 1024;
+  setsockopt(fd[0], SOL_SOCKET, SO_SNDBUF, &small, sizeof(small));
+  serve_test_hook = +[](const char* name) {
+    if (!std::strcmp(name, "write.backpressure")) throw std::bad_alloc();
+  };
+  ScopeExit reset([] { serve_test_hook = nullptr; });
+  HttpTransportMetrics metrics;
+  {
+    HttpResponseContext context(fd[0], &metrics);
+    Q4T_CHECK(BeginStreamingResponse(fd[0], context.State()));
+    const std::string filler(4096, 'x');
+    size_t total = 0;
+    ssize_t n;
+    while ((n = send(fd[0], filler.data(), filler.size(),
+                     MSG_DONTWAIT | MSG_NOSIGNAL)) > 0) {
+      total += static_cast<size_t>(n);
+      Q4T_CHECK(total < 1024 * 1024);
+    }
+    Q4T_CHECK(n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK));
+    auto control = std::make_shared<RequestControl>(
+        "id", "key", std::chrono::steady_clock::now() + 2s);
+    context.StartHeartbeats(control, 5ms);
+    const auto until = std::chrono::steady_clock::now() + 1s;
+    while (context.WriteFailure().reason == HttpWriteFailure::kNone &&
+           std::chrono::steady_clock::now() < until)
+      std::this_thread::sleep_for(1ms);
+    context.StopHeartbeats();
+    const auto failure = context.WriteFailure();
+    Q4T_CHECK(failure.reason == HttpWriteFailure::kException);
+    Q4T_CHECK(failure.origin == HttpWriteOrigin::kHeartbeat &&
+              control->Failed());
+    Q4T_CHECK(!WriteAll(fd[0], "duplicate"));
+  }
+  Q4T_CHECK(metrics.write[static_cast<size_t>(HttpWriteOrigin::kHeartbeat)]
+                         [static_cast<size_t>(HttpWriteFailure::kException)] ==
+            1);
   return true;
 }

@@ -412,6 +412,7 @@ if(Q4T_BUILD_TESTS)
     tests/runtime_memory_budget_test.cpp
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
+    tests/server_http_observation_test.cpp
     tests/server_chat_contract_test.cpp
     src/server/chat_capabilities.cpp
     tests/server_chat_capabilities_test.cpp

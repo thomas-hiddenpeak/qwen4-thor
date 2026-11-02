@@ -63,6 +63,7 @@ struct MetricHistogram {
 
 // serve/scheduler observability counters + histograms (exposed at /metrics).
 struct ServeMetrics {
+  HttpTransportMetrics http_transport;
   std::atomic<uint64_t> requests_total{0};
   std::atomic<uint64_t> requests_success{0};
   std::atomic<uint64_t> requests_error{0};    // rejected before generation

@@ -8,6 +8,14 @@
 
 namespace q4t::server {
 struct ServeContractAccess {
+  static HttpBodyBudget& BodyBudget(ChatServer& server) {
+    return server.body_budget_;
+  }
+  static uint64_t ReceiveFailures(ChatServer& server,
+                                  HttpReceiveFailure reason) {
+    return server.metrics_.http_transport.receive[static_cast<size_t>(reason)]
+        .load();
+  }
   static void Slots(ChatServer& server, std::vector<int> capacities,
                     int queued) {
     server.max_seq_ = capacities.size();

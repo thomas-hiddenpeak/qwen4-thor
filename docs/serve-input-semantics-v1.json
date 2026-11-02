@@ -25,9 +25,10 @@
       "id": "transport-body",
       "sources": [
         "src/server/http_request.cpp",
-        "src/server/chat_http.cpp"
+        "src/server/chat_http.cpp",
+        "include/q4t/server/http_observation.h"
       ],
-      "contract": "16MiB Chat/preflight body, 48MiB aggregate; cancel body4096. POST application/json UTF-8, no query strings, GET no body, methods exact; framing and header limits apply before parsing."
+      "contract": "16MiB Chat/preflight body, 48MiB aggregate reservation; capacity failure is HTTP503/body_capacity_exhausted/param=body before body read. This is not a RAM measurement. Cancel body4096. POST application/json UTF-8, no query strings, GET no body, methods exact; framing and header limits apply before parsing. Fixed first receive-failure counters exclude business validation."
     },
     {
       "id": "model-and-credentials",
@@ -133,6 +134,7 @@
     }
   ],
   "sources_sha256": {
+    "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
     "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
@@ -141,13 +143,13 @@
     "src/server/chat_admission.cpp": "17c3d1452ae0c85a8ff2a6c0486c5f88e3a459963309eed9126b0a27dcd4d092",
     "src/server/chat_contract.cpp": "e964a90e839c1bcf5d57ef6b70a84da19f5d1c9fd92ab2489510e68ad0c3b7b8",
     "src/server/chat_generation.cpp": "9a33e84a35083cb21bf406fec5270fce77009d084850bc082462e04a87f07150",
-    "src/server/chat_http.cpp": "6f3b16942ed3747b75a3ee411f0c9b0f2f71661bc629f25aa577ca289be86aa2",
+    "src/server/chat_http.cpp": "16184c2cbc7488383557981f232ec6a449dd1b7889d7a5f10047a2a9e3ac0564",
     "src/server/chat_plan.cpp": "372d2a203727e63b9369fcce054244b67bdbb347c8a11ea0d5f21e2b975e6e4b",
     "src/server/chat_preflight.cpp": "9204d383d0110278e0bea8783e44431c1a1b84a044b84dec127516abf0a14f2f",
     "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
     "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
     "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
-    "src/server/http_request.cpp": "ee120f3af80e12ff7cd407efa624754379cc8019ec062309d84430361d08873d",
+    "src/server/http_request.cpp": "f4381a52db20862e2fa26ee402db0ab4de99c5f3980b7075c7cf01f20edc01e0",
     "src/server/input_contract.cpp": "b11ff893774749edcc59f636eb0de762956cb17e650db7755490df55b5f81d13",
     "src/server/output_constraints.cpp": "76630cbef022cf14d250dc890d983d912bd44096c80a275c630ad30196f285f0",
     "src/server/output_schema.cpp": "b9309e2102d6f44e412c4c8c59d1c1b5e35fbcb71dae60c56cb70af453f05d4f",

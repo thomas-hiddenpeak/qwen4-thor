@@ -147,16 +147,41 @@ std::string JsonEscape(const std::string& s) {
 }
 
 namespace {
+HttpWriteFailure CancelWriteReason(const RequestControl& control) {
+  const std::string_view reason(control.Reason());
+  if (reason == "deadline_exceeded") return HttpWriteFailure::kRequestDeadline;
+  if (reason == "explicit_cancel") return HttpWriteFailure::kExplicitCancel;
+  if (reason == "client_disconnected") return HttpWriteFailure::kPeerClosed;
+  if (reason == "server_shutdown") return HttpWriteFailure::kShutdown;
+  return HttpWriteFailure::kRequestFailure;
+}
+
 bool WriteAllImpl(int fd, const char* data, size_t len,
-                  const WriteOptions& options, ResponseState* header_state) {
+                  const WriteOptions& options, ResponseState* header_state,
+                  HttpWriteObservation* observation = nullptr) {
+  HttpWriteObservation local;
+  if (!observation) observation = &local;
+  *observation = {};
+  const auto fail = [&](HttpWriteFailure reason, int system_error = 0,
+                        short events = 0) {
+    observation->reason = reason;
+    observation->system_error = system_error;
+    observation->poll_events = events;
+    return false;
+  };
   using Clock = std::chrono::steady_clock;
   const auto deadline = options.control
       ? std::min(options.deadline, options.control->deadline())
       : options.deadline;
+  const auto timeout_reason =
+      options.control && options.control->deadline() <= options.deadline
+          ? HttpWriteFailure::kRequestDeadline
+          : HttpWriteFailure::kWriteDeadline;
   size_t off = 0;
   while (off < len) {
-    if (options.control && options.control->Cancelled()) return false;
-    if (Clock::now() >= deadline) return false;
+    if (options.control && options.control->Cancelled())
+      return fail(CancelWriteReason(*options.control));
+    if (Clock::now() >= deadline) return fail(timeout_reason);
     // A disconnected client must fail this request, not terminate the server.
     // Per-call nonblocking leaves the request reader's fd mode unchanged.
     size_t remaining_bytes = len - off;
@@ -174,18 +199,30 @@ bool WriteAllImpl(int fd, const char* data, size_t len,
         ServeFaultPoint("write.backpressure");
         const auto remaining = std::chrono::duration_cast<
             std::chrono::milliseconds>(deadline - Clock::now()).count();
-        if (remaining < 0) return false;
+        if (remaining < 0) return fail(timeout_reason);
         pollfd peer{fd, POLLOUT, 0};
         const int ready = ::poll(
             &peer, 1, static_cast<int>(std::min<int64_t>(remaining + 1, 25)));
-        if (ready < 0 && errno != EINTR) return false;
-        if (ready > 0 && (peer.revents & (POLLERR | POLLHUP | POLLNVAL)))
-          return false;
+        if (ready < 0 && errno != EINTR)
+          return fail(HttpWriteFailure::kSocket, errno);
+        if (ready > 0 && (peer.revents & (POLLERR | POLLHUP | POLLNVAL))) {
+          const auto reason =
+              (peer.revents & POLLHUP) && !(peer.revents & POLLNVAL)
+                  ? HttpWriteFailure::kPeerClosed
+                  : HttpWriteFailure::kSocket;
+          return fail(reason, 0, peer.revents);
+        }
         continue;
       }
-      return false;
+      const int error = n < 0 ? errno : 0;
+      const auto reason =
+          error == EPIPE || error == ECONNRESET || error == ENOTCONN
+              ? HttpWriteFailure::kPeerClosed
+              : HttpWriteFailure::kSocket;
+      return fail(reason, error);
     }
     off += static_cast<size_t>(n);
+    observation->transferred = off;
     if (header_state) {
       *header_state = ResponseState::kHeadersStarted;
       ServeFaultPoint("handler.partial_header");
@@ -212,14 +249,62 @@ std::string NewRequestId(std::string_view prefix) {
   return result;
 }
 
-HttpResponseContext::HttpResponseContext(int fd)
-    : fd_(fd), previous_(current_response), trace_id_(NewRequestId()) {
+HttpResponseContext::HttpResponseContext(int fd, HttpTransportMetrics* metrics)
+    : fd_(fd),
+      previous_(current_response),
+      trace_id_(NewRequestId()),
+      metrics_(metrics) {
   current_response = this;
 }
 
 HttpResponseContext::~HttpResponseContext() {
   StopHeartbeats();
+  // Both reasons are finalized after join and before the socket is closed.
+  // A read rejection may also fail to write; these are separate observations.
+  if (metrics_ && receive_failure_ != HttpReceiveFailure::kNone) {
+    const auto index = static_cast<size_t>(receive_failure_);
+    metrics_->receive[index].fetch_add(1, std::memory_order_relaxed);
+    std::fprintf(stderr,
+                 "[q4t][http-receive] trace_id=%s reason=%s status=%d "
+                 "system_error=%d\n",
+                 trace_id_.c_str(), kHttpReceiveReasons[index], receive_status_,
+                 receive_system_error_);
+  }
+  if (metrics_ && write_failure_.reason != HttpWriteFailure::kNone) {
+    const auto reason = static_cast<size_t>(write_failure_.reason);
+    const auto origin = static_cast<size_t>(write_failure_.origin);
+    metrics_->write[origin][reason].fetch_add(1, std::memory_order_relaxed);
+    std::fprintf(stderr,
+                 "[q4t][http-write] trace_id=%s reason=%s origin=%s "
+                 "transferred=%zu system_error=%d poll_events=%d\n",
+                 trace_id_.c_str(), kHttpWriteReasons[reason],
+                 kHttpWriteOrigins[origin], write_failure_.transferred,
+                 write_failure_.system_error, write_failure_.poll_events);
+  }
   current_response = previous_;
+}
+
+void HttpResponseContext::RecordReceiveFailure(HttpReceiveFailure reason,
+                                               int status, int system_error) {
+  const auto index = static_cast<size_t>(reason);
+  if (index == 0 || index >= kHttpReceiveReasons.size() ||
+      receive_failure_ != HttpReceiveFailure::kNone)
+    return;
+  receive_failure_ = reason;
+  receive_status_ = status;
+  receive_system_error_ = system_error;
+}
+
+HttpWriteObservation HttpResponseContext::WriteFailure() {
+  const std::lock_guard<std::mutex> lock(write_mu_);
+  return write_failure_;
+}
+
+void HttpResponseContext::RecordWriteFailure(HttpWriteObservation value,
+                                             HttpWriteOrigin origin) {
+  if (write_failure_.reason != HttpWriteFailure::kNone) return;
+  value.origin = origin;
+  write_failure_ = value;
 }
 
 HttpResponseContext* HttpResponseContext::Current(int fd) {
@@ -237,10 +322,17 @@ bool HttpResponseContext::Write(const char* data, size_t size,
                                 const WriteOptions& options,
                                 ResponseState* header_state) {
   const std::lock_guard<std::mutex> lock(write_mu_);
-  if (write_failed_) return false;
-  if (!WriteAllImpl(fd_, data, size, options, header_state)) {
-    write_failed_ = true;
-    return false;
+  if (write_failure_.reason != HttpWriteFailure::kNone) return false;
+  HttpWriteObservation observation;
+  try {
+    if (!WriteAllImpl(fd_, data, size, options, header_state, &observation)) {
+      RecordWriteFailure(observation, HttpWriteOrigin::kHandler);
+      return false;
+    }
+  } catch (...) {
+    observation.reason = HttpWriteFailure::kException;
+    RecordWriteFailure(observation, HttpWriteOrigin::kHandler);
+    throw;
   }
   last_write_ = std::chrono::steady_clock::now();
   wake_.notify_all();
@@ -260,7 +352,8 @@ void HttpResponseContext::StartHeartbeats(
       HeartbeatLoop();
     } catch (...) {
       const std::lock_guard<std::mutex> lock(write_mu_);
-      write_failed_ = true;
+      RecordWriteFailure({.reason = HttpWriteFailure::kException},
+                         HttpWriteOrigin::kHeartbeat);
       control_->Cancel(RequestControl::State::kFailure);
     }
   });
@@ -277,10 +370,12 @@ void HttpResponseContext::StopHeartbeats() {
 
 void HttpResponseContext::HeartbeatLoop() {
   std::unique_lock<std::mutex> lock(write_mu_);
-  while (!stop_ && !write_failed_) {
+  while (!stop_ && write_failure_.reason == HttpWriteFailure::kNone) {
     const auto due = last_write_ + interval_;
     wake_.wait_until(lock, due);
-    if (stop_ || write_failed_ || control_->Cancelled()) return;
+    if (stop_ || write_failure_.reason != HttpWriteFailure::kNone ||
+        control_->Cancelled())
+      return;
     if (std::chrono::steady_clock::now() < last_write_ + interval_) continue;
     constexpr char comment[] = ": keep-alive\r\n\r\n";
     // A heartbeat cannot pin the handler for the normal 30 second write
@@ -288,10 +383,18 @@ void HttpResponseContext::HeartbeatLoop() {
     const WriteOptions options{
         std::chrono::steady_clock::now() + std::chrono::seconds(1),
         control_.get()};
-    if (!WriteAllImpl(fd_, comment, sizeof(comment) - 1, options, nullptr)) {
-      write_failed_ = true;
-      control_->Cancel(RequestControl::State::kDisconnect);
-      return;
+    HttpWriteObservation observation;
+    try {
+      if (!WriteAllImpl(fd_, comment, sizeof(comment) - 1, options, nullptr,
+                        &observation)) {
+        RecordWriteFailure(observation, HttpWriteOrigin::kHeartbeat);
+        control_->Cancel(RequestControl::State::kDisconnect);
+        return;
+      }
+    } catch (...) {
+      observation.reason = HttpWriteFailure::kException;
+      RecordWriteFailure(observation, HttpWriteOrigin::kHeartbeat);
+      throw;
     }
     last_write_ = std::chrono::steady_clock::now();
   }

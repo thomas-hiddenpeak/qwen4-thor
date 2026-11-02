@@ -147,7 +147,9 @@ Status ChatServer::Run() {
       counted = true;
       if (active_conns_.fetch_add(1, std::memory_order_relaxed) >=
           conn_cap_ + kControlConnections) {
-        detail::HttpResponseContext context(fd);
+        detail::HttpResponseContext context(fd, &metrics_.http_transport);
+        context.RecordReceiveFailure(HttpReceiveFailure::kConnectionCapacity,
+                                     503);
         SendError(fd, 503, "connection capacity exhausted",
                   {std::chrono::steady_clock::now() +
                    std::chrono::milliseconds(250)}, "capacity_exhausted");
@@ -213,7 +215,8 @@ Status ChatServer::Run() {
 }
 
 void ChatServer::HandleClient(int fd) {
-  detail::HttpResponseContext context(fd);
+  detail::HttpResponseContext context(fd, &metrics_.http_transport);
+  bool dispatch_started = false;
   try {
     std::string method, path, body;
     HttpBodyLease lease(body_budget_);
@@ -232,6 +235,7 @@ void ChatServer::HandleClient(int fd) {
       if (!control && stop_requested_.load()) {
         failure_status = 503;
         headers.error_code = "server_draining";
+        headers.failure = HttpReceiveFailure::kDraining;
         return false;
       }
       auto& counter = control ? control_conns_ : business_conns_;
@@ -240,6 +244,7 @@ void ChatServer::HandleClient(int fd) {
         counter.fetch_sub(1);
         failure_status = 503;
         headers.error_code = "capacity_exhausted";
+        headers.failure = HttpReceiveFailure::kConnectionCapacity;
         return false;
       }
       admission = &counter;
@@ -248,6 +253,8 @@ void ChatServer::HandleClient(int fd) {
     if (!ReadHttpRequest(fd, &method, &path, &body, 30000, &lease,
                          &failure_status, &headers, admit)) {
       if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
+      context.RecordReceiveFailure(headers.failure, failure_status,
+                                   headers.system_error);
       const char* reason = failure_status == 408   ? "Request Timeout"
                            : failure_status == 503 ? "Service Unavailable"
                                                    : "Bad Request";
@@ -272,6 +279,7 @@ void ChatServer::HandleClient(int fd) {
         if (media != "application/json" ||
             (!charset.empty() && charset != "charset=utf-8" &&
              charset != "charset=\"utf-8\"")) {
+          context.RecordReceiveFailure(HttpReceiveFailure::kMedia, 415);
           SendError(fd, 415, "Content-Type must be application/json with UTF-8",
                     {}, "unsupported_media_type", "Content-Type");
           return;
@@ -279,6 +287,7 @@ void ChatServer::HandleClient(int fd) {
       }
     }
     const auto t0 = std::chrono::steady_clock::now();
+    dispatch_started = true;
     Dispatch(fd, method, path, body);
     static const bool access_log = std::getenv("Q4T_ACCESS_LOG") != nullptr;
     if (access_log) {
@@ -289,13 +298,20 @@ void ChatServer::HandleClient(int fd) {
                    context.TraceId().c_str(), ms);
     }
   } catch (...) {
+    if (!dispatch_started)
+      context.RecordReceiveFailure(HttpReceiveFailure::kException, 500);
     detail::SendExceptionResponse(fd, *context.State());
   }
 }
 
 void ChatServer::Dispatch(int fd, const std::string& method,
                           const std::string& path, const std::string& body) {
+  const auto rejected = [&](HttpReceiveFailure reason, int status) {
+    if (auto* context = detail::HttpResponseContext::Current(fd))
+      context->RecordReceiveFailure(reason, status);
+  };
   if (path.find('?') != path.npos) {
+    rejected(HttpReceiveFailure::kQuery, 400);
     SendError(fd, 400, "query parameters are not supported", {},
               "unsupported_query", "path");
     return;
@@ -309,11 +325,13 @@ void ChatServer::Dispatch(int fd, const std::string& method,
            path == "/v1/requests/cancel")
     expected = "POST";
   if (!expected.empty() && method != expected) {
+    rejected(HttpReceiveFailure::kMethod, 405);
     SendError(fd, 405, "method not allowed", {}, "method_not_allowed", "method",
               expected);
     return;
   }
   if (expected == "GET" && !body.empty()) {
+    rejected(HttpReceiveFailure::kUnexpectedBody, 400);
     SendError(fd, 400, "GET body is not supported", {}, "unexpected_body",
               "body");
     return;
@@ -374,6 +392,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     HandleChat(fd, body);
     return;
   }
+  rejected(HttpReceiveFailure::kRoute, 404);
   SendError(fd, 404, "route or method not found");
 }
 

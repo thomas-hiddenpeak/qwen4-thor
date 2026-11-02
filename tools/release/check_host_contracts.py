@@ -36,9 +36,13 @@ def main():
         registered = listed.stdout.splitlines()
         assert listed.returncode == 0 and len(set(registered)) == len(registered)
         assert set(required).issubset(registered), 'required tests not registered'
-        with (out / 'run.log').open('w') as log:
+        # Buffered test stdout and transport diagnostics on stderr can split
+        # a PASS line when merged into one descriptor. Keep both byte streams;
+        # only the harness result channel is parsed as test identities.
+        with (out / 'run.log').open('w') as log, \
+                (out / 'run-stderr.log').open('w') as diagnostics:
             run = subprocess.run([str(args.test_binary.resolve()), '--required-list',
-                                  str(MANIFEST)], stdout=log, stderr=subprocess.STDOUT,
+                                  str(MANIFEST)], stdout=log, stderr=diagnostics,
                                  timeout=180)
         result['exit'] = run.returncode
         text = (out / 'run.log').read_text()
