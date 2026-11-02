@@ -32,12 +32,31 @@ SCHEMAS = ("docs/serve-transport-v1.schema.json",
            "docs/serve-thinking-v1.schema.json",
            "docs/serve-stop-v1.schema.json")
 RELEASE_VERSION = "serve-text-stop-20261103"
+SDK_PYTHON = ROOT / ".q4t-work/application-service-20261102/sdk-env/bin/python"
+
+
+def sdk_environment():
+    code = ("import json,sys,openai,importlib.metadata as m; "
+            "client=openai.OpenAI(base_url='http://127.0.0.1:18099/v1',"
+            "api_key='local-q4t-no-auth',max_retries=0,timeout=120,"
+            "_strict_response_validation=True,"
+            "http_client=openai.DefaultHttpxClient(trust_env=False)); client.close(); "
+            "print(json.dumps(dict("
+            "python=sys.executable,prefix=sys.prefix,openai=openai.__version__,"
+            "packages={d.metadata['Name']:d.version for d in m.distributions()},"
+            "module=openai.__file__)))")
+    checked = subprocess.run([str(SDK_PYTHON), "-B", "-c", code],
+        cwd=ROOT, capture_output=True, text=True, timeout=15, check=True)
+    result = json.loads(checked.stdout)
+    h.require(result["openai"] == "3.42.1", "wrong SDK environment")
+    result["module_identity"] = h.identity(result["module"])
+    return result
 
 
 def cpu_gate():
     cpu = BASE / "cpu"
     for name in ("host-gate/result.json", "template-reuse.json",
-                 "startup-preflight/result.json", "driver-launch-result.json",
+                 "startup-preflight/result.json", "driver-sdk-result.json",
                  "client-result.json"):
         h.require(h.read(cpu / name)["passed"], "CPU gate failed: " + name)
     for mode, count in (("on", 197), ("off", 188)):
@@ -114,6 +133,7 @@ def prepare():
             for p in sorted(protocol)).encode()).hexdigest(),
         model_dir=str(model), model_inputs={n: h.sha(model / n) for n in prior["model_inputs"]},
         sdk_version="3.42.1", limits=LIMITS,
+        sdk_environment=sdk_environment(),
         source_manifest_sha256=h.sha(PACKAGE / "sources.json"),
         planned=dict(starts=3, generations=21, negatives=16),
         startup_preflight=h.identity(PACKAGE / "candidate/startup_preflight"))
@@ -138,6 +158,24 @@ def prepare():
             guard_attempts=1, output=str(prior_output),
             exit=h.identity(prior_output / "lease/exit.json"),
             log=h.identity(BASE / "launch.log"))
+    if PACKAGE.name == "package-sdk":
+        prior = BASE / "execution-absolute"
+        h.verify_seal(BASE / "package-absolute")
+        failed = h.read(prior / "business/result.json")
+        h.require(failed["request_attempts"] == failed["negative_requests"] == 0
+                  and failed["starts"] == 1 and failed["error"] ==
+                  'ModuleNotFoundError("No module named \'openai\'")',
+                  "SDK retry requires exactly the retained pre-request failure")
+        h.require(h.read(prior / "business/candidate-mtp/shutdown.json")["clean"]
+                  and h.read(prior / "lease/exit.json")["status"] == "COMMAND_FAILED",
+                  "failed SDK invocation did not drain")
+        first = h.read(BASE / "package-absolute/plan.json")
+        h.require(plan["candidate_sha256"] == first["candidate_sha256"],
+                  "SDK retry cannot change runtime")
+        plan.update(original_started=first["original_started"],
+            prior_counts=dict(starts=1, generations=0, negatives=0),
+            prior_invocation=dict(guard_attempts=2, first=first["prior_invocation"],
+                sdk_failure=h.identity(prior / "business/result.json")))
     h.save(PACKAGE / "plan.json", plan)
     h.seal(PACKAGE)
     print("PREPARED", plan["candidate_sha256"], flush=True)
@@ -217,11 +255,12 @@ def bind():
     a.check, a.verifier, a.release = check, verifier, release
 
 
-def guard_command(retry=False):
+def guard_command(retry=False, sdk_retry=False):
     # The deployment guard validates exact absolute argv, not only the lock.
     return ["/usr/bin/python3", "-B", str(ROOT / "tools/evalscope/gpu_exclusive.py"),
-            "--output", str(OUTPUT / "lease"), "--", "/usr/bin/python3", "-B",
-            str(Path(__file__).resolve()), "execute", *(["--guard-retry"] if retry else [])]
+            "--output", str(OUTPUT / "lease"), "--", str(SDK_PYTHON), "-B",
+            str(Path(__file__).resolve()), "execute",
+            *(["--sdk-retry"] if sdk_retry else ["--guard-retry"] if retry else [])]
 
 
 def main():
@@ -230,14 +269,20 @@ def main():
     ap.add_argument("action", choices=["prepare", "launch", "execute", "finalize", "rollback"])
     ap.add_argument("--output", type=Path)
     ap.add_argument("--guard-retry", action="store_true")
+    ap.add_argument("--sdk-retry", action="store_true")
     args = ap.parse_args()
     if args.guard_retry:
         PACKAGE, OUTPUT = BASE / "package-absolute", BASE / "execution-absolute"
+    if args.sdk_retry:
+        h.require(not args.guard_retry, "choose exactly one continuation")
+        PACKAGE, OUTPUT = BASE / "package-sdk", BASE / "execution-sdk"
     bind()
     if args.action == "prepare":
         prepare()
     elif args.action == "launch":
-        raise SystemExit(subprocess.run(guard_command(args.guard_retry), cwd=ROOT).returncode)
+        h.require(sdk_environment() == check()["sdk_environment"], "SDK environment drift")
+        raise SystemExit(subprocess.run(guard_command(args.guard_retry, args.sdk_retry),
+                                       cwd=ROOT).returncode)
     elif args.action == "execute":
         h.require_guard(OUTPUT)
         h.save(OUTPUT / "begin.json", dict(started=time.time(), limits=LIMITS))

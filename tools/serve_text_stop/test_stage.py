@@ -4,6 +4,7 @@ import io
 import json
 from pathlib import Path
 import time
+import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -20,6 +21,31 @@ class Contracts(unittest.TestCase):
         self.assertEqual(command[4], str(stage.OUTPUT / "lease"))
         self.assertEqual(command[-2:], ["execute", "--guard-retry"])
         self.assertTrue(Path(command[-3]).is_absolute())
+        self.assertEqual(command[6], str(stage.SDK_PYTHON))
+
+    def test_sdk_retry_charges_prior_start(self):
+        run = object.__new__(v.Run)
+        run.installed, run.deadline = False, time.time() + 60
+        run.plan = dict(prior_counts=dict(starts=1))
+        run.requests, run.negative, run.starts, run.capability_gets = 20, 16, 2, 2
+        run.budget()
+        run.starts = 3
+        with self.assertRaises(AssertionError):
+            run.budget()
+
+    def test_missing_sdk_precedes_model_start(self):
+        with tempfile.TemporaryDirectory(dir=stage.BASE) as directory:
+            run = object.__new__(v.Run)
+            run.out, run.installed = Path(directory), False
+            run.requests = run.negative = run.starts = 0
+            run.started = time.monotonic()
+            with patch.object(run, "sdk", side_effect=RuntimeError("missing SDK")), \
+                 patch.object(run, "model") as model:
+                with self.assertRaises(RuntimeError):
+                    run.run()
+                model.assert_not_called()
+                result = json.loads((run.out / "result.json").read_text())
+                self.assertEqual(result["starts"], 0)
 
     def test_guard_retry_keeps_first_deadline(self):
         with patch.object(v.b.Run, "__init__", return_value=None):

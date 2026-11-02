@@ -92,10 +92,12 @@ class Run(b.Run):
 
     def budget(self):
         wire.require(time.time() < self.deadline, "text stop deadline")
+        previous = getattr(self, "plan", {}).get("prior_counts", {})
         wire.require(self.requests <= (1 if self.installed else 21) and
                      self.negative <= (0 if self.installed else 16) and
-                     self.starts <= (1 if self.installed else 3) and
-                     self.capability_gets <= (1 if self.installed else 3), "text stop budget")
+                     self.starts <= (1 if self.installed else 3 - previous.get("starts", 0)) and
+                     self.capability_gets <= (1 if self.installed else 3 - previous.get("starts", 0)),
+                     "text stop budget")
 
     def success(self, folder, label, body):
         if label in ("project-read", "project-answer"):
@@ -257,6 +259,9 @@ class Run(b.Run):
     def run(self):
         state = dict(status="FAILED")
         try:
+            # Verify the pinned SDK before any server process/model loading.
+            with self.sdk():
+                pass
             binary = ROOT / "build/q4t" if self.installed else Path(self.plan["candidate"])
             if self.installed:
                 self.model("candidate-installed", binary, True, self.health)

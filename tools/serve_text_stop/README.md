@@ -22,3 +22,9 @@ The first relative guard invocation was rejected before model/request work.
 Use `stage.py launch --guard-retry` for the frozen absolute-path continuation;
 `prepare/finalize/rollback` also take `--guard-retry`. Its original deadline
 comes from the first failed lease, which remains intact. Runtime is unchanged.
+
+The system-Python attempt then failed at SDK import after one cleanly closed
+model start and zero requests. The final continuation is `--sdk-retry`, with
+`launch` binding the already accepted SDK venv and constructing its real client
+before taking the GPU lease. That prior start and the original deadline remain
+charged. Use the same continuation flag for prepare/finalize/rollback.
