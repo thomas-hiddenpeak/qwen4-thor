@@ -124,9 +124,8 @@ class ChatServer {
   Status Run();
 
   // Request a graceful shutdown from a signal handler: sets a flag and
-  // shutdown(2)s the listen socket to interrupt the blocked accept, so Run()
-  // stops accepting, drains in-flight requests, and returns. Async-signal-safe
-  // (atomic store + shutdown(2)).
+  // wakes the bounded accept poll, so Run() rejects new business, briefly
+  // serves control requests while draining, and returns. Async-signal-safe.
   void RequestStop();
 
  private:
@@ -141,6 +140,7 @@ class ChatServer {
   void Dispatch(int fd, const std::string& method, const std::string& path,
                 const std::string& body);
   void HandleHealth(int fd);
+  void HandleReadiness(int fd, bool liveness);
   void HandleModels(int fd);
   void HandleCapabilities(int fd);
   void HandleMetrics(int fd);
@@ -156,7 +156,6 @@ class ChatServer {
   RequestRegistry requests_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;
-  std::atomic<uint64_t> next_request_id_{0};
   void FreeSeqId(int seq_id);
   std::mutex model_mu_;   // serializes all model forwards (main + MTP + vision)
   std::mutex seq_mu_;     // guards the seq_id free pool
@@ -291,9 +290,12 @@ class ChatServer {
   HttpBodyBudget body_budget_{48 * 1024 * 1024};
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
+  std::atomic<int> business_conns_{0};
+  std::atomic<int> control_conns_{0};
+  static constexpr int kControlConnections = 4;
   int conn_cap_ = 512;
-  // Graceful shutdown (signal handler -> RequestStop): stop_requested_ breaks
-  // the accept loop; listen_fd_ is shutdown(2) to interrupt a blocked accept.
+  // Poll observes stop within 25ms. A draining listener serves control only
+  // for at most 2 seconds; remaining owned sockets then close before cleanup.
   std::atomic<bool> stop_requested_{false};
   std::atomic<int> listen_fd_{-1};
   // GPU health: a forward's CUDA error is sticky (it poisons every later
@@ -301,6 +303,7 @@ class ChatServer {
   // 503) and refuses new requests (503) instead of silently failing them all.
   std::atomic<bool> gpu_healthy_{true};
   std::atomic<bool> serving_failed_{false};
+  std::atomic<bool> model_ready_{false};
   ServeMetrics metrics_;  // /metrics observability
 
   // Multimodal pipeline: run the image/video processor + vision tower over the

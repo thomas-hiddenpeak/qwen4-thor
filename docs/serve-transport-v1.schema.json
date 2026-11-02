@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:q4t:serve-transport:v1",
+  "title": "Q4T serve transport response subset v1",
+  "description": "Stage A response envelopes, not a complete OpenAPI or tool/schema input contract. Transport and stream ordering require the accompanying validator.",
+  "x-q4t": {
+    "request_id_header": "X-Request-Id",
+    "request_id_pattern": "^[A-Za-z0-9_.:-]{1,128}$",
+    "trace_id_is_cancel_credential": false,
+    "random_id_bits": 128,
+    "known_route_wrong_method": 405,
+    "unsupported_post_content_type": 415,
+    "query_parameters": "reject_400",
+    "stream_heartbeat_ms": 5000,
+    "heartbeat_write_timeout_ms": 1000,
+    "control_connection_reserve": 4,
+    "draining_control_window_max_ms": 2000,
+    "header_flood_guarantee": false,
+    "stream_usage": "if requested: null on choices chunks, object on final empty-choices chunk",
+    "stream_error": "one error then DONE when writable; partial write failure closes without another terminal"
+  },
+  "oneOf": [
+    {"$ref": "#/$defs/error"},
+    {"$ref": "#/$defs/completion"},
+    {"$ref": "#/$defs/chunk"},
+    {"$ref": "#/$defs/readiness"}
+  ],
+  "$defs": {
+    "usage": {
+      "type": "object",
+      "required": ["prompt_tokens", "completion_tokens", "total_tokens"],
+      "properties": {
+        "prompt_tokens": {"type": "integer", "minimum": 0},
+        "completion_tokens": {"type": "integer", "minimum": 0},
+        "total_tokens": {"type": "integer", "minimum": 0}
+      }
+    },
+    "error": {
+      "type": "object", "required": ["error"], "additionalProperties": false,
+      "properties": {
+        "error": {
+          "type": "object", "required": ["message", "type", "code", "param"],
+          "additionalProperties": false,
+          "properties": {
+            "message": {"type": "string"},
+            "type": {"enum": ["invalid_request_error", "server_error", "timeout_error", "conflict_error", "service_unavailable_error"]},
+            "code": {"type": "string", "minLength": 1},
+            "param": {"type": ["string", "null"]}
+          }
+        }
+      }
+    },
+    "completion": {
+      "type": "object", "required": ["id", "object", "created", "model", "choices", "usage"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "object": {"const": "chat.completion"},
+        "created": {"type": "integer", "minimum": 1},
+        "model": {"type": "string"},
+        "choices": {
+          "type": "array", "minItems": 1, "maxItems": 1,
+          "items": {
+            "type": "object", "required": ["index", "message", "finish_reason", "logprobs"],
+            "properties": {
+              "index": {"const": 0}, "logprobs": {"type": "null"},
+              "message": {"type": "object", "required": ["role", "content"], "properties": {
+                "role": {"const": "assistant"}, "content": {"type": ["string", "null"]}
+              }},
+              "finish_reason": {"enum": ["stop", "length", "tool_calls"]}
+            }
+          }
+        },
+        "usage": {"$ref": "#/$defs/usage"}
+      }
+    },
+    "chunk": {
+      "type": "object", "required": ["id", "object", "created", "model", "choices"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "object": {"const": "chat.completion.chunk"},
+        "created": {"type": "integer", "minimum": 1}, "model": {"type": "string"},
+        "choices": {
+          "type": "array", "maxItems": 1,
+          "items": {
+            "type": "object", "required": ["index", "delta", "finish_reason", "logprobs"],
+            "properties": {
+              "index": {"const": 0}, "delta": {"type": "object"},
+              "finish_reason": {"enum": [null, "stop", "length", "tool_calls"]},
+              "logprobs": {"type": "null"}
+            }
+          }
+        },
+        "usage": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/usage"}]}
+      },
+      "if": {"properties": {"choices": {"maxItems": 0}}},
+      "then": {"required": ["usage"], "properties": {"usage": {"$ref": "#/$defs/usage"}}}
+    },
+    "readiness": {
+      "type": "object", "required": ["status", "live", "ready"], "additionalProperties": false,
+      "properties": {
+        "status": {"enum": ["starting", "ready", "draining", "unhealthy"]},
+        "live": {"type": "boolean"}, "ready": {"type": "boolean"}
+      }
+    }
+  }
+}

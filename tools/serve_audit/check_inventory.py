@@ -12,7 +12,7 @@ INVENTORY = ROOT / "tools/serve_audit/inventory.json"
 
 def current_surface(root):
     contract = (root / "src/server/chat_contract.cpp").read_text()
-    match = re.search(r'Fields\(req,\s*\{([^}]+)\}\)', contract)
+    match = re.search(r'Fields\(req,\s*\{([^}]+)\}', contract)
     if not match:
         raise ValueError("cannot extract Chat allowlist; review extractor")
     fields = re.findall(r'"([a-z_]+)"', match[1])
@@ -25,7 +25,7 @@ def current_surface(root):
                  "input_contract.cpp", "chat_tool_history.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
-                r'Fields\(([^,]+),\s*\{([^}]+)\}\)', source)):
+                r'Fields\(([^,]+),\s*\{([^}]+)\}', source)):
             nested[f"{file}:{index}:{item[1]}"] = re.findall(
                 r'"([a-z_]+)"', item[2])
     # These anchors intentionally cover more than the wire protocol identity:

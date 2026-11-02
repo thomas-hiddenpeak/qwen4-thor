@@ -17,6 +17,10 @@ set(protocol_inputs
   include/q4t/server/chat_template.h
   include/q4t/server/chat_tool_history.h
   include/q4t/server/http_response.h
+  include/q4t/server/http_request.h
+  include/q4t/server/request_control.h
+  include/q4t/server/request_diagnostics.h
+  include/q4t/server/chat_server.h
   include/q4t/server/request_json.h
   include/q4t/server/output_schema.h
   include/q4t/server/output_constraints.h
@@ -33,6 +37,8 @@ set(protocol_inputs
   src/server/chat_template.cpp
   src/server/chat_tool_history.cpp
   src/server/http_response.cpp
+  src/server/http_request.cpp
+  src/server/chat_server.cpp
   src/server/output_schema.cpp
   src/server/output_constraints.cpp
   src/server/structured_decoder.cpp)

@@ -50,12 +50,13 @@
     },
     "stream": {
       "semantics": "bool 或 null；null=false，JSON 或 SSE",
-      "boundary": "结构化 payload 缓冲；完整 SSE 可空字段等 G5 尚未修复",
+      "boundary": "结构化payload完整校验后发布；首角色提前、空闲5秒注释心跳；首帧后失败为SSE error，写失败可截断",
       "evidence": [
         "tests/server_http_response_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "tools/serve_stage_a/verify.py"
       ]
     },
     "stream_options": {
@@ -69,7 +70,7 @@
     },
     "request_id": {
       "semantics": "ASCII 字母数字/下划线/短横线，1..128；需合法 cancel_token",
-      "boundary": "活跃 ID 去重；保留 auto 前缀不可自定；无持久幂等 G4",
+      "boundary": "JSON ID绑定取消凭据；与HTTP追踪头独立；自动ID为128随机位，不提供幂等重放",
       "evidence": [
         "tests/server_state_contract_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
@@ -326,7 +327,7 @@
   "routes": {
     "GET /healthz": {
       "semantics": "GPU sticky 健康及槽/连接计数",
-      "boundary": "不是独立 readiness/排队进展保障；与业务连接共用接入上限",
+      "boundary": "保留旧健康语义；与livez/readyz、cancel共享4个控制连接名额；未分类连接仍计总上限",
       "evidence": [
         "docs/SERVE_RELIABILITY_2026-10-30.md",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
@@ -369,10 +370,28 @@
     },
     "POST /v1/chat/completions": {
       "semantics": "messages/prompt，JSON/SSE，单模型文本生成",
-      "boundary": "35 字段子集；详见字段与组合清单；非完整 OpenAI",
+      "boundary": "application/json UTF-8；方法405、query400；普通连接与active chat仍有界；首帧后错误走SSE",
       "evidence": [
         "docs/STRUCTURED_OUTPUT_RESULT_2026-11-02.md",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+      ]
+    },
+    "GET /livez": {
+      "semantics": "进程服务循环存活；GPU unhealthy 不等同进程死亡",
+      "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
+      "evidence": [
+        "tools/serve_reliability/http_lifecycle_test.cpp",
+        "tools/serve_stage_a/verify.py",
+        "docs/PHASES.md"
+      ]
+    },
+    "GET /readyz": {
+      "semantics": "模型已加载、服务/GPU健康且未排空；普通忙不改变ready",
+      "boundary": "加载后才监听；控制入口4连接预留、排空窗口至多2秒；不保证header洪泛下可用",
+      "evidence": [
+        "tools/serve_reliability/http_lifecycle_test.cpp",
+        "tools/serve_stage_a/verify.py",
+        "docs/PHASES.md"
       ]
     }
   },
@@ -492,26 +511,26 @@
     ]
   },
   "sources_sha256": {
-    "cmake/ChatProtocolIdentity.cmake": "0d7342e2ee164273acb0e74af9687a15367e9743ae98ebea31e7d6921cfcf92f",
+    "cmake/ChatProtocolIdentity.cmake": "a93a6f7ae7a9254206bfd2255f84c7cbdf9820b66dc57b4cdc42e4f78ad7c732",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
     "include/q4t/server/abort_reason.h": "2bad04553ca1e40595e10d6549d2a3a798bed05fcadd92527f722c48aecb70b5",
     "include/q4t/server/chat_capabilities.h": "7258dd026c08b16d5a09f55ea318036a86e1ad4c93d816d1aa2163f23d01540c",
-    "include/q4t/server/chat_contract.h": "cc1fc63b8f551dcf705c1692cc9b551d64040487245827ea74fbb190010c7bdf",
+    "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
     "include/q4t/server/chat_response_parser.h": "6f2da0dcd7f548ef6de8860f822516354c561c447a4fee1c43a0e450124cc2cf",
-    "include/q4t/server/chat_server.h": "567b54e34f06a0c33b8aa9372c34664bf2afbebee300061950844a34703ed82f",
+    "include/q4t/server/chat_server.h": "7b75b91ff39cf1bc0a5f51dac719eb59d854e979c24094c5d74eeced45a920bb",
     "include/q4t/server/chat_template.h": "5be2647b6559eca3373642188ce5f79bd7672139991ecc148d4e722c4730c1b0",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/grammar_process.h": "5a43df744adf5647177ee723d806c63e0e20c9d6555cfca45bb80863f995e760",
-    "include/q4t/server/http_request.h": "7c5f076db8fec2f745223a499f1510ce8e08208ee120e3e5b682b8ee80c53b43",
-    "include/q4t/server/http_response.h": "e82717241bb8d7d09e27b198e9b248e9fd547bb3ed29d35591a64a2b3f6239af",
+    "include/q4t/server/http_request.h": "153cb5b66d5d7b0aa971f404bc88e326440aacc6e215c2f5ffa83c6456030a46",
+    "include/q4t/server/http_response.h": "891a0cef5a4ba0002354b0d10bfa8f7cb2fbfce31df580c9a6a922ee3904cc0e",
     "include/q4t/server/input_contract.h": "b10e1fb838738b687c5a8f30808f895b38f4fd204dd34e5aefaa84059ac7154e",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
     "include/q4t/server/output_constraints.h": "3b3e67271fa0d0edd04d5479e9a6a6cae570bfb73737038ce2bafa2f410ca306",
     "include/q4t/server/output_schema.h": "83fd9a353b2fd2587ed75f2908790b9ee63ad5f4d063c9aab9d6c800bc151779",
     "include/q4t/server/prefix_cache_policy.h": "91ef4f963c51a8098f1e333a74ac3cc56c046cf87f987b0e026a1e27d4c304c4",
-    "include/q4t/server/request_control.h": "39ff07314074bffaf0b85c105d358f095c922b918b00c86449f49f4e299bfd6f",
-    "include/q4t/server/request_diagnostics.h": "5e977ad816a934865ac87a8a01efe576cfdeb4eb727d0170b3d85762600f8c28",
+    "include/q4t/server/request_control.h": "a895f0242061d713dee73edd90db8b2a176ae332e0df856b3431bc896c47fb13",
+    "include/q4t/server/request_diagnostics.h": "1317e9ff60dfb0094c22cb28292b46b0330293dcbda161fb7a6f1c8095bcca6a",
     "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
     "include/q4t/server/scheduler_submission.h": "2a960c668c25a0c694b811a2c5640c6e6605db7d386b1ba0075e64061aa1c416",
     "include/q4t/server/serve_fault.h": "c2f7e532d1d7bae414dfaedddd18808a7bc8a1b3b01ac0ddb426dfaec6721d9b",
@@ -526,23 +545,23 @@
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
     "src/main.cpp": "93cae8f751bfc446d812f1d786389b32ae577c3dd386fedcfc907d6b08539b67",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "src/server/chat_capabilities.cpp": "c3876c1d8c476b3aa79efd0331f5991961b14ae520886b8cd564b0b0307b4faf",
-    "src/server/chat_contract.cpp": "2278a6c8474d61ca21244061e6b25ea97cd38ab0d7f1ecda5a6c59b962390e96",
-    "src/server/chat_generation.cpp": "9fd0211cc2994f72493383a87f1dc58d38749e27af50b895bb4b6beab749192b",
-    "src/server/chat_http.cpp": "114c84ba1b3a8c48c1e90e39695e4248fe7b4c86124696eaac99f53c6486ab49",
+    "src/server/chat_capabilities.cpp": "d2b511ff065dc5c440a84d172b86915f9564d53af49dd65a40217bb403dee28b",
+    "src/server/chat_contract.cpp": "90f1b22cb862f0cbfc6730f1e8666eb9b267cf12ba91e91e91f00d81ef3f5b1a",
+    "src/server/chat_generation.cpp": "0677c8567efcbc9aca415f2ea253a644710ba53461f0e6fe4143db9feaa128eb",
+    "src/server/chat_http.cpp": "38798294599cf043e85889feaaa38842b9b471a89d0224d7c1d84bf51468b717",
     "src/server/chat_input.cpp": "1b1c5baf72f418c1377c07c48e8499adb3e01ad72d0b3ebccaa09cbfc7075992",
-    "src/server/chat_metrics.cpp": "35dda44e255f69c7277259882756c7059c4e0dc7fb52f2df812e46d2b7df2443",
+    "src/server/chat_metrics.cpp": "1886838398fe712b6d56d352ca1d3baa96aefc558f4e566c2db6983e0ea67bb5",
     "src/server/chat_response_parser.cpp": "dec8d134d331405688c53150d4dcaeb2736c4a86f5d094ca3dd5f6c809502859",
     "src/server/chat_scheduler.cpp": "fa8abe68ea9c02826731fbc7dc10dbb728d0860708af5f33b1ea800ffacea2f6",
-    "src/server/chat_server.cpp": "228bdfcee62e79ec933488f13c3166e972702b2953dde2ef28361c58c2c66317",
+    "src/server/chat_server.cpp": "685f72a486679c9c5aed3c4b753a61a557717a2c6bae4d635263d497c7404740",
     "src/server/chat_server_internal.h": "a0b12f215356157635e6faae917c973c3b87ed56df30b47324895fd3911ea55a",
     "src/server/chat_template.cpp": "351677cef7accf3461dc40a8b2d6e896bbfb2f25fc94ebb33b7e8b4b1f01d3a0",
     "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
     "src/server/grammar_process.cpp": "14345c6e0470133fe9a1a57659503eabe0b477b2438f5b82f76ab07a57ae02bb",
     "src/server/grammar_worker.cpp": "aca2920b675dce548ceb194690440f00763352ed2d482751100b6345580e560c",
     "src/server/grammar_worker_internal.h": "79d8963200990a0d6b8dacee12c0f886c5612c57bc86e8a3479d942d6bef091a",
-    "src/server/http_request.cpp": "a0609922a91e8517b410bf0c6e236dd524f0584be152362fd17e316039c66aaa",
-    "src/server/http_response.cpp": "004372d91bf53297fc4d7d6bef61abd6569425345968f656a86e2e4490ccdcb1",
+    "src/server/http_request.cpp": "bb6012633d07bd789d3eeb7ea68e1bc64b143298b7b21cdea673e7eadc56295b",
+    "src/server/http_response.cpp": "7e128ae37c56cbb0a4ab6f266590181818ac9293b01f815ab0b3c1934b3b705a",
     "src/server/input_contract.cpp": "b11ff893774749edcc59f636eb0de762956cb17e650db7755490df55b5f81d13",
     "src/server/output_constraints.cpp": "76630cbef022cf14d250dc890d983d912bd44096c80a275c630ad30196f285f0",
     "src/server/output_schema.cpp": "b9309e2102d6f44e412c4c8c59d1c1b5e35fbcb71dae60c56cb70af453f05d4f",
@@ -553,5 +572,16 @@
     "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
-  "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
+  "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+  "stage_a_review": {
+    "base_commit": "48ac853",
+    "scope": "identity, explicit param, admission/readiness/drain, serialized SSE and HTTP boundaries",
+    "evidence": [
+      "tests/server_http_request_test.cpp",
+      "tests/server_http_response_test.cpp",
+      "tools/serve_reliability/http_lifecycle_test.cpp",
+      "tools/serve_stage_a/verify.py"
+    ],
+    "real_acceptance": "pending"
+  }
 }

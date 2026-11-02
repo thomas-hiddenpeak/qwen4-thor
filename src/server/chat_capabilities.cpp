@@ -30,6 +30,10 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("parse_response_false":true,"raw_prompt_parsing":false,)"
          R"("content":true,"reasoning_content":true,"tool_calls":true,)"
          R"("stream":true,"stream_include_usage":true,)"
+         R"("stream_usage_null":true,"choice_logprobs_null":true,)"
+         R"("stream_heartbeat_ms":5000,"heartbeat_write_timeout_ms":1000,)"
+         R"("stream_start":"after_template_and_structured_admission",)"
+         R"("post_header_failure":"sse_error_then_done",)"
          R"("token_limit_fields":["max_tokens","max_completion_tokens"],)"
          R"("token_limit_conflict":"reject_both_nonnull",)"
          R"("input_contract":"q4t-input-v2","exact_integer_spelling":true,)"
@@ -102,7 +106,15 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("runtime":{"media_enabled":)" +
          (allow_media ? "true" : "false") + R"(,"mtp_enabled":)" +
          (mtp_enabled ? "true" : "false") +
-         R"(},"cancellation":{"endpoint":"/v1/requests/cancel",)"
+         R"(},"http":{"request_id_header":"X-Request-Id",)"
+         R"("trace_id_independent_of_completion":true,"random_id_bits":128,)"
+         R"("trace_id_max_bytes":128,"json_content_type_required":true,)"
+         R"("charset":"utf-8","wrong_method_status":405,)"
+         R"("query_parameters":"reject","connection_reuse":false,)"
+         R"("liveness":"/livez","readiness":"/readyz",)"
+         R"("control_reserved_connections":4,"drain_control_window_ms":2000,)"
+         R"("reservation_excludes_unclassified_header_flood":true},)"
+         R"("cancellation":{"endpoint":"/v1/requests/cancel",)"
          R"("accepted_status":202,"acceptance_is_drained":false,)"
          R"("unknown_fields":"reject","malformed_status":400,)"
          R"("unknown_credentials_status":404,)"

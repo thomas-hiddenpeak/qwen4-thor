@@ -598,6 +598,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
     if (!s.ok()) return s;
   }
 #endif
+  model_ready_.store(true);
   return Status();
 }
 

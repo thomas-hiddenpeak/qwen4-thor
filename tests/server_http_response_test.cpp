@@ -1,6 +1,7 @@
 #include "q4t/server/http_response.h"
 
 #include <sys/socket.h>
+#include <poll.h>
 #include <unistd.h>
 
 #include <array>
@@ -28,6 +29,110 @@ struct SocketPair {
   }
 };
 }  // namespace
+
+Q4T_TEST(server_http_context_identity_and_single_terminal) {
+  using namespace q4t::server::detail;
+  for (bool stream : {false, true}) {
+    SocketPair sockets;
+    HttpResponseContext context(sockets.fd[0]);
+    Q4T_CHECK(context.TraceId().starts_with("req-"));
+    Q4T_CHECK(context.TraceId() != NewRequestId());
+    Q4T_CHECK(!context.SetTraceId("injected\r\nHeader: bad"));
+    Q4T_CHECK(context.SetTraceId("client.trace-1"));
+    if (stream)
+      Q4T_CHECK(BeginStreamingResponse(sockets.fd[0], context.State()));
+    SendError(sockets.fd[0], 400, "bad input", {}, "invalid_request", "model");
+    SendExceptionResponse(sockets.fd[0], *context.State());
+    SendError(sockets.fd[0], 500, "duplicate");
+    shutdown(sockets.fd[0], SHUT_WR);
+    std::string wire;
+    char buf[4096];
+    ssize_t n;
+    while ((n = recv(sockets.fd[1], buf, sizeof(buf), 0)) > 0)
+      wire.append(buf, n);
+    Q4T_CHECK(wire.find("X-Request-Id: client.trace-1\r\n") != wire.npos);
+    Q4T_CHECK(wire.find("duplicate") == wire.npos);
+    Q4T_CHECK(wire.find("\"param\":\"model\"") != wire.npos);
+    Q4T_CHECK(wire.find("HTTP/1.1", 1) == wire.npos);
+    if (stream) {
+      Q4T_CHECK(wire.starts_with("HTTP/1.1 200 "));
+      Q4T_CHECK(wire.ends_with("data: [DONE]\r\n\r\n"));
+      Q4T_CHECK(wire.find("[DONE]", wire.find("[DONE]") + 1) == wire.npos);
+    } else {
+      Q4T_CHECK(wire.starts_with("HTTP/1.1 400 "));
+    }
+  }
+  return true;
+}
+
+Q4T_TEST(server_sse_heartbeat_serialization_and_nullable_fields) {
+  using namespace q4t::server::detail;
+  using namespace std::chrono_literals;
+  SocketPair sockets;
+  HttpResponseContext context(sockets.fd[0]);
+  Q4T_CHECK(BeginStreamingResponse(sockets.fd[0], context.State()));
+  auto control = std::make_shared<q4t::server::RequestControl>(
+      "id", "", std::chrono::steady_clock::now() + 2s);
+  context.StartHeartbeats(control, 10ms);
+  std::this_thread::sleep_for(35ms);
+  for (int i = 0; i < 8; ++i) {
+    Q4T_CHECK(WriteAll(sockets.fd[0],
+                       SseChunk("id", "model", "", "中文", "", 0, 123, true)));
+    std::this_thread::sleep_for(2ms);
+  }
+  context.StopHeartbeats();
+  SendStreamError(sockets.fd[0], context.State(), 409, "cancelled", {},
+                  "explicit_cancel");
+  shutdown(sockets.fd[0], SHUT_WR);
+  std::string wire;
+  char buf[8192];
+  ssize_t n;
+  while ((n = recv(sockets.fd[1], buf, sizeof(buf), 0)) > 0)
+    wire.append(buf, n);
+  Q4T_CHECK(wire.find(": keep-alive\r\n\r\n") != wire.npos);
+  Q4T_CHECK(wire.ends_with("data: [DONE]\r\n\r\n"));
+  size_t position = wire.find("\r\n\r\n") + 4;
+  int choices = 0;
+  while (position < wire.size()) {
+    const auto end = wire.find("\r\n\r\n", position);
+    Q4T_CHECK(end != wire.npos);
+    const auto event = wire.substr(position, end - position);
+    position = end + 4;
+    if (event.starts_with(":")) continue;
+    Q4T_CHECK(event.starts_with("data: "));
+    if (event == "data: [DONE]") continue;
+    q4t::io::Json value;
+    Q4T_CHECK(q4t::io::ParseJson(event.substr(6), &value, true));
+    if (const auto* data = value.Find("choices")) {
+      Q4T_CHECK(value.Find("usage") && value.Find("usage")->IsNull());
+      Q4T_CHECK(data->array[0].Find("logprobs")->IsNull());
+      Q4T_CHECK(value.GetInt("created") == 123);
+      ++choices;
+    }
+  }
+  Q4T_CHECK(choices == 8);
+  return true;
+}
+
+Q4T_TEST(server_context_backpressure_has_absolute_deadline) {
+  using namespace q4t::server::detail;
+  using namespace std::chrono_literals;
+  SocketPair sockets;
+  int small = 1024;
+  setsockopt(sockets.fd[0], SOL_SOCKET, SO_SNDBUF, &small, sizeof(small));
+  HttpResponseContext context(sockets.fd[0]);
+  Q4T_CHECK(BeginStreamingResponse(sockets.fd[0], context.State()));
+  auto control = std::make_shared<q4t::server::RequestControl>(
+      "id", "", std::chrono::steady_clock::now() + 2s);
+  context.StartHeartbeats(control, 10ms);
+  const auto begin = std::chrono::steady_clock::now();
+  Q4T_CHECK(!WriteAll(sockets.fd[0], std::string(1024 * 1024, 'x'),
+                      {begin + 80ms, control.get()}));
+  context.StopHeartbeats();
+  Q4T_CHECK(std::chrono::steady_clock::now() - begin < 1s);
+  Q4T_CHECK(!WriteAll(sockets.fd[0], "no second frame"));
+  return true;
+}
 
 Q4T_TEST(server_utf8_stream_boundaries) {
   const std::vector<std::string> cases = {

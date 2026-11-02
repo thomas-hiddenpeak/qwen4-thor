@@ -31,7 +31,11 @@ std::string_view Trim(std::string_view s) {
 
 bool ReadHttpRequest(int fd, std::string* method, std::string* path,
                      std::string* body, int timeout_ms, HttpBodyLease* lease,
-                     int* failure_status) {
+                     int* failure_status, HttpRequestHeaders* headers,
+                     const std::function<bool()>& admit) {
+  HttpRequestHeaders local;
+  if (!headers) headers = &local;
+  *headers = {};
   if (failure_status) *failure_status = 400;
   if (timeout_ms <= 0) return false;
   const auto deadline = std::chrono::steady_clock::now() +
@@ -92,6 +96,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
 
   size_t length = 0;
   bool seen_length = false, seen_host = false;
+  bool seen_id = false, seen_type = false;
   size_t pos = line_end + 2;
   while (pos < head.size()) {
     const size_t end = head.find("\r\n", pos);
@@ -122,10 +127,31 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     } else if (name == "host") {
       if (seen_host || value.empty()) return false;
       seen_host = true;
+    } else if (name == "x-request-id") {
+      if (seen_id || !ValidHttpRequestId(value)) {
+        headers->request_id.clear();
+        headers->error_code = "invalid_request_id_header";
+        headers->error_param = "X-Request-Id";
+        return false;
+      }
+      seen_id = true;
+      headers->request_id = value;
+    } else if (name == "content-type") {
+      if (seen_type) {
+        headers->error_code = "duplicate_content_type";
+        headers->error_param = "Content-Type";
+        return false;
+      }
+      seen_type = true;
+      headers->content_type = value;
     }
     pos = end + 2;
   }
   if (version == "HTTP/1.1" && !seen_host) return false;
+  *method = verb;
+  *path = target;
+  headers->content_length = length;
+  if (admit && !admit()) return false;
   if (target == "/v1/chat/completions") {
     if (lease && !lease->Acquire(length)) {
       if (failure_status) *failure_status = 503;
@@ -134,8 +160,6 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   } else if (length > 4096) {
     return false;
   }
-  *method = verb;
-  *path = target;
   // Do not keep a string_view into buf across an append/reallocation.
   while (buf.size() - head_len < length) {
     const ssize_t n = read_some(tmp, sizeof(tmp));

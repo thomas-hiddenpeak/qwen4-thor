@@ -4,8 +4,12 @@
 #include <cstddef>
 #include <cstdint>
 #include <chrono>
+#include <condition_variable>
+#include <memory>
+#include <mutex>
 #include <string>
 #include <string_view>
+#include <thread>
 
 #include "q4t/server/request_control.h"
 
@@ -36,7 +40,47 @@ struct WriteOptions {
       std::chrono::steady_clock::now() + std::chrono::seconds(30);
   RequestControl* control = nullptr;
 };
-// Fixed, allocation-free header. State tracks successful socket writes;
+
+// 128 random bits from the OS; never falls back to a process-local counter.
+std::string NewRequestId(std::string_view prefix = "req-");
+
+// Bound to one handler thread/connection. All writes, including heartbeat
+// comments, share one mutex. The helper thread never reads handler state or
+// touches model resources. It is joined before the socket owner can return.
+class HttpResponseContext {
+ public:
+  explicit HttpResponseContext(int fd);
+  ~HttpResponseContext();
+  HttpResponseContext(const HttpResponseContext&) = delete;
+  HttpResponseContext& operator=(const HttpResponseContext&) = delete;
+  static HttpResponseContext* Current(int fd);
+  const std::string& TraceId() const { return trace_id_; }
+  bool SetTraceId(std::string_view id);
+  ResponseState* State() { return &state_; }
+  void StartHeartbeats(
+      std::shared_ptr<RequestControl> control,
+      std::chrono::milliseconds interval = std::chrono::seconds(5));
+  void StopHeartbeats();
+  bool Write(const char* data, size_t size, const WriteOptions& options,
+             ResponseState* header_state = nullptr);
+
+ private:
+  void HeartbeatLoop();
+  const int fd_;
+  HttpResponseContext* const previous_;
+  std::string trace_id_;
+  ResponseState state_ = ResponseState::kUnsent;  // handler thread only
+  std::mutex write_mu_;
+  std::condition_variable wake_;
+  std::thread heartbeat_;
+  bool stop_ = false;
+  bool write_failed_ = false;
+  std::shared_ptr<RequestControl> control_;
+  std::chrono::milliseconds interval_{5000};
+  std::chrono::steady_clock::time_point last_write_ =
+      std::chrono::steady_clock::now();
+};
+// State tracks successful socket writes, including partial headers;
 // incomplete headers cannot be followed by another HTTP or SSE response.
 bool BeginStreamingResponse(int fd, ResponseState* state,
                             const WriteOptions& options = {});
@@ -46,10 +90,11 @@ bool WriteAll(int fd, const char* data, size_t len,
 bool WriteAll(int fd, const std::string& s, const WriteOptions& options = {});
 bool SendSimple(int fd, int code, const char* status, const std::string& body,
                 const std::string& content_type,
-                const WriteOptions& options = {});
+                const WriteOptions& options = {}, std::string_view allow = {});
 void SendError(int fd, int code, const std::string& message,
                const WriteOptions& options = {},
-               std::string_view error_code = {}, std::string_view param = {});
+               std::string_view error_code = {}, std::string_view param = {},
+               std::string_view allow = {});
 // Stable Q4T codes inside the OpenAI error envelope. No retry guarantee.
 std::string ErrorJson(int status, const std::string& message,
                       std::string_view error_code = {},
@@ -66,10 +111,10 @@ void SendResponseParseError(int fd, bool stream, ResponseState* state,
 std::string SseDeltaChunk(const std::string& id, const std::string& model,
                           const std::string& delta_json,
                           const std::string& finish_reason, int index,
-                          int64_t created = 0);
+                          int64_t created = 0, bool include_usage = false);
 std::string SseChunk(const std::string& id, const std::string& model,
                      const std::string& delta_role, const std::string& content,
                      const std::string& finish_reason, int index,
-                     int64_t created = 0);
+                     int64_t created = 0, bool include_usage = false);
 
 }  // namespace q4t::server::detail

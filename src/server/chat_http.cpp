@@ -60,18 +60,13 @@ void ChatServer::FinishConnection(int fd) noexcept {
 }
 
 void ChatServer::RequestStop() {
-  // SC store/load closes the stop-before-listener-publication handshake.
-  // Both threads cannot miss the other's publication. Still signal-safe.
   static_assert(std::atomic<bool>::is_always_lock_free);
-  static_assert(std::atomic<int>::is_always_lock_free);
   stop_requested_.store(true);
-  const int fd = listen_fd_.load();
-  if (fd >= 0) ::shutdown(fd, SHUT_RDWR);
 }
 
 Status ChatServer::Run() {
   if (stop_requested_.load()) return Status();
-  const int listen_fd = ::socket(AF_INET, SOCK_STREAM, 0);
+  const int listen_fd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
   if (listen_fd < 0) return Status::Fail("socket failed");
   ScopeExit close_listener([&] {
     listen_fd_.store(-1);
@@ -89,18 +84,41 @@ Status ChatServer::Run() {
   if (::listen(listen_fd, 128) < 0) return Status::Fail("listen failed");
   detail::ServeFaultPoint("connection.before_publish");
   listen_fd_.store(listen_fd);
-  if (stop_requested_.load()) ::shutdown(listen_fd, SHUT_RDWR);
   std::fprintf(stderr, "[q4t] serving on port %d (host %s, model %s)\n",
                port_, host_.c_str(), model_name_.c_str());
   try {
-    while (!stop_requested_.load()) {
+    bool draining = false;
+    auto drain_until = std::chrono::steady_clock::time_point::max();
+    for (;;) {
+      if (stop_requested_.load() && !draining) {
+        draining = true;
+        drain_until =
+            std::chrono::steady_clock::now() + std::chrono::seconds(2);
+        requests_.CancelAll();
+        {
+          const std::lock_guard<std::mutex> lock(seq_mu_);
+          seq_stopping_ = true;
+        }
+        seq_cv_.notify_all();
+        sched_cv_.notify_all();
+      }
+      if (draining && (active_conns_.load() == 0 ||
+                       std::chrono::steady_clock::now() >= drain_until))
+        break;
+      pollfd listener{listen_fd, POLLIN, 0};
+      const int ready = ::poll(&listener, 1, 25);
+      if (ready == 0 || (ready < 0 && errno == EINTR)) continue;
+      if (ready < 0 || (listener.revents & (POLLERR | POLLHUP | POLLNVAL))) {
+        serving_failed_.store(true);
+        break;
+      }
       sockaddr_in client{};
       socklen_t clen = sizeof(client);
       const int fd =
           ::accept(listen_fd, reinterpret_cast<sockaddr*>(&client), &clen);
       if (fd < 0) {
         if (stop_requested_.load()) break;
-        if (errno == EINTR) continue;
+        if (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK) continue;
         std::fprintf(stderr, "[q4t] accept failed: %s\n", std::strerror(errno));
         serving_failed_.store(true);
         break;
@@ -127,7 +145,9 @@ Status ChatServer::Run() {
       ::setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
       ::setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
       counted = true;
-      if (active_conns_.fetch_add(1, std::memory_order_relaxed) >= conn_cap_) {
+      if (active_conns_.fetch_add(1, std::memory_order_relaxed) >=
+          conn_cap_ + kControlConnections) {
+        detail::HttpResponseContext context(fd);
         SendError(fd, 503, "connection capacity exhausted",
                   {std::chrono::steady_clock::now() +
                    std::chrono::milliseconds(250)}, "capacity_exhausted");
@@ -193,31 +213,116 @@ Status ChatServer::Run() {
 }
 
 void ChatServer::HandleClient(int fd) {
-  std::string method, path, body;
-  HttpBodyLease lease(body_budget_);
-  int failure_status = 400;
-  if (!ReadHttpRequest(fd, &method, &path, &body, 30000, &lease,
-                       &failure_status)) {
-    const char* reason = failure_status == 408 ? "Request Timeout" :
-                         failure_status == 503 ? "Service Unavailable" :
-                                                 "Bad Request";
-    SendError(fd, failure_status, reason);
-    return;
-  }
-  const auto t0 = std::chrono::steady_clock::now();
-  Dispatch(fd, method, path, body);
-  static const bool access_log = std::getenv("Q4T_ACCESS_LOG") != nullptr;
-  if (access_log) {
-    const double ms = std::chrono::duration<double, std::milli>(
-                          std::chrono::steady_clock::now() - t0)
-                          .count();
-    std::fprintf(stderr, "[q4t] %s %s %.1fms\n", method.c_str(), path.c_str(),
-                 ms);
+  detail::HttpResponseContext context(fd);
+  try {
+    std::string method, path, body;
+    HttpBodyLease lease(body_budget_);
+    HttpRequestHeaders headers;
+    std::atomic<int>* admission = nullptr;
+    ScopeExit release_admission([&] {
+      if (admission) admission->fetch_sub(1);
+    });
+    int failure_status = 400;
+    const auto admit = [&] {
+      if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
+      const bool control =
+          (method == "GET" &&
+           (path == "/healthz" || path == "/livez" || path == "/readyz")) ||
+          (method == "POST" && path == "/v1/requests/cancel");
+      if (!control && stop_requested_.load()) {
+        failure_status = 503;
+        headers.error_code = "server_draining";
+        return false;
+      }
+      auto& counter = control ? control_conns_ : business_conns_;
+      const int cap = control ? kControlConnections : conn_cap_;
+      if (counter.fetch_add(1) >= cap) {
+        counter.fetch_sub(1);
+        failure_status = 503;
+        headers.error_code = "capacity_exhausted";
+        return false;
+      }
+      admission = &counter;
+      return true;
+    };
+    if (!ReadHttpRequest(fd, &method, &path, &body, 30000, &lease,
+                         &failure_status, &headers, admit)) {
+      if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
+      const char* reason = failure_status == 408   ? "Request Timeout"
+                           : failure_status == 503 ? "Service Unavailable"
+                                                   : "Bad Request";
+      SendError(fd, failure_status, reason, {}, headers.error_code,
+                headers.error_param);
+      return;
+    }
+    if (path == "/v1/chat/completions" || path == "/v1/requests/cancel") {
+      if (method == "POST") {
+        std::string type = headers.content_type;
+        for (char& c : type)
+          if (c >= 'A' && c <= 'Z') c += 'a' - 'A';
+        const auto semi = type.find(';');
+        std::string media = type.substr(0, semi);
+        while (!media.empty() && (media.back() == ' ' || media.back() == '\t'))
+          media.pop_back();
+        std::string charset = semi == type.npos ? "" : type.substr(semi + 1);
+        while (!charset.empty() &&
+               (charset.front() == ' ' || charset.front() == '\t'))
+          charset.erase(0, 1);
+        if (media != "application/json" ||
+            (!charset.empty() && charset != "charset=utf-8" &&
+             charset != "charset=\"utf-8\"")) {
+          SendError(fd, 415, "Content-Type must be application/json with UTF-8",
+                    {}, "unsupported_media_type", "Content-Type");
+          return;
+        }
+      }
+    }
+    const auto t0 = std::chrono::steady_clock::now();
+    Dispatch(fd, method, path, body);
+    static const bool access_log = std::getenv("Q4T_ACCESS_LOG") != nullptr;
+    if (access_log) {
+      const double ms = std::chrono::duration<double, std::milli>(
+                            std::chrono::steady_clock::now() - t0)
+                            .count();
+      std::fprintf(stderr, "[q4t][http] trace_id=%s elapsed_ms=%.1f\n",
+                   context.TraceId().c_str(), ms);
+    }
+  } catch (...) {
+    detail::SendExceptionResponse(fd, *context.State());
   }
 }
 
 void ChatServer::Dispatch(int fd, const std::string& method,
                           const std::string& path, const std::string& body) {
+  if (path.find('?') != path.npos) {
+    SendError(fd, 400, "query parameters are not supported", {},
+              "unsupported_query", "path");
+    return;
+  }
+  std::string_view expected;
+  if (path == "/healthz" || path == "/livez" || path == "/readyz" ||
+      path == "/v1/models" || path == "/v1/capabilities" || path == "/metrics")
+    expected = "GET";
+  else if (path == "/v1/chat/completions" || path == "/v1/requests/cancel")
+    expected = "POST";
+  if (!expected.empty() && method != expected) {
+    SendError(fd, 405, "method not allowed", {}, "method_not_allowed", "method",
+              expected);
+    return;
+  }
+  if (expected == "GET" && !body.empty()) {
+    SendError(fd, 400, "GET body is not supported", {}, "unexpected_body",
+              "body");
+    return;
+  }
+  if (path == "/livez" && method == "GET") {
+    HandleReadiness(fd, true);
+    return;
+  }
+  if (path == "/readyz" && method == "GET") {
+    HandleReadiness(fd, false);
+    return;
+  }
   if (path == "/healthz" && method == "GET") {
     HandleHealth(fd);
     return;
@@ -259,6 +364,23 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     return;
   }
   SendError(fd, 404, "route or method not found");
+}
+
+void ChatServer::HandleReadiness(int fd, bool liveness) {
+  const bool draining = stop_requested_.load();
+  const bool live = !serving_failed_.load();
+  const bool ready =
+      live && model_ready_.load() && gpu_healthy_.load() && !draining;
+  const bool success = liveness ? live : ready;
+  const char* state = !live || !gpu_healthy_.load() ? "unhealthy"
+                      : draining                    ? "draining"
+                      : !model_ready_.load()        ? "starting"
+                                                    : "ready";
+  SendSimple(fd, success ? 200 : 503, success ? "OK" : "Service Unavailable",
+             std::string("{\"status\":\"") + state +
+                 "\",\"live\":" + (live ? "true" : "false") +
+                 ",\"ready\":" + (ready ? "true" : "false") + "}",
+             "application/json");
 }
 
 }  // namespace q4t::server

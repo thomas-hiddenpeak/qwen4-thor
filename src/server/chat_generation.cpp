@@ -76,20 +76,23 @@ using detail::PrepareChatInput;
 
 void ChatServer::HandleChat(int fd, const std::string& body) {
   detail::ResponseState response = detail::ResponseState::kUnsent;
+  auto* context = detail::HttpResponseContext::Current(fd);
+  auto* state = context ? context->State() : &response;
   try {
-    HandleChatImpl(fd, body, &response);
+    HandleChatImpl(fd, body, state);
   } catch (const std::exception& error) {
     std::fprintf(stderr, "[q4t] request exception: %s\n", error.what());
-    detail::SendExceptionResponse(fd, response);
+    detail::SendExceptionResponse(fd, *state);
   } catch (...) {
     std::fprintf(stderr, "[q4t] unknown request exception\n");
-    detail::SendExceptionResponse(fd, response);
+    detail::SendExceptionResponse(fd, *state);
   }
 }
 
 void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                detail::ResponseState* response_state) {
-  RequestDiagnostics diagnostic;
+  auto* http = detail::HttpResponseContext::Current(fd);
+  RequestDiagnostics diagnostic(stderr, http ? http->TraceId() : "-");
   using Wait = RequestDiagnostics::Wait;
   metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
   const auto t_arrive = std::chrono::steady_clock::now();
@@ -130,9 +133,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
 
-  s = ValidateChatContract(req, model_name_, allow_media_);
+  std::string error_param;
+  s = ValidateChatContract(req, model_name_, allow_media_, &error_param);
   if (!s.ok()) {
-    SendError(fd, 400, s.message());
+    SendError(fd, 400, s.message(), {}, "invalid_request", error_param);
     return;
   }
 
@@ -172,10 +176,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const std::string key = req.GetString("cancel_token");
   std::string request_id = req.GetString("request_id");
   // Shape, credentials and exact integer spelling were checked before leases.
-  if (!external_id) {
-    request_id = "chatcmpl-auto-" +
-                 std::to_string(next_request_id_.fetch_add(1));
-  }
+  if (!external_id) request_id = detail::NewRequestId("chatcmpl-auto-");
   auto deadline = t_arrive +
                   std::chrono::milliseconds(request_deadline_ms_);
   if (req.Has("request_timeout_ms")) {
@@ -204,6 +205,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     control->Cancel(RequestControl::State::kFailure);
   });
   diagnostic.Bind(request_id);
+  if (http)
+    std::fprintf(stderr, "[q4t][http] trace_id=%s completion_id=%s\n",
+                 http->TraceId().c_str(), request_id.c_str());
   detail::ServeFaultPoint("handler.after_register");
   const auto cancelled = [&] { return RequestCancelled(control.get(), fd); };
   const auto send_cancel_error = [&](const char* message) {
@@ -240,6 +244,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const io::Json* stream_options = req.Find("stream_options");
   const bool include_usage =
       stream_options && stream_options->GetBool("include_usage", false);
+  const std::string id = request_id;
+  const std::string model_field = model_name_;
+  const int created = static_cast<int>(std::time(nullptr));
+  ScopeExit stop_heartbeat([&] {
+    if (http) http->StopHeartbeats();
+  });
 
   std::string prompt;
   std::vector<VisionItem> items;
@@ -256,6 +266,27 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
 
+  const auto start_stream = [&] {
+    if (!stream) return true;
+    if (cancelled()) {
+      count_abort();
+      send_cancel_error("request cancelled before stream");
+      return false;
+    }
+    const detail::WriteOptions options{.control = control.get()};
+    if (!detail::BeginStreamingResponse(fd, response_state, options) ||
+        !WriteAll(fd,
+                  SseChunk(id, model_field, "assistant", "", "", 0, created,
+                           include_usage),
+                  options)) {
+      control->Cancel(RequestControl::State::kDisconnect);
+      count_abort();
+      return false;
+    }
+    if (http) http->StartHeartbeats(control);
+    return true;
+  };
+
   // The outer lease outlives this grammar, including exception unwinding.
   std::unique_ptr<StructuredDecoder> structured;
   if (constraints.active) {
@@ -270,6 +301,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                 "structured_capacity_exhausted");
       return;
     }
+    if (!start_stream()) return;
     const auto prepare_start = std::chrono::steady_clock::now();
     metrics_.structured_preparing.fetch_add(1, std::memory_order_relaxed);
     ScopeExit prepared([&] {
@@ -380,6 +412,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       return;
     }
   }
+  if (!constraints.active && !start_stream()) return;
 
   std::vector<std::uint32_t> prompt_u32;
   std::vector<int32_t> ids;
@@ -1085,9 +1118,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
 
   diagnostic.Stage("decode");
   // 3. Decode loop (greedy).
-  const std::string id = request_id;
-  const std::string model_field = model_name_;
-  const int created = static_cast<int>(std::time(nullptr));
   bool client_disconnected = false;
   const auto write_stream = [&](const std::string& data) {
     if (client_disconnected) return false;
@@ -1105,8 +1135,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const auto write_deltas = [&](const std::vector<ResponseDelta>& deltas) {
     for (const auto& delta : deltas) {
       detail::ServeFaultPoint("handler.before_content");
-      if (!write_stream(detail::SseDeltaChunk(
-              id, model_field, delta.ToJson(), "", 0, created))) return false;
+      if (!write_stream(detail::SseDeltaChunk(id, model_field, delta.ToJson(),
+                                              "", 0, created, include_usage)))
+        return false;
       if (!first_delta_sent) {
         first_delta_sent = true;
         metrics_.ttft_seconds.Observe(std::chrono::duration<double>(
@@ -1121,29 +1152,6 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     response_status = response_parser.Append(piece, &deltas);
     return response_status.ok() && write_deltas(deltas);
   };
-
-  // Streaming header (flushed immediately).
-  if (stream) {
-    bool header_sent;
-    {
-      RequestDiagnostics::Scope wait(diagnostic, Wait::kWrite);
-      header_sent = !cancelled() && detail::BeginStreamingResponse(
-          fd, response_state, {.control = control.get()});
-    }
-    if (!header_sent) {
-      client_disconnected = true;
-      control->Cancel(RequestControl::State::kDisconnect);
-      count_abort();
-    }
-    if (!header_sent ||
-        !write_stream(SseChunk(id, model_field, "assistant", "", "", 0,
-                               created))) {
-      err_guard.ok = true;  // Count this as an abort, not a prefill error.
-      model::ModelEndSequence(&seq);
-      cleanup();
-      return;
-    }
-  }
 
   std::vector<int32_t> generated;
   int next_token = -1;
@@ -1892,12 +1900,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       : "";
   detail::ServeRequestFaultPoint("handler.before_response", request_id.c_str());
   // 4. Finalize.
+  stop_heartbeat.Run();
   if (stream) {
     // Allocate all terminal frames before publishing the first terminal.
     // Once publication starts, an exception can only close the connection;
     // appending a second terminal would turn a truncated stream into a lie.
-    const auto finish_chunk =
-        SseChunk(id, model_field, "", "", finish_reason, 0, created);
+    const auto finish_chunk = SseChunk(id, model_field, "", "", finish_reason,
+                                       0, created, include_usage);
     std::string tail;
     if (include_usage && !client_disconnected) {
       tail =
@@ -1917,12 +1926,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     write_stream(tail);
   } else {
     std::string resp =
-        "{\"id\":\"" + id + "\",\"object\":\"chat.completion\","
+        "{\"id\":\"" + id +
+        "\",\"object\":\"chat.completion\","
         "\"created\":" +
         std::to_string(created) + ",\"model\":\"" + JsonEscape(model_field) +
         "\",\"choices\":[{\"index\":0,\"message\":" +
-        response_parser.MessageJson() +
-        ",\"finish_reason\":\"" + finish_reason + "\"}],"
+        response_parser.MessageJson() + ",\"finish_reason\":\"" +
+        finish_reason +
+        "\",\"logprobs\":null}],"
         "\"usage\":{\"prompt_tokens\":" +
         std::to_string(T) +
         ",\"completion_tokens\":" + std::to_string(generated.size()) +

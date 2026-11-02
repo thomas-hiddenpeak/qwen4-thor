@@ -15,6 +15,33 @@ bool Accept(const std::string& input, bool media = false) {
 }
 }  // namespace
 
+Q4T_TEST(chat_contract_error_param_is_explicit) {
+  const std::pair<const char*, const char*> cases[] = {
+      {R"({"prompt":"x","temperature":1})", "temperature"},
+      {R"({"prompt":"x","max_completion_tokens":0})", "max_completion_tokens"},
+      {R"({"prompt":"x","model":"wrong"})", "model"},
+      {R"({"prompt":"x","stream_options":{"include_usage":1}})",
+       "stream_options.include_usage"},
+      {R"({"messages":[{"role":"developer","content":"x"}]})", "messages[0]"},
+      {R"({"prompt":"x","unknown":true})", "unknown"},
+      {R"([])", "body"}};
+  for (const auto& [wire, expected] : cases) {
+    q4t::io::Json request;
+    Q4T_CHECK(q4t::io::ParseJson(wire, &request, true));
+    std::string param = "stale";
+    Q4T_CHECK(!q4t::server::ValidateChatContract(request, "qwen3.8-flash-next",
+                                                 false, &param));
+    Q4T_CHECK(param == expected);
+  }
+  q4t::io::Json request;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"prompt":"x"})", &request, true));
+  std::string param = "stale";
+  Q4T_CHECK(q4t::server::ValidateChatContract(request, "qwen3.8-flash-next",
+                                              false, &param));
+  Q4T_CHECK(param.empty());
+  return true;
+}
+
 Q4T_TEST(chat_contract_greedy_neutral_options) {
   Q4T_CHECK(Accept(R"({"prompt":"hello","temperature":0,"top_p":1,
     "n":1,"seed":20260920,"presence_penalty":0,"frequency_penalty":0,

@@ -147,3 +147,44 @@ Q4T_TEST(http_absolute_deadline_and_body_budget) {
   Q4T_CHECK(!ok && status == 503 && budget.Used() == 0);
   return true;
 }
+
+Q4T_TEST(http_header_identity_and_pre_body_admission) {
+  using namespace q4t::server;
+  for (const auto& extra :
+       {std::string("X-Request-Id: abc.1:trace\r\n"),
+        std::string("X-Request-Id: abc\r\nx-request-id: abc\r\n"),
+        std::string("X-Request-Id: bad id\r\n"),
+        std::string("X-Request-Id: ") + std::string(129, 'x') + "\r\n",
+        std::string("Content-Type: application/json\r\n")}) {
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    const std::string wire =
+        "POST /v1/chat/completions HTTP/1.1\r\nHost: t\r\n"
+        "Content-Length: 8\r\nContent-Type: application/json\r\n" +
+        extra + "\r\n";
+    Q4T_CHECK(send(fd[0], wire.data(), wire.size(), MSG_NOSIGNAL) > 0);
+    std::string method, path, body;
+    HttpRequestHeaders headers;
+    HttpBodyBudget budget(8);
+    HttpBodyLease lease(budget);
+    bool called = false;
+    int status = 400;
+    const bool ok = ReadHttpRequest(fd[1], &method, &path, &body, 200, &lease,
+                                    &status, &headers, [&] {
+                                      called = true;
+                                      status = 503;
+                                      return false;
+                                    });
+    close(fd[0]);
+    close(fd[1]);
+    Q4T_CHECK(!ok && body.empty() && budget.Used() == 0);
+    if (extra.starts_with("X-Request-Id: abc.1")) {
+      Q4T_CHECK(called && status == 503);
+      Q4T_CHECK(headers.request_id == "abc.1:trace");
+      Q4T_CHECK(headers.content_length == 8);
+    } else {
+      Q4T_CHECK(!called && status == 400 && !headers.error_param.empty());
+    }
+  }
+  return true;
+}

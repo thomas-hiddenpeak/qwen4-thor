@@ -75,6 +75,7 @@ class RequestRegistry {
     const std::lock_guard<std::mutex> lock(mu_);
     if (requests_.contains(id)) return nullptr;
     auto request = std::make_shared<RequestControl>(id, key, deadline);
+    if (stopping_) request->Cancel(RequestControl::State::kShutdown);
     requests_.emplace(id, request);
     return request;
   }
@@ -86,6 +87,7 @@ class RequestRegistry {
   }
   void CancelAll() {
     const std::lock_guard<std::mutex> lock(mu_);
+    stopping_ = true;
     for (const auto& [id, request] : requests_) {
       (void)id;
       request->Cancel(RequestControl::State::kShutdown);
@@ -100,6 +102,7 @@ class RequestRegistry {
 
  private:
   std::mutex mu_;
+  bool stopping_ = false;
   std::unordered_map<std::string, std::shared_ptr<RequestControl>> requests_;
 };
 

@@ -27,20 +27,23 @@ class RequestDiagnostics {
     Clock::time_point start_;
   };
 
-  explicit RequestDiagnostics(FILE* sink = stderr)
-      : instance_(next_.fetch_add(1, std::memory_order_relaxed)), sink_(sink) {
+  explicit RequestDiagnostics(FILE* sink = stderr, std::string trace_id = "-")
+      : instance_(next_.fetch_add(1, std::memory_order_relaxed)),
+        sink_(sink),
+        trace_id_(std::move(trace_id)) {
     Event("begin");
   }
   ~RequestDiagnostics() {
     std::fprintf(sink_,
-        "[q4t][request] instance=%llu id=%s event=end stage=%s seq=%d "
-        "released=%d outcome=%s reason=%s elapsed_ms=%.3f "
-        "slot_wait_ms=%.3f model_lock_ms=%.3f tokenizer_lock_ms=%.3f "
-        "scheduler_completion_ms=%.3f stream_write_ms=%.3f "
-        "scheduler_waits=%llu\n",
-        instance_, id_.c_str(), stage_, seq_, released_, outcome_, reason_,
-        Milliseconds(Clock::now() - start_), totals_[0], totals_[1],
-        totals_[2], totals_[3], totals_[4], counts_[3]);
+                 "[q4t][request] instance=%llu id=%s event=end stage=%s seq=%d "
+                 "released=%d outcome=%s reason=%s elapsed_ms=%.3f "
+                 "slot_wait_ms=%.3f model_lock_ms=%.3f tokenizer_lock_ms=%.3f "
+                 "scheduler_completion_ms=%.3f stream_write_ms=%.3f "
+                 "scheduler_waits=%llu trace_id=%s\n",
+                 instance_, id_.c_str(), stage_, seq_, released_, outcome_,
+                 reason_, Milliseconds(Clock::now() - start_), totals_[0],
+                 totals_[1], totals_[2], totals_[3], totals_[4], counts_[3],
+                 trace_id_.c_str());
   }
   void Bind(const std::string& id) { id_ = id; Event("registered"); }
   void Stage(const char* value) { stage_ = value; Event("stage"); }
@@ -67,13 +70,15 @@ class RequestDiagnostics {
   }
   void Event(const char* event) {
     std::fprintf(sink_,
-        "[q4t][request] instance=%llu id=%s event=%s stage=%s seq=%d "
-        "elapsed_ms=%.3f\n", instance_, id_.c_str(), event, stage_, seq_,
-        Milliseconds(Clock::now() - start_));
+                 "[q4t][request] instance=%llu id=%s event=%s stage=%s seq=%d "
+                 "elapsed_ms=%.3f trace_id=%s\n",
+                 instance_, id_.c_str(), event, stage_, seq_,
+                 Milliseconds(Clock::now() - start_), trace_id_.c_str());
   }
   static inline std::atomic<unsigned long long> next_{0};
   const unsigned long long instance_;
   FILE* sink_;
+  const std::string trace_id_;
   Clock::time_point start_ = Clock::now();
   std::string id_ = "unregistered";
   const char* stage_ = "validation";

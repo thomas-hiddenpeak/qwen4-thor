@@ -15,7 +15,7 @@ Q4T_TEST(request_diagnostics_terminal_and_reuse) {
   FILE* file = std::tmpfile();
   Q4T_CHECK(file);
   for (int i = 0; i < 2; ++i) {
-    q4t::server::RequestDiagnostics d(file);
+    q4t::server::RequestDiagnostics d(file, "trace-test");
     d.Bind("reused-id");
     d.Admitted(0);
     d.Stage("prefill");
@@ -27,6 +27,7 @@ Q4T_TEST(request_diagnostics_terminal_and_reuse) {
   std::fclose(file);
   Q4T_CHECK(text.find("released=1 outcome=success") != std::string::npos);
   Q4T_CHECK(text.find("released=1 outcome=cancelled") != std::string::npos);
+  Q4T_CHECK(text.find("trace_id=trace-test") != std::string::npos);
   const auto first = text.find("instance=");
   const auto next = text.find("event=begin", text.find("event=begin") + 1);
   Q4T_CHECK(next != std::string::npos && first != std::string::npos);

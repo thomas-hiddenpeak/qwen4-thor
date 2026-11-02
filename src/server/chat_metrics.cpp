@@ -128,6 +128,15 @@ void ChatServer::HandleMetrics(int fd) {
         body_budget_.Used());
   gauge("q4t_active_chats", "Parsing, queued and generating chat requests.",
         active_chats_.load());
+  gauge("q4t_business_connections", "Classified non-control connections.",
+        business_conns_.load());
+  gauge("q4t_control_connections", "Classified control connections (limit 4).",
+        control_conns_.load());
+  gauge("q4t_ready", "Ready for business; ordinary slot occupancy is separate.",
+        model_ready_.load() && gpu_healthy_.load() && !stop_requested_.load() &&
+                !serving_failed_.load()
+            ? 1
+            : 0);
   gauge("q4t_structured_active",
         "Structured leases held through response cleanup (limit 1).",
         metrics_.structured_active.load());
@@ -194,9 +203,9 @@ void ChatServer::HandleHealth(int fd) {
 
 void ChatServer::HandleModels(int fd) {
   const std::string body =
-      "{\"object\":\"list\",\"data\":[{\"id\":\"" + model_name_ +
-      "\",\"object\":\"model\",\"created\":" + std::to_string(std::time(nullptr)) +
-      ",\"owned_by\":\"q4t\"}]}";
+      "{\"object\":\"list\",\"data\":[{\"id\":\"" +
+      detail::JsonEscape(model_name_) + "\",\"object\":\"model\",\"created\":" +
+      std::to_string(std::time(nullptr)) + ",\"owned_by\":\"q4t\"}]}";
   SendSimple(fd, 200, "OK", body, "application/json");
 }
 
