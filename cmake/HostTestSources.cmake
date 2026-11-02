@@ -26,6 +26,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_http_response_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/http_response.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_contract_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_message_profile_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_tool_history.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chat_template.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_chat_tool_history_test.cpp

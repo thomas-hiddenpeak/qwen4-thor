@@ -5,6 +5,7 @@
 #include <string_view>
 
 #include "q4t/server/chat_tool_history.h"
+#include "q4t/server/chat_template.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_constraints.h"
 
@@ -235,6 +236,8 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
   if (!messages) return Status();
   if (!messages->IsArray() || messages->array.empty())
     return invalid("messages", "messages must be a nonempty array");
+  status = ValidateChatMessageProfile(*messages, error_param);
+  if (!status) return status;
   for (size_t index = 0; index < messages->array.size(); ++index) {
     const auto& message = messages->array[index];
     *error_param = "messages[" + std::to_string(index) + "]";
@@ -243,15 +246,13 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
                               "tool_calls", "tool_call_id", "name", "refusal",
                               "audio", "annotations", "function_call"});
     if (!status) return status;
-    for (const char* key : {"name", "refusal", "audio", "annotations",
+    for (const char* key : {"refusal", "audio", "annotations",
                             "function_call"}) {
       const auto* value = message.Find(key);
       if (value && !value->IsNull())
         return Status::Fail(std::string("message field not supported: ") + key);
     }
     const auto role = message.GetString("role");
-    if (!Known(role, {"system", "user", "assistant", "tool"}))
-      return Status::Fail("unsupported message role: " + role);
     if (const auto* reasoning = message.Find("reasoning_content"); reasoning &&
         (!reasoning->IsString() || role != "assistant"))
       return Status::Fail("reasoning_content requires an assistant string");

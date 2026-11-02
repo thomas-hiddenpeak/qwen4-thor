@@ -31,6 +31,11 @@ Q4T_TEST(chat_capabilities_identity) {
   Q4T_CHECK(Hash(caps.GetString("protocol_source_sha256")));
   const auto* templ = caps.Find("template");
   Q4T_CHECK(templ && templ->IsObject());
+  Q4T_CHECK(templ->GetString("id") == "qwen4_exp-native-v2");
+  Q4T_CHECK(templ->GetString("message_profile") == "qwen3.8-native-v2");
+  Q4T_CHECK(templ->GetString("developer_mapping") == "system");
+  Q4T_CHECK(!templ->GetBool("mixed_instruction_roles", true));
+  Q4T_CHECK(templ->GetString("message_name") == "absent_or_null_only");
   for (const auto* key : {"reference_sha256", "renderer_source_sha256",
                           "tool_history_source_sha256", "fixture_sha256"})
     Q4T_CHECK(Hash(templ->GetString(key)));

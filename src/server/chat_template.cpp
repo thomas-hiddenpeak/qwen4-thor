@@ -7,6 +7,7 @@
 #include <charconv>
 #include <cmath>
 #include <string_view>
+#include <utility>
 
 namespace q4t::server {
 namespace {
@@ -230,6 +231,55 @@ Status AppendToolCalls(const io::Json& message, bool has_content,
 
 }  // namespace
 
+bool IsChatInstructionRole(std::string_view role) {
+  return role == "system" || role == "developer";
+}
+
+Status ValidateChatMessageProfile(const io::Json& messages,
+                                  std::string* error_param) {
+  if (error_param) error_param->clear();
+  const auto invalid = [&](std::string param, std::string message) {
+    if (error_param) *error_param = std::move(param);
+    return Status::Fail(std::move(message));
+  };
+  if (!messages.IsArray() || messages.array.empty())
+    return invalid("messages", "messages must be a nonempty array");
+  for (size_t i = 0; i < messages.array.size(); ++i) {
+    const auto& message = messages.array[i];
+    const std::string path = "messages[" + std::to_string(i) + "]";
+    if (!message.IsObject())
+      return invalid(path, "message must be an object");
+    const auto role = message.GetString("role");
+    const bool instruction = IsChatInstructionRole(role);
+    if (!instruction && role != "user" && role != "assistant" && role != "tool")
+      return invalid(path + ".role", "unsupported message role");
+    if (instruction && i != 0)
+      return invalid(path + ".role",
+                     "system or developer must be the single leading "
+                     "instruction message; mixing or repeating is unsupported");
+    const auto* name = message.Find("name");
+    if (name && !name->IsNull())
+      return invalid(path + ".name",
+                     "message name is not represented by this model template");
+    if (!instruction) continue;
+    const auto* content = message.Find("content");
+    if (!content || content->IsNull() || content->IsString()) continue;
+    if (!content->IsArray())
+      return invalid(path + ".content", "instruction content must be text");
+    for (size_t j = 0; j < content->array.size(); ++j) {
+      const auto& part = content->array[j];
+      const auto* type = part.Find("type");
+      const auto* text = part.Find("text");
+      auto status = InputFields(part, {"type", "text"});
+      if (!status || !text || !text->IsString() ||
+          (type && (!type->IsString() || type->str != "text")))
+        return invalid(path + ".content[" + std::to_string(j) + "]",
+                       "instruction content parts must contain only text");
+    }
+  }
+  return Status();
+}
+
 Status RenderChatPrompt(const io::Json& request,
                         const std::vector<std::string>& contents,
                         std::string* prompt) {
@@ -241,6 +291,8 @@ Status RenderChatPrompt(const io::Json& request,
       messages->array.size() != contents.size()) {
     return Status::Fail("messages must be a nonempty array");
   }
+  auto profile = ValidateChatMessageProfile(*messages);
+  if (!profile) return profile;
   std::vector<size_t> tool_result_order;
   auto history = PlanToolResultOrder(*messages, &tool_result_order);
   if (!history) return history;
@@ -282,18 +334,15 @@ Status RenderChatPrompt(const io::Json& request,
     if (!ms[i].IsObject()) return Status::Fail("message must be an object");
     text.push_back(Trim(contents[i]));
     const std::string role = ms[i].GetString("role");
-    if (role == "system") {
-      if (i) return Status::Fail("System message must be at the beginning.");
-    } else if (role == "user") {
+    if (role == "user") {
       if (!(text.back().starts_with("<tool_response>") &&
             text.back().ends_with("</tool_response>")))
         last_query = i;
-    } else if (role != "assistant" && role != "tool") {
-      return Status::Fail("Unexpected message role.");
     }
   }
   if (last_query == ms.size()) return Status::Fail("No user query found.");
-  const std::string system = ms[0].GetString("role") == "system" ? text[0] : "";
+  const std::string system =
+      IsChatInstructionRole(ms[0].GetString("role")) ? text[0] : "";
   const io::Json* tools = request.Find("tools");
   if (tools && !tools->IsNull() && !tools->IsArray()) {
     return Status::Fail("tools must be an array");

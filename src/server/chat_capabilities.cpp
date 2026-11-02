@@ -1,6 +1,7 @@
 #include "q4t/server/chat_capabilities.h"
 
 #include "q4t/server/chat_protocol_identity.h"
+#include "q4t/server/chat_template.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/structured_decoder.h"
@@ -95,7 +96,13 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("generation_exit":"q4t_generation_complete_seconds",)"
          R"("legacy_queue_e2e":"deprecated_aliases",)"
          R"("cancellation":"fixed_reason_counters"},"template":{)"
-         R"("id":"qwen4_exp-native-v1","reference_sha256":)" +
+         R"("id":"qwen4_exp-native-v2","message_profile":)" +
+         Quote(std::string(kChatMessageProfile)) +
+         R"(,"roles":["system","developer","user","assistant","tool"],)"
+         R"("instruction_slot":"single_leading_system_or_developer",)"
+         R"("developer_mapping":"system","mixed_instruction_roles":false,)"
+         R"("message_name":"absent_or_null_only","instruction_media":false,)"
+         R"("reference_sha256":)" +
          Quote(identity::kTemplateReference) + R"(,"renderer_source_sha256":)" +
          Quote(identity::kRenderer) + R"(,"tool_history_source_sha256":)" +
          Quote(identity::kToolHistory) + R"(,"fixture_sha256":)" +

@@ -22,7 +22,8 @@ Q4T_TEST(chat_contract_error_param_is_explicit) {
       {R"({"prompt":"x","model":"wrong"})", "model"},
       {R"({"prompt":"x","stream_options":{"include_usage":1}})",
        "stream_options.include_usage"},
-      {R"({"messages":[{"role":"developer","content":"x"}]})", "messages[0]"},
+      {R"({"messages":[{"role":"function","content":"x"}]})",
+       "messages[0].role"},
       {R"({"prompt":"x","unknown":true})", "unknown"},
       {R"([])", "body"}};
   for (const auto& [wire, expected] : cases) {
@@ -89,7 +90,6 @@ Q4T_TEST(chat_contract_completion_token_budget) {
 
 Q4T_TEST(chat_contract_no_silent_message_semantics) {
   for (const auto* message : {
-      R"({"role":"developer","content":"instruction"})",
       R"({"role":"user","content":"hello","name":"alice"})",
       R"({"role":"assistant","content":"x","refusal":"refused"})",
       R"({"role":"user","content":"x","reasoning_content":"lost"})",

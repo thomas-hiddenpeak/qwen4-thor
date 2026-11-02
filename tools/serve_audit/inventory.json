@@ -21,13 +21,16 @@
       ]
     },
     "messages": {
-      "semantics": "原生模板与 parsed 默认启用，历史调用形状与结果必填",
-      "boundary": "无 ID wrapped/flat 兼容格式保留；只有带 ID 的批次保证唯一完整关联",
+      "semantics": "原生模板与parsed默认；单条开头developer作为system替代；历史调用形状与结果必填",
+      "boundary": "混用/重复/错位指令、非null消息name与指令媒体拒绝；无ID历史仅原生兼容；角色profile待本批HTTP验收",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
+        "tests/server_chat_message_profile_test.cpp",
+        "docs/SERVE_STAGE_B1_2026-11-03.md",
+        "docs/serve-message-profile-v2.schema.json"
       ]
     },
     "max_tokens": {
@@ -508,6 +511,10 @@
     "chat_tool_history.cpp:2:*fn": [
       "name",
       "arguments"
+    ],
+    "chat_template.cpp:0:part": [
+      "type",
+      "text"
     ]
   },
   "sources_sha256": {
@@ -518,7 +525,7 @@
     "include/q4t/server/chat_contract.h": "c1aaef06a1ae22f96ce143211a3c6a5a462bb8223d0f86c474f896ab3bb906e0",
     "include/q4t/server/chat_response_parser.h": "6f2da0dcd7f548ef6de8860f822516354c561c447a4fee1c43a0e450124cc2cf",
     "include/q4t/server/chat_server.h": "7b75b91ff39cf1bc0a5f51dac719eb59d854e979c24094c5d74eeced45a920bb",
-    "include/q4t/server/chat_template.h": "5be2647b6559eca3373642188ce5f79bd7672139991ecc148d4e722c4730c1b0",
+    "include/q4t/server/chat_template.h": "f89fa01d5352cc6ec47ecff09c24bdb58f8bb0a3edfa5c89fe840791ac76bb51",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/grammar_process.h": "5a43df744adf5647177ee723d806c63e0e20c9d6555cfca45bb80863f995e760",
     "include/q4t/server/http_request.h": "153cb5b66d5d7b0aa971f404bc88e326440aacc6e215c2f5ffa83c6456030a46",
@@ -545,17 +552,17 @@
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
     "src/main.cpp": "93cae8f751bfc446d812f1d786389b32ae577c3dd386fedcfc907d6b08539b67",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "src/server/chat_capabilities.cpp": "d2b511ff065dc5c440a84d172b86915f9564d53af49dd65a40217bb403dee28b",
-    "src/server/chat_contract.cpp": "90f1b22cb862f0cbfc6730f1e8666eb9b267cf12ba91e91e91f00d81ef3f5b1a",
+    "src/server/chat_capabilities.cpp": "a63a88249cb87833858ca3e6f53c1f18527a399448268a7c40a390c4f950f795",
+    "src/server/chat_contract.cpp": "f8a4639996c1a0208159c4f8003bdb79a66348fd16080256c23a3fa9d031021c",
     "src/server/chat_generation.cpp": "0677c8567efcbc9aca415f2ea253a644710ba53461f0e6fe4143db9feaa128eb",
     "src/server/chat_http.cpp": "38798294599cf043e85889feaaa38842b9b471a89d0224d7c1d84bf51468b717",
-    "src/server/chat_input.cpp": "1b1c5baf72f418c1377c07c48e8499adb3e01ad72d0b3ebccaa09cbfc7075992",
+    "src/server/chat_input.cpp": "a0bfc92dd9fc6b13102e2667345714445e3516740878331ce39f834713eaf020",
     "src/server/chat_metrics.cpp": "1886838398fe712b6d56d352ca1d3baa96aefc558f4e566c2db6983e0ea67bb5",
     "src/server/chat_response_parser.cpp": "dec8d134d331405688c53150d4dcaeb2736c4a86f5d094ca3dd5f6c809502859",
     "src/server/chat_scheduler.cpp": "fa8abe68ea9c02826731fbc7dc10dbb728d0860708af5f33b1ea800ffacea2f6",
     "src/server/chat_server.cpp": "685f72a486679c9c5aed3c4b753a61a557717a2c6bae4d635263d497c7404740",
     "src/server/chat_server_internal.h": "a0b12f215356157635e6faae917c973c3b87ed56df30b47324895fd3911ea55a",
-    "src/server/chat_template.cpp": "351677cef7accf3461dc40a8b2d6e896bbfb2f25fc94ebb33b7e8b4b1f01d3a0",
+    "src/server/chat_template.cpp": "3f7f8dc6fe624413b170b9c33315dd42679835e0b0a55bdcd052ba1c7b22de88",
     "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
     "src/server/grammar_process.cpp": "14345c6e0470133fe9a1a57659503eabe0b477b2438f5b82f76ab07a57ae02bb",
     "src/server/grammar_worker.cpp": "aca2920b675dce548ceb194690440f00763352ed2d482751100b6345580e560c",
@@ -584,5 +591,18 @@
       "docs/SERVE_STAGE_A_RESULT_2026-11-03.md"
     ],
     "real_acceptance": "Bounded delivery 2026-11-03, runtime e0d9f9d / ELF 142bb9d4; strict long buffered backpressure not proven"
+  },
+  "stage_b1_review": {
+    "scope": "SRV-04 only: shared role/profile validation and leading developer mapping",
+    "source_changes": [
+      "include/q4t/server/chat_template.h",
+      "src/server/chat_capabilities.cpp",
+      "src/server/chat_contract.cpp",
+      "src/server/chat_input.cpp",
+      "src/server/chat_template.cpp"
+    ],
+    "cpu_template_cases": 58,
+    "http_status": "pending",
+    "report": "docs/SERVE_STAGE_B1_2026-11-03.md"
   }
 }

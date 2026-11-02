@@ -94,8 +94,8 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
   for (const io::Json& part : content->array) {
     const io::Json* iu = part.Find("image_url");
     if (iu != nullptr) {
-      if (m.GetString("role") == "system") {
-        *err = "System message cannot contain images.";
+      if (IsChatInstructionRole(m.GetString("role"))) {
+        *err = "Instruction message cannot contain images.";
         return {};
       }
       std::string url;
@@ -117,8 +117,8 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
     }
     const io::Json* vf = part.Find("video_frames");
     if (vf != nullptr) {
-      if (m.GetString("role") == "system") {
-        *err = "System message cannot contain videos.";
+      if (IsChatInstructionRole(m.GetString("role"))) {
+        *err = "Instruction message cannot contain videos.";
         return {};
       }
       if (!vf->IsArray()) {
@@ -169,8 +169,10 @@ bool PrepareChatInput(int fd, const io::Json& req, std::string* prompt_out,
   std::vector<VisionItem>& items = *items_out;
   const io::Json* messages = req.Find("messages");
   if (messages) {
-    if (!messages->IsArray()) {
-      SendError(fd, 400, "messages must be an array");
+    std::string error_param;
+    const auto profile = ValidateChatMessageProfile(*messages, &error_param);
+    if (!profile) {
+      SendError(fd, 400, profile.message(), {}, "invalid_request", error_param);
       return false;
     }
     const io::Json* options = req.Find("chat_template_kwargs");
