@@ -1,0 +1,1 @@
+{"id":"chatcmpl-auto-a5f7fe25bc4c381fa896dc15fe327a90","object":"chat.completion","created":1793648993,"model":"qwen3.8-flash-next","choices":[{"index":0,"message":{"role":"assistant","content":"ALPHA0123456789ENDOMEGA"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":50,"completion_tokens":16,"total_tokens":66}}

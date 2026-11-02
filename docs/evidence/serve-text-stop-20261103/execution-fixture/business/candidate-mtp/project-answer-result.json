@@ -1,0 +1,15 @@
+{
+  "id": "chatcmpl-auto-ebb139538d8effc7954af1ed61dfa52d",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "根据读取到的内容：\n\n- **模型架构名称**：Qwen3.8-Flash-Next（实验代号 `qwen4_exp`）\n- **逐字引用工具给出的 citation**：`[docs/MODEL.md:L1-L8]`"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 750,
+    "completion_tokens": 57,
+    "total_tokens": 807
+  },
+  "seconds": 2.2792180369142443
+}

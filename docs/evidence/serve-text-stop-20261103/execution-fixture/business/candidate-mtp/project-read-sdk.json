@@ -1,0 +1,108 @@
+[
+  {
+    "id": "chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6",
+    "choices": [
+      {
+        "delta": {
+          "audio": null,
+          "content": "",
+          "function_call": null,
+          "refusal": null,
+          "role": "assistant",
+          "tool_calls": null
+        },
+        "index": 0,
+        "finish_reason": null,
+        "logprobs": null
+      }
+    ],
+    "created": 1793649325,
+    "model": "qwen3.8-flash-next",
+    "object": "chat.completion.chunk",
+    "moderation": null,
+    "obfuscation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": null
+  },
+  {
+    "id": "chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6",
+    "choices": [
+      {
+        "delta": {
+          "audio": null,
+          "content": null,
+          "function_call": null,
+          "refusal": null,
+          "role": null,
+          "tool_calls": [
+            {
+              "index": 0,
+              "id": "call_chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6_0",
+              "function": {
+                "arguments": "{\"line_count\":8,\"path\":\"docs/MODEL.md\",\"start_line\":1}",
+                "name": "read_project_record"
+              },
+              "type": "function"
+            }
+          ]
+        },
+        "index": 0,
+        "finish_reason": null,
+        "logprobs": null
+      }
+    ],
+    "created": 1793649325,
+    "model": "qwen3.8-flash-next",
+    "object": "chat.completion.chunk",
+    "moderation": null,
+    "obfuscation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": null
+  },
+  {
+    "id": "chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6",
+    "choices": [
+      {
+        "delta": {
+          "audio": null,
+          "content": "",
+          "function_call": null,
+          "refusal": null,
+          "role": null,
+          "tool_calls": null
+        },
+        "index": 0,
+        "finish_reason": "tool_calls",
+        "logprobs": null
+      }
+    ],
+    "created": 1793649325,
+    "model": "qwen3.8-flash-next",
+    "object": "chat.completion.chunk",
+    "moderation": null,
+    "obfuscation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": null
+  },
+  {
+    "id": "chatcmpl-auto-5daec20b2f1da8cf2ebaed1cd64fe8e6",
+    "choices": [],
+    "created": 1793649325,
+    "model": "qwen3.8-flash-next",
+    "object": "chat.completion.chunk",
+    "moderation": null,
+    "obfuscation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 54,
+      "prompt_tokens": 400,
+      "total_tokens": 454,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null
+    }
+  }
+]

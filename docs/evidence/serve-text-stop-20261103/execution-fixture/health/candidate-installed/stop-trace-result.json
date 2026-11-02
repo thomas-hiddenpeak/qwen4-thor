@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "requests": {
+    "plain-json": {
+      "matched_index": 0,
+      "tokens": 13,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "mtp_discarded": 0
+    },
+    "plain-sse": {
+      "matched_index": 0,
+      "tokens": 13,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "mtp_discarded": 0
+    },
+    "installed-stop": {
+      "matched_index": 0,
+      "tokens": 13,
+      "mtp_steps": 0,
+      "mtp_tokens": 0,
+      "mtp_discarded": 0
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "note": "Plain JSON/SSE and installed health share a single real build/q4t --no-mtp process. Default MTP behavior uses the identical accepted candidate ELF evidence; no second installed MTP load claimed.",
+  "required_health_requests": 3,
+  "rollback_on_failure": true
+}

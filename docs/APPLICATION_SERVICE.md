@@ -4,8 +4,14 @@
 只读查询本项目文档、发布与验收记录。代码优先；实现、验证和业务质量
 分别记录。此页是持续维护入口，历史验收不随新功能自动扩张。
 
+2026-11-03 [SRV-06文本停止已交付](SERVE_TEXT_STOP_RESULT_2026-11-03.md)：
+当前默认a3fd64a3/49c7c631。跨token/块与中文停止、JSON/SSE、MTP逻辑
+停止和完整KV退休、普通工具截断错误、真实资料回填及安装plain已验。
+21有效用例，累计22生成/16负例/4模型启动，保留所有入口/夹具失败。
+产品预检、完整客户端矩阵和运营仍待后续。以下为既有交付历史。
+
 2026-11-03 [SRV-05b已交付](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)：
-当前默认31ffc41e/9a71a0a7。原生thinking预算、实际控制token、MTP回退、
+当时默认31ffc41e/9a71a0a7。原生thinking预算、实际控制token、MTP回退、
 usage、严格工具/JSON和私有缓存恢复已按19用例验收。累计21次生成含
 预算1原质量失败，修正为原生换行/close/空行后通过；完整失败与复用记录保留。
 [05a字段/隐藏交付](SERVE_STAGE_B2A_RESULT_2026-11-03.md)继续有效；
@@ -94,7 +100,8 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | max_completion_tokens | 已验 | 与 max_tokens 共用生成预算；两个字段同时非空时拒绝歧义 |
 | temperature / top_p / n | 部分 | 仅 0 / 1 / 1；不可声称支持采样 |
 | penalties / seed | 部分 | 仅中性 penalty；seed 在 greedy 下不改变结果 |
-| stop / logprobs / logit_bias | 明确拒绝有效设置 | 仅接受现有中性空值；不是实现了这些功能 |
+| stop | 已验，有限profile | 字符串或最多4串，每串256 UTF-8字节；null/[]禁用；匹配包含推理/工具标记，截断工具错误；严格输出/cache组合拒绝 |
+| logprobs / logit_bias | 明确拒绝有效设置 | 仅接受现有中性空值，未实现 |
 | response_format | 已验，有限 schema | text / null / json_object / json_schema；与非空 tools 同用须 none |
 | stream_options.include_usage | 已验 | choices块usage:null，最后独立usage；choices的logprobs:null；中断不保证收到尾帧 |
 | chat_template_kwargs | 已验，Q4T 扩展 | thinking/preserve/effort/vision ID；能力端点给出范围 |

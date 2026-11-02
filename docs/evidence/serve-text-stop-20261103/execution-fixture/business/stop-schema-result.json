@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-stop-v1",
+  "utf8_byte_bound_checked": true,
+  "requests": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/ascii-json-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/ascii-sse-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/baseline-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/budget-stop-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/chinese-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/eos-at-limit-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/length-match-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/length-miss-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/overlap-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/project-answer-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/project-read-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/raw-prompt-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/reasoning-hidden-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/reasoning-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/strict-disabled-stop-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/tool-truncated-json-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/tool-truncated-sse-request.json",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/unmatched-prefix-request.json"
+  ]
+}

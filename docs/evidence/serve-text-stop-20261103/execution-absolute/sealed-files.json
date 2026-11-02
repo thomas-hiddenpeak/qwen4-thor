@@ -1,0 +1,14 @@
+{
+  "begin.json": "d8aa8d2a75bf88ab2370d225732630ba564b5bac6cb6e0f13472ce731f37028a",
+  "business/candidate-mtp/capabilities.json": "0426b12eba55a1dc0bc4dc0f1c80d13f90b0bf8005d4f432ffb4b31174802bd1",
+  "business/candidate-mtp/command.json": "18c07127c101e27bb8b7401acc93a1edb3642e8fe86711ff9e9bf5efb934f04a",
+  "business/candidate-mtp/server.log": "3ea29c9bf1fbbca4c20f374b64e874e19b1149c54fb999e8d59bff58db4daf16",
+  "business/candidate-mtp/shutdown.json": "59dc0f379a7f0d5b5a1e7fdb8ae5d8c9f624b6fb743defc57161d5c30bc2254e",
+  "business/candidate-mtp/startup-preflight.json": "5ba2ac501338884693322b60b1140f93b4eebc2445c51adde90a76ed3a568823",
+  "business/result.json": "60e52af2462b091d09edfb4fc61c68c28c18a5f755d7371aabd331eb2fa17925",
+  "execution.json": "210098a7590523f8cb45df953b591b25634e4fb6d7953a86dfca8821220421b6",
+  "initial-gpu.json": "ffb6cd0170662aa84468eba84e2096a2288fbb95fdb9ec8ce873aa2283cf1e00",
+  "lease/events.jsonl": "dee448f77fafe17341495ff93f54ce5e2939976901a6cf952f68ad43eb85037d",
+  "lease/exit.json": "6ca8ab8b6106659ccd14dd40548aeb983084cce089e6a41b63bdb3fe3d4504c1",
+  "lease/nvml-queries.jsonl": "84cd6f534968791fbb4c9265036c36c28714a705a26a85f426e45644677edd7b"
+}

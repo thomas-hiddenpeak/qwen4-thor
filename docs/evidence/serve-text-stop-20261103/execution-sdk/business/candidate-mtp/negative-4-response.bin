@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 138
+X-Request-Id: req-7c4fd2620c4ce4a3d90ba65131347f8d
+Connection: close
+
+{"error":{"message":"stop must be a string, string array or null","type":"invalid_request_error","code":"invalid_request","param":"stop"}}

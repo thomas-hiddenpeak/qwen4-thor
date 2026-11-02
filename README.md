@@ -12,7 +12,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
-当前默认程序`31ffc41e`已包含工具/推理输出解析、JSON/SSE、带ID工具
+当前默认程序`a3fd64a3`已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
@@ -27,6 +27,10 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 控制token闭合并转入答案；总输出预算优先，usage分别记录自然与强制token。
 预算、MTP回退、工具/schema及缓存恢复见[本批交付](docs/SERVE_THINKING_HTTP_RESULT_2026-11-03.md)；
 接口示例见[messages客户端](docs/AGENT_TOOL_CLIENT_2026-11-02.md)。
+`stop`支持字符串或最多4串，每串256 UTF-8字节；null/[]禁用。
+跨token与MTP批的停止串/尾部不会发布，JSON/SSE共用匹配，usage计至触发
+停止的token。普通工具截断仍报错，严格输出及缓存组合首批拒绝；
+[实际工具闭环、安装与回退证据](docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 最新验收限完整head，旧subset证据不自动扩张到新候选。
 当前未启动常驻模型服务，GPU保持释放；通用SDK、完整JSON Schema、
 多人运行边界和长期稳定仍按[工业化验收账](docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进。

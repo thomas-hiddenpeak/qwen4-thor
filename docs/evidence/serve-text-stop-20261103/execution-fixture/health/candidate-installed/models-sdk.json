@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "id": "qwen3.8-flash-next",
+      "created": 1793649364,
+      "object": "model",
+      "owned_by": "q4t",
+      "shutdown_date": null
+    }
+  ],
+  "object": "list"
+}

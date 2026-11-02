@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+Cache-Control: no-cache
+X-Accel-Buffering: no
+X-Request-Id: trace-tool-truncated-sse
+Connection: close
+
+data: {"id":"chatcmpl-auto-685bb7760f8d1ef1871f281f4fd30953","object":"chat.completion.chunk","created":1793649324,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"error":{"message":"incomplete tool call","type":"server_error","code":"response_parse_failed","param":null}}
+
+data: [DONE]
+

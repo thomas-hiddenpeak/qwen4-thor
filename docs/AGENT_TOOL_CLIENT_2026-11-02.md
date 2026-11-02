@@ -1,11 +1,15 @@
 # messages 工具客户端开发
 
-当前默认31ffc41e/9a71a0a7，已交付[SRV-05a字段/隐藏](SERVE_STAGE_B2A_RESULT_2026-11-03.md)
+当前默认a3fd64a3/49c7c631，已交付[SRV-05a字段/隐藏](SERVE_STAGE_B2A_RESULT_2026-11-03.md)
 和[SRV-05b真实预算](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)。项目客户端
 `make_request(..., thinking_token_budget=16)`设置预算，None省略；OpenAI
 Python SDK通过`extra_body={"thinking_token_budget": 16}`传入。JSON直连
 可使用同名顶层字段。usage校验reasoning_tokens=consumed+forced，
 强制原生边界最多14 token且占总输出额度；隐藏不减少计量。
+`make_request(..., stop=["END"])`设置停止串，OpenAI Python SDK直接使用
+`stop`参数。最多4串，每串256 UTF-8字节，None省略、[]禁用；active stop
+不能与严格输出/state cache组合。匹配含隐藏推理，截断工具仍错误；
+见[文本停止交付](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 以下旧默认和验收数字仅属历史开发快照。
 
 后续有界业务验收已通过，见[结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。

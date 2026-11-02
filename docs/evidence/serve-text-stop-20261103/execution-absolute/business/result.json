@@ -1,0 +1,9 @@
+{
+  "status": "FAILED",
+  "error": "ModuleNotFoundError(\"No module named 'openai'\")",
+  "request_attempts": 0,
+  "negative_requests": 0,
+  "starts": 1,
+  "seconds": 42.54615782410838,
+  "performance_acceptance": false
+}

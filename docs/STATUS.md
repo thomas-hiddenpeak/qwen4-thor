@@ -4,54 +4,36 @@
 
 ## 当前推进目标
 
-SRV-06实际8生成/16拒绝已执行：7用例通过，第8项长度夹具把710误设为
-一个token；实际首token为7，服务正确length。修正为7/7X后只重验该项，
-复用7响应及16拒绝；剩余plain两项与健康同在新build/q4t --no-mtp启动。
-全部语义仍验，默认MTP复用同SHA候选证据；总22生成/16拒绝/4模型启动，
-首次30分钟不变。CPU驱动14项经一次stub修正通过；runtime和默认未改。
-
-SRV-06第二次入口实际启动1个模型，但系统Python缺少openai，0生成/0负例，
-已正常关闭。已绑定先前验收的3.42.1 SDK环境，并在持锁/模型启动前构造
-真实客户端预检；12项驱动检查通过。累计已用1/4模型启动，deadline不变。
-
-SRV-06首个guard调用因脚本相对路径未通过祖先身份检查；0模型启动/
-0请求/默认未改，原记录保留。增加绝对路径launch入口和10项驱动检查，
-后续仍首次03:42:38 CST起30分钟截止，不重置；其余CPU证据按身份复用。
-
-SRV-06文本stop已开始开发，冻结[合同与验收](SERVE_TEXT_STOP_2026-11-03.md)：
-最多4串/每串256字节，共用UTF-8增量匹配，普通工具截断保留错误；
-严格输出/cache组合首批拒绝。CPU合同已通过（原夹具失败修正，仅重验受影响项），154原生/9后端、
-客户端28/驱动8通过；真实HTTP待执行，未替换默认，下面05b交付仍有效。
-
 长期目标“持续推进完善serve到工业水准”保持active，按
-[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续；下一项SRV-06文本stop。
-SRV-05a字段/隐藏及05b真实预算已限定交付；当前默认`31ffc41e` /
-sidecar`9a71a0a7`，冻结源码/驱动97e2f573，完整head；
-[验收、失败修复、证据与回退](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)。
+[工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续；下一项SRV-07
+请求预检与有效配置。SRV-06文本stop已限定交付，当前默认a3fd64a3 /
+sidecar49c7c631，运行时ea2dbcfb、冻结源码/驱动85e309c1，完整head；
+[合同、真实结果、失败与回退](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 
-thinking_token_budget支持parsed messages精确整数/null；耗尽后实际选择
-原生换行/close/空行，必要UTF-8补齐，总控制上限14（本批实际3）。
-MTP提交前留pending再转host尾部，grammar接受同一控制token；usage
-明确自然/forced和reasoning_tokens，隐藏不改变计量，总输出预算优先。
+stop支持最多4个非空UTF-8字符串，每串256字节；null/[]禁用。JSON/SSE
+在响应解析前共用增量匹配，包含推理/工具标记；停止串与尾部不发布。
+MTP整批KV完整退休，usage计至匹配token，同批已算后缀不计completion；
+不声称未发生额外计算。普通工具截断仍错误；严格输出/cache组合明确拒绝。
 
-本阶段累计21生成/12负例/5启动尝试，包含Popen前路径错误和预算1
-质量失败；原件保留。边界修正后17新增+2有效复用形成完整19用例，
-含严格工具真实回填、schema、总长度终态、MTP/plain、缓存8473token
-实际恢复及fresh完整message一致、真实build/q4t健康。最终guard COMPLETED，
-ENV_ABORT0；执行143.37秒，首次入口到finalize1317.76秒，不作性能接受声明。
-31响应/121封套、99推理message/delta、18份usage检查通过；
-415原始记录/419文件封存，已核对原字节与SHA。
+累计22生成/16负例/4模型启动，含1次错误长度夹具；另保留guard相对argv
+和SDK解释器入口失败。7个已通过请求及16负例按身份复用，最终14新请求
+完成21个有效用例；真实工具读取回填、推理/隐藏/预算、EOS/长度、raw、
+MTP与安装plain通过。实际安装build/q4t --no-mtp同时完成plain两项与
+健康，默认MTP使用同SHA候选证据，不称安装后另起MTP。最终guard
+COMPLETED，ENV_ABORT0，最终执行84.06秒，首次入口到finalize833.00秒，
+未扩22/16/4及30分钟上限，不作性能接受声明。
 
-原CPU OFF179/ON188、原生145+后端9、客户端27、模板120按依赖复用；
-修正后零警告构建，针对预算8/grammar1/capabilities4/客户端1/驱动13重验。
-当前元数据/能力与真实默认已同步；旧ecd5d21f/91ce0ed9和完整回退链保留。
-03:13 CST GPU计算PID空、锁可用、无恢复标记/常驻模型，MemAvailable116.55GiB。
-原开发阶段2次模型加载前失败与159份归档保留，未被新结果覆盖。
+37响应/143封套、111推理message/delta、18usage与21请求stop投影通过。
+CPU OFF188/ON197原夹具失败保留且受影响项重验通过；生产154必需合同/
+真实后端9、客户端28和驱动14通过，模板120按依赖复用，最终零警告构建。
+530份原始记录/534文件已封存（约4.15MB），22个本地大产物登记身份。
+旧31ffc41e/9a71a0a7及完整回退链保留。03:56:31 CST GPU计算PID空、
+锁可用、无恢复标记/常驻模型，MemAvailable116.34GiB。
 
-SRV-06 stop、SRV-07产品预检/有效配置、SRV-08完整输入协议/JS SDK
-及受载资源、严格长payload背压、访问运维和长期稳定仍未完成。
-[05a历史交付](SERVE_STAGE_B2A_RESULT_2026-11-03.md)及
-[05b先前未接受记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)保留。
+[05a字段/隐藏](SERVE_STAGE_B2A_RESULT_2026-11-03.md)、
+[05b真实预算及缓存恢复](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)已交付。
+SRV-07产品预检/有效配置、SRV-08完整输入协议/JS SDK及受载资源、
+严格长payload背压、访问运维和长期稳定仍未完成；不把本阶段当工业化完成。
 
 ## 阶段 B1 交付历史
 

@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "source_commit": "cd2892aef6808de76e62dbdc96ae7e54dd40e0c7",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-sdk/candidate/q4t",
+  "candidate_sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+  "old_hashes": {
+    "q4t": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+    "q4t.release.json": "9a71a0a72e76da3b3850a340fb30b882da633a867e51bf454bee92ba9f5f9a72"
+  },
+  "previous_binary_sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+  "protocol_sha256": "ecfc9d583e90bd83e81734656270903cf673da5fc89b3e0be9f9d0ebdfc2e02c",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_version": "3.42.1",
+  "limits": {
+    "starts": 4,
+    "generations": 22,
+    "negatives": 16,
+    "seconds": 1800
+  },
+  "sdk_environment": {
+    "python": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/bin/python",
+    "prefix": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env",
+    "openai": "3.42.1",
+    "packages": {
+      "anyio": "4.16.0",
+      "typing_extensions": "4.16.0",
+      "truststore": "0.10.5",
+      "httpx2": "2.16.0",
+      "openai": "3.42.1",
+      "jiter": "0.18.0",
+      "sniffio": "1.3.1",
+      "httpcore2": "2.16.0",
+      "annotated-types": "0.8.0",
+      "idna": "3.20",
+      "pydantic_core": "2.50.2",
+      "h11": "0.16.0",
+      "pydantic": "2.14.2",
+      "typing-inspection": "0.4.4"
+    },
+    "module": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/__init__.py",
+    "module_identity": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-20261102/sdk-env/lib/python3.12/site-packages/openai/__init__.py",
+      "sha256": "c9f81677ff05227f7051ef9e91729a7f2e566c506c839c5779b7f28a288bb77b",
+      "bytes": 12625
+    }
+  },
+  "source_manifest_sha256": "bc4113ebbb72fdc4d4c20d0b33589873ef3b25ac18c44504e77834a9f874e83a",
+  "planned": {
+    "starts": 3,
+    "generations": 21,
+    "negatives": 16
+  },
+  "startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-sdk/candidate/startup_preflight",
+    "sha256": "28fdb701d12e9b97485487c7f7cd47d2a1d2f764cf341d709da64a85e6e62172",
+    "bytes": 149552
+  },
+  "original_started": 1793648558.697788,
+  "prior_counts": {
+    "starts": 1,
+    "generations": 0,
+    "negatives": 0
+  },
+  "prior_invocation": {
+    "guard_attempts": 2,
+    "first": {
+      "generations": 0,
+      "negatives": 0,
+      "starts": 0,
+      "guard_attempts": 1,
+      "output": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution",
+      "exit": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution/lease/exit.json",
+        "sha256": "eec5c9d36c7bbfbbd89368d3146756cbb8783f53a9c9de3a0471854ac6587b16",
+        "bytes": 565
+      },
+      "log": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/launch.log",
+        "sha256": "ed3b215660d2959a44a0dc643ad89118ab06997a229f3cec148eb1ac4dd42460",
+        "bytes": 488
+      }
+    },
+    "sdk_failure": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-absolute/business/result.json",
+      "sha256": "60e52af2462b091d09edfb4fc61c68c28c18a5f755d7371aabd331eb2fa17925",
+      "bytes": 222
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "status": "FAILED",
+  "started": 1793648721.7925704,
+  "original_started": 1793648558.697788,
+  "error": "ModuleNotFoundError(\"No module named 'openai'\")",
+  "finished": 1793648764.4944162
+}

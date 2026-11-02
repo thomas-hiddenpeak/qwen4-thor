@@ -1,0 +1,9 @@
+{
+  "status": "FAILED",
+  "error": "AssertionError(\"text/finish mismatch: {'role': 'assistant', 'content': '7'}\")",
+  "request_attempts": 8,
+  "negative_requests": 16,
+  "starts": 1,
+  "seconds": 40.89063497190364,
+  "performance_acceptance": false
+}

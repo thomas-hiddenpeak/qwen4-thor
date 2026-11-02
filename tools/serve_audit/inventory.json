@@ -219,12 +219,13 @@
       ]
     },
     "stop": {
-      "semantics": "开发中：字符串或最多4个非空UTF-8字符串，每条256字节；null/[]禁用",
-      "boundary": "尚未验收；strict输出与state cache组合拒绝；JSON/SSE增量匹配，部分工具错误；不是完整OpenAI兼容",
+      "semantics": "已验：单串或最多4个非空UTF-8字符串，每串256字节；null/[]禁用，增量匹配后不发布停止串/尾部",
+      "boundary": "strict输出和state cache组合拒绝；包含推理/工具标记，部分工具错误；MTP已算后缀不计completion，不宣称没有额外计算",
       "evidence": [
         "tests/server_text_stop_test.cpp",
         "docs/SERVE_TEXT_STOP_2026-11-03.md",
-        "docs/serve-stop-v1.schema.json"
+        "docs/serve-stop-v1.schema.json",
+        "docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md"
       ]
     },
     "logprobs": {
@@ -672,5 +673,11 @@
     "http_status": "accepted_bounded_after_native_boundary_repair",
     "report": "docs/SERVE_THINKING_BUDGET_2026-11-03.md",
     "result": "docs/SERVE_THINKING_HTTP_RESULT_2026-11-03.md"
+  },
+  "text_stop_review": {
+    "status": "accepted_within_profile",
+    "source_commit": "85e309c1",
+    "runtime_sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "report": "docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md"
   }
 }

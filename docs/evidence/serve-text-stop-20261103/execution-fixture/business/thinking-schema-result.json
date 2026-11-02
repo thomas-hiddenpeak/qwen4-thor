@@ -1,0 +1,143 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-thinking-v1",
+  "accounting_checked": true,
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/ascii-json-wire.bin",
+      "usage": {
+        "prompt_tokens": 50,
+        "completion_tokens": 13,
+        "total_tokens": 63
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/ascii-sse-wire.bin",
+      "usage": {
+        "prompt_tokens": 50,
+        "completion_tokens": 13,
+        "total_tokens": 63
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/baseline-wire.bin",
+      "usage": {
+        "prompt_tokens": 50,
+        "completion_tokens": 16,
+        "total_tokens": 66
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/budget-stop-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 3,
+        "total_tokens": 58,
+        "completion_tokens_details": {
+          "reasoning_tokens": 3
+        },
+        "q4t_thinking_budget": {
+          "limit": 0,
+          "consumed": 0,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/chinese-wire.bin",
+      "usage": {
+        "prompt_tokens": 39,
+        "completion_tokens": 3,
+        "total_tokens": 42
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/eos-at-limit-wire.bin",
+      "usage": {
+        "prompt_tokens": 50,
+        "completion_tokens": 16,
+        "total_tokens": 66
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/length-match-wire.bin",
+      "usage": {
+        "prompt_tokens": 31,
+        "completion_tokens": 1,
+        "total_tokens": 32
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/length-miss-wire.bin",
+      "usage": {
+        "prompt_tokens": 31,
+        "completion_tokens": 1,
+        "total_tokens": 32
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/overlap-wire.bin",
+      "usage": {
+        "prompt_tokens": 41,
+        "completion_tokens": 4,
+        "total_tokens": 45
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/project-answer-wire.bin",
+      "usage": {
+        "prompt_tokens": 750,
+        "completion_tokens": 57,
+        "total_tokens": 807
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/project-read-wire.bin",
+      "usage": {
+        "prompt_tokens": 400,
+        "completion_tokens": 54,
+        "total_tokens": 454
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/reasoning-hidden-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 18,
+        "total_tokens": 73
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/reasoning-wire.bin",
+      "usage": {
+        "prompt_tokens": 55,
+        "completion_tokens": 18,
+        "total_tokens": 73
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/strict-disabled-stop-wire.bin",
+      "usage": {
+        "prompt_tokens": 60,
+        "completion_tokens": 16,
+        "total_tokens": 76,
+        "completion_tokens_details": {
+          "reasoning_tokens": 4
+        },
+        "q4t_thinking_budget": {
+          "limit": 1,
+          "consumed": 1,
+          "forced_closure_tokens": 3
+        }
+      }
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/execution-fixture/business/candidate-mtp/unmatched-prefix-wire.bin",
+      "usage": {
+        "prompt_tokens": 38,
+        "completion_tokens": 4,
+        "total_tokens": 42
+      }
+    }
+  ]
+}

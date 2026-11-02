@@ -1,0 +1,32 @@
+......E.......
+======================================================================
+ERROR: test_missing_sdk_precedes_model_start (__main__.Contracts.test_missing_sdk_precedes_model_start)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/verify.py", line 289, in run
+    with self.sdk():
+         ^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 1134, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 1138, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/unittest/mock.py", line 1193, in _execute_mock_call
+    raise effect
+RuntimeError: missing SDK
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/test_stage.py", line 73, in test_missing_sdk_precedes_model_start
+    run.run()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_text_stop/verify.py", line 316, in run
+    performance_acceptance=False, reused_http=self.plan.get("reuse_http"))
+                                              ^^^^^^^^^
+AttributeError: 'Run' object has no attribute 'plan'. Did you mean: 'plain'?
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.071s
+
+FAILED (errors=1)

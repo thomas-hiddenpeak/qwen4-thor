@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 151
+X-Request-Id: req-6ebe0d56daf11141a0b55db571fe6c44
+Connection: close
+
+{"error":{"message":"stop entries must be valid UTF-8 strings of 1..256 bytes","type":"invalid_request_error","code":"invalid_request","param":"stop"}}

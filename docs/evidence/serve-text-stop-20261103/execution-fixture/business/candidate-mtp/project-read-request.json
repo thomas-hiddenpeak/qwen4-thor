@@ -1,0 +1,69 @@
+{
+  "model": "qwen3.8-flash-next",
+  "temperature": null,
+  "max_completion_tokens": 512,
+  "stream": true,
+  "messages": [
+    {
+      "role": "developer",
+      "content": "遵循用户请求。"
+    },
+    {
+      "role": "user",
+      "content": "调用read_project_record读取docs/MODEL.md第1行，line_count=8。根据读取内容告诉我模型架构名称，并逐字引用工具给出的citation。"
+    }
+  ],
+  "extra_body": {
+    "chat_template_kwargs": {
+      "enable_thinking": false,
+      "reasoning_effort": "low"
+    },
+    "request_timeout_ms": 180000
+  },
+  "stream_options": {
+    "include_usage": true
+  },
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_project_record",
+        "description": "Read real project documentation or acceptance JSON under docs/, or the installed release metadata build/q4t.release.json. Returns numbered lines, a source SHA256 and an exact citation. Use the returned citation verbatim in the answer.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "enum": [
+                "docs/MODEL.md"
+              ]
+            },
+            "start_line": {
+              "type": "integer"
+            },
+            "line_count": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "path",
+            "start_line",
+            "line_count"
+          ],
+          "additionalProperties": false
+        },
+        "strict": null
+      }
+    }
+  ],
+  "tool_choice": "auto",
+  "top_p": null,
+  "n": null,
+  "frequency_penalty": null,
+  "presence_penalty": null,
+  "user": null,
+  "stop": "NEVER_STOP_24c3",
+  "extra_headers": {
+    "X-Request-Id": "trace-project-read"
+  }
+}

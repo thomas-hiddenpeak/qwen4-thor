@@ -1,0 +1,17 @@
+{
+  "src/server/text_stop.cpp": {
+    "before": "b8c9e5503653c4621ce18fb74045b5140a6c813f81c6e65d3fecd837582c4038",
+    "after": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
+    "whitespace_equivalent": true
+  },
+  "include/q4t/server/text_stop.h": {
+    "before": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
+    "after": "560dde9da5f9ea673a22eb2b6ad9ef59e227d55122d041a51ae2c45ef4114f66",
+    "whitespace_equivalent": true
+  },
+  "tests/server_text_stop_test.cpp": {
+    "before": "0f3041862b30f2948f817132eef2301c950a1b453fe07a69d9e236bc1453b7a5",
+    "after": "6206f47b573ea1f4332b9b110d057568320dc586e8b79898ae4f60717c537f0f",
+    "whitespace_equivalent": true
+  }
+}

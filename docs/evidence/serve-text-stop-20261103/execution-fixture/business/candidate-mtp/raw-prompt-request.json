@@ -1,0 +1,5 @@
+{
+  "prompt": "<|im_start|>user\n严格逐字复制下一行，不加解释或引号：\nALPHA0123456789ENDOMEGA<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+  "stop": "456789END",
+  "max_completion_tokens": 128
+}

@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 134
+X-Request-Id: req-4f480f07db7f6167e1e7fe04f639ba9f
+Connection: close
+
+{"error":{"message":"stop is not supported with state caches","type":"invalid_request_error","code":"invalid_request","param":"stop"}}

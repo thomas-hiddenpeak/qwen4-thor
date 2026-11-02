@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "files": {
+    "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
+    "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
+    "src/server/chat_input.cpp": "a0bfc92dd9fc6b13102e2667345714445e3516740878331ce39f834713eaf020",
+    "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8",
+    "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2"
+  },
+  "prior": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-20261103/cpu/template-reuse.json",
+    "sha256": "16197dff3b89f8b3cd19979f8644c62eac8acd92f8d81c71961a30c4cd9a4811",
+    "bytes": 799
+  },
+  "scope": "120 existing template/token IDs cases; no new rendering run or parser reuse claimed"
+}
