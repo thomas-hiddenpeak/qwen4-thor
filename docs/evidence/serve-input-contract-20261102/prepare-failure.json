@@ -1,0 +1,8 @@
+{
+  "status": "PREPARE_FAILED",
+  "time": 1793616207.1234715,
+  "reason": "compile_commands.json was not generated; CMAKE_EXPORT_COMPILE_COMMANDS missing",
+  "default_modified": false,
+  "model_requests": 0,
+  "partial_package": "package-incomplete-compile-commands"
+}

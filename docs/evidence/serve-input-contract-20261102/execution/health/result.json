@@ -1,0 +1,8 @@
+{
+  "status": "PASS_BOUNDED_INPUT_CONTRACT",
+  "requests": 2,
+  "negatives": 0,
+  "starts": 1,
+  "seconds": 38.48278770293109,
+  "performance_acceptance": false
+}

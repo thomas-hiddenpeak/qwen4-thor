@@ -57,5 +57,43 @@ tokenizer 源码、模型 tokenizer 与夹具身份未变，模板 token 对照�
 HandleCapabilities stub 链接失败；补齐该 stub 后只重建 HTTP 支架，
 原日志保留。无引擎修补，已通过 host 结果直接复用。
 
-下一步：在同一共享 GPU guard 中执行 HTTP 支架与 8 生成 / 19 拒绝 /
-3 启动的实际清单（上述上限内），通过后完成默认替换；当前未安装。
+## 交付结果
+
+源码 `b71f026`（运行时实现 `a137ca0`）；默认二进制
+`ea678009413bd4d63a2b456a697e9c7844b47f71e6e2b3e3447b5044f9cbdf0a`，
+sidecar `90372798114d61fac6a15a409169596248716c6553561aa26bfa739ab1ca07ce`。
+2026-11-02 18:47 CST 完成安装健康及 finalize，普通请求继续完整
+head / MTP k3；受约束路径维持 plain masked decode。
+
+- 生产 HTTP 支架 5 项通过，包括未知取消字段 400 且不改变请求状态、
+  错误凭据 404、匹配凭据 202。
+- 实际 8 生成 / 19 拒绝 / 3 启动，在 128.90 秒执行窗口内完成；
+  guard COMPLETED，ENV_ABORT 0。业务 89.84 秒、安装健康 38.48 秒。
+- strict SSE：工具响应 3.635 秒、结果回填后回答 3.241 秒；普通 auto
+  JSON / MTP：1.969 / 2.292 秒。每条链只执行一次真实只读工具，
+  均正确回答 Qwen3.8-Flash-Next，并引用 `[docs/MODEL.md:L1-L8]`。
+- SDK 八项 null 请求输出 710003，合法整数指数写法输出一致；安装
+  健康普通 MTP 输出 710003，SSE schema 输出 answer=323/label=中文。
+  16 个 Chat 输入错误与 3 个取消输入 / 凭据负例按预期拒绝；负例
+  前后 prompt / generation token 计数完全一致，无误触发生成。
+- 三次服务退出均释放全部 startup reservation，0 in-flight；最终
+  NVML 计算 PID 为空，锁已释放，无自有恢复标记，没有常驻模型服务。
+
+首次 prepare 缺 compile_commands 记录，部分包保留，补导出后封存。
+首次 guard 使用相对 argv，不满足部署保护的绝对路径祖先检查，
+COMMAND_FAILED；尚未进入 begin / HTTP / 模型请求。保留整份失败
+现场后，用绝对路径执行原清单。未放宽部署保护，未重复生成请求。
+两个准备 / 启动问题与早期支架链接失败均不计为模型失败。
+
+原始日志、请求/响应 bytes、SDK 消费结果、工具结果、metrics、GPU
+监控、构建记录与身份已封存于
+[证据清单](evidence/serve-input-contract-20261102/sealed-files.json)。
+本机 `.q4t-work/input-contract-20261102/package/` 保留旧默认
+957211c7 / 9eba5472、当前 pair、源码 bundle 与既有完整回退链。
+安装沿用经过 6 项合同的身份绑定事务，未知状态不覆盖；回退须在
+对应冻结源码与 GPU guard 下执行，不能跳过 source / pair 检查。
+
+仅服务源码 9 项变化并新增共用合同头/实现，模型与数值源码未变。
+这关闭审计 F1/F2/F3/F4/F7 的冻结范围，不意味着 OpenAI 全兼容，
+也不推广到媒体、多槽混合、所有 schema 或全上下文质量。F5/F6
+观测及编译资源边界仍需下一阶段独立验收。

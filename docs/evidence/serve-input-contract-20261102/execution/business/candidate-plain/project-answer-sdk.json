@@ -1,0 +1,98 @@
+[
+  {
+    "id": "chatcmpl-auto-1",
+    "choices": [
+      {
+        "delta": {
+          "audio": null,
+          "content": "",
+          "function_call": null,
+          "refusal": null,
+          "role": "assistant",
+          "tool_calls": null
+        },
+        "index": 0,
+        "finish_reason": null,
+        "logprobs": null
+      }
+    ],
+    "created": 1793616337,
+    "model": "qwen3.8-flash-next",
+    "object": "chat.completion.chunk",
+    "moderation": null,
+    "obfuscation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": null
+  },
+  {
+    "id": "chatcmpl-auto-1",
+    "choices": [
+      {
+        "delta": {
+          "audio": null,
+          "content": "根据读取的内容，模型架构名称为：**Qwen3.8-Flash-Next (qwen4_exp)**。\n\n工具给出的 citation 逐字引用如下：\n`[docs/MODEL.md:L1-L8]`",
+          "function_call": null,
+          "refusal": null,
+          "role": null,
+          "tool_calls": null
+        },
+        "index": 0,
+        "finish_reason": null,
+        "logprobs": null
+      }
+    ],
+    "created": 1793616337,
+    "model": "qwen3.8-flash-next",
+    "object": "chat.completion.chunk",
+    "moderation": null,
+    "obfuscation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": null
+  },
+  {
+    "id": "chatcmpl-auto-1",
+    "choices": [
+      {
+        "delta": {
+          "audio": null,
+          "content": "",
+          "function_call": null,
+          "refusal": null,
+          "role": null,
+          "tool_calls": null
+        },
+        "index": 0,
+        "finish_reason": "stop",
+        "logprobs": null
+      }
+    ],
+    "created": 1793616337,
+    "model": "qwen3.8-flash-next",
+    "object": "chat.completion.chunk",
+    "moderation": null,
+    "obfuscation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": null
+  },
+  {
+    "id": "chatcmpl-auto-1",
+    "choices": [],
+    "created": 1793616337,
+    "model": "qwen3.8-flash-next",
+    "object": "chat.completion.chunk",
+    "moderation": null,
+    "obfuscation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 50,
+      "prompt_tokens": 397,
+      "total_tokens": 447,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null
+    }
+  }
+]
