@@ -1,0 +1,7 @@
+POST /v1/chat/preflight HTTP/1.1
+Host: localhost
+X-Request-Id: trace-slot-overflow-preflight
+Content-Type: application/json
+Content-Length: 116
+
+{"request": {"prompt": "q", "max_completion_tokens": 2147483647}, "include_prompt": true, "include_token_ids": true}

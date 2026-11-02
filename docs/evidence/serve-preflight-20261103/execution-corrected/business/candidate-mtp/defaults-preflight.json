@@ -1,0 +1,48 @@
+{
+  "object": "q4t.chat.preflight",
+  "profile": "q4t-preflight-v1",
+  "model": "qwen3.8-flash-next",
+  "protocol_source_sha256": "a6468bf23a7bfb9e870c047cda6d68565e968e13ac4e551fea983f9476f5f747",
+  "prompt_tokens": 6,
+  "prompt_bytes": 15,
+  "max_context_tokens": 8192,
+  "prefill_chunk_tokens": 2048,
+  "prefill_chunks": 1,
+  "output": {
+    "source": "server_default",
+    "requested_tokens": 256,
+    "capped_tokens": 256,
+    "available_tokens": 256,
+    "counts_reasoning_and_forced_tokens": true
+  },
+  "admission": {
+    "policy": "uniform_context_clip",
+    "required_capacity": 0,
+    "eligible_slots": [
+      0
+    ],
+    "slot_reserved": false,
+    "availability_checked": false
+  },
+  "checks": {
+    "input": true,
+    "template": true,
+    "tokenizer": true,
+    "budget": true,
+    "structured_requested": false,
+    "grammar_compiled": false,
+    "cache_accessed": false,
+    "request_registered": false,
+    "gpu_executed": false
+  },
+  "execution_guaranteed": false,
+  "unvalidated": [
+    "runtime_health",
+    "admission_and_deadline",
+    "request_id_and_session_leases",
+    "grammar_compilation",
+    "thinking_boundary_tokens",
+    "cache_hits",
+    "generation_and_output_validation"
+  ]
+}

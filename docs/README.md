@@ -7,6 +7,7 @@
 [Serve阶段A交付、HTTP/SSE合同与剩余边界](SERVE_STAGE_A_RESULT_2026-11-03.md)。
 [Serve阶段B1角色profile交付、模板差分与真实工具闭环](SERVE_STAGE_B1_RESULT_2026-11-03.md)。
 [Serve B2a推理字段/隐藏交付及真实工具历史回填](SERVE_STAGE_B2A_RESULT_2026-11-03.md)。
+[SRV-07预检/有效配置交付、真实usage/槽位与完整证据](SERVE_PREFLIGHT_RESULT_2026-11-03.md)。
 [SRV-06文本停止交付、跨块/MTP/工具终态、失败与回退](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 [SRV-05b真实预算交付、质量修复、MTP/缓存及完整证据](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)；
 [先前开发和未完成HTTP记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)保留。
@@ -28,7 +29,7 @@
 见[验收结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。
 聊天接入 830694ce、应用服务 c3772d11 的后续默认为结构化输出
 957211c7 / 9eba5472，再更新输入合同 ea678009 / 90372798；当前为
-serve预算31ffc41e / 9a71a0a7（之前05a为ecd5d21f）。
+serve预检5642eb68 / 6aca6a3e（之前SRV-06为a3fd64a3）。
 外部 vLLM 已按授权停止，当前交付后 GPU 释放；
 原[正式交付、98份证据与回退](CHAT_DELIVERY_2026-11-02.md)保留。
 [完整工具往返、真实中断与日志崩溃场景准备](CHAT_ACCEPTANCE_SCENARIOS_2026-11-02.md)。

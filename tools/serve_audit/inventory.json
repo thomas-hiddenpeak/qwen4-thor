@@ -436,21 +436,23 @@
     },
     "POST /v1/chat/preflight": {
       "semantics": "私有q4t-preflight-v1：共用真实校验、模板、分词和预算；包装请求/可选文本与ID",
-      "boundary": "仅文本；不预留槽位/注册请求/访问缓存/编译grammar/执行GPU；CPU已验，真实HTTP待验",
+      "boundary": "仅文本；不预留槽位/注册请求/访问缓存/编译grammar/执行GPU；CPU与限定HTTP已验；不保证未来执行成功",
       "evidence": [
         "docs/SERVE_PREFLIGHT_2026-11-03.md",
         "docs/serve-preflight-v1.schema.json",
         "tests/server_chat_plan_test.cpp",
-        "tools/serve_preflight/template_diff.py"
+        "tools/serve_preflight/template_diff.py",
+        "docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md"
       ]
     },
     "GET /v1/config": {
       "semantics": "启动后实际上下文、输出默认、槽位、限制和来源，只读",
-      "boundary": "不公开路径/凭据；不保证可用槽位、全机RAM或未来执行成功；HTTP待验",
+      "boundary": "不公开路径/凭据；不保证可用槽位、全机RAM或未来执行成功；限定HTTP已验",
       "evidence": [
         "docs/SERVE_PREFLIGHT_2026-11-03.md",
         "docs/serve-config-v1.schema.json",
-        "tests/server_chat_plan_test.cpp"
+        "tests/server_chat_plan_test.cpp",
+        "docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md"
       ]
     }
   },

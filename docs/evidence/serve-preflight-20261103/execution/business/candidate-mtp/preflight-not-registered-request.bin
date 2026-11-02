@@ -1,0 +1,7 @@
+POST /v1/requests/cancel HTTP/1.1
+Host: localhost
+X-Request-Id: trace-preflight-not-registered
+Content-Type: application/json
+Content-Length: 120
+
+{"request_id": "preflight-identity", "cancel_token": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}

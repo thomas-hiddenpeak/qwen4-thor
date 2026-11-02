@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/stage.py", line 226, in <module>
+    main()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/stage.py", line 217, in main
+    a.execute()
+  File "/home/rm01/models/dev/qwen4-thor/tools/application_service/stage.py", line 275, in execute
+    verifier(plan)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/stage.py", line 141, in verifier
+    v.Run(plan, OUTPUT / ("health" if installed else "business"), installed=installed).run()
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/verify.py", line 293, in run
+    self.model("candidate-mtp", binary, True, self.business)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/verify.py", line 276, in model
+    super().model(name, binary, mtp, action)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_stage_b1/verify.py", line 143, in model
+    action(folder)
+  File "/home/rm01/models/dev/qwen4-thor/tools/serve_preflight/verify.py", line 231, in business
+    wire.require(long_result.message["content"].strip() == "710003" and
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'strip'

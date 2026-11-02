@@ -1,0 +1,12 @@
+{
+  "failures": [
+    "spelling fixture wrongly rejects exact integer 2.0",
+    "q4t_tests missing server_options.cpp link dependency"
+  ],
+  "files": {
+    "cpu/host-off.log": "8373ff6c90851d603fe07b3c4e10b634b955ffb4fc3fc4bb695cb620eea9f69e",
+    "cpu/host-on.log": "4cd280be420270b128e44b9baf02d9a60375a6370a561c39efa929beaed27c23",
+    "cpu/build-engine.log": "e156748e205ae9353f13a4db6f48b56e0b3cb623fdc05125b4779fba95dfcfd7",
+    "engine/q4t": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce"
+  }
+}

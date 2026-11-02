@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 136
+X-Request-Id: trace-negative-4-preflight
+Connection: close
+
+{"error":{"message":"prefix cache is not enabled","type":"invalid_request_error","code":"invalid_request","param":"prefix_cache_scope"}}

@@ -1,0 +1,615 @@
+[
+  {
+    "id": "system-user",
+    "passed": true,
+    "prompt_tokens": 52
+  },
+  {
+    "id": "developer-system-user",
+    "passed": true,
+    "prompt_tokens": 52
+  },
+  {
+    "id": "user-only",
+    "passed": true,
+    "prompt_tokens": 34
+  },
+  {
+    "id": "developer-user-only",
+    "passed": true,
+    "prompt_tokens": 43
+  },
+  {
+    "id": "multi-turn",
+    "passed": true,
+    "prompt_tokens": 90
+  },
+  {
+    "id": "developer-multi-turn",
+    "passed": true,
+    "prompt_tokens": 90
+  },
+  {
+    "id": "text-parts",
+    "passed": true,
+    "prompt_tokens": 52
+  },
+  {
+    "id": "developer-text-parts",
+    "passed": true,
+    "prompt_tokens": 52
+  },
+  {
+    "id": "chinese",
+    "passed": true,
+    "prompt_tokens": 46
+  },
+  {
+    "id": "developer-chinese",
+    "passed": true,
+    "prompt_tokens": 46
+  },
+  {
+    "id": "whitespace",
+    "passed": true,
+    "prompt_tokens": 51
+  },
+  {
+    "id": "developer-whitespace",
+    "passed": true,
+    "prompt_tokens": 51
+  },
+  {
+    "id": "thinking-default",
+    "passed": true,
+    "prompt_tokens": 74
+  },
+  {
+    "id": "developer-thinking-default",
+    "passed": true,
+    "prompt_tokens": 79
+  },
+  {
+    "id": "thinking-true",
+    "passed": true,
+    "prompt_tokens": 74
+  },
+  {
+    "id": "developer-thinking-true",
+    "passed": true,
+    "prompt_tokens": 79
+  },
+  {
+    "id": "thinking-low",
+    "passed": true,
+    "prompt_tokens": 62
+  },
+  {
+    "id": "developer-thinking-low",
+    "passed": true,
+    "prompt_tokens": 67
+  },
+  {
+    "id": "thinking-medium",
+    "passed": true,
+    "prompt_tokens": 32
+  },
+  {
+    "id": "developer-thinking-medium",
+    "passed": true,
+    "prompt_tokens": 41
+  },
+  {
+    "id": "empty-system",
+    "passed": true,
+    "prompt_tokens": 34
+  },
+  {
+    "id": "developer-empty-system",
+    "passed": true,
+    "prompt_tokens": 34
+  },
+  {
+    "id": "unicode-trim",
+    "passed": true,
+    "prompt_tokens": 45
+  },
+  {
+    "id": "developer-unicode-trim",
+    "passed": true,
+    "prompt_tokens": 45
+  },
+  {
+    "id": "history-preserve",
+    "passed": true,
+    "prompt_tokens": 74
+  },
+  {
+    "id": "developer-history-preserve",
+    "passed": true,
+    "prompt_tokens": 83
+  },
+  {
+    "id": "history-discard",
+    "passed": true,
+    "prompt_tokens": 63
+  },
+  {
+    "id": "developer-history-discard",
+    "passed": true,
+    "prompt_tokens": 72
+  },
+  {
+    "id": "null-assistant",
+    "passed": true,
+    "prompt_tokens": 49
+  },
+  {
+    "id": "developer-null-assistant",
+    "passed": true,
+    "prompt_tokens": 58
+  },
+  {
+    "id": "tools-schema",
+    "passed": true,
+    "prompt_tokens": 312
+  },
+  {
+    "id": "developer-tools-schema",
+    "passed": true,
+    "prompt_tokens": 317
+  },
+  {
+    "id": "tools-object-history",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "developer-tools-object-history",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "tools-string-history",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "developer-tools-string-history",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "consecutive-tools",
+    "passed": true,
+    "prompt_tokens": 476
+  },
+  {
+    "id": "developer-consecutive-tools",
+    "passed": true,
+    "prompt_tokens": 481
+  },
+  {
+    "id": "tool-current-thinking-preserved",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "developer-tool-current-thinking-preserved",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "tool-response-user",
+    "passed": true,
+    "prompt_tokens": 91
+  },
+  {
+    "id": "developer-tool-response-user",
+    "passed": true,
+    "prompt_tokens": 100
+  },
+  {
+    "id": "developer-null",
+    "passed": true,
+    "prompt_tokens": 13
+  },
+  {
+    "id": "developer-empty",
+    "passed": true,
+    "prompt_tokens": 13
+  },
+  {
+    "id": "developer-parts",
+    "passed": true,
+    "prompt_tokens": 23
+  },
+  {
+    "id": "developer-unordered-identified-history",
+    "passed": true,
+    "prompt_tokens": 80
+  },
+  {
+    "id": "mixed-system-first",
+    "rejected": true
+  },
+  {
+    "id": "mixed-developer-first",
+    "rejected": true
+  },
+  {
+    "id": "repeated-developer",
+    "rejected": true
+  },
+  {
+    "id": "repeated-system",
+    "rejected": true
+  },
+  {
+    "id": "late-developer",
+    "rejected": true
+  },
+  {
+    "id": "late-system",
+    "rejected": true
+  },
+  {
+    "id": "user-name",
+    "rejected": true
+  },
+  {
+    "id": "empty-name",
+    "rejected": true
+  },
+  {
+    "id": "developer-media",
+    "rejected": true
+  },
+  {
+    "id": "tool-name",
+    "rejected": true
+  },
+  {
+    "id": "unknown-role",
+    "rejected": true
+  },
+  {
+    "id": "unknown-instruction-part",
+    "rejected": true
+  },
+  {
+    "id": "alias-history-preserve",
+    "passed": true,
+    "prompt_tokens": 74
+  },
+  {
+    "id": "equal-history-preserve",
+    "passed": true,
+    "prompt_tokens": 74
+  },
+  {
+    "id": "legacy-null-history-preserve",
+    "passed": true,
+    "prompt_tokens": 74
+  },
+  {
+    "id": "canonical-null-history-preserve",
+    "passed": true,
+    "prompt_tokens": 74
+  },
+  {
+    "id": "alias-developer-history-preserve",
+    "passed": true,
+    "prompt_tokens": 83
+  },
+  {
+    "id": "equal-developer-history-preserve",
+    "passed": true,
+    "prompt_tokens": 83
+  },
+  {
+    "id": "legacy-null-developer-history-preserve",
+    "passed": true,
+    "prompt_tokens": 83
+  },
+  {
+    "id": "canonical-null-developer-history-preserve",
+    "passed": true,
+    "prompt_tokens": 83
+  },
+  {
+    "id": "alias-history-discard",
+    "passed": true,
+    "prompt_tokens": 63
+  },
+  {
+    "id": "equal-history-discard",
+    "passed": true,
+    "prompt_tokens": 63
+  },
+  {
+    "id": "legacy-null-history-discard",
+    "passed": true,
+    "prompt_tokens": 63
+  },
+  {
+    "id": "canonical-null-history-discard",
+    "passed": true,
+    "prompt_tokens": 63
+  },
+  {
+    "id": "alias-developer-history-discard",
+    "passed": true,
+    "prompt_tokens": 72
+  },
+  {
+    "id": "equal-developer-history-discard",
+    "passed": true,
+    "prompt_tokens": 72
+  },
+  {
+    "id": "legacy-null-developer-history-discard",
+    "passed": true,
+    "prompt_tokens": 72
+  },
+  {
+    "id": "canonical-null-developer-history-discard",
+    "passed": true,
+    "prompt_tokens": 72
+  },
+  {
+    "id": "alias-tools-object-history",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "equal-tools-object-history",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "legacy-null-tools-object-history",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "canonical-null-tools-object-history",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "alias-developer-tools-object-history",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "equal-developer-tools-object-history",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "legacy-null-developer-tools-object-history",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "canonical-null-developer-tools-object-history",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "alias-tools-string-history",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "equal-tools-string-history",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "legacy-null-tools-string-history",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "canonical-null-tools-string-history",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "alias-developer-tools-string-history",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "equal-developer-tools-string-history",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "legacy-null-developer-tools-string-history",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "canonical-null-developer-tools-string-history",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "alias-consecutive-tools",
+    "passed": true,
+    "prompt_tokens": 476
+  },
+  {
+    "id": "equal-consecutive-tools",
+    "passed": true,
+    "prompt_tokens": 476
+  },
+  {
+    "id": "legacy-null-consecutive-tools",
+    "passed": true,
+    "prompt_tokens": 476
+  },
+  {
+    "id": "canonical-null-consecutive-tools",
+    "passed": true,
+    "prompt_tokens": 476
+  },
+  {
+    "id": "alias-developer-consecutive-tools",
+    "passed": true,
+    "prompt_tokens": 481
+  },
+  {
+    "id": "equal-developer-consecutive-tools",
+    "passed": true,
+    "prompt_tokens": 481
+  },
+  {
+    "id": "legacy-null-developer-consecutive-tools",
+    "passed": true,
+    "prompt_tokens": 481
+  },
+  {
+    "id": "canonical-null-developer-consecutive-tools",
+    "passed": true,
+    "prompt_tokens": 481
+  },
+  {
+    "id": "alias-tool-current-thinking-preserved",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "equal-tool-current-thinking-preserved",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "legacy-null-tool-current-thinking-preserved",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "canonical-null-tool-current-thinking-preserved",
+    "passed": true,
+    "prompt_tokens": 461
+  },
+  {
+    "id": "alias-developer-tool-current-thinking-preserved",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "equal-developer-tool-current-thinking-preserved",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "legacy-null-developer-tool-current-thinking-preserved",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "canonical-null-developer-tool-current-thinking-preserved",
+    "passed": true,
+    "prompt_tokens": 466
+  },
+  {
+    "id": "alias-tool-response-user",
+    "passed": true,
+    "prompt_tokens": 91
+  },
+  {
+    "id": "equal-tool-response-user",
+    "passed": true,
+    "prompt_tokens": 91
+  },
+  {
+    "id": "legacy-null-tool-response-user",
+    "passed": true,
+    "prompt_tokens": 91
+  },
+  {
+    "id": "canonical-null-tool-response-user",
+    "passed": true,
+    "prompt_tokens": 91
+  },
+  {
+    "id": "alias-developer-tool-response-user",
+    "passed": true,
+    "prompt_tokens": 100
+  },
+  {
+    "id": "equal-developer-tool-response-user",
+    "passed": true,
+    "prompt_tokens": 100
+  },
+  {
+    "id": "legacy-null-developer-tool-response-user",
+    "passed": true,
+    "prompt_tokens": 100
+  },
+  {
+    "id": "canonical-null-developer-tool-response-user",
+    "passed": true,
+    "prompt_tokens": 100
+  },
+  {
+    "id": "alias-developer-unordered-identified-history",
+    "passed": true,
+    "prompt_tokens": 80
+  },
+  {
+    "id": "equal-developer-unordered-identified-history",
+    "passed": true,
+    "prompt_tokens": 80
+  },
+  {
+    "id": "legacy-null-developer-unordered-identified-history",
+    "passed": true,
+    "prompt_tokens": 80
+  },
+  {
+    "id": "canonical-null-developer-unordered-identified-history",
+    "passed": true,
+    "prompt_tokens": 80
+  },
+  {
+    "id": "reasoning-empty-history",
+    "passed": true,
+    "prompt_tokens": 23
+  },
+  {
+    "id": "reasoning_content-empty-history",
+    "passed": true,
+    "prompt_tokens": 23
+  },
+  {
+    "id": "constraint-none",
+    "passed": true,
+    "prompt_tokens": 13
+  },
+  {
+    "id": "constraint-named",
+    "passed": true,
+    "prompt_tokens": 253
+  },
+  {
+    "id": "long-tool-history",
+    "passed": true,
+    "prompt_tokens": 5660
+  },
+  {
+    "id": "raw-123",
+    "passed": true,
+    "prompt_tokens": 7
+  },
+  {
+    "id": "raw-124",
+    "passed": true,
+    "prompt_tokens": 3
+  }
+]

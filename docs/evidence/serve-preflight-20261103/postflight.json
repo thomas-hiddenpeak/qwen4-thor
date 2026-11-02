@@ -1,0 +1,20 @@
+{
+  "nvml": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "84c03c321ad7ec5c4530cd88846dc7eb",
+    "worker_pid": 1763837,
+    "stdout": "{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.865977868, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.874697477, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.87473782, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.879054505, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.00430538016371429}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.879094939, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.879136068, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.1537143513560295e-05}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.879149383, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.886511778, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.007354422006756067}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.886535333, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.88763868, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0010965419933199883}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.887655912, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.889553711, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.001890762010589242}\n{\"request_id\": \"84c03c321ad7ec5c4530cd88846dc7eb\", \"monotonic\": 1842686.889585183, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.07002155599184334,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "lock_free": true,
+  "markers": [],
+  "known_gpu_commands": {},
+  "utc": "2026-11-02T20:50:04.410595+00:00",
+  "meminfo": "MemTotal:       128828748 kB\nMemFree:        29194632 kB\nMemAvailable:   122618792 kB\nBuffers:          604724 kB\nCached:          7991804 kB\nSwapCached:        54260 kB\nActive:          6076728 kB\nInactive:        5463988 kB\nActive(anon):    1579292 kB\nInactive(anon):  1668220 kB\nActive(file):    4497436 kB\nInactive(file):  3795768 kB\nUnevictable:       30612 kB\nMlocked:            2592 kB\nSwapTotal:       2097148 kB\nSwapFree:          85892 kB\nDirty:                68 kB\nWriteback:             0 kB\nAnonPages:       2833176 kB\nMapped:           558920 kB\nShmem:            275304 kB\nKReclaimable:   86277576 kB\nSlab:             771044 kB\nSReclaimable:     526596 kB\nSUnreclaim:       244448 kB\nKernelStack:        9424 kB\nPageTables:        23904 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    66511520 kB\nCommitted_AS:    6402816 kB\nVmallocTotal:   133141626880 kB\nVmallocUsed:      114948 kB\nVmallocChunk:          0 kB\nPercpu:             7168 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   2095104 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:         524288 kB\nCmaFree:          227292 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\n",
+  "mem_available_gib": 116.93839263916016
+}

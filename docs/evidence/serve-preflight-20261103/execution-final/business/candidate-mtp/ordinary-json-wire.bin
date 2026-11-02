@@ -1,0 +1,1 @@
+{"id":"preflight-identity","object":"chat.completion","created":1793651543,"model":"qwen3.8-flash-next","choices":[{"index":0,"message":{"role":"assistant","content":"710003"},"finish_reason":"stop","logprobs":null}],"usage":{"prompt_tokens":31,"completion_tokens":7,"total_tokens":38}}

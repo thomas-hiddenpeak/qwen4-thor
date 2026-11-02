@@ -1,0 +1,65 @@
+-- liburing found: /usr/include
+-- ICU found:  — tokenizer enabled
+-- Config file: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/engine/config.cmake
+-- Build type: Release
+-- Build Python bindings: OFF
+-- Build C++ tests: OFF
+-- CUDA architectures: native
+-- Enable C++ trace: OFF
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/engine
+[  3%] Built target q4t_runtime
+[  6%] Built target q4t_trace
+[  9%] Built target q4t_io
+[ 15%] Built target q4t_ple
+[ 18%] Built target q4t_text
+[ 25%] Built target q4t_quant
+[ 50%] Built target xgrammar
+[ 71%] Built target q4t_model
+[ 78%] Built target q4t_startup_plan
+[100%] Built target q4t_server
+[100%] Built target q4t
+[  4%] Built target q4t_io
+[ 25%] Built target q4t_text
+[ 41%] Built target xgrammar
+[ 45%] Building CXX object CMakeFiles/q4t_host_tests.dir/tests/server_chat_plan_test.cpp.o
+[ 50%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests
+[  2%] Built target q4t_runtime
+[  4%] Built target q4t_trace
+[  6%] Built target q4t_io
+[ 10%] Built target q4t_ple
+[ 15%] Built target q4t_text
+[ 30%] Built target xgrammar
+[ 34%] Built target q4t_quant
+[ 50%] Built target q4t_model
+[ 50%] Building CXX object CMakeFiles/q4t_tests.dir/tests/server_chat_plan_test.cpp.o
+[ 52%] Building CXX object CMakeFiles/q4t_tests.dir/src/server/server_options.cpp.o
+[ 52%] Linking CXX executable q4t_tests
+[100%] Built target q4t_tests
+[  3%] Built target q4t_runtime
+[  6%] Built target q4t_trace
+[  9%] Built target q4t_io
+[ 15%] Built target q4t_ple
+[ 40%] Built target xgrammar
+[ 43%] Built target q4t_text
+[ 50%] Built target q4t_quant
+[ 71%] Built target q4t_model
+[ 78%] Built target q4t_startup_plan
+[100%] Built target q4t_server
+[100%] Building CXX object CMakeFiles/q4t_preflight_probe.dir/tools/serve_preflight/prompt_probe.cpp.o
+[100%] Linking CXX executable q4t_preflight_probe
+[100%] Built target q4t_preflight_probe
+[ 25%] Built target q4t_io
+[ 50%] Built target q4t_text
+[ 50%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/tools/serve_reliability/http_lifecycle_test.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/tests/test_main.cpp.o
+[ 50%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/chat_http.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/http_request.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/input_contract.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/output_schema.cpp.o
+[ 75%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/server/http_response.cpp.o
+[100%] Building CXX object CMakeFiles/q4t_http_lifecycle_tests.dir/src/trace/router_trace.cpp.o
+[100%] Linking CXX executable q4t_http_lifecycle_tests
+[100%] Built target q4t_http_lifecycle_tests

@@ -12,7 +12,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
-当前默认程序`a3fd64a3`已包含工具/推理输出解析、JSON/SSE、带ID工具
+当前默认程序`5642eb68`已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
@@ -31,6 +31,9 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 跨token与MTP批的停止串/尾部不会发布，JSON/SSE共用匹配，usage计至触发
 停止的token。普通工具截断仍报错，严格输出及缓存组合首批拒绝；
 [实际工具闭环、安装与回退证据](docs/SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
+`POST /v1/chat/preflight`只读返回实际token数量、输出预算和合格槽位，
+`GET /v1/config`提供有效配置与来源；预检不会预留资源或保证生成成功。
+包装格式、文本范围与[真实验证证据](docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md)已公开。
 最新验收限完整head，旧subset证据不自动扩张到新候选。
 当前未启动常驻模型服务，GPU保持释放；通用SDK、完整JSON Schema、
 多人运行边界和长期稳定仍按[工业化验收账](docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进。

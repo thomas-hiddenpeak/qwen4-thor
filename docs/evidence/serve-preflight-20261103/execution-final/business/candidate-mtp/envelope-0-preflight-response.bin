@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 135
+X-Request-Id: trace-envelope-0-preflight
+Connection: close
+
+{"error":{"message":"preview option must be boolean","type":"invalid_request_error","code":"invalid_request","param":"include_prompt"}}

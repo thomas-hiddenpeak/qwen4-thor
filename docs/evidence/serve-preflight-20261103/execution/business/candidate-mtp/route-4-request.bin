@@ -1,0 +1,6 @@
+GET /v1/config?x=1 HTTP/1.1
+Host: localhost
+X-Request-Id: trace-route-4
+Content-Type: application/json
+Content-Length: 0
+

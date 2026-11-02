@@ -1,0 +1,4 @@
+[ 37%] Built target xgrammar
+[ 39%] Building CXX object CMakeFiles/q4t_host_tests.dir/home/rm01/models/dev/qwen4-thor/tests/server_chat_plan_test.cpp.o
+[ 40%] Linking CXX executable q4t_host_tests
+[100%] Built target q4t_host_tests

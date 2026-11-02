@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 124
+X-Request-Id: trace-negative-0-chat
+Connection: close
+
+{"error":{"message":"unsupported field: unknown","type":"invalid_request_error","code":"invalid_request","param":"unknown"}}

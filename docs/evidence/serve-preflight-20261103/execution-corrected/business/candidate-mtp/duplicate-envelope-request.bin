@@ -1,0 +1,6 @@
+POST /v1/chat/preflight HTTP/1.1
+Host: localhost
+Content-Type: application/json
+Content-Length: 51
+
+{"request":{"prompt":"q"},"request":{"prompt":"q"}}

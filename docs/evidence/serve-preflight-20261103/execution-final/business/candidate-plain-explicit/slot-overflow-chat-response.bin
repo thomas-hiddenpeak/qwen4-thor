@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 166
+X-Request-Id: trace-slot-overflow-chat
+Connection: close
+
+{"error":{"message":"input plus output budget exceeds slot capacity","type":"invalid_request_error","code":"context_length_exceeded","param":"max_completion_tokens"}}

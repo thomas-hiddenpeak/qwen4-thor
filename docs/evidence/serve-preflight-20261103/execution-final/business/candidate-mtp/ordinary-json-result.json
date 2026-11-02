@@ -1,0 +1,15 @@
+{
+  "id": "preflight-identity",
+  "model": "qwen3.8-flash-next",
+  "message": {
+    "role": "assistant",
+    "content": "710003"
+  },
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 31,
+    "completion_tokens": 7,
+    "total_tokens": 38
+  },
+  "seconds": 0.47499296092428267
+}

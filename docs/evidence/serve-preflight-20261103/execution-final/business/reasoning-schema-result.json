@@ -1,0 +1,78 @@
+{
+  "passed": true,
+  "schema_id": "urn:q4t:serve-reasoning-v1",
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/long-history-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/ordinary-json-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/ordinary-sse-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 8
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/project-answer-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 3
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/project-read-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 3
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/strict-schema-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": false,
+      "validated_messages": 3
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/text-stop-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 8
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-mtp/thinking-close-wire.bin",
+      "field": "reasoning",
+      "include_reasoning": true,
+      "validated_messages": 2
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/long-history-final-answer-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/plain-json-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 1
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/plain-sse-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 8
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/business/candidate-plain-explicit/slot-short-wire.bin",
+      "field": "reasoning_content",
+      "include_reasoning": true,
+      "validated_messages": 1
+    }
+  ]
+}

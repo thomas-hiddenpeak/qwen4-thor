@@ -1,0 +1,7 @@
+POST /v1/chat/preflight HTTP/1.1
+Host: localhost
+X-Request-Id: trace-ordinary-json-preflight
+Content-Type: application/json
+Content-Length: 519
+
+{"request": {"model": "qwen3.8-flash-next", "temperature": 0, "max_completion_tokens": 128, "stream": false, "messages": [{"role": "developer", "content": "遵循用户请求。"}, {"role": "user", "content": "只回复数字710003。"}], "chat_template_kwargs": {"enable_thinking": false, "reasoning_effort": "low"}, "request_id": "preflight-identity", "cancel_token": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "request_timeout_ms": 180000}, "include_prompt": true, "include_token_ids": true}

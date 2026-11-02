@@ -1,0 +1,117 @@
+{
+  "cpu/startup-preflight/startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/cpu/startup-preflight/startup_preflight",
+    "sha256": "a830ac2154244a1e83ac79b2a1a281790e7adfd0c82eb0be026aa32a3bb77d2f",
+    "bytes": 149576
+  },
+  "package/candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/candidate/q4t",
+    "sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+    "bytes": 7083976
+  },
+  "package/candidate/q4t_http_lifecycle_tests": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "a44de2776bbd01628ad36d26d7e242939f1e907ee92d6f79fd05b2a105c4314a",
+    "bytes": 590800
+  },
+  "package/candidate/q4t_preflight_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/candidate/q4t_preflight_probe",
+    "sha256": "1b2589bd2a29cb9b56ece8cb29cdeb3453f4e1299d2191df18609bc3293df989",
+    "bytes": 502520
+  },
+  "package/candidate/startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/candidate/startup_preflight",
+    "sha256": "a830ac2154244a1e83ac79b2a1a281790e7adfd0c82eb0be026aa32a3bb77d2f",
+    "bytes": 149576
+  },
+  "package/cpu/startup-preflight/startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/cpu/startup-preflight/startup_preflight",
+    "sha256": "a830ac2154244a1e83ac79b2a1a281790e7adfd0c82eb0be026aa32a3bb77d2f",
+    "bytes": 149576
+  },
+  "package/previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/previous/q4t",
+    "sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "bytes": 7012688
+  },
+  "package/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package/source.bundle",
+    "sha256": "ab31e6befd42c422a08a2e9190e39ba939b8c014dc288d054210dd9587729017",
+    "bytes": 898838
+  },
+  "package-corrected/candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-corrected/candidate/q4t",
+    "sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+    "bytes": 7083976
+  },
+  "package-corrected/candidate/q4t_http_lifecycle_tests": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-corrected/candidate/q4t_http_lifecycle_tests",
+    "sha256": "a44de2776bbd01628ad36d26d7e242939f1e907ee92d6f79fd05b2a105c4314a",
+    "bytes": 590800
+  },
+  "package-corrected/candidate/q4t_preflight_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-corrected/candidate/q4t_preflight_probe",
+    "sha256": "1b2589bd2a29cb9b56ece8cb29cdeb3453f4e1299d2191df18609bc3293df989",
+    "bytes": 502520
+  },
+  "package-corrected/candidate/startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-corrected/candidate/startup_preflight",
+    "sha256": "a830ac2154244a1e83ac79b2a1a281790e7adfd0c82eb0be026aa32a3bb77d2f",
+    "bytes": 149576
+  },
+  "package-corrected/cpu/startup-preflight/startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-corrected/cpu/startup-preflight/startup_preflight",
+    "sha256": "a830ac2154244a1e83ac79b2a1a281790e7adfd0c82eb0be026aa32a3bb77d2f",
+    "bytes": 149576
+  },
+  "package-corrected/previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-corrected/previous/q4t",
+    "sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "bytes": 7012688
+  },
+  "package-corrected/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-corrected/source.bundle",
+    "sha256": "ab86d4cd31ac6e97fe0b2885fa44662d2d660cfe0e61e2dc0ecc4c9f802ec023",
+    "bytes": 902262
+  },
+  "package-final/candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/candidate/q4t",
+    "sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+    "bytes": 7083976
+  },
+  "package-final/candidate/q4t_http_lifecycle_tests": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/candidate/q4t_http_lifecycle_tests",
+    "sha256": "a44de2776bbd01628ad36d26d7e242939f1e907ee92d6f79fd05b2a105c4314a",
+    "bytes": 590800
+  },
+  "package-final/candidate/q4t_preflight_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/candidate/q4t_preflight_probe",
+    "sha256": "1b2589bd2a29cb9b56ece8cb29cdeb3453f4e1299d2191df18609bc3293df989",
+    "bytes": 502520
+  },
+  "package-final/candidate/startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/candidate/startup_preflight",
+    "sha256": "a830ac2154244a1e83ac79b2a1a281790e7adfd0c82eb0be026aa32a3bb77d2f",
+    "bytes": 149576
+  },
+  "package-final/cpu/startup-preflight/startup_preflight": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/cpu/startup-preflight/startup_preflight",
+    "sha256": "a830ac2154244a1e83ac79b2a1a281790e7adfd0c82eb0be026aa32a3bb77d2f",
+    "bytes": 149576
+  },
+  "package-final/previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/previous/q4t",
+    "sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+    "bytes": 7012688
+  },
+  "package-final/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/source.bundle",
+    "sha256": "6dbfc7770ee2e371c3168ba7a802bf30ce41a92cc3ed5bbf5110bdeec62f64b2",
+    "bytes": 903642
+  },
+  "execution-final/pair/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/execution-final/pair/q4t",
+    "sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+    "bytes": 7083976
+  }
+}
