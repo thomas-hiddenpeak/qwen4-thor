@@ -46,7 +46,7 @@ bool Prepare(ThinkingBudget* budget, int limit, bool thinking = true,
 bool Close(ThinkingBudget* budget, std::string* text) {
   int count = 0;
   for (int32_t id; (id = budget->ForcedToken()) >= 0;) {
-    Q4T_CHECK(++count <= 11);
+    Q4T_CHECK(++count <= 14);
     std::string piece;
     Q4T_CHECK(Decode(id, &piece));
     Q4T_CHECK(budget->Observe(id, piece));
@@ -105,14 +105,14 @@ Q4T_TEST(thinking_budget_zero_and_forced_accounting) {
   Q4T_CHECK(budget.Consumed() == 0 && budget.ForcedTokens() == 0);
   std::string close;
   Q4T_CHECK(Close(&budget, &close));
-  Q4T_CHECK(close == "</think>");
-  Q4T_CHECK(budget.Consumed() == 0 && budget.ReasoningTokens() == 8);
+  Q4T_CHECK(close == "\n</think>\n\n");
+  Q4T_CHECK(budget.Consumed() == 0 && budget.ReasoningTokens() == 11);
   Q4T_CHECK(budget.Observe(1000, "answer"));
   Q4T_CHECK(budget.Observe(0, "", true));
   const auto usage =
-      Parse("{\"completion_tokens\":10" + budget.UsageFields() + '}');
+      Parse("{\"completion_tokens\":13" + budget.UsageFields() + '}');
   Q4T_CHECK(
-      usage.Find("completion_tokens_details")->GetInt("reasoning_tokens") == 8);
+      usage.Find("completion_tokens_details")->GetInt("reasoning_tokens") == 11);
   Q4T_CHECK(usage.Find("q4t_thinking_budget")->GetInt("consumed") == 0);
   return true;
 }
@@ -126,10 +126,10 @@ Q4T_TEST(thinking_budget_partial_close_never_duplicates_delimiter) {
     Q4T_CHECK(budget.Observe(1000, text));
     std::string suffix;
     Q4T_CHECK(Close(&budget, &suffix));
-    Q4T_CHECK(suffix == close.substr(prefix));
+    Q4T_CHECK(suffix == (prefix ? "" : "\n") + close.substr(prefix) + "\n\n");
     Q4T_CHECK(budget.Consumed() == 1);
     Q4T_CHECK(budget.ForcedTokens() ==
-              static_cast<int64_t>(close.size() - prefix));
+              static_cast<int64_t>(close.size() - prefix + (prefix ? 2 : 3)));
   }
   return true;
 }
@@ -147,10 +147,10 @@ Q4T_TEST(thinking_budget_utf8_closure_preserves_scalars) {
     Q4T_CHECK(budget.Observe(1000, prefix));
     std::string suffix;
     Q4T_CHECK(Close(&budget, &suffix));
-    Q4T_CHECK(prefix + suffix == completed + "</think>");
+    Q4T_CHECK(prefix + suffix == completed + "\n</think>\n\n");
     Q4T_CHECK(q4t::server::detail::NormalizeUtf8(prefix + suffix) ==
               prefix + suffix);
-    Q4T_CHECK(budget.ForcedTokens() <= 11);
+    Q4T_CHECK(budget.ForcedTokens() <= 14);
   }
   return true;
 }

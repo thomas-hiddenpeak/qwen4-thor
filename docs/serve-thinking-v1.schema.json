@@ -103,7 +103,7 @@
             "forced_closure_tokens": {
               "type": "integer",
               "minimum": 0,
-              "maximum": 11
+              "maximum": 14
             }
           }
         }

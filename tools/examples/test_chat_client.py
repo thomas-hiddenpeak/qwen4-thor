@@ -155,7 +155,7 @@ class ClientContracts(unittest.TestCase):
             completion_tokens_details=dict(reasoning_tokens=6),
             q4t_thinking_budget=dict(limit=5, consumed=5, forced_closure_tokens=1))
         self.assertEqual(client._usage(usage), usage)
-        for changes in (dict(consumed=6), dict(forced_closure_tokens=12),
+        for changes in (dict(consumed=6), dict(forced_closure_tokens=15),
                         dict(limit=True), dict(consumed=-1)):
             invalid = deepcopy(usage)
             invalid["q4t_thinking_budget"].update(changes)

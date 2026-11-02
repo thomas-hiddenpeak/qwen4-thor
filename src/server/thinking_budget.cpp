@@ -91,9 +91,14 @@ Status ThinkingBudget::PrepareTokens(const Encode& encode, const Decode& decode,
     return Status::Fail("invalid thinking budget token preparation");
   for (size_t offset = 0; offset < kClose.size(); ++offset) {
     auto& ids = close_suffixes_[offset];
-    auto status = encode(kClose.substr(offset), &ids);
+    // Match the native template's reasoning -> answer boundary. A lone
+    // closing tag after a truncated word is not the trained answer prefix.
+    // If a closing tag already started, complete it without breaking it.
+    const std::string boundary = (offset ? "" : "\n") +
+                                 std::string(kClose.substr(offset)) + "\n\n";
+    auto status = encode(boundary, &ids);
     if (!status) return status;
-    if (ids.empty() || ids.size() > kClose.size() - offset)
+    if (ids.empty() || ids.size() > boundary.size())
       return Status::Fail("unsupported thinking closure encoding");
     std::string text;
     for (const auto id : ids) {
@@ -106,7 +111,7 @@ Status ThinkingBudget::PrepareTokens(const Encode& encode, const Decode& decode,
       if (piece.empty()) return Status::Fail("empty thinking closure token");
       text += piece;
     }
-    if (text != kClose.substr(offset))
+    if (text != boundary)
       return Status::Fail("thinking closure bytes differ from tokenization");
   }
   for (int32_t id = 0; id < vocab; ++id) {

@@ -31,7 +31,7 @@ class Contracts(unittest.TestCase):
             completion_tokens_details=dict(reasoning_tokens=17),
             q4t_thinking_budget=dict(limit=16, consumed=16, forced_closure_tokens=1))
         schema.check_usage(usage, 16)
-        for key, value in (("consumed", 17), ("forced_closure_tokens", 12), ("limit", 15)):
+        for key, value in (("consumed", 17), ("forced_closure_tokens", 15), ("limit", 15)):
             changed = copy.deepcopy(usage)
             changed["q4t_thinking_budget"][key] = value
             with self.assertRaises(Exception):
@@ -162,6 +162,16 @@ class Contracts(unittest.TestCase):
                 argv = run.model("candidate-mtp", Path("candidate"), True, None)
             called.assert_called_once()
             self.assertTrue((run.out / "candidate-mtp/startup-preflight.json").is_file())
+
+    def test_budget_trace_joins_distinct_trace_and_completion_ids(self):
+        log = ("[q4t][http] trace_id=trace-one-hidden completion_id=chatcmpl-random\n"
+               "[thinking-budget] request=chatcmpl-random limit=1 consumed=1 "
+               "forced=3 reasoning_tokens=4 mtp_steps=0 mtp_tokens=0 fallback=0\n")
+        self.assertEqual(v.budget_traces(log)["one-hidden"]["forced"], 3)
+        with self.assertRaises(AssertionError):
+            v.budget_traces(log.split("\n", 1)[1])
+        with self.assertRaises(AssertionError):
+            v.budget_traces(log + log)
 
 
 if __name__ == "__main__":

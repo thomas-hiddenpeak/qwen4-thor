@@ -259,9 +259,9 @@ Q4T_TEST(structured_decoder_budget_closure_and_utf8_share_accepted_tokens) {
       Q4T_CHECK(budget.Observe(token, vocabulary[token]));
       forced += vocabulary[token];
     }
-    Q4T_CHECK(forced == (limit ? "\x80</think>" : "</think>"));
+    Q4T_CHECK(forced == (limit ? "\x80\n</think>\n\n" : "\n</think>\n\n"));
     Q4T_CHECK(budget.Consumed() == limit);
-    Q4T_CHECK(budget.ForcedTokens() == (limit ? 9 : 8) && !budget.Thinking());
+    Q4T_CHECK(budget.ForcedTokens() == (limit ? 12 : 11) && !budget.Thinking());
     for (const unsigned char c :
          std::string("{\"example\":\"<think>literal</think>\"}")) {
       int32_t token;
@@ -272,7 +272,7 @@ Q4T_TEST(structured_decoder_budget_closure_and_utf8_share_accepted_tokens) {
     int32_t token;
     Q4T_CHECK(decoder->Select(logits, &token, 0) && token == 0);
     Q4T_CHECK(decoder->Terminated() &&
-              budget.ReasoningTokens() == (limit ? 11 : 8));
+              budget.ReasoningTokens() == (limit ? 14 : 11));
   }
   return true;
 }

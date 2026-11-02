@@ -351,7 +351,7 @@
     },
     "thinking_token_budget": {
       "semantics": "缺省/null关闭；parsed messages精确整数0..2147483647；自然token计量/有限强制闭合并继续答案",
-      "boundary": "自然closing计入预算；forced额外最多11并计completion；总输出优先；MTP批前留pending再host尾部；非计算FLOPs上限；真实HTTP待验",
+      "boundary": "自然closing计预算；forced为原生换行/闭合/空行及必要UTF8补齐，最多14并计completion；总输出优先；MTP批前留pending再host尾部；真实HTTP预算1原失败保留、修复待验",
       "evidence": [
         "tests/server_thinking_budget_test.cpp",
         "tests/server_structured_decoder_test.cpp",
@@ -588,11 +588,11 @@
     "include/q4t/server/structured_decoder.h": "1638718dda90f146037e8adc30705687e0a9aa8347930dc524a344f32c86b5f7",
     "include/q4t/server/suffix_causal.h": "a0bad73c2a8293367a4e907e06a40d21baec389ba81e9131a248f99432165f2b",
     "include/q4t/server/suffix_token_cache.h": "5cf8881109604764d9deb7869901c0f8f8141b181b47865e7d81018eadd21a9b",
-    "include/q4t/server/thinking_budget.h": "6b252e1ba5a3cfef24a59800e2f9177b37cb8c3f675763379c9404ea318eec1a",
+    "include/q4t/server/thinking_budget.h": "902d062939a5f8cc43ac2dd761d4267624645d1a401c47f9ed748f28b2ee36ff",
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
     "src/main.cpp": "93cae8f751bfc446d812f1d786389b32ae577c3dd386fedcfc907d6b08539b67",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "src/server/chat_capabilities.cpp": "5693d968eaa797f7b0019a6ad6a5ecd9f700e46c08c1bb50fbec65d3f7b9684e",
+    "src/server/chat_capabilities.cpp": "eafbf8e5e480600cda69942ccb1e9d2ba51834b7e3ec886540fbae7b06e601aa",
     "src/server/chat_contract.cpp": "9366541bc928f7bf26d8be429e4c9d59b3d117f055a717c9547650fdd61f73f0",
     "src/server/chat_generation.cpp": "7af3ba19b9730700d4ed7bd19af46c63dd4a62348f5ea246ceddbc86fda65683",
     "src/server/chat_http.cpp": "38798294599cf043e85889feaaa38842b9b471a89d0224d7c1d84bf51468b717",
@@ -617,7 +617,7 @@
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
     "src/server/structured_decoder.cpp": "3d3c9d07a516e0cc10999183d1e2a3770daecac9257c8514a26f43873c877ddd",
-    "src/server/thinking_budget.cpp": "aea0bc7b33017f1d6df327910c9c06fb5458cebc67c8f20185a017654010e7a6",
+    "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259",
     "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
@@ -665,7 +665,7 @@
       "src/server/structured_decoder.cpp",
       "src/server/thinking_budget.cpp"
     ],
-    "http_status": "not_accepted_two_pre_model_startup_fixture_failures",
+    "http_status": "budget_one_quality_failure_native_boundary_repair_pending",
     "report": "docs/SERVE_THINKING_BUDGET_2026-11-03.md",
     "result": "docs/SERVE_THINKING_BUDGET_RESULT_2026-11-03.md"
   }

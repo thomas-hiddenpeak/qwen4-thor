@@ -35,7 +35,8 @@ class ThinkingBudget {
   bool CanSpeculate(int max_accepted) const;
   // Outside exhausted thinking, mask tokens that would enter a new block.
   bool Allows(std::string_view bytes) const;
-  // The next actual closure token, or -1 when normal selection is allowed.
+  // The next actual closure/boundary token, or -1 for normal selection.
+  // At most 3 UTF-8 continuation + 1 LF + 8 close + 2 LF byte tokens.
   // PrepareTokens must have succeeded. This does not consume any token.
   int32_t ForcedToken();
   Status Observe(int32_t token, std::string_view bytes, bool stop = false);

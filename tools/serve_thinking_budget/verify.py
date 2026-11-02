@@ -95,6 +95,23 @@ def quality(result):
                  result.message["content"].strip() == "710003", "answer quality")
 
 
+def budget_traces(log):
+    labels = {}
+    for match in re.finditer(r"\[q4t\]\[http\] trace_id=trace-(\S+) completion_id=(\S+)", log):
+        wire.require(match[2] not in labels, "duplicate completion mapping")
+        labels[match[2]] = match[1]
+    pattern = (r"\[thinking-budget\] request=(\S+) limit=(\d+) consumed=(\d+) "
+               r"forced=(\d+) reasoning_tokens=(\d+) mtp_steps=(\d+) mtp_tokens=(\d+) fallback=(\d+)")
+    keys = ("limit", "consumed", "forced", "reasoning_tokens", "mtp_steps", "mtp_tokens", "fallback")
+    rows = {}
+    for match in re.finditer(pattern, log):
+        wire.require(match[1] in labels, "unmapped budget completion")
+        label = labels[match[1]]
+        wire.require(label not in rows, "duplicate budget trace")
+        rows[label] = dict(zip(keys, map(int, match.groups()[1:])))
+    return rows
+
+
 class Run(b.Run):
     def __init__(self, plan, output, *, installed=False):
         super().__init__(plan, output, installed=installed)
@@ -233,17 +250,25 @@ class Run(b.Run):
             numerical_equivalence_claim=False))
 
     def business(self, folder):
-        self.negatives(folder)
-        control = self.success(folder, "unbudgeted", b.simple(thinking=True))
-        quality(control)
-        prior = json.loads((ROOT / ".q4t-work/serve-stage-b2a-20261103/execution/business/"
-            "candidate-mtp/default-json-visible-result.json").read_text())
-        wire.require(control.message == prior["message"] and control.usage == prior["usage"],
-                     "unbudgeted baseline response changed")
-        null_body = b.simple(thinking=True)
-        null_body["extra_body"]["thinking_token_budget"] = None
-        null = self.success(folder, "null-budget", null_body)
-        b.compare(control, null)
+        reused = self.plan.get("provenance", {}).get("reuse_http")
+        if reused:
+            for name, artifact in reused["files"].items():
+                path = Path(artifact["path"])
+                wire.require(wire.digest(path) == artifact["sha256"], "HTTP reuse evidence changed")
+                (folder / name).write_bytes(path.read_bytes())
+            wire.save(folder / "reused-http.json", reused)
+        else:
+            self.negatives(folder)
+            control = self.success(folder, "unbudgeted", b.simple(thinking=True))
+            quality(control)
+            prior = json.loads((ROOT / ".q4t-work/serve-stage-b2a-20261103/execution/business/"
+                "candidate-mtp/default-json-visible-result.json").read_text())
+            wire.require(control.message == prior["message"] and control.usage == prior["usage"],
+                         "unbudgeted baseline response changed")
+            null_body = b.simple(thinking=True)
+            null_body["extra_body"]["thinking_token_budget"] = None
+            null = self.success(folder, "null-budget", null_body)
+            b.compare(control, null)
         for label, limit, stream, include in (("zero", 0, False, True),
             ("one-hidden", 1, True, False), ("sixteen", 16, False, True),
             ("sixteen-hidden", 16, True, False), ("natural", 128, True, True)):
@@ -291,13 +316,7 @@ class Run(b.Run):
         caps = json.loads(json.loads((folder / "capabilities.json").read_text())["raw"])
         wire.require(caps["reasoning"]["budget_profile"] == "q4t-thinking-v1" and
                      caps["reasoning"]["thinking_token_budget"], "budget capability drift")
-        pattern = (r"\[thinking-budget\] request=trace-(\S+) limit=(\d+) consumed=(\d+) "
-                   r"forced=(\d+) reasoning_tokens=(\d+) mtp_steps=(\d+) mtp_tokens=(\d+) fallback=(\d+)")
-        keys = ("limit", "consumed", "forced", "reasoning_tokens", "mtp_steps", "mtp_tokens", "fallback")
-        rows = {}
-        for match in re.finditer(pattern, (folder / "server.log").read_text()):
-            wire.require(match[1] not in rows, "duplicate budget trace")
-            rows[match[1]] = dict(zip(keys, map(int, match.groups()[1:])))
+        rows = budget_traces((folder / "server.log").read_text())
         expected = []
         for path in folder.glob("*-result.json"):
             value = json.loads(path.read_text())
@@ -329,7 +348,7 @@ class Run(b.Run):
                       "plain-16", "installed-zero"):
             if label in rows:
                 wire.require(rows[label]["consumed"] == rows[label]["limit"] and
-                             0 < rows[label]["forced"] <= 11, label + ": closure not exercised")
+                             0 < rows[label]["forced"] <= 14, label + ": closure not exercised")
         wire.require(set(rows) == set(expected), "missing/unexpected budget trace")
         metrics, _ = self.snapshot(folder, "budget-metrics")
         for metric, value in (
@@ -367,8 +386,9 @@ class Run(b.Run):
             else:
                 self.model("candidate-mtp", binary, True, self.business)
                 self.model("candidate-plain", binary, False, self.plain)
-            wire.require(self.requests == (1 if self.installed else 18) and
-                         self.negative == (0 if self.installed else 12), "missing frozen cases")
+            reused = bool(self.plan.get("provenance", {}).get("reuse_http"))
+            wire.require(self.requests == (1 if self.installed else 16 if reused else 18) and
+                         self.negative == (0 if self.installed or reused else 12), "missing frozen cases")
             for script in ("tools/serve_stage_a/check_schema.py", "tools/serve_stage_b2a/check_schema.py",
                            "tools/serve_thinking_budget/check_schema.py"):
                 subprocess.run(["/usr/bin/python3", "-B", str(ROOT / script), str(self.out)],
@@ -380,5 +400,6 @@ class Run(b.Run):
         finally:
             state.update(request_attempts=self.requests, negative_requests=self.negative,
                 starts=self.starts, seconds=time.monotonic() - self.started,
-                performance_acceptance=False)
+                performance_acceptance=False,
+                reused_http=self.plan.get("provenance", {}).get("reuse_http"))
             wire.save(self.out / "result.json", state)

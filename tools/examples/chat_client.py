@@ -116,7 +116,7 @@ def _usage(value):
             require(type(budget.get(key)) is int and budget[key] >= 0,
                     "invalid thinking budget field: " + key)
         require(budget["consumed"] <= budget["limit"] <= 2147483647 and
-                budget["forced_closure_tokens"] <= 11 and
+                budget["forced_closure_tokens"] <= 14 and
                 budget["consumed"] + budget["forced_closure_tokens"] ==
                 details["reasoning_tokens"], "inconsistent thinking budget usage")
     if "prompt_tokens_details" in value:

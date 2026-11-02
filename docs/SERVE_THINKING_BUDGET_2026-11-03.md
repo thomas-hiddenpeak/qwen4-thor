@@ -14,8 +14,10 @@
   一份请求预算。该保守口径显式版本化，不冒充vLLM所有版本的计量规则。
 - 预算用尽且仍在推理区时，选择实际闭合token；已产生部分`</think>`
   就只补后缀。末尾UTF-8标量未完整时先用最小合法continuation补齐，
-  再闭合；这些是有限控制token，不继续自由生成推理。最多3个UTF-8
-  continuation字节token及8个ASCII闭合token（实际原生完整close为1个）。
+  再输出原生换行/闭合/空行边界；这些是有限控制token，不继续自由生成
+  推理。无部分close时使用`\n</think>\n\n`，已有部分close就补其后缀与
+  两个换行；最多3个UTF-8 continuation、1个前置换行、8个ASCII close
+  和2个后置换行token，共14。此修正针对真实预算1后的正文续写失败。
 - 强制控制token不占上述自然推理配额，但计入completion_tokens及
   completion_tokens_details.reasoning_tokens；额外给出预算consumed和
   forced_closure_tokens，使总数可核对。隐藏前后计量一致。
