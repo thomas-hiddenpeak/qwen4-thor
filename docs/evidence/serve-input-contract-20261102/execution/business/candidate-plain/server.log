@@ -1,0 +1,102 @@
+[q4t][capabilities] requested=text-greedy mtp=0 media=0 max_seq=1
+[q4t][startup] tokenizer 303 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=8192 max_seq=1 max_prefill=2048 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=86.86 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=687669248 mtp_workspace=0 forward_buffers=104898564 ple_working=76571648 mtp=0
+[q4t][budget]   per_request=0.00 GB (peak admitted MTP request allocations)  state_pool=0.37 GB
+[q4t][budget]   => max_len=8192 max_seq=1
+[q4t][startup] budget 420 ms
+[q4t][capacity] requested_max_len=8192 requested_max_seq=1 requested_max_prefill=2048 effective_max_len=8192 effective_max_seq=1 effective_max_prefill=2048 budget_enabled=1 budget_feasible=true
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1541,"device_bytes":79025839888,"allocated":1541,"consumed":0,"freed":0,"unhanded_remaining":1541,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"0e6a148bcc76f8507e42326e4029148aa680700390ed5f00d3303f5c0c793bc9"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2542 ms
+[q4t][startup] model_load 36577 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP disabled; plain decode
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=0 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1541,"device_bytes":79025839888,"allocated":1541,"consumed":1541,"freed":0,"unhanded_remaining":0,"handed_live":1541,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"0e6a148bcc76f8507e42326e4029148aa680700390ed5f00d3303f5c0c793bc9"}
+[q4t][startup] startup_total 39844 ms
+[q4t] serving on port 18099 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=registered stage=validation seq=-1 elapsed_ms=0.098
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=grammar_compile seq=-1 elapsed_ms=0.126
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=slot_admission seq=-1 elapsed_ms=168.531
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=admitted stage=slot_admission seq=0 elapsed_ms=168.566
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=encode seq=0 elapsed_ms=168.575
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=prefill seq=0 elapsed_ms=169.949
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=decode seq=0 elapsed_ms=747.198
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][mem] phase=request_end id=chatcmpl-auto-0 dev_used_gb=95.585 dev_total_gb=131.921 rss_mb=970.5 mem_free_gb=29.247 mem_avail_gb=40.657 cached_gb=4.991
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=stage stage=response seq=0 elapsed_ms=3595.032
+[q4t][request] instance=0 id=chatcmpl-auto-0 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=3596.654 slot_wait_ms=0.003 model_lock_ms=0.004 tokenizer_lock_ms=0.005 scheduler_completion_ms=577.230 stream_write_ms=0.117 scheduler_waits=1
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=registered stage=validation seq=-1 elapsed_ms=0.058
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=grammar_compile seq=-1 elapsed_ms=0.088
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=slot_admission seq=-1 elapsed_ms=157.365
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=admitted stage=slot_admission seq=0 elapsed_ms=157.388
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=encode seq=0 elapsed_ms=157.390
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=prefill seq=0 elapsed_ms=158.449
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=decode seq=0 elapsed_ms=600.592
+[q4t][mem] phase=request_end id=chatcmpl-auto-1 dev_used_gb=95.489 dev_total_gb=131.921 rss_mb=970.6 mem_free_gb=29.343 mem_avail_gb=40.753 cached_gb=4.991
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=stage stage=response seq=0 elapsed_ms=3237.704
+[q4t][request] instance=1 id=chatcmpl-auto-1 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=3239.274 slot_wait_ms=0.002 model_lock_ms=0.004 tokenizer_lock_ms=0.005 scheduler_completion_ms=442.131 stream_write_ms=0.108 scheduler_waits=1
+[q4t][request] instance=2 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=registered stage=validation seq=-1 elapsed_ms=0.033
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=slot_admission seq=-1 elapsed_ms=0.044
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=admitted stage=slot_admission seq=0 elapsed_ms=0.047
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=encode seq=0 elapsed_ms=0.049
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=prefill seq=0 elapsed_ms=0.183
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=decode seq=0 elapsed_ms=143.313
+[q4t][mem] phase=request_end id=chatcmpl-auto-2 dev_used_gb=95.475 dev_total_gb=131.921 rss_mb=971.3 mem_free_gb=29.359 mem_avail_gb=40.767 cached_gb=4.991
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=stage stage=response seq=0 elapsed_ms=445.226
+[q4t][request] instance=2 id=chatcmpl-auto-2 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=445.296 slot_wait_ms=0.001 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=444.682 stream_write_ms=0.000 scheduler_waits=7
+[q4t][request] instance=3 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=registered stage=validation seq=-1 elapsed_ms=0.051
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=slot_admission seq=-1 elapsed_ms=0.062
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=admitted stage=slot_admission seq=0 elapsed_ms=0.066
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=encode seq=0 elapsed_ms=0.068
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=prefill seq=0 elapsed_ms=0.202
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=decode seq=0 elapsed_ms=134.839
+[q4t][mem] phase=request_end id=chatcmpl-auto-3 dev_used_gb=95.396 dev_total_gb=131.921 rss_mb=971.3 mem_free_gb=29.438 mem_avail_gb=40.845 cached_gb=4.991
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=stage stage=response seq=0 elapsed_ms=436.837
+[q4t][request] instance=3 id=chatcmpl-auto-3 event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=436.910 slot_wait_ms=0.002 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=436.247 stream_write_ms=0.000 scheduler_waits=7
+[q4t][request] instance=4 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=4 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.089 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=5 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=5 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.081 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=6 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=6 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.069 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=7 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=7 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.041 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=8 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=8 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.051 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=9 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=9 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.048 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=10 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=10 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.047 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=11 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=11 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.056 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=12 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=12 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.043 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=13 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=13 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.075 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=14 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=14 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.042 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=15 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=15 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.023 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=16 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=16 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.020 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=17 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=17 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.021 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=18 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=18 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.018 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t][request] instance=19 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000
+[q4t][request] instance=19 id=unregistered event=end stage=validation seq=-1 released=0 outcome=error reason=handler_error elapsed_ms=0.032 slot_wait_ms=0.000 model_lock_ms=0.000 tokenizer_lock_ms=0.000 scheduler_completion_ms=0.000 stream_write_ms=0.000 scheduler_waits=0
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1541,"device_bytes":79025839888,"allocated":1541,"consumed":1541,"freed":1541,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"0e6a148bcc76f8507e42326e4029148aa680700390ed5f00d3303f5c0c793bc9"}

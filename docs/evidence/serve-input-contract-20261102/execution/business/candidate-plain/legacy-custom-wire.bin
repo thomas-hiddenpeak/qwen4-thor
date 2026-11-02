@@ -1,0 +1,1 @@
+{"error":{"message":"tool calls require function type and valid batch IDs","type":"invalid_request_error","code":"invalid_request","param":null}}
