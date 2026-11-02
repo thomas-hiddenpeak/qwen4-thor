@@ -30,7 +30,8 @@ IO 库需要 CUDA runtime 链接依赖，但不执行 CUDA API。
 [serve 审计](../../docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md)。
 
 `inventory.json` 为 35 个顶层字段和 6 条路由逐项登记语义、限制及
-证据引用，并固定 10 处直接白名单与 51 个服务相关源码锚点。
+证据引用；初次审计固定 10 处白名单 / 51 个源码锚点，输入合同 A
+组修复后重新评审为 16 处 / 53 个，受影响字段指向修复合同与回归。
 `python3 -B tools/serve_audit/check_inventory.py --self-check` 检查代码
 是否新增未登记接口、删除已有接口或使审计来源过期。CI 同步执行。
 更改源码后必须重新评审受影响合同、更新结论及来源身份；禁止只为

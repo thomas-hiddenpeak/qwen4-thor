@@ -277,3 +277,61 @@ Q4T_TEST(chat_tool_history_media_order_guard) {
           .ok());
   return true;
 }
+
+Q4T_TEST(chat_tool_history_no_silent_argument_loss) {
+  for (const auto* fields : {
+      R"("name":"lookup")", R"("name":"lookup","argumnts":{})",
+      R"("name":"lookup","arguments":null)",
+      R"("name":"lookup","arguments":"")",
+      R"("name":"lookup","arguments":"[]")",
+      R"("name":"lookup","arguments":"{\"x\":1,\"x\":2}")",
+      R"("name":"lookup","arguments":{},"extra":1)",
+      R"("name":"lookup","arguments":{"bad>key":1})"}) {
+    for (const bool ids : {false, true}) {
+      const auto call = std::string(R"({"role":"assistant","tool_calls":[{)") +
+          (ids ? R"("id":"a",)" : "") +
+          R"("type":"function","function":{)" + fields + "}}]}";
+      const auto history = List({kUser, call, ids ? Result("a") :
+          R"({"role":"tool","content":"result"})"});
+      Q4T_CHECK(Reject(history));
+      Json request;
+      Q4T_CHECK(ParseRequest(history, &request));
+      Q4T_CHECK(!q4t::server::ValidateChatContract(request, "m", false).ok());
+      std::string prompt;
+      Q4T_CHECK(!q4t::server::RenderChatPrompt(
+          request, {"q", "", "result"}, &prompt).ok());
+    }
+  }
+  for (const auto* content : {"", R"(,"content":null)", R"(,"content":1)"}) {
+    Q4T_CHECK(Reject(List({kUser, Call("a"),
+        std::string(R"({"role":"tool","tool_call_id":"a")") + content + '}'})));
+    Q4T_CHECK(Reject(List({kUser, kLegacy,
+        std::string(R"({"role":"tool")") + content + '}'})));
+  }
+  return true;
+}
+
+Q4T_TEST(chat_tool_history_legacy_shapes_are_explicit) {
+  for (const auto* call : {
+      R"({"type":"custom","function":{"name":"lookup","arguments":{}}})",
+      R"({"name":"lookup","arguments":{},"extra":1})",
+      R"({"type":"custom","name":"lookup","arguments":{}})",
+      R"({"function":{"name":"lookup","arguments":{}},"extra":1})",
+      R"({"id":"a","name":"lookup","arguments":{}})", R"(null)"})
+    Q4T_CHECK(Reject(List({kUser,
+        std::string(R"({"role":"assistant","tool_calls":[)") + call + "]}",
+        R"({"role":"tool","content":"result"})"})));
+  for (const auto* call : {
+      R"({"name":"lookup","arguments":{}})",
+      R"({"type":"function","name":"lookup","arguments":"{}"})",
+      R"({"function":{"name":"lookup","arguments":{"n":9007199254740993}}})"}) {
+    Json req;
+    Q4T_CHECK(ParseRequest(List({kUser,
+        std::string(R"({"role":"assistant","tool_calls":[)") + call + "]}",
+        R"({"role":"tool","content":""})"}), &req));
+    Q4T_CHECK(q4t::server::ValidateChatContract(req, "m", false).ok());
+    std::string prompt;
+    Q4T_CHECK(q4t::server::RenderChatPrompt(req, {"q", "", ""}, &prompt).ok());
+  }
+  return true;
+}

@@ -159,7 +159,7 @@ def main():
     sources = ["tools/serve_audit/probe.cpp", "src/io/json.cpp"] + [
         "src/server/" + name + ".cpp" for name in (
             "chat_http", "chat_metrics", "chat_capabilities", "http_request",
-            "http_response", "chat_contract", "chat_template",
+            "http_response", "input_contract", "chat_contract", "chat_template",
             "chat_tool_history", "chat_response_parser", "output_constraints",
             "output_schema")]
     # Reuse only the unchanged tokenizer static library / generated identity.

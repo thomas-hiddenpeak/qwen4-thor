@@ -5,6 +5,7 @@
 #include <string_view>
 
 #include "q4t/server/chat_tool_history.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/output_constraints.h"
 
 namespace q4t::server {
@@ -28,7 +29,7 @@ Status Fields(const io::Json& object,
 }
 
 bool Number(const io::Json& value, double expected) {
-  return value.IsNumber() && value.number == expected;
+  return IsInputInteger(value) && value.number == expected;
 }
 
 Status TemplateOption(const std::string& key, const io::Json& value) {
@@ -67,6 +68,13 @@ Status ValidateChatContract(const io::Json& req,
       "user", "session_id", "prefix_cache_scope", "prefix_cache_write_tokens",
       "parse_response", "tool_choice", "parallel_tool_calls"});
   if (!status) return status;
+  status = ValidateRequestCredentials(req);
+  if (!status) return status;
+  if (const auto* value = req.Find("request_timeout_ms"); value &&
+      (!IsInputInteger(*value) || value->number < 1 ||
+       value->number > 10800000))
+    return Status::Fail(
+        "request_timeout_ms must be an integer in [1,10800000]");
   for (const auto* field : {"session_id", "prefix_cache_scope"}) {
     const auto* value = req.Find(field);
     if (!value) continue;
@@ -78,15 +86,16 @@ Status ValidateChatContract(const io::Json& req,
   }
   if (const auto* value = req.Find("prefix_cache_write_tokens")) {
     const double n = value->AsDouble(-1);
-    if (!value->IsNumber() || !std::isfinite(n) || std::trunc(n) != n ||
+    if (!IsInputInteger(*value) ||
         (n != 0 && (n < 1024 || n > 131072)))
       return Status::Fail(
           "prefix_cache_write_tokens must be 0 or an integer in [1024,131072]");
     if (n > 0 && !req.Has("prefix_cache_scope"))
       return Status::Fail("prefix_cache_write_tokens requires prefix_cache_scope");
   }
-  if (const auto* value = req.Find("stream"); value && !value->IsBool())
-    return Status::Fail("stream must be boolean");
+  if (const auto* value = req.Find("stream");
+      value && !value->IsNull() && !value->IsBool())
+    return Status::Fail("stream must be boolean or null");
   const auto* legacy_limit = req.Find("max_tokens");
   const auto* limit = req.Find("max_completion_tokens");
   if (legacy_limit && !legacy_limit->IsNull() && limit && !limit->IsNull())
@@ -96,8 +105,7 @@ Status ValidateChatContract(const io::Json& req,
     const auto* value = req.Find(key);
     if (!value || value->IsNull()) continue;
     const double n = value->AsDouble(-1);
-    if (!value->IsNumber() || !std::isfinite(n) || n < 1 ||
-        n > 2147483647.0 || std::trunc(n) != n)
+    if (!IsInputInteger(*value) || n < 1 || n > 2147483647.0)
       return Status::Fail(std::string(key) +
                           " must be an integer in [1,2147483647] or null");
   }
@@ -116,20 +124,22 @@ Status ValidateChatContract(const io::Json& req,
   if (const auto* model = req.Find("model");
       model && (!model->IsString() || model->str != model_name))
     return Status::Fail("model must match the served model");
-  if (const auto* user = req.Find("user"); user && !user->IsString())
-    return Status::Fail("user must be a string (metadata only)");
+  if (const auto* user = req.Find("user");
+      user && !user->IsNull() && !user->IsString())
+    return Status::Fail("user must be a string or null (metadata only)");
   for (const auto& [key, neutral] : {
            std::pair{"temperature", 0.0}, {"top_p", 1.0}, {"n", 1.0},
            {"frequency_penalty", 0.0}, {"presence_penalty", 0.0},
            {"repetition_penalty", 1.0}}) {
-    if (const auto* value = req.Find(key); value && !Number(*value, neutral))
+    if (const auto* value = req.Find(key); value &&
+        !(value->IsNull() && std::string_view(key) != "repetition_penalty") &&
+        !Number(*value, neutral))
       return Status::Fail(std::string(key) +
                           " unsupported value in greedy mode");
   }
   if (const auto* seed = req.Find("seed"); seed && !seed->IsNull()) {
-    if (!seed->IsNumber() || !std::isfinite(seed->number) ||
-        std::abs(seed->number) > 9007199254740991.0 ||
-        std::trunc(seed->number) != seed->number)
+    if (!IsInputInteger(*seed) ||
+        std::abs(seed->number) > 9007199254740991.0)
       return Status::Fail("seed must be an exact binary64 integer or null");
   }
   for (const char* key : {"logprobs", "top_logprobs", "stop", "logit_bias"}) {
@@ -143,7 +153,8 @@ Status ValidateChatContract(const io::Json& req,
         (name == "logit_bias" && value->IsObject() && value->object.empty());
     if (!neutral) return Status::Fail(std::string(key) + " is not supported");
   }
-  if (const auto* options = req.Find("stream_options")) {
+  if (const auto* options = req.Find("stream_options");
+      options && !options->IsNull()) {
     status = Fields(*options, {"include_usage"});
     if (!status) return status;
     if (const auto* usage = options->Find("include_usage");

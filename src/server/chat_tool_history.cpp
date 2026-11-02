@@ -6,6 +6,9 @@
 #include <unordered_map>
 #include <utility>
 
+#include "q4t/server/input_contract.h"
+#include "q4t/server/request_json.h"
+
 namespace q4t::server {
 namespace {
 constexpr size_t kMaxCalls = 128;
@@ -16,14 +19,38 @@ bool ValidId(const io::Json* id) {
          id->str.size() <= kMaxIdBytes;
 }
 
-bool ValidFunction(const io::Json& call) {
-  const auto* function = call.Find("function");
-  if (call.GetString("type") != "function" || !function ||
-      !function->IsObject())
-    return false;
-  const auto name = function->GetString("name");
-  return !name.empty() && name.size() <= 256 &&
-         name.find_first_of("<>\r\n") == name.npos;
+Status ValidateCall(const io::Json& call, bool identified) {
+  const auto* fn = call.Find("function");
+  auto status = fn ? InputFields(call, {"id", "type", "function"})
+                   : InputFields(call, {"type", "name", "arguments"});
+  if (!status) return status;
+  if ((identified && (!fn || !ValidId(call.Find("id")) ||
+                      call.GetString("type") != "function")) ||
+      (call.Has("type") && call.GetString("type") != "function"))
+    return Status::Fail("tool calls require function type and valid batch IDs");
+  if (fn) {
+    status = InputFields(*fn, {"name", "arguments"});
+    if (!status) return status;
+  } else {
+    fn = &call;  // Explicit native legacy flat shape, without an ID.
+  }
+  if (!ValidInputName(fn->GetString("name")))
+    return Status::Fail("invalid historical function name");
+  const auto* args = fn->Find("arguments");
+  io::Json decoded;
+  if (args && args->IsString()) {
+    status = io::ParseJson(args->str, &decoded, true, kRequestJsonLimits);
+    if (!status) return Status::Fail("invalid historical arguments JSON");
+    args = &decoded;
+  }
+  if (!args || !args->IsObject())
+    return Status::Fail("tool arguments require an object or JSON object text");
+  for (const auto& [key, value] : args->object) {
+    (void)value;
+    if (!ValidInputName(key))
+      return Status::Fail("invalid historical parameter name");
+  }
+  return Status();
 }
 
 bool TextResult(const io::Json& message) {
@@ -51,6 +78,11 @@ Status PlanToolResultOrder(const io::Json& messages,
     if (!message.IsObject()) return Status::Fail("message must be an object");
     if (message.Has("tool_call_id") && message.GetString("role") != "tool")
       return Status::Fail("tool_call_id is only valid on tool results");
+    if (message.GetString("role") == "tool") {
+      const auto* content = message.Find("content");
+      if (!content || !(content->IsString() || content->IsArray()))
+        return Status::Fail("tool result requires string or array content");
+    }
   }
   std::vector<size_t> order;
   if (render_order) {
@@ -75,6 +107,12 @@ Status PlanToolResultOrder(const io::Json& messages,
     const bool identified =
         std::any_of(calls->array.begin(), calls->array.end(),
                     [](const io::Json& call) { return call.Has("id"); });
+    if (calls->array.size() > kMaxCalls)
+      return Status::Fail("tool batch exceeds 128 calls");
+    for (const auto& call : calls->array) {
+      auto status = ValidateCall(call, identified);
+      if (!status) return status;
+    }
     size_t end = i + 1;
     while (end < ms.size() && ms[end].GetString("role") == "tool") ++end;
     if (!identified) {
@@ -86,14 +124,10 @@ Status PlanToolResultOrder(const io::Json& messages,
       i = end;
       continue;
     }
-    if (calls->array.size() > kMaxCalls)
-      return Status::Fail("identified tool batch exceeds 128 calls");
     std::unordered_map<std::string, size_t> slots;
     for (size_t k = 0; k < calls->array.size(); ++k) {
       const auto& call = calls->array[k];
       const auto* id = call.Find("id");
-      if (!ValidId(id) || !ValidFunction(call))
-        return Status::Fail("identified tool calls require function and id");
       if (!slots.emplace(id->str, k).second)
         return Status::Fail("duplicate tool call id within assistant batch");
     }

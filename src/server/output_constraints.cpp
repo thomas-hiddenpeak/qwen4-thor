@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 #include "q4t/server/http_response.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
 
 namespace q4t::server {
@@ -68,6 +69,8 @@ Status ParseDocument(std::string_view input, io::Json* out) {
 
 Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out) {
   *out = {};
+  auto definitions = ValidateToolDefinitions(request);
+  if (!definitions) return definitions;
   const bool parsed =
       request.Has("messages") && request.GetBool("parse_response", true);
   const auto* choice = request.Find("tool_choice");
@@ -110,9 +113,7 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out) {
     for (const auto& tool : tools->array) {
       const auto* fn = tool.Find("function");
       const auto* strict = fn ? fn->Find("strict") : nullptr;
-      if (strict && !strict->IsBool())
-        return Status::Fail("function.strict must be boolean");
-      strict_tools |= strict && strict->boolean;
+      strict_tools |= strict && strict->IsBool() && strict->boolean;
     }
   }
   const auto* format = request.Find("response_format");
@@ -137,9 +138,9 @@ Status PlanOutputConstraints(const io::Json& request, OutputConstraints* out) {
       if (!SafeName(spec->GetString("name")))
         return Status::Fail("invalid response schema name");
       if (const auto* strict = spec->Find("strict")) {
-        if (!strict->IsBool())
-          return Status::Fail("schema.strict must be bool");
-        strict_schema = strict->boolean;
+        if (!strict->IsNull() && !strict->IsBool())
+          return Status::Fail("schema.strict must be bool or null");
+        strict_schema = strict->IsBool() && strict->boolean;
       }
       if (const auto* description = spec->Find("description");
           description && !description->IsString())

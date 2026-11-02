@@ -18,10 +18,10 @@
 #include <string>
 #include <thread>
 #include "q4t/server/http_request.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
 
 namespace q4t::server {
-using detail::ValidRequestKey;
 using detail::SendSimple;
 using detail::SendError;
 
@@ -43,10 +43,7 @@ bool RequestCancelled(RequestControl* control, int fd) {
 }
 
 bool ValidRequestKey(const std::string& key) {
-  return key.size() == 64 &&
-         std::all_of(key.begin(), key.end(), [](unsigned char c) {
-           return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
-         });
+  return ValidCancelToken(key);
 }
 
 
@@ -240,8 +237,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
   if (path == "/v1/requests/cancel" && method == "POST") {
     io::Json req;
     if (!io::ParseJson(body, &req, true, kRequestJsonLimits).ok() ||
-        !req.IsObject() ||
-        !ValidRequestKey(req.GetString("cancel_token"))) {
+        !ValidateCancelContract(req)) {
       SendError(fd, 400, "invalid cancellation request", {},
                 "invalid_cancellation");
       return;

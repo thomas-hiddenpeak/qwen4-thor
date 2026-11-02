@@ -271,6 +271,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/session_cache.cpp
   src/server/session_state.cpp
   src/server/http_request.cpp
+  src/server/input_contract.cpp
   src/server/chat_contract.cpp
   src/server/chat_tool_history.cpp
                              src/server/chat_template.cpp)
@@ -406,6 +407,7 @@ if(Q4T_BUILD_TESTS)
     src/server/output_constraints.cpp
     src/server/structured_decoder.cpp
     tests/server_output_constraints_test.cpp
+    src/server/input_contract.cpp
     src/server/chat_contract.cpp
     src/server/http_response.cpp
     tests/server_http_response_test.cpp
@@ -533,6 +535,7 @@ if(Q4T_BUILD_TESTS)
     add_executable(q4t_http_lifecycle_tests
       tools/serve_reliability/http_lifecycle_test.cpp tests/test_main.cpp
       src/server/chat_http.cpp src/server/http_request.cpp
+      src/server/input_contract.cpp src/server/output_schema.cpp
       src/server/http_response.cpp src/trace/router_trace.cpp)
     target_include_directories(q4t_http_lifecycle_tests PRIVATE
       include ${CUDAToolkit_INCLUDE_DIRS})
@@ -633,8 +636,10 @@ target_compile_options(q4t_prefix_state_contract PRIVATE -Wall -Wextra)
 
 add_executable(q4t_prefix_seed_contract EXCLUDE_FROM_ALL
   tests/test_main.cpp tests/server_chat_contract_test.cpp
+  src/server/input_contract.cpp
   tools/prefix_seed/policy_contract.cpp src/server/chat_contract.cpp
   src/server/chat_tool_history.cpp src/server/output_constraints.cpp
+  src/server/chat_template.cpp src/server/chat_response_parser.cpp
   src/server/output_schema.cpp src/server/http_response.cpp src/io/json.cpp)
 target_include_directories(q4t_prefix_seed_contract PRIVATE include)
 target_compile_options(q4t_prefix_seed_contract PRIVATE -Wall -Wextra)

@@ -4,6 +4,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
   include/q4t/server/chat_capabilities.h
+  include/q4t/server/input_contract.h
   include/q4t/server/chat_contract.h
   include/q4t/server/chat_response_parser.h
   include/q4t/server/chat_template.h
@@ -15,6 +16,7 @@ set(protocol_inputs
   include/q4t/server/structured_decoder.h
   cmake/StructuredOutput.cmake
   src/server/chat_capabilities.cpp
+  src/server/input_contract.cpp
   src/server/chat_contract.cpp
   src/server/chat_generation.cpp
   src/server/chat_http.cpp

@@ -21,7 +21,8 @@ def current_surface(root):
     if not fields or not routes:
         raise ValueError("empty protocol inventory")
     nested = {}
-    for file in ("chat_contract.cpp", "output_constraints.cpp"):
+    for file in ("chat_contract.cpp", "output_constraints.cpp",
+                 "input_contract.cpp", "chat_tool_history.cpp"):
         source = (root / "src/server" / file).read_text()
         for index, item in enumerate(re.finditer(
                 r'Fields\(([^,]+),\s*\{([^}]+)\}\)', source)):

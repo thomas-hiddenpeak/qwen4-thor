@@ -1,6 +1,7 @@
 #include "q4t/server/chat_template.h"
 
 #include "q4t/server/chat_tool_history.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
 
 #include <charconv>
@@ -233,6 +234,8 @@ Status RenderChatPrompt(const io::Json& request,
                         const std::vector<std::string>& contents,
                         std::string* prompt) {
   prompt->clear();
+  auto definitions = ValidateToolDefinitions(request);
+  if (!definitions) return definitions;
   const io::Json* messages = request.Find("messages");
   if (!messages || !messages->IsArray() || messages->array.empty() ||
       messages->array.size() != contents.size()) {

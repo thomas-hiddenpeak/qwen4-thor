@@ -65,7 +65,6 @@ void LogMemorySnapshot(const char* phase, const std::string& id) {
 
 }  // namespace
 using detail::RequestCancelled;
-using detail::ValidRequestKey;
 using detail::FinishHostReadback;
 using detail::JsonEscape;
 using detail::WriteAll;
@@ -167,39 +166,18 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   }
 
   const io::Json* external_id = req.Find("request_id");
-  const io::Json* cancel_key = req.Find("cancel_token");
   const std::string key = req.GetString("cancel_token");
   std::string request_id = req.GetString("request_id");
-  if ((external_id && (!external_id->IsString() || request_id.empty() ||
-                       request_id.size() > 128 ||
-                       request_id.starts_with("chatcmpl-auto-") ||
-                       !std::all_of(request_id.begin(), request_id.end(),
-                                    [](unsigned char c) {
-                                      return std::isalnum(c) || c == '-' ||
-                                             c == '_';
-                                    }))) ||
-      (external_id && (!cancel_key || !cancel_key->IsString() ||
-                       !ValidRequestKey(key))) ||
-      (!external_id && cancel_key)) {
-    SendError(fd, 400, "request_id requires a fresh 64-hex cancel_token");
-    return;
-  }
+  // Shape, credentials and exact integer spelling were checked before leases.
   if (!external_id) {
     request_id = "chatcmpl-auto-" +
                  std::to_string(next_request_id_.fetch_add(1));
   }
   auto deadline = t_arrive +
                   std::chrono::milliseconds(request_deadline_ms_);
-  if (const io::Json* timeout = req.Find("request_timeout_ms")) {
-    const double value = timeout->AsDouble(-1);
-    if (!timeout->IsNumber() || !(value >= 1 && value <= 10800000) ||
-        value != static_cast<double>(static_cast<int64_t>(value))) {
-      SendError(fd, 400,
-                "request_timeout_ms must be an integer in [1,10800000]");
-      return;
-    }
+  if (req.Has("request_timeout_ms")) {
     deadline = t_arrive +
-               std::chrono::milliseconds(static_cast<int64_t>(value));
+               std::chrono::milliseconds(req.GetInt("request_timeout_ms"));
   }
   detail::ServeFaultPoint("handler.before_register");
   auto control = requests_.Register(request_id, key, deadline);

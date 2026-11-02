@@ -1,4 +1,5 @@
 #include "q4t/server/output_schema.h"
+#include "q4t/server/input_contract.h"
 
 #include <algorithm>
 #include <charconv>
@@ -144,7 +145,7 @@ Status Schema(const io::Json& schema, bool strict, bool xml, size_t depth,
     for (const char* key : {"minItems", "maxItems"}) {
       const auto* bound = schema.Find(key);
       if (bound &&
-          (!bound->IsNumber() || bound->AsInt(-1) < 0 || bound->AsInt(-1) > 64))
+          (!IsInputInteger(*bound) || bound->number < 0 || bound->number > 64))
         return Status::Fail("array bounds must be integers in [0,64]");
     }
     if (schema.GetInt("minItems", 0) > schema.GetInt("maxItems", 64))

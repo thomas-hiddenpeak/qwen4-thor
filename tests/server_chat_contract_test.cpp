@@ -1,4 +1,7 @@
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/input_contract.h"
+#include "q4t/server/chat_response_parser.h"
+#include "q4t/server/chat_template.h"
 #include "q4t/test.h"
 
 #include <string>
@@ -6,7 +9,7 @@
 namespace {
 bool Accept(const std::string& input, bool media = false) {
   q4t::io::Json req;
-  if (!q4t::io::ParseJson(input, &req).ok()) return false;
+  if (!q4t::io::ParseJson(input, &req, true).ok()) return false;
   return q4t::server::ValidateChatContract(
       req, "qwen3.8-flash-next", media).ok();
 }
@@ -135,5 +138,106 @@ Q4T_TEST(chat_contract_parsed_response_options) {
       R"({"messages":[],"tool_choice":"required"})",
       R"({"messages":[],"parallel_tool_calls":false})"})
     Q4T_CHECK(!Accept(bad));
+  return true;
+}
+
+Q4T_TEST(chat_contract_tool_definitions_all_modes) {
+  for (const auto* mode : {"", R"(,"parse_response":false)",
+                           R"(,"tool_choice":"auto")",
+                           R"(,"tool_choice":"none")"}) {
+    for (const auto* tool : {
+        R"({"type":"function","strict":true,"function":{"name":"f"}})",
+        R"({"type":"function","function":{"name":"f","paramaters":{}}})",
+        R"({"type":"function","function":{"name":"f","description":null}})",
+        R"({"type":"function","function":{"name":"f","parameters":null}})",
+        R"({"type":"function","function":{"name":"f","strict":1}})",
+        R"({"type":"custom","function":{"name":"f"}})",
+        R"({"function":{"name":"f"}})",
+        R"({"type":"function","function":{"name":"bad\u0000name"}})",
+        R"({"type":"function","function":{"name":"f"},"extra":false})"}) {
+      const auto text = std::string(R"({"messages":[{"role":"user",)"
+                                   R"("content":"q"}],"tools":[)") +
+                        tool + ']' + mode + '}';
+      Q4T_CHECK(!Accept(text));
+      q4t::io::Json request;
+      Q4T_CHECK(q4t::io::ParseJson(text, &request, true).ok());
+      std::string prompt = "clear on failure";
+      Q4T_CHECK(!q4t::server::RenderChatPrompt(request, {"q"}, &prompt).ok());
+      Q4T_CHECK(prompt.empty());
+      q4t::server::ChatResponseParser parser;
+      Q4T_CHECK(!parser.Init(request,
+          "<|im_start|>assistant\n<think>\n\n</think>\n\n", "r", true).ok());
+    }
+  }
+  // An advisory schema can retain ordinary JSON Schema keywords. Only the
+  // constrained mode promises validation against the finite schema profile.
+  Q4T_CHECK(Accept(R"({"messages":[{"role":"user","content":"q"}],
+    "tools":[{"type":"function","function":{"name":"f","strict":null,
+    "parameters":{"type":"object","properties":{"id":{"type":"number",
+    "default":1.0}}}}}]})"));
+  Q4T_CHECK(!Accept(R"({"messages":[{"role":"user","content":"q"}],
+    "tools":[{"type":"function","function":{"name":"f"}},
+    {"type":"function","function":{"name":"f"}}]})"));
+  return true;
+}
+
+Q4T_TEST(chat_contract_nullable_defaults_are_field_specific) {
+  Q4T_CHECK(Accept(R"({"prompt":"q","temperature":null,"top_p":null,
+    "n":null,"frequency_penalty":null,"presence_penalty":null,"stream":null,
+    "stream_options":null,"user":null})"));
+  for (const auto* key : {"model", "repetition_penalty", "request_id",
+                         "cancel_token", "request_timeout_ms",
+                         "prefix_cache_write_tokens", "parse_response"})
+    Q4T_CHECK(!Accept(std::string(R"({"prompt":"q",")") + key + "\":null}"));
+  for (const auto* field : {R"("temperature":"0")", R"("top_p":false)",
+                           R"("n":[])" , R"("stream_options":[])"})
+    Q4T_CHECK(!Accept(std::string(R"({"prompt":"q",)") + field + '}'));
+  return true;
+}
+
+Q4T_TEST(chat_contract_exact_numeric_spelling) {
+  for (const auto* fields : {
+      R"("max_tokens":1.0000000000000001)",
+      R"("max_completion_tokens":2147483647.00000001)",
+      R"("request_timeout_ms":1.0000000000000001)",
+      R"("prefix_cache_write_tokens":1024.00000000000001)",
+      R"("seed":9007199254740991.1)", R"("seed":1.0000000000000001)",
+      R"("n":1.0000000000000001)", R"("top_p":1.0000000000000001)",
+      R"("temperature":1e-400)", R"("top_logprobs":1e-400)"})
+    Q4T_CHECK(!Accept(std::string(R"({"prompt":"q",)") + fields + '}'));
+  for (const auto* fields : {
+      R"("max_tokens":1.0000000000000000)", R"("max_tokens":10e-1)",
+      R"("max_completion_tokens":21474836470e-1)",
+      R"("request_timeout_ms":1e3)", R"("seed":-9007199254740991)",
+      R"("temperature":-0.0)", R"("n":1e0)"})
+    Q4T_CHECK(Accept(std::string(R"({"prompt":"q",)") + fields + '}'));
+  return true;
+}
+
+Q4T_TEST(chat_contract_cancellation_shape_and_credentials) {
+  const std::string key(64, 'a');
+  const std::string fields = R"("request_id":"task-1","cancel_token":")" +
+                             key + '"';
+  q4t::io::Json req;
+  Q4T_CHECK(q4t::io::ParseJson('{' + fields + '}', &req).ok());
+  Q4T_CHECK(q4t::server::ValidateCancelContract(req).ok());
+  Q4T_CHECK(Accept(R"({"prompt":"q",)" + fields + '}'));
+  for (const auto& text : std::initializer_list<std::string>{
+      "{}", '{' + fields + R"(,"dry_run":true})",
+      '{' + fields + R"(,"reason":"ignore"})",
+      R"({"cancel_token":")" + key + R"("})",
+      R"({"request_id":null,"cancel_token":")" + key + R"("})",
+      R"({"request_id":"chatcmpl-auto-1","cancel_token":")" + key + R"("})",
+      R"({"request_id":"bad/id","cancel_token":")" + key + R"("})",
+      R"({"request_id":"x","cancel_token":"A"})",
+      R"({"request_id":"x","cancel_token":null})"}) {
+    Q4T_CHECK(q4t::io::ParseJson(text, &req).ok());
+    Q4T_CHECK(!q4t::server::ValidateCancelContract(req).ok());
+  }
+  Q4T_CHECK(!Accept(R"({"prompt":"q","request_id":"x"})"));
+  Q4T_CHECK(!Accept(R"({"prompt":"q","cancel_token":")" + key + R"("})"));
+  for (const auto* number : {"null", "true", "0", "10800001", "1.1"})
+    Q4T_CHECK(!Accept(std::string(R"({"prompt":"q","request_timeout_ms":)") +
+                      number + '}'));
   return true;
 }

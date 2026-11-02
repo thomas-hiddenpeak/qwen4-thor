@@ -32,6 +32,10 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("stream":true,"stream_include_usage":true,)"
          R"("token_limit_fields":["max_tokens","max_completion_tokens"],)"
          R"("token_limit_conflict":"reject_both_nonnull",)"
+         R"("input_contract":"q4t-input-v2","exact_integer_spelling":true,)"
+         R"("null_as_default":["temperature","top_p","n",)"
+         R"("frequency_penalty","presence_penalty","stream",)"
+         R"("stream_options","user"],)"
          R"("reasoning_field":"reasoning_content",)"
          R"("stream_tool_arguments":"complete_call",)"
          R"("stream_terminal_order":["finish","usage_if_requested","DONE"],)"
@@ -40,11 +44,16 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("tools":{"type":"function","execution":"client",)" +
          options +
          R"("options_require_parsed_messages":true,)"
+         R"("definition_unknown_fields":"reject_all_modes",)"
+         R"("strict_null":"false",)"
          R"("full_json_schema_validation":false,)"
          R"("max_calls":128,"max_id_bytes":256,)"
          R"("history":{"identified_results":"complete_unique_batch",)"
          R"("unordered_text_results":true,"unordered_media_results":false,)"
-         R"("legacy_without_ids":true}},"structured_output":{"available":)" +
+         R"("legacy_without_ids":true,"legacy_shape_validation":true,)"
+         R"("arguments":"required_object_or_json_object_text",)"
+         R"("result_content":"required_string_or_array"}},)"
+         R"("structured_output":{"available":)" +
          (constrained ? "true" : "false") +
          R"(,"backend":"xgrammar","backend_revision":)" +
          Quote(kXGrammarRevision) + R"(,"schema_profile":)" +
@@ -73,6 +82,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          (mtp_enabled ? "true" : "false") +
          R"(},"cancellation":{"endpoint":"/v1/requests/cancel",)"
          R"("accepted_status":202,"acceptance_is_drained":false,)"
+         R"("unknown_fields":"reject","malformed_status":400,)"
+         R"("unknown_credentials_status":404,)"
          R"("request_replay_idempotent":false},)"
          R"("errors":{"envelope":["message","type","code","param"],)"
          R"("code_namespace":"q4t","automatic_retry_safe":false,)"

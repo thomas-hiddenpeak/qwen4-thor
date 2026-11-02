@@ -33,9 +33,15 @@ void ChatServer::HandleHealth(int fd) {
   detail::SendSimple(fd, 200, "OK", "ok", "text/plain");
 }
 void ChatServer::HandleModels(int fd) { HandleHealth(fd); }
+void ChatServer::HandleCapabilities(int fd) { HandleHealth(fd); }
 void ChatServer::HandleMetrics(int fd) { HandleHealth(fd); }
 
 struct ServeContractAccess {
+  static std::shared_ptr<RequestControl> Register(ChatServer& server,
+                                                const std::string& token) {
+    return server.requests_.Register("cancel-contract", token,
+        std::chrono::steady_clock::now() + std::chrono::seconds(30));
+  }
   static void Configure(ChatServer& server) { server.port_ = 0; }
   static int Port(ChatServer& server) {
     const int fd = server.listen_fd_.load();
@@ -132,6 +138,44 @@ Q4T_TEST(http_exception_keeps_server_and_releases_connections) {
   Q4T_CHECK(run.get().ok() && ServeContractAccess::Empty(server));
   Q4T_CHECK(failed.starts_with("HTTP/1.1 500 "));
   Q4T_CHECK(healthy.starts_with("HTTP/1.1 200 "));
+  return true;
+}
+
+Q4T_TEST(http_cancel_validates_before_registry_mutation) {
+  ChatServer server;
+  ServeContractAccess::Configure(server);
+  const std::string token(64, 'a');
+  auto control = ServeContractAccess::Register(server, token);
+  Q4T_CHECK(control != nullptr);
+  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  const std::string valid = R"({"request_id":"cancel-contract","cancel_token":")" +
+                            token + R"("})";
+  const auto post = [&](const std::string& body) {
+    return Request(server, "POST /v1/requests/cancel HTTP/1.1\r\nHost: test\r\n"
+        "Content-Type: application/json\r\nContent-Length: " +
+        std::to_string(body.size()) + "\r\n\r\n" + body);
+  };
+  for (const auto& body : std::initializer_list<std::string>{
+      valid.substr(0, valid.size() - 1) + R"(,"dry_run":true})",
+      valid.substr(0, valid.size() - 1) + R"(,"reason":"test"})",
+      R"({"cancel_token":")" + token + R"("})",
+      R"({"request_id":null,"cancel_token":")" + token + R"("})"}) {
+    const auto response = post(body);
+    Q4T_CHECK(response.starts_with("HTTP/1.1 400 "));
+    Q4T_CHECK(response.find("invalid_cancellation") != response.npos);
+    Q4T_CHECK(!control->Cancelled());
+  }
+  const auto unknown = post(R"({"request_id":"cancel-contract","cancel_token":")" +
+                            std::string(64, 'b') + R"("})");
+  Q4T_CHECK(unknown.starts_with("HTTP/1.1 404 "));
+  Q4T_CHECK(!control->Cancelled());
+  const auto accepted = post(valid);
+  Q4T_CHECK(accepted.starts_with("HTTP/1.1 202 "));
+  Q4T_CHECK(control->Cancelled());
+  stop.Run();
+  Q4T_CHECK(run.wait_for(3s) == std::future_status::ready);
+  Q4T_CHECK(run.get().ok() && ServeContractAccess::Empty(server));
   return true;
 }
 

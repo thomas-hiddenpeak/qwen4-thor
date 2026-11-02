@@ -21,75 +21,90 @@
       ]
     },
     "messages": {
-      "semantics": "原生模板和 parsed 输出默认启用",
-      "boundary": "角色/嵌套/history 子合同；F1/F2",
+      "semantics": "原生模板与 parsed 默认启用，历史调用形状与结果必填",
+      "boundary": "无 ID wrapped/flat 兼容格式保留；只有带 ID 的批次保证唯一完整关联",
       "evidence": [
         "tests/server_chat_tool_history_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "max_tokens": {
-      "semantics": "旧版总生成 token 预算，含推理",
-      "boundary": "仅一个非 null 预算；请求容量可能进一步限制；F7",
+      "semantics": "数字原文精确整数 [1,2147483647] 或 null，总生成 token 预算含推理",
+      "boundary": "两个预算只能一个非 null；容量可能进一步限制；非法舍入值拒绝",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "max_completion_tokens": {
-      "semantics": "与 max_tokens 共用总生成预算",
-      "boundary": "双非空拒绝；不是独立可见内容预算；F7",
+      "semantics": "数字原文精确整数 [1,2147483647] 或 null，总生成 token 预算含推理",
+      "boundary": "两个预算只能一个非 null；容量可能进一步限制；非法舍入值拒绝",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "stream": {
-      "semantics": "JSON 或 SSE 传输",
-      "boundary": "null 拒绝 F3；结构化 payload 缓冲；G5",
+      "semantics": "bool 或 null；null=false，JSON 或 SSE",
+      "boundary": "结构化 payload 缓冲；完整 SSE 可空字段等 G5 尚未修复",
       "evidence": [
         "tests/server_http_response_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "stream_options": {
-      "semantics": "include_usage 决定 SSE 用量尾帧",
-      "boundary": "null 拒绝 F3；非 stream 提供时无作用；G5",
+      "semantics": "对象或 null；null 不请求 usage",
+      "boundary": "仅 include_usage bool；尚无其他流控选项",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "request_id": {
-      "semantics": "活跃 ID 去重并贯穿诊断/响应",
-      "boundary": "需 cancel_token；无持久幂等；自动 ID 跨重启不唯一 G4",
+      "semantics": "ASCII 字母数字/下划线/短横线，1..128；需合法 cancel_token",
+      "boundary": "活跃 ID 去重；保留 auto 前缀不可自定；无持久幂等 G4",
       "evidence": [
         "tests/server_state_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "cancel_token": {
-      "semantics": "64 位小写 hex 取消凭据",
-      "boundary": "仅随显式 request_id；不是网关鉴权",
+      "semantics": "显式 request_id 配套 64 位小写 hex；注册前检查",
+      "boundary": "取消 handler 共用凭据形状；不是网关鉴权",
       "evidence": [
         "tests/server_state_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "request_timeout_ms": {
-      "semantics": "请求注册/执行中的协作取消期限",
+      "semantics": "原文精确整数 [1,10800000]；注册前拒绝错误值",
       "boundary": "不含读取 body；编译/部分等待不可抢占 F6",
       "evidence": [
         "tests/server_state_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "tools": {
-      "semantics": "声明函数并进入模板和输出名称/类型解析",
-      "boundary": "普通 auto 不保证完整 schema；嵌套未知字段 F1",
+      "semantics": "各模式共用函数定义白名单；strict:null=false",
+      "boundary": "普通 schema 仍为提示，不保证完整 JSON Schema；强约束有限 profile 不变",
       "evidence": [
         "tests/server_chat_response_parser_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "chat_template_kwargs": {
@@ -133,59 +148,66 @@
       ]
     },
     "temperature": {
-      "semantics": "仅兼容 0，固定 greedy",
-      "boundary": "不支持采样；null 拒绝 F3",
+      "semantics": "中性值或 null；null 使用 greedy 默认值",
+      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "top_p": {
-      "semantics": "仅兼容 1",
-      "boundary": "不支持采样；null 拒绝 F3",
+      "semantics": "中性值或 null；null 使用 greedy 默认值",
+      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "n": {
-      "semantics": "仅支持 1 choice",
-      "boundary": "不支持多候选；null 拒绝 F3",
+      "semantics": "中性值或 null；null 使用 greedy 默认值",
+      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "frequency_penalty": {
-      "semantics": "仅兼容 0",
-      "boundary": "非中性值拒绝；null 拒绝 F3",
+      "semantics": "中性值或 null；null 使用 greedy 默认值",
+      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "presence_penalty": {
-      "semantics": "仅兼容 0",
-      "boundary": "非中性值拒绝；null 拒绝 F3",
+      "semantics": "中性值或 null；null 使用 greedy 默认值",
+      "boundary": "非中性采样值拒绝；中性值比较先检查数字原文为精确整数",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "repetition_penalty": {
-      "semantics": "仅兼容 1",
-      "boundary": "非中性值拒绝；vLLM 扩展，不是 OpenAI 原字段",
+      "semantics": "仅数学精确的 1",
+      "boundary": "扩展选项 null 仍拒绝；其他值不支持",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "seed": {
-      "semantics": "整数或 null 可接收",
-      "boundary": "greedy 无随机效果；不保证跨版本/配置重现；F7",
+      "semantics": "原文精确整数且绝对值不超过 2^53-1，或 null",
+      "boundary": "greedy 无随机效果；不保证跨版本/配置重现",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "stop": {
@@ -205,11 +227,12 @@
       ]
     },
     "top_logprobs": {
-      "semantics": "只接受 null 或 0",
-      "boundary": "未实现 token 概率 G8",
+      "semantics": "仅 null 或精确数学零的数值",
+      "boundary": "不返回 logprobs；浮点舍入后的零不视为合法控制值",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "logit_bias": {
@@ -221,19 +244,22 @@
       ]
     },
     "response_format": {
-      "semantics": "text/null 或受约束 JSON 对象/有限 schema",
-      "boundary": "XGrammar ON；与 tools 同用须 none；缓存/媒体拒绝",
+      "semantics": "text/null 或受约束 JSON 对象/有限 schema；schema.strict:null=false",
+      "boundary": "XGrammar ON；tools 同用须 none；数组界限精确整数 0..64；缓存/媒体拒绝",
       "evidence": [
         "tests/server_output_constraints_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "user": {
-      "semantics": "接收字符串后忽略，兼容元数据占位",
-      "boundary": "不做身份、审计索引、配额；null 拒绝 F3",
+      "semantics": "字符串或 null，可选元数据",
+      "boundary": "不用于鉴权、隔离、路由或日志标签",
       "evidence": [
         "tests/server_chat_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "session_id": {
@@ -253,11 +279,13 @@
       ]
     },
     "prefix_cache_write_tokens": {
-      "semantics": "显式共享种子 checkpoint",
-      "boundary": "需 scope；边界受配置限制；F7",
+      "semantics": "原文精确整数 0 或 [1024,131072]",
+      "boundary": "正值必须提供 prefix_cache_scope；不扩大缓存组合支持",
       "evidence": [
         "tests/server_state_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "parse_response": {
@@ -319,11 +347,12 @@
       ]
     },
     "POST /v1/requests/cancel": {
-      "semantics": "令牌匹配后请求协作取消，返回202",
-      "boundary": "202不等于drained；未知字段接受 F4；重启无持久状态",
+      "semantics": "仅 request_id/cancel_token；未知/形状错误400，无匹配404，匹配202",
+      "boundary": "400不触发取消；202不等于drained；重启无持久状态",
       "evidence": [
-        "tests/server_state_contract_test.cpp",
-        "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md"
+        "tools/serve_reliability/http_lifecycle_test.cpp",
+        "tests/server_chat_contract_test.cpp",
+        "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
       ]
     },
     "POST /v1/chat/completions": {
@@ -420,10 +449,38 @@
       "description",
       "parameters",
       "strict"
+    ],
+    "input_contract.cpp:0:tool": [
+      "type",
+      "function"
+    ],
+    "input_contract.cpp:1:*fn": [
+      "name",
+      "description",
+      "parameters",
+      "strict"
+    ],
+    "input_contract.cpp:2:request": [
+      "request_id",
+      "cancel_token"
+    ],
+    "chat_tool_history.cpp:0:call": [
+      "id",
+      "type",
+      "function"
+    ],
+    "chat_tool_history.cpp:1:call": [
+      "type",
+      "name",
+      "arguments"
+    ],
+    "chat_tool_history.cpp:2:*fn": [
+      "name",
+      "arguments"
     ]
   },
   "sources_sha256": {
-    "cmake/ChatProtocolIdentity.cmake": "ee157645f4a39a2eccf190fb2fc9f05eac2c88c92cf34845bf1265929dc7c5d7",
+    "cmake/ChatProtocolIdentity.cmake": "b67382fbc9974033a82b3239511d690a97c3760cbd9adeca9cfb63952fe57e29",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
     "include/q4t/server/chat_capabilities.h": "7258dd026c08b16d5a09f55ea318036a86e1ad4c93d816d1aa2163f23d01540c",
     "include/q4t/server/chat_contract.h": "cc1fc63b8f551dcf705c1692cc9b551d64040487245827ea74fbb190010c7bdf",
@@ -433,6 +490,7 @@
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/http_request.h": "7c5f076db8fec2f745223a499f1510ce8e08208ee120e3e5b682b8ee80c53b43",
     "include/q4t/server/http_response.h": "e82717241bb8d7d09e27b198e9b248e9fd547bb3ed29d35591a64a2b3f6239af",
+    "include/q4t/server/input_contract.h": "b10e1fb838738b687c5a8f30808f895b38f4fd204dd34e5aefaa84059ac7154e",
     "include/q4t/server/lifetime.h": "11c9b381a7f6c5e019dcb57fbc18e2ad76492fca5c5e42960c381e954e5068bc",
     "include/q4t/server/mtp_policy.h": "28f10c5c885f9465c0f26c22a36bf6be541933a0ed9d9c2da5f0d3983e0a8285",
     "include/q4t/server/output_constraints.h": "3b3e67271fa0d0edd04d5479e9a6a6cae570bfb73737038ce2bafa2f410ca306",
@@ -453,26 +511,28 @@
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
     "src/main.cpp": "09eb90bd2246afe03c72ad4be71743cfed8076f0ccd3fbba999eb119b27b4deb",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "src/server/chat_capabilities.cpp": "c31f8d84bdf0cdffe0cef9b2528e795b0f25f94a88080db68bb631d7c8b37e90",
-    "src/server/chat_contract.cpp": "057bf794530f17db9c171e29e46a0643e1010e6feeffc76260f7284d86b2699d",
-    "src/server/chat_generation.cpp": "c61282d876ec1516e16893afcff0d11a440cf38c39c778c036ab385e3d740acc",
-    "src/server/chat_http.cpp": "f1d28a9deca860b21cdab20d34947f96024bbb5c8eaf6476a83d88f348084adb",
+    "src/server/chat_capabilities.cpp": "983c1d2073ffaa39a467edb6ff58e1e504820382eedab0bdef1e86890a1f835a",
+    "src/server/chat_contract.cpp": "2278a6c8474d61ca21244061e6b25ea97cd38ab0d7f1ecda5a6c59b962390e96",
+    "src/server/chat_generation.cpp": "2e5ce89cd2611c572143992767e7170b18a677a43c89398b43a3ff8d6ef65e40",
+    "src/server/chat_http.cpp": "114c84ba1b3a8c48c1e90e39695e4248fe7b4c86124696eaac99f53c6486ab49",
     "src/server/chat_input.cpp": "1b1c5baf72f418c1377c07c48e8499adb3e01ad72d0b3ebccaa09cbfc7075992",
     "src/server/chat_metrics.cpp": "1e08a6115d85f7a8cffd37e62d17b1b585585d08a4b115dd719516fe76e6a41a",
-    "src/server/chat_response_parser.cpp": "7ff219ef215f18972ffb9e164fd4a011521c8f413fb1902d0a5bfae454b47bb6",
+    "src/server/chat_response_parser.cpp": "dec8d134d331405688c53150d4dcaeb2736c4a86f5d094ca3dd5f6c809502859",
     "src/server/chat_scheduler.cpp": "fa8abe68ea9c02826731fbc7dc10dbb728d0860708af5f33b1ea800ffacea2f6",
     "src/server/chat_server.cpp": "228bdfcee62e79ec933488f13c3166e972702b2953dde2ef28361c58c2c66317",
     "src/server/chat_server_internal.h": "a0b12f215356157635e6faae917c973c3b87ed56df30b47324895fd3911ea55a",
-    "src/server/chat_template.cpp": "d616835ffaa3fc8555f69b8d1b7a2fafd8c06cc2d8791f6fad43b9e15bdeeeae",
-    "src/server/chat_tool_history.cpp": "29b94f2a8f7d0001e609c5bb1425f6001044017e446a83f28587b96ef225d09a",
+    "src/server/chat_template.cpp": "351677cef7accf3461dc40a8b2d6e896bbfb2f25fc94ebb33b7e8b4b1f01d3a0",
+    "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
     "src/server/http_request.cpp": "a0609922a91e8517b410bf0c6e236dd524f0584be152362fd17e316039c66aaa",
     "src/server/http_response.cpp": "004372d91bf53297fc4d7d6bef61abd6569425345968f656a86e2e4490ccdcb1",
-    "src/server/output_constraints.cpp": "07cb69c6cf039ad84b6f61a7c4b941d0b0d9ade803fde4a634b7a62480c51133",
-    "src/server/output_schema.cpp": "3e5d7520d0d5d6a2d5dbf87cc5d73d5d79a22fa8432442ef6359a0c5e331a963",
+    "src/server/input_contract.cpp": "b11ff893774749edcc59f636eb0de762956cb17e650db7755490df55b5f81d13",
+    "src/server/output_constraints.cpp": "76630cbef022cf14d250dc890d983d912bd44096c80a275c630ad30196f285f0",
+    "src/server/output_schema.cpp": "b9309e2102d6f44e412c4c8c59d1c1b5e35fbcb71dae60c56cb70af453f05d4f",
     "src/server/server_options.cpp": "06e9470e9d294b8604677fefd74ab9d9b23c5dbe70b17a652174c7b1e4a4c1fc",
     "src/server/session_cache.cpp": "68fc36654c7f3a7c14ac41b26e3abd10697e87ffc94bf70fe2052edb9cf751f6",
     "src/server/session_state.cpp": "bc34bd240a68cfb7ba57f78604d898c51e61bc5705b5d9db64bd546f91d64f12",
     "src/server/structured_decoder.cpp": "8ae6eeaf142aad749164d572ec4557462ce3ee8647aa47155abd5e980c469ee3",
     "src/text/tokenizer.cpp": "bfa059ee7dc64a37eb42d749710b4ad039f125675a93718902cab3b6ade2e7e8"
-  }
+  },
+  "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md"
 }

@@ -98,6 +98,24 @@ Q4T_TEST(output_constraints_schema_profile_rejects_silent_downgrade) {
   return true;
 }
 
+Q4T_TEST(output_schema_array_bounds_exact_spelling) {
+  for (const auto* key : {"minItems", "maxItems"}) {
+    for (const auto* value : {"1.0000000000000001", "63.9999999999999999",
+                             "1.5", "-1", "65", "true"}) {
+      auto schema = Parse(R"({"type":"object","properties":{"xs":{)"
+          R"("type":"array","items":{"type":"string"},")" +
+          std::string(key) + "\":" + value +
+          R"(}},"required":["xs"],"additionalProperties":false})");
+      Q4T_CHECK(!q4t::server::ValidateOutputSchema(schema, true).ok());
+    }
+  }
+  auto schema = Parse(R"({"type":"object","properties":{"xs":{"type":"array",
+    "items":{"type":"string"},"minItems":1.0,"maxItems":64e0}},
+    "required":["xs"],"additionalProperties":false})");
+  Q4T_CHECK(q4t::server::ValidateOutputSchema(schema, true).ok());
+  return true;
+}
+
 Q4T_TEST(output_constraints_nested_values_and_exact_integers) {
   const auto schema = Parse(R"({"type":"object","properties":{
     "values":{"type":"array","items":{"type":["integer","null"]},

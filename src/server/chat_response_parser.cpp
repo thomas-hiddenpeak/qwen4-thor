@@ -190,8 +190,6 @@ Status ChatResponseParser::Init(const io::Json& request,
         name.find_first_of("<>\r\n") != name.npos ||
         !tools_.emplace(name, fn).second)
       return Fail("invalid or duplicate tool name");
-    if (const auto* strict = fn->Find("strict"); strict && !strict->IsBool())
-      return Fail("strict must be boolean");
     const auto* parameters = fn->Find("parameters");
     if (parameters && !parameters->IsObject())
       return Fail("tool parameters must be a schema object");
