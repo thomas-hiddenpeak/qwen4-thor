@@ -1,0 +1,22 @@
+{
+  "status": "PASS_MANAGED_SYSTEMD_MTP",
+  "automatic_request_retry": false,
+  "performance_acceptance": false,
+  "persistent_service_installed": false,
+  "starts": 2,
+  "successful_requests": 6,
+  "real_tool_executions": 2,
+  "actual_backend_replacements": 1,
+  "pending_restarts_cancelled": 1,
+  "reused_negative_scenarios": 3,
+  "cleanup_confirmed": true,
+  "counts": {
+    "generations": 6,
+    "negatives": 3,
+    "controls": 17
+  },
+  "elapsed_seconds": 117.59029476996511,
+  "supervision_http_upper_bound": 188,
+  "full_observation_upper_bound": 205,
+  "gpu_window_elapsed": 106.91972623509355
+}

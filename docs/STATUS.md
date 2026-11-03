@@ -8,16 +8,14 @@
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进；当前组合GPU
 验收已完成限定交付，GPU交接阻塞已解除。
 
-当前推进[SRV-14受控服务托管](SERVE_MANAGED_SERVICE_2026-11-03.md)，
-[CPU已通过](SERVE_MANAGED_SERVICE_CPU_2026-11-03.md)：独立发布源码包、
-默认不重启/显式总预算、停止终止记录、有效MTP/容量配置校验及有界
-私有日志。实际CPU进程验证parent-death跨exec及控制器死亡后的锁保持；
-托管29/共享guard30、包内isolated入口/systemd语法通过，10份CPU原件
-封存。旧text-v1固定no-MTP且healthz503重启，不直接推广；211运行时/
-默认pair保持。[实际托管矩阵](SERVE_MANAGED_SERVICE_GPU_2026-11-03.md)
-已冻结2启动/8生成/6负面场景；实际首轮在第4请求发现结构化响应
-结束与grammar回收之间的交接竞争，整体FAILED，临时服务/GPU/锁
-均已清理。普通JSON/SSE/严格JSON通过不代替整批通过。
+[SRV-14受控托管已限定通过](SERVE_MANAGED_SERVICE_RESULT_2026-11-03.md)：
+真实systemd/包内生产控制器、同锁跨2启动，6请求成功、2次真实资料
+工具执行；只恢复1次，第二次退避被正式stop取消。幂等停止后10秒
+无复起，临时unit已删除，guard COMPLETED/cleanup_confirmed。
+106.920秒GPU窗口、117.590秒总计，17显式控制+保守188监督GET；
+88原件/1本机ELF封存。原3拒绝及29托管/30guard/8驱动CPU证据复用。
+原首轮第4请求的交接503及FAILED保持，托管累计4+6=10次另列；
+未安装常驻服务。包manifest71da1a1d，伴随接受记录绑定该身份。
 [交接修复已限定交付](SERVE_STRUCTURED_HANDOFF_RESULT_2026-11-03.md)：
 默认d66f2bb9/sidecar42d7672a、protocol55a3e67b。终态前标记收尾、
 后继可取消等待，保留完整资源独占。零警告、261公共/227必需/9后端、
@@ -27,11 +25,11 @@
 保留；纠正复核既有livez/readyz/metrics及exit0，不新增模型/HTTP，
 新guard COMPLETED并交付。缺失healthz与独立末样本单列，原600秒不扩。
 旧280b95dc完整pair和专用回退入口已核验；恢复服务仍masked，GPU/锁
-释放，[实际托管补验](SERVE_MANAGED_SERVICE_SUPPLEMENT_2026-11-03.md)
-冻结2启动/6生成/3终止场景，复用原3拒绝与未变CPU，待执行。
+释放。下一步物理RAM保护策略、实际部署访问/通知/多人及新ELF长稳；
+不因本批受控托管通过而标记完整工业化目标完成。
 
 [SRV-02h+02i已限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)：
-默认280b95dc/sidecar18c9d2c5、protocol29810d03，211来源保持；工具
+当时默认280b95dc/sidecar18c9d2c5、protocol29810d03，211来源保持；工具
 冻结abb653c8。原生25、实际函数查询/8拒绝、tiny视觉与workspace故障、
 333真实上传通过；实际32生成/21负场景/11启动首轮通过，含真实资料
 工具回填、11媒体准入负例、配额拒绝、分配哨兵/同PID恢复与完整SSE取消。

@@ -1,7 +1,7 @@
 # 当前文本发布的受控托管
 
-入口：`service.py`。本机CPU合同已通过；真实托管/MTP工具与systemd
-生命周期仍待[SRV-14验收](../../docs/SERVE_MANAGED_SERVICE_2026-11-03.md)。
+入口：`service.py`。本机CPU合同及真实托管/MTP工具、systemd恢复与停止
+已[限定通过](../../docs/SERVE_MANAGED_SERVICE_RESULT_2026-11-03.md)。
 当前默认二进制和已接受业务范围见[STATUS](../../docs/STATUS.md)。
 
 从项目根目录准备独立包，不加载模型：
@@ -17,7 +17,9 @@
 目录只读，只重新核对JSON元数据，没有重算全部权重shard摘要。
 准备包不会把托管入口自动标为业务验收通过，摘要也不是签名认证。
 
-实际运行前必须完成对应托管验收。启动新代次示例：
+实际运行应使用身份与配置匹配的托管证据；本次已验包和绑定manifest
+SHA的伴随接受记录见上述结果页。prepare本身的未验声明不被改写，
+不能把新准备的其他配置自动视为本次接受。启动新代次示例：
 
 ```bash
 /usr/bin/python3 -I -B tools/serve_service/service.py run \
@@ -74,5 +76,5 @@ JSON。写日志失败会停服。不同运行目录/发布包不会自动清除
 
 首个配置固定为full-head MTP k3、seq1、8192上下文、2048 prefill、
 inflight8/queued2、2GiB内存准入/启动余量与512MiB恢复滞回。配置与
-当前已验HTTP原件逐项比较通过，不能据此宣称新托管路径已通过HTTP。
+当前已验HTTP与实际托管结果保持这一范围。
 其他上下文、媒体或代理入口应另有明确配置和适用验收。

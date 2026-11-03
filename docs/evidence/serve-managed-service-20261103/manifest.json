@@ -1,0 +1,582 @@
+{
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/accepted-package.json",
+      "sha256": "4867a2c4ab09e0422d0805f2072e46b8bbb0475345b4fd5cb192ada9c9c7983d",
+      "bytes": 1314,
+      "member": "supplement/accepted-package.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/begin.json",
+      "sha256": "46ff06d7ba669983f84b8f87757fade1a38672f19932905cc45a7443a6531b5b",
+      "bytes": 4638,
+      "member": "supplement/execution/begin.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/cleanup-unit-before.json",
+      "sha256": "8b6bc565a0a79682d44101b36762e95ad6f87f4ada29a004b1f9d127225b605b",
+      "bytes": 923,
+      "member": "supplement/execution/cleanup-unit-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/counts.json",
+      "sha256": "16d56252cd054d41a6f473486eafaee11852c35e6f0107174ac421f0262ece16",
+      "bytes": 59,
+      "member": "supplement/execution/counts.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/explicit-stop.json",
+      "sha256": "fcab2747d24f4e35a41e9d765e6c3aec090dbc9c8ae97dc5eb7b27049ec015e2",
+      "bytes": 480,
+      "member": "supplement/execution/explicit-stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-idle-metrics.json",
+      "sha256": "29e9b541f9e68267d6d7051c222c18c2552a48bc4f8200e37f30b26b6d38ac4c",
+      "bytes": 26258,
+      "member": "supplement/execution/first-idle-metrics.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-kill.json",
+      "sha256": "811889e3b32a00dad07e1d196f15f48838e64114eb1e27b0b873d73637bf8034",
+      "bytes": 236,
+      "member": "supplement/execution/first-kill.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-project-answer-http.json",
+      "sha256": "3883adf4f27b222aff94de09d68aaa48a5cef06389090d06859b98f0396a15c3",
+      "bytes": 280,
+      "member": "supplement/execution/first-project-answer-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-project-answer-request.json",
+      "sha256": "e93796bfb9ca82902092a5352a8555ddfff146735205ef81d02a6beaff72b176",
+      "bytes": 5890,
+      "member": "supplement/execution/first-project-answer-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-project-answer-response.json",
+      "sha256": "87df23849957a7648d5c1e965d16bd8764cda99324e95ba6651a1656291775d8",
+      "bytes": 497,
+      "member": "supplement/execution/first-project-answer-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-project-answer-wire.bin",
+      "sha256": "f5279aba69014a08634e361ca47b652bc9ada85518d16dc4706550fb3a0c9786",
+      "bytes": 1137,
+      "member": "supplement/execution/first-project-answer-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-project-read-http.json",
+      "sha256": "cf56971757b056ca5999e2f2ae1c50bf08a872c8c843eb477119dd309fd36230",
+      "bytes": 279,
+      "member": "supplement/execution/first-project-read-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-project-read-request.json",
+      "sha256": "31bca76423b1121af1844b999bb398624c37a482bdeb0ebf89dcb73ab8261a53",
+      "bytes": 3442,
+      "member": "supplement/execution/first-project-read-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-project-read-response.json",
+      "sha256": "1262ac4fba6b877d088b8cc78ede8a58ac12a5d4d345f1bfd73d46840d838f8b",
+      "bytes": 577,
+      "member": "supplement/execution/first-project-read-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-project-read-wire.bin",
+      "sha256": "0bfd5002683b7a882de8d6df761c5e2076cf50babd6a8c955841386a866e0a0f",
+      "bytes": 1184,
+      "member": "supplement/execution/first-project-read-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-project-tool-result.json",
+      "sha256": "398a3bd5bf8437a09243b540af1567dac23e84b83b69efc9fc4b62b31ee1e628",
+      "bytes": 2036,
+      "member": "supplement/execution/first-project-tool-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-project-tool-started.json",
+      "sha256": "461badbf58c4690c77027b7586a75ab09fd99462e1cf3859413e83f9c8d20874",
+      "bytes": 191,
+      "member": "supplement/execution/first-project-tool-started.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-ready-ownership.json",
+      "sha256": "6abb7ce2f43a5b8db4bcff95e5a46db3821015a4b0bfeb316d2bfec59cdcccd5",
+      "bytes": 1666,
+      "member": "supplement/execution/first-ready-ownership.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/first-ready-unit.json",
+      "sha256": "8e136b38058e641273e669b5b10f076f11e4884ecdb0f954eb898f3a4810f00a",
+      "bytes": 1036,
+      "member": "supplement/execution/first-ready-unit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/gpu-after-stop.json",
+      "sha256": "75b3def14c8c81c7d2acd3e01a8e20fb29d3882fde3451228d1ae302774b1968",
+      "bytes": 2259,
+      "member": "supplement/execution/gpu-after-stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/gpu-before.json",
+      "sha256": "a7c3e9631560063cd4d28c61bcd6ba57cfb039293dd90dba1ec8ed1eed186ed6",
+      "bytes": 2257,
+      "member": "supplement/execution/gpu-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/gpu-final.json",
+      "sha256": "76714eb77efe54683a95aad4fd6d5b35bb9bb8e4ab47074f2d49d5c64f4a633e",
+      "bytes": 2256,
+      "member": "supplement/execution/gpu-final.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/idempotent-stop.json",
+      "sha256": "d01e25772f3b2b0fcfd7166f8caacaacc0f2c9edc93bed2ecf97e2d7cb1f8a9c",
+      "bytes": 8723,
+      "member": "supplement/execution/idempotent-stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/attempt-1.json",
+      "sha256": "0fd2ecb44b77c86c9e90c772f17a996771142eac9e6aaf75b10645f94ee34e67",
+      "bytes": 834,
+      "member": "supplement/execution/managed-run/attempt-1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/attempt-2.json",
+      "sha256": "3cb395ae5f5d05c01d12fecbfb4deba8ba49163b9add77c17f01cb560f379ccc",
+      "bytes": 835,
+      "member": "supplement/execution/managed-run/attempt-2.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/backend.log",
+      "sha256": "803279d955ce9d4212f94daa483ee42de9ea0ecc5edb3fe01ab4d9babba4a41e",
+      "bytes": 22982,
+      "member": "supplement/execution/managed-run/backend.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/controller.json",
+      "sha256": "93c2cf6c6bc8c5e3282914a2a957fd3b823e3c117dacf2c243daf7961cf47360",
+      "bytes": 457,
+      "member": "supplement/execution/managed-run/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/events.log",
+      "sha256": "70cd530162f6e1bea0bd49fe99773e5dc4a94499e4f9f9c671f8e3d7b088a5a7",
+      "bytes": 277,
+      "member": "supplement/execution/managed-run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/lease/events.jsonl",
+      "sha256": "54bee0c6d1db3b466c68fb9e37905cb6c4f4e7f2c22ef416f6a0fd8514a5a29a",
+      "bytes": 19131,
+      "member": "supplement/execution/managed-run/lease/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/lease/exit.json",
+      "sha256": "d7c42dd245a8be2979e625df38ccedfee94e9cf89c7a334db4ce9bde23ddd417",
+      "bytes": 950,
+      "member": "supplement/execution/managed-run/lease/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/lease/nvml-queries.jsonl",
+      "sha256": "ac114e648e86a8a36889e9f019c41c4170b1b4d2b2b770de6f80100eed955988",
+      "bytes": 234596,
+      "member": "supplement/execution/managed-run/lease/nvml-queries.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/status.json",
+      "sha256": "14bfaeec17db82781073caea2805fe99b0725e089ed8c19d9d6f01ad36ed71bc",
+      "bytes": 7406,
+      "member": "supplement/execution/managed-run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/stop.request.json",
+      "sha256": "331899a88e764c13e6be7c4f23fa4758b74fc5f6f0ab1aee98733fd301cdba13",
+      "bytes": 69,
+      "member": "supplement/execution/managed-run/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/terminal.json",
+      "sha256": "382881f2de6ba09bf51af44d7059d607b2c1c5ca5221927ab7dbf06deeacf3e7",
+      "bytes": 8894,
+      "member": "supplement/execution/managed-run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/q4t-managed-srv14-fix-119a59821e66a28990c6.service",
+      "sha256": "6dfe3438df2c4eafe7cda919a872e1320c7f658bbea29ecedf1804737b20d1df",
+      "bytes": 811,
+      "member": "supplement/execution/q4t-managed-srv14-fix-119a59821e66a28990c6.service"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/recovered-json-http.json",
+      "sha256": "6107575addde819bafa0c6551f3a66d343f803dd3462250eb2c419ec89b9b852",
+      "bytes": 245,
+      "member": "supplement/execution/recovered-json-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/recovered-json-request.json",
+      "sha256": "0f8cd6b3d3752ce20db4f2e7fd071ececef44741d66568b5b683467f69144f33",
+      "bytes": 634,
+      "member": "supplement/execution/recovered-json-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/recovered-json-response.json",
+      "sha256": "e0ff4891e6cce7e62ffb8141cdb362640658f5474393bd8b9329be2a20724d96",
+      "bytes": 276,
+      "member": "supplement/execution/recovered-json-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/recovered-json-wire.bin",
+      "sha256": "10d337261bb35c806103cca8715119c1a41d00bad40c8923d4730f448cec9c56",
+      "bytes": 306,
+      "member": "supplement/execution/recovered-json-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/result.json",
+      "sha256": "9ebb7eaacdeaaf46e17e9d7d0fdafae95c43d301662f44c240ae2cecbd115e16",
+      "bytes": 604,
+      "member": "supplement/execution/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/sealed-files.json",
+      "sha256": "7a3b0b6e21b57ddcdcd4cb1d4fa0b92483ee12bd6a77c1473496b927e1445c6d",
+      "bytes": 6786,
+      "member": "supplement/execution/sealed-files.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-idle-metrics.json",
+      "sha256": "4f3296608039b87ccd65fedd991ed8c24491d5ce828e28964fa90a02e0f14e1b",
+      "bytes": 26258,
+      "member": "supplement/execution/second-idle-metrics.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-kill.json",
+      "sha256": "5c0b011440027a4341290cc0cd0115b6bc8a8b82d301a704b2242401faf7da3d",
+      "bytes": 236,
+      "member": "supplement/execution/second-kill.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-project-answer-http.json",
+      "sha256": "f913ac0518726c92d300e27d626f6bbf75bad20e74c1ad197759b3227cf487e8",
+      "bytes": 280,
+      "member": "supplement/execution/second-project-answer-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-project-answer-request.json",
+      "sha256": "b1d578e1f46d962e5a05178e79ace9e1cfa311ad6eefdc1f05f09c4f68a43135",
+      "bytes": 5890,
+      "member": "supplement/execution/second-project-answer-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-project-answer-response.json",
+      "sha256": "f4d6c2ea146591f3961a7ef797c3cbb97b2b97ecb8a0fa67a176929768a44776",
+      "bytes": 497,
+      "member": "supplement/execution/second-project-answer-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-project-answer-wire.bin",
+      "sha256": "9cb679869915e783d9614a950271c8fee381b08957713f348973c0ff400f242b",
+      "bytes": 1137,
+      "member": "supplement/execution/second-project-answer-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-project-read-http.json",
+      "sha256": "1d62c91e3efacbc468d97b8506eb04226eb19232ec43eff275265f92b783b016",
+      "bytes": 280,
+      "member": "supplement/execution/second-project-read-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-project-read-request.json",
+      "sha256": "42d8deeb1b6871cc60b4a66b9301a2c758b479187e0b8ac5e61c2b388ea5218d",
+      "bytes": 3442,
+      "member": "supplement/execution/second-project-read-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-project-read-response.json",
+      "sha256": "6f64a1d2b0af8e1ebf6134f76d7fc53dcf71bb0f2870dcff610ac19c214f3b1f",
+      "bytes": 577,
+      "member": "supplement/execution/second-project-read-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-project-read-wire.bin",
+      "sha256": "d7f16a4fc27aca4b2808cecf93c7b9a41c7258f83c4aba726c103d9aea828134",
+      "bytes": 1184,
+      "member": "supplement/execution/second-project-read-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-project-tool-result.json",
+      "sha256": "38afea77dea8f52955302a0fd27c7327999234210758fd25f12c99801fd18fb4",
+      "bytes": 2036,
+      "member": "supplement/execution/second-project-tool-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-project-tool-started.json",
+      "sha256": "0495ee5ef72f971380b09e68b356486cbe8f1e96e52c2cccf3098bf8bea1956b",
+      "bytes": 191,
+      "member": "supplement/execution/second-project-tool-started.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-ready-ownership.json",
+      "sha256": "58dc7e8d5d38e227615f64c0cbc741ab8ca13b6ef7d024deaf3290031c6d99bf",
+      "bytes": 1666,
+      "member": "supplement/execution/second-ready-ownership.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/second-ready-unit.json",
+      "sha256": "8e136b38058e641273e669b5b10f076f11e4884ecdb0f954eb898f3a4810f00a",
+      "bytes": 1036,
+      "member": "supplement/execution/second-ready-unit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/status-snapshots.jsonl",
+      "sha256": "d508a0789a612680cb114b00c075c1a503303673ab7d715f09f816ae5138f139",
+      "bytes": 92506,
+      "member": "supplement/execution/status-snapshots.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/stop-during-backoff.json",
+      "sha256": "93844e0bb8a841948d6f37c9fd20cdbefc30b4e3fcaf8dffec0d1db081d8e9ef",
+      "bytes": 7487,
+      "member": "supplement/execution/stop-during-backoff.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/strict-json-http.json",
+      "sha256": "b74920f66276b138b8221b3aadb605e6de02cc8af5c4df20cd3e1186efffcba6",
+      "bytes": 245,
+      "member": "supplement/execution/strict-json-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/strict-json-request.json",
+      "sha256": "2db905768ab35ed399643fe4579b6bf4288a93d4920bd4262238369a4eead4af",
+      "bytes": 1064,
+      "member": "supplement/execution/strict-json-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/strict-json-response.json",
+      "sha256": "ce5cf943dcf0507627f8dae9d9a6d774a328045b646d641d38eb17b0c3970457",
+      "bytes": 284,
+      "member": "supplement/execution/strict-json-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/strict-json-wire.bin",
+      "sha256": "9488623d1eb37286bbd62b7c300216cb3c1ea0fa9aa07bbdc810fbfbaa4c69d6",
+      "bytes": 314,
+      "member": "supplement/execution/strict-json-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/unit-before.json",
+      "sha256": "21c1960ffc102695d8a28460915c8ca0dd8ba14c5c79790afcee9aae030a0aa1",
+      "bytes": 854,
+      "member": "supplement/execution/unit-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/unit-journal.json",
+      "sha256": "6c95397a5396bc226916353091724d48fc8a853e7b4f64158954687314eb99ee",
+      "bytes": 287,
+      "member": "supplement/execution/unit-journal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/unit-link.json",
+      "sha256": "42d304234f2358c694e62bee3cbd9e1bb92fc4d477ee51b399bbca16c2f5295a",
+      "bytes": 533,
+      "member": "supplement/execution/unit-link.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/unit-linked.json",
+      "sha256": "8b6bc565a0a79682d44101b36762e95ad6f87f4ada29a004b1f9d127225b605b",
+      "bytes": 923,
+      "member": "supplement/execution/unit-linked.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/unit-reload.json",
+      "sha256": "a19196c7a69bf16f38ae5d07e9fbe8c07b49984b8b07c2b7a11c46f5adf9c8ff",
+      "bytes": 122,
+      "member": "supplement/execution/unit-reload.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/unit-removed.json",
+      "sha256": "21c1960ffc102695d8a28460915c8ca0dd8ba14c5c79790afcee9aae030a0aa1",
+      "bytes": 854,
+      "member": "supplement/execution/unit-removed.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/unit-reset.json",
+      "sha256": "7ba9991f954ac83c30852e429ecdd79045be702ee17243a5ee595eb480b08c93",
+      "bytes": 337,
+      "member": "supplement/execution/unit-reset.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/unit-start.json",
+      "sha256": "2c902c537b9a662bc6ca58808968790159eee13397b77a85448b36a8be8c10aa",
+      "bytes": 172,
+      "member": "supplement/execution/unit-start.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/unit-stopped.json",
+      "sha256": "8b6bc565a0a79682d44101b36762e95ad6f87f4ada29a004b1f9d127225b605b",
+      "bytes": 923,
+      "member": "supplement/execution/unit-stopped.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/unit-verify.json",
+      "sha256": "3bba924ccf6120e16238af019ac00146a99b65ca11e11fad7106de3573867b4a",
+      "bytes": 274,
+      "member": "supplement/execution/unit-verify.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/CMakeCache.txt",
+      "sha256": "fd1130b57a00a839279dab7875cbdd7eb942016069927ad57fdea4ba574e4111",
+      "bytes": 39184,
+      "member": "supplement/package/CMakeCache.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/acceptance.json",
+      "sha256": "41c1f1d776502620942f2fe24392b622bbf77125d28618cf82f3845e5167d4f9",
+      "bytes": 902,
+      "member": "supplement/package/acceptance.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/manifest.json",
+      "sha256": "71da1a1d05e3d83dbf28df052c249646e5e80a48639af54b9513debff266af0d",
+      "bytes": 3804,
+      "member": "supplement/package/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/q4t.release.json",
+      "sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+      "bytes": 48517,
+      "member": "supplement/package/q4t.release.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "supplement/package/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "supplement/package/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "supplement/package/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "supplement/package/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "supplement/package/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "supplement/package/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "supplement/package/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "supplement/package/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/serve_service/package.py",
+      "sha256": "c493bf2122cc5c6dcbbfa4ebc371a30e1b7f7616a729108a8f0c175207cc043e",
+      "bytes": 8111,
+      "member": "supplement/package/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/serve_service/service.py",
+      "sha256": "27b481a31720c18c0cf7b5a3fb83a8d0d20e8362a20d5f2f2993b75be330a9f1",
+      "bytes": 9959,
+      "member": "supplement/package/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/source/tools/serve_service/supervisor.py",
+      "sha256": "f78d3c7019ad444fedca48e12a1c11108862ddf1d70b4edcd1fa6a27a466be37",
+      "bytes": 11958,
+      "member": "supplement/package/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/plan.json",
+      "sha256": "a8f1d883965f4b2c1795e7d3df73041e83868648ae8b6ac6c9d278d1d0c3aa3a",
+      "bytes": 4427,
+      "member": "supplement/plan.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/postflight.json",
+      "sha256": "e62f82fc96c645c82973b14b01943a25189463f583f2b7aa318e22fde5f5cf13",
+      "bytes": 608,
+      "member": "supplement/postflight.json"
+    }
+  ],
+  "local_artifacts": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/package/q4t",
+      "sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+      "bytes": 7159544
+    }
+  ],
+  "aliases": {
+    "plan.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/plan.json",
+      "sha256": "a8f1d883965f4b2c1795e7d3df73041e83868648ae8b6ac6c9d278d1d0c3aa3a",
+      "bytes": 4427
+    },
+    "result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/result.json",
+      "sha256": "9ebb7eaacdeaaf46e17e9d7d0fdafae95c43d301662f44c240ae2cecbd115e16",
+      "bytes": 604
+    },
+    "terminal.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/terminal.json",
+      "sha256": "382881f2de6ba09bf51af44d7059d607b2c1c5ca5221927ab7dbf06deeacf3e7",
+      "bytes": 8894
+    },
+    "guard.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/execution/managed-run/lease/exit.json",
+      "sha256": "d7c42dd245a8be2979e625df38ccedfee94e9cf89c7a334db4ce9bde23ddd417",
+      "bytes": 950
+    },
+    "accepted_package.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/accepted-package.json",
+      "sha256": "4867a2c4ab09e0422d0805f2072e46b8bbb0475345b4fd5cb192ada9c9c7983d",
+      "bytes": 1314
+    },
+    "postflight.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/supplement/postflight.json",
+      "sha256": "e62f82fc96c645c82973b14b01943a25189463f583f2b7aa318e22fde5f5cf13",
+      "bytes": 608
+    }
+  },
+  "archiver": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_service/closeout.py",
+    "sha256": "1475638adafe45f52fd4663c5d189ae0804428ba35be0b3d4fa852e64f7a98f8",
+    "bytes": 7046
+  },
+  "prior_failure_archive": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-structured-handoff-20261103/manifest.json",
+    "sha256": "b9d3dfce93344daa0c21cbc1737f90704fe9c9516053ff6d3752f2a657c2167e",
+    "bytes": 135167
+  },
+  "scope": "Actual systemd, two backend starts, six model requests, two real project tools, one replacement and stop during backoff. No persistent deployment/long-soak/performance claim."
+}
