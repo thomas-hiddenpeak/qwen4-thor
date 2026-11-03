@@ -63,7 +63,9 @@ SRV-13[限定接受并交付关停修复](SERVE_LIFECYCLE_RESULT_2026-11-03.md)�
 SRV-02e[启动检查及Thor计量限定交付](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)。
 SRV-02f[文本/调度资源故障限定交付](SERVE_DEVICE_MEMORY_RESULT_2026-11-03.md)。
 02g[默认文本内部清理已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)。
-02h与02i接线均已开发并取得CPU证据，下一步冻结组合GPU业务验收；
+02h与02i接线均已开发并取得CPU证据，[组合GPU合同](SERVE_MEDIA_COMPOSITE_2026-11-03.md)
+及驱动/压缩夹具CPU检查已准备，下一步封存32/21/11组合包并在GPU
+空闲后统一验收；
 保留正在运行的vLLM，物理可证明保护单列；
 物理硬限额、实际访问运维与多人策略仍需独立完成。
 B通过不表示工业化持续目标完成。
