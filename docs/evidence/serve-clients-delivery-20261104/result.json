@@ -1,0 +1,84 @@
+{
+  "containers_empty": true,
+  "day_execution_absent": true,
+  "days_unchanged": true,
+  "default": {
+    "bytes": 7229952,
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "7619966ef2a5101e9a4bbc56d20805d980f85324e0313a71c248c701df6aa501"
+  },
+  "lock_available": true,
+  "lock_device": 66305,
+  "lock_inode": 3294067,
+  "long_run": false,
+  "new_http_requests": 0,
+  "new_model_starts": 0,
+  "original_delivery_refusal_preserved": true,
+  "owned": [
+    {
+      "exited": true,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-clients-20261104/short/legacy-model/identity.json",
+      "pid": 2534929,
+      "start_ticks": 192808669
+    },
+    {
+      "exited": true,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-clients-20261104/short/lifecycle/identity.json",
+      "pid": 2534779,
+      "start_ticks": 192808612
+    },
+    {
+      "exited": true,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-clients-20261104/short/nginx/identity.json",
+      "pid": 2536567,
+      "start_ticks": 192815887
+    },
+    {
+      "exited": true,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-clients-20261104/short/scoped-model/identity.json",
+      "pid": 2535750,
+      "start_ticks": 192812414
+    },
+    {
+      "exited": true,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-clients-20261104/handoff-short/lifecycle/identity.json",
+      "pid": 2540777,
+      "start_ticks": 192880853
+    },
+    {
+      "exited": true,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-clients-20261104/handoff-short/nginx/identity.json",
+      "pid": 2541596,
+      "start_ticks": 192884313
+    },
+    {
+      "exited": true,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-clients-20261104/handoff-short/scoped-model/identity.json",
+      "pid": 2540792,
+      "start_ticks": 192880859
+    },
+    {
+      "exited": true,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-clients-20261104/cache-short/nginx/identity.json",
+      "pid": 2543092,
+      "start_ticks": 192907341
+    },
+    {
+      "exited": true,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-clients-20261104/cache-short/scoped-model/identity.json",
+      "pid": 2542253,
+      "start_ticks": 192903947
+    }
+  ],
+  "previous_binary_sha256": "a479d8ab02d133000bc7a029c307b60c9f42504faf20e679f5d292137550cb8d",
+  "protocol_sha256": "63b29f137b9c7057201de50c3a711930e9d76431f443ea29a083d9b429fced25",
+  "rollback_pair_verified": true,
+  "runtime_sources": 222,
+  "sidecar": {
+    "bytes": 56974,
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "a2f9cb8feb2fab94917b4d4ad1b22020efe42c2416b87306873d15d26b71a263"
+  },
+  "soar_masked_inactive": true,
+  "status": "DELIVERED_BOUNDED_CLIENT_ISOLATION"
+}

@@ -11,8 +11,9 @@
 本机真实模型4类生命周期已通过，实际LAN配置和常驻安装仍待交接。
 下面保留基础配置与底层prepare/check/run说明。
 
-SRV-10c已开发可选[runner客户端策略](../../docs/SERVE_CLIENT_ISOLATION_2026-11-04.md)，
-尚未验收/替换默认ELF。该模式在本工具及managed的prepare增加
+SRV-10c可选[runner客户端策略](../../docs/SERVE_CLIENT_ISOLATION_2026-11-04.md)
+已完成[本机真实业务验收与默认交付](../../docs/SERVE_CLIENT_RESULT_2026-11-04.md)，
+新托管组合及实际LAN部署仍待验。该模式在本工具及managed的prepare增加
 `--client-policy FILE`，并在模型托管prepare传入同一文件；runner使用
 `--client-policy-file FILE`。网关重建可信client/共享凭据头，后端再校验，
 按client隔离请求/取消/cache键并限制body/token/并发。策略须使用独立

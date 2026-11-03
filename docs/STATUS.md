@@ -41,7 +41,8 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-10c[客户端隔离与请求预算本机短验限定接受](SERVE_CLIENT_RESULT_2026-11-04.md)：
+SRV-10c[客户端隔离与请求预算已限定交付](SERVE_CLIENT_RESULT_2026-11-04.md)：
+当前默认7619966e/sidecar a2f9cb8f，protocol63b29f13、222运行来源；
 私有policy、可信身份、data/control完整计额与100ms收尾交接、正文/
 真实token预算、请求/取消/私有和共享缓存域及包绑定已接入。
 最终7619966e零警告，280公共/246必需/9后端/28 SSD/70包及新增3
@@ -50,7 +51,9 @@ handoff合同（29相关off/on）通过。原链接、真实429及漏seed夹具
 和引用通过，27不同HTTP合同执行29次。私有hit8234、跨client miss0；
 显式共享seed后各自hit8192、答案正确。3 GPU窗口合计200秒内，
 GPU/原锁释放、9自有身份退出、SOAR masked、容器空，day未运行。
-419原件/9 ELF身份封存并离线核对；正在按授权准备默认pair交付。
+419业务原件/9 ELF身份封存；交付42原件/3 ELF身份另封存并离线核对。
+首个相对guard入口拒绝保留，绝对路径交付COMPLETED/DELIVERED；
+0新增模型/HTTP，CLI及同ELF业务复用，旧pair回退核对通过。
 实际LAN部署、新托管E2E、长期公平/物理RAM和用户长验仍待办。
 
 [SRV-12d独立心跳检测本机限定接受](SERVE_NOTIFY_WATCHDOG_RESULT_2026-11-04.md)：
@@ -65,7 +68,7 @@ GPU空/原锁可用/容器空、SOAR仍masked，默认pair和新旧day不变且�
 留存、物理RAM保护和用户长验仍待办，工业化目标继续active。
 
 [SRV-02j2生产额度接线已限定交付](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)：
-默认a479d8ab/sidecar9ed141ad、protocol847aeb46、217来源。实际启动
+该阶段默认a479d8ab/sidecar9ed141ad、protocol847aeb46、217来源。实际启动
 预留和运行device/pinned/managed/async统一计额，进程缓存保留，
 stream代次/完成退额、CLI/config/metrics和拒绝原因已接入。
 零警告，有效28 wrapper/268公共/234必需/9后端/5驱动/3 flags；

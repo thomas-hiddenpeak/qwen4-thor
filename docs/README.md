@@ -68,7 +68,7 @@
 [真实排空/失联/崩溃/依赖退场短验](SERVE_GATEWAY_MANAGED_RESULT_2026-11-04.md)；
 [SRV-10c客户端状态隔离与请求预算开发合同](SERVE_CLIENT_ISOLATION_2026-11-04.md)、
 [本机限定接受](SERVE_CLIENT_RESULT_2026-11-04.md)及
-[默认交付与回退步骤](SERVE_CLIENT_DELIVERY_2026-11-04.md)；
+[实际默认交付与回退](SERVE_CLIENT_DELIVERED_2026-11-04.md)；
 [SRV-12c通知链路开发合同](SERVE_NOTIFY_2026-11-04.md)、
 [真实通知/恢复冻结矩阵](SERVE_NOTIFY_GPU_2026-11-04.md)及
 [本机接收/真实服务恢复限定结果](SERVE_NOTIFY_RESULT_2026-11-04.md)；

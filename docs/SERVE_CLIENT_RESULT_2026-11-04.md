@@ -5,6 +5,12 @@
 运行时。当前完成的是协议与资源隔离、业务闭环及本机接入证明，
 实际LAN部署、多机与新托管包E2E、长稳仍待后续。
 
+默认已交付7619966e/sidecar a2f9cb8f，protocol63b29f13，222来源；
+原a479d8ab/9ed141ad作为可核验回退pair保留。交付0新增模型/HTTP，
+CLI与同ELF已验业务复用，guard COMPLETED/finalized DELIVERED。
+首个相对guard argv拒绝在begin前发生，未改默认，原失败保持；
+修正入口仅用绝对路径并写新目录。详见[实际交付](SERVE_CLIENT_DELIVERED_2026-11-04.md)。
+
 私有固定policy支持最多64客户端，网关覆盖内部身份头，后端验证
 独立随机凭据；启用策略仅loopback文本。data/control分别计额到
 完整清理，响应收尾仅允许后继最多等100ms，active饱和仍429。
