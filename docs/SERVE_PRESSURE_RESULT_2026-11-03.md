@@ -84,3 +84,16 @@ ed672a65/67897c81及完整回退链保留；见[原发布与回退入口](SERVE_
 后续继续运营告警/排障运行手册、较长持续运行与重启/发布回退合同。
 整机物理RAM硬保护、实际网关/鉴权和多人资源策略、跨进程业务恢复
 仍未完成；局部通过不能关闭工业化持续目标。
+
+## 收尾驱动分类修正（未重跑模型）
+
+审阅发现资源Monitor失效时，原驱动异常文本含ENV_ABORT，但最终
+result.status仍是FAILED。现以ObservationAbort区分资源证据失效，
+机器结果明确记ENV_ABORT；真实业务失败仍FAILED。外层GPU guard若
+自身观测正常而子进程非0退出，仍按其既有合同记COMMAND_FAILED；
+两层分别保留，不把环境异常当业务/数值NO_GO。
+
+[定向CPU记录](evidence/serve-pressure-observation-20261103/result.json)2项
+通过，无HTTP/模型启动。此次仅改验证工具的异常分支，不改运行时或
+接受条件；4fd5ec7c冻结的原始GPU测试/driver身份与证据不追改，本轮
+实际没有发生观测失效，原通过证据直接复用。

@@ -9,7 +9,7 @@ import time
 
 from tools.serve_pressure import stage
 from tools.serve_pressure import pressure
-from tools.serve_pressure.observe import Monitor, plateau, sample
+from tools.serve_pressure.observe import Monitor, ObservationAbort, plateau, sample
 from tools.serve_admission import verify as base
 from tools.serve_memory.verify import memory_contract, rejection_key
 from isolated_scope import IsolatedScope
@@ -328,6 +328,8 @@ class Run(base.Run):
                 physical_ram_hard_limit_proved=False, long_duration_soak_proved=False,
                 deployment_changed=False, automatic_retries=0)
         except BaseException as error:
+            if isinstance(error, ObservationAbort):
+                result['status'] = 'ENV_ABORT'
             result['error'] = repr(error)
             raise
         finally:

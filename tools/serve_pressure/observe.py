@@ -9,6 +9,10 @@ from tools.serve_backpressure.verify import memory_snapshot
 from resource_metrics import collect_resources
 
 
+class ObservationAbort(RuntimeError):
+    """Resource evidence is unavailable; no candidate acceptance is possible."""
+
+
 def check_oom(events):
     keys = ('oom', 'oom_kill', 'oom_group_kill')
     if any(key not in events for key in keys):
@@ -74,7 +78,7 @@ class Monitor:
 
     def check(self):
         if self.error:
-            raise RuntimeError('ENV_ABORT: observer failed: ' + self.error)
+            raise ObservationAbort('ENV_ABORT: observer failed: ' + self.error)
 
     def close(self):
         self.stop.set()

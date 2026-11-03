@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "tests": 2,
+  "models_started": 0,
+  "http_started": 0,
+  "prior_gpu_evidence_reused": true,
+  "source_hashes": {
+    "tools/serve_pressure/observe.py": "fe6d9ffb4d5181c3c4561b11afd44efe1507db5e3eca541c134ae2b5011f7341",
+    "tools/serve_pressure/verify.py": "dbce072d92a939fe33dc869e0931bb543d70dc0b0385f63cacbc5ec5c2ddb630",
+    "tools/serve_pressure/test_abort.py": "f8ef5db9f1d1a8199c9697dffa456b67a703e9d166758bbdfb724941cae882a6"
+  }
+}
