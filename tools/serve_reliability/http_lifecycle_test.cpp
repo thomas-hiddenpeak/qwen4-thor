@@ -18,6 +18,10 @@
 #include <cerrno>
 #include <cstring>
 
+namespace {
+std::atomic<bool> observation_failure{false};
+}
+
 namespace q4t::model {
 ModelOwner::~ModelOwner() = default;
 DecodeMetadataUpload::~DecodeMetadataUpload() = default;
@@ -43,7 +47,10 @@ void ChatServer::HandleHealth(int fd) {
 }
 void ChatServer::HandleModels(int fd) { HandleHealth(fd); }
 void ChatServer::HandleCapabilities(int fd) { HandleHealth(fd); }
-void ChatServer::HandleMetrics(int fd) { HandleHealth(fd); }
+void ChatServer::HandleMetrics(int fd) {
+  if (observation_failure.exchange(false)) throw std::bad_alloc();
+  HandleHealth(fd);
+}
 
 }  // namespace q4t::server
 
@@ -96,6 +103,180 @@ std::string Request(ChatServer& server, const std::string& request) {
   return response;
 }
 }  // namespace
+
+Q4T_TEST(http_observation_partition_business_and_control_isolation) {
+  using namespace q4t::server;
+  ChatServer server;
+  ServeContractAccess::Configure(server);
+  const std::string token(64, 'a');
+  auto control = ServeContractAccess::Register(server, token);
+  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  std::vector<int> held;
+  ScopeExit close_held([&] { for (int fd : held) if (fd >= 0) close(fd); });
+  const auto hold = [&](const std::string& wire) {
+    const int fd = Connect(server);
+    held.push_back(fd);
+    return detail::WriteAll(fd, wire);
+  };
+  const auto wait = [&](auto predicate) {
+    const auto end = std::chrono::steady_clock::now() + 1s;
+    while (!predicate() && std::chrono::steady_clock::now() < end)
+      std::this_thread::sleep_for(1ms);
+    return predicate();
+  };
+  const std::string business =
+      "POST /v1/chat/completions HTTP/1.1\r\nHost: t\r\n"
+      "Content-Type: application/json\r\nContent-Length: 1\r\n\r\n";
+  Q4T_CHECK(hold(business) && hold(business));
+  Q4T_CHECK(wait([&] { return ServeContractAccess::Business(server) == 2; }));
+  Q4T_CHECK(Request(server, business).starts_with("HTTP/1.1 503 "));
+  for (const char* path : {"/metrics", "/v1/models", "/v1/capabilities"})
+    Q4T_CHECK(Request(server, std::string("GET ") + path +
+        " HTTP/1.1\r\nHost: t\r\n\r\n").starts_with("HTTP/1.1 200 "));
+  // Config's fixture returns 501, proving it reached dispatch, not capacity.
+  Q4T_CHECK(Request(server, "GET /v1/config HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 501 "));
+  for (int i = 0; i < 4; ++i)
+    Q4T_CHECK(hold("GET /metrics HTTP/1.1\r\nHost: t\r\n"
+                   "Content-Length: 1\r\n\r\n"));
+  Q4T_CHECK(wait([&] { return ServeContractAccess::Observation(server) == 4; }));
+  const auto full = Request(server,
+      "GET /metrics HTTP/1.1\r\nHost: t\r\n\r\n");
+  Q4T_CHECK(full.starts_with("HTTP/1.1 503 ") &&
+            full.find("observation_capacity_exhausted") != full.npos);
+  Q4T_CHECK(Request(server, "GET /readyz HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 200 "));
+  const std::string body =
+      R"({"request_id":"cancel-contract","cancel_token":")" + token + "\"}";
+  Q4T_CHECK(Request(server,
+      "POST /v1/requests/cancel HTTP/1.1\r\nHost: t\r\n"
+      "Content-Type: application/json\r\nContent-Length: " +
+      std::to_string(body.size()) + "\r\n\r\n" + body)
+                .starts_with("HTTP/1.1 202 "));
+  Q4T_CHECK(control->Cancelled());
+  Q4T_CHECK(ServeContractAccess::ConnectionRejected(
+      server, HttpConnectionClass::kBusiness) == 1);
+  Q4T_CHECK(ServeContractAccess::ConnectionRejected(
+      server, HttpConnectionClass::kObservation) == 1);
+  Q4T_CHECK(ServeContractAccess::ConnectionRejected(
+      server, HttpConnectionClass::kControl) == 0);
+  for (size_t i = 2; i < held.size(); ++i) {
+    close(held[i]);
+    held[i] = -1;
+  }
+  Q4T_CHECK(wait([&] { return ServeContractAccess::Observation(server) == 0; }));
+  Q4T_CHECK(Request(server, "GET /metrics HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 200 "));
+  close_held.Run();
+  stop.Run();
+  Q4T_CHECK(run.wait_for(3s) == std::future_status::ready && run.get().ok());
+  Q4T_CHECK(ServeContractAccess::Empty(server));
+  return true;
+}
+
+Q4T_TEST(http_observation_independent_of_saturated_control_partition) {
+  using namespace q4t::server;
+  ChatServer server;
+  ServeContractAccess::Configure(server);
+  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  std::vector<int> held;
+  ScopeExit close_held([&] { for (int fd : held) close(fd); });
+  for (int i = 0; i < 4; ++i) {
+    held.push_back(Connect(server));
+    Q4T_CHECK(detail::WriteAll(held.back(),
+        "POST /v1/requests/cancel HTTP/1.1\r\nHost: t\r\n"
+        "Content-Type: application/json\r\nContent-Length: 1\r\n\r\n"));
+  }
+  const auto end = std::chrono::steady_clock::now() + 1s;
+  while (ServeContractAccess::Control(server) != 4 &&
+         std::chrono::steady_clock::now() < end)
+    std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(ServeContractAccess::Control(server) == 4);
+  Q4T_CHECK(Request(server, "GET /readyz HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 503 "));
+  Q4T_CHECK(Request(server, "GET /metrics HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 200 "));
+  Q4T_CHECK(Request(server, "GET /unknown HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 404 "));
+  Q4T_CHECK(ServeContractAccess::ConnectionRejected(
+      server, HttpConnectionClass::kControl) == 1);
+  close_held.Run();
+  stop.Run();
+  Q4T_CHECK(run.wait_for(3s) == std::future_status::ready && run.get().ok());
+  Q4T_CHECK(ServeContractAccess::Empty(server));
+  return true;
+}
+
+Q4T_TEST(http_unclassified_total_limit_is_explicit_and_recoverable) {
+  using namespace q4t::server;
+  ChatServer server;
+  ServeContractAccess::Configure(server);
+  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  std::vector<int> held;
+  ScopeExit close_held([&] { for (int fd : held) close(fd); });
+  for (int i = 0; i < 10; ++i) held.push_back(Connect(server));
+  const auto end = std::chrono::steady_clock::now() + 1s;
+  while (ServeContractAccess::ActiveConnections(server) != 10 &&
+         std::chrono::steady_clock::now() < end)
+    std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(ServeContractAccess::ActiveConnections(server) == 10);
+  for (const char* path : {"/metrics", "/readyz"})
+    Q4T_CHECK(Request(server, std::string("GET ") + path +
+        " HTTP/1.1\r\nHost: t\r\n\r\n").starts_with("HTTP/1.1 503 "));
+  Q4T_CHECK(ServeContractAccess::Business(server) == 0 &&
+            ServeContractAccess::Observation(server) == 0 &&
+            ServeContractAccess::Control(server) == 0);
+  Q4T_CHECK(ServeContractAccess::ConnectionRejected(
+      server, HttpConnectionClass::kUnclassified) == 2);
+  close_held.Run();
+  const auto cleared = std::chrono::steady_clock::now() + 1s;
+  while (ServeContractAccess::ActiveConnections(server) != 0 &&
+         std::chrono::steady_clock::now() < cleared)
+    std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(ServeContractAccess::ActiveConnections(server) == 0);
+  Q4T_CHECK(Request(server, "GET /metrics HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 200 "));
+  stop.Run();
+  Q4T_CHECK(run.wait_for(3s) == std::future_status::ready && run.get().ok());
+  Q4T_CHECK(ServeContractAccess::Empty(server));
+  return true;
+}
+
+Q4T_TEST(http_observation_draining_and_exception_release) {
+  using namespace q4t::server;
+  ChatServer server;
+  ServeContractAccess::Configure(server);
+  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  observation_failure = true;
+  ScopeExit clear_failure([] { observation_failure = false; });
+  Q4T_CHECK(Request(server, "GET /metrics HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 500 "));
+  clear_failure.Run();
+  const int fd = Connect(server);
+  ScopeExit close_socket([&] { close(fd); });
+  Q4T_CHECK(detail::WriteAll(fd,
+      "POST /v1/chat/completions HTTP/1.1\r\nHost: t\r\n"
+      "Content-Type: application/json\r\nContent-Length: 1\r\n\r\n"));
+  const auto end = std::chrono::steady_clock::now() + 1s;
+  while (ServeContractAccess::Business(server) != 1 &&
+         std::chrono::steady_clock::now() < end)
+    std::this_thread::sleep_for(1ms);
+  Q4T_CHECK(ServeContractAccess::Business(server) == 1);
+  stop.Run();
+  Q4T_CHECK(Request(server, "GET /metrics HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 200 "));
+  const auto ready = Request(server, "GET /readyz HTTP/1.1\r\nHost: t\r\n\r\n");
+  Q4T_CHECK(ready.starts_with("HTTP/1.1 503 ") &&
+            ready.find("draining") != ready.npos);
+  close_socket.Run();
+  Q4T_CHECK(run.wait_for(3s) == std::future_status::ready && run.get().ok());
+  Q4T_CHECK(ServeContractAccess::Empty(server));
+  return true;
+}
 
 Q4T_TEST(http_memory_gate_before_body_controls_and_recovery) {
   ChatServer server;

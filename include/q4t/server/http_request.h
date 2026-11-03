@@ -7,13 +7,13 @@
 #include <string>
 #include <string_view>
 
+#include "q4t/server/http_connection.h"
 #include "q4t/server/http_observation.h"
 
 namespace q4t::server {
 
 inline constexpr size_t kChatBodyBytes = 16 * 1024 * 1024;
 inline constexpr size_t kAggregateChatBodyBytes = 48 * 1024 * 1024;
-inline constexpr int kReservedControlConnections = 4;
 
 inline bool ValidHttpRequestId(std::string_view id) {
   if (id.empty() || id.size() > 128) return false;

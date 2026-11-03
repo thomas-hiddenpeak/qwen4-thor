@@ -5,7 +5,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from tools.serve_ops.contracts import BOOLEAN, FAMILIES, METRICS
+from tools.serve_ops.contracts import BOOLEAN, METRIC_PROFILES
 
 TARGET = '{job="q4t"}'
 UP = 'up{job="q4t"} == 1'
@@ -21,7 +21,9 @@ def increased(name):
     return f'increase({series(name)}[5m]) > 0'
 
 
-def render():
+def render(*, version=4):
+    contract = METRIC_PROFILES[version]
+    families = {name.split('{', 1)[0] for name in contract}
     rules = []
     def alert(name, expr, duration, severity, summary, section, *, live=True):
         if live:
@@ -33,8 +35,8 @@ def render():
           'The configured q4t scrape target is unreachable.', 'unavailable', live=False)
     alert('Q4TTargetMissing', 'absent(up{job="q4t"})', '2m', 'critical',
           'No q4t target series is present; inspect discovery and monitoring.', 'unavailable', live=False)
-    pattern = '|'.join(sorted(FAMILIES))
-    present = f'count by ({BY}) ({{job="q4t",__name__=~"{pattern}"}}) == {len(METRICS)}'
+    pattern = '|'.join(sorted(families))
+    present = f'count by ({BY}) ({{job="q4t",__name__=~"{pattern}"}}) == {len(contract)}'
     alert('Q4TMetricContractMissing', f'({UP}) unless on ({BY}) ({present})', '30s', 'critical',
           'The operational metric contract is incomplete.', 'observation', live=False)
     booleans = '{job="q4t",__name__=~"'+'|'.join(sorted(BOOLEAN | {'q4t_memory_admission_state'}))+'"}'
@@ -59,6 +61,8 @@ def render():
         'text_admission_rejected_total', 'structured_rejected_total'))
     rejection += ' or (increase(q4t_memory_rejected_total{job="q4t"}[5m]) > 0)'
     rejection += ' or (increase(q4t_http_receive_failures_total{job="q4t",reason="body_capacity"}[5m]) > 0)'
+    if version == 4:
+        rejection += ' or (increase(q4t_connection_rejections_total{job="q4t"}[5m]) > 0)'
     alert('Q4TAdmissionRejections', rejection, '1m', 'warning',
           'Admission rejections increased; counters are separate views, not an additive failure total.', 'capacity')
     alert('Q4TStructuredFailures', ' or '.join(increased(n) for n in (
@@ -73,10 +77,9 @@ def render():
     alert('Q4TTransportReceiveFailures',
           'increase(q4t_http_receive_failures_total{job="q4t",reason=~"header_deadline|body_deadline|socket_error|exception"}[5m]) > 0',
           '', 'warning', 'Receive deadlines or transport faults increased.', 'transport')
-    # /metrics itself owns one non-control connection (chat_http.cpp).
-    # Extra classified connections may still be receiving a body; do not
-    # mistake those owners for a leak before chat admission.
-    idle = f'{series("active_chats")} == 0 and {series("business_connections")} <= 1'
+    # v4 moves scrape ownership to its own partition. v3 counts it as business.
+    idle = (f'{series("active_chats")} == 0 and {series("business_connections")} '
+            + ('== 0' if version == 4 else '<= 1'))
     alert('Q4TWorkerReapStalled', f'{series("structured_workers_active")} > 0 and '
           f'{series("structured_active")} == 0 and {series("structured_preparing")} == 0 and ({idle})',
           '1m', 'warning', 'A worker remains owned after requests and structured leases have drained.', 'owners')
@@ -98,13 +101,14 @@ def render():
 
 
 if __name__ == '__main__':
-    path = ROOT/'deploy/serve-ops/q4t.rules.yml'
-    raw = json.dumps(render(), indent=2)+'\n'
-    if sys.argv[1:] == ['--check']:
-        if path.read_text() != raw:
-            raise SystemExit('operational rules differ from reviewed policy')
-    elif sys.argv[1:] == ['--write']:
-        path.parent.mkdir(parents=True,exist_ok=True)
-        path.write_text(raw)
-    else:
+    if sys.argv[1:] not in (['--check'], ['--write']):
         raise SystemExit('--check | --write')
+    for version, name in ((4,'q4t.rules.yml'), (3,'q4t-v3.rules.yml')):
+        path = ROOT/'deploy/serve-ops'/name
+        raw = json.dumps(render(version=version), indent=2)+'\n'
+        if sys.argv[1:] == ['--check']:
+            if path.read_text() != raw:
+                raise SystemExit('operational rules differ from reviewed policy')
+        else:
+            path.parent.mkdir(parents=True,exist_ok=True)
+            path.write_text(raw)

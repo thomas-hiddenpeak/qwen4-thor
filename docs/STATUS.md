@@ -7,6 +7,14 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
+正在推进[SRV-12b观测连接隔离](SERVE_OBSERVATION_CAPACITY_2026-11-03.md)：
+独立观测4/控制4、完整头后原子准入、计数/配置/协议与v3/v4诊断适配。
+开发与成组CPU已完成，候选3cd3994d、199运行时来源，零警告。host
+OFF226/ON235、必需192、backend9、诊断29+6/驱动6、原生配置15
+（7成功形状匹配v4）、promtool31场景/169断言通过。默认84d16983/
+c5203331保持；待冻结后原生23项/模型受载/交付同lease。未知慢头洪泛仍另需
+入口合同，不能把分区准入等同于完整网络隔离。
+
 [SRV-12本地运营能力已限定接受](SERVE_OPERATIONS_RESULT_2026-11-03.md)：
 17告警/2记录、身份绑定只读诊断、匿名日志投影/私有包留存与
 [运行手册](SERVE_OPERATIONS.md)。冻结52ada556，198运行时及默认
@@ -27,8 +35,8 @@ journald模板未安装/未验实际轮转，历史14个失效文档链接仍待
 封存检查器的待创建receipt自引用修订单独保留，没有新模型验收。
 
 10:58:29 CST GPU空、锁可用，owned模型/Prometheus均退出，无恢复
-标记，MemAvailable116.979GiB。下一项SRV-12b先补观测端点连接饱和
-隔离：metrics/config/capabilities仍用普通额度；之后SRV-13长时运行/
+标记，MemAvailable116.979GiB。当前SRV-12b正在补观测端点连接饱和
+隔离，旧默认metrics/config/capabilities仍用普通额度；之后SRV-13长时运行/
 重启回退。实际访问/通知/多人策略、物理RAM硬保护与通用恢复仍待办。
 
 ## SRV-02d交付历史

@@ -20,10 +20,10 @@ def label(name, instance='a:8080', job='q4t'):
     return (name[:-1]+',' if '{' in name else name+'{')+f'job="{job}",instance="{instance}"}}'
 
 
-def build(rule_path):
-    policy={r['alert']:r for r in rules.render()['groups'][0]['rules'] if 'alert' in r}
+def build(rule_path, *, version=4):
+    policy={r['alert']:r for r in rules.render(version=version)['groups'][0]['rules'] if 'alert' in r}
     assert set(policy)==set(ALERTS)
-    base=contracts.parse_metrics(fixtures.text_metrics())[0]
+    base=contracts.parse_metrics(fixtures.text_metrics(version=version),version=version)[0]
     base.update(up=1)
     tests=[]
     def scenario(name, changes=None, checks=(), *, omit=(), instances=('a:8080',), all_clear=False):
@@ -93,7 +93,8 @@ def build(rule_path):
     gate('idle body retained',{'q4t_request_body_bytes':1024},'Q4TIdleResourcesRetained',60)
     gate('idle slot retained',{'q4t_seq_slots_free':0},'Q4TIdleResourcesRetained',60)
     scenario('another classified body receiver still owns resources',{
-        'q4t_business_connections':'2x64','q4t_request_body_bytes':'1024x64',
+        'q4t_business_connections':('1x64' if version == 4 else '2x64'),
+        'q4t_request_body_bytes':'1024x64',
         'q4t_structured_workers_active':'1x64'},all_clear=True)
     gate('execution boundary stopped',{'q4t_active_chats':1,'q4t_business_connections':1,
                                      'q4t_seq_slots_free':0},'Q4TExecutionProgressStalled',300)
@@ -116,6 +117,14 @@ def build(rule_path):
         'q4t_requests_error_total':'100x3 0x60','q4t_queue_rejected_total':'100x3 0x60'},all_clear=True)
     scenario('stale target series does not remain healthy',{'up':'1x3 stale _x60'},[
         ('Q4TTargetDown',300,[]),('Q4TTargetMissing',165,[]),('Q4TTargetMissing',180,[None])])
+    if version == 4:
+        gate('observation family must not disappear', {'q4t_observation_connections':'_'},
+             'Q4TMetricContractMissing',30)
+        for kind in ('unclassified','business','observation','control'):
+            alert='Q4TAdmissionRejections'
+            metric=f'q4t_connection_rejections_total{{kind="{kind}"}}'
+            scenario('connection rejection '+kind,{metric:'0x3 1x60'},[
+                (alert,105,[]),(alert,120,['a:8080']),(alert,375,[])],instances=('a:8080','b:8080'))
     return dict(rule_files=[str(rule_path)],evaluation_interval='15s',tests=tests)
 
 

@@ -65,6 +65,8 @@ struct MetricHistogram {
 // serve/scheduler observability counters + histograms (exposed at /metrics).
 struct ServeMetrics {
   HttpTransportMetrics http_transport;
+  std::array<std::atomic<uint64_t>, kHttpConnectionClasses.size()>
+      connection_rejections{};
   std::atomic<uint64_t> requests_total{0};
   std::atomic<uint64_t> requests_success{0};
   std::atomic<uint64_t> requests_error{0};    // rejected before generation
@@ -301,10 +303,13 @@ class ChatServer {
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
   std::atomic<int> business_conns_{0};
+  std::atomic<int> observation_conns_{0};
   std::atomic<int> control_conns_{0};
   static constexpr int kControlConnections = kReservedControlConnections;
+  static constexpr int kObservationConnections =
+      kReservedObservationConnections;
   int conn_cap_ = 512;
-  // Poll observes stop within 25ms. A draining listener serves control only
+  // Poll observes stop within 25ms. Draining serves control and observation
   // for at most 2 seconds; remaining owned sockets then close before cleanup.
   std::atomic<bool> stop_requested_{false};
   std::atomic<int> listen_fd_{-1};

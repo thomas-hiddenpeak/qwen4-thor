@@ -9,7 +9,7 @@ import time
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_ops import bundle, contracts, identity, privacy, transport
-from tools.serve_ops.contracts import InvalidObservation, METRICS, key
+from tools.serve_ops.contracts import InvalidObservation, METRIC_PROFILES
 
 
 def compare(previous, current):
@@ -22,6 +22,7 @@ def compare(previous, current):
                 current['identity']['state'] != 'verified' or
                 previous['identity']['process'] != current['identity']['process'] or
                 previous['port'] != current['port'] or
+                previous.get('observability_version', 3) != current.get('observability_version', 3) or
                 previous['configuration']['protocol_sha256'] != current['configuration']['protocol_sha256']):
             result['reason'] = 'instance_or_contract_changed'
             return result
@@ -29,7 +30,7 @@ def compare(previous, current):
         if not math.isfinite(elapsed) or not 0 < elapsed <= 3600:
             raise InvalidObservation('interval_out_of_range')
         values = {}
-        for name, kind in METRICS.items():
+        for name, kind in METRIC_PROFILES[current.get('observability_version', 3)].items():
             if kind != 'counter':
                 continue
             old = contracts.integer(previous['metrics'][name])
@@ -81,7 +82,8 @@ def findings(report):
         selectors = {
             'admission_rejections_observed': ['q4t_queue_rejected_total',
                 'q4t_text_admission_rejected_total', 'q4t_structured_rejected_total'] +
-                [n for n in METRICS if n.startswith('q4t_memory_rejected_total{')],
+                [n for n in changed if n.startswith(('q4t_memory_rejected_total{',
+                                                     'q4t_connection_rejections_total{'))],
             'structured_failures_observed': ['q4t_structured_prepare_failed_total',
                 'q4t_structured_compile_timeouts_total', 'q4t_structured_resource_exhausted_total'],
             'chat_errors_observed': ['q4t_requests_error_total'],
@@ -98,6 +100,7 @@ def snapshot(port, pid, release_path, *, log_path=None, previous_path=None):
     report = dict(version=contracts.VERSION, monotonic=started, unix_seconds=wall,
         collected_at=datetime.datetime.fromtimestamp(wall, datetime.timezone.utc).isoformat(),
         port=port, probes={}, metrics=None, configuration=None, identity=dict(state='unavailable'),
+        observability_version=None,
         log=dict(state='not_requested', raw_log_included=False),
         read_only=True, automatic_retry=False, automatic_restart=False,
         snapshot_atomic=False, physical_ram_hard_limit_proved=False)
@@ -119,7 +122,8 @@ def snapshot(port, pid, release_path, *, log_path=None, previous_path=None):
             if path == '/metrics':
                 if value['http_status'] != 200:
                     raise InvalidObservation('metrics_unavailable')
-                report['metrics'], probe['omitted_series'] = contracts.parse_metrics(value['body'])
+                report['metrics'], probe['omitted_series'] = contracts.parse_metrics(
+                    value['body'], version=report['observability_version'] or 3)
             else:
                 document = contracts.json_object(value['body'])
                 if path in ('/readyz', '/livez'):
@@ -128,7 +132,8 @@ def snapshot(port, pid, release_path, *, log_path=None, previous_path=None):
                 elif value['http_status'] != 200:
                     raise InvalidObservation('contract_endpoint_unavailable')
                 elif path == '/v1/config':
-                    report['configuration'] = contracts.configuration(document)
+                    report['configuration'] = contracts.configuration(
+                        document, version=report['observability_version'] or 3)
                 else:
                     candidate = document.get('protocol_source_sha256')
                     observation = document.get('observability')
@@ -136,8 +141,19 @@ def snapshot(port, pid, release_path, *, log_path=None, previous_path=None):
                             document.get('object') != 'q4t.capabilities' or
                             not isinstance(observation, dict) or
                             type(observation.get('version')) is not int or
-                            observation['version'] != 3):
+                            observation['version'] not in METRIC_PROFILES):
                         raise InvalidObservation('capabilities_contract_unavailable')
+                    if observation['version'] == 4:
+                        http = document.get('http')
+                        if (not isinstance(http, dict) or
+                                http.get('connection_profile') != 'q4t-http-partitions-v1' or
+                                http.get('observation_reserved_connections') != 4 or
+                                http.get('control_reserved_connections') != 4 or
+                                http.get('observation_routes') != ['GET /metrics', 'GET /v1/config',
+                                    'GET /v1/capabilities', 'GET /v1/models'] or
+                                observation.get('business_connections_exclude_observation') is not True):
+                            raise InvalidObservation('capabilities_partition_unavailable')
+                    report['observability_version'] = observation['version']
                     protocol = candidate
         except InvalidObservation as error:
             probe['error'] = error.code

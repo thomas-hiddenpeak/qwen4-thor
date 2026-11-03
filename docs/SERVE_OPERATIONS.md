@@ -25,15 +25,18 @@ python3 -B tools/serve_ops/diagnose.py \
 ```
 
 示例 PID、端口与日志路径需替换为实际拥有的服务。诊断依次 GET
-`/livez`、`/readyz`、`/v1/config`、`/v1/capabilities`、`/metrics`，每次
+`/livez`、`/readyz`、`/v1/capabilities`、`/v1/config`、`/metrics`，每次
 截止 2 秒、全组 HTTP 10 秒；单头 16KiB、单体 256KiB。只接受数字
 loopback 地址和显式端口，拒绝代理、重定向、分块或不完整响应。
 同机 IPv4 socket 归属、网络命名空间和前后进程身份必须稳定。
 发布元数据与 ELF、两个协议指纹共同核对；capabilities 本身不是发布
 证明。该工具不支持远端代理、容器跨网络命名空间或 IPv6 监听者鉴别。
-其中 config/capabilities/metrics 目前使用普通连接额度；只有 health/
-live/ready 与取消接口使用保留控制额度。诊断不是五个入口都享有独立
-容量的承诺，业务连接耗尽时这些普通入口可能返回 503。
+诊断先读取 capabilities 的 observability 版本：v3 的 config/capabilities/
+metrics 使用普通连接额度；v4 将四个精确 GET 观测路由（再含 models）
+独立预留4个连接，health/live/ready/取消仍共享另一组4个控制连接。
+v4开发与验收进度见[容量合同](SERVE_OBSERVATION_CAPACITY_2026-11-03.md)，
+默认交付版本以STATUS为准。观测满为503/observation_capacity_exhausted，
+报告UNKNOWN；未知慢头仍共用处理线程总额，不能保证洪泛下可用。
 
 退出码：0 HEALTHY、1 WARNING、2 CRITICAL、3 UNKNOWN；4 表示
 参数/本地包创建失败。UNKNOWN 优先表示证据不足，报告仍保存已知
@@ -48,7 +51,9 @@ reset 都输出 unavailable，不能补零、跨重启拼接或加总重叠事�
 ## 配置监控
 
 [Prometheus 示例](../deploy/serve-ops/prometheus.example.yml)与
-[规则文件](../deploy/serve-ops/q4t.rules.yml)提供 17 条告警、2 条记录规则。
+[v4规则文件](../deploy/serve-ops/q4t.rules.yml)提供 17 条告警、2 条记录规则；
+旧v3二进制和回退服务使用[v3规则](../deploy/serve-ops/q4t-v3.rules.yml)。
+通过capabilities明确选版本，不可把v4规则套在v3服务上。
 `tools/serve_ops/rules.py --check` 核对生成结果。必须用实际部署版本的
 `promtool check config`、`check rules` 与 `test rules` 验证；本阶段工具
 固定 3.5.0，不表示最新版本推荐。
@@ -60,7 +65,7 @@ timeout 2 秒。只抓取已拥有的 loopback 端口。模板没有通知接收
 
 `TargetMissing` 发现整个 job 没有 series；已有部分实例时，单个预期
 实例从服务发现中消失，需要外部预期实例清单。`MetricContractMissing`
-按固定家族的 87 条 series 数检查完整性；同数量的错误标签替代须由
+按版本固定家族的87（v3）或92（v4）条series数检查完整性；同数量的错误标签替代须由
 诊断工具固定标签合同发现。Prometheus 使用浮点时序，不能代替诊断
 工具对大整数的精确投影。规则持续时间是本地调查门槛，不是用户 SLO。
 
@@ -68,8 +73,8 @@ timeout 2 秒。只抓取已拥有的 loopback 端口。模板没有通知接收
 
 `Q4TTargetDown` 连续 1 分钟抓取失败，`Q4TTargetMissing` 连续 2 分钟
 job 缺失；先分清监控配置、端口、服务退出与系统故障。不要直接将
-`up=0` 解释为 GPU 错误。抓取也可能因普通连接额度耗尽而失败，不能
-直接推断进程退出。`Q4TNotReady` 在 GPU 健康且内存门开放时
+`up=0` 解释为 GPU 错误。v3抓取可能因普通连接额度耗尽，v4可能因观测额度或未分类总额耗尽
+而失败；这些都不能直接推断进程退出。`Q4TNotReady` 在 GPU 健康且内存门开放时
 持续 2 分钟未 ready，检查启动/排空状态。`/livez` 活着不表示可接单；
 正常忙和槽被占用不应改变 ready。先收集诊断与 owned service 状态，
 再依既定服务恢复合同处理，不盲目重启或抢 GPU 锁。
@@ -150,10 +155,10 @@ exception。主动取消、正常 shutdown/peer close 不作为这两条告警�
 
 `Q4TWorkerReapStalled`、`Q4TIdleResourcesRetained` 在已观察到业务
 空闲后持续 1 分钟提示 worker/body/strict/slot 未释放。活动工作拥有
-资源属于正常，不自动报泄漏。`/metrics` 自身计入 business_connections，
-所以空闲判定为 active_chats=0 且 business_connections≤1；更高数值
-可能来自其他诊断/抓取或尚在接收 body 的连接，不能据此报资源泄漏。
-并发抓取可能推迟该告警，不是无泄漏证明。核对多次快照、子进程身份和截止；
+资源属于正常，不自动报泄漏。v3 `/metrics`自身计入business_connections，
+空闲条件为active_chats=0且business_connections≤1；v4自身属于观测
+连接，空闲要求business_connections=0。尚在接收body的业务连接不
+满足v4空闲条件；不得混用版本。核对多次快照、子进程身份和截止；
 单一瞬时读数、worker started-reaped 或退出中无 VmRSS 不等于物理
 泄漏证据。禁止因这些调查告警直接 kill 未确认身份的 worker。
 

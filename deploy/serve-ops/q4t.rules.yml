@@ -32,7 +32,7 @@
         },
         {
           "alert": "Q4TMetricContractMissing",
-          "expr": "(up{job=\"q4t\"} == 1) unless on (job, instance) (count by (job, instance) ({job=\"q4t\",__name__=~\"q4t_active_chats|q4t_business_connections|q4t_control_connections|q4t_execution_steps_total|q4t_generation_tokens_total|q4t_gpu_healthy|q4t_http_receive_failures_total|q4t_http_write_failures_total|q4t_memory_admission_enabled|q4t_memory_admission_floor_bytes|q4t_memory_admission_open|q4t_memory_admission_recovery_bytes|q4t_memory_admission_state|q4t_memory_admission_transitions_total|q4t_memory_available_bytes|q4t_memory_observation_failures_total|q4t_memory_observation_valid|q4t_memory_observations_total|q4t_memory_rejected_total|q4t_prompt_tokens_total|q4t_queue_rejected_total|q4t_queued_requests|q4t_ready|q4t_request_body_bytes|q4t_requests_aborted_by_reason_total|q4t_requests_aborted_total|q4t_requests_error_total|q4t_requests_success_total|q4t_requests_total|q4t_seq_slots_free|q4t_seq_slots_total|q4t_structured_active|q4t_structured_compile_timeouts_total|q4t_structured_prepare_failed_total|q4t_structured_preparing|q4t_structured_rejected_total|q4t_structured_resource_exhausted_total|q4t_structured_vocab_bytes|q4t_structured_workers_active|q4t_structured_workers_reaped_total|q4t_structured_workers_started_total|q4t_text_admission_rejected_total\"}) == 87)",
+          "expr": "(up{job=\"q4t\"} == 1) unless on (job, instance) (count by (job, instance) ({job=\"q4t\",__name__=~\"q4t_active_chats|q4t_business_connections|q4t_connection_rejections_total|q4t_control_connections|q4t_execution_steps_total|q4t_generation_tokens_total|q4t_gpu_healthy|q4t_http_receive_failures_total|q4t_http_write_failures_total|q4t_memory_admission_enabled|q4t_memory_admission_floor_bytes|q4t_memory_admission_open|q4t_memory_admission_recovery_bytes|q4t_memory_admission_state|q4t_memory_admission_transitions_total|q4t_memory_available_bytes|q4t_memory_observation_failures_total|q4t_memory_observation_valid|q4t_memory_observations_total|q4t_memory_rejected_total|q4t_observation_connections|q4t_prompt_tokens_total|q4t_queue_rejected_total|q4t_queued_requests|q4t_ready|q4t_request_body_bytes|q4t_requests_aborted_by_reason_total|q4t_requests_aborted_total|q4t_requests_error_total|q4t_requests_success_total|q4t_requests_total|q4t_seq_slots_free|q4t_seq_slots_total|q4t_structured_active|q4t_structured_compile_timeouts_total|q4t_structured_prepare_failed_total|q4t_structured_preparing|q4t_structured_rejected_total|q4t_structured_resource_exhausted_total|q4t_structured_vocab_bytes|q4t_structured_workers_active|q4t_structured_workers_reaped_total|q4t_structured_workers_started_total|q4t_text_admission_rejected_total\"}) == 92)",
           "for": "30s",
           "labels": {
             "severity": "critical",
@@ -122,7 +122,7 @@
         },
         {
           "alert": "Q4TAdmissionRejections",
-          "expr": "max by (job, instance) (increase(q4t_queue_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_text_admission_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_rejected_total{job=\"q4t\"}[5m]) > 0 or (increase(q4t_memory_rejected_total{job=\"q4t\"}[5m]) > 0) or (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=\"body_capacity\"}[5m]) > 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+          "expr": "max by (job, instance) (increase(q4t_queue_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_text_admission_rejected_total{job=\"q4t\"}[5m]) > 0 or increase(q4t_structured_rejected_total{job=\"q4t\"}[5m]) > 0 or (increase(q4t_memory_rejected_total{job=\"q4t\"}[5m]) > 0) or (increase(q4t_http_receive_failures_total{job=\"q4t\",reason=\"body_capacity\"}[5m]) > 0) or (increase(q4t_connection_rejections_total{job=\"q4t\"}[5m]) > 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
           "for": "1m",
           "labels": {
             "severity": "warning",
@@ -183,7 +183,7 @@
         },
         {
           "alert": "Q4TWorkerReapStalled",
-          "expr": "max by (job, instance) (q4t_structured_workers_active{job=\"q4t\"} > 0 and q4t_structured_active{job=\"q4t\"} == 0 and q4t_structured_preparing{job=\"q4t\"} == 0 and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} <= 1)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+          "expr": "max by (job, instance) (q4t_structured_workers_active{job=\"q4t\"} > 0 and q4t_structured_active{job=\"q4t\"} == 0 and q4t_structured_preparing{job=\"q4t\"} == 0 and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
           "for": "1m",
           "labels": {
             "severity": "warning",
@@ -196,7 +196,7 @@
         },
         {
           "alert": "Q4TIdleResourcesRetained",
-          "expr": "max by (job, instance) ((q4t_request_body_bytes{job=\"q4t\"} > 0 or q4t_structured_active{job=\"q4t\"} > 0 or (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} <= 1)) and on (job, instance) (up{job=\"q4t\"} == 1)",
+          "expr": "max by (job, instance) ((q4t_request_body_bytes{job=\"q4t\"} > 0 or q4t_structured_active{job=\"q4t\"} > 0 or (q4t_seq_slots_free{job=\"q4t\"} < on (job, instance) q4t_seq_slots_total{job=\"q4t\"})) and (q4t_active_chats{job=\"q4t\"} == 0 and q4t_business_connections{job=\"q4t\"} == 0)) and on (job, instance) (up{job=\"q4t\"} == 1)",
           "for": "1m",
           "labels": {
             "severity": "warning",

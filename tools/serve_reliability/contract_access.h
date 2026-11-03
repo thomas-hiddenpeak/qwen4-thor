@@ -75,6 +75,18 @@ struct ServeContractAccess {
   static int Business(ChatServer& server) {
     return server.business_conns_.load();
   }
+  static int Observation(ChatServer& server) {
+    return server.observation_conns_.load();
+  }
+  static int Control(ChatServer& server) { return server.control_conns_.load(); }
+  static int ActiveConnections(ChatServer& server) {
+    return server.active_conns_.load();
+  }
+  static uint64_t ConnectionRejected(ChatServer& server,
+                                     HttpConnectionClass kind) {
+    return server.metrics_.connection_rejections[static_cast<size_t>(kind)]
+        .load();
+  }
   static void Healthy(ChatServer& server, bool healthy) {
     server.gpu_healthy_.store(healthy);
   }
@@ -91,6 +103,7 @@ struct ServeContractAccess {
     const std::lock_guard<std::mutex> lock(server.connections_mu_);
     return server.connections_.empty() && server.active_conns_.load() == 0 &&
            server.business_conns_.load() == 0 &&
+           server.observation_conns_.load() == 0 &&
            server.control_conns_.load() == 0 && server.listen_fd_.load() == -1;
   }
 };

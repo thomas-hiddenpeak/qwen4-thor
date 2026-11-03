@@ -5,8 +5,10 @@
 #include <unistd.h>
 
 #include <chrono>
+#include <barrier>
 #include <string>
 #include <thread>
+#include <vector>
 
 namespace {
 
@@ -34,6 +36,50 @@ bool Read(const std::string& wire, std::string* body) {
 }
 
 }  // namespace
+
+Q4T_TEST(http_connection_classification_exact_route_and_method) {
+  using namespace q4t::server;
+  for (const auto path : {"/metrics", "/v1/config", "/v1/capabilities",
+                           "/v1/models"}) {
+    Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
+              HttpConnectionClass::kObservation);
+    for (const auto method : {"POST", "HEAD", "get"})
+      Q4T_CHECK(ClassifyHttpConnection(method, path) ==
+                HttpConnectionClass::kBusiness);
+    for (const auto suffix : {"?x=1", "/", "/anything"})
+      Q4T_CHECK(ClassifyHttpConnection("GET", std::string(path) + suffix) ==
+                HttpConnectionClass::kBusiness);
+  }
+  for (const auto path : {"/healthz", "/livez", "/readyz"})
+    Q4T_CHECK(ClassifyHttpConnection("GET", path) ==
+              HttpConnectionClass::kControl);
+  Q4T_CHECK(ClassifyHttpConnection("POST", "/v1/requests/cancel") ==
+            HttpConnectionClass::kControl);
+  Q4T_CHECK(ClassifyHttpConnection("GET", "/v1/requests/cancel") ==
+            HttpConnectionClass::kBusiness);
+  return true;
+}
+
+Q4T_TEST(http_connection_atomic_limit_and_reuse) {
+  using q4t::server::AcquireHttpConnection;
+  std::atomic<int> count{0}, successes{0};
+  std::barrier start(16), acquired(16);
+  std::vector<std::thread> callers;
+  for (int i = 0; i < 16; ++i) {
+    callers.emplace_back([&] {
+      start.arrive_and_wait();
+      const bool admitted = AcquireHttpConnection(count, 4);
+      if (admitted) successes.fetch_add(1);
+      acquired.arrive_and_wait();  // No release until every attempt finished.
+      if (admitted) count.fetch_sub(1);
+    });
+  }
+  for (auto& caller : callers) caller.join();
+  Q4T_CHECK(successes.load() == 4 && count.load() == 0);
+  for (int i = 0; i < 4; ++i) Q4T_CHECK(AcquireHttpConnection(count, 4));
+  Q4T_CHECK(!AcquireHttpConnection(count, 4) && count.load() == 4);
+  return true;
+}
 
 Q4T_TEST(http_valid_length_and_header_names) {
   std::string body;

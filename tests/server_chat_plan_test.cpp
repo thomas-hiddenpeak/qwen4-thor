@@ -295,6 +295,10 @@ Q4T_TEST(chat_config_admission_snapshot_and_queue_policy) {
   Q4T_CHECK(response.Find("max_queued_requests")->GetInt("requested") == -1);
   Q4T_CHECK(response.Find("max_queued_requests")->GetInt("effective") == 30);
   Q4T_CHECK(response.Find("limits")->GetInt("queued_requests") == 30);
+  Q4T_CHECK(response.Find("limits")->GetInt("observation_connections") == 4);
+  Q4T_CHECK(response.Find("limits")->GetInt("control_connections") == 4);
+  Q4T_CHECK(response.Find("limits")->GetInt("connection_handlers") == 136);
+  Q4T_CHECK(response.Find("limits")->GetBool("unclassified_shares_total"));
   Q4T_CHECK(response.Find("limits")->GetString("queue_policy") ==
             "capacity_fifo_best_fit");
   const std::vector<std::string_view> args{"--max-inflight-requests", "5",

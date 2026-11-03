@@ -65,6 +65,10 @@ def metric_contract():
 
 METRICS = metric_contract()
 FAMILIES = {name.split('{', 1)[0] for name in METRICS}
+METRICS_V4 = dict(METRICS, q4t_observation_connections='gauge')
+for _kind in ('unclassified', 'business', 'observation', 'control'):
+    METRICS_V4[key('q4t_connection_rejections_total', kind=_kind)] = 'counter'
+METRIC_PROFILES = {3: METRICS, 4: METRICS_V4}
 HEX = re.compile(r'[0-9a-f]{64}\Z')
 
 
@@ -124,16 +128,20 @@ def json_object(raw):
     return value
 
 
-def parse_metrics(raw):
+def parse_metrics(raw, *, version=3):
     """Only fixed metric names/labels leave this function; no unknown text."""
     if len(raw) > 262144 or not raw.endswith('\n'):
         raise InvalidObservation('incomplete_metrics')
+    if type(version) is not int or version not in METRIC_PROFILES:
+        raise InvalidObservation('unsupported_observation_version')
+    contract = METRIC_PROFILES[version]
+    families = {name.split('{', 1)[0] for name in contract}
     result, omitted = {}, 0
     for line in raw.splitlines():
         if not line or line.startswith('#'):
             continue
         family = re.match(r'[a-zA-Z_:][a-zA-Z0-9_:]*', line)
-        if not family or family[0] not in FAMILIES:
+        if not family or family[0] not in families:
             omitted += 1
             continue
         match = re.fullmatch(r'([a-zA-Z_:][a-zA-Z0-9_:]*)(?:\{([^{}]*)\})?\s+(\S+)', line)
@@ -147,7 +155,7 @@ def parse_metrics(raw):
                     raise InvalidObservation('invalid_metric_labels')
                 labels[label[1]] = label[2]
         name = key(match[1], **labels)
-        if name not in METRICS or name in result:
+        if name not in contract or name in result:
             raise InvalidObservation('unexpected_or_duplicate_metric')
         try:
             value = Decimal(match[3])
@@ -156,12 +164,14 @@ def parse_metrics(raw):
             result[name] = int(value)
         except InvalidOperation:
             raise InvalidObservation('invalid_metric_value') from None
-    if set(result) != set(METRICS):
+    if set(result) != set(contract):
         raise InvalidObservation('missing_required_metric')
     if any(result[name] not in (0, 1) for name in BOOLEAN):
         raise InvalidObservation('invalid_boolean_metric')
     if result['q4t_seq_slots_free'] > result['q4t_seq_slots_total']:
         raise InvalidObservation('invalid_slot_observation')
+    if version == 4 and result['q4t_observation_connections'] > 4:
+        raise InvalidObservation('invalid_observation_owners')
     states = [result[key('q4t_memory_admission_state', state=s)] for s in STATES]
     if any(n not in (0, 1) for n in states) or sum(states) != 1:
         raise InvalidObservation('invalid_memory_state')
@@ -187,7 +197,7 @@ def readiness(value, http_status, *, liveness=False):
     return value
 
 
-def configuration(value):
+def configuration(value, *, version=3):
     """No model name, paths, argv, credentials or arbitrary strings in bundle."""
     try:
         protocol = value['protocol_source_sha256']
@@ -209,6 +219,17 @@ def configuration(value):
             if type(value_bool) is not bool:
                 raise InvalidObservation('invalid_runtime_contract')
             result[name] = value_bool
+        if version == 4:
+            limits = value['limits']
+            for name in ('business_connections', 'observation_connections',
+                         'control_connections', 'connection_handlers'):
+                result[name] = integer(limits[name], 1, 2**31-1)
+            if (result['observation_connections'] != 4 or result['control_connections'] != 4 or
+                    result['connection_handlers'] != result['business_connections']+8 or
+                    limits['unclassified_shares_total'] is not True):
+                raise InvalidObservation('invalid_connection_partitions')
+        elif version != 3:
+            raise InvalidObservation('unsupported_observation_version')
         return result
     except (KeyError, TypeError):
         raise InvalidObservation('missing_config_contract') from None

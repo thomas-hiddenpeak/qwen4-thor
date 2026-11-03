@@ -318,7 +318,13 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"("queue_excludes_preparation":true)" +
          R"(,"preflight_shares_text_admission":true,"business_connections":)" +
          std::to_string(business_connections) + R"(,"control_connections":)" +
-         std::to_string(kReservedControlConnections) + R"(,"body_bytes":)" +
+         std::to_string(kReservedControlConnections) +
+         R"(,"observation_connections":)" +
+         std::to_string(kReservedObservationConnections) +
+         R"(,"connection_handlers":)" +
+         std::to_string(business_connections + kReservedControlConnections +
+                        kReservedObservationConnections) +
+         R"(,"unclassified_shares_total":true,"body_bytes":)" +
          std::to_string(kChatBodyBytes) + R"(,"aggregate_body_bytes":)" +
          std::to_string(kAggregateChatBodyBytes) +
          R"(,"tokenizer_input_bytes":)" +

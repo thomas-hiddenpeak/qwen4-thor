@@ -146,7 +146,10 @@ Status ChatServer::Run() {
       ::setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeout, sizeof(timeout));
       counted = true;
       if (active_conns_.fetch_add(1, std::memory_order_relaxed) >=
-          conn_cap_ + kControlConnections) {
+          conn_cap_ + kControlConnections + kObservationConnections) {
+        metrics_.connection_rejections[
+            static_cast<size_t>(HttpConnectionClass::kUnclassified)]
+            .fetch_add(1);
         detail::HttpResponseContext context(fd, &metrics_.http_transport);
         context.RecordReceiveFailure(HttpReceiveFailure::kConnectionCapacity,
                                      503);
@@ -228,22 +231,29 @@ void ChatServer::HandleClient(int fd) {
     int failure_status = 400;
     const auto admit = [&] {
       if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
-      const bool control =
-          (method == "GET" &&
-           (path == "/healthz" || path == "/livez" || path == "/readyz")) ||
-          (method == "POST" && path == "/v1/requests/cancel");
-      if (!control && stop_requested_.load()) {
+      const auto kind = ClassifyHttpConnection(method, path);
+      if (kind == HttpConnectionClass::kBusiness && stop_requested_.load()) {
         failure_status = 503;
         headers.error_code = "server_draining";
         headers.failure = HttpReceiveFailure::kDraining;
         return false;
       }
-      auto& counter = control ? control_conns_ : business_conns_;
-      const int cap = control ? kControlConnections : conn_cap_;
-      if (counter.fetch_add(1) >= cap) {
-        counter.fetch_sub(1);
+      auto& counter = kind == HttpConnectionClass::kControl
+                          ? control_conns_
+                          : kind == HttpConnectionClass::kObservation
+                                ? observation_conns_
+                                : business_conns_;
+      const int cap = kind == HttpConnectionClass::kControl
+                          ? kControlConnections
+                          : kind == HttpConnectionClass::kObservation
+                                ? kObservationConnections
+                                : conn_cap_;
+      if (!AcquireHttpConnection(counter, cap)) {
+        metrics_.connection_rejections[static_cast<size_t>(kind)].fetch_add(1);
         failure_status = 503;
-        headers.error_code = "capacity_exhausted";
+        headers.error_code = kind == HttpConnectionClass::kObservation
+                                 ? "observation_capacity_exhausted"
+                                 : "capacity_exhausted";
         headers.failure = HttpReceiveFailure::kConnectionCapacity;
         return false;
       }

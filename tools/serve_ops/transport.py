@@ -8,7 +8,7 @@ from urllib.parse import urlsplit
 
 from .contracts import InvalidObservation
 
-ROUTES = ('/livez', '/readyz', '/v1/config', '/v1/capabilities', '/metrics')
+ROUTES = ('/livez', '/readyz', '/v1/capabilities', '/v1/config', '/metrics')
 MAX_BODY = 262144
 MAX_HEADER = 16384
 

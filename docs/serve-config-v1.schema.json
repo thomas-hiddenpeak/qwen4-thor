@@ -273,6 +273,16 @@
         "control_connections": {
           "const": 4
         },
+        "observation_connections": {
+          "const": 4
+        },
+        "connection_handlers": {
+          "type": "integer",
+          "minimum": 9
+        },
+        "unclassified_shares_total": {
+          "const": true
+        },
         "body_bytes": {
           "const": 16777216
         },
@@ -309,6 +319,9 @@
         "preflight_shares_text_admission",
         "business_connections",
         "control_connections",
+        "observation_connections",
+        "connection_handlers",
+        "unclassified_shares_total",
         "body_bytes",
         "aggregate_body_bytes",
         "tokenizer_input_bytes",

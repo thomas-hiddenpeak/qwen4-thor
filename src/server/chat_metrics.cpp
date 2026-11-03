@@ -209,8 +209,18 @@ void ChatServer::HandleMetrics(int fd) {
   counter("q4t_text_admission_rejected_total",
           "Chat/preflight rejected at the shared inflight limit.",
           metrics_.text_admission_rejected.load());
-  gauge("q4t_business_connections", "Classified non-control connections.",
+  gauge("q4t_business_connections", "Classified business-route connections.",
         business_conns_.load());
+  gauge("q4t_observation_connections",
+        "Classified observation connections, including this scrape (limit 4).",
+        observation_conns_.load());
+  b += "# HELP q4t_connection_rejections_total Connection capacity refusals "
+       "by fixed partition.\n"
+       "# TYPE q4t_connection_rejections_total counter\n";
+  for (size_t i = 0; i < kHttpConnectionClasses.size(); ++i)
+    b += "q4t_connection_rejections_total{kind=\"" +
+         std::string(kHttpConnectionClasses[i]) + "\"} " +
+         std::to_string(metrics_.connection_rejections[i].load()) + '\n';
   gauge("q4t_control_connections", "Classified control connections (limit 4).",
         control_conns_.load());
   gauge("q4t_ready", "Ready for business; ordinary slot occupancy is separate.",

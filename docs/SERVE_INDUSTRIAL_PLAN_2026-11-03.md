@@ -45,7 +45,8 @@ SRV-06/07/08/02b/01b均已限定交付；严格复制长输出的实际背压也
   冻结52ada556、默认pair不变，35项CPU与25组告警时序、真实3生成/
   1启动、资料工具/三诊断/临时监控通过。两条owner规则修订8组通过，
   原运行保留、未重跑模型。GPU释放，未安装监控通知或日志namespace。
-  下一优先SRV-12b：metrics/config/capabilities普通连接额度的饱和隔离。
+  SRV-12b[开发与CPU已完成](SERVE_OBSERVATION_CAPACITY_2026-11-03.md)：
+  独立观测/控制连接4+4，v3/v4运维适配；尚待同lease原生与真实受载验收。
 
 - SRV-02d：[结果与证据](SERVE_PRESSURE_RESULT_2026-11-03.md)已限定接受，
   冻结4fd5ec7c；326生成/4负例/1启动及65预检首轮通过，同PID压力恢复

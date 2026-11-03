@@ -19,7 +19,8 @@ ERRORS = set(ABORTS + RECEIVE + WRITE + STATES) | {
     'structured_output_incomplete', 'structured_output_invalid',
     'response_parse_failed', 'gpu_unhealthy', 'internal_error',
     'invalid_request', 'invalid_cancellation', 'request_not_found',
-    'body_capacity_exhausted', 'invalid_request_id_header'}
+    'body_capacity_exhausted', 'observation_capacity_exhausted',
+    'invalid_request_id_header'}
 ENUMS = {
     'event': {'begin', 'registered', 'stage', 'admitted', 'end'},
     'stage': {'validation', 'grammar_compile', 'encode', 'slot_admission',
