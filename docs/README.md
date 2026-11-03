@@ -75,6 +75,9 @@
 [任务操作说明](../tools/project_tasks/README.md)；
 [SRV-11b任务预算与逐轮预检](SERVE_PROJECT_TASK_BUDGET_2026-11-04.md)及
 [双客户端真实闭环结果](SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)；
+[SRV-11c任务源码/同客户端Key迁移](SERVE_TASK_MIGRATION_2026-11-04.md)、
+[原失败后的有界续验](SERVE_TASK_MIGRATION_CONTINUE_2026-11-04.md)及
+[真实迁移结果](SERVE_TASK_MIGRATION_RESULT_2026-11-04.md)；
 [SRV-12e跨运行目录准入与私有留存](SERVE_RETENTION_2026-11-04.md)、
 [本机短验结果](SERVE_RETENTION_RESULT_2026-11-04.md)及
 [运行/留存说明](../tools/serve_retention/README.md)；

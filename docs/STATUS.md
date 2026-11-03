@@ -41,13 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-11c[任务源码升级与同客户端Key轮换开发中](SERVE_TASK_MIGRATION_2026-11-04.md)：
-精确已验源码登记、私有计划/摘要、原账本追加迁移事件及有效合同
-推导已接入；保留预算、结果、未知阶段，禁止客户端/模型/CA变化。
-49应用CPU/3驱动通过；首轮旧应用各完成1真实生成/工具后SIGKILL，
-第二网关被留存容量拒绝，原失败与清理保持。5定向驱动检查通过，
-[仅续验两原任务的最终答案](SERVE_TASK_MIGRATION_CONTINUE_2026-11-04.md)，
-先复制原任务快照；尚未接受，不改默认/固定包/day。
+SRV-11c[任务源码升级与同客户端Key轮换限定接受](SERVE_TASK_MIGRATION_RESULT_2026-11-04.md)：
+2502105c实现、2ded2ab4续验；精确来源登记、私有计划/摘要与原revision/
+文件身份、单事务追加迁移事件，原状态/预算/结果保持。49应用CPU/
+3原驱动/5定向检查通过；导入语法错误和原第二网关留存容量拒绝保持。
+两代真实旧应用保存工具后SIGKILL，原2成功；快照后仅续验2最终回答，
+0新工具，2任务完成/引用正确；alpha测试Key轮换旧Key401，beta64保持。
+2重复迁移/2重复submit零执行；累计2模型/2成功网关/1启动前拒绝、
+4成功/2工具/3预检、grammar4/4。GPU两窗口52.587/48.171秒分别释放；
+468原件/3 ELF路径身份离线重建通过，16自有身份退、4代次SEALED，
+SOAR masked/容器空，默认/原包/原Key/3份day未改且day未跑。
+未登记版本、CA/模型协议迁移、归档保键/容量、实际LAN、物理RAM和
+用户长验仍待完善，工业化目标保持active。
 
 SRV-11b[任务预算与逐轮预检限定接受](SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)：
 冻结dc2c18d0，输出1..512持久化、完整history真实token/客户端预算
@@ -58,7 +63,7 @@ SRV-11b[任务预算与逐轮预检限定接受](SERVE_PROJECT_TASK_BUDGET_RESUL
 submit零执行，grammar4/4。GPU60.125823秒/57观察、总70.888181秒/
 15控制，263原件/2 ELF身份封存并离线重建通过；8自有身份退、
 2代次SEALED，GPU/原锁释放、SOAR masked、容器空，默认/Key/day未改。
-预检不预留资源；源码/凭据迁移、归档保键、实际LAN、物理RAM与用户
+预检不预留资源；登记源码/同client Key迁移见11c，归档保键、实际LAN、物理RAM与用户
 长验待办，未执行三份day，工业化目标保持active。
 
 SRV-11[持久项目任务与真实恢复限定接受](SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)：
@@ -71,7 +76,7 @@ SRV-11[持久项目任务与真实恢复限定接受](SERVE_PROJECT_TASKS_RESULT
 411原件/2 ELF身份封存并离线重建通过，18自有身份退、4代次封存；
 GPU/原锁释放、SOAR masked、容器空，默认/固定包/3份day未改未跑。
 [操作入口](../tools/project_tasks/README.md)显式使用；客户端输出预算
-匹配由上方11b补齐，源码/凭据迁移与终态归档/幂等键保留待策略。实际LAN、
+匹配由11b补齐，登记源码/同client Key迁移见11c；终态归档/幂等键保留待策略。实际LAN、
 物理RAM及用户长验仍未证明，工业化目标继续active。
 
 SRV-12e[受管代次与私有留存本机短验限定接受](SERVE_RETENTION_RESULT_2026-11-04.md)：

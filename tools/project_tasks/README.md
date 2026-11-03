@@ -5,6 +5,7 @@
 [合同](../../docs/SERVE_PROJECT_TASKS_2026-11-04.md) ·
 [本机真实恢复验收](../../docs/SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)。
 [双客户端预算与恢复预检验收](../../docs/SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)。
+[源码升级与同客户端Key轮换验收](../../docs/SERVE_TASK_MIGRATION_RESULT_2026-11-04.md)。
 
 先显式创建新 store，任务不会自动删除，幂等键一直保留：
 
@@ -118,4 +119,5 @@ CA/模型/协议或未登记版本迁移、终态归档后幂等键保留仍需�
 ```bash
 python3 -B tools/project_tasks/report.py verify
 python3 -B tools/project_tasks/budget_report.py verify
+python3 -B tools/project_tasks/migration_report.py verify
 ```

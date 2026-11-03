@@ -1,0 +1,81 @@
+{
+  "status": "ACCEPT_PROJECT_TASK_MIGRATION_SHORT",
+  "application_cpu_tests": 49,
+  "original_driver_tests": 3,
+  "continuation_driver_tests": 5,
+  "import_failure_retained": true,
+  "original_capacity_failure_retained": true,
+  "original_raw_counter": 0,
+  "original_successful_requests": 2,
+  "cumulative_model_starts": 2,
+  "cumulative_gateway_starts": 2,
+  "gateway_prestart_refusals": 1,
+  "completed_tasks": 2,
+  "application_kills": 2,
+  "new_tools_during_continuation": 0,
+  "duplicate_migrations": 2,
+  "duplicate_submissions": 2,
+  "revoked_key_status": 401,
+  "requests": 4,
+  "responses": 4,
+  "tools": 2,
+  "preflights": 3,
+  "capabilities": 4,
+  "migrations": 2,
+  "preserved_original_files": 5,
+  "response_usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "guards": {
+    "original": {
+      "seconds": 52.587085492908955,
+      "observations": 50
+    },
+    "continuation": {
+      "seconds": 48.170754787977785,
+      "observations": 46
+    }
+  },
+  "original_seconds": 53.36964241298847,
+  "continuation_seconds": 58.90739477588795,
+  "original_controls": 6,
+  "continuation_controls": 15,
+  "timing": {
+    "original": {
+      "q4t_response_seconds_sum": 7.737714,
+      "q4t_response_seconds_count": 2.0
+    },
+    "continuation": {
+      "q4t_response_seconds_sum": 8.154054,
+      "q4t_response_seconds_count": 2.0
+    }
+  },
+  "owned_exited": 16,
+  "cleanup_confirmed": true,
+  "default_changed": false,
+  "long_run": false,
+  "performance_acceptance": false
+}
