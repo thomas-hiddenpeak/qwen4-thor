@@ -65,14 +65,16 @@ SRV-16[独立controller死亡限定通过](SERVE_CONTROLLER_DEATH_RESULT_2026-11
 
 ## 当前工作包
 
-- SRV-17：[失联后的只读运维核验](SERVE_INSPECTION_2026-11-03.md)。
-  开发与51项CPU/隔离入口首轮通过，固定一次托管/3成功业务矩阵待验；
-  旧终态不改、未知不当清空，新v3包补观察范围，默认ELF不改。
+- SRV-17：[只读运维核验实际限定接受](SERVE_INSPECTION_RESULT_2026-11-03.md)。
+  51项CPU、旧v1/v2兼容通过；v3包1启动/3成功含真实工具闭环，
+  live/stopped完整观察通过，旧失联scope缺证保留UNKNOWN/原件。
+  80原件/1本机ELF封存，GPU/原锁释放、SOAR仍masked、默认pair不改。
+  新默认长稳、实际访问/通知/多人及物理RAM硬保护继续待办。
 
 - SRV-16：[独立控制器死亡实际限定接受](SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)。
   生产实现不改，1启动/6生成/4成功/2 shutdown，真实工具和自然退场
   通过；旧controller记录缺失与held历史文字保留，GPU空、锁可用。
-  下一项完善OWNER_ABSENT后的只读运维核验，新ELF长稳及实际部署
+  OWNER_ABSENT后的只读运维核验由SRV-17补齐；新ELF长稳、实际部署
   策略、物理RAM硬保护仍待办。
 
 - SRV-15：[托管内存保护退场已限定接受](SERVE_MEMORY_STOP_RESULT_2026-11-03.md)。

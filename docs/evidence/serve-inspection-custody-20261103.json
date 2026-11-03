@@ -1,0 +1,101 @@
+{
+  "passed": true,
+  "checked_at_utc": "2026-11-03T15:01:13.500939+00:00",
+  "frozen_commit": "5ec78b45",
+  "staged_files": [
+    {
+      "path": "docs/PHASES.md",
+      "bytes": 28290,
+      "sha256": "163a2de107030141de3561acf9a17fafc4342c9578ea48467eaab9efb4a345a1"
+    },
+    {
+      "path": "docs/README.md",
+      "bytes": 38388,
+      "sha256": "b8a49266557fb48b5b0e29bcf62aa0c3c38162f03eeb07e6dfe28e003aa9bedc"
+    },
+    {
+      "path": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "bytes": 15183,
+      "sha256": "fcb24f83296f42d1fb0859147f155572619d94f40ea6bd088024089866f7a611"
+    },
+    {
+      "path": "docs/SERVE_INSPECTION_RESULT_2026-11-03.md",
+      "bytes": 3101,
+      "sha256": "b04807d765f5870b11a5eb846551b88760979283209af406bbe3a7cfc5879548"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "bytes": 161744,
+      "sha256": "b1df942248261fffef59273cfd293e18af3de7a3df0ecc65348096abc97fb0e4"
+    },
+    {
+      "path": "docs/evidence/serve-inspection-20261103/accepted_package.json",
+      "bytes": 969,
+      "sha256": "2f1bbd4cb77e0451d5b1f19ad6726c36aa5886c020093756ce2431f1a8ae82cb"
+    },
+    {
+      "path": "docs/evidence/serve-inspection-20261103/cpu.json",
+      "bytes": 1761,
+      "sha256": "fbcf5aa145f87c90f6e4a7b21e92a46cbd57e8366c54dbc41ab096f5b88f541d"
+    },
+    {
+      "path": "docs/evidence/serve-inspection-20261103/manifest.json",
+      "bytes": 25292,
+      "sha256": "3c445edcfb4a7c395383c964d37f90eed0071bd425eaeba659996f70444f8197"
+    },
+    {
+      "path": "docs/evidence/serve-inspection-20261103/plan.json",
+      "bytes": 3836,
+      "sha256": "05f6c8b279016820f54832306b04f05aa7b71d0bb1187fce300952c7ce741bec"
+    },
+    {
+      "path": "docs/evidence/serve-inspection-20261103/postflight.json",
+      "bytes": 454,
+      "sha256": "7f7dd27a7039e8132e9e4b28db037e2cc564b6d08063b47f1a31f07eb1bb6e81"
+    },
+    {
+      "path": "docs/evidence/serve-inspection-20261103/raw-records.tar.gz",
+      "bytes": 132563,
+      "sha256": "aff342abe120a790ddcf9713b46bc856f538326345aad4f4a2ba6d8868d7b5de"
+    },
+    {
+      "path": "docs/evidence/serve-inspection-20261103/result.json",
+      "bytes": 601,
+      "sha256": "72e6632e78f584155b98c0552f523638460cdc2968384cd9ec47685d159b7bed"
+    },
+    {
+      "path": "docs/evidence/serve-inspection-20261103/sealed-files.json",
+      "bytes": 616,
+      "sha256": "adc666d418d97c96b7d03157e246bbd9d1639e289fb9d929db68a222b4f94e7b"
+    },
+    {
+      "path": "docs/log/2026-11-03.md",
+      "bytes": 105634,
+      "sha256": "2e566009829f77ffab3dcae111c055d8197454b05d38d94d2b4a77ac6820b334"
+    },
+    {
+      "path": "tools/serve_service/README.md",
+      "bytes": 6854,
+      "sha256": "409e6cf0742abe733fae639fb3adf1efe30ee18914194edc5c96e70d1ba272fc"
+    },
+    {
+      "path": "tools/serve_service/inspection_closeout.py",
+      "bytes": 8431,
+      "sha256": "8f4cb89c743f811d5aa02bec931e5200156824034fe3ea59bbc47227d0e9a050"
+    }
+  ],
+  "markdown_links_checked": 601,
+  "missing_links": [],
+  "gpu": {
+    "status": "OK",
+    "pids": []
+  },
+  "lock_available": true,
+  "lock_inode": 3294067,
+  "recovery_marker": false,
+  "soar_unit": "MainPID=0\nActiveState=inactive\nUnitFileState=masked\n",
+  "containers": "",
+  "default_binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+  "default_release_sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+  "new_model_or_http": 0
+}

@@ -1,0 +1,22 @@
+{
+  "status": "PASS_READONLY_SERVICE_INSPECTION",
+  "starts": 1,
+  "successful_requests": 3,
+  "performance_acceptance": false,
+  "persistent_service_installed": false,
+  "real_tool_executions": 1,
+  "legacy_preserved": true,
+  "stopped_records_preserved": true,
+  "live_inspection_complete": true,
+  "live_inspection_errors": [],
+  "cleanup_confirmed": true,
+  "counts": {
+    "generations": 3,
+    "negatives": 0,
+    "controls": 5
+  },
+  "elapsed_seconds": 61.34361348184757,
+  "gpu_window_elapsed": 50.699049899121746,
+  "supervisor_http_upper_bound": 188,
+  "full_observation_upper_bound": 193
+}

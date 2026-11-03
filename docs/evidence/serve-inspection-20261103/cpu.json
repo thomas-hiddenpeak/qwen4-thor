@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "tests_run": 51,
+  "failures": 0,
+  "errors": 0,
+  "seconds": 2.7617517090402544,
+  "sources": {
+    "tools/serve_service/package.py": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+    "tools/serve_service/supervisor.py": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+    "tools/serve_service/backend.py": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+    "tools/serve_service/service.py": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+    "tools/evalscope/gpu_exclusive.py": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+    "tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+    "tools/evalscope/nvml_process_query.py": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+    "tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+    "tools/serve_ops/contracts.py": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+    "tools/serve_ops/identity.py": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+    "tools/serve_ops/transport.py": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+    "tools/serve_service/memory.py": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+    "tools/serve_service/inspection.py": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+    "tools/serve_service/test_service.py": "eabe6f3836971d590a897bdc733146bf15d86044b9a5122192480eb9abe5a1bd",
+    "tools/serve_service/test_inspection.py": "abac1c235a562105e90e0dac5c5320d9dbef3c0658dde3477c578735bfe2aeec"
+  },
+  "isolated_entry_passed": true
+}
