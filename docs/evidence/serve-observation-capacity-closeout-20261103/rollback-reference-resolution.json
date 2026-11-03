@@ -1,0 +1,52 @@
+{
+  "status": "EXPLICIT_LEGACY_BOUNDARY_VERIFIED",
+  "verified_modern_pairs": 37,
+  "legacy_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t",
+    "sha256": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+    "bytes": 4300080
+  },
+  "legacy_build_cache": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-20261017/CMakeCache.txt",
+    "sha256": "ca2e60a10bb4c6c3d653a73437283e543797d119b5fbd7e9cdc82835af549e06",
+    "bytes": 37296
+  },
+  "stale_sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t.release.json",
+    "sha256": "cef96e24197d4e16b0a2a4f03566c59c1133ee385950970e24dd9c69c3e8796d",
+    "bytes": 998
+  },
+  "predecessor_release": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/deploy-v1/previous/q4t.release.json",
+    "sha256": "e77f600510c9acfc8987392479203306348ac0776a8600a257360cef396bbdca",
+    "bytes": 1030
+  },
+  "predecessor_marks_previous_release_was_stale": true,
+  "original_deployment": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/deployment.json",
+    "sha256": "5d2f3be33e93ab955ccf990b708d3c9fe7cc9804035a88231565c7ccda7a23ff",
+    "bytes": 2450
+  },
+  "existing_rollback_script": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/rollback.py",
+    "sha256": "806d97ba4d5b85ae0f32fe19cd9cdea7afa25ff84a9fefaeb0533dd94275afe5",
+    "bytes": 1368
+  },
+  "published_rollback_script": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/b1a-deploy-20261018/rollback.py",
+    "sha256": "806d97ba4d5b85ae0f32fe19cd9cdea7afa25ff84a9fefaeb0533dd94275afe5",
+    "bytes": 1368
+  },
+  "identity_evidence": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/no-mtp-calibration-design-20261018/identity.json",
+    "sha256": "03ff3fb7b738f78e1cd810aa7e054098877c459f2612457a12fa5faea36111d5",
+    "bytes": 12424
+  },
+  "original_report": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/MTP_POSITION_B1A_DEPLOY_2026-10-18.md",
+    "sha256": "c235cb3b3d823c4ea54171a0bc6f4e6b917d88c6cd642b4c7cc4f2b88f5ece6c",
+    "bytes": 2663
+  },
+  "explanation": "The generic traversal ignored an explicit previous_release_was_stale marker. This archival September sidecar was intentionally retained in October and is not a usable pair. The legacy A binary/cache and existing identity-correcting rollback script match original published evidence. No historical file or current default was changed; no rollback/model was run.",
+  "next_stage_requirement": "SRV-13 rollback inventory must stop at explicit legacy boundaries and keep stale archival sidecars distinct from installable pairs."
+}

@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "tools/serve_protocol/build_contract.py",
+    "--check"
+  ],
+  "started": 1793677616.3972938
+}

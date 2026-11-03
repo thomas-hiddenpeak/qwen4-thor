@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "unittest",
+    "tools.serve_ops.test_ops",
+    "tools.serve_observation_capacity.test_ops",
+    "-v"
+  ],
+  "started": 1793677612.8419623
+}

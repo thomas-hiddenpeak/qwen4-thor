@@ -1,0 +1,21 @@
+{
+  "changed": [
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/http_request.h",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/chat_metrics.cpp",
+    "src/server/chat_plan.cpp"
+  ],
+  "added": [
+    "include/q4t/server/http_connection.h"
+  ],
+  "previous_manifest": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/candidate/runtime-source.json",
+    "sha256": "b2272a8e0163f8304de26998c2fc79c5e1a2c9f73c4e50586253d4c86c91246e",
+    "bytes": 20563
+  },
+  "unchanged_model_and_numerical_sources": true,
+  "performance_acceptance": false,
+  "scope": "HTTP ownership, public discovery and metrics only. Template, tokenizer, grammar, model math and MTP unchanged."
+}

@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "zero_warnings": true,
+  "binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+  "runtime_sources_unchanged_during_build": true
+}

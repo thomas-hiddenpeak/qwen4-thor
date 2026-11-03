@@ -1,0 +1,12 @@
+{
+  "rollback-reference-audit.json": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/rollback-reference-audit.json",
+    "sha256": "dd0eef90a755a6a39ae185a57c8fffb9754e5673002dbf1a903014ac6fd8efc0",
+    "bytes": 21166
+  },
+  "rollback-reference-resolution.json": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/rollback-reference-resolution.json",
+    "sha256": "b8621f56349825259d9966471cad29121912a1a58a7f448d07d291833b850de9",
+    "bytes": 2749
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "utc": "2026-11-03T04:08:15Z",
+  "main_archive_custody": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-observation-capacity-custody-20261103.json",
+    "sha256": "644fde710385fd7f30a33956a6aafe853b425d7ea2fa28c0e7946c0839a60744",
+    "bytes": 144224
+  },
+  "additional_staged_blobs_verified": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-observation-capacity-closeout-20261103/rollback-reference-audit.json",
+      "sha256": "dd0eef90a755a6a39ae185a57c8fffb9754e5673002dbf1a903014ac6fd8efc0",
+      "bytes": 21166
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-observation-capacity-closeout-20261103/rollback-reference-resolution.json",
+      "sha256": "b8621f56349825259d9966471cad29121912a1a58a7f448d07d291833b850de9",
+      "bytes": 2749
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-observation-capacity-closeout-20261103/sealed-files.json",
+      "sha256": "54c64c2e177ebc064ecfc3fca842becf03daf24c2a2acc7009d093d64918115a",
+      "bytes": 303
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-observation-capacity-closeout-20261103/source-map.json",
+      "sha256": "ccf34d88f45d02326258307980e4f9a109a6940cf0676c074ac2d97774b8fe52",
+      "bytes": 546
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-observation-capacity-custody-20261103.json",
+      "sha256": "644fde710385fd7f30a33956a6aafe853b425d7ea2fa28c0e7946c0839a60744",
+      "bytes": 144224
+    }
+  ],
+  "current_changed_document_links_checked": 565,
+  "runtime_sources_verified": 199,
+  "installed": {
+    "q4t": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "q4t.release.json": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2"
+  },
+  "direct_rollback_pair_verified": true,
+  "legacy_boundary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-observation-capacity-closeout-20261103/rollback-reference-resolution.json",
+    "sha256": "b8621f56349825259d9966471cad29121912a1a58a7f448d07d291833b850de9",
+    "bytes": 2749
+  },
+  "staged_source_and_document_whitespace_passed": true,
+  "raw_evidence_whitespace_check": {
+    "returncode": 2,
+    "affected_files": 269,
+    "output": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/raw-evidence-whitespace.stdout",
+      "sha256": "2c53ce5f2ae2d588045c19cff8676b2e856470fd56be2d3651415ab90841f362",
+      "bytes": 370472
+    },
+    "explanation": "HTTP/SSE CRLF and captured stdout/CMake trailing newlines are immutable raw evidence; do not normalize. Source and authored document paths pass separately."
+  },
+  "current_gpu_observation": {
+    "status": "OK",
+    "pids": [],
+    "original": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/final-gpu-observation.json",
+      "sha256": "8829444d777a4e52c78a8cc7bcc36cc2b0806b0dca1358a8fcf34014d3bbda07",
+      "bytes": 2256
+    }
+  },
+  "new_http_or_model_requests": 0,
+  "goal_complete": false
+}

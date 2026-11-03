@@ -1,0 +1,8 @@
+{
+  "binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+  "chat_protocol": {
+    "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05"
+  },
+  "candidate_identity_only": true,
+  "acceptance": "PENDING; this is not a release attestation"
+}

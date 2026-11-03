@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "commands": {
+    "host-off": true,
+    "host-on": true,
+    "host-required": true,
+    "backend": true,
+    "operations": true,
+    "policy": true,
+    "prometheus-rules": true,
+    "prometheus-scenarios": true,
+    "inventory": true,
+    "generated": true
+  },
+  "http_or_model_started": false
+}

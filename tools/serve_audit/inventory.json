@@ -375,28 +375,30 @@
     },
     "GET /v1/models": {
       "semantics": "固定单模型列表",
-      "boundary": "created 为查询时刻；无详情/别名；普通模型名固定；SRV-12b开发增加独立观测额度4，完整头后分类，未分类慢头仍共享总额；尚未验收",
+      "boundary": "created 为查询时刻；无详情/别名；普通模型名固定；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
       "evidence": [
         "docs/APPLICATION_SERVICE_RESULT_2026-11-02.md",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
-        "include/q4t/server/http_connection.h"
+        "include/q4t/server/http_connection.h",
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
       ]
     },
     "GET /v1/capabilities": {
       "semantics": "实现/模板源码身份与能力边界",
-      "boundary": "implementation_only；不是发布/实际配置完整证明；明示单constrained租约、编译不可抢占及非RSS硬上限；SRV-12b开发增加独立观测额度4，完整头后分类，未分类慢头仍共享总额；尚未验收",
+      "boundary": "implementation_only；不是发布/实际配置完整证明；明示单constrained租约、编译不可抢占及非RSS硬上限；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
       "evidence": [
         "tests/server_chat_capabilities_test.cpp",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
         "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
-        "include/q4t/server/http_connection.h"
+        "include/q4t/server/http_connection.h",
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
       ]
     },
     "GET /metrics": {
       "semantics": "独立slot_wait/admission/generation_exit/response；固定原因取消计数；constrained准备与租约指标；SRV-02b已验slot等候数、queue/text准入拒绝固定计数；SRV-01b已验每连接首次接收/写失败固定原因/来源，心跳join后发布，与chat结果分开；新增固定4内存状态、3检查点×2拒绝原因及有效读数/阈值，不计为物理峰值",
-      "boundary": "queue/e2e保留原语义的弃用别名；存储计量非compiler峰值；局部写完不保证客户端消费；SRV-12b开发增加独立观测额度4，完整头后分类，未分类慢头仍共享总额；尚未验收",
+      "boundary": "queue/e2e保留原语义的弃用别名；存储计量非compiler峰值；局部写完不保证客户端消费；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
       "evidence": [
         "src/server/chat_metrics.cpp",
         "tools/serve_resources/verify.py",
@@ -406,7 +408,8 @@
         "tests/server_memory_admission_test.cpp",
         "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
         "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
-        "include/q4t/server/http_connection.h"
+        "include/q4t/server/http_connection.h",
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
       ]
     },
     "POST /v1/requests/cancel": {
@@ -469,7 +472,7 @@
     },
     "GET /v1/config": {
       "semantics": "启动后实际上下文、输出默认、槽位、限制和来源，只读；SRV-02b已验inflight/queued请求值与预算后有效值、capacity_fifo_best_fit策略；新增独立于启动预算的内存门限/恢复余量/样本时效配置，0可显式禁用，不是整机硬限额",
-      "boundary": "不公开路径/凭据；不保证可用槽位、全机RAM或未来执行成功；限定HTTP已验；SRV-12b开发增加独立观测额度4，完整头后分类，未分类慢头仍共享总额；尚未验收",
+      "boundary": "不公开路径/凭据；不保证可用槽位、全机RAM或未来执行成功；限定HTTP已验；SRV-12b独立观测额度4已限定受载验收，完整头后分类，未分类慢头仍共享总额",
       "evidence": [
         "docs/SERVE_PREFLIGHT_2026-11-03.md",
         "docs/serve-config-v1.schema.json",
@@ -479,7 +482,8 @@
         "tests/server_memory_admission_test.cpp",
         "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
         "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
-        "include/q4t/server/http_connection.h"
+        "include/q4t/server/http_connection.h",
+        "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md"
       ]
     }
   },
@@ -782,7 +786,7 @@
     }
   },
   "observation_partition_review": {
-    "status": "cpu_passed_http_pending",
+    "status": "accepted_bounded",
     "base_commit": "5174ab76",
     "changed_sources": [
       "cmake/ChatProtocolIdentity.cmake",
@@ -795,6 +799,14 @@
       "src/server/chat_plan.cpp"
     ],
     "contract": "docs/SERVE_OBSERVATION_CAPACITY_2026-11-03.md",
-    "review": "Exact method/path classification, atomic partition ownership, exception/drain release, fixed refusal counters, v4 capabilities/config plus v3-compatible diagnostic. No request fields/routes/whitelists changed. Unclassified headers share total bound; no network flood isolation claim."
+    "review": "Exact method/path classification, atomic partition ownership, exception/drain release, fixed refusal counters, v4 capabilities/config plus v3-compatible diagnostic. No request fields/routes/whitelists changed. Unclassified headers share total bound; no network flood isolation claim.",
+    "source_commit": "362f42a8c6bca47d853eb47acd9c79f7022885dd",
+    "binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "result": "docs/SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md",
+    "native_cases": 23,
+    "real_generations": 4,
+    "real_negatives": 136,
+    "real_starts": 1,
+    "unclassified_header_flood_isolated": false
   }
 }

@@ -1,0 +1,362 @@
+[q4t][capabilities] requested=experimental mtp=1 media=0 max_seq=1
+[q4t][startup] tokenizer 297 ms
+[q4t][budget] mem_total=131.92 GB fraction=0.90 budget=118.73 GB
+[q4t][budget]   allocation estimate only; excludes file cache, driver overlap and other processes; not a physical RAM limit
+[q4t][budget]   requested max_len=8192 max_seq=1 max_prefill=2048 feasible=1 reason=estimate_fits
+[q4t][budget]   weights=84.00 GB  fixed=93.36 GB (estimated allocations+margin)
+[q4t][budget]   main_workspace=687669248 mtp_workspace=926107648 forward_buffers=104898564 ple_working=76571648 mtp=1
+[q4t][budget]   per_request=1.24 GB (peak admitted MTP request allocations)  state_pool=0.39 GB
+[q4t][budget]   => max_len=8192 max_seq=1
+[q4t][budget]   MTP allocation scope: text pooled sequences, k in [1,16]; allocation estimate, not a physical RAM guarantee
+[q4t][budget]   mtp_weights=5214301696 mtp_buffers=522240 mtp_scratch=6476920 mtp_checkpoints=346927104 mtp_forward_temp=4206736
+[q4t][budget]   loading_host_peak=3355443200 startup_envelope=97103842376 runtime_peak=94990027992 estimated_total=97103842376
+[q4t][startup] budget 417 ms
+[q4t][capacity] requested_max_len=8192 requested_max_seq=1 requested_max_prefill=2048 effective_max_len=8192 effective_max_seq=1 effective_max_prefill=2048 budget_enabled=1 budget_feasible=true
+[q4t][admission] inflight=8 queued=2 policy=capacity_fifo_best_fit
+[startup-reservation] {"schema":1,"event":"prepared","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":0,"freed":0,"unhanded_remaining":1606,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":false,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup-plan] mode=auto active=1
+[q4t][startup] startup_resource_plan 2584 ms
+[q4t][startup] model_load 28063 ms
+[q4t] generation stop token ids: 248046 248044
+[q4t] MTP loaded (k=3 max_seq=1)
+[q4t][startup] mtp_load 2858 ms
+[q4t] media disabled; vision tower not loaded
+[q4t][capabilities] effective mtp=1 media_allowed=0 vision_loaded=0 max_seq=1
+[q4t] continuous-batching scheduler started (max_seq=1)
+[startup-reservation] {"schema":1,"event":"startup_complete","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":0,"unhanded_remaining":0,"handed_live":1606,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":false,"active":true,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}
+[q4t][startup] startup_total 34220 ms
+[q4t] serving on port 18108 (host 127.0.0.1, model qwen3.8-flash-next)
+[q4t][request] instance=0 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-048cf82af844ccf0e7d852d3bbea64a3
+[q4t][request] instance=0 id=agent-5de9cdf2b067f5eaea70e02425f4132e event=registered stage=validation seq=-1 elapsed_ms=0.107 trace_id=req-048cf82af844ccf0e7d852d3bbea64a3
+[q4t][http] trace_id=req-048cf82af844ccf0e7d852d3bbea64a3 completion_id=agent-5de9cdf2b067f5eaea70e02425f4132e
+[q4t][request] instance=0 id=agent-5de9cdf2b067f5eaea70e02425f4132e event=stage stage=encode seq=-1 elapsed_ms=0.190 trace_id=req-048cf82af844ccf0e7d852d3bbea64a3
+[q4t][request] instance=0 id=agent-5de9cdf2b067f5eaea70e02425f4132e event=stage stage=slot_admission seq=-1 elapsed_ms=0.391 trace_id=req-048cf82af844ccf0e7d852d3bbea64a3
+[q4t][request] instance=0 id=agent-5de9cdf2b067f5eaea70e02425f4132e event=admitted stage=slot_admission seq=0 elapsed_ms=0.412 trace_id=req-048cf82af844ccf0e7d852d3bbea64a3
+[q4t][request] instance=0 id=agent-5de9cdf2b067f5eaea70e02425f4132e event=stage stage=encode seq=0 elapsed_ms=0.415 trace_id=req-048cf82af844ccf0e7d852d3bbea64a3
+[q4t][request] instance=0 id=agent-5de9cdf2b067f5eaea70e02425f4132e event=stage stage=prefill seq=0 elapsed_ms=0.498 trace_id=req-048cf82af844ccf0e7d852d3bbea64a3
+[q4t][request] instance=0 id=agent-5de9cdf2b067f5eaea70e02425f4132e event=stage stage=decode seq=0 elapsed_ms=246.548 trace_id=req-048cf82af844ccf0e7d852d3bbea64a3
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=1280 K=2560 mode=expert-grouped cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=40 N=2560 K=640 mode=expert-grouped cuBLASLt=130501
+[q4t][http] trace_id=req-5fb03b620bb6f6fa298ae6fae7c3173f status=503 error=capacity_exhausted
+[q4t][http-receive] trace_id=req-5fb03b620bb6f6fa298ae6fae7c3173f reason=connection_capacity status=503 system_error=0
+[q4t][http] trace_id=req-1c1fb63bae53158660d75619167daeb2 status=503 error=observation_capacity_exhausted
+[q4t][http-receive] trace_id=req-1c1fb63bae53158660d75619167daeb2 reason=connection_capacity status=503 system_error=0
+[q4t][http] trace_id=req-db12ff206e75c3f426c601bf0d315aa7 status=503 error=observation_capacity_exhausted
+[q4t][http-receive] trace_id=req-db12ff206e75c3f426c601bf0d315aa7 reason=connection_capacity status=503 system_error=0
+[q4t][http] trace_id=req-f540ce3947383cbb0cfec7753ed281cf status=503 error=observation_capacity_exhausted
+[q4t][http-receive] trace_id=req-f540ce3947383cbb0cfec7753ed281cf reason=connection_capacity status=503 system_error=0
+[q4t][http] trace_id=req-be21f17082a8e453da2bf38a420fc66d status=503 error=observation_capacity_exhausted
+[q4t][http-receive] trace_id=req-be21f17082a8e453da2bf38a420fc66d reason=connection_capacity status=503 system_error=0
+[q4t] request cancelled id=agent-5de9cdf2b067f5eaea70e02425f4132e reason=explicit_cancel
+[mtp-accept] request=agent-5de9cdf2b067f5eaea70e02425f4132e draft_counts=0,0,0,62
+[q4t][mem] phase=request_end id=agent-5de9cdf2b067f5eaea70e02425f4132e dev_used_gb=107.616 dev_total_gb=131.921 rss_mb=947.7 mem_free_gb=22.958 mem_avail_gb=35.845 cached_gb=11.688
+[q4t][request] instance=0 id=agent-5de9cdf2b067f5eaea70e02425f4132e event=end stage=decode seq=0 released=1 outcome=cancelled reason=explicit_cancel elapsed_ms=6019.498 slot_wait_ms=0.017 model_lock_ms=0.000 tokenizer_lock_ms=0.025 scheduler_completion_ms=5746.601 stream_write_ms=2.397 scheduler_waits=62 trace_id=req-048cf82af844ccf0e7d852d3bbea64a3
+[q4t][http] trace_id=observation.observation-3 status=400 error=unexpected_body
+[q4t][http-receive] trace_id=observation.observation-3 reason=unexpected_body status=400 system_error=0
+[q4t][http] trace_id=observation.observation-2 status=400 error=unexpected_body
+[q4t][http-receive] trace_id=observation.observation-2 reason=unexpected_body status=400 system_error=0
+[q4t][http] trace_id=observation.observation-1 status=400 error=unexpected_body
+[q4t][http-receive] trace_id=observation.observation-1 reason=unexpected_body status=400 system_error=0
+[q4t][http] trace_id=observation.observation-0 status=400 error=unexpected_body
+[q4t][http-receive] trace_id=observation.observation-0 reason=unexpected_body status=400 system_error=0
+[q4t][http] trace_id=observation.business-126 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-126 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-125 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-125 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-124 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-124 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-123 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-123 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-122 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-122 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-121 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-121 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-120 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-120 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-119 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-119 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-118 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-118 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-117 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-117 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-116 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-116 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-115 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-115 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-114 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-114 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-113 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-113 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-112 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-112 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-111 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-111 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-110 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-110 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-109 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-109 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-108 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-108 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-107 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-107 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-106 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-106 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-105 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-105 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-104 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-104 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-103 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-103 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-102 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-102 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-101 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-101 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-100 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-100 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-099 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-099 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-098 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-098 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-097 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-097 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-096 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-096 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-095 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-095 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-094 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-094 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-093 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-093 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-092 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-092 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-091 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-091 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-090 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-090 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-089 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-089 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-088 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-088 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-087 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-087 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-086 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-086 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-085 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-085 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-084 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-084 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-083 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-083 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-082 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-082 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-081 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-081 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-080 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-080 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-079 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-079 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-078 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-078 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-077 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-077 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-076 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-076 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-075 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-075 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-074 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-074 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-073 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-073 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-072 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-072 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-071 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-071 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-070 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-070 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-069 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-069 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-068 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-068 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-067 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-067 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-066 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-066 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-065 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-065 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-064 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-064 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-063 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-063 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-062 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-062 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-061 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-061 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-060 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-060 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-059 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-059 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-058 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-058 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-057 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-057 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-056 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-056 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-055 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-055 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-054 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-054 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-053 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-053 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-052 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-052 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-051 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-051 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-050 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-050 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-049 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-049 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-048 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-048 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-047 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-047 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-046 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-046 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-045 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-045 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-044 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-044 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-043 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-043 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-042 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-042 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-041 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-041 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-040 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-040 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-039 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-039 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-038 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-038 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-037 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-037 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-036 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-036 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-035 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-035 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-034 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-034 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-033 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-033 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-032 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-032 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-031 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-031 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-030 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-030 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-029 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-029 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-028 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-028 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-027 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-027 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-026 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-026 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-025 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-025 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-024 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-024 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-023 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-023 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-022 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-022 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-021 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-021 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-020 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-020 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-019 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-019 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-018 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-018 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-017 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-017 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-016 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-016 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-015 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-015 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-014 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-014 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-013 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-013 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-012 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-012 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-011 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-011 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-010 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-010 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-009 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-009 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-008 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-008 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-007 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-007 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-006 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-006 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-005 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-005 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-004 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-004 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-003 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-003 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-002 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-002 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-001 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-001 reason=body_eof status=400 system_error=0
+[q4t][http] trace_id=observation.business-000 status=400 error=invalid_request
+[q4t][http-receive] trace_id=observation.business-000 reason=body_eof status=400 system_error=0
+[q4t][request] instance=1 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-19139cdca7e7e0810fdd9a694fab94d0
+[q4t][request] instance=1 id=agent-e699179c9ab85d941ee58084b2e056bc event=registered stage=validation seq=-1 elapsed_ms=0.080 trace_id=req-19139cdca7e7e0810fdd9a694fab94d0
+[q4t][http] trace_id=req-19139cdca7e7e0810fdd9a694fab94d0 completion_id=agent-e699179c9ab85d941ee58084b2e056bc
+[q4t][request] instance=1 id=agent-e699179c9ab85d941ee58084b2e056bc event=stage stage=encode seq=-1 elapsed_ms=0.094 trace_id=req-19139cdca7e7e0810fdd9a694fab94d0
+[q4t][request] instance=1 id=agent-e699179c9ab85d941ee58084b2e056bc event=stage stage=slot_admission seq=-1 elapsed_ms=0.227 trace_id=req-19139cdca7e7e0810fdd9a694fab94d0
+[q4t][request] instance=1 id=agent-e699179c9ab85d941ee58084b2e056bc event=admitted stage=slot_admission seq=0 elapsed_ms=0.241 trace_id=req-19139cdca7e7e0810fdd9a694fab94d0
+[q4t][request] instance=1 id=agent-e699179c9ab85d941ee58084b2e056bc event=stage stage=encode seq=0 elapsed_ms=0.244 trace_id=req-19139cdca7e7e0810fdd9a694fab94d0
+[q4t][request] instance=1 id=agent-e699179c9ab85d941ee58084b2e056bc event=stage stage=prefill seq=0 elapsed_ms=0.320 trace_id=req-19139cdca7e7e0810fdd9a694fab94d0
+[q4t][request] instance=1 id=agent-e699179c9ab85d941ee58084b2e056bc event=stage stage=decode seq=0 elapsed_ms=143.310 trace_id=req-19139cdca7e7e0810fdd9a694fab94d0
+[mtp-accept] request=agent-e699179c9ab85d941ee58084b2e056bc draft_counts=0,1,0,1
+[q4t][mem] phase=request_end id=agent-e699179c9ab85d941ee58084b2e056bc dev_used_gb=107.594 dev_total_gb=131.921 rss_mb=933.1 mem_free_gb=22.981 mem_avail_gb=35.870 cached_gb=11.690
+[q4t][request] instance=1 id=agent-e699179c9ab85d941ee58084b2e056bc event=stage stage=response seq=0 elapsed_ms=332.217 trace_id=req-19139cdca7e7e0810fdd9a694fab94d0
+[q4t][request] instance=1 id=agent-e699179c9ab85d941ee58084b2e056bc event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=332.294 slot_wait_ms=0.011 model_lock_ms=0.001 tokenizer_lock_ms=0.000 scheduler_completion_ms=172.454 stream_write_ms=0.000 scheduler_waits=2 trace_id=req-19139cdca7e7e0810fdd9a694fab94d0
+[q4t][request] instance=2 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t][request] instance=2 id=agent-91b7f20f425f7cd27e9da328600b687f event=registered stage=validation seq=-1 elapsed_ms=0.112 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t][http] trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6 completion_id=agent-91b7f20f425f7cd27e9da328600b687f
+[q4t][request] instance=2 id=agent-91b7f20f425f7cd27e9da328600b687f event=stage stage=grammar_compile seq=-1 elapsed_ms=0.232 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t][request] instance=2 id=agent-91b7f20f425f7cd27e9da328600b687f event=stage stage=encode seq=-1 elapsed_ms=198.724 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t][request] instance=2 id=agent-91b7f20f425f7cd27e9da328600b687f event=stage stage=slot_admission seq=-1 elapsed_ms=200.558 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t][request] instance=2 id=agent-91b7f20f425f7cd27e9da328600b687f event=admitted stage=slot_admission seq=0 elapsed_ms=200.597 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t][request] instance=2 id=agent-91b7f20f425f7cd27e9da328600b687f event=stage stage=encode seq=0 elapsed_ms=200.600 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t][request] instance=2 id=agent-91b7f20f425f7cd27e9da328600b687f event=stage stage=prefill seq=0 elapsed_ms=200.612 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t][request] instance=2 id=agent-91b7f20f425f7cd27e9da328600b687f event=stage stage=decode seq=0 elapsed_ms=824.082 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=1280 K=2560 mode=per-row cuBLASLt=130501
+[q4t] MoE device decode grouped NVFP4 enabled: groups=10 N=2560 K=640 mode=per-row cuBLASLt=130501
+[q4t][mem] phase=request_end id=agent-91b7f20f425f7cd27e9da328600b687f dev_used_gb=107.753 dev_total_gb=131.921 rss_mb=941.7 mem_free_gb=22.831 mem_avail_gb=35.710 cached_gb=11.690
+[q4t][request] instance=2 id=agent-91b7f20f425f7cd27e9da328600b687f event=stage stage=response seq=0 elapsed_ms=3720.930 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4093288448 reported_post_exec_rss_bytes=234942464 wait_status=9
+[q4t][request] instance=2 id=agent-91b7f20f425f7cd27e9da328600b687f event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=3727.822 slot_wait_ms=0.031 model_lock_ms=0.005 tokenizer_lock_ms=0.005 scheduler_completion_ms=0.000 stream_write_ms=0.056 scheduler_waits=0 trace_id=req-3b892a49d50f5d290b8458dc92f3c4d6
+[q4t][request] instance=3 id=unregistered event=begin stage=validation seq=-1 elapsed_ms=0.000 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t][request] instance=3 id=agent-ffdf6c625dc4f50357380300abd9791a event=registered stage=validation seq=-1 elapsed_ms=0.107 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t][http] trace_id=req-6f2fe66e5838cfc6d3de0427209203a1 completion_id=agent-ffdf6c625dc4f50357380300abd9791a
+[q4t][request] instance=3 id=agent-ffdf6c625dc4f50357380300abd9791a event=stage stage=grammar_compile seq=-1 elapsed_ms=0.239 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t][request] instance=3 id=agent-ffdf6c625dc4f50357380300abd9791a event=stage stage=encode seq=-1 elapsed_ms=210.419 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t][request] instance=3 id=agent-ffdf6c625dc4f50357380300abd9791a event=stage stage=slot_admission seq=-1 elapsed_ms=212.688 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t][request] instance=3 id=agent-ffdf6c625dc4f50357380300abd9791a event=admitted stage=slot_admission seq=0 elapsed_ms=212.731 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t][request] instance=3 id=agent-ffdf6c625dc4f50357380300abd9791a event=stage stage=encode seq=0 elapsed_ms=212.733 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t][request] instance=3 id=agent-ffdf6c625dc4f50357380300abd9791a event=stage stage=prefill seq=0 elapsed_ms=212.746 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t][request] instance=3 id=agent-ffdf6c625dc4f50357380300abd9791a event=stage stage=decode seq=0 elapsed_ms=915.583 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t][mem] phase=request_end id=agent-ffdf6c625dc4f50357380300abd9791a dev_used_gb=107.713 dev_total_gb=131.921 rss_mb=944.1 mem_free_gb=22.871 mem_avail_gb=35.750 cached_gb=11.690
+[q4t][request] instance=3 id=agent-ffdf6c625dc4f50357380300abd9791a event=stage stage=response seq=0 elapsed_ms=4021.697 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t] grammar worker reaped=1 lifetime_max_rss_bytes=4093288448 reported_post_exec_rss_bytes=228495360 wait_status=9
+[q4t][request] instance=3 id=agent-ffdf6c625dc4f50357380300abd9791a event=end stage=response seq=0 released=1 outcome=success reason=completed elapsed_ms=4028.684 slot_wait_ms=0.031 model_lock_ms=0.005 tokenizer_lock_ms=0.007 scheduler_completion_ms=0.000 stream_write_ms=0.058 scheduler_waits=0 trace_id=req-6f2fe66e5838cfc6d3de0427209203a1
+[q4t] shutting down: draining in-flight requests...
+[mtp-batches] rows=1 suffix=0 steps=64
+[q4t] shutdown complete (0 in-flight remaining)
+[startup-reservation] {"schema":1,"event":"finalized","status":"PASS","count":1606,"device_bytes":85541278088,"allocated":1606,"consumed":1606,"freed":1606,"unhanded_remaining":0,"handed_live":0,"release_unknown":0,"error":"none","backend_rc":0,"error_index":0,"prepared":true,"startup_complete":true,"finalized":true,"active":false,"strategy":"stable_descending_bytes","plan_sha256":"281c12b1a51f1fe344326d8223d0a2b47b3141f47255a7d39023c6417b25b3b5"}

@@ -1,0 +1,11 @@
+test_accounting_accepts_exact_attempts_and_separate_owner_contract (tools.serve_observation_capacity.test_driver.Driver.test_accounting_accepts_exact_attempts_and_separate_owner_contract) ... ok
+test_budget_refuses_before_increment_and_original_deadline (tools.serve_observation_capacity.test_driver.Driver.test_budget_refuses_before_increment_and_original_deadline) ... ok
+test_error_wire_requires_complete_body_status_and_code (tools.serve_observation_capacity.test_driver.Driver.test_error_wire_requires_complete_body_status_and_code) ... ok
+test_frozen_rollback_does_not_depend_on_working_source_hashes (tools.serve_observation_capacity.test_driver.Driver.test_frozen_rollback_does_not_depend_on_working_source_hashes) ... ok
+test_lost_refusals_false_success_and_owner_leaks_are_not_accepted (tools.serve_observation_capacity.test_driver.Driver.test_lost_refusals_false_success_and_owner_leaks_are_not_accepted) ... ok
+test_observation_reservations_are_not_unbounded_polling (tools.serve_observation_capacity.test_driver.Driver.test_observation_reservations_are_not_unbounded_polling) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.005s
+
+OK

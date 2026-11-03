@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "96",
+    "X-Request-Id": "req-4dcad212e1c1ad6cefba406c2d1e1b4b",
+    "Connection": "close"
+  },
+  "raw": "{\"status\":\"ok\",\"gpu_healthy\":true,\"requests_running\":129,\"seq_slots_free\":0,\"seq_slots_total\":1}"
+}

@@ -1,0 +1,312 @@
+{
+  "passed": false,
+  "records": [
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+      "expected_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+      "actual_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+      "sidecar_sha256": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/previous/q4t.release.json",
+      "expected_sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+      "actual_sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+      "sidecar_sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t.release.json",
+      "expected_sha256": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+      "actual_sha256": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+      "sidecar_sha256": "67897c817dfccd6db3d4e2c0d0af3cfc70fb97a2c840887905c03fbf0bd6be23",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/package/previous/q4t.release.json",
+      "expected_sha256": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+      "actual_sha256": "c16caf0573ed2ecdf23237229a54a23a0d4ead46e86f6b25e7a44436d3caafe0",
+      "sidecar_sha256": "be4cd02115f97a232aa885b487fa5e42bf044e9ccfa1bca8be31701a0c8d4463",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/previous/q4t.release.json",
+      "expected_sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+      "actual_sha256": "5642eb68d0e2d9296aeb0d5f4197797a18d064b2de749c4368a86fce918167ce",
+      "sidecar_sha256": "6aca6a3ebf951ed8e625ff4944b73c34f40f3854b92497be2a8abe485315e382",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-preflight-20261103/package-final/previous/q4t.release.json",
+      "expected_sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+      "actual_sha256": "a3fd64a34a67f619bf2978faf152d6f455652d048a1e7a2cdc48caf784898184",
+      "sidecar_sha256": "49c7c63159c806d8b8f28d5a5a46e5f1c2b6562cc608f46bc43d921c48d0d35a",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-text-stop-20261103/package-fixture/previous/q4t.release.json",
+      "expected_sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+      "actual_sha256": "31ffc41efefe7e407a0848041e03673906e8965865b9464019aa54a99fd5dee6",
+      "sidecar_sha256": "9a71a0a72e76da3b3850a340fb30b882da633a867e51bf454bee92ba9f5f9a72",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-thinking-budget-http-20261103/package-boundary/previous/q4t.release.json",
+      "expected_sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+      "actual_sha256": "ecd5d21f7b3a9adb221b17a352499df5a5803020f15149ed6cef978c916f8dcc",
+      "sidecar_sha256": "91ce0ed94e4ee2c9bcb30895258a6bb30bef3cfe8e37f0dd6ac9160fb314ecfb",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b2a-20261103/package/previous/q4t.release.json",
+      "expected_sha256": "f1133bcc539caa5148200e2603269646ab46047fb32ff22f722ac4830b88a305",
+      "actual_sha256": "f1133bcc539caa5148200e2603269646ab46047fb32ff22f722ac4830b88a305",
+      "sidecar_sha256": "2edfb882a543195cf03608c8ad5ed1876aa66c3c991a81e9b5227a25000c1507",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-b1-20261103/package/previous/q4t.release.json",
+      "expected_sha256": "142bb9d41b2b972d61d995f391cb890c4068b3fd6b7a68b71aa9dafe1f506317",
+      "actual_sha256": "142bb9d41b2b972d61d995f391cb890c4068b3fd6b7a68b71aa9dafe1f506317",
+      "sidecar_sha256": "94ce08253aa345db4775de3b1002c9daf29a91d058fea682ede946c6bcde5fdf",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-stage-a-final-20261102/package/previous/q4t.release.json",
+      "expected_sha256": "c8c412c4ab0f24c238d83e3e5def78baf4b25c99883eda382b0da7f560ed15d4",
+      "actual_sha256": "c8c412c4ab0f24c238d83e3e5def78baf4b25c99883eda382b0da7f560ed15d4",
+      "sidecar_sha256": "da9f3ac5b41215157a6fbbb0d24ec540be7836c24d75d3bc6ed5228627032800",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-final-20261102/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/grammar-isolation-final-20261102/package/previous/q4t.release.json",
+      "expected_sha256": "f03ee0d465419c2320552cfc20a589c5104e139120baa7204fed60a71d80b56b",
+      "actual_sha256": "f03ee0d465419c2320552cfc20a589c5104e139120baa7204fed60a71d80b56b",
+      "sidecar_sha256": "a1e9d24e3119a76939ed0859ac3d2f27bf49610df1a5d653efea93482ff08402",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-resources-20261102/package/previous/q4t.release.json",
+      "expected_sha256": "ea678009413bd4d63a2b456a697e9c7844b47f71e6e2b3e3447b5044f9cbdf0a",
+      "actual_sha256": "ea678009413bd4d63a2b456a697e9c7844b47f71e6e2b3e3447b5044f9cbdf0a",
+      "sidecar_sha256": "90372798114d61fac6a15a409169596248716c6553561aa26bfa739ab1ca07ce",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/input-contract-20261102/package/previous/q4t.release.json",
+      "expected_sha256": "957211c7807a5189e5c124b13d52c4fe5a95a4213dfbce087007783cb479d5fc",
+      "actual_sha256": "957211c7807a5189e5c124b13d52c4fe5a95a4213dfbce087007783cb479d5fc",
+      "sidecar_sha256": "9eba5472f952372464bf0a903c63074b2e73cd51321d0d19a0601f7f05426fad",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/package/previous/q4t.release.json",
+      "expected_sha256": "c3772d111088f8dbd7f07b6b482367da05c50112dd6502f047cd4627da2ea23a",
+      "actual_sha256": "c3772d111088f8dbd7f07b6b482367da05c50112dd6502f047cd4627da2ea23a",
+      "sidecar_sha256": "c80f1f14b1abe39a24e45a9fe37a0fa4e9b8a5fd47a4537799f816dca852e5a1",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/application-service-correction-20261102/package/previous/q4t.release.json",
+      "expected_sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+      "actual_sha256": "830694ce26621cdd852b9d0b064d42c217958e17c9444935dd9298ebcb645f51",
+      "sidecar_sha256": "0f28e0f08322c6ad513dc9117e95f6913d34876b43485534e150b67f8544f1aa",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/chat-delivery-20261102/package/previous/q4t.release.json",
+      "expected_sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+      "actual_sha256": "0c5ab1de85ff68f9d757ac3bfad04187756a1b2c6634108c3112a5861c209483",
+      "sidecar_sha256": "e6fdd13b7d140926ed4a0d42bcda37b6ec6689305960e3deab03b3f73dc294d6",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/main-reaudit-fixes-20261031/delivery-package/previous/q4t.release.json",
+      "expected_sha256": "b11ed66cd94f943957e83edbfa223cb3e65f758e409eb4d125b4911d1164e015",
+      "actual_sha256": "b11ed66cd94f943957e83edbfa223cb3e65f758e409eb4d125b4911d1164e015",
+      "sidecar_sha256": "982c888c2c9d6e63a608398472bc692f8340e117361011d123593fd7c6d45fab",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/delivery-package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage3/delivery-package/previous/q4t.release.json",
+      "expected_sha256": "5e6249fcd2eb9849ef047d7fff89489c3d0218ba2c40ace40f4b79b3affe8b05",
+      "actual_sha256": "5e6249fcd2eb9849ef047d7fff89489c3d0218ba2c40ace40f4b79b3affe8b05",
+      "sidecar_sha256": "cb90c388034bc33b80b378faac73216082074b15d993fa8f00d59fc26575c908",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/audit-p2-20261031/stage1/delivery-package/previous/q4t.release.json",
+      "expected_sha256": "037328bb5c8788920ef44d1dfac2df94f908760f5626a95f1a674568c0dac4f7",
+      "actual_sha256": "037328bb5c8788920ef44d1dfac2df94f908760f5626a95f1a674568c0dac4f7",
+      "sidecar_sha256": "3200266ea8778507b9e9acdfc0cf0a8b2bb97ae02aa8262cd572fd0a9b060d06",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-closeout-20261031/delivery-package/previous/q4t.release.json",
+      "expected_sha256": "27a483a31e5799b67342efbabea6812c6ec7efce1f0b03ffc304f31318fcbf28",
+      "actual_sha256": "27a483a31e5799b67342efbabea6812c6ec7efce1f0b03ffc304f31318fcbf28",
+      "sidecar_sha256": "af6b3a4466390b11b01034a9194fbc41fe5e8d522d90b44107496473fdc97a6a",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reliability-20261030/delivery-package-v2/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-reliability-20261030/delivery-package-v2/previous/q4t.release.json",
+      "expected_sha256": "21eb5204e094cf8f86b02780b168ac62cd354c47ad9ae3348759e05860594097",
+      "actual_sha256": "21eb5204e094cf8f86b02780b168ac62cd354c47ad9ae3348759e05860594097",
+      "sidecar_sha256": "9698b4300edba168cbdb60040239741275ec079b372113610bb714396a9c8a57",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-incremental-delivery-20261029/delivery-package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-incremental-delivery-20261029/delivery-package/previous/q4t.release.json",
+      "expected_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+      "actual_sha256": "6f3722b26e5b9d1b08d405e873d1f90d72f4b5c1aec2dd14589d1e27390b7965",
+      "sidecar_sha256": "5fdca879f84da6795b66113833de7167df6edbcff0d97e09d474113e47a67de2",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/delivery-package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/prefix-seed-20261028/delivery-package/previous/q4t.release.json",
+      "expected_sha256": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+      "actual_sha256": "09fe25ba5db65ae0bd343a110f2b7042de06f1bc7184bba51d10704638ad26b3",
+      "sidecar_sha256": "5027b9d4229e97edf35fa482e0351581434b8e270cebd8b91b055a671ec0082e",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/delivery-package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/session-cache-20261027/delivery-package/previous/q4t.release.json",
+      "expected_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+      "actual_sha256": "f2a6de360e05676c5fee2f86fbd314c9a9ff3ea0378fa104e0185cef6b4ec164",
+      "sidecar_sha256": "26325699af40325e384c4aae4d615679f2d7e2aa69f9eecbc5743e68db6032cf",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-agent-delivery-20261027/package-v2/previous/q4t.release.json",
+      "expected_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+      "actual_sha256": "90f24f49ea93e7ddbb359e817f05a9d39f87a54f66433c01a8d46f198f489bd4",
+      "sidecar_sha256": "45cfe74a761f9b3a9ab1db613b42e8fde64192d869f17a0596ea5925b73e61ec",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/suffix-causal-20261026/delivery-package-v2/previous/q4t.release.json",
+      "expected_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+      "actual_sha256": "f356b2c96330101abf1e5fa3fced495a37f4ea5a270ed4457037e0d55735d313",
+      "sidecar_sha256": "422993b0aba5d21462ac3a7e44a78cbb8fb1721b41ca961bd476c679581e7e96",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/sha2-startup-20261023/delivery-package/previous/q4t.release.json",
+      "expected_sha256": "75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d",
+      "actual_sha256": "75e85bac509b793b9b69612539809a17b64d45febe1b408e019641fe01c2eb2d",
+      "sidecar_sha256": "9cbfaf7d76e62198fbc4f48b0e5ed1187d84a47705007ff5212411272ba47ab5",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-subset-head-20261023/delivery-package-v2/previous/q4t.release.json",
+      "expected_sha256": "5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191",
+      "actual_sha256": "5a456351ac7230607e69b6d03e24aace3efb4c7ba521bf0a348a9b92d6c21191",
+      "sidecar_sha256": "e1a14429064aae3d046bbea6c743c2355071b09893cb9bc090deb7aecdf6be10",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/deploy-v1/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/startup-delivery-20261021/deploy-v1/previous/q4t.release.json",
+      "expected_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+      "actual_sha256": "19ea4e57bf3a0e4f568a3e59c31ccbb4e71ad535db997682d8160d4be2f9c469",
+      "sidecar_sha256": "471e2debe81e1231d9060ff36ddae31db3fe9fb042fa5cf1ad8753cd1d514b8a",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-foundation-20261020/deploy-v1/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/offload-foundation-20261020/deploy-v1/previous/q4t.release.json",
+      "expected_sha256": "3ae53f268119d0b391e974d6989cc1ee6a182e38e79503f793d562f0a822ea98",
+      "actual_sha256": "3ae53f268119d0b391e974d6989cc1ee6a182e38e79503f793d562f0a822ea98",
+      "sidecar_sha256": "f720cb21137a210d10f1213ed2f16b55b54b9f1255cec925e487b66bd2907415",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/resource-admission-20261020/deploy-v1/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/resource-admission-20261020/deploy-v1/previous/q4t.release.json",
+      "expected_sha256": "3eb9b2a032db927988468e38855d67892a2a21482e7e2142ae64ce6de513a9a8",
+      "actual_sha256": "3eb9b2a032db927988468e38855d67892a2a21482e7e2142ae64ce6de513a9a8",
+      "sidecar_sha256": "44e4311fd3f6940ec235f041dd413e21ec7e26de4335a6a5979aca959b0c58df",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/request-diagnostics-20261020/deploy-v1/previous/q4t.release.json",
+      "expected_sha256": "d4232b63e53bece8c82bd87d8dcac628fb089f4f7eddc163535030133107f7a6",
+      "actual_sha256": "d4232b63e53bece8c82bd87d8dcac628fb089f4f7eddc163535030133107f7a6",
+      "sidecar_sha256": "057415ce09f340827b30bee225fbc1479ecb632298f20ed48ca7f3223b01437c",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-hot-upload-20261020/deploy-v1/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/moe-hot-upload-20261020/deploy-v1/previous/q4t.release.json",
+      "expected_sha256": "bc348458db08f7d8006ab9416fd83dd4810fc905af9bd6d2a766fecab937790a",
+      "actual_sha256": "bc348458db08f7d8006ab9416fd83dd4810fc905af9bd6d2a766fecab937790a",
+      "sidecar_sha256": "34ddb994c79dfb3c7d7de098a904f2b174613e0d3377547f9525080081cafd2e",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/deploy-v1/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/megatron-reliability-20261020/deploy-v1/previous/q4t.release.json",
+      "expected_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+      "actual_sha256": "753d9769f96e9848800eae88b4800bef65e20885fd2ec025b8f3bc91fc497542",
+      "sidecar_sha256": "cbf089607c600dd4245901a79db2777d070928d62510e85d06c3430aeabd6c4b",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-deploy-v1/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/batch-deploy-v1/previous/q4t.release.json",
+      "expected_sha256": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+      "actual_sha256": "c8f4b241f67b2818e92791f688082e338f6981a5db923cf09fb07e30b99e887d",
+      "sidecar_sha256": "e4d5033a8a9cd55eae523263c72c0bcb164bc8cb80693109f36f4f8a703df0e9",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/deploy-v1/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/metadata-followup-20261020/deploy-v1/previous/q4t.release.json",
+      "expected_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+      "actual_sha256": "44abd8b1a7edaca41620b87b4cf894427f8397c1e3529ef56512940ef1b44e03",
+      "sidecar_sha256": "e77f600510c9acfc8987392479203306348ac0776a8600a257360cef396bbdca",
+      "passed": true
+    },
+    {
+      "binary": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t",
+      "sidecar": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t.release.json",
+      "expected_sha256": "3b414633df3f68190afa41787beb19b991fce34e5657e3f06da0617462c75ace",
+      "actual_sha256": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+      "sidecar_sha256": "cef96e24197d4e16b0a2a4f03566c59c1133ee385950970e24dd9c69c3e8796d",
+      "passed": false,
+      "error": "RuntimeError('binary/release identity differs')"
+    }
+  ],
+  "read_only": true,
+  "prior_failure": "The first traversal raised binary/release identity differs before writing a receipt; traceback retained in tool output. No file was changed."
+}

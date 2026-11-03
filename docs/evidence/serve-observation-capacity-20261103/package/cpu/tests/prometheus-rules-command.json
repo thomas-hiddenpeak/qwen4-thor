@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/promtool",
+    "check",
+    "rules",
+    "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml"
+  ],
+  "started": 1793677613.1224341
+}

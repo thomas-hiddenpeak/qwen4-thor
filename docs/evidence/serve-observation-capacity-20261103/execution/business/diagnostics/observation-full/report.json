@@ -1,0 +1,261 @@
+{
+  "automatic_restart": false,
+  "automatic_retry": false,
+  "collected_at": "2026-11-03T03:53:35.006187+00:00",
+  "comparison": {
+    "counters": {},
+    "reason": "instance_or_contract_changed",
+    "state": "unavailable"
+  },
+  "configuration": null,
+  "duration_seconds": 0.034796623047441244,
+  "findings": [
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "identity_unverified",
+      "evidence": "unavailable",
+      "severity": "unknown"
+    },
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "endpoint_observation_failed",
+      "evidence": {
+        "error": "contract_endpoint_unavailable",
+        "route": "/v1/capabilities"
+      },
+      "severity": "unknown"
+    },
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "endpoint_observation_failed",
+      "evidence": {
+        "error": "contract_endpoint_unavailable",
+        "route": "/v1/config"
+      },
+      "severity": "unknown"
+    },
+    {
+      "action": "consult_runbook",
+      "automatic_restart": false,
+      "automatic_retry": false,
+      "code": "endpoint_observation_failed",
+      "evidence": {
+        "error": "unexpected_content_type",
+        "route": "/metrics"
+      },
+      "severity": "unknown"
+    }
+  ],
+  "identity": {
+    "state": "unavailable"
+  },
+  "log": {
+    "events": [
+      {
+        "elapsed_ms": 0.0,
+        "event": "begin",
+        "id_hash": "4b1c48c6e3a8675f7990eafd103e0eac4da4f124f34ec18efd71bab315244ec1",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "c864d0551697adba15fa945b97410becbaa62ff726a5da3556ed900e0e44aca1"
+      },
+      {
+        "elapsed_ms": 0.107,
+        "event": "registered",
+        "id_hash": "9e255d6c87e455178da46a56d350bffea85141ad761272004f761c969ab62154",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "validation",
+        "trace_id_hash": "c864d0551697adba15fa945b97410becbaa62ff726a5da3556ed900e0e44aca1"
+      },
+      {
+        "completion_id_hash": "9e255d6c87e455178da46a56d350bffea85141ad761272004f761c969ab62154",
+        "kind": "http",
+        "trace_id_hash": "c864d0551697adba15fa945b97410becbaa62ff726a5da3556ed900e0e44aca1"
+      },
+      {
+        "elapsed_ms": 0.19,
+        "event": "stage",
+        "id_hash": "9e255d6c87e455178da46a56d350bffea85141ad761272004f761c969ab62154",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "encode",
+        "trace_id_hash": "c864d0551697adba15fa945b97410becbaa62ff726a5da3556ed900e0e44aca1"
+      },
+      {
+        "elapsed_ms": 0.391,
+        "event": "stage",
+        "id_hash": "9e255d6c87e455178da46a56d350bffea85141ad761272004f761c969ab62154",
+        "instance": 0,
+        "kind": "request",
+        "seq": -1,
+        "stage": "slot_admission",
+        "trace_id_hash": "c864d0551697adba15fa945b97410becbaa62ff726a5da3556ed900e0e44aca1"
+      },
+      {
+        "elapsed_ms": 0.412,
+        "event": "admitted",
+        "id_hash": "9e255d6c87e455178da46a56d350bffea85141ad761272004f761c969ab62154",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "slot_admission",
+        "trace_id_hash": "c864d0551697adba15fa945b97410becbaa62ff726a5da3556ed900e0e44aca1"
+      },
+      {
+        "elapsed_ms": 0.415,
+        "event": "stage",
+        "id_hash": "9e255d6c87e455178da46a56d350bffea85141ad761272004f761c969ab62154",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "encode",
+        "trace_id_hash": "c864d0551697adba15fa945b97410becbaa62ff726a5da3556ed900e0e44aca1"
+      },
+      {
+        "elapsed_ms": 0.498,
+        "event": "stage",
+        "id_hash": "9e255d6c87e455178da46a56d350bffea85141ad761272004f761c969ab62154",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "prefill",
+        "trace_id_hash": "c864d0551697adba15fa945b97410becbaa62ff726a5da3556ed900e0e44aca1"
+      },
+      {
+        "elapsed_ms": 246.548,
+        "event": "stage",
+        "id_hash": "9e255d6c87e455178da46a56d350bffea85141ad761272004f761c969ab62154",
+        "instance": 0,
+        "kind": "request",
+        "seq": 0,
+        "stage": "decode",
+        "trace_id_hash": "c864d0551697adba15fa945b97410becbaa62ff726a5da3556ed900e0e44aca1"
+      },
+      {
+        "error": "capacity_exhausted",
+        "kind": "http",
+        "status": 503,
+        "trace_id_hash": "b3c7d909ae4ef6c5a76cc8173068f4ddc6f76c6ad171fb26bc30ea37bc29d52e"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "connection_capacity",
+        "status": 503,
+        "system_error": 0,
+        "trace_id_hash": "b3c7d909ae4ef6c5a76cc8173068f4ddc6f76c6ad171fb26bc30ea37bc29d52e"
+      },
+      {
+        "error": "observation_capacity_exhausted",
+        "kind": "http",
+        "status": 503,
+        "trace_id_hash": "7c2250d2e1c3d05cd6fd0f15a2ae8883b73838d5cbbbba9517c82cdc835dfb96"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "connection_capacity",
+        "status": 503,
+        "system_error": 0,
+        "trace_id_hash": "7c2250d2e1c3d05cd6fd0f15a2ae8883b73838d5cbbbba9517c82cdc835dfb96"
+      },
+      {
+        "error": "observation_capacity_exhausted",
+        "kind": "http",
+        "status": 503,
+        "trace_id_hash": "b91e59420a6cece8029b435082c46e412d0fe549f48c8ae6752d333c8496d9b4"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "connection_capacity",
+        "status": 503,
+        "system_error": 0,
+        "trace_id_hash": "b91e59420a6cece8029b435082c46e412d0fe549f48c8ae6752d333c8496d9b4"
+      },
+      {
+        "error": "observation_capacity_exhausted",
+        "kind": "http",
+        "status": 503,
+        "trace_id_hash": "1a5e0ab70e848882c965b4a207ee4c23ed70133e287f14b8ff19a544c271ebc5"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "connection_capacity",
+        "status": 503,
+        "system_error": 0,
+        "trace_id_hash": "1a5e0ab70e848882c965b4a207ee4c23ed70133e287f14b8ff19a544c271ebc5"
+      },
+      {
+        "error": "observation_capacity_exhausted",
+        "kind": "http",
+        "status": 503,
+        "trace_id_hash": "0e1d6de2a9dcc1721263a1bddf6d19c151cc98b7b974bd532b1a3e8b3048a89a"
+      },
+      {
+        "kind": "http-receive",
+        "reason": "connection_capacity",
+        "status": 503,
+        "system_error": 0,
+        "trace_id_hash": "0e1d6de2a9dcc1721263a1bddf6d19c151cc98b7b974bd532b1a3e8b3048a89a"
+      }
+    ],
+    "id_policy": "per_bundle_hmac_sha256; key discarded; no cross_bundle_correlation",
+    "omitted_lines": 30,
+    "omitted_older_events": 0,
+    "raw_log_included": false,
+    "sampled_bytes": 5566,
+    "state": "available",
+    "tail_only": false,
+    "tail_window_bytes": 2097152,
+    "unknown_fields": 0
+  },
+  "metrics": null,
+  "monotonic": 1868097.523060895,
+  "observability_version": null,
+  "physical_ram_hard_limit_proved": false,
+  "port": 18108,
+  "probes": {
+    "/livez": {
+      "http_status": 200,
+      "readiness": {
+        "live": true,
+        "ready": true,
+        "status": "ready"
+      }
+    },
+    "/metrics": {
+      "error": "unexpected_content_type",
+      "http_status": 503
+    },
+    "/readyz": {
+      "http_status": 200,
+      "readiness": {
+        "live": true,
+        "ready": true,
+        "status": "ready"
+      }
+    },
+    "/v1/capabilities": {
+      "error": "contract_endpoint_unavailable",
+      "http_status": 503
+    },
+    "/v1/config": {
+      "error": "contract_endpoint_unavailable",
+      "http_status": 503
+    }
+  },
+  "read_only": true,
+  "snapshot_atomic": false,
+  "state": "UNKNOWN",
+  "unix_seconds": 1793678015.0061872,
+  "version": "q4t.ops.snapshot.v1"
+}

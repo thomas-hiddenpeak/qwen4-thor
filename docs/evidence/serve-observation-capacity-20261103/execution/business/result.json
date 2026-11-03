@@ -1,0 +1,22 @@
+{
+  "status": "PASS_BOUNDED_OBSERVATION_CAPACITY",
+  "automatic_retries": 0,
+  "performance_acceptance": false,
+  "unclassified_header_flood_isolated": false,
+  "diagnostics": [
+    "HEALTHY",
+    "WARNING",
+    "UNKNOWN",
+    "WARNING"
+  ],
+  "saturated_scrape": true,
+  "physical_ram_hard_limit_proved": false,
+  "counts": {
+    "generations": 4,
+    "negatives": 136,
+    "starts": 1
+  },
+  "elapsed_seconds": 50.12569626001641,
+  "control_request_budget_used": 88,
+  "control_count_includes_35_reserved_prometheus_scrapes": true
+}
