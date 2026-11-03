@@ -1,0 +1,9 @@
+{
+  "call_id": "call_agent-bb7c429f7b553bdd493518c4181e2e68_0",
+  "name": "read_project_record",
+  "arguments": {
+    "path": "docs/MODEL.md",
+    "start_line": 1,
+    "line_count": 24
+  }
+}

@@ -1,0 +1,10 @@
+data: {"id":"agent-c12c9a6559685c4593e1305c429aa2cd","object":"chat.completion.chunk","created":1793670592,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-c12c9a6559685c4593e1305c429aa2cd","object":"chat.completion.chunk","created":1793670592,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":"根据 `docs/MODEL.md` 第 1 到 24 行的内容，`architectures` 字段的准确值为：\n\n`Qwen4ExpForConditionalGeneration`\n\n引用：[docs/MODEL.md:L1-L24]"},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"id":"agent-c12c9a6559685c4593e1305c429aa2cd","object":"chat.completion.chunk","created":1793670592,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop","logprobs":null}],"usage":null}
+
+data: {"id":"agent-c12c9a6559685c4593e1305c429aa2cd","object":"chat.completion.chunk","created":1793670592,"model":"qwen3.8-flash-next","choices":[],"usage":{"prompt_tokens":890,"completion_tokens":58,"total_tokens":948}}
+
+data: [DONE]
+

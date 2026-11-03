@@ -1,0 +1,93 @@
+{
+  "full_repository_links_passed": false,
+  "scanned_links": 1755,
+  "missing_links": [
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/HISTORY_AGENT_ENTRY_2026-09-20.md",
+      "target": "docs/STATUS.md"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_INIT_TIMING_2026-10-08.md",
+      "target": "../.q4t-work/mtp-init-timing-20261008/timing-summary-final-01.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_INIT_TIMING_2026-10-08.md",
+      "target": "../.q4t-work/mtp-init-timing-20261008/derived-findings-final-01.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_INIT_TIMING_2026-10-08.md",
+      "target": "../.q4t-work/mtp-init-timing-20261008/http-independent-review-01.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_INIT_TIMING_2026-10-08.md",
+      "target": "../.q4t-work/mtp-init-timing-20261008/derived-independent-crosscheck-01.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_INIT_TIMING_2026-10-08.md",
+      "target": "../.q4t-work/mtp-init-timing-20261008/final-protected-audit.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_INIT_TIMING_2026-10-08.md",
+      "target": "../.q4t-work/mtp-init-timing-20261008/stage-summary.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_BATCH_GATHER_RESULT_2026-10-08.md",
+      "target": "../.q4t-work/mtp-batch-gather-20261008/candidate-summary-final-01.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_BATCH_GATHER_RESULT_2026-10-08.md",
+      "target": "../.q4t-work/mtp-batch-gather-20261008/candidate-independent-review-01.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_BATCH_GATHER_RESULT_2026-10-08.md",
+      "target": "../.q4t-work/mtp-batch-gather-20261008/final-protection-audit.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_BATCH_GATHER_RESULT_2026-10-08.md",
+      "target": "../.q4t-work/mtp-batch-gather-20261008/source-snapshot.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_VERIFY_MOE_2026-10-08.md",
+      "target": "../.q4t-work/mtp-verify-moe-20261008/moe-summary-final-01.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_VERIFY_MOE_2026-10-08.md",
+      "target": "../.q4t-work/mtp-verify-moe-20261008/moe-cost-ranking-01.json"
+    },
+    {
+      "source": "/home/rm01/models/dev/qwen4-thor/docs/MTP_VERIFY_MOE_2026-10-08.md",
+      "target": "../.q4t-work/mtp-verify-moe-20261008/moe-independent-review-01.json"
+    }
+  ],
+  "baseline_commit": "4fd5ec7c",
+  "unchanged_documents": {
+    "docs/HISTORY_AGENT_ENTRY_2026-09-20.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/HISTORY_AGENT_ENTRY_2026-09-20.md",
+      "sha256": "7d1f88d11ff8bfcee49dc988c512c3157dda700adfb6643d077f69ab080dbfc0",
+      "bytes": 11843
+    },
+    "docs/MTP_INIT_TIMING_2026-10-08.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/MTP_INIT_TIMING_2026-10-08.md",
+      "sha256": "9246d320598461129db720f48711e4f6c522fa0c2cc79c1e339b461115577def",
+      "bytes": 17483
+    },
+    "docs/MTP_BATCH_GATHER_RESULT_2026-10-08.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/MTP_BATCH_GATHER_RESULT_2026-10-08.md",
+      "sha256": "b46de229c6e94070a78a55e2788b9f42416810135c1645593ad2e70ebe2973a0",
+      "bytes": 13644
+    },
+    "docs/MTP_VERIFY_MOE_2026-10-08.md": {
+      "path": "/home/rm01/models/dev/qwen4-thor/docs/MTP_VERIFY_MOE_2026-10-08.md",
+      "sha256": "f82caf7fd2a3bc6a5c5135e3ba8c5837d18ff7f513202c97eb217773554bed88",
+      "bytes": 18586
+    }
+  },
+  "original_checker": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-pressure-20261103/custody.py",
+    "sha256": "bdf9bb0dcee5d61e2e4a8bb076fb93b73f2af2a1688136579dc44d9bb45282cd",
+    "bytes": 3167
+  },
+  "original_checker_outcome": "Failed on these existing links after byte checks; original stderr in tool transcript",
+  "resolved": false,
+  "model_acceptance_affected": false
+}

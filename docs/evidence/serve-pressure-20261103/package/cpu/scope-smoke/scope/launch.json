@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "sudo",
+    "-n",
+    "systemd-run",
+    "--quiet",
+    "--scope",
+    "--unit=q4t-pressure-cpu-1992538.scope",
+    "--description=q4t-scope-a0a15a9bb19c248b0531200e506e6a45",
+    "--property=MemoryAccounting=yes",
+    "--property=IOAccounting=yes",
+    "--property=MemorySwapMax=0",
+    "--property=OOMPolicy=continue",
+    "--property=MemoryMax=infinity",
+    "--property=TasksMax=4096",
+    "--",
+    "/usr/bin/setpriv",
+    "--reuid=2002",
+    "--regid=2002",
+    "--init-groups",
+    "/usr/bin/python3",
+    "/home/rm01/models/dev/qwen4-thor/tools/evalscope/scope_payload.py",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-pressure-20261103/cpu/scope-smoke/scope"
+  ],
+  "unit": "q4t-pressure-cpu-1992538.scope",
+  "host_cache_max_bytes": null,
+  "swap_max_bytes": 0,
+  "scope": "memcg charge including scope helper, excluding clients; not total physical RAM",
+  "exit_counter_retention": "helper retains scope for up to 15 seconds"
+}

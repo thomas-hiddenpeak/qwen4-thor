@@ -1,0 +1,10 @@
+{
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "1105",
+    "X-Request-Id": "req-172e70e474b78540d805507770a7ca33",
+    "Connection": "close"
+  },
+  "raw": "{\"object\":\"q4t.chat.preflight\",\"profile\":\"q4t-preflight-v1\",\"model\":\"qwen3.8-flash-next\",\"protocol_source_sha256\":\"aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5\",\"prompt_tokens\":22,\"prompt_bytes\":93,\"max_context_tokens\":8192,\"prefill_chunk_tokens\":2048,\"prefill_chunks\":1,\"output\":{\"source\":\"max_tokens\",\"requested_tokens\":128,\"capped_tokens\":128,\"available_tokens\":128,\"counts_reasoning_and_forced_tokens\":true},\"admission\":{\"policy\":\"uniform_context_clip\",\"required_capacity\":0,\"eligible_slots\":[0],\"slot_reserved\":false,\"availability_checked\":false},\"checks\":{\"input\":true,\"template\":true,\"tokenizer\":true,\"budget\":true,\"structured_requested\":false,\"grammar_compiled\":false,\"cache_accessed\":false,\"request_registered\":false,\"gpu_executed\":false},\"execution_guaranteed\":false,\"unvalidated\":[\"runtime_health\",\"admission_and_deadline\",\"request_id_and_session_leases\",\"grammar_compilation\",\"thinking_boundary_tokens\",\"cache_hits\",\"generation_and_output_validation\"],\"token_ids\":[248045,846,198,96227,100535,99129,22,16,15,15,15,18,1710,248046,198,248045,74455,198,248068,271,248069,271]}"
+}

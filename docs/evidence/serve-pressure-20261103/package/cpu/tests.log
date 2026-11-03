@@ -1,0 +1,24 @@
+test_full_wire_retains_error_done_before_client_raises (__main__.Driver.test_full_wire_retains_error_done_before_client_raises) ... ok
+test_observation_rejects_unknown_contradictory_duplicate_and_partial (__main__.Driver.test_observation_rejects_unknown_contradictory_duplicate_and_partial) ... ok
+test_only_complete_content_deltas_count_as_progress (__main__.Driver.test_only_complete_content_deltas_count_as_progress) ... ok
+test_original_time_and_attempt_budget (__main__.Driver.test_original_time_and_attempt_budget) ... ok
+test_real_parent_death_releases_pressure (__main__.Driver.test_real_parent_death_releases_pressure) ... ok
+test_real_scope_ownership_ancestry_and_cleanup (__main__.Driver.test_real_scope_ownership_ancestry_and_cleanup) ... ok
+test_reserves_and_allocation_cap (__main__.Driver.test_reserves_and_allocation_cap) ... ok
+test_resource_envelope_does_not_allow_missing_cycles_or_growth (__main__.Driver.test_resource_envelope_does_not_allow_missing_cycles_or_growth) ... ok
+test_small_real_pressure_released_on_eof (__main__.Driver.test_small_real_pressure_released_on_eof) ... ok
+test_absent_scope_does_not_invent_stop (test_isolated_scope.ScopeContracts.test_absent_scope_does_not_invent_stop) ... ok
+test_cleanup_refuses_replaced_owner (test_isolated_scope.ScopeContracts.test_cleanup_refuses_replaced_owner) ... ok
+test_empty_properties_fail_closed (test_isolated_scope.ScopeContracts.test_empty_properties_fail_closed) ... ok
+test_existing_unit_does_not_launch_or_stop (test_isolated_scope.ScopeContracts.test_existing_unit_does_not_launch_or_stop) ... ok
+test_fallback_cleanup_checks_token_before_signal (test_isolated_scope.ScopeContracts.test_fallback_cleanup_checks_token_before_signal) ... ok
+test_foreign_exit_token_rejected (test_isolated_scope.ScopeContracts.test_foreign_exit_token_rejected) ... ok
+test_missing_exit_does_not_invent_success (test_isolated_scope.ScopeContracts.test_missing_exit_does_not_invent_success) ... ok
+test_reject_bad_limit_before_query (test_isolated_scope.ScopeContracts.test_reject_bad_limit_before_query) ... ok
+test_reject_foreign_unit_name (test_isolated_scope.ScopeContracts.test_reject_foreign_unit_name) ... ok
+test_signal_uses_pidfd (test_isolated_scope.ScopeContracts.test_signal_uses_pidfd) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 3.744s
+
+OK

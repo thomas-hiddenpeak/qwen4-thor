@@ -1,0 +1,24 @@
+{
+  "warmup_cycles": 8,
+  "measured_cycles": 56,
+  "baseline": {
+    "rss": 1007894528,
+    "anon": 815726592,
+    "fds": 49,
+    "threads": 5
+  },
+  "maxima": {
+    "rss": 1012613120,
+    "anon": 820445184,
+    "fds": 49,
+    "threads": 5
+  },
+  "additive_envelope": {
+    "rss": 67108864,
+    "anon": 134217728,
+    "fds": 2,
+    "threads": 2
+  },
+  "physical_ram_peak_proved": false,
+  "indefinite_leak_freedom_proved": false
+}

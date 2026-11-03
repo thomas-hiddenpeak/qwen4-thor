@@ -1,0 +1,29 @@
+{
+  "request": {
+    "model": "qwen3.8-flash-next",
+    "messages": [
+      {
+        "role": "user",
+        "content": "\u53ea\u56de\u590d\u6570\u5b57710003\u3002"
+      }
+    ],
+    "tools": [],
+    "parse_response": true,
+    "temperature": 0,
+    "top_p": 1,
+    "n": 1,
+    "stream": false,
+    "max_tokens": 128,
+    "tool_choice": "auto",
+    "parallel_tool_calls": true,
+    "request_timeout_ms": 180000,
+    "request_id": "agent-7aaf9f43c724c5a9bf9839e9ba65ada9",
+    "cancel_token": "bc34d1236a57e5181a7e1304f7b938d443e1f9c1c496019d5acbc342b647fc24",
+    "chat_template_kwargs": {
+      "enable_thinking": false,
+      "preserve_thinking": true,
+      "reasoning_effort": "low"
+    }
+  },
+  "include_token_ids": true
+}

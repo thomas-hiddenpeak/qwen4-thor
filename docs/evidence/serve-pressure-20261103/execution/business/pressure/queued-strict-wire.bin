@@ -1,0 +1,6 @@
+data: {"id":"agent-a7c55bba3e300a4ff9a6b051c5be13b3","object":"chat.completion.chunk","created":1793670071,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"error":{"message":"memory admission temporarily unavailable","type":"service_unavailable_error","code":"memory_pressure","param":null}}
+
+data: [DONE]
+
