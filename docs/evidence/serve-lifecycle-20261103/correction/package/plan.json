@@ -1,0 +1,84 @@
+{
+  "root": "/home/rm01/models/dev/qwen4-thor",
+  "limits": {
+    "generations": 1224,
+    "negatives": 8,
+    "preflights": 240,
+    "starts": 7,
+    "observations": 5000,
+    "seconds": 6000
+  },
+  "planned": {
+    "generations": 1216,
+    "negatives": 4,
+    "starts": 5
+  },
+  "source_commit": "279c9abb0d0572f1d706ebf6161d0ee08f548d2d",
+  "cycles": 240,
+  "warmup": 16,
+  "interval_seconds": 15,
+  "soak_seconds": 3600,
+  "soak_max_seconds": 4500,
+  "envelope": {
+    "rss": 67108864,
+    "anon": 134217728,
+    "fds": 2,
+    "threads": 2
+  },
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t",
+    "sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+    "bytes": 7087224
+  },
+  "sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/diagnostic-identity.json",
+    "sha256": "8ac778551c354ea25f7bda2479e7e375a9da87fafe59aacbe3bb1d58e1883f7a",
+    "bytes": 295
+  },
+  "protocol_sha256": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "port": 18109,
+  "release_bundle": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases",
+  "lease_root": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/execution",
+  "performance_acceptance": false,
+  "runtime_changed": true,
+  "final_default_changed": true,
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t",
+  "candidate_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+  "old_hashes": {
+    "q4t": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "q4t.release.json": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2"
+  },
+  "previous_binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+  "started": 1793680422.72266,
+  "prior_counts": {
+    "generations": 1202,
+    "negatives": 0,
+    "starts": 1
+  },
+  "final_counts": {
+    "generations": 1218,
+    "negatives": 4,
+    "starts": 6
+  },
+  "planned_correction": {
+    "generations": 16,
+    "negatives": 4,
+    "starts": 5
+  },
+  "source_manifest_sha256": "a6c3d203a80d8183152253115cc5784e4162fa40c1a8fe3d06e82a8aab5bdd34",
+  "automatic_retries": 0,
+  "explicit_failure_correction": true,
+  "original_failed_result": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/execution/business/result.json",
+    "sha256": "452f6288c1140884b7ac588f7c29e0eaeec3e1d74a274e43c4f7b9f398963c97",
+    "bytes": 795
+  }
+}

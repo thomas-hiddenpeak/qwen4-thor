@@ -1,0 +1,11 @@
+{
+  "mode": "SIGTERM",
+  "passed": true,
+  "pid": 2200268,
+  "start_ticks": 187496043,
+  "continuous_samples": 42,
+  "returncode": 0,
+  "exit_seconds": 0.5367863969877362,
+  "scope_removed": true,
+  "elapsed_seconds": 0.9779567709192634
+}

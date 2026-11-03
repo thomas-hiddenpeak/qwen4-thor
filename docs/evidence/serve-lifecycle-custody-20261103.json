@@ -1,0 +1,520 @@
+{
+  "passed": true,
+  "source_commit": "279c9abb0d0572f1d706ebf6161d0ee08f548d2d",
+  "original_records_verified": 10321,
+  "decompressed_members_verified": 10321,
+  "readable_duplicates_verified": 94,
+  "local_identities_verified": 12,
+  "staged_evidence_files": 100,
+  "staged_blobs": [
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/README.md",
+      "sha256": "fe60655cc63f11a1a520ac965c71ed0c2f8b4f9d33ad5921e743aa192621d070",
+      "bytes": 1264
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/compression-proof.json",
+      "sha256": "961d9d9bc0bcb3b0204565f1e0ab4a761863542e83bdba1a1a7b732358e4a533",
+      "bytes": 6282
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/acceptance-summary.json",
+      "sha256": "c09b478821d9fc29d935bfe1e8cddb7aabd6da60596cdcce38a73266b59221f7",
+      "bytes": 89514
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/archive.py",
+      "sha256": "d84cb263ce345e9c8b0bd57a56859d26526f9147dd28974b535ee072ab467332",
+      "bytes": 5465
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/custody.py",
+      "sha256": "f427d536d7ec94f87bd9ad5c978d11cd9ea989d0a970f1a30c479960fbb04c4d",
+      "bytes": 4598
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/crash-inflight/child-exit-observations.json",
+      "sha256": "6ce6f9af25be5543f6d586004e1726d3d0d3010d1db3e3b6c3b7185a079e5466",
+      "bytes": 384
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/after-crash/manifest.json",
+      "sha256": "fafb55cc8ed7a54cacc5aa30817f1f631e87adc3e0a83b15c25563ea3c0950f0",
+      "bytes": 148
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/after-crash/report.json",
+      "sha256": "fb0513af8100a18697f2f6109b155952abfe9fb5d1af8f4d87a6867eb557142b",
+      "bytes": 26320
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/after-graceful/manifest.json",
+      "sha256": "70646036d2cce8951a497b4a86ea7356b52746ea2adecf2e8baf14988acb3eb0",
+      "bytes": 148
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/after-graceful/report.json",
+      "sha256": "53bfd7c305ac8f05938727baf871a22aea28f9db8fd8eae002e835e40dbd3450",
+      "bytes": 26321
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/model-1-corrected-start/manifest.json",
+      "sha256": "5d0bb26ff3533a1e023f1cc8732b919517cc1e6240a593b619888d45fa7d4f84",
+      "bytes": 147
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/model-1-corrected-start/report.json",
+      "sha256": "3bef9dbc8508abeb4ea107fae98ab038911af3a4d6fbea4169e28fe8de77f6b7",
+      "bytes": 8309
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/model-2-restart-start/manifest.json",
+      "sha256": "dd9b1deb9a483277757e98c7cd90214e2a9fb2aa591bd06a5aa866f1794c69f4",
+      "bytes": 147
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/model-2-restart-start/report.json",
+      "sha256": "74ef45c14c03406c52ba3f97c28e1675811f2d723d34a4c21b0003df6640fd33",
+      "bytes": 8318
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/model-3-restart-start/manifest.json",
+      "sha256": "fff9ecc7f359b2337285adaa8b47755580c1dde27f227a20d982e1a9e07290ad",
+      "bytes": 147
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/model-3-restart-start/report.json",
+      "sha256": "c110f92cb2293bf3ba85c083f1715d277b543d57f54c24c4b27881dad9065b6e",
+      "bytes": 8318
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/model-4-rollback-start/manifest.json",
+      "sha256": "e8c22c0bf99038defa516fad51da6824ebcc9401bb0145084f45200d15a98765",
+      "bytes": 147
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/model-4-rollback-start/report.json",
+      "sha256": "49788e5b4e139ed88f9e01a683da73c2536614b126101e7004eb90089995bd60",
+      "bytes": 7902
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/previous-business/manifest.json",
+      "sha256": "bbbc9e219ddf747d656f393b0ede8c2f0e83002dd0ca2716985d198e4252c4ee",
+      "bytes": 148
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/diagnostics/previous-business/report.json",
+      "sha256": "1ac35db09d51380fad457cd65366cd1b0cbb62f909013a9ca30fb6e49c8552ae",
+      "bytes": 25259
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/graceful-inflight/active-error.json",
+      "sha256": "a53d954b063738e5f0bd8aa47ac38b258fada7554dfdecf2b15cd0c252ac470b",
+      "bytes": 275
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/graceful-inflight/active-wire.bin",
+      "sha256": "cd203cff5fd3ec4297890a1e0870cf4afddb4bc98c6fb3316d4bb7cabf9831ac",
+      "bytes": 5154
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/graceful-inflight/child-exit-observations.json",
+      "sha256": "821d244800125dee2cc5c0f57e8d4c0a2a4b6e2c51e7b1ba3c9a481049d7ba8d",
+      "bytes": 384
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/graceful-inflight/queued-error.json",
+      "sha256": "5c7bf5a74ea129d72158088c26f62f24afdfe0078455c57ba12072f9c097dc8d",
+      "bytes": 292
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/graceful-inflight/queued-wire.bin",
+      "sha256": "24e074c71e3d838863e5afd595ce2aaa8d6de488d15904a8b90a701a019b1ba5",
+      "bytes": 402
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/model-1-corrected/shutdown.json",
+      "sha256": "c7c327d396edcccf783adce94f4de41ff6e8397956e484be8438e53485048563",
+      "bytes": 376
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/model-2-restart/shutdown.json",
+      "sha256": "2b5b95089f7d59e4c581e5731a3888c0e347104b5f6f0a75bcb0fd872c4b042a",
+      "bytes": 377
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/model-3-restart/shutdown.json",
+      "sha256": "0e6c5ee125da157e48d2ebc786b30d4237014815f9fdc868e56fefabdc66ea7a",
+      "bytes": 239
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/model-4-rollback/shutdown.json",
+      "sha256": "b31010ff98fcc708bb5f057381de3b56c697a1ca979b67f9c6af00bdc8d1a37a",
+      "bytes": 239
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/result.json",
+      "sha256": "1160d7763d0ed843d0aca5d76475124cedc0d665cbbe184271a56d7ab18b52a7",
+      "bytes": 2038
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/shutdown-abort-accounting.json",
+      "sha256": "eb63c90c2c5342ae53a5cc10ae6c078de4422819a5cfd7669e38387df4380dc3",
+      "bytes": 123
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/switch-original-current/after.json",
+      "sha256": "328d1a2d596d8719711663939d692f54b631c02f50888433db3e6b4d3b0583e5",
+      "bytes": 485
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/switch-original-current/before.json",
+      "sha256": "e08c418831e49c878d561534ba9eee98bbd26e5d56db552a8b096a8c1ca324ea",
+      "bytes": 236
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/switch-original-current/gpu-before.json",
+      "sha256": "7e7a767d3fef60a504aacc173b303b2d84117e7275e7183bf5b1cfe4ebd49430",
+      "bytes": 2254
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/switch-original-current/result.json",
+      "sha256": "e6e8f4e11fe72376bded30f47ec189b568d64784c7025840c9355daa968d105e",
+      "bytes": 399
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/switch-previous/after.json",
+      "sha256": "65a140a8b45943e5d68be5c0d709b98f4d0e7c854cf0b407ba575ebd4f9edaea",
+      "bytes": 487
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/switch-previous/before.json",
+      "sha256": "4becf9fd63cbd090079af1acf451d17f74ee510f2e22d626247dcbc334bde4f8",
+      "bytes": 235
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/switch-previous/gpu-before.json",
+      "sha256": "f803e56c3d525289113bd8eb7f76bc3fbbbb3272f8efc643eea65577124d7521",
+      "bytes": 2257
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/business/switch-previous/result.json",
+      "sha256": "32b13d619b0ba53045fee2071cc13a725fc5010891e3feae2f8a83b9fedf386e",
+      "bytes": 401
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/finalized.json",
+      "sha256": "205b613ff90760a6b2b642e1529f23a0c9f5d7f0c3f30360d78cbc3b1c5e09fb",
+      "bytes": 313
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/health/diagnostics/installed-business/manifest.json",
+      "sha256": "c74f77baa8ceaae2725a52a34628c45aa2e86176bbbb4c8562c2e0b896aaf1af",
+      "bytes": 148
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/health/diagnostics/installed-business/report.json",
+      "sha256": "f0d0ea525130fac68e9b2a2d7a2edfa37fb1325f3eacd52bdc68e3b759777fee",
+      "bytes": 25933
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/health/diagnostics/model-installed-start/manifest.json",
+      "sha256": "3af7fa79eb0a45c248877d7d99488bfa9c534d8ccfcb82814d71f01fda821842",
+      "bytes": 147
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/health/diagnostics/model-installed-start/report.json",
+      "sha256": "72a4c9c0a2d8ea2a2af1ef2421a69450912415c035efc329fd62fff40d849234",
+      "bytes": 8316
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/health/model-installed/shutdown.json",
+      "sha256": "c395ca2c89442c41d730d9ef90979c124cc57d72495f47fdb4d5b1c6250885fd",
+      "bytes": 238
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/health/result.json",
+      "sha256": "bc750a8ddb34b8d0b988b3c39a940a6605e9dc6c690cbd731e6a7b093f12e453",
+      "bytes": 845
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/lease/exit.json",
+      "sha256": "6662b6d372b406c70ef09f0a5a3d726956e47fb82bc540345704581ee866ed0f",
+      "bytes": 594
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/native/result.json",
+      "sha256": "947dada67ddce6efc885b2a24c7ad577952df867ff9ace852268734a5f7971fe",
+      "bytes": 315
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/pair/q4t.release.json",
+      "sha256": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9",
+      "bytes": 44957
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/release/binding.json",
+      "sha256": "7030fd3b69beff7c9a56bdaf24e92b333f6813799cc36516e61ad6fe9751fc59",
+      "bytes": 375
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/execution/release/q4t.release.json",
+      "sha256": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9",
+      "bytes": 44957
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/offline-schema.json",
+      "sha256": "2b07e30ee3ae6d4fc8747b6484427d45a116e8dc4ae06310e1c0fb28bac92356",
+      "bytes": 429599
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/original-evidence.json",
+      "sha256": "62a8d529298eb097d61d38f05ac74fdf60877218dcd8cca15125496b1eae1c53",
+      "bytes": 701
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/package/cpu/tests/required/result.json",
+      "sha256": "df3d2bd5c897bb453a068b8573a646b31cb7a3cd0fa3cecce11b94b64e85d3d3",
+      "bytes": 10273
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/package/cpu/tests/result.json",
+      "sha256": "d260c9704403dfbfa3821cf3fe81d248763056ea9c9ba459da8714060ebc6720",
+      "bytes": 184
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/package/cpu/tests/reviewed-drift/result.json",
+      "sha256": "79f5b8103876f136e8e7a1552ad1458094cd1cd954ea231a983b3b75cb686c1d",
+      "bytes": 308
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/package/plan.json",
+      "sha256": "e81cd4fec5145f4167ca767688f938f68eb4c30354e158556155234a6678876a",
+      "bytes": 3225
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/package/previous/q4t.release.json",
+      "sha256": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2",
+      "bytes": 44671
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/package/reuse.json",
+      "sha256": "240895a04fb0820814001f0e5988c22f7f95d843f43e9867c77d0cfb32ebbbca",
+      "bytes": 1010
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/postflight-gpu.json",
+      "sha256": "b719ce34954b96f5686339636be37d2b31b1bee12033387cb9570a0ae879a717",
+      "bytes": 2259
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/postflight.json",
+      "sha256": "57aab3e72f5faaa5df7deb025b9aa8e80ec1966f2f734577ddd2c532a75c570b",
+      "bytes": 4439
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/postflight.py",
+      "sha256": "fea923cae2ab15be300d59e04b3b521c3f433c6f6186c98cb8610dd891af77e9",
+      "bytes": 2227
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/release-history.json",
+      "sha256": "70b241da435c34bc6cf536a7a7fc518c11b0b16863e592ae8d8b3c7a87b20c8a",
+      "bytes": 50622
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/rollback-bundle/current/q4t.release.json",
+      "sha256": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9",
+      "bytes": 44957
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/rollback-bundle/manifest.json",
+      "sha256": "354efdd31c4b00bdb58dda147362ce20643da7fd56f25e973a3bddb36308ee78",
+      "bytes": 6992
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/rollback-bundle/previous/q4t.release.json",
+      "sha256": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2",
+      "bytes": 44671
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/rollback-readiness.json",
+      "sha256": "e7036eaebe0e845daf97aaa4948918e48d87445ba2432ab64eac36c6a7338c44",
+      "bytes": 814
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/correction/summarize.py",
+      "sha256": "a24856e8e0531c288a46d6f7802370bb43de7bc734d696b24518406e412d65c9",
+      "bytes": 9173
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/local-identities.json",
+      "sha256": "c1a67e467ee1d13d37175360660dc6c5c532bd15b7509d7815635be07e901f72",
+      "bytes": 3059
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/begin.json",
+      "sha256": "a1f568e4f62d4a936c97b1f8fd1b59d7e798efba4540d0a3525e83e09eb83340",
+      "bytes": 184
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/diagnostics/cycle-060/manifest.json",
+      "sha256": "8d839962e9eedad92518be82f989d6d7e177a074834e551cab79ec6c0bfe3410",
+      "bytes": 149
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/diagnostics/cycle-060/report.json",
+      "sha256": "5d3bb2199d3f16541c41712c6d5e25a33b1fc3d4fb231e28c1b6c64f46f5636f",
+      "bytes": 201610
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/diagnostics/cycle-120/manifest.json",
+      "sha256": "eaf1e26ee26c617ed08576bbcff2a60ec0c2b571761d37adb45924ff43e7c0c9",
+      "bytes": 149
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/diagnostics/cycle-120/report.json",
+      "sha256": "73b54b5d443bdc2d7d070cd2476b2d5b829e885202d0aeda149740dbfbbf0af1",
+      "bytes": 201607
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/diagnostics/cycle-180/manifest.json",
+      "sha256": "02492aa28d563e0dedbd4722e88d25e9bc42406e437872716eb15c1c6bffb0e4",
+      "bytes": 149
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/diagnostics/cycle-180/report.json",
+      "sha256": "651bd59f52f2a055ab674f47b551377c80be49def8d9a4448535dbd274bb7043",
+      "bytes": 201633
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/diagnostics/cycle-240/manifest.json",
+      "sha256": "312e9be7f6e9ebc74d48d0cbfddb1f4dcb3e32509ea12cebf3fd3164b5819473",
+      "bytes": 149
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/diagnostics/cycle-240/report.json",
+      "sha256": "241a5ceec2530298638d6faa14a53abae667a237d6d56f28c1410327b7fe8918",
+      "bytes": 202083
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/diagnostics/model-1-soak-start/manifest.json",
+      "sha256": "53fea8e671f7e37ed7c3e129690a0cb82bac1eb820d9f5252f30ea5c10c5678e",
+      "bytes": 147
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/diagnostics/model-1-soak-start/report.json",
+      "sha256": "fa1bb9001dc388bff1bcf3472e76c6bc714d06537f03c1850018493c7dda0f3b",
+      "bytes": 8309
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/graceful-inflight/active-error.json",
+      "sha256": "a53d954b063738e5f0bd8aa47ac38b258fada7554dfdecf2b15cd0c252ac470b",
+      "bytes": 275
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/graceful-inflight/active-wire.bin",
+      "sha256": "1b16f335dd0303c8b2daee36c1c07a2020a3950e075884feae8ad34771a41247",
+      "bytes": 5154
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/graceful-inflight/child-exit-observations.json",
+      "sha256": "15312ff2a17ced9ceb9f3582417d23deedc6ac39566b9b361882455a10f99587",
+      "bytes": 384
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/graceful-inflight/queued-error.json",
+      "sha256": "c88ff74587e8603e346512bcd67933147833441e30f5763feafdde8f21f46494",
+      "bytes": 297
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/graceful-inflight/queued-wire.bin",
+      "sha256": "4411d5c5d2547f72992c03b007b7e337cf5777e64b34980e139dff3398081141",
+      "bytes": 403
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/model-1-soak/shutdown.json",
+      "sha256": "401330e12a9f2ce7b4203987fbc7ab633022c6805e944898768a5f3c476e6946",
+      "bytes": 378
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/resource-envelope.json",
+      "sha256": "a2872ed127b126d0f2632a86dee6794b4224eef58ebbbf8a1265e59bd22bc744",
+      "bytes": 433
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/result.json",
+      "sha256": "452f6288c1140884b7ac588f7c29e0eaeec3e1d74a274e43c4f7b9f398963c97",
+      "bytes": 795
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/business/soak-result.json",
+      "sha256": "9bb52a57f9fef4303be08afc56107d2c0312606a5433ba60ba4586232051ae2b",
+      "bytes": 277
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/execution/lease/exit.json",
+      "sha256": "bbe7f05790bcd9bd6ac4bede4aea442427c2a5cfd119b133a8b2721ec99dc919",
+      "bytes": 598
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/package/cpu/result.json",
+      "sha256": "845f91791e80e5f87ea50e450899e3619b935fca1725480b8648256350040746",
+      "bytes": 138
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/package/plan.json",
+      "sha256": "e0732e2337c9505aef19e93f32e0b9382cf650b0621a3839da0f3c3d02d46964",
+      "bytes": 1910
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/package/release-history.json",
+      "sha256": "72163f59d8fa8543ece01f21aafdc9d5f9b8388e3ebc0eb5163e6cd5c0b140b6",
+      "bytes": 49260
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/package/releases/current/q4t.release.json",
+      "sha256": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2",
+      "bytes": 44671
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/package/releases/manifest.json",
+      "sha256": "ca1226ff3994a2ff43f811501273fe0eaf48e501eb718d40baacabcf9583ee47",
+      "bytes": 6882
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/package/releases/previous/q4t.release.json",
+      "sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+      "bytes": 42438
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/original/package/runtime-reuse.json",
+      "sha256": "0bd7e3153ca36cd9944f756bad63712050e107c11c87be144ddf0cef913a9253",
+      "bytes": 1273
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/raw-records.tar.gz",
+      "sha256": "74d57280d8b2216f71394f3fbe8ecf7f74926747fa378f69294d1956640145be",
+      "bytes": 8382544
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/sealed-files.json",
+      "sha256": "4c19042ab62e5ae4dac60905ad8633ab8a9d9bb7f436bcf5545277dbf09e996b",
+      "bytes": 12480
+    },
+    {
+      "path": "docs/evidence/serve-lifecycle-20261103/source-map.json",
+      "sha256": "cfda1b05ddbad1dc6f3d3f62d839f6dfc50bae417d4d5b2b0775e318521c97bd",
+      "bytes": 3175340
+    }
+  ],
+  "changed_document_links_checked": 583,
+  "original_bytes_preserved": true,
+  "existing_repository_link_gap": "14 preexisting historical missing links, separate backlog",
+  "installed": {
+    "q4t": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+    "q4t.release.json": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9"
+  },
+  "no_new_http_or_model_requests": true,
+  "goal_complete": false
+}

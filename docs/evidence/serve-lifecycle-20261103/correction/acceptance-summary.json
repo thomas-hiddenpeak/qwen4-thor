@@ -1,0 +1,2013 @@
+{
+  "status": "ACCEPT_BOUNDED_LIFECYCLE_WITH_TARGETED_SHUTDOWN_REPAIR",
+  "original_source_commit": "05d899841719acf7138b3f38ebd4ef97d2da1c1f",
+  "repair_source_commit": "279c9abb0d0572f1d706ebf6161d0ee08f548d2d",
+  "original_failed_result": {
+    "status": "FAILED",
+    "automatic_retries": 0,
+    "requests_replayed": 0,
+    "error": "RuntimeError('graceful client error classification')",
+    "counts": {
+      "generations": 1202,
+      "negatives": 0,
+      "starts": 1
+    },
+    "preflights": 240,
+    "control_requests_used": 1719,
+    "instances": [
+      {
+        "mode": "SIGTERM",
+        "passed": true,
+        "pid": 2124227,
+        "start_ticks": 187050647,
+        "continuous_samples": 3600,
+        "returncode": 0,
+        "exit_seconds": 0.6433715810999274,
+        "child_exit": [
+          {
+            "pid": 2186879,
+            "start_ticks": 187414325,
+            "state": "absent",
+            "running": false
+          }
+        ],
+        "scope_removed": true,
+        "elapsed_seconds": 1.0276712600607425
+      }
+    ],
+    "elapsed_seconds": 3638.4913841409143
+  },
+  "correction_business": {
+    "status": "PASS_BOUNDED_LIFECYCLE_REPAIR",
+    "automatic_retries": 0,
+    "requests_replayed": 0,
+    "prior_counts": {
+      "generations": 1202,
+      "negatives": 0,
+      "starts": 1
+    },
+    "original_failed_run_retained": true,
+    "installed": false,
+    "reused_original_hour": true,
+    "new_candidate_hour_proved": false,
+    "counts": {
+      "generations": 1215,
+      "negatives": 4,
+      "starts": 5
+    },
+    "preflights": 240,
+    "control_requests_used": 1817,
+    "instances": [
+      {
+        "mode": "SIGTERM",
+        "passed": true,
+        "pid": 2197675,
+        "start_ticks": 187488156,
+        "continuous_samples": 34,
+        "returncode": 0,
+        "exit_seconds": 0.6416750298812985,
+        "child_exit": [
+          {
+            "pid": 2198819,
+            "start_ticks": 187491522,
+            "state": "absent",
+            "running": false
+          }
+        ],
+        "scope_removed": true,
+        "elapsed_seconds": 1.1065046759322286
+      },
+      {
+        "mode": "SIGKILL",
+        "passed": true,
+        "pid": 2198904,
+        "start_ticks": 187491685,
+        "continuous_samples": 42,
+        "returncode": -9,
+        "exit_seconds": 0.4024155961815268,
+        "child_exit": [
+          {
+            "pid": 2200189,
+            "start_ticks": 187495908,
+            "state": "absent",
+            "running": false
+          }
+        ],
+        "scope_removed": true,
+        "elapsed_seconds": 0.8227687960024923
+      },
+      {
+        "mode": "SIGTERM",
+        "passed": true,
+        "pid": 2200268,
+        "start_ticks": 187496043,
+        "continuous_samples": 42,
+        "returncode": 0,
+        "exit_seconds": 0.5367863969877362,
+        "scope_removed": true,
+        "elapsed_seconds": 0.9779567709192634
+      },
+      {
+        "mode": "SIGTERM",
+        "passed": true,
+        "pid": 2201612,
+        "start_ticks": 187500342,
+        "continuous_samples": 41,
+        "returncode": 0,
+        "exit_seconds": 0.6395528148859739,
+        "scope_removed": true,
+        "elapsed_seconds": 1.0610440969467163
+      }
+    ],
+    "elapsed_seconds": 164.90385188604705,
+    "original_elapsed_seconds": 4540.835028171539
+  },
+  "installed_health": {
+    "status": "PASS_BOUNDED_LIFECYCLE_REPAIR",
+    "automatic_retries": 0,
+    "requests_replayed": 0,
+    "prior_counts": {
+      "generations": 1202,
+      "negatives": 0,
+      "starts": 1
+    },
+    "original_failed_run_retained": true,
+    "installed": true,
+    "reused_original_hour": true,
+    "new_candidate_hour_proved": false,
+    "counts": {
+      "generations": 1218,
+      "negatives": 4,
+      "starts": 6
+    },
+    "preflights": 240,
+    "control_requests_used": 1839,
+    "instances": [
+      {
+        "mode": "SIGTERM",
+        "passed": true,
+        "pid": 2202992,
+        "start_ticks": 187504814,
+        "continuous_samples": 42,
+        "returncode": 0,
+        "exit_seconds": 0.5407859021797776,
+        "scope_removed": true,
+        "elapsed_seconds": 0.918379268143326
+      }
+    ],
+    "elapsed_seconds": 42.919752199202776,
+    "original_elapsed_seconds": 4585.475771903992
+  },
+  "finalized": {
+    "status": "DELIVERED",
+    "time": 1793685032.8024843,
+    "installed": {
+      "q4t": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+      "q4t.release.json": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9"
+    },
+    "source_commit": "279c9abb0d0572f1d706ebf6161d0ee08f548d2d"
+  },
+  "guards": {
+    "original": {
+      "status": "COMMAND_FAILED",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/serve_lifecycle/stage.py",
+        "execute"
+      ],
+      "compute_backend": "nvml",
+      "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+      "poll_interval_seconds": 1.0,
+      "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+      "performance_acceptance": false,
+      "child_returncode": 1,
+      "external_lease": false,
+      "finished": {
+        "utc": "2026-11-03T05:34:23.867886+00:00",
+        "monotonic": 1874146.384770668,
+        "pid": 2124185
+      }
+    },
+    "correction": {
+      "status": "COMPLETED",
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "/home/rm01/models/dev/qwen4-thor/tools/serve_lifecycle/repair.py",
+        "execute"
+      ],
+      "compute_backend": "nvml",
+      "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+      "poll_interval_seconds": 1.0,
+      "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+      "performance_acceptance": false,
+      "child_returncode": 0,
+      "external_lease": false,
+      "finished": {
+        "utc": "2026-11-03T05:50:09.340700+00:00",
+        "monotonic": 1875091.857584083,
+        "pid": 2197456
+      }
+    }
+  },
+  "environment_aborts": [],
+  "cpu": {
+    "host": 242,
+    "required": 192,
+    "driver": 24,
+    "native": 24,
+    "initial_drift_failures_retained": true
+  },
+  "runtime_sources": 199,
+  "changed_runtime": [
+    "src/server/chat_admission.cpp"
+  ],
+  "reuse": {
+    "original_package": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/sealed-files.json",
+      "sha256": "66c38e7d787b81ebe11de52fd012f548ced276b64e34bc42252e5c2cd038ff1a",
+      "bytes": 2178
+    },
+    "original_execution": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/execution/sealed-files.json",
+      "sha256": "9fc405db9793bf131353ba8583c3a803a4f5c1c8391044bdd9e58d8341da72db",
+      "bytes": 1138349
+    },
+    "original_soak": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/execution/business/soak-result.json",
+      "sha256": "9bb52a57f9fef4303be08afc56107d2c0312606a5433ba60ba4586232051ae2b",
+      "bytes": 277
+    },
+    "changed_runtime": [
+      "src/server/chat_admission.cpp"
+    ],
+    "reuse": "Original 240 normal cycles and resource envelope only; not new-ELF hour-long acceptance. Model, tokenizer, template and math unchanged.",
+    "failures_retained": true,
+    "original_budget_unchanged": true
+  },
+  "soak": {
+    "passed": true,
+    "cycles": 240,
+    "seconds": 3600.0000611969735,
+    "generations": 1200,
+    "preflights": 240,
+    "instance_pid": 2124227,
+    "instance_start_ticks": 187050647,
+    "automatic_retries": 0,
+    "throughput_slo_claim": false,
+    "day_scale_stability_proved": false
+  },
+  "envelope": {
+    "warmup_cycles": 16,
+    "measured_cycles": 224,
+    "baseline": {
+      "rss": 1003835392,
+      "anon": 811675648,
+      "fds": 49,
+      "threads": 5
+    },
+    "maxima": {
+      "rss": 1013440512,
+      "anon": 821301248,
+      "fds": 49,
+      "threads": 5
+    },
+    "additive_envelope": {
+      "rss": 67108864,
+      "anon": 134217728,
+      "fds": 2,
+      "threads": 2
+    },
+    "physical_ram_peak_proved": false,
+    "indefinite_leak_freedom_proved": false
+  },
+  "instances": {
+    "original/model-1-soak": {
+      "command": {
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/build/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18109",
+          "--max-prefill",
+          "2048",
+          "--max-len",
+          "8192",
+          "--max-seq",
+          "1",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--min-available-memory-mib",
+          "2048"
+        ],
+        "installed": {
+          "hashes": {
+            "q4t": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+            "q4t.release.json": "bb620240dfbbe0437066f6827bf54d00f9e107327f244997fb437fe30727b1b2"
+          },
+          "role": "current",
+          "consistent": true
+        },
+        "rules": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/current/q4t.rules.yml",
+          "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+          "bytes": 13565
+        },
+        "rules_activation": "selected identity; no monitoring daemon installed"
+      },
+      "identity": {
+        "kind": "scope",
+        "token": "q4t-scope-667c2402c846dc6631a40af51964e836",
+        "pid": 2124227,
+        "properties": {
+          "Result": "success",
+          "OOMPolicy": "continue",
+          "ControlGroup": "/system.slice/q4t-lifecycle-2124197-1.scope",
+          "IOAccounting": "yes",
+          "MemoryAccounting": "yes",
+          "MemoryMax": "infinity",
+          "MemorySwapMax": "0",
+          "Description": "q4t-scope-667c2402c846dc6631a40af51964e836",
+          "LoadState": "loaded",
+          "ActiveState": "active",
+          "SubState": "running"
+        },
+        "membership": [
+          "0::/system.slice/q4t-lifecycle-2124197-1.scope"
+        ],
+        "start_ticks": 187050647
+      },
+      "shutdown": {
+        "mode": "SIGTERM",
+        "passed": true,
+        "pid": 2124227,
+        "start_ticks": 187050647,
+        "continuous_samples": 3600,
+        "returncode": 0,
+        "exit_seconds": 0.6433715810999274,
+        "child_exit": [
+          {
+            "pid": 2186879,
+            "start_ticks": 187414325,
+            "state": "absent",
+            "running": false
+          }
+        ],
+        "scope_removed": true,
+        "elapsed_seconds": 1.0276712600607425
+      },
+      "parent_reaped_workers": 721,
+      "request_end_outcomes": {
+        "success": 1200,
+        "cancelled": 2
+      },
+      "request_end_reasons": {
+        "completed": 1200,
+        "server_shutdown": 2
+      }
+    },
+    "correction/model-1-corrected": {
+      "command": {
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18109",
+          "--max-prefill",
+          "2048",
+          "--max-len",
+          "8192",
+          "--max-seq",
+          "1",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--min-available-memory-mib",
+          "2048"
+        ],
+        "installed": {
+          "candidate_installed": false,
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344"
+        },
+        "rules": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t.rules.yml",
+          "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+          "bytes": 13565
+        },
+        "rules_activation": "selected identity; no monitoring daemon installed"
+      },
+      "identity": {
+        "kind": "scope",
+        "token": "q4t-scope-9c4868a17f5252a6f641be784763d885",
+        "pid": 2197675,
+        "properties": {
+          "Result": "success",
+          "OOMPolicy": "continue",
+          "ControlGroup": "/system.slice/q4t-lifecycle-2197466-2.scope",
+          "IOAccounting": "yes",
+          "MemoryAccounting": "yes",
+          "MemoryMax": "infinity",
+          "MemorySwapMax": "0",
+          "Description": "q4t-scope-9c4868a17f5252a6f641be784763d885",
+          "LoadState": "loaded",
+          "ActiveState": "active",
+          "SubState": "running"
+        },
+        "membership": [
+          "0::/system.slice/q4t-lifecycle-2197466-2.scope"
+        ],
+        "start_ticks": 187488156
+      },
+      "shutdown": {
+        "mode": "SIGTERM",
+        "passed": true,
+        "pid": 2197675,
+        "start_ticks": 187488156,
+        "continuous_samples": 34,
+        "returncode": 0,
+        "exit_seconds": 0.6416750298812985,
+        "child_exit": [
+          {
+            "pid": 2198819,
+            "start_ticks": 187491522,
+            "state": "absent",
+            "running": false
+          }
+        ],
+        "scope_removed": true,
+        "elapsed_seconds": 1.1065046759322286
+      },
+      "parent_reaped_workers": 1,
+      "request_end_outcomes": {
+        "cancelled": 2
+      },
+      "request_end_reasons": {
+        "server_shutdown": 2
+      }
+    },
+    "correction/model-2-restart": {
+      "command": {
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18109",
+          "--max-prefill",
+          "2048",
+          "--max-len",
+          "8192",
+          "--max-seq",
+          "1",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--min-available-memory-mib",
+          "2048"
+        ],
+        "installed": {
+          "candidate_installed": false,
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344"
+        },
+        "rules": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t.rules.yml",
+          "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+          "bytes": 13565
+        },
+        "rules_activation": "selected identity; no monitoring daemon installed"
+      },
+      "identity": {
+        "kind": "scope",
+        "token": "q4t-scope-ccd147b369eeaa5ff8a28b100cc1d9f9",
+        "pid": 2198904,
+        "properties": {
+          "Result": "success",
+          "OOMPolicy": "continue",
+          "ControlGroup": "/system.slice/q4t-lifecycle-2197466-3.scope",
+          "IOAccounting": "yes",
+          "MemoryAccounting": "yes",
+          "MemoryMax": "infinity",
+          "MemorySwapMax": "0",
+          "Description": "q4t-scope-ccd147b369eeaa5ff8a28b100cc1d9f9",
+          "LoadState": "loaded",
+          "ActiveState": "active",
+          "SubState": "running"
+        },
+        "membership": [
+          "0::/system.slice/q4t-lifecycle-2197466-3.scope"
+        ],
+        "start_ticks": 187491685
+      },
+      "shutdown": {
+        "mode": "SIGKILL",
+        "passed": true,
+        "pid": 2198904,
+        "start_ticks": 187491685,
+        "continuous_samples": 42,
+        "returncode": -9,
+        "exit_seconds": 0.4024155961815268,
+        "child_exit": [
+          {
+            "pid": 2200189,
+            "start_ticks": 187495908,
+            "state": "absent",
+            "running": false
+          }
+        ],
+        "scope_removed": true,
+        "elapsed_seconds": 0.8227687960024923
+      },
+      "parent_reaped_workers": 2,
+      "request_end_outcomes": {
+        "success": 3
+      },
+      "request_end_reasons": {
+        "completed": 3
+      }
+    },
+    "correction/model-3-restart": {
+      "command": {
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18109",
+          "--max-prefill",
+          "2048",
+          "--max-len",
+          "8192",
+          "--max-seq",
+          "1",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--min-available-memory-mib",
+          "2048"
+        ],
+        "installed": {
+          "candidate_installed": false,
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344"
+        },
+        "rules": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t.rules.yml",
+          "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+          "bytes": 13565
+        },
+        "rules_activation": "selected identity; no monitoring daemon installed"
+      },
+      "identity": {
+        "kind": "scope",
+        "token": "q4t-scope-d7a805f94a4ae34d99e215b52f28c3ee",
+        "pid": 2200268,
+        "properties": {
+          "Result": "success",
+          "OOMPolicy": "continue",
+          "ControlGroup": "/system.slice/q4t-lifecycle-2197466-4.scope",
+          "IOAccounting": "yes",
+          "MemoryAccounting": "yes",
+          "MemoryMax": "infinity",
+          "MemorySwapMax": "0",
+          "Description": "q4t-scope-d7a805f94a4ae34d99e215b52f28c3ee",
+          "LoadState": "loaded",
+          "ActiveState": "active",
+          "SubState": "running"
+        },
+        "membership": [
+          "0::/system.slice/q4t-lifecycle-2197466-4.scope"
+        ],
+        "start_ticks": 187496043
+      },
+      "shutdown": {
+        "mode": "SIGTERM",
+        "passed": true,
+        "pid": 2200268,
+        "start_ticks": 187496043,
+        "continuous_samples": 42,
+        "returncode": 0,
+        "exit_seconds": 0.5367863969877362,
+        "scope_removed": true,
+        "elapsed_seconds": 0.9779567709192634
+      },
+      "parent_reaped_workers": 2,
+      "request_end_outcomes": {
+        "success": 3
+      },
+      "request_end_reasons": {
+        "completed": 3
+      }
+    },
+    "correction/model-4-rollback": {
+      "command": {
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/build/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18109",
+          "--max-prefill",
+          "2048",
+          "--max-len",
+          "8192",
+          "--max-seq",
+          "1",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--min-available-memory-mib",
+          "2048"
+        ],
+        "installed": {
+          "hashes": {
+            "q4t": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+            "q4t.release.json": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75"
+          },
+          "role": "previous",
+          "consistent": true
+        },
+        "rules": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/previous/q4t.rules.yml",
+          "sha256": "77a4ddc613b002508be336ab41dfae17c9d9e6421f1638c15ccbfcca0eed637e",
+          "bytes": 13437
+        },
+        "rules_activation": "selected identity; no monitoring daemon installed"
+      },
+      "identity": {
+        "kind": "scope",
+        "token": "q4t-scope-055edc5b7219151c3f8a1db5227f1f4e",
+        "pid": 2201612,
+        "properties": {
+          "Result": "success",
+          "OOMPolicy": "continue",
+          "ControlGroup": "/system.slice/q4t-lifecycle-2197466-5.scope",
+          "IOAccounting": "yes",
+          "MemoryAccounting": "yes",
+          "MemoryMax": "infinity",
+          "MemorySwapMax": "0",
+          "Description": "q4t-scope-055edc5b7219151c3f8a1db5227f1f4e",
+          "LoadState": "loaded",
+          "ActiveState": "active",
+          "SubState": "running"
+        },
+        "membership": [
+          "0::/system.slice/q4t-lifecycle-2197466-5.scope"
+        ],
+        "start_ticks": 187500342
+      },
+      "shutdown": {
+        "mode": "SIGTERM",
+        "passed": true,
+        "pid": 2201612,
+        "start_ticks": 187500342,
+        "continuous_samples": 41,
+        "returncode": 0,
+        "exit_seconds": 0.6395528148859739,
+        "scope_removed": true,
+        "elapsed_seconds": 1.0610440969467163
+      },
+      "parent_reaped_workers": 2,
+      "request_end_outcomes": {
+        "success": 3
+      },
+      "request_end_reasons": {
+        "completed": 3
+      }
+    },
+    "installed/model-installed": {
+      "command": {
+        "argv": [
+          "/home/rm01/models/dev/qwen4-thor/build/q4t",
+          "serve",
+          "--model-dir",
+          "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "18109",
+          "--max-prefill",
+          "2048",
+          "--max-len",
+          "8192",
+          "--max-seq",
+          "1",
+          "--max-inflight-requests",
+          "8",
+          "--max-queued-requests",
+          "2",
+          "--min-available-memory-mib",
+          "2048"
+        ],
+        "installed": {
+          "candidate_installed": true,
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344"
+        },
+        "rules": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t.rules.yml",
+          "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+          "bytes": 13565
+        },
+        "rules_activation": "selected identity; no monitoring daemon installed"
+      },
+      "identity": {
+        "kind": "scope",
+        "token": "q4t-scope-1b64d143be4507ffd64d43bd6c0edbd7",
+        "pid": 2202992,
+        "properties": {
+          "Result": "success",
+          "OOMPolicy": "continue",
+          "ControlGroup": "/system.slice/q4t-lifecycle-2197466-6.scope",
+          "IOAccounting": "yes",
+          "MemoryAccounting": "yes",
+          "MemoryMax": "infinity",
+          "MemorySwapMax": "0",
+          "Description": "q4t-scope-1b64d143be4507ffd64d43bd6c0edbd7",
+          "LoadState": "loaded",
+          "ActiveState": "active",
+          "SubState": "running"
+        },
+        "membership": [
+          "0::/system.slice/q4t-lifecycle-2197466-6.scope"
+        ],
+        "start_ticks": 187504814
+      },
+      "shutdown": {
+        "mode": "SIGTERM",
+        "passed": true,
+        "pid": 2202992,
+        "start_ticks": 187504814,
+        "continuous_samples": 42,
+        "returncode": 0,
+        "exit_seconds": 0.5407859021797776,
+        "scope_removed": true,
+        "elapsed_seconds": 0.918379268143326
+      },
+      "parent_reaped_workers": 2,
+      "request_end_outcomes": {
+        "success": 3
+      },
+      "request_end_reasons": {
+        "completed": 3
+      }
+    }
+  },
+  "diagnostics": {
+    "original/cycle-060": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+        "expected": {
+          "binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "listener_inode": 27663513,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2124227,
+          "start_ticks": 187050647
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {
+          "q4t_connection_rejections_total{kind=\"business\"}": 0,
+          "q4t_connection_rejections_total{kind=\"control\"}": 0,
+          "q4t_connection_rejections_total{kind=\"observation\"}": 0,
+          "q4t_connection_rejections_total{kind=\"unclassified\"}": 0,
+          "q4t_execution_steps_total": 7620,
+          "q4t_generation_tokens_total": 7980,
+          "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+          "q4t_memory_admission_transitions_total": 0,
+          "q4t_memory_observation_failures_total": 0,
+          "q4t_memory_observations_total": 1199,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+          "q4t_prompt_tokens_total": 91020,
+          "q4t_queue_rejected_total": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+          "q4t_requests_aborted_total": 0,
+          "q4t_requests_error_total": 0,
+          "q4t_requests_success_total": 300,
+          "q4t_requests_total": 300,
+          "q4t_structured_compile_timeouts_total": 0,
+          "q4t_structured_prepare_failed_total": 0,
+          "q4t_structured_rejected_total": 0,
+          "q4t_structured_resource_exhausted_total": 0,
+          "q4t_structured_workers_reaped_total": 180,
+          "q4t_structured_workers_started_total": 180,
+          "q4t_text_admission_rejected_total": 0
+        },
+        "scope": "same verified process only; per-counter, non-atomic; not additive outcomes",
+        "seconds": 894.3965938799083,
+        "state": "available"
+      }
+    },
+    "original/cycle-120": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+        "expected": {
+          "binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "listener_inode": 27663513,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2124227,
+          "start_ticks": 187050647
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {
+          "q4t_connection_rejections_total{kind=\"business\"}": 0,
+          "q4t_connection_rejections_total{kind=\"control\"}": 0,
+          "q4t_connection_rejections_total{kind=\"observation\"}": 0,
+          "q4t_connection_rejections_total{kind=\"unclassified\"}": 0,
+          "q4t_execution_steps_total": 7620,
+          "q4t_generation_tokens_total": 7980,
+          "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+          "q4t_memory_admission_transitions_total": 0,
+          "q4t_memory_observation_failures_total": 0,
+          "q4t_memory_observations_total": 1200,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+          "q4t_prompt_tokens_total": 91020,
+          "q4t_queue_rejected_total": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+          "q4t_requests_aborted_total": 0,
+          "q4t_requests_error_total": 0,
+          "q4t_requests_success_total": 300,
+          "q4t_requests_total": 300,
+          "q4t_structured_compile_timeouts_total": 0,
+          "q4t_structured_prepare_failed_total": 0,
+          "q4t_structured_rejected_total": 0,
+          "q4t_structured_resource_exhausted_total": 0,
+          "q4t_structured_workers_reaped_total": 180,
+          "q4t_structured_workers_started_total": 180,
+          "q4t_text_admission_rejected_total": 0
+        },
+        "scope": "same verified process only; per-counter, non-atomic; not additive outcomes",
+        "seconds": 900.0730241739657,
+        "state": "available"
+      }
+    },
+    "original/cycle-180": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+        "expected": {
+          "binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "listener_inode": 27663513,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2124227,
+          "start_ticks": 187050647
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {
+          "q4t_connection_rejections_total{kind=\"business\"}": 0,
+          "q4t_connection_rejections_total{kind=\"control\"}": 0,
+          "q4t_connection_rejections_total{kind=\"observation\"}": 0,
+          "q4t_connection_rejections_total{kind=\"unclassified\"}": 0,
+          "q4t_execution_steps_total": 7620,
+          "q4t_generation_tokens_total": 7980,
+          "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+          "q4t_memory_admission_transitions_total": 0,
+          "q4t_memory_observation_failures_total": 0,
+          "q4t_memory_observations_total": 1200,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+          "q4t_prompt_tokens_total": 91020,
+          "q4t_queue_rejected_total": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+          "q4t_requests_aborted_total": 0,
+          "q4t_requests_error_total": 0,
+          "q4t_requests_success_total": 300,
+          "q4t_requests_total": 300,
+          "q4t_structured_compile_timeouts_total": 0,
+          "q4t_structured_prepare_failed_total": 0,
+          "q4t_structured_rejected_total": 0,
+          "q4t_structured_resource_exhausted_total": 0,
+          "q4t_structured_workers_reaped_total": 180,
+          "q4t_structured_workers_started_total": 180,
+          "q4t_text_admission_rejected_total": 0
+        },
+        "scope": "same verified process only; per-counter, non-atomic; not additive outcomes",
+        "seconds": 899.9897419591434,
+        "state": "available"
+      }
+    },
+    "original/cycle-240": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+        "expected": {
+          "binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "listener_inode": 27663513,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2124227,
+          "start_ticks": 187050647
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {
+          "q4t_connection_rejections_total{kind=\"business\"}": 0,
+          "q4t_connection_rejections_total{kind=\"control\"}": 0,
+          "q4t_connection_rejections_total{kind=\"observation\"}": 0,
+          "q4t_connection_rejections_total{kind=\"unclassified\"}": 0,
+          "q4t_execution_steps_total": 7620,
+          "q4t_generation_tokens_total": 7980,
+          "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+          "q4t_memory_admission_transitions_total": 0,
+          "q4t_memory_observation_failures_total": 0,
+          "q4t_memory_observations_total": 1200,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+          "q4t_prompt_tokens_total": 91020,
+          "q4t_queue_rejected_total": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+          "q4t_requests_aborted_total": 0,
+          "q4t_requests_error_total": 0,
+          "q4t_requests_success_total": 300,
+          "q4t_requests_total": 300,
+          "q4t_structured_compile_timeouts_total": 0,
+          "q4t_structured_prepare_failed_total": 0,
+          "q4t_structured_rejected_total": 0,
+          "q4t_structured_resource_exhausted_total": 0,
+          "q4t_structured_workers_reaped_total": 180,
+          "q4t_structured_workers_started_total": 180,
+          "q4t_text_admission_rejected_total": 0
+        },
+        "scope": "same verified process only; per-counter, non-atomic; not additive outcomes",
+        "seconds": 900.0152981719002,
+        "state": "available"
+      }
+    },
+    "original/model-1-soak-start": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05",
+        "expected": {
+          "binary_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "protocol_sha256": "da1466be364b9d177669a6a6b3209d77ef832bd4c8e059e3d93820bfeb336b05"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+          "listener_inode": 27663513,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2124227,
+          "start_ticks": 187050647
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {},
+        "reason": "no_previous_bundle",
+        "state": "unavailable"
+      }
+    },
+    "correction/after-crash": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589",
+        "expected": {
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "protocol_sha256": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "listener_inode": 27808094,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2200268,
+          "start_ticks": 187496043
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {
+          "q4t_connection_rejections_total{kind=\"business\"}": 0,
+          "q4t_connection_rejections_total{kind=\"control\"}": 0,
+          "q4t_connection_rejections_total{kind=\"observation\"}": 0,
+          "q4t_connection_rejections_total{kind=\"unclassified\"}": 0,
+          "q4t_execution_steps_total": 117,
+          "q4t_generation_tokens_total": 120,
+          "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+          "q4t_memory_admission_transitions_total": 0,
+          "q4t_memory_observation_failures_total": 0,
+          "q4t_memory_observations_total": 11,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+          "q4t_prompt_tokens_total": 1476,
+          "q4t_queue_rejected_total": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+          "q4t_requests_aborted_total": 0,
+          "q4t_requests_error_total": 0,
+          "q4t_requests_success_total": 3,
+          "q4t_requests_total": 3,
+          "q4t_structured_compile_timeouts_total": 0,
+          "q4t_structured_prepare_failed_total": 0,
+          "q4t_structured_rejected_total": 0,
+          "q4t_structured_resource_exhausted_total": 0,
+          "q4t_structured_workers_reaped_total": 2,
+          "q4t_structured_workers_started_total": 2,
+          "q4t_text_admission_rejected_total": 0
+        },
+        "scope": "same verified process only; per-counter, non-atomic; not additive outcomes",
+        "seconds": 8.71664190501906,
+        "state": "available"
+      }
+    },
+    "correction/after-graceful": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589",
+        "expected": {
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "protocol_sha256": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "listener_inode": 27808909,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2198904,
+          "start_ticks": 187491685
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {
+          "q4t_connection_rejections_total{kind=\"business\"}": 0,
+          "q4t_connection_rejections_total{kind=\"control\"}": 0,
+          "q4t_connection_rejections_total{kind=\"observation\"}": 0,
+          "q4t_connection_rejections_total{kind=\"unclassified\"}": 0,
+          "q4t_execution_steps_total": 117,
+          "q4t_generation_tokens_total": 120,
+          "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+          "q4t_memory_admission_transitions_total": 0,
+          "q4t_memory_observation_failures_total": 0,
+          "q4t_memory_observations_total": 11,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+          "q4t_prompt_tokens_total": 1476,
+          "q4t_queue_rejected_total": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+          "q4t_requests_aborted_total": 0,
+          "q4t_requests_error_total": 0,
+          "q4t_requests_success_total": 3,
+          "q4t_requests_total": 3,
+          "q4t_structured_compile_timeouts_total": 0,
+          "q4t_structured_prepare_failed_total": 0,
+          "q4t_structured_rejected_total": 0,
+          "q4t_structured_resource_exhausted_total": 0,
+          "q4t_structured_workers_reaped_total": 2,
+          "q4t_structured_workers_started_total": 2,
+          "q4t_text_admission_rejected_total": 0
+        },
+        "scope": "same verified process only; per-counter, non-atomic; not additive outcomes",
+        "seconds": 8.71217846707441,
+        "state": "available"
+      }
+    },
+    "correction/model-1-corrected-start": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589",
+        "expected": {
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "protocol_sha256": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "listener_inode": 27803230,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2197675,
+          "start_ticks": 187488156
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {},
+        "reason": "no_previous_bundle",
+        "state": "unavailable"
+      }
+    },
+    "correction/model-2-restart-start": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589",
+        "expected": {
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "protocol_sha256": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "listener_inode": 27808909,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2198904,
+          "start_ticks": 187491685
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {},
+        "reason": "instance_or_contract_changed",
+        "state": "unavailable"
+      }
+    },
+    "correction/model-3-restart-start": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589",
+        "expected": {
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "protocol_sha256": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "listener_inode": 27808094,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2200268,
+          "start_ticks": 187496043
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {},
+        "reason": "instance_or_contract_changed",
+        "state": "unavailable"
+      }
+    },
+    "correction/model-4-rollback-start": {
+      "state": "HEALTHY",
+      "version": 3,
+      "identity": {
+        "capability_protocol": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5",
+        "expected": {
+          "binary_sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+          "protocol_sha256": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+          "listener_inode": 27813136,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2201612,
+          "start_ticks": 187500342
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {},
+        "reason": "instance_or_contract_changed",
+        "state": "unavailable"
+      }
+    },
+    "correction/previous-business": {
+      "state": "HEALTHY",
+      "version": 3,
+      "identity": {
+        "capability_protocol": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5",
+        "expected": {
+          "binary_sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+          "protocol_sha256": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+          "listener_inode": 27813136,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2201612,
+          "start_ticks": 187500342
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {
+          "q4t_execution_steps_total": 117,
+          "q4t_generation_tokens_total": 120,
+          "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+          "q4t_memory_admission_transitions_total": 0,
+          "q4t_memory_observation_failures_total": 0,
+          "q4t_memory_observations_total": 11,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+          "q4t_prompt_tokens_total": 1476,
+          "q4t_queue_rejected_total": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+          "q4t_requests_aborted_total": 0,
+          "q4t_requests_error_total": 0,
+          "q4t_requests_success_total": 3,
+          "q4t_requests_total": 3,
+          "q4t_structured_compile_timeouts_total": 0,
+          "q4t_structured_prepare_failed_total": 0,
+          "q4t_structured_rejected_total": 0,
+          "q4t_structured_resource_exhausted_total": 0,
+          "q4t_structured_workers_reaped_total": 2,
+          "q4t_structured_workers_started_total": 2,
+          "q4t_text_admission_rejected_total": 0
+        },
+        "scope": "same verified process only; per-counter, non-atomic; not additive outcomes",
+        "seconds": 8.708562200888991,
+        "state": "available"
+      }
+    },
+    "installed/installed-business": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589",
+        "expected": {
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "protocol_sha256": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "listener_inode": 27814581,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2202992,
+          "start_ticks": 187504814
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {
+          "q4t_connection_rejections_total{kind=\"business\"}": 0,
+          "q4t_connection_rejections_total{kind=\"control\"}": 0,
+          "q4t_connection_rejections_total{kind=\"observation\"}": 0,
+          "q4t_connection_rejections_total{kind=\"unclassified\"}": 0,
+          "q4t_execution_steps_total": 117,
+          "q4t_generation_tokens_total": 120,
+          "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 0,
+          "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+          "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+          "q4t_memory_admission_transitions_total": 0,
+          "q4t_memory_observation_failures_total": 0,
+          "q4t_memory_observations_total": 11,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+          "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+          "q4t_prompt_tokens_total": 1476,
+          "q4t_queue_rejected_total": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+          "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+          "q4t_requests_aborted_total": 0,
+          "q4t_requests_error_total": 0,
+          "q4t_requests_success_total": 3,
+          "q4t_requests_total": 3,
+          "q4t_structured_compile_timeouts_total": 0,
+          "q4t_structured_prepare_failed_total": 0,
+          "q4t_structured_rejected_total": 0,
+          "q4t_structured_resource_exhausted_total": 0,
+          "q4t_structured_workers_reaped_total": 2,
+          "q4t_structured_workers_started_total": 2,
+          "q4t_text_admission_rejected_total": 0
+        },
+        "scope": "same verified process only; per-counter, non-atomic; not additive outcomes",
+        "seconds": 8.723970741964877,
+        "state": "available"
+      }
+    },
+    "installed/model-installed-start": {
+      "state": "HEALTHY",
+      "version": 4,
+      "identity": {
+        "capability_protocol": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589",
+        "expected": {
+          "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "protocol_sha256": "f79cf82274e4e3df0732f09e8362b1145c207ced1bd53a783a711b05aca3b589"
+        },
+        "process": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "executable_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+          "listener_inode": 27814581,
+          "listener_scope": "loopback",
+          "net_namespace_device": 4,
+          "net_namespace_inode": 4026531840,
+          "pid": 2202992,
+          "start_ticks": 187504814
+        },
+        "state": "verified"
+      },
+      "comparison": {
+        "counters": {},
+        "reason": "instance_or_contract_changed",
+        "state": "unavailable"
+      }
+    }
+  },
+  "resource_observations": {
+    "original/model-1-soak": {
+      "samples": 3600,
+      "span_seconds": 3636.3909353581257,
+      "maximum_separate_observations": {
+        "parent_rss": 4094496768,
+        "parent_fds": 197,
+        "parent_threads": 18,
+        "memcg_current": 16662175744,
+        "memcg_peak": 17113579520,
+        "memcg_anon": 3920117760,
+        "observed_child_rss": 234942464
+      },
+      "minimum_global_MemAvailable": 33678364672,
+      "child_observations": 2073,
+      "child_rss_missing": 6,
+      "observations_not_additive": true,
+      "physical_ram_peak_proved": false
+    },
+    "correction/model-1-corrected": {
+      "samples": 34,
+      "span_seconds": 33.346653618849814,
+      "maximum_separate_observations": {
+        "parent_rss": 4094537728,
+        "parent_fds": 120,
+        "parent_threads": 18,
+        "memcg_current": 16132456448,
+        "memcg_peak": 17113829376,
+        "memcg_anon": 3920150528,
+        "observed_child_rss": 0
+      },
+      "minimum_global_MemAvailable": 34247176192,
+      "child_observations": 0,
+      "child_rss_missing": 0,
+      "observations_not_additive": true,
+      "physical_ram_peak_proved": false
+    },
+    "correction/model-2-restart": {
+      "samples": 42,
+      "span_seconds": 41.43716843915172,
+      "maximum_separate_observations": {
+        "parent_rss": 4094537728,
+        "parent_fds": 200,
+        "parent_threads": 18,
+        "memcg_current": 16457781248,
+        "memcg_peak": 17113391104,
+        "memcg_anon": 3920142336,
+        "observed_child_rss": 234942464
+      },
+      "minimum_global_MemAvailable": 34074394624,
+      "child_observations": 8,
+      "child_rss_missing": 0,
+      "observations_not_additive": true,
+      "physical_ram_peak_proved": false
+    },
+    "correction/model-3-restart": {
+      "samples": 42,
+      "span_seconds": 41.43466518796049,
+      "maximum_separate_observations": {
+        "parent_rss": 4094525440,
+        "parent_fds": 200,
+        "parent_threads": 18,
+        "memcg_current": 16301473792,
+        "memcg_peak": 17114136576,
+        "memcg_anon": 3920130048,
+        "observed_child_rss": 234942464
+      },
+      "minimum_global_MemAvailable": 33640710144,
+      "child_observations": 7,
+      "child_rss_missing": 0,
+      "observations_not_additive": true,
+      "physical_ram_peak_proved": false
+    },
+    "correction/model-4-rollback": {
+      "samples": 41,
+      "span_seconds": 40.42528287996538,
+      "maximum_separate_observations": {
+        "parent_rss": 4094496768,
+        "parent_fds": 197,
+        "parent_threads": 18,
+        "memcg_current": 16891379712,
+        "memcg_peak": 17113460736,
+        "memcg_anon": 3920109568,
+        "observed_child_rss": 234942464
+      },
+      "minimum_global_MemAvailable": 33844662272,
+      "child_observations": 8,
+      "child_rss_missing": 0,
+      "observations_not_additive": true,
+      "physical_ram_peak_proved": false
+    },
+    "installed/model-installed": {
+      "samples": 42,
+      "span_seconds": 41.44127129204571,
+      "maximum_separate_observations": {
+        "parent_rss": 4094541824,
+        "parent_fds": 200,
+        "parent_threads": 18,
+        "memcg_current": 16859271168,
+        "memcg_peak": 17114136576,
+        "memcg_anon": 3920154624,
+        "observed_child_rss": 234942464
+      },
+      "minimum_global_MemAvailable": 33981902848,
+      "child_observations": 7,
+      "child_rss_missing": 0,
+      "observations_not_additive": true,
+      "physical_ram_peak_proved": false
+    }
+  },
+  "wire_schema": {
+    "passed": true,
+    "generation_wires": 1218,
+    "complete_successes": 1212,
+    "original_failed_attempts": 2,
+    "corrected_graceful_errors": 2,
+    "unknown_crash_prefixes": 2,
+    "envelopes": 5022,
+    "negative_responses": 4,
+    "no_new_http_or_model_requests": true
+  },
+  "graceful_children": {
+    "samples": [
+      {
+        "monotonic": 1874916.163842851,
+        "children": [
+          {
+            "pid": 2198819,
+            "start_ticks": 187491522,
+            "state": "absent",
+            "running": false
+          }
+        ]
+      }
+    ],
+    "observed_before_scope_cleanup": true,
+    "controller_signalled_workers": false,
+    "zombie_means_address_space_exited_not_parent_reaped": true
+  },
+  "crash_children": {
+    "samples": [
+      {
+        "monotonic": 1874959.776300849,
+        "children": [
+          {
+            "pid": 2200189,
+            "start_ticks": 187495908,
+            "state": "absent",
+            "running": false
+          }
+        ]
+      }
+    ],
+    "observed_before_scope_cleanup": true,
+    "controller_signalled_workers": false,
+    "zombie_means_address_space_exited_not_parent_reaped": true
+  },
+  "crash_recovery": {
+    "active": {
+      "state": "REQUEST_OUTCOME_UNKNOWN",
+      "next_action": "Keep the wire and request receipt; reconcile or explicitly cancel using original credentials. Do not commit partial text or execute tools.",
+      "automatic_retry": false,
+      "requests": 1,
+      "completed_tool_calls": 0,
+      "attempted_tool_calls": 0,
+      "remaining_requests": 0,
+      "remaining_tool_calls": 1,
+      "messages": [
+        {
+          "role": "user",
+          "content": "\u4ece1\u5f00\u59cb\u9010\u884c\u5199\u51fa\u6574\u6570\u76f4\u523010000\uff0c\u6bcf\u884c\u4e00\u4e2a\uff0c\u4e0d\u8981\u7701\u7565\uff0c\u4e0d\u8981\u89e3\u91ca\uff0c\u6301\u7eed\u8f93\u51fa\u3002"
+        }
+      ],
+      "pending_tool_calls": [],
+      "known_results": {},
+      "cancellation_note": "202 accepts cancellation only; 404 does not prove no execution. Never reuse request IDs."
+    },
+    "queued": {
+      "state": "REQUEST_OUTCOME_UNKNOWN",
+      "next_action": "Keep the wire and request receipt; reconcile or explicitly cancel using original credentials. Do not commit partial text or execute tools.",
+      "automatic_retry": false,
+      "requests": 1,
+      "completed_tool_calls": 0,
+      "attempted_tool_calls": 0,
+      "remaining_requests": 0,
+      "remaining_tool_calls": 1,
+      "messages": [
+        {
+          "role": "user",
+          "content": "\u4ec5\u8f93\u51fa\u7b26\u5408schema\u7684JSON\u3002"
+        }
+      ],
+      "pending_tool_calls": [],
+      "known_results": {},
+      "cancellation_note": "202 accepts cancellation only; 404 does not prove no execution. Never reuse request IDs."
+    }
+  },
+  "postflight": {
+    "time": "2026-11-03T13:50:33.426898+08:00",
+    "lock_available": true,
+    "gpu": {
+      "status": "OK",
+      "pids": [],
+      "request_id": "885d10eaa835755e21c2d5ac39d6b49c",
+      "worker_pid": 2204602,
+      "stdout": "{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.678451468, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.687133118, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.687171331, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.690955444, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.003772122086957097}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.690999861, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.691045657, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.4443801268935204e-05}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.691059991, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.69749598, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006428395863622427}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.697515581, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.698594644, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0010715990792959929}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.698612468, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.699864855, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012452751398086548}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.699887188, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+      "stderr": "",
+      "returncode": 0,
+      "seconds": 0.06611339095979929,
+      "process_memory": [],
+      "device_count": 1
+    },
+    "owned_process_states": [
+      {
+        "pid": 2124227,
+        "start_ticks": 187050647,
+        "state": "absent",
+        "running": false
+      },
+      {
+        "pid": 2186879,
+        "start_ticks": 187414325,
+        "state": "absent",
+        "running": false
+      },
+      {
+        "pid": 2200268,
+        "start_ticks": 187496043,
+        "state": "absent",
+        "running": false
+      },
+      {
+        "pid": 2198904,
+        "start_ticks": 187491685,
+        "state": "absent",
+        "running": false
+      },
+      {
+        "pid": 2197675,
+        "start_ticks": 187488156,
+        "state": "absent",
+        "running": false
+      },
+      {
+        "pid": 2201612,
+        "start_ticks": 187500342,
+        "state": "absent",
+        "running": false
+      },
+      {
+        "pid": 2198819,
+        "start_ticks": 187491522,
+        "state": "absent",
+        "running": false
+      },
+      {
+        "pid": 2200189,
+        "start_ticks": 187495908,
+        "state": "absent",
+        "running": false
+      },
+      {
+        "pid": 2202992,
+        "start_ticks": 187504814,
+        "state": "absent",
+        "running": false
+      }
+    ],
+    "owned_processes_not_live": true,
+    "memory": {
+      "MemTotal": 131920637952,
+      "MemFree": 25061576704,
+      "MemAvailable": 125119578112
+    },
+    "recovery_markers": [],
+    "installed": {
+      "q4t": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+      "q4t.release.json": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9"
+    },
+    "runtime_sources": 199,
+    "history_pairs": 38,
+    "history_terminal": {
+      "kind": "explicit_stale_history",
+      "installable": false,
+      "binary": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t",
+        "sha256": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+        "bytes": 4300080
+      },
+      "sidecar": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t.release.json",
+        "sha256": "cef96e24197d4e16b0a2a4f03566c59c1133ee385950970e24dd9c69c3e8796d",
+        "bytes": 998
+      }
+    },
+    "atomic_hardware_isolation_proved": false
+  },
+  "raw_records_are_not_redacted": true,
+  "goal_complete": false,
+  "original_elapsed_to_finalization": 4610.079824209213
+}

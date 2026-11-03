@@ -1,0 +1,100 @@
+{
+  "time": "2026-11-03T13:50:33.426898+08:00",
+  "lock_available": true,
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "885d10eaa835755e21c2d5ac39d6b49c",
+    "worker_pid": 2204602,
+    "stdout": "{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.678451468, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.687133118, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.687171331, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.690955444, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.003772122086957097}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.690999861, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.691045657, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.4443801268935204e-05}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.691059991, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.69749598, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006428395863622427}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.697515581, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.698594644, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0010715990792959929}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.698612468, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.699864855, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012452751398086548}\n{\"request_id\": \"885d10eaa835755e21c2d5ac39d6b49c\", \"monotonic\": 1875115.699887188, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.06611339095979929,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "owned_process_states": [
+    {
+      "pid": 2124227,
+      "start_ticks": 187050647,
+      "state": "absent",
+      "running": false
+    },
+    {
+      "pid": 2186879,
+      "start_ticks": 187414325,
+      "state": "absent",
+      "running": false
+    },
+    {
+      "pid": 2200268,
+      "start_ticks": 187496043,
+      "state": "absent",
+      "running": false
+    },
+    {
+      "pid": 2198904,
+      "start_ticks": 187491685,
+      "state": "absent",
+      "running": false
+    },
+    {
+      "pid": 2197675,
+      "start_ticks": 187488156,
+      "state": "absent",
+      "running": false
+    },
+    {
+      "pid": 2201612,
+      "start_ticks": 187500342,
+      "state": "absent",
+      "running": false
+    },
+    {
+      "pid": 2198819,
+      "start_ticks": 187491522,
+      "state": "absent",
+      "running": false
+    },
+    {
+      "pid": 2200189,
+      "start_ticks": 187495908,
+      "state": "absent",
+      "running": false
+    },
+    {
+      "pid": 2202992,
+      "start_ticks": 187504814,
+      "state": "absent",
+      "running": false
+    }
+  ],
+  "owned_processes_not_live": true,
+  "memory": {
+    "MemTotal": 131920637952,
+    "MemFree": 25061576704,
+    "MemAvailable": 125119578112
+  },
+  "recovery_markers": [],
+  "installed": {
+    "q4t": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+    "q4t.release.json": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9"
+  },
+  "runtime_sources": 199,
+  "history_pairs": 38,
+  "history_terminal": {
+    "kind": "explicit_stale_history",
+    "installable": false,
+    "binary": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t",
+      "sha256": "8685d8bf4068b81df0f5162d6c55924d93eae793d17664a1b465ca7587d6c6ee",
+      "bytes": 4300080
+    },
+    "sidecar": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/b1a-deploy-20261018/previous/q4t.release.json",
+      "sha256": "cef96e24197d4e16b0a2a4f03566c59c1133ee385950970e24dd9c69c3e8796d",
+      "bytes": 998
+    }
+  },
+  "atomic_hardware_isolation_proved": false
+}

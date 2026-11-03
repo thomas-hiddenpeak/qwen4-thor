@@ -1,0 +1,7 @@
+{
+  "error": "RemoteError(\"Remote response failed (200): {'message': 'request cancelled', 'type': 'conflict_error', 'code': 'server_shutdown', 'param': None}\")",
+  "code": "server_shutdown",
+  "status": 200,
+  "automatic_retry": false,
+  "complete_assistant_turn": false
+}

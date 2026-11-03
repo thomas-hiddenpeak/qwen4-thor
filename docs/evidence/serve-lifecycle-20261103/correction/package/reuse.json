@@ -1,0 +1,23 @@
+{
+  "original_package": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/sealed-files.json",
+    "sha256": "66c38e7d787b81ebe11de52fd012f548ced276b64e34bc42252e5c2cd038ff1a",
+    "bytes": 2178
+  },
+  "original_execution": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/execution/sealed-files.json",
+    "sha256": "9fc405db9793bf131353ba8583c3a803a4f5c1c8391044bdd9e58d8341da72db",
+    "bytes": 1138349
+  },
+  "original_soak": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/execution/business/soak-result.json",
+    "sha256": "9bb52a57f9fef4303be08afc56107d2c0312606a5433ba60ba4586232051ae2b",
+    "bytes": 277
+  },
+  "changed_runtime": [
+    "src/server/chat_admission.cpp"
+  ],
+  "reuse": "Original 240 normal cycles and resource envelope only; not new-ELF hour-long acceptance. Model, tokenizer, template and math unchanged.",
+  "failures_retained": true,
+  "original_budget_unchanged": true
+}

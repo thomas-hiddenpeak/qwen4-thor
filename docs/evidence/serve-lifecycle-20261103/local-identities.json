@@ -1,0 +1,62 @@
+{
+  "correction/execution/pair/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/execution/pair/q4t",
+    "sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+    "bytes": 7087224
+  },
+  "correction/package/candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t",
+    "sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+    "bytes": 7087224
+  },
+  "correction/package/candidate/q4t_http_lifecycle_tests": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "76b4d0d9c28d990c26668a07c01750919bfc3701f361548a9f82c8a4abb4e639",
+    "bytes": 864936
+  },
+  "correction/package/previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/previous/q4t",
+    "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "bytes": 7087224
+  },
+  "correction/package/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/source.bundle",
+    "sha256": "0a05b545e6a74023d1c1ecf43196f3785404f1bdd01ae4a5546fc225960c0432",
+    "bytes": 14836
+  },
+  "correction/rollback-bundle/current/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/current/q4t",
+    "sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+    "bytes": 7087224
+  },
+  "correction/rollback-bundle/previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/rollback-bundle/previous/q4t",
+    "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "bytes": 7087224
+  },
+  "original/package/releases/current/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/current/q4t",
+    "sha256": "3cd3994d561ba9bcdebcb609204be1056ba16b1fc7bab103447e62bc47ee897a",
+    "bytes": 7087224
+  },
+  "original/package/releases/previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/releases/previous/q4t",
+    "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "bytes": 7086768
+  },
+  "original/package/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-20261103/package/source.bundle",
+    "sha256": "e815d714b7ff091fadee1662c4d60d1aec3ed7cc6a94ef20e65fd7d4431f25df",
+    "bytes": 31704
+  },
+  "installed/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t",
+    "sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+    "bytes": 7087224
+  },
+  "installed/q4t.release.json": {
+    "path": "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json",
+    "sha256": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9",
+    "bytes": 44957
+  }
+}

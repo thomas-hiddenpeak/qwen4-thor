@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "cycles": 240,
+  "seconds": 3600.0000611969735,
+  "generations": 1200,
+  "preflights": 240,
+  "instance_pid": 2124227,
+  "instance_start_ticks": 187050647,
+  "automatic_retries": 0,
+  "throughput_slo_claim": false,
+  "day_scale_stability_proved": false
+}

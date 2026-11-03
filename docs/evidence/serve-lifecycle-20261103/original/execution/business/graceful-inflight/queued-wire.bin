@@ -1,0 +1,6 @@
+data: {"id":"agent-0ab54e9149469900df2ad8dab763bb0a","object":"chat.completion.chunk","created":1793684060,"model":"qwen3.8-flash-next","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"logprobs":null}],"usage":null}
+
+data: {"error":{"message":"server shutting down","type":"service_unavailable_error","code":"service_unavailable","param":null}}
+
+data: [DONE]
+

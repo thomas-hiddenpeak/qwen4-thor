@@ -27,7 +27,8 @@
 [SRV-12限定接受、实际工具/监控、owner告警修订与剩余缺口](SERVE_OPERATIONS_RESULT_2026-11-03.md)。
 [SRV-12b观测连接隔离有界验收合同](SERVE_OBSERVATION_CAPACITY_2026-11-03.md)与
 [实际受载、真实工具恢复和默认交付结果](SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md)。
-[SRV-13发布身份、小时段及退出/重启/回退合同](SERVE_LIFECYCLE_2026-11-03.md)。
+[SRV-13发布身份、小时段及退出/重启/回退合同](SERVE_LIFECYCLE_2026-11-03.md)；
+[原停机失败、定向修复与实际回退/安装结果](SERVE_LIFECYCLE_RESULT_2026-11-03.md)。
 [SRV-06文本停止交付、跨块/MTP/工具终态、失败与回退](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 [SRV-05b真实预算交付、质量修复、MTP/缓存及完整证据](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)；
 [先前开发和未完成HTTP记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)保留。
@@ -49,7 +50,8 @@
 见[验收结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。
 聊天接入 830694ce、应用服务 c3772d11 的后续默认为结构化输出
 957211c7 / 9eba5472，再更新输入合同 ea678009 / 90372798；当前为
-内存准入84d16983 / c5203331；此前serve观测ed672a65 / 67897c81保留回退。
+停机修复c597adc3 / a350c978；直接上一版观测隔离3cd3994d / bb620240
+及更早内存准入84d16983 / c5203331保留完整回退链。
 外部 vLLM 已按授权停止，当前交付后 GPU 释放；
 原[正式交付、98份证据与回退](CHAT_DELIVERY_2026-11-02.md)保留。
 [完整工具往返、真实中断与日志崩溃场景准备](CHAT_ACCEPTANCE_SCENARIOS_2026-11-02.md)。

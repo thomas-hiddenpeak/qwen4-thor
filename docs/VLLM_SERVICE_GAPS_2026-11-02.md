@@ -9,6 +9,11 @@
 [有界验收与交付](STRUCTURED_OUTPUT_RESULT_2026-11-02.md)。
 下表已交付状态不因源码开发自动升级。
 
+2026-11-03 [SRV-13限定接受与关停修复](SERVE_LIFECYCLE_RESULT_2026-11-03.md)：
+旧ELF一小时240周期通过，随后排队关停分类错误原失败保留；c597adc3
+修复后定向关停、崩溃未知、重启、实际v3回退及安装真实工具通过。
+原小时段仅复用未变正常路径，不把新ELF或天级稳定写成已证明。
+
 2026-11-03 [SRV-12本地运营限定接受](SERVE_OPERATIONS_RESULT_2026-11-03.md)：
 17告警/只读诊断/匿名投影与留存、运行手册；CPU/真实资料工具、诊断
 与临时Prometheus健康/停机检查通过。owner规则按metrics自身占普通
@@ -43,7 +48,7 @@ worker196/196reap。补同模型动态恢复和有界持续负载证据，不证
 `reference/vllm/vllm/entrypoints/openai/` 和 `entrypoints/serve/`。
 同时核对当前官方文档（访问日期 2026-11-02）；未更新、构建或启动
 reference，未把 stable 网页当作本地固定 commit 的相同版本。
-本项目盘点起点 460ffd0，下表已同步截至3cd3994d的A/B、预检/机器合同、
+本项目盘点起点 460ffd0，下表已同步截至c597adc3的A/B、预检/机器合同、
 资源准入和观测隔离状态；当前结论链接对应交付记录，不改变外部参考版本。历史
 差异与具体失败另列，未验部分不标成熟。
 
@@ -85,7 +90,7 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 多 choice / logprobs / sampling | 相应生成参数与响应结构 | n=1、greedy，logprobs 拒绝 | C：需要底层支持，不是 HTTP 字段补丁 |
 | 会话与 Responses | 独立 responses 路由 / stateful 路径，受配置限制 | 只支持 Chat；session cache 是同进程 KV | B：应用持久会话先于新增一套 API |
 | 真实工具执行 | Chat function 调用通常由应用执行与回填 | 首批真实发布 / 历史验收 / 不存在资料查询已验 | A/P2 已交付有界只读链路；自主广泛检索未验 |
-| 取消 / 断连 / 关闭 | serving 检查断连并传播 abort；生命周期管理 | 已有取消、deadline、断连、shutdown 与槽回收 | 保留证据；不是新的缺失 |
+| 取消 / 断连 / 关闭 | serving 检查断连并传播 abort；生命周期管理 | 取消/deadline/断连已有；SRV-13修复排队shutdown分类与计数，实际活动/排队终态、worker及崩溃后恢复通过 | 原失败保留；[SRV-13限定证据](SERVE_LIFECYCLE_RESULT_2026-11-03.md)，不承诺未知请求自动重放 |
 | 压力与配额 | 调度、准入与服务配置；不等于完整租户计费平台 | 连接 / body / chat / slot 上限已具备，无租户配额 | B/C：先错误可观测，再业务配额 |
 | 健康与观测 | health/load/version、Prometheus、请求 metrics | F5/01b指标与trace、livez/readyz/排空；12告警/诊断/手册和12b独立4观测/4控制实际饱和保障已验 | [12b限定交付](SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md)；v3/v4规则分列，未分类慢头、实际通知/日志轮转仍待办 |
 | 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生未提供；现有 Nginx 示例未含完整鉴权配置 | C：在真实入口配置并验收，不能认为传了 api_key 就鉴权 |

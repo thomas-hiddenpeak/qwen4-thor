@@ -1,0 +1,7 @@
+{
+  "error": "RemoteError(\"Remote response failed (200): {'message': 'server shutting down', 'type': 'service_unavailable_error', 'code': 'service_unavailable', 'param': None}\")",
+  "code": "service_unavailable",
+  "status": 200,
+  "automatic_retry": false,
+  "complete_assistant_turn": false
+}

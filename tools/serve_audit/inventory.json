@@ -815,10 +815,16 @@
     ],
     "contract": "docs/SERVE_LIFECYCLE_REPAIR_2026-11-03.md",
     "review": "Stopping admission cancels with kShutdown and returns the existing cancellation branch; first terminal reason wins, abort accounting and SSE error terminal share the established path. No wire fields/routes changed.",
-    "status": "PENDING_REAL_ACCEPTANCE",
+    "status": "ACCEPT_BOUNDED_LIFECYCLE_REPAIR",
     "evidence": [
       "tools/serve_reliability/admission_contract_test.cpp",
       "tools/serve_lifecycle/repair.py"
-    ]
+    ],
+    "source_commit": "279c9abb0d0572f1d706ebf6161d0ee08f548d2d",
+    "binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+    "result": "docs/SERVE_LIFECYCLE_RESULT_2026-11-03.md",
+    "native_cases": 24,
+    "original_failed_run_retained": true,
+    "new_candidate_hour_proved": false
   }
 }

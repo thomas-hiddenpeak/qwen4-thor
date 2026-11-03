@@ -1,0 +1,30 @@
+{
+  "build": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/cpu/build-result.json",
+    "sha256": "26eef8cc04dc3572fac16357d68c10287b059cf069249991729d92896a19ebf6",
+    "bytes": 183
+  },
+  "cpu": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/cpu/tests/result.json",
+    "sha256": "485001c86fecd46ec57ad8368b0dfb8008972f25871e7ad631e0c6b38e1356c5",
+    "bytes": 320
+  },
+  "numerical": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/package/numerical-reuse.json",
+    "sha256": "8f90b8a7509658090ac3fc647957f65005eb509b1ee8a6f3fa242261385454f1",
+    "bytes": 761
+  },
+  "native": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/execution/native/result.json",
+    "sha256": "3c27ffcb2a6615954f6c30630284bc45c85197ca453607dc34776e2e43ba3c5e",
+    "bytes": 492
+  },
+  "business": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observation-capacity-20261103/execution/business/result.json",
+    "sha256": "a45787516baf290230212e7d2fbb30ca3a5476836f47ea38a3d4a5ed18def647",
+    "bytes": 535
+  },
+  "runtime_sources": 199,
+  "runtime_changed": false,
+  "new_build": false
+}
