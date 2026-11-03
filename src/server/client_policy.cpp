@@ -204,7 +204,20 @@ ClientUsage ClientAdmission::Usage(size_t index) const {
 }
 
 ClientLease::~ClientLease() {
-  if (active_) active_->fetch_sub(1, std::memory_order_release);
+  if (!active_) return;
+  {
+    const std::lock_guard lock(counters_->mutex);
+    if (handing_off_) --*finishing_;
+    active_->fetch_sub(1, std::memory_order_release);
+  }
+  counters_->changed.notify_all();
+}
+
+void ClientLease::BeginHandoff() noexcept {
+  if (!active_ || handing_off_) return;
+  const std::lock_guard lock(counters_->mutex);
+  ++*finishing_;
+  handing_off_ = true;
 }
 
 bool ClientLease::Acquire(ClientAdmission& admission,
@@ -224,14 +237,20 @@ bool ClientLease::Acquire(ClientAdmission& admission,
   auto& rejected = control ? counters.control_rejected : counters.data_rejected;
   const uint32_t limit = control ? identity.limits_->max_control_inflight
                                  : identity.limits_->max_inflight;
-  uint32_t previous = active.load(std::memory_order_relaxed);
-  while (previous < limit) {
-    if (active.compare_exchange_weak(previous, previous + 1,
-                                     std::memory_order_acquire,
-                                     std::memory_order_relaxed)) {
-      active_ = &active;
-      return true;
-    }
+  auto& finishing =
+      control ? counters.control_finishing : counters.data_finishing;
+  std::unique_lock lock(counters.mutex);
+  if (active.load(std::memory_order_relaxed) >= limit && finishing) {
+    counters.changed.wait_for(lock, kClientHandoffWait, [&] {
+      return active.load(std::memory_order_relaxed) < limit || finishing == 0;
+    });
+  }
+  if (active.load(std::memory_order_relaxed) < limit) {
+    active.fetch_add(1, std::memory_order_relaxed);
+    counters_ = &counters;
+    active_ = &active;
+    finishing_ = &finishing;
+    return true;
   }
   rejected.fetch_add(1, std::memory_order_relaxed);
   return false;

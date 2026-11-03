@@ -48,10 +48,15 @@ SRV-10c[客户端隔离与请求预算开发中](SERVE_CLIENT_ISOLATION_2026-11-
 超额在SSE/grammar前拒绝。修正独立HTTP测试target漏链后，候选
 5487bc67零警告构建；280公共host/246必需host（含12新合同）、9后端、
 28个真实SSD存储检查点及70包/网关/托管回归通过。原链接失败保留；
-27项HTTP生命周期及真实TLS/模型/缓存/工具短验尚未运行，未部署；
-默认pair/day保持，长验仍由用户执行。
-[短验范围](SERVE_CLIENT_SHORT_2026-11-04.md)已冻结，4驱动CPU通过；
-2启动/600秒预算，11成功+1取消/实际工具，结果待执行。
+[首轮真实短验](SERVE_CLIENT_SHORT_2026-11-04.md)27项HTTP通过；
+2启动/10 HTTP生成尝试中4成功、1取消、5生成前拒绝。鉴权、预算、
+伪造头及取消隔离通过，但strict JSON完成后工具请求误收429；
+原FAILED/COMMAND_FAILED保留，真实工具和缓存尚未执行，未部署。
+[终态额度交接修正](SERVE_CLIENT_HANDOFF_2026-11-04.md)已开发：
+finishing仍计额，后继最多等100ms，实际active饱和仍立即拒绝。
+候选7619966e零警告，29相关host在off/on两模式均通过；随后进行
+1启动有界补验，默认pair/day保持，
+长验仍由用户执行，不把已提交开发记为业务验收通过。
 
 [SRV-12d独立心跳检测本机限定接受](SERVE_NOTIFY_WATCHDOG_RESULT_2026-11-04.md)：
 冻结c48b764e/36来源，26有效CPU/4驱动/11官方时序及metrics lint

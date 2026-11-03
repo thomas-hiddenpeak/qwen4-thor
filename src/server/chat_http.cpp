@@ -243,7 +243,7 @@ void ChatServer::HandleClient(int fd) {
       if (!AdmitClientRequest(method, path, &headers, clients_, &client_lease,
                                &identity, &failure_status))
         return false;
-      context.SetClient(identity);
+      context.SetClient(identity, &client_lease);
       const auto kind = ClassifyHttpConnection(method, path);
       if (kind == HttpConnectionClass::kBusiness && stop_requested_.load()) {
         failure_status = 503;

@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <future>
 #include <stdexcept>
 #include <thread>
 
@@ -258,6 +259,87 @@ Q4T_TEST(client_quota_independent_clients_control_and_unwind) {
   const auto metrics = ClientPolicyMetrics(admission);
   Q4T_CHECK(metrics.find("{client=\"alpha\",lane=\"data\"} 1") != metrics.npos);
   Q4T_CHECK(metrics.find(kSecret) == metrics.npos);
+  return true;
+}
+
+Q4T_TEST(client_handoff_keeps_quota_until_cleanup_then_admits_successor) {
+  ClientAdmission admission;
+  Q4T_CHECK(Configure(&admission));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  auto first = std::make_unique<ClientLease>();
+  ClientLease second;
+  Q4T_CHECK(first->Acquire(admission, alpha, ClientLane::kData));
+  Q4T_CHECK(second.Acquire(admission, alpha, ClientLane::kData));
+  first->BeginHandoff();
+  first->BeginHandoff();  // Idempotent publication, no duplicate finishing
+                          // owner.
+  std::promise<void> entering;
+  auto entered = entering.get_future();
+  auto successor = std::async(std::launch::async, [&] {
+    ClientLease lease;
+    entering.set_value();
+    return lease.Acquire(admission, alpha, ClientLane::kData);
+  });
+  entered.wait();
+  Q4T_CHECK(successor.wait_for(std::chrono::milliseconds(10)) ==
+            std::future_status::timeout);
+  Q4T_CHECK(admission.Usage(0).data_active == 2);
+  ClientLease control, beta;
+  Q4T_CHECK(control.Acquire(admission, alpha, ClientLane::kControl));
+  Q4T_CHECK(beta.Acquire(admission, admission.Authenticate("beta", kSecret),
+                         ClientLane::kData));
+  first.reset();
+  Q4T_CHECK(successor.get());
+  Q4T_CHECK(admission.Usage(0).data_active == 1 &&
+            admission.Usage(0).data_rejected == 0);
+  return true;
+}
+
+Q4T_TEST(client_handoff_stalled_terminal_has_fixed_wait_and_retains_charge) {
+  ClientAdmission admission;
+  Q4T_CHECK(Configure(&admission));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  ClientLease first, second, denied;
+  Q4T_CHECK(first.Acquire(admission, alpha, ClientLane::kData));
+  Q4T_CHECK(second.Acquire(admission, alpha, ClientLane::kData));
+  first.BeginHandoff();
+  const auto start = std::chrono::steady_clock::now();
+  Q4T_CHECK(!denied.Acquire(admission, alpha, ClientLane::kData));
+  const auto elapsed = std::chrono::steady_clock::now() - start;
+  Q4T_CHECK(elapsed >= kClientHandoffWait && elapsed < std::chrono::seconds(2));
+  Q4T_CHECK(admission.Usage(0).data_active == 2 &&
+            admission.Usage(0).data_rejected == 1);
+  return true;
+}
+
+Q4T_TEST(client_handoff_http_terminal_publishes_without_releasing_owner) {
+  ClientAdmission admission;
+  Q4T_CHECK(Configure(&admission));
+  const auto alpha = admission.Authenticate("alpha", kSecret);
+  auto first = std::make_unique<ClientLease>();
+  ClientLease second;
+  Q4T_CHECK(first->Acquire(admission, alpha, ClientLane::kData));
+  Q4T_CHECK(second.Acquire(admission, alpha, ClientLane::kData));
+  int pair[2];
+  Q4T_CHECK(::socketpair(AF_UNIX, SOCK_STREAM, 0, pair) == 0);
+  ScopeExit close([&] {
+    ::close(pair[0]);
+    ::close(pair[1]);
+  });
+  {
+    detail::HttpResponseContext response(pair[0]);
+    response.SetClient(alpha, first.get());
+    Q4T_CHECK(detail::SendSimple(pair[0], 200, "OK", "{}", "application/json"));
+  }
+  Q4T_CHECK(admission.Usage(0).data_active == 2);
+  auto successor = std::async(std::launch::async, [&] {
+    ClientLease lease;
+    return lease.Acquire(admission, alpha, ClientLane::kData);
+  });
+  Q4T_CHECK(successor.wait_for(std::chrono::milliseconds(10)) ==
+            std::future_status::timeout);
+  first.reset();
+  Q4T_CHECK(successor.get() && admission.Usage(0).data_active == 1);
   return true;
 }
 

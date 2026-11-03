@@ -3,8 +3,11 @@
 
 #include <array>
 #include <atomic>
+#include <chrono>
+#include <condition_variable>
 #include <cstddef>
 #include <cstdint>
+#include <mutex>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -16,6 +19,7 @@ namespace q4t::server {
 
 inline constexpr size_t kClientPolicyBytes = 64 * 1024;
 inline constexpr size_t kMaxClients = 64;
+inline constexpr auto kClientHandoffWait = std::chrono::milliseconds(100);
 
 struct ClientLimits {
   std::string id;
@@ -87,6 +91,10 @@ class ClientAdmission {
  private:
   friend class ClientLease;
   struct Counters {
+    std::mutex mutex;
+    std::condition_variable changed;
+    uint32_t data_finishing = 0;  // Protected by mutex; still charged.
+    uint32_t control_finishing = 0;
     std::atomic<uint32_t> data{0};
     std::atomic<uint32_t> control{0};
     std::atomic<uint64_t> data_rejected{0};
@@ -108,9 +116,15 @@ class ClientLease {
   ClientLease& operator=(ClientLease&&) = delete;
   bool Acquire(ClientAdmission& admission, const ClientIdentity& identity,
                ClientLane lane);
+  // Publish before terminal bytes; retain the permit until destruction. A
+  // successor may wait at most 100 ms for finishing work, never active work.
+  void BeginHandoff() noexcept;
 
  private:
   std::atomic<uint32_t>* active_ = nullptr;
+  ClientAdmission::Counters* counters_ = nullptr;
+  uint32_t* finishing_ = nullptr;
+  bool handing_off_ = false;
   bool attempted_ = false;
 };
 

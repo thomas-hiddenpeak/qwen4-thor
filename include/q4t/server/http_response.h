@@ -64,7 +64,10 @@ class HttpResponseContext {
   bool SetTraceId(std::string_view id);
   // Handler-thread-only identity, minted by header admission.
   const ClientIdentity& Client() const { return client_; }
-  void SetClient(ClientIdentity client) { client_ = client; }
+  void SetClient(ClientIdentity client, ClientLease* lease) {
+    client_ = client;
+    client_lease_ = lease;
+  }
   ResponseState* State() { return &state_; }
   // Handler-thread-only, non-owning hook. Clear it before its owner dies.
   // Invoked once before terminal publication, including error responses.
@@ -73,6 +76,7 @@ class HttpResponseContext {
     terminal_owner_ = owner;
   }
   void BeforeTerminal() noexcept {
+    if (client_lease_) client_lease_->BeginHandoff();
     auto* hook = terminal_hook_;
     terminal_hook_ = nullptr;
     if (hook) hook(terminal_owner_);
@@ -95,6 +99,7 @@ class HttpResponseContext {
   HttpResponseContext* const previous_;
   std::string trace_id_;
   ClientIdentity client_;
+  ClientLease* client_lease_ = nullptr;  // Owner outlives this context.
   ResponseState state_ = ResponseState::kUnsent;  // handler thread only
   void (*terminal_hook_)(void*) noexcept = nullptr;
   void* terminal_owner_ = nullptr;
