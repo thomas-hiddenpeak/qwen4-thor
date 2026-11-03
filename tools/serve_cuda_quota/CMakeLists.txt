@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.25)
+project(q4t_cuda_quota_contracts LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+find_package(Threads REQUIRED)
+find_package(CUDAToolkit 13.3 REQUIRED)
+
+add_executable(quota_host_contracts
+  ../../tests/runtime_allocation_quota_test.cpp)
+add_executable(quota_cuda_probe probe.cpp)
+foreach(target quota_host_contracts quota_cuda_probe)
+  target_include_directories(${target} PRIVATE ../../include)
+  target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
+  target_link_libraries(${target} PRIVATE Threads::Threads)
+endforeach()
+target_link_libraries(quota_cuda_probe PRIVATE CUDA::cudart)
