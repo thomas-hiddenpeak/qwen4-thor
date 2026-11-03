@@ -1,0 +1,103 @@
+{
+  "passed": true,
+  "staged_files": [
+    {
+      "path": "docs/PHASES.md",
+      "bytes": 27747,
+      "sha256": "44290123b849c3ae753cbdfd2ebcd432e8eac4d0d879fea388b4e76e096efa9c"
+    },
+    {
+      "path": "docs/README.md",
+      "bytes": 38060,
+      "sha256": "0b2a4af92b4462e4894f2128f860907694f73b05cfb9546b0405c0bd99db3a7c"
+    },
+    {
+      "path": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "bytes": 13987,
+      "sha256": "5897e79955ffeceda06a87cd97f386b2b50acf0dca170e65ea3517ad317c24dc"
+    },
+    {
+      "path": "docs/SERVE_MEMORY_STOP_RESULT_2026-11-03.md",
+      "bytes": 4546,
+      "sha256": "f0349bf29d610dc8a4cc6adf94b6ecb696b8bb07f72ffe8f641e6bca9077c0c8"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "bytes": 160176,
+      "sha256": "426b4aab80b12954e1910fe54d7b08ca6a48565de5000ffa8dee8163b88380a9"
+    },
+    {
+      "path": "docs/evidence/serve-memory-stop-20261103/accepted_package.json",
+      "bytes": 1509,
+      "sha256": "cb15b31201ad3f407414cc9ca0482b2d1a00c787e555128081aaf086415d429b"
+    },
+    {
+      "path": "docs/evidence/serve-memory-stop-20261103/cpu.json",
+      "bytes": 3819,
+      "sha256": "5c53971109727b19b623988c81d4feefec02d8cb3310302fe2bce6384f8f2ca1"
+    },
+    {
+      "path": "docs/evidence/serve-memory-stop-20261103/manifest.json",
+      "bytes": 25274,
+      "sha256": "77dc908ae2222711f5508947d77fbe61a924ef877ec66b166b083f92e670096a"
+    },
+    {
+      "path": "docs/evidence/serve-memory-stop-20261103/plan.json",
+      "bytes": 4223,
+      "sha256": "f11a03d978cd7a1b6260b4add4284f26dbc7f8a411ca979cb6f8b57b0bdca4ba"
+    },
+    {
+      "path": "docs/evidence/serve-memory-stop-20261103/postflight.json",
+      "bytes": 571,
+      "sha256": "280533317d7246cd0c067187a892c8ec9286cfdb1c78245f54cda6804fb214de"
+    },
+    {
+      "path": "docs/evidence/serve-memory-stop-20261103/raw-records.tar.gz",
+      "bytes": 94084,
+      "sha256": "18ed52d842dc360932264e590d0f704f47e8cfa5bd184be812d4ff73f39563b0"
+    },
+    {
+      "path": "docs/evidence/serve-memory-stop-20261103/result.json",
+      "bytes": 531,
+      "sha256": "071207914981ffe93c007c3e7d1a18c5dfc013d22b5a7ecda7b6b6ed57cc44c3"
+    },
+    {
+      "path": "docs/evidence/serve-memory-stop-20261103/sealed-files.json",
+      "bytes": 703,
+      "sha256": "c0dc87a04e6cf71ccc2a1b90647b7f5769b67b8821fdffe9df883671dc0039e0"
+    },
+    {
+      "path": "docs/evidence/serve-memory-stop-20261103/terminal.json",
+      "bytes": 9352,
+      "sha256": "8e32b5b04b88983fa6e27f633b2843d996984ced7eb6a07872af4d48e0d151ce"
+    },
+    {
+      "path": "docs/log/2026-11-03.md",
+      "bytes": 100371,
+      "sha256": "1bc50c7ade2e79e808db9ed45723f0ad4788f9f547922735df5ff34c43905fab"
+    },
+    {
+      "path": "tools/serve_service/README.md",
+      "bytes": 5399,
+      "sha256": "b4b991bd762e7f0170e16b077221c849ca1117ea164117b7b9cf39004745ebc0"
+    },
+    {
+      "path": "tools/serve_service/memory_closeout.py",
+      "bytes": 7951,
+      "sha256": "7e4afadc351746afb89d9ce39377489bfdd9c0ed81d5a5aef90fbbb2b6737a4f"
+    }
+  ],
+  "changed_markdown_links": 590,
+  "missing_links": [],
+  "archive_records": 80,
+  "local_artifacts": 1,
+  "container_inventory": {
+    "returncode": 0,
+    "stdout": ""
+  },
+  "gpu_compute_processes": {
+    "returncode": 0,
+    "stdout": ""
+  },
+  "new_model_or_http": 0
+}

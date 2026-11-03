@@ -60,6 +60,10 @@ GPU已清理，应查单元/cgroup与NVML，不按旧PID或进程名kill。
 重启；cleanup_confirmed与失败状态分开记录。它是轮询保护，不能当作
 统一物理RAM硬限额；详见[合同与验收](../../docs/SERVE_MEMORY_STOP_2026-11-03.md)。
 旧v1封存包保留旧行为及旧证据，新包的实际接受范围需另查对应结果。
+v2目前[已限定接受](../../docs/SERVE_MEMORY_STOP_RESULT_2026-11-03.md)：
+51有效CPU合同，实际4成功请求/真实资料工具，显式30GiB门限下
+2.25GiB有界压力触发停止、资源回收和禁重启。生产默认1GiB门限
+未在真实OOM边缘测试，保持CPU与高门限实测的证据区分。
 
 `unit`接收与`run`相同参数，只把unit文本写到stdout；它不安装服务。
 模板使用包内固定入口、`Restart=no`和`KillMode=control-group`，没有

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "soar_unit": "MainPID=0\nActiveState=inactive\nUnitFileState=masked\n",
+  "lock_inode": 3294067,
+  "lock_available": true,
+  "recovery_marker": false,
+  "memory": {
+    "MemTotal": 131920637952,
+    "MemFree": 19982004224,
+    "MemAvailable": 125079724032
+  },
+  "additional_systemd_queries": 1,
+  "gpu": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/execution/gpu-final.json",
+    "sha256": "7db78f4b4c872a09ab21f4b33457cc2ede387f0ae434fc80f453caa455d20a88",
+    "bytes": 2256
+  },
+  "new_model_or_http": 0
+}
