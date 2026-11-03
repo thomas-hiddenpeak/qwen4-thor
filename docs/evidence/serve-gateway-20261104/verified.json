@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "scope": "loopback TLS with two clients; no actual LAN deployment",
+  "reused_successful_requests": 5,
+  "corrective_successful_requests": 2,
+  "real_tool_executions": 1,
+  "explicit_cancel": 1,
+  "original_shutdown_requests": 2,
+  "original_model_failure_retained": true,
+  "model_starts": 2,
+  "total_model_attempts": 10,
+  "original_controls": 6,
+  "independent_stop_controls": 1,
+  "corrective_controls": 6,
+  "gateway_rejections": 4,
+  "guards": {
+    "model": {
+      "passed": true,
+      "records": 146,
+      "observations": 142,
+      "seconds": 152.94855779595673
+    },
+    "model-corrected": {
+      "passed": true,
+      "records": 41,
+      "observations": 37,
+      "seconds": 38.29312018491328
+    }
+  },
+  "transport_attempts": 35,
+  "fixture_cancel_was_not_runner_proof": true,
+  "gpu_window_seconds": 191.9137773392722,
+  "performance_acceptance": false,
+  "day_started": false,
+  "new_model_or_http": 0,
+  "package_manifest_sha256": "87e2da423e7e5086ccd5e3d16ebfbdee60218504cbc68c56368e1ca6353de7c5"
+}

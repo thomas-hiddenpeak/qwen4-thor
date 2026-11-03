@@ -6,6 +6,15 @@
 网关依赖固定nginx1.30.6（含SSL模块），当前验证包仅在工作目录解包，
 没有系统安装、timer、自动重启或内网监听。
 
+2026-11-04已完成[本机TLS与双客户端短验](../../docs/SERVE_GATEWAY_RESULT_2026-11-04.md)：
+普通/严格输出、真实工具与引用回填、限额、取消、排队及恢复通过。
+首轮取消路径错接及修复前失败保持；修复已与正式API合同交叉核对。
+已有验收目录不覆盖、不重复启动模型；核验原件使用只读入口：
+
+```bash
+python3 -B tools/serve_gateway/report.py verify-archive
+```
+
 准备私有JSON policy（0600），字段示意如下。示例Key是占位符，
 不能直接使用；每个客户端用安全随机源生成独立32字节以上的随机Key，
 例如Python `secrets.token_urlsafe(32)`，通过受控渠道分发。
