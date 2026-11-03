@@ -41,6 +41,15 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+[SRV-12c标准告警通知链路正在开发](SERVE_NOTIFY_2026-11-04.md)：
+补原Prometheus没有接收器的缺口，固定Alertmanager0.34.2与现有3.5.0，
+私有HTTPS/Bearer、恢复通知/链路心跳/失败指标、状态复用和显式托管。
+正式渠道异步询问；16 CPU首轮通过，原业务规则/固定包及day不改。
+[实际短验预算](SERVE_NOTIFY_GPU_2026-11-04.md)在HTTP前细化为2模型/
+4生成，补真实停服及恢复通知；4驱动CPU/2隔离入口首轮通过。
+外层同锁覆盖完整链路，3监控代次/64接收/256控制/360秒，尚未
+执行HTTP或宣称通知验收通过。
+
 [SRV-10b网关托管与有界日志短验限定通过](SERVE_GATEWAY_MANAGED_RESULT_2026-11-04.md)：
 冻结f187ef8d，固定包内入口/同包互斥、持续依赖核对、正常排空/异常
 回收、每代次8.5MiB日志与systemd模板已开发。18 CPU有效通过，原6
