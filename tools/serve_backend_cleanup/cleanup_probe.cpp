@@ -102,7 +102,18 @@ int main(int argc, char** argv) {
     q4t::runtime::StartupReservation owner;
     Check(owner.Prepare(plan).ok(), "reserve");
     const q4t::runtime::CleanupPhase phase("probe");
-    Check(owner.Finalize().ownership.result.ok(), "finalize unhanded");
+    const auto result = owner.Finalize();
+    // Reclaiming an unhanded allocation succeeds, but a prepared plan that
+    // never handed out its entries must still report incomplete startup.
+    Check(result.ownership.result.error ==
+              q4t::runtime::reservation::Error::kPlanIncomplete &&
+              result.ownership.result.backend_rc == 0 &&
+              result.ownership.allocated == 1 && result.ownership.freed == 1 &&
+              result.ownership.unhanded_remaining == 0 &&
+              result.ownership.handed_live == 0 &&
+              result.ownership.release_unknown == 0 &&
+              result.ownership.finalized && !result.active,
+          "unhanded reclaim must preserve incomplete-plan failure");
   } else {
     Check(false, "unknown mode");
   }
