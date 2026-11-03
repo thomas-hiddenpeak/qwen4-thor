@@ -21,6 +21,10 @@ V2_SOURCES = (*LEGACY_SOURCES, 'tools/serve_service/memory.py')
 SOURCES = (*V2_SOURCES, 'tools/serve_service/inspection.py')
 V4_SOURCES = (*SOURCES, 'tools/serve_gateway/client_policy.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
+# Some releases combine preserved failed attempts and targeted successful
+# repairs into an explicit acceptance decision. Do not accept arbitrary
+# ACCEPT_* or turn a failed underlying attempt into a PASS_* receipt.
+AGGREGATE_ACCEPTANCES = frozenset({'ACCEPT_BOUNDED_CLIENT_ISOLATION'})
 PROFILE = dict(name='text-mtp-managed-v1', host='127.0.0.1', max_seq=1,
     max_len=8192, max_prefill=2048, max_tokens=256, mtp_k=3,
     max_inflight_requests=8, max_queued_requests=2,
@@ -102,6 +106,17 @@ def settings(port, restart_limit, critical_memory_mib=1024):
         memory_low_seconds=2, memory_unknown_seconds=5)
 
 
+def accepted_release(metadata, decision):
+    require(type(metadata) is dict and type(decision) is dict,
+            'release and acceptance must be objects')
+    acceptance, status = metadata.get('acceptance'), decision.get('status')
+    require(type(acceptance) is str and acceptance.startswith('ACCEPT_') and
+            type(status) is str and
+            (status.startswith('PASS_') or
+             status in AGGREGATE_ACCEPTANCES and status == acceptance),
+            'explicit accepted release required')
+
+
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None):
     policy_raw = None
@@ -120,9 +135,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     regular(acceptance)
     require(sha(acceptance) == metadata['acceptance_decision_sha256'],
             'acceptance receipt mismatch')
-    require(metadata['acceptance'].startswith('ACCEPT_') and
-            read(acceptance)['status'].startswith('PASS_'),
-            'explicit accepted release required')
+    accepted_release(metadata, read(acceptance))
     protocol = metadata['chat_protocol']['protocol_sha256']
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
@@ -197,6 +210,7 @@ def verify(package, digest):
     require(sha(manifest['python']['path']) == manifest['python']['sha256'],
             'Python interpreter changed')
     metadata = read(package/'q4t.release.json')
+    accepted_release(metadata, read(package/'acceptance.json'))
     require(metadata['binary_sha256'] == manifest['files']['q4t'] and
             metadata['build_cache_sha256'] == manifest['files']['CMakeCache.txt']
             and metadata['acceptance_decision_sha256'] ==

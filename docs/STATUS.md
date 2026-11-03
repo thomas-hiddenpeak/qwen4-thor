@@ -41,6 +41,16 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-10d[客户端策略托管闭环与长验交接开发中](SERVE_CLIENT_MANAGED_2026-11-04.md)：
+已复现新默认汇总ACCEPT决定与打包器旧PASS合同不匹配，在创建包前
+拒绝；原件保留，补明确格式校验及verify同合同，C++/默认pair不改。
+新驱动组合后端v4/systemd、网关v2、双Key、两轮业务及排空/换代，
+短验固定12生成/1模型/2网关，day仅准备由用户执行。首轮37 CPU
+有2驱动初始化错误，原件保留；修正后只重验5驱动，33无关成功复用。
+审查修正systemd与直接子进程锁保管器不适配：先停全部网关再停后端，
+全体HTTP/清理保持原租约；依赖失联复用10b。最终38有效CPU通过（33复用、4修正通过、1停止顺序夹具定向通过），
+两次原失败保留；尚无新托管通过结论。
+
 SRV-10c[客户端隔离与请求预算已限定交付](SERVE_CLIENT_RESULT_2026-11-04.md)：
 当前默认7619966e/sidecar a2f9cb8f，protocol63b29f13、222运行来源；
 私有policy、可信身份、data/control完整计额与100ms收尾交接、正文/
