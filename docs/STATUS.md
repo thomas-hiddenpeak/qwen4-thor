@@ -54,9 +54,11 @@ SRV-10c[客户端隔离与请求预算开发中](SERVE_CLIENT_ISOLATION_2026-11-
 原FAILED/COMMAND_FAILED保留，真实工具和缓存尚未执行，未部署。
 [终态额度交接修正](SERVE_CLIENT_HANDOFF_2026-11-04.md)已开发：
 finishing仍计额，后继最多等100ms，实际active饱和仍立即拒绝。
-候选7619966e零警告，29相关host在off/on两模式均通过；随后进行
-1启动有界补验，默认pair/day保持，
-长验仍由用户执行，不把已提交开发记为业务验收通过。
+候选7619966e零警告，29相关host在off/on两模式均通过；补验2原生
+HTTP、1启动、9成功/1取消，连续strict→工具/回填及私有缓存隔离通过。
+共享缓存夹具漏显式写入却期待命中，原FAILED/COMMAND_FAILED保持；
+[独立夹具修正](SERVE_CLIENT_CACHE_CORRECTION_2026-11-04.md)只补验共享
+缓存与末尾恢复，不改生产/旧驱动。默认pair/day保持，长验归用户。
 
 [SRV-12d独立心跳检测本机限定接受](SERVE_NOTIFY_WATCHDOG_RESULT_2026-11-04.md)：
 冻结c48b764e/36来源，26有效CPU/4驱动/11官方时序及metrics lint
