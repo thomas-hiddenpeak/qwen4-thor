@@ -14,7 +14,8 @@
 私有日志。实际CPU进程验证parent-death跨exec及控制器死亡后的锁保持；
 托管29/共享guard30、包内isolated入口/systemd语法通过，10份CPU原件
 封存。旧text-v1固定no-MTP且healthz503重启，不直接推广；211运行时/
-默认pair保持。下一步冻结实际托管验收驱动，尚无新GPU/HTTP或常驻unit。
+默认pair保持。[实际托管矩阵](SERVE_MANAGED_SERVICE_GPU_2026-11-03.md)
+已冻结2启动/8生成/6负面场景，驱动开发中；新GPU/HTTP尚未执行。
 
 [SRV-02h+02i已限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)：
 默认280b95dc/sidecar18c9d2c5、protocol29810d03，211来源保持；工具
