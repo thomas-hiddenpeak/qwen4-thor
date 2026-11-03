@@ -8,25 +8,30 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT))
-from tools.project_tasks import store, engine, transport, migration
+from tools.project_tasks import store, engine, transport, migration, retention
 
 
 def submit(root, binding, key, question, client, **options):
     spec = engine.specification(binding, question, **options)
     name = store.task_name(binding["client_id"], key)
-    _, created = store.create(root, name, spec)
-    with store.open_task(root, name) as ledger:
-        state = engine.replay(ledger)
-        store.require(state["execution_spec"] == spec, "idempotency key conflicts with existing task")
-        result = (engine.run(ledger, binding, client) if created else
-                  engine.public(ledger, state))
-        return dict(result, created=created)
+    try:
+        _, created = store.create(root, name, spec)
+        with store.open_task(root, name) as ledger:
+            state = engine.replay(ledger)
+            store.require(state["execution_spec"] == spec, "idempotency key conflicts with existing task")
+            result = (engine.run(ledger, binding, client) if created else engine.public(ledger, state))
+            return dict(result, created=created)
+    except store.ArchivedTask:
+        return dict(retention.lookup(root, binding, key, spec=spec), created=False)
 
 
 def resume(root, binding, key, client, **options):
     name = store.task_name(binding["client_id"], key)
-    with store.open_task(root, name) as ledger:
-        return engine.run(ledger, binding, client, **options)
+    try:
+        with store.open_task(root, name) as ledger:
+            return engine.run(ledger, binding, client, **options)
+    except store.ArchivedTask:
+        return retention.lookup(root, binding, key)
 
 
 def inspect(root, binding, key):
@@ -35,6 +40,8 @@ def inspect(root, binding, key):
         with store.open_task(root, name, exclusive=False) as ledger:
             engine.check_binding(ledger, binding)
             return engine.public(ledger, engine.replay(ledger))
+    except store.ArchivedTask:
+        return retention.lookup(root, binding, key)
     except BlockingIOError:
         return dict(task_id=name, state="ACTIVE", automatic_retry=False)
 
@@ -49,9 +56,14 @@ def main():
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("init", "submit", "inspect", "resume", "resolve",
-                                           "plan-migration", "apply-migration"))
+        "plan-migration", "apply-migration", "enable-retention", "retention-status", "finish-retention",
+        "plan-archive", "apply-archive", "plan-prune", "apply-prune", "inspect-archive"))
     parser.add_argument("--root", type=Path, required=True)
-    parser.add_argument("--max-tasks", type=int, default=16)
+    parser.add_argument("--max-tasks", type=int)
+    parser.add_argument("--max-keys", type=int)
+    parser.add_argument("--archive-bytes", type=int)
+    parser.add_argument("--min-retain-seconds", type=int)
+    parser.add_argument("--operation-sha256")
     parser.add_argument("--profile", type=Path)
     parser.add_argument("--key")
     parser.add_argument("--question")
@@ -69,10 +81,23 @@ def main():
         store.require(all(value is None for value in (args.question, args.max_requests,
             args.max_tools, args.max_tokens)) and not args.no_stream,
             "question and request budgets apply only to submit; resume keeps the saved contract")
-    store.require(args.action in ("plan-migration", "apply-migration") or
-        args.plan is None and args.plan_sha256 is None, "migration parameters require a migration command")
+    store.require(args.action in ("plan-migration", "apply-migration", "plan-archive", "apply-archive", "plan-prune", "apply-prune") or
+        args.plan is None and args.plan_sha256 is None, "plan parameters require an explicit plan/apply command")
+    store.require(args.action == "init" or args.max_tasks is None, "max-tasks applies only to init")
+    store.require(args.action == "enable-retention" or all(value is None for value in
+        (args.max_keys, args.archive_bytes, args.min_retain_seconds)), "retention policy is immutable after enabling")
+    store.require(args.action == "finish-retention" or args.operation_sha256 is None, "operation digest requires finish-retention")
     if args.action == "init":
-        result = store.init(args.root, args.max_tasks)
+        result = store.init(args.root, 16 if args.max_tasks is None else args.max_tasks)
+    elif args.action == "enable-retention":
+        result = retention.enable(args.root, max_keys=4096 if args.max_keys is None else args.max_keys,
+            max_bytes=1024**3 if args.archive_bytes is None else args.archive_bytes,
+            min_retain_seconds=86400 if args.min_retain_seconds is None else args.min_retain_seconds)
+    elif args.action == "retention-status":
+        result = retention.status(args.root)
+    elif args.action == "finish-retention":
+        store.require(args.operation_sha256 is not None, "exact pending operation digest required")
+        result = retention.finish(args.root, args.operation_sha256)
     else:
         store.require(args.profile is not None and args.key is not None,
                       "private profile and idempotency key required")
@@ -94,11 +119,22 @@ def main():
             store.require(args.plan is not None and args.plan_sha256 is not None,
                           "exact private plan and digest required")
             result = migration.apply(args.root, binding, args.key, args.plan, args.plan_sha256)
+        elif args.action in ("plan-archive", "plan-prune"):
+            store.require(args.plan is not None and args.plan_sha256 is None, "new private retention plan required")
+            result = retention.prepare(args.root, binding, args.key, args.action.removeprefix("plan-"), args.plan, args.reason)
+        elif args.action in ("apply-archive", "apply-prune"):
+            store.require(args.plan is not None and args.plan_sha256 is not None, "exact retention plan and digest required")
+            store.require(retention.read(args.plan)["kind"] == args.action.removeprefix("apply-"), "wrong retention operation")
+            result = retention.apply(args.root, binding, args.key, args.plan, args.plan_sha256)
+        elif args.action == "inspect-archive":
+            result = retention.lookup(args.root, binding, args.key, include_answer=True)
         else:
             result = resolve(args.root, binding, args.key, args.decision,
                              args.revision, args.reason)
     print(json.dumps(result, ensure_ascii=False))
-    return 0 if result.get("state", "COMPLETED") == "COMPLETED" or result.get("no_execution") else 2
+    completed = result.get("state", "COMPLETED") == "COMPLETED"
+    metadata_only = args.action not in ("submit", "resume", "inspect") and result.get("no_execution")
+    return 0 if completed or metadata_only else 2
 
 
 if __name__ == "__main__":

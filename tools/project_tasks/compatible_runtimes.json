@@ -35,6 +35,26 @@
         "tools/project_tasks/store.py": "d1816b8fe27b10ea8f7bcf18db12c2ecb545f985980146f6495a28eb3417f590",
         "tools/project_tasks/transport.py": "d841d7116ff023b5f83b0418cf2841df4a910ffd91dd7dbea66f2daa09a9bfde"
       }
+    },
+    {
+      "archive_sha256": "da20790c8905fe89734b47bffe0a89898c278ee3a783cf6b8d560827919945e5",
+      "budget_profile": "q4t-project-budget-v1",
+      "evidence": "docs/evidence/serve-task-migration-20261104/records.tar.gz",
+      "release": "srv11c-2502105c",
+      "runtime_sources": {
+        "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+        "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+        "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+        "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+        "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+        "tools/project_tasks/budget.py": "7328c9524eac3257a1b841089d9889975915d96b487d7886196106b560dc0412",
+        "tools/project_tasks/compatible_runtimes.json": "54790ab1907dbfe9a3ba90c5d8eb8fd15b72422952f24817e10c7014e95d2c07",
+        "tools/project_tasks/engine.py": "bb0fb35f0f95a0f947760f3e22462fd033bde261f15e6dd5358999eabfeaffd0",
+        "tools/project_tasks/migration.py": "c9675412f4eb4fa36c9b69567965e54cc220c3366b2b5d0fb37330aef37a1bac",
+        "tools/project_tasks/runner.py": "94d1b5c3e40e0f35077c957bc511a7cc13de97c287b2105291f4d1a59d62866f",
+        "tools/project_tasks/store.py": "d1816b8fe27b10ea8f7bcf18db12c2ecb545f985980146f6495a28eb3417f590",
+        "tools/project_tasks/transport.py": "d841d7116ff023b5f83b0418cf2841df4a910ffd91dd7dbea66f2daa09a9bfde"
+      }
     }
   ]
 }

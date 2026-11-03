@@ -1,5 +1,5 @@
 """Private, bounded task ledgers. One exclusive writer per task; no replay."""
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 import fcntl
 import hashlib
 import json
@@ -17,6 +17,10 @@ MAX_EVENTS = 256
 MAX_EVENT_BYTES = 1024 * 1024
 MAX_WIRE_BYTES = 1024 * 1024
 RESERVED_BYTES = 80 * 1024 * 1024
+
+
+class ArchivedTask(ValueError):
+    """A permanent key exists; callers must never recreate this task."""
 
 
 def require(value, message):
@@ -113,8 +117,12 @@ def checked_root(path):
             1 <= meta["max_tasks"] <= 64 and
             meta["reserved_bytes_per_task"] == RESERVED_BYTES,
             "store identity/policy changed")
-    require({p.name for p in path.iterdir()} ==
-            {".lock", "store.json", "tasks"}, "unknown store entry")
+    entries = {p.name for p in path.iterdir()}
+    require({".lock", "store.json", "tasks"} <= entries <=
+            {".lock", "store.json", "tasks", "retention"}, "unknown store entry")
+    if "retention" in entries:
+        from tools.project_tasks import retention
+        retention.extension(path, meta)
     return path, meta
 
 
@@ -152,6 +160,9 @@ def create(root, name, spec):
     root, meta = checked_root(root)
     require(re.fullmatch(r"[0-9a-f]{64}", name), "task identity")
     with lock(root / ".lock"):
+        from tools.project_tasks import retention
+        if retention.present(root, meta, name):
+            raise ArchivedTask("task key was archived")
         path = root / "tasks" / name
         if os.path.lexists(path):
             private(path, True)
@@ -160,6 +171,7 @@ def create(root, name, spec):
         require(len(entries) < meta["max_tasks"], "task capacity exhausted")
         require(all(re.fullmatch(r"[0-9a-f]{64}", p.name) for p in entries),
                 "interrupted task creation; preserve and inspect")
+        retention.admit(root, meta)
         require(shutil.disk_usage(root).free >= RESERVED_BYTES,
                 "insufficient task storage headroom")
         temporary = root / "tasks" / (".creating-" + uuid.uuid4().hex)
@@ -236,8 +248,15 @@ def open_task(root, name, *, exclusive=True):
     root, meta = checked_root(root)
     require(re.fullmatch(r"[0-9a-f]{64}", name), "task identity")
     path = root / "tasks" / name
-    private(path, True)
-    with lock(path / ".lock", exclusive=exclusive):
+    with ExitStack() as stack:
+        # Stabilize lookup and claim against archive rename; release the root
+        # lock before any model work so other task keys can still proceed.
+        with lock(root / ".lock", exclusive=False):
+            from tools.project_tasks import retention
+            if retention.present(root, meta, name):
+                raise ArchivedTask("task key was archived")
+            private(path, True)
+            stack.enter_context(lock(path / ".lock", exclusive=exclusive))
         db = connection(path)
         try:
             yield Ledger(path, db, meta["store_id"])

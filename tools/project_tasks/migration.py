@@ -91,26 +91,34 @@ def build(ledger, state, binding, root, root_meta, reason):
 
 
 def prepare(root, binding, key, output, reason):
-    from tools.project_tasks import engine
+    from tools.project_tasks import engine, retention
     root, meta = store.checked_root(root)
     output = store.local(output)
     store.private(output.parent, True)
     store.require(not output.is_relative_to(root), "store contains only its managed task entries")
     name = store.task_name(binding["client_id"], key)
-    with store.open_task(root, name) as ledger:
-        state = engine.replay(ledger)
-        plan = build(ledger, state, binding, root, meta, reason)
-        store.write_new(output, store.encode(plan))
+    try:
+        with store.open_task(root, name) as ledger:
+            state = engine.replay(ledger)
+            plan = build(ledger, state, binding, root, meta, reason)
+            store.write_new(output, store.encode(plan))
+    except store.ArchivedTask:
+        return retention.prepare(root, binding, key, "rekey", output, reason)
     return dict(prepared=True, task_id=name, state=state["phase"], revision=state["revision"],
         plan=str(output), plan_sha256=store.digest(plan), source_release=plan["source_release"],
         key_changed=plan["source_spec"]["binding"] != binding, no_execution=True)
 
 
 def apply(root, binding, key, path, expected, *, checkpoint=None):
-    from tools.project_tasks import engine
+    from tools.project_tasks import engine, retention
     path = store.local(path)
     store.require(store.private(path).st_size <= 65536 and checksum(expected), "bounded plan and exact digest required")
     plan = engine.chat.load_json(path.read_bytes())
+    if plan.get("format") == retention.PLAN_FORMAT:
+        store.require(plan["kind"] == "rekey", "only credential migration for archived tasks")
+        result = retention.apply(root, binding, key, path, expected, checkpoint=checkpoint)
+        result["migration_applied"] = result.pop("applied")
+        return result
     store.require(store.digest(plan) == expected and plan["format"] == FORMAT, "migration plan changed")
     root, meta = store.checked_root(root)
     name = store.task_name(binding["client_id"], key)
