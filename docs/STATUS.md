@@ -41,13 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-11d[终态归档与永久保键开发中](SERVE_TASK_ARCHIVE_2026-11-04.md)：
-分离活跃名额、永久键与可清理正文；显式计划/文件操作日志、终态
-保护和进程中断恢复。已接入SQLite原子元数据/有界目录簿、显式
-归档/清理/恢复、归档Key轮换和普通入口保键；69应用/5驱动有效CPU
-通过，11次文件操作SIGKILL、三代旧证据重建通过；原错误文字断言
-及CLI测试替身错误保留，定向修正完成。待冻结一次真实双客户端短验；
-不改默认/既有包/旧验收原件/day。
+SRV-11d[终态归档与永久保键限定接受](SERVE_TASK_ARCHIVE_RESULT_2026-11-04.md)：
+冻结241bf36c，SQLite原子元数据、独立活跃/永久键/正文额度、显式
+归档/清理/恢复及归档Key轮换。69应用/5驱动有效CPU，11次文件操作
+SIGKILL与三代旧证据重建通过，原文字断言/CLI替身失败保持。
+1模型/1网关、alpha512/beta64各2成功/1真实工具，答案/引用正确；
+2实际文件操作SIGKILL恢复，3重复提交/3恢复零执行，5场景生成前拒绝，
+grammar4/4。活跃0/永久键2/保留正文1，原任务已完整保留后清理测试正文。
+GPU62.342223秒/59观察、总73.108097秒/34控制；402原件/2 ELF身份
+离线重建通过，9自有身份退、2代次SEALED。GPU/原锁释放、容器空、
+SOAR仍masked，默认/固定包/Key/旧原件及三份day保持，day未跑。
+启用前停旧版任务客户端，不承诺跨版本热升级；实际LAN/正式策略与
+容量变更、备份迁移、物理RAM和用户长验继续待办，工业化目标active。
 
 SRV-11c[任务源码升级与同客户端Key轮换限定接受](SERVE_TASK_MIGRATION_RESULT_2026-11-04.md)：
 2502105c实现、2ded2ab4续验；精确来源登记、私有计划/摘要与原revision/
@@ -59,7 +64,7 @@ SRV-11c[任务源码升级与同客户端Key轮换限定接受](SERVE_TASK_MIGRA
 4成功/2工具/3预检、grammar4/4。GPU两窗口52.587/48.171秒分别释放；
 468原件/3 ELF路径身份离线重建通过，16自有身份退、4代次SEALED，
 SOAR masked/容器空，默认/原包/原Key/3份day未改且day未跑。
-未登记版本、CA/模型协议迁移、归档保键/容量、实际LAN、物理RAM和
+未登记版本、CA/模型协议迁移、正式容量/策略、实际LAN、物理RAM和
 用户长验仍待完善，工业化目标保持active。
 
 SRV-11b[任务预算与逐轮预检限定接受](SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)：
@@ -71,7 +76,7 @@ SRV-11b[任务预算与逐轮预检限定接受](SERVE_PROJECT_TASK_BUDGET_RESUL
 submit零执行，grammar4/4。GPU60.125823秒/57观察、总70.888181秒/
 15控制，263原件/2 ELF身份封存并离线重建通过；8自有身份退、
 2代次SEALED，GPU/原锁释放、SOAR masked、容器空，默认/Key/day未改。
-预检不预留资源；登记源码/同client Key迁移见11c，归档保键、实际LAN、物理RAM与用户
+预检不预留资源；登记源码/同client Key迁移见11c，归档保键见11d；实际LAN、物理RAM与用户
 长验待办，未执行三份day，工业化目标保持active。
 
 SRV-11[持久项目任务与真实恢复限定接受](SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)：
@@ -84,7 +89,7 @@ SRV-11[持久项目任务与真实恢复限定接受](SERVE_PROJECT_TASKS_RESULT
 411原件/2 ELF身份封存并离线重建通过，18自有身份退、4代次封存；
 GPU/原锁释放、SOAR masked、容器空，默认/固定包/3份day未改未跑。
 [操作入口](../tools/project_tasks/README.md)显式使用；客户端输出预算
-匹配由11b补齐，登记源码/同client Key迁移见11c；终态归档/幂等键保留待策略。实际LAN、
+匹配由11b补齐，登记源码/同client Key迁移见11c；终态归档/永久保键见11d。实际LAN、
 物理RAM及用户长验仍未证明，工业化目标继续active。
 
 SRV-12e[受管代次与私有留存本机短验限定接受](SERVE_RETENTION_RESULT_2026-11-04.md)：
