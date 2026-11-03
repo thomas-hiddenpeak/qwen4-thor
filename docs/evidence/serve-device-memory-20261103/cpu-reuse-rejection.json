@@ -1,0 +1,8 @@
+{
+  "passed": false,
+  "reason": "unaffected test ELF changed",
+  "old_required_binary": "842c852bf970efaf785b85d734a85195e64e3cc95c4320bce3e5d554c5b877c4",
+  "new_required_binary": "1abe7e0eb273cb5360e050d4fbf0811c820397867758cf21c1adb62d91c914be",
+  "evidence": "build-engine.stdout shows protocol identity consumers capabilities/plan/test recompiled",
+  "model_or_http_started": false
+}

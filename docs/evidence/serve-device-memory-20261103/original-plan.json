@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "root": "/home/rm01/models/dev/qwen4-thor",
+  "limits": {
+    "generations": 16,
+    "negatives": 7,
+    "starts": 9,
+    "observations": 256,
+    "seconds": 1800
+  },
+  "planned": {
+    "generations": 16,
+    "negatives": 7,
+    "starts": 9
+  },
+  "source_commit": "41cceacbf1bf91f2992327f7bb4e97a235f2bb75",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/package/candidate/q4t",
+  "candidate_sha256": "40cf6376b06fb9182c194cb44b4723946d4f09253bf681b7eb06707fee0314cf",
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/package/candidate/q4t",
+    "sha256": "40cf6376b06fb9182c194cb44b4723946d4f09253bf681b7eb06707fee0314cf",
+    "bytes": 7154192
+  },
+  "sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/package/candidate/diagnostic-identity.json",
+    "sha256": "ca26be9435e764290ea5e7995d661a89bfc08ef15aee5f6e7dda286719e430cd",
+    "bytes": 303
+  },
+  "old_hashes": {
+    "q4t": "f69982d52d66214b5ce45e250fba1c93bd46e37054f147e09f10fb362f7a6692",
+    "q4t.release.json": "34de1c8fbdc715a885c21ea660db5bfe0cafc5be9f4923f3ebab6ad6b038e7db"
+  },
+  "previous_binary_sha256": "f69982d52d66214b5ce45e250fba1c93bd46e37054f147e09f10fb362f7a6692",
+  "source_manifest_sha256": "e74030e4805b3c9ce827ba211ea9b6669ba4be58df207d5e7557faef24f30ec8",
+  "protocol_sha256": "0075631ee582de909dbdebb33b2a4eec175517e65e57a2f0dbabef39a681f73b",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "port": 18110,
+  "performance_acceptance": false,
+  "validation_binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/package/validation/q4t",
+    "sha256": "21eb1ec7b4ab2afb12c77dcf50b23acd9c1373306a48892f1ffba20a1d5110b5",
+    "bytes": 7155880
+  },
+  "lifecycle_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "5aff0608201dd262000affac504aeb0a0f458de6720b83a9c69f0128914afb62",
+    "bytes": 865240
+  }
+}

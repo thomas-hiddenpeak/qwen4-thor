@@ -1,0 +1,44 @@
+{
+  "source_commit": "c8b656b9006179e677c8bc48c7dc21937150dde3",
+  "original_package": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/package/sealed-files.json",
+    "sha256": "27c6cc8b2756db999c505093fa0a3e22bb2b9b15477904482c085b332f9f30e3",
+    "bytes": 22381
+  },
+  "original_execution": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/sealed-files.json",
+    "sha256": "928e53680af9d75f688691453572cee3bd3a83d54f267d9634af4d63ecc9c546",
+    "bytes": 14248
+  },
+  "started": 1793689477.39374,
+  "limits": {
+    "generations": 9,
+    "negatives": 7,
+    "starts": 7,
+    "observations": 128,
+    "seconds": 1800
+  },
+  "spent": {
+    "generations": 8,
+    "negatives": 1,
+    "starts": 3
+  },
+  "cumulative": {
+    "generations": 17,
+    "negatives": 8,
+    "starts": 10
+  },
+  "original_limits_unchanged": {
+    "generations": 16,
+    "negatives": 7,
+    "starts": 9,
+    "observations": 256,
+    "seconds": 1800
+  },
+  "original_plan_remains_failed": true,
+  "added_attempts": {
+    "generations": 1,
+    "negatives": 1,
+    "starts": 1
+  }
+}

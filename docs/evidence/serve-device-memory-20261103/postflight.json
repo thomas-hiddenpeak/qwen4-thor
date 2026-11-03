@@ -1,0 +1,90 @@
+{
+  "time": "2026-11-03T15:17:20.870193+08:00",
+  "gpu": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-correction-20261103/postflight-gpu.json",
+    "sha256": "3acf573aa7ccd9e7dc33cecb7346f43aae00143d3687403b5e6cff181d2bc502",
+    "bytes": 2259
+  },
+  "memory": {
+    "MemTotal": 131920637952,
+    "MemFree": 24269414400,
+    "MemAvailable": 125118234624
+  },
+  "lock_available": true,
+  "no_recovery_marker": true,
+  "owned_scopes": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/model/scope/cleanup.json",
+      "sha256": "49213d27ce23a142163ca7d7a3dd4db435768cc2af8d479871c2101c26257612",
+      "bytes": 442
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/optional-oom/scope/cleanup.json",
+      "sha256": "b39babcd6b0b35fc324b989951791921fec789ad188356bde9679858efddfa9d",
+      "bytes": 449
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/session-oom/scope/cleanup.json",
+      "sha256": "b90928e73c8ab845298a3d9897481c10f2657291548eb77bbff285532a4d7c1c",
+      "bytes": 448
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-correction-20261103/execution/business/early-release/scope/cleanup.json",
+      "sha256": "25aa5025845f042241c8eee4d0a55fc1d384c3c2ba90e1aac07d2d0658c570a9",
+      "bytes": 450
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-correction-20261103/execution/business/fatal-allocation/scope/cleanup.json",
+      "sha256": "66d4caf51cafa332bdafcde8b312955b3c1414a0c767d4f17368b865841d6e6f",
+      "bytes": 453
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-correction-20261103/execution/business/late-release/scope/cleanup.json",
+      "sha256": "ec6e614edea56433095427013763c425253df6c42ad54b6c8965e1ab4d01a55c",
+      "bytes": 449
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-correction-20261103/execution/business/model/scope/cleanup.json",
+      "sha256": "49213d27ce23a142163ca7d7a3dd4db435768cc2af8d479871c2101c26257612",
+      "bytes": 442
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-correction-20261103/execution/business/mtp-prepare/scope/cleanup.json",
+      "sha256": "6df56fa7325a9aae6a74aa8d600985a1a06226676bf67596a7aec4c8ba1844c2",
+      "bytes": 448
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-correction-20261103/execution/business/optional-oom/scope/cleanup.json",
+      "sha256": "b39babcd6b0b35fc324b989951791921fec789ad188356bde9679858efddfa9d",
+      "bytes": 449
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-correction-20261103/execution/business/session-oom/scope/cleanup.json",
+      "sha256": "1ce3e4448c9efcc3381d58fcccc8e514dfbe04b48366b87c34a4fa3077951bff",
+      "bytes": 448
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-correction-20261103/execution/business/shutdown/scope/cleanup.json",
+      "sha256": "0de6e0b1357df895a9a714e43431c94cdb1e91441743c31ebb3e5c2e392ef147",
+      "bytes": 445
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-correction-20261103/execution/business/startup/scope/cleanup.json",
+      "sha256": "53054d3bd91843d9af9d4c0a487d75a54b29be9f5a3c292243743ce609985030",
+      "bytes": 444
+    }
+  ],
+  "own_scopes_removed": true,
+  "rollback_bundle_verified": true,
+  "history_pairs": 40,
+  "history_terminal": "explicit_stale_history",
+  "current_pair": {
+    "q4t": "40cf6376b06fb9182c194cb44b4723946d4f09253bf681b7eb06707fee0314cf",
+    "q4t.release.json": "79d4a6578404b270648861a0ec1d344ae4e5bf75cae750fc5ac0d7adb150b515"
+  },
+  "previous_pair": {
+    "q4t": "f69982d52d66214b5ce45e250fba1c93bd46e37054f147e09f10fb362f7a6692",
+    "q4t.release.json": "34de1c8fbdc715a885c21ea660db5bfe0cafc5be9f4923f3ebab6ad6b038e7db"
+  },
+  "live_rollback_tested": false
+}

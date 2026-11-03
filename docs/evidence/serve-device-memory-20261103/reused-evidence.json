@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "counts": {
+    "generations": 8,
+    "negatives": 1,
+    "starts": 3
+  },
+  "wires": [
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/model/ordinary-recovery-wire.bin",
+        "sha256": "36fa14f52d170097d82ed85f73623fa74d3e64cf54b0163bcd87417df891d905",
+        "bytes": 306
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/model/ordinary-sse-wire.bin",
+        "sha256": "b552f47709b19d01f2ac65e882f207034b4bc24a9a1e8d9bbf74d68802712ced",
+        "bytes": 2161
+      },
+      "envelopes": 9,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/model/strict-json-wire.bin",
+        "sha256": "c37b9746691cd24dab128ea4525ee6bfa5843a6fb5993494060efcd6a1d65b6e",
+        "bytes": 314
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/model/project-read-wire.bin",
+        "sha256": "ed52336a856f1b4cc40a55a6ebeca5ff649f8739f9f6f500f010fa14a389faa7",
+        "bytes": 1184
+      },
+      "envelopes": 4,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/model/project-answer-wire.bin",
+        "sha256": "74f5233f9205e24c2c122bb99b788e570e39f1579ee3c6b38c116dbb13f38b1a",
+        "bytes": 1137
+      },
+      "envelopes": 4,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/optional-oom/fallback-wire.bin",
+        "sha256": "7465508d9d61f45a25ad8f7bd48184feef038429f7962bf231dde407664a0dfa",
+        "bytes": 287
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/optional-oom/recovered-wire.bin",
+        "sha256": "9d58c7fd5cd89cd78a3d977731220e2c6ec516160aaf737b2848ba554efac225",
+        "bytes": 2161
+      },
+      "envelopes": 9,
+      "success": true
+    }
+  ],
+  "original_result": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/result.json",
+    "sha256": "797a666871e069a7b6f22d51a9c368ad37045d1ab9029300906085130f4a0f4a",
+    "bytes": 233
+  },
+  "incomplete_error_wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/business/session-oom/fault-wire.bin",
+    "sha256": "483226a0ac352707a405ec7ec0eceddb630a854c9fd19c280ccdb38d0317cdd0",
+    "bytes": 375
+  },
+  "native": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-device-memory-20261103/execution/native/result.json",
+    "sha256": "57eb6b778229d87dfb9b380064339d8b6bad71b51eb4d87774e64c406fb01d5d",
+    "bytes": 478
+  },
+  "reused_successful_model_turns": 7,
+  "repeat_only_failed_capture": true,
+  "runtime_changed": false,
+  "original_failed_plan_not_reclassified": true
+}

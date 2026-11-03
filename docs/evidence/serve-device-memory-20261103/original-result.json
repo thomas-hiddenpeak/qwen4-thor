@@ -1,0 +1,11 @@
+{
+  "status": "FAILED",
+  "error": "RuntimeError('error stream needs one final DONE')",
+  "counts": {
+    "generations": 8,
+    "negatives": 1,
+    "starts": 3
+  },
+  "control_requests": 25,
+  "elapsed_seconds": 114.82641538302414
+}

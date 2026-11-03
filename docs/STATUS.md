@@ -7,20 +7,35 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
-SRV-02f正在补齐[设备分配失败传播与回收合同](SERVE_DEVICE_MEMORY_2026-11-03.md)。
-已修改文本请求/调度缓冲区：仅明确OOM可降级，必需缓冲区503，
-其他设备错误/释放失败停服，成功终态前检查回收；未分类MTP准备失败
-排空后停服。CPU OFF241/ON250、必需207、后端9、驱动6、配置15+10通过，
-生产/validation零警告；仅协议身份受影响门定向重验。首轮25原生及
-7成功通过，必需OOM的SSE取证器在error事件提前停止、未读DONE，
-原FAILED/COMMAND_FAILED保持；服务正常退出、GPU释放。
-[定向补验](SERVE_DEVICE_MEMORY_CORRECTION_2026-11-03.md)只重验该场景
-及未执行项，原1800秒时间保持，累计次数明确增至17/8/10，不追认原预算通过；
-默认仍为下述02e版本。媒体、模型内部清理、
-整机物理RAM保护另列，不以局部改动宣称完整覆盖。
+[SRV-02f设备资源故障已限定交付](SERVE_DEVICE_MEMORY_RESULT_2026-11-03.md)：
+默认40cf6376/sidecar79d4a657，protocol0075631e，203运行时来源。
+文本/调度缓冲仅明确OOM可降级，必需OOM503；其他设备/释放错误锁内
+排空后停服，排空失败立即退出，成功终态/缓存发布前检查释放。
+MTP未分类准备失败停止；媒体/模型内部、物理RAM保护仍未闭合。
+
+CPU OFF241/ON250、必需207、后端9、驱动6+4、配置15+10、原生25通过，
+零警告。41cceacb生产5轮真实工具及可选OOM2轮通过；原SSE取证器读到
+error便退出、未读DONE，FAILED/COMMAND_FAILED保留。c8b656b9先完整
+取wire后验证，只重验该场景与未执行项，运行时不改、通过项不重跑。
+
+实际必需OOM同PID恢复及8473-token缓存命中/fresh答案一致，四类fatal
+请求、startup/shutdown退出1通过。累计17生成尝试/8负例/10启动、
+11成功、16完整wire/47封套；1原错误尾部缺证另列。补验明确多一次
+请求/重启，不能称仍在原次数预算内；762.663秒finalize保留原1800秒。
+61业务控制观察、328不重复时间样本；纠正guard COMPLETED/ENV_ABORT0。
+
+安装CLI/worker通过，HTTP复用同SHA生产候选；新/旧f699回退bundle只读
+验证与40pair链保持，未实际回退。839原记录封存19份Git文件约1.385MB，
+20本机产物身份，19 Git blob/839原件/20身份及594变更链接核对通过；
+15:17:20 CST GPU空、锁可用、owned scopes退出、无
+恢复标记，MemAvailable116.525GiB。下一阶段先收紧legacy MTP启动降级
+和模型内部清理传播，再补媒体；实际访问/通知/多人、新ELF长稳、通用
+恢复与物理RAM硬保护继续待办。长期目标active。
+
+## SRV-02e交付历史
 
 [SRV-02e启动检查与Thor计量已限定交付](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)：
-当前默认f69982d5/sidecar34de1c8f，protocol80529db3，200运行时来源，
+当时默认f69982d5/sidecar34de1c8f，protocol80529db3，200运行时来源，
 完整head/MTP k3。metadata前/大分配前/ready前三次新读数，默认2GiB
 余量，大分配前含完整峰值估算；未知拒绝、0/no-budget明确绕过，
 运行期门限独立，config/capabilities公开快照。不是预留或物理硬限额。

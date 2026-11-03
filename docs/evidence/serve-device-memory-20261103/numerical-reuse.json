@@ -1,0 +1,22 @@
+{
+  "changed": [
+    "include/q4t/server/chat_server.h",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_generation.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/chat_server.cpp"
+  ],
+  "added": [
+    "include/q4t/server/device_memory.h",
+    "src/server/chat_device_memory.cpp",
+    "src/server/cuda_memory_backend.h"
+  ],
+  "previous_manifest": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/package/candidate/runtime-source.json",
+    "sha256": "5434e00802cd97ca15a0bc600a08ddbb2f3c7969c2ee4e98b6b1709048adc1d7",
+    "bytes": 20785
+  },
+  "unchanged_model_and_numerical_sources": true,
+  "performance_acceptance": false,
+  "scope": "Serve allocation/release failure paths and cleanup-before-success ordering. Template, tokenizer, grammar and model math unchanged; MTP preparation failure now drains/stops. No throughput equivalence claim."
+}
