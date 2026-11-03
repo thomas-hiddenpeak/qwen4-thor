@@ -65,11 +65,14 @@ live继续保留进程级所有权，不宣称进程内零驻留；进程退出�
 原cpu、execution及各固定包均保持。归档入口为
 `tools/serve_cuda_quota_integration/report.py`；它同时核对原失败、
 wire终态/工具引用、计数、guard、安装及退出，不重新运行模型。
+463原件无损封存于[Git归档](evidence/serve-cuda-quota-integration-20261104/manifest.json)，
+23本机ELF身份独立保留；3份Git文件561683字节，离线核对通过。
 首个离线归档核对误用finalization.json路径的失败另保存在report-audit，
 修正为现有事务实际输出finalized.json，不影响任何运行时验收。
 
 新默认的长验入口为`tools/serve_cuda_quota_integration/handoff.py`。
 准备/check只生成和核对独立operator-package与operator-soak/day；
+包manifest68a765c2、day计划a573e933已生成并离线check，execution不存在。
 旧11项soak CPU及不变控制器代码证据复用。新包尚未运行托管E2E，
 用户手动运行时会同时验证这一集成与长稳，不能将旧包结果改称
 新包已通过。具体启动、停止和只读检查见

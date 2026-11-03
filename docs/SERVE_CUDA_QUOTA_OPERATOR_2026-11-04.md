@@ -5,6 +5,12 @@
 计划在同阶段`operator-soak/day/plan.json`，旧day目录保持。只准备
 与离线核对，不自动启动模型、监听或临时服务。
 
+已准备的package manifest为
+`68a765c28925f8c5df4d6b49173d9895a2cefbb785ddd4f9b77c01f9a8b3486a`，
+day计划SHA256为
+`a573e93322f2449139f42ce5f0e71d69ff931a10c4ddcc0db3df2caf6c4c5649`。
+已离线check，execution目录尚不存在。
+
 旧11项soak CPU及不变的控制器实现证据复用；新包未在托管模式下
 执行过，尚无新包托管E2E或长稳结论。下面的用户执行会同时验证
 新包的托管启动/关闭与24小时业务闭环；失败保留，不自动重试。
