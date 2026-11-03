@@ -16,6 +16,12 @@
 #include "q4t/runtime/startup_plan.h"
 #include "q4t/runtime/startup_reservation.h"
 
+// A small unwrapped control establishes the driver's reported properties for
+// the same input flags; the fake CPU contracts verify exact argument
+// forwarding.
+extern "C" cudaError_t __real_cudaHostAlloc(void**, size_t, unsigned);
+extern "C" cudaError_t __real_cudaFreeHost(void*);
+
 namespace {
 namespace rt = q4t::runtime;
 constexpr size_t kMiB = 1024 * 1024;
@@ -97,7 +103,16 @@ void Mixed() {
   Cuda(cudaHostAlloc(&p[1], 8 * kMiB, cudaHostAllocPortable));
   unsigned flags = 0;
   Cuda(cudaHostGetFlags(&flags, p[1]));
-  Check(flags == cudaHostAllocPortable, "host flags preserved");
+  void* control = nullptr;
+  Cuda(__real_cudaHostAlloc(&control, 4096, cudaHostAllocPortable));
+  unsigned direct_flags = 0;
+  Cuda(cudaHostGetFlags(&direct_flags, control));
+  std::printf(
+      "{\"event\":\"host_flags\",\"requested\":%u,\"wrapped\":%u,"
+      "\"direct\":%u,\"control_bytes\":4096}\n",
+      unsigned(cudaHostAllocPortable), flags, direct_flags);
+  Cuda(__real_cudaFreeHost(control));
+  Check(flags == direct_flags, "host flags differ from direct CUDA control");
   Cuda(cudaMallocHost(&p[2], 8 * kMiB));
   Cuda(cudaMallocManaged(&p[3], 8 * kMiB, cudaMemAttachGlobal));
   for (int i = 0; i < 4; ++i)

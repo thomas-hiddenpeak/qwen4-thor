@@ -50,7 +50,9 @@ no-budget；整机RAM硬限额仍不成立。首轮零警告，wrapper27/28、
 指针未清空及CLI夹具缺必需model_dir失败保留，v2零警告，定向2
 wrapper与两配置各2 CLI通过；有效28/268/234及后端9/驱动5，
 未受影响证据复用，原CLI负例错误前置条件不计新增边界通过。
-尚无GPU/模型/默认替换；随后同锁6 native/3启动尝试/最多7生成；用户
+原GPU轮1 native在host flags回显等值断言失败，COMMAND_FAILED
+保留，无模型/HTTP/默认替换；[加入直接CUDA对照](SERVE_CUDA_QUOTA_FLAGS_CORRECTION_2026-11-04.md)
+后唯一继续轮6 native/3启动尝试/最多7生成，累计native最多7；用户
 小时/day计划不执行，旧default与证据保留，工业化目标继续active。
 
 [SRV-02j1 CUDA申请额度核心限定通过](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md)：
