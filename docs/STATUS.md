@@ -4,6 +4,16 @@
 
 ## CUDA 13.4 指令支持核验
 
+[Thor原生FP4/FP8转换与两条等价组合已实机通过](CUDA134_THOR_NATIVE_FP4_FP8_2026-11-03.md)：
+F2FP解码/打包，经FP16或BF16 packed乘法实现FP4×E4M3 scale→FP8；
+每四元素6条F2FP+2条乘法，无QMUL4。8个原生探针各4129组向量，
+全部逐位正确/canary通过，两条组合还经独立定点参考核对。覆盖16种
+FP4×254种有限有符号FP8 scale的四lane，NaN未测。8个函数在100a/
+110a的完整.text相同；没有找到Thor专用QMUL4编码，不排除隐藏编码。
+GPU独占13.189秒、14观察无竞争，COMPLETED/锁释放、计算上下文空；
+环境及系统CUDA13.3.33不变。67文本/17完整数值缓冲/3本机身份封存，
+47项离线核对通过；无完整W4A8 GEMM、模型质量或性能结论。
+
 [QMUL4已完成Thor原生cubin实机核验](CUDA134_QMUL4_THOR_2026-11-03.md)：
 绕过ptxas限制，仅植入同一16字节指令槽，模块加载/kernel提交成功，
 首次同步报CUDA_ERROR_ILLEGAL_INSTRUCTION（715）；内核SM Warp
