@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import socket
 import sqlite3
 import subprocess
 import sys
@@ -354,6 +355,8 @@ class Tasks(unittest.TestCase):
     def test_deadline_reader_checks_each_partial_read_and_eof(self):
         class Response:
             chunks = [b"first", b"\nsecond", b"", b"impossible"]
+            def isclosed(self):
+                return False
             def read1(self, size):
                 return self.chunks.pop(0)
         class Sock:
@@ -366,6 +369,19 @@ class Tasks(unittest.TestCase):
         reader = transport.DeadlineReader(Response(), Sock(), time.monotonic() - 1)
         with self.assertRaises(TimeoutError):
             reader.read(100)
+
+    def test_content_length_eof_after_connection_close_does_not_touch_retired_socket(self):
+        left, right = socket.socketpair()
+        self.addCleanup(left.close); self.addCleanup(right.close)
+        right.sendall(b"HTTP/1.1 200 OK\r\nContent-Length: 3\r\nConnection: close\r\n\r\nabc")
+        response = transport.http.client.HTTPResponse(left)
+        self.addCleanup(response.close)
+        response.begin()
+        left.close()  # HTTPConnection hands the remaining socket IO reference to response.
+        reader = transport.DeadlineReader(response, left, time.monotonic() + 2)
+        self.assertEqual(reader.read(100), b"abc")
+        self.assertEqual(reader.read(100), b"")
+        self.assertTrue(response.isclosed())
 
 
 if __name__ == "__main__":

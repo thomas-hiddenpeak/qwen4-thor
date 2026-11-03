@@ -97,6 +97,11 @@ class DeadlineReader:
         return value
 
     def fill(self, size):
+        # Content-Length completion can retire the last socket IO reference in
+        # read1(). EOF then comes from HTTPResponse, not the retired descriptor.
+        if self.response.isclosed():
+            self.eof = True
+            return
         self.remaining()
         data = self.response.read1(min(size, 65536))
         self.eof = not data

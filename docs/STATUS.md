@@ -45,7 +45,10 @@ SRV-11[项目查询持久任务与显式恢复已开发](SERVE_PROJECT_TASKS_202
 按client隔离幂等键、私有事件账、单任务互斥、已知结果复用、未知请求/
 只读工具显式处置及跨运行预算；19有效CPU与2驱动通过，含SIGKILL、
 新进程恢复、SQLite事务回滚和wire保留，无失败。[真实短验已冻结](SERVE_PROJECT_TASKS_SHORT_2026-11-04.md)：
-1模型/1网关、3应用中断、最多7请求/4工具尝试，尚未执行。
+原1模型/1网关在capabilities读取EOF后访问已关闭socket失败，0生成/工具；
+原FAILED与49.900秒及完整清理保持。Unix socketpair复现同一EBADF，
+修正2定向通过，20有效CPU/2驱动；原业务组尚未执行，单次修正短验
+仍固定3应用中断/最多7请求/4工具尝试，不自动扩样。
 [操作入口](../tools/project_tasks/README.md)显式运行，不改默认或3份day，
 应用恢复尚未实际接受，工业化目标继续active。
 
