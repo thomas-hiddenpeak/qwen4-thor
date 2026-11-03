@@ -1,0 +1,32 @@
+test_busy_port_rejects_before_backend_launch (test_service.Case.test_busy_port_rejects_before_backend_launch) ... ok
+test_default_never_restarts (test_service.Case.test_default_never_restarts) ... ok
+test_gpu_failure_is_terminal_even_with_restart_budget (test_service.Case.test_gpu_failure_is_terminal_even_with_restart_budget) ... ok
+test_guard_retention_is_opt_in_and_preserves_terminal_receipt (test_service.Case.test_guard_retention_is_opt_in_and_preserves_terminal_receipt) ... ok
+test_internal_worker_needs_real_controller_parent (test_service.Case.test_internal_worker_needs_real_controller_parent) ... ok
+test_log_write_error_stops_and_is_reported (test_service.Case.test_log_write_error_stops_and_is_reported) ... ok
+test_logs_have_actual_byte_bound (test_service.Case.test_logs_have_actual_byte_bound) ... ok
+test_normal_nonzero_exit_is_not_signal_recovery (test_service.Case.test_normal_nonzero_exit_is_not_signal_recovery) ... ok
+test_observation_loss_has_bounded_grace (test_service.Case.test_observation_loss_has_bounded_grace) ... ok
+test_orphan_grammar_like_child_is_reaped (test_service.Case.test_orphan_grammar_like_child_is_reaped) ... ok
+test_parent_death_across_exec_keeps_lease_until_backend_exit (test_service.Case.test_parent_death_across_exec_keeps_lease_until_backend_exit) ... ok
+test_policy_matrix (test_service.Case.test_policy_matrix) ... ok
+test_protocol_mismatch_fails_closed (test_service.Case.test_protocol_mismatch_fails_closed) ... ok
+test_signal_exit_restarts_after_group_cleanup (test_service.Case.test_signal_exit_restarts_after_group_cleanup) ... ok
+test_startup_deadline_does_not_restart (test_service.Case.test_startup_deadline_does_not_restart) ... ok
+test_stop_during_backoff_blocks_reactivation (test_service.Case.test_stop_during_backoff_blocks_reactivation) ... ok
+test_stop_persists_intent_when_controller_absent (test_service.Case.test_stop_persists_intent_when_controller_absent) ... ok
+test_temporary_unready_keeps_pid (test_service.Case.test_temporary_unready_keeps_pid) ... ok
+test_terminal_run_is_not_reactivated_or_signalled (test_service.Case.test_terminal_run_is_not_reactivated_or_signalled) ... ok
+test_total_restart_budget_is_not_reset (test_service.Case.test_total_restart_budget_is_not_reset) ... ok
+test_wrong_start_or_boot_never_signals_reused_pid (test_service.Case.test_wrong_start_or_boot_never_signals_reused_pid) ... ok
+test_inconsistent_acceptance_rejected_before_output_creation (test_service.PackageTests.test_inconsistent_acceptance_rejected_before_output_creation) ... ok
+test_invalid_port_or_unbounded_restart_rejected (test_service.PackageTests.test_invalid_port_or_unbounded_restart_rejected) ... ok
+test_package_or_model_changes_are_rejected (test_service.PackageTests.test_package_or_model_changes_are_rejected) ... ok
+test_snapshot_is_independent_of_worktree_and_original_pair (test_service.PackageTests.test_snapshot_is_independent_of_worktree_and_original_pair) ... ok
+test_unit_has_no_automatic_activation_and_binds_snapshot (test_service.PackageTests.test_unit_has_no_automatic_activation_and_binds_snapshot) ... ok
+test_unknown_config_or_inventory_rejected (test_service.PackageTests.test_unknown_config_or_inventory_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 2.209s
+
+OK

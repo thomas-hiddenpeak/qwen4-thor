@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "files": {
+    "guard-first.log": {
+      "sha256": "89804f5b6848662e91d61f3be3cc5696208e4aa6fdd6faa17e1e30bf82eab36a",
+      "bytes": 4497
+    },
+    "guard-inheritance.log": {
+      "sha256": "118805a261d224e3ce50d1bb22252030549a5ab6ecfb7511724efe8aecc9b8fb",
+      "bytes": 4497
+    },
+    "package-manifest.json": {
+      "sha256": "e33a0ac2771d450a380c2b49eed8d6a5221b5e67c6b10ea6c70eca5199de5787",
+      "bytes": 3804
+    },
+    "prepare.json": {
+      "sha256": "287ba52ceffcd54921adccee3e2b72a9121411c631ed445a9e51d617452d81bd",
+      "bytes": 273
+    },
+    "q4t-managed-smoke.service": {
+      "sha256": "eeb98eab6a493cc872fe2b4726a498806b0ad33d2096660ebcd6dfe052af18ce",
+      "bytes": 800
+    },
+    "result.json": {
+      "sha256": "d95189e24e6b9e6eaf77653677137446f2fac21f0f3bae73b4c16c3aed3a6573",
+      "bytes": 3523
+    },
+    "service-final.log": {
+      "sha256": "655652bcf049fea32e53428c54444e52e98fe5cb59774523d5909ed206d29231",
+      "bytes": 3604
+    },
+    "service-first.log": {
+      "sha256": "0285946dd6609148dbe3a285a53c902574fb7c2a474a9420bd4f3d4bde45e30f",
+      "bytes": 2901
+    },
+    "service-second.log": {
+      "sha256": "ec1ea8cdc21aa44b4005a8d40f66b3971662af4938fc434ca181153ee700b80d",
+      "bytes": 3318
+    },
+    "service-third.log": {
+      "sha256": "5cad119e585b83b2e21892d2ee9beed59b03d55df01be7e90abe5af95bdca1b7",
+      "bytes": 3453
+    }
+  },
+  "source": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/cpu",
+  "raw_logs_retained": true,
+  "new_model_starts": 0,
+  "new_http_requests": 0,
+  "package_manifest_sha256": "e33a0ac2771d450a380c2b49eed8d6a5221b5e67c6b10ea6c70eca5199de5787",
+  "local_package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/package-cpu",
+  "accepted_runtime_unchanged": true,
+  "managed_gpu_acceptance": "PENDING"
+}

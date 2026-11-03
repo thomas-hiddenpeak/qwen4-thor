@@ -8,6 +8,14 @@
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进；当前组合GPU
 验收已完成限定交付，GPU交接阻塞已解除。
 
+当前推进[SRV-14受控服务托管](SERVE_MANAGED_SERVICE_2026-11-03.md)，
+[CPU已通过](SERVE_MANAGED_SERVICE_CPU_2026-11-03.md)：独立发布源码包、
+默认不重启/显式总预算、停止终止记录、有效MTP/容量配置校验及有界
+私有日志。实际CPU进程验证parent-death跨exec及控制器死亡后的锁保持；
+托管29/共享guard30、包内isolated入口/systemd语法通过，10份CPU原件
+封存。旧text-v1固定no-MTP且healthz503重启，不直接推广；211运行时/
+默认pair保持。下一步冻结实际托管验收驱动，尚无新GPU/HTTP或常驻unit。
+
 [SRV-02h+02i已限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)：
 默认280b95dc/sidecar18c9d2c5、protocol29810d03，211来源保持；工具
 冻结abb653c8。原生25、实际函数查询/8拒绝、tiny视觉与workspace故障、

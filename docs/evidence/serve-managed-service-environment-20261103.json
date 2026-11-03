@@ -1,0 +1,25 @@
+{
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "ca7e3bcb744207ccbf9a26dc4cf702c4",
+    "worker_pid": 2431238,
+    "stdout": "{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.845821246, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.853733223, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.853768879, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.857402179, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.003621032228693366}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.857453105, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.857501327, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.7656864151358604e-05}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.857516345, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.863974392, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006450324086472392}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.86399805, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.86560682, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0015975949354469776}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.865628256, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.866859788, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0012246151454746723}\n{\"request_id\": \"ca7e3bcb744207ccbf9a26dc4cf702c4\", \"monotonic\": 1899488.866883056, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.06343378103338182,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "shared_lock_available": true,
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "lock_inode": 3294067,
+  "soar_unit": {
+    "unit": "soar-flash-fast-v3-fixture-retry-qualified-v1-20261103.service",
+    "properties": {
+      "MainPID": "0",
+      "LoadState": "masked",
+      "ActiveState": "inactive"
+    }
+  }
+}
