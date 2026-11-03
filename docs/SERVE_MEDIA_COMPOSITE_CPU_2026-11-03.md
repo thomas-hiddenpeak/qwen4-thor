@@ -37,7 +37,26 @@
 32生成/21负场景/11启动矩阵、原生25/权重与上传等范围全部完成。
 本批未扩媒体+显式seq-capacities组合，未把CPU成功当业务交付。
 
-当前仍有vLLM PID2336565占93,864,288,256字节，环境预检ENV_ABORT，
-继续保留服务。工具提交后封存组合包；只有GPU空闲或取得该服务交接
-授权，才经一把互斥lease执行launch，成功后再按既有授权交付/finalize。
-旧02h包与02i CPU包保持原seal，不删除失败或覆盖旧来源身份。
+组合包已按工具提交`abb653c8263d721babc640b3438b74872e83df5b`封存，
+准备后来源/CPU门禁核对通过。候选、旧默认pair、夹具、SDK/模型只读
+输入与工具来源均固定在`package/`，没有`execution/`或安装恢复标记。
+[原始记录归档](evidence/serve-media-composite-cpu-20261103/README.md)保留
+140份记录，9份Git文件共424,928字节；19个本机ELF/bundle身份逐项匹配。
+[暂存保管核验](evidence/serve-media-composite-cpu-custody-20261103.json)
+9份Git blob逐项通过，654个变更文档链接无缺失；本次封存不重复CPU、
+解压或模型验证。
+
+18:45:13 CST只读预检仍有vLLM PID2336565占93,864,288,256字节，
+环境入口记ENV_ABORT，继续保留服务。只有GPU空闲或该服务已完成授权
+交接，才执行下列入口；launch内部持有一把完整阶段lease，成功后立即
+finalize，仍计入原2400秒。失败保留现场，不能自动重试或扩充预算。
+
+```bash
+python3 -B tools/serve_media_composite/stage.py launch &&
+python3 -B tools/serve_media_composite/stage.py finalize
+```
+
+旧02h包与02i CPU包保持原seal，不删除失败或覆盖旧来源身份。当前
+工作包已完成不依赖GPU的准备；下一步是原生HTTP、设备探针及32/21/11
+真实业务矩阵，满足门禁后才按既有授权替换默认并交付。实际网络入口、
+通知接收与多人策略仍待部署范围确定，不从本批CPU成功推导为已支持。

@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "zero_warnings": true,
+  "commands": {
+    "fixture_contract-compile": true,
+    "fixture_contract-link": true,
+    "device_contract-compile": true,
+    "device_contract-link": true
+  },
+  "runtime_unchanged": true,
+  "bindings_unchanged": true,
+  "binaries": {
+    "fixture_contract": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-composite-20261103/cpu/fixture_contract",
+      "sha256": "93386f913c0953c72f724eb760f71b2b33896580803bfd1436f3a7e937a70ad8",
+      "bytes": 568032
+    },
+    "device_contract": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-composite-20261103/cpu/device_contract",
+      "sha256": "59aba92a2b6179e299d10c9b69bb1cd731b469959484cf90c5a62fe6e3ab7dd9",
+      "bytes": 439520
+    }
+  }
+}

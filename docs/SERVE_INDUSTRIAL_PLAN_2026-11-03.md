@@ -56,7 +56,8 @@ Thor计量随后限定交付；cudaMalloc实测揭示memcg缺口。SRV-02f文本
   通过，首轮失败保留。新vLLM占GPU，未干预、未部署。[组合驱动和新
   压缩夹具CPU](SERVE_MEDIA_COMPOSITE_CPU_2026-11-03.md)已通过，计划
   32/21/11涵盖旧02h所有权/错误/真实工具及新增准入/恢复/取消；
-  下一步封存候选并在空闲后统一GPU验收。
+  组合包按abb653c8封存，140原件/19本机身份匹配；本批CPU与准备
+  已完成，等待该vLLM释放或完成交接后统一GPU验收。
   解码所有权额度不等于物理RAM硬限额，CPU部分仍持model锁。
 
 - SRV-02g[限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)：
