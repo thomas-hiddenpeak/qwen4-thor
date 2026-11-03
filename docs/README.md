@@ -22,6 +22,8 @@
 [统一内存准入交付、真实工具闭环、证据限制与回退](SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md)；
 [同模型动态压力恢复与持续混合业务合同](SERVE_PRESSURE_2026-11-03.md)；
 [同PID受压恢复、64轮混合业务与资源核算结果](SERVE_PRESSURE_RESULT_2026-11-03.md)。
+[SRV-12本地运营能力与有界验收合同](SERVE_OPERATIONS_2026-11-03.md)；
+[只读诊断、告警处置与日志/诊断包留存手册](SERVE_OPERATIONS.md)。
 [SRV-06文本停止交付、跨块/MTP/工具终态、失败与回退](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 [SRV-05b真实预算交付、质量修复、MTP/缓存及完整证据](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)；
 [先前开发和未完成HTTP记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)保留。

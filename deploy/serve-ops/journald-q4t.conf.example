@@ -1,0 +1,8 @@
+# Dedicated q4t namespace configuration, NOT the global journald.conf.
+# Template destination: /etc/systemd/journald@q4t.conf
+[Journal]
+Storage=persistent
+SystemMaxUse=256M
+RuntimeMaxUse=64M
+MaxRetentionSec=14day
+RateLimitIntervalSec=0

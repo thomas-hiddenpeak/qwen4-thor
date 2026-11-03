@@ -1,0 +1,13 @@
+# Loopback example only. No daemon, reload, webhook or receiver is installed.
+global:
+  scrape_interval: 15s
+  scrape_timeout: 2s
+  evaluation_interval: 15s
+rule_files:
+  - q4t.rules.yml
+scrape_configs:
+  - job_name: q4t
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets: ['127.0.0.1:8080']

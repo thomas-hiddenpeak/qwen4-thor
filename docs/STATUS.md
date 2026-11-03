@@ -7,6 +7,13 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
+当前推进[SRV-12本地运营能力](SERVE_OPERATIONS_2026-11-03.md)：固定
+Prometheus告警、只读身份绑定诊断、私有日志投影/诊断包留存与排障
+手册已实现；29项CPU边界、6项验收/身份/留存门及官方promtool时序
+通过，原夹具失败与PromQL跨指标误匹配修复保留。即将冻结真实控制
+入口/工具闭环与临时Prometheus验证，尚未实际验收。原运行时/默认pair
+保持；[运维手册](SERVE_OPERATIONS.md)覆盖17告警。通知/网关与长稳待办。
+
 [同模型压力恢复与64轮混合业务已限定接受](SERVE_PRESSURE_RESULT_2026-11-03.md)。
 冻结4fd5ec7c，直接复用安装84d16983/c5203331、protocol aeb66adc；198
 运行时源码未变，默认pair不替换，原零警告/数值证据复用。CPU19+1通过。
