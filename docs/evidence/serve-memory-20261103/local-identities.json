@@ -1,0 +1,37 @@
+{
+  "execution/pair/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/pair/q4t",
+    "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "bytes": 7086768
+  },
+  "package/candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/candidate/q4t",
+    "sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "bytes": 7086768
+  },
+  "package/candidate/q4t_http_lifecycle_tests": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "36dd676f5660a1a4f9fa93e28858b96464260ee9dea9ff804c0f4c5d48f987a3",
+    "bytes": 760312
+  },
+  "package/cpu/config-schema/config_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/cpu/config-schema/config_probe",
+    "sha256": "82b42764455da65e176d962eac058f2f7e8db132e19ccd9ee430fc4138acaed5",
+    "bytes": 429008
+  },
+  "package/cpu/config-schema/probe.o": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/cpu/config-schema/probe.o",
+    "sha256": "03ba9572a4af5773d79e6602fa0f10334c6887e1873234f53cc527c5e921c598",
+    "bytes": 19232
+  },
+  "package/previous/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/previous/q4t",
+    "sha256": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+    "bytes": 7084248
+  },
+  "package/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/package/source.bundle",
+    "sha256": "64e56e6efb2b6239142ba6f3526547a18bfbf128608f4c869aa3b94fe602d05c",
+    "bytes": 38456
+  }
+}

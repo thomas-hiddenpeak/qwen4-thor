@@ -4,6 +4,13 @@
 只读查询本项目文档、发布与验收记录。代码优先；实现、验证和业务质量
 分别记录。此页是持续维护入口，历史验收不随新功能自动扩张。
 
+2026-11-03 [统一内存准入已限定交付](SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md)：
+当前默认84d16983/c5203331。全局MemAvailable观测/未知拒绝、门限和恢复
+滞回、body前/准备/slot检查、ready和固定指标；真实5生成/4拒绝/2启动
+及1预检通过，实际资料工具回填正常，GPU释放。高floor用真实读数安全
+触发拒绝；同模型动态压力恢复仅有原生未加载HTTP/队列注入证据，完整
+RAM硬保护仍未具备。原生19项缺归档原始stdout/stderr的限制明确保留。
+
 2026-11-03 [严格复制长输出背压限定通过](SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)：
 明确复制条件下，固定12443字节严格输出实际244token含EOS完成；真实TCP
 EAGAIN后的SSE取消、JSON写截止、排队普通/strict恢复、控制与资源清理通过。
@@ -11,7 +18,7 @@ EAGAIN后的SSE取消、JSON写截止、排队普通/strict恢复、控制与资
 不变、GPU释放。旧03b失败保留，不保证任意strict请求在token预算内完成。
 
 2026-11-03 [SRV-01b接收/输出失败观测已限定交付](SERVE_OBSERVABILITY_RESULT_2026-11-03.md)：
-当前默认ed672a65/67897c81。body额度专属503、首次接收/写失败固定原因、
+当时默认ed672a65/67897c81。body额度专属503、首次接收/写失败固定原因、
 心跳join后计数、trace日志对账；生产body/读取截止/TCP reset/真实工具及
 专用普通SSE取消/写截止/恢复通过。8生成尝试含3次预期不完整流、16拒绝、
 2启动；不把接收拒绝与chat结果相加。当时严格长payload未证明，后续见上方。
@@ -109,7 +116,7 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 
 ## API 兼容矩阵
 
-当前交付为 ed672a65 / sidecar 67897c81，盘点起点为 460ffd0 /
+当前交付为 84d16983 / sidecar c5203331，盘点起点为 460ffd0 /
 旧默认 830694ce。`已验`指本项目已有明确证据，不代表外部 SDK 全部
 版本通过。P1 / P2 的验证范围与具体失败在本页末尾及结果文档记录。
 完整 vLLM 对照与优先级见[32项服务能力盘点](VLLM_SERVICE_GAPS_2026-11-02.md)。
@@ -145,12 +152,13 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | 请求取消 / deadline | 已验，Q4T 扩展 | 202 仅接受取消；404 不证明请求未执行 |
 | request_id / session_id | 已验，Q4T 扩展 | 活跃 ID 去重 / 同进程 KV 缓存；不是持久任务与幂等键 |
 | X-Request-Id | 已验 | 128字节受限ASCII，自动128随机位；与JSON请求/取消ID独立，不提供幂等 |
-| GET /livez、/readyz | 限定已验 | 普通忙仍ready；GPU unhealthy或排空ready503；加载后才监听 |
+| GET /livez、/readyz | 限定已验 | 普通忙仍ready；GPU unhealthy/排空/内存压力或观测失效ready503；加载后才监听 |
 | HTTP媒体 / 方法 / query | 已验 | application/json UTF-8；405＋Allow、query400、GET body400；连接关闭 |
 | 控制入口 / 慢读 | 限定已验 | 4控制连接预留；普通增量流真实EAGAIN后取消回收；不保证慢头洪泛 |
 | POST /v1/chat/preflight | SRV-07限定已验 | 共用合同/模板/分词/预算；可选prompt/IDs；不预留资源或保证执行 |
 | GET /v1/config | SRV-07/02b限定已验 | 实际容量、默认与运行配置、准入/等候请求值与有效值；不暴露模型目录/凭据 |
 | 请求准入 / slot队列 | SRV-02b限定已验 | chat/preflight共享上限，准备后的容量FIFO；满队列503或已开SSE的唯一错误终态；非每租户公平或RAM预留 |
+| 全局内存准入 | 限定已验 | MemAvailable门限/恢复余量与失效拒绝；实际高floor提前拒绝和默认业务通过；不是物理RAM硬限额，同模型动态压力恢复待验 |
 | 机器schema | SRV-08限定交付 | 38字段/10路由OpenAPI加必需原生语义清单；396 CPU差分，实际25 wire/56封套；标准schema本身不证明动态准入 |
 | Responses / Assistants / Batch | 未实现 | 不能通过更换 base_url 使用 |
 | 图片 / 视频 / 音频 | 非首批文本兼容范围 | 媒体实验开关不代表多模态业务验收 |

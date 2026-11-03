@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "cmake",
+    "-S",
+    "/home/rm01/models/dev/qwen4-thor/tests/host",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/host-on",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+    "-DQ4T_ENABLE_XGRAMMAR=ON",
+    "-DFETCHCONTENT_SOURCE_DIR_Q4T_XGRAMMAR=/home/rm01/models/dev/qwen4-thor/.q4t-work/structured-control-20261102/xgrammar"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor",
+  "started": 1793667206.380612
+}

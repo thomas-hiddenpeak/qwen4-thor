@@ -18,6 +18,8 @@
 [SRV-01b交付、首次原因/固定计数/真实工具与回退证据](SERVE_OBSERVABILITY_RESULT_2026-11-03.md)。
 [严格长输出先验、实际token取证及独立冻结](SERVE_STRICT_TRANSPORT_2026-11-03.md)；
 [严格复制12443字节实际背压、取消/写截止与恢复结果](SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)。
+[统一内存准入合同与安全触发验证](SERVE_MEMORY_ADMISSION_2026-11-03.md)；
+[统一内存准入交付、真实工具闭环、证据限制与回退](SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md)。
 [SRV-06文本停止交付、跨块/MTP/工具终态、失败与回退](SERVE_TEXT_STOP_RESULT_2026-11-03.md)。
 [SRV-05b真实预算交付、质量修复、MTP/缓存及完整证据](SERVE_THINKING_HTTP_RESULT_2026-11-03.md)；
 [先前开发和未完成HTTP记录](SERVE_THINKING_BUDGET_RESULT_2026-11-03.md)保留。
@@ -39,7 +41,7 @@
 见[验收结果与证据](CHAT_BUSINESS_ACCEPTANCE_2026-11-02.md)。
 聊天接入 830694ce、应用服务 c3772d11 的后续默认为结构化输出
 957211c7 / 9eba5472，再更新输入合同 ea678009 / 90372798；当前为
-serve观测ed672a65 / 67897c81（严格复制验收未替换默认）。
+内存准入84d16983 / c5203331；此前serve观测ed672a65 / 67897c81保留回退。
 外部 vLLM 已按授权停止，当前交付后 GPU 释放；
 原[正式交付、98份证据与回退](CHAT_DELIVERY_2026-11-02.md)保留。
 [完整工具往返、真实中断与日志崩溃场景准备](CHAT_ACCEPTANCE_SCENARIOS_2026-11-02.md)。

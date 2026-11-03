@@ -12,7 +12,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
-当前默认程序`ed672a65`已包含工具/推理输出解析、JSON/SSE、带ID工具
+当前默认程序`84d16983`已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
@@ -45,6 +45,10 @@ token预算不足而失败，canonical分词长度不构成生成上限。
 耗尽返回`body_capacity_exhausted`。写超时、取消与断连可分别定位，
 计数范围及[真实HTTP/工具恢复证据](docs/SERVE_OBSERVABILITY_RESULT_2026-11-03.md)已公开。
 最新验收限完整head，旧subset证据不自动扩张到新候选。
+内存准入默认在全局MemAvailable低于2048MiB或读数失效时拒绝新工作，
+达到2560MiB恢复，readyz同步；进行中的生成继续。可配置门限与恢复
+余量，详见[限定业务验收与边界](docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md)。
+这是提前准入，不是物理RAM硬限额或OOM保证。
 当前未启动常驻模型服务，GPU保持释放；通用SDK、完整JSON Schema、
 多人运行边界和长期稳定仍按[工业化验收账](docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进。
 
@@ -180,6 +184,8 @@ OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成�
 | `--request-deadline-ms` | `1200000`（20分钟）；含等待槽位和生成，显式范围1000～10800000；客户端超时需匹配 |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
 | `--mem-fraction` | `0.90`，启动内存预算比例 |
+| `--min-available-memory-mib` | `2048`，运行时全局内存准入门限；0显式禁用，独立于`--no-budget` |
+| `--memory-recovery-margin-mib` | `512`，正数；关闭后需达到门限+余量才恢复；门限0时忽略 |
 | `--moe-resident-slots` | `0`，所有专家驻留；非零启用按需驻留 |
 | `--startup-plan` | 默认`auto`；`off`保留旧分配路径，`required`要求支持并启用预留计划 |
 

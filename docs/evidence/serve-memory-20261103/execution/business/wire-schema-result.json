@@ -1,0 +1,77 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-high-floor/chat-json-wire.bin",
+        "sha256": "6cae88fa4effbc55a159a08768a79bb56dd6c48a7f3c89e83cb17738db2a89a4",
+        "bytes": 256
+      },
+      "envelopes": 1,
+      "success": false
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-high-floor/chat-stream-intent-wire.bin",
+        "sha256": "5b224c39b4b87c974bb2fd46c7560ed667a82bca761a0556fe718e54b1dd9cc8",
+        "bytes": 265
+      },
+      "envelopes": 1,
+      "success": false
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-high-floor/preflight-wire.bin",
+        "sha256": "597ceab2666c593de9931c6232e5e711831d8c80c58060b3f9ff67db768943ef",
+        "bytes": 256
+      },
+      "envelopes": 1,
+      "success": false
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/ordinary-recovery-wire.bin",
+        "sha256": "0a090425ed424b6d5c00e206a5ab4d61b754fde597b687db0c98743251e847bb",
+        "bytes": 306
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/strict-json-wire.bin",
+        "sha256": "4da52b5d17950ec627f2f7cc656224074a247d293cd711b0e2bab46af57c1e7d",
+        "bytes": 314
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/strict-sse-wire.bin",
+        "sha256": "191212a5cd3897cac64cec688b107bd8aa5cf6e70c4fd76232c8dde92c593d86",
+        "bytes": 984
+      },
+      "envelopes": 4,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/project-read-wire.bin",
+        "sha256": "7525bf82881c68d558067243453728dc3bff543b35849e2929491ea85096d6ad",
+        "bytes": 1184
+      },
+      "envelopes": 4,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/execution/business/production-mtp/project-answer-wire.bin",
+        "sha256": "3c0a3606bbc3dea77653663f94e3a95b332b20bb2ee19daac69ae6f52bb8b72b",
+        "bytes": 1137
+      },
+      "envelopes": 4,
+      "success": true
+    }
+  ]
+}

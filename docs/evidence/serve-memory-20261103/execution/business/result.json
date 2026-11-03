@@ -1,0 +1,14 @@
+{
+  "status": "PASS_BOUNDED_MEMORY_ADMISSION",
+  "counts": {
+    "generations": 5,
+    "negatives": 4,
+    "starts": 2
+  },
+  "genuine_memory_exhaustion_tested": false,
+  "same_process_model_recovery_tested": false,
+  "recovery_evidence": "native unloaded HTTP and queue contracts; simulated observations",
+  "native_raw_output_archived": false,
+  "performance_acceptance": false,
+  "seconds": 81.07013621204533
+}

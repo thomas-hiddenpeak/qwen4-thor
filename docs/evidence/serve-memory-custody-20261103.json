@@ -1,0 +1,1010 @@
+{
+  "passed": true,
+  "stage_source_commit": "326eff19a1a6f43aac7cbd68b722e5794adc9c1e",
+  "staged_evidence_files": 199,
+  "byte_verified": [
+    {
+      "path": "docs/evidence/serve-memory-20261103/README.md",
+      "sha256": "84254965e6d90efaa24f6cb1a2b619523dd519b62ab1217764c8bc614a2d2fc2",
+      "bytes": 1306
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/acceptance-summary.json",
+      "sha256": "da621f5a7a39b501f69dc42cb95158b255cec2560470c2f5d15ac43f6bde5ae1",
+      "bytes": 34839
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/archive.py",
+      "sha256": "4db778d13dcaecd378af51ee1d37f46b423635f07c221b2da9fbc4225f9d3755",
+      "bytes": 3091
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/begin.json",
+      "sha256": "e9ba91768e5b81906472add2552d8068ff0c84f64bce788328627ff9396b3c12",
+      "bytes": 133
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-generations-01.json",
+      "sha256": "e88eef3e4741cc23585891ccdcbe64d5756a4219c48ff22f1ce17f623d0cdb6c",
+      "bytes": 135
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-generations-02.json",
+      "sha256": "ba2fff2d33276fab9bf24693295dfc739e640a978f57d67039ce23304237085d",
+      "bytes": 135
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-generations-03.json",
+      "sha256": "e742e52d5d9980624c4573133665a30ef95fceeff446646e4972761edf1030d9",
+      "bytes": 135
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-generations-04.json",
+      "sha256": "7d776355defb4b0e7bad1455d9a12e8aeb23c4c88aaace3b09dcf28f3c922e27",
+      "bytes": 135
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-generations-05.json",
+      "sha256": "8e35236f1863e195f55f14e69e9828afa3ff1dbc05c661f928b72d576e096ab8",
+      "bytes": 135
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-negatives-01.json",
+      "sha256": "9df26b35884a1436fa50538d68563ceb1d150feb202f8e2f0670b8e963997ea6",
+      "bytes": 133
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-negatives-02.json",
+      "sha256": "e3422d67c266a0bd134e1d2cb4173aa7e448a2a67e4051776ecd696446802a55",
+      "bytes": 132
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-negatives-03.json",
+      "sha256": "db2f23dd77da57221e4b67c57d9852acb8cb09650f1624f5d359bfeca6a8e50f",
+      "bytes": 133
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-negatives-04.json",
+      "sha256": "58376aa026cebde3ffc8a4cfd5de361698d4d5d33f953854f1c4be2d7d13fbfc",
+      "bytes": 133
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-starts-01.json",
+      "sha256": "5e62a6590968cee083f8964ed97f2d5dd1426a4cf039f82779f806cbc98ae587",
+      "bytes": 130
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/attempt-starts-02.json",
+      "sha256": "e7015864154203ad4e8603c701f8a9ddada12a128d16a7de7a507e636c917ff2",
+      "bytes": 130
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/after-refusals-resources.json",
+      "sha256": "9ee00d14da57f7c872c32247c9f88a3d3a704595b26707f37f30dae9ce8c1fb3",
+      "bytes": 17669
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/after-refusals-samples.json",
+      "sha256": "8f82fc9c542388d63050abb5e890d001b144c25b3437620430e0aa2909858e70",
+      "bytes": 15137
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/before-refusals-resources.json",
+      "sha256": "ffe15927584a11c7268a52d889813da349b8c6c00817c60c4694ec9bbbea3b4b",
+      "bytes": 17669
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/before-refusals-samples.json",
+      "sha256": "62ed67901cb1b873cbeb93cc596703c1b1ffa73af9cf79b5c70ac662145dab01",
+      "bytes": 15136
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/capabilities.json",
+      "sha256": "f723786b56bc76ecea199b619cbe61332c66964b291aeac43dedab33c32aab78",
+      "bytes": 8728
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/chat-json-elapsed.json",
+      "sha256": "9194a1660ab2f8deee0ad998077ca273a0db43b4dfd22da49542464a5aab8860",
+      "bytes": 40
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/chat-json-request.bin",
+      "sha256": "07f2d37de1b74c589cb0abdb59200ac964e1ae77e2ff4bcf3ba074418ccb5516",
+      "bytes": 145
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/chat-json-wire.bin",
+      "sha256": "6cae88fa4effbc55a159a08768a79bb56dd6c48a7f3c89e83cb17738db2a89a4",
+      "bytes": 256
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/chat-stream-intent-elapsed.json",
+      "sha256": "91f9f83ca8267ecadb8df3129128fa31755bc1da66608b2be3ea66cab3ae0d81",
+      "bytes": 40
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/chat-stream-intent-request.bin",
+      "sha256": "ffde4592db3c8b5bd57466e8fbb0b0983f03eb1bd12e214f3f4a5e3b4b98fea1",
+      "bytes": 154
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/chat-stream-intent-wire.bin",
+      "sha256": "5b224c39b4b87c974bb2fd46c7560ed667a82bca761a0556fe718e54b1dd9cc8",
+      "bytes": 265
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/command.json",
+      "sha256": "2514788ecb558ddca25ec51c0c539a31cb8358dc4c54522aaaf10c0bf2ac94b2",
+      "bytes": 749
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/configuration.json",
+      "sha256": "34be8232287da34834bfb463ae405f1c6add03e47643de17bf3fd2f13c811066",
+      "bytes": 2618
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/gpu-after.json",
+      "sha256": "7935f80156096b4db2ddc0e3f018063315fdb07c0dcc879cc494e47835dab0af",
+      "bytes": 2256
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/preflight-elapsed.json",
+      "sha256": "f3b725aa8566dfe85f360ce3fe019d032ac7e59e5ddbcc1415f8f016c98a2996",
+      "bytes": 40
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/preflight-request.bin",
+      "sha256": "61d98f7833e3d0fdb7eb0b3fcab4c0838307d410fe96939c2c54be8fa8735f37",
+      "bytes": 143
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/preflight-wire.bin",
+      "sha256": "597ceab2666c593de9931c6232e5e711831d8c80c58060b3f9ff67db768943ef",
+      "bytes": 256
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/pressure-healthz.json",
+      "sha256": "60a752d5a138f5e62f421f4720c3d27f98998b2b9adbd29ac53e47f04ece34e5",
+      "bytes": 313
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/pressure-livez.json",
+      "sha256": "27f0529a1c1ce10b273866ca355531f830b20e70db4187b760a479059b63f5cc",
+      "bytes": 269
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/pressure-readyz.json",
+      "sha256": "2014802d1273c9bff499d7e8fc44f3abf7b665110bd98bbeac15b08be4c82369",
+      "bytes": 269
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/rejection-logs.json",
+      "sha256": "3d18732abfd6c6f070b794b1f6398643e2caf6ed32890aa36a66cf070b55a18c",
+      "bytes": 222
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/server.log",
+      "sha256": "2602fcbb52c0097e8e107727dfb20b0ee266c11eb1a9e4dc89dad00971c5c0f5",
+      "bytes": 4248
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/shutdown.json",
+      "sha256": "59dc0f379a7f0d5b5a1e7fdb8ae5d8c9f624b6fb743defc57161d5c30bc2254e",
+      "bytes": 39
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-high-floor/unknown-cancel.json",
+      "sha256": "66ff092417855989473ee32c85dcb74373725c75ea3c756a9c10248c27fd0c4a",
+      "bytes": 364
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/after-business-resources.json",
+      "sha256": "e9019663340580044f9e5073ebdc5e70ba9d997424d4ea2613964c7ca65ea02a",
+      "bytes": 17732
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/after-business-samples.json",
+      "sha256": "c2785f8e85cfa2a6ab81ad557b98094ce02d74b12a8a738b08188b99d2b861f3",
+      "bytes": 15200
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/after-project-resources.json",
+      "sha256": "867f6f0d5003b66d85a9549c5c120ef27d89c5afa1de63c4996accda12ac4b32",
+      "bytes": 17732
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/after-project-samples.json",
+      "sha256": "0af1699b85046c141cf16259d7d56427fa7cdeed23a4cda551dc30c75a05eab2",
+      "bytes": 15200
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/before-business-resources.json",
+      "sha256": "88585e9c9b921fea3c03659a989bd3f65eae244ce7c006523f86b7c0f5ec0e14",
+      "bytes": 17662
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/before-business-samples.json",
+      "sha256": "bcbfeafb2ca9479a9f1bff5172a9d9594565d5818ebabdf93d25c324153a793c",
+      "bytes": 15131
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/capabilities.json",
+      "sha256": "f85803e43229db8bafb16723050354927858d647116afd9274f84c804348a99b",
+      "bytes": 8728
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/command.json",
+      "sha256": "ff0a94b3a9bd7cf56e983bebf171443e9c579466241a1cecfd78cf81fea25164",
+      "bytes": 700
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/configuration.json",
+      "sha256": "6c2f2edbcd3902f5c74b0a3633e3380a94c93f20389096bc9f4dab98a39ca150",
+      "bytes": 2621
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/final-healthz.json",
+      "sha256": "f8f368ebeabc275db3d2823f806fcec4f6072f3e5de0448319286408fc7cf576",
+      "bytes": 313
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/final-livez.json",
+      "sha256": "c18b397a92998c7d45e91f60ba019492ae8d90183000e1164e851f7f0931ed37",
+      "bytes": 258
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/final-readyz.json",
+      "sha256": "3fb1ccc4f26abbe563752619a9dcd3371b0012b4243e3d82f9244b180cbea82b",
+      "bytes": 258
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/gpu-after.json",
+      "sha256": "d0f616c374b1e3888e9a1707f9edb0a35e8dea7c4ba3bbecbfa3725b0a7c1df7",
+      "bytes": 2258
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/ordinary-recovery-elapsed.json",
+      "sha256": "8576c554075fbc988393b0e29e2202a016ce05df3b9b8db1342946cee55e215d",
+      "bytes": 36
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/ordinary-recovery-request.json",
+      "sha256": "4635a5f1bfc333b411249c61ea07e9301867a3162c08cf1380ad8f8bb99f4620",
+      "bytes": 634
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/ordinary-recovery-result.json",
+      "sha256": "54b9dc0769fa9642a8fb5c5294e58890738556f8a2b2dcaf2f9ec846a0b72e79",
+      "bytes": 276
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/ordinary-recovery-wire.bin",
+      "sha256": "0a090425ed424b6d5c00e206a5ab4d61b754fde597b687db0c98743251e847bb",
+      "bytes": 306
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/preflight-request.json",
+      "sha256": "d27ae08b63af6e9d92dc78e2e41e102b72cc8e73c4c6efa2f6a18961fb987710",
+      "bytes": 730
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/preflight-response.json",
+      "sha256": "d9f418829da9dc3dd638545c560ac2ad3b127ed70467d3222d0736c48dab5a21",
+      "bytes": 1408
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-answer-elapsed.json",
+      "sha256": "41ef02037081d162282a51e43dc5d0e79e40fd098949e3478d2d47ee05fb764f",
+      "bytes": 35
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-answer-request.json",
+      "sha256": "bf8033a2fc4a09970cca023a5dc39e50ed9d617e8ce88e15567fb741a2113f62",
+      "bytes": 5890
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-answer-result.json",
+      "sha256": "1cc21e463072e0168edf8dca2533dbd54052acb6b49e8cd98d6042cba4a5e8c3",
+      "bytes": 497
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-answer-wire.bin",
+      "sha256": "3c0a3606bbc3dea77653663f94e3a95b332b20bb2ee19daac69ae6f52bb8b72b",
+      "bytes": 1137
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-completed.json",
+      "sha256": "d309a589e7efbcf2102c90a2c1983b8f731648d7102ae80f5039b5adada445d2",
+      "bytes": 4711
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-read-elapsed.json",
+      "sha256": "2ed3d1f14cd6f0b13db4903a1b95ed544a238ae8c0dbe01d1f1f9556b9740a09",
+      "bytes": 36
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-read-request.json",
+      "sha256": "faa0616ec35cc944b13db827e3e74ca44438beb471afd0267fbbe75fc5e172c0",
+      "bytes": 3442
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-read-result.json",
+      "sha256": "fbc412f1ab5ab8cb49d6b1518422642fbf0c7727ae51cbd37e6bfad210f06875",
+      "bytes": 577
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-read-wire.bin",
+      "sha256": "7525bf82881c68d558067243453728dc3bff543b35849e2929491ea85096d6ad",
+      "bytes": 1184
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-tool-history.json",
+      "sha256": "ad1173f4a77a8af70668f7b4a961ed47f4716bbc9d3ceb57152b5c5d022523aa",
+      "bytes": 4318
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-tool-result.json",
+      "sha256": "38c8a6959095f7295154854d07aad13cf50497ab6c930a484a715934cc23a128",
+      "bytes": 2036
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/project-tool-started.json",
+      "sha256": "4e319c1a9d557b3671c9ed21dbac362208854eb5f40dbb0b636e491eabdd1a82",
+      "bytes": 191
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/sdk-capabilities.json",
+      "sha256": "20335753ed7b6ea9807851ed1792706be15df93ef952ca8636e1dfaeb9a7c6f0",
+      "bytes": 9663
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/server.log",
+      "sha256": "4a542c9d3a7b347a0dd50b78fd7d138caff100fb9e3f308325a7a08ade7a13f7",
+      "bytes": 15645
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/shutdown.json",
+      "sha256": "59dc0f379a7f0d5b5a1e7fdb8ae5d8c9f624b6fb743defc57161d5c30bc2254e",
+      "bytes": 39
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/strict-json-elapsed.json",
+      "sha256": "490c6b9d10692b172f193849d56435fbdde6d38741083a6dd1d9db778172df78",
+      "bytes": 36
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/strict-json-request.json",
+      "sha256": "424ebf4fbdb9a46047942f7802c47725f0983e9f187e789020aee4360e3e03fc",
+      "bytes": 1064
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/strict-json-result.json",
+      "sha256": "827b39aa246fb00a7e51c24b077423c744e757a906439fe63d0f5e22f3a0629d",
+      "bytes": 284
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/strict-json-wire.bin",
+      "sha256": "4da52b5d17950ec627f2f7cc656224074a247d293cd711b0e2bab46af57c1e7d",
+      "bytes": 314
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/strict-sse-elapsed.json",
+      "sha256": "7a36eac9ff770cdff78955cae028ce46be26a174d494b1d3ad3ee56de6b54b9b",
+      "bytes": 36
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/strict-sse-request.json",
+      "sha256": "ec619a03f1b8695480c4e19c8d5932a903f0ed7f4d6f4244a956986f77fd8c52",
+      "bytes": 1116
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/strict-sse-result.json",
+      "sha256": "0ff6e73811738bf084df4d09be433e624aedaf06eecf217d7ed09f966201956d",
+      "bytes": 284
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/production-mtp/strict-sse-wire.bin",
+      "sha256": "191212a5cd3897cac64cec688b107bd8aa5cf6e70c4fd76232c8dde92c593d86",
+      "bytes": 984
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/result.json",
+      "sha256": "5621270e192064a6e690860ddb1f304cbd41d90ea338eb5dcbc1e68d7dd881eb",
+      "bytes": 414
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/business/wire-schema-result.json",
+      "sha256": "3d27f99f032a3219764672f1c6943854cad243367da50e51c8f56401e852dff4",
+      "bytes": 2702
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/execution.json",
+      "sha256": "14c1d0144fb12ac3a721277851745f8aa32681b789fff53f7b445dd712d7bf15",
+      "bytes": 155
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/final-gpu.json",
+      "sha256": "f794da1d3b601e2dc3880b14507df44cc612880e8174e5d04bbf54c95f327e91",
+      "bytes": 2258
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/finalized.json",
+      "sha256": "ecb4b15f71a9f5b27a54d1ade7c4b6752243fc4b9a3f339ca27df3268144858a",
+      "bytes": 312
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/health/result.json",
+      "sha256": "c79bba334c6b420efb8995abb08ee5bc45ea0d5431c9de30fa1c0db878a3dd00",
+      "bytes": 1547
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/initial-gpu.json",
+      "sha256": "58aef5ea9eace26709e6efc71e7ebe50fac1a9448362fa74b05d5a0d1de23e23",
+      "bytes": 2257
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/lease/events.jsonl",
+      "sha256": "2b74ff703e2729e68d9ac07c28ddecb72f1998963486a87215dc87408c69f30b",
+      "bytes": 15047
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/lease/exit.json",
+      "sha256": "3470d783cc74bfd08206d9468adc629dd70352c0b6e208c9cff9603764878cc1",
+      "bytes": 590
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/lease/nvml-queries.jsonl",
+      "sha256": "1f1bee989ccb75755e35057ca65e5308f4ed65afc32e14dad9de98e5016d2ba1",
+      "bytes": 183455
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/pair/q4t.release.json",
+      "sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+      "bytes": 42438
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/release/binding.json",
+      "sha256": "3a54f18f5be8dc06923eb33f2e6eb25067b7e68560cd7e27ba34f8c51502f2e0",
+      "bytes": 375
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/release/q4t.release.json",
+      "sha256": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+      "bytes": 42438
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/release/sealed-files.json",
+      "sha256": "17ed8364561162bda8c2662666133181c4d58b05e6aa52c2e1883a6cd3d476b6",
+      "bytes": 179
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/execution/sealed-files.json",
+      "sha256": "16e1190c495bb595880fa5f0da366e669b9fe7e964568bd1b03c5b7232a1283a",
+      "bytes": 10770
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/local-identities.json",
+      "sha256": "46b51ac46e8321e14c662e1fedee2cf906a48041d3fa93a69e19e366dcd6cd14",
+      "bytes": 1762
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/memory-summary.json",
+      "sha256": "6ec034737743dd6684972dd467afefd9cd0cfd2478ebe9ce2cd104234410f33a",
+      "bytes": 3627
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/candidate/CMakeCache.txt",
+      "sha256": "7fb9a8f1e6d6ad2b754f732c8c88704a351e2111f86ba0a3c02097f3d86fde15",
+      "bytes": 38741
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/candidate/compile_commands.json",
+      "sha256": "23f21cfcbded18c554e3b709cf66b46714e86ec6e3bbcb917f96f1b182095075",
+      "bytes": 314629
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/candidate/generated/q4t/server/chat_protocol_identity.h",
+      "sha256": "66782ee29f971ac23433d20b58d5d7e36ab8f5e8ca87b7acdd2f7e47a3c83275",
+      "bytes": 697
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/candidate/generated/q4t/server/chat_protocol_sources.json",
+      "sha256": "954de2034858bd76ae30039f20be4e32855ecc33513bf7d8d288781060e5889a",
+      "bytes": 6742
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/candidate/runtime-source.json",
+      "sha256": "b2272a8e0163f8304de26998c2fc79c5e1a2c9f73c4e50586253d4c86c91246e",
+      "bytes": 20563
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/backend-command.json",
+      "sha256": "de82315f558eceeb1ee2216a88620c52d62d633fe7c70ae58c332a89d7d88fe0",
+      "bytes": 218
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/backend-exit.json",
+      "sha256": "9615b99be85b2dd48a33833d94d85c4a2ca8ea38dfb931650decc816a7932726",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/backend-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/backend.log",
+      "sha256": "fafbefd646ccb9127473d5ec6819c360ede330a36faa1425175490f6b4aa4272",
+      "bytes": 577
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-engine-command.json",
+      "sha256": "f59e20ee0176f9fb37e2d15e46c9006ade182f917184a38c15642a4b6d786dfa",
+      "bytes": 339
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-engine-exit.json",
+      "sha256": "01acb2b0e22a17db3144f44fd4143998dba3f4615c23ca9b6871f9b180893867",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-engine-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-engine.log",
+      "sha256": "1d03bc6c5cee925fe21adfb49e20fbcbf93354798e6d479884c8bd05922b7f09",
+      "bytes": 17556
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-off-command.json",
+      "sha256": "8d1ce441c48c0ce2e46bd674b533320cc1345f5aaa41257893080ed7fce8a6f2",
+      "bytes": 271
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-off-exit.json",
+      "sha256": "0b5d5078f23467fdff59640db21c0ef73b3679b93c59a3fae59849d1de416603",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-off-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-off.log",
+      "sha256": "5b0885dd70358e06029c2a87597577a46b6a0a26dca911bd2e97c5159480dc88",
+      "bytes": 6506
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-on-command.json",
+      "sha256": "46095f7f233a78b658bddc65f5b036fe821cc7c7f0e9b85c79701352ab7e3b0c",
+      "bytes": 270
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-on-exit.json",
+      "sha256": "8eeda476e2ca86b8976591ffe92f48126de59e7eaef55a9c6520c288a83cac16",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-on-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-on.log",
+      "sha256": "0f4104e418157e289b33bd459cd198b7ec18989979b0a55914a6d45506cdf068",
+      "bytes": 9655
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-result.json",
+      "sha256": "605014d965a5f9733779bb2ff8582d9cb2d09c52780ddbccac68e2923cf17d57",
+      "bytes": 133
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/build-sources.json",
+      "sha256": "b2272a8e0163f8304de26998c2fc79c5e1a2c9f73c4e50586253d4c86c91246e",
+      "bytes": 20563
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/commands.json",
+      "sha256": "f9cbc30998c445e32ce5ca6319d6397470a5b91824dea9c305ecb1de36b2b65a",
+      "bytes": 2584
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/config-schema/build-command.json",
+      "sha256": "6f2b5cf9ed637a12700ed6df4d6118617d50334d2960febd94c40f338048a834",
+      "bytes": 4104
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/config-schema/build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/config-schema/fixtures.json",
+      "sha256": "5630ab677303ad881c302d99032b375457e6d37c87e6f259027d29ba4215c71e",
+      "bytes": 2388
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/config-schema/link.d",
+      "sha256": "6a40632fc920d8f99fb3c9e40cc9861afd107adb2b95cd906840fa00e8d5c52e",
+      "bytes": 5507
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/config-schema/requests.jsonl",
+      "sha256": "66d611454d2938ce418f3c88befb054a8778ece44765d16f5832355c0cff631e",
+      "bytes": 1650
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/config-schema/result.json",
+      "sha256": "7adeddef3d2cf7b98dd9fe39287051fe05dae86f50a57ad473de79639eec356a",
+      "bytes": 355
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/config-schema/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/config-schema/stdout.jsonl",
+      "sha256": "4cf97cf6d3008602646e564e54df4cf16f7e4e45b0754deb03dab851347065a1",
+      "bytes": 17522
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-engine-command.json",
+      "sha256": "0981fe2268bf98fbaecc2caa47e9f6608c79c113c6d76d0df495b5871b18cd1f",
+      "bytes": 779
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-engine-exit.json",
+      "sha256": "6dbe4bc64728f6ea1287470ba0e1909951ccabb4a77f7bbd1f59904f5befbf9b",
+      "bytes": 46
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-engine-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-engine.log",
+      "sha256": "44c81b0ae678b568167f3af18e1e6d442e123d9a09e220a646b2fca9047b306c",
+      "bytes": 1310
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-off-command.json",
+      "sha256": "4d7dc876a67cf14f1003e00417837c2c40543586c9b5a9375283887587bf4e0f",
+      "bytes": 372
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-off-exit.json",
+      "sha256": "9f629055c62dc52cb9ddbddb0a2b4aa9857b01746e713fb60d1dd2afc1fd760a",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-off-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-off.log",
+      "sha256": "055ad2fc3ec4b321f3be8d234f1ab17d41699b0e5e6d8d69b8099fc63fee2b4c",
+      "bytes": 690
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-on-command.json",
+      "sha256": "e7dcdbcd407c7ed4dce7cd8fe094585926449cf0f929e11d2de53c435fd67784",
+      "bytes": 496
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-on-exit.json",
+      "sha256": "02d4bde2d59a610ee6451b35a9b2254aca921e58c5323ea21a6873fb8b8aa4aa",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-on-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/configure-on.log",
+      "sha256": "7b1c77b6a7f424af88aa0ac5f9f4ab11ce2191dc9668c9ef903b12e9b44cfcfb",
+      "bytes": 923
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/driver-result.json",
+      "sha256": "f0bf99db7fe062e51339ba4d99d4062fd78f47426f793352ed84bfd25dcfa89c",
+      "bytes": 35
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/driver-tests.log",
+      "sha256": "c9b92b0a443f6153488fb4c27e37a43e9409cce959973a4b806cc7bddf3e4e87",
+      "bytes": 899
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/generated-command.json",
+      "sha256": "5af00f904ce9ae32ca3e77d031b0187ba33e5bbc37216ee22cc84c784f10971b",
+      "bytes": 224
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/generated-exit.json",
+      "sha256": "2cb5a2f96a16d94ba0f65bcf2d041bd426e7985e4f79e4ca768c2ea82e32b63a",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/generated-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/generated.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-gate/check_host_contracts.py",
+      "sha256": "a09810c67df4ce76dfe1d26d436574706587a77a853b81466594050387121ddd",
+      "bytes": 3139
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-gate/list.log",
+      "sha256": "6afdffbce67c2feac0f44a1f09ec241deaff18dc8db8e14a31873d7fae25d97f",
+      "bytes": 10970
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-gate/required_host_tests.txt",
+      "sha256": "7f52ceab472879ddc38de263774ca3595348ce08a9c1e01c87d59e2ce89c91c3",
+      "bytes": 8933
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-gate/result.json",
+      "sha256": "83e27eb7be4c89de24c1230d605b25a3f4be100305cd986c25c36c396e68db2e",
+      "bytes": 10156
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-gate/run-stderr.log",
+      "sha256": "bbf1d2ced20cee70dbacfe94b43cb2e6e37206c0682e4176293d29331ea6b968",
+      "bytes": 1510
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-gate/run.log",
+      "sha256": "fd306d7f8f3e375a1b5412c0a29d52817305865423983e4aced1467c9cffc11e",
+      "bytes": 9768
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-off-command.json",
+      "sha256": "9cfbe772920adc9c2d6c566fe0bb0b92f5715b113329b918b56eba89d517c968",
+      "bytes": 193
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-off-exit.json",
+      "sha256": "8e2f874b8930d8eb8574c8183e3dcc21b241d678f22f7dcae27a0ad424c36724",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-off-stderr.log",
+      "sha256": "b94274733e57c489199349c3a482960e8951eb34f71ac032802c06eb3e614389",
+      "bytes": 1510
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-off.log",
+      "sha256": "59dd7de610189c886b61aabdf6daa0c48eceea195a13f9d192ca3cb30287b111",
+      "bytes": 11884
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-on-command.json",
+      "sha256": "4c2a73c5530a9a7e67f674266947fff8165828511cb6ea4ab1e1e6e45579120c",
+      "bytes": 192
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-on-exit.json",
+      "sha256": "017580d2ea22c6e57b718bb9480eb7fd2d033fea940e306514f4ac5613500c32",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-on-stderr.log",
+      "sha256": "328d178c55367e53eea405d4f9e255d02eb0478ce3f6ab6e78313c439d932604",
+      "bytes": 1510
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-on.log",
+      "sha256": "041da0bbda6888809ecf82e1defe39cb4492c2a6ab97e9e7961e8eb6487d3e76",
+      "bytes": 12422
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-required-command.json",
+      "sha256": "73b6cd8847e47f03629d27ac5657c0a3dfdc7adce567040ce1609846d5ba69e8",
+      "bytes": 426
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-required-exit.json",
+      "sha256": "6e3daa45f0d6068394e37c5b36ef485fd51176b3c09ad4ce71d142038309e0e1",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-required-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/host-required.log",
+      "sha256": "b2819e695583faac0e01db16844306dfd1b84343f9ae9db4d7e3d6ff2110d3ca",
+      "bytes": 66
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/inventory-command.json",
+      "sha256": "0d23a10e1d2caee9648f61d7a06aa95da85bcfd0a2885a0c51f8834480f507f8",
+      "bytes": 228
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/inventory-exit.json",
+      "sha256": "e087e54d238680ccfb6f6c4352b27afa67fbd9a73f0a90c3346fde727af96e3a",
+      "bytes": 46
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/inventory-reviewed-command.json",
+      "sha256": "0cb6a1f8c753191fd5e9bf6599bd3034056eb1dcd9c6ae14188cfd80ca855dc3",
+      "bytes": 228
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/inventory-reviewed-exit.json",
+      "sha256": "3b98b647086d2306ee061282378121be695955dc0dbbf770d62459d572917886",
+      "bytes": 46
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/inventory-reviewed-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/inventory-reviewed.log",
+      "sha256": "3b8c59e7999d778ae75e0f5a921fa4b6486c25890b8f83efcb9108046fe90378",
+      "bytes": 169
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/inventory-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/inventory.log",
+      "sha256": "c05c7326f004acd05aa934672562ce3e9a983ed72baa846cd6e36f85faa8feae",
+      "bytes": 775
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/memory-config/fixtures.json",
+      "sha256": "747cbdf7dcd40e2be64e5616a4712de81361ac9f944c21c84c8ec38c1bd9cd7b",
+      "bytes": 804
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/memory-config/result.json",
+      "sha256": "1c31c283daa1c28a90c083014c51ec77024685a7fc0aaeade9d86595ab4a8a0d",
+      "bytes": 209
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/memory-config/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/memory-config/stdout.jsonl",
+      "sha256": "e30dd6aa927298da6d689918662636bf60fd35ddfa53320ec6493664055e4914",
+      "bytes": 9796
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/native-receipt.json",
+      "sha256": "4d90e7fddbea0c5a4825a05d3ea082ab0d43185c2c0643209afdbe4ed18e7757",
+      "bytes": 565
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/native-registry-command.json",
+      "sha256": "b1328ceb8b54473bfec95c96b7ef276f5653a85eefb09ecb98d8ee64d8a15a2e",
+      "bytes": 215
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/native-registry-exit.json",
+      "sha256": "64dd7a424e8cac4ff765d72ce7693ecfdceb7604bea8701b21761d58d110587d",
+      "bytes": 47
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/native-registry-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/native-registry.log",
+      "sha256": "902f7427489c56a8eacb8a8e3c8267bdc0c6646768253ee04a11d65d2337d88d",
+      "bytes": 1045
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/cpu/test-result.json",
+      "sha256": "a19cdd64a280d6cef92f4d0b82f7f545ad45cf223652467d034109fbc1fb5232",
+      "bytes": 180
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/native-lease/events.jsonl",
+      "sha256": "b0604c9b03d893de1d677db38dc1d97080d3e8dbfb9df52a6128403627fb9c9f",
+      "bytes": 1101
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/native-lease/exit.json",
+      "sha256": "2acd81dbffc77bb96d39b889368a9ce519b467fc4653755d42e54f7d9991a56b",
+      "bytes": 577
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/native-lease/nvml-queries.jsonl",
+      "sha256": "792220c8a1fcce6e5054449c3067ca2de993b79a37faf11533fd00dae5d16a26",
+      "bytes": 6710
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/numerical-reuse.json",
+      "sha256": "a5590806d417527f183393b34871e093ec17d21418d0efd76281263cc2eec9d1",
+      "bytes": 1308
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/plan.json",
+      "sha256": "8b26996c5917fd2ef5b083cce4163544f78ae58264e81642b3e5ae8a8e07b39e",
+      "bytes": 2089
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/previous/CMakeCache.txt",
+      "sha256": "9827ceb6fbfafa0299f0a13b8bca1ec9c7f4884fbc50ee122976d08b721e7c3b",
+      "bytes": 38783
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/previous/q4t.release.json",
+      "sha256": "67897c817dfccd6db3d4e2c0d0af3cfc70fb97a2c840887905c03fbf0bd6be23",
+      "bytes": 41102
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/sdk.json",
+      "sha256": "a3e5c04d2614e158190f386dfe7e9c48330818cbc09cba49cb7b1ad92bb29d95",
+      "bytes": 534938
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/sealed-files.json",
+      "sha256": "054c4f8fa06b20d4a71cc7303e9e910e628a484689e301b9fcd1ec149dc1ae48",
+      "bytes": 10025
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/package/sources.json",
+      "sha256": "be07f25aff147c2deae8548d6f2151c7bbb1b2abead75213ee57a1a73f78a4a0",
+      "bytes": 196089
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/postflight-gpu.json",
+      "sha256": "b4347f22e3d48d6060e627c9fddd1390f5758b688fe9737d5b79d4ece9d6d55a",
+      "bytes": 2259
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/postflight.json",
+      "sha256": "84df8f4c4db26b7d23e7ebb77b7eca4dec7d773e038a9986f3be2f2b1819a420",
+      "bytes": 2149
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/sealed-files.json",
+      "sha256": "9964219f19dac424dee9a5c816dd7d0aaaf47dfad9ab8dd26c8b563545cc86f0",
+      "bytes": 22828
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/source-map.json",
+      "sha256": "8669f6ca17a45ec75fad4f31c2652ae83598062c812435326399a92500a554b0",
+      "bytes": 53952
+    },
+    {
+      "path": "docs/evidence/serve-memory-20261103/summarize.py",
+      "sha256": "e8ede4128e4d9bb3011c434fd5bd1794a2c63e186e96d1c35d69b91476c15c63",
+      "bytes": 4315
+    }
+  ],
+  "raw_records_verified": 195,
+  "local_artifacts_verified": 7,
+  "local_document_links_checked": 574,
+  "missing_links": [],
+  "raw_bytes_preserved": true,
+  "models_retested": false,
+  "native_output_limitation": "Original stdout/stderr unavailable on disk; derived receipt intentionally distinct",
+  "rollback_pair_verified_without_mutation": true
+}

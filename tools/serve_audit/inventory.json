@@ -399,7 +399,8 @@
         "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
         "docs/SERVE_OBSERVABILITY_RESULT_2026-11-03.md",
         "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
-        "tests/server_memory_admission_test.cpp"
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
       ]
     },
     "POST /v1/requests/cancel": {
@@ -412,13 +413,14 @@
       ]
     },
     "POST /v1/chat/completions": {
-      "semantics": "messages/prompt，JSON/SSE，单模型文本生成；新增body前/准备/slot交接的全局MemAvailable准入，失效读数也拒绝；CPU/原生未加载HTTP已验，真实模型待验",
+      "semantics": "messages/prompt，JSON/SSE，单模型文本生成；新增body前/准备/slot交接的全局MemAvailable准入，失效读数也拒绝；CPU/原生未加载HTTP及真实高floor/默认业务已验；同模型动态压力恢复未验",
       "boundary": "application/json UTF-8；方法405、query400；普通连接与active chat仍有界；首帧后错误走SSE",
       "evidence": [
         "docs/STRUCTURED_OUTPUT_RESULT_2026-11-02.md",
         "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
         "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
-        "tests/server_memory_admission_test.cpp"
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
       ]
     },
     "GET /livez": {
@@ -429,7 +431,8 @@
         "tools/serve_stage_a/verify.py",
         "docs/PHASES.md",
         "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
-        "tests/server_memory_admission_test.cpp"
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
       ]
     },
     "GET /readyz": {
@@ -440,7 +443,8 @@
         "tools/serve_stage_a/verify.py",
         "docs/PHASES.md",
         "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
-        "tests/server_memory_admission_test.cpp"
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
       ]
     },
     "POST /v1/chat/preflight": {
@@ -453,7 +457,8 @@
         "tools/serve_preflight/template_diff.py",
         "docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md",
         "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
-        "tests/server_memory_admission_test.cpp"
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
       ]
     },
     "GET /v1/config": {
@@ -465,7 +470,8 @@
         "tests/server_chat_plan_test.cpp",
         "docs/SERVE_PREFLIGHT_RESULT_2026-11-03.md",
         "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
-        "tests/server_memory_admission_test.cpp"
+        "tests/server_memory_admission_test.cpp",
+        "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md"
       ]
     }
   },
@@ -757,6 +763,13 @@
   "memory_review": {
     "base": "e67ad06e",
     "contract": "docs/SERVE_MEMORY_ADMISSION_2026-11-03.md",
-    "scope": "Reviewed new memory input/admission/metrics/config and unchanged 38 fields/10 routes. Prior serve_fault token diagnostic remains validation-only; no production dump. Native HTTP passes; model HTTP not yet run."
+    "scope": "Reviewed new memory input/admission/metrics/config and unchanged 38 fields/10 routes. Prior serve_fault token diagnostic remains validation-only; no production dump. Native HTTP passes; model high-floor refusals and default business passed; no actual exhaustion.",
+    "delivery": {
+      "source": "326eff19",
+      "binary": "84d16983",
+      "result": "docs/SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md",
+      "physical_hard_limit": false,
+      "same_process_model_pressure_recovery": false
+    }
   }
 }

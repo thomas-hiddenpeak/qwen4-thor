@@ -7,15 +7,30 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
-当前开发统一内存准入保护，见[合同](SERVE_MEMORY_ADMISSION_2026-11-03.md)：
+统一内存准入已限定交付，当前默认84d16983/sidecar c5203331，冻结
+326eff19、protocol aeb66adc、完整head。见[结果与回退](SERVE_MEMORY_ADMISSION_RESULT_2026-11-03.md)。
 严格读数/未知拒绝、2048MiB门限和512MiB恢复余量、body前/准备/slot复查，
-ready/config/固定指标与排队回收。仅提前准入，不是物理RAM硬限额；
-CPU OFF224/ON233、必需190、后端9、锁内原生19和配置22/驱动7通过，
-零警告；inventory旧漂移拒绝保留，复核后定向通过。原生原始输出只在
-工具记录，归档guard/身份/派生receipt，不补跑。候选84d16983待真实
-5生成/4拒绝/2启动验收；默认ed672a65/67897c81保持，长期目标active。
+ready/config/固定指标与排队回收；只是提前准入，不是物理RAM硬限额。
 
-严格长输出复制候选已限定通过；默认ed672a65/67897c81保持。
+真实5生成/4拒绝/2启动加1预检首轮通过：高floor用实际读数提前拒绝、
+控制可用；默认普通/strict JSON/SSE及真实资料工具引用回填通过。
+业务81.070秒、106.751秒finalize，guard COMPLETED/ENV_ABORT0，未扩大
+6/6/3/1800秒限额、不作性能接受声明。成功5/错0/中断0、worker4/4reap，
+owner全部归零、槽1/1free。安装CLI/worker通过，HTTP复用同SHA生产候选，
+未另起安装模型；旧ed672a65/67897c81及完整回退链保留。
+
+CPU OFF224/ON233、必需190、后端9、锁内原生19、配置22/驱动7通过，
+零警告；inventory原漂移拒绝保留，复核后定向通过。原生stdout/stderr
+仅在工具记录，归档guard/身份/派生receipt，明确缺原始日志，不补跑。
+195原记录封存199文件约2.09MB、7大产物本机身份。5稀疏内存样本非峰值；
+199份Git暂存blob逐字节核对、7大产物及回退pair只读核验、574本地链接通过。
+09:11:09 CST GPU PID空、锁可用、无恢复标记，MemAvailable116.988GiB。
+同模型动态压力恢复/物理RAM硬保护、持续混合负载、访问运维、长稳和
+通用恢复仍待办，长期目标active，下一步冻结受载资源与混合负载合同。
+
+## 严格长输出历史
+
+严格长输出复制候选已限定通过；当时默认ed672a65/67897c81保持。
 [结果与证据](SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)，冻结531752ba，
 专用f07117f3、协议130468da，不安装。原12443字节schema及1024-token
 上限保持，完整复制提示289token；两组实际244token含EOS逐项等于canonical。

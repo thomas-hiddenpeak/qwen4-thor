@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "cmake",
+    "-S",
+    "/home/rm01/models/dev/qwen4-thor/tests/host",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-20261103/host-off",
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/g++-14",
+    "-DQ4T_ENABLE_XGRAMMAR=OFF"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor",
+  "started": 1793667193.675842
+}
