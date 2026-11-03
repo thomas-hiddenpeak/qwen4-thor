@@ -1,0 +1,10 @@
+{
+  "complete_events": 13,
+  "complete_assistant_turn": false,
+  "automatic_retry": false,
+  "bytes": 3430,
+  "seconds": 31.479956976138055,
+  "expected_reason": "write_deadline",
+  "socket_window_small": true,
+  "strict_output": false
+}

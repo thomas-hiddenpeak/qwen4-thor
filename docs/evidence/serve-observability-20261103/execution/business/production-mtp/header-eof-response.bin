@@ -1,0 +1,7 @@
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 104
+X-Request-Id: req-d8064206740ad9cfa39583527af2f6da
+Connection: close
+
+{"error":{"message":"Bad Request","type":"invalid_request_error","code":"invalid_request","param":null}}

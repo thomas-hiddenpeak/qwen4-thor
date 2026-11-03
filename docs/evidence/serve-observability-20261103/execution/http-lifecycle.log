@@ -1,0 +1,84 @@
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=exception-1 error=internal_error
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=req-c453b5208f3c757cdeef3ad640a330ae status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-822f0e761f39c3c7b45fe4f664d91b90 status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-127696d88b10d7dc0ccb329d0052e0e4 status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-8771b6252697ce7e06af76ac5b0b8de7 status=400 error=invalid_cancellation
+[q4t][http] trace_id=req-e73a4b7a38d72ff5660976aa7e7ec80c status=404 error=request_not_found
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t] accept/thread exception: std::bad_alloc
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=route-1 status=405 error=method_not_allowed
+[q4t][http-receive] trace_id=route-1 reason=method status=405 system_error=0
+[q4t][http] trace_id=req-8de935a5c277a0365d33fda8b782408e status=400 error=unsupported_query
+[q4t][http-receive] trace_id=req-8de935a5c277a0365d33fda8b782408e reason=query status=400 system_error=0
+[q4t][http] trace_id=req-af4622e209208cafc0b52737f28ae70a status=404 error=not_found
+[q4t][http-receive] trace_id=req-af4622e209208cafc0b52737f28ae70a reason=route status=404 system_error=0
+[q4t][http] trace_id=req-1c7f7cd9b50fc0e5df7bbc1d5a4481d7 status=415 error=unsupported_media_type
+[q4t][http-receive] trace_id=req-1c7f7cd9b50fc0e5df7bbc1d5a4481d7 reason=unsupported_media status=415 system_error=0
+[q4t][http] trace_id=req-0288ce2d96f33b55f1ab78e00fef174a status=415 error=unsupported_media_type
+[q4t][http-receive] trace_id=req-0288ce2d96f33b55f1ab78e00fef174a reason=unsupported_media status=415 system_error=0
+[q4t][http] trace_id=req-152e6a76bb177d622fd3b4018dfedf6f status=415 error=unsupported_media_type
+[q4t][http-receive] trace_id=req-152e6a76bb177d622fd3b4018dfedf6f reason=unsupported_media status=415 system_error=0
+[q4t][http] trace_id=req-cccac4b8bf8e598c75291ba32017b7e0 error=internal_error
+[q4t][http] trace_id=req-c5aecdcb7b19cd67fc186ea26d2f6e1a status=400 error=invalid_request_id_header
+[q4t][http-receive] trace_id=req-c5aecdcb7b19cd67fc186ea26d2f6e1a reason=malformed status=400 system_error=0
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=req-6da2b929fd8affa31e2dcc67270f7e2d status=503 error=capacity_exhausted
+[q4t][http-receive] trace_id=req-6da2b929fd8affa31e2dcc67270f7e2d reason=connection_capacity status=503 system_error=0
+[q4t][http] trace_id=req-e8aa0dd0a7d68595e9961145cc8360a2 status=503 error=server_draining
+[q4t][http-receive] trace_id=req-e8aa0dd0a7d68595e9961145cc8360a2 reason=server_draining status=503 system_error=0
+[q4t][http] trace_id=req-42c648bd391926d32cba8dccfebed1cf status=400 error=invalid_request
+[q4t][http] trace_id=req-0324505596fa0aa56b67b182950baeda status=400 error=invalid_request
+[q4t][http-receive] trace_id=req-42c648bd391926d32cba8dccfebed1cf reason=body_eof status=400 system_error=0
+[q4t][http-receive] trace_id=req-0324505596fa0aa56b67b182950baeda reason=body_eof status=400 system_error=0
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t] serving on port 0 (host 127.0.0.1, model )
+[q4t][http] trace_id=observation.fixture status=503 error=body_capacity_exhausted
+[q4t][http-receive] trace_id=observation.fixture reason=body_capacity status=503 system_error=0
+[q4t][http] trace_id=req-be42591e3de034336d267a4ab2502ca8 status=404 error=not_found
+[q4t][http-receive] trace_id=req-be42591e3de034336d267a4ab2502ca8 reason=route status=404 system_error=0
+[q4t][http] trace_id=req-860531431339f15f7ae603609bab4ee1 status=400 error=unsupported_query
+[q4t][http-receive] trace_id=req-860531431339f15f7ae603609bab4ee1 reason=query status=400 system_error=0
+[q4t][http] trace_id=req-476917c8d9aa3ff29519fe8e5a88d3b1 status=405 error=method_not_allowed
+[q4t][http-receive] trace_id=req-476917c8d9aa3ff29519fe8e5a88d3b1 reason=method status=405 system_error=0
+[q4t][http] trace_id=req-b1383c5652931278feec91b9eadfbbd0 status=400 error=unexpected_body
+[q4t][http-receive] trace_id=req-b1383c5652931278feec91b9eadfbbd0 reason=unexpected_body status=400 system_error=0
+[q4t][http] trace_id=req-47ea3271ba74523c702f6d3f9ea2017a status=415 error=unsupported_media_type
+[q4t][http-receive] trace_id=req-47ea3271ba74523c702f6d3f9ea2017a reason=unsupported_media status=415 system_error=0
+[q4t][http] trace_id=req-9e90ba80c49058fe06230ca6b45d39ef error=internal_error
+[q4t] shutting down: draining in-flight requests...
+[q4t] shutdown complete (0 in-flight remaining)
+[q4t][http] trace_id=req-4b11e3d924f1ab0abcd453467c6524a9 error=internal_error
+[q4t][http-write] trace_id=req-4b11e3d924f1ab0abcd453467c6524a9 reason=exception origin=handler transferred=8 system_error=0 poll_events=0
+[q4t][http-write] trace_id=req-f70a9a47c178f7847c77fbea8145e0a7 reason=exception origin=heartbeat transferred=0 system_error=0 poll_events=0
+[PASS] http_stop_before_and_during_listener_publication
+[PASS] http_exception_keeps_server_and_releases_connections
+[PASS] http_cancel_validates_before_registry_mutation
+[PASS] http_thread_creation_failure_rolls_back
+[PASS] http_validation_gate_is_an_explicit_handshake
+[PASS] http_methods_media_queries_and_trace_headers
+[PASS] http_control_reserve_and_draining_readiness
+[PASS] http_receive_observation_body_routes_and_business_boundary
+[PASS] observation_runtime_partial_header_exception_remains_first
+[PASS] observation_runtime_heartbeat_exception_joins_and_counts_once
+[PASS] admission_runtime_fifo_survives_later_arrival_and_slot_transfer
+[PASS] admission_runtime_zero_and_full_queue_reject_without_slot_loss
+[PASS] admission_runtime_full_queue_allows_incompatible_idle_slot
+[PASS] admission_runtime_cancel_head_middle_tail_wakes_successors
+[PASS] admission_runtime_deadline_disconnect_stop_and_gpu_failure_cleanup
+[PASS] admission_runtime_exception_unlinks_before_successor_recovery
+16 tests, 16 passed, 0 failed, 0 skipped

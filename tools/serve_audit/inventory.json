@@ -391,12 +391,13 @@
       ]
     },
     "GET /metrics": {
-      "semantics": "独立slot_wait/admission/generation_exit/response；固定原因取消计数；constrained准备与租约指标；SRV-02b已验slot等候数、queue/text准入拒绝固定计数",
+      "semantics": "独立slot_wait/admission/generation_exit/response；固定原因取消计数；constrained准备与租约指标；SRV-02b已验slot等候数、queue/text准入拒绝固定计数；SRV-01b已验每连接首次接收/写失败固定原因/来源，心跳join后发布，与chat结果分开",
       "boundary": "queue/e2e保留原语义的弃用别名；存储计量非compiler峰值；局部写完不保证客户端消费",
       "evidence": [
         "src/server/chat_metrics.cpp",
         "tools/serve_resources/verify.py",
-        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md"
+        "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
+        "docs/SERVE_OBSERVABILITY_RESULT_2026-11-03.md"
       ]
     },
     "POST /v1/requests/cancel": {
@@ -722,13 +723,18 @@
     "limitation": "No strict long-payload backpressure, public-network or long-soak acceptance"
   },
   "observability_review_20261103": {
-    "status": "development_candidate_not_accepted",
+    "status": "accepted_bounded",
     "scope": "Fixed first receive/write transport causes; join before publication; body capacity error; business validation excluded only from receive counters",
     "contract": "docs/SERVE_OBSERVABILITY_2026-11-03.md",
     "tests": [
       "tests/server_http_observation_test.cpp",
       "tests/server_chat_capabilities_test.cpp",
       "tools/serve_reliability/http_lifecycle_test.cpp"
-    ]
+    ],
+    "result": "docs/SERVE_OBSERVABILITY_RESULT_2026-11-03.md",
+    "runtime_source": "2425044b49aaab3b8754319b5bf33a135e9c5911",
+    "production_sha256": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+    "evidence": "docs/evidence/serve-observability-20261103",
+    "limitation": "Ordinary TCP backpressure only; strict long payload, long soak and public network not accepted"
   }
 }

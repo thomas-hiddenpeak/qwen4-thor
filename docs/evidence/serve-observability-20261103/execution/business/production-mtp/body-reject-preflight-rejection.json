@@ -1,0 +1,18 @@
+{
+  "status": 503,
+  "trace_id": "srv01b.body-reject-preflight",
+  "reason": "body_capacity",
+  "response": {
+    "error": {
+      "message": "Service Unavailable",
+      "type": "service_unavailable_error",
+      "code": "body_capacity_exhausted",
+      "param": "body"
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/body-reject-preflight-response.bin",
+    "sha256": "5370a0bc4f593197931b686fcb76c176a8885cc6158e8818861770043386639d",
+    "bytes": 278
+  }
+}

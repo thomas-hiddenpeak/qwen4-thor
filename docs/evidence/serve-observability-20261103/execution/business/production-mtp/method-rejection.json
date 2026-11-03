@@ -1,0 +1,18 @@
+{
+  "status": 405,
+  "trace_id": "srv01b.method",
+  "reason": "method",
+  "response": {
+    "error": {
+      "message": "method not allowed",
+      "type": "invalid_request_error",
+      "code": "method_not_allowed",
+      "param": "method"
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/method-response.bin",
+    "sha256": "2e008b2991efef4cbaf0c9cbda8c3e71b26a031a152283f12796ba24b142cf55",
+    "bytes": 267
+  }
+}

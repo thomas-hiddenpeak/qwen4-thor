@@ -1,0 +1,29 @@
+{
+  "model": "qwen3.8-flash-next",
+  "messages": [
+    {
+      "role": "user",
+      "content": "\u4ece1\u5f00\u59cb\u9010\u884c\u5217\u51fa\u6574\u6570\uff0c\u4e00\u76f4\u5217\u52301000\uff0c\u6bcf\u884c\u53ea\u5199\u4e00\u4e2a\u6570\u5b57\u3002"
+    }
+  ],
+  "tools": [],
+  "parse_response": true,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1,
+  "stream": true,
+  "max_tokens": 1024,
+  "tool_choice": "auto",
+  "parallel_tool_calls": true,
+  "request_timeout_ms": 180000,
+  "request_id": "agent-80012a502e5ceafad2a1ac94b76f4c55",
+  "cancel_token": "a04dd131519c88a8480efc63da782ea1fa7625e2529a51a9a5a1561599ff4429",
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "preserve_thinking": true,
+    "reasoning_effort": "low"
+  },
+  "stream_options": {
+    "include_usage": true
+  }
+}

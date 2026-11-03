@@ -1,0 +1,18 @@
+{
+  "status": 400,
+  "trace_id": "srv01b.body-large",
+  "reason": "body_too_large",
+  "response": {
+    "error": {
+      "message": "Bad Request",
+      "type": "invalid_request_error",
+      "code": "invalid_request",
+      "param": null
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/body-large-response.bin",
+    "sha256": "9c5b695ad14d847705a72f3337d9ce73bc17036749616a5f4b6465971b7589e1",
+    "bytes": 237
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "records": [
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/ordinary-recovery-wire.bin",
+        "sha256": "b2b4110f9173486f53651e51d4ea42a033dbff421584af408e45b03e635a9bd9",
+        "bytes": 306
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/project-read-wire.bin",
+        "sha256": "b5398ef2d503a6d8a234c3873b0d9fc9c6e70b41bd44120017feccf68c9871c0",
+        "bytes": 1184
+      },
+      "envelopes": 4,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/project-answer-wire.bin",
+        "sha256": "41a015d57e2c3e1160e99c4ec9612a97d32654a635c828af119356048f5724c6",
+        "bytes": 1137
+      },
+      "envelopes": 4,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/ordinary-writes-fault/ordinary-recovery-wire.bin",
+        "sha256": "4162f81ed24528c58b76df396bd125b2a3003baa5988acacd2ea98485cd21fd9",
+        "bytes": 306
+      },
+      "envelopes": 1,
+      "success": true
+    },
+    {
+      "file": {
+        "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/ordinary-writes-fault/strict-recovery-wire.bin",
+        "sha256": "93eb4a4c9f4253a4e5d83eab3146493f71a5138aa2ce0049de12671beca6dc38",
+        "bytes": 314
+      },
+      "envelopes": 1,
+      "success": true
+    }
+  ]
+}

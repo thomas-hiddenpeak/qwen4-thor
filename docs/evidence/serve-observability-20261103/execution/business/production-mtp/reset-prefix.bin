@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+Content-Type: text/event-stream
+Cache-Control: no-cache
+X-Accel-Buffering: no
+X-Request-Id: srv01b.reset
+Connection: close
+

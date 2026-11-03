@@ -12,7 +12,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
-当前默认程序`c16caf05`已包含工具/推理输出解析、JSON/SSE、带ID工具
+当前默认程序`ed672a65`已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
@@ -38,6 +38,9 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 `--max-queued-requests`配置slot等候上限。准备完成后按容量适配FIFO授予
 槽位，队列满时拒绝等待，空闲小槽仍可供不阻碍先来请求的小请求使用；
 [真实队列、取消/工具恢复与回退证据](docs/SERVE_ADMISSION_RESULT_2026-11-03.md)。
+接收拒绝与首次写失败分别用固定原因计数并关联trace日志；body额度
+耗尽返回`body_capacity_exhausted`。写超时、取消与断连可分别定位，
+计数范围及[真实HTTP/工具恢复证据](docs/SERVE_OBSERVABILITY_RESULT_2026-11-03.md)已公开。
 最新验收限完整head，旧subset证据不自动扩张到新候选。
 当前未启动常驻模型服务，GPU保持释放；通用SDK、完整JSON Schema、
 多人运行边界和长期稳定仍按[工业化验收账](docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进。

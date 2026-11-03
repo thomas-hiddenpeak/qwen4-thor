@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "fixtures": 7,
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/cpu/planned-native/contract_probe",
+    "sha256": "2a14bf27ead26a954b68851a6a79f0dea423aef3f271d184fd41cac2c0fe2dd4",
+    "bytes": 498400
+  },
+  "native": [
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    },
+    {
+      "accepted": true
+    },
+    {
+      "accepted": false,
+      "response": {
+        "error": {
+          "message": "messages must be a nonempty array",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "messages"
+        }
+      }
+    }
+  ]
+}

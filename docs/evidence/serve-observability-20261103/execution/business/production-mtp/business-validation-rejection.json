@@ -1,0 +1,18 @@
+{
+  "status": 400,
+  "trace_id": "srv01b.business-validation",
+  "reason": null,
+  "response": {
+    "error": {
+      "message": "messages must be a nonempty array",
+      "type": "invalid_request_error",
+      "code": "invalid_request",
+      "param": "messages"
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/business-validation-response.bin",
+    "sha256": "90d62ed430469e946d306ade28cf8777fa555843781e09f4f17ca1f9f0fe06cd",
+    "bytes": 274
+  }
+}

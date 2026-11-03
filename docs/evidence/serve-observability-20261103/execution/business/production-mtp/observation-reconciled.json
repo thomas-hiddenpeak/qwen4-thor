@@ -1,0 +1,142 @@
+{
+  "passed": true,
+  "metrics": {
+    "q4t_http_receive_failures_total{reason=\"malformed\"}": 1.0,
+    "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0.0,
+    "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 1.0,
+    "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 2.0,
+    "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 1.0,
+    "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 1.0,
+    "q4t_http_receive_failures_total{reason=\"header_eof\"}": 1.0,
+    "q4t_http_receive_failures_total{reason=\"body_eof\"}": 3.0,
+    "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0.0,
+    "q4t_http_receive_failures_total{reason=\"admission\"}": 0.0,
+    "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 0.0,
+    "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0.0,
+    "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 1.0,
+    "q4t_http_receive_failures_total{reason=\"method\"}": 1.0,
+    "q4t_http_receive_failures_total{reason=\"query\"}": 1.0,
+    "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 1.0,
+    "q4t_http_receive_failures_total{reason=\"route\"}": 1.0,
+    "q4t_http_receive_failures_total{reason=\"exception\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 1.0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0.0,
+    "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0.0
+  },
+  "receive_logs": [
+    [
+      "srv01b.body-reject-completions",
+      "body_capacity",
+      "503",
+      "0"
+    ],
+    [
+      "srv01b.body-reject-preflight",
+      "body_capacity",
+      "503",
+      "0"
+    ],
+    [
+      "srv01b.body-holder-0",
+      "body_eof",
+      "400",
+      "0"
+    ],
+    [
+      "srv01b.body-holder-1",
+      "body_eof",
+      "400",
+      "0"
+    ],
+    [
+      "srv01b.body-holder-2",
+      "body_eof",
+      "400",
+      "0"
+    ],
+    [
+      "req-7b5d78b5cd33cd3870115a997926b2f6",
+      "malformed",
+      "400",
+      "0"
+    ],
+    [
+      "srv01b.media",
+      "unsupported_media",
+      "415",
+      "0"
+    ],
+    [
+      "srv01b.route",
+      "route",
+      "404",
+      "0"
+    ],
+    [
+      "srv01b.method",
+      "method",
+      "405",
+      "0"
+    ],
+    [
+      "srv01b.query",
+      "query",
+      "400",
+      "0"
+    ],
+    [
+      "srv01b.get-body",
+      "unexpected_body",
+      "400",
+      "0"
+    ],
+    [
+      "srv01b.body-large",
+      "body_too_large",
+      "400",
+      "0"
+    ],
+    [
+      "req-d8064206740ad9cfa39583527af2f6da",
+      "header_eof",
+      "400",
+      "0"
+    ],
+    [
+      "req-5812105353e9eef17cd47b9726b9e368",
+      "header_deadline",
+      "408",
+      "0"
+    ],
+    [
+      "srv01b.body-deadline",
+      "body_deadline",
+      "408",
+      "0"
+    ]
+  ],
+  "write_logs": [
+    [
+      "srv01b.reset",
+      "peer_closed",
+      "handler",
+      "0",
+      "104",
+      "0"
+    ]
+  ],
+  "local_bytes_not_peer_receipt": true
+}

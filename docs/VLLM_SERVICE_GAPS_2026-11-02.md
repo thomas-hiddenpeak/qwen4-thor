@@ -10,7 +10,7 @@
 下表已交付状态不因源码开发自动升级。
 
 后续[serve 全链路审计](SERVE_COMPLETENESS_AUDIT_2026-11-02.md)已覆盖
-审计起点6路由/35字段（当前8路由）并复现输入与取消的嵌套合同缺口，补充可空值、
+审计起点6路由/35字段（当前10路由/38字段）并复现输入与取消的嵌套合同缺口，补充可空值、
 监控口径、流式存活和编译资源边界；后续输入A组与F5已修，F6独立
 准入、exec隔离、编译/匹配超时与2GiB地址空间限额已补；整机RAM和
 独立RSS保证仍不具备，不能沿用本表的
@@ -69,7 +69,7 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 真实工具执行 | Chat function 调用通常由应用执行与回填 | 首批真实发布 / 历史验收 / 不存在资料查询已验 | A/P2 已交付有界只读链路；自主广泛检索未验 |
 | 取消 / 断连 / 关闭 | serving 检查断连并传播 abort；生命周期管理 | 已有取消、deadline、断连、shutdown 与槽回收 | 保留证据；不是新的缺失 |
 | 压力与配额 | 调度、准入与服务配置；不等于完整租户计费平台 | 连接 / body / chat / slot 上限已具备，无租户配额 | B/C：先错误可观测，再业务配额 |
-| 健康与观测 | health/load/version、Prometheus、请求 metrics | F5指标、livez/readyz、排空与4个控制连接预留已验 | SRV-02限定交付；不保证未分类慢头洪泛下控制可用 |
+| 健康与观测 | health/load/version、Prometheus、请求 metrics | F5指标、livez/readyz、排空与4个控制连接预留；01b首次接收/写失败固定指标与trace对账已验 | SRV-02/01b限定交付；不保证未分类慢头洪泛下控制可用，告警/长稳仍待补 |
 | 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生未提供；现有 Nginx 示例未含完整鉴权配置 | C：在真实入口配置并验收，不能认为传了 api_key 就鉴权 |
 | HTTP 媒体类型 / 方法 | 框架路由与 JSON request validation | application/json UTF-8、405＋Allow、query400、GET body400已验 | SRV-03限定交付；仍禁chunked上传/连接复用 |
 | OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | A响应/B1消息schema子集、自有客户端及Python SDK 3.42.1限定互通已验 | SRV-08继续完整输入协议/JS等矩阵，不外推其他SDK |

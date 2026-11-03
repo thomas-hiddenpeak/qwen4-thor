@@ -7,7 +7,37 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
-SRV-02b准入/容量FIFO已限定交付；当前默认c16caf05 / sidecarbe4cd021，
+SRV-01b接收拒绝/首次输出失败已限定交付；当前默认ed672a65 /
+sidecar67897c81，冻结运行时/驱动2425044b，protocol0e252868，完整head。
+[结果、原始失败、证据与回退](SERVE_OBSERVABILITY_RESULT_2026-11-03.md)。
+body额度耗尽有专属503 code，18类接收原因、8类写原因/2类来源；
+心跳join后按连接发布首次观测，与chat业务结果分开，trace关联日志。
+
+实际8生成尝试/16拒绝/2启动首轮完成，含3个预期断连/不完整流。
+生产MTP的body预留/EOF/30秒读取截止、业务校验边界、TCP reset及
+JS真实资料工具通过；同源专用plain普通SSE实际EAGAIN取消、30秒
+写截止和普通/strict恢复通过。15接收/3写日志与固定指标对账，均无
+重复计数，资源归零，worker3/3与1/1已reap。严格长payload仍未证明。
+
+业务148.955秒、179.515秒finalize，guard COMPLETED/ENV_ABORT0；
+未扩10/20/3/1800秒硬限，不作性能接受声明。安装CLI/worker通过，
+HTTP复用同SHA生产候选，无额外安装模型；旧c16caf05/be4cd021和完整
+回退链保留。07:55:29 CST GPU PID空、共享锁可用，无模型/worker/
+恢复标记，MemAvailable117.013GiB。
+
+CPU OFF214/ON223、必需180、写异常2、后端9、锁内原生HTTP16通过；
+驱动10、取证修订受影响1和计划native7通过，零警告。必需门原程序
+180全通过但stdout/stderr交错被工具误判，分流修复后定向通过，原
+失败保留。模型/数值/模板未变证据复用；5完整生成wire/11封套与16
+拒绝封套通过，3不完整生成不记成功。303原记录封存307文件7.34MB。
+307份Git blob逐字节核对通过，原wire显式入库，回退计划只读核验。
+稀疏采样无活跃worker，RSS采样最大值为null；退出post-exec/lifetime
+另列，不冒充完整峰值。下一步离线核对03b载荷与取证前提，不自动
+重启旧实验或增加token预算；访问运维、长稳、通用恢复仍待完成。
+
+## SRV-02b交付历史
+
+SRV-02b准入/容量FIFO已限定交付；该阶段默认c16caf05 / sidecarbe4cd021，
 冻结运行时/驱动919cc01f、protocol b70fc28a，完整head；
 [结果、原始失败、证据与回退](SERVE_ADMISSION_RESULT_2026-11-03.md)。
 可配置chat/preflight总准入、slot等候、准备后的容量FIFO/取消注销，
@@ -29,14 +59,7 @@ CPU OFF206/ON215、必需172、真实等待6、后端9、锁内HTTP原生13通�
 07:13:45 CST GPU PID空、锁可用、无模型/worker/恢复标记，MemAvailable
 116.997GiB。稀疏parent/worker RSS与系统内存分列，不当整机峰值保证。
 
-下一独立包[SRV-01b接收拒绝与输出失败观测](SERVE_OBSERVABILITY_2026-11-03.md)
-已完成候选实现与CPU验证、真实HTTP尚待验：body/读取拒绝固定原因、容量专属503
-code、首次写失败/部分进度与handler/heartbeat来源，join后按连接发布
-固定计数与trace日志。CPU OFF214/ON223、必需180、写异常2与后端9
-通过；必需门原始stdout/stderr交错误判保留，分流采集后定向通过。
-生产ed672a65/专用4da3c5d0零警告；驱动10与计划原生输入7通过。
-冻结真实8生成/16接收拒绝/2启动，硬限10/20/3/1800秒，同一GPU锁。
-保持既有状态码、超时和模型路径。03b严格长payload背压仍未通过；
+SRV-01b随后已按上方交付；03b严格长payload背压仍未通过。
 访问运维、长稳和通用任务恢复仍待办，不能把02b当工业化全部完成。
 
 ## SRV-07/08及03b交付历史
@@ -93,7 +116,7 @@ Thor缺task/*/children导致漏worker采样，已改PPid/start-ticks发现，
 采样未知；日志post-exec224.027MiB另列，不相加。06:25:12 CST GPU空、
 锁可用、无恢复标记/模型，MemAvailable116.976GiB。
 
-SRV-02b随后已按上方交付；不能用它代替03b。当前下一项见上方01b开发合同。
+SRV-02b/01b随后已按上方交付；不能用它们代替03b。当前下一项见顶部目标。
 
 ## SRV-06交付历史
 

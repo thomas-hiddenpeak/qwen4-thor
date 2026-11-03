@@ -1,0 +1,7 @@
+HTTP/1.1 408 Request Timeout
+Content-Type: application/json
+Content-Length: 100
+X-Request-Id: srv01b.body-deadline
+Connection: close
+
+{"error":{"message":"Request Timeout","type":"timeout_error","code":"request_timeout","param":null}}

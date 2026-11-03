@@ -1,0 +1,35 @@
+{
+  "business": {
+    "status": "PASS_BOUNDED_OBSERVABILITY",
+    "counts": {
+      "generations": 8,
+      "negatives": 16,
+      "starts": 2
+    },
+    "seconds": 148.9548025841359,
+    "performance_acceptance": false,
+    "automatic_retry": false
+  },
+  "finalize_seconds": 179.51527070999146,
+  "source_commit": "2425044b49aaab3b8754319b5bf33a135e9c5911",
+  "protocol_sha256": "0e252868586d1d78e59fd951f8e327d7cb5f6a0e903148a622198decd6645a8f",
+  "default": {
+    "q4t": "ed672a65b586f8445e51e3ba6d63659b4a098386e87e1ed38e3c8893a352a139",
+    "q4t.release.json": "67897c817dfccd6db3d4e2c0d0af3cfc70fb97a2c840887905c03fbf0bd6be23"
+  },
+  "wire_records": 5,
+  "wire_envelopes": 11,
+  "negative_responses": 16,
+  "expected_incomplete_generations": 3,
+  "receive_observations": 15,
+  "write_observations": 3,
+  "sampled_parent_rss_max_bytes": 990371840,
+  "sampled_worker_rss_max_bytes": null,
+  "logged_worker_post_exec_max_bytes": 234893312,
+  "logged_worker_lifetime_max_bytes": 4092723200,
+  "logged_worker_reports": 4,
+  "sampled_mem_available_min_bytes": 37106110464,
+  "memory_samples": 15,
+  "memory_sampling_errors": [],
+  "limitation": "Sparse phase observations, not whole-run peaks. No active worker in RSS samples; worker post-exec VmHWM and pre-exec-inclusive lifetime max are separate log observations, not sample maxima. RSS and global memory are never summed as unique physical RAM."
+}

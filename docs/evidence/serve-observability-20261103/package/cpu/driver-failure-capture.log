@@ -1,0 +1,6 @@
+test_failure_preserves_received_bytes_without_replay (tools.serve_observability.test_driver.DriverTests.test_failure_preserves_received_bytes_without_replay) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK

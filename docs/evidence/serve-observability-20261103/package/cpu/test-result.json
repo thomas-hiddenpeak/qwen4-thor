@@ -1,0 +1,12 @@
+{
+  "passed": false,
+  "commands": {
+    "host-off": true,
+    "host-on": true,
+    "host-required": false,
+    "native-observation": true,
+    "backend-gate": true,
+    "inventory": true,
+    "contract-generated": true
+  }
+}

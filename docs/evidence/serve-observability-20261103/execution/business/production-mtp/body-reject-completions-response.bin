@@ -1,0 +1,7 @@
+HTTP/1.1 503 Service Unavailable
+Content-Type: application/json
+Content-Length: 126
+X-Request-Id: srv01b.body-reject-completions
+Connection: close
+
+{"error":{"message":"Service Unavailable","type":"service_unavailable_error","code":"body_capacity_exhausted","param":"body"}}

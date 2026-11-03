@@ -1,0 +1,18 @@
+{
+  "status": 400,
+  "trace_id": "srv01b.body-holder-1",
+  "reason": "body_eof",
+  "response": {
+    "error": {
+      "message": "Bad Request",
+      "type": "invalid_request_error",
+      "code": "invalid_request",
+      "param": null
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/body-holder-1-response.bin",
+    "sha256": "a8f90698ac5c66b5d22974b181b67ab688d808682d86013940f2aef54262088e",
+    "bytes": 240
+  }
+}

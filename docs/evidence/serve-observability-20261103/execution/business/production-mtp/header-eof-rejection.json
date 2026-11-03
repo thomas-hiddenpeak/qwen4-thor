@@ -1,0 +1,18 @@
+{
+  "status": 400,
+  "trace_id": "req-d8064206740ad9cfa39583527af2f6da",
+  "reason": "header_eof",
+  "response": {
+    "error": {
+      "message": "Bad Request",
+      "type": "invalid_request_error",
+      "code": "invalid_request",
+      "param": null
+    }
+  },
+  "wire": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/execution/business/production-mtp/header-eof-response.bin",
+    "sha256": "4b2f056c1640b45682fef53e99423ab1010742ee6c8e67c0e9a4ed44c83d8a0b",
+    "bytes": 256
+  }
+}

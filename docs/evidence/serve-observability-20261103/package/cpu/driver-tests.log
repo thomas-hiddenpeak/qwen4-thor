@@ -1,0 +1,15 @@
+test_body_capacity_error_code_and_param_are_required (tools.serve_observability.test_driver.DriverTests.test_body_capacity_error_code_and_param_are_required) ... ok
+test_budget_refuses_overrun_before_dispatch (tools.serve_observability.test_driver.DriverTests.test_budget_refuses_overrun_before_dispatch) ... ok
+test_builds_share_sources_and_separate_fault_macro (tools.serve_observability.test_driver.DriverTests.test_builds_share_sources_and_separate_fault_macro) ... ok
+test_failed_write_refuses_success_or_error_terminal (tools.serve_observability.test_driver.DriverTests.test_failed_write_refuses_success_or_error_terminal) ... ok
+test_failure_preserves_received_bytes_without_replay (tools.serve_observability.test_driver.DriverTests.test_failure_preserves_received_bytes_without_replay) ... ok
+test_metric_labels_reject_new_caller_values (tools.serve_observability.test_driver.DriverTests.test_metric_labels_reject_new_caller_values) ... ok
+test_partial_write_never_becomes_a_complete_turn (tools.serve_observability.test_driver.DriverTests.test_partial_write_never_becomes_a_complete_turn) ... ok
+test_planned_shapes_and_independent_limits (tools.serve_observability.test_driver.DriverTests.test_planned_shapes_and_independent_limits) ... ok
+test_rollback_checks_seal_not_current_workspace (tools.serve_observability.test_driver.DriverTests.test_rollback_checks_seal_not_current_workspace) ... ok
+test_wire_lengths_and_read_phase (tools.serve_observability.test_driver.DriverTests.test_wire_lengths_and_read_phase) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.176s
+
+OK

@@ -1,0 +1,23 @@
+{
+  "changed": [
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/http_request.h",
+    "include/q4t/server/http_response.h",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_http.cpp",
+    "src/server/chat_metrics.cpp",
+    "src/server/http_request.cpp",
+    "src/server/http_response.cpp"
+  ],
+  "added": [
+    "include/q4t/server/http_observation.h"
+  ],
+  "previous_manifest": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-admission-20261103/package/candidate/runtime-source.json",
+    "sha256": "839cccf7444eb93b378866ba4a6873815f69e2fe96898e8b8a3cd982d00a989f",
+    "bytes": 19924
+  },
+  "unchanged_model_and_numerical_sources": true,
+  "performance_acceptance": false,
+  "text_contract_reuse": "Input validation, template/tool history, tokenizer, grammar and model math unchanged. Transport observations retested; protocol hash changes intentionally."
+}
