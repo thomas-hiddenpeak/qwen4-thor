@@ -4,6 +4,11 @@
 short，所有命令都需要显式执行，没有timer、开机项或恢复脚本。
 范围与限额见[冻结合同](../../docs/SERVE_SOAK_2026-11-03.md)。
 
+2026-11-03已完成CPU11及short 8周期/40成功、8次真实工具回填，
+详见[短验结果](../../docs/SERVE_SOAK_RESULT_2026-11-03.md)。下面的CPU和
+两个prepare已执行，现有计划可直接check；不要重复准备或覆盖原件。
+day尚未启动；其第1小时与24小时稳定性结论须等你的实际运行结果。
+
 准备工作在工作区干净且来源已提交时运行，不加载模型：
 
 ```bash
@@ -40,6 +45,13 @@ systemd实际状态。第一小时到达240周期/1200成功请求并满3600秒�
 `first-hour.json`，它不会宣称day已通过。最终`result.json`、`soak.json`、
 `capture/capture.json`和`guard-archive.json`共同判定；不只看进度或PASS
 字样。完整wire、quiescent样本、连续资源与轮转日志副本均留在execution。
+
+正常结束后运行只读复核，重新解析完整响应、工具引用及清理证据，
+不会启动模型或发送HTTP：
+
+```bash
+python3 -B tools/serve_soak/report.py check --profile day
+```
 
 若driver被强杀，临时unit最多运行到计划的RuntimeMaxSec，不能假定
 已自动清理；不要按旧PID批量kill。用manifest中的unit名核对身份后

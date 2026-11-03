@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "profile": "short",
+  "cycles": 8,
+  "successful_requests": 40,
+  "real_tool_executions": 8,
+  "guard": {
+    "passed": true,
+    "records": 154,
+    "observations": 150,
+    "seconds": 161.71166968997568
+  },
+  "resource_samples": 119,
+  "day_scale_stability_proved": false,
+  "new_model_or_http": 0,
+  "manifest_sha256": "160796c3fc65d44cb36967952ca300abd48eb8228f59a8afee597a6b685e8606"
+}

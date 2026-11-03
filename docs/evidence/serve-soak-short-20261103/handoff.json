@@ -1,0 +1,17 @@
+{
+  "short_passed": true,
+  "day_executed": false,
+  "day_plan": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-soak-20261103/day/plan.json",
+    "sha256": "d5201d2bba25e1d1b918ea0f7b5d2a3c41e69582ad37209b0e90f1c7e60362a1",
+    "bytes": 4761
+  },
+  "long_validation_owner": "user",
+  "automatic_execution": false,
+  "default_pair_unchanged": true,
+  "short_result": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-soak-20261103/short/execution/result.json",
+    "sha256": "d0a2f6c7360cab4d6c9bfd8ada23ad835284c80f6e6d0c2c575a05f6d77e5ce3",
+    "bytes": 526
+  }
+}

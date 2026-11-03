@@ -1,0 +1,136 @@
+{
+  "passed": true,
+  "checked_at_utc": "2026-11-03T15:33:51.071765+00:00",
+  "frozen_commit": "0bd0e8fef855a9f7648c5eda25f26c05979b8f53",
+  "staged_files": [
+    {
+      "path": "docs/PHASES.md",
+      "bytes": 28533,
+      "sha256": "dd232365d523f311970739ef93e69b7c48443064ea02c2d6250d52813a63e559"
+    },
+    {
+      "path": "docs/README.md",
+      "bytes": 38528,
+      "sha256": "386641a922bb76e1b0ce4b58f81c2130d8e4c93a98f9518d124def40b048a411"
+    },
+    {
+      "path": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "bytes": 15601,
+      "sha256": "d83209407f7d24b2985828599be1948e86cc44f6b9802be289ba8ff247a8962c"
+    },
+    {
+      "path": "docs/SERVE_SOAK_RESULT_2026-11-03.md",
+      "bytes": 4255,
+      "sha256": "92407a826aa9f6ae77d948907eed1ec26aea913c54f8bff9a1f8e5d9170d058e"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "bytes": 163358,
+      "sha256": "a1a544a47b1c655c09493bd6b83e971fbb20761f17ab85edb7ec4f7188013f8a"
+    },
+    {
+      "path": "docs/evidence/serve-soak-short-20261103/cpu.json",
+      "bytes": 3443,
+      "sha256": "e39be590325162f0711bf9e9b2a9bdb03fd47709dfe155c9d7f0e8d49894bacc"
+    },
+    {
+      "path": "docs/evidence/serve-soak-short-20261103/day_plan.json",
+      "bytes": 4761,
+      "sha256": "d5201d2bba25e1d1b918ea0f7b5d2a3c41e69582ad37209b0e90f1c7e60362a1"
+    },
+    {
+      "path": "docs/evidence/serve-soak-short-20261103/handoff.json",
+      "bytes": 596,
+      "sha256": "8fbb33dadb3e4d60bd548330ee82f758759507829ed7d40221cc22a5852050f8"
+    },
+    {
+      "path": "docs/evidence/serve-soak-short-20261103/manifest.json",
+      "bytes": 97248,
+      "sha256": "d1e68d6dd9d3a9de08ea0415040f5b1fb8fba6609cc08cce29892a702ada1367"
+    },
+    {
+      "path": "docs/evidence/serve-soak-short-20261103/postflight.json",
+      "bytes": 425,
+      "sha256": "5d71f29eceb398b45607f42eb744ab5467128c5ce8ec225e9d3c38386d023c0b"
+    },
+    {
+      "path": "docs/evidence/serve-soak-short-20261103/raw-records.tar.gz",
+      "bytes": 337937,
+      "sha256": "18085164d705124fd6db0c206803df257e97afeff41fca3cdf979b557bb7e64c"
+    },
+    {
+      "path": "docs/evidence/serve-soak-short-20261103/result.json",
+      "bytes": 526,
+      "sha256": "d0a2f6c7360cab4d6c9bfd8ada23ad835284c80f6e6d0c2c575a05f6d77e5ce3"
+    },
+    {
+      "path": "docs/evidence/serve-soak-short-20261103/sealed-files.json",
+      "bytes": 787,
+      "sha256": "44f82f8d232e16748d45b875b30dc30be9de6f4764f1baa5582a5495cf8b34a3"
+    },
+    {
+      "path": "docs/evidence/serve-soak-short-20261103/short_plan.json",
+      "bytes": 4741,
+      "sha256": "bd41824567e7f2cd625d52f28075167253fde3c1796eef1fdb11aac04d8955bc"
+    },
+    {
+      "path": "docs/evidence/serve-soak-short-20261103/verified.json",
+      "bytes": 414,
+      "sha256": "71f304fd4cd57a35c1015bcabf5b2c0d4a85bdc9bbd7e97a4a10e0921a9f03b3"
+    },
+    {
+      "path": "docs/log/2026-11-03.md",
+      "bytes": 109844,
+      "sha256": "7ca00b2294a4eb53f0e43f3b714aa5c3d89a3fcee3d56bcc92c255b4af827aa9"
+    },
+    {
+      "path": "tools/serve_soak/README.md",
+      "bytes": 2865,
+      "sha256": "6712693360e8eb193b14da3b6d4b4f2c10ed74d6e9d9d52ae93d91788fa253d0"
+    },
+    {
+      "path": "tools/serve_soak/report.py",
+      "bytes": 10521,
+      "sha256": "3a03770afd050908bd49b9ae5da33dd5bdb76329cbaf681ac24acefec04d655e"
+    }
+  ],
+  "markdown_links_checked": 606,
+  "missing_links": [],
+  "archive": {
+    "passed": true,
+    "profile": "short",
+    "cycles": 8,
+    "successful_requests": 40,
+    "real_tool_executions": 8,
+    "guard": {
+      "passed": true,
+      "records": 154,
+      "observations": 150,
+      "seconds": 161.71166968997568
+    },
+    "resource_samples": 119,
+    "day_scale_stability_proved": false,
+    "new_model_or_http": 0,
+    "manifest_sha256": "160796c3fc65d44cb36967952ca300abd48eb8228f59a8afee597a6b685e8606",
+    "records": 311,
+    "local_artifacts": 2
+  },
+  "gpu": {
+    "status": "OK",
+    "pids": []
+  },
+  "lock_available": true,
+  "lock_inode": 3294067,
+  "lock_device": 66305,
+  "lock_text_unchanged": true,
+  "recovery_marker": false,
+  "soar_unit": "MainPID=0\nActiveState=inactive\nUnitFileState=masked\n",
+  "short_unit": "MainPID=0\nLoadState=not-found\nActiveState=inactive\n",
+  "containers": "",
+  "day_prepared": true,
+  "day_executed": false,
+  "long_validation_owner": "user",
+  "default_binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+  "default_release_sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+  "new_model_or_http": 0
+}
