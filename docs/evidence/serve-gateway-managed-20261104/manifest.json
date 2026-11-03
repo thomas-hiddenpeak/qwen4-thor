@@ -1,0 +1,2722 @@
+{
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/result.json",
+      "sha256": "86851f85f553347784785a56f6cefedc109addb6767cadf8e5196f1d38876b0c",
+      "bytes": 2386,
+      "member": "cpu/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/docs/SERVE_GATEWAY_MANAGED_2026-11-04.md",
+      "sha256": "f1ae42ac4ed823d3f527be57c99fbd538034074158aa64b6e6d0a645943683fe",
+      "bytes": 5313,
+      "member": "cpu/source/docs/SERVE_GATEWAY_MANAGED_2026-11-04.md"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439,
+      "member": "cpu/source/docs/serve-openapi-v1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "cpu/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "cpu/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "cpu/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "cpu/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b",
+      "bytes": 18714,
+      "member": "cpu/source/tools/serve_gateway/gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81",
+      "bytes": 18350,
+      "member": "cpu/source/tools/serve_gateway/managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484,
+      "member": "cpu/source/tools/serve_gateway/managed_child.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_gateway/managed_cpu.py",
+      "sha256": "08910c8b2aa75d15ec953e5fe8efa8f8b67649b7a610d20bbd2334b3ef4de9c0",
+      "bytes": 1523,
+      "member": "cpu/source/tools/serve_gateway/managed_cpu.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_gateway/test_gateway.py",
+      "sha256": "6a2c07bda4fe7e68aae0ab730d20828a1e8df2234b534c3d8b35db331247bfca",
+      "bytes": 8608,
+      "member": "cpu/source/tools/serve_gateway/test_gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_gateway/test_managed.py",
+      "sha256": "c7f5d532158a6ecd0bc66dcd7e02a702365d60f41f667168d0fda61593d15d9f",
+      "bytes": 11718,
+      "member": "cpu/source/tools/serve_gateway/test_managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "cpu/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "cpu/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "cpu/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "cpu/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+      "bytes": 15056,
+      "member": "cpu/source/tools/serve_service/inspection.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "cpu/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+      "bytes": 8993,
+      "member": "cpu/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+      "bytes": 10368,
+      "member": "cpu/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "cpu/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu/tests.log",
+      "sha256": "edc0d2772f6561385bc1eb085f26fe9c8d66f33454021f4963826f1060290325",
+      "bytes": 6488,
+      "member": "cpu/tests.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/result.json",
+      "sha256": "a1169fa70c2e4c4466d5aedef459cfac6883002da832a8edb7bcab56afb21651",
+      "bytes": 2765,
+      "member": "cpu-corrected/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/docs/SERVE_GATEWAY_MANAGED_2026-11-04.md",
+      "sha256": "f1ae42ac4ed823d3f527be57c99fbd538034074158aa64b6e6d0a645943683fe",
+      "bytes": 5313,
+      "member": "cpu-corrected/source/docs/SERVE_GATEWAY_MANAGED_2026-11-04.md"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439,
+      "member": "cpu-corrected/source/docs/serve-openapi-v1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "cpu-corrected/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "cpu-corrected/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "cpu-corrected/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "cpu-corrected/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b",
+      "bytes": 18714,
+      "member": "cpu-corrected/source/tools/serve_gateway/gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81",
+      "bytes": 18350,
+      "member": "cpu-corrected/source/tools/serve_gateway/managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484,
+      "member": "cpu-corrected/source/tools/serve_gateway/managed_child.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_gateway/managed_cpu.py",
+      "sha256": "08910c8b2aa75d15ec953e5fe8efa8f8b67649b7a610d20bbd2334b3ef4de9c0",
+      "bytes": 1523,
+      "member": "cpu-corrected/source/tools/serve_gateway/managed_cpu.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_gateway/test_gateway.py",
+      "sha256": "6a2c07bda4fe7e68aae0ab730d20828a1e8df2234b534c3d8b35db331247bfca",
+      "bytes": 8608,
+      "member": "cpu-corrected/source/tools/serve_gateway/test_gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_gateway/test_managed.py",
+      "sha256": "ba0ca77c118798ef5dcc4ae36fdd58130e2ef2efca1afc1d57c1953646161517",
+      "bytes": 11859,
+      "member": "cpu-corrected/source/tools/serve_gateway/test_managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "cpu-corrected/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "cpu-corrected/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "cpu-corrected/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "cpu-corrected/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+      "bytes": 15056,
+      "member": "cpu-corrected/source/tools/serve_service/inspection.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "cpu-corrected/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+      "bytes": 8993,
+      "member": "cpu-corrected/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+      "bytes": 10368,
+      "member": "cpu-corrected/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "cpu-corrected/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/cpu-corrected/tests.log",
+      "sha256": "ab882bcf9f3086551e82aad30f2724a64f2d8f19091305068891a5394591732e",
+      "bytes": 1055,
+      "member": "cpu-corrected/tests.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/day-check.json",
+      "sha256": "2948c10b390a1fb9b83ecc7ca69ff07e451ef216a182a3da27f5d1389732b721",
+      "bytes": 4796,
+      "member": "day-check.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/result.json",
+      "sha256": "79808f925f738ea3a06e746122c459afa74c139d93be8665ade34d7912c87f0c",
+      "bytes": 5439,
+      "member": "driver-cpu/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/docs/MODEL.md",
+      "sha256": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+      "bytes": 14620,
+      "member": "driver-cpu/source/docs/MODEL.md"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/docs/SERVE_GATEWAY_2026-11-03.md",
+      "sha256": "a471abd14595a298a31a9975ea1ca81aea7b8cec953dde94c4d0e8a36b678d4a",
+      "bytes": 5242,
+      "member": "driver-cpu/source/docs/SERVE_GATEWAY_2026-11-03.md"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/docs/SERVE_GATEWAY_MANAGED_2026-11-04.md",
+      "sha256": "f1ae42ac4ed823d3f527be57c99fbd538034074158aa64b6e6d0a645943683fe",
+      "bytes": 5313,
+      "member": "driver-cpu/source/docs/SERVE_GATEWAY_MANAGED_2026-11-04.md"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/docs/SERVE_MANAGED_SERVICE_GPU_2026-11-03.md",
+      "sha256": "fd2dd8ad086dbcbd961a76eb12189dcb33beb4a0c49a0feca9986e57a944c547",
+      "bytes": 4614,
+      "member": "driver-cpu/source/docs/SERVE_MANAGED_SERVICE_GPU_2026-11-03.md"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439,
+      "member": "driver-cpu/source/docs/serve-openapi-v1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/docs/serve-transport-v1.schema.json",
+      "sha256": "992a666781a0f0b92c4d9d4a8ce9680c663f7bf89a1608eac37d4d63e17ce0e0",
+      "bytes": 4429,
+      "member": "driver-cpu/source/docs/serve-transport-v1.schema.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "driver-cpu/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "driver-cpu/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "driver-cpu/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/examples/agent_tools_demo.py",
+      "sha256": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+      "bytes": 7208,
+      "member": "driver-cpu/source/tools/examples/agent_tools_demo.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/examples/chat_client.py",
+      "sha256": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+      "bytes": 28871,
+      "member": "driver-cpu/source/tools/examples/chat_client.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/examples/project_query.py",
+      "sha256": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+      "bytes": 6953,
+      "member": "driver-cpu/source/tools/examples/project_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/examples/project_records.py",
+      "sha256": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+      "bytes": 8033,
+      "member": "driver-cpu/source/tools/examples/project_records.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/examples/tool_recovery.py",
+      "sha256": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+      "bytes": 12913,
+      "member": "driver-cpu/source/tools/examples/tool_recovery.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "driver-cpu/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/acceptance.py",
+      "sha256": "41d8e5360fbbe24263f16f58f7421c3b246cd0554879322fdcdc7f1ffec16a40",
+      "bytes": 19672,
+      "member": "driver-cpu/source/tools/serve_gateway/acceptance.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/cpu.py",
+      "sha256": "f41bc73b3d764877f75f8ef8aa45166aaae0f2b7d1f3b85843de5c1444121c30",
+      "bytes": 1621,
+      "member": "driver-cpu/source/tools/serve_gateway/cpu.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/exec_gateway.py",
+      "sha256": "43306fd807dc95b5277917418deed62b51cf77b78852e5a17bd3da59234d7fce",
+      "bytes": 894,
+      "member": "driver-cpu/source/tools/serve_gateway/exec_gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b",
+      "bytes": 18714,
+      "member": "driver-cpu/source/tools/serve_gateway/gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81",
+      "bytes": 18350,
+      "member": "driver-cpu/source/tools/serve_gateway/managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484,
+      "member": "driver-cpu/source/tools/serve_gateway/managed_child.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/managed_cpu.py",
+      "sha256": "08910c8b2aa75d15ec953e5fe8efa8f8b67649b7a610d20bbd2334b3ef4de9c0",
+      "bytes": 1523,
+      "member": "driver-cpu/source/tools/serve_gateway/managed_cpu.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/managed_stage.py",
+      "sha256": "3efdd6e6a8baf1556cd792885d1ae176ce406172d0590d9626eaea0de158e5e6",
+      "bytes": 21912,
+      "member": "driver-cpu/source/tools/serve_gateway/managed_stage.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/test_gateway.py",
+      "sha256": "6a2c07bda4fe7e68aae0ab730d20828a1e8df2234b534c3d8b35db331247bfca",
+      "bytes": 8608,
+      "member": "driver-cpu/source/tools/serve_gateway/test_gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/test_managed.py",
+      "sha256": "ba0ca77c118798ef5dcc4ae36fdd58130e2ef2efca1afc1d57c1953646161517",
+      "bytes": 11859,
+      "member": "driver-cpu/source/tools/serve_gateway/test_managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_gateway/transport_tests.py",
+      "sha256": "2ce03405123863eb77125685ca2021e66d531a8cdf74b93a59dcc1c5dc0719ee",
+      "bytes": 15425,
+      "member": "driver-cpu/source/tools/serve_gateway/transport_tests.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "driver-cpu/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "driver-cpu/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "driver-cpu/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_service/acceptance.py",
+      "sha256": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
+      "bytes": 27400,
+      "member": "driver-cpu/source/tools/serve_service/acceptance.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "driver-cpu/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_service/controller_exec.py",
+      "sha256": "7f37aa2881f2a5e174fee3583d39590c14356f12edfed307eae8718e9643e380",
+      "bytes": 1298,
+      "member": "driver-cpu/source/tools/serve_service/controller_exec.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+      "bytes": 15056,
+      "member": "driver-cpu/source/tools/serve_service/inspection.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_service/lease_custody.py",
+      "sha256": "c3925db0e1f53e81720bbf4c01ab03fbf74a53ec504ab918b9b1042e92ae4c3d",
+      "bytes": 6612,
+      "member": "driver-cpu/source/tools/serve_service/lease_custody.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "driver-cpu/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+      "bytes": 8993,
+      "member": "driver-cpu/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+      "bytes": 10368,
+      "member": "driver-cpu/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "driver-cpu/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/driver-cpu/source/tools/serve_service/test_acceptance.py",
+      "sha256": "9305521b0aff9d6329e84224e5c8527160c635ddfdb902f135bfd0de86e78797",
+      "bytes": 6513,
+      "member": "driver-cpu/source/tools/serve_service/test_acceptance.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/after-graceful-00.json",
+      "sha256": "2b1ea77d226aba5b98a0ddf71758ce78454a2b89274fd12f7b0bb86d43645fdf",
+      "bytes": 26261,
+      "member": "execution/after-graceful-00.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/after-manager-crash-00.json",
+      "sha256": "c430837ca6ba5b3a79102efe9220ee3bbc6d83ccb64cd2d1cbec9e097233c439",
+      "bytes": 26265,
+      "member": "execution/after-manager-crash-00.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/after-manager-crash-01.json",
+      "sha256": "b7f854b33cb504d4e8f90bba184b284a9fdcdfba66fe1cdd5d71c11d160cb1f2",
+      "bytes": 26261,
+      "member": "execution/after-manager-crash-01.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/after-master-crash-00.json",
+      "sha256": "7aaeeb523ecc766e211765208234033d76c89e85d53b316e1bdae72f640278a3",
+      "bytes": 26261,
+      "member": "execution/after-master-crash-00.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/begin.json",
+      "sha256": "075f6ccd59e9b1e1b15d9f735f776e77db481d9186408c9c25acd52e9af10647",
+      "bytes": 75,
+      "member": "execution/begin.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/controller.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "execution/controller.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/counts.json",
+      "sha256": "d604976cabe23407b2e3e52be34d1f071a75f50bfe94957bb66520a0e7e6b20e",
+      "bytes": 59,
+      "member": "execution/counts.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/custody/events.jsonl",
+      "sha256": "9f89299ef494d2d12135b58583c84ebbb968db7c3e8f0629fdeac35f8800df91",
+      "bytes": 3716,
+      "member": "execution/custody/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/custody/exit.json",
+      "sha256": "d49627a597917512aee3f8a56e85068945dfdf5eba53b4c8ab130e5cf6719509",
+      "bytes": 99,
+      "member": "execution/custody/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/custody/lease-copy.json",
+      "sha256": "dd682c4106873b431f8ccf072637d9b9ec6f0c47de46e5dab3cedf6c469b976e",
+      "bytes": 486,
+      "member": "execution/custody/lease-copy.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/custody/nvml.jsonl",
+      "sha256": "f901ca5e5eacd1427164e1f912c61eebaac22879488484adf5575e66fa2b6121",
+      "bytes": 69554,
+      "member": "execution/custody/nvml.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/explicit-stop.json",
+      "sha256": "f3463a5f2e01652c4ccfbf8e0a98e41da14f5c84e3acc8ab7034669f2edc4227",
+      "bytes": 453,
+      "member": "execution/explicit-stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/final-metrics-00.json",
+      "sha256": "5e01f82d4a2eb11f01a47ab1750dc598d5fb2dd12995eff9fef12d0439ea27e9",
+      "bytes": 26261,
+      "member": "execution/final-metrics-00.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/final-recovery-http.json",
+      "sha256": "7183e607d9ab44f546f2b021cdeebab48c6f6e41dfc1de3e0be10e0ceccc0065",
+      "bytes": 441,
+      "member": "execution/final-recovery-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/final-recovery-request.json",
+      "sha256": "5fc3d1f5dddb2726fae9120b68dcc1920bfda39a644d5b557eafb0997ef5c86c",
+      "bytes": 634,
+      "member": "execution/final-recovery-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/final-recovery-response.json",
+      "sha256": "1845ad80295d89e1f37644e563ef1500d3981f421eb19e80c29e4a5fdd5217ef",
+      "bytes": 276,
+      "member": "execution/final-recovery-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/final-recovery-wire.bin",
+      "sha256": "a25f340f396b40fb91497c2ea7074b99c0ef2d85c021549ed0c9a0900c7c40e0",
+      "bytes": 306,
+      "member": "execution/final-recovery-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-1/controller.json",
+      "sha256": "3d319830b5f9188a15b1cbbbeba9eddc649423c21969e3934c782c7de2a0b290",
+      "bytes": 1533,
+      "member": "execution/front-1/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-1/events.log",
+      "sha256": "4ce935ec77ba9e9001c6e977ff8bf95380f2b4d7501726b1399b4cf9c0f3973e",
+      "bytes": 170,
+      "member": "execution/front-1/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-1/gateway.log",
+      "sha256": "7e98b60a30a48cde7c3c8164fa77f55dcce058d681f3a3bdc089d3c2e7222147",
+      "bytes": 984,
+      "member": "execution/front-1/gateway.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-1/status.json",
+      "sha256": "1a795bccd1c8e48c9068682c6d3f891f2d12c11eac97fb462a9d8f2ee207e13d",
+      "bytes": 882,
+      "member": "execution/front-1/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-1/stop.request.json",
+      "sha256": "5b85a1d9050a7d755550d023cbbec9f6de54eb4293b12bc7d18fb01c99034996",
+      "bytes": 63,
+      "member": "execution/front-1/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-1/terminal.json",
+      "sha256": "50a1e3b5dbd3648aaf3e1cc67840b217f7ffd4432ca741f4b13fb90b05e39988",
+      "bytes": 995,
+      "member": "execution/front-1/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-1-gone.json",
+      "sha256": "04c05166a532d53a0cf9b2f548073c05334e887eb549e056128bacf0174b6e36",
+      "bytes": 153,
+      "member": "execution/front-1-gone.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-1-ready.json",
+      "sha256": "2edefd39e5ca9ccbd690de4fe4095f8b1824447eda87d22f077741ffb44fae14",
+      "bytes": 2756,
+      "member": "execution/front-1-ready.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-1-stop-idempotent.json",
+      "sha256": "249cd82c779df98dd84f544037f627fd2fed634ed62916632fe80b6d8a9df4bf",
+      "bytes": 1250,
+      "member": "execution/front-1-stop-idempotent.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-1-stop.json",
+      "sha256": "80f7d1737997d496de9887e7b90cb0b37cca3af4f91d9a6465fc820bf01633dc",
+      "bytes": 398,
+      "member": "execution/front-1-stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2/controller.json",
+      "sha256": "2cb0adbb0eec4a761f52122d66a3a37304300598d693d06275aac88f9814d418",
+      "bytes": 1533,
+      "member": "execution/front-2/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2/events.log",
+      "sha256": "ece8120498705e9ca53b857845fad75dfcccda602ea17522fd69e08518d83f07",
+      "bytes": 55,
+      "member": "execution/front-2/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2/status.json",
+      "sha256": "1fd0826726dbd2efd1be85458d6db362a855f20bc9c856b4498f438ab167955e",
+      "bytes": 839,
+      "member": "execution/front-2/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2-controller.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "execution/front-2-controller.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2-crash.json",
+      "sha256": "c34fb29bfe0b431acba2b83c61294012ab63baa8536424bc36ff574938080100",
+      "bytes": 169,
+      "member": "execution/front-2-crash.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2-final-state.json",
+      "sha256": "ebb0e2b650379ac048c43def684bb00f158e6c35116e19d72a7586125360468b",
+      "bytes": 1009,
+      "member": "execution/front-2-final-state.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2-gone.json",
+      "sha256": "0f211c13344369644caeb654ab78303ae99bdf091bbbfdcc8cc36472c7111183",
+      "bytes": 153,
+      "member": "execution/front-2-gone.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2-interrupted-http.json",
+      "sha256": "a6dff1ea6676c98bd57f6d061b11076d4dba2b8a68277e7fedb13741ebd5fa3a",
+      "bytes": 449,
+      "member": "execution/front-2-interrupted-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2-interrupted-request.json",
+      "sha256": "be231a52fe977a193cee4be1b34efc104940b2ed9d5d48e32561f1c4b55afb71",
+      "bytes": 783,
+      "member": "execution/front-2-interrupted-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2-interrupted-verified.json",
+      "sha256": "cb8432b33055db4f012d87f9889d1783642158dbeff6eaa4bd4b94709a2aa814",
+      "bytes": 99,
+      "member": "execution/front-2-interrupted-verified.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2-interrupted-wire.bin",
+      "sha256": "a4f0cd70f77ff2cda8e5ca0a601d04e800b363b47d4b503f8b0acea5da381e86",
+      "bytes": 1210,
+      "member": "execution/front-2-interrupted-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-2-ready.json",
+      "sha256": "38b8f872fd021909bf1f85f07974eea226448853f6a2af6e51d66945e991e3e5",
+      "bytes": 2756,
+      "member": "execution/front-2-ready.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3/controller.json",
+      "sha256": "53c3b432763269a504795bbabcf71730c73731f621fc814afc71813e5a1f5b13",
+      "bytes": 1533,
+      "member": "execution/front-3/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3/events.log",
+      "sha256": "620a6f99136d2d16fbfb2930c00edb475dafa9a3eea3ffc6f6c353ca7b71814c",
+      "bytes": 111,
+      "member": "execution/front-3/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3/status.json",
+      "sha256": "0b625268da2ce99c04757a4eb11e1b25ed54d577cad09d7953e9b77f53568222",
+      "bytes": 928,
+      "member": "execution/front-3/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3/terminal.json",
+      "sha256": "f8286e0027486e372c39f13965813484c583655f83007cf0cfd87c4e4331a9fc",
+      "bytes": 1041,
+      "member": "execution/front-3/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3-controller.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "execution/front-3-controller.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3-crash.json",
+      "sha256": "4dc4547c6b7424013a73fcdfc17e5b6d19fa7e3985b6f9f188cfe3a0b11a3bbd",
+      "bytes": 168,
+      "member": "execution/front-3-crash.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3-final-state.json",
+      "sha256": "f8286e0027486e372c39f13965813484c583655f83007cf0cfd87c4e4331a9fc",
+      "bytes": 1041,
+      "member": "execution/front-3-final-state.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3-gone.json",
+      "sha256": "825e31e2363e539a43d5ac3556b091b9c80b689f5e2fab69c404f8aa1b0f9dd5",
+      "bytes": 153,
+      "member": "execution/front-3-gone.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3-interrupted-http.json",
+      "sha256": "70c8eca6f7771fbe5d436a03b7d6b7f81b1071c8fbd055038de0e6ec3c7ff89a",
+      "bytes": 446,
+      "member": "execution/front-3-interrupted-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3-interrupted-request.json",
+      "sha256": "19c0ee61be266dc16c73aaeb9c13c7f80eb5664805cd3a5f09200e2a48821b0e",
+      "bytes": 783,
+      "member": "execution/front-3-interrupted-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3-interrupted-verified.json",
+      "sha256": "cb8432b33055db4f012d87f9889d1783642158dbeff6eaa4bd4b94709a2aa814",
+      "bytes": 99,
+      "member": "execution/front-3-interrupted-verified.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3-interrupted-wire.bin",
+      "sha256": "66f09566a24f469a1170be3bcd2b4e1508220a4efbb357c45f3bf3d57577c5c0",
+      "bytes": 7885,
+      "member": "execution/front-3-interrupted-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-3-ready.json",
+      "sha256": "86063647feca7f40bd639d0e356a882fc445b848c5ce91cd52a6e9cd69fa229a",
+      "bytes": 2756,
+      "member": "execution/front-3-ready.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-4/controller.json",
+      "sha256": "d5e432b976091d342ecf1cf970537e18bdadfb983d0911bb776d2c47c86c68eb",
+      "bytes": 1531,
+      "member": "execution/front-4/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-4/events.log",
+      "sha256": "b7e3519f686f05699a98ed981db8598bc5e3f607a037047deaeb6d6a2708b042",
+      "bytes": 110,
+      "member": "execution/front-4/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-4/gateway.log",
+      "sha256": "a203c3167652642e5a4ec141994ceb5acaa31c1e153dc071aaeec4aec378bec3",
+      "bytes": 196,
+      "member": "execution/front-4/gateway.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-4/status.json",
+      "sha256": "545278395988d47ccd22603a627e21a05f91a850575cdeced948af956e3fcbe1",
+      "bytes": 927,
+      "member": "execution/front-4/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-4/terminal.json",
+      "sha256": "a76d76bd5d8fa2d07ab2e9dfe4502b6bd8624a5b97b5f64d966c0c6fc1693e37",
+      "bytes": 1040,
+      "member": "execution/front-4/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-4-controller.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "execution/front-4-controller.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-4-gone.json",
+      "sha256": "8a3da380b67e00ace992a33fb7518c844e3eb8985fb8336342f5148ac5d89510",
+      "bytes": 153,
+      "member": "execution/front-4-gone.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/front-4-ready.json",
+      "sha256": "75ec3134d9bacc70d8c62b97da3e3b2c961d7e40b8998a291d51214f13320afe",
+      "bytes": 2754,
+      "member": "execution/front-4-ready.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/gpu-before.json",
+      "sha256": "8082ed693d67933713087c38f28d8d5009bc6eb7d4fd10232f92b893353ea7c6",
+      "bytes": 2253,
+      "member": "execution/gpu-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/gpu-final.json",
+      "sha256": "12073dfeb2d4ff83be439da3c7db1739c77ae344225c37a105c8de144155f58c",
+      "bytes": 2259,
+      "member": "execution/gpu-final.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/graceful-active.json",
+      "sha256": "7081323c3a3031d31ff4d8f9efdbb63b6584c33e7d2258445ed71b796098f813",
+      "bytes": 26262,
+      "member": "execution/graceful-active.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/graceful-stream-http.json",
+      "sha256": "0e9cdd1ae659c17e1e9578adba208ea7f5f5d050e3a176f8b7f25ea053fe3bf4",
+      "bytes": 447,
+      "member": "execution/graceful-stream-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/graceful-stream-request.json",
+      "sha256": "34ee5ffdaaef460f19bf3dfe13fd461e04029701a572549a859f2e4e56db7ced",
+      "bytes": 778,
+      "member": "execution/graceful-stream-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/graceful-stream-response.json",
+      "sha256": "429853774c8afa189afc3acac19cfb97cd960059f082df51067d503b598f43fe",
+      "bytes": 422,
+      "member": "execution/graceful-stream-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/graceful-stream-wire.bin",
+      "sha256": "aa40e2e1ae57294288290c471bedf154c9bc9c58b1533e62fc8bf84836ac0eac",
+      "bytes": 26955,
+      "member": "execution/graceful-stream-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/managed-run/attempt-1.json",
+      "sha256": "e2ea7c289450e888a2fcbfd8f34f72577def6d9fd994282ab8164e1a006ede33",
+      "bytes": 818,
+      "member": "execution/managed-run/attempt-1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/managed-run/backend.log",
+      "sha256": "adb2d5a19b4d228f7fe3220f28930dbde8411b7eba8c91a1c71f625a9b13bd5b",
+      "bytes": 23615,
+      "member": "execution/managed-run/backend.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/managed-run/controller.json",
+      "sha256": "9c8a09f2ac0fc93dc48d67c55c42e8fbfa4d2ebd050ad8d030811697cb824678",
+      "bytes": 775,
+      "member": "execution/managed-run/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/managed-run/events.log",
+      "sha256": "41302dc3cf8c4ab869a9956af5703c616f15608b27ccec7e869b60bccaa24a34",
+      "bytes": 120,
+      "member": "execution/managed-run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/managed-run/lease/events.jsonl",
+      "sha256": "5508452b6c21d1793fc716eebee536b7a738f16905d48819a36a4c5772b31407",
+      "bytes": 11328,
+      "member": "execution/managed-run/lease/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/managed-run/lease/exit.json",
+      "sha256": "28137a3970cb8a45a54924feb9bd26ecf6ee8d2af7301f7568dfeb2e74143cdf",
+      "bytes": 923,
+      "member": "execution/managed-run/lease/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/managed-run/lease/nvml-queries.jsonl",
+      "sha256": "1a6f795f6ba243a1cde33012d4d32ce91a97911d79d0dd6d6a731c6c6035f7b6",
+      "bytes": 136644,
+      "member": "execution/managed-run/lease/nvml-queries.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/managed-run/status.json",
+      "sha256": "81b0c70914af9f949450f6793083686ce88e73054275aa347ceaacf0e9be0eca",
+      "bytes": 7647,
+      "member": "execution/managed-run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/managed-run/stop.request.json",
+      "sha256": "367abd3ccb9fa98ebaf4e504bee7fe0183f0d3e0206b147bd5ce9ebb345ba9ed",
+      "bytes": 70,
+      "member": "execution/managed-run/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/managed-run/terminal.json",
+      "sha256": "546568600531a6835f686ef2271fc39a16d906e00bcd7cc1ee192f1bd55247b0",
+      "bytes": 9128,
+      "member": "execution/managed-run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/model-owners.json",
+      "sha256": "201b7b2050ef1164da96711c2e285a1f779e879de669155ff248505cee02eb6d",
+      "bytes": 342,
+      "member": "execution/model-owners.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/ordinary-http.json",
+      "sha256": "e55c75f862d4d3458a3b7cd9f1224b32bd3c8bc4d671e7aa45afa2b3adcd8632",
+      "bytes": 439,
+      "member": "execution/ordinary-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/ordinary-request.json",
+      "sha256": "41dc11bceeeb1f52027f5527f8799c04239e8d93e7b0bf3a5ba2e21a3ec457cc",
+      "bytes": 634,
+      "member": "execution/ordinary-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/ordinary-response.json",
+      "sha256": "54b90ddbe850bf62a1c3f7100eae86c94fed954cc78de049a3cf53e97100f68e",
+      "bytes": 276,
+      "member": "execution/ordinary-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/ordinary-wire.bin",
+      "sha256": "3892b124af298f502d4271cd9be01e523c7f6846231a438059a5b1e13b9acf12",
+      "bytes": 306,
+      "member": "execution/ordinary-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/project-answer-http.json",
+      "sha256": "d520686977dd09a1dada4a11395fcb53e1d77e68f3e5642c60a3a8070281a655",
+      "bytes": 447,
+      "member": "execution/project-answer-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/project-answer-request.json",
+      "sha256": "7fdbd66bb6da3f53ba5efc561158576640296effa8d204b745119a75c48047d0",
+      "bytes": 5890,
+      "member": "execution/project-answer-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/project-answer-response.json",
+      "sha256": "747cb47158149345fb3890c23380f36b7009210f13d02186b33f248703afe011",
+      "bytes": 497,
+      "member": "execution/project-answer-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/project-answer-wire.bin",
+      "sha256": "b05dbde80c7703f95aaedb08606c06d0a55821b34da65e54d6c0b7490bd4e7d7",
+      "bytes": 1137,
+      "member": "execution/project-answer-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/project-read-http.json",
+      "sha256": "4398f248b994f36e096db77db83af693045b39f798bde25eeb282964faf653d5",
+      "bytes": 448,
+      "member": "execution/project-read-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/project-read-request.json",
+      "sha256": "c8993c140dccf28fc8dd6fac18ff73483a9c2331f7655b4ba8c871d75fc5b7f8",
+      "bytes": 3442,
+      "member": "execution/project-read-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/project-read-response.json",
+      "sha256": "16dabec8c9352cf963608314023a059563895fe9ee7505ccb6d68124e5a06a74",
+      "bytes": 577,
+      "member": "execution/project-read-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/project-read-wire.bin",
+      "sha256": "6957b70248c35b40ec925987b6936e35b0d6a8ca869a3e8cd18372b57f02960a",
+      "bytes": 1184,
+      "member": "execution/project-read-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/project-tool-result.json",
+      "sha256": "aee350f407c275eb932232f81e0915d2889908704df25b0057ceacda0470eef2",
+      "bytes": 2036,
+      "member": "execution/project-tool-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/project-tool-started.json",
+      "sha256": "c5779ec0140cea225bd922bfcc0bdcfb74fd5cd3dbec320eac8d6cc9cdeedca2",
+      "bytes": 191,
+      "member": "execution/project-tool-started.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/q4t-gateway-10b-20261104.service",
+      "sha256": "4c7609f68bf08c65c5b8006d4b756138a22021e8701505b25712831ccee48208",
+      "bytes": 951,
+      "member": "execution/q4t-gateway-10b-20261104.service"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/result.json",
+      "sha256": "2a857eaad8a59b9048066073842d17170c8e05a298e87ba8a7f8aa44be84a8d8",
+      "bytes": 478,
+      "member": "execution/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/status-snapshots.jsonl",
+      "sha256": "1e9a42107bb0cc7d64e8f544a0224c86525dacb8a9d34685eeb21ca7dfa24e86",
+      "bytes": 13110,
+      "member": "execution/status-snapshots.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/strict-http.json",
+      "sha256": "0d78bf87174be9f7cbda741a6a7c7da5178b728fe6237bf40584ce6daaee72e7",
+      "bytes": 440,
+      "member": "execution/strict-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/strict-request.json",
+      "sha256": "989c32019c9b3977e850b94a4ddc9af66a2a05a4cb4a8bd26729686ca9088dbf",
+      "bytes": 1064,
+      "member": "execution/strict-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/strict-response.json",
+      "sha256": "6b78a4c37588c6104797039f5e4b6989f107691648bd0d16356d2076ed7e401c",
+      "bytes": 284,
+      "member": "execution/strict-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/strict-wire.bin",
+      "sha256": "01892d7c52002fe01292942e43f945312963ad5a2b7b6f4d3d3ff878af040c1a",
+      "bytes": 314,
+      "member": "execution/strict-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/unit-before.json",
+      "sha256": "f45efa80443c17e5ba52f04c31cd5086222d49bfefc64279d87192d97c387092",
+      "bytes": 201,
+      "member": "execution/unit-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/unit-daemon-reload.json",
+      "sha256": "a19196c7a69bf16f38ae5d07e9fbe8c07b49984b8b07c2b7a11c46f5adf9c8ff",
+      "bytes": 122,
+      "member": "execution/unit-daemon-reload.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/unit-final-stop.json",
+      "sha256": "b4c0a642729c32ce4a3b8b9436a3443b39769cb6315199c998a07a523814b905",
+      "bytes": 153,
+      "member": "execution/unit-final-stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/unit-link.json",
+      "sha256": "693f3504a84f8e9f6c00f944e5f1167ac2ec116d9cd6445e945d9eb588c16882",
+      "bytes": 457,
+      "member": "execution/unit-link.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/unit-reset.json",
+      "sha256": "ebd6ed8db13439b025cf181a68814651ce406b833bda1890cdb4f7dd5c6c292e",
+      "bytes": 283,
+      "member": "execution/unit-reset.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/unit-running.json",
+      "sha256": "16d8c220ab57ad2865e8d88f70b0d78b8c3cc87ef5becfeff382f97590aba00c",
+      "bytes": 419,
+      "member": "execution/unit-running.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/unit-start.json",
+      "sha256": "c4681a4e0abb4a9a9d9450d600a9f2e268a066f79dac7c09325736dff3e99630",
+      "bytes": 154,
+      "member": "execution/unit-start.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/unit-verify.json",
+      "sha256": "d850bdf2091695c7e6bb3c45396833c2abafca2c408d8e7c699ee19042448f8e",
+      "bytes": 245,
+      "member": "execution/unit-verify.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/model-private/certificate.pem",
+      "sha256": "8ccdbb637780866800c4ea3813db7682a049de757e19068b9e0e5e0dd83ba04e",
+      "bytes": 1176,
+      "member": "model-private/certificate.pem"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/gateway/certificate.pem",
+      "sha256": "8ccdbb637780866800c4ea3813db7682a049de757e19068b9e0e5e0dd83ba04e",
+      "bytes": 1176,
+      "member": "package-1/gateway/certificate.pem"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/gateway/manifest.json",
+      "sha256": "1faf57d995eb27b247c8e88af65596a21d055c30c64421b0b822bf3752991bcf",
+      "bytes": 1200,
+      "member": "package-1/gateway/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/manifest.json",
+      "sha256": "38c1f215ed11f317dd6b7c46c1a0d4491d9cf84a8c575423ff093810604989fb",
+      "bytes": 2558,
+      "member": "package-1/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439,
+      "member": "package-1/source/docs/serve-openapi-v1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "package-1/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "package-1/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "package-1/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "package-1/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b",
+      "bytes": 18714,
+      "member": "package-1/source/tools/serve_gateway/gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81",
+      "bytes": 18350,
+      "member": "package-1/source/tools/serve_gateway/managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484,
+      "member": "package-1/source/tools/serve_gateway/managed_child.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "package-1/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "package-1/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "package-1/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "package-1/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+      "bytes": 15056,
+      "member": "package-1/source/tools/serve_service/inspection.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "package-1/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+      "bytes": 8993,
+      "member": "package-1/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+      "bytes": 10368,
+      "member": "package-1/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "package-1/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/gateway/certificate.pem",
+      "sha256": "8ccdbb637780866800c4ea3813db7682a049de757e19068b9e0e5e0dd83ba04e",
+      "bytes": 1176,
+      "member": "package-2/gateway/certificate.pem"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/gateway/manifest.json",
+      "sha256": "5baeedea140ee8b8d9b8f98173d2585c2d413072a4341e45a0175a5165adfefc",
+      "bytes": 1200,
+      "member": "package-2/gateway/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/manifest.json",
+      "sha256": "e80e4c91facb009823a52cd77473e69fd94f18c38a7bc7819b84b040b6f1e9c6",
+      "bytes": 2558,
+      "member": "package-2/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439,
+      "member": "package-2/source/docs/serve-openapi-v1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "package-2/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "package-2/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "package-2/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "package-2/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b",
+      "bytes": 18714,
+      "member": "package-2/source/tools/serve_gateway/gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81",
+      "bytes": 18350,
+      "member": "package-2/source/tools/serve_gateway/managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484,
+      "member": "package-2/source/tools/serve_gateway/managed_child.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "package-2/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "package-2/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "package-2/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "package-2/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+      "bytes": 15056,
+      "member": "package-2/source/tools/serve_service/inspection.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "package-2/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+      "bytes": 8993,
+      "member": "package-2/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+      "bytes": 10368,
+      "member": "package-2/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "package-2/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/gateway/certificate.pem",
+      "sha256": "8ccdbb637780866800c4ea3813db7682a049de757e19068b9e0e5e0dd83ba04e",
+      "bytes": 1176,
+      "member": "package-3/gateway/certificate.pem"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/gateway/manifest.json",
+      "sha256": "40217bea533007d5b303ee6bb8faa43741be1bb08b2b3ac7cfa6c7346519c491",
+      "bytes": 1200,
+      "member": "package-3/gateway/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/manifest.json",
+      "sha256": "5043f7fa3fe8b10296b003b7d97dba4c7c5905f3242e9d40af446cfc0e6800f8",
+      "bytes": 2558,
+      "member": "package-3/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439,
+      "member": "package-3/source/docs/serve-openapi-v1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "package-3/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "package-3/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "package-3/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "package-3/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b",
+      "bytes": 18714,
+      "member": "package-3/source/tools/serve_gateway/gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81",
+      "bytes": 18350,
+      "member": "package-3/source/tools/serve_gateway/managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484,
+      "member": "package-3/source/tools/serve_gateway/managed_child.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "package-3/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "package-3/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "package-3/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "package-3/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+      "bytes": 15056,
+      "member": "package-3/source/tools/serve_service/inspection.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "package-3/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+      "bytes": 8993,
+      "member": "package-3/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+      "bytes": 10368,
+      "member": "package-3/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "package-3/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/gateway/certificate.pem",
+      "sha256": "8ccdbb637780866800c4ea3813db7682a049de757e19068b9e0e5e0dd83ba04e",
+      "bytes": 1176,
+      "member": "package-4/gateway/certificate.pem"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/gateway/manifest.json",
+      "sha256": "ea6fb1df7f7d5ef8e6ef1cde95d97ccaec65ee293dfa0c6937a94b6bcc0b3236",
+      "bytes": 1200,
+      "member": "package-4/gateway/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/manifest.json",
+      "sha256": "f640f05cf2840946ef67675a503fe525210ca27a497ff9391dc3378306c989b1",
+      "bytes": 2558,
+      "member": "package-4/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439,
+      "member": "package-4/source/docs/serve-openapi-v1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "package-4/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "package-4/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "package-4/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "package-4/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b",
+      "bytes": 18714,
+      "member": "package-4/source/tools/serve_gateway/gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81",
+      "bytes": 18350,
+      "member": "package-4/source/tools/serve_gateway/managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484,
+      "member": "package-4/source/tools/serve_gateway/managed_child.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "package-4/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "package-4/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "package-4/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "package-4/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+      "bytes": 15056,
+      "member": "package-4/source/tools/serve_service/inspection.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "package-4/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+      "bytes": 8993,
+      "member": "package-4/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+      "bytes": 10368,
+      "member": "package-4/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "package-4/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/plan.json",
+      "sha256": "b097be84e559b3f1f299e4c35a1fd934827dfce5984d397c535773182ed33fb4",
+      "bytes": 6486,
+      "member": "plan.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/postflight-gpu.json",
+      "sha256": "35a85b1cdb7ccfc5a67cd7fe3eb388f76fb0ba19e1532a7b1a21f7ed24cc6b91",
+      "bytes": 2255,
+      "member": "postflight-gpu.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/postflight.json",
+      "sha256": "be769b5dcd052cbb04209f9ccd51093f68a7b6e70806ea0e79a5760258ae0a3b",
+      "bytes": 458,
+      "member": "postflight.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/verified.json",
+      "sha256": "6cf81a3e51811ed99f0bc6f4438a9012b0f5971acd8162fc9474742131b146dd",
+      "bytes": 723,
+      "member": "verified.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp0grrqgrs/run/events.log",
+      "sha256": "cf0671a15e1c54217e07552c9f51066c75810a2fc2e5af17e32297de96df1172",
+      "bytes": 56,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp0grrqgrs/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp0grrqgrs/run/status.json",
+      "sha256": "f562b71991f3756db170921607834ede409ebf2a86056c9fcea86115c980c7a3",
+      "bytes": 428,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp0grrqgrs/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp0grrqgrs/run/terminal.json",
+      "sha256": "afc301b5b3abcae9759ecc9f96659f92dd1084204a76296123af01ed0b03e81b",
+      "bytes": 541,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp0grrqgrs/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp2aayv48j/child-ready",
+      "sha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+      "bytes": 5,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp2aayv48j/child-ready"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp2aayv48j/run/events.log",
+      "sha256": "f48c9082b3ac5271964096b76e9ff923cec37fe95fdd236c194bf0cc018d4cbe",
+      "bytes": 56,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp2aayv48j/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp2aayv48j/run/status.json",
+      "sha256": "1ae3161f3926170bef4f52e4cfcc22533cd802b97fd61c0e88f3cb2304e5bb03",
+      "bytes": 593,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp2aayv48j/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp2aayv48j/run/terminal.json",
+      "sha256": "059210ddc7b9489ef1a38eff0a7ed09adf0cd8e1bfad752ae5c7bb3b4527c4c3",
+      "bytes": 706,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp2aayv48j/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp4ziy3dxy/run/events.log",
+      "sha256": "043b4c7452b798cb286c0e07f5d7aff60ebd3b86e1ce0fc5798542a95d2843ab",
+      "bytes": 56,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp4ziy3dxy/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp4ziy3dxy/run/status.json",
+      "sha256": "635a39e4b6aa01c5451e43f70c3269d049e530ed33b8b245fc58e1fd4ff944d8",
+      "bytes": 427,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp4ziy3dxy/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp4ziy3dxy/run/terminal.json",
+      "sha256": "3334081a186fbf09839d852e0f3f4bf3c1e36b003cb2fac32bc16078f73a7a76",
+      "bytes": 539,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp4ziy3dxy/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp5ecrzm_4/child-ready",
+      "sha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+      "bytes": 5,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp5ecrzm_4/child-ready"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp5ecrzm_4/run/events.log",
+      "sha256": "cf207506f52431a63e0618eac4171446966e9c87dc470bd1523b409352adfe02",
+      "bytes": 110,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp5ecrzm_4/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp5ecrzm_4/run/status.json",
+      "sha256": "af1801ec90b695babc2d534494becc07dff28983976bd20e6208b77a8c3efdf6",
+      "bytes": 705,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp5ecrzm_4/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp5ecrzm_4/run/terminal.json",
+      "sha256": "6d30dc1147090ed76623eb81e247c1aa3d219a9f3c35e93777aa68b0aabf6b7a",
+      "bytes": 818,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp5ecrzm_4/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp8c1z8sg6/child-ready",
+      "sha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+      "bytes": 5,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp8c1z8sg6/child-ready"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp8c1z8sg6/orphan",
+      "sha256": "c3c47f700be7110432f5ec3d9e26e5770094b205afa1fa510c2bff2f9f266cde",
+      "bytes": 7,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp8c1z8sg6/orphan"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp8c1z8sg6/run/events.log",
+      "sha256": "064d12227e9e35bd647fa53e0b5f2352115079d56ea3ad1e2ce48dd6c7e8e01a",
+      "bytes": 109,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp8c1z8sg6/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp8c1z8sg6/run/status.json",
+      "sha256": "8b510047900e4a518cc6a2d7b26325518c726fece678cfb9ec263693d425b83f",
+      "bytes": 689,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp8c1z8sg6/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp8c1z8sg6/run/terminal.json",
+      "sha256": "e29214d778218c9e5556c6993a0ad735c46c7b8b7f5cabfc484f84ce2984540d",
+      "bytes": 802,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp8c1z8sg6/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp8t2cry90/run/events.log",
+      "sha256": "392f80dfc2a6d74c92dae9325fcf97a62f1901793d29bf56ba1fe5039ba2a34f",
+      "bytes": 55,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp8t2cry90/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp8t2cry90/run/status.json",
+      "sha256": "9d8808e26a69462de07bbb030eb9160cf726cc496d5c65aecc111f26e32d7b9a",
+      "bytes": 428,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp8t2cry90/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp8t2cry90/run/terminal.json",
+      "sha256": "5ef171326f4c096777ed7d7d776d1434ec51cbf9302123b0e8c9404db59b6631",
+      "bytes": 541,
+      "member": "cpu-fixtures/managed-gateway-tests/tmp8t2cry90/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpbflbg8ek/child-ready",
+      "sha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+      "bytes": 5,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpbflbg8ek/child-ready"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpbflbg8ek/run/events.log",
+      "sha256": "17ec1842b1674e97eb037c4e0a6c00ae9b76ee680b93aba2085de0ce92cccce8",
+      "bytes": 169,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpbflbg8ek/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpbflbg8ek/run/status.json",
+      "sha256": "bd3bb9feeee95fee1fc4bc4b7ed3dbdbdd180547b5ef44fec5e453ae334e4e59",
+      "bytes": 668,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpbflbg8ek/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpbflbg8ek/run/stop.request.json",
+      "sha256": "e880ecfe496c3be54203aafca876ec926442b5d538035cc92e6d474500bec247",
+      "bytes": 57,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpbflbg8ek/run/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpbflbg8ek/run/terminal.json",
+      "sha256": "b3c7156c0aeaf72c8ea727ded912fa18bfc94f2caf12d54761f4ecde6736c5cb",
+      "bytes": 780,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpbflbg8ek/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpbgs2r6fl/controller.json",
+      "sha256": "781878e7959c7e98b3f0c64cad30bc7ab6e6f5867f031a0f094660acf772bcd1",
+      "bytes": 125,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpbgs2r6fl/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpbgs2r6fl/terminal.json",
+      "sha256": "9a14133804517d919d53091b29dae0dc9f4fe0d230bb92e703c81c824523bc75",
+      "bytes": 53,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpbgs2r6fl/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpd0krg6tu/child-ready",
+      "sha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+      "bytes": 5,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpd0krg6tu/child-ready"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpd0krg6tu/run/events.log",
+      "sha256": "9feac091f7979b2643ceb33b57a22fc55f78c13ae251ca9f89b8d3903a8fcd8d",
+      "bytes": 111,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpd0krg6tu/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpd0krg6tu/run/status.json",
+      "sha256": "2180500c4da22a001f9b70a920bb94cc2456fa62c8297866378a053042be0560",
+      "bytes": 680,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpd0krg6tu/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpd0krg6tu/run/terminal.json",
+      "sha256": "aaa6ca154abb3b77fcacb9f2dda270ec3518438da79d69929766ff6ed80ba88d",
+      "bytes": 793,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpd0krg6tu/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpe4w7eayb/run/events.log",
+      "sha256": "ddf864d185d1717089ba27ab22f2452b8eb500c5a843a5e5344e701086ec7cc9",
+      "bytes": 55,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpe4w7eayb/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpe4w7eayb/run/status.json",
+      "sha256": "c88322917dfb46068c23862086c7ff67f475e63836714dc553ac2eeda9ef3977",
+      "bytes": 427,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpe4w7eayb/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpe4w7eayb/run/terminal.json",
+      "sha256": "d97032fdd5421306ed29011ce90e04ed340cb085a68dc6d84b8b11b23fe38185",
+      "bytes": 540,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpe4w7eayb/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpe56x8pns/run/events.log",
+      "sha256": "4c52fc783b9976d0c388febf3708142bc873186632ad453f7471f072b0b56df2",
+      "bytes": 56,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpe56x8pns/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpe56x8pns/run/status.json",
+      "sha256": "3b4cc99d4e7f02fb0a27b322c4d1b2b33749d1d11150fa3617369ce0877d63f2",
+      "bytes": 428,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpe56x8pns/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpe56x8pns/run/terminal.json",
+      "sha256": "17bcade9665292246ce52fcac24f0514af62c1f23c13669d6ae35940a6644dc8",
+      "bytes": 541,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpe56x8pns/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpholbm0o3/run/events.log",
+      "sha256": "4b30fa78ec7546c92b8dccdd2b13e461d379204cb8f00c5e6f6f124275ab8790",
+      "bytes": 57,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpholbm0o3/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpholbm0o3/run/status.json",
+      "sha256": "8c891521fe0498de34fb5b5f47f9a3819517d1326fc65d3c3878bee8d3d7a2df",
+      "bytes": 390,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpholbm0o3/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpholbm0o3/run/stop.request.json",
+      "sha256": "249a3e7b9a487eff94c3fabc63487dcf2088fe517b3850837d8e50b3039ad56f",
+      "bytes": 56,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpholbm0o3/run/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpholbm0o3/run/terminal.json",
+      "sha256": "d0731f84e00a4d5310be14a96648c71818ca8f86dbdb99199bc2620aac60417e",
+      "bytes": 503,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpholbm0o3/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpicimg8br/controller.json",
+      "sha256": "c9f3f53624ceaabeef293fff758f84ec0941f6dc73805ea67617a939ab685040",
+      "bytes": 89,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpicimg8br/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpicimg8br/stop.request.json",
+      "sha256": "c41b9475396951ae81a49398d53d9f8a904f30547c974fb422ccc198987f4390",
+      "bytes": 63,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpicimg8br/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpir0k7gld/controller.json",
+      "sha256": "c5be80febc21169a75eb06c26638a3355519fcff10f98f17fc34cfcaeb0b4fd2",
+      "bytes": 19,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpir0k7gld/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpqvp3qxtx/child-ready",
+      "sha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+      "bytes": 5,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpqvp3qxtx/child-ready"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpqvp3qxtx/run/events.log",
+      "sha256": "13a62b6c274277470a09f2efabae5aa229495ee990eed1b35e1fc95d8286fa19",
+      "bytes": 169,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpqvp3qxtx/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpqvp3qxtx/run/status.json",
+      "sha256": "c01df916ea53b2206e7fcded308eaf1a4dd3df8e69c065570bb7c407e5a107d7",
+      "bytes": 770,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpqvp3qxtx/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpqvp3qxtx/run/stop.request.json",
+      "sha256": "d532a529a61047019ccee8dbd905fedcee942042cd4f340f26bd5c3c391a25cd",
+      "bytes": 57,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpqvp3qxtx/run/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpqvp3qxtx/run/terminal.json",
+      "sha256": "6179f370465f93fd82cd4148212376ed6216d85a29eb305a1ba30b5bbe72d9f8",
+      "bytes": 883,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpqvp3qxtx/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpu34jb9ji/gateway.log",
+      "sha256": "60ae23ee1dd9974d2f4036aa646f97b13f1a5a8b6304c31faea05c59cb363c65",
+      "bytes": 128,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpu34jb9ji/gateway.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpu34jb9ji/gateway.previous",
+      "sha256": "471fb943aa23c511f6f72f8d1652d9c880cfa392ad80503120547703e56a2be5",
+      "bytes": 128,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpu34jb9ji/gateway.previous"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmputmipzry/run/events.log",
+      "sha256": "2b1c9d20c3879fe6b74a83f2c24ad742f9c7a8a99619ba4003e735b4ed5a5941",
+      "bytes": 56,
+      "member": "cpu-fixtures/managed-gateway-tests/tmputmipzry/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmputmipzry/run/status.json",
+      "sha256": "8cabad12127870be96420251758d0ddc27eda401564dfae2f3020e9f70b82b63",
+      "bytes": 428,
+      "member": "cpu-fixtures/managed-gateway-tests/tmputmipzry/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmputmipzry/run/terminal.json",
+      "sha256": "7a6bd2e382e492567f18eee61bf392bca9d3822d69a6f743e0b22974a4162c05",
+      "bytes": 541,
+      "member": "cpu-fixtures/managed-gateway-tests/tmputmipzry/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpvlyvqem3/controller.json",
+      "sha256": "1489715d4a501c93a2630cb0387142c414f936b198afd6c6a9bf48664179303f",
+      "bytes": 125,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpvlyvqem3/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpvlyvqem3/stop.request.json",
+      "sha256": "e71a567e7e52343b21af64d45aa23f93338af87d39a822aa2513697e435fcb7b",
+      "bytes": 63,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpvlyvqem3/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpxy00lrac/child-ready",
+      "sha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+      "bytes": 5,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpxy00lrac/child-ready"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpxy00lrac/run/events.log",
+      "sha256": "1df2338945ae447ef7dd73d014bca71e7fb752024131d57346ba19c2b974ca9e",
+      "bytes": 55,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpxy00lrac/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpxy00lrac/run/status.json",
+      "sha256": "6332527b7d4fface275788c6d28ddbca50765327c7f8606552053a7c32af74dd",
+      "bytes": 521,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpxy00lrac/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpxy00lrac/run/terminal.json",
+      "sha256": "0e9c80c8a0c61444409a1d98bf3cd50b39486060de5f472ac382528a36c2c7ed",
+      "bytes": 634,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpxy00lrac/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpy0f0nz92/foreign",
+      "sha256": "d59c2a5f721ce135ce54628b1ad8ad8b8eb26c8bbe2e2abe1cdca97e2d6ab446",
+      "bytes": 9,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpy0f0nz92/foreign"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpyfb2eq8q/run/events.log",
+      "sha256": "ce91c39cacf1c0f063ac313c4d145ac770f6ea70b53f27eeb8d783ce3c50fa06",
+      "bytes": 56,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpyfb2eq8q/run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpyfb2eq8q/run/status.json",
+      "sha256": "23a0aef05f66142d823c43aa733b6fd3dbe8120c34597b3448b26bb1ed0dfbf2",
+      "bytes": 428,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpyfb2eq8q/run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpyfb2eq8q/run/terminal.json",
+      "sha256": "9efdc4cfe3b85c4b001d24e80cb5f9fa7ae539fef9b187a12006b62610a1342f",
+      "bytes": 541,
+      "member": "cpu-fixtures/managed-gateway-tests/tmpyfb2eq8q/run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/certificate.pem",
+      "sha256": "50312aac32705d579f0b88cf8770dd7ea9021359b9e0d533ff10710e2adf6084",
+      "bytes": 1176,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/certificate.pem"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/gateway/certificate.pem",
+      "sha256": "50312aac32705d579f0b88cf8770dd7ea9021359b9e0d533ff10710e2adf6084",
+      "bytes": 1176,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/gateway/certificate.pem"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/gateway/manifest.json",
+      "sha256": "21391a1eec319dadfa164bf2ef940465a8dadfc8efec9861d11411c8351e2365",
+      "bytes": 1207,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/gateway/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/manifest.json",
+      "sha256": "b6af1a51216007b05275574c8504a1f5c836cb555e0be473fa37673bc02222cb",
+      "bytes": 2568,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/docs/serve-openapi-v1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b",
+      "bytes": 18714,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_gateway/gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81",
+      "bytes": 18350,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_gateway/managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_gateway/managed_child.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+      "bytes": 15056,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/inspection.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+      "bytes": 8993,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+      "bytes": 10368,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/q4t-managed-gateway-cpu.service",
+      "sha256": "a093ffbe7bb93b883f850c2b73771a2a25fb2e80e1833728cb9dc44a87d2b3b8",
+      "bytes": 923,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/q4t-managed-gateway-cpu.service"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/gateway/certificate.pem",
+      "sha256": "50312aac32705d579f0b88cf8770dd7ea9021359b9e0d533ff10710e2adf6084",
+      "bytes": 1176,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/gateway/certificate.pem"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/gateway/manifest.json",
+      "sha256": "0831dd593ce62a9d4f7f09cc6ecfc0897f918d5b137407fbecc3b52a857e9066",
+      "bytes": 1203,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/gateway/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/manifest.json",
+      "sha256": "3786fe96faa78b5cb236d3fd03d0b62ba30bb86e665521ebbc37a3874a193686",
+      "bytes": 2564,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/docs/serve-openapi-v1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b",
+      "bytes": 18714,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_gateway/gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81",
+      "bytes": 18350,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_gateway/managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_gateway/managed_child.py",
+      "sha256": "e64f007eaed62d8a4883910b74b214159959bdc6565319b1f2c2db63545c87a2",
+      "bytes": 1485,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_gateway/managed_child.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+      "bytes": 15056,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/inspection.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+      "bytes": 8993,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+      "bytes": 10368,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/snapshot/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/gateway/certificate.pem",
+      "sha256": "50312aac32705d579f0b88cf8770dd7ea9021359b9e0d533ff10710e2adf6084",
+      "bytes": 1176,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/gateway/certificate.pem"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/gateway/manifest.json",
+      "sha256": "5b3dd8bd68dbb8fe628e850af6d5f72b54fa9b716b156222cc1bf23ec9b0d970",
+      "bytes": 1199,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/gateway/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/manifest.json",
+      "sha256": "89d4b68f6da89d23fa905157fa5a5c22f7e76a1ad557a44c6cc16d0a71a799ad",
+      "bytes": 2560,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e",
+      "bytes": 25439,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/docs/serve-openapi-v1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b",
+      "bytes": 18714,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_gateway/gateway.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81",
+      "bytes": 18350,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_gateway/managed.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea",
+      "bytes": 1484,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_gateway/managed_child.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a",
+      "bytes": 15056,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/inspection.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d",
+      "bytes": 8993,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b",
+      "bytes": 10368,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit-verify.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "cpu-fixtures/managed-gateway-package-tests/tmp7loo6a4v/unit-verify.log"
+    }
+  ],
+  "local_artifacts": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/model-private/key.pem",
+      "sha256": "115d300d8fee15aafca16b7365690140e9d2db1367e185626f4cd55e0f71098d",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/model-private/policy-private.json",
+      "sha256": "3f56948226477fcbe20a0c0df555d581e2827f0a169e80347df38de91bc28b39",
+      "bytes": 371
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/gateway/nginx.conf",
+      "sha256": "9b743a778819bd023d20e9b2461cecb7f10a9e85d5e7202042c1894eb9069da9",
+      "bytes": 8757
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/gateway/private-key.pem",
+      "sha256": "115d300d8fee15aafca16b7365690140e9d2db1367e185626f4cd55e0f71098d",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/gateway/syntax-private.log",
+      "sha256": "de8d0d8be687ca12c37e5ea470127f06e0e029bca649ec0c71584568f3ed62ab",
+      "bytes": 294
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-1/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/gateway/nginx.conf",
+      "sha256": "8bd6289b6780158efe0d3b04e2d86cc5c7a30147c147337c437bb09f7323e061",
+      "bytes": 8757
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/gateway/private-key.pem",
+      "sha256": "115d300d8fee15aafca16b7365690140e9d2db1367e185626f4cd55e0f71098d",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/gateway/syntax-private.log",
+      "sha256": "af3b8f25d6a61c7521eede372af51a11ec575dc4b4cc06efab163ec12cd5f7ff",
+      "bytes": 294
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-2/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/gateway/nginx.conf",
+      "sha256": "4d91fecf5b4cb450643e2b386521af9a73315092d130647d19885aefce4e0111",
+      "bytes": 8757
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/gateway/private-key.pem",
+      "sha256": "115d300d8fee15aafca16b7365690140e9d2db1367e185626f4cd55e0f71098d",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/gateway/runtime/nginx.pid",
+      "sha256": "13a31178e4a50a7dab3b8f66de4d8b10d2c4dbf9aa390407ac099c01e0dcb150",
+      "bytes": 8
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/gateway/syntax-private.log",
+      "sha256": "779a95f9c59b56090cca74e4b77d06ebcec7c42dbdb6e58219ae7892d4e941ec",
+      "bytes": 294
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-3/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/gateway/nginx.conf",
+      "sha256": "1bd196c6818e362c794e316fa64e1480ef7f592d0b700a81873eebf378ce8f1c",
+      "bytes": 8757
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/gateway/private-key.pem",
+      "sha256": "115d300d8fee15aafca16b7365690140e9d2db1367e185626f4cd55e0f71098d",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/gateway/syntax-private.log",
+      "sha256": "732bebaa7f2b29deb94b68cbdef1398f64615f20abbfe193cdfe9f639dbd7840",
+      "bytes": 294
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/package-4/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp2aayv48j/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp5ecrzm_4/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp61dnic6v/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmp8c1z8sg6/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpbflbg8ek/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpd0krg6tu/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpqvp3qxtx/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-tests/tmpxy00lrac/gateway/runtime/managed.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/key.pem",
+      "sha256": "1a86b558a5320ed21bd84fb25920ec1e01bd0549cb831924fcceed09c845d888",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/gateway/nginx.conf",
+      "sha256": "a63db634769c438e64280d891c810257c42b2b1772f532d83165a432500e9cca",
+      "bytes": 8834
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/gateway/private-key.pem",
+      "sha256": "1a86b558a5320ed21bd84fb25920ec1e01bd0549cb831924fcceed09c845d888",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/gateway/syntax-private.log",
+      "sha256": "dbc70381f3f2664d4361324ee4b65e9ce2f0d8f06735d89fe0704dd7e2271f68",
+      "bytes": 314
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/no-overwrite/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/policy-private.json",
+      "sha256": "df7da2b8e0b19f0a7b7b1418ab42b90418e89c035f38db5904791cdda1625814",
+      "bytes": 286
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/gateway/nginx.conf",
+      "sha256": "4de5f141f556348257ff8d5e61cf36b33e4d1a1401bcdf997b8ccb7197d65951",
+      "bytes": 8802
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/gateway/private-key.pem",
+      "sha256": "1a86b558a5320ed21bd84fb25920ec1e01bd0549cb831924fcceed09c845d888",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/gateway/syntax-private.log",
+      "sha256": "54829f5f989901cbc598c2111e2529e31bd93733dc8d0bbfac4e250ec0702e7f",
+      "bytes": 306
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/snapshot/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/gateway/nginx.conf",
+      "sha256": "1d9d826a2bf45634a35cf7c9ac8406fa4ca62d326be4f9afa81bc891bf1b1780",
+      "bytes": 8770
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/gateway/private-key.pem",
+      "sha256": "1a86b558a5320ed21bd84fb25920ec1e01bd0549cb831924fcceed09c845d888",
+      "bytes": 1704
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/gateway/syntax-private.log",
+      "sha256": "9d859c97d2e2a80fb2cde019186dd1635d6d672ddb5cdb99c003ee3fa6b07402",
+      "bytes": 298
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/build/managed-gateway-package-tests/tmp7loo6a4v/unit/nginx",
+      "sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "bytes": 1760872
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-inspection-20261103/package/q4t",
+      "sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+      "bytes": 7159544
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-inspection-20261103/package/manifest.json",
+      "sha256": "160796c3fc65d44cb36967952ca300abd48eb8228f59a8afee597a6b685e8606",
+      "bytes": 4157
+    }
+  ],
+  "aliases": {
+    "plan.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/plan.json",
+      "sha256": "b097be84e559b3f1f299e4c35a1fd934827dfce5984d397c535773182ed33fb4",
+      "bytes": 6486
+    },
+    "result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/execution/result.json",
+      "sha256": "2a857eaad8a59b9048066073842d17170c8e05a298e87ba8a7f8aa44be84a8d8",
+      "bytes": 478
+    },
+    "verified.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/verified.json",
+      "sha256": "6cf81a3e51811ed99f0bc6f4438a9012b0f5971acd8162fc9474742131b146dd",
+      "bytes": 723
+    },
+    "postflight.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-gateway-managed-20261104/postflight.json",
+      "sha256": "be769b5dcd052cbb04209f9ccd51093f68a7b6e70806ea0e79a5760258ae0a3b",
+      "bytes": 458
+    }
+  },
+  "archiver": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/managed_report.py",
+    "sha256": "c74c37ccd8fb49c3a5ea89a6c320cf7e61a765899db65756444899dc674dc634",
+    "bytes": 15229
+  },
+  "scope": "Bounded loopback gateway supervision, not actual LAN/long-soak acceptance.",
+  "private_material": "Keys, policies, private nginx configuration and syntax diagnostics remain local by hash.",
+  "cpu_fixture_limit": "Deliberate symlink-rejection fixture is not followed or archived. Target contents remain recorded.",
+  "prior_cpu_failures_retained": true,
+  "long_validation_owner": "user",
+  "day_started": false
+}

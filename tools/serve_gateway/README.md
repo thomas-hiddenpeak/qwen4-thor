@@ -6,6 +6,11 @@
 网关依赖固定nginx1.30.6（含SSL模块），当前验证包仅在工作目录解包，
 没有系统安装、timer、自动重启或内网监听。
 
+持续运行入口已补齐[托管网关](MANAGED.md)：固定包内源码、每秒核对
+依赖身份、正常排空/异常回收、每代次8.5MiB有界日志与systemd模板。
+本机真实模型4类生命周期已通过，实际LAN配置和常驻安装仍待交接。
+下面保留基础配置与底层prepare/check/run说明。
+
 2026-11-04已完成[本机TLS与双客户端短验](../../docs/SERVE_GATEWAY_RESULT_2026-11-04.md)：
 普通/严格输出、真实工具与引用回填、限额、取消、排队及恢复通过。
 首轮取消路径错接及修复前失败保持；修复已与正式API合同交叉核对。
@@ -69,9 +74,10 @@ python3 -B tools/serve_gateway/gateway.py run \
 ```
 
 run前台执行nginx，没有后台自启动。通过拥有该前台进程的终端/服务
-管理器停止；不要按遗留PID文件批量kill。正式部署应由受控服务单元
-拥有进程与日志，使用[既有运维留存策略](../../docs/SERVE_OPERATIONS_2026-11-03.md)。
-日志stdout需有界收集；当前工具不自动安装日志服务。凭据轮换：停止/
+管理器停止；不要按遗留PID文件批量kill。持续运行使用
+[managed入口](MANAGED.md)拥有进程及有界日志，结合
+[既有运维留存策略](../../docs/SERVE_OPERATIONS_2026-11-03.md)。
+底层run的stdout仍需外部收集。凭据轮换：停止/
 排空网关，生成不含旧key的新包，再显式run；在途请求不作自动重放。
 
 允许GET `/v1/models`、`/v1/capabilities`，POST `/v1/chat/completions`、
