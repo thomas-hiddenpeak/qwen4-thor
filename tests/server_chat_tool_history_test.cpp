@@ -256,14 +256,15 @@ Q4T_TEST(chat_tool_history_media_order_guard) {
     Json request;
     Q4T_CHECK(
         ParseRequest(List({kUser, kPair, result, Result("a")}), &request));
-    // Even experimental allow_media cannot reorder only the rendered markers.
+    // Media is user-only even with experimental allow_media. Both ordered and
+    // reordered tool results must reject it before template/decoder work.
     Q4T_CHECK(
         !q4t::server::ValidateChatContract(request, "qwen3.8-flash-next", true)
              .ok());
     Q4T_CHECK(
         ParseRequest(List({kUser, kPair, Result("a"), result}), &request));
     Q4T_CHECK(
-        q4t::server::ValidateChatContract(request, "qwen3.8-flash-next", true)
+        !q4t::server::ValidateChatContract(request, "qwen3.8-flash-next", true)
             .ok());
   }
   Json request;

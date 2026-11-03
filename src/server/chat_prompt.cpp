@@ -4,77 +4,17 @@
 #include <utility>
 
 #include "q4t/server/chat_template.h"
+#include "q4t/server/media_admission.h"
 
 namespace q4t::server {
 namespace {
-// Decode a base64 string into raw bytes. Whitespace and '=' padding are
-// ignored; both the standard and URL-safe alphabets are accepted. Returns
-// false on an invalid character.
-bool Base64Decode(const std::string& in, std::string* out) {
-  static const std::vector<int8_t> kDec = [] {
-    std::vector<int8_t> t(256, -1);
-    const char* a =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    for (int i = 0; i < 64; ++i)
-      t[static_cast<unsigned char>(a[i])] = static_cast<int8_t>(i);
-    t[static_cast<unsigned char>('-')] = 62;  // url-safe
-    t[static_cast<unsigned char>('_')] = 63;
-    return t;
-  }();
-  out->clear();
-  unsigned val = 0;
-  int bits = -8;
-  for (unsigned char c : in) {
-    if (c == '=' || c == '\n' || c == '\r' || c == ' ' || c == '\t') continue;
-    const int8_t d = kDec[c];
-    if (d < 0) return false;
-    val = (val << 6) | d;
-    bits += 6;
-    if (bits >= 0) {
-      out->push_back(static_cast<char>((val >> bits) & 0xFF));
-      bits -= 8;
-    }
-  }
-  return true;
-}
-
-// Extract raw image bytes from an OpenAI image_url. Supports base64 data URLs
-// ("data:image/png;base64,....") and raw base64 strings. Remote http(s) URLs
-// are rejected (the server performs no network fetches).
-bool DecodeImageUrl(const std::string& url, std::string* out,
-                    std::string* err) {
-  const std::string kData = "data:";
-  const std::string kB64 = "base64,";
-  std::string b64;
-  if (url.rfind(kData, 0) == 0) {
-    const size_t comma = url.find(kB64);
-    if (comma == std::string::npos) {
-      if (err) *err = "unsupported data url (need base64 payload)";
-      return false;
-    }
-    b64 = url.substr(comma + kB64.size());
-  } else if (url.rfind("http://", 0) == 0 || url.rfind("https://", 0) == 0) {
-    if (err) *err = "remote image_url not supported (use a base64 data url)";
-    return false;
-  } else {
-    b64 = url;  // assume a raw base64 payload
-  }
-  if (!Base64Decode(b64, out)) {
-    if (err) *err = "base64 decode failed";
-    return false;
-  }
-  if (out->empty()) {
-    if (err) *err = "empty image payload";
-    return false;
-  }
-  return true;
-}
-
 // Render and collect content once, preserving model vision boundaries and
 // item order. HTTP video_frames is the transport adapter for a video item.
 std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
                           std::string* err, bool add_vision_id,
-                          int* image_count, int* video_count) {
+                          int* image_count, int* video_count,
+                          size_t message_index, std::string* error_param,
+                          std::string* error_code) {
   std::string out;
   const io::Json* content = m.Find("content");
   if (content == nullptr || content->IsNull()) return out;
@@ -83,11 +23,15 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
     *err = "Unexpected content type.";
     return out;
   }
-  for (const io::Json& part : content->array) {
+  for (size_t part_index = 0; part_index < content->array.size();
+       ++part_index) {
+    const auto& part = content->array[part_index];
+    *error_param = "messages[" + std::to_string(message_index) + "].content[" +
+                   std::to_string(part_index) + "]";
     const io::Json* iu = part.Find("image_url");
     if (iu != nullptr) {
-      if (IsChatInstructionRole(m.GetString("role"))) {
-        *err = "Instruction message cannot contain images.";
+      if (m.GetString("role") != "user") {
+        *err = "Only user messages may contain images.";
         return {};
       }
       std::string url;
@@ -96,10 +40,24 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       } else if (iu->IsString()) {
         url = iu->str;
       }
-      std::string bytes;
-      if (!DecodeImageUrl(url, &bytes, err)) return std::string();
       VisionItem item;
       item.kind = VisionItem::kImage;
+      item.message_index = message_index;
+      item.part_index = part_index;
+      *error_param = MediaInputParam(item);
+      if (items->size() >= vision::kMediaPlanItems) {
+        *error_code = "media_item_limit";
+        *err = *error_code;
+        return {};
+      }
+      std::string bytes;
+      const char* code = "ok";
+      const auto decoded = DecodeMediaUrl(url, &bytes, &code);
+      if (!decoded) {
+        *error_code = code;
+        *err = decoded.message();
+        return {};
+      }
       item.frames.push_back(std::move(bytes));
       items->push_back(std::move(item));
       ++*image_count;
@@ -110,8 +68,8 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
     }
     const io::Json* vf = part.Find("video_frames");
     if (vf != nullptr) {
-      if (IsChatInstructionRole(m.GetString("role"))) {
-        *err = "Instruction message cannot contain videos.";
+      if (m.GetString("role") != "user") {
+        *err = "Only user messages may contain videos.";
         return {};
       }
       if (!vf->IsArray()) {
@@ -120,7 +78,20 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
       }
       VisionItem item;
       item.kind = VisionItem::kVideo;
-      for (const io::Json& f : vf->array) {
+      item.message_index = message_index;
+      item.part_index = part_index;
+      *error_param = MediaInputParam(item);
+      if (items->size() >= vision::kMediaPlanItems || vf->array.size() < 2 ||
+          vf->array.size() > vision::kMediaPlanFrames) {
+        *error_code = items->size() >= vision::kMediaPlanItems
+                          ? "media_item_limit"
+                          : "media_frame_limit";
+        *err = *error_code;
+        return {};
+      }
+      for (size_t frame = 0; frame < vf->array.size(); ++frame) {
+        const auto& f = vf->array[frame];
+        *error_param = MediaInputParam(item, frame);
         std::string url;
         if (f.IsObject()) {
           url = f.GetString("url", "");
@@ -128,7 +99,13 @@ std::string RenderContent(const io::Json& m, std::vector<VisionItem>* items,
           url = f.str;
         }
         std::string bytes;
-        if (!DecodeImageUrl(url, &bytes, err)) return std::string();
+        const char* code = "ok";
+        const auto decoded = DecodeMediaUrl(url, &bytes, &code);
+        if (!decoded) {
+          *error_code = code;
+          *err = decoded.message();
+          return {};
+        }
         item.frames.push_back(std::move(bytes));
       }
       if (item.frames.empty()) {
@@ -158,16 +135,20 @@ Status PrepareChatPrompt(const io::Json& request,
                          const OutputConstraints& constraints,
                          std::string* prompt_out,
                          std::vector<VisionItem>* items_out,
-                         std::string* error_param) {
+                         std::string* error_param, std::string* error_code) {
   prompt_out->clear();
   items_out->clear();
   error_param->clear();
+  std::string local_code;
+  if (!error_code) error_code = &local_code;
+  *error_code = "invalid_request";
   const auto adapted = constraints.active
                            ? ConstraintTemplateRequest(request, constraints)
                            : io::Json{};
   const auto& req = constraints.active ? adapted : request;
   const auto fail = [&](std::string message) {
-    *error_param = req.Has("messages") ? "messages" : "prompt";
+    if (error_param->empty())
+      *error_param = req.Has("messages") ? "messages" : "prompt";
     return Status::Fail(std::move(message));
   };
   std::string& prompt = *prompt_out;
@@ -180,12 +161,14 @@ Status PrepareChatPrompt(const io::Json& request,
     if (!vision_id) vision_id = req.Find("add_vision_id");
     int image_count = 0, video_count = 0;
     std::vector<std::string> contents;
-    for (const auto& message : messages->array) {
+    for (size_t index = 0; index < messages->array.size(); ++index) {
+      const auto& message = messages->array[index];
       std::string error;
-      contents.push_back(RenderContent(message, &items, &error,
-                                       vision_id && vision_id->boolean,
-                                       &image_count, &video_count));
+      contents.push_back(RenderContent(
+          message, &items, &error, vision_id && vision_id->boolean,
+          &image_count, &video_count, index, error_param, error_code));
       if (!error.empty()) return fail(error);
+      error_param->clear();
     }
     const auto rendered = RenderChatPrompt(req, contents, &prompt);
     if (!rendered) return fail(rendered.message());

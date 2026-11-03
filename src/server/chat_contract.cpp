@@ -1,4 +1,5 @@
 #include "q4t/server/chat_contract.h"
+#include "q4t/vision/media_plan.h"
 
 #include <cmath>
 #include <initializer_list>
@@ -248,6 +249,7 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
     return invalid("messages", "messages must be a nonempty array");
   status = ValidateChatMessageProfile(*messages, error_param);
   if (!status) return status;
+  size_t media_items = 0;
   for (size_t index = 0; index < messages->array.size(); ++index) {
     const auto& message = messages->array[index];
     *error_param = "messages[" + std::to_string(index) + "]";
@@ -267,7 +269,12 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
     const auto* content = message.Find("content");
     if (!content || content->IsNull() || content->IsString()) continue;
     if (!content->IsArray()) return Status::Fail("invalid message content");
-    for (const auto& part : content->array) {
+    for (size_t part_index = 0; part_index < content->array.size();
+         ++part_index) {
+      const auto& part = content->array[part_index];
+      const auto part_param = "messages[" + std::to_string(index) +
+                              "].content[" + std::to_string(part_index) + "]";
+      *error_param = part_param;
       if (!part.IsObject())
         return Status::Fail("content part must be an object");
       const std::string type = part.GetString("type");
@@ -288,6 +295,52 @@ Status ValidateChatContract(const io::Json& req, const std::string& model_name,
         if (!allow_media)
           return Status::Fail(
               "media disabled; experimental --allow-media required");
+        if (message.GetString("role") != "user")
+          return Status::Fail("media requires user role");
+        const bool image = part.Has("image_url");
+        const bool video = part.Has("video_frames");
+        if (image == video || type == "video_url")
+          return Status::Fail("exactly one supported media part is required");
+        status = image ? Fields(part, {"type", "image_url"})
+                       : Fields(part, {"type", "video_frames"});
+        if (!status) return status;
+        if (const auto* kind = part.Find("type");
+            kind && (!kind->IsString() ||
+                     kind->str != (image ? "image_url" : "video_frames")))
+          return Status::Fail("media part type does not match its payload");
+        if (++media_items > vision::kMediaPlanItems)
+          return Status::Fail("media item limit exceeded");
+        const auto url = [&](const io::Json& value) -> Status {
+          if (value.IsString())
+            return value.str.empty() ? Status::Fail("media URL is empty")
+                                     : Status();
+          auto checked = Fields(value, {"url", "detail"});
+          if (!checked) return checked;
+          const auto* link = value.Find("url");
+          if (!link || !link->IsString() || link->str.empty())
+            return Status::Fail("media URL must be a nonempty string");
+          if (const auto* detail = value.Find("detail");
+              detail && (!detail->IsString() || detail->str != "auto"))
+            return Status::Fail("only detail=auto is implemented");
+          return Status();
+        };
+        if (image) {
+          *error_param = part_param + ".image_url";
+          status = url(*part.Find("image_url"));
+          if (!status) return status;
+        } else {
+          *error_param = part_param + ".video_frames";
+          const auto* frames = part.Find("video_frames");
+          if (!frames->IsArray() || frames->array.size() < 2 ||
+              frames->array.size() > vision::kMediaPlanFrames)
+            return Status::Fail("video requires 2..32 frames");
+          for (size_t frame = 0; frame < frames->array.size(); ++frame) {
+            *error_param =
+                part_param + ".video_frames[" + std::to_string(frame) + "]";
+            status = url(frames->array[frame]);
+            if (!status) return status;
+          }
+        }
       }
     }
   }

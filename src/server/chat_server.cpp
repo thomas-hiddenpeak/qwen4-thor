@@ -517,6 +517,18 @@ Status ChatServer::Start(const ServerOptions& opts) {
     if (!s.ok()) return s;
     std::unique_ptr<io::WeightLoader> loader(raw_loader);
     vision::VisionConfig vcfg;
+    if (vcfg.patch_size != proc_cfg_.patch_size ||
+        vcfg.temporal_patch_size != proc_cfg_.temporal_patch_size ||
+        vcfg.spatial_merge_size != proc_cfg_.merge_size ||
+        vcfg.in_channels != 3)
+      return Status::Fail("vision processor configuration mismatch");
+    const auto attention = vision::VisionAttentionSharedBytes(
+        &vision_device_budget_.attention_shared_bytes);
+    if (attention != cudaSuccess)
+      return Status::Fail("vision attention capability unavailable");
+    vision_device_budget_.hidden_size = vcfg.hidden_size;
+    vision_device_budget_.intermediate_size = vcfg.intermediate_size;
+    vision_device_budget_.out_hidden_size = vcfg.out_hidden_size;
     auto tower = std::make_unique<vision::VisionTower>();
     std::string error;
     if (detail::DeviceMemoryFault("startup.vision_load", nullptr) !=

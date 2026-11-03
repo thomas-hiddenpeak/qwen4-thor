@@ -2,6 +2,7 @@
 
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/chat_plan.h"
+#include "q4t/server/media_admission.h"
 #include "q4t/server/chat_template.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
@@ -18,7 +19,8 @@ std::string Quote(const std::string& value) {
 }  // namespace
 
 std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
-                                 bool mtp_enabled) {
+                                 bool mtp_enabled,
+                                 uint64_t media_attention_shared_bytes) {
   const bool constrained = kStructuredDecodingAvailable;
   const std::string options =
       constrained ? R"("tool_choice":["auto","none","required","named"],)"
@@ -95,7 +97,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("invalid_input_http_status":400,"device_failure_http_status":503,)"
          R"("device_failure_code":"device_memory_failure",)"
          R"("workspace_oom":"clear_workspace_keep_weights",)"
-         R"("source_decode_hard_budget":false},)"
+         R"("source_decode_hard_budget":false,)"
+         R"("decoder_owned_allocation_quota":true},)"
          R"("backend_cleanup":{"profile":"q4t-linked-cuda-cleanup-v1",)"
          R"("scope":"production_q4t_direct_cuda_calls",)"
          R"("unhandled_failure":"immediate_exit_1",)"
@@ -199,8 +202,9 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("reasoning_effort":["low","medium","xhigh"]},)"
          R"("runtime":{"media_enabled":)" +
          (allow_media ? "true" : "false") + R"(,"mtp_enabled":)" +
-         (mtp_enabled ? "true" : "false") +
-         R"(},"http":{"request_id_header":"X-Request-Id",)"
+         (mtp_enabled ? "true" : "false") + R"(},"media":)" +
+         MediaLimitsJson(media_attention_shared_bytes) +
+         R"(,"http":{"request_id_header":"X-Request-Id",)"
          R"("trace_id_independent_of_completion":true,"random_id_bits":128,)"
          R"("trace_id_max_bytes":128,"json_content_type_required":true,)"
          R"("charset":"utf-8","wrong_method_status":405,)"

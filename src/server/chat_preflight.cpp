@@ -18,6 +18,8 @@ ChatPlanConfig ChatServer::PlanningConfig() const {
           .request_deadline_ms = request_deadline_ms_,
           .admission = admission_limits_,
           .allow_media = allow_media_,
+          .media_attention_shared_bytes =
+              vision_device_budget_.attention_shared_bytes,
           .structured = kStructuredDecodingAvailable,
           .session_cache = session_cache_.Enabled(),
           .prefix_cache = prefix_cache_.Enabled(),

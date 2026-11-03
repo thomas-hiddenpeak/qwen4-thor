@@ -140,7 +140,7 @@ Q4T_TEST(chat_contract_media_rejected_before_decoding) {
   const std::string image = R"({"messages":[{"role":"user","content":[
     {"type":"image_url","image_url":{"url":"not even valid base64"}}]}]})";
   const std::string video = R"({"messages":[{"role":"user","content":[
-    {"video_frames":["invalid"]}]}]})";
+    {"video_frames":["invalid","invalid"]}]}]})";
   Q4T_CHECK(!Accept(image));
   Q4T_CHECK(!Accept(video));
   // Explicit experimental mode only passes this policy gate, not decoding.

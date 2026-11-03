@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <cstdint>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -25,6 +26,7 @@ struct ChatPlanConfig {
   int request_deadline_ms = 1200000;
   AdmissionLimits admission;
   bool allow_media = false;
+  uint64_t media_attention_shared_bytes = 0;
   bool structured = false;
   bool session_cache = false;
   bool prefix_cache = false;

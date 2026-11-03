@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/media_admission.h"
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/http_response.h"
@@ -286,6 +287,8 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"(,"mtp_k":)" +
          (mtp_enabled ? std::to_string(requested.mtp_k) : "null") +
          R"(,"media_enabled":)" + Bool(config.allow_media) +
+         R"(,"media_limits":)" +
+         MediaLimitsJson(config.media_attention_shared_bytes) +
          R"(,"structured_backend":)" + Bool(config.structured) +
          R"(,"session_cache":)" + Bool(config.session_cache) +
          R"(,"prefix_cache":)" + Bool(config.prefix_cache) +
@@ -307,7 +310,8 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"(},"memory_admission":{"enabled":)" +
          Bool(requested.min_available_memory_mib != 0) +
          R"(,"source":"linux_global_mem_available","min_available_mib":)" +
-         number("--min-available-memory-mib", requested.min_available_memory_mib,
+         number("--min-available-memory-mib",
+                requested.min_available_memory_mib,
                 defaults.min_available_memory_mib,
                 requested.min_available_memory_mib, "zero_disables") +
          R"(,"recovery_margin_mib":)" +

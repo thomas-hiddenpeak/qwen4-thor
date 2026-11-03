@@ -192,6 +192,7 @@ add_library(q4t_model STATIC
   src/mtp/subset_head.cpp
   src/mtp/suffix_drafter.cpp
   src/vision/vision.cu
+  src/vision/media_plan.cpp
   src/vision/processor.cpp)
 target_include_directories(q4t_model PUBLIC include third_party)
 target_link_libraries(q4t_model PUBLIC q4t_trace q4t_io q4t_quant q4t_ple CUDA::cudart
@@ -274,6 +275,7 @@ add_library(q4t_server STATIC src/server/chat_server.cpp
   src/server/grammar_worker.cpp
   src/server/structured_decoder.cpp
   src/server/chat_input.cpp
+  src/server/media_admission.cpp
   src/server/chat_prompt.cpp
   src/server/chat_plan.cpp
   src/server/chat_preflight.cpp
@@ -446,7 +448,9 @@ if(Q4T_BUILD_TESTS)
     src/server/input_contract.cpp
     src/server/chat_contract.cpp
     src/server/chat_prompt.cpp
+    src/server/media_admission.cpp
     src/server/chat_plan.cpp
+    tests/server_media_admission_test.cpp
     tests/server_chat_plan_test.cpp
     tests/server_sequence_admission_test.cpp
     src/server/server_options.cpp
@@ -564,6 +568,7 @@ if(Q4T_BUILD_TESTS)
 
   add_executable(q4t_host_memory_contract EXCLUDE_FROM_ALL
     tools/serve_media_failure/host_contract.cpp src/server/http_response.cpp
+    src/vision/media_plan.cpp
     src/vision/processor.cpp)
   target_include_directories(q4t_host_memory_contract PRIVATE include third_party)
   target_link_libraries(q4t_host_memory_contract PRIVATE Threads::Threads)

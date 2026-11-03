@@ -309,13 +309,11 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
   return {};
 }
 
-MediaPlanResult PlanMedia(std::span<const MediaPlanInput> inputs,
-                          const ProcessorConfig& image_config,
-                          const ProcessorConfig& video_config,
-                          const MediaPlanLimits& limits,
-                          const MediaContextBudget& context,
-                          const MediaDeviceBudget& device,
-                          MediaPlan* out) noexcept {
+MediaPlanResult PlanMediaSources(std::span<const MediaPlanInput> inputs,
+                                 const ProcessorConfig& image_config,
+                                 const ProcessorConfig& video_config,
+                                 const MediaPlanLimits& limits,
+                                 MediaPlan* out) noexcept {
   if (!out) return Fail(MediaPlanError::kInvalidConfig);
   *out = {};
   if (!ValidConfig(image_config) || !ValidConfig(video_config) ||
@@ -324,22 +322,11 @@ MediaPlanResult PlanMedia(std::span<const MediaPlanInput> inputs,
       limits.max_frames_per_item > kMediaPlanFrames ||
       !limits.max_encoded_bytes || !limits.max_source_edge ||
       !limits.max_source_pixels || !limits.max_decoded_rgb_bytes ||
-      !limits.max_patches || !limits.max_workspace_bytes ||
-      !context.max_prefill || context.max_sequence < 2 ||
-      context.max_prefill > kIntMax || context.max_sequence > kIntMax ||
-      device.hidden_size <= 0 || device.intermediate_size <= 0 ||
-      device.out_hidden_size <= 0) {
+      !limits.max_patches || !limits.max_workspace_bytes) {
     return Fail(MediaPlanError::kInvalidConfig);
   }
   if (inputs.empty() || inputs.size() > limits.max_items) {
     return Fail(MediaPlanError::kItemCount);
-  }
-  if (context.placeholders != inputs.size() ||
-      context.prompt_tokens_with_placeholders < context.placeholders) {
-    return Fail(MediaPlanError::kPlaceholderCount);
-  }
-  if (!device.attention_shared_bytes) {
-    return Fail(MediaPlanError::kDeviceLimitUnknown);
   }
   MediaPlan plan;
   for (size_t i = 0; i < inputs.size(); ++i) {
@@ -391,9 +378,6 @@ MediaPlanResult PlanMedia(std::span<const MediaPlanInput> inputs,
         item.kind == MediaKind::kImage ? image_config : video_config,
         &item.geometry);
     if (!geometry) return Fail(geometry.error, i);
-    if (item.geometry.attention_shared_bytes > device.attention_shared_bytes) {
-      return Fail(MediaPlanError::kAttentionSharedBytes, i);
-    }
     if (!Add(plan.patches, item.geometry.patches, &plan.patches) ||
         plan.patches > limits.max_patches) {
       return Fail(MediaPlanError::kPatchCount, i);
@@ -406,6 +390,44 @@ MediaPlanResult PlanMedia(std::span<const MediaPlanInput> inputs,
       return Fail(MediaPlanError::kIntegerRange, i);
     }
     plan.items[i] = item;
+  }
+  plan.item_count = inputs.size();
+  *out = plan;
+  return {};
+}
+
+MediaPlanResult PlanMedia(std::span<const MediaPlanInput> inputs,
+                          const ProcessorConfig& image_config,
+                          const ProcessorConfig& video_config,
+                          const MediaPlanLimits& limits,
+                          const MediaContextBudget& context,
+                          const MediaDeviceBudget& device,
+                          MediaPlan* out) noexcept {
+  if (!out) return Fail(MediaPlanError::kInvalidConfig);
+  *out = {};
+  if (!context.max_prefill || context.max_sequence < 2 ||
+      context.max_prefill > kIntMax || context.max_sequence > kIntMax ||
+      device.hidden_size <= 0 || device.intermediate_size <= 0 ||
+      device.out_hidden_size <= 0) {
+    return Fail(MediaPlanError::kInvalidConfig);
+  }
+  // Source policy and all frames are checked without decoder/device activity.
+  MediaPlan plan;
+  const auto sources =
+      PlanMediaSources(inputs, image_config, video_config, limits, &plan);
+  if (!sources) return sources;
+  if (context.placeholders != inputs.size() ||
+      context.prompt_tokens_with_placeholders < context.placeholders) {
+    return Fail(MediaPlanError::kPlaceholderCount);
+  }
+  if (!device.attention_shared_bytes) {
+    return Fail(MediaPlanError::kDeviceLimitUnknown);
+  }
+  for (size_t i = 0; i < plan.item_count; ++i) {
+    if (plan.items[i].geometry.attention_shared_bytes >
+        device.attention_shared_bytes) {
+      return Fail(MediaPlanError::kAttentionSharedBytes, i);
+    }
   }
   // Bound signed element offsets/ceil-div used by the current CUDA kernels.
   uint64_t count = 0;

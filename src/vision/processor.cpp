@@ -11,27 +11,110 @@
 //   5. normalize: (f32 - 0.5f) / 0.5f  (mean=std=0.5)
 //   6. patchify: block-major, per-patch [C=3, T=2, P=16, P=16]
 #include "q4t/vision/processor.h"
+#include "q4t/vision/media_plan.h"
 
+#include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <memory>
+#include <limits>
 #include <new>
 #include <string>
 #include <vector>
 
 namespace {
 thread_local bool decode_allocation_failed = false;
+struct DecodeBudget {
+  size_t maximum;
+  size_t owned = 0;
+  size_t peak = 0;
+  bool denied = false;
+};
+thread_local DecodeBudget* decode_budget = nullptr;
+struct DecodeScope {
+  DecodeBudget budget;
+  DecodeBudget* previous;
+  q4t::vision::ProcessorResult* result;
+  explicit DecodeScope(const q4t::vision::ProcessorOptions& options)
+      : budget{options.decoder_owned_bytes},
+        previous(decode_budget),
+        result(options.result) {
+    decode_budget = &budget;
+    decode_allocation_failed = false;
+  }
+  ~DecodeScope() {
+    if (result)
+      result->decoder_peak_bytes =
+          std::max(result->decoder_peak_bytes, budget.peak);
+    decode_budget = previous;
+  }
+};
+struct alignas(std::max_align_t) DecodeHeader {
+  size_t charged;
+  DecodeBudget* owner;
+};
+
+bool DecodeCharge(size_t bytes, size_t old, DecodeBudget* budget,
+                  size_t* charged) noexcept {
+  if (bytes > std::numeric_limits<size_t>::max() - sizeof(DecodeHeader)) {
+    if (budget) budget->denied = true;
+    return false;
+  }
+  *charged = bytes + sizeof(DecodeHeader);
+  if (budget && (budget->owned < old || *charged > budget->maximum ||
+                 budget->owned - old > budget->maximum - *charged)) {
+    budget->denied = true;
+    return false;
+  }
+  return true;
+}
+
 void* DecodeAllocate(size_t bytes) noexcept {
-  void* pointer = std::malloc(bytes);
-  if (bytes && !pointer) decode_allocation_failed = true;
-  return pointer;
+  size_t charged = 0;
+  if (!DecodeCharge(bytes, 0, decode_budget, &charged)) return nullptr;
+  auto* header = static_cast<DecodeHeader*>(std::malloc(charged));
+  if (!header) {
+    decode_allocation_failed = true;
+    return nullptr;
+  }
+  *header = {charged, decode_budget};
+  if (decode_budget) {
+    decode_budget->owned += charged;
+    decode_budget->peak = std::max(decode_budget->peak, decode_budget->owned);
+  }
+  return header + 1;
+}
+void DecodeFree(void* pointer) noexcept {
+  if (!pointer) return;
+  auto* header = static_cast<DecodeHeader*>(pointer) - 1;
+  if (header->owner) header->owner->owned -= header->charged;
+  std::free(header);
 }
 void* DecodeReallocate(void* pointer, size_t bytes) noexcept {
-  void* result = std::realloc(pointer, bytes);
-  if (bytes && !result) decode_allocation_failed = true;
-  return result;
+  if (!pointer) return DecodeAllocate(bytes);
+  if (!bytes) {
+    DecodeFree(pointer);
+    return nullptr;
+  }
+  auto* old_header = static_cast<DecodeHeader*>(pointer) - 1;
+  const size_t old = old_header->charged;
+  auto* owner = old_header->owner;
+  size_t charged = 0;
+  if (!DecodeCharge(bytes, old, owner, &charged)) return nullptr;
+  auto* header = static_cast<DecodeHeader*>(std::realloc(old_header, charged));
+  if (!header) {
+    decode_allocation_failed = true;
+    return nullptr;
+  }
+  *header = {charged, owner};
+  if (owner) {
+    owner->owned = owner->owned - old + charged;
+    owner->peak = std::max(owner->peak, owner->owned);
+  }
+  return header + 1;
 }
 }  // namespace
 
@@ -39,7 +122,9 @@ void* DecodeReallocate(void* pointer, size_t bytes) noexcept {
 // capacity failure to bad_alloc. Throwing from STBI_MALLOC would leak them.
 #define STBI_MALLOC(bytes) DecodeAllocate(bytes)
 #define STBI_REALLOC(pointer, bytes) DecodeReallocate(pointer, bytes)
-#define STBI_FREE(pointer) std::free(pointer)
+#define STBI_FREE(pointer) DecodeFree(pointer)
+#define STBI_ONLY_PNG
+#define STBI_ONLY_JPEG
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
@@ -47,47 +132,6 @@ namespace q4t {
 namespace vision {
 
 namespace {
-
-// ---------------------------------------------------------------------------
-// smart_resize (exact copy of transformers 5.16.1).
-// ---------------------------------------------------------------------------
-bool SmartResize(int height, int width, int factor, int min_pixels,
-                 int max_pixels, int* out_h, int* out_w) {
-  if (height <= 0 || width <= 0) return false;
-  if (static_cast<double>(std::max(height, width)) /
-          std::min(height, width) >
-      200.0) {
-    return false;  // aspect ratio too large
-  }
-  int h_bar = static_cast<int>(std::round(static_cast<double>(height) / factor)) *
-              factor;
-  int w_bar = static_cast<int>(std::round(static_cast<double>(width) / factor)) *
-              factor;
-  if (static_cast<int64_t>(h_bar) * w_bar > max_pixels) {
-    double beta = std::sqrt(
-        static_cast<double>(height * width) / static_cast<double>(max_pixels));
-    h_bar = std::max(factor,
-                     static_cast<int>(std::floor(
-                         static_cast<double>(height) / beta / factor)) *
-                         factor);
-    w_bar = std::max(factor,
-                     static_cast<int>(std::floor(
-                         static_cast<double>(width) / beta / factor)) *
-                         factor);
-  } else if (static_cast<int64_t>(h_bar) * w_bar < min_pixels) {
-    double beta = std::sqrt(
-        static_cast<double>(min_pixels) / static_cast<double>(height * width));
-    h_bar = static_cast<int>(std::ceil(
-        static_cast<double>(height) * beta / factor)) *
-            factor;
-    w_bar = static_cast<int>(std::ceil(
-        static_cast<double>(width) * beta / factor)) *
-            factor;
-  }
-  *out_h = h_bar;
-  *out_w = w_bar;
-  return true;
-}
 
 // ---------------------------------------------------------------------------
 // Pillow 12.3.0 BICUBIC fixed-point resize (exact replication).
@@ -253,71 +297,74 @@ void BicubicResize(const uint8_t* in, int h, int w, uint8_t* out, int out_h,
   // else: identity (h == out_h && w == out_w), caller copies.
 }
 
-}  // namespace
+bool ProcessorFail(const ProcessorOptions& options, std::string* error,
+                   const char* code) {
+  if (options.result) options.result->code = code;
+  if (error) *error = code;
+  return false;
+}
 
-// ---------------------------------------------------------------------------
-// video smart_resize (exact copy of transformers 5.16.1 Qwen3VLVideoProcessor
-// smart_resize). Unlike the image version the pixel budget is 3-D
-// (t_bar * h_bar * w_bar) and the shrink/grow beta uses num_frames.
-// ---------------------------------------------------------------------------
-bool VideoSmartResize(int num_frames, int height, int width, int temporal_factor,
-                      int factor, int min_pixels, int max_pixels, int* out_h,
-                      int* out_w) {
-  if (num_frames < temporal_factor) return false;
-  if (height <= 0 || width <= 0) return false;
-  if (height < factor || width < factor) {
-    double scale = std::max(static_cast<double>(factor) / height,
-                            static_cast<double>(factor) / width);
-    height = static_cast<int>(height * scale);
-    width = static_cast<int>(width * scale);
-  }
-  if (static_cast<double>(std::max(height, width)) / std::min(height, width) >
-      200.0) {
-    return false;  // aspect ratio too large
-  }
-  int h_bar =
-      static_cast<int>(std::round(static_cast<double>(height) / factor)) * factor;
-  int w_bar =
-      static_cast<int>(std::round(static_cast<double>(width) / factor)) * factor;
-  int t_bar = static_cast<int>(std::round(
-                  static_cast<double>(num_frames) / temporal_factor)) *
-              temporal_factor;
-  if (static_cast<int64_t>(t_bar) * h_bar * w_bar > max_pixels) {
-    double beta = std::sqrt(static_cast<double>(num_frames * height * width) /
-                            static_cast<double>(max_pixels));
-    h_bar = std::max(factor, static_cast<int>(std::floor(
-                                 static_cast<double>(height) / beta / factor)) *
-                            factor);
-    w_bar = std::max(factor, static_cast<int>(std::floor(
-                                 static_cast<double>(width) / beta / factor)) *
-                            factor);
-  } else if (static_cast<int64_t>(t_bar) * h_bar * w_bar < min_pixels) {
-    double beta = std::sqrt(static_cast<double>(min_pixels) /
-                            static_cast<double>(num_frames * height * width));
-    h_bar = static_cast<int>(std::ceil(
-                static_cast<double>(height) * beta / factor)) * factor;
-    w_bar = static_cast<int>(std::ceil(
-                static_cast<double>(width) * beta / factor)) * factor;
-  }
-  *out_h = h_bar;
-  *out_w = w_bar;
+bool ProcessorContinue(const ProcessorOptions& options, std::string* error) {
+  if (options.cancelled && options.cancelled(options.cancel_context))
+    return ProcessorFail(options, error, "request_cancelled");
   return true;
 }
+
+bool PrepareItem(const MediaPlanInput& input, const ProcessorConfig& config,
+                 const ProcessorOptions& options, MediaItemPlan* item,
+                 std::string* error) {
+  if (!options.decoder_owned_bytes)
+    return ProcessorFail(options, error, "media_config_invalid");
+  if (!ProcessorContinue(options, error)) return false;
+  MediaPlan plan;
+  const auto checked = PlanMediaSources({&input, 1}, config, config, {}, &plan);
+  if (!checked) {
+    if (options.result) options.result->frame = checked.frame;
+    return ProcessorFail(options, error, MediaPlanErrorCode(checked.error));
+  }
+  *item = plan.items[0];
+  if (const auto* admitted = options.admission) {
+    const auto& a = admitted->geometry;
+    const auto& b = item->geometry;
+    if (admitted->kind != item->kind || admitted->frames != item->frames ||
+        admitted->source_width != item->source_width ||
+        admitted->source_height != item->source_height || a.width != b.width ||
+        a.height != b.height || a.grid_t != b.grid_t || a.grid_h != b.grid_h ||
+        a.grid_w != b.grid_w || a.pixel_elements != b.pixel_elements ||
+        a.patches != b.patches)
+      return ProcessorFail(options, error, "media_plan_mismatch");
+  }
+  return ProcessorContinue(options, error);
+}
+
+template <class Output>
+struct ProcessorOutput {
+  Output* out;
+  bool success = false;
+  ~ProcessorOutput() {
+    if (!success) *out = {};
+  }
+};
+
+}  // namespace
 
 // ---------------------------------------------------------------------------
 // ProcessImage: decode + resize + normalize + patchify.
 // ---------------------------------------------------------------------------
 bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
                   const ProcessorConfig& cfg, ProcessedImage* out,
-                  std::string* err) {
-  if (!image_bytes || num_bytes == 0) {
-    if (err) *err = "empty image data";
-    return false;
-  }
-  if (!out) {
-    if (err) *err = "null output";
-    return false;
-  }
+                  std::string* err, const ProcessorOptions& options) {
+  if (options.result) *options.result = {};
+  if (!out) return ProcessorFail(options, err, "media_config_invalid");
+  *out = {};
+  ProcessorOutput guard{out};
+  if (!image_bytes || !num_bytes)
+    return ProcessorFail(options, err, "media_encoded_limit");
+  const MediaBytes bytes{image_bytes, num_bytes};
+  const MediaPlanInput input{MediaKind::kImage, {&bytes, 1}};
+  MediaItemPlan item;
+  if (!PrepareItem(input, cfg, options, &item, err)) return false;
+  DecodeScope decode(options);
 
   // 1. Decode PNG/JPEG -> RGB uint8.
   int w = 0, h = 0, comp = 0;
@@ -327,23 +374,15 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
                             &comp, 3),
       stbi_image_free);
   if (decode_allocation_failed) throw std::bad_alloc();
+  if (decode.budget.denied)
+    return ProcessorFail(options, err, "media_decode_limit");
   auto* pixels = decoded.get();
-  if (!pixels) {
-    if (err) *err = "failed to decode image (not PNG/JPEG?)";
-    return false;
-  }
-  if (w <= 0 || h <= 0) {
-    if (err) *err = "invalid image dimensions";
-    return false;
-  }
-
-  // 2. smart_resize.
-  const int factor = cfg.patch_size * cfg.merge_size;  // 16*2 = 32
-  int rh = 0, rw = 0;
-  if (!SmartResize(h, w, factor, cfg.min_pixels, cfg.max_pixels, &rh, &rw)) {
-    if (err) *err = "smart_resize failed (aspect ratio or size)";
-    return false;
-  }
+  if (!pixels) return ProcessorFail(options, err, "media_decode_invalid");
+  if (w != static_cast<int>(item.source_width) ||
+      h != static_cast<int>(item.source_height))
+    return ProcessorFail(options, err, "media_decoded_dimensions");
+  if (!ProcessorContinue(options, err)) return false;
+  const int rh = item.geometry.height, rw = item.geometry.width;
 
   // 3. BICUBIC resize (Pillow fixed-point).
   std::vector<uint8_t> resized;
@@ -354,6 +393,7 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
     resized.assign(pixels, pixels + static_cast<size_t>(h) * w * 3);
   }
   decoded.reset();
+  if (!ProcessorContinue(options, err)) return false;
 
   // 4-5. rescale + normalize (per pixel, per channel, exact float32).
   // rescale: float32(double(px) * double(1.0/255.0))
@@ -416,7 +456,8 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
     }
   }
 
-  return true;
+  guard.success = ProcessorContinue(options, err);
+  return guard.success;
 }
 
 // ---------------------------------------------------------------------------
@@ -426,25 +467,35 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
 bool ProcessVideo(const std::vector<const uint8_t*>& frames,
                   const std::vector<size_t>& frame_bytes,
                   const ProcessorConfig& cfg, ProcessedVideo* out,
-                  std::string* err) {
+                  std::string* err, const ProcessorOptions& options) {
+  if (options.result) *options.result = {};
+  if (!out) return ProcessorFail(options, err, "media_config_invalid");
+  *out = {};
+  ProcessorOutput guard{out};
+  if (frames.size() < 2 || frames.size() > kMediaPlanFrames ||
+      frame_bytes.size() != frames.size())
+    return ProcessorFail(options, err, "media_frame_limit");
+  std::array<MediaBytes, kMediaPlanFrames> bytes;
+  for (size_t f = 0; f < frames.size(); ++f) {
+    if (!frames[f] || !frame_bytes[f]) {
+      if (options.result) options.result->frame = f;
+      return ProcessorFail(options, err, "media_encoded_limit");
+    }
+    bytes[f] = {frames[f], frame_bytes[f]};
+  }
+  const MediaPlanInput input{MediaKind::kVideo, {bytes.data(), frames.size()}};
+  MediaItemPlan item;
+  if (!PrepareItem(input, cfg, options, &item, err)) return false;
   const int F = static_cast<int>(frames.size());
-  if (F < cfg.temporal_patch_size) {
-    if (err) *err = "need at least temporal_patch_size frames";
-    return false;
-  }
-  if (frame_bytes.size() != static_cast<size_t>(F)) {
-    if (err) *err = "frame_bytes size mismatch";
-    return false;
-  }
-  if (!out) {
-    if (err) *err = "null output";
-    return false;
-  }
 
   // 1. Decode every frame -> RGB uint8 [H, W, 3]. All frames share H, W.
   std::vector<std::vector<uint8_t>> decoded(F);
-  int H = 0, W = 0;
+  const int H = static_cast<int>(item.source_height);
+  const int W = static_cast<int>(item.source_width);
   for (int f = 0; f < F; ++f) {
+    if (options.result) options.result->frame = f;
+    if (!ProcessorContinue(options, err)) return false;
+    DecodeScope decode(options);
     int w = 0, h = 0, comp = 0;
     decode_allocation_failed = false;
     std::unique_ptr<uint8_t, decltype(&stbi_image_free)> source(
@@ -452,33 +503,22 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
                               &h, &comp, 3),
         stbi_image_free);
     if (decode_allocation_failed) throw std::bad_alloc();
+    if (decode.budget.denied)
+      return ProcessorFail(options, err, "media_decode_limit");
     auto* px = source.get();
-    if (!px) {
-      if (err) *err = "failed to decode frame " + std::to_string(f);
-      return false;
-    }
-    if (f == 0) {
-      H = h;
-      W = w;
-    } else if (h != H || w != W) {
-      if (err) *err = "inconsistent frame dimensions";
-      return false;
-    }
+    if (!px) return ProcessorFail(options, err, "media_decode_invalid");
+    if (h != H || w != W)
+      return ProcessorFail(options, err, "media_decoded_dimensions");
+    if (!ProcessorContinue(options, err)) return false;
     decoded[f].assign(px, px + static_cast<size_t>(h) * w * 3);
   }
 
-  // 2. video smart_resize (3-D t*h*w budget).
-  const int factor = cfg.patch_size * cfg.merge_size;  // 16*2 = 32
-  int rh = 0, rw = 0;
-  if (!VideoSmartResize(F, H, W, cfg.temporal_patch_size, factor,
-                        cfg.min_pixels, cfg.max_pixels, &rh, &rw)) {
-    if (err) *err = "video smart_resize failed (aspect ratio or size)";
-    return false;
-  }
+  const int rh = item.geometry.height, rw = item.geometry.width;
 
   // 3. Per-frame BICUBIC resize (Pillow fixed-point).
   std::vector<std::vector<uint8_t>> resized(F);
   for (int f = 0; f < F; ++f) {
+    if (!ProcessorContinue(options, err)) return false;
     resized[f].resize(static_cast<size_t>(rh) * rw * 3);
     if (rh != H || rw != W) {
       BicubicResize(decoded[f].data(), H, W, resized[f].data(), rh, rw);
@@ -496,6 +536,7 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
   const double kInv255 = 1.0 / 255.0;
   std::vector<std::vector<float>> norm(Fp);
   for (int f = 0; f < Fp; ++f) {
+    if (!ProcessorContinue(options, err)) return false;
     norm[f].resize(static_cast<size_t>(rh) * rw * 3);
     for (size_t i = 0; i < norm[f].size(); ++i) {
       const int c = static_cast<int>(i % 3);
@@ -552,7 +593,8 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
     }
   }
 
-  return true;
+  guard.success = ProcessorContinue(options, err);
+  return guard.success;
 }
 
 }  // namespace vision

@@ -7,10 +7,25 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
+[02i接线CPU已通过](SERVE_MEDIA_INTEGRATION_CPU_2026-11-03.md)：共享source/
+geometry、全部帧预检、decoder256MiB所有权配额、实际尺寸复核、user媒体
+字段/base64、展开后槽位准入、协作取消和实际attention函数能力已接线。
+候选280b95dc/validation00718dea、protocol29810d03/211来源已封存；
+生产/验证零警告，host有效覆盖258/267/必需224、后端9、配置15+10、
+80核心/36几何、134配额取消调用、四组像素参考通过。
+首轮旧媒体夹具与分配计数探针FAILED保留，仅修正重验受影响项；旧“68C”
+计数混入41次C++，现独立41C++/27C失败回收及22响应通过。打包器首次
+误假定公共host导出compile_commands的失败也保留，没有重跑模型。
+698原件封存9份Git文件约3.118MB、35本机ELF/对象身份；暂存blob逐项通过。
+18:10:56同一vLLM PID2336565仍占约87.4GiB，未干预、GPU/HTTP未启动。
+默认3fd31a21不变；下一步冻结02h+02i组合GPU驱动与业务矩阵，空闲后
+统一验收。物理RAM硬保护及完整工业化仍待办。
+
 [SRV-02h已开发并通过CPU](SERVE_MEDIA_FAILURE_CPU_2026-11-03.md)：视觉加载
 失败拒绝启动、媒体CPU/GPU所有权及错误分类、host bad_alloc固定503。
 生产/validation零警告；host248/257、必需214、后端9、驱动6、配置通过。
-持续拒绝22响应组合，processor41处C++/68处C分配失败回收及8成功调用；
+持续拒绝22响应组合，processor41处C++/68处混合分配失败回收及8成功调用；
+68独立C的旧解释已由上方02i计数自检纠正为27独立C边界，旧原件不改；
 四组像素逐字节与参考一致。首轮生成语义指纹漏同步的CPU失败保留。
 
 16:50:59 CST预检发现16:05新启动的vLLM PID2336565占93,864,288,256
@@ -23,9 +38,8 @@ PNG/JPEG头、全部帧/累计容量、宽整数resize及int索引、token/conte
 workspace/函数shared上限；零警告，80合同/36真实processor几何对照、
 ASan/UBSan通过，planner零分配尝试。42原件封存4份Git文件/2本机ELF，
 4暂存blob/原件/ELF及562变更文档链接核对通过。
-尚未接入processor/serve，02h冻结来源与默认程序不变，不能称服务已有限额。
-17:28同一vLLM PID仍占约87.4GiB，未干预。下一批接线、解码器配额与
-实际尺寸复核、媒体字段/base64及取消边界；统一物理RAM保护继续待办。
+以上为8837e680独立核心时的历史证据；新接线候选CPU另见本页顶部，
+两者均不能代替GPU/服务交付或统一物理RAM保护。
 
 [SRV-02g内部清理与MTP启动已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)：
 默认3fd31a21/sidecar3ba0b8d3、protocol044ef2f3，206来源。请求MTP加载

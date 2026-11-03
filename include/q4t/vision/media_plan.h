@@ -140,6 +140,14 @@ struct MediaPlan {
   uint64_t workspace_bytes = 0;
 };
 
+// Shared CPU source/geometry validation. Does not admit a device execution or
+// context: callers must also run PlanMedia before requesting GPU buffers.
+MediaPlanResult PlanMediaSources(std::span<const MediaPlanInput> inputs,
+                                 const ProcessorConfig& image_config,
+                                 const ProcessorConfig& video_config,
+                                 const MediaPlanLimits& limits,
+                                 MediaPlan* out) noexcept;
+
 // Validate EVERY header and budget before any caller decodes an item. On any
 // failure, *out is empty (never a usable partial plan). Inputs are borrowed
 // only during this call; the returned plan contains no borrowed references.

@@ -1,0 +1,48 @@
+{
+  "status": "CPU_ACCEPTED_GPU_PENDING",
+  "candidate": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-integration-20261103/cpu-accepted/artifacts/engine/q4t",
+    "sha256": "280b95dceabe5a3b1fd794019102de0dc9f0b62e8a3aa9fcc30eb5c57fdfd793",
+    "bytes": 7158360
+  },
+  "validation": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-integration-20261103/cpu-accepted/artifacts/validation/q4t",
+    "sha256": "00718deab9fd07729cd0bd1409bf04180297db3312fd493f2e6eb547cab87897",
+    "bytes": 7160720
+  },
+  "previous_binary": "3fd31a217ee145c9a56659bacd2ca015041d02bd1bc0603cf6f5845cb362d1c3",
+  "previous_sidecar": "3ba0b8d3ba421851bd423150928e299720bb8ba749c03885378858473670e39f",
+  "runtime_sources": 211,
+  "public_host": [
+    258,
+    267
+  ],
+  "required_host": 224,
+  "host_reuse": "First run 257/266/223 passed plus one corrected test per mode. First FAILED remains; no full host rerun.",
+  "core_cases": 80,
+  "processor_geometry": 36,
+  "processor_quota_calls": 134,
+  "quota_failures": 30,
+  "cancellation_boundaries": 80,
+  "backend_cases": 9,
+  "fixed_response_cases": 22,
+  "cpp_failures": 41,
+  "c_failures": 27,
+  "old_c_count_correction": "68 included 41 C++ calls; 27 disjoint C allocator boundaries are now independently checked.",
+  "pixel_reference": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-integration-20261103/cpu-correction-01/tests/pixels/reference.json",
+    "sha256": "cc7373aaeacf4b30f0a942c2697e26af79254218a5b411fd674d3a5ea54972dd",
+    "bytes": 934
+  },
+  "old_package_seal": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-failure-20261103/package/sealed-files.json",
+    "sha256": "eadde2928d8d34794712d2707f3a6ceef67024919c0b51b7e830e65881f24491",
+    "bytes": 13868
+  },
+  "model_or_http_started": false,
+  "gpu_tests": 0,
+  "default_replaced": false,
+  "physical_ram_bound_proven": false,
+  "whole_goal_complete": false,
+  "next": "Freeze composite 02h+02i GPU matrix and driver before a single exclusive lease. Preserve unrelated vLLM. No launch from this package."
+}

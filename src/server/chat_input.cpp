@@ -11,17 +11,17 @@
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
 #include "q4t/server/chat_template.h"
+#include "q4t/server/media_admission.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/vision.h"
 
 namespace q4t::server {
-bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
-                                   uint16_t** out_feats, int* out_num_tokens,
-                                   std::vector<int>* out_counts,
-                                   std::vector<std::array<int, 3>>* out_grids,
-                                   std::string* err,
-                                   DeviceMemoryResult* device_result,
-                                   const char* request_id) {
+bool ChatServer::RunVisionPipeline(
+    const std::vector<VisionItem>& items, const vision::MediaPlan& plan,
+    uint16_t** out_feats, int* out_num_tokens, std::vector<int>* out_counts,
+    std::vector<std::array<int, 3>>* out_grids, std::string* err,
+    DeviceMemoryResult* device_result, const char* request_id,
+    const std::function<bool()>& cancelled, ChatPlanError* media_error) {
   const runtime::CleanupPhase phase("vision.request");
   *device_result = {};
   *out_feats = nullptr;
@@ -33,6 +33,16 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
     return false;
   }
   if (items.empty()) return true;  // nothing to do
+  const auto fail = [&](const char* code, size_t item, size_t frame = 0) {
+    media_error->code = code;
+    media_error->param =
+        item < items.size() ? MediaInputParam(items[item], frame) : "messages";
+    if (err) *err = code;
+    return false;
+  };
+  if (plan.item_count != items.size())
+    return fail("media_plan_mismatch", items.size());
+  if (cancelled()) return fail("request_cancelled", 0);
 
   const vision::VisionConfig& cfg = vision_tower_->cfg;
   const int m = cfg.spatial_merge_size;
@@ -40,13 +50,24 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
   // 1. Process each item (CPU: decode + resize + normalize + patchify).
   //    Images use the image budget (proc_cfg_); videos use the video budget
   //    (video_proc_cfg_). Both produce the same per-patch layout [C,T,P,P]
-  //    (96 floats) so they can share one VisionForward batch.
+  //    (1536 floats at P=16,T=2) so they share one VisionForward batch.
   std::vector<std::vector<float>> pixel_sets;  // per-item float32 patches
   pixel_sets.reserve(items.size());
   std::vector<vision::ImageShape> shapes;
   shapes.reserve(items.size());
   int total_L = 0;
-  for (const auto& item : items) {
+  for (size_t index = 0; index < items.size(); ++index) {
+    const auto& item = items[index];
+    if (cancelled()) return fail("request_cancelled", index);
+    vision::ProcessorResult processed;
+    const vision::ProcessorOptions options{
+        .cancelled =
+            [](void* context) {
+              return (*static_cast<const std::function<bool()>*>(context))();
+            },
+        .cancel_context = const_cast<std::function<bool()>*>(&cancelled),
+        .admission = &plan.items[index],
+        .result = &processed};
     std::vector<float> pix;
     vision::ImageShape sh;
     std::string perr;
@@ -54,9 +75,8 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
       vision::ProcessedImage pi;
       if (!vision::ProcessImage(
               reinterpret_cast<const uint8_t*>(item.frames[0].data()),
-              item.frames[0].size(), proc_cfg_, &pi, &perr)) {
-        if (err) *err = "image process failed: " + perr;
-        return false;
+              item.frames[0].size(), proc_cfg_, &pi, &perr, options)) {
+        return fail(processed.code, index, processed.frame);
       }
       pix = std::move(pi.pixel_values);
       sh.h = pi.grid_h;
@@ -72,15 +92,19 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
         flens.push_back(f.size());
       }
       vision::ProcessedVideo pv;
-      if (!vision::ProcessVideo(fptrs, flens, video_proc_cfg_, &pv, &perr)) {
-        if (err) *err = "video process failed: " + perr;
-        return false;
+      if (!vision::ProcessVideo(fptrs, flens, video_proc_cfg_, &pv, &perr,
+                                options)) {
+        return fail(processed.code, index, processed.frame);
       }
       pix = std::move(pv.pixel_values);
       sh.h = pv.grid_h;
       sh.w = pv.grid_w;
       sh.t = pv.grid_t;
     }
+    const auto& expected = plan.items[index].geometry;
+    if (sh.h != expected.grid_h || sh.w != expected.grid_w ||
+        sh.t != expected.grid_t || pix.size() != expected.pixel_elements)
+      return fail("media_plan_mismatch", index);
     shapes.push_back(sh);
     total_L += sh.L();
     pixel_sets.push_back(std::move(pix));
@@ -88,10 +112,13 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
     // feature rows / placeholders).
     if (out_grids) out_grids->push_back({sh.t, sh.h, sh.w});
   }
+  if (static_cast<uint64_t>(total_L) != plan.patches)
+    return fail("media_plan_mismatch", items.size());
+  if (cancelled()) return fail("request_cancelled", items.size());
 
   // 2. Build the device pixel buffer (float32 -> BF16, concatenated).
   const int patch_dim = cfg.in_channels * cfg.temporal_patch_size *
-                        cfg.patch_size * cfg.patch_size;  // 96
+                        cfg.patch_size * cfg.patch_size;  // 1536
   std::vector<uint16_t> pixels_bf16(static_cast<size_t>(total_L) * patch_dim);
   {
     size_t off = 0;
@@ -113,6 +140,10 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
     out_counts->push_back(count);
     total_tokens += count;
   }
+  if (static_cast<uint64_t>(total_tokens) != plan.merged_tokens ||
+      pixels_bf16.size() != plan.pixel_elements)
+    return fail("media_plan_mismatch", items.size());
+  if (cancelled()) return fail("request_cancelled", items.size());
   uint16_t* d_pixels = nullptr;
   uint16_t* d_out = nullptr;
   const auto record = [&](DeviceMemoryResult result) {
@@ -173,6 +204,7 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
   runtime::RequireCleanupSuccess(cudaDeviceSynchronize(),
                                  "cudaDeviceSynchronize");
   if (!release(d_pixels, "vision.pixels_free")) return false;
+  if (cancelled()) return fail("request_cancelled", items.size());
   *out_feats = std::exchange(d_out, nullptr);
   *out_num_tokens = total_tokens;
   return true;

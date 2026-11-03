@@ -140,6 +140,11 @@ bool LoadVision(const io::WeightLoader& loader, const VisionConfig& cfg,
                 VisionTower* tower, std::string* err,
                 cudaStream_t stream = 0);
 
+// Effective dynamic shared limit without opt-in changes. Intersects the
+// current device's default block limit minus static bytes with this function's
+// queried dynamic maximum. Unknown/query failures are never a guessed limit.
+cudaError_t VisionAttentionSharedBytes(uint64_t* bytes);
+
 // Run the vision tower forward for one or more images.
 //
 // pixel_values: device BF16 [total_L, in*tp*P*P] (patches concatenated in

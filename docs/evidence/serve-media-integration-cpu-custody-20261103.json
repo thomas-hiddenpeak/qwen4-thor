@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "raw_records": 698,
+  "local_artifacts": 35,
+  "git_files": 9,
+  "git_bytes": 3118147,
+  "staged_blobs": 9,
+  "gpu_acceptance": false,
+  "default_replaced": false,
+  "whole_goal_complete": false,
+  "checker": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_media_integration/custody.py",
+    "sha256": "34cfc8653f96738a834063dae8bcca76523dd2b141a705a1d9547d30320a82dd",
+    "bytes": 6008
+  }
+}

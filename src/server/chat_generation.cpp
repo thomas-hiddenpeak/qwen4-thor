@@ -19,6 +19,7 @@
 #include "q4t/diagnostic/execution_observer.h"
 #include "q4t/mtp/suffix_drafter.h"
 #include "q4t/server/chat_contract.h"
+#include "q4t/server/media_admission.h"
 #include "q4t/server/chat_response_parser.h"
 #include "q4t/server/structured_decoder.h"
 #include "q4t/server/structured_admission.h"
@@ -241,9 +242,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   std::string prompt;
   std::vector<VisionItem> items;
   s = PrepareChatPrompt(req, constraints, &prompt, &items,
-                         &planning_error.param);
+                        &planning_error.param, &planning_error.code);
   if (!s) {
-    SendError(fd, 400, s.message(), {}, "invalid_request", planning_error.param);
+    SendError(fd, 400, s.message(), {}, planning_error.code,
+              planning_error.param);
     return;
   }
   ChatResponseParser response_parser;
@@ -459,6 +461,53 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
   ids.assign(prompt_u32.begin(), prompt_u32.end());
+  const int img_id = model_.Get().cfg.image_token_id;
+  const int vid_id = model_.Get().cfg.video_token_id;
+  vision::MediaPlan media_plan;
+  if (!items.empty()) {
+    if (cancelled()) {
+      count_abort();
+      send_cancel_error("request cancelled before media planning");
+      return;
+    }
+    s = PlanChatMedia(items, ids, img_id, vid_id, proc_cfg_, video_proc_cfg_,
+                      vision_device_budget_, planning_config, &media_plan,
+                      &planning_error);
+    if (!s) {
+      SendError(fd, 400, s.message(), {}, planning_error.code,
+                planning_error.param);
+      return;
+    }
+    std::vector<int> image_counts, video_counts;
+    for (size_t i = 0; i < items.size(); ++i) {
+      auto& counts =
+          items[i].kind == VisionItem::kImage ? image_counts : video_counts;
+      counts.push_back(
+          static_cast<int>(media_plan.items[i].geometry.merged_tokens));
+    }
+    std::vector<int32_t> expanded;
+    if (!model::ExpandMultimodalTokens(ids.data(), static_cast<int>(ids.size()),
+                                       img_id, vid_id, image_counts,
+                                       video_counts, &expanded) ||
+        expanded.size() != media_plan.expanded_prompt_tokens) {
+      SendError(fd, 400, "multimodal count mismatch", {},
+                "media_placeholder_count", "messages");
+      return;
+    }
+    ids = std::move(expanded);
+    s = PlanChatBudget(req, planning_config, ids.size(), &prompt_budget,
+                       &planning_error);
+    if (!s) {
+      SendError(fd, 400, s.message(), {}, planning_error.code,
+                planning_error.param);
+      return;
+    }
+    if (cancelled()) {
+      count_abort();
+      send_cancel_error("request cancelled after media planning");
+      return;
+    }
+  }
   const size_t required_capacity = prompt_budget.required_capacity;
 
   // B1 multi-request scheduling: each request runs on its own thread. All
@@ -586,10 +635,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   // (video_token_id) placeholder expands to the number of merged visual tokens
   // for its item, and the vision tower's features are injected in place of
   // those token embeddings (in prompt position order).
-  const int img_id = model_.Get().cfg.image_token_id;
-  const int vid_id = model_.Get().cfg.video_token_id;
   model::VisionFeatures vfeats;
   if (!items.empty()) {
+    if (ids.size() >= static_cast<size_t>(request_capacity)) {
+      SendError(fd, 400, "expanded media exceeds assigned context", {},
+                "context_length_exceeded", "messages");
+      return;
+    }
     std::vector<int> counts;
     std::vector<std::array<int, 3>> grids;
     std::string verr;
@@ -605,36 +657,25 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         // Outer buffer cleanup runs after this model lock is released.
         return;
       }
-      if (!RunVisionPipeline(items, &d_vfeats, &vfeats.num_tokens, &counts,
-                             &grids, &verr, &vision_memory,
-                             request_id.c_str())) {
+      if (!RunVisionPipeline(items, media_plan, &d_vfeats, &vfeats.num_tokens,
+                             &counts, &grids, &verr, &vision_memory,
+                             request_id.c_str(), cancelled, &planning_error)) {
         if (!vision_memory.ok()) {
           SendError(fd, 503, "vision device resource failure", {},
                     vision_memory.Reason());
+        } else if (cancelled()) {
+          count_abort();
+          send_cancel_error("request cancelled during media processing");
         } else {
-          SendError(fd, 400, verr);
+          const bool mismatch = planning_error.code == "media_plan_mismatch";
+          SendError(fd, mismatch ? 500 : 400, verr, {}, planning_error.code,
+                    planning_error.param);
         }
         // A failed buffer release may need to reacquire model_mu_ to drain.
         return;
       }
     }
     vfeats.grids = std::move(grids);
-    // Split the per-item counts (in item order) into image / video counts,
-    // matching the placeholder order in the encoded prompt.
-    std::vector<int> img_counts, vid_counts;
-    for (size_t i = 0; i < items.size(); ++i) {
-      if (items[i].kind == VisionItem::kImage) img_counts.push_back(counts[i]);
-      else vid_counts.push_back(counts[i]);
-    }
-    std::vector<int32_t> expanded;
-    if (!model::ExpandMultimodalTokens(ids.data(), static_cast<int>(ids.size()),
-                                       img_id, vid_id, img_counts, vid_counts,
-                                       &expanded)) {
-      SendError(fd, 400, "multimodal count mismatch in prompt");
-      cleanup();
-      return;
-    }
-    ids = std::move(expanded);
     vfeats.device = d_vfeats;
   }
   const int T = static_cast<int>(ids.size());

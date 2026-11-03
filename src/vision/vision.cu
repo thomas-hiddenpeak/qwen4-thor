@@ -433,6 +433,28 @@ bool BuildPosIds(int h, int w, int t, int* d_pos_ids) {
 
 }  // namespace
 
+cudaError_t VisionAttentionSharedBytes(uint64_t* bytes) {
+  if (!bytes) return cudaErrorInvalidValue;
+  *bytes = 0;
+  int device = 0, block_bytes = 0;
+  auto status = cudaGetDevice(&device);
+  if (status != cudaSuccess) return status;
+  status = cudaDeviceGetAttribute(&block_bytes,
+                                  cudaDevAttrMaxSharedMemoryPerBlock, device);
+  if (status != cudaSuccess) return status;
+  cudaFuncAttributes attributes{};
+  status = cudaFuncGetAttributes(&attributes, AttentionKernel);
+  if (status != cudaSuccess) return status;
+  if (block_bytes <= 0 || attributes.maxDynamicSharedSizeBytes <= 0 ||
+      attributes.maxThreadsPerBlock < kBlock ||
+      attributes.sharedSizeBytes >= static_cast<size_t>(block_bytes))
+    return cudaErrorInvalidConfiguration;
+  *bytes =
+      std::min(static_cast<uint64_t>(block_bytes) - attributes.sharedSizeBytes,
+               static_cast<uint64_t>(attributes.maxDynamicSharedSizeBytes));
+  return *bytes ? cudaSuccess : cudaErrorInvalidConfiguration;
+}
+
 bool VisionWeights::Empty() const noexcept {
   if (d_patch_w) return false;
   if (d_patch_b) return false;

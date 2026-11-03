@@ -48,6 +48,7 @@
 #include "q4t/server/startup_admission.h"
 #include "q4t/server/device_memory.h"
 #include "q4t/vision/processor.h"
+#include "q4t/vision/media_plan.h"
 #include "q4t/vision/vision.h"
 
 namespace q4t {
@@ -337,11 +338,13 @@ class ChatServer {
   // ViT grid (t, h, w) in PATCH units (same order as `items`). The grids feed
   // the 3D MRoPE position computation (model::VisionFeatures::grids).
   bool RunVisionPipeline(const std::vector<VisionItem>& items,
-                         uint16_t** out_feats, int* out_num_tokens,
-                         std::vector<int>* out_counts,
+                         const vision::MediaPlan& plan, uint16_t** out_feats,
+                         int* out_num_tokens, std::vector<int>* out_counts,
                          std::vector<std::array<int, 3>>* out_grids,
                          std::string* err, DeviceMemoryResult* device_result,
-                         const char* request_id);
+                         const char* request_id,
+                         const std::function<bool()>& cancelled,
+                         ChatPlanError* media_error);
 
   std::string effective_config_;
   std::string model_name_;
@@ -393,6 +396,7 @@ class ChatServer {
   std::unique_ptr<vision::VisionTower> vision_tower_;
   vision::ProcessorConfig proc_cfg_;       // image budget (65536/16777216)
   vision::ProcessorConfig video_proc_cfg_;  // video budget (4096/25165824)
+  vision::MediaDeviceBudget vision_device_budget_;
 };
 
 }  // namespace server

@@ -302,7 +302,8 @@ void ChatServer::HandleModels(int fd) {
 
 void ChatServer::HandleCapabilities(int fd) {
   SendSimple(fd, 200, "OK",
-             ChatCapabilitiesJson(model_name_, allow_media_, mtp_loaded_),
+             ChatCapabilitiesJson(model_name_, allow_media_, mtp_loaded_,
+                                  vision_device_budget_.attention_shared_bytes),
              "application/json");
 }
 

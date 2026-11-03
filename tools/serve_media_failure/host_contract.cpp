@@ -25,10 +25,9 @@ thread_local size_t deny_from = 0;
 thread_local size_t cpp_calls = 0;
 thread_local size_t denied = 0;
 bool tracking = false;
-thread_local bool cpp_malloc = false;
 size_t c_calls = 0, c_deny_from = 0;
 bool DenyC(size_t bytes) {
-  if (!tracking || cpp_malloc || !bytes) return false;
+  if (!tracking || !bytes) return false;
   return ++c_calls >= c_deny_from && c_deny_from;
 }
 struct Calls {
@@ -116,9 +115,9 @@ extern "C" ssize_t __wrap_send(int fd, const void* data, size_t n, int flags) {
 
 void* operator new(size_t n) {
   BeforeNew();
-  cpp_malloc = true;
-  void* p = std::malloc(n ? n : 1);
-  cpp_malloc = false;
+  // Keep C and C++ injection domains distinct after compiler optimization.
+  void* p = __real_malloc(n ? n : 1);
+  Track(p);
   if (p) return p;
   throw std::bad_alloc();
 }
@@ -150,6 +149,24 @@ void operator delete[](void* p, size_t, std::align_val_t a) noexcept {
 }
 
 namespace {
+void CheckAllocationLedger() {
+  tracking = true;
+  c_calls = 0;
+  void* (*volatile allocate)(size_t) = &::operator new;
+  void* cpp = allocate(64);
+  Check(c_calls == 0 && std::count(live.begin(), live.end(), cpp) == 1,
+        "C++ allocation incorrectly counted as C");
+  ::operator delete(cpp);
+  void* c = __wrap_malloc(64);
+  Check(c_calls == 1 && std::count(live.begin(), live.end(), c) == 1,
+        "C allocation not counted");
+  __wrap_free(c);
+  tracking = false;
+  Check(std::all_of(live.begin(), live.end(), [](auto* p) { return !p; }),
+        "ledger self-check leaked");
+  std::puts("PASS ledger distinguishes C/C++ allocation ownership");
+}
+
 void Responses() {
   using namespace q4t::server::detail;
   int cases = 0;
@@ -288,6 +305,7 @@ Calls Process(const std::vector<uint8_t>& bytes, bool video, size_t fail,
 
 int main(int argc, char** argv) {
   Check(argc == 4, "host_contract image_a image_b output_directory");
+  CheckAllocationLedger();
   Responses();
   size_t attempts = 0, c_attempts = 0;
   for (int i = 1; i <= 2; ++i) {
