@@ -7,6 +7,12 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
+[SRV-02g内部清理已冻结开发范围](SERVE_BACKEND_CLEANUP_2026-11-03.md)：
+legacy请求MTP失败拒绝启动、默认ELF内部释放/排空错误不可忽略；保留
+serve显式错误处理。候选3fd31a21生产、3d6cdf75验证零警告构建，
+CPU OFF245/ON254、必需211、后端9、驱动6、配置15+10通过。默认40cf
+保持；待单租约原生25、MTP生命周期、17微小探针与7实例/10生成/6负场景。
+
 [SRV-02f设备资源故障已限定交付](SERVE_DEVICE_MEMORY_RESULT_2026-11-03.md)：
 默认40cf6376/sidecar79d4a657，protocol0075631e，203运行时来源。
 文本/调度缓冲仅明确OOM可降级，必需OOM503；其他设备/释放错误锁内

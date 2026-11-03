@@ -469,10 +469,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   for (int32_t id : stop_token_ids_) std::fprintf(stderr, " %d", id);
   std::fprintf(stderr, "\n");
 
-  // Load the MTP draft model (optional). Borrowed embed/lm_head from the main
-  // model. Legacy loading falls back to plain decode on failure; a selected
-  // startup plan must fail because its resource contract includes MTP.
-  // Skipped entirely when opts.no_mtp is set.
+  // A requested MTP model must load successfully in either startup mode.
+  // Untyped load errors cannot establish that plain decode remains healthy.
+  // --no-mtp is the explicit opt-out; borrowed weights stay with the model.
   if (!capabilities.mtp) {
     std::fprintf(stderr, "[q4t] MTP disabled; plain decode\n");
   } else {
@@ -489,14 +488,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
     mcfg.max_seq = max_seq_;
     mcfg.seq_capacities = cfg.seq_capacities;
     if (planned_startup) mcfg.initial_scratch_capacity = mtp_k_ + 1;
-    s = mtp::LoadMtp(mcfg, model_.Get().head.embed_tokens, model_.Get().head.lm_head,
-                     &mtp_, nullptr);
+    s = detail::DeviceMemoryFault("startup.mtp_load", nullptr) != cudaSuccess
+            ? Status::Fail("injected MTP load failure")
+            : mtp::LoadMtp(mcfg, model_.Get().head.embed_tokens,
+                           model_.Get().head.lm_head, &mtp_, nullptr);
     if (!s.ok()) {
-      if (planned_startup || !opts.mtp_subset_head.empty()) {
-        return Status::Fail("planned MTP load failed: " + s.message());
-      }
-      std::fprintf(stderr, "[q4t] MTP load failed (%s); plain decode only\n",
-                   s.message().c_str());
+      return Status::Fail("requested MTP load failed: " + s.message());
     } else {
       mtp_loaded_ = true;
       if (planned_startup) {

@@ -143,6 +143,19 @@
       "contract": "Serve-owned text and scheduler buffers distinguish proven capacity exhaustion from other device failures. Only a known OOM indicator may be consumed: optional buffers fall back, required request buffers return device_memory_exhausted (JSON503 or SSE error). Other device or any release failure closes readiness and stops serve with nonzero exit. Release ownership is consumed once and checked before successful terminal/cache publication. Untyped MTP preparation failure drains and stops. Media and model-internal allocations/releases are not fully covered. This is not physical RAM reservation or a hard limit."
     },
     {
+      "id": "backend-cleanup",
+      "sources": [
+        "include/q4t/runtime/cleanup_policy.h",
+        "src/runtime/startup_reservation.cpp",
+        "cmake/CudaCleanupBoundary.cmake",
+        "src/model/model.cu",
+        "src/model/model_owner.cpp",
+        "src/mtp/mtp.cu",
+        "src/server/chat_server.cpp"
+      ],
+      "contract": "Production q4t links checked direct CUDA free/freeAsync/freeHost/eventDestroy/streamDestroy/streamSynchronize/deviceSynchronize/eventSynchronize calls. Unknown cleanup/completion fails closed with immediate exit1, no destructor retry and no guaranteed HTTP error. Only the explicit serving cudaFree owner may receive errors to stop/drain and publish its existing error protocol. External shared-library internals and other executables are outside this link boundary. Successful async free/destroy does not prove completion or physical reclaim. Requested MTP load failure stops either startup path; --no-mtp remains explicit opt-out. Model load completion is checked before source release; failed MTP load drains before loader destruction. No model arithmetic change or complete media allocation guarantee."
+    },
+    {
       "id": "runtime-memory-admission",
       "sources": [
         "src/runtime/system_memory.cpp",
@@ -167,6 +180,8 @@
     }
   ],
   "sources_sha256": {
+    "cmake/CudaCleanupBoundary.cmake": "242149ff9405d36f6e09041d978379bd271a8d21adc06b446ed0467ca23d7750",
+    "include/q4t/runtime/cleanup_policy.h": "41acdb66d9bf371534a0b110efc5ab73d233be2c5930dafdec130485a17f3ee7",
     "include/q4t/server/device_memory.h": "3bf98a0f67b3f6ba18603e10525a5f7550e54531df4355eb7cdbfe4244cb542a",
     "include/q4t/server/http_connection.h": "a30ff01c169aa8c992d76d44a698b7451adbbc6e0c9041798998c37d1da0bfe9",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
@@ -176,6 +191,10 @@
     "include/q4t/server/sequence_admission.h": "1dd2ef39526bdaf839ebeb1d348b837d388d0cbae8d4f0c15837a75123ae6f1c",
     "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
+    "src/model/model.cu": "ddf5df2ef04770369785b4dd93d928bea7fa4ca4484e670ada9c7a944ed068fb",
+    "src/model/model_owner.cpp": "cc3a998e52d4cca44bd695f40e1bf01f4ee2d75ce9f0c437d07757582d60e2bf",
+    "src/mtp/mtp.cu": "290a8a32eac18b138d0ec850126b1482a0ddeea554a90a0753ff77aece7530e4",
+    "src/runtime/startup_reservation.cpp": "39b76a270b14d41eef089c5ac6a621ff849d2c33aad209ae83a9685a60cb23d2",
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/chat_admission.cpp": "ce33753d06a1859511e6c596b1b03154f39de278f6c3b3c2dae986fc317ef69d",
     "src/server/chat_contract.cpp": "e964a90e839c1bcf5d57ef6b70a84da19f5d1c9fd92ab2489510e68ad0c3b7b8",
@@ -186,10 +205,10 @@
     "src/server/chat_plan.cpp": "13b93d06aad7c6c33ce27c8c6c093d638adce54510d4f38dbdff4ffb139b98b2",
     "src/server/chat_preflight.cpp": "07d780dc1180d04cc531ba5d8720d44e3a6a757a63111e94512e3ff59926149e",
     "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
-    "src/server/chat_server.cpp": "f708d7cca35017acd716242e392bfd401ac0c9c08cbc7b0a4da06a61d059fe1d",
+    "src/server/chat_server.cpp": "18cc9edb8ab888cfaef2e7744ae499380850531474e84dc8d92a4fc44640378e",
     "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
     "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
-    "src/server/cuda_memory_backend.h": "f659897a8c570bf03f42fc467e52581f6864b4d860197878cdb9bf51b9bfbdde",
+    "src/server/cuda_memory_backend.h": "a82fcf9235f03b8c60fe7389bb500200abbad2b5079f7f45f581d7c389d20afa",
     "src/server/http_request.cpp": "f4381a52db20862e2fa26ee402db0ab4de99c5f3980b7075c7cf01f20edc01e0",
     "src/server/input_contract.cpp": "b11ff893774749edcc59f636eb0de762956cb17e650db7755490df55b5f81d13",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",

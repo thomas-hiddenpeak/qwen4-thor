@@ -35,6 +35,12 @@ def current_surface(root):
                    set(root.glob("include/q4t/server/**/*.*")) | {
                        root / "src/io/json.cpp", root / "src/text/tokenizer.cpp",
                        root / "src/runtime/system_memory.cpp",
+                       root / "src/runtime/startup_reservation.cpp",
+                       root / "include/q4t/runtime/cleanup_policy.h",
+                       root / "src/model/model_owner.cpp",
+                       root / "src/model/model.cu", root / "src/mtp/mtp.cu",
+                       root / "cmake/CudaCleanupBoundary.cmake",
+                       root / "CMakeLists.txt",
                        root / "include/q4t/runtime/system_memory.h",
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake"})

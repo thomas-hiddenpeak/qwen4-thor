@@ -328,12 +328,17 @@ else()
   # PUBLIC keeps ChatServer's member layout identical in all translation units.
   target_compile_definitions(q4t_server PUBLIC Q4T_STARTUP_RESERVATION=1)
   target_sources(q4t PRIVATE src/runtime/startup_reservation.cpp)
-  # Only allocation ownership is intercepted; no event/sync tracing is linked
-  # into the production executable. Non-planned operation passes through.
-  foreach(api cudaMalloc cudaFree cudaHostAlloc cudaMallocHost
-              cudaMallocAsync cudaFreeAsync)
-    target_link_options(q4t PRIVATE "LINKER:--wrap=${api}")
-  endforeach()
+  # No per-operation tracing. Unknown cleanup/completion fails closed even
+  # with --startup-plan off; existing handled serve releases retain errors.
+  include(cmake/CudaCleanupBoundary.cmake)
+  q4t_link_cuda_cleanup(q4t)
+
+  add_executable(q4t_cleanup_probe EXCLUDE_FROM_ALL
+    tools/serve_backend_cleanup/cleanup_probe.cpp
+    src/runtime/startup_reservation.cpp)
+  target_include_directories(q4t_cleanup_probe PRIVATE include)
+  target_link_libraries(q4t_cleanup_probe PRIVATE q4t_startup_plan CUDA::cudart)
+  q4t_link_cuda_cleanup(q4t_cleanup_probe)
 endif()
 
 # ---------------------------------------------------------------------------

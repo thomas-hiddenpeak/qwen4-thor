@@ -2,6 +2,7 @@
 
 #include <cuda_runtime_api.h>
 
+#include "q4t/runtime/cleanup_policy.h"
 #include "q4t/server/device_memory.h"
 
 #ifdef Q4T_SERVE_FAULT_INJECTION
@@ -50,6 +51,8 @@ struct CudaMemoryBackend {
                              : static_cast<int>(cudaMalloc(pointer, bytes));
   }
   int Release(void* pointer) noexcept {
+    const runtime::CleanupPhase phase(site);
+    const runtime::HandledDeviceRelease handled;
     const int fault = DeviceMemoryFault(site, request);
     return fault != kSuccess ? fault : static_cast<int>(cudaFree(pointer));
   }

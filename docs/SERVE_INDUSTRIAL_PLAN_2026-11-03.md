@@ -43,6 +43,11 @@ Thor计量随后限定交付；cudaMalloc实测揭示memcg缺口。SRV-02f文本
 
 ## 当前工作包
 
+- SRV-02g[合同冻结，CPU通过](SERVE_BACKEND_CLEANUP_2026-11-03.md)：
+  请求MTP启动失败收紧、默认q4t直接CUDA清理/完成边界，保留已处理
+  serve错误协议。候选3fd31a21，host245/254、必需211等通过，零警告；
+  单租约真实业务待验，当前默认40cf保持。
+
 - SRV-02f[限定交付](SERVE_DEVICE_MEMORY_RESULT_2026-11-03.md)：
   40cf6376/79d4a657，已知OOM降级、其他设备/释放失败排空停服、成功
   终态前回收。CPU241/250/必需207、原生25及真实工具、8473-token缓存

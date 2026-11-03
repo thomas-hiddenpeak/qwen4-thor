@@ -3,6 +3,12 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  cmake/CudaCleanupBoundary.cmake
+  include/q4t/runtime/cleanup_policy.h
+  src/runtime/startup_reservation.cpp
+  src/model/model_owner.cpp
+  src/model/model.cu
+  src/mtp/mtp.cu
   include/q4t/server/device_memory.h
   src/server/cuda_memory_backend.h
   src/server/chat_device_memory.cpp

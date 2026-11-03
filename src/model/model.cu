@@ -21,6 +21,7 @@
 #include "q4t/quant/moe_subtiming.h"
 
 #include "q4t/runtime/residency_config.h"
+#include "q4t/runtime/cleanup_policy.h"
 
 #include <cuda_bf16.h>
 #include <cuda_runtime.h>
@@ -124,6 +125,7 @@ __global__ void InjectVisionKernel(const uint16_t* __restrict__ vision_src,
 }  // namespace
 
 void Model::Free() {
+  const runtime::CleanupPhase phase("model.release");
   metadata_upload.reset();
   decode_metadata_upload.reset();
   head.Free();
@@ -220,6 +222,7 @@ Status LoadPleHashParams(const io::WeightLoader& loader,
 }
 
 Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
+  const runtime::CleanupPhase phase("model.load");
   if (!runtime::ValidSequenceCapacities(cfg.seq_capacities, cfg.max_len,
                                         cfg.max_seq))
     return Status::Fail("invalid model slot capacities");
@@ -460,12 +463,11 @@ Status LoadModel(const ModelConfig& cfg, Model* m, cudaStream_t stream) {
   m->ws_bytes = ws;
   if (!(s = alloc(&m->d_ws, ws))) return s;
 
-  // All weights are on GPU. `index` (unique_ptr) releases the weight
-  // index at scope exit; the loader's shard mappings are released below
-  // (baseline) or kept for the model's lifetime (tiered residency). Sync first so every H2D copy has landed
-  // (the reads are async on `stream`).
+  // Establish completion before releasing the model-owned loader/index.
+  // Failure cannot unwind storage whose device lifetime remains unknown.
   t0 = lt ? NowMs() : 0.0;
-  cudaStreamSynchronize(stream);
+  runtime::RequireCleanupSuccess(cudaStreamSynchronize(stream),
+                                 "model.load completion");
   if (lt) {
     t_sync = NowMs() - t0;
     std::fprintf(stderr,
