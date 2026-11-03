@@ -10,6 +10,8 @@
 #include <charconv>
 #include <string_view>
 
+#include "q4t/server/client_identity.h"
+
 namespace q4t::server {
 namespace {
 
@@ -120,6 +122,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   size_t length = 0;
   bool seen_length = false, seen_host = false;
   bool seen_id = false, seen_type = false;
+  bool seen_client = false, seen_gateway = false;
   size_t pos = line_end + 2;
   while (pos < head.size()) {
     const size_t end = head.find("\r\n", pos);
@@ -163,6 +166,26 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       }
       seen_id = true;
       headers->request_id = value;
+    } else if (name == "x-q4t-client-id") {
+      if (seen_client || !ValidClientId(value)) {
+        headers->error_code = "invalid_client_header";
+        return false;
+      }
+      seen_client = true;
+      headers->client_id = value;
+    } else if (name == "x-q4t-gateway-token") {
+      if (seen_gateway || value.size() != 64) {
+        headers->error_code = "invalid_client_header";
+        return false;
+      }
+      for (char c : value) {
+        if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'))) {
+          headers->error_code = "invalid_client_header";
+          return false;
+        }
+      }
+      seen_gateway = true;
+      headers->gateway_token = value;
     } else if (name == "content-type") {
       if (seen_type) {
         headers->error_code = "duplicate_content_type";

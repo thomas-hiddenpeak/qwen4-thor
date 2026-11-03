@@ -22,9 +22,10 @@ from tools.serve_gateway import gateway as g
 from tools.serve_service import package as pkg, service, supervisor as sup
 from tools.serve_ops import identity
 
-SOURCES=(*pkg.SOURCES,'tools/serve_gateway/gateway.py',
+LEGACY_SOURCES=(*pkg.SOURCES,'tools/serve_gateway/gateway.py',
          'tools/serve_gateway/managed.py','tools/serve_gateway/managed_child.py',
          'docs/serve-openapi-v1.json')
+SOURCES=(*LEGACY_SOURCES, 'tools/serve_gateway/client_policy.py')
 SETTINGS=dict(poll_seconds=1,startup_seconds=10,drain_seconds=35,
               term_seconds=5,kill_seconds=5,log_bytes=4*1024**2,
               event_bytes=256*1024,restarts=0)
@@ -42,18 +43,18 @@ def read(path):
     return g.parse(g.read_file(path,maximum=2*1024**2,private=True))
 
 
-def prepare(policy,nginx,certificate,key,output):
+def prepare(policy,nginx,certificate,key,output,client_policy=None):
     target=pkg.private_directory(output)
     binary=target/'nginx'
     original=pkg.sha(nginx)
     g.save(binary,g.read_file(nginx,maximum=32*1024**2));binary.chmod(0o500)
     g.require(pkg.sha(binary)==original,'nginx changed while copying')
-    gateway=g.prepare(policy,binary,certificate,key,target/'gateway')
+    gateway=g.prepare(policy,binary,certificate,key,target/'gateway',client_policy)
     for name in SOURCES:
         dest=target/'source'/name;dest.parent.mkdir(parents=True,exist_ok=True)
         g.save(dest,g.read_file(ROOT/name,maximum=2*1024**2));dest.chmod(0o400)
     python=Path(sys.executable).resolve()
-    manifest=dict(version=1,repository=str(ROOT),gateway=gateway,settings=SETTINGS,
+    manifest=dict(version=2,repository=str(ROOT),gateway=gateway,settings=SETTINGS,
         python=dict(path=str(python),sha256=pkg.sha(python)),
         sources={n:pkg.sha(target/'source'/n) for n in SOURCES},
         automatic_start=False,managed_gateway_accepted=False)
@@ -67,8 +68,10 @@ def verify(package,digest):
     package=private(Path(package).resolve(strict=True))
     g.require(pkg.sha(package/'manifest.json')==digest,'managed manifest changed')
     manifest=read(package/'manifest.json')
-    g.require(manifest['version']==1 and manifest['settings']==SETTINGS and
-              set(manifest['sources'])==set(SOURCES),'unknown managed gateway contract')
+    sources={1:LEGACY_SOURCES,2:SOURCES}.get(manifest['version'])
+    g.require(type(manifest['version']) is int and sources is not None and
+              manifest['settings']==SETTINGS and
+              set(manifest['sources'])==set(sources),'unknown managed gateway contract')
     g.require(Path(manifest['gateway']['package'])==package/'gateway','gateway path changed')
     for name,digest in manifest['sources'].items():
         raw=g.read_file(package/'source'/name,maximum=2*1024**2,private=True)
@@ -327,6 +330,7 @@ def main():
     sub=parser.add_subparsers(dest='action',required=True)
     p=sub.add_parser('prepare')
     for name in ('policy','nginx','certificate','key','output'):p.add_argument('--'+name,type=Path,required=True)
+    p.add_argument('--client-policy',type=Path)
     for name in ('run','unit'):
         p=sub.add_parser(name)
         for option in ('package','backend-run','output'):p.add_argument('--'+option,type=Path,required=True)
@@ -334,7 +338,7 @@ def main():
     for name in ('status','stop'):
         p=sub.add_parser(name);p.add_argument('--run',type=Path,required=True)
     args=parser.parse_args()
-    if args.action=='prepare':value=prepare(args.policy,args.nginx,args.certificate,args.key,args.output)
+    if args.action=='prepare':value=prepare(args.policy,args.nginx,args.certificate,args.key,args.output,args.client_policy)
     elif args.action=='unit':print(unit(args.package,args.manifest_sha256,args.backend_run,args.output),end='');return 0
     elif args.action in ('status','stop'):value=(status if args.action=='status' else stop)(args.run)
     else:

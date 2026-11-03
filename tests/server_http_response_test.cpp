@@ -328,9 +328,13 @@ Q4T_TEST(server_http_error_classification) {
   struct Case { int status; const char* reason; const char* type; };
   for (const auto& item : std::vector<Case>{
            {400, "Bad Request", "invalid_request_error"},
+           {401, "Unauthorized", "authentication_error"},
+           {403, "Forbidden", "permission_error"},
            {404, "Not Found", "invalid_request_error"},
            {408, "Request Timeout", "timeout_error"},
            {409, "Conflict", "conflict_error"},
+           {413, "Content Too Large", "invalid_request_error"},
+           {429, "Too Many Requests", "rate_limit_error"},
            {500, "Internal Server Error", "server_error"},
            {502, "Bad Gateway", "server_error"},
            {503, "Service Unavailable", "service_unavailable_error"}}) {

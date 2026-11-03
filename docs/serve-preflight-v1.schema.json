@@ -198,6 +198,26 @@
             "type": "integer",
             "minimum": 0
           }
+        },
+        "client_limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_prompt_tokens": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1048576
+            },
+            "max_output_tokens": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1048576
+            }
+          },
+          "required": [
+            "max_prompt_tokens",
+            "max_output_tokens"
+          ]
         }
       },
       "required": [

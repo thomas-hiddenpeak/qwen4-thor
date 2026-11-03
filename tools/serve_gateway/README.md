@@ -11,6 +11,15 @@
 本机真实模型4类生命周期已通过，实际LAN配置和常驻安装仍待交接。
 下面保留基础配置与底层prepare/check/run说明。
 
+SRV-10c已开发可选[runner客户端策略](../../docs/SERVE_CLIENT_ISOLATION_2026-11-04.md)，
+尚未验收/替换默认ELF。该模式在本工具及managed的prepare增加
+`--client-policy FILE`，并在模型托管prepare传入同一文件；runner使用
+`--client-policy-file FILE`。网关重建可信client/共享凭据头，后端再校验，
+按client隔离请求/取消/cache键并限制body/token/并发。策略须使用独立
+随机凭据且为私有文件，不能将外部API Key作为内部共享token。旧包的
+无策略模式继续有效，但不具有新命名空间/预算保证；运行已封包证据
+应使用包内旧源码，不能用已改变的工作区来源重新解释原验收。
+
 2026-11-04已完成[本机TLS与双客户端短验](../../docs/SERVE_GATEWAY_RESULT_2026-11-04.md)：
 普通/严格输出、真实工具与引用回填、限额、取消、排队及恢复通过。
 首轮取消路径错接及修复前失败保持；修复已与正式API合同交叉核对。

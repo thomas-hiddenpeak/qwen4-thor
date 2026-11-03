@@ -3,6 +3,11 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/server/client_identity.h
+  include/q4t/server/client_policy.h
+  include/q4t/server/client_request.h
+  src/server/client_policy.cpp
+  src/server/client_request.cpp
   include/q4t/runtime/device_memory.h
   include/q4t/runtime/allocation_quota.h
   include/q4t/runtime/cuda_allocation_quota.h

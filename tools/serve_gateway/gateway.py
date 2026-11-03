@@ -129,8 +129,16 @@ def quoted(path):
     return '"'+value+'"'
 
 
-def render(value, directory):
+def render(value, directory, backend_policy=None):
     p = policy(value)
+    identity_headers = ''
+    if backend_policy is not None:
+        from tools.serve_gateway import client_policy as cp
+        cp.match_clients(p, backend_policy)
+        identity_headers = (
+            'proxy_set_header X-Q4T-Client-Id $q4t_client;\n'
+            '      proxy_set_header X-Q4T-Gateway-Token ' +
+            backend_policy['gateway_token'] + ';')
     directory = Path(directory).absolute()
     q = lambda name: quoted(directory/name)
     # nginx literal map keys are case-insensitive. Credentials MUST instead use
@@ -239,6 +247,7 @@ http {{
       proxy_set_header Connection close;
       proxy_set_header Content-Type $http_content_type;
       proxy_set_header X-Request-Id $http_x_request_id;
+      {identity_headers}
       proxy_buffering off;
       proxy_request_buffering on;
       proxy_cache off;
@@ -277,9 +286,14 @@ def certificate_check(certificate, key, hostname):
                     f'Hostname {hostname} does match certificate', 'certificate hostname mismatch')
 
 
-def prepare(policy_path, nginx, certificate, key, output):
+def prepare(policy_path, nginx, certificate, key, output, client_policy=None):
     api_sha256 = validate_routes()
     p = policy(parse(read_file(policy_path, private=True)))
+    backend_raw, backend_policy = None, None
+    if client_policy is not None:
+        from tools.serve_gateway import client_policy as cp
+        backend_raw, backend_policy = cp.read(client_policy)
+        cp.match_clients(p, backend_policy)
     output = Path(output).absolute()
     require(output.parent.resolve().is_relative_to(ROOT/'.q4t-work') or
             output.parent.resolve().is_relative_to(ROOT/'build'), 'output outside work/build')
@@ -297,7 +311,9 @@ def prepare(policy_path, nginx, certificate, key, output):
         (output/name).mkdir(mode=0o700)
     save(output/'certificate.pem', cert_raw)
     save(output/'private-key.pem', key_raw)
-    save(output/'nginx.conf', render(p, output).encode())
+    save(output/'nginx.conf', render(p, output, backend_policy).encode())
+    if backend_raw is not None:
+        save(output/'client-policy.json', backend_raw)
     # Keep syntax-test diagnostics private: nginx can quote configuration input.
     result = subprocess.run([str(nginx),'-e','stderr','-t','-p',str(output)+'/',
         '-c',str(output/'nginx.conf')], capture_output=True, timeout=10, umask=0o077)
@@ -317,6 +333,11 @@ def prepare(policy_path, nginx, certificate, key, output):
         generator_sha256=sha(__file__), api_contract_sha256=api_sha256,
         automatic_start=False,
         upstream_host='127.0.0.1', production_deployment_accepted=False)
+    if backend_raw is not None:
+        manifest['version'] = 2
+        manifest['client_policy'] = cp.binding(backend_raw)
+        manifest['files']['client-policy.json'] = sha(output/'client-policy.json')
+        manifest['client_policy_tool_sha256'] = sha(cp.__file__)
     save(output/'manifest.json', (json.dumps(manifest,indent=2)+'\n').encode())
     return dict(package=str(output), manifest_sha256=sha(output/'manifest.json'),
                 automatic_start=False)
@@ -331,16 +352,28 @@ def check(directory, digest):
                 info.st_mode & 0o077 == 0, 'gateway directory ownership/permissions changed')
     require(sha(directory/'manifest.json') == digest, 'gateway manifest changed')
     manifest = parse(read_file(directory/'manifest.json', private=True))
-    require(manifest['version'] == 1, 'unknown gateway package')
+    require(type(manifest['version']) is int and manifest['version'] in (1, 2),
+            'unknown gateway package')
     require(sha(manifest['nginx']['path']) == manifest['nginx']['sha256'], 'nginx changed')
     require(sha(__file__) == manifest['generator_sha256'], 'gateway tooling changed')
     require(validate_routes() == manifest.get('api_contract_sha256'),
             'gateway API contract changed')
+    expected = {'nginx.conf', 'certificate.pem', 'private-key.pem'}
+    if manifest['version'] == 2:
+        from tools.serve_gateway import client_policy as cp
+        expected.add('client-policy.json')
+        raw, backend_policy = cp.read(directory/'client-policy.json')
+        require(cp.binding(raw) == manifest['client_policy'], 'client policy binding changed')
+        require(sha(cp.__file__) == manifest['client_policy_tool_sha256'], 'policy tooling changed')
+        require({c['id'] for c in backend_policy['clients']} ==
+                set(manifest['policy']['client_ids']), 'client policy IDs differ')
+    else:
+        require('client_policy' not in manifest, 'legacy gateway cannot scope clients')
     for name, digest in manifest['files'].items():
-        require(name in ('nginx.conf','certificate.pem','private-key.pem'), 'unexpected package file')
+        require(name in expected, 'unexpected package file')
         require(hashlib.sha256(read_file(directory/name,private=True)).hexdigest() == digest,
                 'gateway input identity/permissions changed')
-    require(set(manifest['files']) == {'nginx.conf','certificate.pem','private-key.pem'}, 'missing inputs')
+    require(set(manifest['files']) == expected, 'missing inputs')
     certificate_check(directory/'certificate.pem', directory/'private-key.pem',
                       manifest['policy']['server_name'])
     return manifest
@@ -357,12 +390,20 @@ def check_backend(directory, gateway):
     manifest = pkg.verify(control['package'], control['manifest_sha256'])
     port = gateway['policy']['upstream_port']
     require(manifest['settings']['port'] == port, 'backend port differs')
+    expected = gateway.get('client_policy')
+    require(manifest.get('client_policy') == expected, 'gateway/backend client policy differs')
     backend = status['worker']['backend']
     require(supervisor.process_identity(backend['pid']) == backend, 'backend identity changed')
     observed = identity.process(backend['pid'], port)
     require(observed['listener_scope'] == 'loopback' and
             observed['executable_sha256'] == manifest['files']['q4t'],
             'backend must be the pinned binary on loopback')
+    if expected is not None:
+        from tools.serve_gateway import client_policy as cp
+        probe = supervisor.probe(backend['pid'], port)
+        cp.observed_matches(probe.get('client_policy'), expected)
+        require(supervisor.process_identity(backend['pid']) == backend,
+                'backend changed during policy check')
     return dict(backend=backend, listener_inode=observed['listener_inode'])
 
 
@@ -373,6 +414,7 @@ def main():
     p = sub.add_parser('prepare')
     for option in ('policy','nginx','certificate','key','output'):
         p.add_argument('--'+option,required=True,type=Path)
+    p.add_argument('--client-policy', type=Path)
     for action in ('check','run'):
         p = sub.add_parser(action)
         p.add_argument('--package',required=True,type=Path)
@@ -381,7 +423,8 @@ def main():
             p.add_argument('--backend-run',required=True,type=Path)
     args = parser.parse_args()
     if args.action == 'prepare':
-        value = prepare(args.policy,args.nginx,args.certificate,args.key,args.output)
+        value = prepare(args.policy,args.nginx,args.certificate,args.key,args.output,
+                        args.client_policy)
     else:
         value = check(args.package,args.manifest_sha256)
         if args.action == 'run':

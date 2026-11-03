@@ -41,6 +41,16 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-10c[客户端隔离与请求预算开发中](SERVE_CLIENT_ISOLATION_2026-11-04.md)：
+已接入私有固定policy、网关身份校验、data/control RAII额度、body及
+真实模板token预算、请求/取消/缓存命名空间、发现/指标与托管包绑定。
+启用policy仅限loopback文本，省略输出预算取server/client较小值；
+超额在SSE/grammar前拒绝。修正独立HTTP测试target漏链后，候选
+5487bc67零警告构建；280公共host/246必需host（含12新合同）、9后端、
+28个真实SSD存储检查点及70包/网关/托管回归通过。原链接失败保留；
+27项HTTP生命周期及真实TLS/模型/缓存/工具短验尚未运行，未部署；
+默认pair/day保持，长验仍由用户执行。
+
 [SRV-12d独立心跳检测本机限定接受](SERVE_NOTIFY_WATCHDOG_RESULT_2026-11-04.md)：
 冻结c48b764e/36来源，26有效CPU/4驱动/11官方时序及metrics lint
 通过；原缺HELP与首次时间回退失败保持，1+6定向修正通过。

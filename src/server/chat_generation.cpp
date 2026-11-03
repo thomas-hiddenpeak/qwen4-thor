@@ -150,7 +150,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
 
-  const auto planning_config = PlanningConfig();
+  const auto planning_config = PlanningConfig(fd);
+  const auto client = http ? http->Client().Id() : std::string_view();
   ChatRequestPlan request_plan;
   ChatPlanError planning_error;
   s = PlanChatRequest(req, planning_config, &request_plan, &planning_error);
@@ -160,12 +161,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   }
   const auto& constraints = request_plan.constraints;
   TextStopStream text_stop(std::move(request_plan.stops));
-  const std::string prefix_scope = req.GetString("prefix_cache_scope");
+  const std::string prefix_scope =
+      ClientScopedKey(client, req.GetString("prefix_cache_scope"));
   const int prefix_write_tokens =
       static_cast<int>(req.GetInt("prefix_cache_write_tokens", 0));
   std::vector<std::unique_ptr<SessionLease>> shared_writes;
   SessionLease session;
-  session.key = req.GetString("session_id");
+  session.key = ClientScopedKey(client, req.GetString("session_id"));
   if (!session.key.empty()) {
     if (!session_cache_.Acquire(session.key)) {
       SendError(fd, 409, "session is busy or lease capacity exhausted", {},
@@ -187,7 +189,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                std::chrono::milliseconds(req.GetInt("request_timeout_ms"));
   }
   detail::ServeFaultPoint("handler.before_register");
-  auto control = requests_.Register(request_id, key, deadline);
+  auto control = requests_.Register(request_id, key, deadline, client);
   if (!control) {
     SendError(fd, 409, "request_id already active", {},
               "request_id_conflict", "request_id");
@@ -295,6 +297,33 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       SendError(fd, 500, s.message(), {}, "thinking_budget_unavailable");
     }
     return;
+  }
+
+  std::vector<std::uint32_t> prompt_u32;
+  ChatPromptBudget prompt_budget;
+  const auto encode_prompt = [&] {
+    diagnostic.Stage("encode");
+    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
+    return EncodeChatPrompt(
+        req, planning_config, prompt,
+        [&](std::string_view text, std::vector<uint32_t>* out) {
+          return tok_->Encode(text, out, {.cancelled = cancelled});
+        }, &prompt_u32, &prompt_budget, &planning_error);
+  };
+  // Scoped policies are text-only. Check actual template tokens before SSE
+  // or grammar work, and reuse the exact tokenization during admission.
+  if (planning_config.client_limits) {
+    s = encode_prompt();
+    if (!s) {
+      if (cancelled()) {
+        count_abort();
+        send_cancel_error("request cancelled during encoding");
+      } else {
+        SendError(fd, 400, s.message(), {}, planning_error.code,
+                  planning_error.param);
+      }
+      return;
+    }
   }
 
   const auto start_stream = [&] {
@@ -453,19 +482,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   }
   if (!constraints.active && !start_stream()) return;
 
-  std::vector<std::uint32_t> prompt_u32;
   std::vector<int32_t> ids;
   const bool explicit_slots = !seq_capacities_.empty();
-  ChatPromptBudget prompt_budget;
-  diagnostic.Stage("encode");
-  {
-    auto lock = diagnostic.Lock(tok_mu_, Wait::kTokenizer);
-    s = EncodeChatPrompt(
-        req, planning_config, prompt,
-        [&](std::string_view text, std::vector<uint32_t>* out) {
-          return tok_->Encode(text, out, {.cancelled = cancelled});
-        }, &prompt_u32, &prompt_budget, &planning_error);
-  }
+  if (!planning_config.client_limits) s = encode_prompt();
   if (!s) {
     if (cancelled()) {
       count_abort();

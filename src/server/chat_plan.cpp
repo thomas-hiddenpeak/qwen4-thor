@@ -31,9 +31,14 @@ std::string Array(const std::vector<T>& values) {
 const char* Bool(bool value) { return value ? "true" : "false"; }
 
 int RequestedOutput(const io::Json& req, const ChatPlanConfig& config) {
+  const int fallback = config.client_limits
+                           ? std::min(config.default_max_tokens,
+                                      static_cast<int>(config.client_limits
+                                                           ->max_output_tokens))
+                           : config.default_max_tokens;
   return static_cast<int>(
       req.GetInt("max_completion_tokens",
-                 req.GetInt("max_tokens", config.default_max_tokens)));
+                 req.GetInt("max_tokens", fallback)));
 }
 
 std::string OutputSource(const io::Json& req) {
@@ -57,6 +62,11 @@ Status PlanChatRequest(const io::Json& req, const ChatPlanConfig& config,
   auto status = ValidateChatContract(req, config.model, config.allow_media,
                                      &error->param);
   if (!status) return status;
+  if (config.client_limits &&
+      RequestedOutput(req, config) >
+          static_cast<int>(config.client_limits->max_output_tokens))
+    return Fail(error, "client_output_limit_exceeded", OutputSource(req),
+                "requested output exceeds client token limit");
   status = PlanOutputConstraints(req, &plan->constraints);
   if (!status)
     return Fail(error, "invalid_output_constraint", "", status.message());
@@ -85,6 +95,14 @@ Status PlanChatBudget(const io::Json& req, const ChatPlanConfig& config,
   *budget = {};
   *error = {};
   const auto input = req.Has("messages") ? "messages" : "prompt";
+  if (config.client_limits && tokens > config.client_limits->max_prompt_tokens)
+    return Fail(error, "client_prompt_limit_exceeded", input,
+                "encoded prompt exceeds client token limit");
+  if (config.client_limits &&
+      RequestedOutput(req, config) >
+          static_cast<int>(config.client_limits->max_output_tokens))
+    return Fail(error, "client_output_limit_exceeded", OutputSource(req),
+                "requested output exceeds client token limit");
   if (!tokens || tokens >= static_cast<size_t>(config.max_len))
     return Fail(error, "context_length_exceeded", input,
                 "prompt tokens must be positive and below context capacity");
@@ -193,6 +211,12 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
       R"("admission_and_deadline","request_id_and_session_leases",)"
       R"("grammar_compilation","thinking_boundary_tokens",)"
       R"("cache_hits","generation_and_output_validation"])";
+  if (config.client_limits) {
+    out += R"(,"client_limits":{"max_prompt_tokens":)" +
+           std::to_string(config.client_limits->max_prompt_tokens) +
+           R"(,"max_output_tokens":)" +
+           std::to_string(config.client_limits->max_output_tokens) + '}';
+  }
   // Compute the escaped size before allocating it. The optional preview has
   // a hard response bound, not silent truncation or an unbounded token array.
   size_t additional = 2;
@@ -244,7 +268,13 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
   return R"({"object":"q4t.serve.config","profile":"q4t-config-v1",)"
          R"("protocol_source_sha256":)" +
          Quote(identity::kProtocol) + R"(,"model":)" + Quote(config.model) +
-         R"(,"max_context_tokens":)" +
+         R"(,"client_policy":{"profile":"q4t-gateway-clients-v1","enabled":)" +
+         Bool(config.client_count != 0) + R"(,"sha256":)" +
+         Quote(config.client_policy_sha256) + R"(,"clients":)" +
+         std::to_string(config.client_count) +
+         R"(,"namespace":"client_id","credential_values_redacted":true,)"
+         R"("mutable":false,"per_client_ram_limit":false},)"
+         R"("max_context_tokens":)" +
          number("--max-len", requested.max_len, defaults.max_len,
                 config.max_len,
                 !config.capacities.empty() ? "explicit_slots"

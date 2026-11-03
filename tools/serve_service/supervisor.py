@@ -99,7 +99,7 @@ def expected_configuration():
                             p['memory_recovery_margin_mib'])
 
 
-def classify(probe, protocol, binary):
+def classify(probe, protocol, binary, client_policy=None):
     """Only validated observations affect supervision; busy is not failure."""
     pkg.require(probe['process']['executable_sha256'] == binary and
                 probe['process']['listener_scope'] == 'loopback',
@@ -108,6 +108,9 @@ def classify(probe, protocol, binary):
     pkg.require(all(probe['configuration'].get(k) == v
                     for k, v in expected_configuration().items()),
                 'effective serving configuration differs')
+    if client_policy is not None:
+        from tools.serve_gateway import client_policy as cp
+        cp.observed_matches(probe.get('client_policy'), client_policy)
     metrics = probe['metrics']
     if metrics['q4t_gpu_healthy'] == 0:
         return 'GPU_UNHEALTHY'
@@ -126,14 +129,18 @@ def probe(pid, port):
     config = transport.get(port, '/v1/config', deadline=started+8)
     if config['http_status'] != 200:
         raise contracts.InvalidObservation('configuration_unavailable')
-    configuration = contracts.configuration(contracts.json_object(config['body']),
-                                            version=4)
+    raw_config = contracts.json_object(config['body'])
+    configuration = contracts.configuration(raw_config, version=4)
     response = transport.get(port, '/metrics', deadline=started+8)
     if response['http_status'] != 200:
         raise contracts.InvalidObservation('metrics_unavailable')
     metrics, _ = contracts.parse_metrics(response['body'], version=4)
     pkg.require(identity.process(pid, port) == owner, 'backend identity changed')
     return dict(process=owner, protocol=configuration['protocol_sha256'],
+                client_policy=({key: raw_config['client_policy'].get(key) for key in
+                    ('profile', 'enabled', 'sha256', 'clients', 'mutable',
+                     'credential_values_redacted')}
+                    if type(raw_config.get('client_policy')) is dict else None),
                 configuration=configuration,
                 ready=value['ready'], metrics=metrics)
 
@@ -226,7 +233,8 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
                         try:
                             observation = observe(child.pid, cfg['port'])
                             status = classify(observation, manifest['protocol_sha256'],
-                                              manifest['files']['q4t'])
+                                              manifest['files']['q4t'],
+                                              manifest.get('client_policy'))
                             pkg.require(status != 'GPU_UNHEALTHY', 'GPU unhealthy')
                             missing = None
                             was_ready = was_ready or status == 'READY'

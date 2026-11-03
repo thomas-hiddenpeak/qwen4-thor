@@ -8,6 +8,7 @@
 
 #include "q4t/io/json.h"
 #include "q4t/server/output_constraints.h"
+#include "q4t/server/client_policy.h"
 #include "q4t/server/server_options.h"
 #include "q4t/status.h"
 
@@ -33,6 +34,9 @@ struct ChatPlanConfig {
   std::vector<int> capacities;
   std::vector<int> checkpoints;
   uint64_t cuda_quota_limit_bytes = 0;
+  std::string client_policy_sha256;
+  size_t client_count = 0;
+  const ClientLimits* client_limits = nullptr;
 };
 
 struct ChatPlanError {

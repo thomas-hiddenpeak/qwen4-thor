@@ -173,6 +173,7 @@ def main():
     p.add_argument('--port', type=int, default=8080)
     p.add_argument('--restart-limit', type=int, default=0)
     p.add_argument('--critical-memory-mib', type=int, default=1024)
+    p.add_argument('--client-policy', type=Path)
     for action in ('run', 'unit'):
         p = sub.add_parser(action)
         p.add_argument('--package', type=Path, required=True)
@@ -185,7 +186,7 @@ def main():
     if args.action == 'prepare':
         result = pkg.prepare(args.binary, args.release, args.model_dir,
                              args.output, args.port, args.restart_limit,
-                             args.critical_memory_mib)
+                             args.critical_memory_mib, args.client_policy)
     elif args.action == 'run':
         manifest = pkg.verify(args.package, args.manifest_sha256)
         entry = args.package.resolve()/'source/tools/serve_service/service.py'

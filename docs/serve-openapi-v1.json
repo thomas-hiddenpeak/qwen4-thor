@@ -816,6 +816,44 @@
     "post_content_type": "application/json; optional charset=utf-8",
     "unsupported_media_type": 415,
     "builtin_authentication": false,
+    "gateway_client_policy": {
+      "profile": "q4t-gateway-clients-v1",
+      "enabled_by": "--client-policy-file",
+      "transport": "loopback text only",
+      "external_authentication": "TLS gateway independent API keys",
+      "internal_headers": [
+        "X-Q4T-Client-Id",
+        "X-Q4T-Gateway-Token"
+      ],
+      "identity": "gateway overwrites internal headers; runner validates configured client and independent shared credential before body admission",
+      "scoped_resources": [
+        "request_id",
+        "cancellation",
+        "session_id",
+        "prefix_cache_scope"
+      ],
+      "limits": [
+        "data/control inflight",
+        "body bytes",
+        "encoded prompt tokens",
+        "total output tokens"
+      ],
+      "refusals": {
+        "authentication": 401,
+        "local_admin_with_identity": 403,
+        "body_limit": 413,
+        "concurrency_limit": 429,
+        "token_limit": 400
+      },
+      "defaults": "omitted/null output budget is min(server default, client output limit)",
+      "local_admin": "exact GET health/liveness/readiness/config/metrics remain trusted same-host routes; gateway denies them",
+      "no_guarantee": [
+        "per-client physical RAM",
+        "fair scheduling",
+        "distributed quotas",
+        "automatic in-flight key revocation"
+      ]
+    },
     "deployment": "controlled local/internal service; public deployment not accepted",
     "streaming_response_schema_scope": "envelopes; sequencing and tool semantics require client validation"
   }

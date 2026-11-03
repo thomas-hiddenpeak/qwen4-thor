@@ -19,6 +19,7 @@ LEGACY_SOURCES = (
 )
 V2_SOURCES = (*LEGACY_SOURCES, 'tools/serve_service/memory.py')
 SOURCES = (*V2_SOURCES, 'tools/serve_service/inspection.py')
+V4_SOURCES = (*SOURCES, 'tools/serve_gateway/client_policy.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
 PROFILE = dict(name='text-mtp-managed-v1', host='127.0.0.1', max_seq=1,
     max_len=8192, max_prefill=2048, max_tokens=256, mtp_k=3,
@@ -102,7 +103,11 @@ def settings(port, restart_limit, critical_memory_mib=1024):
 
 
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
-            critical_memory_mib=1024):
+            critical_memory_mib=1024, client_policy=None):
+    policy_raw = None
+    if client_policy is not None:
+        from tools.serve_gateway import client_policy as cp
+        policy_raw, _ = cp.read(client_policy)
     binary, release, model = map(lambda p: Path(p).resolve(),
                                  (binary, release, model))
     regular(binary)
@@ -130,19 +135,28 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     for source, name in zip((binary, release, cache, acceptance), FILES):
         shutil.copyfile(source, target/name)
         os.chmod(target/name, 0o500 if name == 'q4t' else 0o400)
-    for name in SOURCES:
+    sources = V4_SOURCES if policy_raw is not None else SOURCES
+    for name in sources:
         source, dest = ROOT/name, target/'source'/name
         regular(source)
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, dest)
         os.chmod(dest, 0o400)
-    names = [*FILES, *('source/'+s for s in SOURCES)]
+    names = [*FILES, *('source/'+s for s in sources)]
+    if policy_raw is not None:
+        with (target/'client-policy.json').open('xb') as stream:
+            stream.write(policy_raw)
+        (target/'client-policy.json').chmod(0o400)
+        names.append('client-policy.json')
     python = Path(sys.executable).resolve()
     manifest = dict(version=3, repository=str(ROOT), model_dir=str(model),
         model_files=model_files, protocol_sha256=protocol, settings=config,
         python=dict(path=str(python), sha256=sha(python)),
         files={name: sha(target/name) for name in names},
         weight_shards_rehashed=False, managed_service_accepted=False)
+    if policy_raw is not None:
+        manifest['version'] = 4
+        manifest['client_policy'] = cp.binding(policy_raw)
     save(target/'manifest.json', manifest)
     verify(target, sha(target/'manifest.json'))
     return dict(package=str(target), manifest_sha256=sha(target/'manifest.json'),
@@ -153,7 +167,7 @@ def verify(package, digest):
     package = Path(package).resolve(strict=True)
     require(sha(package/'manifest.json') == digest, 'package manifest changed')
     manifest = read(package/'manifest.json')
-    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3),
+    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4),
             'unsupported package version')
     config = manifest['settings']
     wanted = settings(config['port'], config['restart_limit'],
@@ -163,8 +177,17 @@ def verify(package, digest):
                     'memory_low_seconds', 'memory_unknown_seconds'):
             del wanted[key]
     require(config == wanted, 'unknown managed configuration')
-    sources = {1: LEGACY_SOURCES, 2: V2_SOURCES, 3: SOURCES}[manifest['version']]
+    sources = {1: LEGACY_SOURCES, 2: V2_SOURCES, 3: SOURCES,
+               4: V4_SOURCES}[manifest['version']]
     expected = {*FILES, *('source/'+name for name in sources)}
+    if manifest['version'] == 4:
+        from tools.serve_gateway import client_policy as cp
+        expected.add('client-policy.json')
+        raw, _ = cp.read(package/'client-policy.json')
+        require(manifest.get('client_policy') == cp.binding(raw),
+                'client policy binding differs')
+    else:
+        require('client_policy' not in manifest, 'legacy package cannot scope clients')
     require(set(manifest['files']) == expected, 'package inventory differs')
     for name, wanted in manifest['files'].items():
         path = package/name
@@ -198,4 +221,6 @@ def command(package, manifest):
     for key, value in PROFILE.items():
         if key not in ('name', 'host'):
             args += ['--'+key.replace('_', '-'), str(value)]
+    if manifest['version'] == 4:
+        args += ['--client-policy-file', str(Path(package)/'client-policy.json')]
     return args

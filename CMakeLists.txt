@@ -258,6 +258,8 @@ target_include_directories(q4t_runtime PUBLIC include)
 # ---------------------------------------------------------------------------
 include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
+  src/server/client_policy.cpp
+  src/server/client_request.cpp
   src/server/chat_device_memory.cpp
   src/server/memory_admission.cpp
   src/server/chat_memory.cpp
@@ -610,6 +612,8 @@ if(Q4T_BUILD_TESTS)
       src/server/chat_device_memory.cpp
       src/server/chat_admission.cpp
       src/server/chat_http.cpp src/server/http_request.cpp
+      src/server/client_policy.cpp src/server/client_request.cpp
+      src/trace/sha256.cpp
       src/server/input_contract.cpp src/server/output_schema.cpp
       src/server/http_response.cpp src/trace/router_trace.cpp)
     target_include_directories(q4t_http_lifecycle_tests PRIVATE

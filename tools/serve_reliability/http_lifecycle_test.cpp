@@ -115,7 +115,112 @@ std::string Request(ChatServer& server, const std::string& request) {
   }
   return response;
 }
+
+bool ConfigureClients(ChatServer& server) {
+  q4t::server::GatewayClientPolicy policy;
+  policy.gateway_token = std::string(64, 'd');
+  policy.sha256 = std::string(64, 'a');
+  policy.clients = {{"alpha", 1, 1, 64, 16, 1024},
+                    {"beta", 1, 1, 64, 16, 1024}};
+  return ServeContractAccess::Clients(server).Configure(std::move(policy)).ok();
+}
+
+std::string ClientHeaders(const std::string& id) {
+  return "X-Q4T-Client-Id: " + id + "\r\nX-Q4T-Gateway-Token: " +
+         std::string(64, 'd') + "\r\n";
+}
 }  // namespace
+
+Q4T_TEST(http_client_authentication_scoped_cancel_and_local_admin) {
+  using namespace q4t::server;
+  ChatServer server;
+  ServeContractAccess::Configure(server);
+  Q4T_CHECK(ConfigureClients(server));
+  const std::string key_a(64, 'a'), key_b(64, 'b');
+  auto a = ServeContractAccess::Register(server, key_a, "alpha");
+  auto b = ServeContractAccess::Register(server, key_b, "beta");
+  Q4T_CHECK(a && b);
+  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  Q4T_CHECK(Request(server, "GET /v1/models HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 401 Unauthorized\r\n"));
+  Q4T_CHECK(Request(server, "GET /v1/models HTTP/1.1\r\nHost: t\r\n" +
+                            ClientHeaders("beta") + "\r\n")
+                .starts_with("HTTP/1.1 200 "));
+  Q4T_CHECK(Request(server, "GET /healthz HTTP/1.1\r\nHost: t\r\n\r\n")
+                .starts_with("HTTP/1.1 200 "));
+  Q4T_CHECK(Request(server, "GET /healthz HTTP/1.1\r\nHost: t\r\n" +
+                            ClientHeaders("alpha") + "\r\n")
+                .starts_with("HTTP/1.1 403 Forbidden\r\n"));
+  const std::string body =
+      R"({"request_id":"cancel-contract","cancel_token":")" + key_a + "\"}";
+  const auto cancel = [&](const std::string& client) {
+    return Request(server,
+        "POST /v1/requests/cancel HTTP/1.1\r\nHost: t\r\n" +
+        ClientHeaders(client) + "Content-Type: application/json\r\n" +
+        "Content-Length: " + std::to_string(body.size()) + "\r\n\r\n" + body);
+  };
+  Q4T_CHECK(cancel("beta").starts_with("HTTP/1.1 404 "));
+  Q4T_CHECK(!a->Cancelled() && !b->Cancelled());
+  Q4T_CHECK(cancel("alpha").starts_with("HTTP/1.1 202 "));
+  Q4T_CHECK(a->Cancelled() && !b->Cancelled());
+  stop.Run();
+  Q4T_CHECK(run.wait_for(3s) == std::future_status::ready && run.get().ok());
+  Q4T_CHECK(ServeContractAccess::Empty(server));
+  for (size_t i = 0; i < 2; ++i) {
+    const auto usage = ServeContractAccess::Clients(server).Usage(i);
+    Q4T_CHECK(usage.data_active == 0 && usage.control_active == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(http_client_body_quota_and_exception_cleanup) {
+  using namespace q4t::server;
+  ChatServer server;
+  ServeContractAccess::Configure(server);
+  Q4T_CHECK(ConfigureClients(server));
+  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  auto& clients = ServeContractAccess::Clients(server);
+  const auto wait = [&](auto predicate) {
+    const auto end = std::chrono::steady_clock::now() + 1s;
+    while (!predicate() && std::chrono::steady_clock::now() < end)
+      std::this_thread::sleep_for(1ms);
+    return predicate();
+  };
+  const auto prefix = [](const std::string& client, int bytes) {
+    return "POST /v1/chat/completions HTTP/1.1\r\nHost: t\r\n" +
+           ClientHeaders(client) + "Content-Type: application/json\r\n" +
+           "Content-Length: " + std::to_string(bytes) + "\r\n\r\n";
+  };
+  Q4T_CHECK(Request(server, prefix("alpha", 1025))
+                .starts_with("HTTP/1.1 413 Content Too Large\r\n"));
+  Q4T_CHECK(ServeContractAccess::BodyBudget(server).Used() == 0);
+  const int held = Connect(server);
+  ScopeExit close_held([&] { close(held); });
+  Q4T_CHECK(detail::WriteAll(held, prefix("alpha", 2)));
+  Q4T_CHECK(wait([&] { return clients.Usage(0).data_active == 1; }));
+  Q4T_CHECK(Request(server, prefix("alpha", 2) + "{}")
+                .starts_with("HTTP/1.1 429 Too Many Requests\r\n"));
+  // Unloaded HandleChat throws bad_alloc; this is exception teardown coverage.
+  Q4T_CHECK(Request(server, prefix("beta", 2) + "{}")
+                .starts_with("HTTP/1.1 503 "));
+  Q4T_CHECK(wait([&] { return clients.Usage(1).data_active == 0; }));
+  Q4T_CHECK(Request(server, "GET /v1/models HTTP/1.1\r\nHost: t\r\n" +
+                            ClientHeaders("alpha") + "\r\n")
+                .starts_with("HTTP/1.1 200 "));
+  close_held.Run();
+  Q4T_CHECK(wait([&] { return clients.Usage(0).data_active == 0; }));
+  Q4T_CHECK(Request(server, prefix("alpha", 2) + "{}")
+                .starts_with("HTTP/1.1 503 "));
+  stop.Run();
+  Q4T_CHECK(run.wait_for(3s) == std::future_status::ready && run.get().ok());
+  Q4T_CHECK(ServeContractAccess::Empty(server));
+  Q4T_CHECK(clients.Usage(0).data_active == 0 &&
+            clients.Usage(0).data_rejected == 1);
+  Q4T_CHECK(ServeContractAccess::BodyBudget(server).Used() == 0);
+  return true;
+}
 
 Q4T_TEST(http_observation_partition_business_and_control_isolation) {
   using namespace q4t::server;

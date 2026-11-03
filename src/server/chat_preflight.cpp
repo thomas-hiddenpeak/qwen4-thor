@@ -9,7 +9,8 @@
 
 namespace q4t::server {
 
-ChatPlanConfig ChatServer::PlanningConfig() const {
+ChatPlanConfig ChatServer::PlanningConfig(int fd) const {
+  const auto* http = detail::HttpResponseContext::Current(fd);
   return {.model = model_name_,
           .max_len = max_len_,
           .max_seq = max_seq_,
@@ -25,7 +26,10 @@ ChatPlanConfig ChatServer::PlanningConfig() const {
           .prefix_cache = prefix_cache_.Enabled(),
           .capacities = seq_capacities_,
           .checkpoints = prefix_cache_checkpoints_,
-          .cuda_quota_limit_bytes = cuda_quota_limit_bytes_};
+          .cuda_quota_limit_bytes = cuda_quota_limit_bytes_,
+          .client_policy_sha256 = clients_.PolicySha256(),
+          .client_count = clients_.Size(),
+          .client_limits = http ? http->Client().Limits() : nullptr};
 }
 
 void ChatServer::HandleConfig(int fd) {
@@ -59,7 +63,7 @@ void ChatServer::HandlePreflight(int fd, const std::string& body) {
     return;
   }
   const auto& req = *envelope.Find("request");
-  auto config = PlanningConfig();
+  auto config = PlanningConfig(fd);
   // Exact text token counts cannot represent vision expansion without model
   // execution. Reject media even on an experimental media-enabled server.
   config.allow_media = false;

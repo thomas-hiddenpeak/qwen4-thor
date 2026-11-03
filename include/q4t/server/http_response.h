@@ -12,6 +12,7 @@
 #include <thread>
 
 #include "q4t/server/request_control.h"
+#include "q4t/server/client_policy.h"
 #include "q4t/server/http_observation.h"
 
 namespace q4t::server::detail {
@@ -61,6 +62,9 @@ class HttpResponseContext {
   static HttpResponseContext* Current(int fd);
   const std::string& TraceId() const { return trace_id_; }
   bool SetTraceId(std::string_view id);
+  // Handler-thread-only identity, minted by header admission.
+  const ClientIdentity& Client() const { return client_; }
+  void SetClient(ClientIdentity client) { client_ = client; }
   ResponseState* State() { return &state_; }
   // Handler-thread-only, non-owning hook. Clear it before its owner dies.
   // Invoked once before terminal publication, including error responses.
@@ -90,6 +94,7 @@ class HttpResponseContext {
   const int fd_;
   HttpResponseContext* const previous_;
   std::string trace_id_;
+  ClientIdentity client_;
   ResponseState state_ = ResponseState::kUnsent;  // handler thread only
   void (*terminal_hook_)(void*) noexcept = nullptr;
   void* terminal_owner_ = nullptr;

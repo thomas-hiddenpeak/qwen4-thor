@@ -9,6 +9,8 @@
 #include <unordered_map>
 #include <utility>
 
+#include "q4t/server/client_identity.h"
+
 namespace q4t::server {
 
 class RequestControl {
@@ -17,8 +19,10 @@ class RequestControl {
     kActive, kDisconnect, kExplicit, kDeadline, kShutdown, kFailure, kFinished
   };
   RequestControl(std::string id, std::string key,
-                 std::chrono::steady_clock::time_point deadline)
-      : id_(std::move(id)), key_(std::move(key)), deadline_(deadline) {}
+                 std::chrono::steady_clock::time_point deadline,
+                 std::string_view client = {})
+      : id_(std::move(id)), key_(std::move(key)),
+        registry_key_(ClientScopedKey(client, id_)), deadline_(deadline) {}
   const std::string& id() const { return id_; }
   bool Failed() const { return state_.load() == State::kFailure; }
   std::chrono::steady_clock::time_point deadline() const { return deadline_; }
@@ -59,8 +63,10 @@ class RequestControl {
   }
 
  private:
+  friend class RequestRegistry;
   const std::string id_;
   const std::string key_;
+  const std::string registry_key_;
   const std::chrono::steady_clock::time_point deadline_;
   std::atomic<State> state_{State::kActive};
 };
@@ -71,17 +77,20 @@ class RequestRegistry {
  public:
   std::shared_ptr<RequestControl> Register(
       const std::string& id, const std::string& key,
-      std::chrono::steady_clock::time_point deadline) {
+      std::chrono::steady_clock::time_point deadline,
+      std::string_view client = {}) {
     const std::lock_guard<std::mutex> lock(mu_);
-    if (requests_.contains(id)) return nullptr;
-    auto request = std::make_shared<RequestControl>(id, key, deadline);
+    const auto scoped = ClientScopedKey(client, id);
+    if (requests_.contains(scoped)) return nullptr;
+    auto request = std::make_shared<RequestControl>(id, key, deadline, client);
     if (stopping_) request->Cancel(RequestControl::State::kShutdown);
-    requests_.emplace(id, request);
+    requests_.emplace(scoped, request);
     return request;
   }
-  bool Cancel(const std::string& id, const std::string& key) {
+  bool Cancel(const std::string& id, const std::string& key,
+              std::string_view client = {}) {
     const std::lock_guard<std::mutex> lock(mu_);
-    const auto it = requests_.find(id);
+    const auto it = requests_.find(ClientScopedKey(client, id));
     return it != requests_.end() && it->second->MatchesKey(key) &&
            it->second->Cancel();
   }
@@ -96,7 +105,7 @@ class RequestRegistry {
   void Remove(const std::shared_ptr<RequestControl>& request) {
     const std::lock_guard<std::mutex> lock(mu_);
     request->Finish();
-    const auto it = requests_.find(request->id());
+    const auto it = requests_.find(request->registry_key_);
     if (it != requests_.end() && it->second == request) requests_.erase(it);
   }
 

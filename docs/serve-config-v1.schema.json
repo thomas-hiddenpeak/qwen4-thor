@@ -973,6 +973,49 @@
         "excluded"
       ],
       "additionalProperties": false
+    },
+    "client_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "const": "q4t-gateway-clients-v1"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^([a-f0-9]{64})?$"
+        },
+        "clients": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 64
+        },
+        "namespace": {
+          "const": "client_id"
+        },
+        "credential_values_redacted": {
+          "const": true
+        },
+        "mutable": {
+          "const": false
+        },
+        "per_client_ram_limit": {
+          "const": false
+        }
+      },
+      "required": [
+        "profile",
+        "enabled",
+        "sha256",
+        "clients",
+        "namespace",
+        "credential_values_redacted",
+        "mutable",
+        "per_client_ram_limit"
+      ]
     }
   },
   "required": [

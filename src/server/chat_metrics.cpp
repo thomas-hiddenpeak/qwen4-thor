@@ -37,6 +37,7 @@ void ChatServer::HandleMetrics(int fd) {
   const auto memory = memory_admission_.Observe();
   std::string b;
   b.reserve(2048);
+  b += ClientPolicyMetrics(clients_);
 #ifdef Q4T_STARTUP_RESERVATION
   b += CudaQuotaMetrics(runtime::ReadCudaAllocationQuota());
 #endif

@@ -62,11 +62,13 @@ struct ServeContractAccess {
     server.seq_cv_.notify_all();
   }
   static std::shared_ptr<RequestControl> Register(ChatServer& server,
-                                                  const std::string& token) {
+                                                  const std::string& token,
+                                                  std::string_view client = {}) {
     return server.requests_.Register(
         "cancel-contract", token,
-        std::chrono::steady_clock::now() + std::chrono::seconds(30));
+        std::chrono::steady_clock::now() + std::chrono::seconds(30), client);
   }
+  static ClientAdmission& Clients(ChatServer& server) { return server.clients_; }
   static void Configure(ChatServer& server) {
     server.port_ = 0;
     server.conn_cap_ = 2;

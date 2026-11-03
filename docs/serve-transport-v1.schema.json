@@ -43,7 +43,7 @@
           "additionalProperties": false,
           "properties": {
             "message": {"type": "string"},
-            "type": {"enum": ["invalid_request_error", "server_error", "timeout_error", "conflict_error", "service_unavailable_error"]},
+            "type": {"enum": ["invalid_request_error", "server_error", "timeout_error", "conflict_error", "service_unavailable_error", "authentication_error", "permission_error", "rate_limit_error"]},
             "code": {"type": "string", "minLength": 1},
             "param": {"type": ["string", "null"]}
           }

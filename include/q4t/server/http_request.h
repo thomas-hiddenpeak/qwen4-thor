@@ -28,6 +28,8 @@ inline bool ValidHttpRequestId(std::string_view id) {
 struct HttpRequestHeaders {
   std::string request_id;
   std::string content_type;
+  std::string client_id;
+  std::string gateway_token;
   std::string error_code;
   std::string error_param;
   size_t content_length = 0;

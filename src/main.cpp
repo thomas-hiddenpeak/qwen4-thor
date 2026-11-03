@@ -62,6 +62,7 @@ void PrintUsage(const char* prog) {
       "[--min-available-memory-mib N] [--memory-recovery-margin-mib N] "
       "[--startup-memory-headroom-mib N] "
       "[--cuda-allocation-limit-mib auto|0|N] "
+      "[--client-policy-file FILE] "
       "[--seq-capacities N,N,...] [--mtp | --no-mtp] [--mtp-suffix] "
       "[--session-cache-dir DIR] [--prefix-cache-dir DIR] "
       "[--prefix-cache-checkpoints 8192,32768,65536] "

@@ -109,6 +109,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  if (!opts.client_policy_file.empty()) {
+    GatewayClientPolicy policy;
+    auto status = LoadGatewayClientPolicy(opts.client_policy_file, &policy);
+    if (status) status = clients_.Configure(std::move(policy));
+    if (!status) return status;
+  }
   memory_admission_.Configure(
       static_cast<uint64_t>(opts.min_available_memory_mib) * 1024 * 1024,
       static_cast<uint64_t>(opts.memory_recovery_margin_mib) * 1024 * 1024);

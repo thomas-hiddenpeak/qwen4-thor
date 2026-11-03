@@ -163,7 +163,7 @@ class ChatServer {
   void HandleMetrics(int fd);
   void HandlePreflight(int fd, const std::string& body);
   void HandleConfig(int fd);
-  ChatPlanConfig PlanningConfig() const;
+  ChatPlanConfig PlanningConfig(int fd = -1) const;
   void HandleChat(int fd, const std::string& body);
   void HandleChatImpl(int fd, const std::string& body,
                       detail::ResponseState* response_state);
@@ -175,6 +175,7 @@ class ChatServer {
   // Admission is provisional: recheck GPU health under model_mu_ at submit.
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
+  ClientAdmission clients_;
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;
   void FreeSeqId(int seq_id);

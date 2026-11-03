@@ -92,6 +92,9 @@ Status ValidateServerOptions(const ServerOptions& options) {
   in_addr address{};
   if (inet_pton(AF_INET, options.host.c_str(), &address) != 1)
     return Status::Fail("host must be a numeric IPv4 address");
+  if (!options.client_policy_file.empty() &&
+      (options.host != "127.0.0.1" || options.allow_media))
+    return Status::Fail("client-policy-file requires loopback text serving");
   if (options.port < 1 || options.port > 65535)
     return Status::Fail("port must be in [1,65535]");
   if (options.model_dir.empty()) return Status::Fail("model-dir is empty");
@@ -199,7 +202,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
         key != "--moe-trace-workload" && key != "--moe-hot-list" &&
         key != "--startup-plan" && key != "--mtp-subset-head" &&
         key != "--seq-capacities" && key != "--session-cache-dir" &&
-        key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints")
+        key != "--prefix-cache-dir" && key != "--prefix-cache-checkpoints" &&
+        key != "--client-policy-file")
       return Status::Fail("unknown serve option: " + std::string(key));
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
@@ -236,6 +240,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       parsed.session_cache_dir = value;
     } else if (key == "--mtp-subset-head") {
       parsed.mtp_subset_head = value;
+    } else if (key == "--client-policy-file") {
+      parsed.client_policy_file = value;
     } else if (key == "--host") {
       parsed.host = value;
     } else if (key == "--moe-trace-dir") {

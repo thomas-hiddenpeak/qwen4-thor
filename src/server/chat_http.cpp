@@ -22,6 +22,7 @@
 #include "q4t/server/http_request.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/client_request.h"
 
 namespace q4t::server {
 using detail::SendSimple;
@@ -224,6 +225,7 @@ Status ChatServer::Run() {
 }
 
 void ChatServer::HandleClient(int fd) {
+  ClientLease client_lease;  // Outlives response and heartbeat cleanup.
   detail::HttpResponseContext context(fd, &metrics_.http_transport);
   bool dispatch_started = false;
   try {
@@ -237,6 +239,11 @@ void ChatServer::HandleClient(int fd) {
     int failure_status = 400;
     const auto admit = [&] {
       if (!headers.request_id.empty()) context.SetTraceId(headers.request_id);
+      ClientIdentity identity;
+      if (!AdmitClientRequest(method, path, &headers, clients_, &client_lease,
+                               &identity, &failure_status))
+        return false;
+      context.SetClient(identity);
       const auto kind = ClassifyHttpConnection(method, path);
       if (kind == HttpConnectionClass::kBusiness && stop_requested_.load()) {
         failure_status = 503;
@@ -284,6 +291,10 @@ void ChatServer::HandleClient(int fd) {
                                    headers.system_error);
       const char* reason = failure_status == 408   ? "Request Timeout"
                            : failure_status == 503 ? "Service Unavailable"
+                           : failure_status == 401 ? "Unauthorized"
+                           : failure_status == 403 ? "Forbidden"
+                           : failure_status == 413 ? "Content Too Large"
+                           : failure_status == 429 ? "Too Many Requests"
                                                    : "Bad Request";
       SendError(fd, failure_status, reason, {}, headers.error_code,
                 headers.error_param);
@@ -408,8 +419,10 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                 "invalid_cancellation");
       return;
     }
+    const auto* context = detail::HttpResponseContext::Current(fd);
+    const auto client = context ? context->Client().Id() : std::string_view();
     if (!requests_.Cancel(req.GetString("request_id"),
-                          req.GetString("cancel_token"))) {
+                          req.GetString("cancel_token"), client)) {
       SendError(fd, 404, "no cancellable request with these credentials", {},
                 "request_not_found");
       return;

@@ -470,6 +470,8 @@ struct ErrorInfo {
 ErrorInfo ErrorForStatus(int status) {
   switch (status) {
     case 400: return {"Bad Request", "invalid_request_error", "invalid_request"};
+    case 401: return {"Unauthorized", "authentication_error", "unauthorized"};
+    case 403: return {"Forbidden", "permission_error", "forbidden"};
     case 404: return {"Not Found", "invalid_request_error", "not_found"};
     case 405:
       return {"Method Not Allowed", "invalid_request_error",
@@ -479,6 +481,10 @@ ErrorInfo ErrorForStatus(int status) {
               "unsupported_media_type"};
     case 408: return {"Request Timeout", "timeout_error", "request_timeout"};
     case 409: return {"Conflict", "conflict_error", "request_conflict"};
+    case 413:
+      return {"Content Too Large", "invalid_request_error", "body_too_large"};
+    case 429:
+      return {"Too Many Requests", "rate_limit_error", "capacity_exhausted"};
     case 502: return {"Bad Gateway", "server_error", "upstream_error"};
     case 503: return {"Service Unavailable", "service_unavailable_error",
                       "service_unavailable"};

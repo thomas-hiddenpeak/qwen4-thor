@@ -28,6 +28,7 @@ struct ServerOptions {
   std::vector<std::string> supplied_options;
   // Numeric IPv4 only. Remote access requires an explicit address.
   std::string host = "127.0.0.1";
+  std::string client_policy_file;  // Private immutable gateway policy, optional.
   int port = 8000;
   std::string model_dir;
   int max_tokens = 256;  // default cap when the request omits max_tokens
