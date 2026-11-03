@@ -4,6 +4,7 @@
 工具仅查询本项目允许范围内的真实文档、发布和验收记录。
 [合同](../../docs/SERVE_PROJECT_TASKS_2026-11-04.md) ·
 [本机真实恢复验收](../../docs/SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)。
+[双客户端预算与恢复预检验收](../../docs/SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)。
 
 先显式创建新 store，任务不会自动删除，幂等键一直保留：
 
@@ -90,4 +91,5 @@ store、SQLite账本和wire都是私有资料；同UID是可信边界。没有�
 
 ```bash
 python3 -B tools/project_tasks/report.py verify
+python3 -B tools/project_tasks/budget_report.py verify
 ```

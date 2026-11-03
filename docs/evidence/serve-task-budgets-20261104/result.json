@@ -1,0 +1,55 @@
+{
+  "status": "ACCEPT_PROJECT_TASK_BUDGET_SHORT",
+  "cpu_tests": 31,
+  "driver_tests": 3,
+  "model_starts": 1,
+  "gateway_starts": 1,
+  "completed_tasks": 2,
+  "rejected_tasks": 1,
+  "actual_application_kills": 1,
+  "duplicate_submissions": 3,
+  "grammar_reaped": 4,
+  "preflights": 6,
+  "requests": 4,
+  "responses": 4,
+  "tools": 2,
+  "capabilities": 4,
+  "response_usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "owned_exited": 8,
+  "controls": 15,
+  "seconds": 70.88818071899004,
+  "gpu_seconds": 60.125822512898594,
+  "gpu_observations": 57,
+  "successful_server_response_seconds_sum": 15.778981,
+  "successful_server_response_count": 4,
+  "cleanup_confirmed": true,
+  "default_changed": false,
+  "long_run": false,
+  "performance_acceptance": false,
+  "preflight_reserves_capacity": false
+}

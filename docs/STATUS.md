@@ -41,11 +41,17 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-11b[任务与客户端预算匹配开发中](SERVE_PROJECT_TASK_BUDGET_2026-11-04.md)：
-输出上限持久化、每轮真实token预检、拒绝与生成未知状态分离、跨进程
-重新核对及预检wire/错误定位已实现；31应用CPU/3驱动检查通过。
-原512隐式固定不再用于新任务，默认程序/Key策略/三份day保持。
-真实alpha512/beta64工具闭环与生成前拒绝尚未执行。
+SRV-11b[任务预算与逐轮预检限定接受](SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)：
+冻结dc2c18d0，输出1..512持久化、完整history真实token/客户端预算
+核对、生成前拒绝与未知分离、恢复后重新预检；31应用CPU/3驱动通过。
+1模型/1网关，alpha512/beta64同业务键各2生成/1工具，实际MODEL值/
+引用正确，两客户端均55/58输出token；beta512生成前400拒绝。
+1应用SIGKILL后换凭据重新预检；合计4成功/6预检/4能力查询、3重复
+submit零执行，grammar4/4。GPU60.125823秒/57观察、总70.888181秒/
+15控制，263原件/2 ELF身份封存并离线重建通过；8自有身份退、
+2代次SEALED，GPU/原锁释放、SOAR masked、容器空，默认/Key/day未改。
+预检不预留资源；源码/凭据迁移、归档保键、实际LAN、物理RAM与用户
+长验待办，未执行三份day，工业化目标保持active。
 
 SRV-11[持久项目任务与真实恢复限定接受](SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)：
 按client隔离幂等键、单任务互斥、已知结果复用、未知请求/只读工具
@@ -56,8 +62,8 @@ SRV-11[持久项目任务与真实恢复限定接受](SERVE_PROJECT_TASKS_RESULT
 总75.348秒/25父控制；累计2模型/2网关，原0生成失败49.900秒保持。
 411原件/2 ELF身份封存并离线重建通过，18自有身份退、4代次封存；
 GPU/原锁释放、SOAR masked、容器空，默认/固定包/3份day未改未跑。
-[操作入口](../tools/project_tasks/README.md)显式使用；当前512输出须匹配
-客户端预算，源码/凭据迁移与终态归档/幂等键保留待策略。实际LAN、
+[操作入口](../tools/project_tasks/README.md)显式使用；客户端输出预算
+匹配由上方11b补齐，源码/凭据迁移与终态归档/幂等键保留待策略。实际LAN、
 物理RAM及用户长验仍未证明，工业化目标继续active。
 
 SRV-12e[受管代次与私有留存本机短验限定接受](SERVE_RETENTION_RESULT_2026-11-04.md)：
