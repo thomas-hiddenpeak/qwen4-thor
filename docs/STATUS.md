@@ -41,15 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-10d[客户端策略托管闭环与长验交接开发中](SERVE_CLIENT_MANAGED_2026-11-04.md)：
-已复现新默认汇总ACCEPT决定与打包器旧PASS合同不匹配，在创建包前
-拒绝；原件保留，补明确格式校验及verify同合同，C++/默认pair不改。
-新驱动组合后端v4/systemd、网关v2、双Key、两轮业务及排空/换代，
-短验固定12生成/1模型/2网关，day仅准备由用户执行。首轮37 CPU
-有2驱动初始化错误，原件保留；修正后只重验5驱动，33无关成功复用。
-审查修正systemd与直接子进程锁保管器不适配：先停全部网关再停后端，
-全体HTTP/清理保持原租约；依赖失联复用10b。最终38有效CPU通过（33复用、4修正通过、1停止顺序夹具定向通过），
-两次原失败保留；尚无新托管通过结论。
+SRV-10d[客户端策略托管组合短验限定接受](SERVE_CLIENT_MANAGED_RESULT_2026-11-04.md)：
+冻结495a8ae6，后端v4包971dc713/TLS托管v2包3c4c31b5；补明确汇总
+发布决定兼容，旧实际拒绝/两轮CPU夹具失败保留。38有效CPU通过，
+1模型/2网关/12成功（alpha9/beta3）、2真实工具与引用、grammar6/6；
+2错策略包启动前拒绝、beta输出预算、SSE排空/重新接入通过。
+原租约78.713488秒、74观察，业务30秒/总89.856205秒、29控制/37资源
+样本；两网关和后端STOPPED/COMPLETED、10秒无复起，10自有身份退出。
+328原件/4 ELF身份封存并离线核对，默认pair保持、GPU/原锁释放、
+容器空、SOAR仍masked。新day同包已prepare/check但未执行，启动/停止
+与核对见[运行说明](../tools/serve_clients/README.md)，长稳由用户开展。
+全部网关先退出再停后端，失联路径复用10b，不声称本组合重验故障。
+实际LAN/CA/网段仍待参数，小时/day、长期公平/物理RAM等仍未证明。
 
 SRV-10c[客户端隔离与请求预算已限定交付](SERVE_CLIENT_RESULT_2026-11-04.md)：
 当前默认7619966e/sidecar a2f9cb8f，protocol63b29f13、222运行来源；
@@ -64,7 +67,7 @@ GPU/原锁释放、9自有身份退出、SOAR masked、容器空，day未运行�
 419业务原件/9 ELF身份封存；交付42原件/3 ELF身份另封存并离线核对。
 首个相对guard入口拒绝保留，绝对路径交付COMPLETED/DELIVERED；
 0新增模型/HTTP，CLI及同ELF业务复用，旧pair回退核对通过。
-实际LAN部署、新托管E2E、长期公平/物理RAM和用户长验仍待办。
+实际LAN部署、长期公平/物理RAM和用户长验仍待办；新托管组合见10d。
 
 [SRV-12d独立心跳检测本机限定接受](SERVE_NOTIFY_WATCHDOG_RESULT_2026-11-04.md)：
 冻结c48b764e/36来源，26有效CPU/4驱动/11官方时序及metrics lint

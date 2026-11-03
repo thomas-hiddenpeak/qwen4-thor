@@ -69,7 +69,9 @@
 [SRV-10c客户端状态隔离与请求预算开发合同](SERVE_CLIENT_ISOLATION_2026-11-04.md)、
 [本机限定接受](SERVE_CLIENT_RESULT_2026-11-04.md)及
 [实际默认交付与回退](SERVE_CLIENT_DELIVERED_2026-11-04.md)；
-[SRV-10d客户端策略托管闭环与长验交接](SERVE_CLIENT_MANAGED_2026-11-04.md)；
+[SRV-10d客户端策略托管闭环与长验交接](SERVE_CLIENT_MANAGED_2026-11-04.md)、
+[本机短验结果](SERVE_CLIENT_MANAGED_RESULT_2026-11-04.md)及
+[用户长验入口](../tools/serve_clients/README.md)；
 [SRV-12c通知链路开发合同](SERVE_NOTIFY_2026-11-04.md)、
 [真实通知/恢复冻结矩阵](SERVE_NOTIFY_GPU_2026-11-04.md)及
 [本机接收/真实服务恢复限定结果](SERVE_NOTIFY_RESULT_2026-11-04.md)；
