@@ -41,15 +41,15 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-[SRV-02j1 CUDA额度核心CPU通过，原GPU轮ENV_ABORT保留](SERVE_CUDA_QUOTA_CORRECTION_2026-11-04.md)：
-有界账本与并发预占、设备/pinned/managed/async聚合额度、代次票据、
-释放未知锁存及异步完成边界已实现；初轮25 CPU/4驱动通过，随后
-释放发布时序定向复现失败并修正，独立26 CPU/4驱动通过，零警告。
-4真实探针本地检查均通过，但短进程过早回收使guard看到无历史身份
-的滞后CUDA上下文，整轮ENV_ABORT，不能记GPU验收通过。新驱动保留
-WNOWAIT身份到新guard扫描完成，原4+定向4预算，待6 CPU及唯一复验。
-当前不接入默认serve，02j2再接线CLI/metrics与真实工具验收。请求字节额度
-不是物理RAM硬限额；默认pair/day保持，长验继续由用户执行。
+[SRV-02j1 CUDA申请额度核心限定通过](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md)：
+固定表/并发预占、混合申请额度、代次票据、异步完成和未知锁存已开发。
+初轮25 CPU后，释放发布时序1失败复现并修正，独立26 CPU/4驱动通过；
+原4 CUDA探针本地通过但guard ENV_ABORT保留。6保管CPU后，相同4探针
+完整112MiB/15 buffer/14检查点通过，WNOWAIT保留身份到guard观察后回收；
+同锁2.379515秒/4观察，COMPLETED。累计8 native启动/零模型/零HTTP。
+169原件/17本机身份封存；GPU空/原锁可用、SOAR masked，默认pair/211
+来源/day保持且day未执行。本批未接入serve，02j2继续wrapper/CLI/
+metrics与真实工具验收；请求字节额度不等于物理RAM硬限额，目标继续。
 
 [SRV-12c本机通知与真实服务恢复限定通过](SERVE_NOTIFY_RESULT_2026-11-04.md)：
 冻结b166cee7，标准Prometheus3.5.0/Alertmanager0.34.2、HTTPS/Bearer、

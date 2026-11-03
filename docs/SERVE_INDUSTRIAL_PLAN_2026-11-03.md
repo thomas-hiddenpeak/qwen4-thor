@@ -65,14 +65,14 @@ TLS网关及独立API Key接入；10a先进行loopback开发/短验，实际地�
 
 ## 当前工作包
 
-- SRV-02j1：[CUDA额度核心开发与短验合同](SERVE_CUDA_QUOTA_CORE_2026-11-04.md)。
-  有界并发账本、混合申请额度、异步完成和未知所有权已开发。初轮
-  25 CPU通过后补释放发布时序失败复现并修正，独立26 CPU/4驱动
-  通过、零警告。原4小探针本地通过但guard短进程身份丢失ENV_ABORT，
-  原件保持；[WNOWAIT修正/唯一复验](SERVE_CUDA_QUOTA_CORRECTION_2026-11-04.md)
-  尚未执行。当前不接入serve、不改默认pair/day；02j2
-  再接线现有wrapper、启动预留、CLI/metrics及真实业务验收。物理
-  RAM仍有驱动/库/host/文件缓存/池保留等独立缺口，不能合并宣称硬保护。
+- SRV-02j1：[CUDA申请额度核心限定通过](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md)。
+  固定表/并发预占、异步完成/未知锁存已实现，26有效CPU/4驱动/
+  6保管CPU通过。释放发布时序失败及原GPU ENV_ABORT保持；修正
+  保管后相同4探针112MiB/15 buffer/14检查点通过，同锁2.379515秒。
+  累计8 native/零模型/零HTTP，169原件/17本机身份封存、GPU释放。
+  当前不接入serve，默认pair/day保持；02j2再接线wrapper、startup
+  owner、CLI/metrics与真实工具验收。物理RAM的驱动/库/host/
+  文件缓存/池保留等独立边界未完成，不能合并宣称硬保护。
 
 - SRV-12c：[本机通知与真实恢复限定通过](SERVE_NOTIFY_RESULT_2026-11-04.md)。
   16 CPU/4驱动/2隔离入口首轮通过，实际2模型/4成功含真实资料工具，

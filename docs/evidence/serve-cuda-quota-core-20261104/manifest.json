@@ -1,0 +1,776 @@
+{
+  "archive": {
+    "bytes": 133416,
+    "name": "records.tar.gz",
+    "sha256": "bdfd4f438845d7afbff002ee7bee3c36ad2f2caf62cdabdd0779ccc0068c0862"
+  },
+  "archiver_sha256": "d02e21798b6902d2d9d7aae4d8e90efe45e92c576dbef9616f7350c930f20ec4",
+  "correction_sha256": "8086f828dc12a4cc17eb162795e26206797ff6c126368c2d38c5f6a7c429a501",
+  "files": {
+    "archiver/report.py": {
+      "bytes": 11918,
+      "sha256": "d02e21798b6902d2d9d7aae4d8e90efe45e92c576dbef9616f7350c930f20ec4"
+    },
+    "baseline/day-plan.json": {
+      "bytes": 4761,
+      "sha256": "d5201d2bba25e1d1b918ea0f7b5d2a3c41e69582ad37209b0e90f1c7e60362a1"
+    },
+    "baseline/q4t.release.json": {
+      "bytes": 48517,
+      "sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5"
+    },
+    "build-v2/CMakeCache.txt": {
+      "bytes": 31028,
+      "sha256": "fbe4feb0a4afcc06b46cb86daf78f470b5e5aa639ceaf0f65a7e4bcb481e710b"
+    },
+    "build-v2/compile_commands.json": {
+      "bytes": 1291,
+      "sha256": "458cefdd70e8dba409ed9623e70cf73f8d62881633c5713af8db18d615a93fae"
+    },
+    "build/CMakeCache.txt": {
+      "bytes": 31016,
+      "sha256": "8048ecaf399795e2e4b6468eccf7b6e0c8bd4f155deb3bb35ba9f19eb2acb05c"
+    },
+    "build/compile_commands.json": {
+      "bytes": 1285,
+      "sha256": "00ce34091c5e6a8872f1923fbb7ca1b48b5068361fae218921f0f91c7deb9606"
+    },
+    "correction-cpu/result.json": {
+      "bytes": 472,
+      "sha256": "3ed02f41909f444c49321fb203042013799fb09837f4f037f492b1d881aac962"
+    },
+    "correction-cpu/source/docs/SERVE_CUDA_QUOTA_CORRECTION_2026-11-04.md": {
+      "bytes": 2368,
+      "sha256": "72e9b2bcff8eafcbecf3ef58bdc937c876bede33c532eab1260fb99784faaee4"
+    },
+    "correction-cpu/source/tools/serve_cuda_quota/correction.py": {
+      "bytes": 10927,
+      "sha256": "8086f828dc12a4cc17eb162795e26206797ff6c126368c2d38c5f6a7c429a501"
+    },
+    "correction-cpu/source/tools/serve_cuda_quota/test_correction.py": {
+      "bytes": 3477,
+      "sha256": "55beb885e343b8cab1e4d0eb17af3fe86a50b18553df433bebfb5e3455d41db3"
+    },
+    "correction-cpu/tests.log": {
+      "bytes": 798,
+      "sha256": "fcd3f86feb7fd0e6921ee05819a0fcf740b02900ebf72b8c0de364ff3d956a0d"
+    },
+    "correction-plan.json": {
+      "bytes": 1789,
+      "sha256": "20cd077bc9708547e6a435e0da358869afa080dc0dccae63047ccd71b35465f3"
+    },
+    "cpu-v2/allocation-audit.json": {
+      "bytes": 775,
+      "sha256": "867c839caf4321015999dc57d759eabda14afd5d2037893a0635f80f6d7d9b11"
+    },
+    "cpu-v2/allocation-call-sites.json": {
+      "bytes": 219,
+      "sha256": "d7d61adfa947a0304b0af99dff267646f63f74c9552923263bfcca9499d7309c"
+    },
+    "cpu-v2/allocation-call-sites.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-v2/allocation-call-sites.stdout": {
+      "bytes": 9428,
+      "sha256": "ae882271456db5604b57366b252e2cd7e2435598dc8af755a14880720555ba7f"
+    },
+    "cpu-v2/baseline.json": {
+      "bytes": 441,
+      "sha256": "5d5614cd2ffc9ca208820cb4b4f564dcafa80bc394f42e4a69013e2ba43cc9f1"
+    },
+    "cpu-v2/build-result.json": {
+      "bytes": 4009,
+      "sha256": "3ec2b5f832c74a468ac1dfde21ece03e243ae3d01a9b5344840032cc44ae489f"
+    },
+    "cpu-v2/build.json": {
+      "bytes": 224,
+      "sha256": "c7231090ec12ae779f630a62f496a0448c11125d675177d3a01f7b4ddbe27886"
+    },
+    "cpu-v2/build.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-v2/build.stdout": {
+      "bytes": 384,
+      "sha256": "73c50b5b2aca9c33dcdcb11ad08981c9fa89e909092277692c9c7af226ed6ffd"
+    },
+    "cpu-v2/configure.json": {
+      "bytes": 348,
+      "sha256": "10e36d72fe3cb41dee88391fe8213a916dc2426aef1c4ba2b8e59f63c0cbd3c3"
+    },
+    "cpu-v2/configure.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-v2/configure.stdout": {
+      "bytes": 740,
+      "sha256": "1943154e87f645270736258a5f211372769d234910fced8a0e7c3b24775d99a0"
+    },
+    "cpu-v2/default-cuda-symbols.json": {
+      "bytes": 175,
+      "sha256": "a4220fa9e5562b1be1e8dc026442d99b1753cbe6960411684995d55db9e5fd90"
+    },
+    "cpu-v2/default-cuda-symbols.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-v2/default-cuda-symbols.stdout": {
+      "bytes": 25356,
+      "sha256": "7ae3116317ef9bb206c5c5093f2dba5febb8106982efd93c80eec33169e7f48c"
+    },
+    "cpu-v2/host-needed.json": {
+      "bytes": 217,
+      "sha256": "75dfcda7e922eacdfe2b2fa421443a52722df6d9cf29775346fa3024c0ebe7c4"
+    },
+    "cpu-v2/host-needed.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-v2/host-needed.stdout": {
+      "bytes": 1676,
+      "sha256": "a4a16d77c5c625680a8aed18ca9761f01fbc2c8fd1d4d364341ee32c1b1e238f"
+    },
+    "cpu-v2/probe-link.json": {
+      "bytes": 198,
+      "sha256": "13abe173057785b6eab2ce83ead2d1842c2cd1c0b7fdf2fd45dbd59f381d4288"
+    },
+    "cpu-v2/probe-link.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-v2/probe-link.stdout": {
+      "bytes": 681,
+      "sha256": "dc3518725cf8a38a660bf689addbf96529af5ae845a539fcf22d2a27629e1dd3"
+    },
+    "cpu-v2/source/docs/SERVE_CUDA_QUOTA_CORE_2026-11-04.md": {
+      "bytes": 4471,
+      "sha256": "8db978cdabf74021d8786e4d7962489a1398b3b24c6bf3700ba4119387ccf23b"
+    },
+    "cpu-v2/source/include/q4t/runtime/allocation_quota.h": {
+      "bytes": 12356,
+      "sha256": "f3707f500c3dc5492bcd56e434c52e98b64cdfb83113139d32161ee3ddbb381c"
+    },
+    "cpu-v2/source/include/q4t/runtime/reservation_owner.h": {
+      "bytes": 10122,
+      "sha256": "3cbb96a5c17ba9f58dc0a1fe765a2e43003014453d202721f5616fd740dfffd4"
+    },
+    "cpu-v2/source/tests/runtime_allocation_quota_test.cpp": {
+      "bytes": 23767,
+      "sha256": "acec4de53bed25c99c1311a52c0e797cb840e66f8ee57392f22ee17edf004f85"
+    },
+    "cpu-v2/source/tools/evalscope/bounded_log.py": {
+      "bytes": 1784,
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb"
+    },
+    "cpu-v2/source/tools/evalscope/gpu_exclusive.py": {
+      "bytes": 18395,
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2"
+    },
+    "cpu-v2/source/tools/evalscope/nvml_process_query.py": {
+      "bytes": 7182,
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f"
+    },
+    "cpu-v2/source/tools/serve_cuda_quota/CMakeLists.txt": {
+      "bytes": 702,
+      "sha256": "a311a4a72863be5cb4dcd695f05152a0576d0e7f91e586fd2b1ef4209dfa9f20"
+    },
+    "cpu-v2/source/tools/serve_cuda_quota/probe.cpp": {
+      "bytes": 12390,
+      "sha256": "09068f9db235c825ff28819e19c472c8372448d4e701a2d86fc2b0b095859058"
+    },
+    "cpu-v2/source/tools/serve_cuda_quota/stage.py": {
+      "bytes": 15969,
+      "sha256": "f84ead1bd18188ca556090d54ba174561b54831e0247d0e00d9582e789ffceed"
+    },
+    "cpu-v2/source/tools/serve_cuda_quota/test_stage.py": {
+      "bytes": 2864,
+      "sha256": "9fc34fa58813c6ccab5ff00beb21d62d475e0d939b1d35ce2c84cf2a21060aa2"
+    },
+    "cpu-v2/sources.json": {
+      "bytes": 1208,
+      "sha256": "be08ca07ba27b916975afc1adad2390650255f18195d37589aaa502261e91580"
+    },
+    "cpu-v2/tests/contracts.json": {
+      "bytes": 193,
+      "sha256": "2de5f2449cd17845f5ecde0e46801c16f0f2b25870290f52b58917e84f3353ea"
+    },
+    "cpu-v2/tests/contracts.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-v2/tests/contracts.stdout": {
+      "bytes": 674,
+      "sha256": "df2ce029c4849f94324d47d3e205e2102bcb914a8675289cb18284c74cbcf5ef"
+    },
+    "cpu-v2/tests/driver.json": {
+      "bytes": 191,
+      "sha256": "75803e6c42f1dcb6e691b5630860227c9dcff0303bbf9eb6434b60c5a0631436"
+    },
+    "cpu-v2/tests/driver.stderr": {
+      "bytes": 520,
+      "sha256": "fceab769111b2243a54392aaf5e7d199d193a103a2a3388536e41a5fa9c0ad9d"
+    },
+    "cpu-v2/tests/driver.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-v2/tests/result.json": {
+      "bytes": 2128,
+      "sha256": "06161bbf460677504db6e9b58a240899b01d655b88900fb04b08449715672a83"
+    },
+    "cpu/allocation-audit.json": {
+      "bytes": 775,
+      "sha256": "867c839caf4321015999dc57d759eabda14afd5d2037893a0635f80f6d7d9b11"
+    },
+    "cpu/allocation-call-sites.json": {
+      "bytes": 220,
+      "sha256": "a64f78ac5253b3a35001e342b533363434850146721e886b1be20fbd39f43803"
+    },
+    "cpu/allocation-call-sites.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu/allocation-call-sites.stdout": {
+      "bytes": 9428,
+      "sha256": "a5b46543db091c3fcf1463c45f42dc5962c45b421d7a29578239dbdb59d9b610"
+    },
+    "cpu/baseline.json": {
+      "bytes": 441,
+      "sha256": "5d5614cd2ffc9ca208820cb4b4f564dcafa80bc394f42e4a69013e2ba43cc9f1"
+    },
+    "cpu/build-result.json": {
+      "bytes": 4003,
+      "sha256": "ffc0f29f926c9be4628c72df6bde7af7560928514c7eef915f5d68055ef34115"
+    },
+    "cpu/build.json": {
+      "bytes": 221,
+      "sha256": "121cce8367bf36b48c56adbb510b71d0e31760fcc0c7c3fe8780a93a98bf75e2"
+    },
+    "cpu/build.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu/build.stdout": {
+      "bytes": 384,
+      "sha256": "73c50b5b2aca9c33dcdcb11ad08981c9fa89e909092277692c9c7af226ed6ffd"
+    },
+    "cpu/configure.json": {
+      "bytes": 345,
+      "sha256": "a5ec59ba7e4ac3eb6a1d66ff36fe595875c0eefbb214ca95c99d83fc960bdbaf"
+    },
+    "cpu/configure.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu/configure.stdout": {
+      "bytes": 737,
+      "sha256": "17d93146139930cbde68677211c8383da9a18ff8e059ea0e05de1e59cbf710ba"
+    },
+    "cpu/default-cuda-symbols.json": {
+      "bytes": 175,
+      "sha256": "0f2e98bb4143d0812d43a2e9372a53d78726145899dfd4835d1d5b35ef675736"
+    },
+    "cpu/default-cuda-symbols.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu/default-cuda-symbols.stdout": {
+      "bytes": 25356,
+      "sha256": "7ae3116317ef9bb206c5c5093f2dba5febb8106982efd93c80eec33169e7f48c"
+    },
+    "cpu/host-needed.json": {
+      "bytes": 215,
+      "sha256": "2607d9644e6751dca87b7ac5e41462b687b11dbf7be66e714310cd43b2f447ad"
+    },
+    "cpu/host-needed.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu/host-needed.stdout": {
+      "bytes": 1676,
+      "sha256": "bb9612a91485652e5e8049df02f912f8a507de774c566c41eeba6d3085cd2a15"
+    },
+    "cpu/probe-link.json": {
+      "bytes": 195,
+      "sha256": "613a4ab4bc79f59e56e379f93c1341882690ee1154c38ce5b2fc8c86c9905389"
+    },
+    "cpu/probe-link.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu/probe-link.stdout": {
+      "bytes": 681,
+      "sha256": "0a6cdc9139b359069425cbf0697ba08c25d3857fb5542cb0ebbc7fca6b729680"
+    },
+    "cpu/source/docs/SERVE_CUDA_QUOTA_CORE_2026-11-04.md": {
+      "bytes": 3719,
+      "sha256": "f74c653f50dd33a5d9c0124928025eda6771c9c07d9cb9caaaa0f1abcd635a43"
+    },
+    "cpu/source/include/q4t/runtime/allocation_quota.h": {
+      "bytes": 11966,
+      "sha256": "12e8c3fdb666c40e0ff84e8d675088615b2550ca55a26e4ef4a7ae75294d262e"
+    },
+    "cpu/source/include/q4t/runtime/reservation_owner.h": {
+      "bytes": 10122,
+      "sha256": "3cbb96a5c17ba9f58dc0a1fe765a2e43003014453d202721f5616fd740dfffd4"
+    },
+    "cpu/source/tests/runtime_allocation_quota_test.cpp": {
+      "bytes": 22134,
+      "sha256": "89c41ecc28d7839441230586d35855071dc98d4478f0948f94163712c5cf007b"
+    },
+    "cpu/source/tools/evalscope/bounded_log.py": {
+      "bytes": 1784,
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb"
+    },
+    "cpu/source/tools/evalscope/gpu_exclusive.py": {
+      "bytes": 18395,
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2"
+    },
+    "cpu/source/tools/evalscope/nvml_process_query.py": {
+      "bytes": 7182,
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f"
+    },
+    "cpu/source/tools/serve_cuda_quota/CMakeLists.txt": {
+      "bytes": 702,
+      "sha256": "a311a4a72863be5cb4dcd695f05152a0576d0e7f91e586fd2b1ef4209dfa9f20"
+    },
+    "cpu/source/tools/serve_cuda_quota/probe.cpp": {
+      "bytes": 12390,
+      "sha256": "09068f9db235c825ff28819e19c472c8372448d4e701a2d86fc2b0b095859058"
+    },
+    "cpu/source/tools/serve_cuda_quota/stage.py": {
+      "bytes": 15963,
+      "sha256": "770f94710fc6eebf353770c70cd01829196fd3cccbc613a7291e0f1230ac49d9"
+    },
+    "cpu/source/tools/serve_cuda_quota/test_stage.py": {
+      "bytes": 2864,
+      "sha256": "9fc34fa58813c6ccab5ff00beb21d62d475e0d939b1d35ce2c84cf2a21060aa2"
+    },
+    "cpu/sources.json": {
+      "bytes": 1208,
+      "sha256": "cdc7cca472cf96a3e7cccc8ce0d14b51187242448e69a4d3a613789d48c5a439"
+    },
+    "cpu/tests/contracts.json": {
+      "bytes": 189,
+      "sha256": "e384748b7646eda95693b5b4aef105f4a1e636e1a5fdcdc2b0d895393ed2a369"
+    },
+    "cpu/tests/contracts.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu/tests/contracts.stdout": {
+      "bytes": 644,
+      "sha256": "526e15ec4552187b845fd8011fae6ebbf3ffcdc2a874427e7786068a88edf077"
+    },
+    "cpu/tests/driver.json": {
+      "bytes": 191,
+      "sha256": "35dad079f19227193f7ce73bf2ac51d03a85c85afef54360489c87e9a225ec00"
+    },
+    "cpu/tests/driver.stderr": {
+      "bytes": 520,
+      "sha256": "fceab769111b2243a54392aaf5e7d199d193a103a2a3388536e41a5fa9c0ad9d"
+    },
+    "cpu/tests/driver.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu/tests/result.json": {
+      "bytes": 2096,
+      "sha256": "139388d8965fc90b0161d8781fc5c2c97bec4c2ea0842a6b80f645453ca87a3e"
+    },
+    "execution-v2/async/exit-waitable.json": {
+      "bytes": 194,
+      "sha256": "50f04d23785b25686064b6b60fad8bf2799ffc563cf2a71b992b2f8ae08c3385"
+    },
+    "execution-v2/async/reaped.json": {
+      "bytes": 74,
+      "sha256": "985ced4247fb871d3739a00bd76fa8fabe61ebf22be5f05dc6d4ca2693f1a9b5"
+    },
+    "execution-v2/async/result.json": {
+      "bytes": 2060,
+      "sha256": "7ffa52ae9b97ddea97796474425bfbe5df0e2168d8a452397f22238103f4b040"
+    },
+    "execution-v2/async/started.json": {
+      "bytes": 333,
+      "sha256": "e5356949dff557618d150cc744e1fc731d3eca14c5fa26bad2fe9596c1f8741b"
+    },
+    "execution-v2/async/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "execution-v2/async/stdout.jsonl": {
+      "bytes": 1482,
+      "sha256": "33db35017bdadb0858194ec94716c1df3edf937682ff2027a2ff19d16cb36ea0"
+    },
+    "execution-v2/begin.json": {
+      "bytes": 180,
+      "sha256": "86d5c86642618aa4bdf5ca32854b1b029259e71adda01bcec594051afb7a2253"
+    },
+    "execution-v2/concurrent/exit-waitable.json": {
+      "bytes": 193,
+      "sha256": "e4210b313d2c9de03baf310c2e004f9d760e1d99de0556ed26e1543981343af3"
+    },
+    "execution-v2/concurrent/reaped.json": {
+      "bytes": 74,
+      "sha256": "cc330cef2d001aeed961e90cbe0f0bcfa1870333c5c7d5d9af35a573a7612132"
+    },
+    "execution-v2/concurrent/result.json": {
+      "bytes": 964,
+      "sha256": "807beb86a7267c6909e1d19f3630ce09e2f7c769e2e81bc456350017ce26ded4"
+    },
+    "execution-v2/concurrent/started.json": {
+      "bytes": 338,
+      "sha256": "40c1a2735aa202f7437413b742112285c935c8dfa743a81caba038ea872d5498"
+    },
+    "execution-v2/concurrent/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "execution-v2/concurrent/stdout.jsonl": {
+      "bytes": 775,
+      "sha256": "e5e98a9b5270e3573c60c2d4f4975079201ef053b8a00defa15f1e0a346c3612"
+    },
+    "execution-v2/guard-acknowledgement.json": {
+      "bytes": 1007,
+      "sha256": "2752d3b6521a6e48feae76e6b08c6ddfe09b43aae7a26439d74772c4c8030f63"
+    },
+    "execution-v2/mixed/exit-waitable.json": {
+      "bytes": 192,
+      "sha256": "85ca4b057b2ca513a24ebeb8615fab2d728adf47124657a1c4ab5fc986cc1193"
+    },
+    "execution-v2/mixed/reaped.json": {
+      "bytes": 74,
+      "sha256": "b5735e3e8e238c40d5d820811148147ed4af40d59cacb807eeb8bb669f351995"
+    },
+    "execution-v2/mixed/result.json": {
+      "bytes": 1657,
+      "sha256": "b74008c76f99da8e0621d56a6b24df4b999d4f1bd7d7ed3877643cc7f66b8231"
+    },
+    "execution-v2/mixed/started.json": {
+      "bytes": 333,
+      "sha256": "4d9382e6acaa7d4aa4774d36c1e59ce3bb8b3da5d2ea2bd12ac33cc7c5a8c441"
+    },
+    "execution-v2/mixed/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "execution-v2/mixed/stdout.jsonl": {
+      "bytes": 1256,
+      "sha256": "408d7a1bbc6a23c81d14eee7de4142c6df244f4bc4eb544aa376032c4135c425"
+    },
+    "execution-v2/result.json": {
+      "bytes": 7469,
+      "sha256": "19117c806f4116254231aa63de4621da47736294a8db05f67aefcd110e7de074"
+    },
+    "execution-v2/startup/exit-waitable.json": {
+      "bytes": 194,
+      "sha256": "b05056ffcd951f73a8944e6efe33cfa3410c80c625a0c747d368f1336511f513"
+    },
+    "execution-v2/startup/reaped.json": {
+      "bytes": 74,
+      "sha256": "5a3901f17b583bd5acac7901b0e1d11bb1fcc7a65a37e5d33ab94741c29e807f"
+    },
+    "execution-v2/startup/result.json": {
+      "bytes": 1317,
+      "sha256": "00df28680b8cc56000e2e632f0c6ed5cf8319fe0da9d45ea1a368f8faeda4901"
+    },
+    "execution-v2/startup/started.json": {
+      "bytes": 334,
+      "sha256": "4adbee375caeefe6a685702af3cedac7a4d12b8cbc6bf92ee5dac1aa7a21be80"
+    },
+    "execution-v2/startup/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "execution-v2/startup/stdout.jsonl": {
+      "bytes": 949,
+      "sha256": "e2cc7bef54a68e6adf9dd8f661b2e001e243c36a6e5ee8881ba5f2a83be4000e"
+    },
+    "execution/async/exit.json": {
+      "bytes": 63,
+      "sha256": "a7f049c8fe78ab7723054a343e0faf4724b1320acf1b1a715af7425744581731"
+    },
+    "execution/async/result.json": {
+      "bytes": 2060,
+      "sha256": "7ffa52ae9b97ddea97796474425bfbe5df0e2168d8a452397f22238103f4b040"
+    },
+    "execution/async/started.json": {
+      "bytes": 253,
+      "sha256": "ceaacf3fddb07ba3ae7c51fc302c84ad8eab2134c754d1154844833d0a51035f"
+    },
+    "execution/async/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "execution/async/stdout.jsonl": {
+      "bytes": 1482,
+      "sha256": "33db35017bdadb0858194ec94716c1df3edf937682ff2027a2ff19d16cb36ea0"
+    },
+    "execution/begin.json": {
+      "bytes": 161,
+      "sha256": "7adb827d478300778ffb37e9d9b228bf0786097f4d9db5263ff71facb9ffb24e"
+    },
+    "execution/concurrent/exit.json": {
+      "bytes": 63,
+      "sha256": "897ed6f4af9d5fddb5c56c6bcf582f2c429334c98769a6c962ebafea051be72c"
+    },
+    "execution/concurrent/result.json": {
+      "bytes": 964,
+      "sha256": "807beb86a7267c6909e1d19f3630ce09e2f7c769e2e81bc456350017ce26ded4"
+    },
+    "execution/concurrent/started.json": {
+      "bytes": 258,
+      "sha256": "db33345d76997f346f521c4b5c06632365887cab26a9c2cf4e6c6611b9c750e8"
+    },
+    "execution/concurrent/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "execution/concurrent/stdout.jsonl": {
+      "bytes": 775,
+      "sha256": "5b90be8042257998f605c5dbcd8e3c5e6b155553a7651a33c1f7f4929ce3fc55"
+    },
+    "execution/mixed/exit.json": {
+      "bytes": 63,
+      "sha256": "e24a98af48ca95506fcceca1055e71bd9d74fdd0b20b764e9347bb1b48eaff9c"
+    },
+    "execution/mixed/result.json": {
+      "bytes": 1657,
+      "sha256": "b74008c76f99da8e0621d56a6b24df4b999d4f1bd7d7ed3877643cc7f66b8231"
+    },
+    "execution/mixed/started.json": {
+      "bytes": 253,
+      "sha256": "9673873f19bfa9456c4a7b5065936c4861efcac4c5cacb9e02479121b10e8511"
+    },
+    "execution/mixed/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "execution/mixed/stdout.jsonl": {
+      "bytes": 1256,
+      "sha256": "408d7a1bbc6a23c81d14eee7de4142c6df244f4bc4eb544aa376032c4135c425"
+    },
+    "execution/result.json": {
+      "bytes": 7398,
+      "sha256": "8ea258d78afd99c1141a14d86c5228f37e1b44a2f23dbf5f7a3d048dea1baa84"
+    },
+    "execution/startup/exit.json": {
+      "bytes": 63,
+      "sha256": "95294c59016e12d64909141a84b2894c897ad5ac85d4089a62ad653e791b1932"
+    },
+    "execution/startup/result.json": {
+      "bytes": 1317,
+      "sha256": "00df28680b8cc56000e2e632f0c6ed5cf8319fe0da9d45ea1a368f8faeda4901"
+    },
+    "execution/startup/started.json": {
+      "bytes": 255,
+      "sha256": "4aca82d6709698fab1eaae641bbf3fc7f22392df37b56d5afcaafd762b84f98e"
+    },
+    "execution/startup/stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "execution/startup/stdout.jsonl": {
+      "bytes": 949,
+      "sha256": "e2cc7bef54a68e6adf9dd8f661b2e001e243c36a6e5ee8881ba5f2a83be4000e"
+    },
+    "lease-v2/events.jsonl": {
+      "bytes": 1287,
+      "sha256": "efd9edb626766433e3a90fa3bace429b0473bc0238c0bf1693d1eeb66b22d925"
+    },
+    "lease-v2/exit.json": {
+      "bytes": 566,
+      "sha256": "16264ad9f67c3ac4e44c4c3164a2bdac098785216e9f8040926c430a69cbde53"
+    },
+    "lease-v2/nvml-queries.jsonl": {
+      "bytes": 8944,
+      "sha256": "8d598af96ed84f6a72e8c689063ac3b98b4346b449562d63e55bacb6ee913a2e"
+    },
+    "lease/events.jsonl": {
+      "bytes": 1147,
+      "sha256": "139c3dc8cf263475fd96c17bd776a08e28f29c10a9edbaee3ea1bb6fc1b8bc99"
+    },
+    "lease/exit.json": {
+      "bytes": 609,
+      "sha256": "1b0c2aa52caf9f915a4b6026ea680441602b40ed81f40d3bbd4bb33242e6db6b"
+    },
+    "lease/nvml-queries.jsonl": {
+      "bytes": 6839,
+      "sha256": "96834d0cd8cc16aeb8a385d0bf9e28966e78134f0b306c0b53ccd29dbb82108e"
+    },
+    "plan.json": {
+      "bytes": 4290,
+      "sha256": "ff4537473ed69209180d984331de731004910eb2abb13e9ee8c5aec6fe891163"
+    },
+    "postflight/containers.json": {
+      "bytes": 172,
+      "sha256": "606b962feae2b09d5bc36c93b5b446bac1fe311cd9c54101b844b3418c37860e"
+    },
+    "postflight/containers.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "postflight/containers.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "postflight/gpu.json": {
+      "bytes": 189,
+      "sha256": "a780d99a6c0076bc00b5021ffc5de5c16e7f48b27d65f732414069ace33ddd9a"
+    },
+    "postflight/gpu.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "postflight/gpu.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "postflight/recovery-service.json": {
+      "bytes": 276,
+      "sha256": "a14a3aac1189126d7182aba9f86288272a50223f67a0550f5ba322375350275c"
+    },
+    "postflight/recovery-service.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "postflight/recovery-service.stdout": {
+      "bytes": 52,
+      "sha256": "f40045cda05de296066687a63140e8096827ee65ba127a151a1295a1b9f78ccc"
+    },
+    "postflight/result.json": {
+      "bytes": 2669,
+      "sha256": "a74ef9708d366c17f2bdc9f3438ab726b041864d5ac40f91b272c3cb81f3b945"
+    },
+    "publication-repro/build.json": {
+      "bytes": 362,
+      "sha256": "68426d180bb92aff1902e3a9d556538e04c919457a0a084c0fc303d0112b276f"
+    },
+    "publication-repro/build.stderr": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "publication-repro/build.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "publication-repro/release-publication-race.json": {
+      "bytes": 222,
+      "sha256": "cf4f78283c3f93ca4aa4a7938a9244f1aaf74b76db391862bf04c786ce5229af"
+    },
+    "publication-repro/release-publication-race.stderr": {
+      "bytes": 17,
+      "sha256": "f4ba226d8757b14347405108048bdae48e2353bf3bf18b3d20f901e370705620"
+    },
+    "publication-repro/release-publication-race.stdout": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "publication-repro/reproduced.json": {
+      "bytes": 356,
+      "sha256": "65ed4c9abea1313bacfb9c2096068652940f20a62c9202ff84127aca977815d9"
+    },
+    "publication-repro/source/include/q4t/runtime/allocation_quota.h": {
+      "bytes": 11966,
+      "sha256": "12e8c3fdb666c40e0ff84e8d675088615b2550ca55a26e4ef4a7ae75294d262e"
+    },
+    "publication-repro/source/tests/runtime_allocation_quota_test.cpp": {
+      "bytes": 23767,
+      "sha256": "acec4de53bed25c99c1311a52c0e797cb840e66f8ee57392f22ee17edf004f85"
+    },
+    "publication-repro/sources.json": {
+      "bytes": 228,
+      "sha256": "1b377e64b48a3157f8e5fecb255078bea55745f59059f1d39439fde8cb9a46b1"
+    }
+  },
+  "local_identities": {
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/baseline/day-plan.json": {
+      "bytes": 4761,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/baseline/day-plan.json",
+      "sha256": "d5201d2bba25e1d1b918ea0f7b5d2a3c41e69582ad37209b0e90f1c7e60362a1"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/baseline/q4t": {
+      "bytes": 7159544,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/baseline/q4t",
+      "sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/baseline/q4t.release.json": {
+      "bytes": 48517,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/baseline/q4t.release.json",
+      "sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/build-v2/quota_cuda_probe": {
+      "bytes": 79560,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/build-v2/quota_cuda_probe",
+      "sha256": "710f061ed7f131146cbec10d0dce631ebf88dfd69009873b11b2df71c55774a3"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/build-v2/quota_host_contracts": {
+      "bytes": 146736,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/build-v2/quota_host_contracts",
+      "sha256": "bc58b44d3f23dde9070ecae8fb08df614e8dff7eeb567372c43d2887e21011e1"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/build/quota_cuda_probe": {
+      "bytes": 79432,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/build/quota_cuda_probe",
+      "sha256": "5654ca3afde33ac66fd1bf54b8f0fc5eb0279a3ee9c2acdfe96bba1af8eb93d3"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/build/quota_host_contracts": {
+      "bytes": 146528,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/build/quota_host_contracts",
+      "sha256": "b312a9d23a61ddf2bbe7887064d7af18f93652fd8b22675ec5e1ba804ab147ed"
+    },
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/publication-repro/contracts": {
+      "bytes": 82320,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-cuda-quota-core-20261104/publication-repro/contracts",
+      "sha256": "edeb95e798cbe6deca3c134f8348cd7465b2057f081ee7de1d7300deaefee183"
+    },
+    "/usr/bin/aarch64-linux-gnu-g++-14": {
+      "bytes": 1121200,
+      "path": "/usr/bin/aarch64-linux-gnu-g++-14",
+      "sha256": "7483d767d75e501f802d181ab6e73bc7d8c71a8b039cc0f3e3691a0ca51d2fc5"
+    },
+    "/usr/lib/aarch64-linux-gnu/libc.so.6": {
+      "bytes": 1722920,
+      "path": "/usr/lib/aarch64-linux-gnu/libc.so.6",
+      "sha256": "0f1905dc27dbc6715875c70527bc8da846a10084c9c483e9d8ff76dce8d69d0e"
+    },
+    "/usr/lib/aarch64-linux-gnu/libdl.so.2": {
+      "bytes": 67440,
+      "path": "/usr/lib/aarch64-linux-gnu/libdl.so.2",
+      "sha256": "1c16b2692a155191c97d7fdc5ce937d37c242435f05745046a794a9832b16af4"
+    },
+    "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1": {
+      "bytes": 133696,
+      "path": "/usr/lib/aarch64-linux-gnu/libgcc_s.so.1",
+      "sha256": "f2d3ad2bf0b61f6bc944cc37d7b6ab7f88d2582b41ff989ca164803f56cc5f20"
+    },
+    "/usr/lib/aarch64-linux-gnu/libm.so.6": {
+      "bytes": 591800,
+      "path": "/usr/lib/aarch64-linux-gnu/libm.so.6",
+      "sha256": "5e0391562de36de323fb9cb0f2c1b6bd6d034c840b1dac018499f5fe4ded1b4a"
+    },
+    "/usr/lib/aarch64-linux-gnu/libpthread.so.0": {
+      "bytes": 67440,
+      "path": "/usr/lib/aarch64-linux-gnu/libpthread.so.0",
+      "sha256": "6f1ab9e7d7de142dc5e2feaf6d19faceff0a0f40d5e225c922899f5362b8c353"
+    },
+    "/usr/lib/aarch64-linux-gnu/librt.so.1": {
+      "bytes": 67512,
+      "path": "/usr/lib/aarch64-linux-gnu/librt.so.1",
+      "sha256": "93d0d5ab643b50ac1a61c2c7baf670e8aa94973fa5a2584d13db05295d5b5a0e"
+    },
+    "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33": {
+      "bytes": 2633224,
+      "path": "/usr/lib/aarch64-linux-gnu/libstdc++.so.6.0.33",
+      "sha256": "6e3112d35cfc86db7ee85b27e1746f67408e2837ff8628b46386c3eabd5682a4"
+    },
+    "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29": {
+      "bytes": 785664,
+      "path": "/usr/local/cuda-13.3/targets/sbsa-linux/lib/libcudart.so.13.3.29",
+      "sha256": "83b2ccdccdbb285613a97e8be332d1b17cbd55e267e1d2e047adb3081660335e"
+    }
+  },
+  "schema": 1,
+  "stage_sha256": "f84ead1bd18188ca556090d54ba174561b54831e0247d0e00d9582e789ffceed"
+}

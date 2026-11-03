@@ -1,0 +1,46 @@
+{
+  "accepted_native_starts": 4,
+  "accepted_quota_checkpoints": 14,
+  "accepted_verified_buffers": 15,
+  "accepted_verified_bytes": 117440512,
+  "baseline": {
+    "day_execution_absent": true,
+    "day_plan": {
+      "bytes": 4761,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-soak-20261103/day/plan.json",
+      "sha256": "d5201d2bba25e1d1b918ea0f7b5d2a3c41e69582ad37209b0e90f1c7e60362a1"
+    },
+    "default": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+    "runtime_source_count": 211,
+    "sidecar": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5"
+  },
+  "core_cpu_effective": 26,
+  "core_cpu_executions": 52,
+  "core_cpu_failures_preserved": 1,
+  "custody_cpu_checks": 6,
+  "final_core_passes": 26,
+  "http_requests": 0,
+  "initial_core_passes": 25,
+  "model_starts": 0,
+  "native_starts": 8,
+  "original_driver_checks": 4,
+  "original_env_abort_preserved": true,
+  "physical_ram_hard_limit": false,
+  "repeated_driver_checks": 4,
+  "serve_integrated": false,
+  "status": "PASS_CORE_ONLY",
+  "windows": {
+    "lease": {
+      "observations": 3,
+      "records": 7,
+      "seconds": 1.314618449890986,
+      "status": "ENV_ABORT"
+    },
+    "lease-v2": {
+      "observations": 4,
+      "records": 8,
+      "seconds": 2.3795147868804634,
+      "status": "COMPLETED"
+    }
+  }
+}

@@ -4,6 +4,20 @@
 serve默认程序**。它是未来入口的申请字节额度，不是物理RAM限额。
 合同、预算与下一步见[SRV-02j1](../../docs/SERVE_CUDA_QUOTA_CORE_2026-11-04.md)。
 
+2026-11-04已完成[核心限定验收](../../docs/SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md)：
+26有效CPU/4驱动/6保管CPU，修正后4 native/112MiB/14检查点通过；
+原发布时序失败和GPU ENV_ABORT保留。下列build/cpu/prepare/execute
+已执行，不重复运行或覆盖。离线查看/复核，不发HTTP或调用CUDA：
+
+```bash
+python3 -B tools/serve_cuda_quota/report.py check
+python3 -B tools/serve_cuda_quota/report.py verify-archive
+```
+
+`check`要求本阶段当前来源/默认身份仍在；默认后续更新时用
+`verify-archive`复核冻结原件及保留的本机二进制。不要修改已绑定
+SHA的`report.py`来迁就新结果。
+
 开发验证只有下列显式入口，没有timer、常驻服务或自动重试：
 
 ```bash
