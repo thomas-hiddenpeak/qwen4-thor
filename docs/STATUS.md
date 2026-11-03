@@ -7,6 +7,13 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
+正在推进[SRV-13较长运行与重启/回退](SERVE_LIFECYCLE_2026-11-03.md)：
+先补可复用发布清单/已知pair切换与恢复，再冻结一小时240周期及
+SIGTERM/SIGKILL/版本切换验收。发布清单/切换恢复与固定驱动已完成，
+成组CPU24项首轮通过（真实临时文件恢复/写失败/陌生状态、流终态、
+未知journal与预算/资源负控），未启动模型/HTTP。本阶段等待冻结与
+真实验收，默认3cd3994d/bb620240及199运行时不变。
+
 [SRV-12b观测连接隔离已限定交付](SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md)：
 当前默认3cd3994d / sidecar bb620240，protocol da1466be，冻结362f42a8、
 199运行时来源。独立观测4/控制4、精确完整头后CAS准入/RAII回收、
