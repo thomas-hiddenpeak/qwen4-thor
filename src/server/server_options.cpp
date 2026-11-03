@@ -36,6 +36,10 @@ Status ResolveAdmissionLimits(const ServerOptions& options, int effective_slots,
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
+  if (options.cuda_allocation_limit_mib < -1 ||
+      options.cuda_allocation_limit_mib > 1048576)
+    return Status::Fail(
+        "cuda-allocation-limit-mib must be auto or [0,1048576]");
   if (options.startup_memory_headroom_mib < 0 ||
       options.startup_memory_headroom_mib > 1048576)
     return Status::Fail("startup memory headroom must be in [0,1048576] MiB");
@@ -184,6 +188,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       integer = &parsed.memory_recovery_margin_mib;
     if (key == "--startup-memory-headroom-mib")
       integer = &parsed.startup_memory_headroom_mib;
+    if (key == "--cuda-allocation-limit-mib")
+      integer = &parsed.cuda_allocation_limit_mib;
     if (key == "--moe-trace-max-mib") integer = &parsed.moe_trace_max_mib;
     if (key == "--moe-resident-slots") integer = &parsed.moe_resident_slots;
     if (key == "--request-deadline-ms") integer = &parsed.request_deadline_ms;
@@ -198,6 +204,15 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (++i == args.size() || args[i].empty() || args[i].starts_with("--"))
       return Status::Fail("missing value for " + std::string(key));
     const auto value = args[i];
+    if (key == "--cuda-allocation-limit-mib") {
+      if (value == "auto") {
+        parsed.cuda_allocation_limit_mib = -1;
+        continue;
+      }
+      if (value.starts_with('-'))
+        return Status::Fail(
+            "cuda-allocation-limit-mib must be auto or [0,1048576]");
+    }
     if (key == "--seq-capacities" || key == "--prefix-cache-checkpoints") {
       auto& values = key == "--seq-capacities" ? parsed.seq_capacities
                                                : parsed.prefix_cache_checkpoints;

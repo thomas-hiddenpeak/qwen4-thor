@@ -64,6 +64,9 @@ struct ServerOptions {
   // no_budget bypasses both sizing and the estimate-based startup check.
   double mem_fraction = 0.90;
   bool no_budget = false;
+  // Process-lived quota for project-linked CUDA requested bytes. -1 = auto
+  // mem_fraction x MemTotal; 0 explicitly disables; independent of no_budget.
+  int cuda_allocation_limit_mib = -1;
   // Before large allocations require MemAvailable >= estimated_total + this
   // headroom. 0 disables the check; ignored with no_budget. Not a hard limit.
   int startup_memory_headroom_mib = 2048;

@@ -24,7 +24,8 @@ ChatPlanConfig ChatServer::PlanningConfig() const {
           .session_cache = session_cache_.Enabled(),
           .prefix_cache = prefix_cache_.Enabled(),
           .capacities = seq_capacities_,
-          .checkpoints = prefix_cache_checkpoints_};
+          .checkpoints = prefix_cache_checkpoints_,
+          .cuda_quota_limit_bytes = cuda_quota_limit_bytes_};
 }
 
 void ChatServer::HandleConfig(int fd) {

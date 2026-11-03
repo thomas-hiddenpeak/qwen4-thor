@@ -40,6 +40,7 @@
 #include "q4t/status.h"
 #include "q4t/runtime/memory_budget.h"
 #ifdef Q4T_STARTUP_RESERVATION
+#include "q4t/runtime/cuda_allocation_quota.h"
 #include "q4t/runtime/startup_reservation.h"
 #endif
 #include "q4t/text/tokenizer.h"
@@ -138,10 +139,12 @@ class ChatServer {
  private:
   friend struct ServeContractAccess;
 #ifdef Q4T_STARTUP_RESERVATION
+  runtime::CudaQuotaReportOnDestruction cuda_quota_report_;
   // Destroy last: model, MTP, scheduler and request buffers release their
   // handed allocations before the reservation reclaims unhanded blocks.
   runtime::StartupReservation startup_reservation_;
 #endif
+  uint64_t cuda_quota_limit_bytes_ = 0;
   void RecordDeviceMemoryFailure(const DeviceMemoryResult& result,
                                  const char* site) noexcept;
   void HandleClient(int fd);

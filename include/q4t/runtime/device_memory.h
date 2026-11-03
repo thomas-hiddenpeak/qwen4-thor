@@ -14,12 +14,14 @@ struct DeviceMemoryResult {
   DeviceMemoryState state = DeviceMemoryState::kSuccess;
   int operation_error = 0;
   int pending_error = 0;
+  bool quota_exhausted = false;
 
   bool ok() const { return state == DeviceMemoryState::kSuccess; }
   bool exhausted() const { return state == DeviceMemoryState::kExhausted; }
   const char* Reason() const {
     return ok()          ? "success"
-           : exhausted() ? "device_memory_exhausted"
+           : exhausted() ? (quota_exhausted ? "cuda_allocation_quota_exhausted"
+                                            : "device_memory_exhausted")
                          : "device_memory_failure";
   }
 };

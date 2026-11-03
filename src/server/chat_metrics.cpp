@@ -5,6 +5,9 @@
 #include <string>
 
 #include "q4t/server/chat_capabilities.h"
+#ifdef Q4T_STARTUP_RESERVATION
+#include "q4t/server/cuda_quota_metrics.h"
+#endif
 
 namespace q4t::server {
 using detail::SendSimple;
@@ -34,6 +37,9 @@ void ChatServer::HandleMetrics(int fd) {
   const auto memory = memory_admission_.Observe();
   std::string b;
   b.reserve(2048);
+#ifdef Q4T_STARTUP_RESERVATION
+  b += CudaQuotaMetrics(runtime::ReadCudaAllocationQuota());
+#endif
   auto counter = [&](const char* name, const char* help, uint64_t v) {
     b += "# HELP "; b += name; b += ' '; b += help; b += "\n# TYPE ";
     b += name; b += " counter\n"; b += name; b += ' ';

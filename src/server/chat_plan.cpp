@@ -307,7 +307,29 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"("failure_policy":"stop_startup",)"
          R"("snapshot_is_reservation":false,"hard_limit":false,"checks":)" +
          (startup ? StartupMemoryChecksJson(*startup) : "null") +
-         R"(},"memory_admission":{"enabled":)" +
+         R"(},"cuda_allocation_quota":{"profile":)"
+         R"("q4t-linked-cuda-quota-v1","enabled":)" +
+         Bool(config.cuda_quota_limit_bytes != 0) + R"(,"requested_mib":)" +
+         (requested.cuda_allocation_limit_mib < 0
+              ? Quote("auto")
+              : std::to_string(requested.cuda_allocation_limit_mib)) +
+         R"(,"effective_limit_bytes":)" +
+         std::to_string(config.cuda_quota_limit_bytes) + R"(,"source":)" +
+         Quote(source("--cuda-allocation-limit-mib",
+                      requested.cuda_allocation_limit_mib == -1)) +
+         R"(,"resolution":)" +
+         Quote(requested.cuda_allocation_limit_mib < 0
+                   ? "mem_fraction_times_mem_total"
+               : requested.cuda_allocation_limit_mib == 0
+                   ? "explicitly_disabled"
+                   : "requested_mib") +
+         R"(,"scope":"process_requested_cuda_bytes","allocation_entries":16384,)"
+         R"("stream_entries":256,"no_budget_bypasses_quota":false,)"
+         R"("external_library_calls_covered":false,"physical_ram_limit":false,)"
+         R"("reconfiguration":"new_process","async_credit":"successful_sync",)"
+         R"("excluded":["host_heap","file_cache","driver",)"
+         R"("external_library_allocations","cuda_pool_retained"]},)"
+         R"("memory_admission":{"enabled":)" +
          Bool(requested.min_available_memory_mib != 0) +
          R"(,"source":"linux_global_mem_available","min_available_mib":)" +
          number("--min-available-memory-mib",

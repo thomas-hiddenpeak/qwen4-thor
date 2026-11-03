@@ -3,6 +3,9 @@
 #include <cuda_runtime_api.h>
 
 #include "q4t/runtime/cleanup_policy.h"
+#ifdef Q4T_STARTUP_RESERVATION
+#include "q4t/runtime/cuda_allocation_quota.h"
+#endif
 #include "q4t/server/device_memory.h"
 
 #ifdef Q4T_SERVE_FAULT_INJECTION
@@ -46,6 +49,9 @@ struct CudaMemoryBackend {
   const char* request;
 
   int Allocate(void** pointer, size_t bytes) noexcept {
+#ifdef Q4T_STARTUP_RESERVATION
+    runtime::ClearCudaQuotaRejection();
+#endif
     const int fault = DeviceMemoryFault(site, request);
     return fault != kSuccess ? fault
                              : static_cast<int>(cudaMalloc(pointer, bytes));
@@ -65,7 +71,15 @@ DeviceMemoryResult AllocateCudaMemory(T*& pointer, size_t bytes,
                                       const char* site,
                                       const char* request = nullptr) noexcept {
   CudaMemoryBackend backend{site, request};
-  return AllocateDeviceMemory(backend, pointer, bytes);
+  auto result = AllocateDeviceMemory(backend, pointer, bytes);
+#ifdef Q4T_STARTUP_RESERVATION
+  const auto reason = runtime::LastCudaQuotaRejection();
+  result.quota_exhausted =
+      result.exhausted() && (reason == runtime::CudaQuotaRejection::kBytes ||
+                             reason == runtime::CudaQuotaRejection::kEntries ||
+                             reason == runtime::CudaQuotaRejection::kStreams);
+#endif
+  return result;
 }
 
 template <typename T>

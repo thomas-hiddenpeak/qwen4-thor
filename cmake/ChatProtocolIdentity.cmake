@@ -4,6 +4,12 @@ include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
   include/q4t/runtime/device_memory.h
+  include/q4t/runtime/allocation_quota.h
+  include/q4t/runtime/cuda_allocation_quota.h
+  src/runtime/cuda_allocation_quota.cpp
+  src/runtime/cuda_quota_backend.h
+  include/q4t/server/cuda_quota_policy.h
+  include/q4t/server/cuda_quota_metrics.h
   include/q4t/vision/vision.h
   include/q4t/vision/processor.h
   include/q4t/vision/media_plan.h

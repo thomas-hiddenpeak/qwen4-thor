@@ -32,6 +32,7 @@ struct ChatPlanConfig {
   bool prefix_cache = false;
   std::vector<int> capacities;
   std::vector<int> checkpoints;
+  uint64_t cuda_quota_limit_bytes = 0;
 };
 
 struct ChatPlanError {

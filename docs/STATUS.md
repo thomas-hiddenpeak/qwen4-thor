@@ -41,6 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+[SRV-02j2生产额度接线开发中](SERVE_CUDA_QUOTA_INTEGRATION_2026-11-04.md)：
+把已验核心接入实际startup预留、运行期device/pinned/managed/async
+申请；进程缓存持续计额、stream代次防止handle复用误退，配置/指标
+公开覆盖与拒绝原因。默认auto按mem_fraction×MemTotal，独立于
+no-budget；整机RAM硬限额仍不成立。首轮零警告，wrapper27/28、
+公共host267/268、required233/234、后端9与驱动5；原零字节异常
+指针未清空及CLI夹具缺必需model_dir失败保留，v2零警告，定向2
+wrapper与两配置各2 CLI通过；有效28/268/234及后端9/驱动5，
+未受影响证据复用，原CLI负例错误前置条件不计新增边界通过。
+尚无GPU/模型/默认替换；随后同锁6 native/3启动尝试/最多7生成；用户
+小时/day计划不执行，旧default与证据保留，工业化目标继续active。
+
 [SRV-02j1 CUDA申请额度核心限定通过](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md)：
 固定表/并发预占、混合申请额度、代次票据、异步完成和未知锁存已开发。
 初轮25 CPU后，释放发布时序1失败复现并修正，独立26 CPU/4驱动通过；

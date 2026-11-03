@@ -30,6 +30,8 @@
 [SRV-02e启动可用内存及Thor计量合同](SERVE_STARTUP_MEMORY_2026-11-03.md)及
 [限定交付结果](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)；
 [SRV-02j1 CUDA申请额度核心合同](SERVE_CUDA_QUOTA_CORE_2026-11-04.md)、
+[SRV-02j2生产额度接线合同](SERVE_CUDA_QUOTA_INTEGRATION_2026-11-04.md)及
+[使用与验证入口](../tools/serve_cuda_quota_integration/README.md)、
 [短进程保管修正](SERVE_CUDA_QUOTA_CORRECTION_2026-11-04.md)及
 [核心限定结果与待接线边界](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md)；
 [SRV-02g内部清理合同](SERVE_BACKEND_CLEANUP_2026-11-03.md)、

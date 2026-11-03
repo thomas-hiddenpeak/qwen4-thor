@@ -23,6 +23,7 @@
 #include "q4t/quant/moe_residency.h"
 #include "q4t/runtime/memory_budget.h"
 #include "q4t/runtime/residency_config.h"
+#include "q4t/server/cuda_quota_policy.h"
 #if defined(Q4T_STARTUP_RESOURCE_PLAN) || defined(Q4T_STARTUP_RESERVATION)
 #include "q4t/runtime/startup_plan.h"
 #endif
@@ -381,6 +382,21 @@ Status ChatServer::Start(const ServerOptions& opts) {
                            &startup_memory_.before_allocations);
   if (!s.ok()) return s;
   bool planned_startup = false;
+#ifdef Q4T_STARTUP_RESERVATION
+  s = ResolveCudaQuotaLimit(opts.cuda_allocation_limit_mib, opts.mem_fraction,
+                            opts.cuda_allocation_limit_mib < 0
+                                ? runtime::ReadSystemMemory()
+                                : runtime::SystemMemory{},
+                            &cuda_quota_limit_bytes_);
+  if (!s.ok()) return s;
+  s = runtime::ConfigureCudaAllocationQuota(cuda_quota_limit_bytes_);
+  if (!s.ok()) return s;
+#else
+  if (opts.cuda_allocation_limit_mib != 0)
+    return Status::Fail(
+        "CUDA quota unavailable in experimental startup build; "
+        "explicitly select --cuda-allocation-limit-mib 0");
+#endif
 #ifdef Q4T_STARTUP_RESOURCE_PLAN
   {
     PhaseTimer pt("startup_resource_plan");

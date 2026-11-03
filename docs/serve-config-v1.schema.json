@@ -881,6 +881,98 @@
         "hard_limit",
         "checks"
       ]
+    },
+    "cuda_allocation_quota": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "const": "q4t-linked-cuda-quota-v1"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "requested_mib": {
+          "oneOf": [
+            {
+              "const": "auto"
+            },
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1048576
+            }
+          ]
+        },
+        "effective_limit_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "source": {
+          "enum": [
+            "builtin_default",
+            "server_options",
+            "cli"
+          ]
+        },
+        "resolution": {
+          "enum": [
+            "mem_fraction_times_mem_total",
+            "explicitly_disabled",
+            "requested_mib"
+          ]
+        },
+        "scope": {
+          "const": "process_requested_cuda_bytes"
+        },
+        "allocation_entries": {
+          "const": 16384
+        },
+        "stream_entries": {
+          "const": 256
+        },
+        "no_budget_bypasses_quota": {
+          "const": false
+        },
+        "external_library_calls_covered": {
+          "const": false
+        },
+        "physical_ram_limit": {
+          "const": false
+        },
+        "reconfiguration": {
+          "const": "new_process"
+        },
+        "async_credit": {
+          "const": "successful_sync"
+        },
+        "excluded": {
+          "const": [
+            "host_heap",
+            "file_cache",
+            "driver",
+            "external_library_allocations",
+            "cuda_pool_retained"
+          ]
+        }
+      },
+      "required": [
+        "profile",
+        "enabled",
+        "requested_mib",
+        "effective_limit_bytes",
+        "source",
+        "resolution",
+        "scope",
+        "allocation_entries",
+        "stream_entries",
+        "no_budget_bypasses_quota",
+        "external_library_calls_covered",
+        "physical_ram_limit",
+        "reconfiguration",
+        "async_credit",
+        "excluded"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -901,6 +993,7 @@
     "max_inflight_requests",
     "max_queued_requests",
     "memory_admission",
-    "startup_memory"
+    "startup_memory",
+    "cuda_allocation_quota"
   ]
 }

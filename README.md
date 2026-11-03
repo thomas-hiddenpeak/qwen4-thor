@@ -188,6 +188,7 @@ OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成�
 | `--request-deadline-ms` | `1200000`（20分钟）；含等待槽位和生成，显式范围1000～10800000；客户端超时需匹配 |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
 | `--mem-fraction` | `0.90`，启动分配估算占总内存的比例，不是物理预留 |
+| `--cuda-allocation-limit-mib` | `auto`，生产wrapper请求字节额度为mem_fraction×MemTotal；0显式关闭，正整数指定MiB，独立于`--no-budget`。不覆盖DSO内部/host堆/driver/文件缓存/CUDA池保留，不是整机RAM硬限额；交付状态见STATUS |
 | `--startup-memory-headroom-mib` | `2048`，大分配前要求真实MemAvailable容纳估算总量及余量；元数据前/ready前复查余量，0禁用，`--no-budget`同时绕过此估算检查 |
 | `--min-available-memory-mib` | `2048`，运行时全局内存准入门限；0显式禁用，独立于`--no-budget` |
 | `--memory-recovery-margin-mib` | `512`，正数；关闭后需达到门限+余量才恢复；门限0时忽略 |

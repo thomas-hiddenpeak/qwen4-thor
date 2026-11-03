@@ -620,10 +620,11 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const auto allocation_error = [&](const DeviceMemoryResult& result) {
     err_guard.ok = false;
     diagnostic.Outcome("error", result.Reason());
-    SendError(fd, 503, result.exhausted() ? "device memory exhausted"
-                                        : "device memory failure; restart server",
-              {}, result.exhausted() ? "device_memory_exhausted"
-                                    : "gpu_unhealthy");
+    SendError(fd, 503,
+              result.quota_exhausted ? "CUDA allocation quota exhausted"
+              : result.exhausted()   ? "device memory exhausted"
+                                     : "device memory failure; restart server",
+              {}, result.exhausted() ? result.Reason() : "gpu_unhealthy");
   };
   bool cleaned = false;
   auto cleanup = [&]() {

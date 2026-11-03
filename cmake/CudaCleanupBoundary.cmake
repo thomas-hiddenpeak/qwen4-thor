@@ -1,8 +1,9 @@
 # Production q4t and its native contract probe use the same link boundary.
 # This does not intercept calls internal to external shared libraries.
 function(q4t_link_cuda_cleanup target)
-  foreach(api cudaMalloc cudaHostAlloc cudaMallocHost cudaMallocAsync
+  foreach(api cudaMalloc cudaMallocManaged cudaHostAlloc cudaMallocHost cudaMallocAsync
               cudaFree cudaFreeAsync cudaFreeHost cudaEventDestroy
+              cudaStreamCreate cudaStreamCreateWithFlags cudaStreamCreateWithPriority
               cudaStreamDestroy cudaStreamSynchronize cudaDeviceSynchronize
               cudaEventSynchronize)
     target_link_options(${target} PRIVATE "LINKER:--wrap=${api}")
