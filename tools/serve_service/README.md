@@ -34,6 +34,10 @@ SHA的伴随接受记录见上述结果页。prepare本身的未验声明不被�
 外部服务；锁文件永不删除。锁描述符贯穿控制器、worker及后端，两个
 父子边界设置跨exec的parent-death信号。控制器死亡时后端退出前锁
 仍保持；这不保证内核不可中断任务能够退出，也不证明物理RAM硬上限。
+独立前台controller SIGKILL已[实际限定验证](../../docs/SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)：
+活跃输出与准备完成的grammar排队请求均完整server_shutdown，4个
+grammar回收，无辅助清理信号，10秒无重启。验收额外保留同一flock
+副本并独立监控到结束；原controller终态缺失保持，不伪造其清理确认。
 
 ```bash
 /usr/bin/python3 -I -B tools/serve_service/service.py status \
@@ -46,6 +50,8 @@ SHA的伴随接受记录见上述结果页。prepare本身的未验声明不被�
 返回`STOP_REQUESTED`仅代表请求停止；之后`status`的终态与
 `cleanup_confirmed`才说明控制器观察到清理完成。`OWNER_ABSENT`不等于
 GPU已清理，应查单元/cgroup与NVML，不按旧PID或进程名kill。
+同样，控制器被SIGKILL后锁文件可能保留历史held；真实占用以flock、
+进程身份和GPU观测为准，不能为消除旧文本而删除锁文件。
 运行目录留下terminal，不提供自动复活或恢复旧请求的入口。
 
 默认重启次数为0；`prepare --restart-limit 1..3`显式允许恢复已ready、

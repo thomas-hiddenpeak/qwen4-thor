@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "limits": {
+    "starts": 1,
+    "generations": 6,
+    "negatives": 1,
+    "observations": 260,
+    "seconds": 600
+  },
+  "gpu_window_seconds": 220,
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package",
+    "manifest_sha256": "35ca281fb34b5deb48b2acd2dfd82e2e9a4c8de522c9049ec114b0b182061979",
+    "binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b"
+  },
+  "unit": "unused-foreground-only.service",
+  "token": "foreground",
+  "source_commit": "4c780befb221d540922a9069eddd0088415912a0",
+  "source_files": {
+    "tools/serve_service/package.py": "ffc6880571b967106877d8f8835f94db1b2a1142aa5d211abcdbedcf8b420397",
+    "tools/serve_service/supervisor.py": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+    "tools/serve_service/backend.py": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+    "tools/serve_service/service.py": "3eedfcd515865f00a2751c275d4adba7b956f83b13b30353fce1f4f9bb7476d9",
+    "tools/evalscope/gpu_exclusive.py": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+    "tools/evalscope/bounded_log.py": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+    "tools/evalscope/nvml_process_query.py": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+    "tools/release/release.py": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+    "tools/serve_ops/contracts.py": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+    "tools/serve_ops/identity.py": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+    "tools/serve_ops/transport.py": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+    "tools/serve_service/memory.py": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+    "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
+    "tools/serve_service/test_acceptance.py": "9305521b0aff9d6329e84224e5c8527160c635ddfdb902f135bfd0de86e78797",
+    "tools/examples/chat_client.py": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32",
+    "tools/examples/project_query.py": "dbf70665fef0d144d18fc0ef16b04029a7dd595664efe45b7de07579b3997206",
+    "tools/examples/project_records.py": "abd47d37ddcbd482f147ef172ee01e4a8be3bfcb78f29f7156d00b0073eb8b3c",
+    "tools/examples/agent_tools_demo.py": "acf6ee24c66d372d95ec08e672c2ec5dc423999890a537b9495a96ced4d89ca4",
+    "tools/examples/tool_recovery.py": "e3fba1d9d028ff532c59e826b76e4434b64599a8b3c42b79d4ae0c1c59341f90",
+    "docs/MODEL.md": "7409269429d9e61ac6f560e829acd0613906d29e03e902c84af3a8db2d17a97c",
+    "docs/SERVE_MANAGED_SERVICE_GPU_2026-11-03.md": "fd2dd8ad086dbcbd961a76eb12189dcb33beb4a0c49a0feca9986e57a944c547",
+    "tools/serve_service/lease_custody.py": "c3925db0e1f53e81720bbf4c01ab03fbf74a53ec504ab918b9b1042e92ae4c3d",
+    "tools/serve_service/controller_death.py": "fcc9e376d995cd8a4b541fc002beaa3bab6affb55c00b1335a7ac1e01d35a4cc",
+    "tools/serve_service/controller_exec.py": "7f37aa2881f2a5e174fee3583d39590c14356f12edfed307eae8718e9643e380",
+    "tools/serve_service/test_controller_death.py": "873fb6389814692b6c3600c81d12bd2fde21527c8871ac7852027b1248a58b48",
+    "tools/serve_lifecycle/verify.py": "5bb505cee574711f54d88da6df76b784403e9e309be7e7d9756b65b6b7897078",
+    "docs/serve-transport-v1.schema.json": "992a666781a0f0b92c4d9d4a8ce9680c663f7bf89a1608eac37d4d63e17ce0e0",
+    "docs/SERVE_CONTROLLER_DEATH_2026-11-03.md": "5563998f2432bbcb503d29c46cca700b45702dd8cfc4739dbeacd0f0336c2a20"
+  },
+  "cpu_result_sha256": "674ff465a462da23c0405259432346bfc8c402d450782ac3f9a223df4b378800",
+  "binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+  "default_release_sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+  "production_service_reused_from": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-memory-stop-20261103/package",
+    "manifest_sha256": "dd94fb050aa23adad672cbf15935cb2c6d35bedf58468b086f39c42160dc030a",
+    "binary_sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b"
+  },
+  "planned": {
+    "starts": 1,
+    "generations": 6,
+    "successes": 4,
+    "shutdown_errors": 2
+  },
+  "explicit_control_limit": 64,
+  "supervisor_http_upper_bound": 188,
+  "original_controller_guard_intentionally_interrupted": true,
+  "independent_same_description_custody": true,
+  "performance_acceptance": false
+}

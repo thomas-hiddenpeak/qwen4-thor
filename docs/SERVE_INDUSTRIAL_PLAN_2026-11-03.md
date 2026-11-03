@@ -25,7 +25,12 @@ SRV-14随后修复结构化终态交接并交付d66f2bb9，实际托管限定通
 SRV-15[低内存退场限定通过](SERVE_MEMORY_STOP_RESULT_2026-11-03.md)：
 独立观测/锁存原因/owned清理及禁重启，实际1启动/4成功、真实资料
 工具后以2.25GiB有界压力触发30GiB门限，释放GPU/锁且10秒无复起。
-默认1GiB门限只有CPU证据，轮询保护不能替代整机物理RAM硬限额。
+默认1GiB临界触发仍只有CPU证据，轮询保护不能替代整机物理RAM硬限额。
+
+SRV-16[独立controller死亡限定通过](SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)：
+真实资料工具后保留活跃/排队请求，仅kill controller，两完整shutdown
+错误、grammar4/4回收，无辅助清理或自动重启。原guard终态缺失保持，
+同一flock副本及独立监控覆盖到结束；不扩大为未知状态的自动清理。
 
 已确认范围：本机Thor、原生Qwen文本模型、OpenAI兼容Chat API、真实
 项目资料/运行记录查询。部署边界已向用户询问；尚未答复时，开发规划
@@ -59,6 +64,12 @@ SRV-15[低内存退场限定通过](SERVE_MEMORY_STOP_RESULT_2026-11-03.md)：
 或明确失效，不能用同名其他实验结果替代。
 
 ## 当前工作包
+
+- SRV-16：[独立控制器死亡实际限定接受](SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)。
+  生产实现不改，1启动/6生成/4成功/2 shutdown，真实工具和自然退场
+  通过；旧controller记录缺失与held历史文字保留，GPU空、锁可用。
+  下一项完善OWNER_ABSENT后的只读运维核验，新ELF长稳及实际部署
+  策略、物理RAM硬保护仍待办。
 
 - SRV-15：[托管内存保护退场已限定接受](SERVE_MEMORY_STOP_RESULT_2026-11-03.md)。
   新v2包dd94fb05、CPU51有效，真实工具与高门限安全压力退出通过；

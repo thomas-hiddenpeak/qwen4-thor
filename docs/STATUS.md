@@ -4,13 +4,16 @@
 
 ## 当前推进目标
 
-SRV-16正在补齐[独立控制器死亡实际验收](SERVE_CONTROLLER_DEATH_2026-11-03.md)：
-一个活跃输出加一个已准备grammar排队请求，真实controller SIGKILL；
-pidfd_getfd已通过本机CPU能力探针，可保留同一锁并独立观测到清理结束。
-生产服务/C++默认不改；新增CPU最终8有效通过，隔离入口首次导入失败，
-拆成仅stdlib的独立exec辅助程序后定向导入通过，原失败/误记纠正保留。
-首轮驱动括号导入错误与SSE夹具字段错误保留，仅重验受影响1项，
-其他7项源码AST未变复用。实际GPU矩阵待验，不以空闲退出替代该缺口。
+[SRV-16独立控制器死亡已限定通过](SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)：
+冻结4c780bef、包35ca281f；1启动/6生成、4成功含真实资料工具，活跃SSE
+及已准备grammar排队各完整server_shutdown。controller -9，worker
+自然STOPPED/清理，grammar4/4，无辅助清理信号、10秒无复起。
+复制原flock描述符并独立监控到关闭，原guard47/独立21观察无竞争；
+业务窗口61.219秒、总61.469秒，5显式控制。原guard终态缺失按故障保持，
+custody COMPLETED；82原件/1本机ELF封存。CPU最终8有效及隔离helper
+通过，首轮夹具/导入失败和误记纠正保留。生产代码/默认pair不改，GPU
+空/原锁可用、SOAR仍masked。OWNER_ABSENT及历史held元数据不是仍占锁，
+其运维核验、物理RAM保护、新ELF长稳和实际部署策略继续待办。
 
 [SRV-15托管低内存退场已限定通过](SERVE_MEMORY_STOP_RESULT_2026-11-03.md)：
 独立观测、owned信号清理、锁存原因/禁重启，FAILED与清理分别记录。

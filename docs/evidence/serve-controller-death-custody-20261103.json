@@ -1,0 +1,121 @@
+{
+  "passed": true,
+  "staged_files": [
+    {
+      "path": "docs/PHASES.md",
+      "bytes": 28037,
+      "sha256": "7b95fe56b34b7ef28196b777301c7dfebded82f54f5b59ba3afcb899eb10129f"
+    },
+    {
+      "path": "docs/README.md",
+      "bytes": 38231,
+      "sha256": "ab7b4b32e0e5be03d3fed8aa46e6dc4cb86f97495fba3786ee6f4849b3cd46d2"
+    },
+    {
+      "path": "docs/SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md",
+      "bytes": 5298,
+      "sha256": "259c11dbbb75898f6a73e1812cc0afaf3de280d9c4d00f70ec25c6f99dadfaf9"
+    },
+    {
+      "path": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "bytes": 14762,
+      "sha256": "945fe728f7161a74111dfe843ad6b4a284135d682b7b43d9747057f441dadc69"
+    },
+    {
+      "path": "docs/STATUS.md",
+      "bytes": 161042,
+      "sha256": "692f7e1f90e43ddab1f22855683e999949501365346c1e261e0df45e4f19be6d"
+    },
+    {
+      "path": "docs/evidence/serve-controller-death-20261103/accepted_package.json",
+      "bytes": 1318,
+      "sha256": "6bb46758d843e3f1fbeec46a2d32ba2fdaee4cada2412bcdf6296d88d7f0b5ed"
+    },
+    {
+      "path": "docs/evidence/serve-controller-death-20261103/cpu.json",
+      "bytes": 3702,
+      "sha256": "674ff465a462da23c0405259432346bfc8c402d450782ac3f9a223df4b378800"
+    },
+    {
+      "path": "docs/evidence/serve-controller-death-20261103/custody.json",
+      "bytes": 99,
+      "sha256": "09b9378c912b926c159fe4786fb6949f7d016d0b90d9d425eb346499c93b78a8"
+    },
+    {
+      "path": "docs/evidence/serve-controller-death-20261103/manifest.json",
+      "bytes": 26195,
+      "sha256": "2911b180b7c953380021cfa834cd5f9ac8b99a6a0074e743c0dad012c8f58648"
+    },
+    {
+      "path": "docs/evidence/serve-controller-death-20261103/plan.json",
+      "bytes": 4574,
+      "sha256": "15508226a8f25d8db458e9d6bb11ad09db5f97ff9f4a6b40cf3550ec9be31c68"
+    },
+    {
+      "path": "docs/evidence/serve-controller-death-20261103/postflight.json",
+      "bytes": 1131,
+      "sha256": "ed24cff458aa46c49c71f9d7fd7df0f8623d1a48ecf3f2da87106eebe14ecc9a"
+    },
+    {
+      "path": "docs/evidence/serve-controller-death-20261103/raw-records.tar.gz",
+      "bytes": 111050,
+      "sha256": "2291792571f1369f05396299f83133b3237adc48f181e801b3489a70797e6154"
+    },
+    {
+      "path": "docs/evidence/serve-controller-death-20261103/result.json",
+      "bytes": 519,
+      "sha256": "01452ddf144664b2062a2ef6138ca4c4b77ce98fa2dfdb100a69f4b57ebb832e"
+    },
+    {
+      "path": "docs/evidence/serve-controller-death-20261103/sealed-files.json",
+      "bytes": 702,
+      "sha256": "70eb75e870ecc7e1449f62892189dd0a41165b69741f7d8378dae5c1a4007d98"
+    },
+    {
+      "path": "docs/log/2026-11-03.md",
+      "bytes": 103735,
+      "sha256": "8a670aaa438919cc82d06821343337364ceacb494c9372d07e6406a733802df9"
+    },
+    {
+      "path": "tools/serve_service/README.md",
+      "bytes": 5943,
+      "sha256": "2a7a465b10ddeb2cfc140ce682bf51105bcf5d115f8ce8534af75aee24bb67bf"
+    },
+    {
+      "path": "tools/serve_service/controller_closeout.py",
+      "bytes": 8413,
+      "sha256": "e3067774ade57ec967e141d692e8df6a4dfdbd27bf057a1923179d01019b68ac"
+    }
+  ],
+  "changed_markdown_links": 597,
+  "missing_links": [],
+  "archive_records": 82,
+  "local_artifacts": 1,
+  "environment": {
+    "containers": {
+      "argv": [
+        "sudo",
+        "-n",
+        "docker",
+        "ps",
+        "-a",
+        "--format",
+        "{{.Names}} {{.Status}}"
+      ],
+      "returncode": 0,
+      "stdout": ""
+    },
+    "gpu": {
+      "argv": [
+        "nvidia-smi",
+        "--query-compute-apps=pid,process_name,used_memory",
+        "--format=csv,noheader"
+      ],
+      "returncode": 0,
+      "stdout": ""
+    }
+  },
+  "lock_inode": 3294067,
+  "lock_available": true,
+  "new_model_or_http": 0
+}

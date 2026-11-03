@@ -1,0 +1,541 @@
+{
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/accepted-package.json",
+      "sha256": "6bb46758d843e3f1fbeec46a2d32ba2fdaee4cada2412bcdf6296d88d7f0b5ed",
+      "bytes": 1318,
+      "member": "accepted-package.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/cpu/result.json",
+      "sha256": "032bf37441834f5293935b03134f8ae1aba6a462e31c0b3a0a5fb85624519ae1",
+      "bytes": 3090,
+      "member": "cpu/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/cpu/test_controller_death.py",
+      "sha256": "6315a290de786041c7b298255aa23dbdc6fbc2dd20c55deedc5fd4819ffa6dfd",
+      "bytes": 6415,
+      "member": "cpu/test_controller_death.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/cpu/unittest.log",
+      "sha256": "1250ec253989ba0634564cdff2afc1c9e41a1af956dab691805eeb980d2bf024",
+      "bytes": 13085,
+      "member": "cpu/unittest.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/cpu-final/result.json",
+      "sha256": "7643cbd3ff612d14e29fb6b69d6ccb2e894e0c984276b4c006afd8f4b3519ace",
+      "bytes": 3226,
+      "member": "cpu-final/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/cpu-final/unittest.log",
+      "sha256": "aed7a170609ed1ddbc5766831d2935cac25cf6e2e84bf537e3d1246812bddc79",
+      "bytes": 298,
+      "member": "cpu-final/unittest.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/cpu-import-failed/controller_death.py",
+      "sha256": "6fbe3845ba65e715285e6ba9719ca9653aef3cafe721143c1af262cc005665af",
+      "bytes": 21914,
+      "member": "cpu-import-failed/controller_death.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/cpu-import-failed/result.json",
+      "sha256": "8005ef4aaf902dba94e0f6a56298aac09643880ca7d0241001901fac1a8e753a",
+      "bytes": 229,
+      "member": "cpu-import-failed/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/cpu-probe.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "cpu-probe.lock"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/entry-corrected/result.json",
+      "sha256": "674ff465a462da23c0405259432346bfc8c402d450782ac3f9a223df4b378800",
+      "bytes": 3702,
+      "member": "entry-corrected/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/active-http.json",
+      "sha256": "6dc8dfebc21fe8907abe899de6dfeb53fa265842230d5d840a87fbebb3f9a727",
+      "bytes": 410,
+      "member": "execution/active-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/active-request.json",
+      "sha256": "75e6c526bbe0d101ab576c58ef287d9df45eb256941f83e2fd390f9b1f1f52c8",
+      "bytes": 843,
+      "member": "execution/active-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/active-verified.json",
+      "sha256": "620590dc1adce781854513acd0fcde42578ce819f97fe4ca9dfa2ef7fd9fefd2",
+      "bytes": 103,
+      "member": "execution/active-verified.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/active-wire.bin",
+      "sha256": "204ef114721346b631e51d4290d92d3e837a35bebd529eeb16ea8cef0ca2d77c",
+      "bytes": 6108,
+      "member": "execution/active-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/before-crash-ownership.json",
+      "sha256": "9a431dec6b2d3189d63ec434d4124f738e594be1997ca58bfab921882e9ad4c0",
+      "bytes": 1199,
+      "member": "execution/before-crash-ownership.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/before-crash.json",
+      "sha256": "5d77be90b7847ca1e0577154c12e904d11bc24ba6552c20754d0164ae02e341f",
+      "bytes": 9114,
+      "member": "execution/before-crash.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/begin.json",
+      "sha256": "c7957c44b469a6c76c6c834360d8b03cd47b1a7bde867dca39b6f170559bcc3d",
+      "bytes": 4760,
+      "member": "execution/begin.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/busy-observations.jsonl",
+      "sha256": "d8f9317427beac6f1d9d29926788d158807da9643f48d67a287c5d19a64b3cbe",
+      "bytes": 77719,
+      "member": "execution/busy-observations.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/controller-death-verified.json",
+      "sha256": "c4de8c501c6e752e251af42487de9384a92cf4d3d2102be604351a27c94f42e7",
+      "bytes": 8153,
+      "member": "execution/controller-death-verified.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/controller.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "execution/controller.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/counts.json",
+      "sha256": "5d45290d36abbc65db9114ac52be1de2691195e7c428aa1c93ec4ea2e58a88fa",
+      "bytes": 58,
+      "member": "execution/counts.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/custody/events.jsonl",
+      "sha256": "fdfa5d963114b17791d3bbb895d3a928cd8ff98f268f332d857ecbd7fb033e3b",
+      "bytes": 2602,
+      "member": "execution/custody/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/custody/exit.json",
+      "sha256": "09b9378c912b926c159fe4786fb6949f7d016d0b90d9d425eb346499c93b78a8",
+      "bytes": 99,
+      "member": "execution/custody/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/custody/lease-copy.json",
+      "sha256": "c651f6455038b0868b6e3abfcb2c4aa2aae44e90b909d67cd925f1e08d80d969",
+      "bytes": 486,
+      "member": "execution/custody/lease-copy.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/custody/nvml.jsonl",
+      "sha256": "4aa5003265cd84fd7df9cfb8fe143e34028ca49b2b3043171f1e6b46fab18aaf",
+      "bytes": 48394,
+      "member": "execution/custody/nvml.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/first-ready-ownership.json",
+      "sha256": "9a431dec6b2d3189d63ec434d4124f738e594be1997ca58bfab921882e9ad4c0",
+      "bytes": 1199,
+      "member": "execution/first-ready-ownership.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/gpu-before.json",
+      "sha256": "f4f8981dcfffb02e8f2743aae564ce314f548602682a3b1db078bb4eb540b011",
+      "bytes": 2257,
+      "member": "execution/gpu-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/gpu-final.json",
+      "sha256": "a9d16f6aa07e9d0cfcd4c10b05b8f91249d52fca3cd8be6f423b2272daeed96e",
+      "bytes": 2257,
+      "member": "execution/gpu-final.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/idle-before-crash-metrics.json",
+      "sha256": "4cfcad6412c29f4df86939fb77c172b710db5f417517850976f1b6c5788220bd",
+      "bytes": 26258,
+      "member": "execution/idle-before-crash-metrics.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/managed-run/attempt-1.json",
+      "sha256": "d1d1ae85e2a5f877f0b3e95403d77ce6e7cc35719e1563c6872cf155a610eb24",
+      "bytes": 825,
+      "member": "execution/managed-run/attempt-1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/managed-run/backend.log",
+      "sha256": "f9d005822c6dc2aadc74aab330d7a7a87ff13364a01fbe8b73ca317714b0ea3b",
+      "bytes": 18522,
+      "member": "execution/managed-run/backend.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/managed-run/controller.json",
+      "sha256": "7473e676d1e54b3d490136213d581880db15ab12381b4b89f16f07ee5e2756d1",
+      "bytes": 447,
+      "member": "execution/managed-run/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/managed-run/events.log",
+      "sha256": "472cdf5b1386d84e9a62fc8cf3491f3cbfffc392d2963cc908383a44cead4a30",
+      "bytes": 120,
+      "member": "execution/managed-run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/managed-run/lease/events.jsonl",
+      "sha256": "fa0735f065aae49f98c2dcb5fb630020993040cd2d29d827efb0a14b808ed6c5",
+      "bytes": 9137,
+      "member": "execution/managed-run/lease/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/managed-run/lease/nvml-queries.jsonl",
+      "sha256": "6f539d82a10cee9a273d8480e2cd012c91804992d30f8868bb55719cf12e210e",
+      "bytes": 110728,
+      "member": "execution/managed-run/lease/nvml-queries.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/managed-run/status.json",
+      "sha256": "dc9ed3154803a271537a4a8fa16c2c5a067c3af11cda83f150a4a23845e3ecc6",
+      "bytes": 7652,
+      "member": "execution/managed-run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/ordinary-json-http.json",
+      "sha256": "f565d42e353dd34a287ff3c31719e7c77edabd205bddc6f0cd48c62d102c68e7",
+      "bytes": 245,
+      "member": "execution/ordinary-json-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/ordinary-json-request.json",
+      "sha256": "668785370d9e5ed3b196f109d418b53e7097634b90b1362e055dc486499d6626",
+      "bytes": 634,
+      "member": "execution/ordinary-json-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/ordinary-json-response.json",
+      "sha256": "254eef9cf5bee164d557e4236ef9a93ddf996bdcfd7646400d0810404319ed24",
+      "bytes": 276,
+      "member": "execution/ordinary-json-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/ordinary-json-wire.bin",
+      "sha256": "33ff0fe5b452d1295cf1ca51bfe232b494ce521de9b4ee1c8495116b91f81e2e",
+      "bytes": 306,
+      "member": "execution/ordinary-json-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/project-answer-http.json",
+      "sha256": "d38d7a2dda9d188977aa30a7823df6c9f25d382df6806df26d83fefb2a9f4f13",
+      "bytes": 280,
+      "member": "execution/project-answer-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/project-answer-request.json",
+      "sha256": "9f86b4b13c748d7fde6d14b0a03be4ec9eff16978a4015c5f2de91dc75ff35d3",
+      "bytes": 5890,
+      "member": "execution/project-answer-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/project-answer-response.json",
+      "sha256": "4d33a7b0345d411468f175c73a24d29c424da4d59bc262a5e65b1d76ce77bb4e",
+      "bytes": 497,
+      "member": "execution/project-answer-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/project-answer-wire.bin",
+      "sha256": "3853ae842c6b693f3605bdce1fdd03ea0dc13cf31dfc557521a9d64e0298e4a2",
+      "bytes": 1137,
+      "member": "execution/project-answer-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/project-read-http.json",
+      "sha256": "fc127bd44c3cfdd70acb8199312963d51bc8aae791f2c4dd42093388615dfb73",
+      "bytes": 280,
+      "member": "execution/project-read-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/project-read-request.json",
+      "sha256": "1369206317787e19da62b76ffd802bc3e22b2897bd27555d7ffdefb2244414e9",
+      "bytes": 3442,
+      "member": "execution/project-read-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/project-read-response.json",
+      "sha256": "a691bda37a33e9442c146689e89c04c63aaec25af2767a748ffaf9e94c151438",
+      "bytes": 577,
+      "member": "execution/project-read-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/project-read-wire.bin",
+      "sha256": "449d78ccb031cae29795c7d731b8ae611da223dd45c87b77b318c3a2e08e11b5",
+      "bytes": 1184,
+      "member": "execution/project-read-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/project-tool-result.json",
+      "sha256": "a1a45723516c6db2f70c69f301dc577028aac265d81335d2da0390cd94a39f48",
+      "bytes": 2036,
+      "member": "execution/project-tool-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/project-tool-started.json",
+      "sha256": "a56467908853ed7da5109414504c0ae0388957cff4c5ddbbee4b07c76881a2d5",
+      "bytes": 191,
+      "member": "execution/project-tool-started.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/queued-http.json",
+      "sha256": "31524cdb0bf8879a710e116f576e3686a17c3cfc7299baf9a06afd70cfdced5a",
+      "bytes": 427,
+      "member": "execution/queued-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/queued-request.json",
+      "sha256": "436280951b5f91b38b41599d8b894830f0b1c6d60cd5513dd6e64c972f8a1144",
+      "bytes": 1116,
+      "member": "execution/queued-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/queued-verified.json",
+      "sha256": "8e21c01e777cad196b102dc52dea0e0268ebefe09143c0be193fa707f29883ea",
+      "bytes": 102,
+      "member": "execution/queued-verified.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/queued-wire.bin",
+      "sha256": "19df2c5e1994b9dce77f373be24a2c5084c36ba6e080e35423a643c019002791",
+      "bytes": 402,
+      "member": "execution/queued-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/result.json",
+      "sha256": "01452ddf144664b2062a2ef6138ca4c4b77ce98fa2dfdb100a69f4b57ebb832e",
+      "bytes": 519,
+      "member": "execution/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/sealed-files.json",
+      "sha256": "fba42c372f56bfd348aa0d2ef62f057422a4306563232f232fe6a72fbf1b6351",
+      "bytes": 4888,
+      "member": "execution/sealed-files.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/status-after-crash.json",
+      "sha256": "c2d866783eb570f1adef5dca32594b077347f070435e2dae52ba07853666c89a",
+      "bytes": 7920,
+      "member": "execution/status-after-crash.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/status-snapshots.jsonl",
+      "sha256": "7b73d58ff2b3fef1d08d94bcabd4f73c05551c4552acc3ee3ae0a57d4de6bb28",
+      "bytes": 13107,
+      "member": "execution/status-snapshots.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/strict-json-http.json",
+      "sha256": "6b0d01b64dfa83bcd03fdc93ca1c484a0ccafe5979521dd7ea655bfc20087095",
+      "bytes": 244,
+      "member": "execution/strict-json-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/strict-json-request.json",
+      "sha256": "0c1b049b343a47e6b3e4df5bcb12f14daf3d1ea744f46c192a7366473b871150",
+      "bytes": 1064,
+      "member": "execution/strict-json-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/strict-json-response.json",
+      "sha256": "3cc767d5a18f4a73d24cff3e471ac73f1913e18167db9390e296a86a656d2846",
+      "bytes": 284,
+      "member": "execution/strict-json-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/strict-json-wire.bin",
+      "sha256": "18af43ee30ac4272edf139317579531f556f113503b0a08bb25a13e76014e5d1",
+      "bytes": 314,
+      "member": "execution/strict-json-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/isolated-entry.json",
+      "sha256": "6cf6350efe6eb3207915b8eb3cb2a642af963e211dc0c7e941660539bada5b6a",
+      "bytes": 1245,
+      "member": "isolated-entry.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/kernel-capability.json",
+      "sha256": "25d7f1a417534cf983a2d9f9a624d5c1aa13b418375406950fc8db999dfa47a3",
+      "bytes": 121,
+      "member": "kernel-capability.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/CMakeCache.txt",
+      "sha256": "fd1130b57a00a839279dab7875cbdd7eb942016069927ad57fdea4ba574e4111",
+      "bytes": 39184,
+      "member": "package/CMakeCache.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/acceptance.json",
+      "sha256": "41c1f1d776502620942f2fe24392b622bbf77125d28618cf82f3845e5167d4f9",
+      "bytes": 902,
+      "member": "package/acceptance.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/manifest.json",
+      "sha256": "35ca281fb34b5deb48b2acd2dfd82e2e9a4c8de522c9049ec114b0b182061979",
+      "bytes": 4041,
+      "member": "package/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/q4t.release.json",
+      "sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+      "bytes": 48517,
+      "member": "package/q4t.release.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb",
+      "bytes": 1784,
+      "member": "package/source/tools/evalscope/bounded_log.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2",
+      "bytes": 18395,
+      "member": "package/source/tools/evalscope/gpu_exclusive.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f",
+      "bytes": 7182,
+      "member": "package/source/tools/evalscope/nvml_process_query.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab",
+      "bytes": 20261,
+      "member": "package/source/tools/release/release.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816",
+      "bytes": 11582,
+      "member": "package/source/tools/serve_ops/contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+      "bytes": 4202,
+      "member": "package/source/tools/serve_ops/identity.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b",
+      "bytes": 4609,
+      "member": "package/source/tools/serve_ops/transport.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f",
+      "bytes": 1703,
+      "member": "package/source/tools/serve_service/backend.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145",
+      "bytes": 6019,
+      "member": "package/source/tools/serve_service/memory.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/serve_service/package.py",
+      "sha256": "ffc6880571b967106877d8f8835f94db1b2a1142aa5d211abcdbedcf8b420397",
+      "bytes": 8914,
+      "member": "package/source/tools/serve_service/package.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/serve_service/service.py",
+      "sha256": "3eedfcd515865f00a2751c275d4adba7b956f83b13b30353fce1f4f9bb7476d9",
+      "bytes": 10095,
+      "member": "package/source/tools/serve_service/service.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd",
+      "bytes": 12708,
+      "member": "package/source/tools/serve_service/supervisor.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/plan.json",
+      "sha256": "15508226a8f25d8db458e9d6bb11ad09db5f97ff9f4a6b40cf3550ec9be31c68",
+      "bytes": 4574,
+      "member": "plan.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/postflight.json",
+      "sha256": "ed24cff458aa46c49c71f9d7fd7df0f8623d1a48ecf3f2da87106eebe14ecc9a",
+      "bytes": 1131,
+      "member": "postflight.json"
+    }
+  ],
+  "local_artifacts": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/package/q4t",
+      "sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+      "bytes": 7159544
+    }
+  ],
+  "aliases": {
+    "plan.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/plan.json",
+      "sha256": "15508226a8f25d8db458e9d6bb11ad09db5f97ff9f4a6b40cf3550ec9be31c68",
+      "bytes": 4574
+    },
+    "result.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/result.json",
+      "sha256": "01452ddf144664b2062a2ef6138ca4c4b77ce98fa2dfdb100a69f4b57ebb832e",
+      "bytes": 519
+    },
+    "custody.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/execution/custody/exit.json",
+      "sha256": "09b9378c912b926c159fe4786fb6949f7d016d0b90d9d425eb346499c93b78a8",
+      "bytes": 99
+    },
+    "accepted_package.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/accepted-package.json",
+      "sha256": "6bb46758d843e3f1fbeec46a2d32ba2fdaee4cada2412bcdf6296d88d7f0b5ed",
+      "bytes": 1318
+    },
+    "postflight.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/postflight.json",
+      "sha256": "ed24cff458aa46c49c71f9d7fd7df0f8623d1a48ecf3f2da87106eebe14ecc9a",
+      "bytes": 1131
+    },
+    "cpu.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-controller-death-20261103/entry-corrected/result.json",
+      "sha256": "674ff465a462da23c0405259432346bfc8c402d450782ac3f9a223df4b378800",
+      "bytes": 3702
+    }
+  },
+  "archiver": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_service/controller_closeout.py",
+    "sha256": "e3067774ade57ec967e141d692e8df6a4dfdbd27bf057a1923179d01019b68ac",
+    "bytes": 8413
+  },
+  "scope": "Standalone production controller SIGKILL with active output and prepared grammar queue; no helper termination signals. Original guard interrupted; same-description custody and independent monitoring cover full cleanup."
+}
