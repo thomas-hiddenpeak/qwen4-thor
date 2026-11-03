@@ -657,7 +657,7 @@
     "src/main.cpp": "32e52ccf2867a28d92e65f0995c21796f1524dadcd3839d8597f9502b221ecc6",
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "src/server/chat_admission.cpp": "c515bd1fe6ad086c06401742ea164e33c42de5fe09dbeb5e35f320dbf7f06a92",
+    "src/server/chat_admission.cpp": "ce33753d06a1859511e6c596b1b03154f39de278f6c3b3c2dae986fc317ef69d",
     "src/server/chat_capabilities.cpp": "c40d616dd48bcf9ec8df1898a3818b7e2042c87498392b482641e18e77d3bc9a",
     "src/server/chat_contract.cpp": "e964a90e839c1bcf5d57ef6b70a84da19f5d1c9fd92ab2489510e68ad0c3b7b8",
     "src/server/chat_generation.cpp": "e424411e1415bed5fde5844b85b611528f4aba58a2c94a195194b6b168cf96be",
@@ -808,5 +808,17 @@
     "real_negatives": 136,
     "real_starts": 1,
     "unclassified_header_flood_isolated": false
+  },
+  "lifecycle_shutdown_review_20261103": {
+    "changed": [
+      "src/server/chat_admission.cpp"
+    ],
+    "contract": "docs/SERVE_LIFECYCLE_REPAIR_2026-11-03.md",
+    "review": "Stopping admission cancels with kShutdown and returns the existing cancellation branch; first terminal reason wins, abort accounting and SSE error terminal share the established path. No wire fields/routes changed.",
+    "status": "PENDING_REAL_ACCEPTANCE",
+    "evidence": [
+      "tools/serve_reliability/admission_contract_test.cpp",
+      "tools/serve_lifecycle/repair.py"
+    ]
   }
 }

@@ -61,6 +61,7 @@ class Waiter {
     Access::Notify(server_);
   }
   void Disconnect() { close(std::exchange(fd_[1], -1)); }
+  std::string_view Reason() const { return control_.Reason(); }
   bool Ready(std::chrono::milliseconds timeout = 0ms) {
     return future_.wait_for(timeout) == std::future_status::ready;
   }
@@ -183,8 +184,29 @@ Q4T_TEST(admission_runtime_deadline_disconnect_stop_and_gpu_failure_cleanup) {
       Access::Healthy(server, false);
       Access::Notify(server);
     }
-    Q4T_CHECK(waiter.Get() == (reason <= 1 ? -2 : reason == 2 ? -1 : -3));
+    Q4T_CHECK(waiter.Get() == (reason < 3 ? -2 : -3));
+    if (reason == 2) Q4T_CHECK(waiter.Reason() == "server_shutdown");
     Q4T_CHECK(Access::Queued(server) == 0 && Access::Free(server) == 0);
+    Q4T_CHECK(Access::Rejected(server) == 0);
+  }
+  return true;
+}
+
+Q4T_TEST(admission_runtime_shutdown_preserves_first_reason_and_free_slot) {
+  for (bool already_cancelled : {false, true}) {
+    ChatServer server;
+    Access::Slots(server, {8192}, 1);
+    Access::Release(server, 0);
+    Access::StopAdmissions(server);
+    RequestControl control("stopping", "key",
+                           std::chrono::steady_clock::now() + 5s);
+    if (already_cancelled) control.Cancel(RequestControl::State::kExplicit);
+    // Shutdown is checked before socket access, queuing or slot ownership.
+    Q4T_CHECK(Access::Allocate(server, control, -1, 512) == -2);
+    Q4T_CHECK(control.Cancelled());
+    Q4T_CHECK(std::string_view(control.Reason()) ==
+              (already_cancelled ? "explicit_cancel" : "server_shutdown"));
+    Q4T_CHECK(Access::Queued(server) == 0 && Access::Free(server) == 1);
     Q4T_CHECK(Access::Rejected(server) == 0);
   }
   return true;

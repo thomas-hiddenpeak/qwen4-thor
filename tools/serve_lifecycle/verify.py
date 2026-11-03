@@ -173,7 +173,7 @@ class Run(base.Run):
     def collect(self, label, *, cross_instance=False, expected_successes=None):
         self.control(5)
         previous = bundle.read(self.last_diag) if self.last_diag else None
-        value = diagnose.snapshot(self.port, self.server.pid, ROOT/'build/q4t.release.json',
+        value = diagnose.snapshot(self.port, self.server.pid, self.runtime['sidecar'],
             log_path=self.model_folder/'server.log', previous_path=self.last_diag)
         output = self.diag_root/label;bundle.write(output, value)
         require(value['state'] == 'HEALTHY' and value['identity']['state'] == 'verified' and
@@ -232,25 +232,32 @@ class Run(base.Run):
             automatic_retries=0, throughput_slo_claim=False, day_scale_stability_proved=False))
         self.soak_started = None
 
+    def release_config(self, role):
+        require(deployment.state(ROOT, self.releases)['role'] == role, 'wrong installed role')
+        require(not list((ROOT/'build').glob('*recovery*.json')), 'incomplete deployment')
+        return dict(binary=str(ROOT/'build/q4t'), sidecar=ROOT/'build/q4t.release.json',
+                    pair=self.releases['releases'][role]['pair'],
+                    installed=deployment.state(ROOT, self.releases),
+                    rules=self.releases['releases'][role]['rules'])
+
     def start_model(self, name, role, *, cross_instance=False):
         self.budget('starts');h.require_guard(Path(self.plan['lease_root']))
         require(self.server is None, 'previous instance not closed')
-        require(deployment.state(ROOT, self.releases)['role'] == role, 'wrong installed role')
-        require(not list((ROOT/'build').glob('*recovery*.json')), 'incomplete deployment')
-        self.role = role;pair = self.releases['releases'][role]['pair']
+        self.role = role;self.runtime = self.release_config(role)
+        pair = self.runtime['pair']
         self.version = pair['observability_version']
         self.plan['protocol_sha256'] = pair['protocol_sha256']
         self.config_schema = Draft202012Validator(h.read(stage.PACKAGE/f'config-v{self.version}.schema.json'))
         self.new_folder(name);self.model_folder = self.folder
         self.model_calls_begin = len(self.calls)
         stage.a.require_idle_gpu(self.model_folder/'gpu-before.json')
-        argv = [str(ROOT/'build/q4t'), 'serve', '--model-dir', self.plan['model_dir'],
+        argv = [self.runtime['binary'], 'serve', '--model-dir', self.plan['model_dir'],
             '--host', '127.0.0.1', '--port', str(self.port), '--max-prefill', '2048',
             '--max-len', '8192', '--max-seq', '1', '--max-inflight-requests', '8',
             '--max-queued-requests', '2', '--min-available-memory-mib', '2048']
         env = {k:v for k,v in os.environ.items() if not k.startswith('Q4T_') and k != 'LD_PRELOAD'}
-        h.save(self.model_folder/'command.json', dict(argv=argv, installed=deployment.state(ROOT, self.releases),
-            rules=self.releases['releases'][role]['rules'], rules_activation='selected identity; no monitoring daemon installed'))
+        h.save(self.model_folder/'command.json', dict(argv=argv, installed=self.runtime['installed'],
+            rules=self.runtime['rules'], rules_activation='selected identity; no monitoring daemon installed'))
         self.server = IsolatedScope(argv, cwd=ROOT, env=env, log_path=self.model_folder/'server.log',
             unit=f'q4t-lifecycle-{os.getpid()}-{self.counts["starts"]}.scope', memory_max=None,
             evidence=self.model_folder/'scope')

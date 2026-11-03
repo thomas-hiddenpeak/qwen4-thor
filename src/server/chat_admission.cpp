@@ -10,7 +10,12 @@ int ChatServer::AllocSeqId(RequestControl* control, int fd, size_t required) {
   ScopeExit notify([&] { seq_cv_.notify_all(); });
   SequenceAdmissionQueue::Ticket ticket(required);
   for (;;) {
-    if (seq_stopping_) return -1;
+    if (seq_stopping_) {
+      // Use the cancellation path for both the response and abort accounting.
+      // Cancel preserves an earlier terminal reason if it already won.
+      control->Cancel(RequestControl::State::kShutdown);
+      return -2;
+    }
     if (!gpu_healthy_.load(std::memory_order_relaxed)) return -3;
     if (detail::RequestCancelled(control, fd)) return -2;
     const int slot =
