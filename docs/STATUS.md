@@ -50,6 +50,8 @@ SRV-10c[客户端隔离与请求预算开发中](SERVE_CLIENT_ISOLATION_2026-11-
 28个真实SSD存储检查点及70包/网关/托管回归通过。原链接失败保留；
 27项HTTP生命周期及真实TLS/模型/缓存/工具短验尚未运行，未部署；
 默认pair/day保持，长验仍由用户执行。
+[短验范围](SERVE_CLIENT_SHORT_2026-11-04.md)已冻结，4驱动CPU通过；
+2启动/600秒预算，11成功+1取消/实际工具，结果待执行。
 
 [SRV-12d独立心跳检测本机限定接受](SERVE_NOTIFY_WATCHDOG_RESULT_2026-11-04.md)：
 冻结c48b764e/36来源，26有效CPU/4驱动/11官方时序及metrics lint
