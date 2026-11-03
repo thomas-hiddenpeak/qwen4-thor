@@ -500,6 +500,267 @@
         "active_generation",
         "hard_limit"
       ]
+    },
+    "startup_memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "headroom_mib": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "requested": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1048576
+            },
+            "effective": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1048576
+            },
+            "source": {
+              "enum": [
+                "cli",
+                "server_options",
+                "builtin_default"
+              ]
+            },
+            "resolution": {
+              "enum": [
+                "zero_disables",
+                "budget_disabled"
+              ]
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "source",
+            "resolution"
+          ]
+        },
+        "source": {
+          "const": "linux_global_mem_available"
+        },
+        "estimate": {
+          "const": "allocation_budget_peak"
+        },
+        "failure_policy": {
+          "const": "stop_startup"
+        },
+        "snapshot_is_reservation": {
+          "const": false
+        },
+        "hard_limit": {
+          "const": false
+        },
+        "checks": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "before_metadata": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "state": {
+                      "enum": [
+                        "not_observed",
+                        "budget_disabled",
+                        "disabled",
+                        "startup_memory_estimate_unavailable",
+                        "startup_memory_required_overflow",
+                        "startup_memory_observation_unavailable",
+                        "startup_memory_insufficient",
+                        "admitted"
+                      ]
+                    },
+                    "estimate_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "headroom_bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "required_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_total_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_available_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "state",
+                    "estimate_bytes",
+                    "headroom_bytes",
+                    "required_bytes",
+                    "observed_total_bytes",
+                    "observed_available_bytes"
+                  ]
+                },
+                "before_allocations": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "state": {
+                      "enum": [
+                        "not_observed",
+                        "budget_disabled",
+                        "disabled",
+                        "startup_memory_estimate_unavailable",
+                        "startup_memory_required_overflow",
+                        "startup_memory_observation_unavailable",
+                        "startup_memory_insufficient",
+                        "admitted"
+                      ]
+                    },
+                    "estimate_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "headroom_bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "required_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_total_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_available_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "state",
+                    "estimate_bytes",
+                    "headroom_bytes",
+                    "required_bytes",
+                    "observed_total_bytes",
+                    "observed_available_bytes"
+                  ]
+                },
+                "before_ready": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "state": {
+                      "enum": [
+                        "not_observed",
+                        "budget_disabled",
+                        "disabled",
+                        "startup_memory_estimate_unavailable",
+                        "startup_memory_required_overflow",
+                        "startup_memory_observation_unavailable",
+                        "startup_memory_insufficient",
+                        "admitted"
+                      ]
+                    },
+                    "estimate_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "headroom_bytes": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "required_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_total_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    },
+                    "observed_available_bytes": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ],
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "state",
+                    "estimate_bytes",
+                    "headroom_bytes",
+                    "required_bytes",
+                    "observed_total_bytes",
+                    "observed_available_bytes"
+                  ]
+                }
+              },
+              "required": [
+                "before_metadata",
+                "before_allocations",
+                "before_ready"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "enabled",
+        "headroom_mib",
+        "source",
+        "estimate",
+        "failure_policy",
+        "snapshot_is_reservation",
+        "hard_limit",
+        "checks"
+      ]
     }
   },
   "required": [
@@ -519,6 +780,7 @@
     "paths_redacted",
     "max_inflight_requests",
     "max_queued_requests",
-    "memory_admission"
+    "memory_admission",
+    "startup_memory"
   ]
 }

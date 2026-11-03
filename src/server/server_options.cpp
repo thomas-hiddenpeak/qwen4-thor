@@ -36,6 +36,9 @@ Status ResolveAdmissionLimits(const ServerOptions& options, int effective_slots,
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
+  if (options.startup_memory_headroom_mib < 0 ||
+      options.startup_memory_headroom_mib > 1048576)
+    return Status::Fail("startup memory headroom must be in [0,1048576] MiB");
   if (options.min_available_memory_mib < 0 ||
       options.min_available_memory_mib > 1048576 ||
       options.memory_recovery_margin_mib < 1 ||
@@ -179,6 +182,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
       integer = &parsed.min_available_memory_mib;
     if (key == "--memory-recovery-margin-mib")
       integer = &parsed.memory_recovery_margin_mib;
+    if (key == "--startup-memory-headroom-mib")
+      integer = &parsed.startup_memory_headroom_mib;
     if (key == "--moe-trace-max-mib") integer = &parsed.moe_trace_max_mib;
     if (key == "--moe-resident-slots") integer = &parsed.moe_resident_slots;
     if (key == "--request-deadline-ms") integer = &parsed.request_deadline_ms;

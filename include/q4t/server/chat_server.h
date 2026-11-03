@@ -45,6 +45,7 @@
 #include "q4t/text/tokenizer.h"
 #include "q4t/server/abort_reason.h"
 #include "q4t/server/memory_admission.h"
+#include "q4t/server/startup_admission.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/vision.h"
 
@@ -350,6 +351,7 @@ class ChatServer {
   runtime::MemoryBudget budget_;
   bool budget_valid_ = false;
   MemoryAdmission memory_admission_;
+  StartupMemoryChecks startup_memory_;
   std::unique_ptr<text::Tokenizer> tok_;
   model::ModelOwner model_;
   std::unique_ptr<trace::RouterCollector> router_trace_;

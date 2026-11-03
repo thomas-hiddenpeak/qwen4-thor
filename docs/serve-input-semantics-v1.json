@@ -122,6 +122,16 @@
       "contract": "Production tokenizer and max_len determine input/output allowance. Uniform clips output, explicit capacity fits full capped budget; prefix seed must match configured checkpoint and fit prompt. Optional preflight preview has conservative encoded8MiB bound."
     },
     {
+      "id": "startup-memory-admission",
+      "sources": [
+        "include/q4t/server/startup_admission.h",
+        "src/server/server_options.cpp",
+        "src/server/chat_server.cpp",
+        "src/server/chat_plan.cpp"
+      ],
+      "contract": "Fresh global MemAvailable checks before metadata, before either model allocation path, and before readiness. Default2048MiB headroom; preallocation also requires the existing allocation peak estimate. Missing/inconsistent observation, missing estimate or overflow stops startup. Zero or --no-budget explicitly bypasses this guard; request memory admission remains independent. Effective configuration exposes all three snapshots. No reservation, silent capacity retry or physical RAM hard-limit guarantee."
+    },
+    {
       "id": "runtime-memory-admission",
       "sources": [
         "src/runtime/system_memory.cpp",
@@ -152,6 +162,7 @@
     "include/q4t/server/request_admission.h": "e0b802ab08dd1857cb26b5323e35538bfd0f778add9298da6a972ebdc9fb8f64",
     "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
     "include/q4t/server/sequence_admission.h": "1dd2ef39526bdaf839ebeb1d348b837d388d0cbae8d4f0c15837a75123ae6f1c",
+    "include/q4t/server/startup_admission.h": "2da630f79ddebd82e5dc7e410a279a971772b854171c88006929f4c28975d79b",
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
     "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
     "src/server/chat_admission.cpp": "ce33753d06a1859511e6c596b1b03154f39de278f6c3b3c2dae986fc317ef69d",
@@ -159,9 +170,10 @@
     "src/server/chat_generation.cpp": "e424411e1415bed5fde5844b85b611528f4aba58a2c94a195194b6b168cf96be",
     "src/server/chat_http.cpp": "f96020975e00b03b5a10792a539821b32dde84cfa036af7c973a3caac8bb473e",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
-    "src/server/chat_plan.cpp": "0042a67fc0fe670ebb143a9d7befeef1a56723121fafb12107d91d36084c8cac",
+    "src/server/chat_plan.cpp": "13b93d06aad7c6c33ce27c8c6c093d638adce54510d4f38dbdff4ffb139b98b2",
     "src/server/chat_preflight.cpp": "07d780dc1180d04cc531ba5d8720d44e3a6a757a63111e94512e3ff59926149e",
     "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
+    "src/server/chat_server.cpp": "ee7e0f6e73392ecea8062fc06f108df9a81a2940a5beba43b12dc24603e7933c",
     "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
     "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
     "src/server/http_request.cpp": "f4381a52db20862e2fa26ee402db0ab4de99c5f3980b7075c7cf01f20edc01e0",
@@ -170,7 +182,7 @@
     "src/server/output_constraints.cpp": "76630cbef022cf14d250dc890d983d912bd44096c80a275c630ad30196f285f0",
     "src/server/output_schema.cpp": "b9309e2102d6f44e412c4c8c59d1c1b5e35fbcb71dae60c56cb70af453f05d4f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
-    "src/server/server_options.cpp": "afe3a67bce68d0809ead2596d25d36b71bccae2a66e44e9b9cd68fd12a3a967c",
+    "src/server/server_options.cpp": "b003f75f8d70dfcd87026e8f8f33b262d9932a55a1f6308af2cb7a9b5cce347d",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259"
   }

@@ -4,6 +4,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
   include/q4t/runtime/system_memory.h
+  include/q4t/server/startup_admission.h
   src/runtime/system_memory.cpp
   include/q4t/server/memory_admission.h
   src/server/memory_admission.cpp

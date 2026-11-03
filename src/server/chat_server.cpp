@@ -112,6 +112,25 @@ Status ChatServer::Start(const ServerOptions& opts) {
   memory_admission_.Configure(
       static_cast<uint64_t>(opts.min_available_memory_mib) * 1024 * 1024,
       static_cast<uint64_t>(opts.memory_recovery_margin_mib) * 1024 * 1024);
+  const auto check_startup_memory = [&](const char* checkpoint,
+                                       uint64_t estimate, bool full,
+                                       StartupMemorySnapshot* snapshot) {
+    *snapshot = ObserveStartupMemory(
+        !opts.no_budget, estimate,
+        static_cast<uint64_t>(opts.startup_memory_headroom_mib) * 1024 * 1024,
+        full);
+    std::fprintf(stderr,
+                 "[q4t][startup-memory] {\"checkpoint\":\"%s\","
+                 "\"admission\":%s}\n",
+                 checkpoint, StartupMemorySnapshotJson(*snapshot).c_str());
+    return snapshot->Allowed()
+               ? Status()
+               : Status::Fail(std::string(snapshot->Reason()) + ": " +
+                              checkpoint);
+  };
+  Status s = check_startup_memory("before_metadata", 0, false,
+                                  &startup_memory_.before_metadata);
+  if (!s.ok()) return s;
   const ServerCapabilities capabilities = CapabilitiesFor(opts);
   std::fprintf(stderr,
                "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d\n",
@@ -154,8 +173,6 @@ Status ChatServer::Start(const ServerOptions& opts) {
       return Status::Fail("tokenizer load failed: " + s.message());
     }
   }
-  Status s;
-
   model::ModelConfig cfg;
   cfg.model_dir = opts.model_dir;
   cfg.index_path = opts.model_dir + "/model.safetensors.index.json";
@@ -359,6 +376,11 @@ Status ChatServer::Start(const ServerOptions& opts) {
     std::fprintf(stderr, " stream_mtp_prefill=%d text_admission=%d\n",
                  capabilities.mtp, admission_limits_.inflight);
   }
+  // The tokenizer and metadata are already loaded. Sample again here, before
+  // either planned reservation or legacy model loading can allocate weights.
+  s = check_startup_memory("before_allocations", budget_.estimated_total, true,
+                           &startup_memory_.before_allocations);
+  if (!s.ok()) return s;
   bool planned_startup = false;
 #ifdef Q4T_STARTUP_RESOURCE_PLAN
   {
@@ -607,8 +629,14 @@ Status ChatServer::Start(const ServerOptions& opts) {
     if (!s.ok()) return s;
   }
 #endif
+  // A successful estimate is not a reservation against competing allocators.
+  // Recheck the residual headroom before publishing readiness or a listener.
+  s = check_startup_memory("before_ready", 0, false,
+                           &startup_memory_.before_ready);
+  if (!s.ok()) return s;
   effective_config_ = EffectiveServeConfigJson(
-      opts, PlanningConfig(), budget_valid_, mtp_loaded_, conn_cap_);
+      opts, PlanningConfig(), budget_valid_, mtp_loaded_, conn_cap_,
+      &startup_memory_);
   model_ready_.store(true);
   return Status();
 }

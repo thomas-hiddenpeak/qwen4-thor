@@ -76,9 +76,11 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
                          const std::vector<uint32_t>& tokens,
                          std::string* output, ChatPlanError* error);
 
+struct StartupMemoryChecks;
 std::string EffectiveServeConfigJson(const ServerOptions& requested,
                                      const ChatPlanConfig& effective,
                                      bool budget_enabled, bool mtp_enabled,
-                                     int business_connections);
+                                     int business_connections,
+                                     const StartupMemoryChecks* startup = nullptr);
 
 }  // namespace q4t::server

@@ -58,14 +58,15 @@ struct ServerOptions {
   int mtp_k = 3;
   // Experimental media path; default service contract is text-only.
   bool allow_media = false;
-  // Startup memory budget (vllm-style gpu_memory_utilization). The server
-  // reserves mem_fraction x MemTotal for the whole engine (weights + state
-  // pools + per-request headroom) and caps max_len/max_seq to what fits, so
-  // many oversized configurations can be capped before allocation. This is
-  // not a bound on media decoding or other processes. The default is 0.90.
-  // Set no_budget=true to disable the cap (legacy behavior, user's own risk).
+  // Startup allocation estimate: caps max_len/max_seq to fit the modeled
+  // costs within mem_fraction x MemTotal. It reserves no physical memory.
+  // File cache, driver ownership and other processes need separate accounting.
+  // no_budget bypasses both sizing and the estimate-based startup check.
   double mem_fraction = 0.90;
   bool no_budget = false;
+  // Before large allocations require MemAvailable >= estimated_total + this
+  // headroom. 0 disables the check; ignored with no_budget. Not a hard limit.
+  int startup_memory_headroom_mib = 2048;
   // Runtime global MemAvailable admission, independent of startup sizing.
   // 0 disables the gate; reopening needs floor + recovery margin. MiB.
   int min_available_memory_mib = 2048;

@@ -7,6 +7,7 @@
 #include "q4t/server/http_request.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/prefix_cache_policy.h"
+#include "q4t/server/startup_admission.h"
 #include "q4t/server/text_stop.h"
 #include "q4t/text/tokenizer.h"
 
@@ -219,7 +220,8 @@ Status ChatPreflightJson(const io::Json& envelope, const ChatPlanConfig& config,
 std::string EffectiveServeConfigJson(const ServerOptions& requested,
                                      const ChatPlanConfig& config,
                                      bool budget_enabled, bool mtp_enabled,
-                                     int business_connections) {
+                                     int business_connections,
+                                     const StartupMemoryChecks* startup) {
   const ServerOptions defaults;
   const auto source = [&](std::string_view key, bool default_value) {
     if (std::find(requested.supplied_options.begin(),
@@ -289,7 +291,20 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"(,"prefix_cache":)" + Bool(config.prefix_cache) +
          R"(,"prefix_checkpoints":)" + Array(config.checkpoints) +
          R"(,"memory_budget_enabled":)" + Bool(budget_enabled) +
-         R"(,"whole_server_ram_limit":false},"memory_admission":{"enabled":)" +
+         R"(,"whole_server_ram_limit":false},"startup_memory":{"enabled":)" +
+         Bool(budget_enabled && requested.startup_memory_headroom_mib != 0) +
+         R"(,"headroom_mib":)" +
+         number("--startup-memory-headroom-mib",
+                requested.startup_memory_headroom_mib,
+                defaults.startup_memory_headroom_mib,
+                budget_enabled ? requested.startup_memory_headroom_mib : 0,
+                budget_enabled ? "zero_disables" : "budget_disabled") +
+         R"(,"source":"linux_global_mem_available",)"
+         R"("estimate":"allocation_budget_peak",)"
+         R"("failure_policy":"stop_startup",)"
+         R"("snapshot_is_reservation":false,"hard_limit":false,"checks":)" +
+         (startup ? StartupMemoryChecksJson(*startup) : "null") +
+         R"(},"memory_admission":{"enabled":)" +
          Bool(requested.min_available_memory_mib != 0) +
          R"(,"source":"linux_global_mem_available","min_available_mib":)" +
          number("--min-available-memory-mib", requested.min_available_memory_mib,

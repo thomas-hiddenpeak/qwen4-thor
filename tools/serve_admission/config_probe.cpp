@@ -40,7 +40,7 @@ int main() {
     config.request_deadline_ms = options.request_deadline_ms;
     config.structured = kStructuredDecodingAvailable;
     std::cout << "{\"accepted\":true,\"configuration\":"
-              << EffectiveServeConfigJson(options, config, true,
+              << EffectiveServeConfigJson(options, config, !options.no_budget,
                                           !options.no_mtp,
                                           std::max(128, 8 * config.max_seq))
               << "}\n";

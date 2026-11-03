@@ -183,7 +183,8 @@ OFF 构建遇到需要约束的请求会明确拒绝，不降级为普通生成�
 | `--prefix-cache-checkpoints N,...` | 默认8192,32768,65536；1～4个严格递增的1024～131072边界，请求用prefix_cache_write_tokens选择最多一个写点 |
 | `--request-deadline-ms` | `1200000`（20分钟）；含等待槽位和生成，显式范围1000～10800000；客户端超时需匹配 |
 | `--allow-media` | 默认不启用，显式启用实验媒体路径 |
-| `--mem-fraction` | `0.90`，启动内存预算比例 |
+| `--mem-fraction` | `0.90`，启动分配估算占总内存的比例，不是物理预留 |
+| `--startup-memory-headroom-mib` | `2048`，大分配前要求真实MemAvailable容纳估算总量及余量；元数据前/ready前复查余量，0禁用，`--no-budget`同时绕过此估算检查 |
 | `--min-available-memory-mib` | `2048`，运行时全局内存准入门限；0显式禁用，独立于`--no-budget` |
 | `--memory-recovery-margin-mib` | `512`，正数；关闭后需达到门限+余量才恢复；门限0时忽略 |
 | `--moe-resident-slots` | `0`，所有专家驻留；非零启用按需驻留 |
