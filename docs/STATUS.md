@@ -7,6 +7,14 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
+当前开发统一内存准入保护，见[合同](SERVE_MEMORY_ADMISSION_2026-11-03.md)：
+严格读数/未知拒绝、2048MiB门限和512MiB恢复余量、body前/准备/slot复查，
+ready/config/固定指标与排队回收。仅提前准入，不是物理RAM硬限额；
+CPU OFF224/ON233、必需190、后端9、锁内原生19和配置22/驱动7通过，
+零警告；inventory旧漂移拒绝保留，复核后定向通过。原生原始输出只在
+工具记录，归档guard/身份/派生receipt，不补跑。候选84d16983待真实
+5生成/4拒绝/2启动验收；默认ed672a65/67897c81保持，长期目标active。
+
 严格长输出复制候选已限定通过；默认ed672a65/67897c81保持。
 [结果与证据](SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)，冻结531752ba，
 专用f07117f3、协议130468da，不安装。原12443字节schema及1024-token

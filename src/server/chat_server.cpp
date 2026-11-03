@@ -109,6 +109,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
+  memory_admission_.Configure(
+      static_cast<uint64_t>(opts.min_available_memory_mib) * 1024 * 1024,
+      static_cast<uint64_t>(opts.memory_recovery_margin_mib) * 1024 * 1024);
   const ServerCapabilities capabilities = CapabilitiesFor(opts);
   std::fprintf(stderr,
                "[q4t][capabilities] requested=%s mtp=%d media=%d max_seq=%d\n",

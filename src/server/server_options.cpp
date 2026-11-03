@@ -36,6 +36,13 @@ Status ResolveAdmissionLimits(const ServerOptions& options, int effective_slots,
 }
 
 Status ValidateServerOptions(const ServerOptions& options) {
+  if (options.min_available_memory_mib < 0 ||
+      options.min_available_memory_mib > 1048576 ||
+      options.memory_recovery_margin_mib < 1 ||
+      options.memory_recovery_margin_mib > 1048576)
+    return Status::Fail(
+        "memory floor must be in [0,1048576] MiB and recovery margin in "
+        "[1,1048576] MiB");
   if (options.max_inflight_requests < 0 ||
       options.max_inflight_requests > 4096 ||
       options.max_queued_requests < -1 || options.max_queued_requests > 4096)
@@ -168,6 +175,10 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     if (key == "--max-inflight-requests")
       integer = &parsed.max_inflight_requests;
     if (key == "--max-queued-requests") integer = &parsed.max_queued_requests;
+    if (key == "--min-available-memory-mib")
+      integer = &parsed.min_available_memory_mib;
+    if (key == "--memory-recovery-margin-mib")
+      integer = &parsed.memory_recovery_margin_mib;
     if (key == "--moe-trace-max-mib") integer = &parsed.moe_trace_max_mib;
     if (key == "--moe-resident-slots") integer = &parsed.moe_resident_slots;
     if (key == "--request-deadline-ms") integer = &parsed.request_deadline_ms;

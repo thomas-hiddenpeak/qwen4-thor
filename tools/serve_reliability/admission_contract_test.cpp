@@ -17,6 +17,14 @@ using namespace std::chrono_literals;
 using q4t::server::ChatServer;
 using q4t::server::RequestControl;
 using Access = q4t::server::ServeContractAccess;
+std::atomic<int64_t> available_memory{1000};
+q4t::runtime::SystemMemory ReadMemory() {
+  const auto available = available_memory.load();
+  return available < 0
+             ? q4t::runtime::SystemMemory{}
+             : q4t::runtime::SystemMemory{
+                   true, 10000, static_cast<uint64_t>(available)};
+}
 
 // Cancellation/notification precede future destruction, including assertion
 // and exception exits. A completed successful waiter retains only its own slot.
@@ -205,5 +213,34 @@ Q4T_TEST(admission_runtime_exception_unlinks_before_successor_recovery) {
   Q4T_CHECK(WaitQueued(server, 1));
   Access::Release(server, 0);
   Q4T_CHECK(next.Get() == 0 && Access::Queued(server) == 0);
+  return true;
+}
+
+Q4T_TEST(admission_runtime_memory_pressure_unlinks_waiters_and_recovers) {
+  for (const int64_t value : {99, -1}) {
+    ChatServer server;
+    Access::Slots(server, {8192}, 3);
+    available_memory = 1000;
+    Access::Memory(server, 100, 50, ReadMemory);
+    Waiter first(server, "first", 512);
+    Q4T_CHECK(WaitQueued(server, 1));
+    Waiter second(server, "second", 512);
+    Q4T_CHECK(WaitQueued(server, 2));
+    available_memory = value;
+    Access::RefreshMemory(server);
+    Access::Notify(server);
+    Q4T_CHECK(first.Get() == (value < 0 ? -6 : -5));
+    Q4T_CHECK(second.Get() == (value < 0 ? -6 : -5));
+    Q4T_CHECK(Access::Queued(server) == 0 && Access::Free(server) == 0);
+    Access::Release(server, 0);
+    available_memory = 149;
+    Waiter rejected(server, "below-recovery", 512);
+    Q4T_CHECK(rejected.Get() == -5 && Access::Free(server) == 1);
+    available_memory = 150;
+    Waiter recovered(server, "recovery", 512);
+    Q4T_CHECK(recovered.Get() == 0 && Access::Queued(server) == 0);
+    recovered.Release();
+    Q4T_CHECK(Access::Free(server) == 1 && Access::Rejected(server) == 0);
+  }
   return true;
 }

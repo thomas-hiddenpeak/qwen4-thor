@@ -289,7 +289,28 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          R"(,"prefix_cache":)" + Bool(config.prefix_cache) +
          R"(,"prefix_checkpoints":)" + Array(config.checkpoints) +
          R"(,"memory_budget_enabled":)" + Bool(budget_enabled) +
-         R"(,"whole_server_ram_limit":false},"limits":{"text_requests":)" +
+         R"(,"whole_server_ram_limit":false},"memory_admission":{"enabled":)" +
+         Bool(requested.min_available_memory_mib != 0) +
+         R"(,"source":"linux_global_mem_available","min_available_mib":)" +
+         number("--min-available-memory-mib", requested.min_available_memory_mib,
+                defaults.min_available_memory_mib,
+                requested.min_available_memory_mib, "zero_disables") +
+         R"(,"recovery_margin_mib":)" +
+         number("--memory-recovery-margin-mib",
+                requested.memory_recovery_margin_mib,
+                defaults.memory_recovery_margin_mib,
+                requested.min_available_memory_mib
+                    ? requested.memory_recovery_margin_mib
+                    : 0,
+                "ignored_when_disabled") +
+         R"(,"recovery_threshold_mib":)" +
+         std::to_string(requested.min_available_memory_mib
+                            ? requested.min_available_memory_mib +
+                                  requested.memory_recovery_margin_mib
+                            : 0) +
+         R"(,"sample_max_age_ms":250,"failure_policy":"reject_new_work",)"
+         R"("active_generation":"continue","hard_limit":false},)"
+         R"("limits":{"text_requests":)" +
          std::to_string(config.admission.inflight) + R"(,"queued_requests":)" +
          std::to_string(config.admission.queued) +
          R"(,"queue_policy":"capacity_fifo_best_fit",)"

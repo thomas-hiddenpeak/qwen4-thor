@@ -31,6 +31,7 @@ void MetricHistogram::Observe(double seconds) {
 }
 
 void ChatServer::HandleMetrics(int fd) {
+  const auto memory = memory_admission_.Observe();
   std::string b;
   b.reserve(2048);
   auto counter = [&](const char* name, const char* help, uint64_t v) {
@@ -59,6 +60,41 @@ void ChatServer::HandleMetrics(int fd) {
     b += std::to_string(h.sum_us.load(std::memory_order_relaxed) / 1e6);
     b += '\n'; b += name; b += "_count "; b += std::to_string(cum); b += '\n';
   };
+
+  gauge("q4t_memory_admission_enabled", "Global memory admission enabled.",
+        memory.state != MemoryState::kDisabled);
+  gauge("q4t_memory_observation_valid", "Validity of the latest observation.",
+        memory.memory.valid);
+  gauge("q4t_memory_available_bytes",
+        "Linux global MemAvailable estimate; zero when observation invalid.",
+        memory.memory.available_bytes);
+  gauge("q4t_memory_admission_floor_bytes", "Admission closing threshold.",
+        memory.floor_bytes);
+  gauge("q4t_memory_admission_recovery_bytes", "Admission reopening threshold.",
+        memory.recovery_bytes);
+  gauge("q4t_memory_admission_open", "New work allowed by memory admission.",
+        memory.Allowed());
+  counter("q4t_memory_observations_total", "Actual memory samples, not queries.",
+          memory.observations);
+  counter("q4t_memory_observation_failures_total", "Invalid memory samples.",
+          memory.failures);
+  counter("q4t_memory_admission_transitions_total", "Memory gate transitions.",
+          memory.transitions);
+  b += "# HELP q4t_memory_admission_state Current fixed memory state.\n"
+       "# TYPE q4t_memory_admission_state gauge\n";
+  for (size_t i = 0; i < kMemoryStates.size(); ++i)
+    b += std::string("q4t_memory_admission_state{state=\"") + kMemoryStates[i] +
+         "\"} " + (i == static_cast<size_t>(memory.state) ? "1\n" : "0\n");
+  b += "# HELP q4t_memory_rejected_total Requests rejected by memory admission.\n"
+       "# TYPE q4t_memory_rejected_total counter\n";
+  for (size_t point = 0; point < kMemoryCheckpoints.size(); ++point) {
+    for (size_t reason = 0; reason < kMemoryRejectionReasons.size(); ++reason) {
+      b += std::string("q4t_memory_rejected_total{checkpoint=\"") +
+           kMemoryCheckpoints[point] + "\",reason=\"" +
+           kMemoryRejectionReasons[reason] + "\"} " +
+           std::to_string(metrics_.memory_rejected[point][reason].load()) + '\n';
+    }
+  }
 
   counter("q4t_requests_total", "Total chat requests received.",
           metrics_.requests_total.load());
@@ -179,7 +215,7 @@ void ChatServer::HandleMetrics(int fd) {
         control_conns_.load());
   gauge("q4t_ready", "Ready for business; ordinary slot occupancy is separate.",
         model_ready_.load() && gpu_healthy_.load() && !stop_requested_.load() &&
-                !serving_failed_.load()
+                !serving_failed_.load() && memory.Allowed()
             ? 1
             : 0);
   gauge("q4t_structured_active",

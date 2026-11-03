@@ -387,6 +387,106 @@
         "resolution"
       ],
       "description": "Requested auto sentinel -1; effective value derived after startup budget. Request count, not RAM or connection reservation."
+    },
+    "memory_admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "source": {
+          "const": "linux_global_mem_available"
+        },
+        "min_available_mib": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "requested": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "effective": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "source": {
+              "enum": [
+                "cli",
+                "server_options",
+                "builtin_default"
+              ]
+            },
+            "resolution": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "source",
+            "resolution"
+          ]
+        },
+        "recovery_margin_mib": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "requested": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "effective": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "source": {
+              "enum": [
+                "cli",
+                "server_options",
+                "builtin_default"
+              ]
+            },
+            "resolution": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "requested",
+            "effective",
+            "source",
+            "resolution"
+          ]
+        },
+        "recovery_threshold_mib": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2097152
+        },
+        "sample_max_age_ms": {
+          "const": 250
+        },
+        "failure_policy": {
+          "const": "reject_new_work"
+        },
+        "active_generation": {
+          "const": "continue"
+        },
+        "hard_limit": {
+          "const": false
+        }
+      },
+      "required": [
+        "enabled",
+        "source",
+        "min_available_mib",
+        "recovery_margin_mib",
+        "recovery_threshold_mib",
+        "sample_max_age_ms",
+        "failure_policy",
+        "active_generation",
+        "hard_limit"
+      ]
     }
   },
   "required": [
@@ -405,6 +505,7 @@
     "configuration_mutable",
     "paths_redacted",
     "max_inflight_requests",
-    "max_queued_requests"
+    "max_queued_requests",
+    "memory_admission"
   ]
 }

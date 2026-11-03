@@ -15,6 +15,11 @@ int ChatServer::AllocSeqId(RequestControl* control, int fd, size_t required) {
     if (detail::RequestCancelled(control, fd)) return -2;
     const int slot =
         seq_waiters_.Select(ticket, seq_capacities_, max_len_, seq_free_);
+    // Refresh at handoff; waiting requests see a sample at least every 250 ms.
+    // No slot is owned on rejection. The ticket destructor unlinks the waiter.
+    const auto memory = memory_admission_.Observe(slot >= 0);
+    if (!memory.Allowed())
+      return memory.state == MemoryState::kLow ? -5 : -6;
     if (slot >= 0) {
       seq_free_[slot] = false;
       return slot;

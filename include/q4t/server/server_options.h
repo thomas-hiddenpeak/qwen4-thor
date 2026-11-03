@@ -66,6 +66,10 @@ struct ServerOptions {
   // Set no_budget=true to disable the cap (legacy behavior, user's own risk).
   double mem_fraction = 0.90;
   bool no_budget = false;
+  // Runtime global MemAvailable admission, independent of startup sizing.
+  // 0 disables the gate; reopening needs floor + recovery margin. MiB.
+  int min_available_memory_mib = 2048;
+  int memory_recovery_margin_mib = 512;
   // Auto reserves supported text startup resources before pinned loading.
   // Off preserves the existing allocator; required rejects unsupported modes.
   StartupPlanMode startup_plan = StartupPlanMode::kAuto;

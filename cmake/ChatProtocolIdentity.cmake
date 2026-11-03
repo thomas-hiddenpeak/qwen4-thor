@@ -3,6 +3,11 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/runtime/system_memory.h
+  src/runtime/system_memory.cpp
+  include/q4t/server/memory_admission.h
+  src/server/memory_admission.cpp
+  src/server/chat_memory.cpp
   src/main.cpp
   include/q4t/server/grammar_process.h
   src/server/grammar_process.cpp

@@ -53,6 +53,12 @@ using q4t::server::ChatServer;
 using q4t::server::ServeContractAccess;
 using q4t::server::ScopeExit;
 ChatServer* publishing_server = nullptr;
+std::atomic<int64_t> memory_available{1000};
+q4t::runtime::SystemMemory ReadMemory() {
+  const auto available = memory_available.load();
+  if (available < 0) return {};
+  return {true, 10000, static_cast<uint64_t>(available)};
+}
 
 int Connect(ChatServer& server) {
   int port = -1;
@@ -90,6 +96,94 @@ std::string Request(ChatServer& server, const std::string& request) {
   return response;
 }
 }  // namespace
+
+Q4T_TEST(http_memory_gate_before_body_controls_and_recovery) {
+  ChatServer server;
+  ServeContractAccess::Configure(server);
+  ServeContractAccess::Memory(server, 100, 50, ReadMemory);
+  auto control = ServeContractAccess::Register(server, std::string(64, 'a'));
+  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  const auto get = [&](const char* path) {
+    return Request(server, std::string("GET ") + path +
+                               " HTTP/1.1\r\nHost: test\r\n\r\n");
+  };
+  for (const auto available : {99, -1}) {
+    memory_available = available;
+    ServeContractAccess::RefreshMemory(server);
+    const char* code = available < 0 ? "memory_observation_unavailable"
+                                     : "memory_pressure";
+    for (const char* path : {"/v1/chat/completions", "/v1/chat/preflight"}) {
+      // No body sent: rejection must precede both reservation and reception.
+      const auto wire = Request(server, std::string("POST ") + path +
+          " HTTP/1.1\r\nHost: test\r\nContent-Type: application/json\r\n"
+          "Content-Length: 16777216\r\n\r\n");
+      Q4T_CHECK(wire.starts_with("HTTP/1.1 503 ") &&
+                wire.find(code) != wire.npos);
+      Q4T_CHECK(ServeContractAccess::BodyBudget(server).Used() == 0);
+    }
+    const auto ready = get("/readyz");
+    Q4T_CHECK(ready.starts_with("HTTP/1.1 503 ") &&
+              ready.find(code) != ready.npos);
+    for (const char* path : {"/healthz", "/livez", "/metrics", "/v1/models"})
+      Q4T_CHECK(get(path).starts_with("HTTP/1.1 200 "));
+  }
+  const std::string cancellation =
+      R"({"request_id":"cancel-contract","cancel_token":")" +
+      std::string(64, 'a') + R"("})";
+  const auto cancelled = Request(server,
+      "POST /v1/requests/cancel HTTP/1.1\r\nHost: test\r\n"
+      "Content-Type: application/json\r\nContent-Length: " +
+      std::to_string(cancellation.size()) + "\r\n\r\n" + cancellation);
+  Q4T_CHECK(cancelled.starts_with("HTTP/1.1 202 ") && control->Cancelled());
+  memory_available = 149;
+  ServeContractAccess::RefreshMemory(server);
+  Q4T_CHECK(get("/readyz").starts_with("HTTP/1.1 503 "));
+  memory_available = 150;
+  ServeContractAccess::RefreshMemory(server);
+  Q4T_CHECK(get("/readyz").starts_with("HTTP/1.1 200 "));
+  const auto recovered = Request(server,
+      "POST /v1/chat/completions HTTP/1.1\r\nHost: test\r\n"
+      "Content-Type: application/json\r\nContent-Length: 2\r\n\r\n{}");
+  // The unloaded fixture throws on dispatch; this is not a successful chat.
+  Q4T_CHECK(recovered.starts_with("HTTP/1.1 500 "));
+  using q4t::server::MemoryCheckpoint;
+  for (size_t reason : {0u, 1u})
+    Q4T_CHECK(ServeContractAccess::MemoryRejected(
+                  server, MemoryCheckpoint::kHeaders, reason) == 2);
+  Q4T_CHECK(ServeContractAccess::ReceiveFailures(
+                server, q4t::server::HttpReceiveFailure::kAdmission) == 4);
+  stop.Run();
+  Q4T_CHECK(run.wait_for(3s) == std::future_status::ready);
+  Q4T_CHECK(run.get().ok() && ServeContractAccess::Empty(server));
+  return true;
+}
+
+Q4T_TEST(http_memory_recheck_uses_one_sse_error_after_headers) {
+  int fd[2];
+  Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+  ScopeExit sockets([&] { close(fd[0]); close(fd[1]); });
+  ChatServer server;
+  ServeContractAccess::Memory(server, 100, 50, ReadMemory);
+  memory_available = -1;
+  q4t::server::detail::HttpResponseContext context(fd[0]);
+  Q4T_CHECK(q4t::server::detail::BeginStreamingResponse(fd[0], context.State()));
+  Q4T_CHECK(!ServeContractAccess::CheckMemory(
+      server, fd[0], q4t::server::MemoryCheckpoint::kExecute));
+  shutdown(fd[0], SHUT_WR);
+  std::string response;
+  char buffer[4096];
+  for (ssize_t n; (n = read(fd[1], buffer, sizeof(buffer))) > 0;)
+    response.append(buffer, static_cast<size_t>(n));
+  Q4T_CHECK(response.starts_with("HTTP/1.1 200 ") &&
+            response.find("HTTP/1.1", 1) == response.npos &&
+            response.find("memory_observation_unavailable") != response.npos &&
+            response.find("data: [DONE]") != response.npos &&
+            response.find("finish_reason") == response.npos);
+  Q4T_CHECK(ServeContractAccess::MemoryRejected(
+                server, q4t::server::MemoryCheckpoint::kExecute, 1) == 1);
+  return true;
+}
 
 Q4T_TEST(http_stop_before_and_during_listener_publication) {
   for (int i = 0; i < 2; ++i) {

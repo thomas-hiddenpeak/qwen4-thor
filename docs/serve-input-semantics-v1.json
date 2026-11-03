@@ -121,6 +121,17 @@
       "contract": "Production tokenizer and max_len determine input/output allowance. Uniform clips output, explicit capacity fits full capped budget; prefix seed must match configured checkpoint and fit prompt. Optional preflight preview has conservative encoded8MiB bound."
     },
     {
+      "id": "runtime-memory-admission",
+      "sources": [
+        "src/runtime/system_memory.cpp",
+        "src/server/memory_admission.cpp",
+        "src/server/chat_memory.cpp",
+        "src/server/chat_http.cpp",
+        "src/server/chat_admission.cpp"
+      ],
+      "contract": "Configurable Linux-wide MemAvailable gate, independent of startup allocation estimates; default2048MiB floor, 512MiB recovery margin, 250ms cached observation with fresh preparation and slot handoff. Missing/invalid samples reject new chat/preflight work, including queued requests; readiness closes, liveness/control remain available and active generations continue. No byte reservation, CUDA allocation or whole-server/cgroup hard-limit guarantee."
+    },
+    {
       "id": "runtime-admission",
       "sources": [
         "src/server/chat_generation.cpp",
@@ -140,21 +151,24 @@
     "include/q4t/server/request_json.h": "3c9b06ae9945a775b2aae2d7a85a831d12ddc6cfb9850f4f27454202056d5a22",
     "include/q4t/server/sequence_admission.h": "1dd2ef39526bdaf839ebeb1d348b837d388d0cbae8d4f0c15837a75123ae6f1c",
     "src/io/json.cpp": "594c940466b10fbd0efa9c1bc05dd3092d7d1a4041d552716914fd84a740c0e0",
-    "src/server/chat_admission.cpp": "17c3d1452ae0c85a8ff2a6c0486c5f88e3a459963309eed9126b0a27dcd4d092",
+    "src/runtime/system_memory.cpp": "231e9a7ce5ed49e27e604a7bfa4066b35e83f286026c15986898d996a66acd2f",
+    "src/server/chat_admission.cpp": "c515bd1fe6ad086c06401742ea164e33c42de5fe09dbeb5e35f320dbf7f06a92",
     "src/server/chat_contract.cpp": "e964a90e839c1bcf5d57ef6b70a84da19f5d1c9fd92ab2489510e68ad0c3b7b8",
-    "src/server/chat_generation.cpp": "9a33e84a35083cb21bf406fec5270fce77009d084850bc082462e04a87f07150",
-    "src/server/chat_http.cpp": "16184c2cbc7488383557981f232ec6a449dd1b7889d7a5f10047a2a9e3ac0564",
-    "src/server/chat_plan.cpp": "372d2a203727e63b9369fcce054244b67bdbb347c8a11ea0d5f21e2b975e6e4b",
-    "src/server/chat_preflight.cpp": "9204d383d0110278e0bea8783e44431c1a1b84a044b84dec127516abf0a14f2f",
+    "src/server/chat_generation.cpp": "e424411e1415bed5fde5844b85b611528f4aba58a2c94a195194b6b168cf96be",
+    "src/server/chat_http.cpp": "a0132d1caec7ca4943cd41879925f5206bf8374ce1b846a334714a7fe0977aac",
+    "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
+    "src/server/chat_plan.cpp": "aa7534edd59d64b2192d6051cde1406afec9d2c399044d57df5fbe76ff195c4e",
+    "src/server/chat_preflight.cpp": "07d780dc1180d04cc531ba5d8720d44e3a6a757a63111e94512e3ff59926149e",
     "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
     "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
     "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
     "src/server/http_request.cpp": "f4381a52db20862e2fa26ee402db0ab4de99c5f3980b7075c7cf01f20edc01e0",
     "src/server/input_contract.cpp": "b11ff893774749edcc59f636eb0de762956cb17e650db7755490df55b5f81d13",
+    "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/output_constraints.cpp": "76630cbef022cf14d250dc890d983d912bd44096c80a275c630ad30196f285f0",
     "src/server/output_schema.cpp": "b9309e2102d6f44e412c4c8c59d1c1b5e35fbcb71dae60c56cb70af453f05d4f",
     "src/server/reasoning_options.cpp": "7b6a8114cdc8fe50cb673c648a6be6c8bdbc92b2af48277cd476b907b3f609b2",
-    "src/server/server_options.cpp": "643f6beb158d4089bc6b7f72aa4088ae57b6095006115deecbd2b33dfd8841e9",
+    "src/server/server_options.cpp": "afe3a67bce68d0809ead2596d25d36b71bccae2a66e44e9b9cd68fd12a3a967c",
     "src/server/text_stop.cpp": "2397b27adc873b3ac0697af68352a73c8481830da6053fde0adeca536eaba4dc",
     "src/server/thinking_budget.cpp": "4c91e8320115ee86096bf7287d4950599ca311f137c3a0051b9d64fb53abf259"
   }

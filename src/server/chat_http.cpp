@@ -248,6 +248,17 @@ void ChatServer::HandleClient(int fd) {
         return false;
       }
       admission = &counter;
+      if (method == "POST" && (path == "/v1/chat/completions" ||
+                               path == "/v1/chat/preflight")) {
+        const auto memory = memory_admission_.Observe();
+        if (!memory.Allowed()) {
+          RecordMemoryRejection(fd, memory.state, MemoryCheckpoint::kHeaders);
+          failure_status = 503;
+          headers.error_code = memory.StateName();
+          headers.failure = HttpReceiveFailure::kAdmission;
+          return false;
+        }
+      }
       return true;
     };
     if (!ReadHttpRequest(fd, &method, &path, &body, 30000, &lease,
@@ -399,12 +410,15 @@ void ChatServer::Dispatch(int fd, const std::string& method,
 void ChatServer::HandleReadiness(int fd, bool liveness) {
   const bool draining = stop_requested_.load();
   const bool live = !serving_failed_.load();
+  const auto memory = memory_admission_.Observe();
   const bool ready =
-      live && model_ready_.load() && gpu_healthy_.load() && !draining;
+      live && model_ready_.load() && gpu_healthy_.load() && !draining &&
+      memory.Allowed();
   const bool success = liveness ? live : ready;
   const char* state = !live || !gpu_healthy_.load() ? "unhealthy"
                       : draining                    ? "draining"
                       : !model_ready_.load()        ? "starting"
+                      : !memory.Allowed()           ? memory.StateName()
                                                     : "ready";
   SendSimple(fd, success ? 200 : 503, success ? "OK" : "Service Unavailable",
              std::string("{\"status\":\"") + state +

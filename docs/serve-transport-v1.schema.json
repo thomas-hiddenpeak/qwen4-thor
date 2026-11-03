@@ -98,7 +98,7 @@
     "readiness": {
       "type": "object", "required": ["status", "live", "ready"], "additionalProperties": false,
       "properties": {
-        "status": {"enum": ["starting", "ready", "draining", "unhealthy"]},
+        "status": {"enum": ["starting", "ready", "draining", "unhealthy", "memory_pressure", "memory_observation_unavailable"]},
         "live": {"type": "boolean"}, "ready": {"type": "boolean"}
       }
     }

@@ -248,7 +248,8 @@ endif()
 # q4t_runtime — host-side runtime utilities (memory budget, OOM preflight).
 # No CUDA dependency: pure host logic over /proc/meminfo + architecture math.
 # ---------------------------------------------------------------------------
-add_library(q4t_runtime STATIC src/runtime/memory_budget.cpp)
+add_library(q4t_runtime STATIC src/runtime/memory_budget.cpp
+  src/runtime/system_memory.cpp)
 target_include_directories(q4t_runtime PUBLIC include)
 
 # ---------------------------------------------------------------------------
@@ -256,6 +257,8 @@ target_include_directories(q4t_runtime PUBLIC include)
 # ---------------------------------------------------------------------------
 include(cmake/ChatProtocolIdentity.cmake)
 add_library(q4t_server STATIC src/server/chat_server.cpp
+  src/server/memory_admission.cpp
+  src/server/chat_memory.cpp
   src/server/chat_capabilities.cpp
   src/server/server_options.cpp
   src/server/chat_http.cpp
@@ -410,6 +413,8 @@ if(Q4T_BUILD_TESTS)
     tests/ple_working_memory_test.cpp
     tests/io_json_test.cpp
     tests/runtime_memory_budget_test.cpp
+    tests/server_memory_admission_test.cpp
+    src/server/memory_admission.cpp
     tests/model_sequence_test.cpp
     tests/server_http_request_test.cpp
     tests/server_http_observation_test.cpp
@@ -566,6 +571,8 @@ if(Q4T_BUILD_TESTS)
     add_executable(q4t_http_lifecycle_tests
       tools/serve_reliability/http_lifecycle_test.cpp tests/test_main.cpp
       tools/serve_reliability/admission_contract_test.cpp
+      src/runtime/system_memory.cpp src/server/memory_admission.cpp
+      src/server/chat_memory.cpp
       src/server/chat_admission.cpp
       src/server/chat_http.cpp src/server/http_request.cpp
       src/server/input_contract.cpp src/server/output_schema.cpp

@@ -77,6 +77,12 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("token_ids":"opt_in","response_max_bytes":8388608,)"
          R"("shares_chat_planning":true,"reserves_slot":false,)"
          R"("executes_model":false,"compiles_grammar":false},)"
+         R"("memory_admission":{"configuration_endpoint":"/v1/config",)"
+         R"("source":"linux_global_mem_available","hard_limit":false,)"
+         R"("failure_policy":"reject_new_work","active_generation":"continue",)"
+         R"("checkpoints":["headers","prepare","execute"],)"
+         R"("error_codes":["memory_pressure","memory_observation_unavailable"],)"
+         R"("readiness":true,"liveness_unaffected":true},)"
          R"("text_stop":{"profile":)" +
          Quote(std::string(kTextStopProfile)) +
          R"(,"available":true,"max_strings":4,"max_utf8_bytes":256,)"

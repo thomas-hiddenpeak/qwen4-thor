@@ -8,6 +8,21 @@
 
 namespace q4t::server {
 struct ServeContractAccess {
+  static void Memory(ChatServer& server, uint64_t floor, uint64_t margin,
+                     MemoryAdmission::Reader reader) {
+    server.memory_admission_.Configure(floor, margin, reader);
+  }
+  static MemoryAdmissionSnapshot RefreshMemory(ChatServer& server) {
+    return server.memory_admission_.Observe(true);
+  }
+  static uint64_t MemoryRejected(ChatServer& server, MemoryCheckpoint point,
+                                 size_t reason) {
+    return server.metrics_.memory_rejected[static_cast<size_t>(point)][reason]
+        .load();
+  }
+  static bool CheckMemory(ChatServer& server, int fd, MemoryCheckpoint point) {
+    return server.CheckMemoryAdmission(fd, point);
+  }
   static HttpBodyBudget& BodyBudget(ChatServer& server) {
     return server.body_budget_;
   }

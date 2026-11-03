@@ -44,6 +44,7 @@
 #endif
 #include "q4t/text/tokenizer.h"
 #include "q4t/server/abort_reason.h"
+#include "q4t/server/memory_admission.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/vision.h"
 
@@ -70,6 +71,7 @@ struct ServeMetrics {
   std::atomic<uint64_t> requests_aborted{0};  // all cooperative abort reasons
   std::atomic<uint64_t> text_admission_rejected{0};
   std::atomic<uint64_t> queue_rejected{0};
+  std::array<std::array<std::atomic<uint64_t>, 2>, 3> memory_rejected{};
   std::array<std::atomic<uint64_t>, kAbortReasons.size()> abort_reasons{};
   std::atomic<int> structured_active{0};  // prep through response cleanup
   std::atomic<int> structured_preparing{0};
@@ -138,6 +140,11 @@ class ChatServer {
                 const std::string& body);
   void HandleHealth(int fd);
   void HandleReadiness(int fd, bool liveness);
+  bool CheckMemoryAdmission(int fd, MemoryCheckpoint checkpoint);
+  void RecordMemoryRejection(int fd, MemoryState state,
+                             MemoryCheckpoint checkpoint);
+  void RejectMemoryAdmission(int fd, MemoryState state,
+                             MemoryCheckpoint checkpoint);
   void HandleModels(int fd);
   void HandleCapabilities(int fd);
   void HandleMetrics(int fd);
@@ -150,7 +157,8 @@ class ChatServer {
 
   // Shared scratch is protected by model_mu_ through default-stream GPU
   // completion and host readback. Only then can another request reuse it.
-  // Negative: -1 stopping, -2 cancelled, -3 GPU unhealthy, -4 queue full.
+  // Negative: -1 stopping, -2 cancelled, -3 GPU unhealthy, -4 queue full,
+  // -5 memory pressure, -6 memory observation unavailable.
   // Admission is provisional: recheck GPU health under model_mu_ at submit.
   int AllocSeqId(RequestControl* control, int fd, size_t required = 0);
   RequestRegistry requests_;
@@ -336,6 +344,7 @@ class ChatServer {
   // terms, not a physical RAM/OOM guarantee. False when --no-budget.
   runtime::MemoryBudget budget_;
   bool budget_valid_ = false;
+  MemoryAdmission memory_admission_;
   std::unique_ptr<text::Tokenizer> tok_;
   model::ModelOwner model_;
   std::unique_ptr<trace::RouterCollector> router_trace_;

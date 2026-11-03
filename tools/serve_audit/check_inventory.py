@@ -34,6 +34,8 @@ def current_surface(root):
     paths = sorted(set(root.glob("src/server/**/*.*")) |
                    set(root.glob("include/q4t/server/**/*.*")) | {
                        root / "src/io/json.cpp", root / "src/text/tokenizer.cpp",
+                       root / "src/runtime/system_memory.cpp",
+                       root / "include/q4t/runtime/system_memory.h",
                        root / "src/main.cpp", root / "cmake/StructuredOutput.cmake",
                        root / "cmake/ChatProtocolIdentity.cmake"})
     return {"fields": sorted(fields),

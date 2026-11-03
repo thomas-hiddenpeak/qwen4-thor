@@ -1,6 +1,9 @@
 # Shared by the Thor release gate and the standalone public host build.
 include(${CMAKE_CURRENT_LIST_DIR}/ChatProtocolIdentity.cmake)
 set(Q4T_HOST_TEST_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/../src/runtime/system_memory.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/memory_admission.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_memory_admission_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_process.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/grammar_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_grammar_process_test.cpp

@@ -112,6 +112,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         err.fetch_add(1, std::memory_order_relaxed);
     }
   } err_guard{metrics_.requests_error};
+  if (!CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare)) return;
   if (!gpu_healthy_.load(std::memory_order_relaxed)) {
     SendError(fd, 503, "GPU unhealthy after a device error; restart the server",
               {}, "gpu_unhealthy");
@@ -303,6 +304,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   // The outer lease outlives this grammar, including exception unwinding.
   std::unique_ptr<StructuredDecoder> structured;
   if (constraints.active) {
+    if (!CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare)) return;
     if (cancelled()) {
       count_abort();
       send_cancel_error("request cancelled before structured admission");
@@ -465,6 +467,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     seq_id = AllocSeqId(control.get(), fd, required_capacity);
   }
   metrics_.slot_wait_seconds.Observe(diagnostic.Total(Wait::kSlot) / 1000.0);
+  if (seq_id == -5 || seq_id == -6) {
+    const auto state = seq_id == -5 ? MemoryState::kLow
+                                    : MemoryState::kUnavailable;
+    diagnostic.Outcome("error", kMemoryStates[static_cast<size_t>(state)]);
+    RejectMemoryAdmission(fd, state, MemoryCheckpoint::kExecute);
+    return;
+  }
   if (seq_id == -4) {
     diagnostic.Outcome("error", "queue_capacity_exhausted");
     // SendError uses the existing response context: JSON 503 before headers,
@@ -650,13 +659,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   int32_t stream_d0 = -1;
   bool stream_draft_ready = false;
   if (mtp_loaded_ && !structured) {
-    // OOM preflight (runtime). On unified memory a large cudaMalloc does not
-    // merely fail — it can push MemFree to zero and trip the global OOM
-    // killer (the 2026-09-19 reboot). So before attempting the trunk
-    // allocation, gauge MemFree (which excludes reclaimable page cache) and
-    // fall back to plain decode if there is not enough headroom. The trunk
-    // buffer (T * hc_dim * 2) plus the MTP draft logits (max_prefill * vocab *
-    // 2, allocated inside MtpDraftExtend) plus a 2 GB safety margin must fit.
+    // Advisory preflight for optional MTP buffers. Unknown or insufficient
+    // global MemAvailable declines the allocation. This is not a reservation:
+    // concurrent allocations and driver accounting can still exhaust RAM.
     const size_t trunk_bytes =
         static_cast<size_t>(stream_mtp ? std::min(T, chunk) : T) *
         trunk_hc_dim * 2;
@@ -665,19 +670,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         static_cast<size_t>(model_.Get().cfg.vocab) * 2;
     const size_t kPreflightMargin = 2u * 1024u * 1024u * 1024u;  // 2 GB
     const size_t need = trunk_bytes + draft_logits_bytes + kPreflightMargin;
-    // MemAvailable (NOT MemFree): it includes reclaimable page cache, which is
-    // exactly what the kernel evicts to satisfy a fresh cudaMalloc. In steady
-    // state MemFree is only a few GB (weights + model-file cache fill it) but
-    // MemAvailable is ~120 GB, so MemFree would wrongly fall back on every
-    // request. MemAvailable < need means even cache eviction cannot satisfy
-    // the allocation -> the OOM killer would trip, so degrade to plain decode.
-    const size_t mem_avail = runtime::ReadMemAvailable();
-    if (mem_avail > 0 && mem_avail < need) {
+    const auto memory = runtime::ReadSystemMemory();
+    if (!memory.CanAllocate(need)) {
       std::fprintf(
           stderr,
-          "[q4t] OOM preflight: MemAvailable=%.2f GB < need=%.2f GB (trunk "
-          "T=%d); plain decode\n",
-          mem_avail / 1e9, need / 1e9, T);
+          "[q4t] MTP memory preflight: valid=%d MemAvailable=%.2f GB "
+          "need=%.2f GB (trunk T=%d); declining optional allocation\n",
+          memory.valid, memory.available_bytes / 1e9, need / 1e9, T);
       d_trunk_full = nullptr;
     } else if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
                           trunk_bytes) != cudaSuccess) {
