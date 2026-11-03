@@ -1880,6 +1880,12 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       std::chrono::duration<double>(std::chrono::steady_clock::now() - t_arrive)
           .count());
 
+#ifdef Q4T_SERVE_FAULT_INJECTION
+  // Preserve the actual constrained path before validation or a blocked write.
+  // The explicit per-request opt-in and bounded dump never exist in production.
+  if (structured) detail::ServeGeneratedTokens(request_id.c_str(), generated);
+#endif
+
   // The handler has left every scheduler list and all submitted work is
   // complete. Cancellation remains possible until the response is sent.
   if (cancelled()) {

@@ -82,4 +82,28 @@ inline void ServeSnapshotTokens(const char* request,
   (void)tokens;
 #endif
 }
+
+// Opt in to one request, only in a validation build. Bound output even if a
+// future fixture raises max_tokens; a truncated dump cannot prove completion.
+inline void ServeGeneratedTokens(const char* request,
+                                std::span<const int32_t> tokens) {
+#ifdef Q4T_SERVE_FAULT_INJECTION
+  const char* selected = std::getenv("Q4T_SERVE_GENERATED_IDS");
+  if (!selected || std::strcmp(selected, request) != 0) return;
+  constexpr size_t kLimit = 4096;
+  const size_t count = tokens.size() < kLimit ? tokens.size() : kLimit;
+  flockfile(stderr);
+  std::fprintf(stderr,
+               "[serve-test-generated] request=%s total=%zu captured=%zu "
+               "truncated=%d tokens=[",
+               request, tokens.size(), count, count != tokens.size());
+  for (size_t i = 0; i < count; ++i)
+    std::fprintf(stderr, "%s%d", i ? "," : "", tokens[i]);
+  std::fprintf(stderr, "]\n");
+  funlockfile(stderr);
+#else
+  (void)request;
+  (void)tokens;
+#endif
+}
 }  // namespace q4t::server::detail
