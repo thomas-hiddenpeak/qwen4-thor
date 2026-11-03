@@ -7,7 +7,7 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
-[SRV-02h已开发并通过CPU](SERVE_MEDIA_FAILURE_2026-11-03.md)：视觉加载
+[SRV-02h已开发并通过CPU](SERVE_MEDIA_FAILURE_CPU_2026-11-03.md)：视觉加载
 失败拒绝启动、媒体CPU/GPU所有权及错误分类、host bad_alloc固定503。
 生产/validation零警告；host248/257、必需214、后端9、驱动6、配置通过。
 持续拒绝22响应组合，processor41处C++/68处C分配失败回收及8成功调用；
@@ -15,8 +15,11 @@
 
 16:50:59 CST预检发现16:05新启动的vLLM PID2336565占93,864,288,256
 字节GPU内存，记ENV_ABORT，未开始GPU lease/原生HTTP/模型验收、未
-干预该服务，默认仍3fd31a21。候选先封存等待GPU交接或空闲；源图解压/
-帧累计预算及几何边界列02i，异常兜底不等于物理RAM保护。
+干预该服务，默认仍3fd31a21。候选20fadc22/validation9b12d758、protocol
+44c4ea8b/207来源已封存，开发4b5bf5da已推送。362原件、10份Git文件
+约2.096MB及13本机身份保留；候选等待GPU交接或空闲。
+[02i纯开发清单](SERVE_MEDIA_RESOURCE_AUDIT_2026-11-03.md)明确源图/帧累计、
+整数几何、过晚上下文准入与格式合同，尚未实现；异常兜底不等于物理RAM保护。
 
 [SRV-02g内部清理与MTP启动已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)：
 默认3fd31a21/sidecar3ba0b8d3、protocol044ef2f3，206来源。请求MTP加载

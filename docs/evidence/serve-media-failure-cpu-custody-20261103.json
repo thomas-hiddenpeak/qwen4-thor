@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "raw_records": 362,
+  "local_artifacts": 13,
+  "git_files": 10,
+  "git_bytes": 2095617,
+  "staged_git_blobs_verified": 10,
+  "gpu_acceptance": false,
+  "default_replaced": false,
+  "goal_complete": false,
+  "checker": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_media_failure/cpu_custody.py",
+    "sha256": "d5de553333299284a5a4713e81d65c4ffc09f4de2506371cf6f1e04216306e41",
+    "bytes": 6351
+  }
+}

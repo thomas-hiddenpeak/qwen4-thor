@@ -1,0 +1,16 @@
+{
+  "status": "ENV_ABORT",
+  "phase": "preflight_before_gpu_lease",
+  "at": "2026-11-03T16:50:59+08:00",
+  "pids": [
+    2336565
+  ],
+  "used_bytes": 93864288256,
+  "service_started": "2026-11-03T16:05:32+08:00",
+  "process": "vLLM",
+  "generation_attempts": 0,
+  "owned_services_started": 0,
+  "other_service_intervention": false,
+  "default_replaced": false,
+  "gpu_evidence_accepted": false
+}

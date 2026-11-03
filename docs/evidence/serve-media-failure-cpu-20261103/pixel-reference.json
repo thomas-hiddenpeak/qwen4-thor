@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "transformers": "5.16.1",
+  "pillow": "12.3.0",
+  "cases": [
+    {
+      "name": "a",
+      "kind": "image",
+      "floats": 393216,
+      "max_abs": 0.0,
+      "sha256": "20366920cf865e2126259310a74719d12afac24c6e9b3d93d46356e8d77cc044"
+    },
+    {
+      "name": "a",
+      "kind": "video",
+      "floats": 393216,
+      "max_abs": 0.0,
+      "sha256": "20366920cf865e2126259310a74719d12afac24c6e9b3d93d46356e8d77cc044"
+    },
+    {
+      "name": "b",
+      "kind": "image",
+      "floats": 430080,
+      "max_abs": 0.0,
+      "sha256": "73036f37766dc9d1c61fd142c66ecb7635be965636d74cb1bab2c80dbcf2aa58"
+    },
+    {
+      "name": "b",
+      "kind": "video",
+      "floats": 73728,
+      "max_abs": 0.0,
+      "sha256": "a8ea058022c6d6e5d82b24eaed3e144c173c7cb868da1f54d01694765228ff7a"
+    }
+  ],
+  "video_scope": "two identical frames, pinned PIL resize/layout; no motion or torchvision equivalence claim"
+}
