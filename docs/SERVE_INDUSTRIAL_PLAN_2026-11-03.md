@@ -65,6 +65,10 @@ SRV-16[独立controller死亡限定通过](SERVE_CONTROLLER_DEATH_RESULT_2026-11
 
 ## 当前工作包
 
+- SRV-18：[当前托管版本短验与长稳交接](SERVE_SOAK_2026-11-03.md)。
+  用户明确agent开发/短验、用户专门做长验；CPU11首轮通过，short
+  固定1启动/8周期/40生成待验，day仅准备。长稳接受仍等实际证据。
+
 - SRV-17：[只读运维核验实际限定接受](SERVE_INSPECTION_RESULT_2026-11-03.md)。
   51项CPU、旧v1/v2兼容通过；v3包1启动/3成功含真实工具闭环，
   live/stopped完整观察通过，旧失联scope缺证保留UNKNOWN/原件。
