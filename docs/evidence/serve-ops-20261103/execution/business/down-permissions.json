@@ -1,0 +1,7 @@
+{
+  "directory": "0o700",
+  "files": {
+    "manifest.json": "0o600",
+    "report.json": "0o600"
+  }
+}

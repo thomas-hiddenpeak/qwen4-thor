@@ -73,7 +73,10 @@ def render():
     alert('Q4TTransportReceiveFailures',
           'increase(q4t_http_receive_failures_total{job="q4t",reason=~"header_deadline|body_deadline|socket_error|exception"}[5m]) > 0',
           '', 'warning', 'Receive deadlines or transport faults increased.', 'transport')
-    idle = f'{series("active_chats")} == 0 and {series("business_connections")} == 0'
+    # /metrics itself owns one non-control connection (chat_http.cpp).
+    # Extra classified connections may still be receiving a body; do not
+    # mistake those owners for a leak before chat admission.
+    idle = f'{series("active_chats")} == 0 and {series("business_connections")} <= 1'
     alert('Q4TWorkerReapStalled', f'{series("structured_workers_active")} > 0 and '
           f'{series("structured_active")} == 0 and {series("structured_preparing")} == 0 and ({idle})',
           '1m', 'warning', 'A worker remains owned after requests and structured leases have drained.', 'owners')

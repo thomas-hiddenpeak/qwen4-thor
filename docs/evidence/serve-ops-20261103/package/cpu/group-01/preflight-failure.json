@@ -1,0 +1,9 @@
+{
+  "passed": false,
+  "phase": "fixture_preflight",
+  "error": "invalid_slot_observation",
+  "cause": "CPU fixture zeroed gauge q4t_seq_slots_total by suffix",
+  "commands_started": 0,
+  "http_or_model_started": false,
+  "original_traceback": "tool output only; not saved as a raw file"
+}

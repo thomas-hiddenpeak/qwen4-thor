@@ -92,6 +92,9 @@ def build(rule_path):
     gate('idle worker ownership',{'q4t_structured_workers_active':1},'Q4TWorkerReapStalled',60)
     gate('idle body retained',{'q4t_request_body_bytes':1024},'Q4TIdleResourcesRetained',60)
     gate('idle slot retained',{'q4t_seq_slots_free':0},'Q4TIdleResourcesRetained',60)
+    scenario('another classified body receiver still owns resources',{
+        'q4t_business_connections':'2x64','q4t_request_body_bytes':'1024x64',
+        'q4t_structured_workers_active':'1x64'},all_clear=True)
     gate('execution boundary stopped',{'q4t_active_chats':1,'q4t_business_connections':1,
                                      'q4t_seq_slots_free':0},'Q4TExecutionProgressStalled',300)
     # Single increases disappear from the 5m window; no automatic retries.

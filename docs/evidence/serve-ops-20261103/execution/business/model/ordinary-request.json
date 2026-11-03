@@ -1,0 +1,26 @@
+{
+  "model": "qwen3.8-flash-next",
+  "messages": [
+    {
+      "role": "user",
+      "content": "\u53ea\u56de\u590d\u6570\u5b57710003\u3002 \u4e0d\u8981\u590d\u8ff0\u6b64\u8bca\u65ad\u54e8\u5175\uff1aSRV12_PRIVATE_182f2438ed0cc0195377e5cf_BODY"
+    }
+  ],
+  "tools": [],
+  "parse_response": true,
+  "temperature": 0,
+  "top_p": 1,
+  "n": 1,
+  "stream": false,
+  "max_tokens": 128,
+  "tool_choice": "auto",
+  "parallel_tool_calls": true,
+  "request_timeout_ms": 180000,
+  "request_id": "SRV12_PRIVATE_182f2438ed0cc0195377e5cf_ID",
+  "cancel_token": "0faed3c23652d4520436ecc64566a04d506f7081517fef854b204d04415b9131",
+  "chat_template_kwargs": {
+    "enable_thinking": false,
+    "preserve_thinking": true,
+    "reasoning_effort": "low"
+  }
+}

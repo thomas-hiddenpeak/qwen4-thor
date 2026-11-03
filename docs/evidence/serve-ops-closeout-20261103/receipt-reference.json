@@ -1,0 +1,10 @@
+{
+  "custody": {
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-ops-custody-20261103.json",
+    "sha256": "3d70189c125b3e94c4af7f629b9a80eec7309cbaf33b0f045cd573e7a920a61e",
+    "bytes": 29572
+  },
+  "original_archive_sha": "6aae390751c75bc8de8f2b45d769c438a8172bdd8a21430ba5cf4422781021d5",
+  "raw_archive_unmodified": true,
+  "no_model_http_or_promtool_retest": true
+}

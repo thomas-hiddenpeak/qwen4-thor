@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "commands": {
+    "python": {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tools.serve_ops.test_ops",
+        "-v"
+      ],
+      "returncode": 0,
+      "seconds": 0.16391667583957314
+    },
+    "policy": {
+      "argv": [
+        "/usr/bin/python3",
+        "-B",
+        "tools/serve_ops/rules.py",
+        "--check"
+      ],
+      "returncode": 0,
+      "seconds": 0.06371968798339367
+    },
+    "promtool-version": {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/promtool",
+        "--version"
+      ],
+      "returncode": 0,
+      "seconds": 0.031588851008564234
+    },
+    "rules": {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/promtool",
+        "check",
+        "rules",
+        "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/q4t.rules.yml"
+      ],
+      "returncode": 0,
+      "seconds": 0.031804220052435994
+    },
+    "config": {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/promtool",
+        "check",
+        "config",
+        "/home/rm01/models/dev/qwen4-thor/deploy/serve-ops/prometheus.example.yml"
+      ],
+      "returncode": 0,
+      "seconds": 0.03172033093869686
+    },
+    "rule-timeseries": {
+      "argv": [
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/deps/promtool",
+        "test",
+        "rules",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/cpu/group-03/rule-tests.json"
+      ],
+      "returncode": 0,
+      "seconds": 2.57661348185502
+    },
+    "systemd-unit": {
+      "argv": [
+        "systemd-analyze",
+        "verify",
+        "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/cpu/group-03/q4t-ops-fixture.service"
+      ],
+      "returncode": 0,
+      "seconds": 0.11410493892617524
+    }
+  },
+  "http_or_model_started": false,
+  "original_failures_preserved": true
+}

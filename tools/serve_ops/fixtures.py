@@ -14,9 +14,7 @@ def metrics():
         if (family.endswith('_total') and family != 'q4t_seq_slots_total') or family.endswith('_count') or family.endswith('_sum'):
             values[name] = 0
     values['q4t_control_connections'] = 0
-    # The archived sample still observed one closing business connection.
-    # CPU idle scenarios explicitly start with it closed.
-    values['q4t_business_connections'] = 0
+    # /metrics itself is a classified non-control connection; retain its 1.
     return values
 
 

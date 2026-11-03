@@ -1,0 +1,18 @@
+{
+  "original_wrapper_exit": 1,
+  "original_wrapper": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/owner-rule-correction.py",
+    "sha256": "fad59ab2d5ed68b2d2278bff29eacca86acb23be2014983dd7b205dc98095f12",
+    "bytes": 4057
+  },
+  "reason": "substring count of name also counted alertname; three expected rule failures were present",
+  "original_promtool_returncodes_from_tool_transcript": {
+    "old-omission": 1,
+    "fixed-rules": 0,
+    "fixed-timeseries": 0
+  },
+  "raw_promtool_outputs_retained": true,
+  "raw_wrapper_traceback": "tool transcript only",
+  "fixed_by_reading_original_outputs": true,
+  "promtool_or_model_rerun": false
+}

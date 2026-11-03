@@ -1,0 +1,200 @@
+{
+  "source_commit": "52ada55642ea9d5f86ea319f7b9a2e254c8f5dfb",
+  "business": {
+    "status": "PASS_BOUNDED_LOCAL_OPERATIONS",
+    "healthy_scrape": {
+      "passed": true,
+      "firing": [],
+      "samples": 7
+    },
+    "stopped_target_alert": {
+      "passed": true,
+      "firing": [
+        "Q4TTargetDown"
+      ],
+      "samples": 24
+    },
+    "notification_receivers_deployed": false,
+    "deployment_changed": false,
+    "automatic_retries": 0,
+    "performance_acceptance": false,
+    "counts": {
+      "generations": 3,
+      "negatives": 0,
+      "starts": 1
+    },
+    "elapsed_seconds": 133.30970273190178
+  },
+  "finalize": {
+    "passed": true,
+    "elapsed_seconds": 144.23535585403442,
+    "binary_unchanged": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+    "sidecar_unchanged": "c520333192c04ddb499dd0188496789ec8ddc20fc5e0f00491ca01f52517aa75",
+    "performance_acceptance": false,
+    "monitoring_receiver_deployed": false,
+    "long_duration_soak_proved": false,
+    "physical_ram_hard_limit_proved": false
+  },
+  "guard": {
+    "status": "COMPLETED",
+    "command": [
+      "python3",
+      "-B",
+      "/home/rm01/models/dev/qwen4-thor/tools/serve_ops/stage.py",
+      "execute"
+    ],
+    "compute_backend": "nvml",
+    "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+    "poll_interval_seconds": 1.0,
+    "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+    "performance_acceptance": false,
+    "child_returncode": 0,
+    "external_lease": false,
+    "finished": {
+      "utc": "2026-11-03T02:57:20.427138+00:00",
+      "monotonic": 1864722.944023241,
+      "pid": 2049583
+    }
+  },
+  "conflicts_or_abort": [],
+  "cpu": {
+    "python_boundary_tests": 29,
+    "driver_tests": 6,
+    "scenarios": 25,
+    "assertions": 136,
+    "original_failures_preserved": true
+  },
+  "diagnostics": {
+    "states": {
+      "before": "HEALTHY",
+      "after": "HEALTHY",
+      "down": "UNKNOWN"
+    },
+    "identity": {
+      "capability_protocol": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5",
+      "expected": {
+        "binary_sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+        "protocol_sha256": "aeb66adc439c31b23d943ffe9d9f40253fe2df275f89767b87927ab979bd4bd5"
+      },
+      "process": {
+        "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+        "executable_sha256": "84d16983e03c21c62dd249f4c7e9785bb5e62a010e21947778b26b001d84d94d",
+        "listener_inode": 27545420,
+        "listener_scope": "loopback",
+        "net_namespace_device": 4,
+        "net_namespace_inode": 4026531840,
+        "pid": 2049605,
+        "start_ticks": 186458942
+      },
+      "state": "verified"
+    },
+    "comparison": {
+      "counters": {
+        "q4t_execution_steps_total": 117,
+        "q4t_generation_tokens_total": 120,
+        "q4t_http_receive_failures_total{reason=\"admission\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"body_capacity\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"body_deadline\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"body_eof\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"body_too_large\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"connection_capacity\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"exception\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"header_deadline\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"header_eof\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"header_too_large\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"malformed\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"method\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"query\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"route\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"server_draining\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"socket_error\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"unexpected_body\"}": 0,
+        "q4t_http_receive_failures_total{reason=\"unsupported_media\"}": 0,
+        "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\"}": 0,
+        "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\"}": 0,
+        "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\"}": 0,
+        "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\"}": 0,
+        "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\"}": 0,
+        "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\"}": 0,
+        "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\"}": 0,
+        "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\"}": 0,
+        "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\"}": 0,
+        "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\"}": 0,
+        "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\"}": 0,
+        "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\"}": 0,
+        "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\"}": 0,
+        "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\"}": 0,
+        "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\"}": 0,
+        "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\"}": 0,
+        "q4t_memory_admission_transitions_total": 0,
+        "q4t_memory_observation_failures_total": 0,
+        "q4t_memory_observations_total": 11,
+        "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\"}": 0,
+        "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\"}": 0,
+        "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\"}": 0,
+        "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\"}": 0,
+        "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\"}": 0,
+        "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\"}": 0,
+        "q4t_prompt_tokens_total": 1513,
+        "q4t_queue_rejected_total": 0,
+        "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\"}": 0,
+        "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\"}": 0,
+        "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\"}": 0,
+        "q4t_requests_aborted_by_reason_total{reason=\"other\"}": 0,
+        "q4t_requests_aborted_by_reason_total{reason=\"request_failed\"}": 0,
+        "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\"}": 0,
+        "q4t_requests_aborted_total": 0,
+        "q4t_requests_error_total": 0,
+        "q4t_requests_success_total": 3,
+        "q4t_requests_total": 3,
+        "q4t_structured_compile_timeouts_total": 0,
+        "q4t_structured_prepare_failed_total": 0,
+        "q4t_structured_rejected_total": 0,
+        "q4t_structured_resource_exhausted_total": 0,
+        "q4t_structured_workers_reaped_total": 2,
+        "q4t_structured_workers_started_total": 2,
+        "q4t_text_admission_rejected_total": 0
+      },
+      "scope": "same verified process only; per-counter, non-atomic; not additive outcomes",
+      "seconds": 8.874337451066822,
+      "state": "available"
+    },
+    "log_projected_events": 35,
+    "stopped_probe_errors": {
+      "/livez": "connection_refused",
+      "/metrics": "connection_refused",
+      "/readyz": "connection_refused",
+      "/v1/capabilities": "connection_refused",
+      "/v1/config": "connection_refused"
+    },
+    "all_sensitive_canaries_removed": true
+  },
+  "prometheus": {
+    "first_observed_up_zero_unix": 1793674576.9621062,
+    "first_observed_firing_unix": 1793674639.9999082,
+    "observed_delay_seconds": 63.03780198097229,
+    "sampling_note": "observed API samples, not exact scrape or alert activation timestamps",
+    "notification_receivers_deployed": false
+  },
+  "wire": {
+    "records": 3,
+    "envelopes": 9
+  },
+  "shutdown": {
+    "model": {
+      "clean": true,
+      "returncode": 0,
+      "clients_joined": true
+    },
+    "prometheus": {
+      "returncode": 0,
+      "owned_only": true
+    }
+  },
+  "runtime_sources_unchanged": 198,
+  "default_pair_unchanged": true,
+  "physical_ram_hard_limit_proved": false,
+  "long_duration_soak_proved": false,
+  "journald_template_installed": false,
+  "raw_logs_are_not_redacted": true
+}

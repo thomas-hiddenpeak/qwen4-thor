@@ -1,0 +1,4492 @@
+{
+  "rule_files": [
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/cpu/owner-correction/after.rules.json"
+  ],
+  "evaluation_interval": "15s",
+  "tests": [
+    {
+      "name": "healthy idle",
+      "interval": "15s",
+      "input_series": [
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "37045985280x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32212254720x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32749125632x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"unrelated\",instance=\"other:80\"}",
+          "values": "0x64"
+        }
+      ],
+      "alert_rule_test": [
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTargetDown",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTargetMissing",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMetricContractMissing",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMetricContractInvalid",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TGpuUnhealthy",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryObservationUnavailable",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryPressure",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryGateDisabled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TNotReady",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TAdmissionRejections",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TStructuredFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TChatErrorsObserved",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTransportWriteFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTransportReceiveFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TWorkerReapStalled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TExecutionProgressStalled",
+          "exp_alerts": []
+        }
+      ]
+    },
+    {
+      "name": "normal busy progressing and explicit cancellation",
+      "interval": "15s",
+      "input_series": [
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "37045985280x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32212254720x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32749125632x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0+1x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0+1x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0+1x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0+1x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0+1x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "2x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "2x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"unrelated\",instance=\"other:80\"}",
+          "values": "0x64"
+        }
+      ],
+      "alert_rule_test": [
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTargetDown",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTargetMissing",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMetricContractMissing",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMetricContractInvalid",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TGpuUnhealthy",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryObservationUnavailable",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryPressure",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryGateDisabled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TNotReady",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TAdmissionRejections",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TStructuredFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TChatErrorsObserved",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTransportWriteFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTransportReceiveFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TWorkerReapStalled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TExecutionProgressStalled",
+          "exp_alerts": []
+        }
+      ]
+    },
+    {
+      "name": "idle worker ownership",
+      "interval": "15s",
+      "input_series": [
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "37045985280x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32212254720x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32749125632x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x3 1x39 0x20"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "37045985280x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "32212254720x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "32749125632x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"unrelated\",instance=\"other:80\"}",
+          "values": "0x64"
+        }
+      ],
+      "alert_rule_test": [
+        {
+          "eval_time": "45s",
+          "alertname": "Q4TWorkerReapStalled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "105s",
+          "alertname": "Q4TWorkerReapStalled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "120s",
+          "alertname": "Q4TWorkerReapStalled",
+          "exp_alerts": [
+            {
+              "exp_labels": {
+                "job": "q4t",
+                "severity": "warning",
+                "component": "q4t-serve",
+                "instance": "a:8080"
+              },
+              "exp_annotations": {
+                "summary": "A worker remains owned after requests and structured leases have drained.",
+                "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners"
+              }
+            }
+          ]
+        },
+        {
+          "eval_time": "660s",
+          "alertname": "Q4TWorkerReapStalled",
+          "exp_alerts": []
+        }
+      ]
+    },
+    {
+      "name": "idle body retained",
+      "interval": "15s",
+      "input_series": [
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "37045985280x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32212254720x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32749125632x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x3 1024x39 0x20"
+        },
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "37045985280x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "32212254720x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "32749125632x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"unrelated\",instance=\"other:80\"}",
+          "values": "0x64"
+        }
+      ],
+      "alert_rule_test": [
+        {
+          "eval_time": "45s",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "105s",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "120s",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": [
+            {
+              "exp_labels": {
+                "job": "q4t",
+                "severity": "warning",
+                "component": "q4t-serve",
+                "instance": "a:8080"
+              },
+              "exp_annotations": {
+                "summary": "Resources remain retained while observed business work is idle.",
+                "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners"
+              }
+            }
+          ]
+        },
+        {
+          "eval_time": "660s",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        }
+      ]
+    },
+    {
+      "name": "idle slot retained",
+      "interval": "15s",
+      "input_series": [
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "37045985280x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32212254720x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32749125632x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x3 0x39 1x20"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "37045985280x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "32212254720x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "32749125632x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"b:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"unrelated\",instance=\"other:80\"}",
+          "values": "0x64"
+        }
+      ],
+      "alert_rule_test": [
+        {
+          "eval_time": "45s",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "105s",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "120s",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": [
+            {
+              "exp_labels": {
+                "job": "q4t",
+                "severity": "warning",
+                "component": "q4t-serve",
+                "instance": "a:8080"
+              },
+              "exp_annotations": {
+                "summary": "Resources remain retained while observed business work is idle.",
+                "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/docs/SERVE_OPERATIONS.md#owners"
+              }
+            }
+          ]
+        },
+        {
+          "eval_time": "660s",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        }
+      ]
+    },
+    {
+      "name": "another classified body receiver still owns resources",
+      "interval": "15s",
+      "input_series": [
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "37045985280x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32212254720x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "32749125632x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1024x64"
+        },
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "2x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"unrelated\",instance=\"other:80\"}",
+          "values": "0x64"
+        }
+      ],
+      "alert_rule_test": [
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTargetDown",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTargetMissing",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMetricContractMissing",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMetricContractInvalid",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TGpuUnhealthy",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryObservationUnavailable",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryPressure",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryGateDisabled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TNotReady",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TAdmissionRejections",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TStructuredFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TChatErrorsObserved",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTransportWriteFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTransportReceiveFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TWorkerReapStalled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TExecutionProgressStalled",
+          "exp_alerts": []
+        }
+      ]
+    },
+    {
+      "name": "actual captured before",
+      "interval": "15s",
+      "input_series": [
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "2147483648x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "2684354560x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "37415223296x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "3x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        }
+      ],
+      "alert_rule_test": [
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTargetDown",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTargetMissing",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMetricContractMissing",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMetricContractInvalid",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TGpuUnhealthy",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryObservationUnavailable",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryPressure",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryGateDisabled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TNotReady",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TAdmissionRejections",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TStructuredFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TChatErrorsObserved",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTransportWriteFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTransportReceiveFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TWorkerReapStalled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TExecutionProgressStalled",
+          "exp_alerts": []
+        }
+      ]
+    },
+    {
+      "name": "actual captured after",
+      "interval": "15s",
+      "input_series": [
+        {
+          "series": "q4t_active_chats{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_business_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_control_connections{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_execution_steps_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "117x64"
+        },
+        {
+          "series": "q4t_generation_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "120x64"
+        },
+        {
+          "series": "q4t_gpu_healthy{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"admission\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"body_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"connection_capacity\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_eof\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"header_too_large\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"malformed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"method\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"query\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"route\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"server_draining\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unexpected_body\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_receive_failures_total{reason=\"unsupported_media\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"handler\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"exception\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"peer_closed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"request_failure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"socket_error\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_http_write_failures_total{origin=\"heartbeat\",reason=\"write_deadline\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_enabled{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_floor_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "2147483648x64"
+        },
+        {
+          "series": "q4t_memory_admission_open{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_recovery_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "2684354560x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"disabled\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_admission_state{state=\"open\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_admission_transitions_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_available_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "37083844608x64"
+        },
+        {
+          "series": "q4t_memory_observation_failures_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_observation_valid{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_memory_observations_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "14x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"execute\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"headers\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_observation_unavailable\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_memory_rejected_total{checkpoint=\"prepare\",reason=\"memory_pressure\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_prompt_tokens_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1513x64"
+        },
+        {
+          "series": "q4t_queue_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_queued_requests{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_ready{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_request_body_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"client_disconnected\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"deadline_exceeded\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"explicit_cancel\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"other\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"request_failed\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_by_reason_total{reason=\"server_shutdown\",job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_aborted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_error_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_requests_success_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "3x64"
+        },
+        {
+          "series": "q4t_requests_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "3x64"
+        },
+        {
+          "series": "q4t_seq_slots_free{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_seq_slots_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        },
+        {
+          "series": "q4t_structured_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_compile_timeouts_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_prepare_failed_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_preparing{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_resource_exhausted_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_vocab_bytes{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_active{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "q4t_structured_workers_reaped_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "2x64"
+        },
+        {
+          "series": "q4t_structured_workers_started_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "2x64"
+        },
+        {
+          "series": "q4t_text_admission_rejected_total{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "0x64"
+        },
+        {
+          "series": "up{job=\"q4t\",instance=\"a:8080\"}",
+          "values": "1x64"
+        }
+      ],
+      "alert_rule_test": [
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTargetDown",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTargetMissing",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMetricContractMissing",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMetricContractInvalid",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TGpuUnhealthy",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryObservationUnavailable",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryPressure",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TMemoryGateDisabled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TNotReady",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TAdmissionRejections",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TStructuredFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TChatErrorsObserved",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTransportWriteFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TTransportReceiveFailures",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TWorkerReapStalled",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TIdleResourcesRetained",
+          "exp_alerts": []
+        },
+        {
+          "eval_time": "15m",
+          "alertname": "Q4TExecutionProgressStalled",
+          "exp_alerts": []
+        }
+      ]
+    }
+  ]
+}

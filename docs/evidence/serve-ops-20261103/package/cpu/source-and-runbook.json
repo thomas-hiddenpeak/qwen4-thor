@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "python_files": 15,
+  "alert_rules": 17,
+  "recording_rules": 2,
+  "time_series_scenarios": 25,
+  "assertions": 136,
+  "operations_sources": {
+    "tools/serve_ops/bundle.py": "af25f02bf7d8267a987f0e7bd43ede5a396c3f7ae58f9e4b46dc0eb6d22f856e",
+    "tools/serve_ops/contracts.py": "aba65cb6dc781670e950bceb37240ff101886ff52904bc589e83c810ba752a86",
+    "tools/serve_ops/cpu.py": "692c39fd03adb3bbcf85b398355b464e78ca9d624d52ff0a1e208fcb4bebf41c",
+    "tools/serve_ops/diagnose.py": "0a3351406ea9547237c43bd95a40d7a94f7f28ca8f0b5f8de4389eaa820afb01",
+    "tools/serve_ops/fixtures.py": "8dddb7b745e15947d18452995ec87f3b27119620d349336e3dcf3dfbc43b6054",
+    "tools/serve_ops/identity.py": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a",
+    "tools/serve_ops/privacy.py": "48b63bca6863c14c8dafec5bd80f817f7487e075f2f942500d0989ba8d502037",
+    "tools/serve_ops/retention.py": "c241b539222f11f0cb3c51da78e455df7d3321142f5d0e0c3c142289fcb90ff3",
+    "tools/serve_ops/rule_tests.py": "54cf1ae5359b210490c2a8ab5e1bafe0f1437845ec7cec9b0812b44a6d1900cb",
+    "tools/serve_ops/rules.py": "82127d385115ab3577f65e256245565839238baa202a0086783b191b07a9ed7f",
+    "tools/serve_ops/stage.py": "7d0559ba2f32eb6427dccd3b40e08cae789ee46f0377f0a60239ceea6bcbcd9e",
+    "tools/serve_ops/test_driver.py": "373c0ebef754d73c30c4d18569a277aa137121c078384cd836dd93ca8c8ca7b6",
+    "tools/serve_ops/test_ops.py": "21f1534b7947d4cb5e12f34ecfbaa114a5518a8e066fa281d29afdfaf4194176",
+    "tools/serve_ops/transport.py": "fdecef51710c0cebf62d8a116612a9e61211a91f08de7bdb5883e8b8142e00b3",
+    "tools/serve_ops/verify.py": "7c57007a3135d5f3b5c30dbde00658d09d63d396e1321f783426cf080ac43c7a"
+  },
+  "runtime_changed": false,
+  "notifications_sent": false
+}

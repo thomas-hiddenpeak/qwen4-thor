@@ -1,0 +1,6 @@
+promtool, version 3.5.0 (branch: HEAD, revision: 8be3a9560fbdd18a94dedec4b747c35178177202)
+  build user:       root@4451b64cb451
+  build date:       20250714-16:18:17
+  go version:       go1.24.5
+  platform:         linux/arm64
+  tags:             netgo,builtinassets

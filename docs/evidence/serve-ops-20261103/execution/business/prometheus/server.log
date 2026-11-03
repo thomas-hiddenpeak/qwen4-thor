@@ -1,0 +1,35 @@
+time=2026-11-03T10:55:43.232+08:00 level=INFO source=main.go:1544 msg="updated GOGC" old=100 new=75
+time=2026-11-03T10:55:43.233+08:00 level=INFO source=main.go:676 msg="Leaving GOMAXPROCS=14: CPU quota undefined" component=automaxprocs
+time=2026-11-03T10:55:43.233+08:00 level=INFO source=memlimit.go:198 msg="GOMEMLIMIT is updated" component=automemlimit package=github.com/KimMachineGun/automemlimit/memlimit GOMEMLIMIT=118728574156 previous=9223372036854775807
+time=2026-11-03T10:55:43.233+08:00 level=INFO source=main.go:769 msg="Starting Prometheus Server" mode=server version="(version=3.5.0, branch=HEAD, revision=8be3a9560fbdd18a94dedec4b747c35178177202)"
+time=2026-11-03T10:55:43.233+08:00 level=INFO source=main.go:774 msg="operational information" build_context="(go=go1.24.5, platform=linux/arm64, user=root@4451b64cb451, date=20250714-16:18:17, tags=netgo,builtinassets)" host_details="(Linux 6.8.12-1021-tegra #1 SMP PREEMPT Thu Aug  6 21:56:04 PDT 2026 aarch64 localhost.localdomain (none))" fd_limits="(soft=65535, hard=65535)" vm_limits="(soft=unlimited, hard=unlimited)"
+time=2026-11-03T10:55:43.234+08:00 level=INFO source=web.go:656 msg="Start listening for connections" component=web address=127.0.0.1:19092
+time=2026-11-03T10:55:43.234+08:00 level=INFO source=main.go:1288 msg="Starting TSDB ..."
+time=2026-11-03T10:55:43.236+08:00 level=INFO source=tls_config.go:347 msg="Listening on" component=web address=127.0.0.1:19092
+time=2026-11-03T10:55:43.236+08:00 level=INFO source=tls_config.go:350 msg="TLS is disabled." component=web http2=false address=127.0.0.1:19092
+time=2026-11-03T10:55:43.237+08:00 level=INFO source=head.go:657 msg="Replaying on-disk memory mappable chunks if any" component=tsdb
+time=2026-11-03T10:55:43.237+08:00 level=INFO source=head.go:744 msg="On-disk memory mappable chunks replay completed" component=tsdb duration=1.009µs
+time=2026-11-03T10:55:43.237+08:00 level=INFO source=head.go:752 msg="Replaying WAL, this may take a while" component=tsdb
+time=2026-11-03T10:55:43.238+08:00 level=INFO source=head.go:825 msg="WAL segment loaded" component=tsdb segment=0 maxSegment=0 duration=612.441µs
+time=2026-11-03T10:55:43.238+08:00 level=INFO source=head.go:862 msg="WAL replay completed" component=tsdb checkpoint_replay_duration=13.667µs wal_replay_duration=631.238µs wbl_replay_duration=74ns chunk_snapshot_load_duration=0s mmap_chunk_replay_duration=1.009µs total_replay_duration=659.691µs
+time=2026-11-03T10:55:43.240+08:00 level=INFO source=main.go:1309 msg="filesystem information" fs_type=EXT4_SUPER_MAGIC
+time=2026-11-03T10:55:43.240+08:00 level=INFO source=main.go:1312 msg="TSDB started"
+time=2026-11-03T10:55:43.240+08:00 level=INFO source=main.go:1497 msg="Loading configuration file" filename=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/prometheus/config.json
+time=2026-11-03T10:55:43.244+08:00 level=INFO source=main.go:1537 msg="Completed loading of configuration file" db_storage=1.611µs remote_storage=1.435µs web_handler=454ns query_engine=1.166µs scrape=780.238µs scrape_sd=25.167µs notify=1.185µs notify_sd=629ns rules=2.725368ms tracing=6.648µs filename=/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-ops-20261103/execution/business/prometheus/config.json totalDuration=3.760679ms
+time=2026-11-03T10:55:43.244+08:00 level=INFO source=main.go:1273 msg="Server is ready to receive web requests."
+time=2026-11-03T10:55:43.244+08:00 level=INFO source=manager.go:176 msg="Starting rule manager..." component="rule manager"
+time=2026-11-03T10:57:20.011+08:00 level=WARN source=main.go:1075 msg="Received an OS signal, exiting gracefully..." signal=terminated
+time=2026-11-03T10:57:20.011+08:00 level=INFO source=main.go:1100 msg="Stopping scrape discovery manager..."
+time=2026-11-03T10:57:20.011+08:00 level=INFO source=main.go:1114 msg="Stopping notify discovery manager..."
+time=2026-11-03T10:57:20.011+08:00 level=INFO source=manager.go:190 msg="Stopping rule manager..." component="rule manager"
+time=2026-11-03T10:57:20.011+08:00 level=INFO source=manager.go:206 msg="Rule manager stopped" component="rule manager"
+time=2026-11-03T10:57:20.011+08:00 level=INFO source=main.go:1096 msg="Scrape discovery manager stopped"
+time=2026-11-03T10:57:20.011+08:00 level=INFO source=main.go:1151 msg="Stopping scrape manager..."
+time=2026-11-03T10:57:20.011+08:00 level=INFO source=main.go:1110 msg="Notify discovery manager stopped"
+time=2026-11-03T10:57:20.011+08:00 level=INFO source=main.go:1143 msg="Scrape manager stopped"
+time=2026-11-03T10:57:20.012+08:00 level=INFO source=manager.go:540 msg="Stopping notification manager..." component=notifier
+time=2026-11-03T10:57:20.012+08:00 level=INFO source=manager.go:282 msg="Draining any remaining notifications..." component=notifier
+time=2026-11-03T10:57:20.012+08:00 level=INFO source=manager.go:288 msg="Remaining notifications drained" component=notifier
+time=2026-11-03T10:57:20.012+08:00 level=INFO source=manager.go:218 msg="Notification manager stopped" component=notifier
+time=2026-11-03T10:57:20.012+08:00 level=INFO source=main.go:1421 msg="Notifier manager stopped"
+time=2026-11-03T10:57:20.012+08:00 level=INFO source=main.go:1435 msg="See you next time!"
