@@ -18,8 +18,14 @@
 干预该服务，默认仍3fd31a21。候选20fadc22/validation9b12d758、protocol
 44c4ea8b/207来源已封存，开发4b5bf5da已推送。362原件、10份Git文件
 约2.096MB及13本机身份保留；候选等待GPU交接或空闲。
-[02i纯开发清单](SERVE_MEDIA_RESOURCE_AUDIT_2026-11-03.md)明确源图/帧累计、
-整数几何、过晚上下文准入与格式合同，尚未实现；异常兜底不等于物理RAM保护。
+[02i共享预检核心CPU首轮通过](SERVE_MEDIA_PLAN_CORE_RESULT_2026-11-03.md)：
+PNG/JPEG头、全部帧/累计容量、宽整数resize及int索引、token/context、
+workspace/函数shared上限；零警告，80合同/36真实processor几何对照、
+ASan/UBSan通过，planner零分配尝试。42原件封存4份Git文件/2本机ELF，
+4暂存blob/原件/ELF及562变更文档链接核对通过。
+尚未接入processor/serve，02h冻结来源与默认程序不变，不能称服务已有限额。
+17:28同一vLLM PID仍占约87.4GiB，未干预。下一批接线、解码器配额与
+实际尺寸复核、媒体字段/base64及取消边界；统一物理RAM保护继续待办。
 
 [SRV-02g内部清理与MTP启动已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)：
 默认3fd31a21/sidecar3ba0b8d3、protocol044ef2f3，206来源。请求MTP加载

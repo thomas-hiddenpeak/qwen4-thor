@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "checks": {
+    "compiler": true,
+    "cmake-version": true,
+    "configure": true,
+    "build": true,
+    "zero-warnings": true,
+    "contract": true,
+    "fixtures": true,
+    "processor": true
+  },
+  "zero_warnings": true,
+  "sources_unchanged": true,
+  "default_pair_unchanged": true,
+  "frozen_02h_gate_passed": true,
+  "binaries": {
+    "media_plan_contract": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-plan-core-20261103/run-01/build/media_plan_contract",
+      "sha256": "4d36c6f7e436a7ab0d99657f28a0324d33f6116557d5b5de2b427360ee5d12ee",
+      "bytes": 534376
+    },
+    "media_plan_processor": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-plan-core-20261103/run-01/build/media_plan_processor",
+      "sha256": "36426e1b19aa6a881bf46dd3ed8f15468f3017dec536e796435b91029530ad96",
+      "bytes": 3159704
+    }
+  },
+  "sanitizers": [
+    "address",
+    "undefined"
+  ],
+  "model_or_http_started": false,
+  "stage_gpu_tests": 0
+}

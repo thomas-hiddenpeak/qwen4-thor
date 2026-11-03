@@ -53,7 +53,9 @@ python3 -B tools/serve_media_failure/stage.py finalize
 
 当前默认仍为`3fd31a21`/sidecar`3ba0b8d3`，未替换，也没有新的部署
 健康或工具闭环证明。[SRV-02i审计清单](SERVE_MEDIA_RESOURCE_AUDIT_2026-11-03.md)
-列出解压容量、几何及过晚准入问题，尚未实现；全机RAM保护、新ELF长稳、
+列出解压容量、几何及过晚准入问题；独立
+[预检核心CPU已通过](SERVE_MEDIA_PLAN_CORE_RESULT_2026-11-03.md)，尚未接线。
+全机RAM保护、新ELF长稳、
 实际访问/多人/通知与任务恢复等全局缺口仍存在。
 
 ## 证据

@@ -43,7 +43,7 @@ C项按明确业务条件单独冻结。
 | SRV-02f | serve设备分配/释放失败传播 | [已限定交付](SERVE_DEVICE_MEMORY_RESULT_2026-11-03.md)；40cf6376 | 仅已知OOM降级，其他设备/释放错误停服、成功终态前回收；真实工具、缓存8473-token恢复、fatal/startup/shutdown通过；原SSE取证失败保留，累计17/8/10，非完整模型资源覆盖 |
 | SRV-02g | 默认文本启动降级与内部资源错误传播 | [已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)；3fd31a21 | 请求MTP失败拒绝启动；直接CUDA清理/完成失败退出1，已有serve错误协议保持；原探针误断言保留，18探针/7启动/10生成/6负场景通过，非完整分配或物理保护 |
 | SRV-02h | 媒体与host异常/错误响应完整性 | [CPU通过，GPU待验](SERVE_MEDIA_FAILURE_CPU_2026-11-03.md) | 视觉加载/所有权、typed设备错误、持续host拒绝通过；新vLLM占GPU，预检ENV_ABORT，未运行原生HTTP/模型或替换默认 |
-| SRV-02i | 媒体解压与几何资源边界 | [审计/开发清单](SERVE_MEDIA_RESOURCE_AUDIT_2026-11-03.md)，实现待冻结 | 源图尺寸/解压容量、帧累计和整数乘法边界；02h异常回收不证明此项或全机RAM硬保护 |
+| SRV-02i | 媒体解压与几何资源边界 | [共享预检核心CPU通过](SERVE_MEDIA_PLAN_CORE_RESULT_2026-11-03.md) | 80合同/36真实processor几何、零警告及ASan/UBSan通过；独立无分配模块尚未接入serve，解码配额/字段合同与全机RAM硬保护待补 |
 
 “待开发”只表示排期，不能写成已开始或已支持；“条件待办”不自动
 触发扩展。阶段 A/B 为业务与可靠性推进。SRV-09 若包含解码、批处理

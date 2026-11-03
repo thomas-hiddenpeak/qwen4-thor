@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "raw_records": 42,
+  "local_artifacts": 2,
+  "git_files": 4,
+  "git_bytes": 24348,
+  "staged_blobs": 4,
+  "model_or_http_started": false,
+  "default_replaced": false
+}
