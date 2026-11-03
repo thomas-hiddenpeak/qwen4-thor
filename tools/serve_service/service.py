@@ -74,9 +74,9 @@ def run(package, digest, output):
         # The generic guard calls an operator interruption ENV_ABORT. Preserve
         # that receipt; the service terminal additionally describes intent.
         clean = (worker is not None and worker.get('cleanup_confirmed') is True
-                 and worker['state'] == 'STOPPED' and
-                 'cleanup_error' not in result)
-        stopped = normal_stop(manual, clean, result)
+                 and 'cleanup_error' not in result)
+        stopped = normal_stop(manual, clean and worker['state'] == 'STOPPED',
+                              result)
         pkg.save(output/'terminal.json', dict(version=1,
             state='STOPPED' if stopped else 'FAILED', manual_stop=manual,
             cleanup_confirmed=clean, guard=result, worker=worker,
@@ -170,6 +170,7 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--port', type=int, default=8080)
     p.add_argument('--restart-limit', type=int, default=0)
+    p.add_argument('--critical-memory-mib', type=int, default=1024)
     for action in ('run', 'unit'):
         p = sub.add_parser(action)
         p.add_argument('--package', type=Path, required=True)
@@ -181,7 +182,8 @@ def main():
     args = parser.parse_args()
     if args.action == 'prepare':
         result = pkg.prepare(args.binary, args.release, args.model_dir,
-                             args.output, args.port, args.restart_limit)
+                             args.output, args.port, args.restart_limit,
+                             args.critical_memory_mib)
     elif args.action == 'run':
         manifest = pkg.verify(args.package, args.manifest_sha256)
         entry = args.package.resolve()/'source/tools/serve_service/service.py'

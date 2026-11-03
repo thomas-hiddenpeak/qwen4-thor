@@ -8,7 +8,7 @@ import stat
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCES = (
+LEGACY_SOURCES = (
     'tools/serve_service/package.py', 'tools/serve_service/supervisor.py',
     'tools/serve_service/backend.py',
     'tools/serve_service/service.py', 'tools/evalscope/gpu_exclusive.py',
@@ -17,6 +17,7 @@ SOURCES = (
     'tools/serve_ops/contracts.py', 'tools/serve_ops/identity.py',
     'tools/serve_ops/transport.py',
 )
+SOURCES = (*LEGACY_SOURCES, 'tools/serve_service/memory.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
 PROFILE = dict(name='text-mtp-managed-v1', host='127.0.0.1', max_seq=1,
     max_len=8192, max_prefill=2048, max_tokens=256, mtp_k=3,
@@ -85,17 +86,22 @@ def private_directory(path, repository=ROOT):
     return path
 
 
-def settings(port, restart_limit):
+def settings(port, restart_limit, critical_memory_mib=1024):
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
     require(type(restart_limit) is int and 0 <= restart_limit <= 3,
             'restart limit must be between zero and three')
+    require(type(critical_memory_mib) is int and
+            1 <= critical_memory_mib <= 1024**2, 'invalid critical memory floor')
     return dict(profile=PROFILE.copy(), port=port, restart_limit=restart_limit,
         poll_seconds=5, startup_seconds=300, unavailable_seconds=30,
         restart_delay_seconds=5, stop_seconds=30, kill_seconds=5,
-        log_bytes=4*1024**2, log_files=2)
+        log_bytes=4*1024**2, log_files=2,
+        critical_memory_mib=critical_memory_mib, memory_poll_seconds=1,
+        memory_low_seconds=2, memory_unknown_seconds=5)
 
 
-def prepare(binary, release, model, output, port=8080, restart_limit=0):
+def prepare(binary, release, model, output, port=8080, restart_limit=0,
+            critical_memory_mib=1024):
     binary, release, model = map(lambda p: Path(p).resolve(),
                                  (binary, release, model))
     regular(binary)
@@ -114,7 +120,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0):
     protocol = metadata['chat_protocol']['protocol_sha256']
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
-    config = settings(port, restart_limit)
+    config = settings(port, restart_limit, critical_memory_mib)
     model_files = {p.name: sha(p) for p in sorted(model.glob('*.json'))
                    if p.is_file() and not p.is_symlink()}
     require({'config.json', 'tokenizer.json', 'tokenizer_config.json'} <=
@@ -131,7 +137,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0):
         os.chmod(dest, 0o400)
     names = [*FILES, *('source/'+s for s in SOURCES)]
     python = Path(sys.executable).resolve()
-    manifest = dict(version=1, repository=str(ROOT), model_dir=str(model),
+    manifest = dict(version=2, repository=str(ROOT), model_dir=str(model),
         model_files=model_files, protocol_sha256=protocol, settings=config,
         python=dict(path=str(python), sha256=sha(python)),
         files={name: sha(target/name) for name in names},
@@ -146,11 +152,18 @@ def verify(package, digest):
     package = Path(package).resolve(strict=True)
     require(sha(package/'manifest.json') == digest, 'package manifest changed')
     manifest = read(package/'manifest.json')
-    require(manifest['version'] == 1, 'unsupported package version')
+    require(type(manifest['version']) is int and manifest['version'] in (1, 2),
+            'unsupported package version')
     config = manifest['settings']
-    require(config == settings(config['port'], config['restart_limit']),
-            'unknown managed configuration')
-    expected = {*FILES, *('source/'+name for name in SOURCES)}
+    wanted = settings(config['port'], config['restart_limit'],
+                      config.get('critical_memory_mib', 1024))
+    if manifest['version'] == 1:
+        for key in ('critical_memory_mib', 'memory_poll_seconds',
+                    'memory_low_seconds', 'memory_unknown_seconds'):
+            del wanted[key]
+    require(config == wanted, 'unknown managed configuration')
+    sources = LEGACY_SOURCES if manifest['version'] == 1 else SOURCES
+    expected = {*FILES, *('source/'+name for name in sources)}
     require(set(manifest['files']) == expected, 'package inventory differs')
     for name, wanted in manifest['files'].items():
         path = package/name

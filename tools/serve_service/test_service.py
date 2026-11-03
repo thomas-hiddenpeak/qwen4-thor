@@ -34,13 +34,17 @@ class Case(unittest.TestCase):
                     ready=ready, metrics={'q4t_gpu_healthy': 1},
                     configuration=sup.expected_configuration())
 
-    def run_supervisor(self, observer, *, restarts=0, script=None, patch=None):
+    def run_supervisor(self, observer, *, restarts=0, script=None, patch=None,
+                       read_memory=None):
         out = self.root/'runtime'
         out.mkdir()
         cfg = pkg.settings(18999, restarts)
         cfg.update(poll_seconds=.01, startup_seconds=.1,
                    unavailable_seconds=.1, restart_delay_seconds=.15,
-                   stop_seconds=.2, kill_seconds=.5)
+                   stop_seconds=.2, kill_seconds=.5, memory_poll_seconds=.01,
+                   memory_low_seconds=.02, memory_unknown_seconds=.04)
+        read_memory = read_memory or (lambda: dict(
+            total_bytes=8*1024**3, available_bytes=4*1024**3))
         manifest = dict(settings=cfg, repository=str(ROOT),
                         protocol_sha256='protocol', files={'q4t': 'binary'})
         command = [sys.executable, '-c', script or 'import time; time.sleep(30)']
@@ -49,9 +53,11 @@ class Case(unittest.TestCase):
              mock.patch.object(sup, 'backend_command', return_value=command):
             if patch:
                 with patch:
-                    rc = sup.run(self.root, 'digest', out, observe=observer)
+                    rc = sup.run(self.root, 'digest', out, observe=observer,
+                                 read_memory=read_memory)
             else:
-                rc = sup.run(self.root, 'digest', out, observe=observer)
+                rc = sup.run(self.root, 'digest', out, observe=observer,
+                             read_memory=read_memory)
         return rc, pkg.read(out/'status.json')
 
     def test_temporary_unready_keeps_pid(self):
@@ -371,6 +377,74 @@ raise SystemExit(g.run_guard([sys.executable, '-B', {str(fixture)!r}],
         self.assertFalse(service.normal_stop(False, True, interrupt))
         self.assertTrue(service.normal_stop(True, True, dict(status='COMPLETED')))
 
+    def test_memory_gate_refuses_launch_on_low_or_unknown_sample(self):
+        for available in (0, None):
+            with self.subTest(available=available):
+                reader = lambda: dict(total_bytes=8*1024**3,
+                                      available_bytes=available)
+                with mock.patch.object(sup.subprocess, 'Popen') as launch:
+                    rc, state = self.run_supervisor(
+                        lambda *_: self.fail('unexpected probe'),
+                        read_memory=reader, restarts=3)
+                launch.assert_not_called()
+                self.assertEqual((rc, state['attempts'], state['restarts']),
+                                 (1, 0, 0))
+                self.assertTrue(state['cleanup_confirmed'])
+                import shutil
+                shutil.rmtree(self.root/'runtime')
+
+    def test_memory_trip_interrupts_blocked_probe_and_prevents_restart(self):
+        for unknown in (False, True):
+            with self.subTest(unknown=unknown):
+                armed = threading.Event()
+                def reader():
+                    if armed.is_set() and unknown:
+                        raise OSError('observation failed')
+                    return dict(total_bytes=8*1024**3,
+                        available_bytes=0 if armed.is_set() else 4*1024**3)
+                def observe(pid, _port):
+                    armed.set()
+                    # Deliberately block this HTTP-equivalent callback. The
+                    # independent watchdog must terminate the real CPU child.
+                    until = time.monotonic()+1
+                    while time.monotonic() < until:
+                        fields = Path(f'/proc/{pid}/stat').read_text().rsplit(
+                            ')', 1)[1].split()
+                        if fields[0] == 'Z':
+                            return self.observation(pid)
+                        time.sleep(.005)
+                    self.fail('blocked probe prevented protective termination')
+                rc, state = self.run_supervisor(observe, restarts=3,
+                                                read_memory=reader)
+                self.assertEqual((rc, state['attempts'], state['restarts']),
+                                 (1, 1, 0))
+                self.assertEqual(state['error'], 'memory_observation_unavailable'
+                    if unknown else 'critical_memory_pressure')
+                self.assertTrue(state['memory']['signal_sent'])
+                self.assertTrue(state['cleanup_confirmed'])
+                self.assertFalse(sup.processes.group_members(state['backend']['pid']))
+                import shutil
+                shutil.rmtree(self.root/'runtime')
+
+    def test_operator_stop_cannot_hide_memory_trip_during_cleanup(self):
+        armed = threading.Event()
+        def reader():
+            return dict(total_bytes=8*1024**3,
+                        available_bytes=0 if armed.is_set() else 4*1024**3)
+        def observe(pid, _port):
+            pkg.save(self.root/'runtime/stop.request.json', {})
+            armed.set()
+            return self.observation(pid)
+        real_cleanup = sup.processes.stop_children
+        def slow_cleanup(*args, **kwargs):
+            time.sleep(.08)
+            return real_cleanup(*args, **kwargs)
+        rc, state = self.run_supervisor(observe, read_memory=reader,
+            patch=mock.patch.object(sup.processes, 'stop_children', slow_cleanup))
+        self.assertEqual(rc, 1)
+        self.assertEqual(state['error'], 'critical_memory_pressure')
+        self.assertTrue(state['cleanup_confirmed'])
+
 
 class PackageTests(unittest.TestCase):
     setUp = Case.setUp
@@ -468,6 +542,31 @@ class PackageTests(unittest.TestCase):
         for port, limit in ((0, 0), (8080, 4), (True, 0), (8080, True)):
             with self.assertRaises(RuntimeError):
                 pkg.settings(port, limit)
+
+    def test_critical_floor_is_explicit_bounded_and_pinned(self):
+        for invalid in (0, -1, True, 1024**2+1, 1.0):
+            with self.assertRaises(RuntimeError):
+                pkg.settings(8080, 0, invalid)
+        binary, release, model = self.fixture()
+        receipt = pkg.prepare(binary, release, model, self.root/'package',
+                              critical_memory_mib=30720)
+        manifest = pkg.verify(receipt['package'], receipt['manifest_sha256'])
+        self.assertEqual(manifest['version'], 2)
+        self.assertEqual(manifest['settings']['critical_memory_mib'], 30720)
+
+    def test_legacy_package_inventory_keeps_legacy_configuration(self):
+        binary, release, model = self.fixture()
+        receipt = pkg.prepare(binary, release, model, self.root/'package')
+        target = Path(receipt['package'])
+        manifest = pkg.read(target/'manifest.json')
+        manifest['version'] = 1
+        del manifest['files']['source/tools/serve_service/memory.py']
+        for key in ('critical_memory_mib', 'memory_poll_seconds',
+                    'memory_low_seconds', 'memory_unknown_seconds'):
+            del manifest['settings'][key]
+        pkg.save(target/'manifest.json', manifest)
+        old = pkg.verify(target, pkg.sha(target/'manifest.json'))
+        self.assertNotIn('critical_memory_mib', old['settings'])
 
 
 if __name__ == '__main__':

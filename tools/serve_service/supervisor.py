@@ -11,6 +11,7 @@ import time
 from tools.release import release as processes
 from tools.serve_ops import contracts, identity, transport
 from tools.serve_service import package as pkg
+from tools.serve_service import memory
 
 
 def process_identity(pid):
@@ -143,7 +144,7 @@ def restart_allowed(returncode, was_ready, used, limit, stopping):
     return (not stopping and was_ready and returncode < 0 and used < limit)
 
 
-def run(package, digest, output, *, observe=probe):
+def run(package, digest, output, *, observe=probe, read_memory=None):
     package, output = Path(package), Path(output)
     manifest = pkg.verify(package, digest)
     cfg = manifest['settings']
@@ -156,13 +157,17 @@ def run(package, digest, output, *, observe=probe):
                  package_manifest_sha256=digest, backend=None)
     child, logger = None, None
     events = RotatingLog(output/'events.log', 256*1024)
+    watchdog = memory.Watchdog(cfg,
+        lambda owner: signal_owner(owner, signal.SIGTERM),
+        reader=read_memory or memory.read)
 
     def stopped():
         return stopping.is_set() or os.path.lexists(output/'stop.request.json')
 
     def publish(status, **changes):
         changed = status != state['state']
-        state.update(state=status, updated_unix=time.time(), **changes)
+        state.update(state=status, updated_unix=time.time(),
+                     memory=watchdog.snapshot(), **changes)
         pkg.save(output/'status.json', state)
         if changed:
             events.write(f'{time.time()} {status}\n'.encode())
@@ -175,11 +180,14 @@ def run(package, digest, output, *, observe=probe):
                 kill_grace=cfg['kill_seconds'])
             pkg.require(logger.error is None, 'backend log capture failed')
             child, logger = None, None
+            watchdog.attach(None)
 
     try:
         with processes.child_subreaper():
             try:
+                watchdog.start()
                 while not stopped():
+                    watchdog.check()
                     pkg.verify(package, digest)
                     with socket.socket() as port_check:
                         port_check.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -194,6 +202,8 @@ def run(package, digest, output, *, observe=probe):
                         inherited = (fd,)
                         env['Q4T_MANAGED_LEASE_FD'] = str(fd)
                     publish('STARTING')
+                    watchdog.sample(startup=True)
+                    watchdog.check()
                     child = subprocess.Popen(backend_command(package, manifest, output),
                         cwd=manifest['repository'], env=env, stdin=subprocess.DEVNULL,
                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -203,12 +213,14 @@ def run(package, digest, output, *, observe=probe):
                     logger.start(child.stdout)
                     state['attempts'] += 1
                     owner = process_identity(child.pid)
+                    watchdog.attach(owner)
                     publish('STARTING', backend=owner)
                     pkg.save(output/f"attempt-{state['attempts']}.json",
                         dict(owner=owner, command=pkg.command(package, manifest),
                              started_unix=time.time()))
                     start, missing, was_ready = time.monotonic(), None, False
                     while not stopped() and child.poll() is None:
+                        watchdog.check()
                         pkg.require(logger.error is None, 'backend log capture failed')
                         now = time.monotonic()
                         try:
@@ -222,6 +234,7 @@ def run(package, digest, output, *, observe=probe):
                         except contracts.InvalidObservation as error:
                             missing = now if missing is None else missing
                             publish('OBSERVATION_UNAVAILABLE', observation_error=error.code)
+                        watchdog.check()
                         if not was_ready:
                             pkg.require(time.monotonic()-start < cfg['startup_seconds'],
                                         'startup deadline exceeded')
@@ -234,6 +247,7 @@ def run(package, digest, output, *, observe=probe):
                     # Even a dead parent can leave grammar descendants. Cleanup
                     # precedes replacement and stays inside the same GPU lease.
                     clean()
+                    watchdog.check()
                     if stopped():
                         break
                     if not restart_allowed(code, was_ready, state['restarts'],
@@ -243,10 +257,15 @@ def run(package, digest, output, *, observe=probe):
                     publish('RESTART_WAIT', backend_returncode=code)
                     until = time.monotonic()+cfg['restart_delay_seconds']
                     while not stopped() and time.monotonic() < until:
+                        watchdog.check()
                         stopping.wait(min(.1, max(0, until-time.monotonic())))
                 publish('STOPPING')
             finally:
-                clean()
+                try:
+                    clean()
+                finally:
+                    watchdog.close()
+        watchdog.check()
         publish('STOPPED', backend=None, cleanup_confirmed=True)
         return 0
     except Exception as error:
