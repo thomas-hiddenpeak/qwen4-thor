@@ -26,6 +26,7 @@ LIMITS = dict(starts=1, generations=6, negatives=1, observations=260, seconds=60
 CONTROL_LIMIT = 64
 SOURCES = (*a.SOURCES, 'tools/serve_service/lease_custody.py',
     'tools/serve_service/controller_death.py',
+    'tools/serve_service/controller_exec.py',
     'tools/serve_service/test_controller_death.py',
     'tools/serve_lifecycle/verify.py', 'docs/serve-transport-v1.schema.json',
     'docs/SERVE_CONTROLLER_DEATH_2026-11-03.md')
@@ -35,8 +36,8 @@ def prepare():
     pkg.require(not PLAN.exists() and not OUT.exists(), 'preserve previous attempt')
     pkg.require(not subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT),
                 'commit reviewed validation first')
-    cpu = pkg.read(BASE/'cpu-final/result.json')
-    pkg.require(cpu['passed'], 'CPU checks incomplete')
+    cpu = pkg.read(BASE/'entry-corrected/result.json')
+    pkg.require(cpu['passed'] and cpu['isolated_entry_passed'], 'CPU checks incomplete')
     for name, digest in cpu['sources'].items():
         pkg.require(pkg.sha(ROOT/name) == digest, 'CPU source changed')
     old = pkg.read(ROOT/'.q4t-work/serve-memory-stop-20261103/accepted-package.json')
@@ -54,7 +55,7 @@ def prepare():
         source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'],
                                               text=True).strip(),
         source_files={p:pkg.sha(ROOT/p) for p in SOURCES},
-        cpu_result_sha256=pkg.sha(BASE/'cpu-final/result.json'),
+        cpu_result_sha256=pkg.sha(BASE/'entry-corrected/result.json'),
         binary_sha256=release['binary_sha256'],
         default_release_sha256=pkg.sha(ROOT/'build/q4t.release.json'),
         production_service_reused_from=old['package'],
@@ -70,7 +71,7 @@ def check():
                 'budget changed')
     for name, digest in plan['source_files'].items():
         pkg.require(pkg.sha(ROOT/name) == digest, 'source changed: '+name)
-    pkg.require(pkg.sha(BASE/'cpu-final/result.json') == plan['cpu_result_sha256'],
+    pkg.require(pkg.sha(BASE/'entry-corrected/result.json') == plan['cpu_result_sha256'],
                 'CPU receipt changed')
     pkg.verify(plan['package']['package'], plan['package']['manifest_sha256'])
     pkg.require(pkg.sha(ROOT/'build/q4t') == plan['binary_sha256'] and
@@ -136,8 +137,10 @@ class Run(a.Run):
 
     def launch(self):
         self.log = (OUT/'controller.log').open('xb')
-        command = [self.manifest['python']['path'], '-I', '-B', __file__,
-                   '_controller', str(PLAN), str(os.getpid())]
+        command = [self.manifest['python']['path'], '-I', '-B',
+                   str(ROOT/'tools/serve_service/controller_exec.py'),
+                   '--plan', str(PLAN), '--output', str(self.run_dir),
+                   '--parent', str(os.getpid())]
         self.gpu_started = time.monotonic()
         signal.setitimer(signal.ITIMER_REAL, a.GPU_WINDOW)
         self.process = subprocess.Popen(command, cwd=ROOT,
@@ -398,27 +401,9 @@ class Run(a.Run):
                     pkg.save(OUT/'result.json', result)
 
 
-def controller_entry(plan_path, parent_pid):
-    # Fresh single-threaded helper; protects the acceptance runner's own
-    # lifetime, then execs the unmodified pinned production entrypoint.
-    sup.arm_parent_death(sup.process_identity(parent_pid))
-    plan = pkg.read(plan_path)
-    package = Path(plan['package']['package'])
-    manifest = pkg.verify(package, plan['package']['manifest_sha256'])
-    command = [manifest['python']['path'], '-I', '-B',
-        str(package/'source/tools/serve_service/service.py'), 'run',
-        '--package', str(package), '--manifest-sha256', plan['package']['manifest_sha256'],
-        '--output', str(OUT/'managed-run')]
-    environment = {k:v for k,v in os.environ.items() if
-        k not in ('LD_PRELOAD', 'PYTHONPATH', 'PYTHONHOME') and not k.startswith('Q4T_')}
-    os.execve(command[0], command, environment)
-
-
 if __name__ == '__main__':
     a.BASE, a.PLAN, a.OUT, a.LIMITS = BASE, PLAN, OUT, LIMITS
     a.CONTROL_LIMIT = CONTROL_LIMIT
     if sys.argv[1:] == ['prepare']: prepare()
     elif sys.argv[1:] == ['execute']: Run(check()).execute()
-    elif len(sys.argv) == 4 and sys.argv[1] == '_controller':
-        controller_entry(Path(sys.argv[2]), int(sys.argv[3]))
     else: raise SystemExit('prepare | execute')
