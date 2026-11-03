@@ -134,7 +134,15 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     return;
   }
   // Outlives request/grammar/response buffers; release only after cleanup.
-  StructuredRequestLease structured_lease(metrics_.structured_active);
+  StructuredRequestLease structured_lease(structured_admission_,
+                                           metrics_.structured_active);
+  if (http)
+    http->SetBeforeTerminal([](void* lease) noexcept {
+      static_cast<StructuredRequestLease*>(lease)->BeginHandoff();
+    }, &structured_lease);
+  ScopeExit clear_terminal_hook([&] {
+    if (http) http->SetBeforeTerminal(nullptr, nullptr);
+  });
   io::Json req;
   Status s = io::ParseJson(body, &req, true, kRequestJsonLimits);
   if (!s.ok()) {
@@ -319,7 +327,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       send_cancel_error("request cancelled before structured admission");
       return;
     }
-    if (!structured_lease.TryAcquire()) {
+    diagnostic.Stage("structured_admission");
+    const auto admission = structured_lease.Acquire(cancelled);
+    if (admission == StructuredRequestLease::Result::kCancelled) {
+      count_abort();
+      send_cancel_error("request cancelled during structured handoff");
+      return;
+    }
+    if (admission == StructuredRequestLease::Result::kBusy) {
       metrics_.structured_rejected.fetch_add(1, std::memory_order_relaxed);
       SendError(fd, 503, "structured request capacity exhausted", {},
                 "structured_capacity_exhausted");
@@ -2115,6 +2130,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
              cached_usage + reasoning_usage + "}}\r\n\r\n";
     }
     tail += "data: [DONE]\r\n\r\n";
+    if (http) http->BeforeTerminal();
     *response_state = detail::ResponseState::kTerminal;
     write_stream(finish_chunk);
     detail::ServeFaultPoint("handler.after_finish");

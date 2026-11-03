@@ -126,10 +126,15 @@ Q4T_TEST(chat_capabilities_option_contract) {
   Q4T_CHECK(tools->GetBool("constrained_decoding") == backend);
   const auto* structured = caps.Find("structured_output");
   Q4T_CHECK(structured && structured->GetBool("available") == backend);
+  const auto* resources = structured->Find("resources");
+  Q4T_CHECK(resources && resources->GetInt("active_limit") == 1);
+  Q4T_CHECK(resources->GetString("terminal_handoff") ==
+            "wait_for_cleanup_with_request_cancellation");
+  Q4T_CHECK(resources->GetString("handoff_waiter_bound") ==
+            "max_inflight_requests");
   Q4T_CHECK(structured->GetString("backend_revision") ==
             q4t::server::kXGrammarRevision);
   Q4T_CHECK(!structured->GetBool("mtp", true));
-  const auto* resources = structured->Find("resources");
   Q4T_CHECK(resources && resources->GetBool("compile_interruptible"));
   Q4T_CHECK(resources->GetInt("worker_address_space_bytes") ==
             q4t::server::kGrammarAddressSpaceLimit);

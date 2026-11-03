@@ -66,7 +66,10 @@ void SendExceptionResponse(int fd, ResponseState state,
     if (size <= 0 || static_cast<size_t>(size) >= sizeof(response)) return;
     const WriteOptions terminal{std::chrono::steady_clock::now() +
                                 std::chrono::milliseconds(250)};
-    if (context) *context->State() = ResponseState::kTerminal;
+    if (context) {
+      context->BeforeTerminal();
+      *context->State() = ResponseState::kTerminal;
+    }
     WriteAll(fd, response, static_cast<size_t>(size), terminal);
   } catch (...) {
     // No allocation, second error response, or exception may escape fallback.
@@ -448,7 +451,10 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
       (allow.empty() ? "" : "Allow: " + std::string(allow) + "\r\n") +
       "Connection: close\r\n\r\n" + body;
   auto* context = HttpResponseContext::Current(fd);
-  if (context) *context->State() = ResponseState::kTerminal;
+  if (context) {
+    context->BeforeTerminal();
+    *context->State() = ResponseState::kTerminal;
+  }
   const bool written = WriteAll(fd, resp, options);
   if (context && written) *context->State() = ResponseState::kComplete;
   return written;
@@ -505,6 +511,7 @@ void SendError(int fd, int code, const std::string& message,
       const std::string tail =
           "data: " + ErrorJson(code, message, error_code, param) +
           "\r\n\r\ndata: [DONE]\r\n\r\n";
+      context->BeforeTerminal();
       *context->State() = ResponseState::kTerminal;
       WriteAll(fd, tail, options);
       return;
@@ -524,6 +531,8 @@ void SendStreamError(int fd, ResponseState* state, int status,
   if (*state != ResponseState::kStreaming) return;
   const std::string tail = "data: " + ErrorJson(status, message, error_code) +
                            "\r\n\r\ndata: [DONE]\r\n\r\n";
+  if (auto* context = HttpResponseContext::Current(fd))
+    context->BeforeTerminal();
   *state = ResponseState::kTerminal;
   WriteAll(fd, tail, options);
 }

@@ -62,6 +62,17 @@ class HttpResponseContext {
   const std::string& TraceId() const { return trace_id_; }
   bool SetTraceId(std::string_view id);
   ResponseState* State() { return &state_; }
+  // Handler-thread-only, non-owning hook. Clear it before its owner dies.
+  // Invoked once before terminal publication, including error responses.
+  void SetBeforeTerminal(void (*hook)(void*) noexcept, void* owner) noexcept {
+    terminal_hook_ = hook;
+    terminal_owner_ = owner;
+  }
+  void BeforeTerminal() noexcept {
+    auto* hook = terminal_hook_;
+    terminal_hook_ = nullptr;
+    if (hook) hook(terminal_owner_);
+  }
   void StartHeartbeats(
       std::shared_ptr<RequestControl> control,
       std::chrono::milliseconds interval = std::chrono::seconds(5));
@@ -80,6 +91,8 @@ class HttpResponseContext {
   HttpResponseContext* const previous_;
   std::string trace_id_;
   ResponseState state_ = ResponseState::kUnsent;  // handler thread only
+  void (*terminal_hook_)(void*) noexcept = nullptr;
+  void* terminal_owner_ = nullptr;
   std::mutex write_mu_;
   std::condition_variable wake_;
   std::thread heartbeat_;

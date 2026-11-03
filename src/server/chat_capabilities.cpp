@@ -158,6 +158,8 @@ std::string ChatCapabilitiesJson(const std::string& model, bool allow_media,
          R"("resources":{"active_limit":1,"overload_status":503,)"
          R"("overload_code":"structured_capacity_exhausted",)"
          R"("lease":"preparation_through_response_cleanup",)"
+         R"("terminal_handoff":"wait_for_cleanup_with_request_cancellation",)"
+         R"("handoff_waiter_bound":"max_inflight_requests",)"
          R"("compiler_threads":1,"compiler_cache":false,)"
          R"("decoded_vocab_storage_bytes":33554432,)"
          R"("compiled_grammar_bytes":67108864,"compile_peak_rss_limit":false,)"

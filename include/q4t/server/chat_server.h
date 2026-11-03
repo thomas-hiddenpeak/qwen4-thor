@@ -46,6 +46,7 @@
 #include "q4t/server/abort_reason.h"
 #include "q4t/server/memory_admission.h"
 #include "q4t/server/startup_admission.h"
+#include "q4t/server/structured_admission.h"
 #include "q4t/server/device_memory.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/media_plan.h"
@@ -361,6 +362,7 @@ class ChatServer {
   bool budget_valid_ = false;
   MemoryAdmission memory_admission_;
   StartupMemoryChecks startup_memory_;
+  StructuredAdmission structured_admission_;
   std::unique_ptr<text::Tokenizer> tok_;
   model::ModelOwner model_;
   std::unique_ptr<trace::RouterCollector> router_trace_;

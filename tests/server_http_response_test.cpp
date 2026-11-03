@@ -15,6 +15,9 @@
 #include <vector>
 
 #include "q4t/io/json.h"
+#include "q4t/server/structured_admission.h"
+#include "q4t/server/lifetime.h"
+#include <future>
 #include "q4t/test.h"
 
 namespace {
@@ -29,6 +32,76 @@ struct SocketPair {
   }
 };
 }  // namespace
+
+Q4T_TEST(server_terminal_handoff_precedes_wire_and_preserves_cleanup) {
+  using namespace q4t::server;
+  using namespace q4t::server::detail;
+  using namespace std::chrono_literals;
+  // Successful JSON, JSON error, both SSE error entry points and fallback.
+  // SSE success explicitly calls BeforeTerminal in the generation handler.
+  for (int mode = 0; mode < 6; ++mode) {
+    SocketPair sockets;
+    StructuredAdmission admission;
+    std::atomic<int> active{0};
+    auto owner = std::make_unique<StructuredRequestLease>(admission, active);
+    Q4T_CHECK(owner->TryAcquire());
+    HttpResponseContext context(sockets.fd[0]);
+    context.SetBeforeTerminal([](void* lease) noexcept {
+      static_cast<StructuredRequestLease*>(lease)->BeginHandoff();
+    }, owner.get());
+    ScopeExit clear([&] { context.SetBeforeTerminal(nullptr, nullptr); });
+    if (mode == 2 || mode == 3 || mode == 5) {
+      Q4T_CHECK(BeginStreamingResponse(sockets.fd[0], context.State()));
+      StructuredRequestLease during_stream(admission, active);
+      Q4T_CHECK(during_stream.Acquire([] { return false; }) ==
+                StructuredRequestLease::Result::kBusy);
+    }
+    if (mode == 0)
+      Q4T_CHECK(SendSimple(sockets.fd[0], 200, "OK", "{}",
+                           "application/json"));
+    else if (mode == 1 || mode == 2)
+      SendError(sockets.fd[0], 503, "failed");
+    else if (mode == 3)
+      SendStreamError(sockets.fd[0], context.State(), 502, "failed", {},
+                        "response_parse_failed");
+    else if (mode == 4)
+      SendExceptionResponse(sockets.fd[0], *context.State());
+    else {
+      context.BeforeTerminal();
+      *context.State() = ResponseState::kTerminal;
+      Q4T_CHECK(WriteAll(sockets.fd[0], "data: [DONE]\r\n\r\n"));
+    }
+    // Read the payload without waiting for socket close or owner destruction.
+    // The kernel has the entire small response, but cleanup is deliberately
+    // still held. A next request must wait rather than observe false overload.
+    char wire[4096];
+    const auto bytes = recv(sockets.fd[1], wire, sizeof(wire), MSG_DONTWAIT);
+    Q4T_CHECK(bytes > 0);
+    const std::string_view body(wire, static_cast<size_t>(bytes));
+    Q4T_CHECK(body.ends_with(mode == 2 || mode == 3 || mode == 5
+                               ? "data: [DONE]\r\n\r\n" : "}"));
+    std::promise<void> entered;
+    auto started = entered.get_future();
+    RequestControl control("next", "", std::chrono::steady_clock::now() + 2s);
+    auto next = std::async(std::launch::async, [&] {
+      StructuredRequestLease waiter(admission, active);
+      bool first = true;
+      return waiter.Acquire([&] {
+        if (first) { entered.set_value(); first = false; }
+        return control.Cancelled();
+      });
+    });
+    ScopeExit cleanup([&] { clear.Run(); owner.reset(); });
+    Q4T_CHECK(started.wait_for(1s) == std::future_status::ready);
+    Q4T_CHECK(next.wait_for(0s) == std::future_status::timeout);
+    Q4T_CHECK(active.load() == 1);
+    cleanup.Run();
+    Q4T_CHECK(next.wait_for(1s) == std::future_status::ready);
+    Q4T_CHECK(next.get() == StructuredRequestLease::Result::kAcquired);
+    Q4T_CHECK(active.load() == 0);
+  }
+  return true;
+}
 
 Q4T_TEST(server_http_context_identity_and_single_terminal) {
   using namespace q4t::server::detail;
