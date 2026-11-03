@@ -69,6 +69,9 @@
 [SRV-10c客户端状态隔离与请求预算开发合同](SERVE_CLIENT_ISOLATION_2026-11-04.md)、
 [本机限定接受](SERVE_CLIENT_RESULT_2026-11-04.md)及
 [实际默认交付与回退](SERVE_CLIENT_DELIVERED_2026-11-04.md)；
+[SRV-11项目任务持久化与恢复](SERVE_PROJECT_TASKS_2026-11-04.md)、
+[短验冻结](SERVE_PROJECT_TASKS_SHORT_2026-11-04.md)及
+[任务操作说明](../tools/project_tasks/README.md)；
 [SRV-12e跨运行目录准入与私有留存](SERVE_RETENTION_2026-11-04.md)、
 [本机短验结果](SERVE_RETENTION_RESULT_2026-11-04.md)及
 [运行/留存说明](../tools/serve_retention/README.md)；

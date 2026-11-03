@@ -41,6 +41,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-11[项目查询持久任务与显式恢复已开发](SERVE_PROJECT_TASKS_2026-11-04.md)：
+按client隔离幂等键、私有事件账、单任务互斥、已知结果复用、未知请求/
+只读工具显式处置及跨运行预算；19有效CPU与2驱动通过，含SIGKILL、
+新进程恢复、SQLite事务回滚和wire保留，无失败。[真实短验已冻结](SERVE_PROJECT_TASKS_SHORT_2026-11-04.md)：
+1模型/1网关、3应用中断、最多7请求/4工具尝试，尚未执行。
+[操作入口](../tools/project_tasks/README.md)显式运行，不改默认或3份day，
+应用恢复尚未实际接受，工业化目标继续active。
+
 SRV-12e[受管代次与私有留存本机短验限定接受](SERVE_RETENTION_RESULT_2026-11-04.md)：
 冻结8ab647d9，新store所有权/启动预占、活跃与未知保护、封存、私有
 读取和显式计划清理/中断恢复；CPU22有效通过，原环境分类失败保持。
