@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "links_checked": 697,
+  "changed_documents": 36,
+  "missing": [],
+  "runtime_and_tool_sources_unchanged": true,
+  "historical_cpu_package_seals_valid": true,
+  "installed": {
+    "q4t": "280b95dceabe5a3b1fd794019102de0dc9f0b62e8a3aa9fcc30eb5c57fdfd793",
+    "q4t.release.json": "18c9d2c50c847c90c6b033b4350fa0cf10c59777bf3a9dacd01391250a341f19"
+  },
+  "execution_seal_valid": true,
+  "rollback_bundle_valid": true,
+  "additional_tests": 0,
+  "preinstall_gate_rejection": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-composite-20261103/post-delivery-preinstall-gate-rejection.json",
+    "sha256": "c33489204bad23247772030044c3d3499a08f9138b2a475b4092215a60e883da",
+    "bytes": 647
+  },
+  "checker_note": "Post-delivery identity verification; pre-install gate is intentionally not applicable."
+}

@@ -1,5 +1,9 @@
 # 组合验收驱动与压缩夹具CPU结果
 
+后续进展：本页为验收前CPU历史；同一候选已完成
+[组合GPU/业务验收并交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)，
+SOAR恢复服务已按用户授权停止。下列原环境与准备记录保留。
+
 2026-11-03，运行时父39cb0ba3。只新增[组合验收](SERVE_MEDIA_COMPOSITE_2026-11-03.md)
 工具与探针，生产280b95dc/validation00718dea、protocol29810d03及211
 运行时来源保持，默认仍3fd31a21/3ba0b8d3。没有GPU/模型/原生HTTP尝试。

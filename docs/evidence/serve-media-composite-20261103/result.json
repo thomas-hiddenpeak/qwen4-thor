@@ -1,0 +1,14 @@
+{
+  "status": "PASS_BOUNDED_MEDIA_COMPOSITE",
+  "performance_acceptance": false,
+  "no_retry": true,
+  "physical_oom_or_damage": false,
+  "broad_multimodal_quality": false,
+  "counts": {
+    "generations": 32,
+    "negatives": 21,
+    "starts": 11
+  },
+  "control_requests": 103,
+  "elapsed_seconds": 371.4638498299755
+}

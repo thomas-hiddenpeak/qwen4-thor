@@ -42,8 +42,8 @@ C项按明确业务条件单独冻结。
 | SRV-02e | 启动可用内存保护与Thor计量边界 | [已限定交付](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)；f69982d5 | 三检查点、2启动拒绝、5真实生成/工具与4类256MiB计量；原worker断言失败保留，纠正复用后交付；cudaMalloc未见相当memcg增量，物理硬限额仍待办 |
 | SRV-02f | serve设备分配/释放失败传播 | [已限定交付](SERVE_DEVICE_MEMORY_RESULT_2026-11-03.md)；40cf6376 | 仅已知OOM降级，其他设备/释放错误停服、成功终态前回收；真实工具、缓存8473-token恢复、fatal/startup/shutdown通过；原SSE取证失败保留，累计17/8/10，非完整模型资源覆盖 |
 | SRV-02g | 默认文本启动降级与内部资源错误传播 | [已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)；3fd31a21 | 请求MTP失败拒绝启动；直接CUDA清理/完成失败退出1，已有serve错误协议保持；原探针误断言保留，18探针/7启动/10生成/6负场景通过，非完整分配或物理保护 |
-| SRV-02h | 媒体与host异常/错误响应完整性 | [CPU通过，GPU待验](SERVE_MEDIA_FAILURE_CPU_2026-11-03.md) | 视觉加载/所有权、typed设备错误、持续host拒绝通过；新vLLM占GPU，预检ENV_ABORT，未运行原生HTTP/模型或替换默认 |
-| SRV-02i | 媒体解压与几何资源边界 | [接线CPU通过，GPU待验](SERVE_MEDIA_INTEGRATION_CPU_2026-11-03.md) | 共享计划/展开槽位、解码配额/字段与取消已接线；80合同/36几何/134配额取消、host258/267/必需224有效覆盖；首轮失败保留，独立分配计数已纠正；需02h+02i统一GPU业务验收，物理RAM硬保护仍待办 |
+| SRV-02h | 媒体与host异常/错误响应完整性 | [组合限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；280b95dc | 原生25、视觉所有权/333上传、真实文本/工具/图片/两帧、OOM恢复/fatal/host/SSE/启动拒绝通过；原CPU失败保留 |
+| SRV-02i | 媒体解压与几何资源边界 | [组合限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；280b95dc | 实际11类准入拒绝、配额、分配哨兵/同PID恢复及媒体SSE取消通过；组合32/21/11首轮完成，物理RAM硬保护与广泛媒体质量仍待办 |
 
 “待开发”只表示排期，不能写成已开始或已支持；“条件待办”不自动
 触发扩展。阶段 A/B 为业务与可靠性推进。SRV-09 若包含解码、批处理
@@ -63,10 +63,10 @@ SRV-13[限定接受并交付关停修复](SERVE_LIFECYCLE_RESULT_2026-11-03.md)�
 SRV-02e[启动检查及Thor计量限定交付](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)。
 SRV-02f[文本/调度资源故障限定交付](SERVE_DEVICE_MEMORY_RESULT_2026-11-03.md)。
 02g[默认文本内部清理已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)。
-02h与02i接线均已开发并取得CPU证据，[组合GPU合同](SERVE_MEDIA_COMPOSITE_2026-11-03.md)
-及驱动/压缩夹具CPU检查已完成，32/21/11组合包按abb653c8封存，
-140原件/19本机身份已核对；等待GPU空闲后统一验收。
-保留正在运行的vLLM，物理可证明保护单列；
+02h与02i按[组合GPU合同](SERVE_MEDIA_COMPOSITE_2026-11-03.md)完成
+[32/21/11首轮验收及默认交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)。
+SOAR恢复服务已按用户授权正常停止并持久mask，GPU/锁释放；原CPU
+失败与ENV_ABORT保留，未重复未变测试。
 物理硬限额、实际访问运维与多人策略仍需独立完成。
 B通过不表示工业化持续目标完成。
 

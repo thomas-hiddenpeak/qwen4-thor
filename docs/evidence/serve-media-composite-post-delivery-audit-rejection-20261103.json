@@ -1,0 +1,13 @@
+{
+  "status": "AUDIT_REJECTED_PREINSTALL_GATE",
+  "observed_at": "2026-11-03T19:20:55.354801+08:00",
+  "evidence_origin": "captured functions.exec command output",
+  "call": "stage.check(); stage.cpu_gate() after DELIVERED",
+  "error": "RuntimeError: default changed",
+  "reason": "freeze_cpu.gate requires the previous installed pair; current default is the accepted new pair",
+  "outer_shell_exit_code": 0,
+  "outer_shell_exit_reason": "the later git diff command succeeded; the Python traceback was inspected independently",
+  "runtime_modified": false,
+  "model_or_http_requests": 0,
+  "stage_execution_and_finalization_remain_passed": true
+}

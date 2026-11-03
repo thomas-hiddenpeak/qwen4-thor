@@ -1,0 +1,68 @@
+{
+  "passed": true,
+  "observed_at": "2026-11-03T19:06:26.628683+08:00",
+  "unit": {
+    "Restart": "no",
+    "MainPID": "0",
+    "Triggers": "",
+    "TriggeredBy": "",
+    "LoadState": "masked",
+    "ActiveState": "inactive",
+    "SubState": "dead",
+    "FragmentPath": "/home/rm01/.config/systemd/user/soar-flash-fast-v3-fixture-retry-qualified-v1-20261103.service",
+    "UnitFileState": "masked"
+  },
+  "persistent_mask": "/home/rm01/.config/systemd/user/soar-flash-fast-v3-fixture-retry-qualified-v1-20261103.service",
+  "mask_target": "/dev/null",
+  "owned_container_absent": true,
+  "port_8000_not_listening": true,
+  "gpu": {
+    "status": "OK",
+    "pids": [],
+    "request_id": "70976afe665090dff0917ab5052fd3c1",
+    "worker_pid": 2413949,
+    "stdout": "{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.108981749, \"event\": \"begin\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.117877644, \"event\": \"end\", \"api\": \"import_pynvml\"}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.117923301, \"event\": \"begin\", \"api\": \"init\"}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.122292448, \"event\": \"end\", \"api\": \"init\", \"seconds\": 0.0043564538937062025}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.122337827, \"event\": \"begin\", \"api\": \"device_count\"}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.122382197, \"event\": \"end\", \"api\": \"device_count\", \"seconds\": 3.445381298661232e-05}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.122396281, \"event\": \"begin\", \"api\": \"handle[0]\"}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.12892121, \"event\": \"end\", \"api\": \"handle[0]\", \"seconds\": 0.006516493856906891}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.128949145, \"event\": \"begin\", \"api\": \"compute_v3[0]\"}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.12991374, \"event\": \"end\", \"api\": \"compute_v3[0]\", \"seconds\": 0.0009573081042617559}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.129932277, \"event\": \"begin\", \"api\": \"shutdown\"}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.131722089, \"event\": \"end\", \"api\": \"shutdown\", \"seconds\": 0.0017815721221268177}\n{\"request_id\": \"70976afe665090dff0917ab5052fd3c1\", \"monotonic\": 1894069.131751895, \"event\": \"result\", \"status\": \"OK\", \"error\": null, \"device_count\": 1, \"pids\": [], \"process_memory\": []}\n",
+    "stderr": "",
+    "returncode": 0,
+    "seconds": 0.07000563107430935,
+    "process_memory": [],
+    "device_count": 1
+  },
+  "lock_original_inode_preserved": {
+    "device": 66305,
+    "inode": 3294067
+  },
+  "lock_available": true,
+  "owned_recovery_marker_absent": true,
+  "normal_supervisor_cleanup": {
+    "approvedPlanSha256": "182fe5ac9cbe5ae37996a7d7d1ee12cad4809dcf10c447fef2e1bda808c70ef1",
+    "attemptId": "fixture-retry-v1",
+    "automaticRepeatedRestoration": false,
+    "candidateWorkPerformed": false,
+    "claimRef": {
+      "path": "/home/rm01/.local/state/soar-flash-fast-v3-20261102/fixture-retry-qualified-v1/restoration-claim.json",
+      "sha256": "598957153cfcb40c054eb1a7db325834a915d157d5568f3275331b4d6445a94f"
+    },
+    "failureClass": "StopRequested",
+    "generationRequests": 0,
+    "newMarkerRetained": false,
+    "ownedCleanupConfirmed": true,
+    "readyWasReached": true,
+    "recordedAt": "2026-11-03T11:05:35.614339+00:00",
+    "rootRecoveryRequired": false,
+    "scope": "exact_qualified_fixture_retry_prerequisite_terminal_v1",
+    "sourceManifest": {
+      "path": "/home/rm01/.local/state/soar-flash-fast-v3-20261102/fixture-retry-v1/control/source-manifest.json",
+      "sha256": "d76b09b1c48cf6fb65b2a460fdd0b347189fc58dbe04db99585279741892b0b0"
+    },
+    "startupDeadlineUtc": "2026-11-03T09:05:32.505641+00:00",
+    "technicalRestoration": {
+      "path": "/home/rm01/.local/state/soar-flash-fast-v3-20261102/fixture-retry-qualified-v1/technical-restoration.json",
+      "sha256": "954049d28df8bde5bbbbead367f6b2c0776fb93b0d8b486c93d2bcd23761e26a"
+    },
+    "version": 1
+  },
+  "automatic_restart_policy_before": "no",
+  "known_timer_and_cron_triggers": false,
+  "new_model_requests": 0
+}

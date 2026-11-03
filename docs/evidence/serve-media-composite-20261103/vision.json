@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "full_visual_weight_loads": 1,
+  "tiny_weight_failures": {
+    "oom": 33,
+    "host": 3,
+    "missing": 1
+  },
+  "workspace_failures": {
+    "oom": 20,
+    "copy": 4
+  },
+  "physical_oom_or_damage": false
+}

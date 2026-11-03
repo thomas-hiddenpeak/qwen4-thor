@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "required_tests": 25,
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-composite-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "9196693f4c693ca7596b1908c444eea1d9532c2dafd256442169cee050c5e70e",
+    "bytes": 865504
+  },
+  "parent_stage_lease": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-media-composite-20261103/execution/lease",
+  "model_loaded": false
+}

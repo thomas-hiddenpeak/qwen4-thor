@@ -6,7 +6,26 @@
 
 长期目标“持续推进完善serve到工业水准”尚未完成，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)推进；当前组合GPU
-验收等待运行中的vLLM释放资源或完成交接。
+验收已完成限定交付，GPU交接阻塞已解除。
+
+[SRV-02h+02i已限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)：
+默认280b95dc/sidecar18c9d2c5、protocol29810d03，211来源保持；工具
+冻结abb653c8。原生25、实际函数查询/8拒绝、tiny视觉与workspace故障、
+333真实上传通过；实际32生成/21负场景/11启动首轮通过，含真实资料
+工具回填、11媒体准入负例、配额拒绝、分配哨兵/同PID恢复与完整SSE取消。
+32完整wire（12成功/20错误）/52封套、103控制及329连续样本保留。
+业务371.464秒、finalize380.076秒，guard COMPLETED/ENV_ABORT0。
+安装CLI/worker通过，HTTP复用同SHA候选；42pair回退链与新/旧bundle
+只读核验，未实际回退。669原件封存15份Git文件约1.214MB、22本机身份。
+
+按用户授权停止SOAR恢复监督器，所属容器及恢复标记正常清理；原GPU锁
+inode保持，持久mask该user服务，原Restart=no、无关联timer/cron。
+19:15:06 CST最终GPU空、锁可取得、11个owned进程已退出、无恢复标记，
+MemAvailable115.715GiB，SOAR仍masked/inactive。先前调查指标说明它
+仅模型驻留而无推理业务；来源和交接记录保留。物理RAM硬保护、实际
+部署访问/通知/多人、新ELF长稳及通用恢复仍待办；不扩大媒体质量结论。
+
+## 组合验收前的CPU与环境历史
 
 [02h+02i组合验收](SERVE_MEDIA_COMPOSITE_2026-11-03.md)驱动已开发并通过
 [CPU检查](SERVE_MEDIA_COMPOSITE_CPU_2026-11-03.md)：
