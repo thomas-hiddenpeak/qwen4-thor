@@ -1,6 +1,7 @@
 """One real managed model, two TLS clients, strict tools and cancellation."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from dataclasses import asdict
 import io
 import json
@@ -28,6 +29,9 @@ BASE=cpu.BASE
 PLAN=BASE/'model-plan.json'
 OUT=BASE/'model'
 LIMITS=dict(starts=1,generations=8,negatives=2,observations=96,seconds=720)
+GPU_WINDOW=600
+SUPERVISOR_BOUND=492
+EXPECTED=dict(successful_requests=7,real_tool_executions=1,rejections=2)
 SOURCES=sorted(set((*a.SOURCES,*cpu.SOURCES,'tools/serve_gateway/acceptance.py',
     'tools/serve_gateway/exec_gateway.py','tools/serve_gateway/transport_tests.py',
     'tools/serve_service/controller_exec.py','docs/serve-transport-v1.schema.json')))
@@ -35,7 +39,7 @@ SOURCES=sorted(set((*a.SOURCES,*cpu.SOURCES,'tools/serve_gateway/acceptance.py',
 
 def configure():
     a.BASE,a.PLAN,a.OUT=BASE,PLAN,OUT
-    a.LIMITS,a.CONTROL_LIMIT,a.GPU_WINDOW=LIMITS,96,600
+    a.LIMITS,a.CONTROL_LIMIT,a.GPU_WINDOW=LIMITS,LIMITS['observations'],GPU_WINDOW
 
 
 def prepare():
@@ -127,7 +131,7 @@ class Run(a.Run):
         self.log=(OUT/'controller.log').open('xb')
         cmd=[self.manifest['python']['path'],'-I','-B',ROOT/'tools/serve_service/controller_exec.py',
             '--plan',PLAN,'--output',self.run_dir,'--parent',str(os.getpid())]
-        self.gpu_started=time.monotonic();signal.setitimer(signal.ITIMER_REAL,600)
+        self.gpu_started=time.monotonic();signal.setitimer(signal.ITIMER_REAL,GPU_WINDOW)
         self.process=subprocess.Popen(list(map(str,cmd)),stdin=subprocess.DEVNULL,
             stdout=self.log,stderr=subprocess.STDOUT,start_new_session=True)
         state=self.wait_state('READY',1)
@@ -216,10 +220,29 @@ class Run(a.Run):
         g.require(result.finish_reason=='stop' and json.loads(result.message['content'])=={'ok':True},'strict quality')
         self.tools('project')
         a.healthy_idle(self.metrics('before-cancel'),5)
+        self.cancel_business(prior_success=5,grammar_workers=3)
+
+    @contextmanager
+    def concurrent_requests(self):
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            try:
+                yield pool
+            except BaseException:
+                # Stop the owned backend before executor.__exit__ joins active
+                # requests. Otherwise a failed control request waits for the
+                # whole long generation instead of draining immediately.
+                self.cleaning=True
+                signal.setitimer(signal.ITIMER_REAL,0)
+                try:self.stop_backend()
+                except BaseException as error:
+                    pkg.save(OUT/'failure-stop-error.json',dict(error=repr(error)))
+                raise
+
+    def cancel_business(self,prior_success,grammar_workers):
         active=a.make_request([dict(role='user',content='逐行列出从1到10000的所有整数，每行一个数字，不要省略，不要解释。')],
             [],stream=True,max_tokens=4096,timeout_ms=180000)
         entered=threading.Event()
-        with ThreadPoolExecutor(max_workers=2) as pool:
+        with self.concurrent_requests() as pool:
             running=pool.submit(self.wire,'active-cancel',active,content_event=entered)
             g.require(entered.wait(15),'active model did not produce content')
             queued=pool.submit(self.complete,'queued-beta',a.ordinary(),1)
@@ -233,29 +256,38 @@ class Run(a.Run):
             rejected=self.wire('alpha-quota',a.ordinary(),expected=429,kind='negatives')
             g.require(json.loads(rejected)['error']['code']=='gateway_rate_limit','quota error code')
             cancel=dict(request_id=active['request_id'],cancel_token=active['cancel_token'])
-            self.wire('explicit-cancel',cancel,expected=202,kind='controls',path='/v1/chat/cancel')
+            raw=self.wire('explicit-cancel',cancel,expected=202,kind='controls',
+                          path='/v1/requests/cancel')
+            g.require(json.loads(raw)=={'cancel_requested':True},'cancel acknowledgment')
             pkg.save(OUT/'cancel-verified.json',cancelled_wire(running.result(20),active['request_id']))
             result=queued.result(20)
             g.require(result.finish_reason=='stop' and result.message['content'].strip()=='710003','queued beta quality')
         self.plain('after-cancel-recovery')
         metrics=self.metrics('final-metrics')
         g.require(all(metrics[n]==0 for n in a.EMPTY) and metrics['q4t_seq_slots_free']==1 and
-            metrics['q4t_requests_total']==8 and metrics['q4t_requests_success_total']==7 and
+            metrics['q4t_requests_total']==prior_success+3 and
+            metrics['q4t_requests_success_total']==prior_success+2 and
             metrics['q4t_requests_aborted_total']==1 and metrics['q4t_requests_error_total']==0 and
-            metrics['q4t_structured_workers_started_total']==metrics['q4t_structured_workers_reaped_total']==3,
+            metrics['q4t_structured_workers_started_total']==
+            metrics['q4t_structured_workers_reaped_total']==grammar_workers,
             'final request/resource accounting mismatch')
 
+    def stop_backend(self):
+        if self.process is not None and self.process.poll() is None:
+            if (self.run_dir/'controller.json').exists():self.service_cli('explicit-stop','stop')
+            else:self.process.terminate()
+            g.require(self.process.wait(50)==0,'controller stop failed')
+        if self.process is not None and self.process.poll() is not None and self.gpu_finished is None:
+            self.gpu_finished=time.monotonic();signal.setitimer(signal.ITIMER_REAL,0)
+
     def stop_owned(self):
+        # Drain backend first, including when a setup or concurrent check fails.
+        self.stop_backend()
         if self.gateway is not None and self.gateway.poll() is None:
             self.gateway.send_signal(signal.SIGQUIT)
             try:self.gateway.wait(35)
             except subprocess.TimeoutExpired:self.gateway.terminate();self.gateway.wait(10)
             g.require(self.gateway.returncode==0,'gateway stop failed')
-        if self.process is not None and self.process.poll() is None:
-            if (self.run_dir/'controller.json').exists():self.service_cli('explicit-stop','stop')
-            else:self.process.terminate()
-            g.require(self.process.wait(50)==0,'controller stop failed')
-            self.gpu_finished=time.monotonic();signal.setitimer(signal.ITIMER_REAL,0)
 
     def execute(self):
         OUT.mkdir(mode=0o700)
@@ -276,16 +308,16 @@ class Run(a.Run):
             for path in (OUT/'gateway-private.log',self.run_dir/'backend.log'):
                 raw=path.read_bytes()
                 for c in self.keys['clients']:g.require(c['api_key'].encode() not in raw,'key leaked to logs')
-            result.update(status='PASS_TLS_MODEL_TOOL_CANCEL',starts=1,successful_requests=7,
-                cancelled_requests=1,real_tool_executions=1,rejections=2)
+            result.update(status='PASS_TLS_MODEL_TOOL_CANCEL',starts=1,
+                          cancelled_requests=1,**EXPECTED)
         except BaseException as error:result['error']=repr(error);raise
         finally:
             signal.setitimer(signal.ITIMER_REAL,0);self.cleaning=True
             try:
                 self.stop_owned();a.require_idle(OUT/'gpu-final.json')
                 g.require(a.lock_available(a.guard.common_lock()),'GPU lease retained')
-                g.require(time.monotonic()-self.started<720 and
-                    (self.gpu_finished is None or self.gpu_finished-self.gpu_started<600),'time budget')
+                g.require(time.monotonic()-self.started<LIMITS['seconds'] and
+                    (self.gpu_finished is None or self.gpu_finished-self.gpu_started<GPU_WINDOW),'time budget')
                 result['cleanup_confirmed']=True
             except BaseException as error:
                 result.update(status='FAILED',cleanup_error=repr(error));raise
@@ -295,7 +327,7 @@ class Run(a.Run):
                     if stream:stream.close()
                 result.update(counts=self.counts,elapsed_seconds=time.monotonic()-self.started,
                     gpu_window_elapsed=None if self.gpu_finished is None else self.gpu_finished-self.gpu_started,
-                    supervisor_http_upper_bound=492)
+                    supervisor_http_upper_bound=SUPERVISOR_BOUND)
                 pkg.save(OUT/'result.json',result)
         return result
 

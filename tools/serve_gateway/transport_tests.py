@@ -77,7 +77,7 @@ class Fixture:
                         fixture.entered.set()
                         if not fixture.release.wait(10):raise RuntimeError('fixture stream expired')
                         self.wfile.write(b'data: [DONE]\n\n');self.wfile.flush();return
-                    if self.path=='/v1/chat/cancel':fixture.release.set()
+                    if self.path=='/v1/requests/cancel':fixture.release.set()
                     value=json.dumps(dict(fixture=True,body=body)).encode()
                     self.send_response(202 if self.path.endswith('/cancel') else 200)
                     self.send_header('Content-Type','application/json')
@@ -226,7 +226,7 @@ class Run:
                 self.request('per-client-limit',429)
                 self.request('independent-beta',client=1)
                 self.request('discovery-control',path='/v1/models',method='GET')
-                self.request('cancel-control',202,path='/v1/chat/cancel')
+                self.request('cancel-control',202,path='/v1/requests/cancel')
             finally:self.fixture.release.set()
             held.result()
         self.fixture.disconnected.clear()

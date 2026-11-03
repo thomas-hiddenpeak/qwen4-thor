@@ -19,7 +19,8 @@ ROUTES = {'/v1/models': ('GET', 'control'),
           '/v1/capabilities': ('GET', 'control'),
           '/v1/chat/completions': ('POST', 'data'),
           '/v1/chat/preflight': ('POST', 'data'),
-          '/v1/chat/cancel': ('POST', 'control')}
+          '/v1/requests/cancel': ('POST', 'control')}
+API_CONTRACT = ROOT/'docs/serve-openapi-v1.json'
 DEFAULTS = dict(per_client_inflight=2, global_inflight=8,
                 per_client_rps=5, burst=10, body_bytes=16*1024**2,
                 upstream_idle_seconds=1300)
@@ -59,6 +60,22 @@ def object_pairs(pairs):
 
 def parse(raw):
     return json.loads(raw, object_pairs_hook=object_pairs)
+
+
+def validate_routes():
+    """Check the selected public surface against the runner's API contract."""
+    paths = parse(read_file(API_CONTRACT))['paths']
+    expected = {'v1_models': 'control', 'v1_capabilities': 'control',
+                'v1_chat_completions': 'data', 'v1_chat_preflight': 'data',
+                'v1_requests_cancel': 'control'}
+    seen = {}
+    for path, (method, lane) in ROUTES.items():
+        operation = paths.get(path, {}).get(method.lower(), {}).get('operationId')
+        require(operation in expected and expected[operation] == lane and
+                operation not in seen, 'route differs from formal API contract')
+        seen[operation] = path
+    require(seen.keys() == expected.keys(), 'missing public API route')
+    return sha(API_CONTRACT)
 
 
 def policy(value):
@@ -261,6 +278,7 @@ def certificate_check(certificate, key, hostname):
 
 
 def prepare(policy_path, nginx, certificate, key, output):
+    api_sha256 = validate_routes()
     p = policy(parse(read_file(policy_path, private=True)))
     output = Path(output).absolute()
     require(output.parent.resolve().is_relative_to(ROOT/'.q4t-work') or
@@ -296,7 +314,8 @@ def prepare(policy_path, nginx, certificate, key, output):
     manifest = dict(version=1, nginx=dict(path=str(nginx),sha256=sha(nginx),version=VERSION),
         policy=public_policy, files={name:sha(output/name) for name in
             ('certificate.pem','private-key.pem','nginx.conf')},
-        generator_sha256=sha(__file__), automatic_start=False,
+        generator_sha256=sha(__file__), api_contract_sha256=api_sha256,
+        automatic_start=False,
         upstream_host='127.0.0.1', production_deployment_accepted=False)
     save(output/'manifest.json', (json.dumps(manifest,indent=2)+'\n').encode())
     return dict(package=str(output), manifest_sha256=sha(output/'manifest.json'),
@@ -315,6 +334,8 @@ def check(directory, digest):
     require(manifest['version'] == 1, 'unknown gateway package')
     require(sha(manifest['nginx']['path']) == manifest['nginx']['sha256'], 'nginx changed')
     require(sha(__file__) == manifest['generator_sha256'], 'gateway tooling changed')
+    require(validate_routes() == manifest.get('api_contract_sha256'),
+            'gateway API contract changed')
     for name, digest in manifest['files'].items():
         require(name in ('nginx.conf','certificate.pem','private-key.pem'), 'unexpected package file')
         require(hashlib.sha256(read_file(directory/name,private=True)).hexdigest() == digest,

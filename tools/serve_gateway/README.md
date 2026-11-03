@@ -65,8 +65,10 @@ run前台执行nginx，没有后台自启动。通过拥有该前台进程的终
 日志stdout需有界收集；当前工具不自动安装日志服务。凭据轮换：停止/
 排空网关，生成不含旧key的新包，再显式run；在途请求不作自动重放。
 
-允许的客户端路由为GET models/capabilities和POST chat completions/
-preflight/cancel。管理/监控/健康端点留在后端loopback。data与control
+允许GET `/v1/models`、`/v1/capabilities`，POST `/v1/chat/completions`、
+`/v1/chat/preflight`及`/v1/requests/cancel`。prepare/check交叉核对正式
+OpenAPI定义并绑定其SHA，避免代理与夹具共享错误路由。管理/监控/健康
+端点留在后端loopback。data与control
 并发/速率分开，429附Retry-After；没有token计费或总任务幂等语义。
 网关error.code以gateway_开头，响应另有X-Q4T-Gateway-Request-Id；
 后端X-Request-Id和原始错误不被改写。proxy关闭响应缓存/缓冲与重试，
