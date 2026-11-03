@@ -2,7 +2,8 @@
 
 这是受控本地应用入口，使用 TLS 网关和一个客户端的独立 API Key。
 工具仅查询本项目允许范围内的真实文档、发布和验收记录。
-[合同](../../docs/SERVE_PROJECT_TASKS_2026-11-04.md)。
+[合同](../../docs/SERVE_PROJECT_TASKS_2026-11-04.md) ·
+[本机真实恢复验收](../../docs/SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)。
 
 先显式创建新 store，任务不会自动删除，幂等键一直保留：
 
@@ -74,3 +75,11 @@ python3 -B tools/project_tasks/runner.py resolve \
 store、SQLite账本和wire都是私有资料；同UID是可信边界。没有自动
 清理、任务迁移、队列服务或后台恢复，不提供多机协调或通用exactly-once。
 运行本入口不启动或停止模型服务；开发HTTP验证仍需在共享GPU租约内。
+
+当前任务输出上限固定512 token，须与所选客户端策略匹配。源码或
+凭据迁移、终态归档后幂等键保留仍需明确策略。已保存的本机验收证据
+可以离线核对，不启动模型或HTTP：
+
+```bash
+python3 -B tools/project_tasks/report.py verify
+```

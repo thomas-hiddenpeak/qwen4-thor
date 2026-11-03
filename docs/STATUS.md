@@ -41,16 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-11[项目查询持久任务与显式恢复已开发](SERVE_PROJECT_TASKS_2026-11-04.md)：
-按client隔离幂等键、私有事件账、单任务互斥、已知结果复用、未知请求/
-只读工具显式处置及跨运行预算；19有效CPU与2驱动通过，含SIGKILL、
-新进程恢复、SQLite事务回滚和wire保留，无失败。[真实短验已冻结](SERVE_PROJECT_TASKS_SHORT_2026-11-04.md)：
-原1模型/1网关在capabilities读取EOF后访问已关闭socket失败，0生成/工具；
-原FAILED与49.900秒及完整清理保持。Unix socketpair复现同一EBADF，
-修正2定向通过，20有效CPU/2驱动；原业务组尚未执行，单次修正短验
-仍固定3应用中断/最多7请求/4工具尝试，不自动扩样。
-[操作入口](../tools/project_tasks/README.md)显式运行，不改默认或3份day，
-应用恢复尚未实际接受，工业化目标继续active。
+SRV-11[持久项目任务与真实恢复限定接受](SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)：
+按client隔离幂等键、单任务互斥、已知结果复用、未知请求/只读工具
+显式处置及原预算；20有效CPU/2驱动。原TLS EOF/EBADF失败及CPU复现
+保持，0f8418e9修正后1模型/1网关/3应用SIGKILL，3任务完成，7请求
+含6完整/1刻意断流，4工具尝试/3结果、3重复submit零新增执行。
+真实MODEL值/引用通过，grammar7/7；修正原租约64.601秒/61观察、
+总75.348秒/25父控制；累计2模型/2网关，原0生成失败49.900秒保持。
+411原件/2 ELF身份封存并离线重建通过，18自有身份退、4代次封存；
+GPU/原锁释放、SOAR masked、容器空，默认/固定包/3份day未改未跑。
+[操作入口](../tools/project_tasks/README.md)显式使用；当前512输出须匹配
+客户端预算，源码/凭据迁移与终态归档/幂等键保留待策略。实际LAN、
+物理RAM及用户长验仍未证明，工业化目标继续active。
 
 SRV-12e[受管代次与私有留存本机短验限定接受](SERVE_RETENTION_RESULT_2026-11-04.md)：
 冻结8ab647d9，新store所有权/启动预占、活跃与未知保护、封存、私有

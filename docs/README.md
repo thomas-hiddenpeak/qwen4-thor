@@ -70,6 +70,7 @@
 [本机限定接受](SERVE_CLIENT_RESULT_2026-11-04.md)及
 [实际默认交付与回退](SERVE_CLIENT_DELIVERED_2026-11-04.md)；
 [SRV-11项目任务持久化与恢复](SERVE_PROJECT_TASKS_2026-11-04.md)、
+[真实进程恢复结果](SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)、
 [短验冻结](SERVE_PROJECT_TASKS_SHORT_2026-11-04.md)及
 [任务操作说明](../tools/project_tasks/README.md)；
 [SRV-12e跨运行目录准入与私有留存](SERVE_RETENTION_2026-11-04.md)、
