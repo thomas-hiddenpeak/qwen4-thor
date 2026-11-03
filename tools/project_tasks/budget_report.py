@@ -69,7 +69,7 @@ def evaluate(data):
                     ledger.spec["binding"] == plan["bindings"][client] and ledger.spec["max_tokens"] == tokens,
                     "SQLite/export/client binding")
                 require(ledger.spec["runtime_sources"] == {name: plan["source_files"][name]
-                    for name in engine.RUNTIME_FILES}, "task runtime identity")
+                    for name in ledger.spec["runtime_sources"]}, "task runtime identity")
                 state = engine.replay(ledger); public = engine.public(ledger, state)
                 events = ledger.events()
                 by_kind = lambda kind: [event["payload"] for event in events if event["kind"] == kind]

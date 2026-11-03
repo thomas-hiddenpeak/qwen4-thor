@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 import sys
 
-from tools.project_tasks import budget, store
+from tools.project_tasks import budget, migration, store
 
 sys.path.insert(0, str(store.ROOT / "tools/examples"))
 import chat_client as chat
@@ -18,6 +18,7 @@ from project_records import ProjectRecords, TOOLS, VALIDATORS
 RUNTIME_FILES = (
     "tools/project_tasks/store.py", "tools/project_tasks/engine.py", "tools/project_tasks/budget.py",
     "tools/project_tasks/transport.py", "tools/project_tasks/runner.py",
+    "tools/project_tasks/migration.py", "tools/project_tasks/compatible_runtimes.json",
     "tools/examples/chat_client.py", "tools/examples/project_records.py",
     "tools/examples/project_query.py", "tools/examples/agent_tools_demo.py",
     "tools/examples/tool_recovery.py")
@@ -67,7 +68,7 @@ def check_wire(ledger, number):
 
 def replay(ledger):
     """Derive executable state exclusively from committed, validated events."""
-    spec = ledger.spec
+    spec = deepcopy(ledger.spec)
     store.require(spec.get("budget_profile") in (None, budget.PROFILE), "unknown task budget profile")
     checked = spec.get("budget_profile") == budget.PROFILE
     state = dict(phase="READY", requests=0, tool_attempts=0, tool_results=0,
@@ -76,14 +77,19 @@ def replay(ledger):
                  dict(role="user", content=spec["question"])],
         citations=set(), tool_ids=set(), results={}, planned=[], request=None, response=None,
         active_tool=None, answer=None, outcome=None, revision=ledger.initial,
-        preflight_checks=0, planned_request=None, preflight_error=None)
+        preflight_checks=0, planned_request=None, preflight_error=None,
+        execution_spec=spec, migrations=0)
     ids, tokens, planning_ids, planning_tokens = set(), set(), set(), set()
     for event in ledger.events():
         kind, value = event["kind"], event["payload"]
         phase = state["phase"]
-        store.require(phase not in ("COMPLETED", "FAILED", "ABANDONED"),
+        store.require(kind == "migration" or phase not in ("COMPLETED", "FAILED", "ABANDONED"),
                       "event after terminal task")
-        if kind == "run":
+        if kind == "migration":
+            spec = migration.event(spec, state, value, ledger.meta["task_id"], ledger.meta["store_id"])
+            checked = spec.get("budget_profile") == budget.PROFILE
+            state.update(execution_spec=spec, migrations=state["migrations"] + 1)
+        elif kind == "run":
             store.require(value == {"number": state["runs"] + 1} and
                           state["runs"] < 16 and phase not in
                           ("REQUEST_UNKNOWN", "TOOL_UNKNOWN"), "resume limit/state")
@@ -224,12 +230,13 @@ def replay(ledger):
 
 
 def public(ledger, state):
+    spec = state["execution_spec"]
     phase = state["phase"]
     actions = [] if phase in ("COMPLETED", "FAILED", "ABANDONED") else ["abandon"]
-    if phase == "REQUEST_UNKNOWN" and state["requests"] < ledger.spec["max_requests"]:
+    if phase == "REQUEST_UNKNOWN" and state["requests"] < spec["max_requests"]:
         actions.append("discard-request")
     elif phase == "TOOL_UNKNOWN" and (state["tool_attempts"] + len(state["planned"]) -
-                                      len(state["results"]) <= ledger.spec["max_tools"]):
+                                      len(state["results"]) <= spec["max_tools"]):
         actions.append("repeat-read")
     elif phase not in ("REQUEST_UNKNOWN", "TOOL_UNKNOWN", "COMPLETED", "FAILED", "ABANDONED"):
         actions.append("resume")
@@ -238,27 +245,30 @@ def public(ledger, state):
         requests=state["requests"], tool_attempts=state["tool_attempts"],
         saved_tool_results=state["tool_results"], read_repetitions=state["read_repetitions"],
         discarded_requests=state["discarded_requests"], runs=state["runs"],
-        remaining_requests=ledger.spec["max_requests"] - state["requests"],
-        remaining_tools=ledger.spec["max_tools"] - state["tool_attempts"],
+        remaining_requests=spec["max_requests"] - state["requests"],
+        remaining_tools=spec["max_tools"] - state["tool_attempts"],
         allowed_actions=actions, automatic_retry=False)
-    if ledger.spec.get("budget_profile") == budget.PROFILE:
-        value.update(max_tokens=ledger.spec["max_tokens"], preflight_checks=state["preflight_checks"],
+    if spec.get("budget_profile") == budget.PROFILE:
+        value.update(max_tokens=spec["max_tokens"], preflight_checks=state["preflight_checks"],
                      preflight_error=state["preflight_error"])
         if state["runs"] >= 16 and "resume" in actions:
             actions.remove("resume")
+    if state["migrations"]:
+        value["migrations"] = state["migrations"]
     return value
 
 
-def check_binding(ledger, binding):
-    store.require(ledger.spec["binding"] == binding, "task/client binding changed")
-    store.require(ledger.spec["runtime_sources"] == sources(),
+def check_binding(ledger, binding, state=None):
+    spec = (state or replay(ledger))["execution_spec"]
+    store.require(spec["binding"] == binding, "task/client binding changed")
+    store.require(spec["runtime_sources"] == sources(),
                   "task runtime changed; explicit migration required")
 
 
 def validate_next(ledger, kind, value):
     events = ledger.events()
     class Preview:
-        spec, initial, path = ledger.spec, ledger.initial, ledger.path
+        spec, initial, path, meta = ledger.spec, ledger.initial, ledger.path, ledger.meta
         wire = ledger.wire
         def events(self):
             return events + [dict(kind=kind, payload=value, digest="preview")]
@@ -275,8 +285,9 @@ def resolve(ledger, binding, decision, expected_revision, reason):
 
 
 def run(ledger, binding, client, *, records=None, checkpoint=None):
-    check_binding(ledger, binding)
     state = replay(ledger)
+    check_binding(ledger, binding, state)
+    spec = state["execution_spec"]
     if state["phase"] in ("COMPLETED", "FAILED", "ABANDONED",
                           "REQUEST_UNKNOWN", "TOOL_UNKNOWN"):
         return public(ledger, state)
@@ -308,16 +319,16 @@ def run(ledger, binding, client, *, records=None, checkpoint=None):
         state = replay(ledger)
         phase = state["phase"]
         if phase == "READY":
-            if state["requests"] >= ledger.spec["max_requests"]:
+            if state["requests"] >= spec["max_requests"]:
                 commit("failed", dict(code="request_budget_exhausted"))
                 return public(ledger, replay(ledger))
             request = chat.make_request(state["history"], TOOLS,
-                model=binding["model"], stream=ledger.spec["stream"], max_tokens=ledger.spec["max_tokens"])
+                model=binding["model"], stream=spec["stream"], max_tokens=spec["max_tokens"])
             request["parallel_tool_calls"] = False
             request["tool_choice"] = ("required" if not state["tool_results"] else
-                "none" if state["requests"] + 1 == ledger.spec["max_requests"] or
-                state["tool_attempts"] >= ledger.spec["max_tools"] else "auto")
-            if ledger.spec.get("budget_profile") == budget.PROFILE:
+                "none" if state["requests"] + 1 == spec["max_requests"] or
+                state["tool_attempts"] >= spec["max_tools"] else "auto")
+            if spec.get("budget_profile") == budget.PROFILE:
                 if state["preflight_checks"] >= budget.MAX_CHECKS:
                     commit("failed", dict(code="preflight_budget_exhausted"))
                     return public(ledger, replay(ledger))
@@ -375,8 +386,8 @@ def run(ledger, binding, client, *, records=None, checkpoint=None):
                     kind, value = "final", final
                 else:
                     planned = chat.prepare_tool_calls(answer, VALIDATORS)
-                    store.require(state["requests"] < ledger.spec["max_requests"] and
-                        state["tool_attempts"] + len(planned) <= ledger.spec["max_tools"] and
+                    store.require(state["requests"] < spec["max_requests"] and
+                        state["tool_attempts"] + len(planned) <= spec["max_tools"] and
                         not state["tool_ids"].intersection(p.call_id for p in planned),
                         "tool batch exceeds remaining budget")
                     kind, value = "plan", [asdict(p) for p in planned]
@@ -393,15 +404,15 @@ def run(ledger, binding, client, *, records=None, checkpoint=None):
             invocation = chat.ToolInvocation(**pending[0])
             # Revalidate the entire saved batch before executing any remaining tool.
             chat.prepare_tool_calls(completion(state["response"]), VALIDATORS)
-            store.require(state["tool_attempts"] < ledger.spec["max_tools"], "tool budget")
+            store.require(state["tool_attempts"] < spec["max_tools"], "tool budget")
             commit("tool_started", asdict(invocation))
             value = records.execute(invocation)
             checkpoint("tool_returned", state["tool_attempts"] + 1, ledger)
             value["application_budget"] = dict(
-                remaining_model_requests=ledger.spec["max_requests"] - state["requests"],
-                remaining_tool_calls=ledger.spec["max_tools"] - state["tool_attempts"] - 1,
-                final_response_required=state["requests"] + 1 == ledger.spec["max_requests"] or
-                    state["tool_attempts"] + 1 == ledger.spec["max_tools"])
+                remaining_model_requests=spec["max_requests"] - state["requests"],
+                remaining_tool_calls=spec["max_tools"] - state["tool_attempts"] - 1,
+                final_response_required=state["requests"] + 1 == spec["max_requests"] or
+                    state["tool_attempts"] + 1 == spec["max_tools"])
             commit("tool_result", dict(tool_call_id=invocation.call_id,
                 content=json.dumps(value, ensure_ascii=False, allow_nan=False)))
         else:

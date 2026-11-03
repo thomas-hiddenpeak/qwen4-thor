@@ -41,6 +41,12 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-11c[任务源码升级与同客户端Key轮换开发中](SERVE_TASK_MIGRATION_2026-11-04.md)：
+精确已验源码登记、私有计划/摘要、原账本追加迁移事件及有效合同
+推导已接入；保留预算、结果、未知阶段，禁止客户端/模型/CA变化。
+49应用CPU/3驱动首轮通过；准备旧实现实际任务迁移短验，尚未接受；
+不改默认/固定包/day。
+
 SRV-11b[任务预算与逐轮预检限定接受](SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)：
 冻结dc2c18d0，输出1..512持久化、完整history真实token/客户端预算
 核对、生成前拒绝与未知分离、恢复后重新预检；31应用CPU/3驱动通过。

@@ -43,7 +43,7 @@ python3 -B tools/project_tasks/runner.py submit \
 ```
 
 任务完成会返回答案和outcome；全部读取失败是UNVERIFIED，不是已核实
-的业务答案。退出0表示任务流程完成，退出2表示需要继续或处置，退出1
+的业务答案。submit/resume退出0表示任务流程完成，退出2表示需要继续或处置，退出1
 表示拒绝/异常。状态和outcome都应检查，不能只看进程退出码。
 
 ```bash
@@ -79,14 +79,40 @@ python3 -B tools/project_tasks/runner.py resolve \
 `repeat-read`保留原未知尝试，新的读取可能观察到更新后的文件；
 `discard-request`放弃该次未知模型输出，不证明它未执行或已经取消；
 `abandon`明确终止任务。处置本身不发请求，之后再显式resume。
-客户端绑定或执行源码变化会拒绝继续，不能编辑数据库绕过检查。
+未经显式迁移的客户端绑定或执行源码变化会拒绝继续，不能编辑数据库绕过检查。
+
+代码升级或同客户端API Key轮换，先生成私有计划并查看计划中的旧/新
+源码、Key指纹、任务revision和剩余预算，再用返回的plan_sha256应用：
+
+```bash
+python3 -B tools/project_tasks/runner.py plan-migration \
+  --root .q4t-work/project-tasks --profile .q4t-work/alpha-new.json \
+  --key release-question-001 --plan .q4t-work/alpha-handoff.json \
+  --reason '升级至已验任务实现，保持同一客户端和任务合同'
+python3 -B tools/project_tasks/runner.py apply-migration \
+  --root .q4t-work/project-tasks --profile .q4t-work/alpha-new.json \
+  --key release-question-001 --plan .q4t-work/alpha-handoff.json \
+  --plan-sha256 EXACT_PLAN_SHA256
+```
+
+计划父目录须私有0700，计划0600；生成后任务变化则需新计划。迁移
+只追加事件，重复apply返回已应用，不执行HTTP/工具；命令退出0表示
+计划/迁移操作成功，不表示业务任务完成。之后用新profile显式resume。
+已知结果复用、未知状态及原预算保持；旧Key不能继续操作新绑定任务。
+
+当前只登记已验SRV-11/SRV-11b到本版的源码升级及同client Key轮换；
+不允许换client、TLS origin/IP/CA、模型/协议/模板、问题或预算。
+未知源码须先审查适配。实际Key撤销仍需先准备新网关私有包、停旧
+网关并确认清理、再运行新包；迁移命令不管理服务，不证明新Key的
+远端client映射。原因中不要填写凭据。详见
+[迁移合同](../../docs/SERVE_TASK_MIGRATION_2026-11-04.md)。
 
 store、SQLite账本和wire都是私有资料；同UID是可信边界。没有自动
-清理、任务迁移、队列服务或后台恢复，不提供多机协调或通用exactly-once。
+清理、自动任务迁移、队列服务或后台恢复，不提供多机协调或通用exactly-once。
 运行本入口不启动或停止模型服务；开发HTTP验证仍需在共享GPU租约内。
 
-源码或凭据迁移、终态归档后幂等键保留仍需明确策略。旧版本账本可
-离线核验，但不能自动迁移到新执行源码。已保存的本机验收证据
+CA/模型/协议或未登记版本迁移、终态归档后幂等键保留仍需明确策略。
+旧版本账本可离线核验，但不能自动迁移到新执行源码。已保存的本机验收证据
 可以离线核对，不启动模型或HTTP：
 
 ```bash

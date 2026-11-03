@@ -8,7 +8,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(ROOT))
-from tools.project_tasks import store, engine, transport
+from tools.project_tasks import store, engine, transport, migration
 
 
 def submit(root, binding, key, question, client, **options):
@@ -16,8 +16,8 @@ def submit(root, binding, key, question, client, **options):
     name = store.task_name(binding["client_id"], key)
     _, created = store.create(root, name, spec)
     with store.open_task(root, name) as ledger:
-        store.require(ledger.spec == spec, "idempotency key conflicts with existing task")
         state = engine.replay(ledger)
+        store.require(state["execution_spec"] == spec, "idempotency key conflicts with existing task")
         result = (engine.run(ledger, binding, client) if created else
                   engine.public(ledger, state))
         return dict(result, created=created)
@@ -48,7 +48,8 @@ def resolve(root, binding, key, decision, revision, reason):
 def main():
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=("init", "submit", "inspect", "resume", "resolve"))
+    parser.add_argument("action", choices=("init", "submit", "inspect", "resume", "resolve",
+                                           "plan-migration", "apply-migration"))
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--max-tasks", type=int, default=16)
     parser.add_argument("--profile", type=Path)
@@ -61,11 +62,15 @@ def main():
     parser.add_argument("--decision", choices=("discard-request", "repeat-read", "abandon"))
     parser.add_argument("--revision")
     parser.add_argument("--reason")
+    parser.add_argument("--plan", type=Path)
+    parser.add_argument("--plan-sha256")
     args = parser.parse_args()
     if args.action != "submit":
         store.require(all(value is None for value in (args.question, args.max_requests,
             args.max_tools, args.max_tokens)) and not args.no_stream,
             "question and request budgets apply only to submit; resume keeps the saved contract")
+    store.require(args.action in ("plan-migration", "apply-migration") or
+        args.plan is None and args.plan_sha256 is None, "migration parameters require a migration command")
     if args.action == "init":
         result = store.init(args.root, args.max_tasks)
     else:
@@ -81,11 +86,19 @@ def main():
             result = inspect(args.root, binding, args.key)
         elif args.action == "resume":
             result = resume(args.root, binding, args.key, transport.Client(value))
+        elif args.action == "plan-migration":
+            store.require(args.plan is not None and args.plan_sha256 is None,
+                          "new private plan path required")
+            result = migration.prepare(args.root, binding, args.key, args.plan, args.reason)
+        elif args.action == "apply-migration":
+            store.require(args.plan is not None and args.plan_sha256 is not None,
+                          "exact private plan and digest required")
+            result = migration.apply(args.root, binding, args.key, args.plan, args.plan_sha256)
         else:
             result = resolve(args.root, binding, args.key, args.decision,
                              args.revision, args.reason)
     print(json.dumps(result, ensure_ascii=False))
-    return 0 if result.get("state", "COMPLETED") == "COMPLETED" else 2
+    return 0 if result.get("state", "COMPLETED") == "COMPLETED" or result.get("no_execution") else 2
 
 
 if __name__ == "__main__":
