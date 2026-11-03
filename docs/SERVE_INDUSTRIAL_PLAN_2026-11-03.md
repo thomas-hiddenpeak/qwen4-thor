@@ -68,7 +68,9 @@ TLS网关及独立API Key接入；10a先进行loopback开发/短验，实际地�
 - SRV-02j1：[CUDA额度核心开发与短验合同](SERVE_CUDA_QUOTA_CORE_2026-11-04.md)。
   有界并发账本、混合申请额度、异步完成和未知所有权已开发。初轮
   25 CPU通过后补释放发布时序失败复现并修正，独立26 CPU/4驱动
-  通过、零警告，4小探针待验。当前不接入serve、不改默认pair/day；02j2
+  通过、零警告。原4小探针本地通过但guard短进程身份丢失ENV_ABORT，
+  原件保持；[WNOWAIT修正/唯一复验](SERVE_CUDA_QUOTA_CORRECTION_2026-11-04.md)
+  尚未执行。当前不接入serve、不改默认pair/day；02j2
   再接线现有wrapper、启动预留、CLI/metrics及真实业务验收。物理
   RAM仍有驱动/库/host/文件缓存/池保留等独立缺口，不能合并宣称硬保护。
 

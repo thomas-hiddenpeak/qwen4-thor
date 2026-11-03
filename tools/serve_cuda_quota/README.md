@@ -42,3 +42,16 @@ host堆、文件缓存和池保留是独立边界，不计入本账本。
 已到达CUDA、尚未发布账本时的合法地址复用误判，原失败保存在
 `publication-repro/`；修正后26 CPU/驱动验证写入`cpu-v2/`和
 `build-v2/`，不覆盖初轮。GPU次数和大小预算保持。
+
+首轮4 CUDA探针虽本地通过，外层guard由于短进程被过早回收而
+ENV_ABORT；原件不追改。当前按[保管修正合同](../../docs/SERVE_CUDA_QUOTA_CORRECTION_2026-11-04.md)
+执行唯一额外4探针，沿用相同native探针和CPU核心身份。新入口如下，
+仍是显式操作，不在旧目录重跑：
+
+```bash
+python3 -B tools/serve_cuda_quota/correction.py cpu
+python3 -B tools/serve_cuda_quota/correction.py prepare
+python3 -B tools/evalscope/gpu_exclusive.py \
+  --output .q4t-work/serve-cuda-quota-core-20261104/lease-v2 -- \
+  /usr/bin/python3 -B tools/serve_cuda_quota/correction.py execute
+```
