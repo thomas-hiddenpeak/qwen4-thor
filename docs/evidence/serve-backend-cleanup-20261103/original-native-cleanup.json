@@ -1,0 +1,8 @@
+{
+  "passed": false,
+  "planned_probes": 17,
+  "mtp_lifecycle_processes": 1,
+  "actual_mtp_load_attempts_with_weights": 3,
+  "negative_status_only": true,
+  "physical_oom_or_gpu_damage": false
+}

@@ -1,0 +1,39 @@
+{
+  "source_commit": "048b9f061664839b7cb1610aa25b269f783ca181",
+  "started": 1793692433.090766,
+  "limits": {
+    "generations": 10,
+    "negatives": 6,
+    "starts": 7,
+    "probes": 1,
+    "observations": 256,
+    "seconds": 1800
+  },
+  "cumulative_probes": 18,
+  "original_package": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/package/sealed-files.json",
+    "sha256": "e2c1ecb6637d787574f4cc238ab92ffe82e72f1219203231396352e66640dba0",
+    "bytes": 12005
+  },
+  "original_execution": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-20261103/execution/sealed-files.json",
+    "sha256": "917d3b6f1f283ef656603a8a1909e3535f657349b266d2f89f5a52147a808cdf",
+    "bytes": 9921
+  },
+  "original_limits_unchanged": {
+    "generations": 10,
+    "negatives": 6,
+    "starts": 7,
+    "observations": 256,
+    "seconds": 1800
+  },
+  "original_plan_remains_failed": true,
+  "additional_probe_attempts": 1,
+  "new_server_starts": 7,
+  "new_generations": 10,
+  "probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-backend-cleanup-correction-20261103/package/q4t_cleanup_probe",
+    "sha256": "e2858c05190e3af8434825189f1e6d001c75ed07f15e1bb6f3c671fa1d227b9f",
+    "bytes": 3962056
+  }
+}

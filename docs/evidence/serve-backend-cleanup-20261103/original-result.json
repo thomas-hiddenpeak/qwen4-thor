@@ -1,0 +1,7 @@
+{
+  "status": "FAILED",
+  "started": 1793692433.9213345,
+  "original_started": 1793692433.090766,
+  "error": "RuntimeError('probe exit code')",
+  "finished": 1793692447.084704
+}

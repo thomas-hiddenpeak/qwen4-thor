@@ -94,6 +94,15 @@ job 缺失；先分清监控配置、端口、服务退出与系统故障。不�
 交给此实例，保存日志/身份/驱动状态；按拥有者的恢复流程处理。诊断
 工具不执行恢复。不能仅凭 `/livez=200` 覆盖 GPU unhealthy。
 
+默认程序的`[q4t][cleanup-fatal] api=… phase=… error=…`表示直接CUDA
+释放/完成失败，进程立即退出1，可能来不及发布GPU指标或HTTP错误。
+这时抓取失败与日志/退出身份合并判断，不要求先看见unhealthy指标。
+保留已收到的响应与未完成工具状态，不把断流当成功或自动重放未知
+工具结果。serve已处理的设备释放错误仍走stop/drain及可写时的错误
+封套；底层无法确认排空时仍立即退出。见[02g范围](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)。
+请求MTP加载失败现会阻止任一启动路径；需要plain应显式配置`--no-mtp`，
+不依赖静默降级。其他CUDA操作/外部库与硬件恢复不由本批证明。
+
 ### memory
 
 `Q4TMemoryObservationUnavailable`、`Q4TMemoryPressure` 持续 30 秒：
@@ -101,7 +110,8 @@ job 缺失；先分清监控配置、端口、服务退出与系统故障。不�
 分别记录。核对有效 floor/recovery、系统可用内存与同机服务；不要
 手动清页缓存或杀他人进程。已验证的滞回恢复不需要重启模型。
 `Q4TMemoryGateDisabled` 持续 5 分钟只提示显式禁用，需确认部署意图。
-当前门限是提前准入，**不是整机物理 RAM 硬限额或启动保护**。Thor
+当前运行期门限是提前准入；启动有独立的三次可用内存检查，
+两者**都不是物理RAM预留或硬限额**。Thor
 host/device 同用 DRAM，RSS、NVML、memcg 存在重叠/漏计，不相加估算
 总容量；worker lifetime maxrss 含 pre-exec，不能当 post-exec 峰值。
 

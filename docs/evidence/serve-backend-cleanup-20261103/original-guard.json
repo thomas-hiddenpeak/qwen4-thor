@@ -1,0 +1,21 @@
+{
+  "status": "COMMAND_FAILED",
+  "command": [
+    "/usr/bin/python3",
+    "-B",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_backend_cleanup/stage.py",
+    "execute"
+  ],
+  "compute_backend": "nvml",
+  "lock_path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/gpu-exclusive.lock",
+  "poll_interval_seconds": 1.0,
+  "poll_scope": "cooperative flock plus /proc and NVIDIA compute polling",
+  "performance_acceptance": false,
+  "child_returncode": 1,
+  "external_lease": false,
+  "finished": {
+    "utc": "2026-11-03T07:54:07.504284+00:00",
+    "monotonic": 1882530.021169512,
+    "pid": 2317956
+  }
+}

@@ -7,15 +7,27 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
-[SRV-02g内部清理已冻结开发范围](SERVE_BACKEND_CLEANUP_2026-11-03.md)：
-legacy请求MTP失败拒绝启动、默认ELF内部释放/排空错误不可忽略；保留
-serve显式错误处理。候选3fd31a21生产、3d6cdf75验证零警告构建，
-CPU OFF245/ON254、必需211、后端9、驱动6、配置15+10通过。默认40cf
-保持；原生25、MTP生命周期和16探针通过，最后预留回收探针误把
-plan_incomplete当失败，原整体FAILED保留。
-[纠正冻结](SERVE_BACKEND_CLEANUP_CORRECTION_2026-11-03.md)只重验该探针
-并执行未开始的7实例/10生成/6负场景；累计18探针明确多一次，原墙钟
-1800秒不扩。修正probe零警告/CPU4通过，运行时与通过项不重跑。
+[SRV-02g内部清理与MTP启动已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)：
+默认3fd31a21/sidecar3ba0b8d3、protocol044ef2f3，206来源。请求MTP加载
+失败一律拒绝启动；默认ELF八类直接CUDA释放/完成错误检查，未知状态
+立即退出1、不继续析构；已有serve free保留stop/drain/SSE错误协议。
+
+零警告，CPU OFF245/ON254、必需211、后端9、驱动6+4、配置15+10及
+原生25/MTP生命周期通过。原17探针的末项错把plan_incomplete视作失败，
+原FAILED保留；只纠正重验该1项，其他16复用，累计18次明确多一次。
+补验7启动/10生成/6负场景、9成功及1完整SSE错误全部通过；真实资料
+工具回填、legacy启动拒绝和四类内部shutdown故障符合合同。
+
+52控制观察、213连续样本、10完整wire/25封套；业务250.507秒，原阶段
+至finalize641.336秒，原1800秒墙钟不扩，guard COMPLETED/ENV_ABORT0。
+安装CLI/worker通过，HTTP复用同SHA候选；40cf回退bundle与41pair链
+只读核验，未实际回退。583原记录封存20份Git文件约1.009MB，16本机
+产物身份；20 Git blob/583原件/16身份与614变更文档链接核对通过。
+16:04:35 CST GPU空、锁可用、owned进程全退出、无恢复标记，
+MemAvailable115.787GiB。下一批02h媒体与host异常/错误响应审计；物理
+RAM硬保护、实际访问/通知/多人、新ELF长稳和通用恢复仍未完成。
+
+## SRV-02f交付历史
 
 [SRV-02f设备资源故障已限定交付](SERVE_DEVICE_MEMORY_RESULT_2026-11-03.md)：
 默认40cf6376/sidecar79d4a657，protocol0075631e，203运行时来源。

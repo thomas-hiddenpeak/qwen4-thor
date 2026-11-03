@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "commands": {
+    "host-off": true,
+    "host-on": true,
+    "host-required": true,
+    "backend": true,
+    "driver": true,
+    "config": true,
+    "inventory": true,
+    "generated": true,
+    "startup-config": true
+  },
+  "http_or_model_started": false
+}

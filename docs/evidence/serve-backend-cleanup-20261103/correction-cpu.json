@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "checks": 4,
+  "no_new_http_or_gpu": true
+}
