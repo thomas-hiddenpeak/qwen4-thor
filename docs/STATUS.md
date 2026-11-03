@@ -7,21 +7,35 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
-正在开发[SRV-02e启动可用内存检查](SERVE_STARTUP_MEMORY_2026-11-03.md)：
-新增独立2048MiB启动余量，在metadata前/大分配前/ready前三次新读数；
-大分配前同时检查完整既有estimated_total，未知/不一致/溢出拒绝。
-明确0与--no-budget绕过，运行期门限保持独立；配置/能力公开实际快照。
-新增8项直接合同；OFF234/ON243、必需200、后端9、驱动6及配置15+10
-通过，引擎/探针零警告。812f78d4首轮真实两次拒绝、三个启动快照、
-五个HTTP/真实资料工具已通过，随后驱动worker误断言2而实际正确3，
-原FAILED/COMMAND_FAILED封存；模型clean shutdown，默认仍c597adc3。
-[定向纠正](SERVE_STARTUP_MEMORY_CORRECTION_2026-11-03.md)两项CPU与
-只读重验通过；只推进剩余4个256MiB探针和安装健康，无新模型/HTTP
-尝试，累计次数和首轮1800秒上限保持，不称两段lease全程连续。
+[SRV-02e启动检查与Thor计量已限定交付](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)：
+当前默认f69982d5/sidecar34de1c8f，protocol80529db3，200运行时来源，
+完整head/MTP k3。metadata前/大分配前/ready前三次新读数，默认2GiB
+余量，大分配前含完整峰值估算；未知拒绝、0/no-budget明确绕过，
+运行期门限独立，config/capabilities公开快照。不是预留或物理硬限额。
 
+CPU OFF234/ON243、必需200、后端9、驱动6+纠正2、配置15+10和原生24
+通过，零警告。首轮812f78d4实际两次拒绝、三个快照、五成功/真实
+资料工具后，驱动workers误断言2而正确3，FAILED/COMMAND_FAILED保留。
+7565e3b1只读纠正并完成未执行四探针；无新模型/HTTP尝试。累计3启动
+尝试/2拒绝/5生成/4探针/9控制，346.183秒finalize，原预算未扩，纠正
+guard COMPLETED/ENV_ABORT0。原最后3 health HTTP/独立末样本缺失单列；
+安装CLI/worker通过、HTTP复用同SHA候选。5wire/19封套、45连续样本留存。
+
+四类各256MiB实测：cudaMalloc时全局可用量约降257MiB，memcg增量
+接近0；明确MemoryMax不能当完整CUDA RAM限额。其他类的本次可见性
+不外推所有分配，释放后全局/CUDA未立即逐字节恢复，不自动判泄漏。
+457原记录无损封存17份Git文件约0.774MB，14个本机产物逐项身份保留。
+17份暂存Git blob/457解压原件/14本机身份及579变更文档链接核对通过。
+新/旧c597回退bundle只读验证及39pair链通过，未实际切换回退。
+14:28:26 CST GPU空、锁可用、owned scopes退出、无恢复标记，
+MemAvailable116.970GiB。下一项审计分配失败传播/回收与可证资源策略；
+全机硬保护、实际入口/通知/多人策略、新ELF长稳和通用恢复仍待办。
+
+
+## SRV-13交付历史
 
 [SRV-13小时段与停机/重启/回退限定接受](SERVE_LIFECYCLE_RESULT_2026-11-03.md)：
-当前默认c597adc3 / sidecar a350c978、protocol f79cf822，修复冻结279c9abb。
+当时默认c597adc3 / sidecar a350c978、protocol f79cf822，修复冻结279c9abb。
 原05d89984在旧3cd3994d完成一小时240周期/1200成功/240预检，固定包络
 通过；随后排队停机误报service_unavailable，原整体FAILED保留。
 唯一运行时修改是停止准入转已有取消路径，保持首因/终态/计数。

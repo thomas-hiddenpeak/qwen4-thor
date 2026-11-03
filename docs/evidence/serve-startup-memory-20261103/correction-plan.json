@@ -1,0 +1,34 @@
+{
+  "source_commit": "7565e3b1ea7822799bec837ead5692898b804075",
+  "original_package": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/package/sealed-files.json",
+    "sha256": "3843102413ed6a27d3ebba2d10a25c415d276eb0fab1714fc42ae7a016136a73",
+    "bytes": 10786
+  },
+  "original_execution": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/execution/sealed-files.json",
+    "sha256": "b4603ec2744dcdad73799b1a7290f8826cfeb0aacc62f90fc4f1576be6a451c0",
+    "bytes": 8785
+  },
+  "started": 1793686922.596173,
+  "limits": {
+    "generations": 5,
+    "negatives": 2,
+    "starts": 3,
+    "probes": 4,
+    "observations": 128,
+    "seconds": 1800
+  },
+  "spent": {
+    "generations": 5,
+    "negatives": 2,
+    "starts": 3,
+    "probes": 0
+  },
+  "remaining": {
+    "probes": 4,
+    "generations": 0,
+    "starts": 0,
+    "negatives": 0
+  }
+}

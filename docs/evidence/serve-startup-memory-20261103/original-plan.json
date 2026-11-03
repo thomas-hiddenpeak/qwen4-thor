@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "root": "/home/rm01/models/dev/qwen4-thor",
+  "limits": {
+    "generations": 5,
+    "negatives": 2,
+    "starts": 3,
+    "probes": 4,
+    "observations": 128,
+    "seconds": 1800
+  },
+  "planned": {
+    "generations": 5,
+    "negatives": 2,
+    "starts": 3,
+    "probes": 4
+  },
+  "source_commit": "812f78d4568de1b9a58c5cb004da19dfebc12dc5",
+  "candidate": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/package/candidate/q4t",
+  "candidate_sha256": "f69982d52d66214b5ce45e250fba1c93bd46e37054f147e09f10fb362f7a6692",
+  "binary": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/package/candidate/q4t",
+    "sha256": "f69982d52d66214b5ce45e250fba1c93bd46e37054f147e09f10fb362f7a6692",
+    "bytes": 7153080
+  },
+  "sidecar": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/package/candidate/diagnostic-identity.json",
+    "sha256": "4fab81d4a08c0cb0818b98a83fbf26d97bcc728e90af677b395b8dd2d310fa69",
+    "bytes": 303
+  },
+  "old_hashes": {
+    "q4t": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+    "q4t.release.json": "a350c9782c42bd2008026b35e61ed3d0acadc5e254a746caa6ee53743322fca9"
+  },
+  "previous_binary_sha256": "c597adc38e202bb810a2b7ace4314618bd504e76eff968bf9ea0103f4078a344",
+  "source_manifest_sha256": "fbb1c0464f9306291485da6e6fc00110091809c3592a365aa44968e6a690573c",
+  "protocol_sha256": "80529db38f43b0d0b8baeaef02856608bc520e9092eadaea58ab0c50185c6651",
+  "model_dir": "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream",
+  "model_inputs": {
+    "config.json": "e765305daba0951974308f4d32c075b52a6a45974730d273f2216718a994d624",
+    "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+    "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+    "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+  },
+  "sdk_directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-protocol-20261103/sdk",
+  "port": 18110,
+  "performance_acceptance": false,
+  "memory_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/package/candidate/memory_probe",
+    "sha256": "56301e876fd7cfac1e6ef6afb6ef49e58400418c773de96f74f2539656a49820",
+    "bytes": 1068672
+  },
+  "lifecycle_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/package/candidate/q4t_http_lifecycle_tests",
+    "sha256": "e6645c41998bc7885d72b6b2debff1c272af0c9081646a68b8e2355daa5e2f46",
+    "bytes": 864912
+  }
+}

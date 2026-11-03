@@ -1,0 +1,23 @@
+{
+  "changed": [
+    "include/q4t/server/chat_plan.h",
+    "include/q4t/server/chat_server.h",
+    "include/q4t/server/server_options.h",
+    "src/main.cpp",
+    "src/server/chat_capabilities.cpp",
+    "src/server/chat_plan.cpp",
+    "src/server/chat_server.cpp",
+    "src/server/server_options.cpp"
+  ],
+  "added": [
+    "include/q4t/server/startup_admission.h"
+  ],
+  "previous_manifest": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-lifecycle-repair-20261103/package/candidate/runtime-source.json",
+    "sha256": "7e41e80702445291cb36d9113a1f45c63aaa87c97390d7463f0c061cb4f7e543",
+    "bytes": 20673
+  },
+  "unchanged_model_and_numerical_sources": true,
+  "performance_acceptance": false,
+  "scope": "Startup available-memory admission, CLI and discovery only. Template, tokenizer, grammar, model math and MTP unchanged."
+}

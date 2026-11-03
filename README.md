@@ -12,7 +12,7 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 
 ## 能力概览
 
-当前默认程序`84d16983`已包含工具/推理输出解析、JSON/SSE、带ID工具
+当前默认程序（身份见[STATUS](docs/STATUS.md)）已包含工具/推理输出解析、JSON/SSE、带ID工具
 历史、单条开头developer适配和`/v1/capabilities`能力/模板身份查询。
 `messages`默认解析；`parse_response: false`保留原始输出，`prompt`
 始终为raw。none / required / named、禁止多调用、strict工具参数和
@@ -21,6 +21,10 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 固定12KiB严格复制输出的真实TCP取消/写截止及后续恢复已验，见
 [限定结果](docs/SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)；生成仍可能因
 token预算不足而失败，canonical分词长度不构成生成上限。
+
+启动增加metadata前、模型分配前、ready前的可用内存检查；默认2GiB
+余量、绕过方式及[Thor四类分配计量](docs/SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)
+均有实际证据。可用量快照不是预留，cgroup限制不覆盖全部CUDA物理RAM。
 
 `reasoning_field`可选择`reasoning`或默认`reasoning_content`；
 `include_reasoning: false`隐藏已解析的推理正文，计算和usage不变。

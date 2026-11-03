@@ -1,0 +1,92 @@
+{
+  "status": "PASS_BOUNDED_STARTUP_MEMORY",
+  "reused": {
+    "passed": true,
+    "original_failure": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/execution/business/result.json",
+      "sha256": "0db15331b760b0f31fddf0cdd7af42305f1bdc703b9b2fb64366b309c4084942",
+      "bytes": 234
+    },
+    "original_guard": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/execution/lease/exit.json",
+      "sha256": "c95859e09202de26e297b886293035663c0a0cea12244ee9fe0ee5ba4f5538c9",
+      "bytes": 603
+    },
+    "wires": [
+      {
+        "file": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/execution/business/model/ordinary-recovery-wire.bin",
+          "sha256": "90e43a4ed4a75d772c65c2cc3b654b254d2a435335b38d87863a5490b93a63c1",
+          "bytes": 306
+        },
+        "envelopes": 1,
+        "success": true
+      },
+      {
+        "file": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/execution/business/model/ordinary-sse-wire.bin",
+          "sha256": "542a133d43353c9fe1419aa43831fcb87c13de1f59a0a1d6cd1d0a43439f2405",
+          "bytes": 2161
+        },
+        "envelopes": 9,
+        "success": true
+      },
+      {
+        "file": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/execution/business/model/strict-json-wire.bin",
+          "sha256": "0d9a6995c40b1eb262661bdcdbf9a4c28caad8a6a3f8ac98811aac7aadeb9d60",
+          "bytes": 314
+        },
+        "envelopes": 1,
+        "success": true
+      },
+      {
+        "file": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/execution/business/model/project-read-wire.bin",
+          "sha256": "add93bdc8bb39c6d01a2a47004d2fccaf0aa78072fe0f014617f3e61579466b5",
+          "bytes": 1184
+        },
+        "envelopes": 4,
+        "success": true
+      },
+      {
+        "file": {
+          "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-memory-20261103/execution/business/model/project-answer-wire.bin",
+          "sha256": "31ebe648240eb54b7f5295f4a97e8145f995ee9aabb833af3193a6bd91339312",
+          "bytes": 1137
+        },
+        "envelopes": 4,
+        "success": true
+      }
+    ],
+    "counts": {
+      "generations": 5,
+      "negatives": 2,
+      "starts": 3,
+      "probes": 0
+    },
+    "expected_workers": 3,
+    "reason": "strict JSON, required tool, and tool_choice=none final text each compile constraints",
+    "original_failure_retained": true,
+    "runtime_changed": false,
+    "new_model_requests": 0,
+    "new_model_starts": 0,
+    "unexecuted_original_checks": [
+      "three final health HTTP probes",
+      "post-business standalone resource sample"
+    ],
+    "replacement_evidence": "Actual ready metric and drained resources, five successful HTTP turns, clean shutdown. Installed CLI/worker still required; same-ELF HTTP reuse remains explicit."
+  },
+  "correction_scope": "offline worker accounting plus previously unexecuted four probes; no repeated model/native cases",
+  "original_failed_execution_retained": true,
+  "performance_acceptance": false,
+  "physical_ram_hard_limit_proved": false,
+  "counts": {
+    "generations": 5,
+    "negatives": 2,
+    "starts": 3,
+    "probes": 4
+  },
+  "control_requests": 9,
+  "cumulative_elapsed_seconds": 316.9788610935211
+}

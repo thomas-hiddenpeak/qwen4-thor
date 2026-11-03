@@ -59,6 +59,12 @@ host池已满足未来低RAM目标。
 代码与历史证据详见[前提对齐审计](SSD_OFFLOAD_ALIGNMENT_AUDIT_2026-10-21.md)。
 PLE另有io_uring页池路径；同样遵守统一RAM计量，不能当成现成GDS实现。
 
+2026-11-03补充实测依据：[四类256MiB分配计量](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md#256mib分配的实际记账)
+中，cudaMalloc使全局可用量约降257MiB，而memcg增量接近零。
+其他三类本次有256MiB级可见增量；这不是全部分配路径覆盖证明，
+也不是物理硬限额。释放API成功后全局/CUDA快照没有立即逐字节恢复。
+这些证据加强下面的独立口径要求，不新增CPU容量卸载或SSD性能结论。
+
 ## 容量与读取验收
 
 1. **先定义资源条件**：冻结device工作集、host staging/L2/mirror、
