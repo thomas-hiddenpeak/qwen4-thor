@@ -1,0 +1,2601 @@
+{
+  "records": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/bindings.json",
+      "sha256": "8f254ad317d88d3e01ddfb96fdb5e6abe70cc37c51ef3b54f856110d2045c91f",
+      "bytes": 982,
+      "member": "handoff/cpu/bindings.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/build-engine-command.json",
+      "sha256": "2a0a25d7f64a4df16f310793c5382e2943867e16e445093bbae46eb0caf6ccc6",
+      "bytes": 279,
+      "member": "handoff/cpu/build-engine-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/build-engine-exit.json",
+      "sha256": "0fef68e181eb65fa71a1bea8b6901c427c628ef1fc2fe913c4bc4487416feb59",
+      "bytes": 53,
+      "member": "handoff/cpu/build-engine-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/build-engine.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu/build-engine.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/build-engine.stdout",
+      "sha256": "22854aca2af8ac4381112cc3ca45af46dc792324bacc21045434be57c153dccb",
+      "bytes": 3257,
+      "member": "handoff/cpu/build-engine.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/build-off-command.json",
+      "sha256": "c7ed483c1ee736c73294a8331520a36753d5abe467fa0035cdc63b6b7cae1aee",
+      "bytes": 238,
+      "member": "handoff/cpu/build-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/build-off-exit.json",
+      "sha256": "7b0a9608ecf4ba42e17124d0e52312559149a9404cf6a3b90eb0c60e740caafc",
+      "bytes": 53,
+      "member": "handoff/cpu/build-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/build-off.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu/build-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/build-off.stdout",
+      "sha256": "97fa6f36f6935c4e17d392fafffb44c722f6f2cb617b271b64e899c748e17653",
+      "bytes": 958,
+      "member": "handoff/cpu/build-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/build-result.json",
+      "sha256": "93e9a364d607c852ac94b2dc8e3b6ca80eb5ba41b166049e9433ac935c3a4d2f",
+      "bytes": 1296,
+      "member": "handoff/cpu/build-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/commands.json",
+      "sha256": "6b077f9f42b26d8f332146609f6296eaa8feb8554d04e90afa38a97cde816e25",
+      "bytes": 1684,
+      "member": "handoff/cpu/commands.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/configure-engine-command.json",
+      "sha256": "10c1bbcead34934007bafa731ba56443f4b974b27b3b6eb0dc332b064a8f85f4",
+      "bytes": 746,
+      "member": "handoff/cpu/configure-engine-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/configure-engine-exit.json",
+      "sha256": "34ac154fc37aac872dc0c0e2510b18102b41b025ebbfa8afb097a46445d57448",
+      "bytes": 53,
+      "member": "handoff/cpu/configure-engine-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/configure-engine.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu/configure-engine.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/configure-engine.stdout",
+      "sha256": "4431798d63a591fac895458d2e8a33de877c4636fb2c1ab5d15d3c09d712fa93",
+      "bytes": 488,
+      "member": "handoff/cpu/configure-engine.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/configure-off-command.json",
+      "sha256": "240116c795dd24fd244d1cd3d0d767db5c5ad29c4fd47f1ad301a911a697b3c1",
+      "bytes": 382,
+      "member": "handoff/cpu/configure-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/configure-off-exit.json",
+      "sha256": "a0cfe5a5fc36cffaa85d21d714a3ffd515b54d10ba2f740e0fab97f872dbb2f0",
+      "bytes": 53,
+      "member": "handoff/cpu/configure-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/configure-off.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu/configure-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/configure-off.stdout",
+      "sha256": "cbf7c0a96c361a883f8f409ddf5ef1afddbb7a0a706824f7315b6f8a6fc2b277",
+      "bytes": 214,
+      "member": "handoff/cpu/configure-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/runtime-source.json",
+      "sha256": "d85d89533540603793a78442155a0a044037503fd1804b134f024d6f3ff1c70f",
+      "bytes": 21936,
+      "member": "handoff/cpu/runtime-source.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/backend-command.json",
+      "sha256": "e4819b408c2af45986f119e50edf25e724efe41914343e0b8d49fab583279338",
+      "bytes": 185,
+      "member": "handoff/cpu/tests/backend-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/backend-exit.json",
+      "sha256": "28a104f010985becf86946ce47a8ce43810fbf11347f52fb1dbc4bd63a8d2ef9",
+      "bytes": 53,
+      "member": "handoff/cpu/tests/backend-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/backend.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu/tests/backend.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/backend.stdout",
+      "sha256": "fafbefd646ccb9127473d5ec6819c360ede330a36faa1425175490f6b4aa4272",
+      "bytes": 577,
+      "member": "handoff/cpu/tests/backend.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/generated-command.json",
+      "sha256": "74fb284d2655284b07375675ddb46decded7c2ee462f39540d89cc6845040815",
+      "bytes": 147,
+      "member": "handoff/cpu/tests/generated-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/generated-exit.json",
+      "sha256": "546485da4662550fc50de26dfb8a8e9605e7b7115e9e06c4e12859392de83ed4",
+      "bytes": 53,
+      "member": "handoff/cpu/tests/generated-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/generated.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu/tests/generated.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/generated.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu/tests/generated.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-gate/check_host_contracts.py",
+      "sha256": "a09810c67df4ce76dfe1d26d436574706587a77a853b81466594050387121ddd",
+      "bytes": 3139,
+      "member": "handoff/cpu/tests/host-gate/check_host_contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-gate/list.log",
+      "sha256": "6a344950a7c5809a7d175715e076f4155e48868a7f79928669aaf5c345b8dba5",
+      "bytes": 12759,
+      "member": "handoff/cpu/tests/host-gate/list.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-gate/required_host_tests.txt",
+      "sha256": "7b7d6d44d4f4b404e22e1a8e9d2a93ae490417c60aca0b62a28901fb5e15dd79",
+      "bytes": 10867,
+      "member": "handoff/cpu/tests/host-gate/required_host_tests.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-gate/result.json",
+      "sha256": "07c40fa73b9b034a15f76977c7835804f594a0520dc666989348371ab783b0a1",
+      "bytes": 12216,
+      "member": "handoff/cpu/tests/host-gate/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-gate/run-stderr.log",
+      "sha256": "5add54d0864086173a7c365ef2adaace37d5625a582ed1d6559fc13c9fce305d",
+      "bytes": 2481,
+      "member": "handoff/cpu/tests/host-gate/run-stderr.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-gate/run.log",
+      "sha256": "615672c5b731736012786bb14c5acb88cd2cef1b58b03b381e2891df2e812b29",
+      "bytes": 11816,
+      "member": "handoff/cpu/tests/host-gate/run.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-off-command.json",
+      "sha256": "5ff77961cee3ced4c81451cf6e15c5c0e770d4cc6f9e5f969abf293780bbccf5",
+      "bytes": 160,
+      "member": "handoff/cpu/tests/host-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-off-exit.json",
+      "sha256": "4ea75fb5f78236cb8098e1fc3b4c25a695af5fc8d53c6302edb5fc6784451c22",
+      "bytes": 53,
+      "member": "handoff/cpu/tests/host-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-off.stderr",
+      "sha256": "a17b384a45bc4827b35dcfe2f2bddd1367d2816ac417417806801c057278c629",
+      "bytes": 2481,
+      "member": "handoff/cpu/tests/host-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-off.stdout",
+      "sha256": "f29de26de71903f27f9d1c17b46c1cecd1bf444a99ac0718730433ba54178f26",
+      "bytes": 13932,
+      "member": "handoff/cpu/tests/host-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-required-command.json",
+      "sha256": "7a183b1552ad4dacf4e811186dd1f327042ba49f0fca35cad1c759e7dda76d04",
+      "bytes": 378,
+      "member": "handoff/cpu/tests/host-required-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-required-exit.json",
+      "sha256": "d8a8b55ef10661a29504db6ea06314a7fb3a8ea6a86b4fae883f1a6240accb95",
+      "bytes": 53,
+      "member": "handoff/cpu/tests/host-required-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-required.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu/tests/host-required.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/host-required.stdout",
+      "sha256": "49353cd3a76f519baf176c2ae3a3d5fab8165d4c24b7bd7af1a33a9bd3d2bb69",
+      "bytes": 66,
+      "member": "handoff/cpu/tests/host-required.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/inventory-command.json",
+      "sha256": "5750b0d5206be1c1b4a2ec3c9cc771c21b5f832ed17aa7bff60f1e8a6ad9d19e",
+      "bytes": 149,
+      "member": "handoff/cpu/tests/inventory-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/inventory-exit.json",
+      "sha256": "e541d06040e8c58dbf5983513c3f0b3121f83bacb817bcc2843c389ab40f2615",
+      "bytes": 53,
+      "member": "handoff/cpu/tests/inventory-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/inventory.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu/tests/inventory.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/inventory.stdout",
+      "sha256": "9de55a37f96bcd1499dc82858a832e025bd607b792af9e6c5293573d1f63f15e",
+      "bytes": 170,
+      "member": "handoff/cpu/tests/inventory.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/result.json",
+      "sha256": "2b1cfec96b0d744c9c3f9e665124ea8011b7cdf9e083285911a0aa32e61f0a9c",
+      "bytes": 238,
+      "member": "handoff/cpu/tests/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/bindings.json",
+      "sha256": "034753c4015ff51c2ce0b4d99ab0edfdcee8bff0b8220cf4c973a882cc1e1d65",
+      "bytes": 669,
+      "member": "handoff/cpu-build-failed01/bindings.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/build-off-command.json",
+      "sha256": "f4e2884db2f0dfbaaa4056b084893e89845609549caffd4d380ad0a1208371be",
+      "bytes": 238,
+      "member": "handoff/cpu-build-failed01/build-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/build-off-exit.json",
+      "sha256": "4115cbbcf98cf28298e3025c7bf1220ba5f0ba795f4cb1dc8e2994146922193d",
+      "bytes": 52,
+      "member": "handoff/cpu-build-failed01/build-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/build-off.stderr",
+      "sha256": "675c4a180332fda975a46eaf0fe2fe960f5e18e38663b7347129c10c2dffa171",
+      "bytes": 1066,
+      "member": "handoff/cpu-build-failed01/build-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/build-off.stdout",
+      "sha256": "ce3b53a5ea61942c3812d50c4040bb21f51c9dd08b2c36e41cffe106bd4e8549",
+      "bytes": 1496,
+      "member": "handoff/cpu-build-failed01/build-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/build-result.json",
+      "sha256": "3374308388994c95c1449276016a45c578153cc4f1a5aa1910f942a0231954ad",
+      "bytes": 195,
+      "member": "handoff/cpu-build-failed01/build-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/commands.json",
+      "sha256": "6b077f9f42b26d8f332146609f6296eaa8feb8554d04e90afa38a97cde816e25",
+      "bytes": 1684,
+      "member": "handoff/cpu-build-failed01/commands.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/configure-off-command.json",
+      "sha256": "3dab5b2d196d4aff597fd21872a4135ea2ce97e2b8131ef56c832423036dcc8b",
+      "bytes": 382,
+      "member": "handoff/cpu-build-failed01/configure-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/configure-off-exit.json",
+      "sha256": "bb38b1b63df4fa69bf6cb37ce76fd4817c0142fde86f720d4ee3735454bb3fb0",
+      "bytes": 53,
+      "member": "handoff/cpu-build-failed01/configure-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/configure-off.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu-build-failed01/configure-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/configure-off.stdout",
+      "sha256": "e8369bb9858442662c33ece452df87737aa92f2f391edeaf0871f7cb8ec98489",
+      "bytes": 702,
+      "member": "handoff/cpu-build-failed01/configure-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-build-failed01/runtime-source.json",
+      "sha256": "7eea310a0631dc937e3b54c351cec6add9139710c0f550414800810dad235f54",
+      "bytes": 21936,
+      "member": "handoff/cpu-build-failed01/runtime-source.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/bindings.json",
+      "sha256": "31e086def448ee4b3dd83b78fe56f5b8b858b7e0811c00d0861dbc70e233d912",
+      "bytes": 669,
+      "member": "handoff/cpu-before-format/bindings.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/build-engine-command.json",
+      "sha256": "76998d8bb15b61791a158bb621f5cf2e45d0660ef8d4b7e1e4d1e5d4f10257af",
+      "bytes": 279,
+      "member": "handoff/cpu-before-format/build-engine-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/build-engine-exit.json",
+      "sha256": "2c27fd34f487c900df6890b2895d55782916249583c2b2ff2fc2844e21c615e6",
+      "bytes": 53,
+      "member": "handoff/cpu-before-format/build-engine-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/build-engine.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu-before-format/build-engine.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/build-engine.stdout",
+      "sha256": "af6729d62d76a711c2ae67e058fad39a9c741cc890520e3675873f5bf3718ca2",
+      "bytes": 17971,
+      "member": "handoff/cpu-before-format/build-engine.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/build-off-command.json",
+      "sha256": "64c8a43ee5822a1825ff5beda92f29b0a4b61d890ddf66bae2c7bbc77cbe4f71",
+      "bytes": 238,
+      "member": "handoff/cpu-before-format/build-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/build-off-exit.json",
+      "sha256": "58922b5edc9093233ba664fb38febb4f4f6c53ae7e19c057fece43844af547df",
+      "bytes": 53,
+      "member": "handoff/cpu-before-format/build-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/build-off.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu-before-format/build-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/build-off.stdout",
+      "sha256": "e3e41fb8f53d3533bced7a4c74b0b3c62df68e2b9740c2b05f3fef77b9aaa867",
+      "bytes": 5886,
+      "member": "handoff/cpu-before-format/build-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/build-result.json",
+      "sha256": "3af19a3bcd5b56400f47a0d848a63f02234dc5493dc3c00fd85fec75cf85feb9",
+      "bytes": 1296,
+      "member": "handoff/cpu-before-format/build-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/commands.json",
+      "sha256": "6b077f9f42b26d8f332146609f6296eaa8feb8554d04e90afa38a97cde816e25",
+      "bytes": 1684,
+      "member": "handoff/cpu-before-format/commands.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/configure-engine-command.json",
+      "sha256": "11b15a7cf0761dbe397a102ab1b6b626b841ee1daf649b4306a8bebaa035680c",
+      "bytes": 746,
+      "member": "handoff/cpu-before-format/configure-engine-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/configure-engine-exit.json",
+      "sha256": "c3acf573dc30817e0f3745be10b19a33214dca191eba61a0c361c5e9612ff130",
+      "bytes": 53,
+      "member": "handoff/cpu-before-format/configure-engine-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/configure-engine.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu-before-format/configure-engine.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/configure-engine.stdout",
+      "sha256": "3d0760cbcc6423b2244313c291e98a9ee0b95009b784d65c39f7be8406d0ef27",
+      "bytes": 1334,
+      "member": "handoff/cpu-before-format/configure-engine.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/configure-off-command.json",
+      "sha256": "2e07537509c0fe098a448ae04c45bd886e8f9cd3b22bdb47d30a1d24861f2fac",
+      "bytes": 382,
+      "member": "handoff/cpu-before-format/configure-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/configure-off-exit.json",
+      "sha256": "4042d776fa3ba3054babc1366a1b6c5ce49c12122e874f7a5564904fb4638e90",
+      "bytes": 53,
+      "member": "handoff/cpu-before-format/configure-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/configure-off.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu-before-format/configure-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/configure-off.stdout",
+      "sha256": "cbf7c0a96c361a883f8f409ddf5ef1afddbb7a0a706824f7315b6f8a6fc2b277",
+      "bytes": 214,
+      "member": "handoff/cpu-before-format/configure-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/runtime-source.json",
+      "sha256": "7eea310a0631dc937e3b54c351cec6add9139710c0f550414800810dad235f54",
+      "bytes": 21936,
+      "member": "handoff/cpu-before-format/runtime-source.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/backend-command.json",
+      "sha256": "dc1fc77e8e79e8b89d6bb345c876e60d452be89ba1fa47e782b56917b066c700",
+      "bytes": 185,
+      "member": "handoff/cpu-before-format/tests/backend-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/backend-exit.json",
+      "sha256": "7e9258ea3841a55a67b2aed7c023a4beba7e9267a15d959665161ce48f2a0558",
+      "bytes": 53,
+      "member": "handoff/cpu-before-format/tests/backend-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/backend.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu-before-format/tests/backend.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/backend.stdout",
+      "sha256": "fafbefd646ccb9127473d5ec6819c360ede330a36faa1425175490f6b4aa4272",
+      "bytes": 577,
+      "member": "handoff/cpu-before-format/tests/backend.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/generated-command.json",
+      "sha256": "fe28be49dcaf67a5c32e5be81b273b731825d7d47661f18b0303cb5f9ef63baa",
+      "bytes": 147,
+      "member": "handoff/cpu-before-format/tests/generated-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/generated-exit.json",
+      "sha256": "5d7bfe62b1a187e0838559eee644f4094c7e56e9aceb0511d023e5a0c0111605",
+      "bytes": 53,
+      "member": "handoff/cpu-before-format/tests/generated-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/generated.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu-before-format/tests/generated.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/generated.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu-before-format/tests/generated.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-gate/check_host_contracts.py",
+      "sha256": "a09810c67df4ce76dfe1d26d436574706587a77a853b81466594050387121ddd",
+      "bytes": 3139,
+      "member": "handoff/cpu-before-format/tests/host-gate/check_host_contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-gate/list.log",
+      "sha256": "6a344950a7c5809a7d175715e076f4155e48868a7f79928669aaf5c345b8dba5",
+      "bytes": 12759,
+      "member": "handoff/cpu-before-format/tests/host-gate/list.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-gate/required_host_tests.txt",
+      "sha256": "7b7d6d44d4f4b404e22e1a8e9d2a93ae490417c60aca0b62a28901fb5e15dd79",
+      "bytes": 10867,
+      "member": "handoff/cpu-before-format/tests/host-gate/required_host_tests.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-gate/result.json",
+      "sha256": "e96393000701934f9f6f43c56ef4d75ad70b01867116890cccada6c7c9d325bc",
+      "bytes": 12216,
+      "member": "handoff/cpu-before-format/tests/host-gate/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-gate/run-stderr.log",
+      "sha256": "db79738b54fcf5208c77044e1f0146ba676d0708d96a314d5e4ab9650102b730",
+      "bytes": 2481,
+      "member": "handoff/cpu-before-format/tests/host-gate/run-stderr.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-gate/run.log",
+      "sha256": "615672c5b731736012786bb14c5acb88cd2cef1b58b03b381e2891df2e812b29",
+      "bytes": 11816,
+      "member": "handoff/cpu-before-format/tests/host-gate/run.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-off-command.json",
+      "sha256": "0b10733222e8554f480723ec3285a678ade4d4562d7c61986005f0ef05db4fd5",
+      "bytes": 160,
+      "member": "handoff/cpu-before-format/tests/host-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-off-exit.json",
+      "sha256": "8a3fb4520ef8d0148c3e5fae23d72dd305ccada6f42958ff63c8b9c0d6aad104",
+      "bytes": 53,
+      "member": "handoff/cpu-before-format/tests/host-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-off.stderr",
+      "sha256": "775011beb8b628f197456dafa8a7e40f1e936b430a418634d13e7892e0e6f73b",
+      "bytes": 2481,
+      "member": "handoff/cpu-before-format/tests/host-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-off.stdout",
+      "sha256": "f29de26de71903f27f9d1c17b46c1cecd1bf444a99ac0718730433ba54178f26",
+      "bytes": 13932,
+      "member": "handoff/cpu-before-format/tests/host-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-required-command.json",
+      "sha256": "c948d482483ca2b153dcef08c3560aa70c0fb85a9c7dc1ff2d8e4b20aae2deb5",
+      "bytes": 378,
+      "member": "handoff/cpu-before-format/tests/host-required-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-required-exit.json",
+      "sha256": "50243744ce136c3b1cee93a9b4bf06ba3ad2d005cf33ed37d227794539c74d65",
+      "bytes": 53,
+      "member": "handoff/cpu-before-format/tests/host-required-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-required.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu-before-format/tests/host-required.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/host-required.stdout",
+      "sha256": "49353cd3a76f519baf176c2ae3a3d5fab8165d4c24b7bd7af1a33a9bd3d2bb69",
+      "bytes": 66,
+      "member": "handoff/cpu-before-format/tests/host-required.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/inventory-command.json",
+      "sha256": "1faafccde0e8baf4e4c5a4229fbf13beae2d09ba4259376bcd0245e6f05e123b",
+      "bytes": 149,
+      "member": "handoff/cpu-before-format/tests/inventory-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/inventory-exit.json",
+      "sha256": "68ee3ec779eae08faee94a3c4f86b902a77ff3621befd4f6213db23cad0ba551",
+      "bytes": 52,
+      "member": "handoff/cpu-before-format/tests/inventory-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/inventory.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/cpu-before-format/tests/inventory.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/inventory.stdout",
+      "sha256": "9de55a37f96bcd1499dc82858a832e025bd607b792af9e6c5293573d1f63f15e",
+      "bytes": 170,
+      "member": "handoff/cpu-before-format/tests/inventory.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/tests/result.json",
+      "sha256": "2b1cfec96b0d744c9c3f9e665124ea8011b7cdf9e083285911a0aa32e61f0a9c",
+      "bytes": 238,
+      "member": "handoff/cpu-before-format/tests/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/driver-cpu/driver-command.json",
+      "sha256": "df15e8d91de2ee493261795ced03362c0b850f5dd4bcf6657af126ee712d7a00",
+      "bytes": 161,
+      "member": "handoff/driver-cpu/driver-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/driver-cpu/driver-exit.json",
+      "sha256": "d465a2a350d528c0f3f5a91122220b3cc28d118be575b153da4621df207b9dae",
+      "bytes": 53,
+      "member": "handoff/driver-cpu/driver-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/driver-cpu/driver.stderr",
+      "sha256": "c4624f88e5e23db7288494a0c822488bc4e4dc768a64f2c837be9e255a2259d6",
+      "bytes": 5340,
+      "member": "handoff/driver-cpu/driver.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/driver-cpu/driver.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/driver-cpu/driver.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/driver-cpu/result.json",
+      "sha256": "e84f5835883b9d982ad146b8ce89112d8f67595d2129bc42d5abd5b7a9b4729f",
+      "bytes": 488,
+      "member": "handoff/driver-cpu/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/driver-corrected/driver-command.json",
+      "sha256": "1d5a795e22142ca25f7adfde4f45a222816821f4e309c2f7601238e17084e5a7",
+      "bytes": 468,
+      "member": "handoff/driver-corrected/driver-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/driver-corrected/driver-exit.json",
+      "sha256": "9117a9d3e45e7f2574069cf92add4da9e00492a624da2b83532dbf8d028fe874",
+      "bytes": 52,
+      "member": "handoff/driver-corrected/driver-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/driver-corrected/driver.stderr",
+      "sha256": "c030fc08c5bbee241d33e0368f494573411166711b462776eae8f64e54bcce6c",
+      "bytes": 645,
+      "member": "handoff/driver-corrected/driver.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/driver-corrected/driver.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/driver-corrected/driver.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/driver-corrected/result.json",
+      "sha256": "3d686ce8a2557d8dd8703fcb0448a7a2451d76f2c8e1878367d25aebb057e246",
+      "bytes": 1055,
+      "member": "handoff/driver-corrected/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/candidate/CMakeCache.txt",
+      "sha256": "fd1130b57a00a839279dab7875cbdd7eb942016069927ad57fdea4ba574e4111",
+      "bytes": 39184,
+      "member": "handoff/package/candidate/CMakeCache.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/candidate/compile_commands.json",
+      "sha256": "c435a45838b15e7a942b1d7e395f617defe4146185e28dda6e73e4a1556aa976",
+      "bytes": 339025,
+      "member": "handoff/package/candidate/compile_commands.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/candidate/generated/q4t/server/chat_protocol_identity.h",
+      "sha256": "6c5aa0250ca0b3febee87ccdbbed12c2cc46276472931e863666b3a02bae141b",
+      "bytes": 697,
+      "member": "handoff/package/candidate/generated/q4t/server/chat_protocol_identity.h"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/candidate/generated/q4t/server/chat_protocol_sources.json",
+      "sha256": "b3aa9a389f300c8b5e72e60a904c58a680dc646d36095dc38bd9fa0ee4d342de",
+      "bytes": 8832,
+      "member": "handoff/package/candidate/generated/q4t/server/chat_protocol_sources.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/candidate/q4t.rules.yml",
+      "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+      "bytes": 13565,
+      "member": "handoff/package/candidate/q4t.rules.yml"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/candidate/runtime-source.json",
+      "sha256": "d85d89533540603793a78442155a0a044037503fd1804b134f024d6f3ff1c70f",
+      "bytes": 21936,
+      "member": "handoff/package/candidate/runtime-source.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/bindings.json",
+      "sha256": "8f254ad317d88d3e01ddfb96fdb5e6abe70cc37c51ef3b54f856110d2045c91f",
+      "bytes": 982,
+      "member": "handoff/package/cpu/bindings.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/build-engine-command.json",
+      "sha256": "2a0a25d7f64a4df16f310793c5382e2943867e16e445093bbae46eb0caf6ccc6",
+      "bytes": 279,
+      "member": "handoff/package/cpu/build-engine-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/build-engine-exit.json",
+      "sha256": "0fef68e181eb65fa71a1bea8b6901c427c628ef1fc2fe913c4bc4487416feb59",
+      "bytes": 53,
+      "member": "handoff/package/cpu/build-engine-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/build-engine.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/package/cpu/build-engine.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/build-engine.stdout",
+      "sha256": "22854aca2af8ac4381112cc3ca45af46dc792324bacc21045434be57c153dccb",
+      "bytes": 3257,
+      "member": "handoff/package/cpu/build-engine.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/build-off-command.json",
+      "sha256": "c7ed483c1ee736c73294a8331520a36753d5abe467fa0035cdc63b6b7cae1aee",
+      "bytes": 238,
+      "member": "handoff/package/cpu/build-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/build-off-exit.json",
+      "sha256": "7b0a9608ecf4ba42e17124d0e52312559149a9404cf6a3b90eb0c60e740caafc",
+      "bytes": 53,
+      "member": "handoff/package/cpu/build-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/build-off.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/package/cpu/build-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/build-off.stdout",
+      "sha256": "97fa6f36f6935c4e17d392fafffb44c722f6f2cb617b271b64e899c748e17653",
+      "bytes": 958,
+      "member": "handoff/package/cpu/build-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/build-result.json",
+      "sha256": "93e9a364d607c852ac94b2dc8e3b6ca80eb5ba41b166049e9433ac935c3a4d2f",
+      "bytes": 1296,
+      "member": "handoff/package/cpu/build-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/commands.json",
+      "sha256": "6b077f9f42b26d8f332146609f6296eaa8feb8554d04e90afa38a97cde816e25",
+      "bytes": 1684,
+      "member": "handoff/package/cpu/commands.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/configure-engine-command.json",
+      "sha256": "10c1bbcead34934007bafa731ba56443f4b974b27b3b6eb0dc332b064a8f85f4",
+      "bytes": 746,
+      "member": "handoff/package/cpu/configure-engine-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/configure-engine-exit.json",
+      "sha256": "34ac154fc37aac872dc0c0e2510b18102b41b025ebbfa8afb097a46445d57448",
+      "bytes": 53,
+      "member": "handoff/package/cpu/configure-engine-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/configure-engine.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/package/cpu/configure-engine.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/configure-engine.stdout",
+      "sha256": "4431798d63a591fac895458d2e8a33de877c4636fb2c1ab5d15d3c09d712fa93",
+      "bytes": 488,
+      "member": "handoff/package/cpu/configure-engine.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/configure-off-command.json",
+      "sha256": "240116c795dd24fd244d1cd3d0d767db5c5ad29c4fd47f1ad301a911a697b3c1",
+      "bytes": 382,
+      "member": "handoff/package/cpu/configure-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/configure-off-exit.json",
+      "sha256": "a0cfe5a5fc36cffaa85d21d714a3ffd515b54d10ba2f740e0fab97f872dbb2f0",
+      "bytes": 53,
+      "member": "handoff/package/cpu/configure-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/configure-off.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/package/cpu/configure-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/configure-off.stdout",
+      "sha256": "cbf7c0a96c361a883f8f409ddf5ef1afddbb7a0a706824f7315b6f8a6fc2b277",
+      "bytes": 214,
+      "member": "handoff/package/cpu/configure-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/runtime-source.json",
+      "sha256": "d85d89533540603793a78442155a0a044037503fd1804b134f024d6f3ff1c70f",
+      "bytes": 21936,
+      "member": "handoff/package/cpu/runtime-source.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/backend-command.json",
+      "sha256": "e4819b408c2af45986f119e50edf25e724efe41914343e0b8d49fab583279338",
+      "bytes": 185,
+      "member": "handoff/package/cpu/tests/backend-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/backend-exit.json",
+      "sha256": "28a104f010985becf86946ce47a8ce43810fbf11347f52fb1dbc4bd63a8d2ef9",
+      "bytes": 53,
+      "member": "handoff/package/cpu/tests/backend-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/backend.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/package/cpu/tests/backend.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/backend.stdout",
+      "sha256": "fafbefd646ccb9127473d5ec6819c360ede330a36faa1425175490f6b4aa4272",
+      "bytes": 577,
+      "member": "handoff/package/cpu/tests/backend.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/generated-command.json",
+      "sha256": "74fb284d2655284b07375675ddb46decded7c2ee462f39540d89cc6845040815",
+      "bytes": 147,
+      "member": "handoff/package/cpu/tests/generated-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/generated-exit.json",
+      "sha256": "546485da4662550fc50de26dfb8a8e9605e7b7115e9e06c4e12859392de83ed4",
+      "bytes": 53,
+      "member": "handoff/package/cpu/tests/generated-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/generated.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/package/cpu/tests/generated.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/generated.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/package/cpu/tests/generated.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-gate/check_host_contracts.py",
+      "sha256": "a09810c67df4ce76dfe1d26d436574706587a77a853b81466594050387121ddd",
+      "bytes": 3139,
+      "member": "handoff/package/cpu/tests/host-gate/check_host_contracts.py"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-gate/list.log",
+      "sha256": "6a344950a7c5809a7d175715e076f4155e48868a7f79928669aaf5c345b8dba5",
+      "bytes": 12759,
+      "member": "handoff/package/cpu/tests/host-gate/list.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-gate/required_host_tests.txt",
+      "sha256": "7b7d6d44d4f4b404e22e1a8e9d2a93ae490417c60aca0b62a28901fb5e15dd79",
+      "bytes": 10867,
+      "member": "handoff/package/cpu/tests/host-gate/required_host_tests.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-gate/result.json",
+      "sha256": "07c40fa73b9b034a15f76977c7835804f594a0520dc666989348371ab783b0a1",
+      "bytes": 12216,
+      "member": "handoff/package/cpu/tests/host-gate/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-gate/run-stderr.log",
+      "sha256": "5add54d0864086173a7c365ef2adaace37d5625a582ed1d6559fc13c9fce305d",
+      "bytes": 2481,
+      "member": "handoff/package/cpu/tests/host-gate/run-stderr.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-gate/run.log",
+      "sha256": "615672c5b731736012786bb14c5acb88cd2cef1b58b03b381e2891df2e812b29",
+      "bytes": 11816,
+      "member": "handoff/package/cpu/tests/host-gate/run.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-off-command.json",
+      "sha256": "5ff77961cee3ced4c81451cf6e15c5c0e770d4cc6f9e5f969abf293780bbccf5",
+      "bytes": 160,
+      "member": "handoff/package/cpu/tests/host-off-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-off-exit.json",
+      "sha256": "4ea75fb5f78236cb8098e1fc3b4c25a695af5fc8d53c6302edb5fc6784451c22",
+      "bytes": 53,
+      "member": "handoff/package/cpu/tests/host-off-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-off.stderr",
+      "sha256": "a17b384a45bc4827b35dcfe2f2bddd1367d2816ac417417806801c057278c629",
+      "bytes": 2481,
+      "member": "handoff/package/cpu/tests/host-off.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-off.stdout",
+      "sha256": "f29de26de71903f27f9d1c17b46c1cecd1bf444a99ac0718730433ba54178f26",
+      "bytes": 13932,
+      "member": "handoff/package/cpu/tests/host-off.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-required-command.json",
+      "sha256": "7a183b1552ad4dacf4e811186dd1f327042ba49f0fca35cad1c759e7dda76d04",
+      "bytes": 378,
+      "member": "handoff/package/cpu/tests/host-required-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-required-exit.json",
+      "sha256": "d8a8b55ef10661a29504db6ea06314a7fb3a8ea6a86b4fae883f1a6240accb95",
+      "bytes": 53,
+      "member": "handoff/package/cpu/tests/host-required-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-required.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/package/cpu/tests/host-required.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/host-required.stdout",
+      "sha256": "49353cd3a76f519baf176c2ae3a3d5fab8165d4c24b7bd7af1a33a9bd3d2bb69",
+      "bytes": 66,
+      "member": "handoff/package/cpu/tests/host-required.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/inventory-command.json",
+      "sha256": "5750b0d5206be1c1b4a2ec3c9cc771c21b5f832ed17aa7bff60f1e8a6ad9d19e",
+      "bytes": 149,
+      "member": "handoff/package/cpu/tests/inventory-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/inventory-exit.json",
+      "sha256": "e541d06040e8c58dbf5983513c3f0b3121f83bacb817bcc2843c389ab40f2615",
+      "bytes": 53,
+      "member": "handoff/package/cpu/tests/inventory-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/inventory.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/package/cpu/tests/inventory.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/inventory.stdout",
+      "sha256": "9de55a37f96bcd1499dc82858a832e025bd607b792af9e6c5293573d1f63f15e",
+      "bytes": 170,
+      "member": "handoff/package/cpu/tests/inventory.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/cpu/tests/result.json",
+      "sha256": "2b1cfec96b0d744c9c3f9e665124ea8011b7cdf9e083285911a0aa32e61f0a9c",
+      "bytes": 238,
+      "member": "handoff/package/cpu/tests/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/numerical-reuse.json",
+      "sha256": "6b2837d54238f66ef90e86f94926f14191a37f182dd67668eaed7c051f65ce7c",
+      "bytes": 908,
+      "member": "handoff/package/numerical-reuse.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/plan.json",
+      "sha256": "3930f50f82069c54d5387fdc54e5dd75947b663ab471cc4c37e6227dfb0f1516",
+      "bytes": 1933,
+      "member": "handoff/package/plan.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/previous/CMakeCache.txt",
+      "sha256": "4fe5c6c12bc753036e14cef20c6e6b336e16865baf4915a91f510ee0fb30e571",
+      "bytes": 38807,
+      "member": "handoff/package/previous/CMakeCache.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/previous/q4t.release.json",
+      "sha256": "18c9d2c50c847c90c6b033b4350fa0cf10c59777bf3a9dacd01391250a341f19",
+      "bytes": 48378,
+      "member": "handoff/package/previous/q4t.release.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/previous/q4t.rules.yml",
+      "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+      "bytes": 13565,
+      "member": "handoff/package/previous/q4t.rules.yml"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/sealed-files.json",
+      "sha256": "c498dc3b6c51438ca3e8f259f5650bb54edca0ea0e0bd63094d4c56bc9890a42",
+      "bytes": 6266,
+      "member": "handoff/package/sealed-files.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/sources.json",
+      "sha256": "9702c8ce639a4bd32657865df789654f71c81aa2cf7ed280764190ba2b0ad311",
+      "bytes": 176082,
+      "member": "handoff/package/sources.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/begin.json",
+      "sha256": "a81eda3d435ca2b8157bfea602b4fa813368705738eb11c5bab9f0fb642d24d4",
+      "bytes": 153,
+      "member": "handoff/execution/begin.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/after-error-http.json",
+      "sha256": "d49b5474590870fe9e02e01015306c8f2a9ecee44eb66d29ec67994ee3404e31",
+      "bytes": 245,
+      "member": "handoff/execution/business/after-error-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/after-error-request.json",
+      "sha256": "3d4a9badd45244e036b6e421a7ea5e130ea14aa566a434b654c5b995767166e7",
+      "bytes": 1064,
+      "member": "handoff/execution/business/after-error-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/after-error-response.json",
+      "sha256": "a9e7c6680abaee13e1e6e9c509f94c702a0baf29dfdf88478d3ae4a550a31c33",
+      "bytes": 284,
+      "member": "handoff/execution/business/after-error-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/after-error-wire.bin",
+      "sha256": "8db464bb6e3fe0998fd7e4c753e5c67d0ad771c8aebdaccc58a7f7d3034ded50",
+      "bytes": 314,
+      "member": "handoff/execution/business/after-error-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/after-sse-http.json",
+      "sha256": "d92bb4ab60e361ecd838d63bd8757a53b6816b032c25e3ca1d8b97dc3d9cf790",
+      "bytes": 245,
+      "member": "handoff/execution/business/after-sse-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/after-sse-request.json",
+      "sha256": "ed2a7c7bc756934b7b00756611703053fec55a05864b5aa6b6f98aebe5f8f997",
+      "bytes": 1064,
+      "member": "handoff/execution/business/after-sse-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/after-sse-response.json",
+      "sha256": "c3789306e43f908424c7a7c2691964a07fcfd6dd5837413171c2af397e8d1f4e",
+      "bytes": 284,
+      "member": "handoff/execution/business/after-sse-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/after-sse-wire.bin",
+      "sha256": "c0e1e258fe6130ef4bb578d46d403305a1068e9fb17cfc0283f2c39c365a9256",
+      "bytes": 314,
+      "member": "handoff/execution/business/after-sse-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-controls-01.json",
+      "sha256": "a2617edd860f531a5c522ecccde92c3cd2d4e2b0f3ffe07e039ca37e0339df24",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-controls-01.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-controls-02.json",
+      "sha256": "6591c0445998c8b1ff29c01640f39b0b55b673ee5ad3f4be8898871300993e56",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-controls-02.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-controls-03.json",
+      "sha256": "6f8e502ebc577148e3b841d0126a5d6ea9a8af20423bc407cc6258639bd8cd8e",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-controls-03.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-controls-04.json",
+      "sha256": "2ef2ea652bebae31284b1572b1819f643321e329305eaf08f3cfd519fbbcd3c8",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-controls-04.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-controls-05.json",
+      "sha256": "89d9bcab5acc431341305ab68e300f7c89eba5b243b6b2934fe21344f5be8077",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-controls-05.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-controls-06.json",
+      "sha256": "2b5e5ca3258c73f2ed02159ece3d0f68e4b092aa152c6584144bc2176d8c4a59",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-controls-06.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-controls-07.json",
+      "sha256": "bb93c61e318c1bd0b2ad152c7a0c2ad3a1594dfdf79ca39fde8c70cf6a8c4d91",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-controls-07.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-generations-01.json",
+      "sha256": "272bdfd33c5fbcf16e94daf5628b34706ccd458f4f1fbce85305e6163eff0200",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-generations-01.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-generations-02.json",
+      "sha256": "42441da1c6eb2b55a64c00146c8e96c93cb1fb3dbd61266239d8bfacc5d58362",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-generations-02.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-generations-03.json",
+      "sha256": "56b0ea607d80c59b368d02ded6316f2d5c1b5e47eda3d0f8cf2008d46bf7fc23",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-generations-03.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-generations-04.json",
+      "sha256": "e815d3cd6c1a79bc02257e4c2c015c9e14a6f840c212368d91333d890cbe4adf",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-generations-04.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-generations-05.json",
+      "sha256": "c64177d4c8f09e193eb8601f745c778d1411842f00458e9ba854aa96d51e939d",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-generations-05.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-generations-06.json",
+      "sha256": "97c270a1a88f599c354228e912fb075ece343c41d401d9393c6d699636225994",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-generations-06.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-generations-07.json",
+      "sha256": "221c7116f140384edd0c5c8e883dcf9ce4462d60f7544e2044a34453e592ecef",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-generations-07.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-generations-08.json",
+      "sha256": "f88cb2bb4d1e81dba7a928752a55d889a49521ed20caf1eb8a363bdd07094854",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-generations-08.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-generations-09.json",
+      "sha256": "895e7db7584a3b8894254b4cc43dad36ca015961cca19027a2e263346e88fb3d",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-generations-09.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-negatives-01.json",
+      "sha256": "0d2e3c3c5729f5a0460ba900c71a5026ba2d692dff947ffa61990936ee65c6bf",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-negatives-01.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/attempt-starts-01.json",
+      "sha256": "21a3ce8c9edd84d74d6a58310d279ed5d8aaf0aa11c8b584d28ffcfc50a1e0f5",
+      "bytes": 73,
+      "member": "handoff/execution/business/attempt-starts-01.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/capabilities.json",
+      "sha256": "0abb3353568c21cf24ba46943e34510d0e3eabc7e85a2fa526cf1ffa6f5a8f6e",
+      "bytes": 11432,
+      "member": "handoff/execution/business/capabilities.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/command.json",
+      "sha256": "d573807747a5a295f6d89e3aa44de365f619525402c4658c69dd84af3e76ef11",
+      "bytes": 700,
+      "member": "handoff/execution/business/command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/configuration.json",
+      "sha256": "b05fb45de16577ffc6f561017175529bbb2d632ece2be7529215546f5f3040b2",
+      "bytes": 4274,
+      "member": "handoff/execution/business/configuration.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/continuous.jsonl",
+      "sha256": "43baaf2ed6b74b3163e7fe2a856eb81eee98a87ac3cbee94a2a39bdcf7a88d3b",
+      "bytes": 343937,
+      "member": "handoff/execution/business/continuous.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/final-livez.json",
+      "sha256": "cd9dc6b4c667b9eff3427b05636ad56696bb7a94cccc42492a6e87474e1c2d90",
+      "bytes": 128,
+      "member": "handoff/execution/business/final-livez.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/final-metrics-2.json",
+      "sha256": "a87e7619313beb5598f040a2725c309613a9311db53368b11f344f1dd9c8e614",
+      "bytes": 20660,
+      "member": "handoff/execution/business/final-metrics-2.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/final-metrics-3.json",
+      "sha256": "4bf10b989546d5955e38217cbe6e1d3c892f01f88f8c7d89114756851bfc5019",
+      "bytes": 20658,
+      "member": "handoff/execution/business/final-metrics-3.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/final-metrics.json",
+      "sha256": "79da22de63715118c5435013e02f8e1817b45d47b8f4c58561c62e89aea689e3",
+      "bytes": 5377,
+      "member": "handoff/execution/business/final-metrics.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/final-readyz.json",
+      "sha256": "cd9dc6b4c667b9eff3427b05636ad56696bb7a94cccc42492a6e87474e1c2d90",
+      "bytes": 128,
+      "member": "handoff/execution/business/final-readyz.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/gpu-after.json",
+      "sha256": "b9c8a601c990c007071c4a5162bc07fac4af24af6d41e305b751d92573e8b73d",
+      "bytes": 2255,
+      "member": "handoff/execution/business/gpu-after.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/incomplete-http.json",
+      "sha256": "1ccc1dbfb3763b33692f8a50964e6001e9e10bd33ced4bd6880106973e446ecd",
+      "bytes": 246,
+      "member": "handoff/execution/business/incomplete-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/incomplete-request.json",
+      "sha256": "8badbcc5a271c114b8fb81d0b2c81c02e07f2b9619786143cd22c29df26e9b03",
+      "bytes": 1062,
+      "member": "handoff/execution/business/incomplete-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/incomplete-wire.bin",
+      "sha256": "5afdb145b369eb05c8a67fdf07f303e1535115b8db8212d88a6f1186ba3c7db5",
+      "bytes": 161,
+      "member": "handoff/execution/business/incomplete-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/ordinary-json-http.json",
+      "sha256": "2faf0c91b8f801b31bc58230ade0d271f70cb1ebf32f2f9a40cd74703cb181ab",
+      "bytes": 246,
+      "member": "handoff/execution/business/ordinary-json-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/ordinary-json-request.json",
+      "sha256": "e6adbc25a4fa9c3e27fc939cf26c015c4a15d0556d1e3350c9529da2f6477f56",
+      "bytes": 634,
+      "member": "handoff/execution/business/ordinary-json-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/ordinary-json-response.json",
+      "sha256": "2cefd31c773bbc99cc858bb1a4f1212d957f782af0714775ba8799629b222dd5",
+      "bytes": 276,
+      "member": "handoff/execution/business/ordinary-json-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/ordinary-json-wire.bin",
+      "sha256": "826706a92e3b8fb9b5793934090cc25e09256d47023543dd2f67db252e210d92",
+      "bytes": 306,
+      "member": "handoff/execution/business/ordinary-json-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/ordinary-sse-http.json",
+      "sha256": "d104f369b632365a42643f69b72c8546b80a66ad9a65b01e3ec99050175b9ab6",
+      "bytes": 282,
+      "member": "handoff/execution/business/ordinary-sse-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/ordinary-sse-request.json",
+      "sha256": "d10cb917bc0dc027dc3c82b2bddfeb4d6782b244cf0f475d6ce9235f8b0be22e",
+      "bytes": 686,
+      "member": "handoff/execution/business/ordinary-sse-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/ordinary-sse-response.json",
+      "sha256": "426872ee4b40d40bdad1dd015b6b2c07d020bc55131b13c7a6f04e516530a51d",
+      "bytes": 276,
+      "member": "handoff/execution/business/ordinary-sse-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/ordinary-sse-wire.bin",
+      "sha256": "9de825d37a13dbd879071dd418204f0d0e12a6223b1bc8767548290fff50643a",
+      "bytes": 2161,
+      "member": "handoff/execution/business/ordinary-sse-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/project-answer-http.json",
+      "sha256": "8c23f50fb19f9dff2c06f0c6010a98fa0ff2ad681fc2aaf1905610441aa87f9f",
+      "bytes": 280,
+      "member": "handoff/execution/business/project-answer-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/project-answer-request.json",
+      "sha256": "194f3b52cb4155f10b0fc2c1d5a248542439a1e99785562237245ce716c2886e",
+      "bytes": 5890,
+      "member": "handoff/execution/business/project-answer-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/project-answer-response.json",
+      "sha256": "5ce589b037189016e916bcf41724acd3f4572575eb4927597a80bbf19197652b",
+      "bytes": 497,
+      "member": "handoff/execution/business/project-answer-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/project-answer-wire.bin",
+      "sha256": "40997d82fe42bc99c4325fb020cc303332ed8e184bab09cf74bfa760beb82e77",
+      "bytes": 1137,
+      "member": "handoff/execution/business/project-answer-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/project-read-http.json",
+      "sha256": "2b138a5f0dee3b5d7ee13d9c2d64b9a82a03af1baa479dc16004037fb5216703",
+      "bytes": 281,
+      "member": "handoff/execution/business/project-read-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/project-read-request.json",
+      "sha256": "f71da4d23ed278a8968ea19daeaf5d4d7316926eba4ddb308f90108985ebe2f9",
+      "bytes": 3442,
+      "member": "handoff/execution/business/project-read-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/project-read-response.json",
+      "sha256": "f27d2ec10a5171aba6c800ff77f697e67c35d2b0010107e29de3b1b2049436eb",
+      "bytes": 577,
+      "member": "handoff/execution/business/project-read-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/project-read-wire.bin",
+      "sha256": "08f29d1da3106ecd9167488d200594005f12d337f019e60766ec1460b096a00a",
+      "bytes": 1184,
+      "member": "handoff/execution/business/project-read-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/project-tool-result.json",
+      "sha256": "0a7e42f2065d9f115d6a1485e31b532231bc90a4bd0f659bb14fcbbcd3ebcc06",
+      "bytes": 2036,
+      "member": "handoff/execution/business/project-tool-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/project-tool-started.json",
+      "sha256": "b0dbd6c1850a0672a103259681791542817d3615dd54dc3a3e9b74a9a8342ad2",
+      "bytes": 191,
+      "member": "handoff/execution/business/project-tool-started.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/result.json",
+      "sha256": "ebe285a519be9c28d49f62a18a91fa85159de8bc29dee96c03d3775647d6b273",
+      "bytes": 326,
+      "member": "handoff/execution/business/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/scope/cleanup.json",
+      "sha256": "d8593bda93ab01726570985a86645a5d441cd72df0850625fc877685ceb4b839",
+      "bytes": 437,
+      "member": "handoff/execution/business/scope/cleanup.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/scope/endpoints.jsonl",
+      "sha256": "88bef93ab9c2b0ca36197a9c432bb3e7596ca514a04e3480036a49e6bfb7888d",
+      "bytes": 8030,
+      "member": "handoff/execution/business/scope/endpoints.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/scope/identity.json",
+      "sha256": "57f1060a771c9b3bb209586560bb70b5c62edc57319f7cee759094e119817116",
+      "bytes": 597,
+      "member": "handoff/execution/business/scope/identity.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/scope/launch.json",
+      "sha256": "34c8186c7f8b0d1d1fe65aee384cf6dd4af09fbe2c0fdf6867f8e5bc0e2274d0",
+      "bytes": 969,
+      "member": "handoff/execution/business/scope/launch.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/scope/launcher.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/execution/business/scope/launcher.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/scope/payload-exit.json",
+      "sha256": "50c2c3092ce2598cc5e4b03492c00b2193140bca333294e678da60b5110c4e9c",
+      "bytes": 105,
+      "member": "handoff/execution/business/scope/payload-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/scope/payload.json",
+      "sha256": "c0da3f7372e6578b1d698c954f8b36f0fe7b85931be8162a72ed1dcb91893afd",
+      "bytes": 183,
+      "member": "handoff/execution/business/scope/payload.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/scope/spec.json",
+      "sha256": "28d9d7a3a49cb78f9c13597caab1c8b8ac0d96aadd6c89792a803f44c356c29a",
+      "bytes": 1480,
+      "member": "handoff/execution/business/scope/spec.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/server.log",
+      "sha256": "a12bae4cab84021a84c6d8bcebaf3ddef06dd964e54b28bc5d9873476c2047d3",
+      "bytes": 27369,
+      "member": "handoff/execution/business/server.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/strict-before-tool-http.json",
+      "sha256": "c262188ec49b52c2aaeabfcc700d6750835e7fe2b4f37d5c665e762a3c3c5432",
+      "bytes": 245,
+      "member": "handoff/execution/business/strict-before-tool-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/strict-before-tool-request.json",
+      "sha256": "64484bc8d94ca2048c391f3f786b288be3a258550c3038cb2232a3fec05ad3a1",
+      "bytes": 1064,
+      "member": "handoff/execution/business/strict-before-tool-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/strict-before-tool-response.json",
+      "sha256": "81b5cfb99464b67e5093b0a31290acb93d04b9e715d7cf6473a58054e396cb69",
+      "bytes": 284,
+      "member": "handoff/execution/business/strict-before-tool-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/strict-before-tool-wire.bin",
+      "sha256": "fffdf19c70c5860ac633313e1101e21612be3f5e2ec75e2ed5edc354047c190d",
+      "bytes": 314,
+      "member": "handoff/execution/business/strict-before-tool-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/strict-sse-http.json",
+      "sha256": "c6cfa6998d5f0c7132fc35b0bdb18365f7d0bb2f074c8fb165fed7193a3f2e3c",
+      "bytes": 281,
+      "member": "handoff/execution/business/strict-sse-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/strict-sse-request.json",
+      "sha256": "47e610b36b3e1afbd480f0f51e40faea790b12d891240bb00eef4e9c9abad0bd",
+      "bytes": 1116,
+      "member": "handoff/execution/business/strict-sse-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/strict-sse-response.json",
+      "sha256": "0fc221f00612c54f890e2319361f8186b7d9bf6ba5df883656f64453701a619d",
+      "bytes": 284,
+      "member": "handoff/execution/business/strict-sse-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/strict-sse-wire.bin",
+      "sha256": "cc69ce2fbe6053b8b5a6a489a0a1a81aa8fd8fea4b6723b9a3ddf27ffd5429ca",
+      "bytes": 984,
+      "member": "handoff/execution/business/strict-sse-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/execution.json",
+      "sha256": "7820c38e52223cf59cfc26fbada976342c68c57e3f1649c82560ae04b2e59d05",
+      "bytes": 198,
+      "member": "handoff/execution/execution.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/initial-gpu.json",
+      "sha256": "8d34e939eb85f922116f4e908b3b2b71c13111290e07edb2603c54b380df9a00",
+      "bytes": 2259,
+      "member": "handoff/execution/initial-gpu.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/lease/events.jsonl",
+      "sha256": "69dc7773ea6b557efff37bc928af37b043b3a578053d4e286793bb6eba2df96f",
+      "bytes": 9283,
+      "member": "handoff/execution/lease/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/lease/exit.json",
+      "sha256": "6bd6ca25ed422a153a001f9a10f0c5d07482f2ec9730b2af5ef6a6d4cb94710f",
+      "bytes": 596,
+      "member": "handoff/execution/lease/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/lease/nvml-queries.jsonl",
+      "sha256": "fb6d1b07f591fc47896ab7d175c2e4d853470abcf2f4ecd65c6a9e423e8fb47b",
+      "bytes": 110446,
+      "member": "handoff/execution/lease/nvml-queries.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/native/lifecycle-command.json",
+      "sha256": "bc43863c21f16079d5b3bff19d563307bc085822095bcaab0503917ed76bd1ab",
+      "bytes": 178,
+      "member": "handoff/execution/native/lifecycle-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/native/lifecycle-exit.json",
+      "sha256": "9c74751a683f35bccb96cbff39f21b0f739ceec6982922950e22792c1311c6d9",
+      "bytes": 52,
+      "member": "handoff/execution/native/lifecycle-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/native/lifecycle.stderr",
+      "sha256": "c87ef6a0d899faa3d6cef069fc90b1350aa35ceda5028f2b53bd1e3bc700c893",
+      "bytes": 13652,
+      "member": "handoff/execution/native/lifecycle.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/native/lifecycle.stdout",
+      "sha256": "279f466c29251b3ef5ae0428104c81bdf094aca981e25352708d03367e2078b0",
+      "bytes": 1608,
+      "member": "handoff/execution/native/lifecycle.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/native/result.json",
+      "sha256": "8201f17e3a92892bb3f880a1f4080f0626f9a4fb1ad7cc25122796aa583ac23c",
+      "bytes": 292,
+      "member": "handoff/execution/native/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/sealed-files.json",
+      "sha256": "48de77cc1e556c8398450d482bf7c136c96fd05b9a45461f3b0025b902cfc558",
+      "bytes": 8929,
+      "member": "handoff/execution/sealed-files.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/begin.json",
+      "sha256": "a81eda3d435ca2b8157bfea602b4fa813368705738eb11c5bab9f0fb642d24d4",
+      "bytes": 153,
+      "member": "handoff/correction/begin.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/after-error-http.json",
+      "sha256": "d49b5474590870fe9e02e01015306c8f2a9ecee44eb66d29ec67994ee3404e31",
+      "bytes": 245,
+      "member": "handoff/correction/business/after-error-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/after-error-request.json",
+      "sha256": "3d4a9badd45244e036b6e421a7ea5e130ea14aa566a434b654c5b995767166e7",
+      "bytes": 1064,
+      "member": "handoff/correction/business/after-error-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/after-error-response.json",
+      "sha256": "a9e7c6680abaee13e1e6e9c509f94c702a0baf29dfdf88478d3ae4a550a31c33",
+      "bytes": 284,
+      "member": "handoff/correction/business/after-error-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/after-error-wire.bin",
+      "sha256": "8db464bb6e3fe0998fd7e4c753e5c67d0ad771c8aebdaccc58a7f7d3034ded50",
+      "bytes": 314,
+      "member": "handoff/correction/business/after-error-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/after-sse-http.json",
+      "sha256": "d92bb4ab60e361ecd838d63bd8757a53b6816b032c25e3ca1d8b97dc3d9cf790",
+      "bytes": 245,
+      "member": "handoff/correction/business/after-sse-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/after-sse-request.json",
+      "sha256": "ed2a7c7bc756934b7b00756611703053fec55a05864b5aa6b6f98aebe5f8f997",
+      "bytes": 1064,
+      "member": "handoff/correction/business/after-sse-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/after-sse-response.json",
+      "sha256": "c3789306e43f908424c7a7c2691964a07fcfd6dd5837413171c2af397e8d1f4e",
+      "bytes": 284,
+      "member": "handoff/correction/business/after-sse-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/after-sse-wire.bin",
+      "sha256": "c0e1e258fe6130ef4bb578d46d403305a1068e9fb17cfc0283f2c39c365a9256",
+      "bytes": 314,
+      "member": "handoff/correction/business/after-sse-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-controls-01.json",
+      "sha256": "a2617edd860f531a5c522ecccde92c3cd2d4e2b0f3ffe07e039ca37e0339df24",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-controls-01.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-controls-02.json",
+      "sha256": "6591c0445998c8b1ff29c01640f39b0b55b673ee5ad3f4be8898871300993e56",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-controls-02.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-controls-03.json",
+      "sha256": "6f8e502ebc577148e3b841d0126a5d6ea9a8af20423bc407cc6258639bd8cd8e",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-controls-03.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-controls-04.json",
+      "sha256": "2ef2ea652bebae31284b1572b1819f643321e329305eaf08f3cfd519fbbcd3c8",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-controls-04.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-controls-05.json",
+      "sha256": "89d9bcab5acc431341305ab68e300f7c89eba5b243b6b2934fe21344f5be8077",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-controls-05.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-controls-06.json",
+      "sha256": "2b5e5ca3258c73f2ed02159ece3d0f68e4b092aa152c6584144bc2176d8c4a59",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-controls-06.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-controls-07.json",
+      "sha256": "bb93c61e318c1bd0b2ad152c7a0c2ad3a1594dfdf79ca39fde8c70cf6a8c4d91",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-controls-07.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-generations-01.json",
+      "sha256": "272bdfd33c5fbcf16e94daf5628b34706ccd458f4f1fbce85305e6163eff0200",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-generations-01.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-generations-02.json",
+      "sha256": "42441da1c6eb2b55a64c00146c8e96c93cb1fb3dbd61266239d8bfacc5d58362",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-generations-02.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-generations-03.json",
+      "sha256": "56b0ea607d80c59b368d02ded6316f2d5c1b5e47eda3d0f8cf2008d46bf7fc23",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-generations-03.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-generations-04.json",
+      "sha256": "e815d3cd6c1a79bc02257e4c2c015c9e14a6f840c212368d91333d890cbe4adf",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-generations-04.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-generations-05.json",
+      "sha256": "c64177d4c8f09e193eb8601f745c778d1411842f00458e9ba854aa96d51e939d",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-generations-05.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-generations-06.json",
+      "sha256": "97c270a1a88f599c354228e912fb075ece343c41d401d9393c6d699636225994",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-generations-06.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-generations-07.json",
+      "sha256": "221c7116f140384edd0c5c8e883dcf9ce4462d60f7544e2044a34453e592ecef",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-generations-07.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-generations-08.json",
+      "sha256": "f88cb2bb4d1e81dba7a928752a55d889a49521ed20caf1eb8a363bdd07094854",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-generations-08.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-generations-09.json",
+      "sha256": "895e7db7584a3b8894254b4cc43dad36ca015961cca19027a2e263346e88fb3d",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-generations-09.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-negatives-01.json",
+      "sha256": "0d2e3c3c5729f5a0460ba900c71a5026ba2d692dff947ffa61990936ee65c6bf",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-negatives-01.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/attempt-starts-01.json",
+      "sha256": "21a3ce8c9edd84d74d6a58310d279ed5d8aaf0aa11c8b584d28ffcfc50a1e0f5",
+      "bytes": 73,
+      "member": "handoff/correction/business/attempt-starts-01.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/capabilities.json",
+      "sha256": "0abb3353568c21cf24ba46943e34510d0e3eabc7e85a2fa526cf1ffa6f5a8f6e",
+      "bytes": 11432,
+      "member": "handoff/correction/business/capabilities.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/command.json",
+      "sha256": "d573807747a5a295f6d89e3aa44de365f619525402c4658c69dd84af3e76ef11",
+      "bytes": 700,
+      "member": "handoff/correction/business/command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/configuration.json",
+      "sha256": "b05fb45de16577ffc6f561017175529bbb2d632ece2be7529215546f5f3040b2",
+      "bytes": 4274,
+      "member": "handoff/correction/business/configuration.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/continuous.jsonl",
+      "sha256": "43baaf2ed6b74b3163e7fe2a856eb81eee98a87ac3cbee94a2a39bdcf7a88d3b",
+      "bytes": 343937,
+      "member": "handoff/correction/business/continuous.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/final-livez.json",
+      "sha256": "cd9dc6b4c667b9eff3427b05636ad56696bb7a94cccc42492a6e87474e1c2d90",
+      "bytes": 128,
+      "member": "handoff/correction/business/final-livez.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/final-metrics-2.json",
+      "sha256": "a87e7619313beb5598f040a2725c309613a9311db53368b11f344f1dd9c8e614",
+      "bytes": 20660,
+      "member": "handoff/correction/business/final-metrics-2.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/final-metrics-3.json",
+      "sha256": "4bf10b989546d5955e38217cbe6e1d3c892f01f88f8c7d89114756851bfc5019",
+      "bytes": 20658,
+      "member": "handoff/correction/business/final-metrics-3.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/final-metrics.json",
+      "sha256": "79da22de63715118c5435013e02f8e1817b45d47b8f4c58561c62e89aea689e3",
+      "bytes": 5377,
+      "member": "handoff/correction/business/final-metrics.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/final-readyz.json",
+      "sha256": "cd9dc6b4c667b9eff3427b05636ad56696bb7a94cccc42492a6e87474e1c2d90",
+      "bytes": 128,
+      "member": "handoff/correction/business/final-readyz.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/gpu-after.json",
+      "sha256": "b9c8a601c990c007071c4a5162bc07fac4af24af6d41e305b751d92573e8b73d",
+      "bytes": 2255,
+      "member": "handoff/correction/business/gpu-after.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/incomplete-http.json",
+      "sha256": "1ccc1dbfb3763b33692f8a50964e6001e9e10bd33ced4bd6880106973e446ecd",
+      "bytes": 246,
+      "member": "handoff/correction/business/incomplete-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/incomplete-request.json",
+      "sha256": "8badbcc5a271c114b8fb81d0b2c81c02e07f2b9619786143cd22c29df26e9b03",
+      "bytes": 1062,
+      "member": "handoff/correction/business/incomplete-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/incomplete-wire.bin",
+      "sha256": "5afdb145b369eb05c8a67fdf07f303e1535115b8db8212d88a6f1186ba3c7db5",
+      "bytes": 161,
+      "member": "handoff/correction/business/incomplete-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/ordinary-json-http.json",
+      "sha256": "2faf0c91b8f801b31bc58230ade0d271f70cb1ebf32f2f9a40cd74703cb181ab",
+      "bytes": 246,
+      "member": "handoff/correction/business/ordinary-json-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/ordinary-json-request.json",
+      "sha256": "e6adbc25a4fa9c3e27fc939cf26c015c4a15d0556d1e3350c9529da2f6477f56",
+      "bytes": 634,
+      "member": "handoff/correction/business/ordinary-json-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/ordinary-json-response.json",
+      "sha256": "2cefd31c773bbc99cc858bb1a4f1212d957f782af0714775ba8799629b222dd5",
+      "bytes": 276,
+      "member": "handoff/correction/business/ordinary-json-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/ordinary-json-wire.bin",
+      "sha256": "826706a92e3b8fb9b5793934090cc25e09256d47023543dd2f67db252e210d92",
+      "bytes": 306,
+      "member": "handoff/correction/business/ordinary-json-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/ordinary-sse-http.json",
+      "sha256": "d104f369b632365a42643f69b72c8546b80a66ad9a65b01e3ec99050175b9ab6",
+      "bytes": 282,
+      "member": "handoff/correction/business/ordinary-sse-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/ordinary-sse-request.json",
+      "sha256": "d10cb917bc0dc027dc3c82b2bddfeb4d6782b244cf0f475d6ce9235f8b0be22e",
+      "bytes": 686,
+      "member": "handoff/correction/business/ordinary-sse-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/ordinary-sse-response.json",
+      "sha256": "426872ee4b40d40bdad1dd015b6b2c07d020bc55131b13c7a6f04e516530a51d",
+      "bytes": 276,
+      "member": "handoff/correction/business/ordinary-sse-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/ordinary-sse-wire.bin",
+      "sha256": "9de825d37a13dbd879071dd418204f0d0e12a6223b1bc8767548290fff50643a",
+      "bytes": 2161,
+      "member": "handoff/correction/business/ordinary-sse-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/original-result.json",
+      "sha256": "ebe285a519be9c28d49f62a18a91fa85159de8bc29dee96c03d3775647d6b273",
+      "bytes": 326,
+      "member": "handoff/correction/business/original-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/project-answer-http.json",
+      "sha256": "8c23f50fb19f9dff2c06f0c6010a98fa0ff2ad681fc2aaf1905610441aa87f9f",
+      "bytes": 280,
+      "member": "handoff/correction/business/project-answer-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/project-answer-request.json",
+      "sha256": "194f3b52cb4155f10b0fc2c1d5a248542439a1e99785562237245ce716c2886e",
+      "bytes": 5890,
+      "member": "handoff/correction/business/project-answer-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/project-answer-response.json",
+      "sha256": "5ce589b037189016e916bcf41724acd3f4572575eb4927597a80bbf19197652b",
+      "bytes": 497,
+      "member": "handoff/correction/business/project-answer-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/project-answer-wire.bin",
+      "sha256": "40997d82fe42bc99c4325fb020cc303332ed8e184bab09cf74bfa760beb82e77",
+      "bytes": 1137,
+      "member": "handoff/correction/business/project-answer-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/project-read-http.json",
+      "sha256": "2b138a5f0dee3b5d7ee13d9c2d64b9a82a03af1baa479dc16004037fb5216703",
+      "bytes": 281,
+      "member": "handoff/correction/business/project-read-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/project-read-request.json",
+      "sha256": "f71da4d23ed278a8968ea19daeaf5d4d7316926eba4ddb308f90108985ebe2f9",
+      "bytes": 3442,
+      "member": "handoff/correction/business/project-read-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/project-read-response.json",
+      "sha256": "f27d2ec10a5171aba6c800ff77f697e67c35d2b0010107e29de3b1b2049436eb",
+      "bytes": 577,
+      "member": "handoff/correction/business/project-read-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/project-read-wire.bin",
+      "sha256": "08f29d1da3106ecd9167488d200594005f12d337f019e60766ec1460b096a00a",
+      "bytes": 1184,
+      "member": "handoff/correction/business/project-read-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/project-tool-result.json",
+      "sha256": "0a7e42f2065d9f115d6a1485e31b532231bc90a4bd0f659bb14fcbbcd3ebcc06",
+      "bytes": 2036,
+      "member": "handoff/correction/business/project-tool-result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/project-tool-started.json",
+      "sha256": "b0dbd6c1850a0672a103259681791542817d3615dd54dc3a3e9b74a9a8342ad2",
+      "bytes": 191,
+      "member": "handoff/correction/business/project-tool-started.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/result.json",
+      "sha256": "41c1f1d776502620942f2fe24392b622bbf77125d28618cf82f3845e5167d4f9",
+      "bytes": 902,
+      "member": "handoff/correction/business/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/scope/cleanup.json",
+      "sha256": "d8593bda93ab01726570985a86645a5d441cd72df0850625fc877685ceb4b839",
+      "bytes": 437,
+      "member": "handoff/correction/business/scope/cleanup.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/scope/endpoints.jsonl",
+      "sha256": "88bef93ab9c2b0ca36197a9c432bb3e7596ca514a04e3480036a49e6bfb7888d",
+      "bytes": 8030,
+      "member": "handoff/correction/business/scope/endpoints.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/scope/identity.json",
+      "sha256": "57f1060a771c9b3bb209586560bb70b5c62edc57319f7cee759094e119817116",
+      "bytes": 597,
+      "member": "handoff/correction/business/scope/identity.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/scope/launch.json",
+      "sha256": "34c8186c7f8b0d1d1fe65aee384cf6dd4af09fbe2c0fdf6867f8e5bc0e2274d0",
+      "bytes": 969,
+      "member": "handoff/correction/business/scope/launch.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/scope/launcher.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/correction/business/scope/launcher.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/scope/payload-exit.json",
+      "sha256": "50c2c3092ce2598cc5e4b03492c00b2193140bca333294e678da60b5110c4e9c",
+      "bytes": 105,
+      "member": "handoff/correction/business/scope/payload-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/scope/payload.json",
+      "sha256": "c0da3f7372e6578b1d698c954f8b36f0fe7b85931be8162a72ed1dcb91893afd",
+      "bytes": 183,
+      "member": "handoff/correction/business/scope/payload.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/scope/spec.json",
+      "sha256": "28d9d7a3a49cb78f9c13597caab1c8b8ac0d96aadd6c89792a803f44c356c29a",
+      "bytes": 1480,
+      "member": "handoff/correction/business/scope/spec.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/server.log",
+      "sha256": "a12bae4cab84021a84c6d8bcebaf3ddef06dd964e54b28bc5d9873476c2047d3",
+      "bytes": 27369,
+      "member": "handoff/correction/business/server.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/strict-before-tool-http.json",
+      "sha256": "c262188ec49b52c2aaeabfcc700d6750835e7fe2b4f37d5c665e762a3c3c5432",
+      "bytes": 245,
+      "member": "handoff/correction/business/strict-before-tool-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/strict-before-tool-request.json",
+      "sha256": "64484bc8d94ca2048c391f3f786b288be3a258550c3038cb2232a3fec05ad3a1",
+      "bytes": 1064,
+      "member": "handoff/correction/business/strict-before-tool-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/strict-before-tool-response.json",
+      "sha256": "81b5cfb99464b67e5093b0a31290acb93d04b9e715d7cf6473a58054e396cb69",
+      "bytes": 284,
+      "member": "handoff/correction/business/strict-before-tool-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/strict-before-tool-wire.bin",
+      "sha256": "fffdf19c70c5860ac633313e1101e21612be3f5e2ec75e2ed5edc354047c190d",
+      "bytes": 314,
+      "member": "handoff/correction/business/strict-before-tool-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/strict-sse-http.json",
+      "sha256": "c6cfa6998d5f0c7132fc35b0bdb18365f7d0bb2f074c8fb165fed7193a3f2e3c",
+      "bytes": 281,
+      "member": "handoff/correction/business/strict-sse-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/strict-sse-request.json",
+      "sha256": "47e610b36b3e1afbd480f0f51e40faea790b12d891240bb00eef4e9c9abad0bd",
+      "bytes": 1116,
+      "member": "handoff/correction/business/strict-sse-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/strict-sse-response.json",
+      "sha256": "0fc221f00612c54f890e2319361f8186b7d9bf6ba5df883656f64453701a619d",
+      "bytes": 284,
+      "member": "handoff/correction/business/strict-sse-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/strict-sse-wire.bin",
+      "sha256": "cc69ce2fbe6053b8b5a6a489a0a1a81aa8fd8fea4b6723b9a3ddf27ffd5429ca",
+      "bytes": 984,
+      "member": "handoff/correction/business/strict-sse-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/execution.json",
+      "sha256": "43878ceaf2af283a5068a55eb013f1b0615b9eaecf37bc52abab4a9b2eb51512",
+      "bytes": 155,
+      "member": "handoff/correction/execution.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/final-gpu.json",
+      "sha256": "e2ce74f37909210f96a9ac971a29fb340a0a43d932021b6c7cd7940884758705",
+      "bytes": 2257,
+      "member": "handoff/correction/final-gpu.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/finalized.json",
+      "sha256": "24dc4e11e93c227877e29de6688551075e640b61b943e15acbe053770e750146",
+      "bytes": 313,
+      "member": "handoff/correction/finalized.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/health/result.json",
+      "sha256": "0bbc2ca479d406e6bc76a902fe36cac32833ccad77211179a9d8bcb4502a38b0",
+      "bytes": 784,
+      "member": "handoff/correction/health/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/health/version-command.json",
+      "sha256": "20a4eae028affe254a61c5519460f3ccee29b3f2dd7b3e9a7200cdabe0e9f845",
+      "bytes": 116,
+      "member": "handoff/correction/health/version-command.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/health/version-exit.json",
+      "sha256": "fd4b7420cb4daa9372af7a739f1cbb34f55051d6d0b1de48a29545735e311c20",
+      "bytes": 53,
+      "member": "handoff/correction/health/version-exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/health/version.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "handoff/correction/health/version.stderr"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/health/version.stdout",
+      "sha256": "641e6cceea77e2f0d85b4f6926c2fc11f70630d4f7ed4efb3c618417e796aaad",
+      "bytes": 99,
+      "member": "handoff/correction/health/version.stdout"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/initial-gpu.json",
+      "sha256": "c226a7bbd1eaa2c613129bb9604732c04b0ed6b7fa773d421cca97433e2e0139",
+      "bytes": 2258,
+      "member": "handoff/correction/initial-gpu.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/lease/events.jsonl",
+      "sha256": "327f5b9a88d5fc2913a57083b4b787e1870dcdbcbdb9a70f864ab6c8d81da8d9",
+      "bytes": 1100,
+      "member": "handoff/correction/lease/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/lease/exit.json",
+      "sha256": "cf41a40c83d8bce1d7fbd5f0951f7bf32aaa4e9732c33a5b46178b8789e77bed",
+      "bytes": 596,
+      "member": "handoff/correction/lease/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/lease/nvml-queries.jsonl",
+      "sha256": "5c756379dd69a9071f0e3f67a92c17b299bff395ec9b08c99dff2e408b2f349a",
+      "bytes": 6705,
+      "member": "handoff/correction/lease/nvml-queries.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/pair/q4t.release.json",
+      "sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+      "bytes": 48517,
+      "member": "handoff/correction/pair/q4t.release.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/release/binding.json",
+      "sha256": "3728af80f278c837a87bad1b76c79b28fa5486c3feb2bea4d12bd1c759ea5b63",
+      "bytes": 375,
+      "member": "handoff/correction/release/binding.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/release/q4t.release.json",
+      "sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+      "bytes": 48517,
+      "member": "handoff/correction/release/q4t.release.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/release/sealed-files.json",
+      "sha256": "c7b5f4e06e6f322b52c45a7408447fb91f5981084f61db2acf513115de7a8db6",
+      "bytes": 179,
+      "member": "handoff/correction/release/sealed-files.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/sealed-files.json",
+      "sha256": "a76cd3efe39ff9baa4cbbe7104f9b1118174685c7e1a00040498dfe93367637a",
+      "bytes": 9668,
+      "member": "handoff/correction/sealed-files.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/rollback-bundle/current/CMakeCache.txt",
+      "sha256": "fd1130b57a00a839279dab7875cbdd7eb942016069927ad57fdea4ba574e4111",
+      "bytes": 39184,
+      "member": "handoff/rollback-bundle/current/CMakeCache.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/rollback-bundle/current/q4t.release.json",
+      "sha256": "42d7672ab473aceb315889be8eeac54310121fd47d4ac861d4d40fcc2bfea1f5",
+      "bytes": 48517,
+      "member": "handoff/rollback-bundle/current/q4t.release.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/rollback-bundle/current/q4t.rules.yml",
+      "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+      "bytes": 13565,
+      "member": "handoff/rollback-bundle/current/q4t.rules.yml"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/rollback-bundle/manifest.json",
+      "sha256": "d3441987d8d220a306d0dc0075dbcd84e232a65e25429511c9a7450c40b2616d",
+      "bytes": 490,
+      "member": "handoff/rollback-bundle/manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/rollback-bundle/previous/CMakeCache.txt",
+      "sha256": "4fe5c6c12bc753036e14cef20c6e6b336e16865baf4915a91f510ee0fb30e571",
+      "bytes": 38807,
+      "member": "handoff/rollback-bundle/previous/CMakeCache.txt"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/rollback-bundle/previous/q4t.release.json",
+      "sha256": "18c9d2c50c847c90c6b033b4350fa0cf10c59777bf3a9dacd01391250a341f19",
+      "bytes": 48378,
+      "member": "handoff/rollback-bundle/previous/q4t.release.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/rollback-bundle/previous/q4t.rules.yml",
+      "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8",
+      "bytes": 13565,
+      "member": "handoff/rollback-bundle/previous/q4t.rules.yml"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/rollback-bundle/sealed-files.json",
+      "sha256": "de2ea3a33fd1811aba42132f2a087c5fb1dbdf2faa44a6d25b0a1a3c382bf8ff",
+      "bytes": 842,
+      "member": "handoff/rollback-bundle/sealed-files.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/begin.json",
+      "sha256": "0cfa74dc6d2a773182a6ebaae0f7bfb104078328674c7b4e49553a2b5d796d6b",
+      "bytes": 3673,
+      "member": "managed-original/execution/begin.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/changed-manifest.json",
+      "sha256": "71445fbbe54031cbc6fbc5094bd1bd9d00051091800d23c5141d6cea4d54992c",
+      "bytes": 640,
+      "member": "managed-original/execution/changed-manifest.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/cleanup-unit-before.json",
+      "sha256": "8801f249a624c7f8c1e951e7a73474212f9b12cccb1d62ddea439fed9496dad8",
+      "bytes": 1024,
+      "member": "managed-original/execution/cleanup-unit-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/cleanup-unit-stop.json",
+      "sha256": "c32fab1fb1e2aceafd892ebef46063df1794ef30e4b032ed335dbce2278f5a01",
+      "bytes": 167,
+      "member": "managed-original/execution/cleanup-unit-stop.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/counts.json",
+      "sha256": "609bf6c25a191c93df5dd8d25eda98568815291d6868970f9032467640a66fb5",
+      "bytes": 59,
+      "member": "managed-original/execution/counts.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/duplicate-runtime.json",
+      "sha256": "8a49159ea09bea72c9c92aa943c349d898035027895d24a50196558b6eb356c4",
+      "bytes": 734,
+      "member": "managed-original/execution/duplicate-runtime.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/first-project-read-http.json",
+      "sha256": "e07e32fda67eb0bba26dee423d84c271cb9713d37e5031f5efb38d097832cbf5",
+      "bytes": 248,
+      "member": "managed-original/execution/first-project-read-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/first-project-read-request.json",
+      "sha256": "0b1d084730809962afecee7a3114cfca6d8ec1dfde173020a28f80f171277bf1",
+      "bytes": 3442,
+      "member": "managed-original/execution/first-project-read-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/first-project-read-wire.bin",
+      "sha256": "86752b44a9ecd9115a342a19662ed37cc861eecb83585331f0f9dc5135f13481",
+      "bytes": 148,
+      "member": "managed-original/execution/first-project-read-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/first-ready-ownership.json",
+      "sha256": "c3f4d2cc793e1a0d9d781db4b95af66747ba1112743b203e3fc24ab29811a367",
+      "bytes": 1651,
+      "member": "managed-original/execution/first-ready-ownership.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/first-ready-unit.json",
+      "sha256": "8801f249a624c7f8c1e951e7a73474212f9b12cccb1d62ddea439fed9496dad8",
+      "bytes": 1024,
+      "member": "managed-original/execution/first-ready-unit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/gpu-before.json",
+      "sha256": "f4e291fb0a2b8a944689820689a6c67083fba851c5a997d223e0ad6290abe9dd",
+      "bytes": 2257,
+      "member": "managed-original/execution/gpu-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/gpu-final.json",
+      "sha256": "8edf7e325e2b955de820c56c3649e1966983c89deb95df05da21d8a00e16463d",
+      "bytes": 2257,
+      "member": "managed-original/execution/gpu-final.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/lease-contention.json",
+      "sha256": "6d99b5d403b0a7bd629703d3ba4778959ddee17b14ed468c5aac9b96d8a79e08",
+      "bytes": 335,
+      "member": "managed-original/execution/lease-contention.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/managed-run/attempt-1.json",
+      "sha256": "9d79adeadd0150ced2894ed47cdf3e24a6a1758c0c283fda3c35b95cee6d9c9d",
+      "bytes": 828,
+      "member": "managed-original/execution/managed-run/attempt-1.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/managed-run/backend.log",
+      "sha256": "f69a1117aaf72ccd891d4a04612b92fee92321158698110dbaa3269abb93aa01",
+      "bytes": 12292,
+      "member": "managed-original/execution/managed-run/backend.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/managed-run/controller.json",
+      "sha256": "6f5d5fda3304cf1158201cc9786d3e515978d667c7f0ade6f3576d16991027fc",
+      "bytes": 450,
+      "member": "managed-original/execution/managed-run/controller.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/managed-run/events.log",
+      "sha256": "c8f0549915ead1be0ef7f857f48ce2eab3447972a553f635d0c3a89f5f8e8e17",
+      "bytes": 123,
+      "member": "managed-original/execution/managed-run/events.log"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/managed-run/lease/events.jsonl",
+      "sha256": "731398e2bc25beaaef1e930603b88bc9ce32ccd741c6955758cc4cb773ebd1b4",
+      "bytes": 7978,
+      "member": "managed-original/execution/managed-run/lease/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/managed-run/lease/exit.json",
+      "sha256": "aab56d548ca6175c778da9023c2fe16d421a46bb9f3d8f4b49accd8590113e8d",
+      "bytes": 991,
+      "member": "managed-original/execution/managed-run/lease/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/managed-run/lease/nvml-queries.jsonl",
+      "sha256": "eaef6c232d6aecd541cd201db20f6f85d500f46697046c379532811a0dd85c86",
+      "bytes": 94153,
+      "member": "managed-original/execution/managed-run/lease/nvml-queries.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/managed-run/status.json",
+      "sha256": "92f24bc2425731e6345901b01caf478b81f2ea6f61854ba2be6bf720a907188d",
+      "bytes": 7370,
+      "member": "managed-original/execution/managed-run/status.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/managed-run/stop.request.json",
+      "sha256": "c1a1ee2042fcf8ebc6c34dbcce13265c4a196a3fc2ff216d0d15bae67724fd0c",
+      "bytes": 74,
+      "member": "managed-original/execution/managed-run/stop.request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/managed-run/terminal.json",
+      "sha256": "8981cb0d29ece3af632c23ba7a774d7f8abcc2e04d4f58c307b69793f438eaa9",
+      "bytes": 8898,
+      "member": "managed-original/execution/managed-run/terminal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/ordinary-json-http.json",
+      "sha256": "fa89b7c3c277f88d0aab02d8b812af33a3934f939737c0760a0a00bcde653bed",
+      "bytes": 246,
+      "member": "managed-original/execution/ordinary-json-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/ordinary-json-request.json",
+      "sha256": "e937cabcac938b2bd838e74f12ae6313aad8977da3df15f7f6ad23be3b57a4ac",
+      "bytes": 634,
+      "member": "managed-original/execution/ordinary-json-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/ordinary-json-response.json",
+      "sha256": "0a43d444dd4eb4abcd91da2b0eb9c9f93599e1543d444a444f4e0ae958143d4b",
+      "bytes": 276,
+      "member": "managed-original/execution/ordinary-json-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/ordinary-json-wire.bin",
+      "sha256": "1584c30d98b8cae01d99b89e167669e22b349e224c79a787142eebac9d6bfac5",
+      "bytes": 306,
+      "member": "managed-original/execution/ordinary-json-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/ordinary-sse-http.json",
+      "sha256": "66cf36576deede2ef8bc74c8a70b356d1f80eccbf470042e31c568ac661ae6ea",
+      "bytes": 280,
+      "member": "managed-original/execution/ordinary-sse-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/ordinary-sse-request.json",
+      "sha256": "b15d7f4bac06aa629679191db802ccbe321c597adc2eddbe07af3a774d1f246a",
+      "bytes": 686,
+      "member": "managed-original/execution/ordinary-sse-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/ordinary-sse-response.json",
+      "sha256": "a68db73e99d3a81237746cb19250d1a0a2bb02e33b69a16f5f75d72c1e2b88e0",
+      "bytes": 276,
+      "member": "managed-original/execution/ordinary-sse-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/ordinary-sse-wire.bin",
+      "sha256": "fe383d11f39232e62eb58d3df7df87f878e8a0363c0ea82bc10d8716a799bb62",
+      "bytes": 2161,
+      "member": "managed-original/execution/ordinary-sse-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/q4t-managed-srv14-db38a13547c91c04a56f.service",
+      "sha256": "6e15205166574177305d5d64ba8fe49e8213268727ae5584e8483e8ac363be1e",
+      "bytes": 786,
+      "member": "managed-original/execution/q4t-managed-srv14-db38a13547c91c04a56f.service"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/rejected-lease/events.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "member": "managed-original/execution/rejected-lease/events.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/rejected-lease/exit.json",
+      "sha256": "b6ff36f84983c17a6ce79c4b6b53916a916f25644b9470543bcea48e64cf3e04",
+      "bytes": 1075,
+      "member": "managed-original/execution/rejected-lease/exit.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/result.json",
+      "sha256": "9ca45d18c347c7ef3e20db89222756a04abecb7ce9cec6d0805a903e07bc2f3d",
+      "bytes": 450,
+      "member": "managed-original/execution/result.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/status-snapshots.jsonl",
+      "sha256": "eae2b95f2c2b6ee2301211638f287eeb450fe4160ed415285bacb94f5a2a477f",
+      "bytes": 11086,
+      "member": "managed-original/execution/status-snapshots.jsonl"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/strict-json-http.json",
+      "sha256": "c38bb936ad9f64fb70a51043d2e3c2b5e36458f7bca38213fbda780fd19eff29",
+      "bytes": 245,
+      "member": "managed-original/execution/strict-json-http.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/strict-json-request.json",
+      "sha256": "6afcdeeeed94e3a0cb03e54dc51243ae532f60eb5a44130eb2c98540845123c0",
+      "bytes": 1064,
+      "member": "managed-original/execution/strict-json-request.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/strict-json-response.json",
+      "sha256": "cc27bbb9d98a2d62111bb09cca1ed541ffc3d1e1ec854b40b0aec7d505cb7dd2",
+      "bytes": 284,
+      "member": "managed-original/execution/strict-json-response.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/strict-json-wire.bin",
+      "sha256": "a5f59e86d37ec81082300d1394e4303f87887e2b9ad1cf9858276b4c174221fb",
+      "bytes": 314,
+      "member": "managed-original/execution/strict-json-wire.bin"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/unit-before.json",
+      "sha256": "c4c6f9f2448f1d1c6c63b7926979fcc2c50f48933bdc77294fcd54f995d37d79",
+      "bytes": 846,
+      "member": "managed-original/execution/unit-before.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/unit-journal.json",
+      "sha256": "08b17cc7002bab0227f511ace9198cf78ae86fe636ad76f64f05eead89f6f8ec",
+      "bytes": 283,
+      "member": "managed-original/execution/unit-journal.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/unit-link.json",
+      "sha256": "e919e8ca56996b68fd0215e88eed6f7605da9c3f0e3c6520ebdd38070777c3ec",
+      "bytes": 499,
+      "member": "managed-original/execution/unit-link.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/unit-linked.json",
+      "sha256": "8336c5237032e15b50c047b86275f9b3535b778f428069d99619321f0596f479",
+      "bytes": 915,
+      "member": "managed-original/execution/unit-linked.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/unit-reload.json",
+      "sha256": "a19196c7a69bf16f38ae5d07e9fbe8c07b49984b8b07c2b7a11c46f5adf9c8ff",
+      "bytes": 122,
+      "member": "managed-original/execution/unit-reload.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/unit-removed.json",
+      "sha256": "c4c6f9f2448f1d1c6c63b7926979fcc2c50f48933bdc77294fcd54f995d37d79",
+      "bytes": 846,
+      "member": "managed-original/execution/unit-removed.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/unit-reset.json",
+      "sha256": "06f4550b291d10965519d2a9c0658e0b482869ec80ed8f33dab2f5bdbfbff1dc",
+      "bytes": 325,
+      "member": "managed-original/execution/unit-reset.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/unit-start.json",
+      "sha256": "9da2c0b49a4145b8294cc3381f39d0854aea4911a490a202173b984e20d496aa",
+      "bytes": 168,
+      "member": "managed-original/execution/unit-start.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/unit-verify.json",
+      "sha256": "7ec02ae9838b44e664bd2fdb49b28887c76766022f39edee55833657849de454",
+      "bytes": 259,
+      "member": "managed-original/execution/unit-verify.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction-plan.json",
+      "sha256": "0bc5acd862b6654fd70d049d68c6875430ee2b682861c53241ac79abce520059",
+      "bytes": 594,
+      "member": "handoff/correction-plan.json"
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/postflight.json",
+      "sha256": "f7b7046e2660c7d1c0d87270bed1eae9accaf1e3d0db7bc72c26dfed8aa55a04",
+      "bytes": 758,
+      "member": "handoff/postflight.json"
+    }
+  ],
+  "local_artifacts": [
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/artifacts/engine/q4t",
+      "sha256": "e2e7e9c7e869246da34e5f24fddcc38685bba31fdd4081625a03f16832694dbe",
+      "bytes": 7159544
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/artifacts/engine/q4t_host_tests",
+      "sha256": "bf9ce7fa5e4c54a57d9c0bb4ed256fb92a3e03d71aeb2648c6a8915e5a9d3505",
+      "bytes": 3952536
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/artifacts/engine/q4t_http_lifecycle_tests",
+      "sha256": "436e56f2bd83b8424eae4bce52e791d511f56af3df88557138713f4286e8c873",
+      "bytes": 865456
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu-before-format/artifacts/host-off/q4t_host_tests",
+      "sha256": "55fc7d2f981be96df75f19bb58339d533d2205151cb8f0153b24c2988ffb5afd",
+      "bytes": 1830816
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/candidate/q4t",
+      "sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+      "bytes": 7159544
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/candidate/q4t_http_lifecycle_tests",
+      "sha256": "436e56f2bd83b8424eae4bce52e791d511f56af3df88557138713f4286e8c873",
+      "bytes": 865456
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/package/previous/q4t",
+      "sha256": "280b95dceabe5a3b1fd794019102de0dc9f0b62e8a3aa9fcc30eb5c57fdfd793",
+      "bytes": 7158360
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/pair/q4t",
+      "sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+      "bytes": 7159544
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/rollback-bundle/current/q4t",
+      "sha256": "d66f2bb9df3a34eda1b885da148e6971c25137564e500b9357bd5f9a5f8dfb1b",
+      "bytes": 7159544
+    },
+    {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/rollback-bundle/previous/q4t",
+      "sha256": "280b95dceabe5a3b1fd794019102de0dc9f0b62e8a3aa9fcc30eb5c57fdfd793",
+      "bytes": 7158360
+    }
+  ],
+  "aliases": {
+    "original_managed.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-managed-service-20261103/execution/result.json",
+      "sha256": "9ca45d18c347c7ef3e20db89222756a04abecb7ce9cec6d0805a903e07bc2f3d",
+      "bytes": 450
+    },
+    "original_gpu.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/execution/business/result.json",
+      "sha256": "ebe285a519be9c28d49f62a18a91fa85159de8bc29dee96c03d3775647d6b273",
+      "bytes": 326
+    },
+    "accepted.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/business/result.json",
+      "sha256": "41c1f1d776502620942f2fe24392b622bbf77125d28618cf82f3845e5167d4f9",
+      "bytes": 902
+    },
+    "guard.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/lease/exit.json",
+      "sha256": "cf41a40c83d8bce1d7fbd5f0951f7bf32aaa4e9732c33a5b46178b8789e77bed",
+      "bytes": 596
+    },
+    "finalized.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/correction/finalized.json",
+      "sha256": "24dc4e11e93c227877e29de6688551075e640b61b943e15acbe053770e750146",
+      "bytes": 313
+    },
+    "cpu.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/cpu/tests/result.json",
+      "sha256": "2b1cfec96b0d744c9c3f9e665124ea8011b7cdf9e083285911a0aa32e61f0a9c",
+      "bytes": 238
+    },
+    "postflight.json": {
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-structured-handoff-20261103/postflight.json",
+      "sha256": "f7b7046e2660c7d1c0d87270bed1eae9accaf1e3d0db7bc72c26dfed8aa55a04",
+      "bytes": 758
+    }
+  },
+  "archiver": {
+    "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_handoff/archive.py",
+    "sha256": "530ec74d82e2e69583a80dafd8fac1a535de34738aab4dc4a4c3118ddeb79029",
+    "bytes": 4162
+  },
+  "scope": "Original failures, complete wire, CPU and corrected delivery; original healthz not sent and standalone final sample absent. No performance/long-soak claim."
+}

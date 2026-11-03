@@ -44,7 +44,7 @@ C项按明确业务条件单独冻结。
 | SRV-02g | 默认文本启动降级与内部资源错误传播 | [已限定交付](SERVE_BACKEND_CLEANUP_RESULT_2026-11-03.md)；3fd31a21 | 请求MTP失败拒绝启动；直接CUDA清理/完成失败退出1，已有serve错误协议保持；原探针误断言保留，18探针/7启动/10生成/6负场景通过，非完整分配或物理保护 |
 | SRV-02h | 媒体与host异常/错误响应完整性 | [组合限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；280b95dc | 原生25、视觉所有权/333上传、真实文本/工具/图片/两帧、OOM恢复/fatal/host/SSE/启动拒绝通过；原CPU失败保留 |
 | SRV-02i | 媒体解压与几何资源边界 | [组合限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)；280b95dc | 实际11类准入拒绝、配额、分配哨兵/同PID恢复及媒体SSE取消通过；组合32/21/11首轮完成，物理RAM硬保护与广泛媒体质量仍待办 |
-| SRV-14 | 当前发布的受控服务托管 | [CPU通过](SERVE_MANAGED_SERVICE_CPU_2026-11-03.md)，实际首轮FAILED | 首轮第4请求触发结构化终态交接503；临时unit已清理，[修复](SERVE_STRUCTURED_HANDOFF_2026-11-03.md)CPU通过，GPU补验待执行 |
+| SRV-14 | 当前发布的受控服务托管 | [CPU通过](SERVE_MANAGED_SERVICE_CPU_2026-11-03.md)，实际首轮FAILED | 首轮交接503已[修复交付](SERVE_STRUCTURED_HANDOFF_RESULT_2026-11-03.md)；新默认2启动/6生成[补验](SERVE_MANAGED_SERVICE_SUPPLEMENT_2026-11-03.md)待执行 |
 
 “待开发”只表示排期，不能写成已开始或已支持；“条件待办”不自动
 触发扩展。阶段 A/B 为业务与可靠性推进。SRV-09 若包含解码、批处理

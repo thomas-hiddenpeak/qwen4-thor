@@ -18,11 +18,17 @@
 已冻结2启动/8生成/6负面场景；实际首轮在第4请求发现结构化响应
 结束与grammar回收之间的交接竞争，整体FAILED，临时服务/GPU/锁
 均已清理。普通JSON/SSE/严格JSON通过不代替整批通过。
-[交接修复](SERVE_STRUCTURED_HANDOFF_2026-11-03.md)CPU通过：终态前标记
-收尾、后继可取消等待，仍保留完整资源独占。候选d66f2bb9零警告，
-261公共/227必需/9后端合同、4驱动检查通过；原编译夹具与驱动计数
-文件覆盖失败保留，纠正后只重验受影响项。GPU补验已冻结1启动/9生成，
-尚未执行；默认280b95dc保持。
+[交接修复已限定交付](SERVE_STRUCTURED_HANDOFF_RESULT_2026-11-03.md)：
+默认d66f2bb9/sidecar42d7672a、protocol55a3e67b。终态前标记收尾、
+后继可取消等待，保留完整资源独占。零警告、261公共/227必需/9后端、
+4驱动及锁内原生25通过；实际1启动/9生成，8成功/1预期截断错误，
+真实工具闭环和连续交接通过，grammar7/7、owner归零。
+首轮末尾healthz被客户端本地白名单拒绝，原FAILED/COMMAND_FAILED
+保留；纠正复核既有livez/readyz/metrics及exit0，不新增模型/HTTP，
+新guard COMPLETED并交付。缺失healthz与独立末样本单列，原600秒不扩。
+旧280b95dc完整pair和专用回退入口已核验；恢复服务仍masked，GPU/锁
+释放，[实际托管补验](SERVE_MANAGED_SERVICE_SUPPLEMENT_2026-11-03.md)
+冻结2启动/6生成/3终止场景，复用原3拒绝与未变CPU，待执行。
 
 [SRV-02h+02i已限定交付](SERVE_MEDIA_COMPOSITE_RESULT_2026-11-03.md)：
 默认280b95dc/sidecar18c9d2c5、protocol29810d03，211来源保持；工具

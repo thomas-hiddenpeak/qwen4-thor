@@ -1,0 +1,11 @@
+{
+  "accepted.json": "41c1f1d776502620942f2fe24392b622bbf77125d28618cf82f3845e5167d4f9",
+  "cpu.json": "2b1cfec96b0d744c9c3f9e665124ea8011b7cdf9e083285911a0aa32e61f0a9c",
+  "finalized.json": "24dc4e11e93c227877e29de6688551075e640b61b943e15acbe053770e750146",
+  "guard.json": "cf41a40c83d8bce1d7fbd5f0951f7bf32aaa4e9732c33a5b46178b8789e77bed",
+  "manifest.json": "b9d3dfce93344daa0c21cbc1737f90704fe9c9516053ff6d3752f2a657c2167e",
+  "original_gpu.json": "ebe285a519be9c28d49f62a18a91fa85159de8bc29dee96c03d3775647d6b273",
+  "original_managed.json": "9ca45d18c347c7ef3e20db89222756a04abecb7ce9cec6d0805a903e07bc2f3d",
+  "postflight.json": "f7b7046e2660c7d1c0d87270bed1eae9accaf1e3d0db7bc72c26dfed8aa55a04",
+  "raw-records.tar.gz": "e669428bbb711a80ce1b1e59f93ee8aab7f45011c09a10c8340eb9a3de909f1a"
+}

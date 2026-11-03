@@ -1,0 +1,14 @@
+{
+  "status": "FAILED",
+  "automatic_request_retry": false,
+  "performance_acceptance": false,
+  "error": "InvalidObservation('unsupported_diagnostic_route')",
+  "cleanup_confirmed": true,
+  "counts": {
+    "generations": 9,
+    "negatives": 1,
+    "controls": 7,
+    "starts": 1
+  },
+  "elapsed_seconds": 47.98786245798692
+}
