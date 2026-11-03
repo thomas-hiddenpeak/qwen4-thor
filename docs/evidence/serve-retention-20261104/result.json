@@ -1,0 +1,28 @@
+{
+  "status": "ACCEPT_RETAINED_MANAGED_SHORT",
+  "cpu_effective_tests": 22,
+  "model_starts": 1,
+  "gateway_starts": 2,
+  "successful_requests": 6,
+  "real_tool_executions": 1,
+  "grammar_reaped": 3,
+  "capacity_refusals": 1,
+  "sealed_generations": 3,
+  "explicitly_pruned_generations": 1,
+  "owned_exited": 10,
+  "controls": 9,
+  "seconds": 68.59525035112165,
+  "guard_seconds": 57.806796201039106,
+  "guard_observations": 55,
+  "http_seconds": {
+    "min": 0.3315051340032369,
+    "median": 1.6656305766664445,
+    "max": 4.049245822010562,
+    "scope": "request through complete EOF"
+  },
+  "cleanup_confirmed": true,
+  "default_changed": false,
+  "long_test_started": false,
+  "performance_acceptance": false,
+  "filesystem_hard_quota_proved": false
+}
