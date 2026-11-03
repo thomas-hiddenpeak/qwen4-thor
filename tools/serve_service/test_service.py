@@ -551,7 +551,7 @@ class PackageTests(unittest.TestCase):
         receipt = pkg.prepare(binary, release, model, self.root/'package',
                               critical_memory_mib=30720)
         manifest = pkg.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(manifest['version'], 2)
+        self.assertEqual(manifest['version'], 3)
         self.assertEqual(manifest['settings']['critical_memory_mib'], 30720)
 
     def test_legacy_package_inventory_keeps_legacy_configuration(self):
@@ -561,12 +561,24 @@ class PackageTests(unittest.TestCase):
         manifest = pkg.read(target/'manifest.json')
         manifest['version'] = 1
         del manifest['files']['source/tools/serve_service/memory.py']
+        del manifest['files']['source/tools/serve_service/inspection.py']
         for key in ('critical_memory_mib', 'memory_poll_seconds',
                     'memory_low_seconds', 'memory_unknown_seconds'):
             del manifest['settings'][key]
         pkg.save(target/'manifest.json', manifest)
         old = pkg.verify(target, pkg.sha(target/'manifest.json'))
         self.assertNotIn('critical_memory_mib', old['settings'])
+
+    def test_v2_inventory_retains_memory_without_inspection(self):
+        binary, release, model = self.fixture()
+        receipt = pkg.prepare(binary, release, model, self.root/'package')
+        target = Path(receipt['package'])
+        manifest = pkg.read(target/'manifest.json')
+        manifest['version'] = 2
+        del manifest['files']['source/tools/serve_service/inspection.py']
+        pkg.save(target/'manifest.json', manifest)
+        old = pkg.verify(target, pkg.sha(target/'manifest.json'))
+        self.assertEqual(old['settings']['critical_memory_mib'], 1024)
 
 
 if __name__ == '__main__':

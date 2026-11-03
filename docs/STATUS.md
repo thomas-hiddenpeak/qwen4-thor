@@ -4,6 +4,12 @@
 
 ## 当前推进目标
 
+[SRV-17只读运维核验正在开发](SERVE_INSPECTION_2026-11-03.md)：
+新增inspect分离历史终态与实际进程/监听/GPU/flock；v3包记录观察范围，
+旧scope缺证保持未知。51项CPU及隔离入口首轮通过；下一步固定
+1启动/3成功真实工具闭环及live/stopped核验，尚未实际验收/交付，
+默认pair不改。
+
 [SRV-16独立控制器死亡已限定通过](SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)：
 冻结4c780bef、包35ca281f；1启动/6生成、4成功含真实资料工具，活跃SSE
 及已准备grammar排队各完整server_shutdown。controller -9，worker

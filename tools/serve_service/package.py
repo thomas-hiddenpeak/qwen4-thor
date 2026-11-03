@@ -17,7 +17,8 @@ LEGACY_SOURCES = (
     'tools/serve_ops/contracts.py', 'tools/serve_ops/identity.py',
     'tools/serve_ops/transport.py',
 )
-SOURCES = (*LEGACY_SOURCES, 'tools/serve_service/memory.py')
+V2_SOURCES = (*LEGACY_SOURCES, 'tools/serve_service/memory.py')
+SOURCES = (*V2_SOURCES, 'tools/serve_service/inspection.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
 PROFILE = dict(name='text-mtp-managed-v1', host='127.0.0.1', max_seq=1,
     max_len=8192, max_prefill=2048, max_tokens=256, mtp_k=3,
@@ -137,7 +138,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         os.chmod(dest, 0o400)
     names = [*FILES, *('source/'+s for s in SOURCES)]
     python = Path(sys.executable).resolve()
-    manifest = dict(version=2, repository=str(ROOT), model_dir=str(model),
+    manifest = dict(version=3, repository=str(ROOT), model_dir=str(model),
         model_files=model_files, protocol_sha256=protocol, settings=config,
         python=dict(path=str(python), sha256=sha(python)),
         files={name: sha(target/name) for name in names},
@@ -152,7 +153,7 @@ def verify(package, digest):
     package = Path(package).resolve(strict=True)
     require(sha(package/'manifest.json') == digest, 'package manifest changed')
     manifest = read(package/'manifest.json')
-    require(type(manifest['version']) is int and manifest['version'] in (1, 2),
+    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3),
             'unsupported package version')
     config = manifest['settings']
     wanted = settings(config['port'], config['restart_limit'],
@@ -162,7 +163,7 @@ def verify(package, digest):
                     'memory_low_seconds', 'memory_unknown_seconds'):
             del wanted[key]
     require(config == wanted, 'unknown managed configuration')
-    sources = LEGACY_SOURCES if manifest['version'] == 1 else SOURCES
+    sources = {1: LEGACY_SOURCES, 2: V2_SOURCES, 3: SOURCES}[manifest['version']]
     expected = {*FILES, *('source/'+name for name in sources)}
     require(set(manifest['files']) == expected, 'package inventory differs')
     for name, wanted in manifest['files'].items():

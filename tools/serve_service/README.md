@@ -54,6 +54,20 @@ GPU已清理，应查单元/cgroup与NVML，不按旧PID或进程名kill。
 进程身份和GPU观测为准，不能为消除旧文本而删除锁文件。
 运行目录留下terminal，不提供自动复活或恢复旧请求的入口。
 
+失联后的现场核验使用当前入口（旧包可从工作区入口核验）：
+
+```bash
+/usr/bin/python3 -I -B tools/serve_service/service.py inspect \
+  --run .q4t-work/managed/run-001
+```
+
+它分别输出历史`history`、实际进程/监听/GPU/flock与恢复标记；
+`cleanup_observed`只代表本次完整观察下无残留，不改历史
+`cleanup_confirmed`。完整观察exit0（包含BUSY），缺证/变化exit2。
+当前v3包记录UID和命名空间范围；旧运行缺该信息时保持UNKNOWN，
+但仍列出各资源的现场结果。空闲锁会在查询期间临时持有，结束释放；
+不写记录、不发送信号、不连HTTP。详见[核验合同](../../docs/SERVE_INSPECTION_2026-11-03.md)。
+
 默认重启次数为0；`prepare --restart-limit 1..3`显式允许恢复已ready、
 被信号终止的后端。总次数不随时间重置。普通非零退出、GPU unhealthy、
 身份/有效配置变化、启动失败或持续观测失效都会停服；旧进程组回收

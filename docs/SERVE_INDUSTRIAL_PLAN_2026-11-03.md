@@ -65,6 +65,10 @@ SRV-16[独立controller死亡限定通过](SERVE_CONTROLLER_DEATH_RESULT_2026-11
 
 ## 当前工作包
 
+- SRV-17：[失联后的只读运维核验](SERVE_INSPECTION_2026-11-03.md)。
+  开发与51项CPU/隔离入口首轮通过，固定一次托管/3成功业务矩阵待验；
+  旧终态不改、未知不当清空，新v3包补观察范围，默认ELF不改。
+
 - SRV-16：[独立控制器死亡实际限定接受](SERVE_CONTROLLER_DEATH_RESULT_2026-11-03.md)。
   生产实现不改，1启动/6生成/4成功/2 shutdown，真实工具和自然退场
   通过；旧controller记录缺失与held历史文字保留，GPU空、锁可用。

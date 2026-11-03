@@ -13,6 +13,7 @@ sys.dont_write_bytecode = True
 sys.path[:0] = [str(ROOT), str(ROOT/'tools/evalscope')]
 from tools.serve_service import package as pkg
 from tools.serve_service import supervisor
+from tools.serve_service import inspection
 import gpu_exclusive as guard
 
 
@@ -49,8 +50,9 @@ def run(package, digest, output):
     output = pkg.private_directory(output, repository)
     guard.ROOT = repository
     lock_path = guard.common_lock()
-    pkg.save(output/'controller.json', dict(version=1,
+    pkg.save(output/'controller.json', dict(version=2,
         owner=supervisor.process_identity(os.getpid()), lock_path=str(lock_path),
+        observation_context=inspection.current_context(),
         package=str(Path(package).resolve()), manifest_sha256=digest,
         created_unix=time.time()))
     command = [manifest['python']['path'], '-I', '-B',
@@ -176,7 +178,7 @@ def main():
         p.add_argument('--package', type=Path, required=True)
         p.add_argument('--manifest-sha256', required=True)
         p.add_argument('--output', type=Path, required=True)
-    for action in ('stop', 'status', '_worker'):
+    for action in ('stop', 'status', 'inspect', '_worker'):
         p = sub.add_parser(action)
         p.add_argument('--run', type=Path, required=True)
     args = parser.parse_args()
@@ -204,6 +206,10 @@ def main():
     elif args.action == 'unit':
         print(unit_text(args.package, args.manifest_sha256, args.output), end='')
         return 0
+    elif args.action == 'inspect':
+        result = inspection.inspect(args.run)
+        print(json.dumps(result))
+        return 0 if result['complete'] else 2
     else:
         result = (stop if args.action == 'stop' else status)(args.run)
     print(json.dumps(result))
