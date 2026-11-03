@@ -548,6 +548,28 @@ if(Q4T_BUILD_TESTS)
     LINKER:--wrap=cudaMalloc LINKER:--wrap=cudaFree
     LINKER:--wrap=cudaStreamSynchronize)
 
+  add_executable(q4t_vision_contract EXCLUDE_FROM_ALL
+    tools/serve_media_failure/vision_contract.cpp)
+  target_include_directories(q4t_vision_contract PRIVATE include)
+  target_link_libraries(q4t_vision_contract PRIVATE ${Q4T_TEST_LIBS})
+  target_link_options(q4t_vision_contract PRIVATE
+    LINKER:--wrap=cudaMalloc LINKER:--wrap=cudaFree
+    LINKER:--wrap=cudaMemcpy LINKER:--wrap=cudaMemcpyAsync
+    LINKER:--wrap=cudaStreamSynchronize LINKER:--wrap=_Znwm)
+  add_executable(q4t_vision_upload EXCLUDE_FROM_ALL
+    tools/verify/inference_metadata/vision_load_test.cpp)
+  target_include_directories(q4t_vision_upload PRIVATE include)
+  target_link_libraries(q4t_vision_upload PRIVATE ${Q4T_TEST_LIBS})
+  target_link_options(q4t_vision_upload PRIVATE LINKER:--wrap=cudaMemcpyAsync)
+
+  add_executable(q4t_host_memory_contract EXCLUDE_FROM_ALL
+    tools/serve_media_failure/host_contract.cpp src/server/http_response.cpp
+    src/vision/processor.cpp)
+  target_include_directories(q4t_host_memory_contract PRIVATE include third_party)
+  target_link_libraries(q4t_host_memory_contract PRIVATE Threads::Threads)
+  target_link_options(q4t_host_memory_contract PRIVATE LINKER:--wrap=malloc
+    LINKER:--wrap=realloc LINKER:--wrap=free LINKER:--wrap=send)
+
   # Repeatable real-CUDA copy contract; no checkpoint or private input.
   add_executable(q4t_mtp_position_copy
     tests/mtp_position_copy_test.cpp)

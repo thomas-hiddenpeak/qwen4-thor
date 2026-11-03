@@ -176,3 +176,22 @@ Q4T_TEST(chat_capabilities_model_escaping) {
   Q4T_CHECK(caps.GetString("model") == model);
   return true;
 }
+
+Q4T_TEST(chat_capabilities_media_and_host_failure_boundaries) {
+  q4t::io::Json caps;
+  Q4T_CHECK(q4t::io::ParseJson(
+      q4t::server::ChatCapabilitiesJson("m", true, false), &caps));
+  const auto* media = caps.Find("media_failures");
+  Q4T_CHECK(media &&
+            media->GetString("requested_load_failure") == "startup_rejected");
+  Q4T_CHECK(media->GetInt("invalid_input_http_status") == 400 &&
+            media->GetInt("device_failure_http_status") == 503 &&
+            !media->GetBool("source_decode_hard_budget"));
+  const auto* errors = caps.Find("errors");
+  const auto* host = errors ? errors->Find("host_memory") : nullptr;
+  Q4T_CHECK(host && host->GetInt("http_status") == 503 &&
+            host->GetString("code") == "host_memory_exhausted" &&
+            host->GetBool("fixed_buffer_fallback") &&
+            !host->GetBool("recovery_guaranteed"));
+  return true;
+}

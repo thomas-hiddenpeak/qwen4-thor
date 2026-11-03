@@ -20,7 +20,10 @@ enum class ResponseState {
   kUnsent, kHeadersStarted, kStreaming, kTerminal, kComplete
 };
 // Allocation-free best effort after an exception; never adds a second terminal.
-void SendExceptionResponse(int fd, ResponseState state) noexcept;
+enum class ExceptionKind { kInternal, kHostMemory };
+void SendExceptionResponse(
+    int fd, ResponseState state,
+    ExceptionKind kind = ExceptionKind::kInternal) noexcept;
 
 // Emits complete UTF-8 scalars, replacing each malformed maximal subpart with
 // U+FFFD. At most three bytes survive Append; Finish resolves an incomplete

@@ -505,34 +505,26 @@ Status ChatServer::Start(const ServerOptions& opts) {
     }
   }
 
-  // Load the vision tower (multimodal). Optional: if the checkpoint has no
-  // "model.visual." tensors, skip gracefully (the server then serves text
-  // only and rejects image parts). The loader is read-only (mmap) and is
-  // released after the weights are copied to device.
+  // Explicitly requested media must initialize completely before readiness.
   if (capabilities.media) {
     PhaseTimer pt("vision_load");
-    io::WeightIndex* index = nullptr;
-    s = io::WeightIndex::Open(cfg.index_path, &index);
-    if (s.ok()) {
-      io::WeightLoader* loader = nullptr;
-      s = io::WeightLoader::Create(opts.model_dir, *index, 8, &loader);
-      if (s.ok()) {
-        vision::VisionConfig vcfg;  // defaults match this model's vision_config
-        auto tower = std::make_unique<vision::VisionTower>();
-        std::string verr;
-        if (vision::LoadVision(*loader, vcfg, tower.get(), &verr, nullptr)) {
-          vision_tower_ = std::move(tower);
-          std::fprintf(stderr, "[q4t] vision tower loaded (%d blocks)\n",
-                       vcfg.depth);
-        } else {
-          std::fprintf(stderr,
-                       "[q4t] vision tower unavailable (%s); text-only mode\n",
-                       verr.c_str());
-        }
-        delete loader;
-      }
-      delete index;
-    }
+    io::WeightIndex* raw_index = nullptr;
+    s = io::WeightIndex::Open(cfg.index_path, &raw_index);
+    if (!s.ok()) return s;
+    std::unique_ptr<io::WeightIndex> index(raw_index);
+    io::WeightLoader* raw_loader = nullptr;
+    s = io::WeightLoader::Create(opts.model_dir, *index, 8, &raw_loader);
+    if (!s.ok()) return s;
+    std::unique_ptr<io::WeightLoader> loader(raw_loader);
+    vision::VisionConfig vcfg;
+    auto tower = std::make_unique<vision::VisionTower>();
+    std::string error;
+    if (detail::DeviceMemoryFault("startup.vision_load", nullptr) !=
+            cudaSuccess ||
+        !vision::LoadVision(*loader, vcfg, tower.get(), &error, nullptr))
+      return Status::Fail("requested vision load failed: " + error);
+    vision_tower_ = std::move(tower);
+    std::fprintf(stderr, "[q4t] vision tower loaded (%d blocks)\n", vcfg.depth);
   } else {
     std::fprintf(stderr, "[q4t] media disabled; vision tower not loaded\n");
   }

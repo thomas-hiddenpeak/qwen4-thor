@@ -37,6 +37,9 @@ ModelOwner::~ModelOwner() = default;
 DecodeMetadataUpload::~DecodeMetadataUpload() = default;
 MetadataUploadBatch::~MetadataUploadBatch() = default;
 }  // namespace q4t::model
+namespace q4t::vision {
+VisionTower::~VisionTower() = default;  // Always empty in this fake backend.
+}
 namespace q4t::trace {
 RouterCollector::~RouterCollector() = default;
 }  // namespace q4t::trace
@@ -264,7 +267,7 @@ Q4T_TEST(http_observation_draining_and_exception_release) {
   observation_failure = true;
   ScopeExit clear_failure([] { observation_failure = false; });
   Q4T_CHECK(Request(server, "GET /metrics HTTP/1.1\r\nHost: t\r\n\r\n")
-                .starts_with("HTTP/1.1 500 "));
+                .starts_with("HTTP/1.1 503 "));
   clear_failure.Run();
   const int fd = Connect(server);
   ScopeExit close_socket([&] { close(fd); });
@@ -337,7 +340,7 @@ Q4T_TEST(http_memory_gate_before_body_controls_and_recovery) {
       "POST /v1/chat/completions HTTP/1.1\r\nHost: test\r\n"
       "Content-Type: application/json\r\nContent-Length: 2\r\n\r\n{}");
   // The unloaded fixture throws on dispatch; this is not a successful chat.
-  Q4T_CHECK(recovered.starts_with("HTTP/1.1 500 "));
+  Q4T_CHECK(recovered.starts_with("HTTP/1.1 503 "));
   using q4t::server::MemoryCheckpoint;
   for (size_t reason : {0u, 1u})
     Q4T_CHECK(ServeContractAccess::MemoryRejected(
@@ -412,7 +415,8 @@ Q4T_TEST(http_exception_keeps_server_and_releases_connections) {
   stop.Run();
   Q4T_CHECK(run.wait_for(3s) == std::future_status::ready);
   Q4T_CHECK(run.get().ok() && ServeContractAccess::Empty(server));
-  Q4T_CHECK(failed.starts_with("HTTP/1.1 500 "));
+  Q4T_CHECK(failed.starts_with("HTTP/1.1 503 "));
+  Q4T_CHECK(failed.find("host_memory_exhausted") != failed.npos);
   Q4T_CHECK(failed.find("X-Request-Id: exception-1\r\n") != failed.npos);
   Q4T_CHECK(healthy.starts_with("HTTP/1.1 200 "));
   return true;
@@ -531,7 +535,7 @@ Q4T_TEST(http_methods_media_queries_and_trace_headers) {
                     "POST /v1/chat/completions HTTP/1.1\r\nHost: t\r\n"
                     "Content-Type: APPLICATION/JSON; charset=\"UTF-8\"\r\n"
                     "Content-Length: 2\r\n\r\n{}")
-                .starts_with("HTTP/1.1 500 "));
+                .starts_with("HTTP/1.1 503 "));
   const auto duplicate =
       Request(server,
               "GET /v1/models HTTP/1.1\r\nHost: t\r\nX-Request-Id: first\r\n"
@@ -641,7 +645,7 @@ Q4T_TEST(http_receive_observation_body_routes_and_business_boundary) {
       Request(server,
               "POST /v1/chat/completions HTTP/1.1\r\nHost: t\r\n"
               "Content-Type: application/json\r\nContent-Length: 2\r\n\r\n{}")
-          .starts_with("HTTP/1.1 500 "));
+          .starts_with("HTTP/1.1 503 "));
   Q4T_CHECK(ServeContractAccess::ReceiveFailures(
                 server, HttpReceiveFailure::kException) == 0);
   stop.Run();

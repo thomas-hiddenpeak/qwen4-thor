@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 
+#include "q4t/runtime/device_memory.h"
+
 namespace q4t {
 namespace io {
 class WeightLoader;
@@ -83,11 +85,17 @@ struct VisionWeights {
   uint16_t* d_merger_fc2_w = nullptr;  // [out_hidden, 4*hidden]
   uint16_t* d_merger_fc2_b = nullptr;  // [out_hidden]
 
+  bool Empty() const noexcept;
   void Free();
 };
 
 // Vision tower: config + weights + precomputed per-image tables + workspace.
 struct VisionTower {
+  VisionTower() = default;
+  ~VisionTower();
+  VisionTower(const VisionTower&) = delete;
+  VisionTower& operator=(const VisionTower&) = delete;
+
   VisionConfig cfg;
   VisionWeights w;
 
@@ -114,11 +122,14 @@ struct VisionTower {
   // Host-side per-image scratch (rot_pos_ids etc.), freed with the tower.
   std::vector<uint8_t> host_scratch;
 
-  // Allocate workspace for the given image shapes. Returns false on OOM.
+  // Failure leaves workspace empty and weights intact. Only a proven CUDA
+  // allocation OOM is recoverable; copy/other device errors remain fatal.
   // Idempotent: safe to call again (e.g. per request) — any prior workspace
   // and (if the grid grew) RoPE tables are freed and rebuilt.
-  bool Allocate(const std::vector<ImageShape>& shapes,
-                cudaStream_t stream);
+  bool Allocate(const std::vector<ImageShape>& shapes, cudaStream_t stream,
+                runtime::DeviceMemoryResult* failure = nullptr);
+  bool Empty() const noexcept;
+  void FreeWorkspace();
   void Free();
 };
 

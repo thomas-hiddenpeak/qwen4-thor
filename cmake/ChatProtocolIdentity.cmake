@@ -3,6 +3,11 @@ include_guard(GLOBAL)
 include(${CMAKE_CURRENT_LIST_DIR}/StructuredOutput.cmake)
 get_filename_component(Q4T_PROTOCOL_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
 set(protocol_inputs
+  include/q4t/runtime/device_memory.h
+  include/q4t/vision/vision.h
+  include/q4t/vision/processor.h
+  src/vision/vision.cu
+  src/vision/processor.cpp
   cmake/CudaCleanupBoundary.cmake
   include/q4t/runtime/cleanup_policy.h
   src/runtime/startup_reservation.cpp

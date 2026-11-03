@@ -23,44 +23,53 @@ std::string RequestIdHeader(int fd) {
 }
 }
 
-void SendExceptionResponse(int fd, ResponseState state) noexcept {
-  auto* context = HttpResponseContext::Current(fd);
-  if (context) {
-    context->StopHeartbeats();
-    state = *context->State();
-    std::fprintf(stderr, "[q4t][http] trace_id=%s error=internal_error\n",
-                 context->TraceId().c_str());
-  }
-  if (state == ResponseState::kHeadersStarted ||
-      state == ResponseState::kTerminal || state == ResponseState::kComplete)
-    return;
-  constexpr char http[] =
-      "HTTP/1.1 500 Internal Server Error\r\n"
-      "Content-Type: application/json\r\nConnection: close\r\n\r\n"
-      "{\"error\":{\"message\":\"request failed\",\"type\":\"server_error\","
-      "\"code\":\"internal_error\",\"param\":null}}";
-  constexpr char sse[] =
-      "data: {\"error\":{\"message\":\"request failed\","
-      "\"type\":\"server_error\",\"code\":\"internal_error\",\"param\":null}}"
-      "\r\n\r\ndata: [DONE]\r\n\r\n";
-  const WriteOptions terminal{
-      std::chrono::steady_clock::now() + std::chrono::milliseconds(250)};
-  if (context) *context->State() = ResponseState::kTerminal;
-  if (state == ResponseState::kStreaming) {
-    WriteAll(fd, sse, sizeof(sse) - 1, terminal);
-  } else if (context) {
+void SendExceptionResponse(int fd, ResponseState state,
+                           ExceptionKind kind) noexcept {
+  // Fixed storage also works while all C++ heap allocations keep failing.
+  // If the transport itself throws, abandon this response without retrying.
+  try {
+    auto* context = HttpResponseContext::Current(fd);
+    const bool memory = kind == ExceptionKind::kHostMemory;
+    const char* code = memory ? "host_memory_exhausted" : "internal_error";
+    const char* type = memory ? "service_unavailable_error" : "server_error";
+    if (context) {
+      context->StopHeartbeats();
+      state = *context->State();
+      std::fprintf(stderr, "[q4t][http] trace_id=%s error=%s\n",
+                   context->TraceId().c_str(), code);
+    }
+    if (state == ResponseState::kHeadersStarted ||
+        state == ResponseState::kTerminal || state == ResponseState::kComplete)
+      return;
+    char body[256];
+    const int body_size = std::snprintf(
+        body, sizeof(body),
+        "{\"error\":{\"message\":\"request failed\",\"type\":\"%s\","
+        "\"code\":\"%s\",\"param\":null}}",
+        type, code);
+    if (body_size <= 0 || static_cast<size_t>(body_size) >= sizeof(body))
+      return;
     char response[1024];
-    const int size = std::snprintf(
-        response, sizeof(response),
-        "HTTP/1.1 500 Internal Server Error\r\nX-Request-Id: %s\r\n"
-        "Content-Type: application/json\r\nConnection: close\r\n\r\n"
-        "{\"error\":{\"message\":\"request failed\",\"type\":\"server_error\","
-        "\"code\":\"internal_error\",\"param\":null}}",
-        context->TraceId().c_str());
-    if (size > 0 && static_cast<size_t>(size) < sizeof(response))
-      WriteAll(fd, response, static_cast<size_t>(size), terminal);
-  } else {
-    WriteAll(fd, http, sizeof(http) - 1, terminal);
+    const int size =
+        state == ResponseState::kStreaming
+            ? std::snprintf(response, sizeof(response),
+                            "data: %s\r\n\r\ndata: [DONE]\r\n\r\n", body)
+            : std::snprintf(response, sizeof(response),
+                            "HTTP/1.1 %s\r\n%s%s%s"
+                            "Content-Type: application/json\r\n"
+                            "Connection: close\r\n\r\n%s",
+                            memory ? "503 Service Unavailable"
+                                   : "500 Internal Server Error",
+                            context ? "X-Request-Id: " : "",
+                            context ? context->TraceId().c_str() : "",
+                            context ? "\r\n" : "", body);
+    if (size <= 0 || static_cast<size_t>(size) >= sizeof(response)) return;
+    const WriteOptions terminal{std::chrono::steady_clock::now() +
+                                std::chrono::milliseconds(250)};
+    if (context) *context->State() = ResponseState::kTerminal;
+    WriteAll(fd, response, static_cast<size_t>(size), terminal);
+  } catch (...) {
+    // No allocation, second error response, or exception may escape fallback.
   }
 }
 

@@ -1,6 +1,8 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
 
+#include <new>
+
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -169,6 +171,9 @@ Status ChatServer::Run() {
         ScopeExit connection_cleanup([&] { FinishConnection(fd); });
         try {
           HandleClient(fd);
+        } catch (const std::bad_alloc&) {
+          detail::SendExceptionResponse(fd, detail::ResponseState::kUnsent,
+                                        detail::ExceptionKind::kHostMemory);
         } catch (const std::exception& error) {
           std::fprintf(stderr, "[q4t] HTTP handler exception: %s\n", error.what());
           detail::SendExceptionResponse(fd, detail::ResponseState::kUnsent);
@@ -319,6 +324,11 @@ void ChatServer::HandleClient(int fd) {
       std::fprintf(stderr, "[q4t][http] trace_id=%s elapsed_ms=%.1f\n",
                    context.TraceId().c_str(), ms);
     }
+  } catch (const std::bad_alloc&) {
+    if (!dispatch_started)
+      context.RecordReceiveFailure(HttpReceiveFailure::kException, 503);
+    detail::SendExceptionResponse(fd, *context.State(),
+                                  detail::ExceptionKind::kHostMemory);
   } catch (...) {
     if (!dispatch_started)
       context.RecordReceiveFailure(HttpReceiveFailure::kException, 500);

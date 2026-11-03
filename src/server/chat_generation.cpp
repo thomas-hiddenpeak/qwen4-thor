@@ -1,5 +1,7 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+
+#include <new>
 #include "cuda_memory_backend.h"
 
 #include <algorithm>
@@ -85,6 +87,9 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
   auto* state = context ? context->State() : &response;
   try {
     HandleChatImpl(fd, body, state);
+  } catch (const std::bad_alloc&) {
+    detail::SendExceptionResponse(fd, *state,
+                                  detail::ExceptionKind::kHostMemory);
   } catch (const std::exception& error) {
     std::fprintf(stderr, "[q4t] request exception: %s\n", error.what());
     detail::SendExceptionResponse(fd, *state);
@@ -97,8 +102,6 @@ void ChatServer::HandleChat(int fd, const std::string& body) {
 void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                detail::ResponseState* response_state) {
   auto* http = detail::HttpResponseContext::Current(fd);
-  RequestDiagnostics diagnostic(stderr, http ? http->TraceId() : "-");
-  using Wait = RequestDiagnostics::Wait;
   metrics_.requests_total.fetch_add(1, std::memory_order_relaxed);
   const auto t_arrive = std::chrono::steady_clock::now();
   // Any return before generation starts (validation / alloc / encode / prefill
@@ -113,6 +116,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         err.fetch_add(1, std::memory_order_relaxed);
     }
   } err_guard{metrics_.requests_error};
+  detail::ServeFaultPoint("handler.before_diagnostics");
+  RequestDiagnostics diagnostic(stderr, http ? http->TraceId() : "-");
+  using Wait = RequestDiagnostics::Wait;
   if (!CheckMemoryAdmission(fd, MemoryCheckpoint::kPrepare)) return;
   if (!gpu_healthy_.load(std::memory_order_relaxed)) {
     SendError(fd, 503, "GPU unhealthy after a device error; restart the server",
@@ -587,6 +593,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     std::vector<int> counts;
     std::vector<std::array<int, 3>> grids;
     std::string verr;
+    DeviceMemoryResult vision_memory;
     // The vision tower uses a shared workspace, so its forward is serialized
     // behind model_mu_ (the same lock that serializes the main model). The
     // pipeline runs on the default stream and self-synchronizes internally.
@@ -599,8 +606,14 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         return;
       }
       if (!RunVisionPipeline(items, &d_vfeats, &vfeats.num_tokens, &counts,
-                             &grids, &verr)) {
-        SendError(fd, 400, verr);
+                             &grids, &verr, &vision_memory,
+                             request_id.c_str())) {
+        if (!vision_memory.ok()) {
+          SendError(fd, 503, "vision device resource failure", {},
+                    vision_memory.Reason());
+        } else {
+          SendError(fd, 400, verr);
+        }
         // A failed buffer release may need to reacquire model_mu_ to drain.
         return;
       }

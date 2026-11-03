@@ -1,5 +1,6 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "cuda_memory_backend.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -18,9 +19,14 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
                                    uint16_t** out_feats, int* out_num_tokens,
                                    std::vector<int>* out_counts,
                                    std::vector<std::array<int, 3>>* out_grids,
-                                   std::string* err) {
+                                   std::string* err,
+                                   DeviceMemoryResult* device_result,
+                                   const char* request_id) {
+  const runtime::CleanupPhase phase("vision.request");
+  *device_result = {};
   *out_feats = nullptr;
   *out_num_tokens = 0;
+  out_counts->clear();
   if (out_grids) out_grids->clear();
   if (vision_tower_ == nullptr) {
     if (err) *err = "vision tower not loaded (text-only model)";
@@ -98,55 +104,76 @@ bool ChatServer::RunVisionPipeline(const std::vector<VisionItem>& items,
       off += n;
     }
   }
+  // Publish no output ownership until all computation and cleanup succeeded.
+  // Counts are prepared before acquiring device buffers (may throw bad_alloc).
+  int total_tokens = 0;
+  out_counts->reserve(shapes.size());
+  for (const auto& sh : shapes) {
+    const int count = (sh.h / m) * (sh.w / m) * sh.t;
+    out_counts->push_back(count);
+    total_tokens += count;
+  }
   uint16_t* d_pixels = nullptr;
-  if (cudaMalloc(reinterpret_cast<void**>(&d_pixels),
-                 pixels_bf16.size() * sizeof(uint16_t)) != cudaSuccess) {
-    if (err) *err = "cudaMalloc pixels failed";
+  uint16_t* d_out = nullptr;
+  const auto record = [&](DeviceMemoryResult result) {
+    if (!result.ok()) {
+      *device_result = result;
+      std::fprintf(stderr,
+                   "[q4t][vision-device] id=%s code=%s error=%d pending=%d\n",
+                   request_id, result.Reason(), result.operation_error,
+                   result.pending_error);
+      ApplyDeviceMemoryFailure(result, gpu_healthy_, serving_failed_,
+                               stop_requested_);
+      // Called with model_mu_ held. Never reacquire it from this path.
+      if (!result.exhausted()) AbortBackendExecution();
+    }
+    return result.ok();
+  };
+  const auto release = [&](uint16_t*& pointer, const char* site) {
+    return record(detail::ReleaseCudaMemory(pointer, site, request_id));
+  };
+  const int exceptions = std::uncaught_exceptions();
+  ScopeExit cleanup([&] {
+    if (std::uncaught_exceptions() > exceptions) AbortBackendExecution();
+    release(d_pixels, "vision.pixels_free");
+    release(d_out, "vision.output_free");
+  });
+  if (!record(detail::AllocateCudaMemory(d_pixels,
+                                         pixels_bf16.size() * sizeof(uint16_t),
+                                         "vision.pixels_allocate", request_id)))
+    return false;
+  auto copy_error = static_cast<cudaError_t>(
+      detail::DeviceMemoryFault("vision.pixels_copy", request_id));
+  if (copy_error == cudaSuccess)
+    copy_error = cudaMemcpy(d_pixels, pixels_bf16.data(),
+                            pixels_bf16.size() * sizeof(uint16_t),
+                            cudaMemcpyHostToDevice);
+  if (copy_error != cudaSuccess) {
+    record({DeviceMemoryState::kFailure, copy_error});
     return false;
   }
-  if (cudaMemcpy(d_pixels, pixels_bf16.data(),
-                 pixels_bf16.size() * sizeof(uint16_t),
-                 cudaMemcpyHostToDevice) != cudaSuccess) {
-    cudaFree(d_pixels);
-    if (err) *err = "H2D pixels failed";
-    return false;
-  }
-
-  // 3. Allocate the tower workspace + run the forward.
-  if (!vision_tower_->Allocate(shapes, nullptr)) {
-    cudaFree(d_pixels);
-    if (err) *err = "vision Allocate failed";
+  DeviceMemoryResult workspace;
+  if (!vision_tower_->Allocate(shapes, nullptr, &workspace)) {
+    record(workspace);
     return false;
   }
   const size_t out_bytes = vision::VisionOutputBytes(cfg, shapes);
-  uint16_t* d_out = nullptr;
-  if (cudaMalloc(reinterpret_cast<void**>(&d_out), out_bytes) != cudaSuccess) {
-    cudaFree(d_pixels);
-    if (err) *err = "cudaMalloc vision output failed";
+  if (!record(detail::AllocateCudaMemory(d_out, out_bytes,
+                                         "vision.output_allocate", request_id)))
     return false;
-  }
-  std::string ferr;
-  if (!vision::VisionForward(*vision_tower_, d_pixels, shapes, d_out, &ferr,
+  detail::ServeRequestFaultPoint("vision.before_forward", request_id);
+  if (detail::DeviceMemoryFault("vision.forward", request_id) != cudaSuccess ||
+      !vision::VisionForward(*vision_tower_, d_pixels, shapes, d_out, err,
                              nullptr)) {
-    cudaFree(d_pixels);
-    cudaFree(d_out);
-    if (err) *err = "VisionForward failed: " + ferr;
+    record({DeviceMemoryState::kFailure, cudaErrorUnknown});
     return false;
   }
-  cudaFree(d_pixels);
-  cudaDeviceSynchronize();
-
-  // 4. Per-item merged-token counts (the <|image_pad|> / <|video_pad|>
-  //    expansion factor). One count per VisionItem, in item (prompt position)
-  //    order.
-  out_counts->clear();
-  int total_tokens = 0;
-  for (const auto& sh : shapes) {
-    const int c = (sh.h / m) * (sh.w / m) * sh.t;
-    out_counts->push_back(c);
-    total_tokens += c;
-  }
-  *out_feats = d_out;
+  detail::ServeRequestFaultPoint("vision.after_forward", request_id);
+  // A completion failure must not unwind or recycle possibly live buffers.
+  runtime::RequireCleanupSuccess(cudaDeviceSynchronize(),
+                                 "cudaDeviceSynchronize");
+  if (!release(d_pixels, "vision.pixels_free")) return false;
+  *out_feats = std::exchange(d_out, nullptr);
   *out_num_tokens = total_tokens;
   return true;
 }

@@ -346,6 +346,50 @@ Q4T_TEST(server_http_exception_terminal_states) {
   return true;
 }
 
+Q4T_TEST(server_http_host_memory_identity_and_terminal) {
+  using namespace q4t::server::detail;
+  for (bool stream : {false, true}) {
+    SocketPair sockets;
+    HttpResponseContext context(sockets.fd[0]);
+    context.SetTraceId("memory-contract");
+    if (stream)
+      Q4T_CHECK(BeginStreamingResponse(sockets.fd[0], context.State()));
+    SendExceptionResponse(sockets.fd[0], *context.State(),
+                          ExceptionKind::kHostMemory);
+    SendExceptionResponse(sockets.fd[0], *context.State(),
+                          ExceptionKind::kHostMemory);
+    shutdown(sockets.fd[0], SHUT_WR);
+    std::array<char, 2048> bytes{};
+    const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(), 0);
+    Q4T_CHECK(n > 0);
+    const std::string wire(bytes.data(), static_cast<size_t>(n));
+    Q4T_CHECK(wire.starts_with(stream ? "HTTP/1.1 200 " : "HTTP/1.1 503 "));
+    Q4T_CHECK(wire.find("X-Request-Id: memory-contract\r\n") != wire.npos);
+    const auto pos = wire.find("host_memory_exhausted");
+    Q4T_CHECK(pos != wire.npos &&
+              wire.find("host_memory_exhausted", pos + 1) == wire.npos);
+    Q4T_CHECK(wire.find("service_unavailable_error") != wire.npos);
+    Q4T_CHECK(!stream || wire.ends_with("data: [DONE]\r\n\r\n"));
+    Q4T_CHECK(wire.find("finish_reason") == wire.npos);
+  }
+  return true;
+}
+
+Q4T_TEST(server_http_host_memory_does_not_append_after_partial_or_terminal) {
+  using namespace q4t::server::detail;
+  for (auto state : {ResponseState::kHeadersStarted, ResponseState::kTerminal,
+                     ResponseState::kComplete}) {
+    SocketPair sockets;
+    HttpResponseContext context(sockets.fd[0]);
+    *context.State() = state;
+    SendExceptionResponse(sockets.fd[0], state, ExceptionKind::kHostMemory);
+    shutdown(sockets.fd[0], SHUT_WR);
+    char byte;
+    Q4T_CHECK(recv(sockets.fd[1], &byte, 1, 0) == 0);
+  }
+  return true;
+}
+
 Q4T_TEST(server_http_header_completion) {
   using namespace q4t::server::detail;
   SocketPair sockets;

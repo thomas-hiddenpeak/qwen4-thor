@@ -14,11 +14,32 @@
 
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
+#include <memory>
+#include <new>
 #include <string>
 #include <vector>
 
-// stb_image for PNG/JPEG decoding.
+namespace {
+thread_local bool decode_allocation_failed = false;
+void* DecodeAllocate(size_t bytes) noexcept {
+  void* pointer = std::malloc(bytes);
+  if (bytes && !pointer) decode_allocation_failed = true;
+  return pointer;
+}
+void* DecodeReallocate(void* pointer, size_t bytes) noexcept {
+  void* result = std::realloc(pointer, bytes);
+  if (bytes && !result) decode_allocation_failed = true;
+  return result;
+}
+}  // namespace
+
+// Let the C decoder unwind its own partial allocations before translating
+// capacity failure to bad_alloc. Throwing from STBI_MALLOC would leak them.
+#define STBI_MALLOC(bytes) DecodeAllocate(bytes)
+#define STBI_REALLOC(pointer, bytes) DecodeReallocate(pointer, bytes)
+#define STBI_FREE(pointer) std::free(pointer)
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
@@ -300,15 +321,18 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
 
   // 1. Decode PNG/JPEG -> RGB uint8.
   int w = 0, h = 0, comp = 0;
-  uint8_t* pixels =
+  decode_allocation_failed = false;
+  std::unique_ptr<uint8_t, decltype(&stbi_image_free)> decoded(
       stbi_load_from_memory(image_bytes, static_cast<int>(num_bytes), &w, &h,
-                            &comp, 3);  // force 3 channels (RGB)
+                            &comp, 3),
+      stbi_image_free);
+  if (decode_allocation_failed) throw std::bad_alloc();
+  auto* pixels = decoded.get();
   if (!pixels) {
     if (err) *err = "failed to decode image (not PNG/JPEG?)";
     return false;
   }
   if (w <= 0 || h <= 0) {
-    stbi_image_free(pixels);
     if (err) *err = "invalid image dimensions";
     return false;
   }
@@ -317,7 +341,6 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   const int factor = cfg.patch_size * cfg.merge_size;  // 16*2 = 32
   int rh = 0, rw = 0;
   if (!SmartResize(h, w, factor, cfg.min_pixels, cfg.max_pixels, &rh, &rw)) {
-    stbi_image_free(pixels);
     if (err) *err = "smart_resize failed (aspect ratio or size)";
     return false;
   }
@@ -330,7 +353,7 @@ bool ProcessImage(const uint8_t* image_bytes, size_t num_bytes,
   } else {
     resized.assign(pixels, pixels + static_cast<size_t>(h) * w * 3);
   }
-  stbi_image_free(pixels);
+  decoded.reset();
 
   // 4-5. rescale + normalize (per pixel, per channel, exact float32).
   // rescale: float32(double(px) * double(1.0/255.0))
@@ -423,8 +446,13 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
   int H = 0, W = 0;
   for (int f = 0; f < F; ++f) {
     int w = 0, h = 0, comp = 0;
-    uint8_t* px = stbi_load_from_memory(
-        frames[f], static_cast<int>(frame_bytes[f]), &w, &h, &comp, 3);
+    decode_allocation_failed = false;
+    std::unique_ptr<uint8_t, decltype(&stbi_image_free)> source(
+        stbi_load_from_memory(frames[f], static_cast<int>(frame_bytes[f]), &w,
+                              &h, &comp, 3),
+        stbi_image_free);
+    if (decode_allocation_failed) throw std::bad_alloc();
+    auto* px = source.get();
     if (!px) {
       if (err) *err = "failed to decode frame " + std::to_string(f);
       return false;
@@ -433,12 +461,10 @@ bool ProcessVideo(const std::vector<const uint8_t*>& frames,
       H = h;
       W = w;
     } else if (h != H || w != W) {
-      stbi_image_free(px);
       if (err) *err = "inconsistent frame dimensions";
       return false;
     }
     decoded[f].assign(px, px + static_cast<size_t>(h) * w * 3);
-    stbi_image_free(px);
   }
 
   // 2. video smart_resize (3-D t*h*w budget).

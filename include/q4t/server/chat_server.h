@@ -46,6 +46,7 @@
 #include "q4t/server/abort_reason.h"
 #include "q4t/server/memory_admission.h"
 #include "q4t/server/startup_admission.h"
+#include "q4t/server/device_memory.h"
 #include "q4t/vision/processor.h"
 #include "q4t/vision/vision.h"
 
@@ -339,7 +340,8 @@ class ChatServer {
                          uint16_t** out_feats, int* out_num_tokens,
                          std::vector<int>* out_counts,
                          std::vector<std::array<int, 3>>* out_grids,
-                         std::string* err);
+                         std::string* err, DeviceMemoryResult* device_result,
+                         const char* request_id);
 
   std::string effective_config_;
   std::string model_name_;
