@@ -41,24 +41,17 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-10c[客户端隔离与请求预算开发中](SERVE_CLIENT_ISOLATION_2026-11-04.md)：
-已接入私有固定policy、网关身份校验、data/control RAII额度、body及
-真实模板token预算、请求/取消/缓存命名空间、发现/指标与托管包绑定。
-启用policy仅限loopback文本，省略输出预算取server/client较小值；
-超额在SSE/grammar前拒绝。修正独立HTTP测试target漏链后，候选
-5487bc67零警告构建；280公共host/246必需host（含12新合同）、9后端、
-28个真实SSD存储检查点及70包/网关/托管回归通过。原链接失败保留；
-[首轮真实短验](SERVE_CLIENT_SHORT_2026-11-04.md)27项HTTP通过；
-2启动/10 HTTP生成尝试中4成功、1取消、5生成前拒绝。鉴权、预算、
-伪造头及取消隔离通过，但strict JSON完成后工具请求误收429；
-原FAILED/COMMAND_FAILED保留，真实工具和缓存尚未执行，未部署。
-[终态额度交接修正](SERVE_CLIENT_HANDOFF_2026-11-04.md)已开发：
-finishing仍计额，后继最多等100ms，实际active饱和仍立即拒绝。
-候选7619966e零警告，29相关host在off/on两模式均通过；补验2原生
-HTTP、1启动、9成功/1取消，连续strict→工具/回填及私有缓存隔离通过。
-共享缓存夹具漏显式写入却期待命中，原FAILED/COMMAND_FAILED保持；
-[独立夹具修正](SERVE_CLIENT_CACHE_CORRECTION_2026-11-04.md)只补验共享
-缓存与末尾恢复，不改生产/旧驱动。默认pair/day保持，长验归用户。
+SRV-10c[客户端隔离与请求预算本机短验限定接受](SERVE_CLIENT_RESULT_2026-11-04.md)：
+私有policy、可信身份、data/control完整计额与100ms收尾交接、正文/
+真实token预算、请求/取消/私有和共享缓存域及包绑定已接入。
+最终7619966e零警告，280公共/246必需/9后端/28 SSD/70包及新增3
+handoff合同（29相关off/on）通过。原链接、真实429及漏seed夹具
+失败保留；累计4启动/26尝试、18成功/2取消/6生成前拒绝、真实工具
+和引用通过，27不同HTTP合同执行29次。私有hit8234、跨client miss0；
+显式共享seed后各自hit8192、答案正确。3 GPU窗口合计200秒内，
+GPU/原锁释放、9自有身份退出、SOAR masked、容器空，day未运行。
+419原件/9 ELF身份封存并离线核对；正在按授权准备默认pair交付。
+实际LAN部署、新托管E2E、长期公平/物理RAM和用户长验仍待办。
 
 [SRV-12d独立心跳检测本机限定接受](SERVE_NOTIFY_WATCHDOG_RESULT_2026-11-04.md)：
 冻结c48b764e/36来源，26有效CPU/4驱动/11官方时序及metrics lint
