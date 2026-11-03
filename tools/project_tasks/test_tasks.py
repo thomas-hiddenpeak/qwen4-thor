@@ -26,10 +26,26 @@ BINDING = dict(client_id="alpha", base_url="https://q4t.internal.test:18448/v1",
     ca_sha256="c" * 64, key_sha256="d" * 64)
 
 
+def preflight_response(request, *, output_limit=512):
+    return dict(object="q4t.chat.preflight", profile="q4t-preflight-v1",
+        model=request["model"], protocol_source_sha256=BINDING["protocol_sha256"],
+        prompt_tokens=100, max_context_tokens=8192,
+        output=dict(source="max_tokens", requested_tokens=request["max_tokens"],
+            capped_tokens=request["max_tokens"], available_tokens=request["max_tokens"],
+            counts_reasoning_and_forced_tokens=True),
+        admission=dict(policy="explicit_full_budget", required_capacity=100 + request["max_tokens"],
+            eligible_slots=[0], slot_reserved=False, availability_checked=False),
+        checks=dict(input=True, template=True, tokenizer=True, budget=True,
+            structured_requested=True, grammar_compiled=False, cache_accessed=False,
+            request_registered=False, gpu_executed=False), execution_guaranteed=False,
+        client_limits=dict(max_prompt_tokens=8192, max_output_tokens=output_limit))
+
+
 class FakeClient:
     def __init__(self, *, bad_tool=False, fail=False, bad_citation=False,
                  finish=None, path="docs/current.md", batch=False):
         self.calls, self.cap_calls = [], 0
+        self.preflight_calls = []
         self.bad_tool, self.fail, self.bad_citation = bad_tool, fail, bad_citation
         self.finish, self.path, self.batch = finish, path, batch
 
@@ -68,6 +84,12 @@ class FakeClient:
                          ensure_ascii=False).encode()
         sink(raw)
         return e.chat.read_json(io.BytesIO(raw))
+
+    def preflight(self, request, *, sink):
+        self.preflight_calls.append(deepcopy(request))
+        value = preflight_response(request)
+        sink(store.encode(value))
+        return value
 
 
 class CountedRecords(ProjectRecords):

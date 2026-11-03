@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 import sys
 
-from tools.project_tasks import store
+from tools.project_tasks import budget, store
 
 sys.path.insert(0, str(store.ROOT / "tools/examples"))
 import chat_client as chat
@@ -16,7 +16,7 @@ from project_query import SYSTEM, validate_answer
 from project_records import ProjectRecords, TOOLS, VALIDATORS
 
 RUNTIME_FILES = (
-    "tools/project_tasks/store.py", "tools/project_tasks/engine.py",
+    "tools/project_tasks/store.py", "tools/project_tasks/engine.py", "tools/project_tasks/budget.py",
     "tools/project_tasks/transport.py", "tools/project_tasks/runner.py",
     "tools/examples/chat_client.py", "tools/examples/project_records.py",
     "tools/examples/project_query.py", "tools/examples/agent_tools_demo.py",
@@ -32,15 +32,16 @@ def sources():
 
 
 def specification(binding, question, *, max_requests=4, max_tools=8,
-                  stream=True):
+                  stream=True, max_tokens=512):
     store.require(isinstance(question, str) and 0 < len(question) <= 4096,
                   "question must be 1..4096 characters")
     store.require(type(max_requests) is int and 2 <= max_requests <= 8 and
                   type(max_tools) is int and 1 <= max_tools <= 32 and
-                  type(stream) is bool, "task budgets/mode")
+                  type(stream) is bool and type(max_tokens) is int and
+                  1 <= max_tokens <= 512, "task budgets/mode")
     return dict(binding=deepcopy(binding), question=question,
                 max_requests=max_requests, max_tools=max_tools, stream=stream,
-                max_tokens=512, runtime_sources=sources())
+                max_tokens=max_tokens, budget_profile=budget.PROFILE, runtime_sources=sources())
 
 
 def completion(value):
@@ -48,16 +49,35 @@ def completion(value):
                             value["finish_reason"], value["usage"])
 
 
+def request_contract(value, spec, history):
+    store.require(isinstance(value, dict) and value["messages"] == history and
+        value["model"] == spec["binding"]["model"] and value["tools"] == TOOLS and
+        value["stream"] == spec["stream"] and type(value["max_tokens"]) is int and
+        value["max_tokens"] == spec["max_tokens"] and value["parse_response"] is True and
+        value["parallel_tool_calls"] is False and isinstance(value["request_id"], str) and
+        1 <= len(value["request_id"]) <= 128 and isinstance(value["cancel_token"], str) and
+        len(value["cancel_token"]) == 64 and all(c in "0123456789abcdef" for c in value["cancel_token"]),
+        "request contract/identity changed")
+
+
+def check_wire(ledger, number):
+    store.require(type(number) is int and 1 <= number <= budget.MAX_CHECKS, "preflight identity")
+    return ledger.path / f"check-{number:03d}.bin"
+
+
 def replay(ledger):
     """Derive executable state exclusively from committed, validated events."""
     spec = ledger.spec
+    store.require(spec.get("budget_profile") in (None, budget.PROFILE), "unknown task budget profile")
+    checked = spec.get("budget_profile") == budget.PROFILE
     state = dict(phase="READY", requests=0, tool_attempts=0, tool_results=0,
         tool_errors=0, read_repetitions=0, discarded_requests=0, runs=0,
         history=[dict(role="system", content=SYSTEM),
                  dict(role="user", content=spec["question"])],
         citations=set(), tool_ids=set(), results={}, planned=[], request=None, response=None,
-        active_tool=None, answer=None, outcome=None, revision=ledger.initial)
-    ids, tokens = set(), set()
+        active_tool=None, answer=None, outcome=None, revision=ledger.initial,
+        preflight_checks=0, planned_request=None, preflight_error=None)
+    ids, tokens, planning_ids, planning_tokens = set(), set(), set(), set()
     for event in ledger.events():
         kind, value = event["kind"], event["payload"]
         phase = state["phase"]
@@ -69,19 +89,39 @@ def replay(ledger):
                           ("REQUEST_UNKNOWN", "TOOL_UNKNOWN"), "resume limit/state")
             state["runs"] += 1
         elif kind == "request":
-            store.require(phase == "READY" and
+            store.require(phase == ("PREFLIGHT_APPROVED" if checked else "READY") and
                 state["requests"] < spec["max_requests"], "request budget/state")
-            store.require(value["messages"] == state["history"] and
-                value["model"] == spec["binding"]["model"] and
-                value["tools"] == TOOLS and value["stream"] == spec["stream"] and
-                value["max_tokens"] == spec["max_tokens"] and
-                value["parse_response"] is True and
-                value["parallel_tool_calls"] is False and
-                value["request_id"] not in ids and value["cancel_token"] not in tokens,
+            request_contract(value, spec, state["history"])
+            store.require(value["request_id"] not in ids and value["cancel_token"] not in tokens and
+                (not checked or value == state["planned_request"]),
                 "request contract/identity changed")
             ids.add(value["request_id"]); tokens.add(value["cancel_token"])
-            state.update(phase="REQUEST_UNKNOWN", request=value,
+            state.update(phase="REQUEST_UNKNOWN", request=value, planned_request=None,
                          requests=state["requests"] + 1)
+        elif kind == "preflight_started":
+            store.require(checked and phase == "READY" and state["preflight_checks"] < budget.MAX_CHECKS and
+                state["requests"] < spec["max_requests"], "preflight state/budget")
+            request_contract(value, spec, state["history"])
+            store.require(value["request_id"] not in planning_ids | ids and
+                value["cancel_token"] not in planning_tokens | tokens, "preflight credentials reused")
+            planning_ids.add(value["request_id"]); planning_tokens.add(value["cancel_token"])
+            state.update(phase="PREFLIGHT_PENDING", preflight_checks=state["preflight_checks"] + 1,
+                         planned_request=value, preflight_error=None)
+        elif kind == "preflight_result":
+            store.require(checked and phase == "PREFLIGHT_PENDING", "unexpected preflight result")
+            path = check_wire(ledger, state["preflight_checks"])
+            store.require(store.private(path).st_size <= budget.MAX_CHECK_BYTES and
+                chat.load_json(path.read_bytes()) == value, "preflight wire/receipt mismatch")
+            budget.validate(value, state["planned_request"], spec["binding"])
+            state.update(phase="PREFLIGHT_APPROVED")
+        elif kind == "preflight_rejected":
+            store.require(checked and phase == "PREFLIGHT_PENDING", "unexpected preflight rejection")
+            budget.validate_rejection(value)
+            state.update(phase="PREFLIGHT_REJECTED", preflight_error=value)
+        elif kind == "preflight_reset":
+            store.require(checked and phase in ("PREFLIGHT_PENDING", "PREFLIGHT_APPROVED", "PREFLIGHT_REJECTED")
+                and value == {"revision": state["revision"]}, "unexpected preflight reset")
+            state.update(phase="READY", planned_request=None, preflight_error=None)
         elif kind == "response":
             store.require(phase == "REQUEST_UNKNOWN", "unexpected response")
             wire_path = ledger.wire(state["requests"])
@@ -177,6 +217,9 @@ def replay(ledger):
         store.require(1 <= int(path.stem[5:]) <= state["requests"] and
                       store.private(path).st_size <= store.MAX_WIRE_BYTES,
                       "orphan/oversized wire")
+    for path in ledger.path.glob("check-*.bin"):
+        store.require(checked and 1 <= int(path.stem[6:]) <= state["preflight_checks"] and
+            store.private(path).st_size <= budget.MAX_CHECK_BYTES, "orphan/oversized preflight wire")
     return state
 
 
@@ -190,7 +233,7 @@ def public(ledger, state):
         actions.append("repeat-read")
     elif phase not in ("REQUEST_UNKNOWN", "TOOL_UNKNOWN", "COMPLETED", "FAILED", "ABANDONED"):
         actions.append("resume")
-    return dict(task_id=ledger.meta["task_id"], state=state["phase"],
+    value = dict(task_id=ledger.meta["task_id"], state=state["phase"],
         revision=state["revision"], outcome=state["outcome"], answer=state["answer"],
         requests=state["requests"], tool_attempts=state["tool_attempts"],
         saved_tool_results=state["tool_results"], read_repetitions=state["read_repetitions"],
@@ -198,6 +241,12 @@ def public(ledger, state):
         remaining_requests=ledger.spec["max_requests"] - state["requests"],
         remaining_tools=ledger.spec["max_tools"] - state["tool_attempts"],
         allowed_actions=actions, automatic_retry=False)
+    if ledger.spec.get("budget_profile") == budget.PROFILE:
+        value.update(max_tokens=ledger.spec["max_tokens"], preflight_checks=state["preflight_checks"],
+                     preflight_error=state["preflight_error"])
+        if state["runs"] >= 16 and "resume" in actions:
+            actions.remove("resume")
+    return value
 
 
 def check_binding(ledger, binding):
@@ -234,6 +283,18 @@ def run(ledger, binding, client, *, records=None, checkpoint=None):
     store.require(state["runs"] < 16, "explicit resume budget exhausted")
     records = records or ProjectRecords(store.ROOT)
     checkpoint = checkpoint or (lambda *args: None)
+    ledger.append("run", dict(number=state["runs"] + 1))
+
+    def commit(kind, value):
+        validate_next(ledger, kind, value)
+        seq = ledger.append(kind, value)
+        checkpoint(kind, seq, ledger)
+
+    state = replay(ledger)
+    if state["phase"] in ("PREFLIGHT_PENDING", "PREFLIGHT_APPROVED", "PREFLIGHT_REJECTED"):
+        # A read-only preflight reserves nothing. A new explicit run must not
+        # reuse an approval from a previous process or repeat a model attempt.
+        commit("preflight_reset", dict(revision=state["revision"]))
     caps = client.capabilities(model=binding["model"], protocol_sha256=binding["protocol_sha256"],
                                template_sha256=binding["template_sha256"])
     chat.validate_capabilities(caps, binding["model"], protocol_sha256=binding["protocol_sha256"],
@@ -242,12 +303,6 @@ def run(ledger, binding, client, *, records=None, checkpoint=None):
                   "required" in caps["tools"]["tool_choice"] and
                   "none" in caps["tools"]["tool_choice"] and
                   False in caps["tools"]["parallel_tool_calls"], "strict tool controls unavailable")
-    ledger.append("run", dict(number=state["runs"] + 1))
-
-    def commit(kind, value):
-        validate_next(ledger, kind, value)
-        seq = ledger.append(kind, value)
-        checkpoint(kind, seq, ledger)
 
     while True:
         state = replay(ledger)
@@ -257,13 +312,42 @@ def run(ledger, binding, client, *, records=None, checkpoint=None):
                 commit("failed", dict(code="request_budget_exhausted"))
                 return public(ledger, replay(ledger))
             request = chat.make_request(state["history"], TOOLS,
-                model=binding["model"], stream=ledger.spec["stream"], max_tokens=512)
+                model=binding["model"], stream=ledger.spec["stream"], max_tokens=ledger.spec["max_tokens"])
             request["parallel_tool_calls"] = False
             request["tool_choice"] = ("required" if not state["tool_results"] else
                 "none" if state["requests"] + 1 == ledger.spec["max_requests"] or
                 state["tool_attempts"] >= ledger.spec["max_tools"] else "auto")
-            commit("request", request)  # Durable uncertainty before network IO.
-            wire_path = ledger.wire(state["requests"] + 1)
+            if ledger.spec.get("budget_profile") == budget.PROFILE:
+                if state["preflight_checks"] >= budget.MAX_CHECKS:
+                    commit("failed", dict(code="preflight_budget_exhausted"))
+                    return public(ledger, replay(ledger))
+                commit("preflight_started", request)
+                path = check_wire(ledger, state["preflight_checks"] + 1)
+                fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+                try:
+                    with os.fdopen(fd, "wb", buffering=0) as wire:
+                        used = 0
+                        def check_sink(data):
+                            nonlocal used
+                            store.require(used + len(data) <= budget.MAX_CHECK_BYTES, "preflight wire budget")
+                            wire.write(data); used += len(data)
+                        value = client.preflight(request, sink=check_sink)
+                        os.fsync(wire.fileno())
+                    store.sync(ledger.path)
+                    budget.validate(value, request, binding)
+                except (OSError, ValueError, chat.RemoteError) as error:
+                    commit("preflight_rejected", budget.rejection(error))
+                    return public(ledger, replay(ledger))
+                commit("preflight_result", value)
+            else:
+                commit("request", request)
+        elif phase == "PREFLIGHT_APPROVED":
+            commit("request", state["planned_request"])
+        elif phase == "REQUEST_UNKNOWN":
+            # This state is entered in this invocation only after committing
+            # the submission intent. An explicit resume returns it above.
+            request = state["request"]
+            wire_path = ledger.wire(state["requests"])
             fd = os.open(wire_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
             with os.fdopen(fd, "wb", buffering=0) as wire:
                 used = 0
@@ -271,7 +355,7 @@ def run(ledger, binding, client, *, records=None, checkpoint=None):
                     nonlocal used
                     store.require(used + len(data) <= store.MAX_WIRE_BYTES, "wire budget exceeded")
                     wire.write(data); used += len(data)
-                    checkpoint("wire", state["requests"] + 1, ledger)
+                    checkpoint("wire", state["requests"], ledger)
                 answer = client.complete(request, sink=sink)
                 wire.flush(); os.fsync(wire.fileno())
             store.sync(ledger.path)

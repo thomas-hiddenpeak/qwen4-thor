@@ -41,6 +41,12 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-11b[任务与客户端预算匹配开发中](SERVE_PROJECT_TASK_BUDGET_2026-11-04.md)：
+输出上限持久化、每轮真实token预检、拒绝与生成未知状态分离、跨进程
+重新核对及预检wire/错误定位已实现；31应用CPU/3驱动检查通过。
+原512隐式固定不再用于新任务，默认程序/Key策略/三份day保持。
+真实alpha512/beta64工具闭环与生成前拒绝尚未执行。
+
 SRV-11[持久项目任务与真实恢复限定接受](SERVE_PROJECT_TASKS_RESULT_2026-11-04.md)：
 按client隔离幂等键、单任务互斥、已知结果复用、未知请求/只读工具
 显式处置及原预算；20有效CPU/2驱动。原TLS EOF/EBADF失败及CPU复现

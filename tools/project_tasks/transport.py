@@ -113,7 +113,7 @@ class Client:
         self.value = value
         self.context = ssl.create_default_context(cafile=value["ca_file"])
 
-    def request(self, method, route, body, timeout, consume):
+    def request(self, method, route, body, timeout, consume, *, trace_id=None, error_sink=None):
         deadline = time.monotonic() + timeout
         conn = Connection(self.value, self.context, timeout)
         headers = {"Authorization": "Bearer " + self.value["api_key"],
@@ -123,7 +123,9 @@ class Client:
             raw = store.encode(body)
             store.require(len(raw) <= store.MAX_EVENT_BYTES, "request byte budget")
             headers["Content-Type"] = "application/json"
-            headers["X-Request-Id"] = body["request_id"]
+            identifier = trace_id or body.get("request_id")
+            if identifier is not None:
+                headers["X-Request-Id"] = identifier
         try:
             conn.request(method, "/v1" + route, raw, headers)
             sock = conn.sock
@@ -132,7 +134,10 @@ class Client:
                 reader = DeadlineReader(response, sock, deadline)
                 if response.status != 200:
                     # Keep errors bounded; redirect responses are never followed.
-                    raise engine.chat.RemoteError(response.status, reader.read(65537))
+                    raw_error = reader.read(65537)
+                    if error_sink:
+                        error_sink(raw_error)
+                    raise engine.chat.RemoteError(response.status, raw_error)
                 return consume(response, reader)
         finally:
             conn.close()
@@ -153,3 +158,15 @@ class Client:
             return parser(reader, sink=sink, max_bytes=store.MAX_WIRE_BYTES)
         return self.request("POST", "/chat/completions", body,
                             body["request_timeout_ms"] / 1000 + 10, consume)
+
+    def preflight(self, body, *, sink):
+        from tools.project_tasks import budget
+        def consume(response, reader):
+            store.require(response.headers.get_content_type() == "application/json", "preflight content type")
+            raw = reader.read(budget.MAX_CHECK_BYTES + 1)
+            store.require(len(raw) <= budget.MAX_CHECK_BYTES, "preflight response size")
+            sink(raw)
+            return engine.chat.load_json(raw)
+        envelope = dict(request=body, include_prompt=False, include_token_ids=False)
+        return self.request("POST", "/chat/preflight", envelope, 30, consume,
+                            trace_id=body["request_id"], error_sink=sink)

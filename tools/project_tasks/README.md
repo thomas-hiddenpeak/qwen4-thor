@@ -38,7 +38,7 @@ python3 -B tools/project_tasks/runner.py submit \
   --root .q4t-work/project-tasks --profile .q4t-work/alpha.json \
   --key release-question-001 \
   --question '读取 docs/MODEL.md 第1到24行，回答 architectures 并引用来源。' \
-  --max-requests 4 --max-tools 8
+  --max-requests 4 --max-tools 8 --max-tokens 512
 ```
 
 任务完成会返回答案和outcome；全部读取失败是UNVERIFIED，不是已核实
@@ -58,6 +58,14 @@ resume复用已保存结果和响应，只执行未开始的调用。ACTIVE表�
 应用进程持有任务锁；REQUEST_UNKNOWN/TOOL_UNKNOWN不会被自动执行。
 所有请求/工具尝试和运行次数继续消耗原预算。
 
+`--max-tokens`只用于submit，范围1..512，默认512。按客户端策略选取，
+例如beta策略上限64时显式传64；同一任务的预算在resume时不能覆盖。
+每轮先以完整对话进行只读token/客户端预算预检，不接受静默缩短输出。
+PREFLIGHT_REJECTED保存有界错误分类、code和param，不消耗生成/工具次数。
+修正外部条件后可显式resume；PREFLIGHT_PENDING/PREFLIGHT_APPROVED也会
+重新预检，旧批准不代表资源预留。新任务实现见
+[预算合同](../../docs/SERVE_PROJECT_TASK_BUDGET_2026-11-04.md)。
+
 未知结果需先inspect，核对原记录，然后携带它返回的完整revision：
 
 ```bash
@@ -76,8 +84,8 @@ store、SQLite账本和wire都是私有资料；同UID是可信边界。没有�
 清理、任务迁移、队列服务或后台恢复，不提供多机协调或通用exactly-once。
 运行本入口不启动或停止模型服务；开发HTTP验证仍需在共享GPU租约内。
 
-当前任务输出上限固定512 token，须与所选客户端策略匹配。源码或
-凭据迁移、终态归档后幂等键保留仍需明确策略。已保存的本机验收证据
+源码或凭据迁移、终态归档后幂等键保留仍需明确策略。旧版本账本可
+离线核验，但不能自动迁移到新执行源码。已保存的本机验收证据
 可以离线核对，不启动模型或HTTP：
 
 ```bash

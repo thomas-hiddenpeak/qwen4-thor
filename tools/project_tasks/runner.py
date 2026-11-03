@@ -54,13 +54,18 @@ def main():
     parser.add_argument("--profile", type=Path)
     parser.add_argument("--key")
     parser.add_argument("--question")
-    parser.add_argument("--max-requests", type=int, default=4)
-    parser.add_argument("--max-tools", type=int, default=8)
+    parser.add_argument("--max-requests", type=int)
+    parser.add_argument("--max-tools", type=int)
+    parser.add_argument("--max-tokens", type=int)
     parser.add_argument("--no-stream", action="store_true")
     parser.add_argument("--decision", choices=("discard-request", "repeat-read", "abandon"))
     parser.add_argument("--revision")
     parser.add_argument("--reason")
     args = parser.parse_args()
+    if args.action != "submit":
+        store.require(all(value is None for value in (args.question, args.max_requests,
+            args.max_tools, args.max_tokens)) and not args.no_stream,
+            "question and request budgets apply only to submit; resume keeps the saved contract")
     if args.action == "init":
         result = store.init(args.root, args.max_tasks)
     else:
@@ -69,8 +74,9 @@ def main():
         value, binding = transport.profile(args.profile)
         if args.action == "submit":
             result = submit(args.root, binding, args.key, args.question,
-                transport.Client(value), max_requests=args.max_requests,
-                max_tools=args.max_tools, stream=not args.no_stream)
+                transport.Client(value), max_requests=4 if args.max_requests is None else args.max_requests,
+                max_tools=8 if args.max_tools is None else args.max_tools,
+                max_tokens=512 if args.max_tokens is None else args.max_tokens, stream=not args.no_stream)
         elif args.action == "inspect":
             result = inspect(args.root, binding, args.key)
         elif args.action == "resume":

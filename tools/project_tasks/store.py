@@ -13,7 +13,7 @@ import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
 FORMAT = "q4t.project.tasks.v1"
-MAX_EVENTS = 192
+MAX_EVENTS = 256
 MAX_EVENT_BYTES = 1024 * 1024
 MAX_WIRE_BYTES = 1024 * 1024
 RESERVED_BYTES = 80 * 1024 * 1024
@@ -130,7 +130,7 @@ def connection(path):
     private(path / "ledger.db")
     for child in path.iterdir():
         require(child.name in {"ledger.db", "ledger.db-journal", ".lock"} or
-                re.fullmatch(r"wire-[0-9]{3}\.bin", child.name),
+                re.fullmatch(r"(?:wire|check)-[0-9]{3}\.bin", child.name),
                 "unknown task entry")
         private(child)
     db = sqlite3.connect(path / "ledger.db", timeout=2, isolation_level=None)
