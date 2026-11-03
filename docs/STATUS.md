@@ -41,6 +41,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-12d[独立接收端心跳缺失检测开发中](SERVE_NOTIFY_WATCHDOG_2026-11-04.md)：
+新增持久到达时刻、180秒缺失/首次缺失、boot/时钟边界、独立观察器与
+外部新鲜度规则。相同AM重复心跳须刷新；标准payload不能区分已认证
+重放或同incident乱序。26有效CPU/11规则通过，指标lint及首次时间
+回退的原失败保持，1指标/6复核定向通过；只读查询不创建写锁。
+正在冻结4监控/2观察器、180秒静默与恢复的无模型短验；本批尚未验收，
+默认pair/现有通知包/用户day保持，正式接收与跨故障域部署仍待办。
+
 [SRV-02j2生产额度接线已限定交付](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)：
 默认a479d8ab/sidecar9ed141ad、protocol847aeb46、217来源。实际启动
 预留和运行device/pinned/managed/async统一计额，进程缓存保留，
