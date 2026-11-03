@@ -65,13 +65,21 @@ TLS网关及独立API Key接入；10a先进行loopback开发/短验，实际地�
 
 ## 当前工作包
 
+- SRV-02j2：[生产额度接线限定交付](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)。
+  默认a479d8ab/9ed141ad，进程请求字节额度贯穿startup/运行申请，
+  异步完成/stream代次、CLI/config/metrics和拒绝原因已接入。
+  28/268/234/9有效CPU与5+3驱动通过，原失败保留；6 native/88MiB、
+  25原生HTTP、3启动尝试含1预期拒绝、7生成及真实工具通过。
+  同锁84.085秒/79观察COMPLETED，GPU释放，旧default/day保留。
+  用户长验不执行，新包托管/长验尚无新增证据；整机物理RAM、
+  实际LAN部署参数与正式通知接收继续是独立待办。
+
 - SRV-02j1：[CUDA申请额度核心限定通过](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md)。
   固定表/并发预占、异步完成/未知锁存已实现，26有效CPU/4驱动/
   6保管CPU通过。释放发布时序失败及原GPU ENV_ABORT保持；修正
   保管后相同4探针112MiB/15 buffer/14检查点通过，同锁2.379515秒。
   累计8 native/零模型/零HTTP，169原件/17本机身份封存、GPU释放。
-  当前不接入serve，默认pair/day保持；02j2再接线wrapper、startup
-  owner、CLI/metrics与真实工具验收。物理RAM的驱动/库/host/
+  本批限于核心，默认pair/day保持；生产接线由02j2完成。物理RAM的驱动/库/host/
   文件缓存/池保留等独立边界未完成，不能合并宣称硬保护。
 
 - SRV-12c：[本机通知与真实恢复限定通过](SERVE_NOTIFY_RESULT_2026-11-04.md)。

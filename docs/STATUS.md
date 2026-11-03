@@ -41,19 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-[SRV-02j2生产额度接线开发中](SERVE_CUDA_QUOTA_INTEGRATION_2026-11-04.md)：
-把已验核心接入实际startup预留、运行期device/pinned/managed/async
-申请；进程缓存持续计额、stream代次防止handle复用误退，配置/指标
-公开覆盖与拒绝原因。默认auto按mem_fraction×MemTotal，独立于
-no-budget；整机RAM硬限额仍不成立。首轮零警告，wrapper27/28、
-公共host267/268、required233/234、后端9与驱动5；原零字节异常
-指针未清空及CLI夹具缺必需model_dir失败保留，v2零警告，定向2
-wrapper与两配置各2 CLI通过；有效28/268/234及后端9/驱动5，
-未受影响证据复用，原CLI负例错误前置条件不计新增边界通过。
-原GPU轮1 native在host flags回显等值断言失败，COMMAND_FAILED
-保留，无模型/HTTP/默认替换；[加入直接CUDA对照](SERVE_CUDA_QUOTA_FLAGS_CORRECTION_2026-11-04.md)
-后唯一继续轮6 native/3启动尝试/最多7生成，累计native最多7；用户
-小时/day计划不执行，旧default与证据保留，工业化目标继续active。
+[SRV-02j2生产额度接线已限定交付](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)：
+默认a479d8ab/sidecar9ed141ad、protocol847aeb46、217来源。实际启动
+预留和运行device/pinned/managed/async统一计额，进程缓存保留，
+stream代次/完成退额、CLI/config/metrics和拒绝原因已接入。
+零警告，有效28 wrapper/268公共/234必需/9后端/5驱动/3 flags；
+原CPU失败与flags native失败保持。修正轮6 native/88MiB/12 buffer/
+15检查点、25 HTTP生命周期、3启动尝试中1预期拒绝、7生成全部成功，
+含真实资料工具及引用、两并发客户端；grammar3/3回收，8控制。
+同锁84.085230秒/79观测（含preflight）COMPLETED，安装核对通过；
+累计7 native，仅6通过。GPU空/原锁可用、11自有进程退、容器空、
+SOAR masked，旧default/day保留。额度不是物理RAM硬限额，用户长验
+交接单独准备且不执行；工业化目标继续active。
 
 [SRV-02j1 CUDA申请额度核心限定通过](SERVE_CUDA_QUOTA_CORE_RESULT_2026-11-04.md)：
 固定表/并发预占、混合申请额度、代次票据、异步完成和未知锁存已开发。
@@ -62,8 +61,8 @@ wrapper与两配置各2 CLI通过；有效28/268/234及后端9/驱动5，
 完整112MiB/15 buffer/14检查点通过，WNOWAIT保留身份到guard观察后回收；
 同锁2.379515秒/4观察，COMPLETED。累计8 native启动/零模型/零HTTP。
 169原件/17本机身份封存；GPU空/原锁可用、SOAR masked，默认pair/211
-来源/day保持且day未执行。本批未接入serve，02j2继续wrapper/CLI/
-metrics与真实工具验收；请求字节额度不等于物理RAM硬限额，目标继续。
+来源/day保持且day未执行。本批限于核心，生产接线由上方02j2交付；
+请求字节额度不等于物理RAM硬限额，目标继续。
 
 [SRV-12c本机通知与真实服务恢复限定通过](SERVE_NOTIFY_RESULT_2026-11-04.md)：
 冻结b166cee7，标准Prometheus3.5.0/Alertmanager0.34.2、HTTPS/Bearer、
