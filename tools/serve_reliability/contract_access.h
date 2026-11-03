@@ -90,6 +90,9 @@ struct ServeContractAccess {
   static void Healthy(ChatServer& server, bool healthy) {
     server.gpu_healthy_.store(healthy);
   }
+  static void DeviceFailure(ChatServer& server, const DeviceMemoryResult& result) {
+    server.RecordDeviceMemoryFailure(result, "native.contract");
+  }
   static int Port(ChatServer& server) {
     const int fd = server.listen_fd_.load();
     sockaddr_in addr{};

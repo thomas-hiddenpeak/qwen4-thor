@@ -2,6 +2,7 @@
 #include "q4t/mtp/suffix_drafter.h"
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "cuda_memory_backend.h"
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -46,18 +47,16 @@ ChatServer::~ChatServer() {
   StopScheduler();
   model_.Get().router_trace = nullptr;
   router_trace_.reset();
-  if (d_sched_logits_) {
-    cudaFree(d_sched_logits_);
-    d_sched_logits_ = nullptr;
-  }
-  if (d_sched_tokens_) {
-    cudaFree(d_sched_tokens_);
-    d_sched_tokens_ = nullptr;
-  }
-  if (d_prefill_logits_) {
-    cudaFree(d_prefill_logits_);
-    d_prefill_logits_ = nullptr;
-  }
+  const auto release = [&](auto*& pointer, const char* site) {
+    const auto result = detail::ReleaseCudaMemory(pointer, site);
+    RecordDeviceMemoryFailure(result, site);
+    // Run() may already have returned success. Do not turn an unknown release
+    // into a clean process exit or retry the same pointer in another owner.
+    if (!result.ok()) std::_Exit(1);
+  };
+  release(d_sched_logits_, "shutdown.scheduler_logits");
+  release(d_sched_tokens_, "shutdown.scheduler_tokens");
+  release(d_prefill_logits_, "shutdown.prefill_logits");
   if (vision_tower_) {
     vision_tower_->Free();
     vision_tower_.reset();
@@ -582,15 +581,26 @@ Status ChatServer::Start(const ServerOptions& opts) {
   // B2b continuous batching: the scheduler's packed-logits buffer (device
   // [max_seq, vocab]) + a GPU-argmax token buffer (device [max_seq] + host
   // mirror) + the scheduler thread.
-  if (cudaMalloc(reinterpret_cast<void**>(&d_sched_logits_),
-                 static_cast<size_t>(max_seq_) * cfg.vocab * 2) != cudaSuccess) {
-    std::fprintf(stderr, "[q4t] scheduler logits alloc failed; plain decode\n");
-  } else if (cudaMalloc(reinterpret_cast<void**>(&d_sched_tokens_),
-                        static_cast<size_t>(max_seq_) * sizeof(int32_t)) !=
-             cudaSuccess) {
-    std::fprintf(stderr, "[q4t] scheduler tokens alloc failed; plain decode\n");
-    cudaFree(d_sched_logits_);
-    d_sched_logits_ = nullptr;
+  const auto allocate = [&](auto*& pointer, size_t bytes, const char* site) {
+    const auto result = detail::AllocateCudaMemory(pointer, bytes, site);
+    RecordDeviceMemoryFailure(result, site);
+    return result;
+  };
+  const auto logits = allocate(d_sched_logits_,
+      static_cast<size_t>(max_seq_) * cfg.vocab * 2, "startup.scheduler_logits");
+  if (!logits.ok() && !logits.exhausted())
+    return Status::Fail("scheduler logits device memory failure");
+  const auto tokens = logits.ok()
+      ? allocate(d_sched_tokens_, static_cast<size_t>(max_seq_) *
+                     sizeof(int32_t), "startup.scheduler_tokens")
+      : logits;
+  if (!tokens.ok()) {
+    const auto released = detail::ReleaseCudaMemory(
+        d_sched_logits_, "startup.scheduler_logits_rollback");
+    RecordDeviceMemoryFailure(released, "startup.scheduler_logits_rollback");
+    if (!tokens.exhausted() || !released.ok())
+      return Status::Fail("scheduler device memory failure");
+    std::fprintf(stderr, "[q4t] scheduler allocation exhausted; plain decode\n");
   } else {
     h_sched_tokens_.assign(static_cast<size_t>(max_seq_), 0);
     try {
@@ -615,11 +625,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   }
   // Every serve prefill consumes one row per sequence. The shared buffer
   // holds at most max_seq rows, and all accesses are under model_mu_.
-  if (cudaMalloc(reinterpret_cast<void**>(&d_prefill_logits_),
-                 static_cast<size_t>(max_seq_) * cfg.vocab * 2) !=
-      cudaSuccess) {
-    return Status::Fail("prefill logits buffer alloc failed (out of memory)");
-  }
+  const auto prefill = allocate(d_prefill_logits_,
+      static_cast<size_t>(max_seq_) * cfg.vocab * 2, "startup.prefill_logits");
+  if (!prefill.ok()) return Status::Fail(prefill.Reason());
 #ifdef Q4T_STARTUP_RESOURCE_PLAN
   s = runtime::CompleteStartupReservation();
   if (!s.ok()) return s;

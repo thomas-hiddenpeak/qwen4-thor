@@ -2,6 +2,7 @@
 // backend. Model/GPU resources stay empty; no CUDA API is executed. The IO
 // library still carries its normal CUDA runtime link dependency.
 #include "q4t/server/chat_server.h"
+#include "q4t/server/device_memory.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/serve_fault.h"
 #include "q4t/test.h"
@@ -20,6 +21,15 @@
 
 namespace {
 std::atomic<bool> observation_failure{false};
+}
+
+Q4T_TEST(http_fatal_device_memory_before_run_fails_without_listener) {
+  using namespace q4t::server;
+  ChatServer server;
+  ServeContractAccess::DeviceFailure(server, {DeviceMemoryState::kFailure, 700});
+  Q4T_CHECK(!server.Run().ok());
+  Q4T_CHECK(ServeContractAccess::Empty(server));
+  return true;
 }
 
 namespace q4t::model {

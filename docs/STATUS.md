@@ -7,6 +7,14 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
+SRV-02f正在补齐[设备分配失败传播与回收合同](SERVE_DEVICE_MEMORY_2026-11-03.md)。
+已修改文本请求/调度缓冲区：仅明确OOM可降级，必需缓冲区503，
+其他设备错误/释放失败停服，成功终态前检查回收；未分类MTP准备失败
+排空后停服。CPU OFF241/ON250、必需207、后端9、驱动6、配置15+10通过，
+生产/validation零警告；仅协议身份受影响门定向重验。真实验收待启动，
+默认仍为下述02e版本。媒体、模型内部清理、
+整机物理RAM保护另列，不以局部改动宣称完整覆盖。
+
 [SRV-02e启动检查与Thor计量已限定交付](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)：
 当前默认f69982d5/sidecar34de1c8f，protocol80529db3，200运行时来源，
 完整head/MTP k3。metadata前/大分配前/ready前三次新读数，默认2GiB

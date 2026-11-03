@@ -65,7 +65,8 @@ void ChatServer::RequestStop() {
 }
 
 Status ChatServer::Run() {
-  if (stop_requested_.load()) return Status();
+  if (stop_requested_.load())
+    return serving_failed_.load() ? Status::Fail("serve failed") : Status();
   const int listen_fd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
   if (listen_fd < 0) return Status::Fail("socket failed");
   ScopeExit close_listener([&] {

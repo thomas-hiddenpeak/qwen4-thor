@@ -107,6 +107,8 @@ struct ServeMetrics {
   MetricHistogram structured_prepare_seconds;  // vocabulary + compile
 };
 
+struct DeviceMemoryResult;
+
 class ChatServer {
  public:
   ChatServer() = default;
@@ -137,6 +139,8 @@ class ChatServer {
   // handed allocations before the reservation reclaims unhanded blocks.
   runtime::StartupReservation startup_reservation_;
 #endif
+  void RecordDeviceMemoryFailure(const DeviceMemoryResult& result,
+                                 const char* site) noexcept;
   void HandleClient(int fd);
   void FinishConnection(int fd) noexcept;
   void Dispatch(int fd, const std::string& method, const std::string& path,

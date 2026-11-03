@@ -1,5 +1,6 @@
 // Existing ChatServer responsibilities; shared state stays in ChatServer.
 #include "chat_server_internal.h"
+#include "cuda_memory_backend.h"
 
 #include <algorithm>
 #include <cctype>
@@ -518,29 +519,50 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                 // share the legacy d_g_/d_g_next_ double buffer)
   trace::RequestOutcome trace_outcome = trace::RequestOutcome::kFailed;
   uint64_t trace_output_tokens = 0;
+  bool buffers_ok = true;
+  const auto release_buffer = [&](auto*& pointer, const char* site) {
+    const auto result = detail::ReleaseCudaMemory(pointer, site,
+                                                 request_id.c_str());
+    RecordDeviceMemoryFailure(result, site);
+    buffers_ok = buffers_ok && result.ok();
+    if (!result.ok()) {
+      const std::lock_guard<std::mutex> lock(model_mu_);
+      AbortBackendExecution();
+    }
+  };
+  const auto release_buffers = [&] {
+    release_buffer(d_session_trunk, "request.session_trunk_free");
+    release_buffer(d_trunk_full, "request.prompt_trunk_free");
+    release_buffer(d_vfeats, "request.vision_features_free");
+    release_buffer(d_mtp_g, "request.draft_trunk_free");
+  };
+  const auto allocate_buffer = [&](auto*& pointer, size_t bytes,
+                                    const char* site) {
+    const auto result = detail::AllocateCudaMemory(pointer, bytes, site,
+                                                  request_id.c_str());
+    RecordDeviceMemoryFailure(result, site);
+    if (result.state == DeviceMemoryState::kFailure) {
+      const std::lock_guard<std::mutex> lock(model_mu_);
+      AbortBackendExecution();
+    }
+    return result;
+  };
+  const auto allocation_error = [&](const DeviceMemoryResult& result) {
+    err_guard.ok = false;
+    diagnostic.Outcome("error", result.Reason());
+    SendError(fd, 503, result.exhausted() ? "device memory exhausted"
+                                        : "device memory failure; restart server",
+              {}, result.exhausted() ? "device_memory_exhausted"
+                                    : "gpu_unhealthy");
+  };
   bool cleaned = false;
   auto cleanup = [&]() {
     if (cleaned) return;
     cleaned = true;
-    if (d_session_trunk) {
-      cudaFree(d_session_trunk);
-      d_session_trunk = nullptr;
-    }
+    release_buffers();
     if (router_trace_) router_trace_->EndRequest(
         control->Cancelled() ? trace::RequestOutcome::kCancelled : trace_outcome,
         trace_output_tokens);
-    if (d_trunk_full) {
-      cudaFree(d_trunk_full);
-      d_trunk_full = nullptr;
-    }
-    if (d_vfeats) {
-      cudaFree(d_vfeats);
-      d_vfeats = nullptr;
-    }
-    if (d_mtp_g) {
-      cudaFree(d_mtp_g);
-      d_mtp_g = nullptr;
-    }
     FreeSeqId(seq_id);
     diagnostic.Released();
   };
@@ -573,13 +595,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       OnException backend_failure([&] { AbortBackendExecution(); });
       if (!gpu_healthy_.load(std::memory_order_relaxed)) {
         SendError(fd, 503, "GPU unhealthy; restart server");
-        cleanup();
+        // Outer buffer cleanup runs after this model lock is released.
         return;
       }
       if (!RunVisionPipeline(items, &d_vfeats, &vfeats.num_tokens, &counts,
                              &grids, &verr)) {
         SendError(fd, 400, verr);
-        cleanup();
+        // A failed buffer release may need to reacquire model_mu_ to drain.
         return;
       }
     }
@@ -678,19 +700,27 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
           "need=%.2f GB (trunk T=%d); declining optional allocation\n",
           memory.valid, memory.available_bytes / 1e9, need / 1e9, T);
       d_trunk_full = nullptr;
-    } else if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
-                          trunk_bytes) != cudaSuccess) {
-      std::fprintf(stderr,
-                   "[q4t] trunk alloc failed for T=%d; plain decode\n", T);
-      d_trunk_full = nullptr;
+    } else {
+      const auto allocated = allocate_buffer(d_trunk_full, trunk_bytes,
+                                              "request.prompt_trunk");
+      if (!allocated.ok() && !allocated.exhausted()) {
+        allocation_error(allocated);
+        return;
+      }
+      if (allocated.exhausted())
+        std::fprintf(stderr,
+                     "[q4t] trunk allocation exhausted for T=%d; plain decode\n",
+                     T);
     }
   }
-  if (stream_mtp &&
-      (!d_trunk_full || cudaMalloc(reinterpret_cast<void**>(&d_mtp_g),
-                                   trunk_hc_dim * 2) != cudaSuccess)) {
-    cleanup();
-    SendError(fd, 503, "streamed MTP prefill reservation failed");
-    return;
+  if (stream_mtp) {
+    const auto allocated = d_trunk_full
+        ? allocate_buffer(d_mtp_g, trunk_hc_dim * 2, "request.stream_draft_trunk")
+        : DeviceMemoryResult{DeviceMemoryState::kExhausted};
+    if (!allocated.ok()) {
+      allocation_error(allocated);
+      return;
+    }
   }
   std::vector<uint16_t> h_logits(static_cast<size_t>(vocab));
 
@@ -742,12 +772,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   const bool scheduled_chunk_prefill =
       scheduler_active_ && !mtp_loaded_ && chunked && vptr == nullptr;
   bool prefill_cancelled = false;
-  if ((session.cache || !prefix_scope.empty()) &&
-      cudaMalloc(&d_session_trunk,
-                          static_cast<size_t>(trunk_hc_dim) * 2) != cudaSuccess) {
-    cleanup();
-    SendError(fd, 500, "session trunk allocation failed");
-    return;
+  if (session.cache || !prefix_scope.empty()) {
+    const auto allocated = allocate_buffer(d_session_trunk, trunk_hc_dim * 2,
+                                            "request.session_trunk");
+    if (!allocated.ok()) {
+      allocation_error(allocated);
+      return;
+    }
   }
   int restored_prefix = 0;
   bool session_gpu_error = false;
@@ -1251,13 +1282,19 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
   int32_t mtp_b = stream_draft_ready ? next_token : -1;
   int32_t mtp_d0 = stream_draft_ready ? stream_d0 : -1;
   if (use_mtp && !stream_mtp) {
-    if (cudaMalloc(reinterpret_cast<void**>(&d_mtp_g),
-                   static_cast<size_t>(mtp_.cfg.hc) *
-                       static_cast<size_t>(mtp_.cfg.hs) * 2) != cudaSuccess) {
-      std::fprintf(stderr, "[q4t] MTP trunk alloc failed; plain decode\n");
+    const auto allocated = allocate_buffer(d_mtp_g,
+        static_cast<size_t>(mtp_.cfg.hc) * mtp_.cfg.hs * 2,
+        "request.draft_trunk");
+    if (!allocated.ok() && !allocated.exhausted()) {
+      allocation_error(allocated);
+      return;
+    }
+    if (allocated.exhausted()) {
+      std::fprintf(stderr, "[q4t] MTP trunk allocation exhausted; plain decode\n");
       use_mtp = false;
     }
   }
+  bool mtp_prepare_failed = false;
   if (use_mtp && !stream_mtp) {
     {
       q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
@@ -1297,23 +1334,41 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             s = mtp::MtpReserveScratch(mtp_, mtp_k_ + 1);
         }
       }
+      if (s.ok() && detail::DeviceMemoryFault("request.mtp_prepare",
+                                             request_id.c_str()) != cudaSuccess)
+        s = Status::Fail("validation MTP preparation failure");
       if (!s.ok()) {
         std::fprintf(stderr,
-                     "[q4t] MTP init failed (%s); plain decode for this "
-                     "request\n",
+                     "[q4t] MTP preparation failed (%s); stopping serve\n",
                      s.message().c_str());
-        use_mtp = false;
+        // Nested preparation exposes only an untyped Status. It does not prove
+        // a recoverable allocation failure or safe reuse of submitted state.
+        AbortBackendExecution();  // model_mu_ is held; drain before unwinding.
+        mtp_prepare_failed = true;
       }
 
     }
+  }
+  if (mtp_prepare_failed) {
+    err_guard.ok = false;
+    diagnostic.Outcome("error", "mtp_prepare_failed");
+    SendError(fd, 503, "MTP preparation failed; restart server", {},
+              "gpu_unhealthy");
+    return;
   }
   // The prompt trunk is only needed for the draft-extend above; free it now so
   // decoding requests do not hold it (bounds concurrent memory).
   if (d_trunk_full) {
     q4t::diagnostic::Batch execution_batch(request_id.c_str(), seq_id, 0, T);
     q4t::diagnostic::Scope execution_free("prompt_trunk_free", 0, T);
-    cudaFree(d_trunk_full);
-    d_trunk_full = nullptr;
+    release_buffer(d_trunk_full, "request.prompt_trunk_free");
+    if (!buffers_ok) {
+      err_guard.ok = false;
+      diagnostic.Outcome("error", "device_memory_failure");
+      SendError(fd, 503, "device buffer release failed; restart server", {},
+                "gpu_unhealthy");
+      return;
+    }
   }
   // Stage 2c (4b): the speculative steps are driven by the central scheduler,
   // which batches all concurrent MTP requests into ONE MtpSpeculativeStepMulti
@@ -1976,6 +2031,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       : "";
   const std::string reasoning_usage = thinking_budget.UsageFields();
   detail::ServeRequestFaultPoint("handler.before_response", request_id.c_str());
+  // Resolve device ownership before a success terminal or cache commit. The
+  // slot/request leases remain held through output and the remaining cleanup.
+  release_buffers();
+  if (!buffers_ok) {
+    err_guard.ok = false;
+    diagnostic.Outcome("error", "device_memory_failure");
+    SendError(fd, 503, "device buffer release failed; restart server", {},
+              "gpu_unhealthy");
+    return;
+  }
   // 4. Finalize.
   stop_heartbeat.Run();
   if (stream) {
