@@ -18,6 +18,9 @@ Linux `io_uring` 按需读取本地 NVMe 页面，避免常驻约 47.68 GiB 的�
 始终为raw。none / required / named、禁止多调用、strict工具参数和
 有限JSON Schema已验，受约束请求仍普通解码，完整校验后发布SSE内容，
 暂不组合缓存或媒体。范围见[应用兼容矩阵](docs/APPLICATION_SERVICE.md)。
+固定12KiB严格复制输出的真实TCP取消/写截止及后续恢复已验，见
+[限定结果](docs/SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)；生成仍可能因
+token预算不足而失败，canonical分词长度不构成生成上限。
 
 `reasoning_field`可选择`reasoning`或默认`reasoning_content`；
 `include_reasoning: false`隐藏已解析的推理正文，计算和usage不变。

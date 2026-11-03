@@ -1,0 +1,10 @@
+{
+  "status": 404,
+  "headers": {
+    "Content-Type": "application/json",
+    "Content-Length": "140",
+    "X-Request-Id": "req-1206aaec8cc85153eaa368a3ab338583",
+    "Connection": "close"
+  },
+  "raw": "{\"error\":{\"message\":\"no cancellable request with these credentials\",\"type\":\"invalid_request_error\",\"code\":\"request_not_found\",\"param\":null}}"
+}

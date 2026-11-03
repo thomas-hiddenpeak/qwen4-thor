@@ -57,7 +57,7 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | 推理隐藏与预算 | include_reasoning / thinking_token_budget 等扩展 | 05a include_reasoning隐藏已验；仍无独立推理预算 | B：05b继续真实选词与强制闭合，隐藏不减少usage |
 | SSE 创建时间 | serving 对一请求持同一 created | 首批已统一同一请求各块时间 | A 已交付 |
 | SSE 工具参数增量 | parser 维护每调用 index/ID/参数增量 | 普通路径完整调用后发布；受约束路径完整响应验证后发布 | B：非逐 token 参数流，保留时延边界 |
-| SSE 用量与中断 | usage tail、可选持续统计；断连不保证尾帧 | 已验usage:null、logprobs:null、尾帧、串行心跳与普通增量流背压 | SRV-03限定交付；严格长payload背压、推理token明细未证明/未实现 |
+| SSE 用量与中断 | usage tail、可选持续统计；断连不保证尾帧 | 已验尾帧/心跳、普通流和固定12443字节严格复制输出的实际背压；05b推理usage已交付 | [严格复制结果](SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)限定通过；任意生成/网络与长稳仍需证明 |
 | 错误语义 | protocol/exception handlers 分类与封套 | 首批已统一 JSON/SSE 分类与封套 | A 已交付；Q4T code 不等同所有外部错误语义 |
 | 关联请求 ID | middleware/x_request_id.py；可选请求 / 响应头 | X-Request-Id接收/随机生成/回传，诊断关联，和JSON取消ID分离 | SRV-01限定交付；仍不提供幂等 |
 | 幂等 / 自动重试 | 不能从 request ID 或 SDK 重试推断幂等执行 | 活跃 ID 去重，无持久幂等存储 | B：本轮禁自动重放，恢复判定已具备 |

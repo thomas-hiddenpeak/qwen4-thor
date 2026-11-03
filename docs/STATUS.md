@@ -7,6 +7,28 @@
 长期目标“持续推进完善serve到工业水准”保持active，按
 [工业化验收账](SERVE_INDUSTRIAL_PLAN_2026-11-03.md)继续。
 
+严格长输出复制候选已限定通过；默认ed672a65/67897c81保持。
+[结果与证据](SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)，冻结531752ba，
+专用f07117f3、协议130468da，不安装。原12443字节schema及1024-token
+上限保持，完整复制提示289token；两组实际244token含EOS逐项等于canonical。
+真实EAGAIN后SSE取消与JSON约30.585秒写截止、控制可用、排队普通和
+strict恢复均通过；4完整生成/2预期不完整传输，4负例，2启动首轮完成。
+业务138.809秒、176.750秒finalize，guard COMPLETED/ENV_ABORT0，无重试。
+各实例worker2/2reap、全部owner归零、槽1/1free，首次写日志与trace/
+指标一致。4完整生成/4错误封套schema通过，2份部分wire明确拒绝成功。
+CPU真实词表/grammar证明243-token路径可行而1100-token前缀也合法，
+不把编码长度当生成上界；旧03b实际路径缺证，原失败/预算保留不追认。
+有界诊断ON/OFF6项、驱动原8通过/1缺import失败定向修复通过，native4
+通过，零警告。186原记录封存190文件约4.21MB，6大产物本机身份保留。
+190份Git blob已逐字节核对，572个本地文档链接通过；原日志/wire显式入库。
+
+36稀疏内存样本，4个退出中/僵尸worker没有VmRSS，记null；摘要原错误
+保留并重用原样本修正。08:30:00 CST GPU PID空、锁可用，无模型/worker/
+恢复标记，MemAvailable117.004GiB，默认及完整回退链不变。下一步资源
+保护与持续混合负载合同；访问运维、长稳及通用恢复仍待办，长期目标active。
+
+## SRV-01b交付历史
+
 SRV-01b接收拒绝/首次输出失败已限定交付；当前默认ed672a65 /
 sidecar67897c81，冻结运行时/驱动2425044b，protocol0e252868，完整head。
 [结果、原始失败、证据与回退](SERVE_OBSERVABILITY_RESULT_2026-11-03.md)。
@@ -34,14 +56,6 @@ CPU OFF214/ON223、必需180、写异常2、后端9、锁内原生HTTP16通过�
 稀疏采样无活跃worker，RSS采样最大值为null；退出post-exec/lifetime
 另列，不冒充完整峰值。下一步离线核对03b载荷与取证前提，不自动
 重启旧实验或增加token预算；访问运维、长稳、通用恢复仍待完成。
-
-当前开发：严格长输出CPU先验已通过，canonical243内容token+EOS可行，
-1100单字节合法前缀尚不能终止；原提示21token，复制提示289token，
-同一12443字节schema/1024-token上限保持。JSON/SSE整份校验前无内容
-释放，校验后单delta；验证程序有界实际token取证ON/OFF6项通过，默认
-不变。驱动首次8通过/1缺import失败保留，受影响1项修复通过，专用零警告。
-[独立实际冻结](SERVE_STRICT_TRANSPORT_2026-11-03.md)：6生成/4负例/2启动/
-1800秒，严格SSE取消与JSON写截止/排队恢复；尚未启动，旧03b预算不重置。
 
 ## SRV-02b交付历史
 

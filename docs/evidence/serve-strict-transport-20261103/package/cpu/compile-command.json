@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "/usr/bin/g++-14",
+    "-std=c++23",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-DQ4T_ENABLE_XGRAMMAR=1",
+    "-I/home/rm01/models/dev/qwen4-thor/include",
+    "-I/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/engine/generated",
+    "-c",
+    "/home/rm01/models/dev/qwen4-thor/tools/serve_strict_transport/payload_probe.cpp",
+    "-o",
+    "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/cpu/probe.o"
+  ],
+  "cwd": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-observability-20261103/engine",
+  "started": 1793665003.569524
+}

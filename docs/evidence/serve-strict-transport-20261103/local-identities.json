@@ -1,0 +1,32 @@
+{
+  "package/candidate/q4t": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/package/candidate/q4t",
+    "sha256": "f07117f384d7bcbe18345f3d437ed26c03dfd74b174aecb5228022f3f3f287d0",
+    "bytes": 7086056
+  },
+  "package/cpu/payload_probe": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/package/cpu/payload_probe",
+    "sha256": "07d739d13efd543378a0d35793207ede865fe0b1410545f6bd841941ffee7335",
+    "bytes": 3054656
+  },
+  "package/cpu/probe.o": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/package/cpu/probe.o",
+    "sha256": "45ef785411185fd390d00167ad105f29be2bca0fb5170f422b83e9d3aa73a557",
+    "bytes": 108496
+  },
+  "package/diagnostic/off": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/package/diagnostic/off",
+    "sha256": "c3fea65ab14d2a5da475f133d34dad9c914d90785331fc624136b527f74281f7",
+    "bytes": 70352
+  },
+  "package/diagnostic/on": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/package/diagnostic/on",
+    "sha256": "55997d0ba3e7b8a8e8e185d30ecb0c3268f8919024d5ae244da61d21172363e4",
+    "bytes": 71328
+  },
+  "package/source.bundle": {
+    "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-strict-transport-20261103/package/source.bundle",
+    "sha256": "99e76fcf05d074a2fc90d0a329597b8891a3bbf3e24dd01aaa4c0f5dbcea0dd5",
+    "bytes": 28090
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "tools/serve_backpressure/verify.py": "f31778081b92f24eb99ea445850a12133e458f99d8609243c16a84fec8d0ad0a",
+  "tools/serve_observability/verify.py": "5a6a22c78154473ef2326e394cb4d29ee8c37228de1e9f2e6c1e224d2251770e",
+  "tools/serve_strict_transport/build.py": "39cd795f274f41c6c73b9b41e0f8969f744298a82fd3abcd4354ac11ff6fc868",
+  "tools/serve_strict_transport/diagnostic_probe.cpp": "86a290af1e1d121b843664d4441e955a998674ed5fb456ff5ac0d92d7b4890f6",
+  "tools/serve_strict_transport/payload_probe.cpp": "cea9aa22e86b4309b29ca56390cd471ce9c25314fdab5f41b107650c732950b4",
+  "tools/serve_strict_transport/prepare.py": "6558ffd94d9b45a734ef9666eb8abbdec04bfd02c37214c38ae54f709f9170b3",
+  "tools/serve_strict_transport/stage.py": "560c1440585d6a7ffb7bc6d8c02e7b4b6f4d9dfd5727cb71cc0c2dc4a02f71c0",
+  "tools/serve_strict_transport/test_driver.py": "528d113f9e59d913c0beb6b0032746a1199c4e30aeb2325779f7b6c83739840e",
+  "tools/serve_strict_transport/verify.py": "6c4774526a65b2037b809906e57337e876912c1167c3b5d8fc92faf6b47a9f42"
+}
