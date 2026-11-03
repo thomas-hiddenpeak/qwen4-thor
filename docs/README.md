@@ -59,6 +59,9 @@
 [本机TLS与双客户端业务限定交付](SERVE_GATEWAY_RESULT_2026-11-04.md)；
 [SRV-10b网关托管、依赖身份和有界日志合同](SERVE_GATEWAY_MANAGED_2026-11-04.md)及
 [真实排空/失联/崩溃/依赖退场短验](SERVE_GATEWAY_MANAGED_RESULT_2026-11-04.md)；
+[SRV-12c通知链路开发合同](SERVE_NOTIFY_2026-11-04.md)、
+[真实通知/恢复冻结矩阵](SERVE_NOTIFY_GPU_2026-11-04.md)及
+[本机接收/真实服务恢复限定结果](SERVE_NOTIFY_RESULT_2026-11-04.md)；
 [SRV-17失联后的只读核验合同](SERVE_INSPECTION_2026-11-03.md)及
 [真实托管/工具/只读状态结果](SERVE_INSPECTION_RESULT_2026-11-03.md)；
 [SRV-02f设备资源故障合同](SERVE_DEVICE_MEMORY_2026-11-03.md)、

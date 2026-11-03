@@ -41,14 +41,16 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-[SRV-12c标准告警通知链路正在开发](SERVE_NOTIFY_2026-11-04.md)：
-补原Prometheus没有接收器的缺口，固定Alertmanager0.34.2与现有3.5.0，
-私有HTTPS/Bearer、恢复通知/链路心跳/失败指标、状态复用和显式托管。
-正式渠道异步询问；16 CPU首轮通过，原业务规则/固定包及day不改。
-[实际短验预算](SERVE_NOTIFY_GPU_2026-11-04.md)在HTTP前细化为2模型/
-4生成，补真实停服及恢复通知；4驱动CPU/2隔离入口首轮通过。
-外层同锁覆盖完整链路，3监控代次/64接收/256控制/360秒，尚未
-执行HTTP或宣称通知验收通过。
+[SRV-12c本机通知与真实服务恢复限定通过](SERVE_NOTIFY_RESULT_2026-11-04.md)：
+冻结b166cee7，标准Prometheus3.5.0/Alertmanager0.34.2、HTTPS/Bearer、
+恢复/心跳/失败指标、固定包与持久状态、显式托管/有界日志已开发。
+16 CPU/4驱动/2隔离入口首轮通过；实际2模型/4成功含真实资料工具，
+grammar2/2，1 Prometheus/2 AM代次，10回调（7确认/2×503/1×307）。
+接收失败重试/拒绝重定向、重启20秒去重、真实TargetDown及resolved
+通过；外层同锁276.843秒、257观察/13控制，全部自有进程/监听清理。
+266原件/37本机身份封存，GPU空/原锁可用/SOAR masked，默认pair及
+day来源保持、day未执行。正式渠道/接收方心跳缺失检测、监控全故障
+时序、跨代次日志和物理RAM保护仍待办；[接入说明](../tools/serve_notify/README.md)。
 
 [SRV-10b网关托管与有界日志短验限定通过](SERVE_GATEWAY_MANAGED_RESULT_2026-11-04.md)：
 冻结f187ef8d，固定包内入口/同包互斥、持续依赖核对、正常排空/异常
