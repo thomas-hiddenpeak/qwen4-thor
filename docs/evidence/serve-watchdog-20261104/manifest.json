@@ -1,0 +1,1464 @@
+{
+  "archive": {
+    "bytes": 295874,
+    "path": "/home/rm01/models/dev/qwen4-thor/docs/evidence/serve-watchdog-20261104/records.tar.gz",
+    "sha256": "c857c19c82ed1e56cbc769f7f0d42bd659b8a9767c49eba309dc850c3f25eeb2"
+  },
+  "cpu_fixture_scope": "CPU outputs and complete tested source retained; private per-test work directories are not archived.",
+  "evaluator": [
+    {
+      "bytes": 14740,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_watchdog/report.py",
+      "sha256": "a980a890f9f187b4c37c184b1622694d208292f569e74a3df8c04d1c8c842b25"
+    },
+    {
+      "bytes": 9977,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_watchdog/core.py",
+      "sha256": "c5d9d8d7199b0d79b897381f692cc7e69b15a0984e25f4abd6f035681b9bc1f0"
+    },
+    {
+      "bytes": 4151,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_watchdog/storage.py",
+      "sha256": "abe77bef5b93d67a1142695797638d4e3cd4a546a6b57a3922b097b21f57f1f4"
+    },
+    {
+      "bytes": 9819,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_watchdog/watchdog.py",
+      "sha256": "bdd9e8c05b0bb70eb4dd71cfd6d9a51d260e1554299dcdd7d551ad62ca438ec6"
+    },
+    {
+      "bytes": 5966,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_watchdog/cpu.py",
+      "sha256": "cda045361c813f8f653b75a466c0135c9f643453cb440758fe9de72a0857129a"
+    },
+    {
+      "bytes": 18714,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b"
+    },
+    {
+      "bytes": 8993,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d"
+    },
+    {
+      "bytes": 20261,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab"
+    },
+    {
+      "bytes": 11582,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816"
+    },
+    {
+      "bytes": 4202,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a"
+    },
+    {
+      "bytes": 4609,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b"
+    },
+    {
+      "bytes": 6019,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145"
+    },
+    {
+      "bytes": 12708,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd"
+    },
+    {
+      "bytes": 7182,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f"
+    },
+    {
+      "bytes": 15056,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a"
+    },
+    {
+      "bytes": 1784,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb"
+    },
+    {
+      "bytes": 18395,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2"
+    },
+    {
+      "bytes": 10368,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b"
+    },
+    {
+      "bytes": 18350,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81"
+    },
+    {
+      "bytes": 21594,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_notify/notify.py",
+      "sha256": "6f07525ca639447c74d450ba0e1af66c5aca53aa68439b6fbc765fefc2cade52"
+    },
+    {
+      "bytes": 4436,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_watchdog/receiver.py",
+      "sha256": "9c0f2cbe1dec6a56a3148c4a13e275aa12223fc9ebceafb11cb91048a5813b9f"
+    },
+    {
+      "bytes": 11982,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_notify/test_notify.py",
+      "sha256": "93cea223ae38da359451e21184e799a74833837d134f39993888f0e1408200a6"
+    },
+    {
+      "bytes": 22129,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_watchdog/stage.py",
+      "sha256": "a53781364b3196e7e6078ce7bc75a595567602cfd9f5d4190d65c751ee435375"
+    },
+    {
+      "bytes": 7264,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_pressure/pressure.py",
+      "sha256": "498437996629320535966f4945b851d69594ef4c063e6953edb758fc6ef0bc90"
+    },
+    {
+      "bytes": 40724,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/verify/startup_delivery/deploy.py",
+      "sha256": "479c2e5496f50f80d950e8be62b239053483e89af656339dc1aaccd2de2a3be8"
+    },
+    {
+      "bytes": 13153,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/response_protocol/acceptance.py",
+      "sha256": "b7b05af3e9e5750fc4c8ca3c4cc2f16bf357359b32db36160be2e6c178d6e9be"
+    },
+    {
+      "bytes": 9114,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/stage.py",
+      "sha256": "eacf904ca1cc5c3090e6b85b9813e259d9af4b10b5a11d49344ce5db1aa9000f"
+    },
+    {
+      "bytes": 8931,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_backpressure/stage.py",
+      "sha256": "3f6dd8d7d810afe510215fd0028524e6b8aaa64f9c3b9540ae2ce9f0778dbcb3"
+    },
+    {
+      "bytes": 28871,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/examples/chat_client.py",
+      "sha256": "a2613333395a511b7741d8ce5fac125ba44dd9ec92fa198aa90ef5f9ba662f32"
+    },
+    {
+      "bytes": 30377,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/build_contract.py",
+      "sha256": "aa774db5c9b0519fc0a30af1876aa24c61fcc90f4764a921287d29cd0fcb6580"
+    },
+    {
+      "bytes": 13574,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/cases.py",
+      "sha256": "ea8558729b7ca529daf7cc86beb979749ecd5291472dd7801f0198856ce6eb8a"
+    },
+    {
+      "bytes": 6654,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_protocol/check_contract.py",
+      "sha256": "9a12744d3497e46b75b9b7b657a5770970e72bf74f907c6b5a531afacbc20230"
+    },
+    {
+      "bytes": 21135,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_backpressure/verify.py",
+      "sha256": "f31778081b92f24eb99ea445850a12133e458f99d8609243c16a84fec8d0ad0a"
+    },
+    {
+      "bytes": 18493,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/evalscope/resource_metrics.py",
+      "sha256": "4ec55a1bad3983d9e71621c72aa299538392b3f8efb4ec121b9ec28bd105a5ce"
+    },
+    {
+      "bytes": 4539,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_pressure/observe.py",
+      "sha256": "fe6d9ffb4d5181c3c4561b11afd44efe1507db5e3eca541c134ae2b5011f7341"
+    },
+    {
+      "bytes": 10047,
+      "path": "/home/rm01/models/dev/qwen4-thor/tools/serve_soak/evidence.py",
+      "sha256": "af160b603bf3ff065c7e72b61658206c4d3b9802c5f887fa3ea1697ea714b169"
+    }
+  ],
+  "local_artifacts": [
+    {
+      "bytes": 257526,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/archive-failed-1/records.tar.gz",
+      "sha256": "a8231a973f0fc8a715e1c4e21a61fc07d03d1ae1fa996dd2f8bc595a6d1797d1"
+    },
+    {
+      "bytes": 168,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/monitor-state/alertmanager/nflog",
+      "sha256": "0e80bd10d53af4f6d5beb73aa415b3c641a406c1e2848aa2ab8eb1df9045f6a4"
+    },
+    {
+      "bytes": 0,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/monitor-state/alertmanager/silences",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/monitor-state/alertmanager.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 183,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/monitor-state/binding.json",
+      "sha256": "d04fe1ebbe2d8ed95e59df6bdcf21eae6cf1f9987d9d990d409a6a3b588ef788"
+    },
+    {
+      "bytes": 4001,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/monitor-state/prometheus/queries.active",
+      "sha256": "023f379320e7c85d210347ce3b912240bc203aa7c8e1e97d9f45de2a7654a641"
+    },
+    {
+      "bytes": 32768,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/monitor-state/prometheus/wal/00000000",
+      "sha256": "035930444cd8fd0566e34ab95311f4a7e93de99e21cfc3089f77190d9cef54f0"
+    },
+    {
+      "bytes": 0,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/monitor-state/prometheus/wal/00000001",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/monitor-state/prometheus.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 46914699,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/alertmanager",
+      "sha256": "62198848d4d81586fa043a1b555dcccdacfce00a5120f3cfdb2f35757676c1c7"
+    },
+    {
+      "bytes": 28200342,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/amtool",
+      "sha256": "6c331abac6c7034ad75ab8139b5d432357c80391c68c245cf8dbadcd5abaed94"
+    },
+    {
+      "bytes": 154293542,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/prometheus",
+      "sha256": "aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a"
+    },
+    {
+      "bytes": 145870402,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/promtool",
+      "sha256": "d4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4"
+    },
+    {
+      "bytes": 43,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/token-private",
+      "sha256": "7eaedf9aef69fcefac86734e1bbe159cd44705389ab89e740ab94672c4e56015"
+    },
+    {
+      "bytes": 30,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/url-private",
+      "sha256": "220a51fe84ee3bf1d6dbd3dd9a139100bbbfd3759fd1b6522e849ed849a3a063"
+    },
+    {
+      "bytes": 548,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/validation-0-private.log",
+      "sha256": "2b3963782c5f3a2e6267ecd633c93c802c66ebd25f5c7eead8fce153d8b80d2b"
+    },
+    {
+      "bytes": 196,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/validation-1-private.log",
+      "sha256": "29da3e31450ae6020d9571be513b97bddacb45b1f34ecc0db477613ae1901a6b"
+    },
+    {
+      "bytes": 1176,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/private/certificate.pem",
+      "sha256": "0ebce13c5b134e0464533ecd8270a17113c1b1c1ad2b10d6caf9d93a77a2b097"
+    },
+    {
+      "bytes": 1704,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/private/key.pem",
+      "sha256": "abc8a046ffdbc15f7adfdf4b14831cbfff9c90d0e0fd294b9bd16267e4feff4b"
+    },
+    {
+      "bytes": 421,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/private/policy-private.json",
+      "sha256": "67a73ca044b25495832fa5c305ca902da1bc51e35f89e9e5d0e17fa27a816482"
+    },
+    {
+      "bytes": 43,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/private/token-private",
+      "sha256": "7eaedf9aef69fcefac86734e1bbe159cd44705389ab89e740ab94672c4e56015"
+    },
+    {
+      "bytes": 43,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/watchdog-state/token-private",
+      "sha256": "7eaedf9aef69fcefac86734e1bbe159cd44705389ab89e740ab94672c4e56015"
+    }
+  ],
+  "records": [
+    {
+      "bytes": 543,
+      "member": "archive-failed-1/failure.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/archive-failed-1/failure.json",
+      "sha256": "aac6e1a5f1d6b05a118827019c25d663e3531f9e9e5366889e3a9686a6f57454"
+    },
+    {
+      "bytes": 370,
+      "member": "cpu/check-0.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/check-0.json",
+      "sha256": "961fe85ef38746a7eba7943d90b0ea7ca2b05e7b3d567f2b752a24c17635b2e2"
+    },
+    {
+      "bytes": 285,
+      "member": "cpu/check-1.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/check-1.json",
+      "sha256": "f67b9de270571faa5ec515ac1fc128705ff7f8e2aa9de63e7ceed7faa7face85"
+    },
+    {
+      "bytes": 554,
+      "member": "cpu/check-2.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/check-2.json",
+      "sha256": "87985ab4daabd719c27851f977d2053680cdf84b5625c0dbe7572626142e587b"
+    },
+    {
+      "bytes": 818,
+      "member": "cpu/check-3.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/check-3.json",
+      "sha256": "8eb8381bf5da78fb218bb4d8b19fd4ca38e860db4d85258825a5ea49bb544e04"
+    },
+    {
+      "bytes": 1180,
+      "member": "cpu/result.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/result.json",
+      "sha256": "d78a5d85a3a6114c14b47c32f5c2bcd6197e6cb7a1a3edc2fe70d91a54aa353f"
+    },
+    {
+      "bytes": 10895,
+      "member": "cpu/rule-tests.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/rule-tests.json",
+      "sha256": "7f812db8f6cd86e0eeaf661c8dee2d7f7080bb87a12a7f92c51ada49a1b5dc36"
+    },
+    {
+      "bytes": 1245,
+      "member": "cpu/source/deploy/serve-ops/q4t-watchdog.rules.yml",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/source/deploy/serve-ops/q4t-watchdog.rules.yml",
+      "sha256": "3f0c0907f90e516101020ce503f45c8ae3fd026241d37d4b9b07258677ed82d8"
+    },
+    {
+      "bytes": 2717,
+      "member": "cpu/source/docs/SERVE_NOTIFY_WATCHDOG_2026-11-04.md",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/source/docs/SERVE_NOTIFY_WATCHDOG_2026-11-04.md",
+      "sha256": "832841836abc547bdba5c5808b05765dcf937d0a29be06c55cb1a8308302d8ad"
+    },
+    {
+      "bytes": 4720,
+      "member": "cpu/source/tools/serve_watchdog/README.md",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/source/tools/serve_watchdog/README.md",
+      "sha256": "dfe4576c1105401c43d5e73d971679159a45bc8ba6658877aba5f20d1f093cbc"
+    },
+    {
+      "bytes": 9641,
+      "member": "cpu/source/tools/serve_watchdog/core.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/source/tools/serve_watchdog/core.py",
+      "sha256": "084c31275016ccd586e7b0b2ede22623453b08d9aa41c6af069db63ead590742"
+    },
+    {
+      "bytes": 5966,
+      "member": "cpu/source/tools/serve_watchdog/cpu.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/source/tools/serve_watchdog/cpu.py",
+      "sha256": "cda045361c813f8f653b75a466c0135c9f643453cb440758fe9de72a0857129a"
+    },
+    {
+      "bytes": 4151,
+      "member": "cpu/source/tools/serve_watchdog/storage.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/source/tools/serve_watchdog/storage.py",
+      "sha256": "abe77bef5b93d67a1142695797638d4e3cd4a546a6b57a3922b097b21f57f1f4"
+    },
+    {
+      "bytes": 17491,
+      "member": "cpu/source/tools/serve_watchdog/test_watchdog.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/source/tools/serve_watchdog/test_watchdog.py",
+      "sha256": "ea69f10938c819cbbba42437b69c7fc8b8480f9cc17dc1a2563bbc8e8c18e387"
+    },
+    {
+      "bytes": 9599,
+      "member": "cpu/source/tools/serve_watchdog/watchdog.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/source/tools/serve_watchdog/watchdog.py",
+      "sha256": "65d069ee6261471d2509e73c760d6b1db443379d3285efa7cf7b6ae053517820"
+    },
+    {
+      "bytes": 4310,
+      "member": "cpu/tests.log",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu/tests.log",
+      "sha256": "b8536875e5e1d7c45473c0c06d0f7278c7cb9bb872d9fcd6ca4fc37fb258808b"
+    },
+    {
+      "bytes": 9955,
+      "member": "cpu-correction/core.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu-correction/core.py",
+      "sha256": "98cf9e837431eec660d181a813ee3015fd464f62f68fa41fb3b84f523231b339"
+    },
+    {
+      "bytes": 54,
+      "member": "cpu-correction/metrics-check.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu-correction/metrics-check.json",
+      "sha256": "83395cbaf5cbebe654f352914cdd7b569643698a8b687ae84b6ea7e5b6f4dd9e"
+    },
+    {
+      "bytes": 1649,
+      "member": "cpu-correction/metrics.prom",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu-correction/metrics.prom",
+      "sha256": "9136bfd5c24b6d9c7924a62388d92459f1309c130c5081f86b0a7d4af7b4ca23"
+    },
+    {
+      "bytes": 1223,
+      "member": "cpu-correction/result.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu-correction/result.json",
+      "sha256": "51af349848379ea20248ecbd295e39b42e80ae6e0d72574821619db433466d27"
+    },
+    {
+      "bytes": 264,
+      "member": "cpu-correction/tests.log",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/cpu-correction/tests.log",
+      "sha256": "afb9b8b8920543c3b3554c7e501a3157f06285abbe012dfecf5659340829826b"
+    },
+    {
+      "bytes": 4341,
+      "member": "driver-cpu/result.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/result.json",
+      "sha256": "26887ecaf67fe742d000b42b320707aeb257bede55688172520615ee8b3c78b0"
+    },
+    {
+      "bytes": 1245,
+      "member": "driver-cpu/source/deploy/serve-ops/q4t-watchdog.rules.yml",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/deploy/serve-ops/q4t-watchdog.rules.yml",
+      "sha256": "3f0c0907f90e516101020ce503f45c8ae3fd026241d37d4b9b07258677ed82d8"
+    },
+    {
+      "bytes": 13565,
+      "member": "driver-cpu/source/deploy/serve-ops/q4t.rules.yml",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/deploy/serve-ops/q4t.rules.yml",
+      "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8"
+    },
+    {
+      "bytes": 2717,
+      "member": "driver-cpu/source/docs/SERVE_NOTIFY_WATCHDOG_2026-11-04.md",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/docs/SERVE_NOTIFY_WATCHDOG_2026-11-04.md",
+      "sha256": "832841836abc547bdba5c5808b05765dcf937d0a29be06c55cb1a8308302d8ad"
+    },
+    {
+      "bytes": 2865,
+      "member": "driver-cpu/source/docs/SERVE_NOTIFY_WATCHDOG_GPU_2026-11-04.md",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/docs/SERVE_NOTIFY_WATCHDOG_GPU_2026-11-04.md",
+      "sha256": "954ddc32ed0783d7de59d0bfe7c78f943815d57db798870db5c73205e2fd9f1c"
+    },
+    {
+      "bytes": 25439,
+      "member": "driver-cpu/source/docs/serve-openapi-v1.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e"
+    },
+    {
+      "bytes": 1784,
+      "member": "driver-cpu/source/tools/evalscope/bounded_log.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb"
+    },
+    {
+      "bytes": 18395,
+      "member": "driver-cpu/source/tools/evalscope/gpu_exclusive.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2"
+    },
+    {
+      "bytes": 7182,
+      "member": "driver-cpu/source/tools/evalscope/nvml_process_query.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f"
+    },
+    {
+      "bytes": 20261,
+      "member": "driver-cpu/source/tools/release/release.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab"
+    },
+    {
+      "bytes": 18714,
+      "member": "driver-cpu/source/tools/serve_gateway/gateway.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b"
+    },
+    {
+      "bytes": 18350,
+      "member": "driver-cpu/source/tools/serve_gateway/managed.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81"
+    },
+    {
+      "bytes": 1484,
+      "member": "driver-cpu/source/tools/serve_gateway/managed_child.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea"
+    },
+    {
+      "bytes": 1366,
+      "member": "driver-cpu/source/tools/serve_notify/child.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_notify/child.py",
+      "sha256": "193b92e49886b9e14d0b6b2611a8c828a5c7b0af456936f20b065d1826e6fc6b"
+    },
+    {
+      "bytes": 21594,
+      "member": "driver-cpu/source/tools/serve_notify/notify.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_notify/notify.py",
+      "sha256": "6f07525ca639447c74d450ba0e1af66c5aca53aa68439b6fbc765fefc2cade52"
+    },
+    {
+      "bytes": 661,
+      "member": "driver-cpu/source/tools/serve_notify/owned_exec.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_notify/owned_exec.py",
+      "sha256": "aa9e9693920ae42d4f628b98a0469eac58125dc98754047979cde613e8c7b393"
+    },
+    {
+      "bytes": 11982,
+      "member": "driver-cpu/source/tools/serve_notify/test_notify.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_notify/test_notify.py",
+      "sha256": "93cea223ae38da359451e21184e799a74833837d134f39993888f0e1408200a6"
+    },
+    {
+      "bytes": 11582,
+      "member": "driver-cpu/source/tools/serve_ops/contracts.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816"
+    },
+    {
+      "bytes": 4202,
+      "member": "driver-cpu/source/tools/serve_ops/identity.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a"
+    },
+    {
+      "bytes": 4609,
+      "member": "driver-cpu/source/tools/serve_ops/transport.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b"
+    },
+    {
+      "bytes": 1703,
+      "member": "driver-cpu/source/tools/serve_service/backend.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f"
+    },
+    {
+      "bytes": 15056,
+      "member": "driver-cpu/source/tools/serve_service/inspection.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a"
+    },
+    {
+      "bytes": 6019,
+      "member": "driver-cpu/source/tools/serve_service/memory.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145"
+    },
+    {
+      "bytes": 8993,
+      "member": "driver-cpu/source/tools/serve_service/package.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d"
+    },
+    {
+      "bytes": 10368,
+      "member": "driver-cpu/source/tools/serve_service/service.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b"
+    },
+    {
+      "bytes": 12708,
+      "member": "driver-cpu/source/tools/serve_service/supervisor.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd"
+    },
+    {
+      "bytes": 4720,
+      "member": "driver-cpu/source/tools/serve_watchdog/README.md",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/README.md",
+      "sha256": "dfe4576c1105401c43d5e73d971679159a45bc8ba6658877aba5f20d1f093cbc"
+    },
+    {
+      "bytes": 9977,
+      "member": "driver-cpu/source/tools/serve_watchdog/core.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/core.py",
+      "sha256": "c5d9d8d7199b0d79b897381f692cc7e69b15a0984e25f4abd6f035681b9bc1f0"
+    },
+    {
+      "bytes": 3012,
+      "member": "driver-cpu/source/tools/serve_watchdog/correction.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/correction.py",
+      "sha256": "1f60d072866aa536e2df80c30475ffb6ec7ec13dfebbdb28513d1301f7159eae"
+    },
+    {
+      "bytes": 5966,
+      "member": "driver-cpu/source/tools/serve_watchdog/cpu.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/cpu.py",
+      "sha256": "cda045361c813f8f653b75a466c0135c9f643453cb440758fe9de72a0857129a"
+    },
+    {
+      "bytes": 4436,
+      "member": "driver-cpu/source/tools/serve_watchdog/receiver.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/receiver.py",
+      "sha256": "9c0f2cbe1dec6a56a3148c4a13e275aa12223fc9ebceafb11cb91048a5813b9f"
+    },
+    {
+      "bytes": 2158,
+      "member": "driver-cpu/source/tools/serve_watchdog/review_cpu.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/review_cpu.py",
+      "sha256": "d17c730088ca4e91618a0868d9b035063a7a825993e266e3ff5674ccaddbacdd"
+    },
+    {
+      "bytes": 22129,
+      "member": "driver-cpu/source/tools/serve_watchdog/stage.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/stage.py",
+      "sha256": "a53781364b3196e7e6078ce7bc75a595567602cfd9f5d4190d65c751ee435375"
+    },
+    {
+      "bytes": 4151,
+      "member": "driver-cpu/source/tools/serve_watchdog/storage.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/storage.py",
+      "sha256": "abe77bef5b93d67a1142695797638d4e3cd4a546a6b57a3922b097b21f57f1f4"
+    },
+    {
+      "bytes": 3484,
+      "member": "driver-cpu/source/tools/serve_watchdog/test_stage.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/test_stage.py",
+      "sha256": "6fb395f577baf67d58bb4c8a706b7002b4aa7c87849f7dfc603578f59c889a27"
+    },
+    {
+      "bytes": 18017,
+      "member": "driver-cpu/source/tools/serve_watchdog/test_watchdog.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/test_watchdog.py",
+      "sha256": "3bc24f7d0eeeb64d63f65fe53d6347b87fdb38b2691f655bd409ed7035f7dce5"
+    },
+    {
+      "bytes": 9819,
+      "member": "driver-cpu/source/tools/serve_watchdog/watchdog.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/source/tools/serve_watchdog/watchdog.py",
+      "sha256": "bdd9e8c05b0bb70eb4dd71cfd6d9a51d260e1554299dcdd7d551ad62ca438ec6"
+    },
+    {
+      "bytes": 748,
+      "member": "driver-cpu/tests.log",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/driver-cpu/tests.log",
+      "sha256": "96020d551482273f496aea4dac0d092de40554d3f41f9adce3a8b29872716bfa"
+    },
+    {
+      "bytes": 487,
+      "member": "execution/alertmanager-1/controller.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-1/controller.json",
+      "sha256": "9ebb9ab15924a953320b28366620af2112ed20e858beb230f4982e4892c783a8"
+    },
+    {
+      "bytes": 1120,
+      "member": "execution/alertmanager-1/service.log",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-1/service.log",
+      "sha256": "9ba1260fad075a85e486f724c3722de6735cc402bf9a10244c84226565fbc72f"
+    },
+    {
+      "bytes": 405,
+      "member": "execution/alertmanager-1/status.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-1/status.json",
+      "sha256": "c30eb3f3be2f9e3f9f9cc96dd3507daf36e83fc29556ca051a5783f6d3215359"
+    },
+    {
+      "bytes": 191,
+      "member": "execution/alertmanager-1/terminal.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-1/terminal.json",
+      "sha256": "f3ee3e81850ca003d42861cb6030cc78f0186ca1aa2d71bcda2a09fb6f4006da"
+    },
+    {
+      "bytes": 892,
+      "member": "execution/alertmanager-1-command.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-1-command.json",
+      "sha256": "3e05215daad752a8da84d7e8cbca2fb63d43afec136c7812608b2d9d7157ecd2"
+    },
+    {
+      "bytes": 22,
+      "member": "execution/alertmanager-1-exit.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-1-exit.json",
+      "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb"
+    },
+    {
+      "bytes": 405,
+      "member": "execution/alertmanager-1-listening.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-1-listening.json",
+      "sha256": "3c483a586b0356092ecd0800db50a8204a0aebc07cefa1a89219288048671322"
+    },
+    {
+      "bytes": 102,
+      "member": "execution/alertmanager-1-owner.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-1-owner.json",
+      "sha256": "d11e110a53dc0750fd47a6dfbf282af5cfbed28f61dc6cf1557a4e89ac2466bd"
+    },
+    {
+      "bytes": 178,
+      "member": "execution/alertmanager-1-waitable.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-1-waitable.json",
+      "sha256": "4409140833eb0fb72e74d4fddd36ca5f84849cb99012082b090fe75b28178e85"
+    },
+    {
+      "bytes": 487,
+      "member": "execution/alertmanager-2/controller.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-2/controller.json",
+      "sha256": "f0b801575388fddc1c57b9218a4134a8b513449bfc4c789b96ef38d04297c2b9"
+    },
+    {
+      "bytes": 1122,
+      "member": "execution/alertmanager-2/service.log",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-2/service.log",
+      "sha256": "0cb230a66ffae44d0e69bc8c7062da7f95cfcd6b78e4677413dc655ae6090eca"
+    },
+    {
+      "bytes": 405,
+      "member": "execution/alertmanager-2/status.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-2/status.json",
+      "sha256": "87adc5a39198b1a903cf85f762c36808181762bb124b5fb26192ae4a23b4fc49"
+    },
+    {
+      "bytes": 191,
+      "member": "execution/alertmanager-2/terminal.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-2/terminal.json",
+      "sha256": "f3ee3e81850ca003d42861cb6030cc78f0186ca1aa2d71bcda2a09fb6f4006da"
+    },
+    {
+      "bytes": 892,
+      "member": "execution/alertmanager-2-command.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-2-command.json",
+      "sha256": "1c2f61ceb35cf0591ab61fd1b44783a1387a4ad600c0a2e1f7b67696d7847b78"
+    },
+    {
+      "bytes": 22,
+      "member": "execution/alertmanager-2-exit.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-2-exit.json",
+      "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb"
+    },
+    {
+      "bytes": 405,
+      "member": "execution/alertmanager-2-listening.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-2-listening.json",
+      "sha256": "b374c03c0435531973f6508e503625516a7ae6a3c37cabc6f9a761c82a67cfea"
+    },
+    {
+      "bytes": 102,
+      "member": "execution/alertmanager-2-owner.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-2-owner.json",
+      "sha256": "94e7341ee3487eaf95accc16063d457277b077ced9b780ed3d4f8505c0f2b766"
+    },
+    {
+      "bytes": 177,
+      "member": "execution/alertmanager-2-waitable.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/alertmanager-2-waitable.json",
+      "sha256": "e1b5b1956a7740cc208db7f87075c1cf35f2f15aafe6bcf741c0dd2347fc1516"
+    },
+    {
+      "bytes": 75,
+      "member": "execution/begin.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/begin.json",
+      "sha256": "58a4863b5093f3add6d6954a488e64a1dc33b8de88791e5e6d9b5aa5204608b7"
+    },
+    {
+      "bytes": 1256,
+      "member": "execution/custody.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/custody.json",
+      "sha256": "e22514309e3bb150114c0e47281aaeb959b3e1f946eb23830315f669d7cde977"
+    },
+    {
+      "bytes": 1765,
+      "member": "execution/final-ledger.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/final-ledger.json",
+      "sha256": "e532ab705affa2fbda38db4f119c0a6fa761a46d8e2117aea055d33f4c958c11"
+    },
+    {
+      "bytes": 1734,
+      "member": "execution/final-metrics.prom",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/final-metrics.prom",
+      "sha256": "71c49f4f16677022b483f8739bf89145f5d4d6bf22618167de5df779f7883166"
+    },
+    {
+      "bytes": 455,
+      "member": "execution/final-status.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/final-status.json",
+      "sha256": "cff9183265e6fbad1daa7cc9d9b1ae264d6cce462327b32f86a0abdf3939efd0"
+    },
+    {
+      "bytes": 454,
+      "member": "execution/first-present.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/first-present.json",
+      "sha256": "428eb6549d20345da59475a4e7c1149d85b1bfd941c8d5621fe517266e4b3486"
+    },
+    {
+      "bytes": 2260,
+      "member": "execution/gpu-final.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/gpu-final.json",
+      "sha256": "248f5618b5c03f23baf8512d7d8b5c691b4f1fb4f5b4b70b2daa1252ff7a1753"
+    },
+    {
+      "bytes": 40132,
+      "member": "execution/lease/events.jsonl",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/lease/events.jsonl",
+      "sha256": "aae03c378797e2fedf337e2c9d5fdb22d1d536e596633f6910cda3cf54185596"
+    },
+    {
+      "bytes": 560,
+      "member": "execution/lease/exit.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/lease/exit.json",
+      "sha256": "d439d6cb30e1b30a5752ef817865eb1d20c6eeb28a34ca2a56e652f27c7a46cd"
+    },
+    {
+      "bytes": 476193,
+      "member": "execution/lease/nvml-queries.jsonl",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/lease/nvml-queries.jsonl",
+      "sha256": "237237b3c1332a6e861caf8f2ba7526287f88522e815a5a37925e392c0c5fe72"
+    },
+    {
+      "bytes": 454,
+      "member": "execution/missing-projection.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/missing-projection.json",
+      "sha256": "074dc8a67c884294f1fec65ddbd382c89120e73150364ba6653ea4562093ac7f"
+    },
+    {
+      "bytes": 455,
+      "member": "execution/missing.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/missing.json",
+      "sha256": "a36adb3e875adb61c3b30dd6e8dec0509de43a6b7e3af5cd9087b844e6025fdd"
+    },
+    {
+      "bytes": 1733,
+      "member": "execution/missing.prom",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/missing.prom",
+      "sha256": "2beb6b622b741cd22711ae149244cba95dae49b31bc33f2855a7b1cdbd9e6d5e"
+    },
+    {
+      "bytes": 414,
+      "member": "execution/monitors-stopped.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/monitors-stopped.json",
+      "sha256": "983fa4eafd67e7476814ed43d1e588fee22001bfe66151f4a883f46844bed4a4"
+    },
+    {
+      "bytes": 452,
+      "member": "execution/observer-restarted.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/observer-restarted.json",
+      "sha256": "ce86c2b5bc84b477f74ce4c6cc9f2b5962023ed57597ba897eab4a4220daa0f6"
+    },
+    {
+      "bytes": 187,
+      "member": "execution/observer-stale.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/observer-stale.json",
+      "sha256": "cb0089c7f26f053272e435a86d618bbe0caa3c50d5b78e1571603769a01f2ce0"
+    },
+    {
+      "bytes": 226,
+      "member": "execution/ordinary-not-heartbeat-http.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/ordinary-not-heartbeat-http.json",
+      "sha256": "3c1939b08de831e06c3ec3e9a752b3c529bb8ea338ee479ae5dfacbcdf169dee"
+    },
+    {
+      "bytes": 485,
+      "member": "execution/prometheus-1/controller.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-1/controller.json",
+      "sha256": "6ddb580772944c5c6441b5096677b28ee18f648abae495195de7e3ab76873495"
+    },
+    {
+      "bytes": 6091,
+      "member": "execution/prometheus-1/service.log",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-1/service.log",
+      "sha256": "86eec8a5adcd8f707e5f4d26375e877ce9a78b988d11df5b246c7877c133e540"
+    },
+    {
+      "bytes": 405,
+      "member": "execution/prometheus-1/status.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-1/status.json",
+      "sha256": "1edcc72252cb352788728ffcef83127f205045746255e899d953ddaccb9772f0"
+    },
+    {
+      "bytes": 191,
+      "member": "execution/prometheus-1/terminal.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-1/terminal.json",
+      "sha256": "f3ee3e81850ca003d42861cb6030cc78f0186ca1aa2d71bcda2a09fb6f4006da"
+    },
+    {
+      "bytes": 888,
+      "member": "execution/prometheus-1-command.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-1-command.json",
+      "sha256": "2293f51c1abbd4c8e3553e898854a94235fc131e92b26f25b784c8770aee21af"
+    },
+    {
+      "bytes": 22,
+      "member": "execution/prometheus-1-exit.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-1-exit.json",
+      "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb"
+    },
+    {
+      "bytes": 405,
+      "member": "execution/prometheus-1-listening.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-1-listening.json",
+      "sha256": "3296b5a11ab109bbe7e5d590135c9fd394e6251147044e7dc662004d9f1a4123"
+    },
+    {
+      "bytes": 102,
+      "member": "execution/prometheus-1-owner.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-1-owner.json",
+      "sha256": "71a6fc63d27175a5f1b77128b9bee6fb4e6a55da1780ce97ebf54f5d01b8b291"
+    },
+    {
+      "bytes": 178,
+      "member": "execution/prometheus-1-waitable.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-1-waitable.json",
+      "sha256": "9b6debb6943745c7f83bf4b27cba227e43ca915b449e07069f3c0e9ce6072a1e"
+    },
+    {
+      "bytes": 485,
+      "member": "execution/prometheus-2/controller.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-2/controller.json",
+      "sha256": "0fed1e3144c7722c36c13d216b91e12d849c4b8f19e4d5c7b80ddf38a3bb6832"
+    },
+    {
+      "bytes": 6278,
+      "member": "execution/prometheus-2/service.log",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-2/service.log",
+      "sha256": "08e0cad6952eebd7259b9a953cfe1225024e32d85e7df930cae42be4116f6ebe"
+    },
+    {
+      "bytes": 405,
+      "member": "execution/prometheus-2/status.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-2/status.json",
+      "sha256": "7c5346010809b3c58dba03a37e371468a7c0475cf33bc33975284170c35774e5"
+    },
+    {
+      "bytes": 191,
+      "member": "execution/prometheus-2/terminal.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-2/terminal.json",
+      "sha256": "f3ee3e81850ca003d42861cb6030cc78f0186ca1aa2d71bcda2a09fb6f4006da"
+    },
+    {
+      "bytes": 888,
+      "member": "execution/prometheus-2-command.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-2-command.json",
+      "sha256": "555c27d9f76a815df0f116a6cf9ace0e5b5198970ea9139f3868a76cbe20d52c"
+    },
+    {
+      "bytes": 22,
+      "member": "execution/prometheus-2-exit.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-2-exit.json",
+      "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb"
+    },
+    {
+      "bytes": 405,
+      "member": "execution/prometheus-2-listening.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-2-listening.json",
+      "sha256": "f9f835b0b67e9b6472815bb5b12f899d33637eb0e8aa463b6c232317cffc4b3b"
+    },
+    {
+      "bytes": 102,
+      "member": "execution/prometheus-2-owner.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-2-owner.json",
+      "sha256": "7b5a27900c7d354285dd839801760fafe7fc24cfdd04ce10adaf907114d6f9f0"
+    },
+    {
+      "bytes": 178,
+      "member": "execution/prometheus-2-waitable.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/prometheus-2-waitable.json",
+      "sha256": "4d154346716dfcc562111f6cde2bd4f5c0b4de44cd2a52bd7cfa27240e176668"
+    },
+    {
+      "bytes": 1070,
+      "member": "execution/receiver/000-body.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/receiver/000-body.json",
+      "sha256": "c0e846134c05139f10fe31f1eb385ba1d5083ba0104b01da3d4d5a6449f3441c"
+    },
+    {
+      "bytes": 816,
+      "member": "execution/receiver/000-receipt.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/receiver/000-receipt.json",
+      "sha256": "acdac8ceb3a3b22e57744979b391374d39e9a69f3d3417dab6b012f3ca9894cf"
+    },
+    {
+      "bytes": 0,
+      "member": "execution/receiver/001-body.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/receiver/001-body.json",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 265,
+      "member": "execution/receiver/001-receipt.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/receiver/001-receipt.json",
+      "sha256": "2ccae34de311fdff64a92ec52d7f8cd80890864f9a199f687b1d665029275a4f"
+    },
+    {
+      "bytes": 1299,
+      "member": "execution/receiver/002-body.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/receiver/002-body.json",
+      "sha256": "6e6cef01f6e441fdc2916e36bf72b4b800a165f86de8c9d9271d2c17de808487"
+    },
+    {
+      "bytes": 299,
+      "member": "execution/receiver/002-receipt.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/receiver/002-receipt.json",
+      "sha256": "2bf055bd3d51bce9638b3265318fb84d7b47cfaaa04c7815c46408d59bc60f17"
+    },
+    {
+      "bytes": 1299,
+      "member": "execution/receiver/003-body.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/receiver/003-body.json",
+      "sha256": "973c531cb86c058b74f45eb3164e48a49dffe098d493d14ab4f810ffdd5ea210"
+    },
+    {
+      "bytes": 297,
+      "member": "execution/receiver/003-receipt.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/receiver/003-receipt.json",
+      "sha256": "c23761a2859af9f0ceaa7453b201050db67b3e7952b8534f19f89ef2bc896407"
+    },
+    {
+      "bytes": 1075,
+      "member": "execution/receiver/004-body.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/receiver/004-body.json",
+      "sha256": "f5b9b2b645fae22b312e645e4f25a9a65d05fe2d0533b319795c0a8b4b74dd47"
+    },
+    {
+      "bytes": 817,
+      "member": "execution/receiver/004-receipt.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/receiver/004-receipt.json",
+      "sha256": "a0d27021dd5afab3870a46b32e765e41e7b1859bcd41e78840d1e368039ef6b5"
+    },
+    {
+      "bytes": 456,
+      "member": "execution/recovered.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/recovered.json",
+      "sha256": "5102408a5b9a6fcca952ced174879ad722b86859e6f0e02fab41440e8d6cd20e"
+    },
+    {
+      "bytes": 324,
+      "member": "execution/result.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/result.json",
+      "sha256": "7c84cfa6c80640494bbeb2948da311153981b93d8f170f488ee4a8a1733a4a43"
+    },
+    {
+      "bytes": 428716,
+      "member": "execution/silence-samples.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/silence-samples.json",
+      "sha256": "180cfaf1ae24129e597f20f716b2c9815da0821a8158cb831e297ef057c0ae63"
+    },
+    {
+      "bytes": 226,
+      "member": "execution/unauthorized-http.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/unauthorized-http.json",
+      "sha256": "65a04528a16e921ce1bc80f75c50941c78556753302938deeda23dbc2bf4541b"
+    },
+    {
+      "bytes": 656,
+      "member": "execution/watchdog-1-command.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/watchdog-1-command.json",
+      "sha256": "e4e7900dbd976d6a05d47ab118f3f06fc66e24e009d5f4200d1a702413638f82"
+    },
+    {
+      "bytes": 22,
+      "member": "execution/watchdog-1-exit.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/watchdog-1-exit.json",
+      "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb"
+    },
+    {
+      "bytes": 436,
+      "member": "execution/watchdog-1-fresh.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/watchdog-1-fresh.json",
+      "sha256": "0dae393c7b98d5f2e841ed0a5e558a29dbe412bbdf648d01fa2cb4538408f175"
+    },
+    {
+      "bytes": 102,
+      "member": "execution/watchdog-1-owner.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/watchdog-1-owner.json",
+      "sha256": "9adad15b6df6016c6083366b8aa8c2f0816ca5f7a628f879f0563a90d1e79b64"
+    },
+    {
+      "bytes": 178,
+      "member": "execution/watchdog-1-waitable.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/watchdog-1-waitable.json",
+      "sha256": "b13cd0bd00b259cf7188b0e06648535d77d5876eec4771d2c60c114b40321383"
+    },
+    {
+      "bytes": 656,
+      "member": "execution/watchdog-2-command.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/watchdog-2-command.json",
+      "sha256": "e4e7900dbd976d6a05d47ab118f3f06fc66e24e009d5f4200d1a702413638f82"
+    },
+    {
+      "bytes": 22,
+      "member": "execution/watchdog-2-exit.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/watchdog-2-exit.json",
+      "sha256": "1e3f6691f455051e8adb15d961e4bf3c7a17e83dd88b2afdd13315cc288250bb"
+    },
+    {
+      "bytes": 455,
+      "member": "execution/watchdog-2-fresh.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/watchdog-2-fresh.json",
+      "sha256": "3a38ea2cf49d6e2a694c7470af4eb26bb4c65e695421f082aa8e31c5bf7493e4"
+    },
+    {
+      "bytes": 102,
+      "member": "execution/watchdog-2-owner.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/watchdog-2-owner.json",
+      "sha256": "54bc33de2538a64d31221eddc146d5e72e013ffa1d0d10c3ac310ea39697607a"
+    },
+    {
+      "bytes": 178,
+      "member": "execution/watchdog-2-waitable.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/watchdog-2-waitable.json",
+      "sha256": "26e0bb1b7a2e89c4fc37cba6ac7d25ba12cbf14d10237db650aefb7a05c20b15"
+    },
+    {
+      "bytes": 226,
+      "member": "execution/wrong-deployment-http.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/execution/wrong-deployment-http.json",
+      "sha256": "65f51223ae4b16cb8f16ef00fd1cc08890805988e19f20c1b28fe52f70da442d"
+    },
+    {
+      "bytes": 1392,
+      "member": "package/alertmanager.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/alertmanager.json",
+      "sha256": "e92dc98732ad9ed499705fde2104568cb90c9b3f89aa6a46e7cc09f2a3c564f8"
+    },
+    {
+      "bytes": 3772,
+      "member": "package/manifest.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/manifest.json",
+      "sha256": "6ab0d57c503699f35ad643b7c644b9c5e72043aba2cb2432e38e5c3cf1c3eda5"
+    },
+    {
+      "bytes": 2030,
+      "member": "package/notify.rules.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/notify.rules.json",
+      "sha256": "ed1d185a9e06538504cef55b3757a5c33e81813bdba4456e27873020f406b8e1"
+    },
+    {
+      "bytes": 2333,
+      "member": "package/prometheus.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/prometheus.json",
+      "sha256": "7c82e117236af8b07cac5034e240fab2903d3eeb3e1f92708e1b8bdf4f368ee0"
+    },
+    {
+      "bytes": 1176,
+      "member": "package/receiver-ca.pem",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/receiver-ca.pem",
+      "sha256": "0ebce13c5b134e0464533ecd8270a17113c1b1c1ad2b10d6caf9d93a77a2b097"
+    },
+    {
+      "bytes": 13565,
+      "member": "package/source/deploy/serve-ops/q4t.rules.yml",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/deploy/serve-ops/q4t.rules.yml",
+      "sha256": "849bf0cdeb4de4225c134183a678b8eb7985f50a5fa22ece4dd3c502067e0ff8"
+    },
+    {
+      "bytes": 25439,
+      "member": "package/source/docs/serve-openapi-v1.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/docs/serve-openapi-v1.json",
+      "sha256": "701f9732157892e38328385e2dbf00672beff029992f67379dca43af3dad4a9e"
+    },
+    {
+      "bytes": 1784,
+      "member": "package/source/tools/evalscope/bounded_log.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/evalscope/bounded_log.py",
+      "sha256": "c3c4a5aa9b9cd14671b2bfbd11ba8ec15a9ba5074100126804d4ec417d8728bb"
+    },
+    {
+      "bytes": 18395,
+      "member": "package/source/tools/evalscope/gpu_exclusive.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/evalscope/gpu_exclusive.py",
+      "sha256": "1264be5a7c9e5285c9ce21f105c94450e1c3e0ea1ba4e8fe0a303ecfce44b1f2"
+    },
+    {
+      "bytes": 7182,
+      "member": "package/source/tools/evalscope/nvml_process_query.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/evalscope/nvml_process_query.py",
+      "sha256": "89c07d941f38ec11f1ddc896cec5396530dbad7383a07916aaa4e50b4eb6d66f"
+    },
+    {
+      "bytes": 20261,
+      "member": "package/source/tools/release/release.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/release/release.py",
+      "sha256": "0ec48519479f4ffc92346255309af0353d7e495cbc61d6915cddbc0ecf6d27ab"
+    },
+    {
+      "bytes": 18714,
+      "member": "package/source/tools/serve_gateway/gateway.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_gateway/gateway.py",
+      "sha256": "4073c8e1865b10101a7d60d096cc13e57ddb595a725d205a98e61276948c190b"
+    },
+    {
+      "bytes": 18350,
+      "member": "package/source/tools/serve_gateway/managed.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_gateway/managed.py",
+      "sha256": "59489806ebe53f7f68d6fc8198ec0f587a20400b3ed87a8cfeb90e1092829c81"
+    },
+    {
+      "bytes": 1484,
+      "member": "package/source/tools/serve_gateway/managed_child.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_gateway/managed_child.py",
+      "sha256": "b976d0180035bab72e7049c5fb60cdab5a63074f4869bb628403bef483002eea"
+    },
+    {
+      "bytes": 1366,
+      "member": "package/source/tools/serve_notify/child.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_notify/child.py",
+      "sha256": "193b92e49886b9e14d0b6b2611a8c828a5c7b0af456936f20b065d1826e6fc6b"
+    },
+    {
+      "bytes": 21594,
+      "member": "package/source/tools/serve_notify/notify.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_notify/notify.py",
+      "sha256": "6f07525ca639447c74d450ba0e1af66c5aca53aa68439b6fbc765fefc2cade52"
+    },
+    {
+      "bytes": 11582,
+      "member": "package/source/tools/serve_ops/contracts.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_ops/contracts.py",
+      "sha256": "709aaf35b476225f42d7c64bcee2ffd55f48a310bb01b939785a2006eb340816"
+    },
+    {
+      "bytes": 4202,
+      "member": "package/source/tools/serve_ops/identity.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_ops/identity.py",
+      "sha256": "1b80467eba0fe84397155d29a62d8ace363aea32b85c58f4ffce5412bc74aa3a"
+    },
+    {
+      "bytes": 4609,
+      "member": "package/source/tools/serve_ops/transport.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_ops/transport.py",
+      "sha256": "5885dab1835afa07c4a4c871726548fad95cb7888b4af29f8835e7d98d6d806b"
+    },
+    {
+      "bytes": 1703,
+      "member": "package/source/tools/serve_service/backend.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_service/backend.py",
+      "sha256": "9ef97c4a60d73598faac56f312e009299b00dd63c9e45333cea50cd89ac89b5f"
+    },
+    {
+      "bytes": 15056,
+      "member": "package/source/tools/serve_service/inspection.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_service/inspection.py",
+      "sha256": "d07c52c5fadc34e8d22348f3f89f4a7f3617c5fa83d477222a51ba1a3b95868a"
+    },
+    {
+      "bytes": 6019,
+      "member": "package/source/tools/serve_service/memory.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_service/memory.py",
+      "sha256": "18844e35d32d8a1b69d2a7cf15a6b29a40466dbcbe5290c424942eeb32d9a145"
+    },
+    {
+      "bytes": 8993,
+      "member": "package/source/tools/serve_service/package.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_service/package.py",
+      "sha256": "694c7831ba721346afd677a8df2552d23eec0e63d96b3dc59a95d988d44cd05d"
+    },
+    {
+      "bytes": 10368,
+      "member": "package/source/tools/serve_service/service.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_service/service.py",
+      "sha256": "c3f8020b1fa65a24f07e13f68aa7d0eb3ce6d102e4e5788de4197c4e0574cf1b"
+    },
+    {
+      "bytes": 12708,
+      "member": "package/source/tools/serve_service/supervisor.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/package/source/tools/serve_service/supervisor.py",
+      "sha256": "bb0e0ded132b4047c909788667bc72bc6b87fd4fa54a86bcc51ecaf4cb2f79cd"
+    },
+    {
+      "bytes": 5637,
+      "member": "plan.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/plan.json",
+      "sha256": "d15a46d675341eb876822efc0874838f1fe29a84c1e001f065a994cfdbd2a532"
+    },
+    {
+      "bytes": 3349,
+      "member": "postflight-check.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/postflight-check.json",
+      "sha256": "bc547b2919f22fe185023ec0e22907908aaedb6696e09f4ed406f2bf14ad99f5"
+    },
+    {
+      "bytes": 2923,
+      "member": "postflight-delayed.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/postflight-delayed.json",
+      "sha256": "8e4b08aa5ec4b2e8666e1563113b97ee3bcfa8e59e4c3b8fcab866467872a1e0"
+    },
+    {
+      "bytes": 2883,
+      "member": "postflight.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/postflight.json",
+      "sha256": "dc2804f660b6892ac500d15d603781effc4ad5bb3c6e8cd7da0cab101979576d"
+    },
+    {
+      "bytes": 998,
+      "member": "report-audit/check.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/report-audit/check.json",
+      "sha256": "6372f5f2481d7c9b116a08ff05df4af2202e34fb7ec7c0e64f6e112078353aec"
+    },
+    {
+      "bytes": 698,
+      "member": "report-audit/marker-tests.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/report-audit/marker-tests.json",
+      "sha256": "f75e238c657531839876c40caced418c071cd2cfaf19dde9ea56a9bbf93732cd"
+    },
+    {
+      "bytes": 14396,
+      "member": "report-audit/original-report.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/report-audit/original-report.py",
+      "sha256": "c372501f25f045ca5c099bf4cad96b28c045e60489dcd0a93fbc8221b63d41e7"
+    },
+    {
+      "bytes": 482,
+      "member": "review/regression-before-first-receipt.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review/regression-before-first-receipt.json",
+      "sha256": "0ac1fc7f3ae8bc15223262f8ee60f856f095c69a24d6232fdc30d8f17b62b441"
+    },
+    {
+      "bytes": 9955,
+      "member": "review/source/tools/serve_watchdog/core.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review/source/tools/serve_watchdog/core.py",
+      "sha256": "98cf9e837431eec660d181a813ee3015fd464f62f68fa41fb3b84f523231b339"
+    },
+    {
+      "bytes": 4151,
+      "member": "review/source/tools/serve_watchdog/storage.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review/source/tools/serve_watchdog/storage.py",
+      "sha256": "abe77bef5b93d67a1142695797638d4e3cd4a546a6b57a3922b097b21f57f1f4"
+    },
+    {
+      "bytes": 9599,
+      "member": "review/source/tools/serve_watchdog/watchdog.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review/source/tools/serve_watchdog/watchdog.py",
+      "sha256": "65d069ee6261471d2509e73c760d6b1db443379d3285efa7cf7b6ae053517820"
+    },
+    {
+      "bytes": 1761,
+      "member": "review-cpu/result.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review-cpu/result.json",
+      "sha256": "f3d31be653f26c8a787f276574a5e1af717b1b13a471e7ec53ed2ab6072a8863"
+    },
+    {
+      "bytes": 1245,
+      "member": "review-cpu/source/deploy/serve-ops/q4t-watchdog.rules.yml",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review-cpu/source/deploy/serve-ops/q4t-watchdog.rules.yml",
+      "sha256": "3f0c0907f90e516101020ce503f45c8ae3fd026241d37d4b9b07258677ed82d8"
+    },
+    {
+      "bytes": 2717,
+      "member": "review-cpu/source/docs/SERVE_NOTIFY_WATCHDOG_2026-11-04.md",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review-cpu/source/docs/SERVE_NOTIFY_WATCHDOG_2026-11-04.md",
+      "sha256": "832841836abc547bdba5c5808b05765dcf937d0a29be06c55cb1a8308302d8ad"
+    },
+    {
+      "bytes": 4720,
+      "member": "review-cpu/source/tools/serve_watchdog/README.md",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review-cpu/source/tools/serve_watchdog/README.md",
+      "sha256": "dfe4576c1105401c43d5e73d971679159a45bc8ba6658877aba5f20d1f093cbc"
+    },
+    {
+      "bytes": 9977,
+      "member": "review-cpu/source/tools/serve_watchdog/core.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review-cpu/source/tools/serve_watchdog/core.py",
+      "sha256": "c5d9d8d7199b0d79b897381f692cc7e69b15a0984e25f4abd6f035681b9bc1f0"
+    },
+    {
+      "bytes": 5966,
+      "member": "review-cpu/source/tools/serve_watchdog/cpu.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review-cpu/source/tools/serve_watchdog/cpu.py",
+      "sha256": "cda045361c813f8f653b75a466c0135c9f643453cb440758fe9de72a0857129a"
+    },
+    {
+      "bytes": 4151,
+      "member": "review-cpu/source/tools/serve_watchdog/storage.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review-cpu/source/tools/serve_watchdog/storage.py",
+      "sha256": "abe77bef5b93d67a1142695797638d4e3cd4a546a6b57a3922b097b21f57f1f4"
+    },
+    {
+      "bytes": 18017,
+      "member": "review-cpu/source/tools/serve_watchdog/test_watchdog.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review-cpu/source/tools/serve_watchdog/test_watchdog.py",
+      "sha256": "3bc24f7d0eeeb64d63f65fe53d6347b87fdb38b2691f655bd409ed7035f7dce5"
+    },
+    {
+      "bytes": 9819,
+      "member": "review-cpu/source/tools/serve_watchdog/watchdog.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review-cpu/source/tools/serve_watchdog/watchdog.py",
+      "sha256": "bdd9e8c05b0bb70eb4dd71cfd6d9a51d260e1554299dcdd7d551ad62ca438ec6"
+    },
+    {
+      "bytes": 1108,
+      "member": "review-cpu/tests.log",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/review-cpu/tests.log",
+      "sha256": "ee279a11231ea2ad27358af035cc34280a159e869acb825aa65a55965ebd1f02"
+    },
+    {
+      "bytes": 980,
+      "member": "verified.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/verified.json",
+      "sha256": "d94fb39571cfd32ec659206c3c177680f0dcabc7cba30678a079b41c246063db"
+    },
+    {
+      "bytes": 1765,
+      "member": "watchdog-state/ledger.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/watchdog-state/ledger.json",
+      "sha256": "e532ab705affa2fbda38db4f119c0a6fa761a46d8e2117aea055d33f4c958c11"
+    },
+    {
+      "bytes": 1734,
+      "member": "watchdog-state/metrics.prom",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/watchdog-state/metrics.prom",
+      "sha256": "71c49f4f16677022b483f8739bf89145f5d4d6bf22618167de5df779f7883166"
+    },
+    {
+      "bytes": 664,
+      "member": "watchdog-state/policy.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/watchdog-state/policy.json",
+      "sha256": "c6fc32fd4315e6c8bb5ae6733242d8c45e43e269e45cd9b6c843d6732418550c"
+    },
+    {
+      "bytes": 9977,
+      "member": "watchdog-state/source/tools/serve_watchdog/core.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/watchdog-state/source/tools/serve_watchdog/core.py",
+      "sha256": "c5d9d8d7199b0d79b897381f692cc7e69b15a0984e25f4abd6f035681b9bc1f0"
+    },
+    {
+      "bytes": 4151,
+      "member": "watchdog-state/source/tools/serve_watchdog/storage.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/watchdog-state/source/tools/serve_watchdog/storage.py",
+      "sha256": "abe77bef5b93d67a1142695797638d4e3cd4a546a6b57a3922b097b21f57f1f4"
+    },
+    {
+      "bytes": 9819,
+      "member": "watchdog-state/source/tools/serve_watchdog/watchdog.py",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/watchdog-state/source/tools/serve_watchdog/watchdog.py",
+      "sha256": "bdd9e8c05b0bb70eb4dd71cfd6d9a51d260e1554299dcdd7d551ad62ca438ec6"
+    },
+    {
+      "bytes": 0,
+      "member": "watchdog-state/state.lock",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/watchdog-state/state.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 455,
+      "member": "watchdog-state/status.json",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/watchdog-state/status.json",
+      "sha256": "cff9183265e6fbad1daa7cc9d9b1ae264d6cce462327b32f86a0abdf3939efd0"
+    },
+    {
+      "bytes": 0,
+      "member": "watchdog-state/watch.lock",
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-watchdog-20261104/watchdog-state/watch.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "scope": "Immutable full stage records; credentials, binaries and mutable monitor storage remain local by hash.",
+  "version": 1
+}
