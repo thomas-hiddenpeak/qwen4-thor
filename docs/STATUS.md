@@ -41,6 +41,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+[SRV-10b网关托管与有界日志正在开发](SERVE_GATEWAY_MANAGED_2026-11-04.md)：
+补固定源码/二进制快照、同包互斥、持续依赖身份核对、owned进程停止/
+排空与失败清理、每代次8.5MiB轮转日志及systemd模板。18 CPU有效通过，
+原夹具无效claim fd导致6失败及1负例误通过已定向修正，18+7次执行
+保留；4驱动协议/3隔离入口通过。当前尚无真实HTTP验收，已准备
+冻结1模型/4网关/8生成短验，先做
+loopback独立工作。默认pair、10a及day冻结依赖保持，不执行用户长稳。
+
 [SRV-10a TLS/独立客户端本机短验限定通过](SERVE_GATEWAY_RESULT_2026-11-04.md)：
 严格Key/路由、data/control分离限额、SSE/断连、包/证书/后端身份；
 nginx1.30.6官方签名包仅工作目录解包，未系统安装或开放LAN。
