@@ -19,6 +19,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+[SRV-10a TLS/独立客户端网关正在开发](SERVE_GATEWAY_2026-11-03.md)：用户
+已确认受控内网、多客户端、TLS与独立API Key。补严格凭据/路径合同、
+独立data/control配额、SSE透传与断连、包/证书/后端身份核验；固定
+nginx1.30.6官方签名包仅解包至工作目录，未安装或监听。CPU9有效通过，
+原校验位置/模块默认目录/空PID及umask失败保持；19次执行逐项复用。
+下一步冻结后真实TLS传输及8生成模型短验；实际LAN部署/长测仍未接受。
+默认pair及SRV-18的day冻结来源保持，不自动启动用户长测。
+
 [SRV-18当前版本短验已限定通过](SERVE_SOAK_RESULT_2026-11-03.md)：冻结
 0bd0e8fe、复用v3包160796c3，CPU11首轮通过。实际1启动/8周期/40成功，
 8次真实资料工具及引用回填，grammar24/24回收，同一后端持续120秒。
