@@ -15,13 +15,14 @@ from tools.project_tasks import operations_review as review
 from tools.serve_service import package as pkg
 
 BASE = review.BASE
-PLAN = BASE/'plan.json'
-OUT = BASE/'execution'
-HISTORICAL = BASE/'historical-runtime'
+ATTEMPT = BASE/'retry-01'
+PLAN = ATTEMPT/'plan.json'
+OUT = ATTEMPT/'execution'
+HISTORICAL = ATTEMPT/'historical-runtime'
 TASKS = HISTORICAL/'.q4t-work/tasks'
 PORT, TLS_PORT = 18134, 18454
 LIMITS = dict(starts=2, generation_attempts=4, controls=80, seconds=300)
-GPU_WINDOW = 270
+GPU_WINDOW = 265  # Keep the prior 1.27-second pre-work refusal inside 270 total.
 CPU_SOURCES = sorted(set((*engine.RUNTIME_FILES,
     'tools/project_tasks/test_tasks.py', 'tools/project_tasks/test_protocol.py',
     'tools/project_tasks/test_operations_protocol.py',
@@ -52,8 +53,16 @@ def prepare():
     cpu = pkg.read(BASE/'cpu/result.json')
     pkg.require(cpu['passed'] and not cpu['errors'] and not cpu['failures'] and
                 cpu['tests_run'] >= 20, 'targeted CPU required')
+    from tools.project_tasks import operations_retry_cpu as retry
+    recovery = retry.gate()
+    repair = pkg.read(BASE/'cpu-entry-fix/result.json')
+    pkg.require(repair['passed'] and repair['tests_run'] == 2, 'entry repair CPU required')
+    for name, digest in repair['sources'].items():
+        pkg.require(pkg.sha(ROOT/name) == digest, 'entry repair source drift')
     for name, digest in cpu['sources'].items():
-        pkg.require(pkg.sha(ROOT/name) == digest, 'CPU source drift: '+name)
+        if name != retry.CHANGED:
+            pkg.require(pkg.sha(ROOT/name) == digest, 'CPU source drift: '+name)
+    ATTEMPT.mkdir(mode=0o700)
     historical = history.extract_runtime(7, HISTORICAL)
     private = HISTORICAL/'.q4t-work/private'
     private.mkdir(mode=0o700, parents=True)
@@ -104,6 +113,8 @@ def prepare():
         source_files=sources(), source_commit=subprocess.check_output(
             ['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
         cpu_sha256=pkg.sha(BASE/'cpu/result.json'),
+        entry_repair_sha256=pkg.sha(BASE/'cpu-entry-fix/result.json'),
+        prior_attempt=recovery,
         historical_archive=review.HISTORY, historical_archive_sha256=review.HISTORY_SHA,
         performance_acceptance=False, long_run=False)
     plan['day_plans'] = [n for n in plan['preserved'] if n.endswith('/day/plan.json')]
@@ -125,6 +136,10 @@ def check():
     for name in plan['day_plans']:
         pkg.require(not (Path(name).parent/'execution').exists(), 'user day executed')
     pkg.require(pkg.sha(BASE/'cpu/result.json') == plan['cpu_sha256'], 'CPU receipt changed')
+    pkg.require(pkg.sha(BASE/'cpu-entry-fix/result.json') == plan['entry_repair_sha256'],
+                'entry repair receipt changed')
+    for name, digest in plan['prior_attempt'].items():
+        pkg.require(pkg.sha(BASE/name) == digest, 'original failed attempt changed')
     for name, digest in plan['model_inputs'].items():
         pkg.require(pkg.sha(Path(plan['model_dir'])/name) == digest, 'model input changed')
     for row in plan['versions']:
@@ -168,13 +183,28 @@ class Run(prior.Run):
         return super().cli(client, version, label, action, *extra, **kwargs)
 
 
+def guard_command():
+    return [sys.executable, '-B', str(ROOT/'tools/evalscope/gpu_exclusive.py'),
+            '--output', str(OUT/'lease'), '--', sys.executable, '-B',
+            str(ROOT/'tools/project_tasks/operations_stage.py'), 'run']
+
+
+def guarded():
+    check()
+    pkg.require(not OUT.exists(), 'preserve prior guarded execution')
+    with (ATTEMPT/'run.stdout').open('xb') as stdout, \
+            (ATTEMPT/'run.stderr').open('xb') as stderr:
+        return subprocess.run(guard_command(), cwd=ROOT, stdout=stdout,
+                              stderr=stderr, check=False).returncode
+
+
 def configure():
     # Reuse the accepted bounded lifecycle algorithm in this process only.
     # Never edit the old driver or its frozen records.
     for name in ('BASE', 'PLAN', 'OUT', 'HISTORICAL', 'TASKS', 'PORT', 'TLS_PORT',
                  'LIMITS', 'GPU_WINDOW'):
         setattr(prior, name, globals()[name])
-    prior.ATTEMPT = BASE
+    prior.ATTEMPT = ATTEMPT
     prior.check = check
 
 
@@ -182,8 +212,9 @@ configure()
 if __name__ == '__main__':
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('prepare', 'check', 'run'))
+    parser.add_argument('action', choices=('prepare', 'check', 'run', 'guard'))
     action = parser.parse_args().action
     if action == 'prepare': print(json.dumps(prepare()))
     elif action == 'check': check(); print('checked; no model or HTTP')
+    elif action == 'guard': raise SystemExit(guarded())
     else: Run(check()).execute()

@@ -48,6 +48,9 @@ SRV-11i[当前运维协议的持久任务交接开发中](SERVE_TASK_OPERATIONS_
 测试前退出，原记录保留，用既有解释器配置后通过。下一步同锁2模型/
 4响应/2真实工具短验；默认pair/旧包/Key/day保持，未记新闭环通过。
 高级部署按需启用，长验归用户。
+首次租约调用路径检查在模型前拒绝，0业务/原锁已释放；
+[入口定向修正](SERVE_TASK_OPERATIONS_REPAIR_2026-11-04.md)固定绝对路径，
+新retry-01保留原件、复用23 CPU，仅补2入口检查后续验。
 
 SRV-19[发布声明一致性已限定交付](SERVE_RELEASE_DECLARATIONS_RESULT_2026-11-04.md)：
 默认ELF7eff020d保持，sidecar更新cc83bf3a；四组过时声明/三份schema摘要

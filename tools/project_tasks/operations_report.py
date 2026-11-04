@@ -18,6 +18,7 @@ from tools.serve_service import package as pkg
 DEST = ROOT/'docs/evidence/serve-task-operations-20261104'
 READERS = sorted(set((*s.CPU_SOURCES,
     'tools/project_tasks/operations_report.py',
+    'tools/project_tasks/operations_retry_cpu.py',
     'tools/project_tasks/protocol_report.py')))
 sha = lambda raw: hashlib.sha256(raw).hexdigest()
 require = pkg.require
@@ -25,14 +26,18 @@ require = pkg.require
 
 def collect():
     data = {}
-    for name in ('plan.json', 'cpu-import-01.json', 'python-dependencies.json',
-                 'run.stdout', 'run.stderr'):
+    for name in ('plan.json', 'run.stdout', 'run.stderr'):
+        data[name] = (s.ATTEMPT/name).read_bytes()
+    for name in ('cpu-import-01.json', 'python-dependencies.json'):
         data[name] = (s.BASE/name).read_bytes()
-    for folder in ('cpu', 'execution', 'postflight', 'plans'):
-        for path in sorted((s.BASE/folder).rglob('*')):
+    for folder in ('cpu', 'cpu-entry-fix', 'execution', 'postflight', 'plans'):
+        root = s.BASE if folder.startswith('cpu') else s.ATTEMPT
+        for path in sorted((root/folder).rglob('*')):
             if path.is_file():
                 pkg.regular(path)
-                data[str(path.relative_to(s.BASE))] = path.read_bytes()
+                data[str(path.relative_to(root))] = path.read_bytes()
+    for name in s.check()['prior_attempt']:
+        data['original/'+name] = (s.BASE/name).read_bytes()
     for name in s.check()['historical']['sources']:
         data['historical-source/'+name] = (s.HISTORICAL/name).read_bytes()
     for path in sorted(s.TASKS.rglob('*')):
@@ -60,9 +65,19 @@ def audit(data):
     require(len(cpu['file_operation_kills']) == 4 and
             read('cpu-import-01.json')['tests_run'] == 0, 'CPU interruption/import evidence')
     require(sha(data['cpu/result.json']) == plan['cpu_sha256'], 'CPU receipt changed')
+    original_plan = read('original/plan.json')
     for name, digest in cpu['sources'].items():
-        require(sha(data['cpu/source/'+name]) == digest == plan['source_files'][name],
+        source_plan = original_plan if name == 'tools/project_tasks/operations_stage.py' else plan
+        require(sha(data['cpu/source/'+name]) == digest == source_plan['source_files'][name],
                 'CPU source changed: '+name)
+    repair = read('cpu-entry-fix/result.json')
+    require(repair['passed'] and repair['tests_run'] == 2 and
+            sha(data['cpu-entry-fix/result.json']) == plan['entry_repair_sha256'], 'entry repair gate')
+    for name, digest in repair['sources'].items():
+        require(sha(data['cpu-entry-fix/source/'+name]) == digest == plan['source_files'][name],
+                'entry repair source changed')
+    for name, digest in plan['prior_attempt'].items():
+        require(sha(data['original/'+name]) == digest, 'original guard evidence changed')
     for name, digest in plan['historical']['sources'].items():
         require(sha(data['historical-source/'+name]) == digest, 'historical reader changed')
     for name in READERS:
@@ -118,21 +133,39 @@ def audit(data):
     require(len(starts) == len(stops) == 1 and stops[0]['status'] ==
             read('execution/lease/exit.json')['status'] == 'COMPLETED' and
             all(not v['conflicts'] for v in observations), 'GPU lease evidence')
+    failed_events = [json.loads(v) for v in data['original/execution/lease/events.jsonl'].splitlines()]
+    failed_starts = [v for v in failed_events if v['event'] == 'lease_acquired']
+    failed_stops = [v for v in failed_events if v['event'] == 'lease_released']
+    failed_observed = [v for v in failed_events if v['event'] in ('preflight', 'monitor')]
+    require(len(failed_starts) == len(failed_stops) == 1 and failed_stops[0]['status'] ==
+            read('original/execution/lease/exit.json')['status'] == 'COMMAND_FAILED' and
+            all(not v['conflicts'] for v in failed_observed) and
+            b'no matching deployment guard ancestor' in data['original/run.stderr'] and
+            'original/execution/begin.json' not in data, 'original pre-work guard refusal')
+    failed_post = read('original/failed-postflight/result.json')
+    require(failed_post['lock_released'] and failed_post['gpu_processes'] == '' and
+            failed_post['model_starts'] == failed_post['http_requests'] ==
+            failed_post['identity_records'] == 0, 'original pre-work cleanup')
+    failed_seconds = failed_stops[0]['monotonic']-failed_starts[0]['monotonic']
+    retry_seconds = stops[0]['monotonic']-starts[0]['monotonic']
+    require(failed_seconds+retry_seconds <= 270, 'total GPU lease bound')
     post = read('postflight/result.json')
     require(post['passed'] and len(post['owners']) == 6 and all(v['gone'] for v in post['owners']) and
             post['lock'] == dict(dev=66305, inode=3294067, released=True) and
             read('postflight/gpu.json')['pids'] == [], 'postflight resources')
     return dict(status='ACCEPT_TASK_OPERATIONS_PROTOCOL', cpu_tests=23,
-        application_cpu_tests=17, driver_cpu_tests=6, file_operation_kills=4,
+        application_cpu_tests=17, driver_cpu_tests=6, entry_repair_tests=2, file_operation_kills=4,
         models=2, gateways=2, responses=4, real_tools=2, application_kills=2,
         active_migrations=2, duplicate_applies=2, duplicate_submits=4,
         archive_resumes_without_execution=2, metadata_refusals=6,
         actual_archived_protocol_migrations=0, archived_protocol_migrations_cpu_only=True,
         permanent_keys=2, retained_payloads=1, usage=usage,
         seconds=result['seconds'], controls=result['counts']['controls'],
-        gpu_seconds=stops[0]['monotonic']-starts[0]['monotonic'],
-        guard_observations=len(observations), owned_exited=6,
+        gpu_seconds=failed_seconds+retry_seconds, failed_gpu_seconds=failed_seconds,
+        retry_gpu_seconds=retry_seconds,
+        guard_observations=len(observations)+len(failed_observed), owned_exited=6,
         default_unchanged=True, original_cpu_import_failure_preserved=True,
+        original_guard_invocation_failure_preserved=True, original_models=0,
         reviewed_transition=plan['protocol_review'], long_run=False,
         actual_lan_accepted=False, physical_ram_limit=False, performance_acceptance=False)
 
