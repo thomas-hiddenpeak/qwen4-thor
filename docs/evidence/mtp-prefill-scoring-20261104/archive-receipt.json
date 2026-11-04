@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "archive": "/home/rm01/models/dev/qwen4-thor/.q4t-work/mtp-prefill-adoption-20261104/scoring-evidence.tar.gz",
+  "archive_sha256": "eaa4f6e185fa93fafb3b5bdd2237c1d076e9272a6d67175d8c8baba493b286bb",
+  "archive_bytes": 359368981,
+  "index_sha256": "800749916b0ccece414aa8f37e876793a06e085b263fdf2cf24ea38b0e7a08d4",
+  "paths": 3001,
+  "objects": 2915,
+  "scope": "This task inputs and both raw attempts. Inherited historical evidence retains original hash/path references; not a general disaster recovery backup."
+}

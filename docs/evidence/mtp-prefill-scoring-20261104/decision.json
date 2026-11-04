@@ -1,0 +1,8 @@
+{
+  "status": "NOT_ACCEPTED_INCOMPLETE_MEASUREMENTS",
+  "passed": false,
+  "candidate_sha256": "a56bd448ba45e31ba223e73212090a3aea76be9d9a17b06ad0d13c44196544a6",
+  "reason": "Required frozen measurements are incomplete; no default replacement.",
+  "statistics": "DESCRIPTIVE_NOT_STATISTICAL_NONINFERIORITY",
+  "review_sha256": "bfd9c093d206fbb7ac5687d094c7bba1b9370b0978ae18132dbd19fd25a68759"
+}
