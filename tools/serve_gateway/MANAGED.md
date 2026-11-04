@@ -6,10 +6,11 @@
 实际监听地址、CA/DNS、来源限制及远端客户端还需部署验收。
 长时间运行由用户专门开展，短验工具不会自动启动day计划。
 
-可选SRV-10c策略接线尚在验证，见[客户端策略合同](../../docs/SERVE_CLIENT_ISOLATION_2026-11-04.md)。
+可选SRV-10c策略已完成[本机验收](../../docs/SERVE_CLIENT_MANAGED_RESULT_2026-11-04.md)。
 新prepare支持`--client-policy FILE`，须与模型托管包使用相同字节。
-新托管网关包version2固定策略解析器源码；旧version1运行入口保持。
-本页已有短验结果不自动覆盖这项新能力。
+当前prepare生成托管version4、内层version3，增加固定TLS校验源码与
+材料元数据；旧包通过各自包内入口使用，不原位升级。
+本轮进度见[TLS生命周期合同](../../docs/SERVE_TLS_LIFECYCLE_2026-11-04.md)。
 
 ## 准备固定包
 
@@ -22,6 +23,7 @@ python3 -B tools/serve_gateway/managed.py prepare \
   --nginx .q4t-work/serve-gateway-20261103/vendor/root/usr/sbin/nginx \
   --certificate .q4t-work/certs/server.pem \
   --key .q4t-work/certs/server-key.pem \
+  --trusted-ca .q4t-work/certs/root-ca.pem \
   --output .q4t-work/managed-gateway/package-001
 ```
 
@@ -106,10 +108,21 @@ STOPPED且cleanup_confirmed=true。正常stop给nginx SIGQUIT，最多
 停本轮网关。该上限不包含跨代次目录总量、systemd journal或外部
 归档；跨代次保留和告警接收应由部署策略明确。
 
-证书有效期在准备/启动检查，运行期核对内容身份，不提供自动续期。
+新包在准备/启动检查生效/到期、用途、密钥与主机名；可选trusted-ca
+明确一个CA锚点，严格验证完整链。省略时trust=not_configured，不能
+推导客户端信任。证书链按leaf、intermediates排序，最多8张；每张和
+显式锚点均须处于有效期，交集剩余时间严格大于3600秒。
+
+运行每秒核对文件身份与缓存有效期，私有status.tls区分VALID、EXPIRING
+（剩余不超过7天）、NOT_YET_VALID、EXPIRED、UNKNOWN；后三类仅排空
+当前网关，终态FAILED/error_code记录原因，后端不受控于网关。
+到期退场最多35秒QUIT排空，再TERM/KILL；这不是撤销既有TLS会话。
+目前未接TLS专属Prometheus告警，没有自动签发、续期或OCSP/CRL检查。
+
 换Key/证书：先准备新私有包，正常停止并确认旧网关清理，再显式
 运行新包；没有零停机轮换或自动撤销在途请求。对外路由、错误封套、
 独立控制额度和请求ID行为仍见[基础合同](README.md)。
+同CA换证可以保留客户端CA与Key；CA变化涉及任务绑定迁移，另行规划。
 
 只读复核本批历史证据：
 

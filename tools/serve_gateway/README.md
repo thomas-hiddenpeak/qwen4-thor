@@ -54,7 +54,10 @@ python3 -B tools/serve_gateway/report.py verify-archive
 }
 ```
 
-证书需匹配server_name、至少还有1小时有效期；私钥0600，支持路径字符
+证书链需已生效、匹配server_name和服务器用途，完整链有效期交集
+剩余严格大于1小时。可选`--trusted-ca`指定一个CA锚点做严格链验证；
+未提供时manifest明确`not_configured`，不声明客户端信任。新内层包v3，
+运行期有效期与显式换证见[托管入口](MANAGED.md)。私钥0600，支持路径字符
 为ASCII字母数字、斜杠、点、短横线及下划线。客户端必须校验CA与域名，
 禁止用关闭TLS验证作为部署方法。测试自签证书仅适用于本机夹具。
 
@@ -64,6 +67,7 @@ python3 -B tools/serve_gateway/gateway.py prepare \
   --nginx .q4t-work/serve-gateway-20261103/vendor/root/usr/sbin/nginx \
   --certificate .q4t-work/certs/server.pem \
   --key .q4t-work/certs/server-key.pem \
+  --trusted-ca .q4t-work/certs/root-ca.pem \
   --output .q4t-work/gateway-package-001
 ```
 

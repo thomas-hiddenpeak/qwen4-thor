@@ -19,6 +19,7 @@ ROOT=Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode=True
 sys.path.insert(0,str(ROOT))
 from tools.serve_gateway import gateway as g
+from tools.serve_gateway import tls
 from tools.serve_service import package as pkg, service, supervisor as sup
 from tools.serve_ops import identity
 
@@ -27,6 +28,7 @@ LEGACY_SOURCES=(*pkg.SOURCES,'tools/serve_gateway/gateway.py',
          'docs/serve-openapi-v1.json')
 SOURCES=(*LEGACY_SOURCES, 'tools/serve_gateway/client_policy.py')
 V3_SOURCES=(*SOURCES, 'tools/serve_service/resources.py')
+V4_SOURCES=(*V3_SOURCES, 'tools/serve_gateway/tls.py')
 SETTINGS=dict(poll_seconds=1,startup_seconds=10,drain_seconds=35,
               term_seconds=5,kill_seconds=5,log_bytes=4*1024**2,
               event_bytes=256*1024,restarts=0)
@@ -44,20 +46,20 @@ def read(path):
     return g.parse(g.read_file(path,maximum=2*1024**2,private=True))
 
 
-def prepare(policy,nginx,certificate,key,output,client_policy=None):
+def prepare(policy,nginx,certificate,key,output,client_policy=None,*,trusted_ca=None):
     target=pkg.private_directory(output)
     binary=target/'nginx'
     original=pkg.sha(nginx)
     g.save(binary,g.read_file(nginx,maximum=32*1024**2));binary.chmod(0o500)
     g.require(pkg.sha(binary)==original,'nginx changed while copying')
-    gateway=g.prepare(policy,binary,certificate,key,target/'gateway',client_policy)
-    for name in V3_SOURCES:
+    gateway=g.prepare(policy,binary,certificate,key,target/'gateway',client_policy,trusted_ca=trusted_ca)
+    for name in V4_SOURCES:
         dest=target/'source'/name;dest.parent.mkdir(parents=True,exist_ok=True)
         g.save(dest,g.read_file(ROOT/name,maximum=2*1024**2));dest.chmod(0o400)
     python=Path(sys.executable).resolve()
-    manifest=dict(version=3,repository=str(ROOT),gateway=gateway,settings=SETTINGS,
+    manifest=dict(version=4,repository=str(ROOT),gateway=gateway,settings=SETTINGS,
         python=dict(path=str(python),sha256=pkg.sha(python)),
-        sources={n:pkg.sha(target/'source'/n) for n in V3_SOURCES},
+        sources={n:pkg.sha(target/'source'/n) for n in V4_SOURCES},
         automatic_start=False,managed_gateway_accepted=False)
     pkg.save(target/'manifest.json',manifest)
     digest=pkg.sha(target/'manifest.json')
@@ -69,7 +71,7 @@ def verify(package,digest):
     package=private(Path(package).resolve(strict=True))
     g.require(pkg.sha(package/'manifest.json')==digest,'managed manifest changed')
     manifest=read(package/'manifest.json')
-    sources={1:LEGACY_SOURCES,2:SOURCES,3:V3_SOURCES}.get(manifest['version'])
+    sources={1:LEGACY_SOURCES,2:SOURCES,3:V3_SOURCES,4:V4_SOURCES}.get(manifest['version'])
     g.require(type(manifest['version']) is int and sources is not None and
               manifest['settings']==SETTINGS and
               set(manifest['sources'])==set(sources),'unknown managed gateway contract')
@@ -199,12 +201,12 @@ def child_command(package,manifest,output):
 
 
 def supervise(package,digest,output,manifest,gateway,binding,claim_fd,*,
-              observe=listener,dependency=check_backend):
+              observe=listener,dependency=check_backend,tls_clock=None):
     """Internal CPU seams are not exposed as policy or CLI overrides."""
     cfg=manifest['settings'];stopping=threading.Event()
     previous={s:signal.signal(s,lambda *_:stopping.set()) for s in (signal.SIGTERM,signal.SIGINT)}
     owner=sup.process_identity(os.getpid())
-    child=logger=None;nginx_owner=None;clean=True;failure=None
+    child=logger=None;nginx_owner=None;clean=True;failure=None;tls_drain=False
     events=sup.RotatingLog(output/'events.log',cfg['event_bytes'])
     state=dict(version=1,state='STARTING',owner=owner,nginx=None,starts=0,restarts=0,
                replayed_requests=0,package_manifest_sha256=digest,cleanup_confirmed=False)
@@ -225,7 +227,8 @@ def supervise(package,digest,output,manifest,gateway,binding,claim_fd,*,
                     child=subprocess.Popen(child_command(package,manifest,output),
                         stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,
                         start_new_session=True,close_fds=True,pass_fds=(claim_fd,),env=env,umask=0o077)
-                    clean=False;nginx_owner=sup.process_identity(child.pid)
+                    clean=False;publish('STARTING',starts=1)
+                    nginx_owner=sup.process_identity(child.pid)
                     logger=sup.RotatingLog(output/'gateway.log',cfg['log_bytes']);logger.start(child.stdout)
                     publish('STARTING',nginx=nginx_owner,starts=1)
                     start=time.monotonic();first=None
@@ -237,6 +240,16 @@ def supervise(package,digest,output,manifest,gateway,binding,claim_fd,*,
                         for name,wanted in gateway['files'].items():
                             raw=g.read_file(Path(package)/'gateway'/name,private=True)
                             g.require(hashlib.sha256(raw).hexdigest()==wanted,'gateway input changed')
+                        if 'tls' in gateway:
+                            validity=tls.observe(gateway['tls'],None if tls_clock is None else tls_clock())
+                            if validity['state']!=state.get('tls',{}).get('state'):
+                                events.write((json.dumps(dict(tls=validity))+'\n').encode())
+                            state['tls']=validity
+                            if validity['state'] not in ('VALID','EXPIRING'):
+                                failure=validity['reason'];tls_drain=True
+                                state['error_code']=failure
+                                intent(output,failure)
+                                break
                         try:
                             observed=observe(nginx_owner,gateway['policy']['listen_host'],
                                 gateway['policy']['listen_port'],gateway['nginx']['sha256'])
@@ -254,23 +267,27 @@ def supervise(package,digest,output,manifest,gateway,binding,claim_fd,*,
                 try:
                     if child is not None:
                         # QUIT drains existing streams; failures stop promptly.
-                        if failure is None and child.poll() is None:
+                        if (failure is None or tls_drain) and child.poll() is None:
                             sup.signal_owner(nginx_owner,signal.SIGQUIT)
                             until=time.monotonic()+cfg['drain_seconds']
                             while child.poll() is None and time.monotonic()<until:time.sleep(.02)
                             g.require(child.poll()==0,'gateway graceful drain did not complete')
-                        sup.processes.stop_children({'gateway':child},{'gateway':logger.thread},
+                        readers={} if logger is None or logger.thread is None else {'gateway':logger.thread}
+                        sup.processes.stop_children({'gateway':child},readers,
                             grace=cfg['term_seconds'],kill_grace=cfg['kill_seconds'])
                         clean=True
-                        g.require(logger.error is None,'gateway log capture failed')
+                        if logger is None:child.stdout.close()
+                        else:g.require(logger.error is None,'gateway log capture failed')
                 except BaseException as error:
                     cleanup_error=repr(error)
                     # A failed graceful wait must still drain/reap owned workers.
                     try:
                         if child is not None:
-                            sup.processes.stop_children({'gateway':child},{'gateway':logger.thread},
+                            readers={} if logger is None or logger.thread is None else {'gateway':logger.thread}
+                            sup.processes.stop_children({'gateway':child},readers,
                                 grace=cfg['term_seconds'],kill_grace=cfg['kill_seconds'])
                             clean=True
+                            if logger is None:child.stdout.close()
                     except BaseException as secondary:cleanup_error+='; '+repr(secondary)
                     state['cleanup_error']=cleanup_error
                     failure=failure or cleanup_error
@@ -332,6 +349,7 @@ def main():
     p=sub.add_parser('prepare')
     for name in ('policy','nginx','certificate','key','output'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--client-policy',type=Path)
+    p.add_argument('--trusted-ca',type=Path)
     for name in ('run','unit'):
         p=sub.add_parser(name)
         for option in ('package','backend-run','output'):p.add_argument('--'+option,type=Path,required=True)
@@ -339,7 +357,8 @@ def main():
     for name in ('status','stop'):
         p=sub.add_parser(name);p.add_argument('--run',type=Path,required=True)
     args=parser.parse_args()
-    if args.action=='prepare':value=prepare(args.policy,args.nginx,args.certificate,args.key,args.output,args.client_policy)
+    if args.action=='prepare':value=prepare(args.policy,args.nginx,args.certificate,args.key,args.output,
+                                           args.client_policy,trusted_ca=args.trusted_ca)
     elif args.action=='unit':print(unit(args.package,args.manifest_sha256,args.backend_run,args.output),end='');return 0
     elif args.action in ('status','stop'):value=(status if args.action=='status' else stop)(args.run)
     else:

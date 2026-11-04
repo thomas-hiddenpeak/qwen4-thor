@@ -41,6 +41,13 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-10e[TLS材料与证书生命周期开发中](SERVE_TLS_LIFECYCLE_2026-11-04.md)：
+已补notBefore/完整链时间/服务器用途、显式CA严格验证与复制材料校验，
+新内层v3/托管v4包，私有有效期状态、失效后仅网关排空和早期child清理。
+61 CPU首轮通过；4驱动中1项异常类型断言错误已保留并定向修正通过，
+生产未因该断言改变。下一步1模型2网关同CA换证与4生成2工具短验；
+实际LAN参数待答复，用户day不执行。
+
 SRV-12f[host资源观测与告警限定接受](SERVE_HOST_OBSERVATION_RESULT_2026-11-04.md)：
 350fa2f6实现、d2c5ea51驱动修正；只读代次/新鲜度、UNKNOWN/current/
 final、10告警和显式notify v2。37有效CPU、5+3+3驱动、22官方时序

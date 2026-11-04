@@ -100,7 +100,7 @@ class Clients(unittest.TestCase):
                             self.root/'gateway', self.path)
         package = Path(receipt['package'])
         manifest = g.check(package, receipt['manifest_sha256'])
-        self.assertEqual(manifest['version'], 2)
+        self.assertEqual(manifest['version'], 3)
         self.assertEqual(manifest['client_policy'], cp.binding(self.path.read_bytes()))
         self.assertNotIn(self.p['gateway_token'], (package/'manifest.json').read_text())
         for client in frontend['clients']:
@@ -120,8 +120,8 @@ class Clients(unittest.TestCase):
         receipt = m.prepare(front, pkg.read(VENDOR)['binary'], cert, key,
                             self.root/'managed', self.path)
         manifest, gateway = m.verify(receipt['package'], receipt['manifest_sha256'])
-        self.assertEqual(manifest['version'], 3)
-        self.assertEqual(gateway['version'], 2)
+        self.assertEqual(manifest['version'], 4)
+        self.assertEqual(gateway['version'], 3)
         self.assertIn('tools/serve_gateway/client_policy.py', manifest['sources'])
 
     def test_managed_backend_v4_policy_is_copied_and_verified(self):

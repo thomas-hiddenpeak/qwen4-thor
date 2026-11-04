@@ -6,7 +6,6 @@ import json
 import os
 from pathlib import Path
 import re
-import ssl
 import stat
 import subprocess
 import sys
@@ -274,19 +273,13 @@ def save(path, raw):
         stream.write(raw)
 
 
-def certificate_check(certificate, key, hostname):
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.load_cert_chain(certificate, key)  # Also verifies the key pair.
-    for option in (['-checkend','3600'], ['-checkhost',hostname]):
-        result = subprocess.run(['/usr/bin/openssl','x509','-in',str(certificate),
-            '-noout',*option], capture_output=True, timeout=10)
-        require(result.returncode == 0, 'certificate expiry/hostname check failed')
-        if option[0] == '-checkhost':
-            require(result.stdout.decode().strip() ==
-                    f'Hostname {hostname} does match certificate', 'certificate hostname mismatch')
+def certificate_check(certificate, key, hostname, *, trusted_ca=None):
+    from tools.serve_gateway import tls
+    return tls.inspect(certificate, key, hostname, trusted_ca=trusted_ca)
 
 
-def prepare(policy_path, nginx, certificate, key, output, client_policy=None):
+def prepare(policy_path, nginx, certificate, key, output, client_policy=None, *, trusted_ca=None):
+    from tools.serve_gateway import tls
     api_sha256 = validate_routes()
     p = policy(parse(read_file(policy_path, private=True)))
     backend_raw, backend_policy = None, None
@@ -304,13 +297,16 @@ def prepare(policy_path, nginx, certificate, key, output, client_policy=None):
     require(result.returncode == 0 and result.stderr.startswith('nginx version: nginx/'+VERSION+'\n')
             and '--with-http_ssl_module' in result.stderr, 'requires reviewed nginx '+VERSION)
     cert_raw, key_raw = read_file(certificate), read_file(key, private=True)
-    certificate_check(certificate, key, p['server_name'])
+    ca_raw = None if trusted_ca is None else read_file(trusted_ca)
     output.mkdir(mode=0o700)
     for name in ('runtime','runtime/body','runtime/proxy','runtime/fastcgi',
                  'runtime/uwsgi','runtime/scgi'):
         (output/name).mkdir(mode=0o700)
     save(output/'certificate.pem', cert_raw)
     save(output/'private-key.pem', key_raw)
+    if ca_raw is not None:save(output/'trusted-ca.pem', ca_raw)
+    material = certificate_check(output/'certificate.pem', output/'private-key.pem',
+        p['server_name'], trusted_ca=None if ca_raw is None else output/'trusted-ca.pem')
     save(output/'nginx.conf', render(p, output, backend_policy).encode())
     if backend_raw is not None:
         save(output/'client-policy.json', backend_raw)
@@ -327,17 +323,17 @@ def prepare(policy_path, nginx, certificate, key, output, client_policy=None):
         pid_path.unlink()
     public_policy = {k:v for k,v in p.items() if k != 'clients'}
     public_policy['client_ids'] = [c['id'] for c in p['clients']]
-    manifest = dict(version=1, nginx=dict(path=str(nginx),sha256=sha(nginx),version=VERSION),
+    manifest = dict(version=3, nginx=dict(path=str(nginx),sha256=sha(nginx),version=VERSION),
         policy=public_policy, files={name:sha(output/name) for name in
             ('certificate.pem','private-key.pem','nginx.conf')},
         generator_sha256=sha(__file__), api_contract_sha256=api_sha256,
-        automatic_start=False,
+        automatic_start=False, tls=material, tls_tool_sha256=sha(tls.__file__),
         upstream_host='127.0.0.1', production_deployment_accepted=False)
     if backend_raw is not None:
-        manifest['version'] = 2
         manifest['client_policy'] = cp.binding(backend_raw)
         manifest['files']['client-policy.json'] = sha(output/'client-policy.json')
         manifest['client_policy_tool_sha256'] = sha(cp.__file__)
+    if ca_raw is not None:manifest['files']['trusted-ca.pem'] = sha(output/'trusted-ca.pem')
     save(output/'manifest.json', (json.dumps(manifest,indent=2)+'\n').encode())
     return dict(package=str(output), manifest_sha256=sha(output/'manifest.json'),
                 automatic_start=False)
@@ -352,14 +348,14 @@ def check(directory, digest):
                 info.st_mode & 0o077 == 0, 'gateway directory ownership/permissions changed')
     require(sha(directory/'manifest.json') == digest, 'gateway manifest changed')
     manifest = parse(read_file(directory/'manifest.json', private=True))
-    require(type(manifest['version']) is int and manifest['version'] in (1, 2),
+    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3),
             'unknown gateway package')
     require(sha(manifest['nginx']['path']) == manifest['nginx']['sha256'], 'nginx changed')
     require(sha(__file__) == manifest['generator_sha256'], 'gateway tooling changed')
     require(validate_routes() == manifest.get('api_contract_sha256'),
             'gateway API contract changed')
     expected = {'nginx.conf', 'certificate.pem', 'private-key.pem'}
-    if manifest['version'] == 2:
+    if manifest['version'] == 2 or (manifest['version'] == 3 and 'client_policy' in manifest):
         from tools.serve_gateway import client_policy as cp
         expected.add('client-policy.json')
         raw, backend_policy = cp.read(directory/'client-policy.json')
@@ -369,13 +365,20 @@ def check(directory, digest):
                 set(manifest['policy']['client_ids']), 'client policy IDs differ')
     else:
         require('client_policy' not in manifest, 'legacy gateway cannot scope clients')
+    if manifest['version'] == 3:
+        from tools.serve_gateway import tls
+        require(sha(tls.__file__) == manifest['tls_tool_sha256'], 'TLS tooling changed')
+        require(manifest['tls']['trust'] in ('explicit_ca', 'not_configured'), 'unknown TLS trust')
+        if manifest['tls']['trust'] == 'explicit_ca':expected.add('trusted-ca.pem')
     for name, digest in manifest['files'].items():
         require(name in expected, 'unexpected package file')
         require(hashlib.sha256(read_file(directory/name,private=True)).hexdigest() == digest,
                 'gateway input identity/permissions changed')
     require(set(manifest['files']) == expected, 'missing inputs')
-    certificate_check(directory/'certificate.pem', directory/'private-key.pem',
-                      manifest['policy']['server_name'])
+    material = certificate_check(directory/'certificate.pem', directory/'private-key.pem',
+        manifest['policy']['server_name'],
+        trusted_ca=directory/'trusted-ca.pem' if 'trusted-ca.pem' in expected else None)
+    if manifest['version'] == 3:require(material == manifest['tls'], 'TLS metadata/tool identity changed')
     return manifest
 
 
@@ -415,6 +418,7 @@ def main():
     for option in ('policy','nginx','certificate','key','output'):
         p.add_argument('--'+option,required=True,type=Path)
     p.add_argument('--client-policy', type=Path)
+    p.add_argument('--trusted-ca', type=Path)
     for action in ('check','run'):
         p = sub.add_parser(action)
         p.add_argument('--package',required=True,type=Path)
@@ -424,7 +428,7 @@ def main():
     args = parser.parse_args()
     if args.action == 'prepare':
         value = prepare(args.policy,args.nginx,args.certificate,args.key,args.output,
-                        args.client_policy)
+                        args.client_policy, trusted_ca=args.trusted_ca)
     else:
         value = check(args.package,args.manifest_sha256)
         if args.action == 'run':

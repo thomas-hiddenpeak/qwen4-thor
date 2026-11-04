@@ -19,7 +19,8 @@ class ManagedTests(unittest.TestCase):
         parent=m.ROOT/'build/managed-gateway-tests';parent.mkdir(exist_ok=True)
         self.root=Path(tempfile.mkdtemp(dir=parent))
 
-    def fake(self,observe,*,dependency=None,script=None,patch=None,stop_before=False):
+    def fake(self,observe,*,dependency=None,script=None,patch=None,stop_before=False,
+             tls_metadata=None,tls_clock=None):
         out=self.root/'run';out.mkdir(mode=0o700)
         cfg=dict(m.SETTINGS,poll_seconds=.01,startup_seconds=.15,
             drain_seconds=.3,term_seconds=.2,kill_seconds=.5,log_bytes=128)
@@ -31,6 +32,7 @@ class ManagedTests(unittest.TestCase):
               (script or 'time.sleep(30)\n'))
         gateway=dict(policy=dict(upstream_port=1,listen_host='127.0.0.1',listen_port=2),
                      nginx=dict(sha256='fixture'),files={})
+        if tls_metadata is not None:gateway['tls']=tls_metadata
         if stop_before:m.intent(out,'fixture')
         def observer(*args):
             if not child.exists():raise ValueError('fixture starting')
@@ -41,7 +43,7 @@ class ManagedTests(unittest.TestCase):
             context=patch or mock.patch.object(m,'__doc__',m.__doc__)
             with context,m.claim(self.root) as fd:
                 rc=m.supervise(self.root,'fixture',out,dict(settings=cfg),gateway,{},fd,
-                    observe=observer,dependency=dependency or (lambda *_:None))
+                    observe=observer,dependency=dependency or (lambda *_:None),tls_clock=tls_clock)
         state=m.read(out/'terminal.json')
         if state.get('nginx'):self.assertFalse(m.sup.processes.group_members(state['nginx']['pid']))
         return rc,state,out
@@ -179,6 +181,51 @@ class ManagedTests(unittest.TestCase):
                 with self.assertRaises(ValueError):m.check_backend(binding,1)
             state['state']='READY';state['worker']['backend']=dict(owner,pid=123)
             with self.assertRaises(ValueError):m.check_backend(binding,1)
+
+    def tls_transition(self,now,script=None):
+        clock=[100]
+        metadata=dict(not_before=0,not_after=1000000,chain=[dict(sha256='a'*64)],trust='explicit_ca')
+        def observe(out,owner,*_):
+            self.assertEqual(m.read(out/'status.json')['state'],'STARTING')
+            clock[0]=now
+            return dict(owner=owner,listener_inode=1)
+        rc,state,out=self.fake(observe,tls_metadata=metadata,tls_clock=lambda:clock[0],script=script)
+        self.assertEqual((rc,state['state'],state['starts'],state['restarts']),(1,'FAILED',1,0))
+        self.assertTrue(state['cleanup_confirmed']);self.assertFalse(state['backend_stopped_by_gateway'])
+        self.assertEqual(m.read(out/'stop.request.json')['reason'],state['error_code'])
+        self.assertIn('"state": "READY"',(out/'events.log').read_text())
+        return state,out
+
+    def test_tls_expiry_drains_then_fails_without_touching_backend(self):
+        state,_=self.tls_transition(1000000)
+        self.assertEqual((state['error_code'],state['nginx_returncode']),('gateway_tls_expired',0))
+
+    def test_tls_backward_clock_drains(self):
+        state,_=self.tls_transition(-.1)
+        self.assertEqual(state['tls']['state'],'UNKNOWN')
+        self.assertEqual(state['nginx_returncode'],0)
+
+    def test_tls_future_certificate_drains(self):
+        # Change cached validity after READY via the clock seam, never the system clock.
+        clock=[100];metadata=dict(not_before=10,not_after=1000000,chain=[dict(sha256='b'*64)],trust='not_configured')
+        def observe(out,owner,*_):clock[0]=5;return dict(owner=owner)
+        rc,state,_=self.fake(observe,tls_metadata=metadata,tls_clock=lambda:clock[0])
+        self.assertEqual((rc,state['error_code'],state['nginx_returncode']),(1,'gateway_tls_not_yet_valid',0))
+
+    def test_tls_drain_deadline_still_cleans_and_preserves_original_reason(self):
+        state,_=self.tls_transition(1000001,'signal.signal(signal.SIGQUIT,signal.SIG_IGN)\ntime.sleep(30)\n')
+        self.assertEqual(state['error_code'],'gateway_tls_expired')
+        self.assertIn('graceful drain',state['cleanup_error'])
+
+    def test_identity_failure_before_logger_still_reaps_owned_child(self):
+        original=m.sup.process_identity;seen=[]
+        def identity(pid):
+            if pid!=os.getpid():seen.append(pid);raise ValueError('fixture early identity failure')
+            return original(pid)
+        rc,state,_=self.fake(lambda *_:None,patch=mock.patch.object(m.sup,'process_identity',identity))
+        self.assertEqual((rc,state['starts'],state['cleanup_confirmed']),(1,1,True))
+        self.assertIn('early identity failure',state['error'])
+        self.assertTrue(seen);self.assertTrue(all(not m.sup.processes.group_members(pid) for pid in seen))
 
 
 class PackageTests(unittest.TestCase):
