@@ -144,6 +144,15 @@ class CombinedSupervisor(unittest.TestCase):
         self.assertTrue(state['host_resources']['payload_removed'])
 
 
+class PrepareRepair(unittest.TestCase):
+    def test_nested_old_gateway_uses_verified_executable_not_config_directory(self):
+        nginx, tls = s.gateway_inputs(pkg.read(s.OLD))
+        self.assertTrue(nginx.is_file())
+        self.assertTrue((tls / 'certificate.pem').is_file())
+        self.assertFalse((tls / 'nginx').exists())
+        self.assertEqual(nginx, tls.parent / 'nginx')
+
+
 class Driver(unittest.TestCase):
     def test_resource_observer_failure_cannot_skip_owned_cleanup(self):
         run = object.__new__(s.Run)

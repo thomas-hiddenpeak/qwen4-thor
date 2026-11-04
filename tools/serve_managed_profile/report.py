@@ -54,6 +54,12 @@ def audit():
     cpu = pkg.read(s.BASE / 'cpu-01/result.json')
     pkg.require(cpu['passed'] and cpu['tests_run'] == 9 and
         cpu['errors'] == cpu['failures'] == cpu['skipped'] == 0, 'combined CPU gate')
+    s.repaired_inputs()
+    repair = pkg.read(s.BASE / 'cpu-repair/result.json')
+    pkg.require(repair['passed'] and repair['tests_run'] == 1 and
+        repair['errors'] == repair['failures'] == 0 and
+        pkg.sha(s.BASE / 'cpu-repair/result.json') == plan['repair_cpu_sha256'],
+        'targeted preparation repair gate')
     binding = pkg.read(s.OUT / 'cgroup-binding.json')
     final = pkg.read(s.OUT / 'managed-run/resources-final.json')
     terminal = pkg.read(s.OUT / 'managed-run/terminal.json')
@@ -101,7 +107,8 @@ def audit():
                 'shutdown complete (0 in-flight remaining)' in log, 'backend shutdown')
     pkg.require(result['monitored_shared_lock_seconds'] <= s.base.GPU_SECONDS and
                 result['driver_seconds'] <= s.base.LIMITS['seconds'], 'runtime bounds')
-    result.update(status='ACCEPT_MANAGED_PROFILE_SHORT', cpu_checks=cpu['tests_run'],
+    result.update(status='ACCEPT_MANAGED_PROFILE_SHORT', cpu_checks=cpu['tests_run']+1,
+        preserved_prepare_failure='nginx executable incorrectly resolved under inner configuration directory; zero starts',
         host_envelope_enabled_in_package=True, release_declarations_verified_live=True,
         host_policy=plan['host_resources'], host_capture=observed,
         host_memory_peak_bytes=final['final']['memory.peak'],
@@ -157,7 +164,10 @@ def postflight():
 
 
 def exported(path):
-    if path.relative_to(s.BASE).parts[0] == 'reviewed-source':
+    rel = path.relative_to(s.BASE)
+    if 'private' in rel.parts or any(n.startswith('gateway-') for n in rel.parts):
+        return path.name == 'manifest.json'
+    if rel.parts[0] in ('reviewed-source', 'prepare-failure-source'):
         return path.suffix in ('.py', '.md')
     if path.suffix == '.txt' and path.parent.name == 'postflight':
         return True
