@@ -41,13 +41,15 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-用户指出工业化任务阻塞后续开发，当前优先级调整为
-[先集成已验基础、再独立补强](SERVE_MAINLINE_READINESS_2026-11-04.md)。
-刷新远端后main ef88d970落后已验锚点92129c71共212提交，可快进；
-223运行来源/默认pair和三归档802成员离线核对通过，无新增业务验证。
-准备基于已验实现的主线PR，main尚未更新；SRV-08b未验代码排除。
-新a56aed21任务迁移/托管组合仍需专项交接，旧15d7ccb1包继续按原证据
-使用；可选部署和用户长验不阻塞文本Chat基础开发，持续目标保持。
+[PR #8](https://github.com/thomas-hiddenpeak/qwen4-thor/pull/8)已于
+2026-11-04合入main，合并提交668c1921；PR与push两项host检查均通过，
+合并树与已验PR head ca4f8ed9完全一致。223运行来源/默认pair保持；
+10个未验SRV-08b客户端文件逐一核对原样保留，不在主线提交内。
+[合入记录与边界](SERVE_MAINLINE_READINESS_2026-11-04.md)明确基础源码
+集成已完成，后续开发可基于main推进；无新增模型/HTTP/GPU或部署。
+用户本轮仅要求合入收尾，**工业化目标保持暂停，不继续扩展**。
+新a56aed21任务迁移/托管组合仍未新增接受，旧15d7ccb1包按原证据使用；
+后续清单保留，不自动执行升级、客户端补强或长验。
 
 SRV-08b[客户端截止/可选连接配置](SERVE_CLIENT_TRANSPORT_2026-11-04.md)已冻结：
 已验基线的ChatClient仍为单IO超时，JS辅助类仍固定占位Key；限定补齐总
