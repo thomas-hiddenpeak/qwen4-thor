@@ -41,11 +41,15 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-11k[当前启动协议任务交接短验待完成](SERVE_TASK_STARTUP_PROTOCOL_2026-11-04.md)：
-独立239原件审核支持ddfba8c0→15d7ccb1，219来源与7schema不变，
-仅监听生命周期差异；新增有向登记与11j精确17来源。24唯一CPU/
-4文件事务SIGKILL通过，实际历史/三跳明确迁移与拒绝边界已验。
-随后同锁2顺序模型4响应2工具短验；默认/旧包/Key/day保持，高级功能按需。
+SRV-11k[当前启动协议持久任务交接已限定接受](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)：
+f4705009登记ddfba8c0→15d7ccb1及11j精确17来源；239原件独立
+审核，24唯一CPU/4事务SIGKILL首轮通过。同锁2模型/两代TLS、4响应
+2真实工具，2应用中断后只续最终回答；512/64预算/原wire/历史保持，
+重复零执行/6拒绝/永久键通过。GPU92.850691秒/87观察COMPLETED，
+6身份/监听/GPU/原锁释放，容器空/SOAR masked；263原件新进程重建。
+默认61abe09f/ce925d51、223来源/原Key/旧包/day保持。归档迁移接受
+路径/连续三跳仅CPU，部署按需/长验交用户；下一步基础合同及证据
+覆盖重新核对，持续目标active。
 
 SRV-12l[托管截止与停止优先已限定交付](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)：
 8790c8e1生产/03ee447b定向驱动；3原复现失败保持，114唯一CPU+
@@ -58,7 +62,7 @@ PID/PGID错位的ENV_ABORT保留；第一代COMPLETED 64.541067秒业务段
 backend/1完整模型；两个租约不合成为一次连续成功全流程。
 256原件/407本机引用独立重建；14身份/三监听/GPU/原锁释放，容器空/
 SOAR masked。默认61abe09f/ce925d51、223来源/旧包/Key/day保持。
-高级配置按需、长验交用户；下一步当前15d7ccb1任务交接，目标active。
+高级配置按需、长验交用户；当前15d7ccb1任务交接见SRV-11k，目标active。
 
 SRV-12k[原生启动监听所有权已限定交付](SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md)：
 默认61abe09f/ce925d51，协议15d7ccb1；双监听在模型前实际保留并沿
