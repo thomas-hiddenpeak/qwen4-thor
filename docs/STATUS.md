@@ -46,7 +46,9 @@ SRV-12f[host资源观测与告警短验待执行](SERVE_HOST_OBSERVATION_2026-11
 37有效CPU、5驱动、22官方规则场景通过，保留2次nginx原失败及1次
 早期子进程清理失败，定向修正通过。真实驱动冻结1模型/1TLS网关、
 4生成2工具、观察器/指标nginx/Prometheus各1；240秒/GPU210秒。
-同一guard锁副本及独立监控覆盖后端退出后的HTTP，未启动真实短验。
+同一guard锁副本及独立监控覆盖后端退出后的HTTP。原驱动64MiB留存
+配置低于现有128MiB最小值，在模型/监听/GPU启动前拒绝，原件保持。
+新目录续验只修正该配置，3定向CPU通过，生产及业务预算不变，待执行。
 
 SRV-02k[host记账域与进程树边界限定接受](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)：
 冻结70b629db，显式v5后端/网关v3、owned scope内control/payload隔离、
