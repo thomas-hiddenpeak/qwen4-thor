@@ -26,7 +26,7 @@ READERS=sorted(set((*engine.RUNTIME_FILES,"tools/project_tasks/protocol_report.p
 
 
 def postflight():
-    plan=s.check(); out=BASE/"postflight"; out.mkdir(mode=0o700)
+    plan=s.check(); out=s.ATTEMPT/"postflight"; out.mkdir(mode=0o700)
     s.s.a.require_idle(out/"gpu.json"); lock=s.s.a.guard.common_lock(); info=lock.stat()
     require((info.st_dev,info.st_ino)==(66305,3294067) and s.s.a.lock_available(lock),"original GPU lock not released")
     owners=[]
@@ -116,16 +116,37 @@ def evaluate(data):
     first=read("cpu-01/result.json")
     require(first["tests_run"]==140 and first["errors"]==1 and first["failures"]==0 and not first["passed"] and
         b"KeyError: 'previous'" in data["cpu-01/tests.log"],"original fixture failure lost")
-    for folder,count in (("cpu-history-fix",1),("cpu-driver",4)):
+    for folder,count in (("cpu-history-fix",1),("cpu-driver-v2",5)):
         receipt=read(folder+"/result.json")
         require(receipt["passed"] and receipt["tests_run"]==count and receipt["failures"]==receipt["errors"]==0 and
             receipt["models_started"]==receipt["listeners_started"]==receipt["gpu_started"]==0,"CPU acceptance")
-    for folder in ("cpu-01","cpu-history-fix","cpu-driver"):
+    for folder in ("cpu-01","cpu-history-fix","cpu-driver-v2"):
         receipt=read(folder+"/result.json"); require(sha(data[folder+"/result.json"])==plan["receipts"][folder],"CPU receipt identity")
         for name,digest in receipt["sources"].items():
             require(sha(data[folder+"/source/"+name])==digest,"CPU source snapshot")
             if folder!="cpu-01" or name!="tools/project_tasks/test_protocol.py": require(digest==plan["source_files"][name],"CPU runtime changed")
     for name,digest in plan["historical"]["sources"].items(): require(sha(data["historical-source/"+name])==digest,"historical source")
+    original_plan=read("original/plan.json"); original=read("original/execution/result.json")
+    require(original["status"]=="FAILED" and original["counts"]==dict(starts=1,generation_attempts=1,controls=1) and
+        original["cleanup_confirmed"] and b"use build or .q4t-work" in data["original/execution/alpha-old/stderr.log"] and
+        b"event=end " not in data["original/execution/old/scoped-model/stderr.log"],"original path failure")
+    for name,digest in plan["prior_attempt"].items(): require(sha(data["original/"+name])==digest,"original evidence changed")
+    prior_driver=read("cpu-driver-original/result.json")
+    require(prior_driver["passed"] and prior_driver["tests_run"]==4,"original driver receipt")
+    for name,digest in prior_driver["sources"].items():
+        require(sha(data["cpu-driver-original/source/"+name])==digest==original_plan["source_files"][name],"original driver source")
+    original_events=[json.loads(raw) for raw in data["original/execution/lease/events.jsonl"].splitlines()]
+    original_start=[v for v in original_events if v["event"]=="lease_acquired"]
+    original_end=[v for v in original_events if v["event"]=="lease_released"]
+    original_observed=[v for v in original_events if v["event"] in ("preflight","monitor")]
+    require(len(original_start)==len(original_end)==1 and original_end[0]["status"]==
+        read("original/execution/lease/exit.json")["status"]=="COMMAND_FAILED" and
+        all(not v["conflicts"] for v in original_observed),"original guarded outcome")
+    original_seconds=original_end[0]["monotonic"]-original_start[0]["monotonic"]
+    original_post=read("original/failed-postflight/result.json")
+    require(original_post["passed"] and len(original_post["owners"])==3 and all(v["gone"] for v in original_post["owners"]) and
+        original_post["lock"]==dict(dev=66305,inode=3294067,released=True) and
+        read("original/failed-postflight/gpu.json")["pids"]==[],"original resource release")
     require(result["status"]=="PASS_TASK_PROTOCOL_SHORT" and result["cleanup_confirmed"] and result["seconds"]<=270 and
         result["counts"]["starts"]==2 and result["counts"]["generation_attempts"]==4 and result["counts"]["controls"]<=80 and not result["long_run"],"bounded real result")
     ends=[]
@@ -161,11 +182,13 @@ def evaluate(data):
     require(not data["postflight/containers.txt"].strip() and len(data["postflight/listeners.txt"].splitlines())==1 and
         dict(row.split("=",1) for row in data["postflight/soar-unit.txt"].decode().splitlines())==
         dict(LoadState="masked",ActiveState="inactive",SubState="dead",MainPID="0"),"service/container state")
-    return dict(passed=True,cpu_effective_tests=140,driver_tests=4,cpu_file_operation_kills=len(first["file_operation_kills"]),
-        models=2,gateways=2,complete_responses=4,real_tools=2,application_kills=2,active_protocol_migrations=2,
+    return dict(passed=True,cpu_effective_tests=140,driver_tests=5,original_driver_tests=4,cpu_file_operation_kills=len(first["file_operation_kills"]),
+        models=3,gateways=3,retry_models=2,complete_responses=4,real_tools=2,application_kills=2,active_protocol_migrations=2,
         duplicate_applies=2,duplicate_submits=4,archive_resumes_without_execution=2,metadata_refusals=6,
-        permanent_keys=2,retained_payloads=1,usage=usage,gpu_seconds=seconds,guard_observations=len(observations),
-        seconds=result["seconds"],controls=result["counts"]["controls"],owned_exited=6,default_unchanged=True,
+        permanent_keys=2,retained_payloads=1,usage=usage,gpu_seconds=seconds+original_seconds,retry_gpu_seconds=seconds,
+        original_gpu_seconds=original_seconds,guard_observations=len(observations)+len(original_observed),retry_guard_observations=len(observations),
+        seconds=result["seconds"]+original["seconds"],retry_seconds=result["seconds"],controls=result["counts"]["controls"]+original["counts"]["controls"],
+        owned_exited=9,default_unchanged=True,original_profile_path_failure_preserved=True,original_business_requests=0,
         reviewed_transition=plan["protocol_review"],original_fixture_failure_preserved=True,
         actual_archived_protocol_migrations=0,archived_protocol_migrations_cpu_only=True,
         long_run=False,performance_acceptance=False,actual_lan_accepted=False,physical_ram_limit=False)
@@ -173,9 +196,15 @@ def evaluate(data):
 
 def archive():
     plan=s.check(); data={"plan.json":s.PLAN.read_bytes()}
-    for folder in ("cpu-01","cpu-history-fix","cpu-driver","execution","postflight","plans"):
+    for folder in ("cpu-01","cpu-history-fix","cpu-driver-v2"):
         for path in sorted((BASE/folder).rglob("*")):
             if path.is_file(): data[str(path.relative_to(BASE))]=path.read_bytes()
+    for folder in ("execution","postflight","plans"):
+        for path in sorted((s.ATTEMPT/folder).rglob("*")):
+            if path.is_file(): data[str(path.relative_to(s.ATTEMPT))]=path.read_bytes()
+    for name in plan["prior_attempt"]: data["original/"+name]=(BASE/name).read_bytes()
+    for path in sorted((BASE/"cpu-driver").rglob("*")):
+        if path.is_file(): data["cpu-driver-original/"+str(path.relative_to(BASE/"cpu-driver"))]=path.read_bytes()
     for path in sorted(s.TASKS.rglob("*")):
         if path.is_file(): data["tasks/"+str(path.relative_to(s.TASKS))]=path.read_bytes()
     for name in plan["historical"]["sources"]: data["historical-source/"+name]=(s.HISTORICAL/name).read_bytes()

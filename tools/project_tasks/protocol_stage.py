@@ -19,8 +19,9 @@ from tools.serve_error_params.stage import Children, h
 from tools.serve_clients import short as s
 from tools.serve_service import package as pkg
 
-BASE=cpu.BASE; PLAN=BASE/"plan.json"; OUT=BASE/"execution"
-HISTORICAL=BASE/"historical-runtime"; TASKS=HISTORICAL/".q4t-work/tasks"
+BASE=cpu.BASE; ATTEMPT=BASE/"retry-01"
+PLAN=ATTEMPT/"plan.json"; OUT=ATTEMPT/"execution"
+HISTORICAL=ATTEMPT/"historical-runtime"; TASKS=HISTORICAL/".q4t-work/tasks"
 PORT,TLS_PORT=18130,18450
 LIMITS=dict(starts=2,generation_attempts=4,controls=80,seconds=300)
 GPU_WINDOW=270
@@ -28,7 +29,8 @@ HERE="tools/project_tasks/"
 DRIVER_SOURCES=sorted(set((*cpu.SOURCES,HERE+"protocol_fix_cpu.py",HERE+"protocol_stage.py",
     HERE+"protocol_driver_cpu.py",HERE+"protocol_report.py",HERE+"migration_worker.py",
     "tools/serve_error_params/stage.py","tools/serve_clients/short.py",
-    "tools/serve_cuda_quota_integration/verify.py","tools/verify/startup_delivery/deploy.py")))
+    "tools/serve_cuda_quota_integration/verify.py","tools/verify/startup_delivery/deploy.py",
+    "docs/SERVE_TASK_PROTOCOL_REPAIR_2026-11-04.md")))
 
 
 def sources():
@@ -41,12 +43,15 @@ def prepare():
     pkg.require(not PLAN.exists() and not OUT.exists() and not HISTORICAL.exists(),"preserve prior attempt")
     pkg.require(not subprocess.check_output(["git","status","--porcelain"],cwd=ROOT),"commit reviewed stage first")
     fix.gate()
-    for folder,count in (("cpu-history-fix",1),("cpu-driver",4)):
+    for folder,count in (("cpu-history-fix",1),("cpu-driver-v2",5)):
         value=pkg.read(BASE/folder/"result.json")
         pkg.require(value["passed"] and value["tests_run"]==count,"CPU gate")
         for name,digest in value["sources"].items(): pkg.require(pkg.sha(ROOT/name)==digest,"CPU source changed: "+name)
+    ATTEMPT.mkdir(mode=0o700)
     historical=history.extract_runtime(6,HISTORICAL); (HISTORICAL/".q4t-work").mkdir(mode=0o700)
-    private=BASE/"private"; private.mkdir(mode=0o700)
+    # The historical reader accepts profile and CA paths only inside its own
+    # build/.q4t-work root; use that same private boundary for both versions.
+    private=HISTORICAL/".q4t-work/private"; private.mkdir(mode=0o700)
     cert,key=s.certificate(private)
     front=s.example(TLS_PORT,PORT); front.update(per_client_inflight=4,global_inflight=8,per_client_rps=100,burst=128)
     policy=dict(version=1,gateway_token=s.secrets.token_hex(32),clients=[
@@ -79,9 +84,13 @@ def prepare():
         preserved=previous_plan["preserved"],
         local={str(p):pkg.sha(p) for p in (private/"gateway.json",private/"clients.json",cert)},
         source_files=sources(),source_commit=subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip(),
-        receipts={name:pkg.sha(BASE/name/"result.json") for name in ("cpu-01","cpu-history-fix","cpu-driver")},
+        receipts={name:pkg.sha(BASE/name/"result.json") for name in ("cpu-01","cpu-history-fix","cpu-driver-v2")},
         historical_archive=history.release(6)["evidence"],historical_archive_sha256=history.release(6)["archive_sha256"],
         performance_acceptance=False,long_run=False)
+    original=[BASE/"plan.json",BASE/"run.stdout",BASE/"run.stderr"]
+    for folder in ("execution","failed-postflight"):
+        original.extend(path for path in (BASE/folder).rglob("*") if path.is_file())
+    plan["prior_attempt"]={str(path.relative_to(BASE)):pkg.sha(path) for path in sorted(original)}
     plan["day_plans"]=[name for name in plan["preserved"] if name.endswith("/day/plan.json")]
     pkg.require(len(plan["day_plans"])==3,"three retained user day plans")
     pkg.save(PLAN,plan); check(); return dict(prepared=True,models_started=0,listeners_started=0)
@@ -95,6 +104,7 @@ def check():
     for name,digest in {**plan["preserved"],**plan["local"]}.items(): pkg.require(pkg.sha(name)==digest,"fixed artifact changed")
     for name in plan["day_plans"]: pkg.require(not (Path(name).parent/"execution").exists(),"user day executed")
     for name,digest in plan["receipts"].items(): pkg.require(pkg.sha(BASE/name/"result.json")==digest,"CPU receipt changed")
+    for name,digest in plan["prior_attempt"].items(): pkg.require(pkg.sha(BASE/name)==digest,"prior failed attempt changed")
     for name,digest in plan["model_inputs"].items(): pkg.require(pkg.sha(Path(plan["model_dir"])/name)==digest,"model input changed")
     for row in plan["versions"]:
         pkg.require(pkg.sha(row["binary"])==row["binary_sha256"] and pkg.sha(row["sidecar"])==row["sidecar_sha256"],"binary/sidecar changed")
@@ -157,7 +167,7 @@ class Run:
     def resume(self,client,tokens):
         denied=self.cli(client,"new","unmigrated","resume",expected=1)
         pkg.require(denied["code"]=="binding_changed","unmigrated protocol refusal")
-        path=BASE/"plans"/(client+"-protocol.json")
+        path=ATTEMPT/"plans"/(client+"-protocol.json")
         prepared=self.cli(client,"new","plan-protocol","plan-protocol","--plan",path,"--reason","explicit reviewed SRV-01c upgrade")
         wrong=self.cli(client,"new","wrong-operation","apply-trust","--plan",path,"--plan-sha256",prepared["plan_sha256"],expected=1)
         pkg.require(wrong["code"]=="plan_changed","mixed operation refusal")
@@ -176,10 +186,10 @@ class Run:
 
     def archived(self,client,tokens,prune):
         for kind in (("archive","prune") if prune else ("archive",)):
-            path=BASE/"plans"/(client+"-"+kind+".json")
+            path=ATTEMPT/"plans"/(client+"-"+kind+".json")
             plan=self.cli(client,"new","plan-"+kind,"plan-"+kind,"--plan",path,"--reason","preserve receipt and verify permanent key")
             self.cli(client,"new","apply-"+kind,"apply-"+kind,"--plan",path,"--plan-sha256",plan["plan_sha256"])
-        denied=self.cli(client,"old","archive-reverse","plan-protocol","--plan",BASE/"plans"/(client+"-reverse.json"),"--reason","unregistered reverse negative",expected=1)
+        denied=self.cli(client,"old","archive-reverse","plan-protocol","--plan",ATTEMPT/"plans"/(client+"-reverse.json"),"--reason","unregistered reverse negative",expected=1)
         pkg.require(denied["code"]=="protocol_unsupported","archived reverse migration accepted")
         value=self.cli(client,"new","archive-duplicate-submit","submit","--question",QUESTION,"--max-requests",2,"--max-tools",1,"--max-tokens",tokens,expected=2)
         pkg.require(value["state"]=="ARCHIVED" and not value["created"] and value["payload_state"]==("purged" if prune else "retained"),"permanent key replay")
@@ -196,7 +206,7 @@ class Run:
         pkg.save(OUT/(label+"-stopped.json"),dict(monotonic=time.monotonic(),lease_still_held=True))
 
     def business(self):
-        store.init(TASKS,2); (BASE/"plans").mkdir(mode=0o700)
+        store.init(TASKS,2); (ATTEMPT/"plans").mkdir(mode=0o700)
         self.launch(0); self.known("alpha",512); self.known("beta",64); self.stop("old")
         self.launch(1); self.resume("alpha",512); self.resume("beta",64)
         retention.enable(TASKS,max_keys=2,min_retain_seconds=0)

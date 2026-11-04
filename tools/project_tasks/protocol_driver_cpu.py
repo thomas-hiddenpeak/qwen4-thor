@@ -1,5 +1,6 @@
 """Bounded driver failures and owned cleanup without model, sockets or GPU."""
 import io
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -11,7 +12,7 @@ from unittest.mock import Mock,patch
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.dont_write_bytecode=True; sys.path.insert(0,str(ROOT))
-from tools.project_tasks import protocol_stage as s, migration_worker
+from tools.project_tasks import protocol_stage as s, migration_worker, test_errors, transport, test_tasks
 from tools.serve_error_params import stage as children_source
 
 
@@ -55,9 +56,24 @@ class Driver(unittest.TestCase):
         hook("tool_result",1,ledger); hold.assert_called_once()
         self.assertEqual(s.pkg.read(output/"boundary.json")["kind"],"tool_result")
 
+    def test_real_11g_profile_and_ca_must_be_inside_historical_root(self):
+        output,_=self.fixture(); runtime=output/"historical"; s.history.extract_runtime(6,runtime)
+        private=runtime/".q4t-work/private"; private.mkdir(mode=0o700,parents=True)
+        ca=private/"ca.pem"; ca.write_bytes(test_errors.CA.read_bytes())
+        value={k:v for k,v in test_tasks.BINDING.items() if k not in ("ca_sha256","key_sha256")}
+        value.update(api_key="cpu-profile-boundary-"+"x"*40,ca_file=str(ca))
+        profile=private/"profile.json"; s.pkg.save(profile,value)
+        expected=transport.profile(profile)[1]
+        script="from tools.project_tasks import transport;import json,sys;print(json.dumps(transport.profile(sys.argv[1])[1]))"
+        child=subprocess.run([sys.executable,"-B","-c",script,str(profile)],cwd=runtime,capture_output=True,text=True,timeout=5)
+        self.assertEqual(child.returncode,0,child.stderr); self.assertEqual(json.loads(child.stdout),expected)
+        external=output/"outside.json"; s.pkg.save(external,value)
+        child=subprocess.run([sys.executable,"-B","-c",script,str(external)],cwd=runtime,capture_output=True,text=True,timeout=5)
+        self.assertNotEqual(child.returncode,0); self.assertIn("use build or .q4t-work",child.stderr)
+
 
 def main():
-    os.umask(0o077); output=s.BASE/"cpu-driver"; output.mkdir(mode=0o700)
+    os.umask(0o077); output=s.BASE/"cpu-driver-v2"; output.mkdir(mode=0o700)
     sources={name:s.pkg.sha(ROOT/name) for name in s.DRIVER_SOURCES}
     for name in sources:
         path=output/"source"/name; path.parent.mkdir(parents=True,exist_ok=True); path.write_bytes((ROOT/name).read_bytes())
