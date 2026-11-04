@@ -41,6 +41,12 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-11k[当前启动协议任务交接短验待完成](SERVE_TASK_STARTUP_PROTOCOL_2026-11-04.md)：
+独立239原件审核支持ddfba8c0→15d7ccb1，219来源与7schema不变，
+仅监听生命周期差异；新增有向登记与11j精确17来源。24唯一CPU/
+4文件事务SIGKILL通过，实际历史/三跳明确迁移与拒绝边界已验。
+随后同锁2顺序模型4响应2工具短验；默认/旧包/Key/day保持，高级功能按需。
+
 SRV-12l[托管截止与停止优先已限定交付](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)：
 8790c8e1生产/03ee447b定向驱动；3原复现失败保持，114唯一CPU+
 6驱动+3定向检查通过，新包fcff7218仅supervisor/transport变化。

@@ -138,6 +138,9 @@ python3 -B tools/project_tasks/runner.py apply-migration \
 再显式apply，之后才resume。已登记63b29f13→fc63db28，以及
 fc63db28→ddfba8c0两个有向步骤；后一项23 CPU、2入口检查及两版本
 真实恢复已[限定接受](../../docs/SERVE_TASK_OPERATIONS_RESULT_2026-11-04.md)。
+新增ddfba8c0→15d7ccb1的独立监听生命周期审核与11j精确来源登记，
+当前验收进展见`docs/STATUS.md`。不自动跳过步骤；各次明确计划/应用
+均计入共享8次迁移限额。启动TCP可早于HTTP就绪，恢复仍需重新预检。
 没有直接登记63b29f13→ddfba8c0，需两次明确计划/应用并分别计入原8次
 迁移上限。登记不触发自动升级，
 完整摘要和依据见`compatible_protocols.json`；不推导未登记方向兼容。
