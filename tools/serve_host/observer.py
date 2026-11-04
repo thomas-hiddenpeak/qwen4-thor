@@ -19,9 +19,10 @@ from tools.serve_service import package as pkg,supervisor as sup
 from tools.serve_gateway import managed as m
 from tools.serve_watchdog.storage import Directory,encoded,sha
 
-FILES=tuple(dict.fromkeys((*pkg.V5_SOURCES,'tools/serve_gateway/gateway.py','tools/serve_gateway/managed.py',
+LEGACY_FILES=tuple(dict.fromkeys((*pkg.V5_SOURCES,'tools/serve_gateway/gateway.py','tools/serve_gateway/managed.py',
     'tools/serve_watchdog/core.py','tools/serve_watchdog/storage.py',
     'tools/serve_host/core.py','tools/serve_host/source.py','tools/serve_host/observer.py','tools/serve_host/child.py')))
+FILES=tuple(dict.fromkeys((*LEGACY_FILES,*m.V4_SOURCES)))
 
 
 def config(path,port):
@@ -82,7 +83,7 @@ def prepare(backend,digest,run,deployment,nginx,port,output):
         m.g.save(target,(ROOT/name).read_bytes());target.chmod(0o400)
     m.g.save(output/'nginx.conf',config(output,port).encode())
     python=Path(sys.executable).resolve()
-    value=dict(version=1,repository=str(repository),backend_package=str(backend),backend_manifest_sha256=digest,
+    value=dict(version=2,repository=str(repository),backend_package=str(backend),backend_manifest_sha256=digest,
         backend_run=str(run),host_resources=manifest['host_resources'],deployment=deployment,port=port,
         context=source.inspection.current_context(),python=dict(path=str(python),sha256=pkg.sha(python)),
         files={name:pkg.sha(output/name) for name in ('nginx','nginx.conf',*('source/'+n for n in FILES))},
@@ -106,9 +107,10 @@ def verify(path,digest):
     path=Path(path).absolute()
     with Directory(path) as directory:
         raw=directory.read('policy.json');c.require(sha(raw)==digest,'binding_invalid');policy=source.parse(raw)
-        c.require(type(policy['version']) is int and policy['version']==1 and
+        sources={1:LEGACY_FILES,2:FILES}.get(policy['version'])
+        c.require(type(policy['version']) is int and sources is not None and
             policy['context']==source.inspection.current_context() and policy['automatic_start'] is False and
-            policy['model_signalled'] is False and set(policy['files'])=={'nginx','nginx.conf',*('source/'+n for n in FILES)},
+            policy['model_signalled'] is False and set(policy['files'])=={'nginx','nginx.conf',*('source/'+n for n in sources)},
             'binding_invalid')
         c.require(Path(sys.executable).resolve()==Path(policy['python']['path']) and
             pkg.sha(policy['python']['path'])==policy['python']['sha256'],'binding_invalid')
@@ -136,8 +138,13 @@ def observe_once(path,digest):
         return evaluate(directory,policy,digest)
 
 
-def watch(path,digest):
-    path=Path(path).resolve(strict=True);policy=verify(path,digest)
+def watch(path,digest,*,verify_policy=None,project=None,kind='host'):
+    # Shared bounded exporter lifecycle. Hooks are fixed by module entrypoints,
+    # never taken from a policy, environment variable or user-provided code.
+    c.require(kind in ('host','tls'),'binding_invalid')
+    verify_policy=verify if verify_policy is None else verify_policy
+    project=evaluate if project is None else project
+    path=Path(path).resolve(strict=True);policy=verify_policy(path,digest)
     stopping=threading.Event();previous={sig:signal.signal(sig,lambda *_:stopping.set()) for sig in (signal.SIGINT,signal.SIGTERM)}
     child=logger=None;failure=None;clean=True
     try:
@@ -146,9 +153,9 @@ def watch(path,digest):
                          claim_identity=[os.fstat(fd).st_dev,os.fstat(fd).st_ino])
             directory.write('observer.json',encoded(control))
             try:
-                evaluate(directory,policy,digest)
-                env=dict(PATH='/usr/bin:/bin',LANG='C.UTF-8',Q4T_HOST_CLAIM_FD=str(fd))
-                child=subprocess.Popen([policy['python']['path'],'-I','-B',path/'source/tools/serve_host/child.py',
+                project(directory,policy,digest)
+                env=dict(PATH='/usr/bin:/bin',LANG='C.UTF-8',**{f'Q4T_{kind.upper()}_CLAIM_FD':str(fd)})
+                child=subprocess.Popen([policy['python']['path'],'-I','-B',path/f'source/tools/serve_{kind}/child.py',
                     '--state',path],env=env,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,
                     start_new_session=True,close_fds=True,pass_fds=(fd,),umask=0o077)
                 clean=False
@@ -163,7 +170,7 @@ def watch(path,digest):
                     else:
                         c.require(first is None or current==first,'binding_invalid');first=current
                         directory.write('exporter.json',encoded(dict(owner=owner,listener=current)))
-                    evaluate(directory,policy,digest)
+                    project(directory,policy,digest)
                     stopping.wait(1)
             except BaseException as error:
                 failure=str(error) if isinstance(error,c.Invalid) else 'observer_failed'
@@ -182,7 +189,7 @@ def watch(path,digest):
                     # Publish while the same claim is still held. A new
                     # observer may not race an old owner's terminal write.
                     directory.write('observer-terminal.json',encoded(dict(state='FAILED' if failure else 'STOPPED',
-                        reason=failure,cleanup_confirmed=clean,model_signalled=False,automatic_reactivation=False,
+                        reason=failure,cleanup_confirmed=clean,model_signalled=False,gateway_signalled=False,automatic_reactivation=False,
                         child_returncode=None if child is None else child.returncode)))
     except BaseException as error:
         failure=failure or (str(error) if isinstance(error,c.Invalid) else 'observer_failed')

@@ -48,6 +48,13 @@ v2增加独立q4t-host目标及10条规则，通知保留generation并按代次�
 观察器必须另行显式配置，见[host观测手册](../serve_host/README.md)。
 v1配置与已有v1包保持原行为；本批host接线不代表正式接收端已上线。
 
+TLS观测使用显式`version: 3`及`tls_observer_port`，可以同时增加
+`host_observer_port`；所有端口须不同。载入10条TLS规则并保留generation，
+观察器另行准备，见[TLS操作手册](../serve_tls/README.md)。
+当前prepare对三个policy版本均生成**包v3**并固定完整TLS依赖；
+manifest.policy_version记录所选策略，不能把包版本等同于策略版本。
+旧包仍使用各自固定入口；不覆盖既有包/状态或自动切换采集目标。
+
 保存返回manifest SHA；以下MANIFEST_SHA256应替换为该完整值，Python
 路径与manifest的python.path一致。准备一次独立持久状态：
 

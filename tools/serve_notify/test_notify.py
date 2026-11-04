@@ -213,6 +213,19 @@ class ProcessTests(unittest.TestCase):
         self.assertTrue(value['cleanup_confirmed'])
         self.assertIn('log capture failed', value['error'])
 
+    def test_identity_failure_before_logger_still_reaps_child(self):
+        original=n.sup.process_identity;children=[]
+        def identity(pid):
+            value=original(pid)
+            if pid!=os.getpid():children.append(value);raise OSError('fixture early identity failure')
+            return value
+        with mock.patch.object(n.sup,'process_identity',side_effect=identity):
+            self.assertEqual(self.invoke(lambda *_:{}),1)
+        value=n.m.read(self.output/'terminal.json')
+        self.assertEqual((value['state'],value['starts'],value['cleanup_confirmed']),('FAILED',1,True))
+        self.assertIn('early identity failure',value['error']);self.assertTrue(children)
+        self.assertTrue(all(not n.sup.processes.group_members(v['pid']) for v in children))
+
     def test_busy_state_refused_before_spawning(self):
         with n.claim(self.state, 'prometheus'), mock.patch.object(n.subprocess, 'Popen') as child:
             self.assertEqual(self.invoke(lambda *_: {}), 1)

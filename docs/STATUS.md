@@ -41,6 +41,12 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-10f[TLS运行观测与到期告警开发中](SERVE_TLS_OBSERVATION_2026-11-04.md)：
+已确认host/notify新包漏带TLS模块和notify早期child清理缺口，先补
+依赖与隔离入口，已实现只读TLS状态、有限指标、显式通知策略v3。
+57 CPU/4驱动通过，29官方时序通过；原NaNx80夹具语法错误保留，
+仅修正时序重验。待本机真实预警/观测暂停恢复/终态投递；不跑用户day。
+
 SRV-10e[TLS材料与证书生命周期限定接受](SERVE_TLS_LIFECYCLE_RESULT_2026-11-04.md)：
 e43761ce实现；notBefore/全链时间/用途、显式CA严格验证、复制材料校验，
 内层v3/托管v4与私有有效期状态、失效仅网关排空、早期child清理。

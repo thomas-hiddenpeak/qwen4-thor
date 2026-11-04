@@ -1,0 +1,137 @@
+{
+  "groups": [
+    {
+      "name": "q4t-tls-material-and-lifecycle",
+      "interval": "5s",
+      "rules": [
+        {
+          "alert": "Q4TTLSExporterDown",
+          "expr": "up{job=\"q4t-tls\"} == 0",
+          "for": "15s",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-tls"
+          },
+          "annotations": {
+            "summary": "The configured TLS observer exporter is unreachable.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_tls/README.md"
+          }
+        },
+        {
+          "alert": "Q4TTLSTargetMissing",
+          "expr": "absent(up{job=\"q4t-tls\"})",
+          "for": "30s",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-tls"
+          },
+          "annotations": {
+            "summary": "No configured TLS observer target is present.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_tls/README.md"
+          }
+        },
+        {
+          "alert": "Q4TTLSMetricContractMissing",
+          "expr": "(up{job=\"q4t-tls\"} == 1) unless on (job,instance) (count by (job,instance) ((((count by (job,instance,deployment,generation) (q4t_tls_state{job=\"q4t-tls\"}) == 7) and on (job,instance,deployment,generation) (count by (job,instance,deployment,generation) (q4t_tls_state{job=\"q4t-tls\",state=~\"WAITING|STARTING|READY|STOPPING|STOPPED|FAILED|UNKNOWN\"}) == 7) and on (job,instance,deployment,generation) (sum by (job,instance,deployment,generation) (q4t_tls_state{job=\"q4t-tls\"}) == 1)) unless on (job,instance,deployment,generation) ((q4t_tls_state{job=\"q4t-tls\"} != 0) and (q4t_tls_state{job=\"q4t-tls\"} != 1))) and on (job,instance,deployment,generation) (((count by (job,instance,deployment,generation) (q4t_tls_certificate_state{job=\"q4t-tls\"}) == 5) and on (job,instance,deployment,generation) (count by (job,instance,deployment,generation) (q4t_tls_certificate_state{job=\"q4t-tls\",state=~\"VALID|EXPIRING|NOT_YET_VALID|EXPIRED|UNKNOWN\"}) == 5) and on (job,instance,deployment,generation) (sum by (job,instance,deployment,generation) (q4t_tls_certificate_state{job=\"q4t-tls\"}) == 1)) unless on (job,instance,deployment,generation) ((q4t_tls_certificate_state{job=\"q4t-tls\"} != 0) and (q4t_tls_certificate_state{job=\"q4t-tls\"} != 1))) and on (job,instance,deployment,generation) (((count by (job,instance,deployment,generation) (q4t_tls_reason{job=\"q4t-tls\"}) == 11) and on (job,instance,deployment,generation) (count by (job,instance,deployment,generation) (q4t_tls_reason{job=\"q4t-tls\",reason=~\"none|binding_invalid|package_unavailable|source_unavailable|source_stale|owner_absent|boot_changed|gateway_failure|gateway_tls_not_yet_valid|gateway_tls_expired|gateway_tls_observation_unavailable\"}) == 11) and on (job,instance,deployment,generation) (sum by (job,instance,deployment,generation) (q4t_tls_reason{job=\"q4t-tls\"}) == 1)) unless on (job,instance,deployment,generation) ((q4t_tls_reason{job=\"q4t-tls\"} != 0) and (q4t_tls_reason{job=\"q4t-tls\"} != 1))) and on (job,instance,deployment,generation) (((count by (job,instance,deployment,generation) (q4t_tls_trust{job=\"q4t-tls\"}) == 3) and on (job,instance,deployment,generation) (count by (job,instance,deployment,generation) (q4t_tls_trust{job=\"q4t-tls\",trust=~\"explicit_ca|not_configured|unknown\"}) == 3) and on (job,instance,deployment,generation) (sum by (job,instance,deployment,generation) (q4t_tls_trust{job=\"q4t-tls\"}) == 1)) unless on (job,instance,deployment,generation) ((q4t_tls_trust{job=\"q4t-tls\"} != 0) and (q4t_tls_trust{job=\"q4t-tls\"} != 1))) and on (job,instance,deployment,generation) (count by (job,instance,deployment,generation) ((q4t_tls_evaluated_timestamp_seconds{job=\"q4t-tls\"} >= 0) and (q4t_tls_evaluated_timestamp_seconds{job=\"q4t-tls\"} <= 9007199254740991)) == 1) and on (job,instance,deployment,generation) (count by (job,instance,deployment,generation) (((q4t_tls_not_after_timestamp_seconds{job=\"q4t-tls\"} > on (job,instance,deployment,generation) q4t_tls_not_before_timestamp_seconds{job=\"q4t-tls\"}) and on (job,instance,deployment,generation) (q4t_tls_not_before_timestamp_seconds{job=\"q4t-tls\"} >= 0) and on (job,instance,deployment,generation) (q4t_tls_not_after_timestamp_seconds{job=\"q4t-tls\"} <= 9007199254740991)) or (q4t_tls_certificate_state{job=\"q4t-tls\",state=\"UNKNOWN\"} == 1)) == 1)) == 1)",
+          "for": "5s",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-tls"
+          },
+          "annotations": {
+            "summary": "The TLS observer metric contract is incomplete or contradictory.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_tls/README.md"
+          }
+        },
+        {
+          "alert": "Q4TTLSObserverStale",
+          "expr": "(time() - q4t_tls_evaluated_timestamp_seconds{job=\"q4t-tls\"} > 30) or (q4t_tls_evaluated_timestamp_seconds{job=\"q4t-tls\"} - time() > 30)",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-tls"
+          },
+          "annotations": {
+            "summary": "TLS observer output is stale or its wall clock is skewed.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_tls/README.md"
+          }
+        },
+        {
+          "alert": "Q4TTLSSourceUnknown",
+          "expr": "max by (job,instance,deployment,generation) (q4t_tls_state{job=\"q4t-tls\",state=\"UNKNOWN\"} == 1)",
+          "for": "5s",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-tls"
+          },
+          "annotations": {
+            "summary": "The bound gateway generation cannot be verified.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_tls/README.md"
+          }
+        },
+        {
+          "alert": "Q4TTLSGenerationWaiting",
+          "expr": "max by (job,instance,deployment,generation) (q4t_tls_state{job=\"q4t-tls\",state=~\"WAITING|STARTING\"} == 1)",
+          "for": "2m",
+          "labels": {
+            "severity": "warning",
+            "component": "q4t-tls"
+          },
+          "annotations": {
+            "summary": "The expected gateway generation has not become ready.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_tls/README.md"
+          }
+        },
+        {
+          "alert": "Q4TTLSGenerationTerminal",
+          "expr": "max by (job,instance,deployment,generation) (q4t_tls_state{job=\"q4t-tls\",state=~\"STOPPED|FAILED\"} == 1)",
+          "labels": {
+            "severity": "warning",
+            "component": "q4t-tls"
+          },
+          "annotations": {
+            "summary": "The bound gateway generation has terminated; check whether this was intended.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_tls/README.md"
+          }
+        },
+        {
+          "alert": "Q4TTLSCertificateExpiring",
+          "expr": "max by (job,instance,deployment,generation) (((q4t_tls_not_after_timestamp_seconds{job=\"q4t-tls\"} - time() <= 604800) and (q4t_tls_not_after_timestamp_seconds{job=\"q4t-tls\"} > time()) and on (job,instance,deployment,generation) (q4t_tls_not_before_timestamp_seconds{job=\"q4t-tls\"} <= time())) and on (job,instance,deployment,generation) ((time() - q4t_tls_evaluated_timestamp_seconds{job=\"q4t-tls\"} <= 30) and (q4t_tls_evaluated_timestamp_seconds{job=\"q4t-tls\"} - time() <= 30)))",
+          "for": "15s",
+          "labels": {
+            "severity": "warning",
+            "component": "q4t-tls"
+          },
+          "annotations": {
+            "summary": "The pinned certificate chain has seven days or less remaining; prepare explicit renewal.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_tls/README.md"
+          }
+        },
+        {
+          "alert": "Q4TTLSCertificateInvalid",
+          "expr": "max by (job,instance,deployment,generation) (((q4t_tls_not_after_timestamp_seconds{job=\"q4t-tls\"} <= time()) or (q4t_tls_not_before_timestamp_seconds{job=\"q4t-tls\"} > time())) and on (job,instance,deployment,generation) ((time() - q4t_tls_evaluated_timestamp_seconds{job=\"q4t-tls\"} <= 30) and (q4t_tls_evaluated_timestamp_seconds{job=\"q4t-tls\"} - time() <= 30)))",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-tls"
+          },
+          "annotations": {
+            "summary": "The pinned certificate chain is expired or not yet valid.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_tls/README.md"
+          }
+        },
+        {
+          "alert": "Q4TTLSTrustNotPinned",
+          "expr": "max by (job,instance,deployment,generation) (q4t_tls_trust{job=\"q4t-tls\",trust=\"not_configured\"} == 1)",
+          "for": "15s",
+          "labels": {
+            "severity": "warning",
+            "component": "q4t-tls"
+          },
+          "annotations": {
+            "summary": "No explicit CA anchor is configured; client trust was not verified by package preparation.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_tls/README.md"
+          }
+        }
+      ]
+    }
+  ]
+}

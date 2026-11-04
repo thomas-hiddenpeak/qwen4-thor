@@ -191,6 +191,6 @@ class Host(unittest.TestCase):
         path=self.root/'policy-private.json';pkg.save(path,p)
         result=n.prepare(path,nt.dependencies(),self.root/'notify')
         manifest=n.verify(result['package'],result['manifest_sha256'])
-        self.assertEqual(manifest['version'],2)
+        self.assertEqual((manifest['version'],manifest['policy_version']),(3,2))
         self.assertIn('source/deploy/serve-ops/q4t-host.rules.yml',manifest['files'])
         self.assertEqual(manifest['ports']['host_observer'],19448)
