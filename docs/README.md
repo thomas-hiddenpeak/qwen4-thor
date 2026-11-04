@@ -4,6 +4,8 @@
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
 应用服务：[能力与 OpenAI 兼容矩阵、vLLM 差距与分阶段计划](APPLICATION_SERVICE.md)。
+[当前合同复核、可选运行方式与剩余优先级](SERVE_CONTRACT_REAUDIT_2026-11-04.md)；
+[旧应用矩阵逐阶段历史快照](APPLICATION_SERVICE_HISTORY_2026-11-04.md)。
 [SRV-11k当前启动协议任务交接限定接受](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)。
 [SRV-12l托管观测截止与停止优先限定交付](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)。
 [SRV-12k原生启动监听所有权合同](SERVE_STARTUP_LISTENERS_2026-11-04.md)与

@@ -4,6 +4,11 @@
 引擎却缺工具响应”的应用层遗漏。与[主兼容矩阵](APPLICATION_SERVICE.md)
 一起维护；不能仅用功能数量衡量成熟度。
 
+2026-11-04重新核对了Q4T侧状态，见[合同复核](SERVE_CONTRACT_REAUDIT_2026-11-04.md)。
+持久任务、client配额、TLS/Key网关与独立运维已经限定交付，不能继续
+记为未实现。高级选项按用户需要启用，长验交用户；本轮未刷新外部
+项目或网页。下方逐日期段落保留历史进展，当前状态看对照表和主矩阵。
+
 工具控制 / 结构化输出的
 [实现合同](STRUCTURED_OUTPUT_DEVELOPMENT_2026-11-02.md)已明确，后续已完成
 [有界验收与交付](STRUCTURED_OUTPUT_RESULT_2026-11-02.md)。
@@ -48,8 +53,8 @@ worker196/196reap。补同模型动态恢复和有界持续负载证据，不证
 `reference/vllm/vllm/entrypoints/openai/` 和 `entrypoints/serve/`。
 同时核对当前官方文档（访问日期 2026-11-02）；未更新、构建或启动
 reference，未把 stable 网页当作本地固定 commit 的相同版本。
-本项目盘点起点 460ffd0，下表已同步截至c597adc3的A/B、预检/机器合同、
-资源准入和观测隔离状态；当前结论链接对应交付记录，不改变外部参考版本。历史
+本项目盘点起点460ffd0，下表Q4T侧已按93d4fac4源码和现有接受记录
+复核；当前结论链接对应交付记录，不改变外部参考版本。历史
 差异与具体失败另列，未验部分不标成熟。
 
 vLLM 的 Chat 服务组织了独立的请求 schema、工具 / 推理 parser、
@@ -83,17 +88,17 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 | SSE 用量与中断 | usage tail、可选持续统计；断连不保证尾帧 | 已验尾帧/心跳、普通流和固定12443字节严格复制输出的实际背压；05b推理usage已交付 | [严格复制结果](SERVE_STRICT_TRANSPORT_RESULT_2026-11-03.md)限定通过；任意生成/网络与长稳仍需证明 |
 | 错误语义 | protocol/exception handlers 分类与封套 | 首批已统一 JSON/SSE 分类与封套 | A 已交付；Q4T code 不等同所有外部错误语义 |
 | 关联请求 ID | middleware/x_request_id.py；可选请求 / 响应头 | X-Request-Id接收/随机生成/回传，诊断关联，和JSON取消ID分离 | SRV-01限定交付；仍不提供幂等 |
-| 幂等 / 自动重试 | 不能从 request ID 或 SDK 重试推断幂等执行 | 活跃 ID 去重，无持久幂等存储 | B：本轮禁自动重放，恢复判定已具备 |
+| 幂等 / 自动重试 | 不能从 request ID 或 SDK 重试推断幂等执行 | runner活跃ID去重；应用持久任务、client幂等键、永久保键、已知工具结果复用已验 | [11k当前协议交接](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)；UNKNOWN不自动重放，不宣称通用exactly-once |
 | 模型发现 | models/api_router.py，served names / adapter 视配置 | 单模型models及错误模型拒绝已验；无详情/动态adapter管理 | Python/JS固定SDK限定互通，模型管理不在当前范围 |
 | Tokenizer / 渲染预检 | tokenize/api_router.py、renderer APIs | POST /v1/chat/preflight共用实际合同/模板/分词/预算，可选prompt/IDs；结果与实际usage已核对 | [SRV-07限定交付](SERVE_PREFLIGHT_RESULT_2026-11-03.md)；不预留槽位、不保证执行或质量，非任意tokenizer API |
 | 默认生成配置 | generation_config 与 serving 配置 | greedy固定/中性兼容；GET /v1/config公开实际容量、默认值/来源、准入与连接分区 | SRV-07/02b/12b已交付；私有schema/协议指纹按版本选择 |
 | 多 choice / logprobs / sampling | 相应生成参数与响应结构 | n=1、greedy，logprobs 拒绝 | C：需要底层支持，不是 HTTP 字段补丁 |
-| 会话与 Responses | 独立 responses 路由 / stateful 路径，受配置限制 | 只支持 Chat；session cache 是同进程 KV | B：应用持久会话先于新增一套 API |
+| 会话与 Responses | 独立 responses 路由 / stateful 路径，受配置限制 | 只支持Chat；session cache是同进程KV，独立应用任务可跨进程恢复 | 持久任务已限定交付；Responses按新业务立项，不能等同于任务库 |
 | 真实工具执行 | Chat function 调用通常由应用执行与回填 | 首批真实发布 / 历史验收 / 不存在资料查询已验 | A/P2 已交付有界只读链路；自主广泛检索未验 |
 | 取消 / 断连 / 关闭 | serving 检查断连并传播 abort；生命周期管理 | 取消/deadline/断连已有；SRV-13修复排队shutdown分类与计数，实际活动/排队终态、worker及崩溃后恢复通过 | 原失败保留；[SRV-13限定证据](SERVE_LIFECYCLE_RESULT_2026-11-03.md)，不承诺未知请求自动重放 |
-| 压力与配额 | 调度、准入与服务配置；不等于完整租户计费平台 | 连接 / body / chat / slot 上限已具备，无租户配额 | B/C：先错误可观测，再业务配额 |
-| 健康与观测 | health/load/version、Prometheus、请求 metrics | F5/01b指标与trace、livez/readyz/排空；12告警/诊断/手册和12b独立4观测/4控制实际饱和保障已验 | [12b限定交付](SERVE_OBSERVATION_CAPACITY_RESULT_2026-11-03.md)；v3/v4规则分列，未分类慢头、实际通知/日志轮转仍待办 |
-| 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生未提供；现有 Nginx 示例未含完整鉴权配置 | C：在真实入口配置并验收，不能认为传了 api_key 就鉴权 |
+| 压力与配额 | 调度、准入与服务配置；不等于完整租户计费平台 | 全局及每client并发、正文/输入输出预算、client状态域隔离已验 | [10c](SERVE_CLIENT_RESULT_2026-11-04.md)；尚无租户公平、RPM/TPM合同或整机物理RAM硬保护 |
+| 健康与观测 | health/load/version、Prometheus、请求 metrics | 公共4观测/4控制，显式独立运维入口、告警/通知/留存及托管总截止与停止优先已短验 | [12l](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)；136公共慢头满额已验，运维自身仍有限额；正式渠道/周期按需部署 |
+| 鉴权 / CORS / TLS | middleware Bearer/CORS；服务 TLS 配置 | 原生不内置TLS；项目网关独立Key、TLS/CA、证书生命周期及显式CIDR已本机短验 | [10g](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)；实际LAN选用时验收，浏览器CORS合同未实现；JS辅助类当前固定本机Key |
 | HTTP 媒体类型 / 方法 | 框架路由与 JSON request validation | application/json UTF-8、405＋Allow、query400、GET body400已验 | SRV-03限定交付；仍禁chunked上传/连接复用 |
 | OpenAPI / SDK | 协议类型生成文档、官方 SDK 接入示例 | 38字段/10路由机器合同＋必需原生语义；Python3.42.1与Node24.18.0/openai7.47.0限定真实工具互通 | [SRV-08限定交付](SERVE_PROTOCOL_RESULT_2026-11-03.md)；静态schema不证明动态准入，不外推其他SDK |
 | Embeddings / rerank / audio / 多模态 | 独立任务接口，取决于模型与 runner | 当前首版文本生成范围之外 | C：不能因为 vLLM 有端点就认为本模型有能力 |
@@ -126,13 +131,12 @@ Q4T 已具备相应的原生消息 / 响应解析、请求生命周期和能力�
 
 ## 排期建议
 
-第一阶段完成“不能误导”的协议地基与本页盘点；第二阶段以真实项目
-查询证明工具错误、引用与持久记录能闭环。之后优先：
-
-1. 工具选择控制 + 有限结构化输出已完成首组有界交付；更广 schema、
-   并发、逐 token 结构化流及受约束加速另行冻结。
-2. developer / name / reasoning 字段兼容、停止条件和 token 预检。
-3. 请求追踪、配置声明、网关访问策略与可恢复任务状态机。
+原先优先项中的工具控制、有限结构化输出、developer适配、reasoning、
+stop、预检、请求追踪、client策略与持久任务均已限定交付，不能继续
+按未实现排期。当前顺序见[主矩阵](APPLICATION_SERVICE.md#当前剩余项与顺序)
+和[执行队列](PHASES.md#队列与依赖)：先复现并补齐准备阶段锁等待的
+取消边界，再按选用客户端完善网络截止/Key接入；公平策略、更多schema
+和逐token工具流由具体业务触发。实际部署按需、长验由用户执行。
 
 多模态、Responses、批处理、LoRA 等按用户实际场景再定，不与上述
 可靠性缺口混为同一轮“全兼容”。当前成熟度仍是已验证的私有文本

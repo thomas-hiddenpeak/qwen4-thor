@@ -58,9 +58,13 @@ TLS网关及独立API Key接入；10a先进行loopback开发/短验，实际地�
 
 本表资源证据另含[02j2生产CUDA申请额度接线](SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md)，
 不能把已交付的wrapper/启动/CLI/指标继续列为待接线；额度仍非物理RAM
-硬限额。应用迁移由[11i](SERVE_TASK_OPERATIONS_RESULT_2026-11-04.md)补至
-当前ddfba8c0协议，[11j](SERVE_TASK_DEADLINE_RESULT_2026-11-04.md)补齐
-持久客户端全程网络期限；未登记版本与未知执行仍不自动重放。
+硬限额。应用迁移由[11k](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)
+补至当前15d7ccb1协议，[11j](SERVE_TASK_DEADLINE_RESULT_2026-11-04.md)
+补齐持久客户端全程网络期限；[12l](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)
+限定接受当前托管包截止与停止，保留首轮ENV_ABORT及定向补验口径。
+未登记版本与未知执行仍不自动重放。2026-11-04[基础合同复核](SERVE_CONTRACT_REAUDIT_2026-11-04.md)
+区分当前能力/可选部署/历史证据与剩余边界；准备阶段tokenizer锁等待
+取消为下一项有界复现，不把单次IO超时或有限配额当完整时限/公平性。
 
 先完成[PHASES任务队列](PHASES.md#队列与依赖)B组，再根据部署答复
 激活必要C项，补持续运行和运营验收。工业化接受必须逐行检查当前
@@ -77,6 +81,11 @@ TLS网关及独立API Key接入；10a先进行loopback开发/短验，实际地�
 或明确失效，不能用同名其他实验结果替代。
 
 ## 当前工作包
+
+- SRV-20：[当前合同与证据入口复核](SERVE_CONTRACT_REAUDIT_2026-11-04.md)。
+  文档与身份核对，不新增运行时测试；旧应用记录独立快照、修正加载
+  前监听/已验托管/当前协议交接及配额/持久任务状态。后续先复现准备
+  阶段锁等待的取消边界，具体代码修复和真实验收不由本次文档核对替代。
 
 - SRV-12k：[原生启动双监听所有权限定交付](SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md)。
   默认61abe09f/ce925d51；41原生/5无模型CLI、1模型6尝试2工具通过，

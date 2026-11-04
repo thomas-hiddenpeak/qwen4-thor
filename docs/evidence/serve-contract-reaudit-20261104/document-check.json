@@ -1,0 +1,364 @@
+{
+  "kind": "added_links_and_restore_unit_read_only",
+  "links_checked": 70,
+  "errors": [],
+  "links": [
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "STATUS.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "APPLICATION_SERVICE_HISTORY_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_MANAGED_PROFILE_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_CUDA_QUOTA_INTEGRATION_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_NOTIFY_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_RETENTION_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "serve-chat-request-v1.schema.json",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "serve-input-semantics-v1.json",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "serve-openapi-v1.json",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "../src/server/chat_contract.cpp",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "../src/server/chat_template.cpp",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "../src/server/chat_capabilities.cpp",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "../src/server/chat_http.cpp",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "../src/server/http_response.cpp",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_TASK_DEADLINE_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "PHASES.md#队列与依赖",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "VLLM_SERVICE_GAPS_2026-11-02.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "APPLICATION_SERVICE_HISTORY_2026-11-04.md#冻结阶段",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "APPLICATION_SERVICE_HISTORY_2026-11-04.md#官方协议依据",
+      "passed": true
+    },
+    {
+      "file": "docs/APPLICATION_SERVICE.md",
+      "target": "APPLICATION_SERVICE_HISTORY_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/PHASES.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/PHASES.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/README.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/README.md",
+      "target": "APPLICATION_SERVICE_HISTORY_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+      "target": "APPLICATION_SERVICE.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "target": "SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "target": "SERVE_TASK_DEADLINE_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "target": "SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_INDUSTRIAL_PLAN_2026-11-03.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/STATUS.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/VLLM_SERVICE_GAPS_2026-11-02.md",
+      "target": "SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/VLLM_SERVICE_GAPS_2026-11-02.md",
+      "target": "SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/VLLM_SERVICE_GAPS_2026-11-02.md",
+      "target": "SERVE_CLIENT_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/VLLM_SERVICE_GAPS_2026-11-02.md",
+      "target": "SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/VLLM_SERVICE_GAPS_2026-11-02.md",
+      "target": "SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/VLLM_SERVICE_GAPS_2026-11-02.md",
+      "target": "APPLICATION_SERVICE.md#当前剩余项与顺序",
+      "passed": true
+    },
+    {
+      "file": "docs/VLLM_SERVICE_GAPS_2026-11-02.md",
+      "target": "PHASES.md#队列与依赖",
+      "passed": true
+    },
+    {
+      "file": "tools/serve_audit/README.md",
+      "target": "../../docs/APPLICATION_SERVICE.md",
+      "passed": true
+    },
+    {
+      "file": "tools/serve_audit/README.md",
+      "target": "../../docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "APPLICATION_SERVICE.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "VLLM_SERVICE_GAPS_2026-11-02.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "SERVE_COMPLETENESS_AUDIT_2026-11-02.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "../include/q4t/server/request_diagnostics.h",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "../src/server/chat_generation.cpp",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "../src/server/chat_preflight.cpp",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "../tools/examples/chat_client.py",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "AGENT_TOOL_CLIENT_2026-11-02.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "SERVE_TASK_DEADLINE_RESULT_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "../tools/examples/js/chat_client.mjs",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "../src/server/client_policy.cpp",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "../include/q4t/server/sequence_admission.h",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "APPLICATION_SERVICE_HISTORY_2026-11-04.md",
+      "passed": true
+    },
+    {
+      "file": "docs/SERVE_CONTRACT_REAUDIT_2026-11-04.md",
+      "target": "evidence/serve-contract-reaudit-20261104/snapshot.json",
+      "passed": true
+    }
+  ],
+  "restore_unit": {
+    "MainPID": "0",
+    "LoadState": "masked",
+    "ActiveState": "inactive",
+    "SubState": "dead"
+  },
+  "services_mutated": false
+}

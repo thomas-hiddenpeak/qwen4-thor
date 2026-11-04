@@ -41,6 +41,17 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-20[当前服务合同与证据入口复核完成](SERVE_CONTRACT_REAUDIT_2026-11-04.md)：
+按93d4fac4修正主矩阵和vLLM对照的过期结论，明确加载前监听、已验
+托管/当前协议交接、client配额及应用持久幂等；原402行逐字节留存
+独立历史快照。高级选项按需，不以正式LAN/证书配置阻塞基础开发。
+静态核对223运行来源/112锚点、38字段/10路由/20白名单、17应用来源、
+29托管包文件和三归档810成员通过；未改运行时、默认、旧包/Key/day，
+零模型/HTTP/GPU占用，无新增业务接受，SOAR只读核对仍masked。
+下一项SRV-03c先有界复现并补齐准备阶段tokenizer锁等待的取消；
+标准库示例总截止、JS辅助类Key/CA及公平/物理RAM边界分别登记。
+三份day仅有plan，由用户长验；持续目标active，不宣称全层无遗漏。
+
 SRV-11k[当前启动协议持久任务交接已限定接受](SERVE_TASK_STARTUP_PROTOCOL_RESULT_2026-11-04.md)：
 f4705009登记ddfba8c0→15d7ccb1及11j精确17来源；239原件独立
 审核，24唯一CPU/4事务SIGKILL首轮通过。同锁2模型/两代TLS、4响应
