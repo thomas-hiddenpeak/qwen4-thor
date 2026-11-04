@@ -41,6 +41,13 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-12i[声明/独立运维/host域组合已冻结](SERVE_MANAGED_PROFILE_2026-11-04.md)：
+9项新增CPU首轮通过，含八种显式配置组合、发布副本/依赖绑定、READY
+不能掩盖host失败、缺少委派在启动前拒绝及采样失败仍清理。沿用当前
+7eff020d/cc83bf3a，不改生产实现；下一步在同锁运行1模型/4响应2工具、
+两代TLS网关及136公共满额的组合短验。尚未实机接受，不安装常驻服务。
+高级配置按执行需要启用，长验仍交用户，持续目标active。
+
 SRV-11j[持久任务全程网络期限已限定交付](SERVE_TASK_DEADLINE_RESULT_2026-11-04.md)：
 acf6f3d1统一TCP/TLS/分段写/底层读期限及11i来源登记；16有效CPU/2
 入口/2探针修正通过，原2夹具失败保持。250ms预算旧真实慢头1.507秒，
