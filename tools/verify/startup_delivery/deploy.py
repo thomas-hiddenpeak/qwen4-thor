@@ -94,6 +94,10 @@ def verify_pair(binary, sidecar, expected_sha, cache=None):
     require_regular(cache)
     require(sha(cache) == metadata['build_cache_sha256'],
             'release real build cache differs')
+    if 'release_declarations' in metadata:
+        package = module('startup_release_declarations',
+                         ROOT / 'tools/serve_service/package.py')
+        package.verify_declarations(metadata)
     return metadata
 
 

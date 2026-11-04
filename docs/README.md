@@ -4,6 +4,8 @@
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
 应用服务：[能力与 OpenAI 兼容矩阵、vLLM 差距与分阶段计划](APPLICATION_SERVICE.md)。
+[SRV-19发布声明与schema冻结合同](SERVE_RELEASE_DECLARATIONS_2026-11-04.md)及
+[元数据修正、62项CPU与默认sidecar交付](SERVE_RELEASE_DECLARATIONS_RESULT_2026-11-04.md)。
 [Serve阶段A交付、HTTP/SSE合同与剩余边界](SERVE_STAGE_A_RESULT_2026-11-03.md)。
 [Serve阶段B1角色profile交付、模板差分与真实工具闭环](SERVE_STAGE_B1_RESULT_2026-11-03.md)。
 [Serve B2a推理字段/隐藏交付及真实工具历史回填](SERVE_STAGE_B2A_RESULT_2026-11-03.md)。

@@ -22,6 +22,14 @@ SOURCES = (*V2_SOURCES, 'tools/serve_service/inspection.py')
 V4_SOURCES = (*SOURCES, 'tools/serve_gateway/client_policy.py')
 V5_SOURCES = (*V4_SOURCES, 'tools/serve_service/resources.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
+DECLARATION_PROFILE = 'q4t-release-declarations-v1'
+DECLARATION_SCHEMAS = ('config', 'message', 'preflight', 'reasoning',
+                       'response', 'stop', 'thinking')
+DECLARATION_FILES = ('capabilities.json', 'configuration.json',
+                     *('schemas/'+s+'.json' for s in DECLARATION_SCHEMAS))
+DECLARATION_SECTIONS = ('cancellation', 'errors', 'http', 'memory_admission',
+                        'observability', 'preflight', 'reasoning',
+                        'structured_output', 'template', 'text_stop')
 # Some releases combine preserved failed attempts and targeted successful
 # repairs into an explicit acceptance decision. Do not accept arbitrary
 # ACCEPT_* or turn a failed underlying attempt into a PASS_* receipt.
@@ -124,6 +132,75 @@ def accepted_release(metadata, decision):
             'explicit accepted release required')
 
 
+def same_json(left, right):
+    """JSON equality must distinguish true from 1 and false from 0."""
+    return json.dumps(left, sort_keys=True, allow_nan=False) == json.dumps(
+        right, sort_keys=True, allow_nan=False)
+
+
+def verify_declarations(metadata, directory=None, *, required=False):
+    """Check frozen observations, not mutable docs or a live server.
+
+    Old sealed packages/rollback pairs may lack the profile. New preparation
+    requires it. A package supplies its own copied directory, so original
+    artifact paths are provenance only and need not survive distribution.
+    These are observed implementation claims, not new feature acceptance.
+    """
+    declaration = metadata.get('release_declarations')
+    if 'release_declarations' not in metadata:
+        require(not required, 'release declarations required for new package')
+        return None
+    require(type(declaration) is dict and set(declaration) == {
+        'profile', 'directory', 'binary_sha256', 'protocol_sha256', 'files'},
+        'invalid release declaration fields')
+    require(declaration['profile'] == DECLARATION_PROFILE,
+            'unknown release declaration profile')
+    require(type(declaration['directory']) is str,
+            'invalid declaration directory')
+    original = Path(declaration['directory'])
+    require(original.is_absolute() and '..' not in original.parts,
+            'declaration directory must be absolute')
+    root = Path(directory) if directory is not None else original
+    require(root == root.resolve(strict=True), 'symlink declaration directory')
+    files = declaration['files']
+    require(type(files) is dict and set(files) == set(DECLARATION_FILES),
+            'declaration inventory differs')
+    for name, digest in files.items():
+        path = root/name
+        require(path == path.resolve(strict=True), 'symlink declaration file')
+        regular(path)
+        require(sha(path) == digest, 'declaration file changed: '+name)
+    protocol = metadata['chat_protocol']
+    require(declaration['binary_sha256'] == metadata['binary_sha256'] and
+            declaration['protocol_sha256'] == protocol['protocol_sha256'],
+            'declaration release identity differs')
+    caps, config = (read(root/name) for name in DECLARATION_FILES[:2])
+    require(type(caps) is dict and type(config) is dict and
+            caps.get('protocol_source_sha256') ==
+            config.get('protocol_source_sha256') == protocol['protocol_sha256']
+            and type(caps.get('model')) is str and
+            caps['model'] == config.get('model'),
+            'declaration observed identity differs')
+    require(set(DECLARATION_SECTIONS) <= caps.keys() & protocol.keys(),
+            'declaration sections incomplete')
+    for key in caps.keys() & protocol.keys():
+        require(same_json(caps[key], protocol[key]),
+                'declaration capability differs: '+key)
+    require(same_json(config.get('observability_version'),
+                      caps['observability']['version']),
+            'declaration observation versions differ')
+    require(same_json(metadata.get('observed_configuration'), config),
+            'declaration configuration differs')
+    for name in DECLARATION_SCHEMAS:
+        relative = 'schemas/'+name+'.json'
+        require(protocol.get(name+'_schema') == str(original/relative) and
+                protocol.get(name+'_schema_sha256') == files[relative],
+                'declaration schema differs: '+name)
+        require(type(read(root/relative)) is dict,
+                'declaration schema must be an object')
+    return root
+
+
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
             operations_port=0):
@@ -150,6 +227,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     protocol = metadata['chat_protocol']['protocol_sha256']
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
+    declarations = verify_declarations(metadata, required=True)
     config = settings(port, restart_limit, critical_memory_mib, operations_port)
     model_files = {p.name: sha(p) for p in sorted(model.glob('*.json'))
                    if p.is_file() and not p.is_symlink()}
@@ -167,6 +245,12 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         shutil.copyfile(source, dest)
         os.chmod(dest, 0o400)
     names = [*FILES, *('source/'+s for s in sources)]
+    for name in DECLARATION_FILES:
+        dest = target/'declarations'/name
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(declarations/name, dest)
+        dest.chmod(0o400)
+        names.append('declarations/'+name)
     if policy_raw is not None:
         with (target/'client-policy.json').open('xb') as stream:
             stream.write(policy_raw)
@@ -178,6 +262,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         python=dict(path=str(python), sha256=sha(python)),
         files={name: sha(target/name) for name in names},
         weight_shards_rehashed=False, managed_service_accepted=False)
+    manifest['release_declarations'] = DECLARATION_PROFILE
     if policy_raw is not None:
         manifest['version'] = 4
         manifest['client_policy'] = cp.binding(policy_raw)
@@ -213,6 +298,10 @@ def verify(package, digest):
     sources = {1: LEGACY_SOURCES, 2: V2_SOURCES, 3: SOURCES,
                4: V4_SOURCES, 5: V5_SOURCES, 6: V5_SOURCES}[manifest['version']]
     expected = {*FILES, *('source/'+name for name in sources)}
+    if 'release_declarations' in manifest:
+        require(manifest['release_declarations'] == DECLARATION_PROFILE,
+                'unknown package declaration profile')
+        expected.update('declarations/'+n for n in DECLARATION_FILES)
     if manifest['version'] == 4 or manifest['version'] in (5, 6) and 'client_policy' in manifest:
         from tools.serve_gateway import client_policy as cp
         expected.add('client-policy.json')
@@ -237,6 +326,11 @@ def verify(package, digest):
     require(sha(manifest['python']['path']) == manifest['python']['sha256'],
             'Python interpreter changed')
     metadata = read(package/'q4t.release.json')
+    require(('release_declarations' in metadata) ==
+            ('release_declarations' in manifest),
+            'package declaration profile differs')
+    verify_declarations(metadata, package/'declarations',
+                        required='release_declarations' in manifest)
     accepted_release(metadata, read(package/'acceptance.json'))
     require(metadata['binary_sha256'] == manifest['files']['q4t'] and
             metadata['build_cache_sha256'] == manifest['files']['CMakeCache.txt']

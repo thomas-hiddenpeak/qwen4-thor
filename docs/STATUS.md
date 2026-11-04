@@ -41,6 +41,17 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-19[发布声明一致性已限定交付](SERVE_RELEASE_DECLARATIONS_RESULT_2026-11-04.md)：
+默认ELF7eff020d保持，sidecar更新cc83bf3a；四组过时声明/三份schema摘要
+修正，新包冻结capabilities/config/七schema并强制校验，旧封存包保持。
+62唯一CPU及真实旧声明拒绝、七schema/实际配置响应/旧v6核对通过；
+原隔离调用路径错误保留，正式包入口通过，新包仅准备未新增托管验收。
+62原件封存；零模型/HTTP/GPU，CLI一次通过，完整旧pair保留，原锁可用，
+GPU/容器空、恢复服务masked。初稿重号17已更正19，原记录不回写。
+用户明确高级接入按执行需要启用：实际LAN/TLS/CIDR/正式策略为可选部署
+验收，不作为基础开发配置前置；长验仍由用户执行。持续目标active，
+下一步独立审核fc63db28→ddfba8c0任务协议迁移，旧day保持且未运行。
+
 SRV-12h[独立运维托管与TLS生命周期已限定接受](SERVE_OPERATIONS_MANAGED_RESULT_2026-11-04.md)：
 8213896c驱动/5 CPU，v6包c4775a10实际生产监督器新样本在136公共
 满额仍READY，诊断HEALTHY/TLS发现通过；2错误运维上游均child前拒绝。

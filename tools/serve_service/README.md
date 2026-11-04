@@ -17,6 +17,15 @@
 目录只读，只重新核对JSON元数据，没有重算全部权重shard摘要。
 准备包不会把托管入口自动标为业务验收通过，摘要也不是签名认证。
 
+新prepare还要求`q4t-release-declarations-v1`发布声明：完整实际
+capabilities/config及七份schema与ELF/协议绑定，包内复制并核对摘要。
+继承旧能力、错误schema引用或配置不一致在创建输出前拒绝；包的后续
+校验使用包内副本，不依赖工作区文档和原声明目录。旧封存v1..v6包
+没有扩展时仍按旧合同校验；不能用旧sidecar新建缺资料的包。资料记录
+实现声明，不扩张业务验收范围，详见
+[SRV-19合同](../../docs/SERVE_RELEASE_DECLARATIONS_2026-11-04.md)及
+[元数据交付结果](../../docs/SERVE_RELEASE_DECLARATIONS_RESULT_2026-11-04.md)。
+
 实际运行应使用身份与配置匹配的托管证据；本次已验包和绑定manifest
 SHA的伴随接受记录见上述结果页。prepare本身的未验声明不被改写，
 不能把新准备的其他配置自动视为本次接受。启动新代次示例：

@@ -464,6 +464,29 @@ class PackageTests(unittest.TestCase):
             acceptance='ACCEPT_CPU_FIXTURE', acceptance_decision=str(accepted),
             acceptance_decision_sha256=pkg.sha(accepted),
             chat_protocol=dict(protocol_sha256='a'*64)))
+        metadata = pkg.read(release)
+        bundle = self.root/'declarations'
+        (bundle/'schemas').mkdir(parents=True)
+        caps = {key: {} for key in pkg.DECLARATION_SECTIONS}
+        caps.update(model='cpu-fixture', protocol_source_sha256='a'*64,
+                    observability=dict(version=5))
+        config = dict(model='cpu-fixture', protocol_source_sha256='a'*64,
+                      observability_version=5)
+        pkg.save(bundle/'capabilities.json', caps)
+        pkg.save(bundle/'configuration.json', config)
+        for name in pkg.DECLARATION_SCHEMAS:
+            path = bundle/'schemas'/(name+'.json')
+            pkg.save(path, {'type': 'object'})
+            metadata['chat_protocol'][name+'_schema'] = str(path)
+            metadata['chat_protocol'][name+'_schema_sha256'] = pkg.sha(path)
+        metadata['chat_protocol'].update(
+            {key: caps[key] for key in pkg.DECLARATION_SECTIONS})
+        metadata['observed_configuration'] = config
+        metadata['release_declarations'] = dict(profile=pkg.DECLARATION_PROFILE,
+            directory=str(bundle), binary_sha256=pkg.sha(binary),
+            protocol_sha256='a'*64,
+            files={name: pkg.sha(bundle/name) for name in pkg.DECLARATION_FILES})
+        pkg.save(release, metadata)
         return binary, release, model
 
     def test_snapshot_is_independent_of_worktree_and_original_pair(self):
