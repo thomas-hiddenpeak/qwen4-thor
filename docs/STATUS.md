@@ -41,11 +41,15 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-12h[独立运维托管短验已冻结](SERVE_OPERATIONS_MANAGED_2026-11-04.md)：
-复用已准备v6包，补真实controller/监督器/双监听inspect和TLS网关生命周期。
-1模型、2网关/2配置拒绝、4响应2工具；公共慢头满额要求新监督样本，
-GPU最多240秒，不跑长验。5项驱动CPU通过、默认/v6身份核对通过；
-尚未运行模型或HTTP，默认/旧Key/day保持。
+SRV-12h[独立运维托管与TLS生命周期已限定接受](SERVE_OPERATIONS_MANAGED_RESULT_2026-11-04.md)：
+8213896c驱动/5 CPU，v6包c4775a10实际生产监督器新样本在136公共
+满额仍READY，诊断HEALTHY/TLS发现通过；2错误运维上游均child前拒绝。
+1模型/2显式网关、双Key4响应2真实工具/引用及512/64预算正确，grammar4/4。
+首轮通过，guard/custody均COMPLETED；同原锁64.776892秒，60+24重叠
+观察，三监听/自有身份/GPU释放，10秒未复起，容器空/SOAR masked。
+115原件/242本机引用核对；默认7eff020d、旧Key/三份day保持且day未跑。
+该包不含host域，v6+host组合/整机物理RAM、旧任务协议迁移、实际LAN/
+正式策略和用户长验仍待；不安装常驻服务，工业化目标active。
 
 SRV-12g[独立本机运维入口已限定交付](SERVE_OPERATIONS_LISTENER_RESULT_2026-11-04.md)：
 默认7eff020d/sidecarabfaeff9、protocolddfba8c0；显式loopback8额、
@@ -56,9 +60,9 @@ Python、289公共/255必需host、9结构化、33原生及三代官方时序通
 2真实工具/引用与512/64预算正确，grammar4/4。三轮原失败保留，
 最终COMPLETED/DELIVERED；累计2模型/7尝试、GPU159.294358秒/150
 观察，6自有身份/三监听/GPU/原锁释放，容器空/SOAR masked。
-337原件/893本机引用核对，旧49cc完整pair及规则保留；新v6包仅准备
-核验未启动，原Key/旧包/3份day保持且day未跑。实际LAN、正式策略、
-完整物理RAM、v6托管/用户长验及新协议任务交接仍待，工业化目标active。
+337原件/893本机引用核对，旧49cc完整pair及规则保留；该阶段v6包仅准备，
+托管短验已由SRV-12h补齐。原Key/旧包/3份day保持且day未跑；实际LAN、
+正式策略、物理RAM/v6+host组合/用户长验及新协议任务交接仍待。
 
 
 SRV-10g[显式客户端来源与真实闭环限定接受](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)：
