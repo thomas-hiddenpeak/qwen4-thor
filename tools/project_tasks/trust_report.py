@@ -32,7 +32,7 @@ def tasks(data,plan,ends):
             known=read('execution/'+client+'-known-ledger.json');final=read('execution/'+client+'-ledger.json')
             require(known['meta']==final['meta'] and known['events']==final['events'][:len(known['events'])] and
                 known['events'][-1]['kind']=='tool_result','saved tool history unchanged')
-            prefix='execution/'+client+'-completed-task/';folder=Path(temp)/client;folder.mkdir(mode=0o700)
+            prefix='execution/'+client+'-completed-task/';folder=Path(temp)/final['meta']['task_id'];folder.mkdir(mode=0o700)
             for name,raw in data.items():
                 if name.startswith(prefix):store.write_new(folder/name[len(prefix):],raw)
             require(sha(data[prefix+'ledger.db'])==final['database_sha256'],'completed ledger identity')
@@ -122,9 +122,11 @@ def evaluate(data):
         all(v['conflicts']==[] for v in observations) and all(0<=b['monotonic']-a['monotonic']<=10 for a,b in zip(events,events[1:])),'continuous GPU lease')
     seconds=events[-1]['monotonic']-events[0]['monotonic'];require(seconds<=210 and
         read('execution/guard-archive.json')==dict(passed=True,records=len(events),observations=len(observations),seconds=seconds),'guard reconstruction')
-    post=read('postflight/result.json');require(post['passed'] and post['lock_available'] and post['ports_available'] and post['lock_identity']==[66305,3294067] and
-        post['days']==plan['days'] and post['default_unchanged'] and read('postflight/gpu.json')['pids']==[] and not data['postflight/containers.txt'].strip(),'postflight')
-    require(dict(v.split('=',1) for v in data['postflight/soar-unit.txt'].decode().splitlines())==
+    require(b'owner_identity_invalid' in data['postflight-command.log'] and b'task identity changed' in data['archive-command.log'],
+        'original offline process/task identity extraction failures preserved')
+    post=read('postflight-corrected/result.json');require(post['passed'] and post['lock_available'] and post['ports_available'] and post['lock_identity']==[66305,3294067] and
+        post['days']==plan['days'] and post['default_unchanged'] and read('postflight-corrected/gpu.json')['pids']==[] and not data['postflight-corrected/containers.txt'].strip(),'postflight')
+    require(dict(v.split('=',1) for v in data['postflight-corrected/soar-unit.txt'].decode().splitlines())==
         dict(LoadState='masked',ActiveState='inactive',SubState='dead',MainPID='0'),'vLLM recovery stayed off')
     return dict(passed=True,cpu_tests=124,driver_tests=4,cpu_file_operation_kills=len(read('cpu-01/result.json')['file_operation_kills']),
         models=1,gateways=2,application_kills=2,complete_responses=4,real_tools=2,completed_tasks=2,response_usage=usage,
@@ -132,11 +134,32 @@ def evaluate(data):
         archived_resumes_without_execution=2,retained_payloads=1,permanent_keys=2,metadata_refusals=4,gpu_seconds=seconds,
         gpu_observations=len(observations),seconds=result['seconds'],controls=result['counts']['controls'],owned_exited=post['owned_exited'],
         memcg_peak_bytes=final['final']['memory.peak'],memcg_events=final['final']['memory.events'],pids_events=final['final']['pids.events'],
-        cleanup_confirmed=True,long_run=False,actual_lan_accepted=False,physical_ram_limit=False,performance_acceptance=False)
+        cleanup_confirmed=True,long_run=False,actual_lan_accepted=False,physical_ram_limit=False,performance_acceptance=False,
+        original_offline_owner_extraction_error_preserved=True,original_offline_task_directory_error_preserved=True)
+
+
+def frozen_runtime_plan():
+    """Runtime stays frozen; only this separately pinned offline report changed."""
+    plan=pkg.read(s.PLAN);report='tools/project_tasks/trust_report.py'
+    for name,digest in plan['source_files'].items():
+        path=BASE/'cpu-driver/source'/name if name==report else ROOT/name
+        require(pkg.sha(path)==digest,'frozen runtime source changed: '+name)
+    for name,digest in {**plan['default'],**plan['private'],**plan['days']}.items():require(pkg.sha(ROOT/name)==digest,'fixed artifact changed')
+    for name in plan['days']:require(not (Path(name).parent/'execution').exists(),'user day executed')
+    for folder,digest in plan['receipts'].items():require(pkg.sha(BASE/folder/'result.json')==digest,'CPU receipt changed')
+    require(pkg.sha(plan['reused_plan']['path'])==plan['reused_plan']['sha256'] and
+        pkg.sha(ROOT/plan['historical_archive'])==plan['historical_archive_sha256'],'historical evidence changed')
+    for row in plan['original_packages']:require(pkg.sha(Path(row['package'])/'manifest.json')==row['manifest_sha256'],'old package changed')
+    pkg.verify(plan['package']['package'],plan['package']['manifest_sha256'])
+    for row in plan['gateways']:s.gateway.verify(row['package'],row['manifest_sha256'])
+    for row in plan['authorities']:require(pkg.sha(row['path'])==row['sha256'],'CA changed')
+    for key,row in plan['profiles'].items():require(pkg.sha(row['path'])==row['sha256'] and s.transport.profile(row['path'])[1]==plan['bindings'][key],'profile changed')
+    for name,digest in plan['historical']['sources'].items():require(pkg.sha(s.HISTORICAL/name)==digest,'historical engine changed')
+    return plan
 
 
 def postflight():
-    s.configure();plan=s.check();output=BASE/'postflight';output.mkdir(mode=0o700);s.a.require_idle(output/'gpu.json')
+    s.configure();plan=frozen_runtime_plan();output=BASE/'postflight-corrected';output.mkdir(mode=0o700);s.a.require_idle(output/'gpu.json')
     lock=s.a.guard.common_lock();info=lock.stat();require([info.st_dev,info.st_ino]==[66305,3294067] and s.a.lock_available(lock),'original lock')
     command=subprocess.run(['systemctl','--user','show','soar-flash-fast-v3-fixture-retry-qualified-v1-20261103.service',
         '-p','LoadState','-p','ActiveState','-p','SubState','-p','MainPID'],capture_output=True,text=True,timeout=10,check=True)
@@ -147,7 +170,8 @@ def postflight():
     owners={}
     def visit(value):
         if isinstance(value,dict):
-            if {'pid','start_ticks','boot_id'}<=value.keys():owners[value['pid'],value['start_ticks'],value['boot_id']]=value
+            if {'pid','start_ticks','boot_id'}<=value.keys():
+                owners[value['pid'],value['start_ticks'],value['boot_id']]={key:value[key] for key in ('pid','start_ticks','boot_id')}
             else:
                 for v in value.values():visit(v)
         elif isinstance(value,list):
@@ -165,8 +189,8 @@ def postflight():
 
 
 def collect():
-    paths=[BASE/'plan.json',BASE/'live-command.log']
-    for folder in ('cpu-01','cpu-driver','execution','plans','postflight'):paths.extend(p for p in (BASE/folder).rglob('*') if p.is_file())
+    paths=[BASE/n for n in ('plan.json','live-command.log','postflight-command.log','postflight-corrected-command.log','archive-command.log')]
+    for folder in ('cpu-01','cpu-driver','execution','plans','postflight','postflight-corrected'):paths.extend(p for p in (BASE/folder).rglob('*') if p.is_file())
     for index in (1,2):paths.extend(BASE/f'gateway-{index}'/n for n in ('manifest.json','gateway/manifest.json','gateway/certificate.pem','gateway/trusted-ca.pem'))
     data={str(p.relative_to(BASE)):p.read_bytes() for p in sorted(set(paths)) if p.exists() and not p.is_symlink()}
     plan=pkg.read(BASE/'plan.json')

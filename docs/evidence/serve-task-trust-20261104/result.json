@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "cpu_tests": 124,
+  "driver_tests": 4,
+  "cpu_file_operation_kills": 27,
+  "models": 1,
+  "gateways": 2,
+  "application_kills": 2,
+  "complete_responses": 4,
+  "real_tools": 2,
+  "completed_tasks": 2,
+  "response_usage": {
+    "alpha": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ],
+    "beta": [
+      {
+        "completion_tokens": 55,
+        "prompt_tokens": 647,
+        "total_tokens": 702
+      },
+      {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    ]
+  },
+  "verified_tls": 2,
+  "old_ca_rejected_before_http": 1,
+  "active_ca_migrations": 2,
+  "archived_ca_migrations": 2,
+  "duplicate_applies": 4,
+  "duplicate_submits": 4,
+  "archived_resumes_without_execution": 2,
+  "retained_payloads": 1,
+  "permanent_keys": 2,
+  "metadata_refusals": 4,
+  "gpu_seconds": 69.81672288686968,
+  "gpu_observations": 66,
+  "seconds": 70.8386787918862,
+  "controls": 35,
+  "owned_exited": 9,
+  "memcg_peak_bytes": 16725082112,
+  "memcg_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0,
+    "oom_group_kill": 0
+  },
+  "pids_events": {
+    "max": 0
+  },
+  "cleanup_confirmed": true,
+  "long_run": false,
+  "actual_lan_accepted": false,
+  "physical_ram_limit": false,
+  "performance_acceptance": false,
+  "original_offline_owner_extraction_error_preserved": true,
+  "original_offline_task_directory_error_preserved": true
+}

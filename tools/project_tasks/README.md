@@ -133,6 +133,7 @@ python3 -B tools/project_tasks/runner.py apply-migration \
 [迁移合同](../../docs/SERVE_TASK_MIGRATION_2026-11-04.md)。
 
 CA交接使用独立的显式计划，见[信任迁移合同](../../docs/SERVE_TASK_TRUST_2026-11-04.md)。
+[双CA真实恢复与归档保键短验已限定接受](../../docs/SERVE_TASK_TRUST_RESULT_2026-11-04.md)。
 新profile仅更换ca_file对应材料，client、origin/IP、Key、模型、
 协议/模板保持；先停妥旧任务进程，核对计划旧/新CA SHA、revision、
 来源及预算，再应用摘要。不能用普通apply-migration应用信任计划。

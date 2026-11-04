@@ -41,11 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-11g[持久任务CA迁移与连接材料绑定开发中](SERVE_TASK_TRUST_2026-11-04.md)：
-代码确认仅支持Key迁移，且CA摘要/上下文两次按路径读取存在错接窗口。
-已实现显式同身份CA交接、活跃/未知/归档保键与一次材料快照；124
-应用CPU/4驱动首轮通过，含27文件操作SIGKILL及六代历史证据。
-待1模型2网关4响应2工具真实双CA恢复短验，不运行用户day。
+SRV-11g[持久任务CA交接与真实恢复限定接受](SERVE_TASK_TRUST_RESULT_2026-11-04.md)：
+7d0d8dec实现；独立信任计划、仅CA变更、同材料TLS快照、原历史/
+预算/UNKNOWN/归档保键保持及11f来源登记。124 CPU/4驱动首轮通过，
+27文件操作SIGKILL及六代历史证据重建。1模型2不同CA网关，2旧应用
+保存真实工具后SIGKILL，新版各只续1最终回答；4响应2工具/引用和
+512/64预算正确，grammar4/4，旧CA在HTTP前拒绝、后端身份保持。
+2活跃/2归档信任迁移、4重复apply/4重复submit/2归档resume零新增执行，
+4元数据拒绝。GPU69.816723秒/66观察、总70.838679秒/35父控制；9自有
+身份退，scope/GPU/原锁/监听释放、容器空/SOAR masked。394原件/5二进制
+路径身份重建通过，原进程字段/任务临时目录两处离线错误保留，仅修正
+报告无追加推理。默认/222源码/原Key/旧包/3份day保持且day未跑。
+实际LAN/正式策略、模型协议迁移、物理RAM与用户长验仍待，目标active。
 
 SRV-10f[TLS运行观测与本机通知限定接受](SERVE_TLS_OBSERVATION_RESULT_2026-11-04.md)：
 d94cc246实现，host包v2/notify包v3补齐TLS依赖与早期child回收；
@@ -149,7 +156,7 @@ SRV-11c[任务源码升级与同客户端Key轮换限定接受](SERVE_TASK_MIGRA
 4成功/2工具/3预检、grammar4/4。GPU两窗口52.587/48.171秒分别释放；
 468原件/3 ELF路径身份离线重建通过，16自有身份退、4代次SEALED，
 SOAR masked/容器空，默认/原包/原Key/3份day未改且day未跑。
-未登记版本、CA/模型协议迁移、正式容量/策略、实际LAN、物理RAM和
+CA交接见11g；未登记版本、模型协议迁移、正式容量/策略、实际LAN、物理RAM和
 用户长验仍待完善，工业化目标保持active。
 
 SRV-11b[任务预算与逐轮预检限定接受](SERVE_PROJECT_TASK_BUDGET_RESULT_2026-11-04.md)：
