@@ -64,7 +64,10 @@ X-Real-IP、Forwarded或PROXY protocol。所有Key共用此来源清单，
 新建内网监听必须用v2；v1新包只允许127.0.0.1，旧固定包保持其原
 入口。变更来源需排空后显式准备/启动新包。网关前若存在NAT或
 其他代理，检查的是它们的真实TCP来源；不靠转发头绕过来源限制。
-合同与短验范围见[SRV-10g](../../docs/SERVE_GATEWAY_SOURCES_2026-11-04.md)。
+合同见[SRV-10g](../../docs/SERVE_GATEWAY_SOURCES_2026-11-04.md)，
+[本机来源/双Key短验已限定接受](../../docs/SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)。
+日志收尾断言误报的原失败保留，原始业务证据经离线重建；复核使用
+`python3 -B tools/serve_gateway/sources_report.py verify`，不会启动HTTP或模型。
 
 证书链需已生效、匹配server_name和服务器用途，完整链有效期交集
 剩余严格大于1小时。可选`--trusted-ca`指定一个CA锚点做严格链验证；

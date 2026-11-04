@@ -249,7 +249,7 @@ class Run(s.Run):
             pkg.require(observed['status'] == row['status'] and
                 observed['source_allowed'] == row['source_allowed'], 'source access record differs')
             if row['status'] in (401, 403, 404):
-                pkg.require(observed['upstream_status'] == '-', 'refused request proxied')
+                pkg.require(observed['upstream_status'] in ('', '-'), 'refused request proxied')
         pkg.require(sum(v['source_allowed'] == 0 for v in rows) == 16, 'refusal accounting')
         for row in rows:
             pkg.require(set(row) == {'gateway_id', 'client', 'lane', 'status', 'bytes', 'seconds',

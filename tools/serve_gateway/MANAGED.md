@@ -8,6 +8,11 @@
 
 可选SRV-10c策略已完成[本机验收](../../docs/SERVE_CLIENT_MANAGED_RESULT_2026-11-04.md)。
 新prepare支持`--client-policy FILE`，须与模型托管包使用相同字节。
+新policy v2可显式填写来源CIDR，实际TCP peer默认拒绝；新建LAN监听
+必须v2。配置与范围见[基础入口](README.md)和
+[10g短验结果](../../docs/SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)。
+该策略随源码快照固定，旧包不自动升级；变更网段仍需排空并准备新包。
+
 当前prepare生成托管version4、内层version3，增加固定TLS校验源码与
 材料元数据；旧包通过各自包内入口使用，不原位升级。
 本轮进度见[TLS生命周期合同](../../docs/SERVE_TLS_LIFECYCLE_2026-11-04.md)。

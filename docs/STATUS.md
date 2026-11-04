@@ -41,12 +41,17 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-10g[显式客户端来源边界待实机短验](SERVE_GATEWAY_SOURCES_2026-11-04.md)：
-新增policy v2必填CIDR、socket peer默认拒绝、403和有限日志字段；
-新建LAN拒绝无来源策略的v1，旧固定包保持。78有效CPU含6驱动通过；
-首轮nginx -t绑定未配置LAN地址的夹具失败保留，仅1项及6驱动定向
-复验，生产未改。单锁21探针、双Key4响应2工具已冻结，尚未执行。
-不启动实际内网监听，默认/模型来源/原Key/三份day保持；长验由用户。
+SRV-10g[显式客户端来源与真实闭环限定接受](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)：
+e69640bd生产，policy v2必填CIDR/真实peer默认拒绝，伪造头无效；新建
+LAN必须v2，旧包保持。78有效CPU含6驱动、3日志回归；首轮未配置
+LAN地址bind失败保留。1模型1TLS网关、21探针含16来源403，双Key
+4响应2真实工具/引用与512/64预算正确；25条日志、grammar4/4。
+最后日志空upstream误断言及离线派生文件缺失均保留，原guard为
+COMMAND_FAILED，业务/清理证据离线重建接受，无追加模型或HTTP。
+GPU54.664095秒/52观察、2自有身份退，原锁/监听/GPU释放，容器空、
+SOAR masked。558原件/4二进制身份核对通过，默认/222来源/原Key/
+旧包/3份day保持且day未跑。实际LAN/新托管生命周期、正式策略、
+物理RAM/灾备/用户长验仍待，工业化目标active。
 
 SRV-11h[已审核协议迁移与真实恢复限定接受](SERVE_TASK_PROTOCOL_RESULT_2026-11-04.md)：
 a4986d61实现、a9fc6e18路径修正；独立协议计划/有向审核，当前仅

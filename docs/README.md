@@ -74,7 +74,8 @@
 [SRV-10e TLS材料、证书有效期与同CA换证](SERVE_TLS_LIFECYCLE_2026-11-04.md)及
 [双证书真实工具短验与交付](SERVE_TLS_LIFECYCLE_RESULT_2026-11-04.md)；
 [SRV-10f TLS观测与到期告警合同](SERVE_TLS_OBSERVATION_2026-11-04.md)、
-[SRV-10g 显式客户端来源边界合同](SERVE_GATEWAY_SOURCES_2026-11-04.md)、
+[SRV-10g 显式客户端来源边界合同](SERVE_GATEWAY_SOURCES_2026-11-04.md)及
+[本机来源/双Key真实闭环限定接受](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)、
 [本机通知与真实工具短验](SERVE_TLS_OBSERVATION_RESULT_2026-11-04.md)及
 [只读观察器操作手册](../tools/serve_tls/README.md)；
 [SRV-10c客户端状态隔离与请求预算开发合同](SERVE_CLIENT_ISOLATION_2026-11-04.md)、
