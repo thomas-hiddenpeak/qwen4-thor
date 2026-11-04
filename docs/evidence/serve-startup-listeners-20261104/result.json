@@ -1,0 +1,224 @@
+{
+  "accepted_package": {
+    "binary_sha256": "61abe09fb0d2585c4f8efa3e5740fa4d0ea5af06971e4490df2d17000453ecce",
+    "manifest_sha256": "51ccb951073cb923a7dc38c4b4ab9e072bb87649b13a77ed3efc1790d3c8ef46",
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-listeners-20261104/accepted-backend"
+  },
+  "actual_lan_accepted": false,
+  "archived_records": 291,
+  "cancelled": 1,
+  "cli_no_model_probes": [
+    {
+      "label": "baseline-conflict",
+      "operations_port": 39623,
+      "original_owner_preserved": true,
+      "ports_released": true,
+      "public_port": 42377,
+      "returncode": 1,
+      "seconds": 0.03661435307003558
+    },
+    {
+      "label": "public-conflict",
+      "operations_port": 40421,
+      "original_owner_preserved": true,
+      "ports_released": true,
+      "public_port": 38825,
+      "returncode": 1,
+      "seconds": 0.040337861981242895
+    },
+    {
+      "label": "operations-conflict",
+      "operations_port": 38827,
+      "original_owner_preserved": true,
+      "ports_released": true,
+      "public_port": 40849,
+      "returncode": 1,
+      "seconds": 0.040640606079250574
+    },
+    {
+      "label": "tokenizer-failure",
+      "operations_port": 40497,
+      "original_owner_preserved": false,
+      "ports_released": true,
+      "public_port": 39777,
+      "returncode": 1,
+      "seconds": 0.03512264718301594
+    },
+    {
+      "label": "invalid-options",
+      "operations_port": 33663,
+      "original_owner_preserved": false,
+      "ports_released": true,
+      "public_port": 34399,
+      "returncode": 2,
+      "seconds": 0.03289633709937334
+    }
+  ],
+  "declarations_verified": true,
+  "generation_attempts": 6,
+  "installed": {
+    "q4t": "61abe09fb0d2585c4f8efa3e5740fa4d0ea5af06971e4490df2d17000453ecce",
+    "q4t.release.json": "ce925d517adee1b7dfdc17c8c90b11e4bd06260e5a87701b6e6268a0fb0329fc"
+  },
+  "lease_observations": 54,
+  "lease_seconds": 58.01137399394065,
+  "local_references": 323,
+  "long_runs": false,
+  "managed_lifecycle_accepted": false,
+  "models": 1,
+  "native_tests": 41,
+  "negative_http_probes": 6,
+  "numerical_reuse": {
+    "changed": [
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/http_listener.h",
+      "src/server/chat_http.cpp",
+      "src/server/chat_server.cpp"
+    ],
+    "current": {
+      "bytes": 23247,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-listeners-20261104/package/candidate/runtime-source.json",
+      "sha256": "d186696b0cdb237edf824edf78a2ad52f7a2a2fabaac228dd61979f823856dff"
+    },
+    "model_math_tokenizer_template_cache_scheduler_unchanged": true,
+    "performance_acceptance": false,
+    "previous": {
+      "bytes": 23139,
+      "path": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-operations-listener-20261104/package-business-fix/candidate/runtime-source.json",
+      "sha256": "bee62663231e09bd4145c296d6c6e071610a5e77ec133128be6510cb189bc730"
+    },
+    "unchanged_runtime_sources": 219
+  },
+  "performance_acceptance": false,
+  "physical_ram_hard_limit": false,
+  "previous_binary_sha256": "7eff020de66b96f3175b3e123909be9e2f58142d54d1dd5992750d23cbe9c769",
+  "privacy": "Raw secret-bearing requests/keys and ELF stay local as hash references; archive is not a disaster-recovery backup.",
+  "protocol_sha256": "15d7ccb103258ea5ec8ca3cfa66c9bfe1245eadb7d38ad6ee149ad97075ec30e",
+  "real_tools": 2,
+  "resources": {
+    "containers_empty": true,
+    "gpu_empty": true,
+    "lock": {
+      "available": true,
+      "dev": 66305,
+      "inode": 3294067
+    },
+    "long_runs": false,
+    "owned": [
+      {
+        "gone": true,
+        "pid": 2705886,
+        "role": "native",
+        "start_ticks": 197754315
+      },
+      {
+        "gone": true,
+        "pid": 2706101,
+        "role": "public-conflict",
+        "start_ticks": 197754591
+      },
+      {
+        "gone": true,
+        "pid": 2706956,
+        "role": "nginx",
+        "start_ticks": 197758228
+      },
+      {
+        "gone": true,
+        "pid": 2706105,
+        "role": "scoped-model",
+        "start_ticks": 197754606
+      },
+      {
+        "gone": true,
+        "pid": 2706100,
+        "role": "baseline-conflict",
+        "start_ticks": 197754587
+      },
+      {
+        "gone": true,
+        "pid": 2706102,
+        "role": "operations-conflict",
+        "start_ticks": 197754595
+      },
+      {
+        "gone": true,
+        "pid": 2706103,
+        "role": "tokenizer-failure",
+        "start_ticks": 197754599
+      },
+      {
+        "gone": true,
+        "pid": 2706104,
+        "role": "invalid-options",
+        "start_ticks": 197754603
+      }
+    ],
+    "passed": true,
+    "ports": [
+      18132,
+      18133,
+      18452
+    ],
+    "restore_unit_masked": true
+  },
+  "rollback": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-startup-listeners-20261104/package/previous",
+  "runtime_sources": 223,
+  "source_commit": "d073eb8f794956158bd646017e80692439f588c7",
+  "startup_http_available": false,
+  "startup_tcp_backlog": 128,
+  "status": "ACCEPT_BOUNDED_STARTUP_LISTENERS",
+  "successes": [
+    {
+      "finish_reason": "stop",
+      "label": "ordinary-recovery",
+      "seconds": 0.3575920229777694,
+      "usage": {
+        "completion_tokens": 7,
+        "prompt_tokens": 22,
+        "total_tokens": 29
+      }
+    },
+    {
+      "finish_reason": "tool_calls",
+      "label": "project-alpha-read",
+      "seconds": 3.757117497967556,
+      "usage": {
+        "completion_tokens": 55,
+        "prompt_tokens": 564,
+        "total_tokens": 619
+      }
+    },
+    {
+      "finish_reason": "stop",
+      "label": "project-alpha-answer",
+      "seconds": 4.0521774920634925,
+      "usage": {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    },
+    {
+      "finish_reason": "tool_calls",
+      "label": "project-beta-read",
+      "seconds": 3.7254274988081306,
+      "usage": {
+        "completion_tokens": 55,
+        "prompt_tokens": 564,
+        "total_tokens": 619
+      }
+    },
+    {
+      "finish_reason": "stop",
+      "label": "project-beta-answer",
+      "seconds": 4.022829370107502,
+      "usage": {
+        "completion_tokens": 58,
+        "prompt_tokens": 890,
+        "total_tokens": 948
+      }
+    }
+  ],
+  "successful_responses": 5
+}

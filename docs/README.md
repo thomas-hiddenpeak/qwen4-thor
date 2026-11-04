@@ -4,7 +4,8 @@
 阶段收尾：[五个参考项目成果、已吸收特性与重启条件](REFERENCE_LEARNING_CLOSEOUT_2026-10-29.md)。
 实际接入：[1长主agent＋3子代理，suffix与两级缓存完整示例](AGENT_CACHE_INTEGRATION.md)。
 应用服务：[能力与 OpenAI 兼容矩阵、vLLM 差距与分阶段计划](APPLICATION_SERVICE.md)。
-[SRV-12k原生启动监听所有权合同](SERVE_STARTUP_LISTENERS_2026-11-04.md)。
+[SRV-12k原生启动监听所有权合同](SERVE_STARTUP_LISTENERS_2026-11-04.md)与
+[41原生/真实工具短验及默认交付结果](SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md)。
 [SRV-12j托管双监听启动前冲突检查](SERVE_PORT_PREFLIGHT_2026-11-04.md)。
 [SRV-12j实际冲突零启动、真实工具与182原件结果](SERVE_PORT_PREFLIGHT_RESULT_2026-11-04.md)。
 [SRV-12i发布声明、独立运维与host域组合短验](SERVE_MANAGED_PROFILE_2026-11-04.md)。
