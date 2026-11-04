@@ -119,12 +119,15 @@ STOPPED且cleanup_confirmed=true。正常stop给nginx SIGQUIT，最多
 （剩余不超过7天）、NOT_YET_VALID、EXPIRED、UNKNOWN；后三类仅排空
 当前网关，终态FAILED/error_code记录原因，后端不受控于网关。
 到期退场最多35秒QUIT排空，再TERM/KILL；这不是撤销既有TLS会话。
-目前未接TLS专属Prometheus告警，没有自动签发、续期或OCSP/CRL检查。
+TLS专属Prometheus告警与本机HTTPS通知已完成有界验收，见
+[SRV-10f结果](../../docs/SERVE_TLS_OBSERVATION_RESULT_2026-11-04.md)；
+正式外部通知尚未部署。没有自动签发、续期或OCSP/CRL检查。
 
 换Key/证书：先准备新私有包，正常停止并确认旧网关清理，再显式
 运行新包；没有零停机轮换或自动撤销在途请求。对外路由、错误封套、
 独立控制额度和请求ID行为仍见[基础合同](README.md)。
-同CA换证可以保留客户端CA与Key；CA变化涉及任务绑定迁移，另行规划。
+同CA换证可以保留客户端CA与Key；CA变化使用已验的显式任务信任
+迁移，见[SRV-11g结果](../../docs/SERVE_TASK_TRUST_RESULT_2026-11-04.md)。
 
 只读复核本批历史证据：
 

@@ -4,10 +4,11 @@ import hashlib
 import json
 import re
 
-from tools.project_tasks import budget, store
+from tools.project_tasks import budget, store, protocol as protocol_contract
 
 FORMAT = "q4t.project.task.migration.v1"
 TRUST_FORMAT = "q4t.project.task.trust.v1"
+PROTOCOL_FORMAT = "q4t.project.task.protocol.v1"
 MAX_MIGRATIONS = 8
 REGISTRY = "tools/project_tasks/compatible_runtimes.json"
 
@@ -38,10 +39,20 @@ def source_map(value):
         len(name) <= 256 and checksum(digest) for name, digest in value.items()), "runtime identity map")
 
 
-def transition(spec, target, *, trust=False):
+def mode(trust, protocol):
+    store.require(not (trust and protocol), "one migration mode required", code="invalid_arguments")
+    return "protocol" if protocol else "trust" if trust else "rekey"
+
+
+def transition(spec, target, *, trust=False, protocol=False, review=None):
     """Validate a historical event without depending on today's runtime hash."""
     store.require(set(target) == set(spec) | {"budget_profile"}, "migration specification fields")
-    (same_trust_identity if trust else same_identity)(spec["binding"], target["binding"])
+    mode(trust, protocol)
+    if protocol:
+        protocol_contract.validate(review, spec["binding"], target["binding"])
+    else:
+        store.require(review is None, "unexpected protocol review")
+        (same_trust_identity if trust else same_identity)(spec["binding"], target["binding"])
     source_map(spec["runtime_sources"]); source_map(target["runtime_sources"])
     store.require(spec.get("budget_profile") in (None, budget.PROFILE) and
         target["budget_profile"] == budget.PROFILE and
@@ -55,12 +66,13 @@ def event(spec, state, value, task_id, store_id):
     store.require(set(value) == {"plan", "plan_sha256"} and
                   store.digest(value["plan"]) == value["plan_sha256"], "migration plan identity")
     plan = value["plan"]
-    store.require(plan["format"] in (FORMAT, TRUST_FORMAT) and plan["task_id"] == task_id and plan["store_id"] == store_id and
+    store.require(plan["format"] in (FORMAT, TRUST_FORMAT, PROTOCOL_FORMAT) and plan["task_id"] == task_id and plan["store_id"] == store_id and
         plan["revision"] == state["revision"] and plan["source_spec"] == spec and
         plan["state"] == state["phase"] and plan["counters"] == counters(state) and
         state["migrations"] < MAX_MIGRATIONS and isinstance(plan["reason"], str) and
         0 < len(plan["reason"]) <= 512, "migration source state/reason")
-    transition(spec, plan["target_spec"], trust=plan["format"] == TRUST_FORMAT)
+    transition(spec, plan["target_spec"], trust=plan["format"] == TRUST_FORMAT,
+        protocol=plan["format"] == PROTOCOL_FORMAT, review=plan.get("protocol_review"))
     return deepcopy(plan["target_spec"])
 
 
@@ -81,28 +93,35 @@ def supported(spec, current):
                   code="runtime_unsupported")
 
 
-def build(ledger, state, binding, root, root_meta, reason, *, trust=False):
+def build(ledger, state, binding, root, root_meta, reason, *, trust=False, protocol=False):
     from tools.project_tasks import engine
     store.require(isinstance(reason, str) and 0 < len(reason) <= 512, "migration reason required", code='invalid_arguments')
     spec, current = state["execution_spec"], engine.sources()
     release = supported(spec, current)
     target = dict(deepcopy(spec), binding=deepcopy(binding), runtime_sources=current, budget_profile=budget.PROFILE)
-    transition(spec, target, trust=trust)
+    mode(trust, protocol)
+    review = protocol_contract.reviewed(spec["binding"], binding) if protocol else None
+    transition(spec, target, trust=trust, protocol=protocol, review=review)
     store.require(target != spec, "task already has this runtime and credential binding", code='already_exists')
     store.require(state["migrations"] < MAX_MIGRATIONS, "migration count exhausted", code='task_budget')
     files = {path.name: dict(bytes=store.private(path).st_size,
         sha256=hashlib.sha256(path.read_bytes()).hexdigest()) for path in ledger.path.iterdir()
         if path.name != ".lock"}
     store.require("ledger.db-journal" not in files, "unsettled SQLite journal")
-    return dict(format=TRUST_FORMAT if trust else FORMAT, root=str(root), root_device=root_meta["root_device"],
+    plan = dict(format=PROTOCOL_FORMAT if protocol else TRUST_FORMAT if trust else FORMAT,
+        root=str(root), root_device=root_meta["root_device"],
         root_inode=root_meta["root_inode"], store_id=root_meta["store_id"], task_id=ledger.meta["task_id"],
         revision=state["revision"], state=state["phase"], counters=counters(state),
         source_release=release, source_spec=deepcopy(spec), target_spec=target,
         artifacts=files, reason=reason)
+    if protocol:
+        plan["protocol_review"] = review
+    return plan
 
 
-def prepare(root, binding, key, output, reason, *, trust=False):
+def prepare(root, binding, key, output, reason, *, trust=False, protocol=False):
     from tools.project_tasks import engine, retention
+    kind = mode(trust, protocol)
     root, meta = store.checked_root(root)
     output = store.local(output)
     store.private(output.parent, True)
@@ -111,29 +130,31 @@ def prepare(root, binding, key, output, reason, *, trust=False):
     try:
         with store.open_task(root, name) as ledger:
             state = engine.replay(ledger)
-            plan = build(ledger, state, binding, root, meta, reason, trust=trust)
+            plan = build(ledger, state, binding, root, meta, reason, trust=trust, protocol=protocol)
             store.write_new(output, store.encode(plan))
     except store.ArchivedTask:
-        return retention.prepare(root, binding, key, "trust" if trust else "rekey", output, reason)
+        return retention.prepare(root, binding, key, kind, output, reason)
     return dict(prepared=True, task_id=name, state=state["phase"], revision=state["revision"],
         plan=str(output), plan_sha256=store.digest(plan), source_release=plan["source_release"],
         key_changed=plan["source_spec"]["binding"]["key_sha256"] != binding["key_sha256"],
-        ca_changed=plan["source_spec"]["binding"]["ca_sha256"] != binding["ca_sha256"], no_execution=True)
+        ca_changed=plan["source_spec"]["binding"]["ca_sha256"] != binding["ca_sha256"],
+        protocol_changed=plan["source_spec"]["binding"]["protocol_sha256"] != binding["protocol_sha256"], no_execution=True)
 
 
-def apply(root, binding, key, path, expected, *, checkpoint=None, trust=False):
+def apply(root, binding, key, path, expected, *, checkpoint=None, trust=False, protocol=False):
     from tools.project_tasks import engine, retention
+    kind = mode(trust, protocol)
     path = store.local(path)
     store.require(store.private(path).st_size <= 65536 and checksum(expected), "bounded plan and exact digest required", code='invalid_arguments')
     plan = engine.chat.load_json(path.read_bytes())
-    if plan.get("format") in (retention.PLAN_FORMAT, retention.TRUST_PLAN_FORMAT):
-        store.require(plan["kind"] == ("trust" if trust else "rekey") and
-            plan["format"] == (retention.TRUST_PLAN_FORMAT if trust else retention.PLAN_FORMAT),
+    if plan.get("format") in (retention.PLAN_FORMAT, retention.TRUST_PLAN_FORMAT, retention.PROTOCOL_PLAN_FORMAT):
+        store.require(plan["kind"] == kind and plan["format"] == retention.plan_format(kind),
             "wrong archived migration operation", code='plan_changed')
         result = retention.apply(root, binding, key, path, expected, checkpoint=checkpoint)
         result["migration_applied"] = result.pop("applied")
         return result
-    store.require(store.digest(plan) == expected and plan["format"] == (TRUST_FORMAT if trust else FORMAT),
+    store.require(store.digest(plan) == expected and
+        plan["format"] == (PROTOCOL_FORMAT if protocol else TRUST_FORMAT if trust else FORMAT),
                   "migration plan changed", code='plan_changed')
     root, meta = store.checked_root(root)
     name = store.task_name(binding["client_id"], key)
@@ -147,7 +168,7 @@ def apply(root, binding, key, path, expected, *, checkpoint=None, trust=False):
         if any(row["payload"]["plan_sha256"] == expected for row in applied):
             engine.check_binding(ledger, binding, state)
             return dict(engine.public(ledger, state), migration_applied=False, already_applied=True, no_execution=True)
-        store.require(plan == build(ledger, state, binding, root, meta, plan["reason"], trust=trust),
+        store.require(plan == build(ledger, state, binding, root, meta, plan["reason"], trust=trust, protocol=protocol),
                       "migration plan is stale or task evidence changed", code='plan_stale')
         payload = dict(plan=plan, plan_sha256=expected)
         engine.validate_next(ledger, "migration", payload)

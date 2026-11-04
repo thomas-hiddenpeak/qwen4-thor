@@ -41,6 +41,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-11h[已审核协议迁移开发中](SERVE_TASK_PROTOCOL_2026-11-04.md)：
+补齐默认01c升级后旧任务协议binding无法续写的问题。新增独立
+plan/apply-protocol与有向审核登记，仅63b29f13→fc63db28；固定
+客户端/Key/CA/origin/模型/模板，保持UNKNOWN、预算与永久保键。
+登记11g真实15源码，140项有效CPU/4驱动与31文件SIGKILL通过；
+首轮历史夹具导出字段错误保留，定向修正1项，不重复其余139项。
+准备同锁两版本真实交接；未记业务验收通过，默认与长稳计划保持。
+
 SRV-01c[工具/结构化错误路径已限定交付](SERVE_ERROR_PARAMS_RESULT_2026-11-04.md)：
 当前默认49cc78cd/sidecar055f4f3e、protocolfc63db28，222运行来源中8项
 错误路径传递变化，数学/模板/缓存/调度保持。287公共/253必需/9结构化，

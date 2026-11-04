@@ -34,6 +34,7 @@ CATALOG = {
     "binding_changed": ("conflict", "The saved client binding does not match.", "review_binding_migration"),
     "runtime_changed": ("conflict", "The saved task runtime requires explicit migration.", "review_runtime_migration"),
     "runtime_unsupported": ("contract", "The saved runtime has no registered migration.", "review_runtime_adapter"),
+    "protocol_unsupported": ("contract", "The protocol transition has no matching review.", "review_protocol_adapter"),
     "plan_changed": ("conflict", "The plan, digest or destination does not match.", "review_plan"),
     "plan_stale": ("conflict", "The task or source has changed since planning.", "inspect_then_replan"),
     "snapshot_stale": ("conflict", "The snapshot no longer matches the source.", "preserve_then_new_snapshot"),
@@ -52,7 +53,7 @@ CATALOG = {
     "internal_error": ("internal", "An unexpected command failure occurred.", "preserve_and_inspect"),
 }
 OPERATIONS = frozenset(("init", "submit", "inspect", "resume", "resolve",
-    "plan-migration", "apply-migration", "plan-trust", "apply-trust", "enable-retention", "retention-status",
+    "plan-migration", "apply-migration", "plan-trust", "apply-trust", "plan-protocol", "apply-protocol", "enable-retention", "retention-status",
     "finish-retention", "plan-archive", "apply-archive", "plan-prune",
     "apply-prune", "inspect-archive", "backup", "verify", "plan-restore", "apply-restore"))
 OPERATION = ContextVar("project_task_operation", default=None)

@@ -124,13 +124,24 @@ python3 -B tools/project_tasks/runner.py apply-migration \
 计划/迁移操作成功，不表示业务任务完成。之后用新profile显式resume。
 已知结果复用、未知状态及原预算保持；旧Key不能继续操作新绑定任务。
 
-当前登记已验SRV-11到SRV-11f的精确源码来源；同client Key轮换仍只
+当前登记已验SRV-11到SRV-11g的精确源码来源；同client Key轮换仍只
 能使用原CA，不允许同时换client、TLS origin/IP、模型/协议/模板、
 问题或预算。
 未知源码须先审查适配。实际Key撤销仍需先准备新网关私有包、停旧
 网关并确认清理、再运行新包；迁移命令不管理服务，不证明新Key的
 远端client映射。原因中不要填写凭据。详见
 [迁移合同](../../docs/SERVE_TASK_MIGRATION_2026-11-04.md)。
+
+已审核的协议升级使用独立`plan-protocol`/`apply-protocol`，参数与上面
+迁移命令相同，新profile仅改变protocol_sha256。先停妥旧任务进程，
+核对计划旧/新协议、版本对的审核依据、revision、来源及剩余预算，
+再显式apply，之后才resume。当前仅登记63b29f13→fc63db28这一方向，
+完整摘要和依据见`compatible_protocols.json`；不推导反向/跨版本兼容。
+同client/origin/IP、CA、Key、模型/模板必须保持，普通Key或CA迁移
+不能代替协议计划。活跃、终态、归档和已清正文的永久键均覆盖，
+未知执行仍不重放。准备和应用均不联网，不能证明目标服务已部署；
+恢复会重新发现能力并逐轮预检。参见
+[协议迁移合同与当前验收边界](../../docs/SERVE_TASK_PROTOCOL_2026-11-04.md)。
 
 CA交接使用独立的显式计划，见[信任迁移合同](../../docs/SERVE_TASK_TRUST_2026-11-04.md)。
 [双CA真实恢复与归档保键短验已限定接受](../../docs/SERVE_TASK_TRUST_RESULT_2026-11-04.md)。

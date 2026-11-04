@@ -1,0 +1,16 @@
+{
+  "format": "q4t.project.task.protocols.v1",
+  "releases": [
+    {
+      "archive_sha256": "2cac5cd4f6e85f9742438403d05d4076f71754dd5372c67853cf79fdc7bd583c",
+      "basis": "Error parameter paths only: 91-case differential, including 14 unchanged successful prompts/grammars; 36 real HTTP rejections and 6 successes, including 2 read-only project tools. No model, template, request budgets or response parsing change.",
+      "contract": "q4t-project-readonly-protocol-v1",
+      "evidence": "docs/evidence/serve-error-params-20261104/records.tar.gz",
+      "from_protocol_sha256": "63b29f137b9c7057201de50c3a711930e9d76431f443ea29a083d9b429fced25",
+      "model": "qwen3.8-flash-next",
+      "release": "srv01c-ac1a3e4d",
+      "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "to_protocol_sha256": "fc63db28261a37ead3b633e0cd704a128e91b4eac264ea8125f715ac4b2834aa"
+    }
+  ]
+}

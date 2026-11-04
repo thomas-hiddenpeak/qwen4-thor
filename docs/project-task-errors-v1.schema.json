@@ -66,7 +66,8 @@
         "task_not_terminal",
         "tls_error",
         "transport_error",
-        "unsafe_path"
+        "unsafe_path",
+        "protocol_unsupported"
       ]
     },
     "category": {
@@ -152,7 +153,8 @@
         "review_runtime_adapter",
         "review_runtime_migration",
         "review_snapshot_budget",
-        "review_task_retention"
+        "review_task_retention",
+        "review_protocol_adapter"
       ]
     },
     "operation": {
@@ -178,7 +180,9 @@
         "resume",
         "retention-status",
         "submit",
-        "verify"
+        "verify",
+        "plan-protocol",
+        "apply-protocol"
       ]
     },
     "http_status": {
