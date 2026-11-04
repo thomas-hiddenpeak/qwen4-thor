@@ -8,6 +8,7 @@
 [源码升级与同客户端Key轮换验收](../../docs/SERVE_TASK_MIGRATION_RESULT_2026-11-04.md)。
 [终态归档、永久保键与中断恢复验收](../../docs/SERVE_TASK_ARCHIVE_RESULT_2026-11-04.md)。
 [一致性备份与单活恢复交接验收](../../docs/SERVE_TASK_BACKUP_RESULT_2026-11-04.md)。
+[管理错误合同与真实短验](../../docs/SERVE_TASK_ERRORS_RESULT_2026-11-04.md)。
 
 先显式创建新 store，任务不会自动删除，幂等键一直保留：
 

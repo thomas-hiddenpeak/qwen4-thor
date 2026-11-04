@@ -84,7 +84,9 @@
 [有界短验清单](SERVE_TASK_BACKUP_SHORT_2026-11-04.md)及
 [真实工具结果跨库续完/未知保持](SERVE_TASK_BACKUP_RESULT_2026-11-04.md)；
 [SRV-11f管理命令错误合同](SERVE_TASK_ERRORS_2026-11-04.md)与
-[错误JSON Schema](project-task-errors-v1.schema.json)；
+[错误JSON Schema](project-task-errors-v1.schema.json)、
+[原驱动失败后的离线续验](SERVE_TASK_ERRORS_FINISH_2026-11-04.md)与
+[真实短验限定结果](SERVE_TASK_ERRORS_RESULT_2026-11-04.md)；
 [SRV-12e跨运行目录准入与私有留存](SERVE_RETENTION_2026-11-04.md)、
 [本机短验结果](SERVE_RETENTION_RESULT_2026-11-04.md)及
 [运行/留存说明](../tools/serve_retention/README.md)；

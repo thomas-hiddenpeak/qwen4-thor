@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -23,7 +24,7 @@ require = store.require
 
 def evaluate(data):
     read = lambda name: json.loads(data[name])
-    get = lambda name: read("execution/" + name)
+    get = lambda name: read(("execution/" if "execution/" + name in data else "offline-finish/") + name)
     cli = lambda label: json.loads(get(label + ".json")["stdout"])
     plan, result = read("plan.json"), get("result.json")
     for folder, count in (("cpu-01", 106), ("cpu-fix-01", 18), ("cpu-driver", 2)):
@@ -42,9 +43,27 @@ def evaluate(data):
             if line.endswith(" ... ERROR")), "preserved CA fixture failure scope")
     kills = read("cpu-01/result.json")["file_operation_kills"]
     require(len(kills) == 23 and all(row["returncode"] == -9 for row in kills), "existing crash coverage")
-    require(result["status"] == "PASS_PROJECT_TASK_ERRORS_SHORT" and result["cleanup_confirmed"] and
-        result["counts"]["generations"] == 4 and result["counts"]["negatives"] == 6 and
+    require(result["status"] == "FAILED" and result["cleanup_confirmed"] and
+        result["error"] == "FileNotFoundError(2, 'No such file or directory')" and
+        result["counts"]["generations"] == 4 and result["counts"]["negatives"] == 3 and
         result["counts"]["controls"] <= 64 and result["seconds"] <= 480 and not result["long_run"], "bounded live result")
+    finish = read("offline-finish/result.json")
+    require(finish["passed"] and finish["status"] == "PASS_ERRORS_OFFLINE_FINISH" and
+        finish["task_state_unchanged"] and finish["original_live_evidence_unchanged"] and
+        finish["seconds"] <= 60 and len(finish["commands"]) == 5 and
+        all(finish[key] == 0 for key in ("models_started","listeners_started","http_requests","tools_executed","gpu_started")), "offline continuation")
+    require(finish["original_plan_sha256"] == hashlib.sha256(data["plan.json"]).hexdigest() and
+        finish["cpu_sha256"] == hashlib.sha256(data["cpu-finish/result.json"]).hexdigest(), "continuation plan/gate")
+    for name, checksum in finish["original"].items():
+        require(hashlib.sha256(data[name]).hexdigest() == checksum, "original live evidence changed")
+    extra = read("cpu-finish/result.json")
+    require(extra["passed"] and extra["tests_run"] == 2 and extra["errors"] == extra["failures"] == 0, "targeted driver regression")
+    for name, checksum in extra["sources"].items():
+        require(hashlib.sha256(data["cpu-finish/source/" + name]).hexdigest() == checksum ==
+            finish["source_files"][name], "continuation source identity")
+    for label in finish["commands"]:
+        command = get(label + ".json")
+        require(command["execution_forbidden"] and not command["tripwire_triggered"], "offline command attempted execution")
     schema = read("cpu-fix-01/source/docs/project-task-errors-v1.schema.json")
     codes = {"key-conflict": ("key_conflict", "submit"), "invalid-control": ("invalid_arguments", "resume"),
         "unauthorized": ("remote_auth", "submit"), "binding-conflict": ("binding_changed", "resume"),
@@ -57,22 +76,30 @@ def evaluate(data):
             error["http_status"] == (401 if label == "unauthorized" else None), "live command error")
         for key in ("error", "category", "message", "next_action"):
             require(error[key] in schema["properties"][key]["enum"], "unsafe public error field")
-    metrics = get("final-metrics.json")
-    require(metrics["q4t_requests_total"] == metrics["q4t_requests_success_total"] == 4 and
-        metrics["q4t_requests_error_total"] == metrics["q4t_requests_aborted_total"] == 0 and
-        metrics["q4t_structured_workers_started_total"] == metrics["q4t_structured_workers_reaped_total"] == 4 and
-        all(metrics[key] == 0 for key in s.a.EMPTY), "server outcomes")
-    timing = {}
-    for line in get("final-00.json")["response"]["body"].splitlines():
-        if line.startswith(("q4t_response_seconds_sum ", "q4t_response_seconds_count ")):
-            key, value = line.split(); timing[key] = float(value)
-    require(timing["q4t_response_seconds_count"] == 4 and timing["q4t_response_seconds_sum"] > 0, "HTTP timing")
-    usages, states = {}, {}
+    reservations = [name.rsplit("/",1)[0] for name in data if name.startswith("owned-generations/generations/") and name.endswith("/reservation.json")]
+    backend = next(p for p in reservations if read(p + "/reservation.json")["kind"] == "backend")
+    gateway = next(p for p in reservations if read(p + "/reservation.json")["kind"] == "gateway")
+    backend_log = data[backend + "/run/backend.log"].decode()
+    ends = [dict(re.findall(r"([a-z_]+)=([^ ]+)", line)) for line in backend_log.splitlines()
+            if line.startswith("[q4t][request]") and " event=end " in line]
+    require(len(ends) == 4 and all(row["outcome"] == "success" and row["reason"] == "completed" and
+        row["released"] == "1" for row in ends) and len({row["id"] for row in ends}) == 4,
+        "actual request ends")
+    require(backend_log.count("grammar worker reaped=1 ") == 4 and
+        "shutdown complete (0 in-flight remaining)" in backend_log, "worker reap/shutdown logs")
+    timing_sum = sum(float(row["elapsed_ms"]) for row in ends)/1000
+    gateway_rows=[json.loads(line) for line in data[gateway + "/run/gateway.log"].splitlines() if line.startswith(b"{")]
+    require(len(gateway_rows)==11 and sum(row["status"]==401 and row["client"]=="" and
+        row["upstream_status"]=="" for row in gateway_rows)==1 and
+        all(sum(row["client"]==client and row["status"]==200 and row["upstream_status"]=="200" and
+            row["lane"]==lane for row in gateway_rows)==count for client in ("alpha","beta")
+            for lane,count in (("control",1),("data",4))), "actual gateway workload/auth rejection")
+    usages, states, response_ids = {}, {}, set()
     totals = dict(preflights=0, requests=0, responses=0, tools=0, capability_attempts=0)
     parent = BASE / "offline-verification"; parent.mkdir(exist_ok=True, mode=0o700)
     with tempfile.TemporaryDirectory(dir=parent) as temp:
         for case, tokens in (("alpha",512),("beta",64),("denied",64)):
-            exported = get(case + "-ledger.json"); name = exported["meta"]["task_id"]
+            exported = get(case + ("-ledger.json" if case == "denied" else "-ledger-ledger.json")); name = exported["meta"]["task_id"]
             prefix = "tasks/tasks/" + name + "/"
             folder = Path(temp) / name; folder.mkdir(mode=0o700)
             for path, raw in data.items():
@@ -87,6 +114,7 @@ def evaluate(data):
                     ledger.spec["binding"] == plan["bindings"][case] and ledger.spec["max_tokens"] == tokens and
                     ledger.spec["runtime_sources"] == {n: plan["source_files"][n] for n in ledger.spec["runtime_sources"]}, "database binding")
                 state = engine.replay(ledger); value = engine.public(ledger, state); states[case] = value
+                response_ids.update(row["payload"]["completion"]["id"] for row in ledger.events() if row["kind"] == "response")
                 by_kind = lambda kind: [row["payload"] for row in ledger.events() if row["kind"] == kind]
                 for key, kind in (("preflights","preflight_started"),("requests","request"),("responses","response"),
                                   ("tools","tool_started"),("capability_attempts","run")):
@@ -111,6 +139,7 @@ def evaluate(data):
             finally: db.close()
     require(totals == dict(preflights=4, requests=4, responses=4, tools=2, capability_attempts=3) and
         len({row["task_id"] for row in states.values()}) == 3, "exact workload/isolation")
+    require(response_ids == {row["id"] for row in ends}, "ledger/service request identity")
     active = {name.split("/")[2] for name in data if name.startswith("tasks/tasks/")}
     require(active == {row["task_id"] for row in states.values()}, "rejected task created")
     require(get("final-retention.json")["active_tasks"] == 3 and get("final-retention.json")["archived_keys"] == 0, "plan error archived data")
@@ -131,12 +160,15 @@ def evaluate(data):
     require(post["passed"] and post["default_unchanged"] and post["day_plans_unchanged"] and post["lock_available"] and
         post["sealed_generations"] == 2, "postflight")
     return dict(status="ACCEPT_PROJECT_TASK_ERRORS_SHORT", application_cpu_tests=106, driver_tests=2,
-        original_fixture_errors=18, targeted_correction_tests=18, cpu_file_operation_kills=23,
+        original_fixture_errors=18, targeted_correction_tests=18, targeted_driver_tests=2,
+        original_live_driver_failed=True, offline_finish_commands=5, offline_finish_seconds=finish["seconds"],
+        cpu_file_operation_kills=23,
         model_starts=1, gateway_starts=1, completed_tasks=2, ready_after_auth_error=1,
         duplicate_submissions=3, nonexecuting_resumes=2, classified_errors=6, **totals,
-        response_usage=usages, grammar_reaped=4, owned_exited=post["owned_exited"], controls=result["counts"]["controls"],
+        response_usage=usages, grammar_reaped=4, owned_exited=post["owned_exited"], controls=result["counts"]["controls"]+len(finish["commands"]),
         seconds=result["seconds"], gpu_seconds=gpu_seconds, gpu_observations=len(samples),
-        successful_server_response_seconds_sum=timing["q4t_response_seconds_sum"], successful_server_response_count=4,
+        successful_request_end_seconds_sum=timing_sum, successful_server_response_count=4,
+        timing_source="backend_request_end_logs", final_metrics_collected=False,
         cleanup_confirmed=True, default_changed=False, long_run=False, performance_acceptance=False)
 
 
@@ -176,8 +208,8 @@ def postflight():
 
 
 def collect():
-    paths = [BASE / "plan.json"]
-    for folder in ("cpu-01", "cpu-fix-01", "cpu-driver", "execution", "owned-generations", "tasks", "postflight"):
+    paths = [BASE / "plan.json", BASE / "live-command.log", BASE / "historical-verification.json"]
+    for folder in ("cpu-01", "cpu-fix-01", "cpu-driver", "cpu-finish", "offline-finish", "execution", "owned-generations", "tasks", "postflight"):
         paths.extend(path for path in (BASE / folder).rglob("*") if path.is_file())
     paths.extend((BASE / "fixtures").glob("*/commands.json"))
     data = {str(path.relative_to(BASE)): path.read_bytes() for path in sorted(set(paths)) if not path.is_symlink()}
