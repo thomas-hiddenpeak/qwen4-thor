@@ -99,7 +99,8 @@
 [真实短验限定结果](SERVE_TASK_ERRORS_RESULT_2026-11-04.md)；
 [SRV-11g任务CA迁移与连接材料绑定](SERVE_TASK_TRUST_2026-11-04.md)及
 [双CA真实恢复与永久键限定验收](SERVE_TASK_TRUST_RESULT_2026-11-04.md)；
-- [工具与结构化输入错误路径](SERVE_ERROR_PARAMS_2026-11-04.md)
+[工具与结构化输入错误路径](SERVE_ERROR_PARAMS_2026-11-04.md)及
+[真实双Key短验与默认交付](SERVE_ERROR_PARAMS_RESULT_2026-11-04.md)；
 [SRV-12e跨运行目录准入与私有留存](SERVE_RETENTION_2026-11-04.md)、
 [本机短验结果](SERVE_RETENTION_RESULT_2026-11-04.md)及
 [运行/留存说明](../tools/serve_retention/README.md)；

@@ -7,6 +7,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import socket
 import subprocess
 import sys
@@ -23,10 +24,29 @@ READERS=('tools/serve_error_params/report.py','tools/serve_error_params/cpu.py',
          'tools/serve_error_params/cases.py','tools/examples/chat_client.py')
 
 
+def frozen_plan():
+    """The runtime is unchanged; preserve the original offline reader too."""
+    from tools.serve_error_params import stage as s
+    s.h.verify_seal(s.PACKAGE)
+    plan=cpu.read(s.PACKAGE/'plan.json')
+    cpu.require(plan['root']==str(ROOT) and plan['limits']==s.LIMITS,'frozen scope')
+    for name,digest in cpu.read(s.PACKAGE/'sources.json').items():
+        path=BASE/'offline-original/report.py' if name==READERS[0] else ROOT/name
+        cpu.require(cpu.sha(path)==digest,'frozen execution source changed: '+name)
+    s.a.verify_hashes(ROOT,cpu.read(s.PACKAGE/'candidate/runtime-source.json'))
+    s.a.verify_hashes(plan['model_dir'],plan['model_inputs'])
+    for path,digest in {**plan['preserved'],**plan['local']}.items():
+        cpu.require(cpu.sha(path)==digest,'preserved artifact changed')
+    for path in s.DAYS:cpu.require(not (path.parent/'execution').exists(),'user day executed')
+    s.s.g.check(plan['gateway']['package'],plan['gateway']['manifest_sha256'])
+    s.h.verify_pair(ROOT/'build/q4t',ROOT/'build/q4t.release.json',plan['candidate_sha256'])
+    return plan
+
+
 def postflight():
     from tools.serve_error_params import stage as s
-    out=BASE/'postflight';out.mkdir()
-    plan=s.check()
+    out=BASE/'postflight-corrected';out.mkdir()
+    plan=frozen_plan()
     s.a.require_idle_gpu(out/'gpu.json')
     lock=s.s.a.guard.common_lock();info=lock.stat()
     cpu.require((info.st_dev,info.st_ino)==(66305,3294067) and s.s.a.lock_available(lock),'original GPU lock not released')
@@ -38,13 +58,18 @@ def postflight():
         cpu.require(current is None or current['start_ticks']!=old['start_ticks'],'own process remains')
         owners.append(dict(pid=old['pid'],start_ticks=old['start_ticks'],gone=True))
     for port in (s.PORT,s.TLS_PORT):
-        with socket.socket() as probe:probe.bind(('127.0.0.1',port))
+        with socket.socket() as probe:
+            probe.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+            probe.bind(('127.0.0.1',port))
+    listeners=subprocess.check_output(['ss','-ltn',f'( sport = :{s.PORT} or sport = :{s.TLS_PORT} )'],text=True)
+    (out/'listeners.txt').write_text(listeners)
+    cpu.require(len(listeners.splitlines())==1,'listener retained')
     unit='soar-flash-fast-v3-fixture-retry-qualified-v1-20261103.service'
     raw=subprocess.check_output(['systemctl','--user','show',unit,'-p','LoadState','-p','ActiveState','-p','SubState','-p','MainPID'],text=True)
     (out/'soar-unit.txt').write_text(raw)
     state=dict(line.split('=',1) for line in raw.splitlines() if '=' in line)
     cpu.require(state==dict(MainPID='0',LoadState='masked',ActiveState='inactive',SubState='dead'),'recovery service changed')
-    containers=subprocess.check_output(['docker','ps','--format','{{.ID}} {{.Names}}'],text=True)
+    containers=subprocess.check_output(['sudo','-n','docker','ps','--format','{{.ID}} {{.Names}}'],text=True)
     (out/'containers.txt').write_text(containers)
     cpu.require(not containers.strip(),'unexpected running container')
     installed=cpu.read(BASE/'execution/finalized.json')
@@ -52,7 +77,10 @@ def postflight():
     cpu.save(out/'result.json',dict(passed=True,owned=owners,ports_released=[s.PORT,s.TLS_PORT],
         lock=dict(dev=info.st_dev,inode=info.st_ino,released=True),preserved_artifacts=len(plan['preserved']),
         source_runtime=cpu.read(BASE/'package/candidate/runtime-source.json'),
-        installed=installed['installed'],long_run=False))
+        installed=installed['installed'],long_run=False,
+        port_method='SO_REUSEADDR bind plus explicit no-LISTEN observation',
+        original_immediate_port_cause='Not observed; first EADDRINUSE remains a failed check',
+        analysis_source_sha256=cpu.sha(__file__)))
 
 
 def evaluate(data):
@@ -136,11 +164,14 @@ def evaluate(data):
     require(b'shutdown complete (0 in-flight remaining)' in data['execution/business/scoped-model/stderr.log'],'drain')
     for name in ('scoped-model','nginx'):
         require(read('execution/business/'+name+'/reaped.json')['returncode']==0,'child reap')
-    post=read('postflight/result.json')
+    post=read('postflight-corrected/result.json')
     require(post['passed'] and len(post['owned'])==2 and all(x['gone'] for x in post['owned']) and
             post['lock']==dict(dev=66305,inode=3294067,released=True),'resource cleanup')
-    require(read('postflight/gpu.json')['status']=='OK' and not read('postflight/gpu.json')['pids'],'GPU retained')
-    require(not data['postflight/containers.txt'].strip() and b'LoadState=masked' in data['postflight/soar-unit.txt'],'recovery unit/container')
+    require(read('postflight-corrected/gpu.json')['status']=='OK' and not read('postflight-corrected/gpu.json')['pids'],'GPU retained')
+    require(not data['postflight-corrected/containers.txt'].strip() and b'LoadState=masked' in data['postflight-corrected/soar-unit.txt'],'recovery unit/container')
+    require(len(data['postflight-corrected/listeners.txt'].splitlines())==1,'listener retained')
+    require('Address already in use' in read('postflight-original/observed-failure.json')['error'] and
+            'permission denied' in read('postflight-second/observed-failure.json')['error'],'postflight refusals lost')
     require(post['installed']==read('execution/release/binding.json')['new'] and
             post['installed']['q4t']==plan['candidate_sha256'],'installed same ELF')
     return dict(status='ACCEPT_BOUNDED_ERROR_PARAMS',cpu_public=287,cpu_required=253,
@@ -148,14 +179,16 @@ def evaluate(data):
         improved_error_locations=77,http_refusals=36,generations=6,real_tools=2,
         gpu_seconds=seconds,guard_observations=len(observed),counts=result['counts'],usage=usage,
         installed=post['installed'],protocol_sha256=plan['protocol_sha256'],owned_processes_reaped=2,
-        original_generated_failure_preserved=True,performance_acceptance=False,long_run=False,
+        original_generated_failure_preserved=True,offline_failures_preserved=True,
+        performance_acceptance=False,long_run=False,
         actual_lan_deployment=False,full_physical_ram_protection=False,new_verification_http=0)
 
 
 def archive():
     data={}
     for name in ('build-01','baseline-source','cpu-01','cpu-finish','driver-cpu','driver-cpu-v2','driver-cpu-v3',
-                 'driver-original-source','driver-v2-source','generated-original','postflight'):
+                 'driver-original-source','driver-v2-source','generated-original','postflight-original',
+                 'postflight-second','postflight-corrected','offline-original'):
         for path in sorted((BASE/name).rglob('*')):
             if path.is_file():data[str(path.relative_to(BASE))]=path.read_bytes()
     for path in sorted((BASE/'execution').rglob('*')):
@@ -176,7 +209,8 @@ def archive():
     secrets.append(cpu.read(plan['policy'])['gateway_token'].encode())
     for name,raw in data.items():
         cpu.require(len(raw)<32*1024**2 and not any(secret in raw for secret in secrets) and
-                    b'-----BEGIN PRIVATE KEY-----' not in raw,'private/oversized record: '+name)
+                    not re.search(br'(?m)^-----BEGIN (?:RSA |EC |ENCRYPTED )?PRIVATE KEY-----\r?$',raw),
+                    'private/oversized record: '+name)
     result=evaluate(data)
     DEST.mkdir()
     with (DEST/'records.tar.gz').open('xb') as stream,gzip.GzipFile(fileobj=stream,mode='wb',mtime=0,filename='') as compressed:

@@ -4,6 +4,13 @@
 只读查询本项目文档、发布与验收记录。代码优先；实现、验证和业务质量
 分别记录。此页是持续维护入口，历史验收不随新功能自动扩张。
 
+2026-11-04 [SRV-01c工具/结构化错误路径已限定交付](SERVE_ERROR_PARAMS_RESULT_2026-11-04.md)：
+默认49cc78cd/055f4f3e；显式工具索引、控制字段、递归schema路径和
+转义键，91差分中77拒绝定位/14成功prompt与grammar保持。287公共/
+253必需/9结构化及4驱动通过；1模型1TLS双Key36拒绝/6成功/2真实
+资料工具，答案/引用正确、grammar5/5，GPU释放。355记录重建，原
+摘要/离线收尾失败保留无补推理；旧固定包/任务协议不自动迁移。
+
 2026-11-04 [SRV-11g显式CA交接与真实恢复限定接受](SERVE_TASK_TRUST_RESULT_2026-11-04.md)：
 独立信任计划、同一CA材料快照、原任务/UNKNOWN/归档保键保持。
 124 CPU/4驱动、27文件操作SIGKILL与六代证据；1模型2不同CA网关，
@@ -214,7 +221,7 @@ Transformers 的模型与模板接口、vLLM 的推理服务接口、Q4T 的 Tho
 | stream_options.include_usage | 已验 | choices块usage:null，最后独立usage；choices的logprobs:null；中断不保证收到尾帧 |
 | chat_template_kwargs | 已验，Q4T 扩展 | thinking/preserve/effort/vision ID；能力端点给出范围 |
 | unknown fields | 明确拒绝 | 不静默丢弃；Responses/store/metadata 等不可直接透传 |
-| 错误 JSON | 已验，Q4T 错误码 | 显式输入位置param、统一封套与追踪头；部分嵌套schema错误仍param:null |
+| 错误 JSON | 已验，Q4T 错误码 | 显式输入位置param、统一封套与追踪头；01c补齐工具/控制/递归schema路径，转义键不混淆层级；无法归属输入字段的运行错误仍可null |
 | SSE 错误 | 已验 | 首帧后HTTP200内error＋DONE；部分写失败直接截断，不追加第二终态 |
 | 请求取消 / deadline | 已验，Q4T 扩展 | 202 仅接受取消；404 不证明请求未执行 |
 | request_id / session_id | 已验，Q4T 扩展 | 活跃 ID 去重 / 同进程 KV 缓存；不是持久任务与幂等键 |
