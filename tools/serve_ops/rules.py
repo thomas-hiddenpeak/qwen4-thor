@@ -21,7 +21,7 @@ def increased(name):
     return f'increase({series(name)}[5m]) > 0'
 
 
-def render(*, version=4):
+def render(*, version=5):
     contract = METRIC_PROFILES[version]
     families = {name.split('{', 1)[0] for name in contract}
     rules = []
@@ -39,10 +39,19 @@ def render(*, version=4):
     present = f'count by ({BY}) ({{job="q4t",__name__=~"{pattern}"}}) == {len(contract)}'
     alert('Q4TMetricContractMissing', f'({UP}) unless on ({BY}) ({present})', '30s', 'critical',
           'The operational metric contract is incomplete.', 'observation', live=False)
-    booleans = '{job="q4t",__name__=~"'+'|'.join(sorted(BOOLEAN | {'q4t_memory_admission_state'}))+'"}'
+    names = BOOLEAN | {'q4t_memory_admission_state'}
+    if version == 5:
+        names = names | {'q4t_operations_listener_enabled'}
+    booleans = '{job="q4t",__name__=~"'+'|'.join(sorted(names))+'"}'
     invalid = (f'({booleans} != 0 and on (__name__, job, instance, state) {booleans} != 1) or '
                f'(sum by ({BY}) (q4t_memory_admission_state{{job="q4t"}}) != 1) or '
                f'({series("seq_slots_free")} > on ({BY}) {series("seq_slots_total")})')
+    if version == 5:
+        for name, limit in (('operations_connections', 8),
+                            ('operations_observation_connections', 4),
+                            ('operations_control_connections', 4)):
+            invalid += (f' or ({series(name)} > on ({BY}) '
+                        f'({series("operations_listener_enabled")} * {limit}))')
     alert('Q4TMetricContractInvalid', invalid, '30s', 'critical',
           'Operational observations are contradictory or invalid.', 'observation')
     alert('Q4TGpuUnhealthy', series('gpu_healthy')+' == 0', '', 'critical',
@@ -61,8 +70,10 @@ def render(*, version=4):
         'text_admission_rejected_total', 'structured_rejected_total'))
     rejection += ' or (increase(q4t_memory_rejected_total{job="q4t"}[5m]) > 0)'
     rejection += ' or (increase(q4t_http_receive_failures_total{job="q4t",reason="body_capacity"}[5m]) > 0)'
-    if version == 4:
+    if version >= 4:
         rejection += ' or (increase(q4t_connection_rejections_total{job="q4t"}[5m]) > 0)'
+    if version == 5:
+        rejection += ' or (increase(q4t_operations_connection_rejections_total{job="q4t"}[5m]) > 0)'
     alert('Q4TAdmissionRejections', rejection, '1m', 'warning',
           'Admission rejections increased; counters are separate views, not an additive failure total.', 'capacity')
     alert('Q4TStructuredFailures', ' or '.join(increased(n) for n in (
@@ -79,7 +90,7 @@ def render(*, version=4):
           '', 'warning', 'Receive deadlines or transport faults increased.', 'transport')
     # v4 moves scrape ownership to its own partition. v3 counts it as business.
     idle = (f'{series("active_chats")} == 0 and {series("business_connections")} '
-            + ('== 0' if version == 4 else '<= 1'))
+            + ('== 0' if version >= 4 else '<= 1'))
     alert('Q4TWorkerReapStalled', f'{series("structured_workers_active")} > 0 and '
           f'{series("structured_active")} == 0 and {series("structured_preparing")} == 0 and ({idle})',
           '1m', 'warning', 'A worker remains owned after requests and structured leases have drained.', 'owners')
@@ -103,7 +114,7 @@ def render(*, version=4):
 if __name__ == '__main__':
     if sys.argv[1:] not in (['--check'], ['--write']):
         raise SystemExit('--check | --write')
-    for version, name in ((4,'q4t.rules.yml'), (3,'q4t-v3.rules.yml')):
+    for version, name in ((5,'q4t.rules.yml'), (4,'q4t-v4.rules.yml'), (3,'q4t-v3.rules.yml')):
         path = ROOT/'deploy/serve-ops'/name
         raw = json.dumps(render(version=version), indent=2)+'\n'
         if sys.argv[1:] == ['--check']:

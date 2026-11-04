@@ -68,7 +68,14 @@ FAMILIES = {name.split('{', 1)[0] for name in METRICS}
 METRICS_V4 = dict(METRICS, q4t_observation_connections='gauge')
 for _kind in ('unclassified', 'business', 'observation', 'control'):
     METRICS_V4[key('q4t_connection_rejections_total', kind=_kind)] = 'counter'
-METRIC_PROFILES = {3: METRICS, 4: METRICS_V4}
+METRICS_V5 = dict(METRICS_V4)
+for _name in ('public_connections', 'operations_listener_enabled',
+              'operations_connections', 'operations_observation_connections',
+              'operations_control_connections'):
+    METRICS_V5['q4t_'+_name] = 'gauge'
+for _kind in ('unclassified', 'business', 'observation', 'control'):
+    METRICS_V5[key('q4t_operations_connection_rejections_total', kind=_kind)] = 'counter'
+METRIC_PROFILES = {3: METRICS, 4: METRICS_V4, 5: METRICS_V5}
 HEX = re.compile(r'[0-9a-f]{64}\Z')
 
 
@@ -170,8 +177,16 @@ def parse_metrics(raw, *, version=3):
         raise InvalidObservation('invalid_boolean_metric')
     if result['q4t_seq_slots_free'] > result['q4t_seq_slots_total']:
         raise InvalidObservation('invalid_slot_observation')
-    if version == 4 and result['q4t_observation_connections'] > 4:
+    if version >= 4 and result['q4t_observation_connections'] > 4:
         raise InvalidObservation('invalid_observation_owners')
+    if version == 5:
+        enabled = result['q4t_operations_listener_enabled']
+        if enabled not in (0, 1) or any(
+                result['q4t_'+name] > limit * enabled for name, limit in (
+                    ('operations_connections', 8),
+                    ('operations_observation_connections', 4),
+                    ('operations_control_connections', 4))):
+            raise InvalidObservation('invalid_operations_owners')
     states = [result[key('q4t_memory_admission_state', state=s)] for s in STATES]
     if any(n not in (0, 1) for n in states) or sum(states) != 1:
         raise InvalidObservation('invalid_memory_state')
@@ -219,14 +234,33 @@ def configuration(value, *, version=3):
             if type(value_bool) is not bool:
                 raise InvalidObservation('invalid_runtime_contract')
             result[name] = value_bool
-        if version == 4:
+        if version in (4, 5):
             limits = value['limits']
             for name in ('business_connections', 'observation_connections',
                          'control_connections', 'connection_handlers'):
                 result[name] = integer(limits[name], 1, 2**31-1)
+            extra = 0
+            if version == 5:
+                if type(value['observability_version']) is not int or value['observability_version'] != 5:
+                    raise InvalidObservation('invalid_observation_version')
+                public, ops = value['listeners']['public'], value['listeners']['operations']
+                result['public_port'] = integer(public['port'], 1, 65535)
+                result['operations_port'] = integer(ops['port'], 0, 65535)
+                if (public['host'] not in ('127.0.0.1', '0.0.0.0') or
+                        ops['host'] != '127.0.0.1' or
+                        type(ops['enabled']) is not bool or
+                        ops['enabled'] != bool(result['operations_port']) or
+                        result['operations_port'] == result['public_port'] or
+                        ops['unclassified_shares_operations_total'] is not True):
+                    raise InvalidObservation('invalid_operations_listener')
+                result['public_host'] = public['host']
+                extra = 8 if ops['enabled'] else 0
+                if (integer(limits['public_connection_handlers'], 1) != result['business_connections']+8 or
+                        integer(limits['operations_connection_handlers']) != extra):
+                    raise InvalidObservation('invalid_operations_capacity')
             if (result['observation_connections'] != 4 or result['control_connections'] != 4 or
-                    result['connection_handlers'] != result['business_connections']+8 or
-                    limits['unclassified_shares_total'] is not True):
+                    result['connection_handlers'] != result['business_connections']+8+extra or
+                    limits['unclassified_shares_total'] is not (extra == 0)):
                 raise InvalidObservation('invalid_connection_partitions')
         elif version != 3:
             raise InvalidObservation('unsupported_observation_version')

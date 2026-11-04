@@ -15,10 +15,10 @@ using detail::SendSimple;
 namespace {
 // le boundaries (seconds) shared by MetricHistogram::Observe and /metrics.
 constexpr double kLatencyBounds[MetricHistogram::kNumBuckets] = {
-    0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0,
-    2.5,   5.0,  10.0,  30.0, 60.0, 120.0};
+    0.005, 0.01, 0.025, 0.05, 0.1,  0.25, 0.5,
+    1.0,   2.5,  5.0,   10.0, 30.0, 60.0, 120.0};
 
-}
+}  // namespace
 
 void MetricHistogram::Observe(double seconds) {
   int i = 0;
@@ -42,30 +42,63 @@ void ChatServer::HandleMetrics(int fd) {
   b += CudaQuotaMetrics(runtime::ReadCudaAllocationQuota());
 #endif
   auto counter = [&](const char* name, const char* help, uint64_t v) {
-    b += "# HELP "; b += name; b += ' '; b += help; b += "\n# TYPE ";
-    b += name; b += " counter\n"; b += name; b += ' ';
-    b += std::to_string(v); b += '\n';
+    b += "# HELP ";
+    b += name;
+    b += ' ';
+    b += help;
+    b += "\n# TYPE ";
+    b += name;
+    b += " counter\n";
+    b += name;
+    b += ' ';
+    b += std::to_string(v);
+    b += '\n';
   };
   auto gauge = [&](const char* name, const char* help, long v) {
-    b += "# HELP "; b += name; b += ' '; b += help; b += "\n# TYPE ";
-    b += name; b += " gauge\n"; b += name; b += ' ';
-    b += std::to_string(v); b += '\n';
+    b += "# HELP ";
+    b += name;
+    b += ' ';
+    b += help;
+    b += "\n# TYPE ";
+    b += name;
+    b += " gauge\n";
+    b += name;
+    b += ' ';
+    b += std::to_string(v);
+    b += '\n';
   };
   auto histogram = [&](const char* name, const char* help,
                        const MetricHistogram& h) {
-    b += "# HELP "; b += name; b += ' '; b += help; b += "\n# TYPE ";
-    b += name; b += " histogram\n";
+    b += "# HELP ";
+    b += name;
+    b += ' ';
+    b += help;
+    b += "\n# TYPE ";
+    b += name;
+    b += " histogram\n";
     uint64_t cum = 0;
     for (int i = 0; i < MetricHistogram::kNumBuckets; ++i) {
       cum += h.bucket[i].load(std::memory_order_relaxed);
-      b += name; b += "_bucket{le=\""; b += std::to_string(kLatencyBounds[i]);
-      b += "\"} "; b += std::to_string(cum); b += '\n';
+      b += name;
+      b += "_bucket{le=\"";
+      b += std::to_string(kLatencyBounds[i]);
+      b += "\"} ";
+      b += std::to_string(cum);
+      b += '\n';
     }
     cum += h.inf.load(std::memory_order_relaxed);
-    b += name; b += "_bucket{le=\"+Inf\"} "; b += std::to_string(cum);
-    b += '\n'; b += name; b += "_sum ";
+    b += name;
+    b += "_bucket{le=\"+Inf\"} ";
+    b += std::to_string(cum);
+    b += '\n';
+    b += name;
+    b += "_sum ";
     b += std::to_string(h.sum_us.load(std::memory_order_relaxed) / 1e6);
-    b += '\n'; b += name; b += "_count "; b += std::to_string(cum); b += '\n';
+    b += '\n';
+    b += name;
+    b += "_count ";
+    b += std::to_string(cum);
+    b += '\n';
   };
 
   gauge("q4t_memory_admission_enabled", "Global memory admission enabled.",
@@ -81,8 +114,8 @@ void ChatServer::HandleMetrics(int fd) {
         memory.recovery_bytes);
   gauge("q4t_memory_admission_open", "New work allowed by memory admission.",
         memory.Allowed());
-  counter("q4t_memory_observations_total", "Actual memory samples, not queries.",
-          memory.observations);
+  counter("q4t_memory_observations_total",
+          "Actual memory samples, not queries.", memory.observations);
   counter("q4t_memory_observation_failures_total", "Invalid memory samples.",
           memory.failures);
   counter("q4t_memory_admission_transitions_total", "Memory gate transitions.",
@@ -92,14 +125,16 @@ void ChatServer::HandleMetrics(int fd) {
   for (size_t i = 0; i < kMemoryStates.size(); ++i)
     b += std::string("q4t_memory_admission_state{state=\"") + kMemoryStates[i] +
          "\"} " + (i == static_cast<size_t>(memory.state) ? "1\n" : "0\n");
-  b += "# HELP q4t_memory_rejected_total Requests rejected by memory admission.\n"
+  b += "# HELP q4t_memory_rejected_total Requests rejected by memory "
+       "admission.\n"
        "# TYPE q4t_memory_rejected_total counter\n";
   for (size_t point = 0; point < kMemoryCheckpoints.size(); ++point) {
     for (size_t reason = 0; reason < kMemoryRejectionReasons.size(); ++reason) {
       b += std::string("q4t_memory_rejected_total{checkpoint=\"") +
            kMemoryCheckpoints[point] + "\",reason=\"" +
            kMemoryRejectionReasons[reason] + "\"} " +
-           std::to_string(metrics_.memory_rejected[point][reason].load()) + '\n';
+           std::to_string(metrics_.memory_rejected[point][reason].load()) +
+           '\n';
     }
   }
 
@@ -154,7 +189,8 @@ void ChatServer::HandleMetrics(int fd) {
           metrics_.structured_prepare_failed.load());
   counter("q4t_structured_workers_started_total", "Grammar worker execs.",
           metrics_.structured_workers_started.load());
-  counter("q4t_structured_workers_ready_total", "Workers with limits installed.",
+  counter("q4t_structured_workers_ready_total",
+          "Workers with limits installed.",
           metrics_.structured_workers_ready.load());
   counter("q4t_structured_compiles_started_total", "Worker compiler entries.",
           metrics_.structured_compiles_started.load());
@@ -162,7 +198,8 @@ void ChatServer::HandleMetrics(int fd) {
           metrics_.structured_workers_reaped.load());
   counter("q4t_structured_compile_timeouts_total", "Hard preparation timeouts.",
           metrics_.structured_compile_timeouts.load());
-  counter("q4t_structured_resource_exhausted_total", "Preparation memory limits.",
+  counter("q4t_structured_resource_exhausted_total",
+          "Preparation memory limits.",
           metrics_.structured_resource_exhausted.load());
   gauge("q4t_structured_workers_active", "Owned unreaped grammar processes.",
         metrics_.structured_workers_active.load());
@@ -205,6 +242,20 @@ void ChatServer::HandleMetrics(int fd) {
   }
   gauge("q4t_num_requests_running", "In-flight request threads.",
         active_conns_.load());
+  gauge("q4t_public_connections",
+        "Public listener handlers, including incomplete headers.",
+        public_conns_.load());
+  gauge("q4t_operations_listener_enabled",
+        "Independent local listener enabled.", operations_port_ != 0 ? 1 : 0);
+  gauge("q4t_operations_connections",
+        "Operations handlers, including incomplete headers (limit 8).",
+        operations_conns_.load());
+  gauge("q4t_operations_observation_connections",
+        "Operations observation connections (limit 4).",
+        operations_observation_conns_.load());
+  gauge("q4t_operations_control_connections",
+        "Operations control connections (limit 4).",
+        operations_control_conns_.load());
   gauge("q4t_request_body_bytes", "Reserved chat body bytes (48 MiB cap).",
         body_budget_.Used());
   gauge("q4t_active_chats", "Admitted chat/preflight through output cleanup.",
@@ -219,7 +270,7 @@ void ChatServer::HandleMetrics(int fd) {
   gauge("q4t_business_connections", "Classified business-route connections.",
         business_conns_.load());
   gauge("q4t_observation_connections",
-        "Classified observation connections, including this scrape (limit 4).",
+        "Public listener observation connections (limit 4).",
         observation_conns_.load());
   b += "# HELP q4t_connection_rejections_total Connection capacity refusals "
        "by fixed partition.\n"
@@ -228,6 +279,14 @@ void ChatServer::HandleMetrics(int fd) {
     b += "q4t_connection_rejections_total{kind=\"" +
          std::string(kHttpConnectionClasses[i]) + "\"} " +
          std::to_string(metrics_.connection_rejections[i].load()) + '\n';
+  b += "# HELP q4t_operations_connection_rejections_total Operations listener "
+       "capacity refusals by fixed partition.\n"
+       "# TYPE q4t_operations_connection_rejections_total counter\n";
+  for (size_t i = 0; i < kHttpConnectionClasses.size(); ++i)
+    b += "q4t_operations_connection_rejections_total{kind=\"" +
+         std::string(kHttpConnectionClasses[i]) + "\"} " +
+         std::to_string(metrics_.operations_connection_rejections[i].load()) +
+         '\n';
   gauge("q4t_control_connections", "Classified control connections (limit 4).",
         control_conns_.load());
   gauge("q4t_ready", "Ready for business; ordinary slot occupancy is separate.",
@@ -249,9 +308,10 @@ void ChatServer::HandleMetrics(int fd) {
   gauge("q4t_gpu_healthy", "1 if no sticky CUDA error observed, else 0.",
         gpu_healthy_.load() ? 1 : 0);
 
-  histogram("q4t_ttft_seconds",
-            "Streaming arrival to first content/reasoning/tool delta sent locally.",
-            metrics_.ttft_seconds);
+  histogram(
+      "q4t_ttft_seconds",
+      "Streaming arrival to first content/reasoning/tool delta sent locally.",
+      metrics_.ttft_seconds);
   histogram("q4t_target_ready_seconds", "Arrival to first target token ready.",
             metrics_.target_ready_seconds);
   histogram("q4t_response_seconds", "Arrival to complete local response write.",

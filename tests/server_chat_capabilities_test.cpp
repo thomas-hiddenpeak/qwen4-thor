@@ -23,15 +23,14 @@ Q4T_TEST(chat_capabilities_transport_observation_contract) {
   Q4T_CHECK(q4t::io::ParseJson(
       q4t::server::ChatCapabilitiesJson("m", false, true), &caps));
   const auto* observation = caps.Find("observability");
-  Q4T_CHECK(observation && observation->GetInt("version") == 4);
+  Q4T_CHECK(observation && observation->GetInt("version") == 5);
   Q4T_CHECK(observation->GetBool("business_connections_exclude_observation"));
   Q4T_CHECK(observation->GetString("connection_rejections") ==
             "q4t_connection_rejections_total");
   const auto* http = caps.Find("http");
   Q4T_CHECK(http && http->GetInt("control_reserved_connections") == 4 &&
             http->GetInt("observation_reserved_connections") == 4);
-  Q4T_CHECK(http->GetString("connection_profile") ==
-            "q4t-http-partitions-v1");
+  Q4T_CHECK(http->GetString("connection_profile") == "q4t-http-partitions-v2");
   Q4T_CHECK(http->GetBool("observation_during_drain") &&
             http->GetBool("reservation_excludes_unclassified_header_flood"));
   const auto* routes = http->GetArray("observation_routes");
@@ -55,7 +54,8 @@ Q4T_TEST(chat_capabilities_text_stop_profile) {
   Q4T_CHECK(q4t::io::ParseJson(
       q4t::server::ChatCapabilitiesJson("m", false, true), &caps));
   const auto* stop = caps.Find("text_stop");
-  Q4T_CHECK(stop && stop->GetString("profile") == q4t::server::kTextStopProfile);
+  Q4T_CHECK(stop &&
+            stop->GetString("profile") == q4t::server::kTextStopProfile);
   Q4T_CHECK(stop->GetInt("max_strings", 0) == 4);
   Q4T_CHECK(stop->GetInt("max_utf8_bytes", 0) == 256);
   Q4T_CHECK(!stop->GetBool("constrained_output", true));

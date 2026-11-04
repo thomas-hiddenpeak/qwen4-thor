@@ -93,18 +93,24 @@ def private_directory(path, repository=ROOT):
     return path
 
 
-def settings(port, restart_limit, critical_memory_mib=1024):
+def settings(port, restart_limit, critical_memory_mib=1024, operations_port=0):
     require(type(port) is int and 1024 <= port <= 65535, 'invalid port')
     require(type(restart_limit) is int and 0 <= restart_limit <= 3,
             'restart limit must be between zero and three')
     require(type(critical_memory_mib) is int and
             1 <= critical_memory_mib <= 1024**2, 'invalid critical memory floor')
-    return dict(profile=PROFILE.copy(), port=port, restart_limit=restart_limit,
+    require(type(operations_port) is int and (operations_port == 0 or
+            1024 <= operations_port <= 65535 and operations_port != port),
+            'invalid operations port')
+    result = dict(profile=PROFILE.copy(), port=port, restart_limit=restart_limit,
         poll_seconds=5, startup_seconds=300, unavailable_seconds=30,
         restart_delay_seconds=5, stop_seconds=30, kill_seconds=5,
         log_bytes=4*1024**2, log_files=2,
         critical_memory_mib=critical_memory_mib, memory_poll_seconds=1,
         memory_low_seconds=2, memory_unknown_seconds=5)
+    if operations_port:
+        result['operations_port'] = operations_port
+    return result
 
 
 def accepted_release(metadata, decision):
@@ -119,7 +125,8 @@ def accepted_release(metadata, decision):
 
 
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
-            critical_memory_mib=1024, client_policy=None, host_resources=None):
+            critical_memory_mib=1024, client_policy=None, host_resources=None,
+            operations_port=0):
     policy_raw = None
     if host_resources is not None:
         from tools.serve_service import resources
@@ -143,7 +150,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     protocol = metadata['chat_protocol']['protocol_sha256']
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
-    config = settings(port, restart_limit, critical_memory_mib)
+    config = settings(port, restart_limit, critical_memory_mib, operations_port)
     model_files = {p.name: sha(p) for p in sorted(model.glob('*.json'))
                    if p.is_file() and not p.is_symlink()}
     require({'config.json', 'tokenizer.json', 'tokenizer_config.json'} <=
@@ -152,7 +159,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     for source, name in zip((binary, release, cache, acceptance), FILES):
         shutil.copyfile(source, target/name)
         os.chmod(target/name, 0o500 if name == 'q4t' else 0o400)
-    sources = V5_SOURCES if host_resources is not None else (V4_SOURCES if policy_raw is not None else SOURCES)
+    sources = V5_SOURCES if host_resources is not None or operations_port else (V4_SOURCES if policy_raw is not None else SOURCES)
     for name in sources:
         source, dest = ROOT/name, target/'source'/name
         regular(source)
@@ -178,6 +185,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         manifest['version'] = 5
         manifest['host_resources'] = dict(host_resources)
         manifest['resource_dependencies'] = resources.dependencies()
+    if operations_port:
+        manifest['version'] = 6
     save(target/'manifest.json', manifest)
     verify(target, sha(target/'manifest.json'))
     return dict(package=str(target), manifest_sha256=sha(target/'manifest.json'),
@@ -188,20 +197,23 @@ def verify(package, digest):
     package = Path(package).resolve(strict=True)
     require(sha(package/'manifest.json') == digest, 'package manifest changed')
     manifest = read(package/'manifest.json')
-    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4, 5),
+    require(type(manifest['version']) is int and manifest['version'] in (1, 2, 3, 4, 5, 6),
             'unsupported package version')
     config = manifest['settings']
     wanted = settings(config['port'], config['restart_limit'],
-                      config.get('critical_memory_mib', 1024))
+                      config.get('critical_memory_mib', 1024),
+                      config.get('operations_port', 0) if manifest['version'] == 6 else 0)
+    require(manifest['version'] != 6 or config.get('operations_port', 0) != 0,
+            'operations package requires explicit port')
     if manifest['version'] == 1:
         for key in ('critical_memory_mib', 'memory_poll_seconds',
                     'memory_low_seconds', 'memory_unknown_seconds'):
             del wanted[key]
     require(config == wanted, 'unknown managed configuration')
     sources = {1: LEGACY_SOURCES, 2: V2_SOURCES, 3: SOURCES,
-               4: V4_SOURCES, 5: V5_SOURCES}[manifest['version']]
+               4: V4_SOURCES, 5: V5_SOURCES, 6: V5_SOURCES}[manifest['version']]
     expected = {*FILES, *('source/'+name for name in sources)}
-    if manifest['version'] == 4 or manifest['version'] == 5 and 'client_policy' in manifest:
+    if manifest['version'] == 4 or manifest['version'] in (5, 6) and 'client_policy' in manifest:
         from tools.serve_gateway import client_policy as cp
         expected.add('client-policy.json')
         raw, _ = cp.read(package/'client-policy.json')
@@ -209,7 +221,7 @@ def verify(package, digest):
                 'client policy binding differs')
     else:
         require('client_policy' not in manifest, 'legacy package cannot scope clients')
-    if manifest['version'] == 5:
+    if manifest['version'] == 5 or manifest['version'] == 6 and 'host_resources' in manifest:
         from tools.serve_service import resources
         resources.validate(manifest['host_resources'])
         resources.verify_dependencies(manifest['resource_dependencies'])
@@ -252,4 +264,6 @@ def command(package, manifest):
             args += ['--'+key.replace('_', '-'), str(value)]
     if 'client_policy' in manifest:
         args += ['--client-policy-file', str(Path(package)/'client-policy.json')]
+    if cfg.get('operations_port', 0):
+        args += ['--operations-port', str(cfg['operations_port'])]
     return args

@@ -31,14 +31,13 @@ std::string Array(const std::vector<T>& values) {
 const char* Bool(bool value) { return value ? "true" : "false"; }
 
 int RequestedOutput(const io::Json& req, const ChatPlanConfig& config) {
-  const int fallback = config.client_limits
-                           ? std::min(config.default_max_tokens,
-                                      static_cast<int>(config.client_limits
-                                                           ->max_output_tokens))
-                           : config.default_max_tokens;
+  const int fallback =
+      config.client_limits
+          ? std::min(config.default_max_tokens,
+                     static_cast<int>(config.client_limits->max_output_tokens))
+          : config.default_max_tokens;
   return static_cast<int>(
-      req.GetInt("max_completion_tokens",
-                 req.GetInt("max_tokens", fallback)));
+      req.GetInt("max_completion_tokens", req.GetInt("max_tokens", fallback)));
 }
 
 std::string OutputSource(const io::Json& req) {
@@ -266,7 +265,11 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
   auto capacities = config.capacities;
   if (capacities.empty()) capacities.assign(config.max_seq, config.max_len);
   const text::TokenizerLimits tokenizer;
+  const int public_handlers = business_connections + kOperationsConnections;
+  const int operations_handlers =
+      requested.operations_port ? kOperationsConnections : 0;
   return R"({"object":"q4t.serve.config","profile":"q4t-config-v1",)"
+         R"("observability_version":5,)"
          R"("protocol_source_sha256":)" +
          Quote(identity::kProtocol) + R"(,"model":)" + Quote(config.model) +
          R"(,"client_policy":{"profile":"q4t-gateway-clients-v1","enabled":)" +
@@ -275,6 +278,14 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          std::to_string(config.client_count) +
          R"(,"namespace":"client_id","credential_values_redacted":true,)"
          R"("mutable":false,"per_client_ram_limit":false},)"
+         R"("listeners":{"public":{"host":)" +
+         Quote(requested.host) + R"(,"port":)" +
+         std::to_string(requested.port) +
+         R"(},"operations":{"host":"127.0.0.1","port":)" +
+         std::to_string(requested.operations_port) + R"(,"enabled":)" +
+         Bool(requested.operations_port != 0) + R"(,"source":)" +
+         Quote(source("--operations-port", requested.operations_port == 0)) +
+         R"(,"unclassified_shares_operations_total":true}},)"
          R"("max_context_tokens":)" +
          number("--max-len", requested.max_len, defaults.max_len,
                 config.max_len,
@@ -393,10 +404,12 @@ std::string EffectiveServeConfigJson(const ServerOptions& requested,
          std::to_string(kReservedControlConnections) +
          R"(,"observation_connections":)" +
          std::to_string(kReservedObservationConnections) +
-         R"(,"connection_handlers":)" +
-         std::to_string(business_connections + kReservedControlConnections +
-                        kReservedObservationConnections) +
-         R"(,"unclassified_shares_total":true,"body_bytes":)" +
+         R"(,"public_connection_handlers":)" + std::to_string(public_handlers) +
+         R"(,"operations_connection_handlers":)" +
+         std::to_string(operations_handlers) + R"(,"connection_handlers":)" +
+         std::to_string(public_handlers + operations_handlers) +
+         R"(,"unclassified_shares_total":)" +
+         Bool(requested.operations_port == 0) + R"(,"body_bytes":)" +
          std::to_string(kChatBodyBytes) + R"(,"aggregate_body_bytes":)" +
          std::to_string(kAggregateChatBodyBytes) +
          R"(,"tokenizer_input_bytes":)" +

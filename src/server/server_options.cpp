@@ -70,15 +70,14 @@ Status ValidateServerOptions(const ServerOptions& options) {
   int previous = 0;
   for (const int point : options.prefix_cache_checkpoints) {
     if (point < 1024 || point > 131072 || point <= previous)
-      return Status::Fail("prefix checkpoints must increase within 1024..131072");
+      return Status::Fail(
+          "prefix checkpoints must increase within 1024..131072");
     previous = point;
   }
   if (options.mtp_suffix &&
-      (options.no_mtp || options.mtp_k != 3 ||
-       options.allow_media ||
+      (options.no_mtp || options.mtp_k != 3 || options.allow_media ||
        options.max_len > static_cast<int>(mtp::SuffixDrafter::kMaxCapacity)))
-    return Status::Fail(
-        "mtp-suffix requires text MTP k=3, max-len<=262144");
+    return Status::Fail("mtp-suffix requires text MTP k=3, max-len<=262144");
   if (!options.mtp_subset_head.empty() &&
       (options.no_mtp || options.mtp_k != 3))
     return Status::Fail("mtp-subset-head requires MTP with fixed k=3");
@@ -97,6 +96,10 @@ Status ValidateServerOptions(const ServerOptions& options) {
     return Status::Fail("client-policy-file requires loopback text serving");
   if (options.port < 1 || options.port > 65535)
     return Status::Fail("port must be in [1,65535]");
+  if (options.operations_port < 0 || options.operations_port > 65535 ||
+      options.operations_port == options.port)
+    return Status::Fail(
+        "operations-port must be 0 or a distinct port [1,65535]");
   if (options.model_dir.empty()) return Status::Fail("model-dir is empty");
   if (options.max_tokens < 1)
     return Status::Fail("max-tokens must be positive");
@@ -124,7 +127,8 @@ Status ValidateServerOptions(const ServerOptions& options) {
       options.startup_plan != StartupPlanMode::kRequired)
     return Status::Fail("startup-plan must be auto, off or required");
   if (options.moe_trace_dir.empty() != options.moe_trace_workload.empty())
-    return Status::Fail("moe-trace-dir and moe-trace-workload are required together");
+    return Status::Fail(
+        "moe-trace-dir and moe-trace-workload are required together");
   if (options.moe_trace_max_mib < 1 || options.moe_trace_max_mib > 4096)
     return Status::Fail("moe-trace-max-mib must be in [1,4096]");
   // 512 is the qwen4_exp routed-expert count (architecture constant).
@@ -135,7 +139,8 @@ Status ValidateServerOptions(const ServerOptions& options) {
     return Status::Fail(
         "moe-hot-protect requires moe-resident-slots > 0 and moe-hot-list");
   }
-  if (options.request_deadline_ms < 1000 || options.request_deadline_ms > 10800000)
+  if (options.request_deadline_ms < 1000 ||
+      options.request_deadline_ms > 10800000)
     return Status::Fail("request-deadline-ms must be in [1000,10800000]");
   // k=3 is the measured optimum; the verify forward and MTP scratch scale
   // linearly with k+1, so cap experimentation well below kMaxT.
@@ -149,7 +154,8 @@ Status ParseServerOptions(std::span<const std::string_view> args,
   ServerOptions parsed = *options;
   for (size_t i = 0; i < args.size(); ++i) {
     const auto key = args[i];
-    if (std::find(parsed.supplied_options.begin(), parsed.supplied_options.end(),
+    if (std::find(parsed.supplied_options.begin(),
+                  parsed.supplied_options.end(),
                   key) == parsed.supplied_options.end())
       parsed.supplied_options.emplace_back(key);
     if (key == "--mtp") {
@@ -178,6 +184,7 @@ Status ParseServerOptions(std::span<const std::string_view> args,
     }
     int* integer = nullptr;
     if (key == "--port") integer = &parsed.port;
+    if (key == "--operations-port") integer = &parsed.operations_port;
     if (key == "--max-tokens") integer = &parsed.max_tokens;
     if (key == "--max-prefill") integer = &parsed.max_prefill;
     if (key == "--max-len") integer = &parsed.max_len;
@@ -218,8 +225,9 @@ Status ParseServerOptions(std::span<const std::string_view> args,
             "cuda-allocation-limit-mib must be auto or [0,1048576]");
     }
     if (key == "--seq-capacities" || key == "--prefix-cache-checkpoints") {
-      auto& values = key == "--seq-capacities" ? parsed.seq_capacities
-                                               : parsed.prefix_cache_checkpoints;
+      auto& values = key == "--seq-capacities"
+                         ? parsed.seq_capacities
+                         : parsed.prefix_cache_checkpoints;
       values.clear();
       size_t start = 0;
       while (start < value.size()) {

@@ -131,8 +131,9 @@ Q4T_TEST(serve_capabilities_allow_explicit_combinations) {
 }
 
 Q4T_TEST(serve_rejects_malformed_numeric_options) {
-  for (const auto flag : {"--port", "--max-seq", "--max-len", "--max-prefill",
-                          "--max-tokens", "--mem-fraction"}) {
+  for (const auto flag :
+       {"--port", "--operations-port", "--max-seq", "--max-len",
+        "--max-prefill", "--max-tokens", "--mem-fraction"}) {
     for (const auto value : {"", "junk", "1tail", " 1", "1 ", "--mtp",
                              "9999999999999999999999999999999999999999"}) {
       auto options = Defaults();
@@ -251,9 +252,9 @@ Q4T_TEST(serve_trace_options_are_explicit_and_bounded) {
   Q4T_CHECK(options.moe_trace_dir.empty());
   Q4T_CHECK(!Parse({"--moe-trace-dir", ".q4t-work/trace"}, &options));
   Q4T_CHECK(options.moe_trace_dir.empty());
-  Q4T_CHECK(Parse({"--moe-trace-dir", ".q4t-work/trace",
-                   "--moe-trace-workload", ".q4t-work/workload.json",
-                   "--moe-trace-max-mib", "128"}, &options));
+  Q4T_CHECK(Parse({"--moe-trace-dir", ".q4t-work/trace", "--moe-trace-workload",
+                   ".q4t-work/workload.json", "--moe-trace-max-mib", "128"},
+                  &options));
   Q4T_CHECK(options.moe_trace_max_mib == 128);
   for (const auto value : {"0", "4097", "1.5", "-1", "nan"}) {
     Q4T_CHECK(!Parse({"--moe-trace-max-mib", value}, &options));
@@ -289,14 +290,29 @@ Q4T_TEST(serve_suffix_requires_text_fixed_k3) {
   Q4T_CHECK(Parse({"--mtp-subset-head", "/explicit-artifact"}, &options));
   for (const auto concurrency : {"1", "2", "4", "16", "32"})
     Q4T_CHECK(Parse({"--max-seq", concurrency}, &options));
-  for (const auto args : {
-           std::initializer_list<std::string_view>{"--mtp-suffix", "--no-mtp"},
-           {"--mtp-suffix", "--mtp-k", "2"},
-           {"--mtp-suffix", "--allow-media"},
-           {"--mtp-suffix", "--max-len", "262145"}}) {
+  for (const auto args :
+       {std::initializer_list<std::string_view>{"--mtp-suffix", "--no-mtp"},
+        {"--mtp-suffix", "--mtp-k", "2"},
+        {"--mtp-suffix", "--allow-media"},
+        {"--mtp-suffix", "--max-len", "262145"}}) {
     auto rejected = Defaults();
     Q4T_CHECK(!Parse(args, &rejected));
     Q4T_CHECK(!rejected.mtp_suffix);
   }
+  return true;
+}
+
+Q4T_TEST(serve_operations_port_is_explicit_distinct_and_transactional) {
+  auto options = Defaults();
+  Q4T_CHECK(options.operations_port == 0);
+  Q4T_CHECK(Parse({"--operations-port", "18108"}, &options));
+  Q4T_CHECK(options.operations_port == 18108);
+  for (const auto value : {"-1", "65536", "8000"}) {
+    auto rejected = Defaults();
+    Q4T_CHECK(!Parse({"--operations-port", value}, &rejected));
+    Q4T_CHECK(rejected.operations_port == 0);
+  }
+  Q4T_CHECK(Parse({"--operations-port", "0"}, &options));
+  Q4T_CHECK(options.operations_port == 0);
   return true;
 }

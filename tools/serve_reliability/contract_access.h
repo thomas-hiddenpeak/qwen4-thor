@@ -61,16 +61,20 @@ struct ServeContractAccess {
     server.seq_stopping_ = true;
     server.seq_cv_.notify_all();
   }
-  static std::shared_ptr<RequestControl> Register(ChatServer& server,
-                                                  const std::string& token,
-                                                  std::string_view client = {}) {
+  static std::shared_ptr<RequestControl> Register(
+      ChatServer& server, const std::string& token,
+      std::string_view client = {}) {
     return server.requests_.Register(
         "cancel-contract", token,
         std::chrono::steady_clock::now() + std::chrono::seconds(30), client);
   }
-  static ClientAdmission& Clients(ChatServer& server) { return server.clients_; }
-  static void Configure(ChatServer& server) {
-    server.port_ = 0;
+  static ClientAdmission& Clients(ChatServer& server) {
+    return server.clients_;
+  }
+  static void Configure(ChatServer& server, int operations_port = 0,
+                        int public_port = 0) {
+    server.port_ = public_port;
+    server.operations_port_ = operations_port;
     server.conn_cap_ = 2;
     server.model_ready_.store(true);
   }
@@ -80,9 +84,26 @@ struct ServeContractAccess {
   static int Observation(ChatServer& server) {
     return server.observation_conns_.load();
   }
-  static int Control(ChatServer& server) { return server.control_conns_.load(); }
+  static int Control(ChatServer& server) {
+    return server.control_conns_.load();
+  }
   static int ActiveConnections(ChatServer& server) {
     return server.active_conns_.load();
+  }
+  static int Operations(ChatServer& server) {
+    return server.operations_conns_.load();
+  }
+  static int OperationsObservation(ChatServer& server) {
+    return server.operations_observation_conns_.load();
+  }
+  static int OperationsControl(ChatServer& server) {
+    return server.operations_control_conns_.load();
+  }
+  static uint64_t OperationsRejected(ChatServer& server,
+                                     HttpConnectionClass kind) {
+    return server.metrics_
+        .operations_connection_rejections[static_cast<size_t>(kind)]
+        .load();
   }
   static uint64_t ConnectionRejected(ChatServer& server,
                                      HttpConnectionClass kind) {
@@ -92,11 +113,13 @@ struct ServeContractAccess {
   static void Healthy(ChatServer& server, bool healthy) {
     server.gpu_healthy_.store(healthy);
   }
-  static void DeviceFailure(ChatServer& server, const DeviceMemoryResult& result) {
+  static void DeviceFailure(ChatServer& server,
+                            const DeviceMemoryResult& result) {
     server.RecordDeviceMemoryFailure(result, "native.contract");
   }
-  static int Port(ChatServer& server) {
-    const int fd = server.listen_fd_.load();
+  static int Port(ChatServer& server, bool operations = false) {
+    const int fd = operations ? server.operations_listen_fd_.load()
+                              : server.listen_fd_.load();
     sockaddr_in addr{};
     socklen_t length = sizeof(addr);
     return fd >= 0 &&
@@ -109,7 +132,12 @@ struct ServeContractAccess {
     return server.connections_.empty() && server.active_conns_.load() == 0 &&
            server.business_conns_.load() == 0 &&
            server.observation_conns_.load() == 0 &&
-           server.control_conns_.load() == 0 && server.listen_fd_.load() == -1;
+           server.control_conns_.load() == 0 &&
+           server.listen_fd_.load() == -1 && server.public_conns_.load() == 0 &&
+           server.operations_conns_.load() == 0 &&
+           server.operations_control_conns_.load() == 0 &&
+           server.operations_observation_conns_.load() == 0 &&
+           server.operations_listen_fd_.load() == -1;
   }
 };
 }  // namespace q4t::server

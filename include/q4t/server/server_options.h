@@ -28,8 +28,12 @@ struct ServerOptions {
   std::vector<std::string> supplied_options;
   // Numeric IPv4 only. Remote access requires an explicit address.
   std::string host = "127.0.0.1";
-  std::string client_policy_file;  // Private immutable gateway policy, optional.
+  std::string
+      client_policy_file;  // Private immutable gateway policy, optional.
   int port = 8000;
+  // Optional independent local operations listener; 0 disables. Always
+  // 127.0.0.1, with its own bounded handlers; never serves generation.
+  int operations_port = 0;
   std::string model_dir;
   int max_tokens = 256;  // default cap when the request omits max_tokens
   int max_prefill = 0;   // 0 = use ModelConfig default (2048); >0 overrides
@@ -51,7 +55,7 @@ struct ServerOptions {
   bool no_mtp = false;
   bool mtp_suffix = false;  // Explicit request-local text, fixed-k3 suffix.
   std::string session_cache_dir;  // Explicit bounded same-process SSD cache.
-  std::string prefix_cache_dir;  // Separate bounded, scope-keyed shared pool.
+  std::string prefix_cache_dir;   // Separate bounded, scope-keyed shared pool.
   std::vector<int> prefix_cache_checkpoints{8192, 32768, 65536};
   std::string mtp_subset_head;  // Explicit experimental BF16 artifact.
   // MTP speculative steps k (draft tokens per step); only meaningful when

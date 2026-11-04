@@ -43,8 +43,9 @@ ChatServer::~ChatServer() {
     seq_stopping_ = true;
   }
   seq_cv_.notify_all();
-  // B2b: stop the scheduler thread FIRST (it touches model_.Get() + d_sched_logits_
-  // under model_mu_, so it must be joined before those are freed).
+  // B2b: stop the scheduler thread FIRST (it touches model_.Get() +
+  // d_sched_logits_ under model_mu_, so it must be joined before those are
+  // freed).
   StopScheduler();
   model_.Get().router_trace = nullptr;
   router_trace_.reset();
@@ -63,8 +64,8 @@ ChatServer::~ChatServer() {
     vision_tower_.reset();
   }
   // MTP draft model: free its device weights before model_.Get() (the borrowed
-  // embed/lm_head point into model_.Get()'s memory). Then the rolling draft-trunk
-  // buffers.
+  // embed/lm_head point into model_.Get()'s memory). Then the rolling
+  // draft-trunk buffers.
   if (mtp_loaded_) {
     mtp_.Free();
     mtp_loaded_ = false;
@@ -77,8 +78,7 @@ ChatServer::~ChatServer() {
                  "[suffix-classes] event=release bytes=%zu peak_bytes=%zu "
                  "checks=%llu lookups=%llu decodes=%llu unknown=%llu "
                  "allocations=%llu allocation_ns=%llu release_ns=%llu\n",
-                 bytes, c.peak_bytes,
-                 static_cast<unsigned long long>(c.checks),
+                 bytes, c.peak_bytes, static_cast<unsigned long long>(c.checks),
                  static_cast<unsigned long long>(c.lookups),
                  static_cast<unsigned long long>(c.decodes),
                  static_cast<unsigned long long>(c.unknown),
@@ -95,11 +95,12 @@ namespace {
 struct PhaseTimer {
   const char* phase;
   std::chrono::steady_clock::time_point t0;
-  explicit PhaseTimer(const char* p) : phase(p), t0(std::chrono::steady_clock::now()) {}
+  explicit PhaseTimer(const char* p)
+      : phase(p), t0(std::chrono::steady_clock::now()) {}
   ~PhaseTimer() {
-    const double ms =
-        std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t0)
-            .count();
+    const double ms = std::chrono::duration<double, std::milli>(
+                          std::chrono::steady_clock::now() - t0)
+                          .count();
     std::fprintf(stderr, "[q4t][startup] %s %.0f ms\n", phase, ms);
   }
 };
@@ -119,8 +120,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       static_cast<uint64_t>(opts.min_available_memory_mib) * 1024 * 1024,
       static_cast<uint64_t>(opts.memory_recovery_margin_mib) * 1024 * 1024);
   const auto check_startup_memory = [&](const char* checkpoint,
-                                       uint64_t estimate, bool full,
-                                       StartupMemorySnapshot* snapshot) {
+                                        uint64_t estimate, bool full,
+                                        StartupMemorySnapshot* snapshot) {
     *snapshot = ObserveStartupMemory(
         !opts.no_budget, estimate,
         static_cast<uint64_t>(opts.startup_memory_headroom_mib) * 1024 * 1024,
@@ -129,10 +130,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
                  "[q4t][startup-memory] {\"checkpoint\":\"%s\","
                  "\"admission\":%s}\n",
                  checkpoint, StartupMemorySnapshotJson(*snapshot).c_str());
-    return snapshot->Allowed()
-               ? Status()
-               : Status::Fail(std::string(snapshot->Reason()) + ": " +
-                              checkpoint);
+    return snapshot->Allowed() ? Status()
+                               : Status::Fail(std::string(snapshot->Reason()) +
+                                              ": " + checkpoint);
   };
   Status s = check_startup_memory("before_metadata", 0, false,
                                   &startup_memory_.before_metadata);
@@ -148,10 +148,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
   mtp_suffix_ = opts.mtp_suffix;
   if (!opts.session_cache_dir.empty()) {
     const char* incremental = std::getenv("Q4T_SESSION_INCREMENTAL");
-    const Status cache_status = session_cache_.Open(
-        opts.session_cache_dir, SessionCache::kMinPrefix,
-        SessionCache::kDiskBudget,
-        incremental && std::strcmp(incremental, "1") == 0);
+    const Status cache_status =
+        session_cache_.Open(opts.session_cache_dir, SessionCache::kMinPrefix,
+                            SessionCache::kDiskBudget,
+                            incremental && std::strcmp(incremental, "1") == 0);
     if (!cache_status.ok()) return cache_status;
     std::fprintf(stderr,
                  "[session-cache] enabled=1 entries=8 disk_bytes=%zu "
@@ -160,8 +160,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
                  SessionCache::kStagingBytes);
   }
   if (!opts.prefix_cache_dir.empty()) {
-    const Status cache_status = prefix_cache_.Open(
-        opts.prefix_cache_dir, 1024, size_t{8} << 30);
+    const Status cache_status =
+        prefix_cache_.Open(opts.prefix_cache_dir, 1024, size_t{8} << 30);
     if (!cache_status.ok()) return cache_status;
     prefix_cache_checkpoints_ = opts.prefix_cache_checkpoints;
     std::fprintf(stderr,
@@ -189,7 +189,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
   cfg.moe_hot_protect = opts.moe_hot_protect;
   runtime::ResidencyConfig residency_config;
   s = runtime::LoadResidencyConfig(cfg.moe_hot_list, cfg.num_layers, cfg.E,
-                                    cfg.moe_resident_slots, &residency_config);
+                                   cfg.moe_resident_slots, &residency_config);
   if (!s.ok()) return s;
 
   // Estimate allocation capacity before model load. This is not a physical
@@ -224,9 +224,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       if (opts.moe_resident_slots > 0) {
         const size_t slot_bytes =
             quant::MoEResidencyLayerBytes(cfg.hs, cfg.moe_is, 1);
-        const size_t offloaded =
-            static_cast<size_t>(cfg.E) * cfg.num_layers -
-            residency_config.total_slots;
+        const size_t offloaded = static_cast<size_t>(cfg.E) * cfg.num_layers -
+                                 residency_config.total_slots;
         if (offloaded > weights / slot_bytes) {
           return Status::Fail("weight index smaller than offloaded estimate");
         }
@@ -270,8 +269,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
         breq.mtp_k = mtp_k_;
         if (!opts.mtp_subset_head.empty()) {
           breq.extra_fixed_bytes += mtp::kSubsetReadCacheBudget;
-          breq.mtp_weights_bytes += mtp::kSubsetWeightBytes + mtp::kSubsetIdBytes;
-          breq.mtp_load_host_bytes = mtp::kSubsetWeightBytes + mtp::kSubsetIdBytes;
+          breq.mtp_weights_bytes +=
+              mtp::kSubsetWeightBytes + mtp::kSubsetIdBytes;
+          breq.mtp_load_host_bytes =
+              mtp::kSubsetWeightBytes + mtp::kSubsetIdBytes;
         }
         io::WeightIndex* raw_index = nullptr;
         s = io::WeightIndex::Open(
@@ -300,8 +301,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
             const io::TensorInfo* tensor = mtp_loader->FindTensor(name);
             if (!tensor) return Status::Fail("MTP budget tensor: " + name);
             const size_t bytes = static_cast<size_t>(tensor->byte_size());
-            if (bytes > std::numeric_limits<size_t>::max() -
-                            breq.mtp_weights_bytes)
+            if (bytes >
+                std::numeric_limits<size_t>::max() - breq.mtp_weights_bytes)
               return Status::Fail("MTP budget weight bytes overflow");
             breq.mtp_weights_bytes += bytes;
             breq.mtp_load_host_bytes =
@@ -350,8 +351,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
     std::fprintf(stderr,
                  "[q4t] suffix enabled: k=3 match=3..64 candidates=4 "
                  "capacity=%d global_ids=1 numeric_gate=1 "
-                 "min_admitted_match=%d lazy_classes=1\n", cfg.max_len,
-                 mtp::SuffixDrafter::kMinAdmittedMatch);
+                 "min_admitted_match=%d lazy_classes=1\n",
+                 cfg.max_len, mtp::SuffixDrafter::kMinAdmittedMatch);
   }
   std::fprintf(stderr,
                "[q4t][capacity] requested_max_len=%d requested_max_seq=%d "
@@ -417,8 +418,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
     const Status supported = runtime::CheckStartupPlanSupport(cfg, opts);
     if (!supported.ok()) {
       if (opts.startup_plan == StartupPlanMode::kRequired) return supported;
-      std::fprintf(stderr,
-                   "[q4t][startup-plan] mode=auto active=0 reason=%s\n",
+      std::fprintf(stderr, "[q4t][startup-plan] mode=auto active=0 reason=%s\n",
                    supported.message().c_str());
     } else {
       PhaseTimer pt("startup_resource_plan");
@@ -426,8 +426,8 @@ Status ChatServer::Start(const ServerOptions& opts) {
       if (!s.ok()) return s;
       planned_startup = true;
       std::fprintf(stderr, "[q4t][startup-plan] mode=%s active=1\n",
-                   opts.startup_plan == StartupPlanMode::kRequired
-                       ? "required" : "auto");
+                   opts.startup_plan == StartupPlanMode::kRequired ? "required"
+                                                                   : "auto");
     }
   }
 #endif
@@ -568,6 +568,7 @@ Status ChatServer::Start(const ServerOptions& opts) {
                mtp_loaded_, allow_media_, vision_tower_ != nullptr, max_seq_);
 
   port_ = opts.port;
+  operations_port_ = opts.operations_port;
   max_tokens_default_ = opts.max_tokens;
   max_prefill_ = cfg.max_prefill;
   max_len_ = cfg.max_len;
@@ -585,8 +586,10 @@ Status ChatServer::Start(const ServerOptions& opts) {
     } else {
       auto capture = std::make_unique<trace::RouterCollector>();
       trace::RouterTraceConfig tc;
-      tc.layers = cfg.num_layers; tc.experts = cfg.E;
-      tc.top_k = cfg.topk; tc.max_rows = cfg.max_prefill;
+      tc.layers = cfg.num_layers;
+      tc.experts = cfg.E;
+      tc.top_k = cfg.topk;
+      tc.max_rows = cfg.max_prefill;
       Status capture_status = capture->Start(
           opts.moe_trace_dir, opts.moe_trace_workload, cfg.index_path, tc,
           cfg.max_len, uint64_t(opts.moe_trace_max_mib) * 1024 * 1024);
@@ -609,21 +612,24 @@ Status ChatServer::Start(const ServerOptions& opts) {
     RecordDeviceMemoryFailure(result, site);
     return result;
   };
-  const auto logits = allocate(d_sched_logits_,
-      static_cast<size_t>(max_seq_) * cfg.vocab * 2, "startup.scheduler_logits");
+  const auto logits =
+      allocate(d_sched_logits_, static_cast<size_t>(max_seq_) * cfg.vocab * 2,
+               "startup.scheduler_logits");
   if (!logits.ok() && !logits.exhausted())
     return Status::Fail("scheduler logits device memory failure");
-  const auto tokens = logits.ok()
-      ? allocate(d_sched_tokens_, static_cast<size_t>(max_seq_) *
-                     sizeof(int32_t), "startup.scheduler_tokens")
-      : logits;
+  const auto tokens =
+      logits.ok() ? allocate(d_sched_tokens_,
+                             static_cast<size_t>(max_seq_) * sizeof(int32_t),
+                             "startup.scheduler_tokens")
+                  : logits;
   if (!tokens.ok()) {
     const auto released = detail::ReleaseCudaMemory(
         d_sched_logits_, "startup.scheduler_logits_rollback");
     RecordDeviceMemoryFailure(released, "startup.scheduler_logits_rollback");
     if (!tokens.exhausted() || !released.ok())
       return Status::Fail("scheduler device memory failure");
-    std::fprintf(stderr, "[q4t] scheduler allocation exhausted; plain decode\n");
+    std::fprintf(stderr,
+                 "[q4t] scheduler allocation exhausted; plain decode\n");
   } else {
     h_sched_tokens_.assign(static_cast<size_t>(max_seq_), 0);
     try {
@@ -642,14 +648,16 @@ Status ChatServer::Start(const ServerOptions& opts) {
       return Status::Fail("thread failed");
     }
     scheduler_active_ = true;
-    std::fprintf(stderr, "[q4t] continuous-batching scheduler started "
-                         "(max_seq=%d)\n",
+    std::fprintf(stderr,
+                 "[q4t] continuous-batching scheduler started "
+                 "(max_seq=%d)\n",
                  max_seq_);
   }
   // Every serve prefill consumes one row per sequence. The shared buffer
   // holds at most max_seq rows, and all accesses are under model_mu_.
-  const auto prefill = allocate(d_prefill_logits_,
-      static_cast<size_t>(max_seq_) * cfg.vocab * 2, "startup.prefill_logits");
+  const auto prefill =
+      allocate(d_prefill_logits_, static_cast<size_t>(max_seq_) * cfg.vocab * 2,
+               "startup.prefill_logits");
   if (!prefill.ok()) return Status::Fail(prefill.Reason());
 #ifdef Q4T_STARTUP_RESOURCE_PLAN
   s = runtime::CompleteStartupReservation();
@@ -665,9 +673,9 @@ Status ChatServer::Start(const ServerOptions& opts) {
   s = check_startup_memory("before_ready", 0, false,
                            &startup_memory_.before_ready);
   if (!s.ok()) return s;
-  effective_config_ = EffectiveServeConfigJson(
-      opts, PlanningConfig(), budget_valid_, mtp_loaded_, conn_cap_,
-      &startup_memory_);
+  effective_config_ =
+      EffectiveServeConfigJson(opts, PlanningConfig(), budget_valid_,
+                               mtp_loaded_, conn_cap_, &startup_memory_);
   model_ready_.store(true);
   return Status();
 }

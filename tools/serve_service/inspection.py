@@ -299,6 +299,9 @@ def inspect(output):
                     errors.append('process_observation_unavailable')
                 try:
                     observed['listeners'] = listeners(manifest['settings']['port'])
+                    if port := manifest['settings'].get('operations_port', 0):
+                        observed['listeners'].extend(dict(row, port=port)
+                                                     for row in listeners(port))
                 except (OSError, ValueError, IndexError):
                     errors.append('listener_observation_unavailable')
                 snapshots.append(observed)

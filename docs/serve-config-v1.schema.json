@@ -401,7 +401,7 @@
           "minimum": 9
         },
         "unclassified_shares_total": {
-          "const": true
+          "type": "boolean"
         },
         "body_bytes": {
           "const": 16777216
@@ -432,6 +432,16 @@
         },
         "queue_excludes_preparation": {
           "const": true
+        },
+        "public_connection_handlers": {
+          "type": "integer",
+          "minimum": 9
+        },
+        "operations_connection_handlers": {
+          "enum": [
+            0,
+            8
+          ]
         }
       },
       "required": [
@@ -1016,6 +1026,71 @@
         "mutable",
         "per_client_ram_limit"
       ]
+    },
+    "observability_version": {
+      "const": 5
+    },
+    "listeners": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "public": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "type": "string"
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            }
+          },
+          "required": [
+            "host",
+            "port"
+          ]
+        },
+        "operations": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "const": "127.0.0.1"
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "source": {
+              "enum": [
+                "cli",
+                "builtin_default",
+                "server_options"
+              ]
+            },
+            "unclassified_shares_operations_total": {
+              "const": true
+            }
+          },
+          "required": [
+            "host",
+            "port",
+            "enabled",
+            "source",
+            "unclassified_shares_operations_total"
+          ]
+        }
+      },
+      "required": [
+        "public",
+        "operations"
+      ]
     }
   },
   "required": [
@@ -1038,5 +1113,38 @@
     "memory_admission",
     "startup_memory",
     "cuda_allocation_quota"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "observability_version"
+        ]
+      },
+      "then": {
+        "required": [
+          "listeners"
+        ],
+        "properties": {
+          "limits": {
+            "required": [
+              "public_connection_handlers",
+              "operations_connection_handlers"
+            ]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "limits": {
+            "properties": {
+              "unclassified_shares_total": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
   ]
 }

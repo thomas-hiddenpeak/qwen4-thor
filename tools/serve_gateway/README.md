@@ -123,3 +123,17 @@ OpenAPI定义并绑定其SHA，避免代理与夹具共享错误路由。管理/
 本机租户时必须另行部署网络/用户边界。启动身份检查不代表持续后端
 身份监控。限制连接只计完整头后请求，慢头与TLS握手不计每client额度，
 仍受总连接/超时限制；本次不承诺完全DoS防护或任意代理性能。
+
+
+## 可选运维上游（SRV-12g）
+
+policy v2可显式增加`upstream_operations_port`，限定1024..65535，
+且不同于TLS监听和业务上游。现有control路由（models/capabilities/
+cancel）走该端口，Chat/preflight仍走业务端口；路由只由固定方法/
+路径决定，客户端头不能选择上游。本机health/config/metrics仍不
+对TLS客户端开放，API Key、来源CIDR、内部身份及取消凭据合同保持。
+
+托管后端v6的operations_port必须与网关配置双边相符，启动核对两个
+监听属于同一进程，每轮依赖检查也核对运维socket。旧包及省略该字段
+的配置不自动升级。具体开发和短验边界见
+[SRV-12g](../../docs/SERVE_OPERATIONS_LISTENER_2026-11-04.md)。

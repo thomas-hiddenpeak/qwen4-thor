@@ -116,9 +116,15 @@ def bound_backend(directory,gateway):
               'backend changed during binding')
     process=identity.process(verified['backend']['pid'],gateway['policy']['upstream_port'])
     g.require(process['listener_inode']==verified['listener_inode'],'backend listener changed')
-    return dict(run=str(directory),controller_sha256=pkg.sha(directory/'controller.json'),
+    result = dict(run=str(directory),controller_sha256=pkg.sha(directory/'controller.json'),
         controller=control['owner'],worker=state['worker']['owner'],
         backend=verified['backend'],process=process)
+    if 'operations_port' in verified:
+        result.update(operations_port=verified['operations_port'],
+                      operations_process=verified['operations_process'])
+        g.require(identity.operations(process, result['operations_port']) ==
+                  result['operations_process'], 'operations listener changed')
+    return result
 
 
 def check_backend(binding,port):
@@ -133,6 +139,9 @@ def check_backend(binding,port):
         'bound backend is no longer running')
     g.require(identity.process(binding['backend']['pid'],port)==binding['process'],
               'backend listener or executable changed')
+    if binding.get('operations_port', 0):
+        g.require(identity.operations(binding['process'], binding['operations_port']) ==
+                  binding['operations_process'], 'operations listener or executable changed')
 
 
 def listener(owner,host,port,binary):

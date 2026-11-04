@@ -312,3 +312,24 @@ Q4T_TEST(chat_config_admission_snapshot_and_queue_policy) {
   Q4T_CHECK(response.Find("limits")->GetInt("text_requests") == 5);
   return true;
 }
+
+Q4T_TEST(chat_config_operations_listener_reports_independent_capacity) {
+  auto config = Config();
+  q4t::server::ServerOptions opts;
+  opts.operations_port = 18108;
+  Json response;
+  Q4T_CHECK(Parse(EffectiveServeConfigJson(opts, config, true, true, 128),
+                  &response));
+  Q4T_CHECK(response.GetInt("observability_version") == 5);
+  const auto* listeners = response.Find("listeners");
+  Q4T_CHECK(listeners && listeners->Find("operations"));
+  Q4T_CHECK(listeners->Find("operations")->GetString("host") == "127.0.0.1");
+  Q4T_CHECK(listeners->Find("operations")->GetInt("port") == 18108);
+  Q4T_CHECK(listeners->Find("operations")->GetBool("enabled"));
+  const auto* limits = response.Find("limits");
+  Q4T_CHECK(limits->GetInt("connection_handlers") == 144);
+  Q4T_CHECK(limits->GetInt("public_connection_handlers") == 136);
+  Q4T_CHECK(limits->GetInt("operations_connection_handlers") == 8);
+  Q4T_CHECK(!limits->GetBool("unclassified_shares_total"));
+  return true;
+}

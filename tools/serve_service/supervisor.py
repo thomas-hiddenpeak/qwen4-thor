@@ -99,7 +99,7 @@ def expected_configuration():
                             p['memory_recovery_margin_mib'])
 
 
-def classify(probe, protocol, binary, client_policy=None):
+def classify(probe, protocol, binary, client_policy=None, operations_port=0):
     """Only validated observations affect supervision; busy is not failure."""
     pkg.require(probe['process']['executable_sha256'] == binary and
                 probe['process']['listener_scope'] == 'loopback',
@@ -111,32 +111,56 @@ def classify(probe, protocol, binary, client_policy=None):
     if client_policy is not None:
         from tools.serve_gateway import client_policy as cp
         cp.observed_matches(probe.get('client_policy'), client_policy)
+    if operations_port:
+        pkg.require(probe.get('operations_port') == operations_port and
+                    probe['configuration'].get('operations_port') == operations_port and
+                    probe.get('observability_version') == 5 and
+                    probe['operations_process']['executable_sha256'] == binary and
+                    probe['operations_process']['listener_scope'] == 'loopback',
+                    'operations listener configuration differs')
     metrics = probe['metrics']
     if metrics['q4t_gpu_healthy'] == 0:
         return 'GPU_UNHEALTHY'
     return 'READY' if probe['ready'] else 'DEGRADED'
 
 
-def probe(pid, port):
+def probe(pid, port, operations_port=0):
     started = time.monotonic()
+    contracts.integer(operations_port, 0, 65535)
+    if operations_port == port:
+        raise contracts.InvalidObservation('operations_listener_port_conflict')
     owner = identity.process(pid, port)
-    live = transport.get(port, '/livez', deadline=started+8)
+    ops = identity.operations(owner, operations_port) if operations_port else None
+    selected = operations_port or port
+    live = transport.get(selected, '/livez', deadline=started+8)
     contracts.readiness(contracts.json_object(live['body']), live['http_status'],
                         liveness=True)
-    ready = transport.get(port, '/readyz', deadline=started+8)
+    ready = transport.get(selected, '/readyz', deadline=started+8)
     value = contracts.json_object(ready['body'])
     contracts.readiness(value, ready['http_status'], liveness=False)
-    config = transport.get(port, '/v1/config', deadline=started+8)
+    config = transport.get(selected, '/v1/config', deadline=started+8)
     if config['http_status'] != 200:
         raise contracts.InvalidObservation('configuration_unavailable')
     raw_config = contracts.json_object(config['body'])
-    configuration = contracts.configuration(raw_config, version=4)
-    response = transport.get(port, '/metrics', deadline=started+8)
+    version = raw_config.get('observability_version', 4)
+    if type(version) is not int or version not in (4, 5):
+        raise contracts.InvalidObservation('unsupported_observation_version')
+    configuration = contracts.configuration(raw_config, version=version)
+    if (operations_port and version != 5 or version == 5 and
+            (configuration['public_port'] != port or
+             configuration['operations_port'] != operations_port)):
+        raise contracts.InvalidObservation('operations_listener_configuration_mismatch')
+    response = transport.get(selected, '/metrics', deadline=started+8)
     if response['http_status'] != 200:
         raise contracts.InvalidObservation('metrics_unavailable')
-    metrics, _ = contracts.parse_metrics(response['body'], version=4)
+    metrics, _ = contracts.parse_metrics(response['body'], version=version)
     pkg.require(identity.process(pid, port) == owner, 'backend identity changed')
+    if operations_port:
+        pkg.require(identity.operations(owner, operations_port) == ops,
+                    'operations listener identity changed')
     return dict(process=owner, protocol=configuration['protocol_sha256'],
+                operations_process=ops, operations_port=operations_port,
+                observability_version=version,
                 client_policy=({key: raw_config['client_policy'].get(key) for key in
                     ('profile', 'enabled', 'sha256', 'clients', 'mutable',
                      'credential_values_redacted')}
@@ -239,10 +263,12 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
                         pkg.require(logger.error is None, 'backend log capture failed')
                         now = time.monotonic()
                         try:
-                            observation = observe(child.pid, cfg['port'])
+                            operations_port = cfg.get('operations_port', 0)
+                            observation = (observe(child.pid, cfg['port'], operations_port)
+                                           if operations_port else observe(child.pid, cfg['port']))
                             status = classify(observation, manifest['protocol_sha256'],
                                               manifest['files']['q4t'],
-                                              manifest.get('client_policy'))
+                                              manifest.get('client_policy'), operations_port)
                             pkg.require(status != 'GPU_UNHEALTHY', 'GPU unhealthy')
                             missing = None
                             was_ready = was_ready or status == 'READY'

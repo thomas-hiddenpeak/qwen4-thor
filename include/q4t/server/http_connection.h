@@ -9,6 +9,8 @@ namespace q4t::server {
 
 inline constexpr int kReservedControlConnections = 4;
 inline constexpr int kReservedObservationConnections = 4;
+inline constexpr int kOperationsConnections =
+    kReservedControlConnections + kReservedObservationConnections;
 
 enum class HttpConnectionClass {
   kUnclassified,

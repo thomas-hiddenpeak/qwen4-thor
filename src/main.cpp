@@ -56,7 +56,8 @@ void PrintUsage(const char* prog) {
       "  generate  Single greedy generation\n"
       "            (q4t generate \"prompt\" [--max-tokens N])\n"
       "  serve     OpenAI-compatible HTTP API server\n"
-      "            (q4t serve [--host IPv4] [--port N] [--model-dir DIR] "
+      "            (q4t serve [--host IPv4] [--port N] "
+      "[--operations-port N] [--model-dir DIR] "
       "[--max-tokens N] [--max-prefill N] [--max-len N] [--max-seq N] "
       "[--max-inflight-requests N] [--max-queued-requests N] "
       "[--min-available-memory-mib N] [--memory-recovery-margin-mib N] "
@@ -105,9 +106,9 @@ int RunProbe() {
     std::printf("Device %d: %s\n", i, prop.name);
     std::printf("  Compute capability: %d.%d\n", prop.major, prop.minor);
     std::printf("  SM count:           %d\n", prop.multiProcessorCount);
-    std::printf("  Global memory:      %.1f GB\n",
-                static_cast<double>(prop.totalGlobalMem) / (1024.0 * 1024.0 *
-                                                            1024.0));
+    std::printf(
+        "  Global memory:      %.1f GB\n",
+        static_cast<double>(prop.totalGlobalMem) / (1024.0 * 1024.0 * 1024.0));
     std::printf("  L2 cache:           %.1f MB\n",
                 static_cast<double>(prop.l2CacheSize) / (1024.0 * 1024.0));
     std::printf("  Shared mem/SM:      %zu KB\n",
@@ -126,12 +127,13 @@ int RunProbe() {
 // token-by-token (argmax) until EOS or --max-tokens, and print the result.
 int RunGenerate(int argc, char** argv) {
   const char* kDefaultModelDir =
-      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+      "/home/rm01/models/dev/llm/garnermccloud/"
+      "Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
   std::string model_dir = kDefaultModelDir;
   int max_tokens = 64;
   std::string subset_head;
   bool use_mtp = true;  // generate defaults to MTP; no --no-mtp parser here.
-  int mtp_k = 3;  // 实测最优 (k=3 1.46x; 见 docs/LOG.md 2026-09-10)
+  int mtp_k = 3;        // 实测最优 (k=3 1.46x; 见 docs/LOG.md 2026-09-10)
   int max_prefill = 0;  // 0 = use ModelConfig default (2048)
   std::string prompt;
 
@@ -162,16 +164,17 @@ int RunGenerate(int argc, char** argv) {
     return 2;
   }
   if (prompt.empty()) {
-    std::fprintf(stderr, "Usage: q4t generate \"prompt\" "
-                         "[--max-tokens N] [--model-dir DIR]\n");
+    std::fprintf(stderr,
+                 "Usage: q4t generate \"prompt\" "
+                 "[--max-tokens N] [--model-dir DIR]\n");
     return 2;
   }
 
   // 1. Tokenizer.
   q4t::text::TokenizerLimits limits;
   std::unique_ptr<q4t::text::Tokenizer> tok;
-  q4t::Status s = q4t::text::Tokenizer::Load(
-      model_dir + "/tokenizer.json", limits, &tok);
+  q4t::Status s =
+      q4t::text::Tokenizer::Load(model_dir + "/tokenizer.json", limits, &tok);
   if (!s.ok()) {
     std::fprintf(stderr, "tokenizer load failed: %s\n", s.message().c_str());
     return 1;
@@ -181,8 +184,7 @@ int RunGenerate(int argc, char** argv) {
   q4t::model::ModelConfig cfg;
   cfg.model_dir = model_dir;
   cfg.index_path = model_dir + "/model.safetensors.index.json";
-  cfg.ple_sidecar =
-      model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
+  cfg.ple_sidecar = model_dir + "/ple/qwen3.8-flash-next-ple-fp8.bin";
   if (max_prefill > 0) cfg.max_prefill = max_prefill;
   q4t::model::Model model;
   s = q4t::model::LoadModel(cfg, &model, nullptr);
@@ -211,15 +213,16 @@ int RunGenerate(int argc, char** argv) {
         model.Free();
         return 1;
       }
-      std::fprintf(stderr, "MTP load failed (falling back to plain decode): "
-                           "%s\n",
+      std::fprintf(stderr,
+                   "MTP load failed (falling back to plain decode): "
+                   "%s\n",
                    s.message().c_str());
     } else {
       mtp_loaded = true;
       auto t_mtp1 = std::chrono::steady_clock::now();
-      std::fprintf(stderr, "[q4t] MTP loaded (k=%d, %.1f ms)\n", mtp_k,
-                   std::chrono::duration<double, std::milli>(t_mtp1 - t_mtp0)
-                       .count());
+      std::fprintf(
+          stderr, "[q4t] MTP loaded (k=%d, %.1f ms)\n", mtp_k,
+          std::chrono::duration<double, std::milli>(t_mtp1 - t_mtp0).count());
     }
   }
 
@@ -256,8 +259,7 @@ int RunGenerate(int argc, char** argv) {
   uint16_t* d_g_next = nullptr;      // [hc_dim] (next draft trunk)
   if (mtp_loaded) {
     if (cudaMalloc(reinterpret_cast<void**>(&d_trunk_full),
-                   static_cast<size_t>(T_prompt) * hc_dim * 2) !=
-            cudaSuccess ||
+                   static_cast<size_t>(T_prompt) * hc_dim * 2) != cudaSuccess ||
         cudaMalloc(reinterpret_cast<void**>(&d_g), hc_dim * 2) != cudaSuccess ||
         cudaMalloc(reinterpret_cast<void**>(&d_g_next), hc_dim * 2) !=
             cudaSuccess) {
@@ -274,8 +276,8 @@ int RunGenerate(int argc, char** argv) {
   // Warm up the CUDA context / cuBLASLt heuristics with a tiny prefill so the
   // first real prefill isn't inflated by one-time init (kernel load, workspace
   // alloc, autotune). Must run BEFORE the real ModelBeginSequence: the warmup's
-  // own Begin/Prefill leaves the per-layer state dirty, and the real Begin below
-  // resets it. This is a benchmarking concern, not a correctness one.
+  // own Begin/Prefill leaves the per-layer state dirty, and the real Begin
+  // below resets it. This is a benchmarking concern, not a correctness one.
   {
     // Warmup must use the SAME T as the real prefill so it exercises the
     // GEMM (cuBLASLt) path and pre-warms the cuBLASLt heuristics for this
@@ -285,7 +287,8 @@ int RunGenerate(int argc, char** argv) {
     std::vector<int32_t> warm(ids);
     uint16_t* d_warm = nullptr;
     if (cudaMalloc(reinterpret_cast<void**>(&d_warm),
-                   static_cast<size_t>(ids.size()) * vocab * 2) == cudaSuccess) {
+                   static_cast<size_t>(ids.size()) * vocab * 2) ==
+        cudaSuccess) {
       auto t_warm0 = std::chrono::steady_clock::now();
       q4t::model::ModelSequence wseq;
       q4t::model::ModelBeginSequence(model, &wseq, nullptr);
@@ -294,9 +297,9 @@ int RunGenerate(int argc, char** argv) {
       q4t::model::ModelEndSequence(&wseq);
       cudaFree(d_warm);
       auto t_warm1 = std::chrono::steady_clock::now();
-      std::fprintf(stderr, "[q4t] warmup T=%zu: %.1f ms\n", warm.size(),
-                   std::chrono::duration<double, std::milli>(t_warm1 - t_warm0)
-                       .count());
+      std::fprintf(
+          stderr, "[q4t] warmup T=%zu: %.1f ms\n", warm.size(),
+          std::chrono::duration<double, std::milli>(t_warm1 - t_warm0).count());
     }
   }
   q4t::model::ModelSequence seq;
@@ -425,7 +428,7 @@ int RunGenerate(int argc, char** argv) {
       mtp_steps++;
       mtp_accepted += accepted_count;
       for (int i = 0; i < accepted_count &&
-                          static_cast<int>(generated.size()) < max_tokens;
+                      static_cast<int>(generated.size()) < max_tokens;
            ++i) {
         generated.push_back(accepted_tokens[i]);
         if (accepted_tokens[i] == cfg.eos_token_id) {
@@ -440,13 +443,12 @@ int RunGenerate(int argc, char** argv) {
       d_g = d_g_next;
       d_g_next = tmp;
     }
-    std::fprintf(stderr,
-                 "[q4t] MTP: %d steps, %d tokens, avg %.2f tok/step "
-                 "(k=%d)\n",
-                 mtp_steps, mtp_accepted,
-                 mtp_steps ? static_cast<double>(mtp_accepted) / mtp_steps
-                           : 0.0,
-                 mtp_k);
+    std::fprintf(
+        stderr,
+        "[q4t] MTP: %d steps, %d tokens, avg %.2f tok/step "
+        "(k=%d)\n",
+        mtp_steps, mtp_accepted,
+        mtp_steps ? static_cast<double>(mtp_accepted) / mtp_steps : 0.0, mtp_k);
   } else {
     // Plain greedy decode (baseline).
     int next_token = -1;
@@ -466,8 +468,8 @@ int RunGenerate(int argc, char** argv) {
                      s.message().c_str());
         break;
       }
-      cudaMemcpy(h_logits.data(), d_logits,
-                 static_cast<size_t>(vocab) * 2, cudaMemcpyDeviceToHost);
+      cudaMemcpy(h_logits.data(), d_logits, static_cast<size_t>(vocab) * 2,
+                 cudaMemcpyDeviceToHost);
       next_token = argmax(h_logits.data());
     }
   }
@@ -483,15 +485,18 @@ int RunGenerate(int argc, char** argv) {
   if (s.ok()) {
     std::printf("%s", text.c_str());
   }
-  const double prefill_ms = std::chrono::duration<double, std::milli>(
-                                t_prefill_end - t_prefill_start).count();
-  const double decode_ms = std::chrono::duration<double, std::milli>(
-                               t_decode_end - t_decode_start).count();
+  const double prefill_ms =
+      std::chrono::duration<double, std::milli>(t_prefill_end - t_prefill_start)
+          .count();
+  const double decode_ms =
+      std::chrono::duration<double, std::milli>(t_decode_end - t_decode_start)
+          .count();
   const double prefill_tps =
       prefill_ms > 0 ? T_prompt / (prefill_ms / 1000.0) : 0.0;
   const double decode_tps =
-      decode_ms > 0 ? static_cast<double>(generated.size()) / (decode_ms / 1000.0)
-                    : 0.0;
+      decode_ms > 0
+          ? static_cast<double>(generated.size()) / (decode_ms / 1000.0)
+          : 0.0;
   std::fprintf(stderr, "\n[q4t] generated %zu tokens\n", generated.size());
   std::fprintf(stderr,
                "[q4t] perf: prefill %d tok in %.1f ms (%.1f tok/s) | "
@@ -524,7 +529,8 @@ int RunGenerate(int argc, char** argv) {
 // the attention range is constant across B.
 int RunBenchDecode(int argc, char** argv) {
   const char* kDefaultModelDir =
-      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+      "/home/rm01/models/dev/llm/garnermccloud/"
+      "Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
   std::string model_dir = kDefaultModelDir;
   int maxB = 8, N = 64, P = 128, L = 0;  // L=0 -> auto (P+N+slack)
   bool sweep = false;
@@ -548,7 +554,8 @@ int RunBenchDecode(int argc, char** argv) {
     }
   }
   if (maxB <= 0 || N <= 0 || P <= 0) {
-    std::fprintf(stderr, "bench-decode: --batch/--steps/--prompt must be > 0\n");
+    std::fprintf(stderr,
+                 "bench-decode: --batch/--steps/--prompt must be > 0\n");
     return 2;
   }
   if (L <= 0) L = P + N + 8;
@@ -587,8 +594,7 @@ int RunBenchDecode(int argc, char** argv) {
   std::vector<q4t::model::ModelSequence> seqs(maxB);
   for (int b = 0; b < maxB; ++b) {
     std::vector<int32_t> prompt(P);
-    for (int i = 0; i < P; ++i)
-      prompt[i] = 100 + ((b * 131 + i * 17) % 20000);
+    for (int i = 0; i < P; ++i) prompt[i] = 100 + ((b * 131 + i * 17) % 20000);
     q4t::model::ModelBeginSequence(model, &seqs[b], nullptr, b);
     s = q4t::model::ModelPrefill(model, &seqs[b], prompt.data(), P, d_pref,
                                  nullptr, nullptr, nullptr, b);
@@ -603,8 +609,8 @@ int RunBenchDecode(int argc, char** argv) {
   }
   cudaDeviceSynchronize();
 
-  std::vector<int32_t> tokens(maxB), history(static_cast<size_t>(maxB) *
-                                             std::max(hist_w, 1));
+  std::vector<int32_t> tokens(maxB),
+      history(static_cast<size_t>(maxB) * std::max(hist_w, 1));
   std::vector<int> positions(maxB), seq_ids(maxB);
   for (int b = 0; b < maxB; ++b) {
     seq_ids[b] = b;
@@ -643,8 +649,8 @@ int RunBenchDecode(int argc, char** argv) {
     for (int step = 0; step < N; ++step) {
       st = step_forward(P + (step % N), step);
       if (!st.ok()) {
-        std::fprintf(stderr, "bench-decode: B=%d step %d failed: %s\n", Bi, step,
-                     st.message().c_str());
+        std::fprintf(stderr, "bench-decode: B=%d step %d failed: %s\n", Bi,
+                     step, st.message().c_str());
         return;
       }
     }
@@ -681,7 +687,8 @@ int RunBenchDecode(int argc, char** argv) {
 // benchmarks B = 1, 2, 4, ..., --batch.
 int RunBenchPrefill(int argc, char** argv) {
   const char* kDefaultModelDir =
-      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+      "/home/rm01/models/dev/llm/garnermccloud/"
+      "Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
   std::string model_dir = kDefaultModelDir;
   int maxB = 16, P = 64;  // batch size, per-prompt length
   bool sweep = false;
@@ -712,7 +719,7 @@ int RunBenchPrefill(int argc, char** argv) {
   cfg.max_seq = maxB;
   cfg.max_len = std::max(P + 8, 2048);  // serve-like; small max_len exposes a
                                         // pre-existing layout-dependent OOB
-  cfg.max_prefill = maxB * P + 8;  // Ttot = B*P must fit
+  cfg.max_prefill = maxB * P + 8;       // Ttot = B*P must fit
   q4t::model::Model model;
   q4t::Status s = q4t::model::LoadModel(cfg, &model, nullptr);
   if (!s.ok()) {
@@ -743,9 +750,9 @@ int RunBenchPrefill(int argc, char** argv) {
     {  // warmup (cuBLASLt M=P heuristics)
       q4t::model::ModelSequence w;
       q4t::model::ModelBeginSequence(model, &w, nullptr, 0);
-      q4t::Status wst = q4t::model::ModelPrefill(model, &w, prompts[0].data(),
-                                                 P, d_logits, nullptr, nullptr,
-                                                 nullptr, 0);
+      q4t::Status wst =
+          q4t::model::ModelPrefill(model, &w, prompts[0].data(), P, d_logits,
+                                   nullptr, nullptr, nullptr, 0);
       cudaError_t ce = cudaDeviceSynchronize();
       if (!wst.ok() || ce != cudaSuccess) {
         std::fprintf(stderr, "bench-prefill: warmup B=%d failed: %s / %s\n", Bi,
@@ -758,9 +765,9 @@ int RunBenchPrefill(int argc, char** argv) {
     for (int b = 0; b < Bi; ++b) {
       q4t::model::ModelSequence seq;
       q4t::model::ModelBeginSequence(model, &seq, nullptr, b);
-      q4t::Status st = q4t::model::ModelPrefill(model, &seq, prompts[b].data(),
-                                                P, d_logits, nullptr, nullptr,
-                                                nullptr, b);
+      q4t::Status st =
+          q4t::model::ModelPrefill(model, &seq, prompts[b].data(), P, d_logits,
+                                   nullptr, nullptr, nullptr, b);
       if (!st.ok()) {
         std::fprintf(stderr, "bench-prefill: seq prefill %d failed: %s\n", b,
                      st.message().c_str());
@@ -781,7 +788,8 @@ int RunBenchPrefill(int argc, char** argv) {
       sids[b] = b;
     }
     q4t::model::ModelPrefillBatch(model, packed.data(), lens.data(),
-                                  sids.data(), Bi, d_logits, nullptr);  // warmup
+                                  sids.data(), Bi, d_logits,
+                                  nullptr);  // warmup
     cudaDeviceSynchronize();
     auto t2 = std::chrono::steady_clock::now();
     q4t::Status st = q4t::model::ModelPrefillBatch(
@@ -816,7 +824,8 @@ int RunBenchPrefill(int argc, char** argv) {
 
 int RunServe(int argc, char** argv) {
   const char* kDefaultModelDir =
-      "/home/rm01/models/dev/llm/garnermccloud/Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
+      "/home/rm01/models/dev/llm/garnermccloud/"
+      "Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
   q4t::server::ServerOptions opts;
   opts.model_dir = kDefaultModelDir;
 

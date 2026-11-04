@@ -58,9 +58,20 @@ def parse_response(raw):
         raise InvalidObservation('invalid_http_utf8') from None
 
 
-def get(port, path, *, timeout=2, deadline=None):
+def get(port, path, *, timeout=2, deadline=None, credentials=None):
     if path not in ROUTES:
         raise InvalidObservation('unsupported_diagnostic_route')
+    headers = ''
+    if credentials is not None:
+        if (path != '/v1/capabilities' or type(credentials) is not dict or
+                credentials.keys() != {'client', 'token'} or
+                type(credentials['client']) is not str or
+                not re.fullmatch(r'[a-z][a-z0-9_-]{0,31}', credentials['client']) or
+                type(credentials['token']) is not str or
+                not re.fullmatch(r'[a-f0-9]{64}', credentials['token'])):
+            raise InvalidObservation('invalid_diagnostic_credentials')
+        headers = (f"X-Q4T-Client-Id: {credentials['client']}\r\n"
+                   f"X-Q4T-Gateway-Token: {credentials['token']}\r\n")
     until = min(time.monotonic()+timeout, deadline if deadline is not None else float('inf'))
     raw = bytearray()
     try:
@@ -69,7 +80,8 @@ def get(port, path, *, timeout=2, deadline=None):
             raise InvalidObservation('http_deadline')
         with socket.create_connection(('127.0.0.1', port), timeout=remaining) as sock:
             sock.setblocking(False)
-            pending = (f'GET {path} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n').encode()
+            pending = (f'GET {path} HTTP/1.1\r\nHost: 127.0.0.1\r\n'
+                       f'{headers}Connection: close\r\n\r\n').encode()
             while pending:
                 remaining = until-time.monotonic()
                 if remaining <= 0 or not select.select([], [sock], [], remaining)[1]:

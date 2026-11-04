@@ -69,7 +69,9 @@ def prepare(backend,digest,run,deployment,nginx,port,output):
               'binding_invalid')
     backend=Path(backend).resolve(strict=True)
     manifest=pkg.verify(backend,digest)
-    c.require(manifest['version']==5 and port!=manifest['settings']['port'],'binding_invalid')
+    c.require(manifest['version'] in (5,6) and 'host_resources' in manifest and
+              port not in (manifest['settings']['port'], manifest['settings'].get('operations_port',0)),
+              'binding_invalid')
     run=Path(run).absolute();repository=Path(manifest['repository'])
     c.require(run==run.resolve() and any(run.is_relative_to(repository/name) for name in ('build','.q4t-work')),
               'binding_invalid')

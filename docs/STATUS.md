@@ -41,6 +41,13 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-12g[独立本机运维入口开发中](SERVE_OPERATIONS_LISTENER_2026-11-04.md)：
+针对未完成请求头占满唯一listener导致健康/观测不可用的已知缺口，
+冻结显式loopback operations-port、独立handler/分类额、严格路由/
+身份保持及配置/观测/托管/网关接线。实现已补齐，173唯一Python、289公共/255必需主机、9结构化及
+三代告警时序通过，诊断凭据归属复查补33定向/5驱动通过，零警告构建；固定1模型/6尝试/300秒短验
+待执行，未接受或替换默认。原包保持，小时/天级长验仍由用户。
+
 SRV-10g[显式客户端来源与真实闭环限定接受](SERVE_GATEWAY_SOURCES_RESULT_2026-11-04.md)：
 e69640bd生产，policy v2必填CIDR/真实peer默认拒绝，伪造头无效；新建
 LAN必须v2，旧包保持。78有效CPU含6驱动、3日志回归；首轮未配置

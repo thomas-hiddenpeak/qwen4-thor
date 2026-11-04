@@ -99,3 +99,15 @@ def process(pid, port, *, proc=Path('/proc')):
 
 def same_instance(before, after):
     return before is not None and before == after
+
+
+def operations(primary, port):
+    """Require a distinct loopback socket owned by the exact same process."""
+    selected = process(primary['pid'], port)
+    fields = ('pid', 'start_ticks', 'boot_id', 'executable_sha256',
+              'net_namespace_device', 'net_namespace_inode')
+    if (selected['listener_scope'] != 'loopback' or
+            selected['listener_inode'] == primary['listener_inode'] or
+            any(selected[k] != primary[k] for k in fields)):
+        raise InvalidObservation('operations_listener_owner_mismatch')
+    return selected

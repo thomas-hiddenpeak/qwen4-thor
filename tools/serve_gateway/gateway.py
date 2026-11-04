@@ -107,7 +107,9 @@ def policy(value):
     if value['version'] == 2:
         required.add('allowed_client_cidrs')
     require(isinstance(value, dict) and required <= value.keys() and
-            value.keys() <= required | DEFAULTS.keys(), 'unknown/missing policy field')
+            value.keys() <= required | DEFAULTS.keys() |
+            ({'upstream_operations_port'} if value['version'] == 2 else set()),
+            'unknown/missing policy field')
     value = dict(DEFAULTS, **value)
     if value['version'] == 2:
         value['allowed_client_cidrs'] = client_sources(value['allowed_client_cidrs'])
@@ -132,6 +134,11 @@ def policy(value):
                 'invalid numeric policy: '+name)
     require(value['listen_port'] != value['upstream_port'] and
             value['per_client_inflight'] <= value['global_inflight'], 'conflicting limits/ports')
+    if 'upstream_operations_port' in value:
+        port = value['upstream_operations_port']
+        require(type(port) is int and 1024 <= port <= 65535 and
+                port not in (value['listen_port'], value['upstream_port']),
+                'invalid operations upstream port')
     require(isinstance(value['clients'], list) and 1 <= len(value['clients']) <= 64,
             'one to 64 clients required')
     ids, keys = set(), set()
@@ -159,6 +166,12 @@ def render(value, directory, backend_policy=None):
     require(p['version'] == 2 or p['listen_host'] == '127.0.0.1',
             'new LAN gateways require policy v2 with allowed_client_cidrs')
     source_map = source_check = source_log = ''
+    upstream, upstream_map = str(p['upstream_port']), ''
+    if 'upstream_operations_port' in p:
+        upstream = '$q4t_upstream_port'
+        upstream_map = ('  map $q4t_lane $q4t_upstream_port {\n'
+                        f"    default {p['upstream_port']};\n"
+                        f"    control {p['upstream_operations_port']};\n  }}\n")
     if p['version'] == 2:
         entries = '\n'.join('    '+net+' 1;' for net in p['allowed_client_cidrs'])
         # Only the socket peer. No geo proxy, realip, or PROXY protocol trust.
@@ -234,7 +247,7 @@ http {{
   scgi_temp_path {q('runtime/scgi')};
   log_format q4t escape=json '{{"gateway_id":"$request_id","client":"$q4t_client","lane":"$q4t_lane","status":$status,"bytes":$body_bytes_sent,"seconds":$request_time,"upstream_status":"$upstream_status","connection_limit":"$limit_conn_status","rate_limit":"$limit_req_status"{source_log}}}';
   access_log /dev/stdout q4t;
-{source_map}  map $http_authorization $q4t_client {{
+{source_map}{upstream_map}  map $http_authorization $q4t_client {{
     default "";
 {clients}
   }}
@@ -277,7 +290,7 @@ http {{
       limit_req zone=data_rate burst={p['burst']} nodelay;
       limit_req zone=control_rate burst=20 nodelay;
       limit_req_status 429;
-      proxy_pass http://127.0.0.1:{p['upstream_port']};
+      proxy_pass http://127.0.0.1:{upstream};
       proxy_http_version 1.1;
       proxy_pass_request_headers off;
       proxy_set_header Host 127.0.0.1;
@@ -432,7 +445,10 @@ def check_backend(directory, gateway):
     control = pkg.read(directory/'controller.json')
     manifest = pkg.verify(control['package'], control['manifest_sha256'])
     port = gateway['policy']['upstream_port']
+    operations_port = gateway['policy'].get('upstream_operations_port', 0)
     require(manifest['settings']['port'] == port, 'backend port differs')
+    require(manifest['settings'].get('operations_port', 0) == operations_port,
+            'backend operations port differs')
     expected = gateway.get('client_policy')
     require(manifest.get('client_policy') == expected, 'gateway/backend client policy differs')
     backend = status['worker']['backend']
@@ -441,13 +457,22 @@ def check_backend(directory, gateway):
     require(observed['listener_scope'] == 'loopback' and
             observed['executable_sha256'] == manifest['files']['q4t'],
             'backend must be the pinned binary on loopback')
-    if expected is not None:
+    ops = identity.operations(observed, operations_port) if operations_port else None
+    if expected is not None or operations_port:
         from tools.serve_gateway import client_policy as cp
-        probe = supervisor.probe(backend['pid'], port)
+        probe = (supervisor.probe(backend['pid'], port, operations_port)
+                 if operations_port else supervisor.probe(backend['pid'], port))
         cp.observed_matches(probe.get('client_policy'), expected)
+        if operations_port:
+            require(probe['protocol'] == manifest['protocol_sha256'], 'backend protocol differs')
+            require(probe['process'] == observed and probe['operations_process'] == ops,
+                    'backend listeners changed during probe')
         require(supervisor.process_identity(backend['pid']) == backend,
                 'backend changed during policy check')
-    return dict(backend=backend, listener_inode=observed['listener_inode'])
+    result = dict(backend=backend, listener_inode=observed['listener_inode'])
+    if operations_port:
+        result.update(operations_port=operations_port, operations_process=ops)
+    return result
 
 
 def main():

@@ -46,6 +46,14 @@ v4开发与验收进度见[容量合同](SERVE_OBSERVATION_CAPACITY_2026-11-03.m
 默认交付版本以STATUS为准。观测满为503/observation_capacity_exhausted，
 报告UNKNOWN；未知慢头仍共用处理线程总额，不能保证洪泛下可用。
 
+v5支持显式`--operations-port`（默认0关闭），固定绑定127.0.0.1，独立
+8个handler及4观测/4控制额度。启用后诊断增加同名参数，业务base-url
+仍指主端口；工具核对两监听属于同一PID/ELF、配置相符且前后未替换。
+启用客户端隔离时再传`--client-policy-file`指向自己拥有的私有策略；
+仅能力发现携带内部身份，健康/config/metrics仍匿名本机访问，凭据不
+进入报告。运维口禁止生成与preflight；可信本机慢头仍可占满它自身
+8额。开发/短验状态见[SRV-12g合同](SERVE_OPERATIONS_LISTENER_2026-11-04.md)。
+
 退出码：0 HEALTHY、1 WARNING、2 CRITICAL、3 UNKNOWN；4 表示
 参数/本地包创建失败。UNKNOWN 优先表示证据不足，报告仍保存已知
 critical finding；不能因为缺指标、失联或身份不符而报告健康。无上份
@@ -59,9 +67,10 @@ reset 都输出 unavailable，不能补零、跨重启拼接或加总重叠事�
 ## 配置监控
 
 [Prometheus 示例](../deploy/serve-ops/prometheus.example.yml)与
-[v4规则文件](../deploy/serve-ops/q4t.rules.yml)提供 17 条告警、2 条记录规则；
-旧v3二进制和回退服务使用[v3规则](../deploy/serve-ops/q4t-v3.rules.yml)。
-通过capabilities明确选版本，不可把v4规则套在v3服务上。
+[v5规则文件](../deploy/serve-ops/q4t.rules.yml)提供 17 条告警、2 条记录规则；
+旧v4二进制和回退服务使用[v4规则](../deploy/serve-ops/q4t-v4.rules.yml)，
+旧v3使用[v3规则](../deploy/serve-ops/q4t-v3.rules.yml)。
+通过capabilities明确选版本，必须与二进制版本一致；不得静默降级缺失指标。
 `tools/serve_ops/rules.py --check` 核对生成结果。必须用实际部署版本的
 `promtool check config`、`check rules` 与 `test rules` 验证；本阶段工具
 固定 3.5.0，不表示最新版本推荐。
@@ -73,7 +82,7 @@ timeout 2 秒。只抓取已拥有的 loopback 端口。模板没有通知接收
 
 `TargetMissing` 发现整个 job 没有 series；已有部分实例时，单个预期
 实例从服务发现中消失，需要外部预期实例清单。`MetricContractMissing`
-按版本固定家族的87（v3）或92（v4）条series数检查完整性；同数量的错误标签替代须由
+按版本固定家族的87（v3）、92（v4）或101（v5）条series数检查完整性；同数量的错误标签替代须由
 诊断工具固定标签合同发现。Prometheus 使用浮点时序，不能代替诊断
 工具对大整数的精确投影。规则持续时间是本地调查门槛，不是用户 SLO。
 
@@ -82,7 +91,8 @@ timeout 2 秒。只抓取已拥有的 loopback 端口。模板没有通知接收
 `Q4TTargetDown` 连续 1 分钟抓取失败，`Q4TTargetMissing` 连续 2 分钟
 job 缺失；先分清监控配置、端口、服务退出与系统故障。不要直接将
 `up=0` 解释为 GPU 错误。v3抓取可能因普通连接额度耗尽，v4可能因观测额度或未分类总额耗尽
-而失败；这些都不能直接推断进程退出。`Q4TNotReady` 在 GPU 健康且内存门开放时
+而失败；v5显式启用并抓取运维端口可隔离主端口未分类容量，运维
+端口自身仍可能满额。上述失败不能直接推断进程退出。`Q4TNotReady` 在 GPU 健康且内存门开放时
 持续 2 分钟未 ready，检查启动/排空状态。`/livez` 活着不表示可接单；
 正常忙和槽被占用不应改变 ready。先收集诊断与 owned service 状态，
 再依既定服务恢复合同处理，不盲目重启或抢 GPU 锁。

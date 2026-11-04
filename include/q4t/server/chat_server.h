@@ -72,6 +72,8 @@ struct ServeMetrics {
   HttpTransportMetrics http_transport;
   std::array<std::atomic<uint64_t>, kHttpConnectionClasses.size()>
       connection_rejections{};
+  std::array<std::atomic<uint64_t>, kHttpConnectionClasses.size()>
+      operations_connection_rejections{};
   std::atomic<uint64_t> requests_total{0};
   std::atomic<uint64_t> requests_success{0};
   std::atomic<uint64_t> requests_error{0};    // rejected before generation
@@ -102,12 +104,12 @@ struct ServeMetrics {
   std::atomic<uint64_t> reasoning_forced_requests{0};
   std::atomic<uint64_t> reasoning_mtp_fallbacks{0};
   std::atomic<uint64_t> execution_steps_total{0};
-  MetricHistogram ttft_seconds;   // streaming: arrival -> first content sent
+  MetricHistogram ttft_seconds;  // streaming: arrival -> first content sent
   MetricHistogram target_ready_seconds;  // arrival -> first target token ready
-  MetricHistogram response_seconds;  // arrival -> full local response write
-  MetricHistogram e2e_seconds;    // arrival -> last token
-  MetricHistogram queue_seconds;  // arrival -> seq slot acquired
-  MetricHistogram slot_wait_seconds;           // only AllocSeqId
+  MetricHistogram response_seconds;      // arrival -> full local response write
+  MetricHistogram e2e_seconds;           // arrival -> last token
+  MetricHistogram queue_seconds;         // arrival -> seq slot acquired
+  MetricHistogram slot_wait_seconds;     // only AllocSeqId
   MetricHistogram structured_prepare_seconds;  // vocabulary + compile
 };
 
@@ -147,8 +149,9 @@ class ChatServer {
   uint64_t cuda_quota_limit_bytes_ = 0;
   void RecordDeviceMemoryFailure(const DeviceMemoryResult& result,
                                  const char* site) noexcept;
-  void HandleClient(int fd);
-  void FinishConnection(int fd) noexcept;
+  void HandleClient(int fd, bool operations = false);
+  void StartConnection(int fd, bool operations);
+  void FinishConnection(int fd, bool operations) noexcept;
   void Dispatch(int fd, const std::string& method, const std::string& path,
                 const std::string& body);
   void HandleHealth(int fd);
@@ -179,8 +182,8 @@ class ChatServer {
   std::mutex connections_mu_;
   std::unordered_set<int> connections_;
   void FreeSeqId(int seq_id);
-  std::mutex model_mu_;   // serializes all model forwards (main + MTP + vision)
-  std::mutex seq_mu_;     // guards the seq_id free pool
+  std::mutex model_mu_;  // serializes all model forwards (main + MTP + vision)
+  std::mutex seq_mu_;    // guards the seq_id free pool
   SequenceAdmissionQueue seq_waiters_;  // also guarded by seq_mu_
   std::condition_variable seq_cv_;  // requests queue here for a free seq slot
   bool seq_stopping_ = false;       // set on shutdown to release seq waiters
@@ -224,15 +227,16 @@ class ChatServer {
     bool is_mtp = false;
     bool complete_terminal_draft = false;
     uint16_t* session_last_trunk = nullptr;
-    int32_t mtp_b = 0;         // bonus token t_P (step input)
-    int32_t mtp_d0 = 0;        // first draft token (step input)
+    int32_t mtp_b = 0;   // bonus token t_P (step input)
+    int32_t mtp_d0 = 0;  // first draft token (step input)
     bool mtp_suffix_ready = false;
     std::array<int32_t, 3> mtp_suffix_tokens{};
-    uint16_t* mtp_g = nullptr;  // draft trunk [hc*hs] (step input + next output)
-    int32_t mtp_next_b = 0;     // correction / next bonus (step output)
-    int32_t mtp_next_d0 = 0;    // next first draft (step output)
+    uint16_t* mtp_g =
+        nullptr;              // draft trunk [hc*hs] (step input + next output)
+    int32_t mtp_next_b = 0;   // correction / next bonus (step output)
+    int32_t mtp_next_d0 = 0;  // next first draft (step output)
     int mtp_accepted_count = 0;  // accepted tokens this step (step output)
-    int32_t mtp_accepted[64];   // accepted tokens (bonus + drafts, step output)
+    int32_t mtp_accepted[64];  // accepted tokens (bonus + drafts, step output)
     std::condition_variable cv;  // request thread waits here for `done`
   };
   // Batched prefill (Phase 2, plain path). Concurrent requests that need a
@@ -279,23 +283,25 @@ class ChatServer {
   void ReleaseActiveRequest(ActiveRequest* request) noexcept;
   void AbortBackendExecution() noexcept;  // model_mu_ held; drain before unlock
   void AbortScheduler(std::span<PrefillReq* const> selected = {},
-                        ChunkPrefillReq* chunk = nullptr) noexcept;
+                      ChunkPrefillReq* chunk = nullptr) noexcept;
   void SchedulerLoop();
   void StopScheduler();  // signal + join the scheduler thread (destructor)
   std::mutex sched_mu_;  // guards active_ + the pending/done handshake
-  std::condition_variable sched_cv_;  // scheduler waits for pending work
+  std::condition_variable sched_cv_;    // scheduler waits for pending work
   std::vector<ActiveRequest*> active_;  // live plain-decode requests
-  std::vector<PrefillReq*> prefill_pending_;  // requests awaiting batched prefill
+  std::vector<PrefillReq*>
+      prefill_pending_;  // requests awaiting batched prefill
   std::vector<ChunkPrefillReq*> chunk_prefill_pending_;
   std::thread scheduler_thread_;
   bool scheduler_stop_ = false;
-  bool scheduler_active_ = false;  // false if the scheduler buffer alloc failed
-                                    // (plain decode then uses the per-request path)
+  bool scheduler_active_ =
+      false;  // false if the scheduler buffer alloc failed
+              // (plain decode then uses the per-request path)
   // Scheduler's packed-logits buffers (device [max_seq, vocab] + host mirror).
   // Only the scheduler thread touches these (the write is under model_mu_).
   uint16_t* d_sched_logits_ = nullptr;
-  int32_t* d_sched_tokens_ = nullptr;        // [max_seq] GPU argmax result
-  std::vector<int32_t> h_sched_tokens_;      // host mirror (B ints, not vocab)
+  int32_t* d_sched_tokens_ = nullptr;    // [max_seq] GPU argmax result
+  std::vector<int32_t> h_sched_tokens_;  // host mirror (B ints, not vocab)
   // Shared prefill logits [max_seq, vocab], accessed under model_mu_.
   // Batched prefill writes B selected rows; single/inline/vision/MTP main
   // prefill and fallback decode write one row. Full trunk output is separate.
@@ -314,6 +320,10 @@ class ChatServer {
   HttpBodyBudget body_budget_{kAggregateChatBodyBytes};
   std::atomic<int> active_chats_{0};
   std::atomic<int> active_conns_{0};
+  std::atomic<int> public_conns_{0};
+  std::atomic<int> operations_conns_{0};
+  std::atomic<int> operations_observation_conns_{0};
+  std::atomic<int> operations_control_conns_{0};
   std::atomic<int> business_conns_{0};
   std::atomic<int> observation_conns_{0};
   std::atomic<int> control_conns_{0};
@@ -325,6 +335,7 @@ class ChatServer {
   // for at most 2 seconds; remaining owned sockets then close before cleanup.
   std::atomic<bool> stop_requested_{false};
   std::atomic<int> listen_fd_{-1};
+  std::atomic<int> operations_listen_fd_{-1};
   // GPU health: a forward's CUDA error is sticky (it poisons every later
   // forward), so once one is observed the server reports unhealthy (healthz
   // 503) and refuses new requests (503) instead of silently failing them all.
@@ -356,6 +367,7 @@ class ChatServer {
   std::string host_ = "127.0.0.1";
   bool allow_media_ = false;
   int port_ = 8000;
+  int operations_port_ = 0;
   int max_tokens_default_ = 256;
   std::vector<int32_t> stop_token_ids_;  // generation_config, not PLE padding
   int max_prefill_ = 2048;
@@ -400,7 +412,7 @@ class ChatServer {
   // per-request and freed by HandleChat's cleanup lambda.
   // Vision tower (multimodal). Null if the model has no visual weights.
   std::unique_ptr<vision::VisionTower> vision_tower_;
-  vision::ProcessorConfig proc_cfg_;       // image budget (65536/16777216)
+  vision::ProcessorConfig proc_cfg_;        // image budget (65536/16777216)
   vision::ProcessorConfig video_proc_cfg_;  // video budget (4096/25165824)
   vision::MediaDeviceBudget vision_device_budget_;
 };

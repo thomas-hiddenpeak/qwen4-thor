@@ -1,3 +1,6 @@
+# v5 rules require observability v5. With --operations-port enabled,
+# point the q4t loopback scrape target at that port; never expose it via TLS gateway.
+# Pinned v4/v3 deployments must select their matching q4t-v4/v3.rules.yml.
 # Loopback example only. No daemon, reload, webhook or receiver is installed.
 global:
   scrape_interval: 15s
