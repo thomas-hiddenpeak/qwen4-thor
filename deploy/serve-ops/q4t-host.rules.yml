@@ -1,0 +1,136 @@
+{
+  "groups": [
+    {
+      "name": "q4t-host-accounting",
+      "interval": "5s",
+      "rules": [
+        {
+          "alert": "Q4THostExporterDown",
+          "expr": "up{job=\"q4t-host\"} == 0",
+          "for": "15s",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-host"
+          },
+          "annotations": {
+            "summary": "The configured host resource exporter is unreachable.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_host/README.md"
+          }
+        },
+        {
+          "alert": "Q4THostTargetMissing",
+          "expr": "absent(up{job=\"q4t-host\"})",
+          "for": "30s",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-host"
+          },
+          "annotations": {
+            "summary": "No configured host resource exporter target is present.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_host/README.md"
+          }
+        },
+        {
+          "alert": "Q4THostMetricContractMissing",
+          "expr": "(up{job=\"q4t-host\"} == 1) unless on (job,instance) ((count by (job,instance) (q4t_host_state{job=\"q4t-host\"}) == 7) and on (job,instance) (sum by (job,instance) (q4t_host_state{job=\"q4t-host\"}) == 1))",
+          "for": "5s",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-host"
+          },
+          "annotations": {
+            "summary": "The host observer lifecycle metric contract is incomplete or contradictory.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_host/README.md"
+          }
+        },
+        {
+          "alert": "Q4THostObserverStale",
+          "expr": "(time() - q4t_host_evaluated_timestamp_seconds{job=\"q4t-host\"} > 30) or (q4t_host_evaluated_timestamp_seconds{job=\"q4t-host\"} - time() > 30)",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-host"
+          },
+          "annotations": {
+            "summary": "Host observer output is stale or its wall clock is skewed.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_host/README.md"
+          }
+        },
+        {
+          "alert": "Q4THostSourceUnknown",
+          "expr": "max by (job, instance, deployment, generation) (q4t_host_state{job=\"q4t-host\",state=\"UNKNOWN\"} == 1)",
+          "for": "5s",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-host"
+          },
+          "annotations": {
+            "summary": "The bound managed generation cannot be verified; resource values are unavailable.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_host/README.md"
+          }
+        },
+        {
+          "alert": "Q4THostGenerationWaiting",
+          "expr": "max by (job, instance, deployment, generation) (q4t_host_state{job=\"q4t-host\",state=~\"WAITING|STARTING\"} == 1)",
+          "for": "2m",
+          "labels": {
+            "severity": "warning",
+            "component": "q4t-host"
+          },
+          "annotations": {
+            "summary": "The expected managed generation has not become available.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_host/README.md"
+          }
+        },
+        {
+          "alert": "Q4THostGenerationTerminal",
+          "expr": "max by (job, instance, deployment, generation) (q4t_host_state{job=\"q4t-host\",state=~\"STOPPED|FAILED\"} == 1)",
+          "labels": {
+            "severity": "warning",
+            "component": "q4t-host"
+          },
+          "annotations": {
+            "summary": "The managed generation has terminated; check whether this was intended.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_host/README.md"
+          }
+        },
+        {
+          "alert": "Q4THostProtectionFailed",
+          "expr": "max by (job, instance, deployment, generation) (q4t_host_memory_events_total{job=\"q4t-host\",event=~\"oom|oom_kill\"} > 0 or q4t_host_tasks_limit_events_total{job=\"q4t-host\"} > 0 or q4t_host_reason{job=\"q4t-host\",reason=\"host_resource_observation_unavailable\"} == 1)",
+          "labels": {
+            "severity": "critical",
+            "component": "q4t-host"
+          },
+          "annotations": {
+            "summary": "This generation recorded an OOM, task limit refusal, or lost resource protection.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_host/README.md"
+          }
+        },
+        {
+          "alert": "Q4THostThrottlingObserved",
+          "expr": "max by (job, instance, deployment, generation) (q4t_host_memory_events_total{job=\"q4t-host\",event=\"high\"} > 0)",
+          "labels": {
+            "severity": "information",
+            "component": "q4t-host"
+          },
+          "annotations": {
+            "summary": "This generation has recorded host memory high events; these may be historical.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_host/README.md"
+          }
+        },
+        {
+          "alert": "Q4THostHeadroomLow",
+          "expr": "max by (job, instance, deployment, generation) ((q4t_host_memory_current_bytes{job=\"q4t-host\"} >= on (job, instance, deployment, generation) (0.9 * q4t_host_memory_max_bytes{job=\"q4t-host\"}) or q4t_host_tasks_current{job=\"q4t-host\"} >= on (job, instance, deployment, generation) (0.9 * q4t_host_tasks_max{job=\"q4t-host\"})) and on (job, instance, deployment, generation) (q4t_host_snapshot_kind{job=\"q4t-host\",kind=\"current\"} == 1))",
+          "for": "30s",
+          "labels": {
+            "severity": "warning",
+            "component": "q4t-host"
+          },
+          "annotations": {
+            "summary": "The current host memory or task accounting domain is near its configured maximum.",
+            "runbook_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/blob/codex/main-reaudit-fixes/tools/serve_host/README.md"
+          }
+        }
+      ]
+    }
+  ]
+}

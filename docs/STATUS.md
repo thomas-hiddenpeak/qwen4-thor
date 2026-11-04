@@ -41,6 +41,13 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-12f[host资源观测与告警短验待执行](SERVE_HOST_OBSERVATION_2026-11-04.md)：
+只读代次/新鲜度、UNKNOWN/current/final及显式notify v2已开发。
+37有效CPU、5驱动、22官方规则场景通过，保留2次nginx原失败及1次
+早期子进程清理失败，定向修正通过。真实驱动冻结1模型/1TLS网关、
+4生成2工具、观察器/指标nginx/Prometheus各1；240秒/GPU210秒。
+同一guard锁副本及独立监控覆盖后端退出后的HTTP，未启动真实短验。
+
 SRV-02k[host记账域与进程树边界限定接受](SERVE_HOST_ENVELOPE_RESULT_2026-11-04.md)：
 冻结70b629db，显式v5后端/网关v3、owned scope内control/payload隔离、
 memcg/pids限额和OOM禁重启。155 CPU、1探针修正、2驱动通过，六类

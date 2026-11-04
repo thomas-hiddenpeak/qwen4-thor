@@ -26,6 +26,7 @@ from tools.serve_ops import identity
 require = pkg.require
 SOURCES = (*m.SOURCES, 'tools/serve_notify/notify.py',
            'tools/serve_notify/child.py', 'deploy/serve-ops/q4t.rules.yml')
+V2_SOURCES = (*SOURCES, 'deploy/serve-ops/q4t-host.rules.yml')
 BINARIES = {
     'prometheus': 'aeebc0ffc6529c87221ab12ff1f9fc276be488869ebc942ce3e4d7ffcfe6a97a',
     'promtool': 'd4ff433304144fae3d4490bd381be983e99064c601bc35e8dfe29f52300a9bc4',
@@ -40,17 +41,21 @@ SETTINGS = dict(poll_seconds=1, startup_seconds=30, stop_seconds=15,
 def policy(value):
     required = {'version', 'deployment', 'runner_port', 'prometheus_port',
                 'alertmanager_port', 'receiver_url', 'receiver_token_file'}
+    require(type(value.get('version')) is int and value['version'] in (1, 2),
+            'unknown notification policy')
+    if value['version'] == 2:
+        required.add('host_observer_port')
     require(required <= value.keys() <= required | {'receiver_ca_file'},
             'unknown or missing notification policy field')
-    require(type(value['version']) is int and value['version'] == 1,
-            'unknown notification policy')
     require(isinstance(value['deployment'], str) and
             re.fullmatch(r'[a-zA-Z0-9_-]{1,64}', value['deployment']),
             'invalid deployment label')
     ports = [value[n] for n in ('runner_port', 'prometheus_port',
                                 'alertmanager_port')]
+    if value['version'] == 2:
+        ports.append(value['host_observer_port'])
     require(all(type(v) is int and 1024 <= v <= 65535 for v in ports) and
-            len(set(ports)) == 3, 'invalid or overlapping ports')
+            len(set(ports)) == len(ports), 'invalid or overlapping ports')
     url = value['receiver_url']
     require(isinstance(url, str) and len(url) <= 2048 and
             re.fullmatch(r'[\x21-\x7e]+', url), 'invalid receiver URL')
@@ -132,6 +137,14 @@ def configs(p, output):
             alert_relabel_configs=[dict(action='labelkeep',
                 regex='alertname|severity|component|deployment|job|instance')]))
     prometheus['global'] = prometheus.pop('global_')
+    if p['version'] == 2:
+        # Explicit host observation is separate from the model's /metrics.
+        host = dict(jobs[0], job_name='q4t-host', sample_limit=128,
+                    static_configs=[dict(targets=[f"127.0.0.1:{p['host_observer_port']}"])])
+        prometheus['scrape_configs'].append(host)
+        prometheus['rule_files'].append(str(output/'source/deploy/serve-ops/q4t-host.rules.yml'))
+        prometheus['alerting']['alert_relabel_configs'][0]['regex'] += '|generation'
+        alertmanager['route']['group_by'].append('generation')
     return dict(prometheus=prometheus, alertmanager=alertmanager)
 
 
@@ -150,7 +163,7 @@ def prepare(policy_path, binaries, output):
         require(hashlib.sha256(data).hexdigest() == BINARIES[name],
                 'dependency changed while copying')
         m.g.save(target/name, data); (target/name).chmod(0o500)
-    for name in SOURCES:
+    for name in V2_SOURCES if p['version'] == 2 else SOURCES:
         path = target/'source'/name
         path.parent.mkdir(parents=True, exist_ok=True)
         m.g.save(path, m.g.read_file(ROOT/name, maximum=2*1024**2))
@@ -174,8 +187,8 @@ def prepare(policy_path, binaries, output):
     files = [str(path.relative_to(target)) for path in target.rglob('*')
              if path.is_file() and not path.name.endswith('-private.log')]
     python = Path(sys.executable).resolve()
-    manifest = dict(version=1, repository=str(ROOT), settings=SETTINGS,
-        ports={n:p[n+'_port'] for n in (*ROLES, 'runner')},
+    manifest = dict(version=p['version'], repository=str(ROOT), settings=SETTINGS,
+        ports={n:p[n+'_port'] for n in (*ROLES, 'runner', *(('host_observer',) if p['version'] == 2 else ()))},
         python=dict(path=str(python), sha256=pkg.sha(python)),
         files={name:pkg.sha(target/name) for name in sorted(files)},
         dependency_versions=dict(prometheus='3.5.0', alertmanager='0.34.2'),
@@ -191,10 +204,13 @@ def verify(package, digest):
     package = m.private(Path(package).resolve(strict=True))
     require(pkg.sha(package/'manifest.json') == digest, 'manifest changed')
     value = m.read(package/'manifest.json')
-    expected = {*BINARIES, *('source/'+s for s in SOURCES),
+    require(type(value['version']) is int and value['version'] in (1, 2),
+            'unknown notification package contract')
+    sources = V2_SOURCES if value['version'] == 2 else SOURCES
+    expected = {*BINARIES, *('source/'+s for s in sources),
                 'prometheus.json', 'alertmanager.json', 'notify.rules.json',
                 'url-private', 'token-private'}
-    require(value['version'] == 1 and value['settings'] == SETTINGS and
+    require(value['settings'] == SETTINGS and
             set(value['files']) in (expected, expected | {'receiver-ca.pem'}),
             'unknown notification package contract')
     for name, wanted in value['files'].items():

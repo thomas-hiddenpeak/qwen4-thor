@@ -42,6 +42,12 @@ python3 -B tools/serve_notify/notify.py prepare \
 ```
 
 prepare复制固定依赖/源码/私有输入并运行真实配置检查，不发送通知。
+需要采集受管host资源时，显式使用`version: 2`并增加
+`host_observer_port`，其余policy字段相同；四个端口须不同。
+v2增加独立q4t-host目标及10条规则，通知保留generation并按代次分组。
+观察器必须另行显式配置，见[host观测手册](../serve_host/README.md)。
+v1配置与已有v1包保持原行为；本批host接线不代表正式接收端已上线。
+
 保存返回manifest SHA；以下MANIFEST_SHA256应替换为该完整值，Python
 路径与manifest的python.path一致。准备一次独立持久状态：
 
