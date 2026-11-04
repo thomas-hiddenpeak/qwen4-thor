@@ -41,16 +41,18 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-12l[托管观测截止与停止优先修复中](SERVE_SUPERVISOR_DEADLINES_2026-11-04.md)：
-三个CPU最小复现确认迟到首次READY/迟到恢复绕过deadline，以及stop
-后仍发布READY。原失败保存，成组修复后114项唯一CPU通过；有限短验
-冻结1完整模型+1加载期停止、4响应2真实工具及3传输探针，同原锁保持。
-6驱动检查通过；首次实机4响应2工具/136满额与3传输探针完成，但
-第二代监控根PID/PGID不一致导致custody ENV_ABORT，原失败保持，
-GPU/监听/原锁已释放。第一代生产guard COMPLETED，冻结[单代加载期
-停止定向补验](SERVE_SUPERVISOR_DEADLINES_RECHECK_2026-11-04.md)，不重跑
-业务。当前未接受修复，默认61abe09f/ce925d51、旧包/day保持，长验交用户。
-8790c8e1及此前af6be505已成功推送；高级配置按需启用。
+SRV-12l[托管截止与停止优先已限定交付](SERVE_SUPERVISOR_DEADLINES_RESULT_2026-11-04.md)：
+8790c8e1生产/03ee447b定向驱动；3原复现失败保持，114唯一CPU+
+6驱动+3定向检查通过，新包fcff7218仅supervisor/transport变化。
+正常CLI 1完整模型/两代TLS/4响应2真实工具、512/64预算/引用及136
+公共满额运维通过，grammar4/4，3传输探针通过。首轮第二代监控根
+PID/PGID错位的ENV_ABORT保留；第一代COMPLETED 64.541067秒业务段
+复用，无补生成。单代CLI补验加载期stop 1.284830秒，未发布READY/
+重启，guard/custody COMPLETED 6.955842秒、10秒未复起。实际3次
+backend/1完整模型；两个租约不合成为一次连续成功全流程。
+256原件/407本机引用独立重建；14身份/三监听/GPU/原锁释放，容器空/
+SOAR masked。默认61abe09f/ce925d51、223来源/旧包/Key/day保持。
+高级配置按需、长验交用户；下一步当前15d7ccb1任务交接，目标active。
 
 SRV-12k[原生启动监听所有权已限定交付](SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md)：
 默认61abe09f/ce925d51，协议15d7ccb1；双监听在模型前实际保留并沿
