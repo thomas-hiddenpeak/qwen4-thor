@@ -11,6 +11,8 @@
 当前prepare生成托管version4、内层version3，增加固定TLS校验源码与
 材料元数据；旧包通过各自包内入口使用，不原位升级。
 本轮进度见[TLS生命周期合同](../../docs/SERVE_TLS_LIFECYCLE_2026-11-04.md)。
+61 CPU/4有效驱动、同CA双证书与双客户端真实工具闭环已
+[限定接受](../../docs/SERVE_TLS_LIFECYCLE_RESULT_2026-11-04.md)；只覆盖新包。
 
 ## 准备固定包
 

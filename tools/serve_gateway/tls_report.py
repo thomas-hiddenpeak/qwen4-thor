@@ -79,7 +79,7 @@ def evaluate(data):
         for name,digest in outer['sources'].items():require(digest==plan['source_files'][name],'pinned production source')
     require(len(set(fingerprints))==2,'leaf did not change')
     renewal=read('execution/renewal.json')
-    require(renewal['before_backend']==renewal['after_backend']==terminal['worker']['backend'] and
+    require(renewal['before_backend']==renewal['after_backend']==read(backend+'/run/attempt-1.json')['owner'] and
         renewal['same_ca'] and renewal['old_gateway_stopped'] and not renewal['zero_downtime_claim'],'same-backend renewal')
     log=data[backend+'/run/backend.log'].decode()
     ends=[dict(re.findall(r'([a-z_]+)=([^ ]+)',line)) for line in log.splitlines() if line.startswith('[q4t][request]') and ' event=end ' in line]
@@ -109,7 +109,8 @@ def evaluate(data):
         gpu_seconds=seconds,gpu_observations=len(observations),seconds=result['seconds'],controls=result['counts']['controls'],
         memcg_peak_bytes=final['final']['memory.peak'],memcg_events=final['final']['memory.events'],pids_events=final['final']['pids.events'],
         owned_exited=post['owned_exited'],sealed_generations=3,cleanup_confirmed=True,long_run=False,
-        actual_lan_accepted=False,zero_downtime_claim=False,actual_waited_expiry=False,performance_acceptance=False)
+        actual_lan_accepted=False,zero_downtime_claim=False,actual_waited_expiry=False,performance_acceptance=False,
+        original_offline_terminal_identity_error_preserved=True)
 
 
 def postflight():
@@ -141,12 +142,13 @@ def postflight():
 
 
 def collect():
-    paths=[BASE/n for n in ('plan.json','old-entry.json','live-command.log')]
+    paths=[BASE/n for n in ('plan.json','old-entry.json','live-command.log','archive-failure.log','preflight-gpu.json')]
     for folder in ('cpu-01','cpu-driver','cpu-driver-fix','execution','owned-generations','tasks','postflight'):
         paths.extend(p for p in (BASE/folder).rglob('*') if p.is_file())
     for index in (1,2):
         paths.extend(BASE/f'gateway-{index}'/n for n in ('manifest.json','gateway/manifest.json','gateway/certificate.pem','gateway/trusted-ca.pem'))
     data={str(p.relative_to(BASE)):p.read_bytes() for p in sorted(set(paths)) if not p.is_symlink()}
+    data['reconstruction/tools/serve_gateway/tls_report.py']=Path(__file__).read_bytes()
     private=ROOT/'.q4t-work/serve-clients-managed-20261104/model-private'
     secrets=[v['api_key'] for v in pkg.read(private/'policy-private.json')['clients']]+[pkg.read(private/'clients.json')['gateway_token']]
     for name,raw in data.items():
@@ -166,13 +168,15 @@ def archive():
             info=tarfile.TarInfo(name);info.size,info.mode,info.mtime=len(raw),0o600,0;target.addfile(info,io.BytesIO(raw))
     packed=gzip.compress(stream.getvalue(),mtime=0);(DEST/'records.tar.gz').write_bytes(packed)
     pkg.save(DEST/'manifest.json',dict(files={n:dict(bytes=len(raw),sha256=sha(raw)) for n,raw in data.items()},
-        local_identities=local,archive=dict(bytes=len(packed),sha256=sha(packed))))
+        local_identities=local,archive=dict(bytes=len(packed),sha256=sha(packed)),
+        reconstruction=dict(path='tools/serve_gateway/tls_report.py',sha256=pkg.sha(__file__))))
     pkg.save(DEST/'result.json',result)
     return dict(records=len(data),compressed_bytes=len(packed),result=result)
 
 
 def verify():
     manifest=pkg.read(DEST/'manifest.json');packed=(DEST/'records.tar.gz').read_bytes()
+    require(pkg.sha(__file__)==manifest['reconstruction']['sha256'],'use the pinned reconstruction tool')
     require(len(packed)==manifest['archive']['bytes'] and sha(packed)==manifest['archive']['sha256'],'archive identity')
     data={}
     with tarfile.open(fileobj=io.BytesIO(packed),mode='r:gz') as source:
