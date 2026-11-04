@@ -10,6 +10,7 @@
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <sys/resource.h>
 #include <unistd.h>
 
 #include <chrono>
@@ -20,6 +21,13 @@
 #include <cstring>
 
 namespace {
+// Model-free equivalent of the successful Start listener handoff. Production
+// Run never lazily binds, so fixtures must explicitly acquire this ownership.
+q4t::Status RunUnloaded(q4t::server::ChatServer& server) {
+  const auto status = q4t::server::ServeContractAccess::ReserveListeners(server);
+  if (!status) return status;
+  return server.Run();
+}
 std::atomic<bool> observation_failure{false};
 [[maybe_unused]] const int stdout_buffering =
     std::setvbuf(stdout, nullptr, _IOLBF, 0);
@@ -144,7 +152,7 @@ Q4T_TEST(http_client_authentication_scoped_cancel_and_local_admin) {
   auto a = ServeContractAccess::Register(server, key_a, "alpha");
   auto b = ServeContractAccess::Register(server, key_b, "beta");
   Q4T_CHECK(a && b);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   Q4T_CHECK(Request(server, "GET /v1/models HTTP/1.1\r\nHost: t\r\n\r\n")
                 .starts_with("HTTP/1.1 401 Unauthorized\r\n"));
@@ -184,7 +192,7 @@ Q4T_TEST(http_client_body_quota_and_exception_cleanup) {
   ChatServer server;
   ServeContractAccess::Configure(server);
   Q4T_CHECK(ConfigureClients(server));
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   auto& clients = ServeContractAccess::Clients(server);
   const auto wait = [&](auto predicate) {
@@ -233,7 +241,7 @@ Q4T_TEST(http_observation_partition_business_and_control_isolation) {
   ServeContractAccess::Configure(server);
   const std::string token(64, 'a');
   auto control = ServeContractAccess::Register(server, token);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   std::vector<int> held;
   ScopeExit close_held([&] {
@@ -308,7 +316,7 @@ Q4T_TEST(http_observation_independent_of_saturated_control_partition) {
   using namespace q4t::server;
   ChatServer server;
   ServeContractAccess::Configure(server);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   std::vector<int> held;
   ScopeExit close_held([&] {
@@ -345,7 +353,7 @@ Q4T_TEST(http_unclassified_total_limit_is_explicit_and_recoverable) {
   using namespace q4t::server;
   ChatServer server;
   ServeContractAccess::Configure(server);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   std::vector<int> held;
   ScopeExit close_held([&] {
@@ -384,7 +392,7 @@ Q4T_TEST(http_observation_draining_and_exception_release) {
   using namespace q4t::server;
   ChatServer server;
   ServeContractAccess::Configure(server);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   observation_failure = true;
   ScopeExit clear_failure([] { observation_failure = false; });
@@ -419,7 +427,7 @@ Q4T_TEST(http_memory_gate_before_body_controls_and_recovery) {
   ServeContractAccess::Configure(server);
   ServeContractAccess::Memory(server, 100, 50, ReadMemory);
   auto control = ServeContractAccess::Register(server, std::string(64, 'a'));
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   const auto get = [&](const char* path) {
     return Request(
@@ -524,7 +532,7 @@ Q4T_TEST(http_stop_before_and_during_listener_publication) {
       q4t::server::detail::serve_test_hook = nullptr;
       publishing_server = nullptr;
     });
-    auto run = std::async(std::launch::async, [&] { return server.Run(); });
+    auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
     Q4T_CHECK(run.wait_for(3s) == std::future_status::ready);
     Q4T_CHECK(run.get().ok() && ServeContractAccess::Empty(server));
   }
@@ -534,7 +542,7 @@ Q4T_TEST(http_stop_before_and_during_listener_publication) {
 Q4T_TEST(http_exception_keeps_server_and_releases_connections) {
   ChatServer server;
   ServeContractAccess::Configure(server);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   const auto failed =
       Request(server,
@@ -560,7 +568,7 @@ Q4T_TEST(http_cancel_validates_before_registry_mutation) {
   const std::string token(64, 'a');
   auto control = ServeContractAccess::Register(server, token);
   Q4T_CHECK(control != nullptr);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   const std::string valid =
       R"({"request_id":"cancel-contract","cancel_token":")" + token + R"("})";
@@ -599,7 +607,7 @@ Q4T_TEST(http_thread_creation_failure_rolls_back) {
   ScopeExit environment([] { unsetenv("Q4T_SERVE_FAULT"); });
   ChatServer server;
   ServeContractAccess::Configure(server);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   const int fd = Connect(server);
   ScopeExit close_socket([&] { close(fd); });
@@ -643,7 +651,7 @@ Q4T_TEST(http_validation_gate_is_an_explicit_handshake) {
 Q4T_TEST(http_methods_media_queries_and_trace_headers) {
   ChatServer server;
   ServeContractAccess::Configure(server);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   const auto wrong_method = Request(
       server,
@@ -687,7 +695,7 @@ Q4T_TEST(http_control_reserve_and_draining_readiness) {
   ServeContractAccess::Configure(server);
   const std::string token(64, 'a');
   auto control = ServeContractAccess::Register(server, token);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   const int a = Connect(server), b = Connect(server);
   ScopeExit close_slow([&] {
@@ -737,7 +745,7 @@ Q4T_TEST(http_receive_observation_body_routes_and_business_boundary) {
   using namespace q4t::server;
   ChatServer server;
   ServeContractAccess::Configure(server);
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   {
     HttpBodyLease held(ServeContractAccess::BodyBudget(server));
@@ -918,7 +926,7 @@ Q4T_TEST(http_operations_bind_failure_closes_both_unpublished_listeners) {
   primary.Release();
   ChatServer server;
   ServeContractAccess::Configure(server, ops.port, primary.port);
-  Q4T_CHECK(!server.Run().ok() && ServeContractAccess::Empty(server));
+  Q4T_CHECK(!RunUnloaded(server).ok() && ServeContractAccess::Empty(server));
   const int fd = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
   ScopeExit close_socket([&] { close(fd); });
   sockaddr_in address{};
@@ -936,7 +944,7 @@ Q4T_TEST(http_operations_public_slow_headers_cannot_consume_private_handlers) {
   ChatServer server;
   ServeContractAccess::Configure(server, port.port);
   port.Release();
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   std::vector<int> held;
   ScopeExit close_held([&] {
@@ -971,7 +979,7 @@ Q4T_TEST(http_operations_classified_and_unclassified_capacity_recover) {
   ChatServer server;
   ServeContractAccess::Configure(server, port.port);
   port.Release();
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   std::vector<int> held;
   ScopeExit close_held([&] {
@@ -1034,7 +1042,7 @@ Q4T_TEST(http_operations_route_before_body_authentication_and_cancel_scope) {
   Q4T_CHECK(ConfigureClients(server));
   const std::string token(64, 'a');
   auto control = ServeContractAccess::Register(server, token, "alpha");
-  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
   ScopeExit stop([&] { server.RequestStop(); });
   for (const char* path : {"/v1/chat/completions", "/v1/chat/preflight",
                            "/healthz", "/v1/models/", "/unknown"})
@@ -1092,7 +1100,7 @@ Q4T_TEST(http_operations_early_fault_and_shutdown_release_both_planes) {
     }
     ScopeExit environment(
         [] { q4t::server::detail::serve_test_hook = nullptr; });
-    auto run = std::async(std::launch::async, [&] { return server.Run(); });
+    auto run = std::async(std::launch::async, [&] { return RunUnloaded(server); });
     ScopeExit stop([&] { server.RequestStop(); });
     const int fd = Connect(server, true);
     ScopeExit close_socket([&] { close(fd); });
@@ -1126,7 +1134,7 @@ Q4T_TEST(http_operations_prepublication_exception_releases_both_sockets) {
   ScopeExit clear([] { q4t::server::detail::serve_test_hook = nullptr; });
   bool failed = false;
   try {
-    server.Run();
+    RunUnloaded(server);
   } catch (const std::exception&) {
     failed = true;
   }
@@ -1141,5 +1149,192 @@ Q4T_TEST(http_operations_prepublication_exception_releases_both_sockets) {
     Q4T_CHECK(
         bind(fd, reinterpret_cast<sockaddr*>(&address), sizeof(address)) == 0);
   }
+  return true;
+}
+
+Q4T_TEST(http_run_requires_completed_startup) {
+  ChatServer server;
+  Q4T_CHECK(!server.Run().ok() && ServeContractAccess::Empty(server));
+  return true;
+}
+
+namespace {
+int SocketPort(int fd) {
+  sockaddr_in address{};
+  socklen_t length = sizeof(address);
+  if (getsockname(fd, reinterpret_cast<sockaddr*>(&address), &length))
+    throw std::runtime_error("getsockname failed");
+  return ntohs(address.sin_port);
+}
+bool BindWithReuse(int port, bool wildcard = false) {
+  const int fd = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
+  ScopeExit close_fd([&] { close(fd); });
+  const int one = 1;
+  if (fd < 0 || setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one)))
+    throw std::runtime_error("test socket failed");
+  sockaddr_in address{};
+  address.sin_family = AF_INET;
+  address.sin_addr.s_addr = htonl(wildcard ? INADDR_ANY : INADDR_LOOPBACK);
+  address.sin_port = htons(port);
+  return bind(fd, reinterpret_cast<sockaddr*>(&address), sizeof(address)) == 0;
+}
+}  // namespace
+
+Q4T_TEST(http_startup_reservation_excludes_reuse_binders_and_is_close_on_exec) {
+  q4t::server::HttpListeners listeners;
+  Q4T_CHECK(listeners.Open("127.0.0.1", 0, 0).ok());
+  const int fd = listeners.Public(), port = SocketPort(fd);
+  Q4T_CHECK(port > 0 && listeners.Operations() == -1);
+  Q4T_CHECK((fcntl(fd, F_GETFD) & FD_CLOEXEC) != 0);
+  Q4T_CHECK((fcntl(fd, F_GETFL) & O_NONBLOCK) != 0);
+  Q4T_CHECK(!BindWithReuse(port) && !BindWithReuse(port, true));
+  Q4T_CHECK(!listeners.Open("127.0.0.1", 0, 0).ok());
+  Q4T_CHECK(listeners.Public() == fd && SocketPort(fd) == port);
+  listeners.Close();
+  Q4T_CHECK(BindWithReuse(port));
+  return true;
+}
+
+Q4T_TEST(http_startup_bad_endpoint_and_partial_pair_release) {
+  using q4t::server::HttpListeners;
+  HttpListeners listeners;
+  Q4T_CHECK(!listeners.Open("not-an-ip", 0, 0).ok());
+  Q4T_CHECK(!listeners.Open("127.0.0.1", 65536, 0).ok());
+  Q4T_CHECK(listeners.Public() == -1 && listeners.Operations() == -1);
+  HttpListeners occupied;
+  Q4T_CHECK(occupied.Open("127.0.0.1", 0, 0).ok());
+  const int port = SocketPort(occupied.Public());
+  ReservedPort primary;
+  primary.Release();
+  const auto status = listeners.Open("127.0.0.1", primary.port, port);
+  Q4T_CHECK(!status.ok());
+  Q4T_CHECK(status.message().find("operations listener bind failed") !=
+            std::string::npos);
+  Q4T_CHECK(status.message().find(std::to_string(port)) != std::string::npos);
+  Q4T_CHECK(listeners.Public() == -1 && listeners.Operations() == -1);
+  Q4T_CHECK(BindWithReuse(primary.port) && !BindWithReuse(port));
+  Q4T_CHECK(SocketPort(occupied.Public()) == port);
+  return true;
+}
+
+Q4T_TEST(http_startup_exception_rolls_back_partial_and_complete_pairs) {
+  for (const char* site : {"listener.after_public", "listener.after_pair"}) {
+    ReservedPort ops, primary;
+    ops.Release();
+    primary.Release();
+    q4t::server::HttpListeners listeners;
+    // Select one deterministic exception without changing the product build.
+    static std::string selected;
+    selected = site;
+    q4t::server::detail::serve_test_hook = +[](const char* name) {
+      if (selected == name) throw std::bad_alloc();
+    };
+    ScopeExit clear([] {
+      q4t::server::detail::serve_test_hook = nullptr;
+    });
+    bool threw = false;
+    try {
+      listeners.Open("127.0.0.1", primary.port, ops.port);
+    } catch (const std::bad_alloc&) {
+      threw = true;
+    }
+    Q4T_CHECK(threw && listeners.Public() == -1 &&
+              listeners.Operations() == -1);
+    Q4T_CHECK(BindWithReuse(primary.port) && BindWithReuse(ops.port));
+  }
+  return true;
+}
+
+Q4T_TEST(http_startup_move_and_close_do_not_close_reused_descriptors) {
+  q4t::server::HttpListeners original;
+  Q4T_CHECK(original.Open("127.0.0.1", 0, 0).ok());
+  const int fd = original.Public(), port = SocketPort(fd);
+  q4t::server::HttpListeners moved(std::move(original));
+  Q4T_CHECK(original.Public() == -1 && moved.Public() == fd);
+  original.Close();
+  Q4T_CHECK(!BindWithReuse(port));
+  moved.Close();
+  const int reused = open("/dev/null", O_RDONLY | O_CLOEXEC);
+  ScopeExit close_fd([&] { close(reused); });
+  Q4T_CHECK(reused == fd);  // Linux allocates the lowest available descriptor.
+  moved.Close();
+  original.Close();
+  Q4T_CHECK(fcntl(reused, F_GETFD) >= 0 && BindWithReuse(port));
+  return true;
+}
+
+Q4T_TEST(http_startup_without_run_and_stop_before_run_release_reservations) {
+  for (bool run : {false, true}) {
+    ReservedPort ops, primary;
+    ops.Release();
+    primary.Release();
+    {
+      ChatServer server;
+      ServeContractAccess::Configure(server, ops.port, primary.port);
+      Q4T_CHECK(ServeContractAccess::ReserveListeners(server).ok());
+      Q4T_CHECK(!BindWithReuse(primary.port) && !BindWithReuse(ops.port));
+      if (run) {
+        server.RequestStop();
+        Q4T_CHECK(server.Run().ok() && ServeContractAccess::Empty(server));
+      }
+    }
+    Q4T_CHECK(BindWithReuse(primary.port) && BindWithReuse(ops.port));
+  }
+  return true;
+}
+
+Q4T_TEST(http_startup_queue_does_not_publish_http_before_run) {
+  ReservedPort primary;
+  primary.Release();
+  ChatServer server;
+  ServeContractAccess::Configure(server, 0, primary.port);
+  Q4T_CHECK(ServeContractAccess::ReserveListeners(server).ok());
+  const int fd = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0);
+  ScopeExit close_fd([&] { close(fd); });
+  sockaddr_in address{};
+  address.sin_family = AF_INET;
+  address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+  address.sin_port = htons(primary.port);
+  Q4T_CHECK(connect(fd, reinterpret_cast<sockaddr*>(&address),
+                    sizeof(address)) == 0);
+  Q4T_CHECK(q4t::server::detail::WriteAll(fd, kHealth));
+  char data[4096];
+  Q4T_CHECK(recv(fd, data, sizeof(data), MSG_DONTWAIT) == -1 &&
+            (errno == EAGAIN || errno == EWOULDBLOCK));
+  Q4T_CHECK(ServeContractAccess::ActiveConnections(server) == 0 &&
+            ServeContractAccess::Port(server) == -1);
+  auto run = std::async(std::launch::async, [&] { return server.Run(); });
+  ScopeExit stop([&] { server.RequestStop(); });
+  const timeval timeout{3, 0};
+  setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+  const auto count = recv(fd, data, sizeof(data), 0);
+  Q4T_CHECK(count > 0 && std::string_view(data, count).starts_with("HTTP/1.1 200"));
+  stop.Run();
+  Q4T_CHECK(run.wait_for(3s) == std::future_status::ready && run.get().ok());
+  Q4T_CHECK(ServeContractAccess::Empty(server));
+  return true;
+}
+
+Q4T_TEST(http_startup_descriptor_exhaustion_fails_without_owned_sockets) {
+  rlimit previous{};
+  Q4T_CHECK(getrlimit(RLIMIT_NOFILE, &previous) == 0);
+  rlimit limited{std::min<rlim_t>(previous.rlim_cur, 64), previous.rlim_max};
+  std::vector<int> held;
+  held.reserve(64);
+  ScopeExit restore([&] {
+    for (int fd : held) close(fd);
+    if (setrlimit(RLIMIT_NOFILE, &previous)) std::terminate();
+  });
+  Q4T_CHECK(setrlimit(RLIMIT_NOFILE, &limited) == 0);
+  for (int fd; (fd = open("/dev/null", O_RDONLY | O_CLOEXEC)) >= 0;)
+    held.push_back(fd);
+  Q4T_CHECK(errno == EMFILE);
+  q4t::server::HttpListeners listeners;
+  const auto status = listeners.Open("127.0.0.1", 0, 0);
+  Q4T_CHECK(!status.ok() && listeners.Public() == -1 &&
+            listeners.Operations() == -1);
+  Q4T_CHECK(status.message().find("public listener socket failed") !=
+            std::string::npos);
+  restore.Run();
   return true;
 }

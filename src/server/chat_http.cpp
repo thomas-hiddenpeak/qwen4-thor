@@ -148,36 +148,21 @@ void ChatServer::StartConnection(int fd, bool operations) {
 }
 
 Status ChatServer::Run() {
-  if (stop_requested_.load())
-    return serving_failed_.load() ? Status::Fail("serve failed") : Status();
-  int listen_fd = -1, operations_fd = -1;
+  // Take startup ownership even when stopped before Run. The local owner also
+  // covers exceptions before publication and destruction after an early exit.
+  HttpListeners listeners = std::move(startup_listeners_);
+  const int listen_fd = listeners.Public();
+  const int operations_fd = listeners.Operations();
   ScopeExit close_listener([&] {
     listen_fd_.store(-1);
     operations_listen_fd_.store(-1);
-    if (listen_fd >= 0) ::close(listen_fd);
-    if (operations_fd >= 0) ::close(operations_fd);
+    listeners.Close();
   });
-  const auto open = [](const char* host, int port, int* fd) -> Status {
-    *fd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
-    if (*fd < 0) return Status::Fail("socket failed");
-    int one = 1;
-    ::setsockopt(*fd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
-    sockaddr_in addr{};
-    addr.sin_family = AF_INET;
-    if (::inet_pton(AF_INET, host, &addr.sin_addr) != 1)
-      return Status::Fail("bad address");
-    addr.sin_port = htons(static_cast<uint16_t>(port));
-    if (::bind(*fd, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0)
-      return Status::Fail("bind failed");
-    if (::listen(*fd, 128) < 0) return Status::Fail("listen failed");
-    return Status();
-  };
-  auto status = open(host_.c_str(), port_, &listen_fd);
-  if (!status) return status;
-  if (operations_port_) {
-    status = open("127.0.0.1", operations_port_, &operations_fd);
-    if (!status) return status;
-  }
+  if (stop_requested_.load())
+    return serving_failed_.load() ? Status::Fail("serve failed") : Status();
+  if (!model_ready_.load() || listen_fd < 0 ||
+      (operations_port_ != 0 && operations_fd < 0))
+    return Status::Fail("server startup not complete");
   detail::ServeFaultPoint("connection.before_publish");
   operations_listen_fd_.store(operations_fd);
   listen_fd_.store(listen_fd);

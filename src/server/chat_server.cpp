@@ -37,6 +37,9 @@ constexpr const char* kDefaultModelName = "qwen3.8-flash-next";
 }
 
 ChatServer::~ChatServer() {
+  // Start may have succeeded without a subsequent Run. Stop accepting TCP
+  // connections before releasing the model, including partial startup state.
+  startup_listeners_.Close();
   // Release any requests queued in AllocSeqId so their threads can exit.
   {
     const std::lock_guard<std::mutex> lock(seq_mu_);
@@ -107,6 +110,8 @@ struct PhaseTimer {
 }  // namespace
 
 Status ChatServer::Start(const ServerOptions& opts) {
+  if (start_attempted_) return Status::Fail("server startup already attempted");
+  start_attempted_ = true;
   // Validate before loading the tokenizer or allocating model resources.
   const Status validated = ValidateServerOptions(opts);
   if (!validated.ok()) return validated;
@@ -116,6 +121,12 @@ Status ChatServer::Start(const ServerOptions& opts) {
     if (status) status = clients_.Configure(std::move(policy));
     if (!status) return status;
   }
+  // Keep the actual listening descriptors across startup. A probe followed by
+  // close would let another process take the port while model loading runs.
+  HttpListeners pending_listeners;
+  const auto listeners =
+      pending_listeners.Open(opts.host, opts.port, opts.operations_port);
+  if (!listeners) return listeners;
   memory_admission_.Configure(
       static_cast<uint64_t>(opts.min_available_memory_mib) * 1024 * 1024,
       static_cast<uint64_t>(opts.memory_recovery_margin_mib) * 1024 * 1024);
@@ -669,13 +680,14 @@ Status ChatServer::Start(const ServerOptions& opts) {
   }
 #endif
   // A successful estimate is not a reservation against competing allocators.
-  // Recheck the residual headroom before publishing readiness or a listener.
+  // Recheck residual headroom before readiness; sockets are already reserved.
   s = check_startup_memory("before_ready", 0, false,
                            &startup_memory_.before_ready);
   if (!s.ok()) return s;
   effective_config_ =
       EffectiveServeConfigJson(opts, PlanningConfig(), budget_valid_,
                                mtp_loaded_, conn_cap_, &startup_memory_);
+  startup_listeners_ = std::move(pending_listeners);
   model_ready_.store(true);
   return Status();
 }

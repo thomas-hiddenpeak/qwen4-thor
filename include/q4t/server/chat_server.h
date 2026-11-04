@@ -29,6 +29,7 @@
 #include "q4t/server/suffix_token_cache.h"
 #include "q4t/server/session_cache.h"
 #include "q4t/server/http_request.h"
+#include "q4t/server/http_listener.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/server_options.h"
 #include "q4t/server/sequence_admission.h"
@@ -123,9 +124,10 @@ class ChatServer {
   ChatServer(const ChatServer&) = delete;
   ChatServer& operator=(const ChatServer&) = delete;
 
-  // Load the tokenizer + full model. On success returns ok and the server is
-  // ready to Run(); on failure the Status carries a message and nothing is
-  // running.
+  // Reserve listeners before loading the tokenizer + full model, then become
+  // ready to Run(). On failure listeners close immediately; destroy this
+  // single-use server to release partial model/scheduler resources. Start,
+  // Run and destruction must be sequenced by the owner, never concurrent.
   Status Start(const ServerOptions& opts);
 
   // Accept loop: blocks, spawning one thread per client (concurrent requests;
@@ -334,6 +336,8 @@ class ChatServer {
   // Poll observes stop within 25ms. Draining serves control and observation
   // for at most 2 seconds; remaining owned sockets then close before cleanup.
   std::atomic<bool> stop_requested_{false};
+  bool start_attempted_ = false;
+  HttpListeners startup_listeners_;
   std::atomic<int> listen_fd_{-1};
   std::atomic<int> operations_listen_fd_{-1};
   // GPU health: a forward's CUDA error is sticky (it poisons every later

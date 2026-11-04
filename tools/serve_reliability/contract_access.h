@@ -78,6 +78,10 @@ struct ServeContractAccess {
     server.conn_cap_ = 2;
     server.model_ready_.store(true);
   }
+  static Status ReserveListeners(ChatServer& server) {
+    return server.startup_listeners_.Open(
+        server.host_, server.port_, server.operations_port_);
+  }
   static int Business(ChatServer& server) {
     return server.business_conns_.load();
   }
@@ -137,7 +141,9 @@ struct ServeContractAccess {
            server.operations_conns_.load() == 0 &&
            server.operations_control_conns_.load() == 0 &&
            server.operations_observation_conns_.load() == 0 &&
-           server.operations_listen_fd_.load() == -1;
+           server.operations_listen_fd_.load() == -1 &&
+           server.startup_listeners_.Public() == -1 &&
+           server.startup_listeners_.Operations() == -1;
   }
 };
 }  // namespace q4t::server

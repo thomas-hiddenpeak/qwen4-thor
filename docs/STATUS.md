@@ -41,6 +41,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-12k[原生启动监听已开发、待短验](SERVE_STARTUP_LISTENERS_2026-11-04.md)：
+双监听从 Run 移至模型加载前，RAII 跨 Start/Run/异常/未运行析构持有。
+零警告构建、42 Python/289公共/255必需/9结构化与5驱动检查通过；
+首轮防遗漏清单五来源过时拒绝已保留，审核后定向核对通过，其余复用。
+TCP 等待队列不代表 HTTP 就绪；1原生进程/5无模型CLI/1模型6尝试
+2工具同锁短验冻结，当前默认 pair 不变。高级接入可选，长验交用户。
+
+
 SRV-12j[托管双监听启动前检查已限定交付](SERVE_PORT_PREFLIGHT_RESULT_2026-11-04.md)：
 8c052db6只改supervisor；38 CPU首轮通过，已占用主/运维端口分别
 0.387914/0.387640秒在backend前拒绝、零启动、原占用者身份保持。

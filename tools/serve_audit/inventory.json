@@ -630,7 +630,7 @@
   },
   "sources_sha256": {
     "CMakeLists.txt": "7a1f3b4a15a26ee347254019ac5d58a1b8483abca68e26b1394ad32e6b7511ce",
-    "cmake/ChatProtocolIdentity.cmake": "7976ca29499d98a3c7c8956e986ed70e158a8d5a7aeb68e1a2374043fb1f2c99",
+    "cmake/ChatProtocolIdentity.cmake": "d59b1b06abf9e0cb8867c03fd749398da5e118838d39ea87364d7b02a787e13e",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/StructuredOutput.cmake": "fd8c800791a39e03d6447716554eb67cc626a1d20855de512fdc5dc715dd8b30",
     "include/q4t/runtime/allocation_quota.h": "f3707f500c3dc5492bcd56e434c52e98b64cdfb83113139d32161ee3ddbb381c",
@@ -644,7 +644,7 @@
     "include/q4t/server/chat_plan.h": "0f5f2e299a9a67f95b1923f3213e64e1e4c79f00468301431cd5d13b7423ad09",
     "include/q4t/server/chat_prompt.h": "1a758fed12a2ef5b3eadc6109cbc99be29de63e088d0d60111ed171730daa54f",
     "include/q4t/server/chat_response_parser.h": "15b41a19e4eb3c3897e71c3b584b25ed0b669a7aa1119ade57b71d6ea9d57246",
-    "include/q4t/server/chat_server.h": "7699817e7a1a4b7792ba990f8f475700695e534577b444d997bc7375e3224267",
+    "include/q4t/server/chat_server.h": "3df4a1fafaf056ae360fa0004b16b53f779d869d78741d625ac4e646bd2cf9b0",
     "include/q4t/server/chat_template.h": "f89fa01d5352cc6ec47ecff09c24bdb58f8bb0a3edfa5c89fe840791ac76bb51",
     "include/q4t/server/chat_tool_history.h": "93e223005735503303d7a25565eccb99dcbc3d92f85e222029137c5d147ad3af",
     "include/q4t/server/client_identity.h": "c05aad5dc655e91962eae55aab25c09fdcbc2a72ddc37a95585c7288dfac54be",
@@ -655,6 +655,7 @@
     "include/q4t/server/device_memory.h": "1099e20d3b205d3ae03daba0308be7221f5097c78a2fd58c8ca16298277dfc4c",
     "include/q4t/server/grammar_process.h": "5a43df744adf5647177ee723d806c63e0e20c9d6555cfca45bb80863f995e760",
     "include/q4t/server/http_connection.h": "dcd12b3f713b9c0318b2f394ee55fb5666a2cfdb092e9a0cb4697cb2e61a4d54",
+    "include/q4t/server/http_listener.h": "bf5ec9d8e4567b3cb479803de66d52f9576c9a9df19f6a5e238ef69c266a2f11",
     "include/q4t/server/http_observation.h": "4a5c07a112faa4d60f834b2d5e4067522a7fe565ca6ff8acd145ad603999dbdc",
     "include/q4t/server/http_request.h": "6746ddda5b84feff0330b524befb1344102c1d99921ef397f7a0f13248f34045",
     "include/q4t/server/http_response.h": "b75293da777e66c304bc75a9e7248e6ee6d48827fbd576aff479342c56bed070",
@@ -703,7 +704,7 @@
     "src/server/chat_contract.cpp": "e87d5f90c7e6e03c57e8c05243c35267a0ade8f6c65ef36a98c70c6b6dba3469",
     "src/server/chat_device_memory.cpp": "09a5e1a1d9c25740a5970cf36a7e27e6fd87110a3ae1a26f5d4cd3c210a5485b",
     "src/server/chat_generation.cpp": "e8ec1e1073dd2d4b61389b6d916a6cdb9ea4d0ed17762a3e9f25c722f7af7eb4",
-    "src/server/chat_http.cpp": "6dcf4af26ea45d9c201efb4bf5c99f504a1aa460ff2c3af589f3dcfc984bcf4d",
+    "src/server/chat_http.cpp": "699098a50ee52ce3eb35e2837db797e6231b5aaa5860d6dc181270cb87a98ba5",
     "src/server/chat_input.cpp": "d126a90ec3e3fdba5f516c53ee0d6ded6dbc3da34af64b86d93d35115d05c8e6",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "3c2738770c331f3bc8e66e7917b12123478c46d70a7f5b6fef53d4e5544f8b26",
@@ -712,7 +713,7 @@
     "src/server/chat_prompt.cpp": "b87c13319b7eb1e58908f4e607ab2827b6f5191e6e1e70040fa57d8dae5c84c2",
     "src/server/chat_response_parser.cpp": "ffa2ce62aeffbfac4c67c97c591854db8cec8eac389e7e2e0cdfe57e05f392f7",
     "src/server/chat_scheduler.cpp": "3bbbc18b7d836b0ec1fb9e1bef4fb4c85b6dc60b4fc1a26a23916196326832cf",
-    "src/server/chat_server.cpp": "3dd04e05f2e7e7d3708ef2b7dcc58b2bfb2bb4c60a6eb6a527f741f32856cbad",
+    "src/server/chat_server.cpp": "1e525bcd4639686868d7aff7c72f00e33bf90df413708a6c6c051ff1b98dc5b1",
     "src/server/chat_server_internal.h": "f648da039df39e84f9f867c55210afeff3eceac0c3578c61edfaa210957d4286",
     "src/server/chat_template.cpp": "a030f020b91227e143827754a3b45e36804a8e2f72c727d5e36291c688193244",
     "src/server/chat_tool_history.cpp": "3514a29df574c5b21c4dd8b6ecd9407aa3ff50a43a30b51d97fa93c6cd247bed",
@@ -920,6 +921,23 @@
       "docs/SERVE_OPERATIONS_LISTENER_2026-11-04.md",
       "tools/serve_reliability/http_lifecycle_test.cpp",
       "tools/serve_operations_listener/test_tools.py"
+    ]
+  },
+  "startup_listener_review": {
+    "date": "2026-11-04",
+    "stage": "SRV-12k",
+    "changed_sources": [
+      "cmake/ChatProtocolIdentity.cmake",
+      "include/q4t/server/chat_server.h",
+      "include/q4t/server/http_listener.h",
+      "src/server/chat_http.cpp",
+      "src/server/chat_server.cpp"
+    ],
+    "review": "Actual dual listeners before tokenizer/cache/model/CUDA allocation, transactional RAII ownership, unchanged handlers/authentication/route and field allowlists. Warmup TCP queue is not HTTP readiness; no startup response thread or signal-handler change. Single-use Start and partial model destruction contract explicit. CPU inventory failure preserved; native and real startup acceptance pending.",
+    "evidence": [
+      "docs/SERVE_STARTUP_LISTENERS_2026-11-04.md",
+      "tools/serve_reliability/http_lifecycle_test.cpp",
+      "tools/serve_startup_listeners/test_stage.py"
     ]
   }
 }
