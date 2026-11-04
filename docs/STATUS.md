@@ -41,6 +41,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-11i[当前运维协议的持久任务交接开发中](SERVE_TASK_OPERATIONS_2026-11-04.md)：
+独立审核222来源/10变化并封存111记录，登记fc63db28→ddfba8c0及11h
+17项旧应用源码；仅单向显式升级，不推导直接63→dd，不改预算/结果。
+17应用/6驱动CPU及4文件SIGKILL通过；首次隔离Python缺referencing在
+测试前退出，原记录保留，用既有解释器配置后通过。下一步同锁2模型/
+4响应/2真实工具短验；默认pair/旧包/Key/day保持，未记新闭环通过。
+高级部署按需启用，长验归用户。
+
 SRV-19[发布声明一致性已限定交付](SERVE_RELEASE_DECLARATIONS_RESULT_2026-11-04.md)：
 默认ELF7eff020d保持，sidecar更新cc83bf3a；四组过时声明/三份schema摘要
 修正，新包冻结capabilities/config/七schema并强制校验，旧封存包保持。

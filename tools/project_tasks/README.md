@@ -135,7 +135,11 @@ python3 -B tools/project_tasks/runner.py apply-migration \
 已审核的协议升级使用独立`plan-protocol`/`apply-protocol`，参数与上面
 迁移命令相同，新profile仅改变protocol_sha256。先停妥旧任务进程，
 核对计划旧/新协议、版本对的审核依据、revision、来源及剩余预算，
-再显式apply，之后才resume。当前仅登记63b29f13→fc63db28这一方向，
+再显式apply，之后才resume。已登记63b29f13→fc63db28，以及
+fc63db28→ddfba8c0两个有向步骤；后一项CPU已过，真实短验状态见
+[当前运维协议交接](../../docs/SERVE_TASK_OPERATIONS_2026-11-04.md)。
+没有直接登记63b29f13→ddfba8c0，需两次明确计划/应用并分别计入原8次
+迁移上限。登记不触发自动升级，
 完整摘要和依据见`compatible_protocols.json`；不推导反向/跨版本兼容。
 同client/origin/IP、CA、Key、模型/模板必须保持，普通Key或CA迁移
 不能代替协议计划。活跃、终态、归档和已清正文的永久键均覆盖，

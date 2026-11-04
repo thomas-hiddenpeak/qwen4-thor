@@ -11,6 +11,17 @@
       "release": "srv01c-ac1a3e4d",
       "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
       "to_protocol_sha256": "fc63db28261a37ead3b633e0cd704a128e91b4eac264ea8125f715ac4b2834aa"
+    },
+    {
+      "archive_sha256": "b26f2dfa69ca2ad68f0b7cb36ed392f317775e30b226e03807d04acd6cefa2ab",
+      "basis": "Reviewed 222 runtime files: 212 unchanged; 10 listener/metrics/config changes. Request planning matches after formatting; model, template, tools, budgets and response parsing unchanged. Reuse SRV-12g public Chat: 5 successes and 2 real read-only tools. Private operations/config are not wire-identical; only directed public project-task history compatibility is approved.",
+      "contract": "q4t-project-readonly-protocol-v1",
+      "evidence": "docs/evidence/serve-task-operations-review-20261104/records.tar.gz",
+      "from_protocol_sha256": "fc63db28261a37ead3b633e0cd704a128e91b4eac264ea8125f715ac4b2834aa",
+      "model": "qwen3.8-flash-next",
+      "release": "srv12g-5e52dc17",
+      "template_sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+      "to_protocol_sha256": "ddfba8c002d8fb899b4c00d42612b0a26669036a1acc65e8292a10c0a9b69342"
     }
   ]
 }
