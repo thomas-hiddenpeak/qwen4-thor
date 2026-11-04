@@ -41,6 +41,12 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-12h[独立运维托管短验已冻结](SERVE_OPERATIONS_MANAGED_2026-11-04.md)：
+复用已准备v6包，补真实controller/监督器/双监听inspect和TLS网关生命周期。
+1模型、2网关/2配置拒绝、4响应2工具；公共慢头满额要求新监督样本，
+GPU最多240秒，不跑长验。5项驱动CPU通过、默认/v6身份核对通过；
+尚未运行模型或HTTP，默认/旧Key/day保持。
+
 SRV-12g[独立本机运维入口已限定交付](SERVE_OPERATIONS_LISTENER_RESULT_2026-11-04.md)：
 默认7eff020d/sidecarabfaeff9、protocolddfba8c0；显式loopback8额、
 双监听生命周期/身份、v5观测、v6托管包及TLS控制上游接线。173唯一
