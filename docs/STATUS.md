@@ -41,6 +41,14 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
+SRV-12l[托管观测截止与停止优先修复中](SERVE_SUPERVISOR_DEADLINES_2026-11-04.md)：
+三个CPU最小复现确认迟到首次READY/迟到恢复绕过deadline，以及stop
+后仍发布READY。原失败保存，成组修复后114项唯一CPU通过；有限短验
+冻结1完整模型+1加载期停止、4响应2真实工具及3传输探针，同原锁保持。
+驱动检查/实机待完成，当前未接受修复。默认61abe09f/ce925d51保持，
+旧包/day不改、长验交用户，高级配置按需启用。
+12k验收提交af6be505仍待GitHub推送，服务端500已复核；本地交付有效。
+
 SRV-12k[原生启动监听所有权已限定交付](SERVE_STARTUP_LISTENERS_RESULT_2026-11-04.md)：
 默认61abe09f/ce925d51，协议15d7ccb1；双监听在模型前实际保留并沿
 Start/Run/异常/析构回收。零警告、42 Python/289公共/255必需/9结构化、

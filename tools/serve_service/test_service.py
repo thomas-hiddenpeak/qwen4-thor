@@ -35,7 +35,7 @@ class Case(unittest.TestCase):
                     configuration=sup.expected_configuration())
 
     def run_supervisor(self, observer, *, restarts=0, script=None, patch=None,
-                       read_memory=None):
+                       read_memory=None, config_overrides=None):
         out = self.root/'runtime'
         out.mkdir()
         cfg = pkg.settings(18999, restarts)
@@ -43,6 +43,8 @@ class Case(unittest.TestCase):
                    unavailable_seconds=.1, restart_delay_seconds=.15,
                    stop_seconds=.2, kill_seconds=.5, memory_poll_seconds=.01,
                    memory_low_seconds=.02, memory_unknown_seconds=.04)
+        if config_overrides:
+            cfg.update(config_overrides)
         read_memory = read_memory or (lambda: dict(
             total_bytes=8*1024**3, available_bytes=4*1024**3))
         manifest = dict(settings=cfg, repository=str(ROOT),

@@ -58,7 +58,53 @@ def parse_response(raw):
         raise InvalidObservation('invalid_http_utf8') from None
 
 
-def get(port, path, *, timeout=2, deadline=None, credentials=None):
+def _remaining(until, stopped):
+    if stopped is not None and stopped():
+        raise InvalidObservation('observation_stopped')
+    remaining = until-time.monotonic()
+    if remaining <= 0:
+        raise InvalidObservation('http_deadline')
+    return remaining
+
+
+def _wait(sock, write, until, stopped):
+    while True:
+        remaining = _remaining(until, stopped)
+        interval = min(.1, remaining) if stopped is not None else remaining
+        ready = select.select([] if write else [sock],
+                              [sock] if write else [], [], interval)
+        # A signal, a late wakeup, or readiness at the deadline cannot turn
+        # cancellation/expiry into a successful observation.
+        _remaining(until, stopped)
+        if ready[1 if write else 0]:
+            return
+
+
+def _connect(port, until, stopped):
+    remaining = _remaining(until, stopped)
+    if stopped is None:
+        return socket.create_connection(('127.0.0.1', port), timeout=remaining)
+    # Numeric loopback needs no resolver. Nonblocking connect also bounds
+    # stop latency when a listening backend has not begun accepting yet.
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sock.setblocking(False)
+        error = sock.connect_ex(('127.0.0.1', port))
+        if error in (errno.EINPROGRESS, errno.EWOULDBLOCK,
+                     errno.EALREADY, errno.EINTR):
+            _wait(sock, True, until, stopped)
+            error = sock.getsockopt(socket.SOL_SOCKET, socket.SO_ERROR)
+        if error:
+            raise OSError(error, 'loopback connection failed')
+        _remaining(until, stopped)
+        return sock
+    except BaseException:
+        sock.close()
+        raise
+
+
+def get(port, path, *, timeout=2, deadline=None, credentials=None,
+        stopped=None):
     if path not in ROUTES:
         raise InvalidObservation('unsupported_diagnostic_route')
     headers = ''
@@ -75,17 +121,12 @@ def get(port, path, *, timeout=2, deadline=None, credentials=None):
     until = min(time.monotonic()+timeout, deadline if deadline is not None else float('inf'))
     raw = bytearray()
     try:
-        remaining = until-time.monotonic()
-        if remaining <= 0:
-            raise InvalidObservation('http_deadline')
-        with socket.create_connection(('127.0.0.1', port), timeout=remaining) as sock:
+        with _connect(port, until, stopped) as sock:
             sock.setblocking(False)
             pending = (f'GET {path} HTTP/1.1\r\nHost: 127.0.0.1\r\n'
                        f'{headers}Connection: close\r\n\r\n').encode()
             while pending:
-                remaining = until-time.monotonic()
-                if remaining <= 0 or not select.select([], [sock], [], remaining)[1]:
-                    raise InvalidObservation('http_deadline')
+                _wait(sock, True, until, stopped)
                 try:
                     sent = sock.send(pending)
                 except BlockingIOError:
@@ -94,15 +135,16 @@ def get(port, path, *, timeout=2, deadline=None, credentials=None):
                     raise InvalidObservation('http_write_failed')
                 pending = pending[sent:]
             while True:
-                remaining = until-time.monotonic()
-                if remaining <= 0 or not select.select([sock], [], [], remaining)[0]:
-                    raise InvalidObservation('http_deadline')
+                _wait(sock, False, until, stopped)
                 try:
                     part = sock.recv(65536)
                 except BlockingIOError:
                     continue
+                _remaining(until, stopped)
                 if not part:
-                    return parse_response(bytes(raw))
+                    result = parse_response(bytes(raw))
+                    _remaining(until, stopped)
+                    return result
                 raw.extend(part)
                 boundary = raw.find(b'\r\n\r\n')
                 if (len(raw) > MAX_HEADER+MAX_BODY or

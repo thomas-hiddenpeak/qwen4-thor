@@ -124,21 +124,27 @@ def classify(probe, protocol, binary, client_policy=None, operations_port=0):
     return 'READY' if probe['ready'] else 'DEGRADED'
 
 
-def probe(pid, port, operations_port=0):
+def probe(pid, port, operations_port=0, *, deadline=None, stopped=None):
     started = time.monotonic()
+    until = min(started+8, deadline if deadline is not None else float('inf'))
+    def get(path):
+        options = dict(deadline=until)
+        if stopped is not None:
+            options['stopped'] = stopped
+        return transport.get(selected, path, **options)
     contracts.integer(operations_port, 0, 65535)
     if operations_port == port:
         raise contracts.InvalidObservation('operations_listener_port_conflict')
     owner = identity.process(pid, port)
     ops = identity.operations(owner, operations_port) if operations_port else None
     selected = operations_port or port
-    live = transport.get(selected, '/livez', deadline=started+8)
+    live = get('/livez')
     contracts.readiness(contracts.json_object(live['body']), live['http_status'],
                         liveness=True)
-    ready = transport.get(selected, '/readyz', deadline=started+8)
+    ready = get('/readyz')
     value = contracts.json_object(ready['body'])
     contracts.readiness(value, ready['http_status'], liveness=False)
-    config = transport.get(selected, '/v1/config', deadline=started+8)
+    config = get('/v1/config')
     if config['http_status'] != 200:
         raise contracts.InvalidObservation('configuration_unavailable')
     raw_config = contracts.json_object(config['body'])
@@ -150,7 +156,7 @@ def probe(pid, port, operations_port=0):
             (configuration['public_port'] != port or
              configuration['operations_port'] != operations_port)):
         raise contracts.InvalidObservation('operations_listener_configuration_mismatch')
-    response = transport.get(selected, '/metrics', deadline=started+8)
+    response = get('/metrics')
     if response['http_status'] != 200:
         raise contracts.InvalidObservation('metrics_unavailable')
     metrics, _ = contracts.parse_metrics(response['body'], version=version)
@@ -194,7 +200,7 @@ def preflight_ports(config):
                 f'{role} listener unavailable at 127.0.0.1:{port}: {error}') from error
 
 
-def run(package, digest, output, *, observe=probe, read_memory=None):
+def run(package, digest, output, *, observe=None, read_memory=None):
     package, output = Path(package), Path(output)
     manifest = pkg.verify(package, digest)
     cfg = manifest['settings']
@@ -259,6 +265,9 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
                     publish('STARTING')
                     watchdog.sample(startup=True)
                     watchdog.check()
+                    if stopped():
+                        break
+                    start = time.monotonic()
                     child = subprocess.Popen(backend_command(package, manifest, output),
                         cwd=manifest['repository'], env=env, stdin=subprocess.DEVNULL,
                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
@@ -273,35 +282,61 @@ def run(package, digest, output, *, observe=probe, read_memory=None):
                     pkg.save(output/f"attempt-{state['attempts']}.json",
                         dict(owner=owner, command=pkg.command(package, manifest),
                              started_unix=time.time()))
-                    start, missing, was_ready = time.monotonic(), None, False
+                    missing, was_ready = None, False
+                    def phase_limit():
+                        if not was_ready:
+                            return start+cfg['startup_seconds'], 'startup'
+                        if missing is not None:
+                            return missing+cfg['unavailable_seconds'], 'observation'
+                        return float('inf'), 'observation'
+
+                    def check_limit():
+                        until, phase = phase_limit()
+                        pkg.require(time.monotonic() < until,
+                                    phase+' deadline exceeded')
+                        return until
+
                     while not stopped() and child.poll() is None:
                         watchdog.check()
                         if envelope is not None: envelope.check()
                         pkg.require(logger.error is None, 'backend log capture failed')
+                        deadline = check_limit()
                         now = time.monotonic()
                         try:
                             operations_port = cfg.get('operations_port', 0)
-                            observation = (observe(child.pid, cfg['port'], operations_port)
-                                           if operations_port else observe(child.pid, cfg['port']))
+                            if observe is None:
+                                observation = probe(child.pid, cfg['port'], operations_port,
+                                                    deadline=deadline, stopped=stopped)
+                            else:
+                                # Injected CPU observers retain their historical
+                                # call shape, but cannot bypass post-call limits.
+                                observation = (observe(child.pid, cfg['port'], operations_port)
+                                               if operations_port else observe(child.pid, cfg['port']))
+                            if stopped():
+                                break
+                            check_limit()
                             status = classify(observation, manifest['protocol_sha256'],
                                               manifest['files']['q4t'],
                                               manifest.get('client_policy'), operations_port)
                             pkg.require(status != 'GPU_UNHEALTHY', 'GPU unhealthy')
+                            if stopped():
+                                break
+                            check_limit()
                             missing = None
                             was_ready = was_ready or status == 'READY'
                             publish(status, observation=observation)
                         except contracts.InvalidObservation as error:
+                            if stopped():
+                                break
+                            check_limit()
                             missing = now if missing is None else missing
                             publish('OBSERVATION_UNAVAILABLE', observation_error=error.code)
                         watchdog.check()
-                        if not was_ready:
-                            pkg.require(time.monotonic()-start < cfg['startup_seconds'],
-                                        'startup deadline exceeded')
-                        elif missing is not None:
-                            pkg.require(time.monotonic()-missing < cfg['unavailable_seconds'],
-                                        'observation deadline exceeded')
-                        if stopping.wait(cfg['poll_seconds']):
+                        if stopped():
                             break
+                        until = min(time.monotonic()+cfg['poll_seconds'], check_limit())
+                        while not stopped() and time.monotonic() < until:
+                            stopping.wait(min(.1, max(0, until-time.monotonic())))
                     code = child.poll()
                     # Even a dead parent can leave grammar descendants. Cleanup
                     # precedes replacement and stays inside the same GPU lease.
