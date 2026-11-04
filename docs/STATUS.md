@@ -41,11 +41,17 @@ Exception明确为Illegal Instruction Encoding，Xid43 PID对应候选。
 
 ## 当前推进目标
 
-SRV-10f[TLS运行观测与到期告警开发中](SERVE_TLS_OBSERVATION_2026-11-04.md)：
-已确认host/notify新包漏带TLS模块和notify早期child清理缺口，先补
-依赖与隔离入口，已实现只读TLS状态、有限指标、显式通知策略v3。
-57 CPU/4驱动通过，29官方时序通过；原NaNx80夹具语法错误保留，
-仅修正时序重验。待本机真实预警/观测暂停恢复/终态投递；不跑用户day。
+SRV-10f[TLS运行观测与本机通知限定接受](SERVE_TLS_OBSERVATION_RESULT_2026-11-04.md)：
+d94cc246实现，host包v2/notify包v3补齐TLS依赖与早期child回收；
+只读绑定、材料/生命周期分离、有限指标/10规则和显式notify策略v3。
+57 CPU/4驱动通过，29官方时序通过；原NaNx80解析失败保留且定向修正。
+1模型1网关，alpha512/beta64各2响应1真实工具，答案引用正确，grammar4/4。
+真实临期预警、观察器Stale/恢复、网关STOPPED均采集并经本机HTTPS
+认证投递；网关原记录保持。GPU145.757954秒/136观察、总146.956388秒/
+25父控制；11自有身份退、scope/GPU/原锁/监听释放，容器空、SOAR masked。
+404原件/9二进制路径身份离线重建通过；默认/222源码/原Key/02k包/3份
+day保持且day未跑。实际LAN、正式外部通知、容量/备份介质、物理RAM及
+用户长验仍待，持续工业化目标active。
 
 SRV-10e[TLS材料与证书生命周期限定接受](SERVE_TLS_LIFECYCLE_RESULT_2026-11-04.md)：
 e43761ce实现；notBefore/全链时间/用途、显式CA严格验证、复制材料校验，
@@ -57,7 +63,7 @@ GPU62.235038秒/59观察、总64.271214秒/7父控制；10身份退/3代次SEALE
 scope/GPU/原锁/监听释放，容器空、SOAR masked。281原件/5二进制路径
 身份重建通过；原报告比较终态空backend的错误保留并离线修正，无补推理。
 默认/222源码/原Key/02k包/3份day保持且day未跑；仅新准备网关包生效。
-实际LAN、TLS告警/正式通知、容量/备份介质、物理RAM和用户长验仍待，
+TLS告警本机接线见10f；实际LAN、正式通知、容量/备份介质、物理RAM和用户长验仍待，
 持续工业化目标active。
 
 SRV-12f[host资源观测与告警限定接受](SERVE_HOST_OBSERVATION_RESULT_2026-11-04.md)：
