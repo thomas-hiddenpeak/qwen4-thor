@@ -36,8 +36,9 @@ python3 -B tools/serve_gateway/report.py verify-archive
 
 ```json
 {
-  "version": 1,
+  "version": 2,
   "listen_host": "127.0.0.1",
+  "allowed_client_cidrs": ["127.0.0.1/32"],
   "listen_port": 18443,
   "server_name": "q4t.internal.example",
   "upstream_port": 18123,
@@ -53,6 +54,17 @@ python3 -B tools/serve_gateway/report.py verify-archive
   "upstream_idle_seconds": 1300
 }
 ```
+
+新policy v2显式限制TCP连接来源，`allowed_client_cidrs`为1至32个
+不重叠的规范IPv4 CIDR，仅支持RFC1918或127/8；来源未匹配返回403
+`gateway_source_denied`。不隐式允许loopback，不信任X-Forwarded-For、
+X-Real-IP、Forwarded或PROXY protocol。所有Key共用此来源清单，
+来源通过仍须有效Key。示例仅用于本机；实际内网须填写真实网段并
+配置防火墙、DNS和受信任证书，不能照搬示例当作部署验收。
+新建内网监听必须用v2；v1新包只允许127.0.0.1，旧固定包保持其原
+入口。变更来源需排空后显式准备/启动新包。网关前若存在NAT或
+其他代理，检查的是它们的真实TCP来源；不靠转发头绕过来源限制。
+合同与短验范围见[SRV-10g](../../docs/SERVE_GATEWAY_SOURCES_2026-11-04.md)。
 
 证书链需已生效、匹配server_name和服务器用途，完整链有效期交集
 剩余严格大于1小时。可选`--trusted-ca`指定一个CA锚点做严格链验证；

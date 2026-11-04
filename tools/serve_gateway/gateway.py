@@ -23,6 +23,8 @@ API_CONTRACT = ROOT/'docs/serve-openapi-v1.json'
 DEFAULTS = dict(per_client_inflight=2, global_inflight=8,
                 per_client_rps=5, burst=10, body_bytes=16*1024**2,
                 upstream_idle_seconds=1300)
+CLIENT_NETWORKS = tuple(ipaddress.IPv4Network(net) for net in
+    ('10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', '127.0.0.0/8'))
 
 
 def require(condition, message):
@@ -77,14 +79,38 @@ def validate_routes():
     return sha(API_CONTRACT)
 
 
+def client_sources(values):
+    """Explicit canonical IPv4 CIDRs, with no implicit local/trusted proxies."""
+    require(isinstance(values, list) and 1 <= len(values) <= 32,
+            'one to 32 allowed_client_cidrs required')
+    networks = []
+    for value in values:
+        require(isinstance(value, str), 'canonical IPv4 source CIDR required')
+        try:
+            network = ipaddress.IPv4Network(value, strict=True)
+        except (ValueError, TypeError):
+            raise ValueError('canonical IPv4 source CIDR required') from None
+        require(str(network) == value, 'canonical IPv4 source CIDR required')
+        require(any(network.subnet_of(parent) for parent in CLIENT_NETWORKS),
+                'source CIDRs must be within RFC1918 or IPv4 loopback')
+        require(not any(network.overlaps(prior) for prior in networks),
+                'duplicate or overlapping source CIDRs')
+        networks.append(network)
+    return list(values)
+
+
 def policy(value):
+    require(isinstance(value, dict) and type(value.get('version')) is int and
+            value['version'] in (1, 2), 'unsupported policy version')
     required = {'version', 'listen_host', 'listen_port', 'server_name',
                 'upstream_port', 'clients'}
+    if value['version'] == 2:
+        required.add('allowed_client_cidrs')
     require(isinstance(value, dict) and required <= value.keys() and
             value.keys() <= required | DEFAULTS.keys(), 'unknown/missing policy field')
     value = dict(DEFAULTS, **value)
-    require(type(value['version']) is int and value['version'] == 1,
-            'unsupported policy version')
+    if value['version'] == 2:
+        value['allowed_client_cidrs'] = client_sources(value['allowed_client_cidrs'])
     require(isinstance(value['listen_host'], str), 'numeric IPv4 string required')
     try:
         address = ipaddress.IPv4Address(value['listen_host'])
@@ -130,6 +156,16 @@ def quoted(path):
 
 def render(value, directory, backend_policy=None):
     p = policy(value)
+    require(p['version'] == 2 or p['listen_host'] == '127.0.0.1',
+            'new LAN gateways require policy v2 with allowed_client_cidrs')
+    source_map = source_check = source_log = ''
+    if p['version'] == 2:
+        entries = '\n'.join('    '+net+' 1;' for net in p['allowed_client_cidrs'])
+        # Only the socket peer. No geo proxy, realip, or PROXY protocol trust.
+        source_map = ('  geo $remote_addr $q4t_source_allowed {\n'
+                      '    default 0;\n'+entries+'\n  }\n')
+        source_check = '    if ($q4t_source_allowed = 0) { return 403; }\n'
+        source_log = ',"source_allowed":$q4t_source_allowed'
     identity_headers = ''
     if backend_policy is not None:
         from tools.serve_gateway import client_policy as cp
@@ -156,6 +192,8 @@ def render(value, directory, backend_policy=None):
         429: 'gateway_rate_limit', 500: 'gateway_internal_error',
         502: 'gateway_upstream_unavailable', 503: 'gateway_unavailable',
         504: 'gateway_upstream_timeout'}
+    if p['version'] == 2:
+        errors[403] = 'gateway_source_denied'
     for status, code in errors.items():
         auth = 'add_header WWW-Authenticate \'Bearer realm="q4t"\' always;' if status == 401 else ''
         retry = 'add_header Retry-After 1 always;' if status == 429 else ''
@@ -194,9 +232,9 @@ http {{
   fastcgi_temp_path {q('runtime/fastcgi')};
   uwsgi_temp_path {q('runtime/uwsgi')};
   scgi_temp_path {q('runtime/scgi')};
-  log_format q4t escape=json '{{"gateway_id":"$request_id","client":"$q4t_client","lane":"$q4t_lane","status":$status,"bytes":$body_bytes_sent,"seconds":$request_time,"upstream_status":"$upstream_status","connection_limit":"$limit_conn_status","rate_limit":"$limit_req_status"}}';
+  log_format q4t escape=json '{{"gateway_id":"$request_id","client":"$q4t_client","lane":"$q4t_lane","status":$status,"bytes":$body_bytes_sent,"seconds":$request_time,"upstream_status":"$upstream_status","connection_limit":"$limit_conn_status","rate_limit":"$limit_req_status"{source_log}}}';
   access_log /dev/stdout q4t;
-  map $http_authorization $q4t_client {{
+{source_map}  map $http_authorization $q4t_client {{
     default "";
 {clients}
   }}
@@ -225,7 +263,7 @@ http {{
     ssl_session_cache shared:TLS:1m;
     ssl_early_data off;
     ssl_buffer_size 4k;
-    if ($host != {p['server_name']}) {{ return 400; }}
+{source_check}    if ($host != {p['server_name']}) {{ return 400; }}
     if ($ssl_server_name != {p['server_name']}) {{ return 400; }}
     if ($q4t_client = "") {{ return 401; }}
     if ($q4t_lane = "") {{ return 404; }}
@@ -282,6 +320,8 @@ def prepare(policy_path, nginx, certificate, key, output, client_policy=None, *,
     from tools.serve_gateway import tls
     api_sha256 = validate_routes()
     p = policy(parse(read_file(policy_path, private=True)))
+    require(p['version'] == 2 or p['listen_host'] == '127.0.0.1',
+            'new LAN gateways require policy v2 with allowed_client_cidrs')
     backend_raw, backend_policy = None, None
     if client_policy is not None:
         from tools.serve_gateway import client_policy as cp
